@@ -34,7 +34,7 @@ Aplikasi ini dirancang dengan pendekatan *essentialist*, menyediakan fitur-fitur
 
 Dibangun dengan fondasi teknologi yang modern dan performan:
 
-*   **Framework**: [Next.js 15](https://nextjs.org/)
+*   **Framework**: [Next.js 16](https://nextjs.org/)
 *   **Language**: [TypeScript](https://www.typescriptlang.org/)
 *   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 *   **Icons**: [Lucide React](https://lucide.dev/)
