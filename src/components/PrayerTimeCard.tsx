@@ -16,6 +16,7 @@ export default function PrayerTimeCard({
     const prayers = [
         { key: "Imsak", label: "Imsak" },
         { key: "Fajr", label: "Subuh" },
+        { key: "Sunrise", label: "Terbit" }, // Distinct
         { key: "Dhuhr", label: "Dzuhur" },
         { key: "Asr", label: "Ashar" },
         { key: "Maghrib", label: "Maghrib" },
@@ -24,15 +25,12 @@ export default function PrayerTimeCard({
 
     return (
         <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-lg shadow-xl">
-            <div className="mb-6 text-center text-white">
-                <h2 className="text-2xl font-bold tracking-tight">{hijriDate}</h2>
-                <p className="mt-1 text-sm text-white/60">{gregorianDate}</p>
-            </div>
 
             <div className="space-y-3">
                 {prayers.map(({ key, label }) => {
                     const isNext = key === nextPrayer;
                     const time = prayerTimes[key] || "--:--";
+                    const isSunrise = key === "Sunrise";
 
                     return (
                         <div
@@ -41,13 +39,15 @@ export default function PrayerTimeCard({
                                 "flex items-center justify-between rounded-xl p-4 transition-all duration-300",
                                 isNext
                                     ? "bg-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/50 scale-[1.02]"
-                                    : "bg-white/5 hover:bg-white/10"
+                                    : isSunrise
+                                        ? "bg-yellow-500/5 hover:bg-yellow-500/10 border border-yellow-500/10"
+                                        : "bg-white/5 hover:bg-white/10"
                             )}
                         >
                             <span
                                 className={cn(
                                     "font-medium",
-                                    isNext ? "text-emerald-400" : "text-white/80"
+                                    isNext ? "text-emerald-400" : isSunrise ? "text-yellow-200/70" : "text-white/80"
                                 )}
                             >
                                 {label}
@@ -55,7 +55,7 @@ export default function PrayerTimeCard({
                             <span
                                 className={cn(
                                     "text-lg font-bold tabular-nums",
-                                    isNext ? "text-emerald-400" : "text-white"
+                                    isNext ? "text-emerald-400" : isSunrise ? "text-yellow-100/90" : "text-white"
                                 )}
                             >
                                 {time}
