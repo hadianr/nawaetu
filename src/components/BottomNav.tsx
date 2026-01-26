@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, Compass, Settings } from "lucide-react";
+import { Home, BookOpen, Compass, Settings, Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
@@ -11,8 +11,9 @@ export default function BottomNav() {
     const navItems = [
         { href: "/", label: "Beranda", icon: Home },
         { href: "/quran", label: "Al-Qur'an", icon: BookOpen },
+        { href: "/tasbih", label: "Tasbih", icon: Fingerprint },
         { href: "/kiblat", label: "Kiblat", icon: Compass },
-        { href: "/settings", label: "Pengaturan", icon: Settings },
+        { href: "/settings", label: "Atur", icon: Settings },
     ];
 
     return (
