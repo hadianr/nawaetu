@@ -12,33 +12,50 @@ Setiap langkah ibadah dimulai dari hati. Nawaetu hadir bukan untuk menggantikan 
 ### Mission
 Menjadi teman digital yang paling fokus dan bebas gangguan bagi Muslim modern dalam mempersiapkan bekal akhiratnya, dimulai dari hal terkecil: **Niat**.
 
-### Personality
-*   **The Companion**: Menemani, suportif, dan hangat.
-*   **The Essentialist**: Desain minimalis, langsung ke inti, dan bersih dari distraksi.
-*   **The Modern Muslim**: Relevan dengan gaya hidup sibuk namun tetap berpegang teguh pada nilai tradisi.
-
 ---
 
 ## 🌟 Fitur Utama
 
-Aplikasi ini dirancang dengan pendekatan *essentialist*, menyediakan fitur-fitur inti yang Anda butuhkan:
+Aplikasi ini dirancang dengan pendekatan *essentialist* dan estetika *dark mode* yang premium:
 
-*   **Jadwal Sholat & Imsakiyah**: Akurat sesuai lokasi Anda.
-*   **Al-Qur'an Digital**: Bacaan nyaman dengan fokus pada kenyamanan mata.
-*   **Penunjuk Kiblat**: Pastikan arah sholat Anda tepat dan presisi.
-*   **Audio Murottal**: Dengarkan lantunan ayat suci per ayat.
-*   **Modern Interface**: Didesain dengan estetika modern, mode gelap yang elegan, dan pengalaman pengguna yang seamless.
-*   **Supported PWA**: Instal sebagai aplikasi di smartphone atau desktop Anda.
+### 1. 🏡 Dashboard Modern
+*   **Jadwal Sholat Otomatis**: Mendeteksi lokasi pengguna untuk jadwal sholat yang akurat.
+*   **Countdown Waktu Sholat**: Hitung mundur menuju waktu sholat berikutnya.
+*   **Daily Inspiration**: Quote dan Hadis harian sebagai pengingat.
+*   **Hijri Calendar**: Integrasi tanggalan Hijriah.
+
+### 2. 📖 Al-Qur'an Digital
+*   **Bacaan Nyaman**: Typography yang jelas dengan *dark mode* yang ramah mata.
+*   **Audio Murottal**: Pemutaran audio per-ayat untuk membantu hafalan/tilawah.
+*   **Terjemahan Bahasa Indonesia**: Memahami makna setiap ayat.
+*   **Search & Navigation**: Pencarian surat yang cepat.
+
+### 3. 🧭 Penunjuk Kiblat (Qibla Finder)
+*   **Visual Kompas**: Tampilan kompas visual dengan indikator Ka'bah yang intuitif.
+*   **Kalibrasi**: Mendukung sensor perangkat untuk akurasi tinggi.
+*   **Minimalist UI**: Fokus pada arah tanpa gangguan peta yang berat.
+
+### 4. 📿 Tasbih Digital (New!)
+*   **Full Screen Tap**: Menghitung zikir dengan mengetuk area layar manapun (cocok untuk penggunaan tanpa melihat layar).
+*   **Zikir Presets**: Pilihan bacaan siap pakai (Tasbih, Tahmid, Takbir, Istighfar, Sholawat, Tahlil).
+*   **Rich Feedback**:
+    *   **Haptic Interface**: Getaran *tactile* (support Android/Device with Vibration API).
+    *   **Sound Feedback**: Suara "klik" natural (opsi fallback untuk iOS).
+*   **Custom Targets**: Atur target zikir Anda sendiri (33, 99, 100, 1000, atau Tanpa Batas).
+*   **Immersive Design**: Visual progress ring yang memuaskan dan *distraction-free*.
+
+---
 
 ## 🛠️ Tech Stack
 
-Dibangun dengan fondasi teknologi yang modern dan performan:
+Dibangun dengan fondasi teknologi web modern untuk performa maksimal:
 
-*   **Framework**: [Next.js 16](https://nextjs.org/)
+*   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 *   **Language**: [TypeScript](https://www.typescriptlang.org/)
-*   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
+*   **Animations**: [Framer Motion](https://www.framer.com/motion/) & Tailwind Animate
 *   **Icons**: [Lucide React](https://lucide.dev/)
-*   **PWA**: [@ducanh2912/next-pwa](https://github.com/DuCanhGH/next-pwa)
+*   **PWA**: Support Progressive Web App (Installable).
 
 ## 🚀 Memulai (Getting Started)
 
@@ -69,12 +86,13 @@ Dibangun dengan fondasi teknologi yang modern dan performan:
 
 ```
 src/
-├── app/              # App Router (Pages)
+├── app/              # App Router (Pages: Home, Quran, Kiblat, Tasbih)
 ├── components/       # Reusable Components
-│   ├── quran/        # Fitur Al-Qur'an
-│   └── ui/           # Design System & UI Kit
-├── lib/              # Utilities
-└── public/           # Assets (Images, Icons)
+│   ├── ui/           # Shadcn UI Components
+│   ├── quran/        # Komponen spesifik Al-Qur'an
+│   └── icons/        # Custom SVG Icons
+├── lib/              # Utilities & Helpers
+└── hooks/            # Custom React Hooks (usePrayerTimes, etc.)
 ```
 
 ---
