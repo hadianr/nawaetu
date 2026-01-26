@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ramadhan Vibe - Teman Ibadahmu",
-  description: "Aplikasi Ramadhan lengkap dengan Al-Quran, Jadwal Sholat, dan Arah Kiblat",
+  title: "Nawaetu - Teman Ibadahmu",
+  description: "Teman digital Muslim modern untuk menata niat dan menjaga istiqomah.",
 };
 
 export default function RootLayout({

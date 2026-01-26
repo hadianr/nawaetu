@@ -11,10 +11,10 @@ export default function Home() {
         {/* Header Section */}
         <header className="text-center space-y-2">
           <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-br from-emerald-300 to-emerald-600 bg-clip-text text-transparent drop-shadow-sm">
-            Ramadhan Vibe
+            Nawaetu
           </h1>
-          <p className="text-lg text-white/80 font-medium">
-            Marhaban ya Ramadhan
+          <p className="text-lg text-white/80 font-medium italic">
+            "Innamal A'malu Binniyat"
           </p>
         </header>
 
