@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { KaabaIcon } from "@/components/icons/KaabaIcon";
@@ -25,6 +25,29 @@ export default function QiblaCompass() {
     // Refs to track absolute values for wrapping logic
     const lastHeadingRef = useRef<number>(0);
 
+    const handleOrientation = useCallback((e: DeviceOrientationEvent) => {
+        let rawHeading: number | null = null;
+
+        if ((e as DeviceOrientationEventiOS).webkitCompassHeading !== undefined) {
+            // iOS: use webkitCompassHeading
+            rawHeading = (e as DeviceOrientationEventiOS).webkitCompassHeading!;
+        } else if (e.alpha !== null) {
+            // Android/Standard: alpha is usually 0-360 counter-clockwise.
+            // Compass heading is clockwise. So 360 - alpha.
+            rawHeading = 360 - e.alpha;
+        }
+
+        if (rawHeading === null) return;
+
+        // Performance: Continuous Rotation Logic
+        let delta = rawHeading - (lastHeadingRef.current % 360);
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+
+        lastHeadingRef.current += delta;
+        setCompassRotate(-lastHeadingRef.current);
+    }, []);
+
     useEffect(() => {
         // Get User Location
         if ("geolocation" in navigator) {
@@ -48,13 +71,21 @@ export default function QiblaCompass() {
         }
     }, []);
 
+    const startCompass = useCallback(() => {
+        setPermissionGranted(true);
+        if ('ondeviceorientationabsolute' in window) {
+            (window as any).addEventListener("deviceorientationabsolute", handleOrientation);
+        } else {
+            (window as any).addEventListener("deviceorientation", handleOrientation);
+        }
+    }, [handleOrientation]);
+
     const requestCompassPermission = async () => {
         if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
             try {
                 const response = await (DeviceOrientationEvent as any).requestPermission();
                 if (response === "granted") {
-                    setPermissionGranted(true);
-                    window.addEventListener("deviceorientation", handleOrientation);
+                    startCompass();
                 } else {
                     setError("Izin kompas ditolak.");
                 }
@@ -62,21 +93,8 @@ export default function QiblaCompass() {
                 setError("Gagal meminta izin kompas.");
             }
         } else {
-            setPermissionGranted(true);
-            window.addEventListener("deviceorientation", handleOrientation);
+            startCompass();
         }
-    };
-
-    const handleOrientation = (e: DeviceOrientationEvent) => {
-        let rawHeading = (e as DeviceOrientationEventiOS).webkitCompassHeading || Math.abs(e.alpha! - 360);
-
-        // Performance: Continuous Rotation Logic
-        let delta = rawHeading - (lastHeadingRef.current % 360);
-        if (delta > 180) delta -= 360;
-        if (delta < -180) delta += 360;
-
-        lastHeadingRef.current += delta;
-        setCompassRotate(-lastHeadingRef.current);
     };
 
     useEffect(() => {
@@ -103,8 +121,11 @@ export default function QiblaCompass() {
     useEffect(() => {
         return () => {
             window.removeEventListener("deviceorientation", handleOrientation);
+            if ('ondeviceorientationabsolute' in window) {
+                (window as any).removeEventListener("deviceorientationabsolute", handleOrientation);
+            }
         };
-    }, []);
+    }, [handleOrientation]);
 
     if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">Mencari lokasi...</div>;
 
