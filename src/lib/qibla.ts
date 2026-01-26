@@ -16,3 +16,19 @@ export function calculateQiblaDirection(latitude: number, longitude: number): nu
 
     return qibla;
 }
+
+export function calculateDistanceToKaaba(latitude: number, longitude: number): number {
+    const R = 6371; // Earth's radius in km
+    const dLat = (21.422487 - latitude) * (Math.PI / 180);
+    const dLon = (39.826206 - longitude) * (Math.PI / 180);
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(latitude * (Math.PI / 180)) * Math.cos(21.422487 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+
+    return Math.round(distance);
+}

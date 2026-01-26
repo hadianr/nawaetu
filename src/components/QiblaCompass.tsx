@@ -1,17 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { calculateQiblaDirection } from "@/lib/qibla";
+import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { KaabaIcon } from "@/components/icons/KaabaIcon";
+import { Compass } from "lucide-react";
+
+interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
+    webkitCompassHeading?: number;
+}
 
 export default function QiblaCompass() {
-    const [heading, setHeading] = useState<number>(0);
+    // We use "display" states for the smooth CSS transition values
+    const [compassRotate, setCompassRotate] = useState<number>(0);
+    const [qiblaRelativeRotate, setQiblaRelativeRotate] = useState<number>(0);
+
     const [qiblaBearing, setQiblaBearing] = useState<number | null>(null);
+    const [distance, setDistance] = useState<number | null>(null);
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [aligned, setAligned] = useState<boolean>(false);
+
+    // Refs to track absolute values for wrapping logic
+    const lastHeadingRef = useRef<number>(0);
 
     useEffect(() => {
         // Get User Location
@@ -20,7 +32,9 @@ export default function QiblaCompass() {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     const bearing = calculateQiblaDirection(latitude, longitude);
+                    const dist = calculateDistanceToKaaba(latitude, longitude);
                     setQiblaBearing(bearing);
+                    setDistance(dist);
                     setLoading(false);
                 },
                 (err) => {
@@ -54,25 +68,37 @@ export default function QiblaCompass() {
     };
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
-        let compass = e.webkitCompassHeading || Math.abs(e.alpha! - 360);
-        setHeading(compass);
+        let rawHeading = (e as DeviceOrientationEventiOS).webkitCompassHeading || Math.abs(e.alpha! - 360);
+
+        // Performance: Continuous Rotation Logic
+        let delta = rawHeading - (lastHeadingRef.current % 360);
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+
+        lastHeadingRef.current += delta;
+        setCompassRotate(-lastHeadingRef.current);
     };
 
     useEffect(() => {
         if (qiblaBearing !== null) {
-            const diff = Math.abs(heading - qiblaBearing);
-            // Adjusted logical check for 360 wrap-around
-            const isAligned = diff < 5 || diff > 355;
+            const currentHeading = (-compassRotate) % 360;
+            const normalizedHeading = currentHeading < 0 ? currentHeading + 360 : currentHeading;
+
+            const diff = Math.abs(normalizedHeading - qiblaBearing);
+
+            // Strict tolerance for "Locked In" feel
+            const isAligned = diff < 3 || diff > 357;
 
             if (isAligned && !aligned) {
-                // Haptic feedback if supported
-                if (navigator.vibrate) navigator.vibrate(50);
+                if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
                 setAligned(true);
             } else if (!isAligned && aligned) {
                 setAligned(false);
             }
+
+            setQiblaRelativeRotate(qiblaBearing);
         }
-    }, [heading, qiblaBearing, aligned]);
+    }, [compassRotate, qiblaBearing, aligned]);
 
     useEffect(() => {
         return () => {
@@ -80,104 +106,136 @@ export default function QiblaCompass() {
         };
     }, []);
 
-    // Use this to rotate the arrow to point to Qibla relative to North
-    const arrowRotation = qiblaBearing ? qiblaBearing - heading : 0;
-    // Rotate the compass rose opposite to heading so North stays North
-    const compassRotation = -heading;
-
-    if (loading) return <div className="text-white/60 animate-pulse">Mencari lokasi...</div>;
+    if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">Mencari lokasi...</div>;
 
     return (
-        <div className="flex flex-col items-center gap-12 relative z-10 w-full max-w-sm mx-auto py-10">
+        <div className="flex flex-col items-center justify-center min-h-[50vh] w-full relative">
             {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-lg text-sm text-center">
+                <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-lg text-sm text-center max-w-xs mx-auto mb-8 z-50">
                     {error}
                 </div>
             )}
 
+            {/* Permission Overlay - FIXED POSITION (No Gaps) */}
             {!permissionGranted && !error && (
-                <div className="text-center space-y-4">
-                    <p className="text-white/80">Izinkan akses sensor gerak/kompas untuk akurasi terbaik.</p>
+                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0a0a] p-6 text-center">
+                    <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 ring-1 ring-emerald-500/20">
+                        {/* Animated Compass Icon */}
+                        <Compass className="w-10 h-10 text-emerald-400 animate-[spin_3s_linear_infinite]" />
+                    </div>
+
+                    <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Izin Akses Kompas</h3>
+                    <p className="text-white/60 max-w-xs mb-10 leading-relaxed">
+                        Nawaetu memerlukan akses sensor gerak HP Anda untuk menentukan arah kiblat dengan presisi.
+                    </p>
+
                     <Button
                         onClick={requestCompassPermission}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-10 py-7 text-lg font-medium shadow-[0_0_30px_rgba(16,185,129,0.25)] transition-all hover:scale-105 active:scale-95"
                     >
-                        Aktifkan Kompas
+                        Aktifkan Sensor
                     </Button>
                 </div>
             )}
 
             {qiblaBearing !== null && (
-                <div className="relative w-72 h-72 flex items-center justify-center">
+                <>
+                    {/* COMPASS CONTAINER */}
+                    <div className="relative flex items-center justify-center w-[85vw] h-[85vw] max-w-[320px] max-h-[320px] md:max-w-[360px] md:max-h-[360px]">
 
-                    {/* Outer Glow Ring (Green when aligned) */}
-                    <div
-                        className={`absolute inset-[-20px] rounded-full blur-2xl transition-all duration-500 ${aligned ? 'bg-emerald-500/30' : 'bg-emerald-500/5'}`}
-                    />
+                        {/* 1. FIX: Radial Gradient Ambient Glow (No Boxy Edges) */}
+                        {/* Scales up significantly when aligned to fill screen with green vibe */}
+                        <div
+                            className={`absolute inset-[-50%] rounded-full transition-all duration-1000 ease-out z-0 pointer-events-none ${aligned ? 'opactity-100 scale-125' : 'opacity-0 scale-90'}`}
+                            style={{
+                                background: aligned
+                                    ? 'radial-gradient(circle at center, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.05) 50%, transparent 70%)'
+                                    : 'none'
+                            }}
+                        />
 
-                    {/* Main Compass Circle (Rose) - Rotates with device */}
-                    <div
-                        className={`absolute inset-0 rounded-full border border-white/10 bg-black/40 backdrop-blur-md transition-transform duration-300 ease-out shadow-2xl ${aligned ? 'border-emerald-500/50' : ''}`}
-                        style={{ transform: `rotate(${compassRotation}deg)` }}
-                    >
-                        {/* Cardinal Points */}
-                        <div className="absolute top-4 left-1/2 -translate-x-1/2 text-emerald-400 font-bold text-lg">N</div>
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/30 font-medium">S</div>
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 font-medium">W</div>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-medium">E</div>
+                        {/* MAIN ROTATING DIAL */}
+                        <div
+                            className="absolute inset-0 will-change-transform z-10"
+                            style={{
+                                transform: `rotate(${compassRotate}deg)`,
+                                transition: 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                            }}
+                        >
+                            {/* Dial Background */}
+                            <div className={`w-full h-full rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.2)]' : ''}`}>
+                                {/* Cardinal Points */}
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2 text-emerald-400 font-bold text-lg md:text-xl transform -translate-y-1">N</div>
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/30 font-medium md:text-lg transform translate-y-1">S</div>
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 font-medium md:text-lg transform -translate-x-1">W</div>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-medium md:text-lg transform translate-x-1">E</div>
 
-                        {/* Detailed Ticks */}
-                        {Array.from({ length: 72 }).map((_, i) => {
-                            const deg = i * 5;
-                            const isCardinal = deg % 90 === 0;
-                            const isMajor = deg % 30 === 0;
-                            return (
+                                {/* Ticks */}
                                 <div
-                                    key={i}
-                                    className={`absolute left-1/2 top-0 origin-bottom-center`}
+                                    className="absolute inset-4 rounded-full opacity-30"
                                     style={{
-                                        height: '50%', // Logic to position tick at edge
-                                        transform: `translateX(-50%) rotate(${deg}deg)`
+                                        background: `repeating-conic-gradient(from 0deg, rgba(255,255,255,0.5) 0deg 0.5deg, transparent 0.5deg 5deg)`,
+                                        maskImage: 'radial-gradient(transparent 65%, black 70%)',
+                                        WebkitMaskImage: 'radial-gradient(transparent 65%, black 70%)'
                                     }}
-                                >
-                                    <div className={`w-full ${isCardinal ? 'h-3 bg-emerald-500/50' : isMajor ? 'h-2 bg-white/20' : 'h-1 bg-white/10'}`} />
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Qibla Indicator (Kaaba) - Stays fixed relative to Qibla bearing */}
-                    <div
-                        className="absolute inset-0 pointer-events-none transition-transform duration-500 ease-out z-20"
-                        style={{ transform: `rotate(${arrowRotation}deg)` }}
-                    >
-                        <div className="absolute top-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                            {/* Visual Indicator Line */}
-                            <div className={`w-1 h-4 mb-2 rounded-full transition-colors ${aligned ? 'bg-emerald-400 shadow-[0_0_10px_#34d399]' : 'bg-white/50'}`} />
-
-                            {/* Kaaba Icon */}
-                            <div className="relative">
-                                <div className={`absolute inset-0 bg-emerald-400 blur-lg transition-opacity duration-300 ${aligned ? 'opacity-50' : 'opacity-0'}`} />
-                                <KaabaIcon className={`w-12 h-12 text-zinc-900 drop-shadow-lg transition-transform ${aligned ? 'scale-110' : 'scale-100'}`} />
+                                />
                             </div>
+
+                            {/* KAABA ICON */}
+                            <div
+                                className="absolute inset-0"
+                                style={{ transform: `rotate(${qiblaRelativeRotate}deg)` }}
+                            >
+                                <div className="absolute top-8 left-1/2 -translate-x-1/2">
+                                    {/* 2. FIX: Radar Ping Animation */}
+                                    <div className={`relative transition-all duration-700 flex items-center justify-center transform ${aligned ? 'scale-125' : 'scale-100'}`}>
+
+                                        {/* Ping Rings */}
+                                        {aligned && (
+                                            <>
+                                                <div className="absolute w-full h-full bg-emerald-500/30 rounded-full animate-ping opacity-75" />
+                                                <div className="absolute w-[140%] h-[140%] border border-emerald-500/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite] delay-100" />
+                                            </>
+                                        )}
+
+                                        <KaabaIcon className={`w-12 h-12 md:w-14 md:h-14 drop-shadow-2xl text-zinc-900 relative z-10 transition-opacity duration-300 ${aligned ? 'opacity-100' : 'opacity-80'}`} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* CENTER ORNAMENT */}
+                        <div className="absolute w-4 h-4 rounded-full bg-white/20 backdrop-blur-md z-20 border border-white/10 flex items-center justify-center shadow-lg">
+                            <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${aligned ? 'bg-emerald-400' : 'bg-white/50'}`} />
+                        </div>
+
+                        {/* TOP INDICATOR */}
+                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
+                            <div className={`w-1 h-3 rounded-full transition-all duration-500 ${aligned ? 'bg-emerald-400 h-4 shadow-[0_0_15px_#34d399]' : 'bg-white/30'}`} />
                         </div>
                     </div>
 
-                    {/* Center Ornament */}
-                    <div className="w-16 h-16 rounded-full border border-white/5 bg-white/5 backdrop-blur-sm z-10 flex items-center justify-center">
-                        <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${aligned ? 'bg-emerald-400' : 'bg-white/30'}`} />
-                    </div>
-                </div>
-            )}
+                    {/* STATUS DISPLAY */}
+                    <div className="mt-16 text-center space-y-3 z-30">
+                        {/* 3. FIX: Text Animation (Scale + Glow) */}
+                        <div className={`transition-all duration-500 transform ${aligned ? 'scale-110' : 'scale-100'}`}>
+                            <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-emerald-400 drop-shadow-[0_0_20px_rgba(52,211,153,0.6)]' : 'text-white/30'}`}>
+                                {aligned ? "MENGHADAP KIBLAT" : "CARI KIBLAT"}
+                            </h2>
+                        </div>
 
-            {qiblaBearing !== null && (
-                <div className="text-center space-y-1">
-                    <div className="text-sm text-white/50 uppercase tracking-widest font-medium">Arah Kiblat</div>
-                    <div className="text-4xl font-bold font-mono text-emerald-400">
-                        {qiblaBearing.toFixed(0)}°
+                        <div className="flex flex-col items-center gap-1">
+                            <div className="text-5xl font-mono font-bold text-white tracking-tighter">
+                                {Math.round((-compassRotate + 3600) % 360)}°
+                            </div>
+                            {distance && (
+                                <div className="text-sm text-white/40 font-medium bg-white/5 px-4 py-1.5 rounded-full border border-white/5 backdrop-blur-sm mt-2">
+                                    Jarak ke Ka'bah: {distance.toLocaleString()} km
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <p className="text-xs text-white/40">dari Utara</p>
-                </div>
+                </>
             )}
         </div>
     );
