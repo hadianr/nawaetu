@@ -19,6 +19,7 @@ interface UserProfileData {
     name: string;
     title: string;
     level: number;
+    gender: 'male' | 'female' | null;
 }
 
 const AVAILABLE_TITLES = [
@@ -66,7 +67,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [profile, setProfile] = useState<UserProfileData>({
         name: "Sobat Nawaetu",
         title: "Hamba Allah",
-        level: 1
+        level: 1,
+        gender: null
     });
     const [stats, setStats] = useState<PlayerStats>({ xp: 0, level: 1, nextLevelXp: 100, progress: 0 });
     const [isEditing, setIsEditing] = useState(false);
@@ -75,12 +77,14 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const loadData = () => {
         const savedName = localStorage.getItem("user_name");
         const savedTitle = localStorage.getItem("user_title");
+        const savedGender = localStorage.getItem("user_gender") as 'male' | 'female' | null;
         const currentStats = getPlayerStats();
 
         setProfile({
             name: savedName || "Sobat Nawaetu",
             title: savedTitle || "Hamba Allah",
-            level: currentStats.level
+            level: currentStats.level,
+            gender: savedGender
         });
         setStats(currentStats);
     };
@@ -114,6 +118,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             setProfile(prev => ({ ...prev, title: titleLabel }));
             localStorage.setItem("user_title", titleLabel);
         }
+    };
+
+    const handleGenderSelect = (gender: 'male' | 'female') => {
+        setProfile(prev => ({ ...prev, gender }));
+        localStorage.setItem("user_gender", gender);
+        if (onProfileUpdate) onProfileUpdate();
     };
 
     return (
@@ -175,7 +185,43 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-6 pt-16 pb-6 space-y-8 scrollbar-hide">
+                <div className="flex-1 overflow-y-auto px-6 pt-16 pb-6 space-y-6 scrollbar-hide">
+
+                    {/* GENDER SELECTION */}
+                    <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 border border-white/5">
+                        <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Jenis Kelamin</Label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={() => handleGenderSelect('male')}
+                                className={cn(
+                                    "flex items-center justify-center gap-2 p-3 rounded-xl border transition-all",
+                                    profile.gender === 'male'
+                                        ? "bg-blue-500/20 border-blue-500/50 text-blue-400"
+                                        : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                                )}
+                            >
+                                <span className="text-xl">👨</span>
+                                <span className="text-sm font-semibold">Laki-laki</span>
+                            </button>
+                            <button
+                                onClick={() => handleGenderSelect('female')}
+                                className={cn(
+                                    "flex items-center justify-center gap-2 p-3 rounded-xl border transition-all",
+                                    profile.gender === 'female'
+                                        ? "bg-pink-500/20 border-pink-500/50 text-pink-400"
+                                        : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                                )}
+                            >
+                                <span className="text-xl">👩</span>
+                                <span className="text-sm font-semibold">Perempuan</span>
+                            </button>
+                        </div>
+                        {!profile.gender && (
+                            <p className="text-[10px] text-amber-400/70 mt-2 text-center">
+                                Pilih untuk menyesuaikan misi dan fitur
+                            </p>
+                        )}
+                    </div>
 
                     {/* XP PROGRESS CARD */}
                     <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-5 border border-white/5 shadow-inner relative overflow-hidden group">

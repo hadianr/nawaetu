@@ -5,6 +5,7 @@ import RamadhanCountdown from "@/components/RamadhanCountdown";
 import LastReadWidget from "@/components/LastReadWidget";
 import HomeHeader from "@/components/HomeHeader";
 import NextPrayerWidget from "@/components/NextPrayerWidget";
+import MissionsWidget from "@/components/MissionsWidget";
 
 export default function Home() {
   return (
@@ -30,7 +31,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 4. Prayer Times List */}
+        {/* 4. Daily Missions */}
+        <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
+          <MissionsWidget />
+        </section>
+
+        {/* 5. Prayer Times List */}
         <section className="w-full">
           <Suspense fallback={<PrayerCardSkeleton />}>
             <PrayerTimesDisplay />

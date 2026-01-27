@@ -2,17 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import StreakBadge from "@/components/StreakBadge";
 
 export default function HomeHeader() {
     const { data } = usePrayerTimes();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
+    const [gender, setGender] = useState<'male' | 'female' | null>(null);
 
     const refreshProfile = () => {
         const savedName = localStorage.getItem("user_name");
         const savedTitle = localStorage.getItem("user_title");
+        const savedGender = localStorage.getItem("user_gender") as 'male' | 'female' | null;
         if (savedName) setUserName(savedName);
         if (savedTitle) setUserTitle(savedTitle);
+        setGender(savedGender);
     };
 
     useEffect(() => {
@@ -58,13 +62,16 @@ export default function HomeHeader() {
                 </span>
             </div>
 
-            {/* Location & Date Badge */}
-            <div className="flex flex-col items-end gap-1 text-right">
-                <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
-                        {data?.locationName?.split(",")[0] || "Lokasi..."}
-                    </span>
+            {/* Location, Streak & Date Badge */}
+            <div className="flex flex-col items-end gap-1.5 text-right">
+                <div className="flex items-center gap-2">
+                    <StreakBadge gender={gender} />
+                    <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                            {data?.locationName?.split(",")[0] || "Lokasi..."}
+                        </span>
+                    </div>
                 </div>
                 <span className="text-[10px] text-white/40 font-medium px-1">
                     {data?.hijriDate || "Loading..."}
