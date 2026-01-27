@@ -4,58 +4,58 @@
 
 **Nawaetu** adalah teman digital bagi Muslim modern untuk membantu menata niat dan menjaga istiqomah dalam beribadah. Kami percaya bahwa kualitas ibadah ditentukan sebelum gerakan dimulai—yaitu saat niat dipasang.
 
+---
+
 ## 🕌 Brand DNA
 
 ### Core Philosophy
 Setiap langkah ibadah dimulai dari hati. Nawaetu hadir bukan untuk menggantikan esensi ibadah, melainkan sebagai **Sahabat (The Companion)** yang menemani perjalanan spiritual Anda tanpa menggurui.
 
 ### Mission
-Menjadi teman digital yang paling fokus dan bebas gangguan bagi Muslim modern dalam mempersiapkan bekal akhiratnya, dimulai dari hal terkecil: **Niat**.
+Menjadi teman digital yang paling fokus dan bebas gangguan bagi Muslim modern dalam mempersiapkan bekal akhiratnya, dimulai dari hal terjujur: **Niat**.
 
 ---
 
-## 🌟 Fitur Utama
+## 🌟 Fitur Unggulan
 
-Aplikasi ini dirancang dengan pendekatan *essentialist* dan estetika *dark mode* yang premium:
+Aplikasi ini dirancang dengan pendekatan *essentialist* dan estetika *premium dark mode*:
 
-### 1. 🏡 Dashboard Modern
-*   **Jadwal Sholat Otomatis**: Mendeteksi lokasi pengguna untuk jadwal sholat yang akurat.
-*   **Countdown Waktu Sholat**: Hitung mundur menuju waktu sholat berikutnya.
-*   **Daily Inspiration**: Quote dan Hadis harian sebagai pengingat.
-*   **Hijri Calendar**: Integrasi tanggalan Hijriah.
+### 1. 🎯 Gamifikasi & Motivasi (Misi Harian)
+*   **System Misi**: Daftar amal harian (Daily Missions) yang dipersonalisasi berdasarkan gender.
+*   **XP & Leveling**: Dapatkan XP untuk setiap ibadah yang terlaksana dan tingkatkan level profile Anda.
+*   **The Streak (🔥)**: Pantau konsistensi ibadah Anda dengan sistem *streak* harian dan raih bonus XP pada *milestone* tertentu.
+*   **Authentic References**: Setiap misi disertai dalil Al-Qur'an atau Hadist Shahih sebagai landasan beramal.
 
-### 2. 📖 Al-Qur'an Digital
-*   **Bacaan Nyaman**: Typography yang jelas dengan *dark mode* yang ramah mata.
-*   **Audio Murottal**: Pemutaran audio per-ayat untuk membantu hafalan/tilawah.
-*   **Terjemahan Bahasa Indonesia**: Memahami makna setiap ayat.
-*   **Search & Navigation**: Pencarian surat yang cepat.
+### 2. 👩‍💼 Personalitas & Experience
+*   **Gender Based UI**: Personalisasi tema warna (Blue untuk Laki-laki, Pink untuk Perempuan) dan penyesuaian misi ibadah (seperti reminder Sholat Jumat atau tracker Qadha Puasa).
+*   **Profile Management**: Kustomisasi nama dan koleksi gelar berdasarkan level pencapaian spiritual Anda.
 
-### 3. 🧭 Penunjuk Kiblat (Qibla Finder)
-*   **Visual Kompas**: Tampilan kompas visual dengan indikator Ka'bah yang intuitif.
-*   **Kalibrasi**: Mendukung sensor perangkat untuk akurasi tinggi.
-*   **Minimalist UI**: Fokus pada arah tanpa gangguan peta yang berat.
+### 3. 📖 Al-Qur'an & Audio Digital
+*   **Multimedia Experience**: Pilihan Qari internasional (Mishary Rashid Alafasy, dll) yang terintegrasi secara global.
+*   **Audio Per-Ayat**: Membantu hafalan dan tilawah dengan kontrol audio yang presisi.
+*   **Dynamic UI**: Menampilkan informasi pembacaan terakhir dan navigasi surat yang intuitif.
 
-### 4. 📿 Tasbih Digital (New!)
-*   **Full Screen Tap**: Menghitung zikir dengan mengetuk area layar manapun (cocok untuk penggunaan tanpa melihat layar).
-*   **Zikir Presets**: Pilihan bacaan siap pakai (Tasbih, Tahmid, Takbir, Istighfar, Sholawat, Tahlil).
-*   **Rich Feedback**:
-    *   **Haptic Interface**: Getaran *tactile* (support Android/Device with Vibration API).
-    *   **Sound Feedback**: Suara "klik" natural (opsi fallback untuk iOS).
-*   **Custom Targets**: Atur target zikir Anda sendiri (33, 99, 100, 1000, atau Tanpa Batas).
-*   **Immersive Design**: Visual progress ring yang memuaskan dan *distraction-free*.
+### 4. 🧭 Navigasi & Waktu
+*   **Dashboard Adaptif**: Widget cerdas yang menampilkan hitung mundur sholat, countdown Ramadhan, dan progres bacaan Al-Qur'an.
+*   **Smart Qibla Finder**: Kompas visual minimalis dengan indikator Ka'bah untuk akurasi arah kiblat.
+*   **Advanced Calculation**: Pilihan metode perhitungan waktu sholat (Kemenag RI, MWL, ISNA, dll) dan sinkronisasi lokasi otomatis.
+
+### 5. 📿 Tasbih Digital
+*   **Full Screen Tap**: Menghitung zikir tanpa harus melihat layar dengan *haptic feedback* yang premium.
+*   **Presets & Targets**: Pilihan zikir siap pakai dengan target yang bisa disesuaikan.
 
 ---
 
 ## 🛠️ Tech Stack
 
-Dibangun dengan fondasi teknologi web modern untuk performa maksimal:
-
-*   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+*   **Framework**: [Next.js](https://nextjs.org/) (App Router & Server Components)
 *   **Language**: [TypeScript](https://www.typescriptlang.org/)
 *   **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
-*   **Animations**: [Framer Motion](https://www.framer.com/motion/) & Tailwind Animate
+*   **Persistence**: Persistence via LocalStorage & Cookies for Server-side Sync.
+*   **Animations**: [Framer Motion](https://www.framer.com/motion/)
 *   **Icons**: [Lucide React](https://lucide.dev/)
-*   **PWA**: Support Progressive Web App (Installable).
+
+---
 
 ## 🚀 Memulai (Getting Started)
 
