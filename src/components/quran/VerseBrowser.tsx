@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import VerseList from "@/components/quran/VerseList";
+import { DEFAULT_SETTINGS } from "@/data/settings-data";
 
 interface VerseBrowserProps {
     params: Promise<{ id: string }>;
@@ -20,9 +22,9 @@ async function getVerses(id: string, page: number = 1) {
     return data.verses;
 }
 
-async function getAudio(id: string) {
+async function getAudio(id: string, reciterId: number) {
     try {
-        const res = await fetch(`https://api.quran.com/api/v4/chapter_recitations/7/${id}`);
+        const res = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${reciterId}/${id}`);
         if (!res.ok) return null;
         const data = await res.json();
         return data.audio_file.audio_url;
@@ -31,9 +33,9 @@ async function getAudio(id: string) {
     }
 }
 
-async function getVerseAudio(id: string, page: number = 1) {
+async function getVerseAudio(id: string, page: number = 1, reciterId: number) {
     try {
-        const res = await fetch(`https://api.quran.com/api/v4/recitations/7/by_chapter/${id}?per_page=20&page=${page}`);
+        const res = await fetch(`https://api.quran.com/api/v4/recitations/${reciterId}/by_chapter/${id}?per_page=20&page=${page}`);
         if (!res.ok) return [];
         const data = await res.json();
         return data.audio_files;
@@ -47,12 +49,17 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
     const { page } = await searchParams;
     const currentPage = Number(page) || 1;
 
-    // Parallel fetching
+    // Get reciter setting from cookie (set by Settings page)
+    const cookieStore = await cookies();
+    const reciterCookie = cookieStore.get("settings_reciter");
+    const reciterId = reciterCookie ? parseInt(reciterCookie.value) : DEFAULT_SETTINGS.reciter;
+
+    // Parallel fetching with selected reciter
     const [chapter, versesData, audioUrl, verseAudioData] = await Promise.all([
         getChapter(id),
         getVerses(id, currentPage),
-        getAudio(id),
-        getVerseAudio(id, currentPage)
+        getAudio(id, reciterId),
+        getVerseAudio(id, currentPage, reciterId)
     ]);
 
     // Merge audio data into verses
@@ -75,6 +82,7 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
             audioUrl={audioUrl}
             currentPage={currentPage}
             totalPages={totalPages}
+            currentReciterId={reciterId}
         />
     );
 }

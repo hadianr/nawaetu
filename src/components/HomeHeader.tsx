@@ -1,0 +1,75 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+
+export default function HomeHeader() {
+    const { data } = usePrayerTimes();
+    const [userName, setUserName] = useState("Sobat Nawaetu");
+    const [userTitle, setUserTitle] = useState("Hamba Allah");
+
+    const refreshProfile = () => {
+        const savedName = localStorage.getItem("user_name");
+        const savedTitle = localStorage.getItem("user_title");
+        if (savedName) setUserName(savedName);
+        if (savedTitle) setUserTitle(savedTitle);
+    };
+
+    useEffect(() => {
+        refreshProfile();
+
+        // Listen for storage events (in case changed in Settings) and custom XP events
+        const handleStorage = () => refreshProfile();
+        window.addEventListener("storage", handleStorage);
+        window.addEventListener("xp_updated", handleStorage);
+        window.addEventListener("focus", handleStorage);
+
+        return () => {
+            window.removeEventListener("storage", handleStorage);
+            window.removeEventListener("xp_updated", handleStorage);
+            window.removeEventListener("focus", handleStorage);
+        }
+    }, []);
+
+    const [greeting, setGreeting] = useState("Selamat Datang");
+
+    useEffect(() => {
+        const hour = new Date().getHours();
+        if (hour >= 4 && hour < 10) setGreeting("Selamat Pagi");
+        else if (hour >= 10 && hour < 15) setGreeting("Selamat Siang");
+        else if (hour >= 15 && hour < 18) setGreeting("Selamat Sore");
+        else setGreeting("Selamat Malam");
+    }, []);
+
+    // ... existing start of return ...
+    return (
+        <div className="w-full flex items-start justify-between animate-in slide-in-from-top-4 duration-700">
+            <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-sm font-medium text-emerald-400 uppercase tracking-widest opacity-90">
+                        {greeting}
+                    </h2>
+                </div>
+                <h1 className="text-2xl font-bold text-white tracking-tight leading-none">
+                    {userName}
+                </h1>
+                <span className="inline-block mt-1 text-[10px] uppercase tracking-widest text-white/40 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                    {userTitle}
+                </span>
+            </div>
+
+            {/* Location & Date Badge */}
+            <div className="flex flex-col items-end gap-1 text-right">
+                <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                        {data?.locationName?.split(",")[0] || "Lokasi..."}
+                    </span>
+                </div>
+                <span className="text-[10px] text-white/40 font-medium px-1">
+                    {data?.hijriDate || "Loading..."}
+                </span>
+            </div>
+        </div>
+    );
+}

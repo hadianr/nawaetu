@@ -1,16 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { addXP } from "@/lib/leveling"; // Corrected placement
 
 // Short "Pop" sound in Base64 (Reliable for mobile)
 const CLICK_SOUND = "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" // Very short placeholder, will replace with better one below or generate short noise buffer. 
@@ -33,12 +28,16 @@ const playTick = (ctx: AudioContext) => {
 };
 
 const ZIKIR_PRESETS = [
-    { label: "Tasbih", arab: "سُبْحَانَ ٱللَّٰهِ", latin: "Subhanallah", target: 33 },
-    { label: "Tahmid", arab: "ٱلْحَمْدُ لِلَّٰهِ", latin: "Alhamdulillah", target: 33 },
-    { label: "Takbir", arab: "ٱللَّٰهُ أَكْبَرُ", latin: "Allahu Akbar", target: 33 },
-    { label: "Istighfar", arab: "أَسْتَغْفِرُ ٱللَّٰهَ", latin: "Astaghfirullah", target: 100 },
-    { label: "Tahlil", arab: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ", latin: "Laa ilaha illallah", target: 100 },
-    { label: "Sholawat", arab: "ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ", latin: "Allahumma sholli 'ala Muhammad", target: 1000 },
+    { label: "Tasbih", arab: "سُبْحَانَ ٱللَّٰهِ", latin: "Subhanallah", tadabbur: "Maha Suci Allah dari segala kekurangan, aib, dan kelemahan.", target: 33 },
+    { label: "Tahmid", arab: "ٱلْحَمْدُ لِلَّٰهِ", latin: "Alhamdulillah", tadabbur: "Segala puji bagi Allah atas segala nikmat dan karunia-Nya.", target: 33 },
+    { label: "Takbir", arab: "ٱللَّٰهُ أَكْبَرُ", latin: "Allahu Akbar", tadabbur: "Allah Maha Besar, melampaui segala sesuatu.", target: 33 },
+    { label: "Subhanallah Wabihamdihi", arab: "سُبْحَانَ ٱللَّٰهِ وَبِحَمْدِهِ", latin: "Subhanallah wa bihamdihi", tadabbur: "Maha Suci Allah dengan segala puji bagi-Nya. (Penggugur dosa walau sebanyak buih di lautan)", target: 100 },
+    { label: "Istighfar", arab: "أَسْتَغْفِرُ ٱللَّٰهَ", latin: "Astaghfirullah", tadabbur: "Aku memohon ampunan kepada Allah atas segala dosa.", target: 100 },
+    { label: "Tahlil", arab: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ", latin: "Laa ilaha illallah", tadabbur: "Tiada Tuhan selain Allah, satu-satunya sumber kekuatan.", target: 100 },
+    { label: "Hauqalah", arab: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰهِ", latin: "Laa hawla wa laa quwwata illa billah", tadabbur: "Tiada daya dan upaya kecuali dengan pertolongan Allah.", target: 100 },
+    { label: "Hasbunallah", arab: "حَسْبُنَا ٱللَّٰهُ وَنِعْمَ ٱلْوَكِيلُ", latin: "Hasbunallah wa ni'mal wakil", tadabbur: "Cukuplah Allah sebagai penolong kami, dan Dia adalah sebaik-baik pelindung.", target: 100 },
+    { label: "Sholawat Nabi", arab: "ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ", latin: "Allahumma sholli 'ala Muhammad", tadabbur: "Ya Allah, limpahkan rahmat kepada junjungan kami Nabi Muhammad.", target: 1000 },
+    { label: "Sholawat Jibril", arab: "صَلَّى ٱللَّٰهُ عَلَىٰ مُحَمَّدٍ", latin: "Shallallahu 'ala Muhammad", tadabbur: "Semoga Allah melimpahkan rahmat kepada Nabi Muhammad. (Pembuka pintu rezeki)", target: 1000 },
 ];
 
 export default function TasbihCounter() {
@@ -48,6 +47,14 @@ export default function TasbihCounter() {
     const [feedbackMode, setFeedbackMode] = useState<'vibrate' | 'sound' | 'both' | 'none'>('vibrate');
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    // Gamification State
+    const [dailyCount, setDailyCount] = useState(0);
+    const [streak, setStreak] = useState(0);
+    const [lastZikirDate, setLastZikirDate] = useState<string>("");
+
+    // Reward State
+    const [showReward, setShowReward] = useState(false);
 
     // Initial load
     useEffect(() => {
@@ -66,6 +73,33 @@ export default function TasbihCounter() {
             if (found) setActiveZikir(found);
             else setActiveZikir(null); // Custom/Manual
         }
+
+        // Load Stats
+        const savedDaily = localStorage.getItem("tasbih_daily_count");
+        if (savedDaily) setDailyCount(parseInt(savedDaily));
+
+        const savedStreak = localStorage.getItem("tasbih_streak");
+        if (savedStreak) setStreak(parseInt(savedStreak));
+
+        const savedDate = localStorage.getItem("tasbih_last_date");
+        const today = new Date().toISOString().split('T')[0];
+
+        if (savedDate) {
+            setLastZikirDate(savedDate);
+            if (savedDate !== today) {
+                setDailyCount(0);
+                const last = new Date(savedDate);
+                const curr = new Date(today);
+                const diffTime = Math.abs(curr.getTime() - last.getTime());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays > 1) {
+                    setStreak(0);
+                }
+            }
+        } else {
+            setLastZikirDate(today);
+        }
     }, []);
 
     // Persistence
@@ -76,6 +110,11 @@ export default function TasbihCounter() {
         if (activeZikir) localStorage.setItem("tasbih_zikir_label", activeZikir.label);
         else localStorage.removeItem("tasbih_zikir_label");
     }, [activeZikir]);
+
+    // Persist Stats
+    useEffect(() => { localStorage.setItem("tasbih_daily_count", dailyCount.toString()); }, [dailyCount]);
+    useEffect(() => { localStorage.setItem("tasbih_streak", streak.toString()); }, [streak]);
+    useEffect(() => { if (lastZikirDate) localStorage.setItem("tasbih_last_date", lastZikirDate); }, [lastZikirDate]);
 
     const initAudio = () => {
         if (!audioContext && typeof window !== "undefined") {
@@ -89,17 +128,59 @@ export default function TasbihCounter() {
         return audioContext;
     };
 
+    // Reward Trigger Effect
+    useEffect(() => {
+        if (target && count === target) {
+            // Use a small timeout to let the UI update the count first visually
+            setTimeout(() => {
+                addXP(50);
+                setShowReward(true);
+
+                // Vibrate for success
+                if (typeof navigator !== "undefined" && navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+            }, 100);
+
+            // No cleanup to prevent cancellation on rapid taps
+        }
+    }, [count, target]);
+
     const handleIncrement = () => {
         let ctx = audioContext;
         if (!ctx) ctx = initAudio();
         if (ctx && ctx.state === 'suspended') ctx.resume();
 
-        // Haptic Feedback
+        // Stats Logic
+        const today = new Date().toISOString().split('T')[0];
+        if (lastZikirDate !== today) {
+            // New Day
+            setDailyCount(1);
+            setLastZikirDate(today);
+
+            // Streak Logic
+            const last = new Date(lastZikirDate);
+            const curr = new Date(today);
+            const diffTime = Math.abs(curr.getTime() - last.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                setStreak(prev => prev + 1);
+            } else {
+                setStreak(1); // Reset if missed days or first day
+            }
+        } else {
+            // Same Day
+            setDailyCount(prev => prev + 1);
+            // First time ever?
+            if (streak === 0) setStreak(1);
+        }
+
+        // Haptic Feedback (Standard Tick)
         const shouldVibrate = feedbackMode === 'vibrate' || feedbackMode === 'both';
         if (shouldVibrate && typeof navigator !== "undefined" && navigator.vibrate) {
-            if (target && count + 1 === target) {
-                navigator.vibrate([200, 100, 200]);
-            } else {
+            // Only short tick here, success vibration handled in useEffect
+            if (!target || count + 1 !== target) {
                 navigator.vibrate(50);
             }
         }
@@ -145,6 +226,7 @@ export default function TasbihCounter() {
             case 'sound': return Volume2;
             case 'both': return Volume2;
             case 'none': return VolumeX;
+            default: return Smartphone;
         }
     };
 
@@ -171,11 +253,12 @@ export default function TasbihCounter() {
             />
 
             {/* Zikir Text Display */}
-            <div className="absolute top-0 z-10 w-full text-center px-4 pointer-events-none space-y-1 mt-4">
+            <div className="absolute -top-2 z-10 w-full text-center px-4 pointer-events-none space-y-1">
                 {activeZikir ? (
                     <div className="animate-in fade-in slide-in-from-top-4 duration-700">
                         <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg font-serif">{activeZikir.arab}</h2>
                         <p className="text-emerald-400 font-medium text-sm md:text-base tracking-wide">{activeZikir.latin}</p>
+                        <p className="text-white/60 text-xs mt-1 italic max-w-xs mx-auto animate-in fade-in delay-150 duration-700">{activeZikir.tadabbur}</p>
                     </div>
                 ) : (
                     <p className="text-white/40 text-sm italic py-4">Mode Bebas</p>
@@ -183,7 +266,7 @@ export default function TasbihCounter() {
             </div>
 
             {/* Display Area */}
-            <div className="relative mb-12 flex flex-col items-center pointer-events-none mt-20">
+            <div className="relative mb-12 flex flex-col items-center pointer-events-none mt-32">
                 <div className="relative w-64 h-64 md:w-72 md:h-72 flex items-center justify-center pointer-events-auto">
                     <div className="absolute inset-0 rounded-full border-[12px] border-white/5" />
 
@@ -211,7 +294,7 @@ export default function TasbihCounter() {
                         onClick={(e) => { e.stopPropagation(); handleIncrement(); }}
                         className="absolute inset-4 rounded-full bg-gradient-to-br from-emerald-900/80 to-black border-4 border-emerald-500/20 active:scale-95 transition-transform duration-100 flex flex-col items-center justify-center group shadow-2xl z-10"
                     >
-                        <span className="text-white/40 text-sm font-medium tracking-widest uppercase mb-2">
+                        <span className="text-white/40 text-[10px] md:text-xs font-bold tracking-wide uppercase mb-2 max-w-[80%] text-center leading-tight">
                             {activeZikir ? activeZikir.label : (target ? `Target: ${target}` : "Tanpa Batas")}
                         </span>
                         <span className="text-7xl md:text-8xl font-mono font-bold text-white tracking-tighter drop-shadow-lg group-active:text-emerald-400 transition-colors">
@@ -300,12 +383,108 @@ export default function TasbihCounter() {
                     onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
                     className={cn(
                         "flex flex-col h-auto py-3 gap-1 border-white/10 hover:bg-white/10",
-                        feedbackMode !== 'none' ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-white/5 text-white/70"
+                        feedbackMode !== 'none'
+                            ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/30"
+                            : "bg-white/5 text-white/70 hover:text-white"
                     )}
                 >
                     <FeedbackIcon className="h-5 w-5" />
                     <span className="text-xs">{getFeedbackLabel()}</span>
                 </Button>
+            </div>
+
+            {/* REWARD DIALOG */}
+            <Dialog open={showReward} onOpenChange={setShowReward}>
+                <DialogContent
+                    className="w-[90%] max-w-sm rounded-[32px] bg-slate-950/90 border border-emerald-500/20 text-white backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center shadow-2xl shadow-emerald-900/20 [&>button]:hidden"
+                    onInteractOutside={(e) => e.preventDefault()}
+                >
+                    <DialogTitle className="sr-only">Target Tercapai</DialogTitle>
+
+                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6 animate-in zoom-in spin-in-12 duration-500">
+                        <Check className="w-10 h-10 text-emerald-400" />
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-white mb-2">Alhamdulillah!</h2>
+                    <p className="text-slate-400 text-sm mb-6">Target dzikir {target}x telah tercapai.</p>
+
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-6 py-3 flex flex-col items-center mb-8 animate-pulse">
+                        <span className="text-emerald-400 font-bold text-2xl">+50 XP</span>
+                        <span className="text-[10px] text-emerald-500/60 uppercase tracking-widest">Poin Ibadah</span>
+                    </div>
+
+                    <div className="flex flex-col gap-3 w-full">
+                        <Button
+                            onClick={() => {
+                                setCount(0);
+                                setShowReward(false);
+                            }}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 rounded-xl w-full"
+                        >
+                            Ulangi Lagi (0)
+                        </Button>
+
+                        {/* Context-Aware Action Button */}
+                        {activeZikir?.label === "Tasbih" && (
+                            <Button
+                                onClick={() => {
+                                    const next = ZIKIR_PRESETS.find(p => p.label === "Tahmid");
+                                    if (next) handlePresetSelect(next);
+                                    setShowReward(false);
+                                }}
+                                className="bg-white hover:bg-slate-200 text-emerald-950 font-bold h-12 rounded-xl w-full"
+                            >
+                                Lanjut ke Alhamdulillah
+                            </Button>
+                        )}
+
+                        {activeZikir?.label === "Tahmid" && (
+                            <Button
+                                onClick={() => {
+                                    const next = ZIKIR_PRESETS.find(p => p.label === "Takbir");
+                                    if (next) handlePresetSelect(next);
+                                    setShowReward(false);
+                                }}
+                                className="bg-white hover:bg-slate-200 text-emerald-950 font-bold h-12 rounded-xl w-full"
+                            >
+                                Lanjut ke Allahu Akbar
+                            </Button>
+                        )}
+
+                        {activeZikir?.label === "Takbir" && (
+                            <Button
+                                onClick={() => {
+                                    const next = ZIKIR_PRESETS.find(p => p.label === "Tahlil");
+                                    if (next) handlePresetSelect(next);
+                                    setShowReward(false);
+                                }}
+                                className="bg-white hover:bg-slate-200 text-emerald-950 font-bold h-12 rounded-xl w-full"
+                            >
+                                Lanjut ke Tahlil
+                            </Button>
+                        )}
+
+                        <Button
+                            variant="ghost"
+                            onClick={() => setShowReward(false)}
+                            className="text-slate-400 hover:bg-white/5 hover:text-white h-12 rounded-xl w-full"
+                        >
+                            Selesai
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Stats Bar */}
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-6 text-white/40 text-xs font-mono uppercase tracking-wider z-20 pointer-events-none">
+                <div className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-emerald-500/50" />
+                    <span>Hari Ini: <span className="text-white font-bold">{dailyCount}</span></span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Flame className="h-4 w-4 text-orange-500/70" />
+                    <span>Streak: <span className="text-white font-bold">{streak}</span> Hari</span>
+                </div>
             </div>
 
             {/* Simple spacer */}

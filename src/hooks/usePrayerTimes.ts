@@ -49,9 +49,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
             }
 
-            // Method 20: Kemenag RI
+            // Get calculation method from settings (default: 20 = Kemenag RI)
+            const savedMethod = localStorage.getItem("settings_calculation_method");
+            const method = savedMethod || "20";
+
             const response = await fetch(
-                `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=20`
+                `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}`
             );
 
             if (!response.ok) {

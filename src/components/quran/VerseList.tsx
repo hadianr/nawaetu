@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff, BookOpen, AlignJustify, Square, Copy, Check, CheckCircle, Palette } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff, BookOpen, AlignJustify, Square, Copy, Check, CheckCircle, Palette, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chapter } from "@/components/quran/SurahList";
 import { AyahMarker } from "./AyahMarker";
 import { surahNames } from "@/lib/surahData";
+import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 
 export interface Verse {
     id: number;
@@ -29,6 +30,7 @@ interface VerseListProps {
     audioUrl?: string;
     currentPage: number;
     totalPages: number;
+    currentReciterId?: number;
 }
 
 const toArabicNumber = (n: number) => {
@@ -144,15 +146,47 @@ const TajweedLegend = () => (
     </div>
 );
 
-export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages }: VerseListProps) {
+export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId }: VerseListProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [tajweedMode, setTajweedMode] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
+    // Get current reciter name for display
+    const currentReciterName = QURAN_RECITER_OPTIONS.find(r => r.id === currentReciterId)?.label || "Mishary Rashid Alafasy";
+
     // Verse Audio State
     const [playingVerseId, setPlayingVerseId] = useState<number | null>(null);
     const verseAudioRef = useRef<HTMLAudioElement | null>(null);
+
+    // Bookmark State
+    const [bookmarkedVerseKey, setBookmarkedVerseKey] = useState<string | null>(null);
+
+    // Reciter Setting
+    const [selectedReciter, setSelectedReciter] = useState(DEFAULT_SETTINGS.reciter);
+
+    useEffect(() => {
+        // Load reciter setting
+        const savedReciter = localStorage.getItem("settings_reciter");
+        if (savedReciter) {
+            setSelectedReciter(parseInt(savedReciter));
+        }
+    }, []);
+
+    useEffect(() => {
+        const saved = localStorage.getItem("quran_last_read");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                // Specifically check if it's THIS Surah
+                if (parsed.surahId === chapter.id) {
+                    setBookmarkedVerseKey(`${chapter.id}:${parsed.verseId}`);
+                }
+            } catch (e) {
+                console.error("Failed to parse bookmark", e);
+            }
+        }
+    }, [chapter.id]);
 
     const toggleAudio = () => {
         // Pause verse audio if playing
@@ -171,7 +205,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
     };
 
-    const handlePlayVerse = (verseId: number, url: string) => {
+    // Build audio URL based on selected reciter
+    // Note: For now, use the original URL from the API as it's more reliable
+    // Custom reciter integration would require a mapping of verse numbers to audio files
+    const handlePlayVerse = (verseId: number, originalUrl: string) => {
         // Pause Global Surah Audio if playing
         if (isPlaying && audioRef.current) {
             audioRef.current.pause();
@@ -183,17 +220,21 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             verseAudioRef.current?.pause();
             setPlayingVerseId(null);
         } else {
-            // Play new verse
+            // Play new verse using the original URL
             if (verseAudioRef.current) {
-                verseAudioRef.current.src = url;
-                verseAudioRef.current.play();
+                verseAudioRef.current.src = originalUrl;
+                verseAudioRef.current.play().catch(console.error);
                 setPlayingVerseId(verseId);
             } else {
-                // Initialize audio element if not exists (should accept ref)
-                const audio = new Audio(url);
+                // Initialize audio element if not exists
+                const audio = new Audio(originalUrl);
                 verseAudioRef.current = audio;
                 audio.onended = () => setPlayingVerseId(null);
-                audio.play();
+                audio.onerror = () => {
+                    console.error("Failed to play audio");
+                    setPlayingVerseId(null);
+                };
+                audio.play().catch(console.error);
                 setPlayingVerseId(verseId);
             }
         }
@@ -210,6 +251,21 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         navigator.clipboard.writeText(text);
         setCopiedVerseId(verse.id);
         setTimeout(() => setCopiedVerseId(null), 2000);
+    };
+
+    const handleBookmark = (verse: Verse) => {
+        const verseNum = parseInt(verse.verse_key.split(":")[1]);
+        const bookmarkData = {
+            surahId: chapter.id,
+            surahName: chapter.name_simple,
+            verseId: verseNum,
+            timestamp: Date.now()
+        };
+        localStorage.setItem("quran_last_read", JSON.stringify(bookmarkData));
+        setBookmarkedVerseKey(verse.verse_key);
+
+        // Optional: Trigger a toast or effect 
+        // For now simple state update is enough visual feedback
     };
 
     return (
@@ -277,14 +333,22 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     </div>
 
                     {audioUrl ? (
-                        <>
+                        <div className="flex items-center gap-3">
+                            {/* Reciter Badge - Subtle Pill */}
+                            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
+                                <span className="text-[10px] text-white/40">Qari:</span>
+                                <span className="text-[10px] font-medium text-emerald-400">
+                                    {currentReciterName}
+                                </span>
+                            </div>
+
                             <Button
                                 onClick={toggleAudio}
                                 className="h-10 gap-2 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 px-6"
-                                title={isPlaying ? "Jeda Audio Surat" : "Putar Audio Surat Full"}
+                                title={`${isPlaying ? "Jeda" : "Putar"} - ${currentReciterName}`}
                             >
                                 {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                                <span className="hidden sm:inline font-medium">{isPlaying ? "Jeda Audio" : "Putar Audio"}</span>
+                                <span className="hidden sm:inline font-medium">{isPlaying ? "Jeda" : "Putar"}</span>
                             </Button>
                             <audio
                                 ref={audioRef}
@@ -292,7 +356,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 onEnded={() => setIsPlaying(false)}
                                 className="hidden"
                             />
-                        </>
+                        </div>
                     ) : (
                         <div className="w-10" />
                     )}
@@ -356,6 +420,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                     />
                                     <span className="inline-flex items-center gap-x-3 ms-2 align-middle">
                                         <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(":")[1]))} />
+
+                                        {/* Play Button */}
                                         <button
                                             onClick={() => handlePlayVerse(verse.id, verse.audio.url)}
                                             className="p-1.5 rounded-full text-emerald-500 hover:bg-emerald-500/10 transition-colors flex items-center justify-center focus:outline-none"
@@ -366,6 +432,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                             ) : (
                                                 <Play className="w-4 h-4 fill-current" />
                                             )}
+                                        </button>
+
+                                        {/* Bookmark Button */}
+                                        <button
+                                            onClick={() => handleBookmark(verse)}
+                                            className={`p-1.5 rounded-full transition-colors flex items-center justify-center focus:outline-none ${bookmarkedVerseKey === verse.verse_key ? 'text-amber-400' : 'text-slate-500 hover:text-amber-400'}`}
+                                            title="Tandai Terakhir Dibaca"
+                                        >
+                                            <Bookmark className={`w-4 h-4 ${bookmarkedVerseKey === verse.verse_key ? 'fill-current' : ''}`} />
                                         </button>
                                     </span>
                                 </p>

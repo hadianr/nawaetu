@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 interface PrayerCountdownProps {
     targetTime: string; // HH:MM
     prayerName: string;
+    compact?: boolean;
 }
 
-export default function PrayerCountdown({ targetTime, prayerName }: PrayerCountdownProps) {
+export default function PrayerCountdown({ targetTime, prayerName, compact = false }: PrayerCountdownProps) {
     const [timeLeft, setTimeLeft] = useState<string>("--:--:--");
     const [isNear, setIsNear] = useState(false);
 
@@ -30,7 +31,6 @@ export default function PrayerCountdown({ targetTime, prayerName }: PrayerCountd
             const diff = target.getTime() - now.getTime();
 
             if (diff <= 0) {
-                // Should trigger refresh or something, but for now just 00:00:00
                 return "00:00:00";
             }
 
@@ -38,13 +38,11 @@ export default function PrayerCountdown({ targetTime, prayerName }: PrayerCountd
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            // Check if near (less than 15 mins)
             setIsNear(hours === 0 && minutes < 15);
 
             return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
         };
 
-        // Initial calulation
         setTimeLeft(calculateTimeLeft());
 
         const timer = setInterval(() => {
@@ -53,6 +51,19 @@ export default function PrayerCountdown({ targetTime, prayerName }: PrayerCountd
 
         return () => clearInterval(timer);
     }, [targetTime]);
+
+    if (compact) {
+        return (
+            <div className="animate-in fade-in duration-700">
+                <div className={cn(
+                    "font-mono text-2xl font-bold tracking-tight",
+                    isNear ? "text-emerald-400" : "text-white"
+                )}>
+                    {timeLeft}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center justify-center py-6 animate-in fade-in zoom-in duration-700">

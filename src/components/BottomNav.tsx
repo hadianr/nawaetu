@@ -13,7 +13,7 @@ export default function BottomNav() {
         { href: "/quran", label: "Al-Qur'an", icon: BookOpen },
         { href: "/tasbih", label: "Tasbih", icon: Fingerprint },
         { href: "/kiblat", label: "Kiblat", icon: Compass },
-        { href: "/settings", label: "Atur", icon: Settings },
+        { href: "/atur", label: "Atur", icon: Settings },
     ];
 
     return (

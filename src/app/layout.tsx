@@ -18,7 +18,26 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Nawaetu - Teman Ibadahmu",
   description: "Teman digital Muslim modern untuk menata niat dan menjaga istiqomah.",
+  manifest: "/manifest.json",
+  themeColor: "#0a0a0a",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Nawaetu",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
+
+import NotificationWatcher from "@/components/NotificationWatcher";
+
+// ... (Metadata export remains)
 
 export default function RootLayout({
   children,
@@ -31,6 +50,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <NotificationWatcher />
         {children}
         <Suspense fallback={null}>
           <BottomNav />
