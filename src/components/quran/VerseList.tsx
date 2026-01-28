@@ -119,7 +119,7 @@ const tajweedRules = [
 const TajweedLegend = () => (
     <div className="mb-8 p-5 rounded-2xl bg-slate-900/50 border border-white/10 backdrop-blur-sm animate-in fade-in zoom-in-95 duration-300 shadow-xl">
         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
-            <Palette className="w-4 h-4 text-emerald-500" />
+            <Palette className="w-4 h-4 text-[rgb(var(--color-primary))]" />
             Panduan Warna & Cara Baća
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -133,7 +133,7 @@ const TajweedLegend = () => (
                         }}
                     ></span>
                     <div className="flex flex-col">
-                        <span className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+                        <span className="text-xs font-bold text-slate-200 group-hover:text-[rgb(var(--color-primary-light))] transition-colors">
                             {rule.label}
                         </span>
                         <span className="text-[10px] text-slate-400 leading-tight mt-0.5">
@@ -187,6 +187,28 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             }
         }
     }, [chapter.id]);
+
+    // Auto-scroll to bookmarked verse
+    useEffect(() => {
+        // Check if URL has hash (e.g., #18:10)
+        if (typeof window !== 'undefined' && window.location.hash) {
+            const hash = window.location.hash.substring(1); // Remove #
+            // Wait for DOM to render, then scroll
+            const timer = setTimeout(() => {
+                const element = document.getElementById(hash);
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    // Optional: Add highlight effect
+                    element.classList.add('highlight-verse');
+                    setTimeout(() => element.classList.remove('highlight-verse'), 2000);
+                }
+            }, 300); // Small delay for rendering
+            return () => clearTimeout(timer);
+        }
+    }, [verses]); // Re-run when verses change (page change)
 
     const toggleAudio = () => {
         // Pause verse audio if playing
@@ -285,7 +307,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                 {/* Center: Title Stack */}
                 <div className="flex flex-1 flex-col items-center justify-center px-4">
-                    <span className="inline-flex items-center justify-center rounded-full border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 mb-1 text-[9px] font-bold tracking-widest text-emerald-400 uppercase">
+                    <span className="inline-flex items-center justify-center rounded-full border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-2 py-0.5 mb-1 text-[9px] font-bold tracking-widest text-[rgb(var(--color-primary-light))] uppercase">
                         SURAT KE-{chapter.id}
                     </span>
                     <h1 className="text-xl font-bold text-white leading-tight text-center tracking-tight">
@@ -320,7 +342,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 h-9 w-9 md:w-auto md:h-10 md:px-4 justify-center rounded-full border text-xs font-medium transition-all
                                 flex items-center gap-x-2
                                 ${tajweedMode
-                                    ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
+                                    ? 'bg-[rgb(var(--color-primary-dark))]/30 border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
                                     : 'bg-slate-800/40 border-white/10 text-slate-400 hover:bg-slate-700/50 hover:text-slate-200'}
                             `}
                             title="Aktifkan Mode Tajwid Berwarna"
@@ -337,14 +359,14 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             {/* Reciter Badge - Subtle Pill */}
                             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
                                 <span className="text-[10px] text-white/40">Qari:</span>
-                                <span className="text-[10px] font-medium text-emerald-400">
+                                <span className="text-[10px] font-medium text-[rgb(var(--color-primary-light))]">
                                     {currentReciterName}
                                 </span>
                             </div>
 
                             <Button
                                 onClick={toggleAudio}
-                                className="h-10 gap-2 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 px-6"
+                                className="h-10 gap-2 rounded-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-dark))] px-6"
                                 title={`${isPlaying ? "Jeda" : "Putar"} - ${currentReciterName}`}
                             >
                                 {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
@@ -405,7 +427,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     {verses.map((verse) => (
                         <div
                             key={verse.id}
-                            className="flex flex-col gap-6 border-b border-white/5 pb-6 last:border-0"
+                            id={verse.verse_key}
+                            className="flex flex-col gap-6 border-b border-white/5 pb-6 last:border-0 scroll-mt-24"
                         >
                             {/* Arabic */}
                             <div className="text-right" dir="rtl">
@@ -424,7 +447,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         {/* Play Button */}
                                         <button
                                             onClick={() => handlePlayVerse(verse.id, verse.audio.url)}
-                                            className="p-1.5 rounded-full text-emerald-500 hover:bg-emerald-500/10 transition-colors flex items-center justify-center focus:outline-none"
+                                            className="p-1.5 rounded-full text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors flex items-center justify-center focus:outline-none"
                                             title={playingVerseId === verse.id ? "Jeda Ayat Ini" : "Dengarkan Ayat Ini"}
                                         >
                                             {playingVerseId === verse.id ? (
@@ -455,7 +478,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 </p>
                                 <button
                                     onClick={() => handleCopyVerse(verse)}
-                                    className="p-1.5 rounded-md text-slate-600 hover:text-emerald-500 hover:bg-emerald-500/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                                    className="p-1.5 rounded-md text-slate-600 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                                     title="Salin Terjemahan"
                                 >
                                     {copiedVerseId === verse.id ? (
@@ -477,7 +500,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     {currentPage > 1 ? (
                         <Link
                             href={`?page=${currentPage - 1}`}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-950/30 text-emerald-400 hover:bg-emerald-500/20 transition-all text-sm font-medium"
+                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary-dark))]/30 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/20 transition-all text-sm font-medium"
                         >
                             <ChevronLeft className="h-4 w-4" />
                             Halaman Sebelumnya
@@ -496,7 +519,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     {currentPage < totalPages ? (
                         <Link
                             href={`?page=${currentPage + 1}`}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-950/30 text-emerald-400 hover:bg-emerald-500/20 transition-all text-sm font-medium"
+                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary-dark))]/30 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/20 transition-all text-sm font-medium"
                         >
                             Halaman Selanjutnya
                             <ChevronRight className="h-4 w-4" />
@@ -514,7 +537,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     {chapter.id > 1 ? (
                         <Link
                             href={`/quran/${chapter.id - 1}`}
-                            className="flex items-center gap-2 text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                            className="flex items-center gap-2 text-xs font-medium text-[rgb(var(--color-primary-light))] hover:text-[rgb(var(--color-primary))] transition-colors"
                         >
                             <ChevronLeft className="h-4 w-4" />
                             <span className="opacity-80">Ke {surahNames[chapter.id - 1]}</span>
@@ -524,7 +547,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     {chapter.id < 114 ? (
                         <Link
                             href={`/quran/${chapter.id + 1}`}
-                            className="flex items-center gap-2 text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                            className="flex items-center gap-2 text-xs font-medium text-[rgb(var(--color-primary-light))] hover:text-[rgb(var(--color-primary))] transition-colors"
                         >
                             <span className="opacity-80">Ke {surahNames[chapter.id + 1]}</span>
                             <ChevronRight className="h-4 w-4" />
@@ -535,8 +558,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             {/* Floating Copy Toast */}
             {copiedVerseId !== null && (
                 <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    <div className="bg-emerald-950/90 border border-emerald-500/20 text-emerald-100 px-4 py-2 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-400" />
+                    <div className="bg-[rgb(var(--color-primary-dark))]/90 border border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] px-4 py-2 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                         <span className="text-xs font-medium">Terjemahan berhasil disalin</span>
                     </div>
                 </div>

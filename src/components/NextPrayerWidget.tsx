@@ -75,9 +75,9 @@ export default function NextPrayerWidget() {
     // === ADZAN MODE (Sekarang!) ===
     if (isAdzanNow) {
         return (
-            <div className="relative overflow-hidden rounded-3xl bg-emerald-600 border border-emerald-500 p-4 h-full flex flex-col justify-center items-center text-center shadow-lg group">
+            <div className="relative overflow-hidden rounded-3xl bg-[rgb(var(--color-primary-dark))] border border-[rgb(var(--color-primary))] p-4 h-full flex flex-col justify-center items-center text-center shadow-lg group">
                 {/* Minimalist Pulse */}
-                <div className="absolute inset-0 bg-emerald-400/20 animate-pulse" />
+                <div className="absolute inset-0 bg-[rgb(var(--color-primary-light))]/20 animate-pulse" />
 
                 <div className="relative z-10 space-y-2">
                     <div className="bg-white/20 p-2 rounded-full w-fit mx-auto backdrop-blur-sm">
@@ -99,11 +99,11 @@ export default function NextPrayerWidget() {
     // === PREPARATION MODE (< 15 minutes) ===
     if (isPreparationTime) {
         return (
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-900/80 to-black border border-emerald-500/30 p-4 h-full flex flex-col justify-between group">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/80 to-black border border-[rgb(var(--color-primary))]/30 p-4 h-full flex flex-col justify-between group">
                 {/* Header: Label */}
                 <div className="flex items-center gap-1.5 opacity-80">
-                    <Sparkles className="w-3 h-3 text-emerald-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                    <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-primary-light))]">
                         Persiapan
                     </span>
                 </div>
@@ -119,7 +119,7 @@ export default function NextPrayerWidget() {
 
                 {/* Footer: Context */}
                 <div className="text-center">
-                    <span className="text-[10px] font-medium text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    <span className="text-[10px] font-medium text-[rgb(var(--color-primary-light))]/80 bg-[rgb(var(--color-primary))]/10 px-2 py-0.5 rounded-full border border-[rgb(var(--color-primary))]/20">
                         Menuju {displayPrayerName}
                     </span>
                 </div>
@@ -132,7 +132,7 @@ export default function NextPrayerWidget() {
         <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex flex-col justify-between group hover:bg-black/30 hover:border-white/10 transition-all">
             {/* Header: Label */}
             <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
-                <Clock className="w-3 h-3 text-emerald-400" />
+                <Clock className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
                     Selanjutnya
                 </span>

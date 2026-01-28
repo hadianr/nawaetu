@@ -257,7 +257,7 @@ export default function TasbihCounter() {
                 {activeZikir ? (
                     <div className="animate-in fade-in slide-in-from-top-4 duration-700">
                         <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg font-serif">{activeZikir.arab}</h2>
-                        <p className="text-emerald-400 font-medium text-sm md:text-base tracking-wide">{activeZikir.latin}</p>
+                        <p className="text-[rgb(var(--color-primary-light))] font-medium text-sm md:text-base tracking-wide">{activeZikir.latin}</p>
                         <p className="text-white/60 text-xs mt-1 italic max-w-xs mx-auto animate-in fade-in delay-150 duration-700">{activeZikir.tadabbur}</p>
                     </div>
                 ) : (
@@ -280,7 +280,7 @@ export default function TasbihCounter() {
                                 cy="50"
                                 r="45"
                                 fill="transparent"
-                                stroke="#10b981"
+                                stroke="rgb(var(--color-primary))"
                                 strokeWidth="4"
                                 strokeLinecap="round"
                                 strokeDasharray="283"
@@ -297,10 +297,10 @@ export default function TasbihCounter() {
                         <span className="text-white/40 text-[10px] md:text-xs font-bold tracking-wide uppercase mb-2 max-w-[80%] text-center leading-tight">
                             {activeZikir ? activeZikir.label : (target ? `Target: ${target}` : "Tanpa Batas")}
                         </span>
-                        <span className="text-7xl md:text-8xl font-mono font-bold text-white tracking-tighter drop-shadow-lg group-active:text-emerald-400 transition-colors">
+                        <span className="text-7xl md:text-8xl font-mono font-bold text-white tracking-tighter drop-shadow-lg group-active:text-[rgb(var(--color-primary-light))] transition-colors">
                             {count}
                         </span>
-                        <div className="mt-4 text-emerald-500/50 text-xs animate-pulse">
+                        <div className="mt-4 text-[rgb(var(--color-primary))]/50 text-xs animate-pulse">
                             Tap di sini
                         </div>
                     </button>
@@ -344,8 +344,8 @@ export default function TasbihCounter() {
                                     variant="outline"
                                     onClick={() => handlePresetSelect(preset)}
                                     className={cn(
-                                        "justify-between h-auto py-3 border-white/10 bg-transparent text-white hover:bg-emerald-500/20 hover:text-white hover:border-emerald-500/50",
-                                        activeZikir?.label === preset.label && "bg-emerald-500/20 border-emerald-500/50"
+                                        "justify-between h-auto py-3 border-white/10 bg-transparent text-white hover:bg-[rgb(var(--color-primary))]/20 hover:text-white hover:border-[rgb(var(--color-primary))]/50",
+                                        activeZikir?.label === preset.label && "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/50"
                                     )}
                                 >
                                     <div className="flex flex-col items-start gap-1">
@@ -385,7 +385,7 @@ export default function TasbihCounter() {
                     className={cn(
                         "flex flex-col h-auto py-3 gap-1 border-white/10 hover:bg-white/10",
                         feedbackMode !== 'none'
-                            ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/30"
+                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30 hover:text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/30"
                             : "bg-white/5 text-white/70 hover:text-white"
                     )}
                 >
@@ -402,16 +402,16 @@ export default function TasbihCounter() {
                 >
                     <DialogTitle className="sr-only">Target Tercapai</DialogTitle>
 
-                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6 animate-in zoom-in spin-in-12 duration-500">
-                        <Check className="w-10 h-10 text-emerald-400" />
+                    <div className="w-20 h-20 rounded-full bg-[rgb(var(--color-primary))]/10 flex items-center justify-center mb-6 animate-in zoom-in spin-in-12 duration-500">
+                        <Check className="w-10 h-10 text-[rgb(var(--color-primary-light))]" />
                     </div>
 
                     <h2 className="text-2xl font-bold text-white mb-2">Alhamdulillah!</h2>
                     <p className="text-slate-400 text-sm mb-6">Target dzikir {target}x telah tercapai.</p>
 
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-6 py-3 flex flex-col items-center mb-8 animate-pulse">
-                        <span className="text-emerald-400 font-bold text-2xl">+50 XP</span>
-                        <span className="text-[10px] text-emerald-500/60 uppercase tracking-widest">Poin Ibadah</span>
+                    <div className="bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-xl px-6 py-3 flex flex-col items-center mb-8 animate-pulse">
+                        <span className="text-[rgb(var(--color-primary-light))] font-bold text-2xl">+50 XP</span>
+                        <span className="text-[10px] text-[rgb(var(--color-primary))]/60 uppercase tracking-widest">Poin Ibadah</span>
                     </div>
 
                     <div className="flex flex-col gap-3 w-full">
@@ -479,7 +479,7 @@ export default function TasbihCounter() {
             {/* Stats Bar */}
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-6 text-white/40 text-xs font-mono uppercase tracking-wider z-20 pointer-events-none">
                 <div className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-emerald-500/50" />
+                    <CalendarDays className="h-4 w-4 text-[rgb(var(--color-primary))]/50" />
                     <span>Hari Ini: <span className="text-white font-bold">{dailyCount}</span></span>
                 </div>
                 <div className="flex items-center gap-2">

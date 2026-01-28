@@ -31,11 +31,11 @@ export default function BottomNav() {
                             className={cn(
                                 "flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
                                 isActive
-                                    ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                                    ? "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"
                                     : "text-slate-500 hover:text-white/80"
                             )}
                         >
-                            <Icon className={cn("h-6 w-6", isActive && "fill-emerald-400/20")} />
+                            <Icon className={cn("h-6 w-6", isActive && "fill-[rgb(var(--color-primary-light))]/20")} />
                             <span className="text-[10px] font-medium">{label}</span>
                         </Link>
                     );

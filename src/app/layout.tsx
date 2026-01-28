@@ -37,6 +37,9 @@ export const metadata: Metadata = {
 };
 
 import NotificationWatcher from "@/components/NotificationWatcher";
+import PatternOverlay from "@/components/PatternOverlay";
+import { PremiumProvider } from "@/context/PremiumContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 // ... (Metadata export remains)
 
@@ -51,11 +54,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <NotificationWatcher />
-        {children}
-        <Suspense fallback={null}>
-          <BottomNav />
-        </Suspense>
+        <ThemeProvider>
+          <PremiumProvider>
+            <PatternOverlay />
+            <NotificationWatcher />
+            {children}
+            <Suspense fallback={null}>
+              <BottomNav />
+            </Suspense>
+          </PremiumProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

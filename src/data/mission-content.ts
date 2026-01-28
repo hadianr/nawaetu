@@ -23,15 +23,15 @@ export interface MissionContent {
 }
 
 export const MISSION_CONTENTS: Record<string, MissionContent> = {
-    // SHOLAT WAJIB 5 WAKTU
-    'sholat_subuh': {
-        id: 'sholat_subuh',
-        intro: 'Sholat Subuh disaksikan oleh para malaikat dan lebih baik dari dunia seisinya.',
+    // SHOLAT WAJIB 5 WAKTU - MALE
+    'sholat_subuh_male': {
+        id: 'sholat_subuh_male',
+        intro: 'Sholat Subuh berjamaah disaksikan oleh para malaikat dan lebih baik dari dunia seisinya.',
         fadhilah: [
-            'Pahala sholat semalam suntuk (jika berjamaah)',
+            'Pahala sholat semalam suntuk (berjamaah)',
             'Berada dalam jaminan/perlindungan Allah',
             'Disaksikan oleh Malaikat siang dan malam',
-            'Dua rakaat qobliyah subuh lebih baik dari dunia dan seisinya'
+            'Pahala 27 derajat lebih tinggi'
         ],
         niat: {
             munfarid: {
@@ -49,205 +49,105 @@ export const MISSION_CONTENTS: Record<string, MissionContent> = {
         },
         readings: [
             {
-                title: "Dzikir Istighfar & Tahlil (10x)",
-                arabic: "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-                latin: "Laa ilaaha illallaahu wahdahu laa syariika lah, lahul mulku wa lahul hamdu yuhyii wa yumiitu wa huwa 'alaa kulli syai'in qodiir",
-                translation: "Tiada Tuhan selain Allah yang Maha Esa, tiada sekutu bagi-Nya. Bagi-Nya segala kerajaan dan bagi-Nya segala puji. Dia yang menghidupkan dan mematikan, dan Dia Maha Kuasa atas segala sesuatu.",
-                note: "Dibaca 10x setelah salam (Posisi kaki tetap)"
-            },
-            {
-                title: "Doa Qunut (Subuh)",
-                arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ...",
-                latin: "Allahummahdinii fiiman hadait, wa 'aafinii fiiman 'aafait...",
-                translation: "Ya Allah, berilah aku petunjuk sebagaimana orang-orang yang telah Engkau beri petunjuk...",
+                title: "Doa Qunut",
+                arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ، وَصَلَّى اللهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ",
+                latin: "Allahummahdinii fiiman hadait, wa 'aafinii fiiman 'aafait, wa tawallanii fiiman tawallait, wa baarik lii fiima a'thait, wa qinii syarra maa qadhait. Fa innaka taqdhii wa laa yuqdhaa 'alaik, wa innahu laa yadzillu man waalaiit, wa laa ya'izzu man 'aadait, tabaarakta rabbanaa wa ta'aalait. Falakal hamdu 'alaa maa qadhait, astaghfiruka wa atuubu ilaik. Wa shallallaahu 'alaa sayyidinaa muhammadin nabiyyil ummiyyi wa 'alaa aalihi wa shahbihi wa sallam.",
+                translation: "Ya Allah, berilah aku petunjuk sebagaimana orang yang Engkau beri petunjuk, berilah kesehatan sebagaimana orang yang Engkau beri kesehatan, peliharalah aku sebagaimana orang yang Engkau pelihara, berakahilah apa yang Engkau berikan, lindungilah aku dari keburukan takdir-Mu. Sesungguhnya Engkau yang menetapkan dan tidak ada yang menetapkan atas-Mu. Tidak akan hina orang yang Engkau lindungi dan tidak akan mulia orang yang Engkau musuhi. Maha Suci Engkau Wahai Tuhan kami dan Maha Tinggi Engkau. Segala puji bagi-Mu atas ketetapan-Mu. Aku memohon ampun dan bertaubat kepada-Mu. Dan semoga sholawat serta salam tercurah kepada Nabi Muhammad, keluarga dan sahabatnya.",
                 note: "Sunnah Muakkad (Syafi'i)"
             }
         ],
         guides: [
             'Waktu: Terbit fajar shadiq hingga terbit matahari',
-            'Rakaat: 2 rakaat',
-            'Sunnah: Qunut (Mazhab Syafi\'i) dan membaca surat panjang'
-        ],
-        source: 'QS. Al-Isra: 78, HR. Muslim'
-    },
-    'sholat_dzuhur': {
-        id: 'sholat_dzuhur',
-        intro: 'Saat matahari tergelincir, pintu langit dibuka. Waktu utama untuk memohon ampunan.',
-        fadhilah: [
-            'Waktu dibukanya pintu-pintu langit',
-            'Dijauhkan dari api neraka',
-            'Waktu mustajab untuk berdoa di antara adzan dan iqamah'
-        ],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Dzuhur (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhadz-dzuhri arba'a raka'aatin mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            },
-            makmum: {
-                title: "Niat Sholat Dzuhur (Makmum)",
-                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
-                latin: "Ushalli fardhadz-dzuhri arba'a raka'aatin mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
-            }
-        },
-        readings: [
-            {
-                title: "Tasbih, Tahmid, Takbir (33x)",
-                arabic: "سُبْحَانَ اللَّهِ ... الْحَمْدُ لِلَّهِ ... اللَّهُ أَكْبَرُ",
-                latin: "Subhanallah (33x), Alhamdulillah (33x), Allahu Akbar (33x)",
-                translation: "Maha Suci Allah, Segala Puji Bagi Allah, Allah Maha Besar",
-                note: "Dzikir Ba'da Sholat Fardhu"
-            }
-        ],
-        guides: [
-            'Waktu: Matahari tergelincir hingga bayangan benda sama panjang dengan bendanya',
-            'Rakaat: 4 rakaat',
-            'Sunnah: Rawatib 4 rakaat sebelum dan 2 sesudah'
-        ],
-        source: 'HR. Tirmidzi & Ahmad'
-    },
-    'sholat_ashar': {
-        id: 'sholat_ashar',
-        intro: 'Sholat Wustha (pertengahan) yang sangat ditekankan penjagaannya. Paling rawan terlewat karena kesibukan.',
-        fadhilah: [
-            'Menjadi penyebab masuk surga (jika menjaga Bardain: Subuh & Ashar)',
-            'Pahala dilipatgandakan (karena beratnya waktu ini)',
-            'Disaksikan malaikat pergantian shift'
-        ],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Ashar (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الْعَصْرِأَرْبَعَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhal-'ashri arba'a raka'aatin mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            },
-            makmum: {
-                title: "Niat Sholat Ashar (Makmum)",
-                arabic: "أُصَلِّى فَرْضَ الْعَصْرِأَرْبَعَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
-                latin: "Ushalli fardhal-'ashri arba'a raka'aatin mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
-            }
-        },
-        readings: [
-            {
-                title: "Doa Perlindungan (Sore)",
-                arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ. رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ",
-                latin: "Amsainaa wa amsal mulku lillahi walhamdulillahi, laa ilaha illallahu wahdahu laa syarika lah, lahul mulku wa lahul hamdu wa huwa 'ala kulli syai-in qadir. Rabbi as-aluka khaira maa fii hadzihil lailah wa khaira maa ba'dahaa, wa a'udzu bika min syarri maa fii hadzihil lailah wa syarri maa ba'dahaa. Rabbi a'udzu bika minal kasali wa suu-il kibar, Rabbi a'udzu bika min 'adzabin fin naari wa 'adzabin fil qabri.",
-                translation: "Kami memasuki waktu sore dan kerajaan milik Allah, segala puji bagi Allah. Tidak ada Tuhan selain Allah semata, tidak ada sekutu bagi-Nya. Bagi-Nya kerajaan dan bagi-Nya pujian. Dia-lah Yang Mahakuasa atas segala sesuatu. Wahai Tuhanku, aku mohon kepada-Mu kebaikan malam ini dan kebaikan yang ada setelahnya. Aku berlindung kepada-Mu dari keburukan malam ini dan keburukan yang ada setelahnya. Wahai Tuhanku, aku berlindung kepada-Mu dari kemalasan dan keburukan di hari tua. Wahai Tuhanku, aku berlindung kepada-Mu dari siksaan di neraka dan siksaan di kubur.",
-                note: "Bagian dari dzikir sore (dibaca ba'da ashar)"
-            }
-        ],
-        guides: [
-            'Waktu: Bayangan benda sama panjang hingga matahari terbenam',
-            'Rakaat: 4 rakaat',
-            'Sunnah: Rawatib 4 rakaat sebelum (Ghairu Muakkad)'
-        ],
-        source: 'QS. Al-Baqarah: 238, HR. Bukhari'
-    },
-    'sholat_maghrib': {
-        id: 'sholat_maghrib',
-        intro: 'Waktu singkat saat matahari tenggelam. Segerakanlah.',
-        fadhilah: [
-            'Waktu mustajab untuk berdoa',
-            'Menghapus dosa-dosa kecil seharian',
-            'Keberkahan di awal malam'
-        ],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Maghrib (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلاَثَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhal-maghribi tsalaatsa raka'aatin mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            },
-            makmum: {
-                title: "Niat Sholat Maghrib (Makmum)",
-                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلاَثَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
-                latin: "Ushalli fardhal-maghribi tsalaatsa raka'aatin mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
-            }
-        },
-        readings: [
-            {
-                title: "Dzikir Khusus Maghrib (10x)",
-                arabic: "لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-                latin: "Laa ilaaha illallaahu wahdahu laa syariika lah... (10x)",
-                translation: "Tiada Tuhan selain Allah... (Dibaca 10x sebelum merubah posisi kaki)",
-                note: "Sunnah Muakkad ba'da Maghrib & Subuh"
-            },
-            {
-                title: "Ayat Kursi",
-                arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
-                latin: "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā ta'khużuhụ sinatuw wa lā naụm. Lahụ mā fis-samāwāti wa mā fil-arḍ. Man żallażī yasyfa'u 'indahū illā bi`iżnih. Ya'lamu mā baina aidīhim wa mā khalfahum. Wa lā yuḥīṭụna bisyai`im min 'ilmihī illā bimā syā`. Wasi'a kursiyyuhus-samāwāti wal-arḍ. Wa lā ya`ụduhụ ḥifẓuhumā. Wa huwal-'aliyyul-'aẓīm.",
-                translation: "Allah, tidak ada tuhan selain Dia. Yang Maha Hidup, Yang terus menerus mengurus (makhluk-Nya), tidak mengantuk dan tidak tidur. Milik-Nya apa yang ada di langit dan apa yang ada di bumi. Tidak ada yang dapat memberi syafaat di sisi-Nya tanpa izin-Nya. Dia mengetahui apa yang di hadapan mereka dan apa yang di belakang mereka, dan mereka tidak mengetahui sesuatu apa pun tentang ilmu-Nya melainkan apa yang Dia kehendaki. Kursi-Nya meliputi langit dan bumi. Dan Dia tidak merasa berat memelihara keduanya, dan Dia Maha Tinggi, Maha Besar.",
-                note: "Dibaca setiap selesai sholat fardhu"
-            }
-        ],
-        guides: [
-            'Waktu: Matahari terbenam hingga mega merah hilang',
-            'Rakaat: 3 rakaat',
-            'Sunnah: Rawatib 2 rakaat sesudah (Muakkad)'
+            'Utamakan berjamaah di masjid bagi laki-laki.'
         ],
         source: 'HR. Muslim'
     },
-    'sholat_isya': {
-        id: 'sholat_isya',
-        intro: 'Sholat terberat bagi munafik, namun memiliki cahaya sempurna di hari kiamat.',
+    'sholat_subuh_female': {
+        id: 'sholat_subuh_female',
+        intro: 'Sholat tepat waktu di rumah adalah sebaik-baik keadaan bagi wanita muslimah.',
         fadhilah: [
-            'Pahala sholat setengah malam (jika berjamaah)',
-            'Cahaya yang sempurna di hari Kiamat',
-            'Ketentraman tidur dan perlindungan malam'
+            'Sebaik-baik sholat wanita adalah di bagian terdalam rumahnya',
+            'Pahala ketaatan yang sempurna',
+            'Terhindar dari fitnah dan menjaga kehormatan'
         ],
         niat: {
             munfarid: {
-                title: "Niat Sholat Isya (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhal-'isyaa-i arba'a raka'aatin mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            },
-            makmum: {
-                title: "Niat Sholat Isya (Makmum)",
-                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعاَتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
-                latin: "Ushalli fardhal-'isyaa-i arba'a raka'aatin mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+                title: "Niat Sholat Subuh (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الصُّبْح رَكَعتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhas-subhi rak'ataini mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu subuh 2 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
             }
         },
         readings: [
             {
-                title: "Ayat Kursi (Pelindung Tidur)",
-                arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
-                latin: "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā ta'khużuhụ sinatuw wa lā naụm. Lahụ mā fis-samāwāti wa mā fil-arḍ. Man żallażī yasyfa'u 'indahū illā bi`iżnih. Ya'lamu mā baina aidīhim wa mā khalfahum. Wa lā yuḥīṭụna bisyai`im min 'ilmihī illā bimā syā`. Wasi'a kursiyyuhus-samāwāti wal-arḍ. Wa lā ya`ụduhụ ḥifẓuhumā. Wa huwal-'aliyyul-'aẓīm.",
-                translation: "Allah, tidak ada tuhan selain Dia. Yang Maha Hidup, Yang terus menerus mengurus (makhluk-Nya), tidak mengantuk dan tidak tidur. Milik-Nya apa yang ada di langit dan apa yang ada di bumi. Tidak ada yang dapat memberi syafaat di sisi-Nya tanpa izin-Nya. Dia mengetahui apa yang di hadapan mereka dan apa yang di belakang mereka, dan mereka tidak mengetahui sesuatu apa pun tentang ilmu-Nya melainkan apa yang Dia kehendaki. Kursi-Nya meliputi langit dan bumi. Dan Dia tidak merasa berat memelihara keduanya, dan Dia Maha Tinggi, Maha Besar.",
-                note: "Dibaca sebelum tidur"
-            },
-            {
-                title: "Surah Al-Ikhlas",
-                arabic: "قُلْ هُوَ ٱللَّهُ أَحَدٌ، ٱللَّهُ ٱلصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
-                latin: "Qul huwallāhu aḥad. Allāhuṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakul lahụ kufuwan aḥad.",
-                translation: "Katakanlah: Dialah Allah, Yang Maha Esa. Allah adalah Tuhan yang bergantung kepada-Nya segala sesuatu. Dia tiada beranak dan tidak pula diperanakkan, dan tidak ada seorangpun yang setara dengan Dia.",
-                note: "Dibaca 3x"
-            },
-            {
-                title: "Surah Al-Falaq",
-                arabic: "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ، مِن شَرِّ مَا خَلَقَ، وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ، وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ، وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
-                latin: "Qul a'ụżu birabbil-falaq. Min syarri mā khalaq. Wa min syarri gāsiqin iżā waqab. Wa min syarrin-naffāṡāti fil-'uqad. Wa min syarri ḥāsidin iżā ḥasad.",
-                translation: "Katakanlah: Aku berlindung kepada Tuhan Yang Menguasai waktu subuh, dari kejahatan makhluk-Nya, dan dari kejahatan malam apabila telah gelap gulita, dan dari kejahatan wanita-wanita tukang sihir yang menghembus pada buhul-buhul, dan dari kejahatan pendengki bila ia dengki.",
-                note: "Dibaca 3x"
-            },
-            {
-                title: "Surah An-Nas",
-                arabic: "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ، مَلِكِ ٱلنَّاسِ، إِلَٰهِ ٱلنَّاسِ، مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ، ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ، مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
-                latin: "Qul a'ụżu birabbin-nās. Malikin-nās. Ilāhin-nās. Min syarril-waswāsil-khannās. Allażī yuwaswisu fī ṣudụrin-nās. Minal-jinnati wan-nās.",
-                translation: "Katakanlah: Aku berlindung kepada Tuhan (yang memelihara dan menguasai) manusia. Raja manusia. Sembahan manusia. Dari kejahatan (bisikan) syaitan yang biasa bersembunyi, yang membisikkan (kejahatan) ke dalam dada manusia, dari (golongan) jin dan manusia.",
-                note: "Dibaca 3x"
+                title: "Doa Qunut",
+                arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ، وَصَلَّى اللهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ",
+                latin: "Allahummahdinii fiiman hadait, wa 'aafinii fiiman 'aafait, wa tawallanii fiiman tawallait, wa baarik lii fiima a'thait, wa qinii syarra maa qadhait. Fa innaka taqdhii wa laa yuqdhaa 'alaik, wa innahu laa yadzillu man waalaiit, wa laa ya'izzu man 'aadait, tabaarakta rabbanaa wa ta'aalait. Falakal hamdu 'alaa maa qadhait, astaghfiruka wa atuubu ilaik. Wa shallallaahu 'alaa sayyidinaa muhammadin nabiyyil ummiyyi wa 'alaa aalihi wa shahbihi wa sallam.",
+                translation: "Ya Allah, berilah aku petunjuk sebagaimana orang yang Engkau beri petunjuk, berilah kesehatan sebagaimana orang yang Engkau beri kesehatan, peliharalah aku sebagaimana orang yang Engkau pelihara, berakahilah apa yang Engkau berikan, lindungilah aku dari keburukan takdir-Mu. Sesungguhnya Engkau yang menetapkan dan tidak ada yang menetapkan atas-Mu. Tidak akan hina orang yang Engkau lindungi dan tidak akan mulia orang yang Engkau musuhi. Maha Suci Engkau Wahai Tuhan kami dan Maha Tinggi Engkau. Segala puji bagi-Mu atas ketetapan-Mu. Aku memohon ampun dan bertaubat kepada-Mu. Dan semoga sholawat serta salam tercurah kepada Nabi Muhammad, keluarga dan sahabatnya.",
+                note: "Sunnah Muakkad (Syafi'i)"
             }
         ],
         guides: [
-            'Waktu: Hilangnya mega merah hingga sepertiga malam (utama)',
-            'Rakaat: 4 rakaat',
-            'Sunnah: Rawatib 2 rakaat sesudah (Muakkad)'
+            'Waktu: Terbit fajar shadiq hingga terbit matahari',
+            'Tunaikan di rumah, di tempat yang tenang/khusus sholat (Musholla rumah).'
         ],
+        source: 'HR. Abu Daud'
+    },
+    'sholat_dzuhur_male': {
+        id: 'sholat_dzuhur_male',
+        intro: 'Saat matahari tergelincir, pintu langit dibuka. Waktu utama untuk memohon ampunan.',
+        fadhilah: [
+            'Waktu dibukanya pintu-pintu langit',
+            'Pahala 27 derajat berjamaah',
+            'Dijauhkan dari api neraka'
+        ],
+        guides: ['Segera ke masjid saat adzan berkumandang.'],
+        source: 'HR. Bukhari'
+    },
+    'sholat_dzuhur_female': {
+        id: 'sholat_dzuhur_female',
+        intro: 'Sholat Dzuhur tepat waktu di rumah adalah bukti ketaatan dan menjaga waktu.',
+        fadhilah: [
+            'Waktu dibukanya pintu-pintu langit',
+            'Ketenangan di tengah kesibukan harian'
+        ],
+        guides: ['Segerakan sholat setelah waktu masuk, meski sibuk dengan urusan rumah.'],
+        source: 'Fiqih Wanita'
+    },
+    'sholat_ashar_male': {
+        id: 'sholat_ashar_male',
+        intro: 'Sholat Wustha yang harus dijaga dengan berjamaah.',
+        fadhilah: ['Masuk surga (Bardain)', 'Pahala dilipatgandakan'],
+        source: 'HR. Bukhari'
+    },
+    'sholat_ashar_female': {
+        id: 'sholat_ashar_female',
+        intro: 'Menjaga sholat Ashar di rumah di sela-sela waktu istirahat sore.',
+        fadhilah: ['Masuk surga karena menjaga Bardain (Subuh & Ashar)', 'Perlindungan sore hari'],
+        source: 'HR. Bukhari'
+    },
+    'sholat_maghrib_male': {
+        id: 'sholat_maghrib_male',
+        intro: 'Waktu singkat yang utama untuk diisi dengan berjamaah di masjid.',
+        fadhilah: ['Waktu mustajab doa antara adzan iqamah', 'Menghapus dosa seharian'],
+        source: 'HR. Muslim'
+    },
+    'sholat_maghrib_female': {
+        id: 'sholat_maghrib_female',
+        intro: 'Waktu singkat saat matahari tenggelam. Segerakanlah di rumah.',
+        fadhilah: ['Waktu mustajab doa', 'Keberkahan awal malam bagi keluarga'],
+        source: 'HR. Muslim'
+    },
+    'sholat_isya_male': {
+        id: 'sholat_isya_male',
+        intro: 'Sholat terberat bagi munafik, namun cahaya sempurna di hari kiamat.',
+        fadhilah: ['Pahala sholat setengah malam', 'Cahaya sempurna di Kiamat'],
+        source: 'HR. Muslim'
+    },
+    'sholat_isya_female': {
+        id: 'sholat_isya_female',
+        intro: 'Menutup hari dengan ketaatan sholat Isya sebelum istirahat.',
+        fadhilah: ['Ketentraman tidur', 'Perlindungan malam'],
         source: 'HR. Muslim'
     },
 

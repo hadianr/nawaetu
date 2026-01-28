@@ -117,3 +117,45 @@ export function checkMissionValidation(
 
     return { locked: false };
 }
+
+/**
+ * Filters missions based on User's Spiritual Archetype (Fokus Ibadah).
+ * 
+ * - Pemula: Focus on Wajib + Basic Quran. Hides generic Sunnah/Trackers to prevent overwhelm.
+ * - Penggerak: Focus on Daily Routine (Wajib + Sunnah). Hides heavy Weekly/Trackers.
+ * - Mujahid: Shows EVERYTHING.
+ */
+export function filterMissionsByArchetype(missions: Mission[], archetype: string | null): Mission[] {
+    if (!archetype) return missions; // Default: Show all if no archetype selected (or maybe filter to 'Penggerak' as safe default? Let's keep all for now).
+
+    return missions.filter(mission => {
+        // 1. Mandatory missions (Wajib) are ALWAYS shown for everyone
+        if (mission.hukum === 'wajib') return true;
+
+        // 2. Special Case: Ramadhan Prep is high priority, show for everyone? 
+        // Let's stick to the archetype rules for consistency, but maybe allow some 'sunnah' prep for Pemula?
+        // Decision: Stick to rules properly.
+
+        switch (archetype) {
+            case 'pemula': // "Fokus Wajib"
+                // Show Wajib (already covered) OR Simple Quran tasks
+                // Hide other Sunnah (Dhuha, Dzikir, Puasa Sunnah)
+                if (mission.category === 'quran' && mission.validationConfig?.requiredCount && mission.validationConfig.requiredCount <= 10) return true;
+                return false;
+
+            case 'penggerak': // "Wajib + Sunnah Ringan"
+                // Show All Daily Missions (Wajib + Sunnah).
+                // Hide Weekly (Puasa Senin Kamis) or Trackers (Qadha Puasa is Wajib so it shows, but generic trackers maybe hide?)
+                // Actually, let's just show all 'daily' type.
+                if (mission.type === 'daily') return true;
+                return false;
+
+            case 'mujahid': // "Extra Strong"
+                // Show EVERYTHING
+                return true;
+
+            default:
+                return true;
+        }
+    });
+}

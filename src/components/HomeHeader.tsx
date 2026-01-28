@@ -9,14 +9,17 @@ export default function HomeHeader() {
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
+    const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     const refreshProfile = () => {
         const savedName = localStorage.getItem("user_name");
         const savedTitle = localStorage.getItem("user_title");
         const savedGender = localStorage.getItem("user_gender") as 'male' | 'female' | null;
+        const savedAvatar = localStorage.getItem("user_avatar");
         if (savedName) setUserName(savedName);
         if (savedTitle) setUserTitle(savedTitle);
         setGender(savedGender);
+        setUserAvatar(savedAvatar);
     };
 
     useEffect(() => {
@@ -26,11 +29,13 @@ export default function HomeHeader() {
         const handleStorage = () => refreshProfile();
         window.addEventListener("storage", handleStorage);
         window.addEventListener("xp_updated", handleStorage);
+        window.addEventListener("avatar_updated", handleStorage); // Real-time avatar sync
         window.addEventListener("focus", handleStorage);
 
         return () => {
             window.removeEventListener("storage", handleStorage);
             window.removeEventListener("xp_updated", handleStorage);
+            window.removeEventListener("avatar_updated", handleStorage);
             window.removeEventListener("focus", handleStorage);
         }
     }, []);
@@ -50,7 +55,7 @@ export default function HomeHeader() {
         <div className="w-full flex items-start justify-between animate-in slide-in-from-top-4 duration-700">
             <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-sm font-medium text-emerald-400 uppercase tracking-widest opacity-90">
+                    <h2 className="text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">
                         {greeting}
                     </h2>
                 </div>
@@ -66,9 +71,9 @@ export default function HomeHeader() {
             <div className="flex flex-col items-end gap-1.5 text-right">
                 <div className="flex items-center gap-2">
                     <StreakBadge gender={gender} />
-                    <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5 bg-[rgb(var(--color-primary))]/10 px-2 py-1 rounded-full border border-[rgb(var(--color-primary))]/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
+                        <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest">
                             {data?.locationName?.split(",")[0] || "Lokasi..."}
                         </span>
                     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -15,7 +15,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import UserProfileDialog from "@/components/UserProfileDialog";
+import PricingModal from "@/components/PricingModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
+import { usePremium } from "@/context/PremiumContext";
 import {
     MUADZIN_OPTIONS,
     QURAN_RECITER_OPTIONS,
@@ -42,6 +45,9 @@ const DEFAULT_PREFS: AdhanPreferences = {
 
 export default function SettingsPage() {
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimes();
+    const { currentTheme, setTheme } = useTheme();
+    const { isPremium } = usePremium();
+    const [showPricing, setShowPricing] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [preferences, setPreferences] = useState<AdhanPreferences>(DEFAULT_PREFS);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -49,6 +55,7 @@ export default function SettingsPage() {
     // Profile State
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
+    const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
@@ -64,8 +71,10 @@ export default function SettingsPage() {
     const refreshProfile = () => {
         const savedName = localStorage.getItem("user_name");
         const savedTitle = localStorage.getItem("user_title");
+        const savedAvatar = localStorage.getItem("user_avatar");
         if (savedName) setUserName(savedName);
         if (savedTitle) setUserTitle(savedTitle);
+        setUserAvatar(savedAvatar);
     };
 
     // Helper to safely stop audio without triggering error
@@ -170,6 +179,13 @@ export default function SettingsPage() {
         if (savedMethod) setCalculationMethod(savedMethod);
     }, []);
 
+    // Real-time avatar sync listener
+    useEffect(() => {
+        const handleAvatarUpdate = () => refreshProfile();
+        window.addEventListener('avatar_updated', handleAvatarUpdate);
+        return () => window.removeEventListener('avatar_updated', handleAvatarUpdate);
+    }, []);
+
     const requestPermission = async () => {
         if (!("Notification" in window)) {
             alert("Browser ini tidak mendukung notifikasi.");
@@ -190,6 +206,18 @@ export default function SettingsPage() {
         const newPrefs = { ...preferences, [prayer]: !preferences[prayer] };
         setPreferences(newPrefs);
         localStorage.setItem("adhan_preferences", JSON.stringify(newPrefs));
+    };
+
+    const handleThemeSelect = (themeId: ThemeId) => {
+        const theme = THEMES[themeId];
+
+        // Check if theme is premium and user is not premium
+        if (theme.isPremium && !isPremium) {
+            setShowPricing(true);
+            return;
+        }
+
+        setTheme(themeId);
     };
 
     const handleMuadzinChange = (value: string) => {
@@ -236,7 +264,7 @@ export default function SettingsPage() {
     const currentMethod = CALCULATION_METHODS.find(m => m.id.toString() === calculationMethod);
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] px-4 py-6 font-sans sm:px-6 pb-24">
+        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-24">
 
             <div className="w-full max-w-md space-y-6">
                 {/* Header */}
@@ -249,15 +277,29 @@ export default function SettingsPage() {
 
                 {/* Profile Card - Compact */}
                 <UserProfileDialog onProfileUpdate={refreshProfile}>
-                    <div className="w-full p-4 bg-gradient-to-r from-emerald-900/30 to-emerald-950/50 border border-emerald-500/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-emerald-500/40 transition-all group">
-                        <div className="h-12 w-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg font-bold">
-                            {userName.charAt(0).toUpperCase()}
+                    <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
+                        <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold relative overflow-hidden">
+                            {/* Avatar Display - Image/Emoji/Initial */}
+                            {userAvatar ? (
+                                userAvatar.startsWith('data:') ? (
+                                    <img src={userAvatar} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-2xl">{userAvatar}</span>
+                                )
+                            ) : (
+                                <span>{userName.charAt(0).toUpperCase()}</span>
+                            )}
+                            {isPremium && (
+                                <div className="absolute -top-1 -right-1 bg-amber-400 rounded-full p-0.5 border-2 border-black z-10">
+                                    <Crown className="w-3 h-3 text-black fill-black" />
+                                </div>
+                            )}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-base font-bold text-white truncate group-hover:text-emerald-400 transition-colors">{userName}</h3>
-                            <span className="text-xs text-emerald-400/70">{userTitle}</span>
+                            <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
+                            <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
+                        <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
                     </div>
                 </UserProfileDialog>
 
@@ -271,11 +313,11 @@ export default function SettingsPage() {
                     >
                         <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-blue-400" />
+                                <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                 <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">Lokasi</span>
                             </div>
                             <svg
-                                className={`w-3 h-3 text-white/30 group-hover:text-blue-400 transition-all ${isRefreshing ? 'animate-spin text-blue-400' : ''}`}
+                                className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${isRefreshing ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -299,18 +341,18 @@ export default function SettingsPage() {
                             <button
                                 onClick={!notificationsEnabled ? requestPermission : undefined}
                                 className={`p-3 rounded-xl border text-left transition-all ${isAnyEnabled
-                                    ? 'bg-emerald-500/10 border-emerald-500/20'
+                                    ? 'bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20'
                                     : notificationsEnabled
                                         ? 'bg-amber-500/10 border-amber-500/20'
                                         : 'bg-red-500/10 border-red-500/20 hover:border-red-500/40'
                                     }`}
                             >
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Bell className={`w-4 h-4 ${isAnyEnabled ? 'text-emerald-400' : notificationsEnabled ? 'text-amber-400' : 'text-red-400'
+                                    <Bell className={`w-4 h-4 ${isAnyEnabled ? 'text-[rgb(var(--color-primary-light))]' : notificationsEnabled ? 'text-amber-400' : 'text-red-400'
                                         }`} />
                                     <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">Notifikasi</span>
                                 </div>
-                                <p className={`text-sm font-medium ${isAnyEnabled ? 'text-emerald-400' : notificationsEnabled ? 'text-amber-400' : 'text-red-400'
+                                <p className={`text-sm font-medium ${isAnyEnabled ? 'text-[rgb(var(--color-primary-light))]' : notificationsEnabled ? 'text-amber-400' : 'text-red-400'
                                     }`}>
                                     {!notificationsEnabled
                                         ? "Nonaktif"
@@ -336,32 +378,116 @@ export default function SettingsPage() {
                             </div>
                         </div>
                         <div className="grid grid-cols-5 gap-2">
-                            {prayerNames.map((prayer) => (
-                                <button
-                                    key={prayer.key}
-                                    onClick={() => togglePrayer(prayer.key)}
-                                    disabled={!notificationsEnabled}
-                                    className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all ${preferences[prayer.key] && notificationsEnabled
-                                        ? 'bg-emerald-500/20 border border-emerald-500/30'
-                                        : 'bg-white/5 border border-white/10 opacity-60'
-                                        }`}
-                                >
-                                    <span className="text-base">{prayer.icon}</span>
-                                    <span className={`text-[9px] font-medium ${preferences[prayer.key] && notificationsEnabled
-                                        ? 'text-emerald-400'
-                                        : 'text-white/60'
-                                        }`}>
-                                        {prayer.label}
-                                    </span>
-                                </button>
-                            ))}
+                            {prayerNames.map((prayer) => {
+                                const isEnabled = preferences[prayer.key] && notificationsEnabled;
+                                return (
+                                    <button
+                                        key={prayer.key}
+                                        onClick={() => togglePrayer(prayer.key)}
+                                        disabled={!notificationsEnabled}
+                                        className={cn(
+                                            "flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all relative",
+                                            isEnabled
+                                                ? 'bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30'
+                                                : 'bg-white/5 border border-white/10 opacity-60'
+                                        )}
+                                    >
+                                        <span className="text-base">{prayer.icon}</span>
+                                        <span className={cn(
+                                            "text-[9px] font-medium",
+                                            isEnabled ? 'text-[rgb(var(--color-primary-light))]' : 'text-white/60'
+                                        )}>
+                                            {prayer.label}
+                                        </span>
+                                        {isEnabled && (
+                                            <div className="absolute -top-1 -right-1 bg-[rgb(var(--color-primary))] rounded-full p-0.5">
+                                                <Check className="w-2 h-2 text-black" />
+                                            </div>
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {!notificationsEnabled && (
+                            <p className="text-xs text-amber-400/70 mt-2 text-center">
+                                Aktifkan notifikasi untuk menerima pengingat adzan
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Theme Appearance Section */}
+                    <div className="p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                            <Palette className="w-4 h-4 text-[rgb(var(--color-primary))]" />
+                            <span className="text-sm font-semibold text-white">Tampilan Aplikasi</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            {Object.values(THEMES).map((theme) => {
+                                const isSelected = currentTheme === theme.id;
+                                const isLocked = theme.isPremium && !isPremium;
+                                const hasPattern = theme.pattern && theme.pattern.type !== 'none';
+
+                                return (
+                                    <button
+                                        key={theme.id}
+                                        onClick={() => handleThemeSelect(theme.id)}
+                                        className={cn(
+                                            "relative p-3 rounded-xl border transition-all text-left group overflow-hidden",
+                                            isSelected
+                                                ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 ring-1 ring-[rgb(var(--color-primary))]/50"
+                                                : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
+                                        )}
+                                    >
+                                        {/* Theme Preview Bar */}
+                                        <div className="flex gap-1 mb-2">
+                                            <div
+                                                className="h-5 flex-1 rounded"
+                                                style={{ backgroundColor: `rgb(${theme.colors.primary})` }}
+                                            />
+                                            <div
+                                                className="h-5 flex-1 rounded"
+                                                style={{ backgroundColor: `rgb(${theme.colors.accent})` }}
+                                            />
+                                        </div>
+
+                                        {/* Theme Info */}
+                                        <div className="space-y-0.5">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-1">
+                                                    <h3 className="font-bold text-xs text-white">{theme.name}</h3>
+                                                    {hasPattern && !isLocked && (
+                                                        <Sparkles className="w-2.5 h-2.5 text-[rgb(var(--color-primary))]" />
+                                                    )}
+                                                </div>
+                                                {isLocked ? (
+                                                    <Lock className="w-3 h-3 text-amber-400" />
+                                                ) : isSelected ? (
+                                                    <Check className="w-3 h-3 text-[rgb(var(--color-primary))]" />
+                                                ) : null}
+                                            </div>
+                                            <p className="text-[9px] text-white/60 leading-tight line-clamp-2">{theme.description}</p>
+                                        </div>
+
+                                        {/* Locked Overlay */}
+                                        {isLocked && (
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center pb-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="text-[8px] font-bold text-amber-400 flex items-center gap-0.5">
+                                                    <Crown className="w-2.5 h-2.5" />
+                                                    Premium
+                                                </span>
+                                            </div>
+                                        )}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
                     {/* Audio Settings Section */}
                     <div className="p-4 space-y-3">
                         <div className="flex items-center gap-2 mb-1">
-                            <Headphones className="w-4 h-4 text-purple-400" />
+                            <Headphones className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                             <span className="text-sm font-semibold text-white">Pengaturan Audio</span>
                         </div>
 
@@ -420,7 +546,7 @@ export default function SettingsPage() {
                                     size="icon"
                                     className={cn(
                                         "h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 shrink-0",
-                                        isPlaying && playingId === reciter && "text-purple-400 bg-purple-500/10"
+                                        isPlaying && playingId === reciter && "text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10"
                                     )}
                                     onClick={() => toggleAudioPreview(reciter)}
                                     disabled={isLoading}
@@ -478,12 +604,29 @@ export default function SettingsPage() {
                 </div>
 
                 {/* App Info - Footer Style */}
-                <div className="flex items-center justify-center gap-2 py-4 opacity-40">
-                    <span className="text-xs text-white">Nawaetu</span>
-                    <span className="text-[8px] text-white/50">•</span>
-                    <span className="text-xs text-white/70">v1.0.0 Beta</span>
+                <div className="space-y-3">
+                    <Link href="/stats" className="block p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl hover:border-amber-500/30 transition-all group">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-amber-500/20 rounded-lg">
+                                <Star className="w-4 h-4 text-amber-400" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-sm font-bold text-amber-200">Lihat Statistik Ibadah</h3>
+                                <p className="text-xs text-amber-200/70">Pantau perkembangan spiritualmu</p>
+                            </div>
+                            <ChevronRight className="w-5 h-5 text-amber-400/50 group-hover:text-amber-400 transition-colors" />
+                        </div>
+                    </Link>
+
+                    <div className="flex items-center justify-center gap-2 py-4 opacity-40">
+                        <span className="text-xs text-white">Nawaetu</span>
+                        <span className="text-[8px] text-white/50">•</span>
+                        <span className="text-xs text-white/70">v1.0.0 Beta</span>
+                    </div>
                 </div>
             </div>
+
+            <PricingModal isOpen={showPricing} onClose={() => setShowPricing(false)} />
         </div>
     );
 }

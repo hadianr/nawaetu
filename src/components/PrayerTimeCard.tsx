@@ -38,7 +38,7 @@ export default function PrayerTimeCard({
                             className={cn(
                                 "flex items-center justify-between rounded-xl p-4 transition-all duration-300",
                                 isNext
-                                    ? "bg-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/50 scale-[1.02]"
+                                    ? "bg-[rgb(var(--color-primary))]/20 shadow-[0_0_20px_rgba(var(--color-primary),0.3)] ring-1 ring-[rgb(var(--color-primary))]/50 scale-[1.02]"
                                     : isSunrise
                                         ? "bg-yellow-500/5 hover:bg-yellow-500/10 border border-yellow-500/10"
                                         : "bg-white/5 hover:bg-white/10"
@@ -47,7 +47,7 @@ export default function PrayerTimeCard({
                             <span
                                 className={cn(
                                     "font-medium",
-                                    isNext ? "text-emerald-400" : isSunrise ? "text-yellow-200/70" : "text-white/80"
+                                    isNext ? "text-[rgb(var(--color-primary-light))]" : isSunrise ? "text-yellow-200/70" : "text-white/80"
                                 )}
                             >
                                 {label}
@@ -55,7 +55,7 @@ export default function PrayerTimeCard({
                             <span
                                 className={cn(
                                     "text-lg font-bold tabular-nums",
-                                    isNext ? "text-emerald-400" : isSunrise ? "text-yellow-100/90" : "text-white"
+                                    isNext ? "text-[rgb(var(--color-primary-light))]" : isSunrise ? "text-yellow-100/90" : "text-white"
                                 )}
                             >
                                 {time}

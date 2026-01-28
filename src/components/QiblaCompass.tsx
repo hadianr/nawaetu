@@ -152,7 +152,7 @@ export default function QiblaCompass() {
 
                     <Button
                         onClick={requestCompassPermission}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-10 py-7 text-lg font-medium shadow-[0_0_30px_rgba(16,185,129,0.25)] transition-all hover:scale-105 active:scale-95"
+                        className="bg-[rgb(var(--color-primary-dark))] hover:bg-[rgb(var(--color-primary))] text-white rounded-full px-10 py-7 text-lg font-medium shadow-[0_0_30px_rgba(var(--color-primary),0.25)] transition-all hover:scale-105 active:scale-95"
                     >
                         Aktifkan Sensor
                     </Button>
@@ -184,9 +184,9 @@ export default function QiblaCompass() {
                             }}
                         >
                             {/* Dial Background */}
-                            <div className={`w-full h-full rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.2)]' : ''}`}>
+                            <div className={`w-full h-full rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-[rgb(var(--color-primary))]/60 shadow-[0_0_30px_rgba(var(--color-primary),0.2)]' : ''}`}>
                                 {/* Cardinal Points */}
-                                <div className="absolute top-4 left-1/2 -translate-x-1/2 text-emerald-400 font-bold text-lg md:text-xl transform -translate-y-1">N</div>
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[rgb(var(--color-primary-light))] font-bold text-lg md:text-xl transform -translate-y-1">N</div>
                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/30 font-medium md:text-lg transform translate-y-1">S</div>
                                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 font-medium md:text-lg transform -translate-x-1">W</div>
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-medium md:text-lg transform translate-x-1">E</div>
@@ -214,8 +214,8 @@ export default function QiblaCompass() {
                                         {/* Ping Rings */}
                                         {aligned && (
                                             <>
-                                                <div className="absolute w-full h-full bg-emerald-500/30 rounded-full animate-ping opacity-75" />
-                                                <div className="absolute w-[140%] h-[140%] border border-emerald-500/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite] delay-100" />
+                                                <div className="absolute w-full h-full bg-[rgb(var(--color-primary))]/30 rounded-full animate-ping opacity-75" />
+                                                <div className="absolute w-[140%] h-[140%] border border-[rgb(var(--color-primary))]/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite] delay-100" />
                                             </>
                                         )}
 
@@ -227,12 +227,12 @@ export default function QiblaCompass() {
 
                         {/* CENTER ORNAMENT */}
                         <div className="absolute w-4 h-4 rounded-full bg-white/20 backdrop-blur-md z-20 border border-white/10 flex items-center justify-center shadow-lg">
-                            <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${aligned ? 'bg-emerald-400' : 'bg-white/50'}`} />
+                            <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${aligned ? 'bg-[rgb(var(--color-primary-light))]' : 'bg-white/50'}`} />
                         </div>
 
                         {/* TOP INDICATOR */}
                         <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
-                            <div className={`w-1 h-3 rounded-full transition-all duration-500 ${aligned ? 'bg-emerald-400 h-4 shadow-[0_0_15px_#34d399]' : 'bg-white/30'}`} />
+                            <div className={`w-1 h-3 rounded-full transition-all duration-500 ${aligned ? 'bg-[rgb(var(--color-primary-light))] h-4 shadow-[0_0_15px_rgb(var(--color-primary-light))]' : 'bg-white/30'}`} />
                         </div>
                     </div>
 
@@ -240,7 +240,7 @@ export default function QiblaCompass() {
                     <div className="mt-16 text-center space-y-3 z-30">
                         {/* 3. FIX: Text Animation (Scale + Glow) */}
                         <div className={`transition-all duration-500 transform ${aligned ? 'scale-110' : 'scale-100'}`}>
-                            <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-emerald-400 drop-shadow-[0_0_20px_rgba(52,211,153,0.6)]' : 'text-white/30'}`}>
+                            <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_20px_rgba(var(--color-primary),0.6)]' : 'text-white/30'}`}>
                                 {aligned ? "MENGHADAP KIBLAT" : "CARI KIBLAT"}
                             </h2>
                         </div>

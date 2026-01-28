@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
-import { checkMissionValidation } from "@/lib/mission-utils";
+import { checkMissionValidation, filterMissionsByArchetype } from "@/lib/mission-utils";
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -47,13 +47,17 @@ export default function MissionsWidget() {
     useEffect(() => {
         // 2. Missions Data Load (Depends on Gender & Prayer Data/Seasonal)
         const savedGender = localStorage.getItem("user_gender") as Gender;
+        const savedArchetype = localStorage.getItem("user_archetype");
         setGender(savedGender);
 
         const daily = getDailyMissions(savedGender);
         const weekly = getWeeklyMissions(savedGender);
         const seasonal = getSeasonalMissions(prayerData?.hijriDate);
 
-        setMissions([...seasonal, ...weekly, ...daily]);
+        const allMissions = [...seasonal, ...weekly, ...daily];
+        const filteredMissions = filterMissionsByArchetype(allMissions, savedArchetype);
+
+        setMissions(filteredMissions);
 
     }, [prayerData?.hijriDate]); // Refresh seasonal missions when hijri date is available
 
@@ -214,7 +218,7 @@ export default function MissionsWidget() {
             {/* Soft Glow based on gender/theme */}
             <div className={cn(
                 "absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] pointer-events-none opacity-20 transition-colors",
-                gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-emerald-500"
+                gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
             )} />
 
             {/* Header */}
@@ -225,7 +229,7 @@ export default function MissionsWidget() {
                         "w-8 h-8 rounded-full flex items-center justify-center text-sm ring-1 ring-inset",
                         gender === 'female' ? "bg-pink-500/10 text-pink-400 ring-pink-500/20" :
                             gender === 'male' ? "bg-blue-500/10 text-blue-400 ring-blue-500/20" :
-                                "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20"
+                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] ring-[rgb(var(--color-primary))]/20"
                     )}>
                         {gender === 'female' ? '🌸' : gender === 'male' ? '💠' : '✨'}
                     </div>
@@ -239,7 +243,7 @@ export default function MissionsWidget() {
                 <div className={cn(
                     "text-[10px] px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
                     completedCount === missions.length
-                        ? "bg-gradient-to-r from-emerald-500/20 to-emerald-900/20 border-emerald-500/30 text-emerald-400"
+                        ? "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]"
                         : "bg-white/5 border-white/10 text-white/50"
                 )}>
                     {completedCount}/{missions.length} Selesai
@@ -260,11 +264,11 @@ export default function MissionsWidget() {
                         // Determine current prayer key based on ID (e.g. sholat_ashar -> Asr)
                         // Helper map
                         const idToKey: { [key: string]: string } = {
-                            'sholat_subuh': 'Fajr',
-                            'sholat_dzuhur': 'Dhuhr',
-                            'sholat_ashar': 'Asr',
-                            'sholat_maghrib': 'Maghrib',
-                            'sholat_isya': 'Isha'
+                            'sholat_subuh_male': 'Fajr', 'sholat_subuh_female': 'Fajr',
+                            'sholat_dzuhur_male': 'Dhuhr', 'sholat_dzuhur_female': 'Dhuhr',
+                            'sholat_ashar_male': 'Asr', 'sholat_ashar_female': 'Asr',
+                            'sholat_maghrib_male': 'Maghrib', 'sholat_maghrib_female': 'Maghrib',
+                            'sholat_isya_male': 'Isha', 'sholat_isya_female': 'Isha'
                         };
                         const prayerKey = idToKey[mission.id];
 
@@ -299,11 +303,11 @@ export default function MissionsWidget() {
                                 if (minsSinceStart <= 60 && minsSinceStart >= 0) {
                                     // Early: < 60 mins passed
                                     urgencyNode = (
-                                        <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-emerald-500/10 border border-emerald-500/20">
-                                            <Sparkles className="w-3 h-3 text-emerald-400 mt-0.5 shrink-0" />
+                                        <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
+                                            <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))] mt-0.5 shrink-0" />
                                             <div>
-                                                <p className="text-[10px] font-bold text-emerald-400 leading-tight">Keutamaan Awal Waktu</p>
-                                                <p className="text-[9px] text-emerald-400/70 leading-tight italic">"Amalan terbaik: Shalat di awal waktu." (HR. Tirmidzi)</p>
+                                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">Keutamaan Awal Waktu</p>
+                                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">"Amalan terbaik: Shalat di awal waktu." (HR. Tirmidzi)</p>
                                             </div>
                                         </div>
                                     );
@@ -340,7 +344,7 @@ export default function MissionsWidget() {
                             {!isCompleted && !isLocked && (
                                 <div className={cn(
                                     "absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                                    mission.hukum === 'wajib' ? "bg-blue-500" : "bg-emerald-500"
+                                    mission.hukum === 'wajib' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
                                 )} />
                             )}
                             <div className="flex items-center gap-3 w-full">
@@ -358,7 +362,7 @@ export default function MissionsWidget() {
                                             isCompleted
                                                 ? gender === 'female' ? "text-pink-400 line-through" :
                                                     gender === 'male' ? "text-blue-400 line-through" :
-                                                        "text-emerald-400 line-through"
+                                                        "text-[rgb(var(--color-primary-light))] line-through"
                                                 : isSpecial ? "text-amber-200" : "text-white"
                                         )}>
                                             {mission.title}
@@ -374,7 +378,7 @@ export default function MissionsWidget() {
                                             "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
                                             mission.hukum === 'wajib'
                                                 ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                                : "bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
+                                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/20"
                                         )}>
                                             {mission.hukum}
                                         </span>
@@ -392,7 +396,7 @@ export default function MissionsWidget() {
                                                 <AlertCircle className="w-2.5 h-2.5" /> Terlewat
                                             </span>
                                         ) : validation.isEarly ? (
-                                            <span className="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 flex items-center gap-1 font-medium ml-auto">
+                                            <span className="text-[9px] text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
                                                 <Sparkles className="w-2.5 h-2.5" /> Awal Waktu
                                             </span>
                                         ) : null}
@@ -401,7 +405,7 @@ export default function MissionsWidget() {
                                 {isCompleted ? (
                                     <div className={cn(
                                         "w-5 h-5 rounded-full flex items-center justify-center",
-                                        gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-emerald-500"
+                                        gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
                                     )}>
                                         <Check className="w-3 h-3 text-white" />
                                     </div>

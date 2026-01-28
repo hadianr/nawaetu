@@ -80,7 +80,7 @@ export default function LastReadWidget() {
                 <Link href="/quran" className="block group h-full">
                     <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex items-center justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/10">
                         <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                            <div className="h-9 w-9 rounded-full bg-[rgb(var(--color-primary))]/10 flex items-center justify-center text-[rgb(var(--color-primary-light))]">
                                 <BookOpen className="h-4 w-4" />
                             </div>
                             <div>
@@ -88,7 +88,7 @@ export default function LastReadWidget() {
                                 <p className="text-[10px] text-white/40">Baca Al-Quran hari ini</p>
                             </div>
                         </div>
-                        <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-emerald-400 transition-colors" />
+                        <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                     </div>
                 </Link>
             </div>
@@ -103,7 +103,7 @@ export default function LastReadWidget() {
 
                     {/* Header: Label */}
                     <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
-                        <Bookmark className="h-3 w-3 text-emerald-400 fill-current" />
+                        <Bookmark className="h-3 w-3 text-[rgb(var(--color-primary-light))] fill-current" />
                         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
                             Terakhir Baca
                         </span>
@@ -130,7 +130,7 @@ export default function LastReadWidget() {
                             <span className="text-[10px] font-medium text-white/40">
                                 QS. {lastRead.surahName} : {lastRead.verseId}
                             </span>
-                            <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-emerald-400 transition-colors" />
+                            <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                         </div>
                     </div>
                 </div>

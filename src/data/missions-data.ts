@@ -106,102 +106,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { timeWindow: { start: 15, end: 18 } }
     },
-    // Individual prayer missions
-    {
-        id: 'sholat_subuh',
-        title: 'Sholat Subuh',
-        description: 'Tunaikan sholat Subuh',
-        xpReward: 25,
-        icon: '🌙',
-        gender: null,
-        dalil: 'QS. Al-Baqarah:238',
-        type: 'daily',
-        category: 'sholat',
-        hukum: 'wajib',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'fajr' },
-        completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'sholat_dzuhur',
-        title: 'Sholat Dzuhur',
-        description: 'Tunaikan sholat Dzuhur',
-        xpReward: 25,
-        icon: '☀️',
-        gender: null,
-        dalil: 'QS. Al-Baqarah:238',
-        type: 'daily',
-        category: 'sholat',
-        hukum: 'wajib',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'dhuhr' },
-        completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'sholat_ashar',
-        title: 'Sholat Ashar',
-        description: 'Tunaikan sholat Ashar',
-        xpReward: 25,
-        icon: '🌤️',
-        gender: null,
-        dalil: 'QS. Al-Baqarah:238',
-        type: 'daily',
-        category: 'sholat',
-        hukum: 'wajib',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'asr' },
-        completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'sholat_maghrib',
-        title: 'Sholat Maghrib',
-        description: 'Tunaikan sholat Maghrib',
-        xpReward: 25,
-        icon: '🌅',
-        gender: null,
-        dalil: 'QS. Al-Baqarah:238',
-        type: 'daily',
-        category: 'sholat',
-        hukum: 'wajib',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'maghrib' },
-        completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'sholat_isya',
-        title: 'Sholat Isya',
-        description: 'Tunaikan sholat Isya',
-        xpReward: 25,
-        icon: '🌃',
-        gender: null,
-        dalil: 'QS. Al-Baqarah:238',
-        type: 'daily',
-        category: 'sholat',
-        hukum: 'wajib',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'isha' },
-        completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
-        ]
-    },
+    // Individual prayer missions (MOVED TO GENDER SPECIFIC)
     {
         id: 'puasa_sunnah',
         title: 'Puasa Senin/Kamis',
@@ -262,6 +167,81 @@ export const FEMALE_MISSIONS: Mission[] = [
         hukum: 'sunnah',
         phase: 'all_year',
         validationType: 'manual'
+    },
+    {
+        id: 'sholat_subuh_female',
+        title: 'Sholat Subuh',
+        description: 'Tunaikan sholat Subuh tepat waktu',
+        xpReward: 25,
+        icon: '🌙',
+        gender: 'female',
+        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'fajr' }
+    },
+    {
+        id: 'sholat_dzuhur_female',
+        title: 'Sholat Dzuhur',
+        description: 'Tunaikan sholat Dzuhur tepat waktu',
+        xpReward: 25,
+        icon: '☀️',
+        gender: 'female',
+        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'dhuhr' }
+    },
+    {
+        id: 'sholat_ashar_female',
+        title: 'Sholat Ashar',
+        description: 'Tunaikan sholat Ashar tepat waktu',
+        xpReward: 25,
+        icon: '🌤️',
+        gender: 'female',
+        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'asr' }
+    },
+    {
+        id: 'sholat_maghrib_female',
+        title: 'Sholat Maghrib',
+        description: 'Tunaikan sholat Maghrib tepat waktu',
+        xpReward: 25,
+        icon: '🌅',
+        gender: 'female',
+        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'maghrib' }
+    },
+    {
+        id: 'sholat_isya_female',
+        title: 'Sholat Isya',
+        description: 'Tunaikan sholat Isya tepat waktu',
+        xpReward: 25,
+        icon: '🌃',
+        gender: 'female',
+        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'isha' }
     }
 ];
 
@@ -296,6 +276,102 @@ export const MALE_MISSIONS: Mission[] = [
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 8, end: 11 } }
+    },
+    // MALE PRAYER MISSIONS
+    {
+        id: 'sholat_subuh_male',
+        title: 'Sholat Subuh',
+        description: 'Tunaikan sholat Subuh (Utama: Berjamaah)',
+        xpReward: 25,
+        icon: '🌙',
+        gender: 'male',
+        dalil: 'Sholat berjamaah lebih utama 27 derajat',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'fajr' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
+    },
+    {
+        id: 'sholat_dzuhur_male',
+        title: 'Sholat Dzuhur',
+        description: 'Tunaikan sholat Dzuhur (Utama: Berjamaah)',
+        xpReward: 25,
+        icon: '☀️',
+        gender: 'male',
+        dalil: 'Sholat berjamaah lebih utama 27 derajat',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'dhuhr' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
+    },
+    {
+        id: 'sholat_ashar_male',
+        title: 'Sholat Ashar',
+        description: 'Tunaikan sholat Ashar (Utama: Berjamaah)',
+        xpReward: 25,
+        icon: '🌤️',
+        gender: 'male',
+        dalil: 'Sholat berjamaah lebih utama 27 derajat',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'asr' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
+    },
+    {
+        id: 'sholat_maghrib_male',
+        title: 'Sholat Maghrib',
+        description: 'Tunaikan sholat Maghrib (Utama: Berjamaah)',
+        xpReward: 25,
+        icon: '🌅',
+        gender: 'male',
+        dalil: 'Sholat berjamaah lebih utama 27 derajat',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'maghrib' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
+    },
+    {
+        id: 'sholat_isya_male',
+        title: 'Sholat Isya',
+        description: 'Tunaikan sholat Isya (Utama: Berjamaah)',
+        xpReward: 25,
+        icon: '🌃',
+        gender: 'male',
+        dalil: 'Sholat berjamaah lebih utama 27 derajat',
+        type: 'daily',
+        category: 'sholat',
+        hukum: 'wajib',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: 'isha' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
     }
 ];
 

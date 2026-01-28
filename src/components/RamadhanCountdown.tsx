@@ -117,16 +117,16 @@ export default function RamadhanCountdown() {
         }
         if (days <= 40) {
             return {
-                bg: "from-emerald-800/40 via-amber-700/20 to-black/60",
-                border: "border-emerald-500/30 shadow-[0_0_20px_-5px_rgba(16,185,129,0.2)]",
-                text: "text-emerald-400",
-                icon: "fill-emerald-400/30 text-emerald-300",
-                glow: "bg-emerald-500/20",
+                bg: "from-[rgb(var(--color-primary-dark))]/40 via-amber-700/20 to-black/60",
+                border: "border-[rgb(var(--color-primary))]/30 shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.2)]",
+                text: "text-[rgb(var(--color-primary-light))]",
+                icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]",
+                glow: "bg-[rgb(var(--color-primary))]/20",
                 animate: ""
             };
         }
         return {
-            bg: "from-slate-900 via-emerald-950/40 to-black/80",
+            bg: "from-slate-900 via-[rgb(var(--color-primary-dark))]/40 to-black/80",
             border: "border-white/10",
             text: "text-slate-400",
             icon: "fill-white/10 text-slate-500",
@@ -177,7 +177,7 @@ export default function RamadhanCountdown() {
                         {/* Minimalist Bar */}
                         <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
                             <div
-                                className={`h-full bg-gradient-to-r from-emerald-500 to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
+                                className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -199,16 +199,16 @@ export default function RamadhanCountdown() {
                 <DialogContent className="bg-black/80 backdrop-blur-xl border border-white/10 text-white w-[90%] rounded-2xl">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                            <Moon className="w-5 h-5 text-emerald-400" /> Persiapan Ramadhan
+                            <Moon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> Persiapan Ramadhan
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 pt-2">
                         <p className="text-sm text-white/70 leading-relaxed">
                             Persentase <strong>"Persiapan"</strong> dihitung dari penyelesaian misi-misi khusus di bulan <strong>Sya'ban</strong> (seperti Puasa Sunnah, Baca Quran, dll).
                         </p>
-                        <div className="bg-emerald-900/20 p-4 rounded-xl border border-emerald-500/10">
-                            <p className="text-xs font-bold text-emerald-400 mb-1">🎯 Cara Meningkatkan:</p>
-                            <ul className="list-disc list-inside text-xs text-emerald-100/70 space-y-1">
+                        <div className="bg-[rgb(var(--color-primary-dark))]/20 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
+                            <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] mb-1">🎯 Cara Meningkatkan:</p>
+                            <ul className="list-disc list-inside text-xs text-[rgb(var(--color-primary))]/70 space-y-1">
                                 <li>Selesaikan misi Puasa Sunnah Sya'ban</li>
                                 <li>Lakukan Sedekah Subuh</li>
                                 <li>Mulai rutinkan baca Al-Quran</li>
