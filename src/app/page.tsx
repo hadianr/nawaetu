@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))] px-4 py-6 font-sans sm:px-6">
 
-      <main className="flex w-full max-w-md flex-col items-center gap-6 pb-24">
+      <main className="flex w-full max-w-md flex-col items-center gap-4 pb-24">
 
         {/* 1. Header & Greeting */}
         <HomeHeader />
@@ -23,10 +23,10 @@ export default function Home() {
 
         {/* 3. Quick Status Grid */}
         <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200">
-          <div className="w-full h-32">
+          <div className="w-full h-28">
             <NextPrayerWidget />
           </div>
-          <div className="w-full h-32">
+          <div className="w-full h-28">
             <LastReadWidget />
           </div>
         </section>

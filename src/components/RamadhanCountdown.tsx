@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Moon } from "lucide-react";
-import { RAMADHAN_MISSIONS } from "@/data/missions-data";
+import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "@/data/missions-data";
 
 export default function RamadhanCountdown() {
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number } | null>(null);
@@ -28,28 +28,18 @@ export default function RamadhanCountdown() {
         setTimeLeft(calculateTimeLeft());
         const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
 
-        // Load Level Progress from LocalStorage (Read-Only here)
-        // We calculate based on the RAMADHAN_MISSIONS imported from data
-        // Note: MissionsWidget now handles the actual completion logic, but might store it in 'completed_missions'
-        // We need to support reading from where MissionsWidget writes.
-        // For backwards compatibility during migration, we might check both, or just switch to checking 'completed_missions' if we migrate fully.
-        // Let's assume we are migrating to 'completed_missions' for everything.
-
+        // Load Level Progress from LocalStorage
         const savedCompleted = localStorage.getItem("completed_missions");
         if (savedCompleted) {
             const completedMap = JSON.parse(savedCompleted);
-            // Count how many RAMADHAN_MISSIONS are in the completed map
-            // For daily missions, valid if completed TODAY. For tracker, valid if completed EVER.
             const today = new Date().toISOString().split('T')[0];
 
-            const currentXP = RAMADHAN_MISSIONS.reduce((acc, m) => {
+            // Use SYABAN_MISSIONS as the "Prep" benchmark for now
+            const targetMissions = SYABAN_MISSIONS;
+
+            const currentXP = targetMissions.reduce((acc, m) => {
                 const record = completedMap[m.id];
                 if (!record) return acc;
-
-                // If it's a daily mission, it must be done today to count for "current state"? 
-                // Actually for "Level Progress" in Ramadhan context, maybe we count total accumulation? 
-                // Or maybe we just stick to "Is it done right now".
-                // Let's stick to: If it's done today (for daily) or done ever (for tracker).
 
                 const isDaily = m.type === 'daily';
                 const isDone = isDaily ? record.date === today : true;
@@ -57,8 +47,8 @@ export default function RamadhanCountdown() {
                 return isDone ? acc + m.xpReward : acc;
             }, 0);
 
-            const totalXP = RAMADHAN_MISSIONS.reduce((acc, m) => acc + m.xpReward, 0);
-            setProgress(Math.round((currentXP / totalXP) * 100));
+            const totalXP = targetMissions.reduce((acc, m) => acc + m.xpReward, 0);
+            setProgress(totalXP > 0 ? Math.round((currentXP / totalXP) * 100) : 0);
         }
 
         return () => clearInterval(timer);
@@ -74,51 +64,82 @@ export default function RamadhanCountdown() {
 
     if (!timeLeft) return null;
 
+    // Dynamic Intensity Logic
+    const getIntensityStyles = (days: number) => {
+        if (days <= 10) {
+            return {
+                bg: "from-amber-600/40 via-yellow-500/20 to-emerald-900/60",
+                border: "border-amber-500/50 shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)]",
+                text: "text-amber-400",
+                icon: "fill-amber-400 text-amber-200",
+                glow: "bg-amber-500/30",
+                animate: "animate-pulse"
+            };
+        }
+        if (days <= 40) {
+            return {
+                bg: "from-emerald-800/40 via-amber-700/20 to-black/60",
+                border: "border-emerald-500/30 shadow-[0_0_20px_-5px_rgba(16,185,129,0.2)]",
+                text: "text-emerald-400",
+                icon: "fill-emerald-400/30 text-emerald-300",
+                glow: "bg-emerald-500/20",
+                animate: ""
+            };
+        }
+        return {
+            bg: "from-slate-900 via-emerald-950/40 to-black/80",
+            border: "border-white/10",
+            text: "text-slate-400",
+            icon: "fill-white/10 text-slate-500",
+            glow: "bg-white/5",
+            animate: ""
+        };
+    };
+
+    const styles = getIntensityStyles(timeLeft.days);
+
     return (
-        <div className="w-full relative mb-6 group transition-transform hover:scale-[1.01]">
-            {/* Background with Gold/Emerald Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-600/30 via-emerald-900/40 to-black rounded-3xl blur-md -z-10 transition-all duration-700 opacity-70" />
+        <div className="w-full relative mb-4 group transition-all duration-500 hover:scale-[1.01]">
+            {/* Background with Dynamic Gradient */}
+            <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl blur-xl -z-10 opacity-70 transition-all duration-1000`} />
 
-            <div className="relative w-full bg-black/40 backdrop-blur-md border border-amber-500/20 rounded-3xl p-6 flex flex-col justify-between overflow-hidden">
-                {/* Decorative Accent */}
-                <div className="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className={`relative w-full bg-black/40 backdrop-blur-md border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden transition-all duration-500`}>
+                {/* Decorative Glow */}
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 ${styles.glow} rounded-full blur-[60px] pointer-events-none transition-all duration-1000`} />
 
-                <div className="flex justify-between items-start mb-4">
-                    <div className="flex flex-col gap-1 z-10">
-                        <div className="flex items-center gap-2 text-amber-400 mb-1">
-                            <Moon className="w-4 h-4 fill-amber-400/20" />
-                            <span className="text-xs font-bold uppercase tracking-wider">Menuju Ramadhan</span>
-                        </div>
-                        <h3 className="text-2xl font-serif text-white font-medium">
-                            1447 H
-                        </h3>
+                {/* Sparkles for High Intensity */}
+                {timeLeft.days <= 10 && (
+                    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay pointer-events-none" />
+                )}
+
+                {/* Left: Text & Title */}
+                <div className="flex flex-col gap-1.5 z-10">
+                    <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
+                        <Moon className={`w-4 h-4 ${styles.icon}`} />
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Menuju Ramadhan</span>
+                    </div>
+                    <div className="flex items-baseline gap-2.5">
+                        <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-lg">
+                            {timeLeft.days}
+                        </span>
+                        <span className="text-sm font-medium text-white/60">Hari Lagi</span>
                     </div>
                 </div>
 
-                {/* Countdown & Level Section */}
-                <div className="flex items-end justify-between z-10 text-white mt-2">
-                    <div className="flex items-end gap-3">
-                        <div className="flex flex-col items-center">
-                            <span className="text-3xl font-bold font-mono leading-none">{timeLeft.days}</span>
-                            <span className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Hari</span>
-                        </div>
-                        <span className="text-2xl font-light text-white/20 pb-4">:</span>
-                        <div className="flex flex-col items-center">
-                            <span className="text-3xl font-bold font-mono leading-none">{timeLeft.hours}</span>
-                            <span className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Jam</span>
-                        </div>
+                {/* Right: Progress Ring (Visual Only) or Minimal Bar */}
+                <div className="z-10 flex flex-col items-end gap-2">
+                    <div className={`text-[10px] font-bold uppercase tracking-wider ${styles.text} text-right`}>
+                        {getLevelTitle(progress)}
                     </div>
-
-                    {/* Mini Progress Circle */}
-                    <div className="flex flex-col items-end gap-1">
-                        <div className="text-xs font-bold text-amber-400/90">{getLevelTitle(progress)}</div>
-                        <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                className="h-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-all duration-1000"
-                                style={{ width: `${progress}%` }}
-                            />
-                        </div>
-                        <div className="text-[10px] text-white/40">{progress}% Siap</div>
+                    {/* Minimalist Bar */}
+                    <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div
+                            className={`h-full bg-gradient-to-r from-emerald-500 to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+                    <div className="text-[9px] text-white/30 font-medium">
+                        {progress}% Persiapan
                     </div>
                 </div>
             </div>

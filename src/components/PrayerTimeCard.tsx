@@ -24,7 +24,7 @@ export default function PrayerTimeCard({
     ];
 
     return (
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-lg shadow-xl">
+        <div className="w-full max-w-md rounded-3xl border border-white/5 bg-black/20 p-6 backdrop-blur-md shadow-lg">
 
             <div className="space-y-3">
                 {prayers.map(({ key, label }) => {

@@ -461,5 +461,59 @@ export const MISSION_CONTENTS: Record<string, MissionContent> = {
             'Mendapatkan ketenangan tidur dalam lindungan Allah'
         ],
         source: 'HR. Muslim no. 656'
+    },
+
+    // PERSIAPAN RAMADHAN (SYABAN)
+    'cek_kesehatan': {
+        id: 'cek_kesehatan',
+        intro: 'Memastikan kondisi fisik prima sebelum memasuki bulan Ramadhan agar dapat menjalankan ibadah puasa dengan optimal.',
+        fadhilah: [
+            'Menjaga amanah tubuh pemberian Allah',
+            'Ibadah menjadi lebih optimal jika fisik sehat (Kuat puasa & Tarawih)',
+            'Mencegah mudharat (bahaya) saat berpuasa bagi yang memiliki kondisi khusus'
+        ],
+        guides: [
+            'Cek Gula Darah: Pastikan kadar gula darah normal (Puasa & Sewaktu). Hipoglikemia saat puasa bisa berbahaya.',
+            'Cek Tekanan Darah: Kontrol hipertensi atau hipotensi agar stabil saat puasa.',
+            'Cek Kolesterol & Asam Urat: Hindari komplikasi setelah berbuka puasa dengan makanan berat.',
+            'Lambung (Maag/GERD): Konsultasi dokter jika memiliki riwayat asam lambung kronis untuk strategi obat.',
+            'Gigi & Mulut: Cek kesehatan gigi, sakit gigi saat puasa sangat mengganggu.',
+            'Pola Tidur & Hidrasi: Mulai biasakan minum air putih cukup (8 gelas) dan kurangi begadang.'
+        ],
+        source: 'Anjuran Medis & Konteks Fiqih Kesehatan'
+    },
+
+    'maaf_maafan': {
+        id: 'maaf_maafan',
+        intro: 'Membersihkan hati dari dendam dan permusuhan sebelum Ramadhan agar amal ibadah tidak terhalang (terhijab) oleh sengketa sesama manusia.',
+        fadhilah: [
+            'Meraih ampunan Allah (Allah memaafkan hamba yang memaafkan saudaranya)',
+            'Diangkat derajatnya dan dimuliakan oleh Allah',
+            'Melapangkan dada dan menenangkan hati saat beribadah',
+            'Bebas dari ancaman tertolaknya amal di malam Nisfu Sya\'ban (karena permusuhan)'
+        ],
+        readings: [
+            {
+                title: "Doa Memohon Ampunan untuk Orang Tua",
+                arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+                latin: "Rabbighfir lī wa liwālidayya warḥamhumā kamā rabbayānī ṣaghīrā",
+                translation: "Ya Tuhanku, ampunilah dosaku dan dosa kedua orang tuaku, dan sayangilah keduanya sebagaimana mereka mendidikku di waktu kecil.",
+                note: "Mulailah dengan meminta ridho orang tua"
+            },
+            {
+                title: "Doa Menghilangkan Dendam (Ghill)",
+                arabic: "رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ وَلَا تَجْعَلْ فِي قُلُوبِنَا غِلًّا لِلَّذِينَ آمَنُوا رَبَّنَا إِنَّكَ رَءُوفٌ رَحِيمٌ",
+                latin: "Rabbanaghfir lanā wa li-ikhwāninallażīna sabaqūnā bil-īmān, wa lā taj'al fī qulūbinā gillal lillażīna āmanū rabbanā innaka ra'ụfur raḥīm",
+                translation: "Ya Rabb kami, beri ampunlah kami dan saudara-saudara kami yang telah beriman lebih dulu dari kami, dan janganlah Engkau membiarkan kedengkian dalam hati kami terhadap orang-orang yang beriman; Ya Rabb kami, Sesungguhnya Engkau Maha Penyantun lagi Maha Penyayang.",
+                note: "QS. Al-Hasyr: 10"
+            }
+        ],
+        guides: [
+            'Hubungi Orang Tua: Telepon atau kunjungi, minta maaf dengan tulus atas kesalahan lisan/perbuatan.',
+            'Sapa Sahabat/Kerabat: Jika ada yang sedang "diam-diaman", jadilah yang pertama menyapa (Mendapat pahala terbaik).',
+            'Lunasi Tanggungan: Jika ada hutang atau janji pada sesama, segera selesaikan atau minta kehalalan.',
+            'Maafkan Kesalahan Orang: Lapangkan hati, maafkan kesalahan orang lain pada kita agar Allah memaafkan kita.'
+        ],
+        source: 'QS. Ali Imran: 134, HR. Muslim No. 2565'
     }
 };

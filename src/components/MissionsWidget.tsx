@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Check, ChevronRight, Sparkles, AlertCircle } from "lucide-react";
-import { getDailyMissions, getRamadhanMissions, Mission, Gender } from "@/data/missions-data";
+import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender } from "@/data/missions-data";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
@@ -31,19 +31,9 @@ export default function MissionsWidget() {
     const { data: prayerData } = usePrayerTimes();
 
     useEffect(() => {
-        // Set today's date on client-side only
+        // 1. Initial Load: Date & Completed Missions
         setToday(new Date().toISOString().split('T')[0]);
 
-        // Load gender from localStorage
-        const savedGender = localStorage.getItem("user_gender") as Gender;
-        setGender(savedGender);
-
-        // Merge Missions: Daily + Ramadhan
-        const daily = getDailyMissions(savedGender);
-        const ramadhan = getRamadhanMissions();
-        setMissions([...ramadhan, ...daily]);
-
-        // Load completed missions
         const savedCompleted = localStorage.getItem("completed_missions");
         if (savedCompleted) {
             try {
@@ -53,6 +43,19 @@ export default function MissionsWidget() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        // 2. Missions Data Load (Depends on Gender & Prayer Data/Seasonal)
+        const savedGender = localStorage.getItem("user_gender") as Gender;
+        setGender(savedGender);
+
+        const daily = getDailyMissions(savedGender);
+        const weekly = getWeeklyMissions(savedGender);
+        const seasonal = getSeasonalMissions(prayerData?.hijriDate);
+
+        setMissions([...seasonal, ...weekly, ...daily]);
+
+    }, [prayerData?.hijriDate]); // Refresh seasonal missions when hijri date is available
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
         const record = completed[missionId];
@@ -185,32 +188,42 @@ export default function MissionsWidget() {
 
     return (
         <div className={cn(
-            "bg-white/[0.02] border rounded-2xl p-4 relative overflow-hidden transition-all hover:bg-white/[0.04]",
-            gender === 'female' ? "border-pink-500/20" : gender === 'male' ? "border-blue-500/20" : "border-white/10"
+            "relative overflow-hidden rounded-3xl p-5 transition-all group",
+            // Glassmorphism Base
+            "bg-black/20 backdrop-blur-md border border-white/5 hover:bg-black/30 hover:border-white/10"
         )}>
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 p-2 opacity-5">
-                <Sparkles className={cn(
-                    "w-20 h-20",
-                    gender === 'female' ? "text-pink-400" : gender === 'male' ? "text-blue-400" : "text-emerald-400"
-                )} />
-            </div>
+            {/* Soft Glow based on gender/theme */}
+            <div className={cn(
+                "absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] pointer-events-none opacity-20 transition-colors",
+                gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-emerald-500"
+            )} />
 
             {/* Header */}
-            <div className="flex items-center justify-between mb-3 relative z-10">
-                <div className="flex items-center gap-2">
-                    <span className="text-lg">{gender === 'female' ? '💜' : gender === 'male' ? '💙' : '🤲'}</span>
-                    <h3 className="text-sm font-bold text-white">Fokus Ibadah</h3>
-                </div>
-                <div className="flex items-center gap-2">
-                    <span className={cn(
-                        "text-[10px] px-2 py-0.5 rounded-full font-bold",
-                        gender === 'female' ? "text-pink-400 bg-pink-500/10" :
-                            gender === 'male' ? "text-blue-400 bg-blue-500/10" :
-                                "text-emerald-400 bg-emerald-500/10"
+            <div className="flex items-center justify-between mb-4 relative z-10">
+                <div className="flex items-center gap-2.5">
+                    {/* Icon Container */}
+                    <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center text-sm ring-1 ring-inset",
+                        gender === 'female' ? "bg-pink-500/10 text-pink-400 ring-pink-500/20" :
+                            gender === 'male' ? "bg-blue-500/10 text-blue-400 ring-blue-500/20" :
+                                "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20"
                     )}>
-                        {completedCount} Selesai
-                    </span>
+                        {gender === 'female' ? '🌸' : gender === 'male' ? '💠' : '✨'}
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-bold text-white leading-none">Fokus Ibadah</h3>
+                        <p className="text-[10px] text-white/40 mt-0.5">Target harianmu</p>
+                    </div>
+                </div>
+
+                {/* Sleek Badge */}
+                <div className={cn(
+                    "text-[10px] px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
+                    completedCount === missions.length
+                        ? "bg-gradient-to-r from-emerald-500/20 to-emerald-900/20 border-emerald-500/30 text-emerald-400"
+                        : "bg-white/5 border-white/10 text-white/50"
+                )}>
+                    {completedCount}/{missions.length} Selesai
                 </div>
             </div>
 
@@ -296,18 +309,21 @@ export default function MissionsWidget() {
                             key={mission.id}
                             onClick={() => handleMissionClick(mission)}
                             className={cn(
-                                "w-full flex flex-col gap-2 p-3 rounded-xl transition-all text-left group", // Changed to flex-col for nicer layout with alert
+                                "w-full flex flex-col gap-2 p-3.5 rounded-2xl transition-all text-left group relative overflow-hidden",
+                                // Base Style
+                                "border backdrop-blur-sm",
                                 isCompleted
-                                    ? gender === 'female' ? "bg-pink-500/10 border border-pink-500/20" :
-                                        gender === 'male' ? "bg-blue-500/10 border border-blue-500/20" :
-                                            "bg-emerald-500/10 border border-emerald-500/20"
-                                    : isLocked
-                                        ? "bg-white/[0.02] border border-white/5 opacity-60 cursor-not-allowed"
-                                        : isSpecial
-                                            ? "bg-amber-900/10 border border-amber-500/30 hover:bg-amber-900/20"
-                                            : "bg-white/5 border border-white/5 hover:border-white/20"
+                                    ? "bg-black/20 border-white/5 opacity-60" // Completed: Dimmed, subtle
+                                    : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10" // Active: Clean glass
                             )}
                         >
+                            {/* Active Indicator Line for Non-Completed */}
+                            {!isCompleted && !isLocked && (
+                                <div className={cn(
+                                    "absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity",
+                                    mission.hukum === 'wajib' ? "bg-blue-500" : "bg-emerald-500"
+                                )} />
+                            )}
                             <div className="flex items-center gap-3 w-full">
                                 <span className={cn(
                                     "text-xl transition-all",
@@ -346,13 +362,19 @@ export default function MissionsWidget() {
                                         <p className="text-[10px] text-white/40 truncate">
                                             +{mission.xpReward} XP
                                         </p>
+
+                                        {/* Validation Status Badges */}
                                         {isLocked ? (
-                                            <span className="text-[9px] text-amber-500/70 flex items-center gap-0.5">
-                                                <AlertCircle className="w-2.5 h-2.5" /> {validation.reason || "Terkunci"}
+                                            <span className="text-[9px] text-white/30 flex items-center gap-0.5 ml-auto">
+                                                Locked
                                             </span>
                                         ) : validation.isLate ? (
-                                            <span className="text-[9px] text-amber-500/70 flex items-center gap-0.5">
-                                                <AlertCircle className="w-2.5 h-2.5" /> {validation.reason}
+                                            <span className="text-[9px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
+                                                <AlertCircle className="w-2.5 h-2.5" /> Terlewat
+                                            </span>
+                                        ) : validation.isEarly ? (
+                                            <span className="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 flex items-center gap-1 font-medium ml-auto">
+                                                <Sparkles className="w-2.5 h-2.5" /> Awal Waktu
                                             </span>
                                         ) : null}
                                     </div>
@@ -387,6 +409,7 @@ export default function MissionsWidget() {
                     onMissionClick={handleMissionClick}
                     checkValidation={checkValidation}
                     isMissionCompleted={isMissionCompleted}
+                    hijriDate={prayerData?.hijriDate}
                 >
                     <button
                         className={cn(

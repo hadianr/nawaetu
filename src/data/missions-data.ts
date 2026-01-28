@@ -465,6 +465,145 @@ export const RAMADHAN_MISSIONS: Mission[] = [
     },
 ];
 
+export const SYABAN_MISSIONS: Mission[] = [
+    {
+        id: 'qadha_puasa', // Standardized ID to match Tracker
+        title: "Lunasi Qadha Puasa",
+        description: 'Segera lunasi hutang puasa sebelum Ramadhan',
+        category: 'puasa',
+        xpReward: 100,
+        icon: '📅',
+        hukum: 'wajib',
+        type: 'tracker',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Aisyah RA berkata: "Aku memiliki hutang puasa Ramadhan, aku tidak bisa mengqadhanya kecuali pada bulan Sya\'ban." (HR. Bukhari 1950)'
+    },
+    {
+        id: 'puasa_syaban',
+        title: "Puasa Sunnah Sya'ban",
+        description: 'Perbanyak puasa sunnah di bulan Sya\'ban',
+        category: 'puasa',
+        xpReward: 50,
+        icon: '🌙',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'HR. Bukhari no. 1969: "Saya tidak melihat Rasulullah menyempurnakan puasa sebulan penuh selain Ramadhan, dan saya tidak melihat beliau memperbanyak puasa selain di bulan Sya\'ban."'
+    },
+    {
+        id: 'baca_quran_syaban',
+        title: "Bulan Para Qurra'",
+        description: 'Perbanyak tilawah Al-Quran (Syahrul Qurra)',
+        category: 'quran',
+        xpReward: 40,
+        icon: '📖',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Salamah bin Kuhail berkata: "Bulan Sya\'ban adalah bulan para pembaca Al-Qur\'an."'
+    },
+    {
+        id: 'persiapan_ilmu', // Renamed/Standardized
+        title: "Pelajari Fiqih Ramadhan",
+        description: 'Bekali diri dengan ilmu puasa & zakat',
+        category: 'ibadah',
+        xpReward: 30,
+        icon: '📚',
+        hukum: 'wajib',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Menuntut ilmu wajib bagi setiap muslim. (HR. Ibnu Majah)'
+    },
+    {
+        id: 'cek_kesehatan', // From RAMADHAN_PREP
+        title: 'Cek Kesehatan (Checkup)',
+        description: 'Pastikan tubuh fit sebelum Ramadhan',
+        category: 'ibadah',
+        xpReward: 10,
+        icon: '🩺',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Mukmin yang kuat lebih dicintai Allah'
+    },
+    {
+        id: 'sedekah_subuh', // From RAMADHAN_PREP
+        title: 'Rutin Sedekah Subuh',
+        description: 'Sedekah di waktu subuh setiap hari',
+        category: 'ibadah',
+        xpReward: 15,
+        icon: '💰',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Malaikat mendoakan orang yang bersedekah'
+    },
+    {
+        id: 'maaf_maafan', // From RAMADHAN_PREP
+        title: 'Saling Memaafkan',
+        description: 'Minta maaf kepada orang tua & teman',
+        category: 'ibadah',
+        xpReward: 10,
+        icon: '🤝',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Pemaaf adalah sifat mulia'
+    },
+    {
+        id: 'malam_nisfu_syaban',
+        title: "Malam Nisfu Sya'ban",
+        description: 'Perbanyak doa & amalan di pertengahan Sya\'ban',
+        category: 'ibadah',
+        xpReward: 60,
+        icon: '✨',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'HR. Ibnu Majah 1390: "Sesungguhnya Allah melihat pada malam nisfu Sya\'ban..."',
+    }
+];
+
 export function getRamadhanMissions(): Mission[] {
     return RAMADHAN_MISSIONS;
+}
+
+export function getSeasonalMissions(hijriDateStr?: string): Mission[] {
+    if (!hijriDateStr) return RAMADHAN_MISSIONS; // Default to Ramadhan if unknown for now, or maybe default to none? Let's use RAMADHAN as fallback or Syaban.
+
+    const lower = hijriDateStr.toLowerCase();
+    if (lower.includes("ramadhan") || lower.includes("ramadan")) {
+        return RAMADHAN_MISSIONS;
+    }
+
+    if (
+        lower.includes("sha'ban") ||
+        lower.includes("syaban") ||
+        lower.includes("sya'ban") ||
+        lower.includes("shaban") ||
+        lower.includes("sha’ban") ||
+        lower.includes("shaʿbān") || // API Output
+        (lower.includes("sha") && lower.includes("ban") && lower.includes("8")) // Fallback: Month 8 (if number is available in string?) No, string is "9 Shaʿbān 1447H".
+    ) {
+        return SYABAN_MISSIONS;
+    }
+
+    // Default or other months
+    return [];
 }

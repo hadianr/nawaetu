@@ -78,7 +78,7 @@ export default function LastReadWidget() {
         return (
             <div className="w-full h-full animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
                 <Link href="/quran" className="block group h-full">
-                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/60 border border-white/10 p-4 h-full flex items-center justify-between transition-all duration-300 hover:bg-slate-900/80 hover:border-emerald-500/30">
+                    <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex items-center justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/10">
                         <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
                                 <BookOpen className="h-4 w-4" />
@@ -99,38 +99,38 @@ export default function LastReadWidget() {
     return (
         <div className="w-full h-full animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
             <Link href={`/quran/${lastRead.surahId}`} className="block group h-full">
-                <div className="relative overflow-hidden rounded-2xl bg-slate-900/60 border border-white/10 p-4 h-full flex flex-col justify-between transition-all duration-300 hover:border-emerald-500/30">
+                <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/10">
 
                     {/* Header: Badge + Surah Name */}
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <Bookmark className="h-3.5 w-3.5 text-emerald-400 fill-current" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-500/80">
+                    <div className="w-full flex items-center justify-between mb-1 opacity-60">
+                        <div className="flex items-center gap-1.5">
+                            <Bookmark className="h-3 w-3 text-emerald-400 fill-current" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
                                 Lanjut Baca
                             </span>
                         </div>
                         <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-white transition-colors" />
                     </div>
 
-                    {/* Content: Arabic Preview */}
+                    {/* Content: Arabic Preview - Centered content feeling */}
                     {loading ? (
-                        <div className="flex-1 flex items-center">
+                        <div className="flex-1 flex items-center justify-center py-2">
                             <div className="h-4 bg-white/10 rounded w-3/4 animate-pulse" />
                         </div>
                     ) : verseContent ? (
-                        <div className="flex-1 flex items-center">
-                            <p className="text-right text-base leading-relaxed text-white/80 line-clamp-1 font-arabic w-full">
+                        <div className="flex-1 flex flex-col justify-center items-end py-1">
+                            <p className="text-right text-lg leading-relaxed text-white/90 line-clamp-1 font-arabic w-full">
                                 {verseContent.arabic}
                             </p>
+                            <h3 className="text-[10px] font-medium text-emerald-500/80 mt-1">
+                                QS. {lastRead.surahName} : {lastRead.verseId}
+                            </h3>
                         </div>
                     ) : (
                         <div className="flex-1" />
                     )}
 
-                    {/* Footer: Surah Info */}
-                    <h3 className="text-xs font-semibold text-emerald-400 mt-2">
-                        QS. {lastRead.surahName} : {lastRead.verseId}
-                    </h3>
+                    {/* Footer removed, merged into content center */}
                 </div>
             </Link>
         </div>
