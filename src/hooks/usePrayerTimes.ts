@@ -196,5 +196,48 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         getLocationAndFetch();
     }, [getLocationAndFetch]);
 
+    // NEW: interval to update "nextPrayer" dynamically as time passes
+    useEffect(() => {
+        if (!data) return;
+
+        const updateNextPrayer = () => {
+            const now = new Date();
+            const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+            const prayerOrder = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+            const timings = data.prayerTimes;
+
+            let next = "Imsak";
+            let nextTime = timings["Imsak"];
+            let found = false;
+
+            for (const prayer of prayerOrder) {
+                if (timings[prayer] > currentTime) {
+                    next = prayer;
+                    nextTime = timings[prayer];
+                    found = true;
+                    break;
+                }
+            }
+
+            // If we passed Isha, wrapped around to Imsak (tomorrow)
+            if (!found) {
+                next = "Imsak";
+                nextTime = timings["Imsak"];
+            }
+
+            // Only update if changed
+            if (next !== data.nextPrayer) {
+                setData(prev => prev ? ({
+                    ...prev,
+                    nextPrayer: next,
+                    nextPrayerTime: nextTime
+                }) : null);
+            }
+        };
+
+        const timer = setInterval(updateNextPrayer, 1000 * 60); // Check every minute
+        return () => clearInterval(timer);
+    }, [data]);
+
     return { data, loading, error, refreshLocation: getLocationAndFetch };
 }

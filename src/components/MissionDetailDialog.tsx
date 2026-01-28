@@ -94,13 +94,13 @@ export default function MissionDetailDialog({
                                 <TabsList variant="line" className="w-full bg-transparent p-0 h-12 justify-start gap-8 border-none">
                                     <TabsTrigger
                                         value="guide"
-                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/40 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
+                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
                                         Panduan
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="info"
-                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/40 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
+                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
                                         Info & Dalil
                                     </TabsTrigger>
@@ -114,6 +114,52 @@ export default function MissionDetailDialog({
                                             <p className="text-sm text-white/70 italic bg-white/5 p-3 rounded-lg border border-white/10">
                                                 "{content.intro}"
                                             </p>
+                                        )}
+
+                                        {/* LAFADZ NIAT IMPLEMENTATION */}
+                                        {content.niat && (
+                                            <div className="space-y-3">
+                                                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                    Niat Sholat
+                                                </h3>
+                                                <Tabs defaultValue="sendiri" className="w-full">
+                                                    <TabsList className="bg-white/5 border border-white/10 w-full justify-start h-8 p-1 mb-2">
+                                                        <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Sendiri</TabsTrigger>
+                                                        {content.niat.makmum && (
+                                                            <TabsTrigger value="makmum" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Makmum</TabsTrigger>
+                                                        )}
+                                                    </TabsList>
+                                                    <TabsContent value="sendiri" className="mt-0">
+                                                        <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
+                                                            <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
+                                                                {content.niat.munfarid.arabic}
+                                                            </p>
+                                                            <p className="text-xs text-emerald-100/70 italic mb-1">
+                                                                {content.niat.munfarid.latin}
+                                                            </p>
+                                                            <p className="text-[10px] text-white/50">
+                                                                {content.niat.munfarid.translation}
+                                                            </p>
+                                                        </div>
+                                                    </TabsContent>
+                                                    {content.niat.makmum && (
+                                                        <TabsContent value="makmum" className="mt-0">
+                                                            <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
+                                                                <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
+                                                                    {content.niat.makmum.arabic}
+                                                                </p>
+                                                                <p className="text-xs text-emerald-100/70 italic mb-1">
+                                                                    {content.niat.makmum.latin}
+                                                                </p>
+                                                                <p className="text-[10px] text-white/50">
+                                                                    {content.niat.makmum.translation}
+                                                                </p>
+                                                            </div>
+                                                        </TabsContent>
+                                                    )}
+                                                </Tabs>
+                                            </div>
                                         )}
 
                                         {/* If Readings Exist (Dzikir/Doa) */}
@@ -131,7 +177,7 @@ export default function MissionDetailDialog({
                                                         {currentReading?.title && (
                                                             <h4 className="text-sm font-bold text-emerald-400 mb-2">{currentReading.title}</h4>
                                                         )}
-                                                        <p className="text-xl md:text-2xl font-serif leading-loose text-right text-white">
+                                                        <p className="text-xl md:text-2xl font-serif leading-relaxed text-right text-white">
                                                             {currentReading?.arabic}
                                                         </p>
                                                     </div>
