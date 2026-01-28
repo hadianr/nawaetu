@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -54,11 +55,87 @@ export default function SettingsPage() {
     const [reciter, setReciter] = useState(DEFAULT_SETTINGS.reciter.toString());
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
 
+    // Audio Preview State
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [playingId, setPlayingId] = useState<string | null>(null);
+    const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
     const refreshProfile = () => {
         const savedName = localStorage.getItem("user_name");
         const savedTitle = localStorage.getItem("user_title");
         if (savedName) setUserName(savedName);
         if (savedTitle) setUserTitle(savedTitle);
+    };
+
+    // Helper to safely stop audio without triggering error
+    const stopCurrentAudio = () => {
+        if (audio) {
+            audio.onended = null;
+            audio.onerror = null;
+            audio.pause();
+            audio.src = "";
+            setAudio(null);
+        }
+        setIsPlaying(false);
+        setPlayingId(null);
+        setIsLoading(false);
+    };
+
+    // Cleanup audio on unmount
+    useEffect(() => {
+        return () => {
+            if (audio) {
+                audio.onended = null;
+                audio.onerror = null;
+                audio.pause();
+                audio.src = "";
+            }
+        };
+    }, [audio]);
+
+    const toggleAudioPreview = (reciterId: string) => {
+        const selectedQari = QURAN_RECITER_OPTIONS.find(r => r.id.toString() === reciterId);
+        if (!selectedQari) return;
+
+        // If clicking the same one that is playing
+        if (playingId === reciterId && isPlaying) {
+            stopCurrentAudio();
+            return;
+        }
+
+        // Stop current audio if playing
+        stopCurrentAudio();
+
+        setIsLoading(true);
+        setPlayingId(reciterId);
+
+        // Al-Fatihah Verse 1 sample
+        const audioUrl = selectedQari.audio_url_format.replace("{verse}", "1");
+        const newAudio = new Audio(audioUrl);
+
+        newAudio.oncanplaythrough = () => {
+            setIsLoading(false);
+            newAudio.play();
+            setIsPlaying(true);
+        };
+
+        newAudio.onended = () => {
+            setIsPlaying(false);
+            setPlayingId(null);
+        };
+
+        newAudio.onerror = () => {
+            setIsLoading(false);
+            setIsPlaying(false);
+            setPlayingId(null);
+            // Ignore error if we are reloading or stopping
+            if (newAudio.src) {
+                alert("Gagal memutar pratinjau suara.");
+            }
+        };
+
+        setAudio(newAudio);
     };
 
     useEffect(() => {
@@ -109,6 +186,9 @@ export default function SettingsPage() {
     };
 
     const handleReciterChange = (value: string) => {
+        // Stop audio if playing when changing reciter
+        stopCurrentAudio();
+
         setReciter(value);
         localStorage.setItem("settings_reciter", value);
         // Also set cookie for server-side access (VerseBrowser)
@@ -249,14 +329,14 @@ export default function SettingsPage() {
                                     onClick={() => togglePrayer(prayer.key)}
                                     disabled={!notificationsEnabled}
                                     className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all ${preferences[prayer.key] && notificationsEnabled
-                                            ? 'bg-emerald-500/20 border border-emerald-500/30'
-                                            : 'bg-white/5 border border-white/10 opacity-60'
+                                        ? 'bg-emerald-500/20 border border-emerald-500/30'
+                                        : 'bg-white/5 border border-white/10 opacity-60'
                                         }`}
                                 >
                                     <span className="text-base">{prayer.icon}</span>
                                     <span className={`text-[9px] font-medium ${preferences[prayer.key] && notificationsEnabled
-                                            ? 'text-emerald-400'
-                                            : 'text-white/60'
+                                        ? 'text-emerald-400'
+                                        : 'text-white/60'
                                         }`}>
                                         {prayer.label}
                                     </span>
@@ -294,9 +374,30 @@ export default function SettingsPage() {
 
                         {/* Reciter Select */}
                         <div className="flex items-center justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-white/60">Qari Al-Quran</p>
-                                <p className="text-sm text-white font-medium truncate">{currentReciter?.label || "Mishary Rashid"}</p>
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs text-white/60">Qari Al-Quran</p>
+                                    <p className="text-sm text-white font-medium truncate">{currentReciter?.label || "Mishary Rashid"}</p>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn(
+                                        "h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 shrink-0",
+                                        isPlaying && playingId === reciter && "text-purple-400 bg-purple-500/10"
+                                    )}
+                                    onClick={() => toggleAudioPreview(reciter)}
+                                    disabled={isLoading}
+                                >
+                                    {isLoading && playingId === reciter ? (
+                                        <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                                    ) : isPlaying && playingId === reciter ? (
+                                        <Volume2 className="w-4 h-4 animate-pulse" />
+                                    ) : (
+                                        <Music className="w-4 h-4" />
+                                    )}
+                                </Button>
                             </div>
                             <Select value={reciter} onValueChange={handleReciterChange}>
                                 <SelectTrigger className="w-auto min-w-[100px] h-8 text-xs bg-white/5 border-white/10 text-white">

@@ -9,10 +9,10 @@ export const MUADZIN_OPTIONS = [
 // Quran Reciter Options (using quran.com API identifiers)
 export const QURAN_RECITER_OPTIONS = [
     { id: 7, label: "Mishary Rashid Alafasy", audio_url_format: "https://cdn.islamic.network/quran/audio/128/ar.alafasy/{verse}.mp3" },
-    { id: 2, label: "Abdul Rahman Al-Sudais", audio_url_format: "https://cdn.islamic.network/quran/audio/128/ar.abdurrahmaansudais/{verse}.mp3" },
-    { id: 1, label: "Abdul Basit (Murattal)", audio_url_format: "https://cdn.islamic.network/quran/audio/128/ar.abdulbasitmujawwad/{verse}.mp3" },
-    { id: 5, label: "Maher Al Muaiqly", audio_url_format: "https://cdn.islamic.network/quran/audio/128/ar.maaboralmeaqely/{verse}.mp3" },
-    { id: 3, label: "Saud Al-Shuraim", audio_url_format: "https://cdn.islamic.network/quran/audio/128/ar.saaboralshoraim/{verse}.mp3" },
+    { id: 2, label: "Abdul Rahman Al-Sudais", audio_url_format: "https://cdn.islamic.network/quran/audio/192/ar.abdurrahmaansudais/{verse}.mp3" },
+    { id: 1, label: "Abdul Basit (Murattal)", audio_url_format: "https://cdn.islamic.network/quran/audio/192/ar.abdulbasitmurattal/{verse}.mp3" },
+    { id: 5, label: "Maher Al Muaiqly", audio_url_format: "https://cdn.islamic.network/quran/audio/128/ar.mahermuaiqly/{verse}.mp3" },
+    { id: 3, label: "Saud Al-Shuraim", audio_url_format: "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/{verse}.mp3" },
 ];
 
 // Prayer Time Calculation Methods (Aladhan API codes)
