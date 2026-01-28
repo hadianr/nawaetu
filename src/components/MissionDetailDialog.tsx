@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft } from "lucide-react";
+import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles } from "lucide-react";
 import { Mission, ValidationType } from "@/data/missions-data";
 import { MISSION_CONTENTS, MissionContent } from "@/data/mission-content";
 import { cn } from "@/lib/utils";
@@ -20,10 +20,13 @@ interface MissionDetailDialogProps {
     mission: Mission;
     isOpen: boolean;
     onClose: () => void;
-    onComplete: () => void;
+    onComplete: (xpAmount?: number) => void; // Updated signature
+    onReset: () => void; // Add this
     isCompleted: boolean;
     isLocked: boolean;
     lockReason?: string;
+    isLate?: boolean;
+    isEarly?: boolean;
 }
 
 export default function MissionDetailDialog({
@@ -33,10 +36,14 @@ export default function MissionDetailDialog({
     onComplete,
     isCompleted,
     isLocked,
-    lockReason
+    lockReason,
+    isLate,
+    isEarly,
+    onReset
 }: MissionDetailDialogProps) {
     const content = MISSION_CONTENTS[mission.id];
     const [readingIndex, setReadingIndex] = useState(0);
+    const [isConfirmingReset, setIsConfirmingReset] = useState(false); // Add this
 
     const handleNextReading = () => {
         if (content && content.readings && readingIndex < content.readings.length - 1) {
@@ -61,7 +68,17 @@ export default function MissionDetailDialog({
                             {mission.icon}
                         </div>
                         <div>
-                            <DialogTitle className="text-xl font-bold">{mission.title}</DialogTitle>
+                            <div className="flex items-center gap-2">
+                                <DialogTitle className="text-xl font-bold">{mission.title}</DialogTitle>
+                                <span className={cn(
+                                    "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
+                                    mission.hukum === 'wajib'
+                                        ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                                        : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                )}>
+                                    {mission.hukum}
+                                </span>
+                            </div>
                             <p className="text-xs text-white/50 mt-1">{mission.description}</p>
                         </div>
                         <div className="ml-auto flex items-center gap-1 bg-amber-500/10 px-2 py-1 rounded-full border border-amber-500/20">
@@ -74,16 +91,16 @@ export default function MissionDetailDialog({
                     {content ? (
                         <Tabs defaultValue="guide" className="flex-1 flex flex-col">
                             <div className="px-6 border-b border-white/10">
-                                <TabsList className="w-full bg-transparent p-0 h-auto justify-start gap-6">
+                                <TabsList variant="line" className="w-full bg-transparent p-0 h-12 justify-start gap-8 border-none">
                                     <TabsTrigger
                                         value="guide"
-                                        className="bg-transparent p-0 pb-3 rounded-none border-b-2 border-transparent data-[state=active]:border-emerald-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/40 data-[state=active]:text-emerald-500 text-sm font-medium"
+                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/40 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
                                         Panduan
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="info"
-                                        className="bg-transparent p-0 pb-3 rounded-none border-b-2 border-transparent data-[state=active]:border-emerald-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/40 data-[state=active]:text-emerald-500 text-sm font-medium"
+                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/40 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
                                         Info & Dalil
                                     </TabsTrigger>
@@ -109,7 +126,7 @@ export default function MissionDetailDialog({
                                                     )}
                                                 </div>
 
-                                                <div className="bg-white/5 rounded-2xl p-4 border border-white/10 space-y-4 relative min-h-[300px] flex flex-col justify-center">
+                                                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 space-y-4 relative min-h-[220px] flex flex-col justify-center">
                                                     <div>
                                                         {currentReading?.title && (
                                                             <h4 className="text-sm font-bold text-emerald-400 mb-2">{currentReading.title}</h4>
@@ -225,22 +242,125 @@ export default function MissionDetailDialog({
                 </div>
 
                 <div className="p-4 border-t border-white/10 bg-[#0F0F0F]">
+                    {/* LATE WARNING (Lalai) - Only for Fardhu Sholat (Punya afterPrayer config) */}
+                    {isLate && !isCompleted && !isLocked && mission.category === 'sholat' && mission.validationConfig?.afterPrayer && (
+                        <div className="mb-3 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
+                            <div className="flex items-center gap-2 mb-1">
+                                <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                                <p className="text-xs font-bold text-red-400">Sholat Terlewat (Qadha)</p>
+                            </div>
+                            <p className="text-[10px] text-red-200/80 leading-tight italic">
+                                "Maka celakalah bagi orang-orang yang shalat, (yaitu) orang-orang yang lalai dari shalatnya." (QS. Al-Ma'un: 4-5)
+                            </p>
+                            <p className="text-[10px] text-zinc-400 mt-1">
+                                Segera tunaikan sholatmu meskipun waktunya sudah lewat. Lebih baik terlambat daripada tidak sama sekali.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* LATE NOTICE (Generic) - For non-Sholat (e.g. Dzikir) OR Sunnah Sholat (e.g. Dhuha) */}
+                    {isLate && !isCompleted && !isLocked && (mission.category !== 'sholat' || !mission.validationConfig?.afterPrayer) && (
+                        <div className="mb-3 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                            <p className="text-[10px] text-amber-200/80 leading-tight">
+                                Waktu utama misi ini sudah lewat, namun Kamu tetap bisa memvalidasi jika sudah mengamalkannya.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* EARLY PRAISE (Awal Waktu) - Only for Sholat */}
+                    {isEarly && !isCompleted && !isLocked && mission.category === 'sholat' && (
+                        <div className="mb-3 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+                                <p className="text-xs font-bold text-emerald-400">Keutamaan Sholat Awal Waktu</p>
+                            </div>
+                            <p className="text-[10px] text-emerald-200/80 leading-tight italic">
+                                "Amalan yang paling dicintai Allah adalah sholat pada waktunya." (HR. Bukhari & Muslim)
+                            </p>
+                        </div>
+                    )}
+
                     {isCompleted ? (
                         <div className="flex flex-col gap-2">
                             <Button className="w-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10 border border-emerald-500/20 cursor-default" disabled>
                                 <Check className="w-4 h-4 mr-2" /> Misi Sudah Selesai
                             </Button>
+
+                            {isConfirmingReset ? (
+                                <div className="flex items-center gap-2 mt-2">
+                                    <Button
+                                        variant="destructive"
+                                        className="flex-1 py-5 text-xs font-bold"
+                                        onClick={() => {
+                                            onReset();
+                                            setIsConfirmingReset(false);
+                                        }}
+                                    >
+                                        Ya, Batalkan (-{mission.xpReward} XP)
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        className="flex-1 py-5 text-xs font-bold text-white/60"
+                                        onClick={() => setIsConfirmingReset(false)}
+                                    >
+                                        Batal
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    className="w-full text-white/30 hover:text-red-400 hover:bg-red-400/10 text-[10px] mt-1"
+                                    onClick={() => setIsConfirmingReset(true)}
+                                >
+                                    Batalkan Penyelesaian?
+                                </Button>
+                            )}
                         </div>
                     ) : isLocked ? (
                         <Button className="w-full bg-white/5 text-white/40 hover:bg-white/5 border border-white/10" disabled>
                             <Lock className="w-4 h-4 mr-2" /> {lockReason || "Terkunci"}
                         </Button>
+                    ) : mission.completionOptions ? (
+                        <div className="flex gap-2">
+                            {mission.completionOptions.map((option, idx) => (
+                                <Button
+                                    key={idx}
+                                    className={cn(
+                                        "flex-1 font-bold py-6 text-sm relative overflow-hidden group",
+                                        option.xpReward > 50
+                                            ? "bg-emerald-600 hover:bg-emerald-500 text-white" // High reward (Berjamaah)
+                                            : "bg-white/10 hover:bg-white/20 text-white/80"    // Low reward (Sendiri)
+                                    )}
+                                    onClick={() => onComplete(option.xpReward)}
+                                >
+                                    {/* Highlight effect for high reward */}
+                                    {option.xpReward > 50 && (
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-white/10 to-emerald-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                                    )}
+
+                                    <div className="flex flex-col items-center gap-0.5 z-10">
+                                        <span className="flex items-center gap-1.5">
+                                            {option.icon && <span>{option.icon}</span>}
+                                            {option.label}
+                                        </span>
+                                        <span className="text-[10px] opacity-80">+{option.xpReward} XP</span>
+                                    </div>
+                                </Button>
+                            ))}
+                        </div>
                     ) : (
                         <Button
-                            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-6 text-base"
-                            onClick={onComplete}
+                            className={cn(
+                                "w-full font-bold py-6 text-base transition-all",
+                                isLate
+                                    ? "bg-amber-600 hover:bg-amber-500 text-white"
+                                    : "bg-emerald-600 hover:bg-emerald-500 text-white"
+                            )}
+                            onClick={() => onComplete(mission.xpReward)}
                         >
-                            <Check className="w-4 h-4 mr-2" /> Selesaikan Misi (+{mission.xpReward} XP)
+                            {isLate ? <Check className="w-4 h-4 mr-2" /> : <Check className="w-4 h-4 mr-2" />}
+                            {isLate ? "Catat Amalan (Terlewat)" : "Selesaikan Misi"} (+{mission.xpReward} XP)
                         </Button>
                     )}
                 </div>

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import MissionDetailDialog from "./MissionDetailDialog";
+import { checkMissionValidation } from "@/lib/mission-utils";
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -56,42 +57,8 @@ export default function MissionsWidget() {
     };
 
     // --- Validation Logic ---
-    const checkValidation = (mission: Mission): { locked: boolean; reason?: string } => {
-        if (!mission.validationType || mission.validationType === 'manual' || mission.validationType === 'auto') {
-            return { locked: false };
-        }
-
-        if (mission.validationType === 'time' && mission.validationConfig?.afterPrayer && prayerData?.prayerTimes) {
-            // Convert prayer time to Date object
-            const prayerTimeStr = prayerData.prayerTimes[mission.validationConfig.afterPrayer]; // "04:30"
-            if (!prayerTimeStr) return { locked: true, reason: "Waktu belum tersedia" };
-
-            const now = new Date();
-            const [pHours, pMinutes] = prayerTimeStr.split(':').map(Number);
-            const prayerDate = new Date();
-            prayerDate.setHours(pHours, pMinutes, 0, 0);
-
-            if (now < prayerDate) {
-                return { locked: true, reason: `Belum masuk waktu ${mission.validationConfig.afterPrayer}` };
-            }
-        }
-
-        if (mission.validationType === 'time' && mission.validationConfig?.timeWindow) {
-            const nowHour = new Date().getHours();
-            const { start, end } = mission.validationConfig.timeWindow;
-            if (nowHour < start || nowHour >= end) {
-                return { locked: true, reason: `Hanya tersedia jam ${start}:00 - ${end}:00` };
-            }
-        }
-
-        if (mission.validationType === 'day' && mission.validationConfig?.allowedDays) {
-            const currentDay = new Date().getDay(); // 0=Sun, 1=Mon...
-            if (!mission.validationConfig.allowedDays.includes(currentDay)) {
-                return { locked: true, reason: "Bukan hari jadwalnya" };
-            }
-        }
-
-        return { locked: false };
+    const checkValidation = (mission: Mission) => {
+        return checkMissionValidation(mission, prayerData);
     };
 
     const handleMissionClick = (mission: Mission) => {
@@ -103,11 +70,12 @@ export default function MissionsWidget() {
         setIsDialogOpen(true);
     };
 
-    const handleCompleteMission = () => {
+    const handleCompleteMission = (xpAmount?: number) => {
         if (!selectedMission) return;
 
         const mission = selectedMission;
-        addXP(mission.xpReward);
+        const reward = xpAmount || mission.xpReward; // Use passed amount or default
+        addXP(reward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
         // Update streak (only on first mission of the day)
@@ -123,6 +91,24 @@ export default function MissionsWidget() {
                 date: today
             }
         };
+        setCompleted(newCompleted);
+        localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+
+        setIsDialogOpen(false);
+    };
+
+    const handleResetMission = () => {
+        if (!selectedMission) return;
+
+        const mission = selectedMission;
+        // Subtract XP
+        addXP(-mission.xpReward);
+        window.dispatchEvent(new CustomEvent("xp_updated"));
+
+        // Remove from completed
+        const newCompleted = { ...completed };
+        delete newCompleted[mission.id];
+
         setCompleted(newCompleted);
         localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
 
@@ -196,25 +182,43 @@ export default function MissionsWidget() {
                                 {mission.icon}
                             </span>
                             <div className="flex-1 min-w-0">
-                                <p className={cn(
-                                    "text-xs font-semibold truncate",
-                                    isCompleted
-                                        ? gender === 'female' ? "text-pink-400 line-through" :
-                                            gender === 'male' ? "text-blue-400 line-through" :
-                                                "text-emerald-400 line-through"
-                                        : "text-white"
-                                )}>
-                                    {mission.title}
-                                </p>
+                                <div className="flex items-center gap-1.5 truncate">
+                                    <p className={cn(
+                                        "text-xs font-semibold truncate",
+                                        isCompleted
+                                            ? gender === 'female' ? "text-pink-400 line-through" :
+                                                gender === 'male' ? "text-blue-400 line-through" :
+                                                    "text-emerald-400 line-through"
+                                            : "text-white"
+                                    )}>
+                                        {mission.title}
+                                    </p>
+                                    <span className={cn(
+                                        "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
+                                        mission.hukum === 'wajib'
+                                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                                            : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                    )}>
+                                        {mission.hukum}
+                                    </span>
+                                </div>
                                 <div className="flex items-center gap-2">
                                     <p className="text-[10px] text-white/40 truncate">
                                         +{mission.xpReward} XP
                                     </p>
-                                    {isLocked && (
+                                    {isLocked ? (
                                         <span className="text-[9px] text-amber-500/70 flex items-center gap-0.5">
-                                            <AlertCircle className="w-2.5 h-2.5" /> Terkunci
+                                            <AlertCircle className="w-2.5 h-2.5" /> {validation.reason || "Terkunci"}
                                         </span>
-                                    )}
+                                    ) : validation.isLate ? (
+                                        <span className="text-[9px] text-amber-500/70 flex items-center gap-0.5">
+                                            <AlertCircle className="w-2.5 h-2.5" /> {validation.reason}
+                                        </span>
+                                    ) : validation.isEarly ? (
+                                        <span className="text-[9px] text-emerald-400/80 flex items-center gap-0.5">
+                                            <Sparkles className="w-2.5 h-2.5" /> Awal Waktu
+                                        </span>
+                                    ) : null}
                                 </div>
                             </div>
                             {isCompleted ? (
@@ -258,15 +262,23 @@ export default function MissionsWidget() {
             )}
 
             {selectedMission && (
-                <MissionDetailDialog
-                    mission={selectedMission}
-                    isOpen={isDialogOpen}
-                    onClose={() => setIsDialogOpen(false)}
-                    isCompleted={isMissionCompletedToday(selectedMission.id)}
-                    isLocked={checkValidation(selectedMission).locked}
-                    lockReason={checkValidation(selectedMission).reason}
-                    onComplete={handleCompleteMission}
-                />
+                (() => {
+                    const validation = checkValidation(selectedMission);
+                    return (
+                        <MissionDetailDialog
+                            mission={selectedMission}
+                            isOpen={isDialogOpen}
+                            onClose={() => setIsDialogOpen(false)}
+                            isCompleted={isMissionCompletedToday(selectedMission.id)}
+                            isLocked={validation.locked}
+                            lockReason={validation.reason}
+                            isLate={validation.isLate}
+                            isEarly={validation.isEarly}
+                            onComplete={handleCompleteMission}
+                            onReset={handleResetMission}
+                        />
+                    );
+                })()
             )}
         </div>
     );

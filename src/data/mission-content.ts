@@ -86,7 +86,7 @@ export const MISSION_CONTENTS: Record<string, MissionContent> = {
     // TASBIH 99
     'tasbih_99': {
         id: 'tasbih_99',
-        intro: 'Mengingat Allah dengan memuji, mensucikan, dan mengagungkan-Nya.',
+        intro: 'Tasbih 99x adalah dzikir ba\'da sholat yang terdiri dari: 33x Subhanallah, 33x Alhamdulillah, dan 33x Allahu Akbar. Amalan ini ringan di lisan namun berat dalam timbangan pahala.',
         fadhilah: [
             'Diampuni dosanya walau sebanyak buih di lautan (jika ditutup Lailahaillallah...)',
             'Tanaman surga bagi yang membacanya',
@@ -175,5 +175,59 @@ export const MISSION_CONTENTS: Record<string, MissionContent> = {
             'Niat: "Ushalli sunnatad-dhuhaa rak\'ataini lillaahi ta\'aalaa."'
         ],
         source: 'HR. Muslim, Abu Dawud, Tirmidzi'
+    },
+
+    // SHOLAT BERJAMAAH (MALE SPECIFIC)
+    'sholat_subuh_jamaah': {
+        id: 'sholat_subuh_jamaah',
+        intro: 'Sholat Subuh berjamaah memiliki pahala setara dengan sholat semalam suntuk.',
+        fadhilah: [
+            'Mendapatkan cahaya yang sempurna di hari kiamat',
+            'Berada di bawah naungan perlindungan Allah seharian',
+            'Mendapatkan pahala 27 derajat lebih tinggi',
+            'Disaksikan oleh para malaikat siang dan malam'
+        ],
+        source: 'HR. Muslim & HR. Tirmidzi'
+    },
+    'sholat_dzuhur_jamaah': {
+        id: 'sholat_dzuhur_jamaah',
+        intro: 'Mengerjakan sholat fardhu berjamaah di masjid bagi laki-laki adalah Sunnah Muakkad.',
+        fadhilah: [
+            'Mendapatkan pahala 27 derajat',
+            'Langkah kaki ke masjid menghapus dosa dan menaikkan derajat',
+            'Menumbuhkan rasa persaudaraan sesama muslim',
+            'Mendapatkan doa dari para malaikat selama di masjid'
+        ],
+        source: 'HR. Bukhari & Muslim'
+    },
+    'sholat_ashar_jamaah': {
+        id: 'sholat_ashar_jamaah',
+        intro: 'Ashar adalah "Sholat Wustha", menjaga sholat ini sangat ditekankan.',
+        fadhilah: [
+            'Tidak akan masuk neraka orang yang sholat sebelum terbit dan terbenam matahari',
+            'Pahala 27 derajat berjamaah',
+            'Mencegah terhapusnya amal (bagi yang meninggalkan ashar)'
+        ],
+        source: 'HR. Muslim no. 634'
+    },
+    'sholat_maghrib_jamaah': {
+        id: 'sholat_maghrib_jamaah',
+        intro: 'Bersegera ke masjid untuk maghrib berjamaah adalah keutamaan.',
+        fadhilah: [
+            'Pahala 27 derajat berjamaah',
+            'Menjaga fitrah kebaikan dalam diri',
+            'Waktu mustajab untuk berdoa di antara maghrib dan isya'
+        ],
+        source: 'HR. Bukhari & Muslim'
+    },
+    'sholat_isya_jamaah': {
+        id: 'sholat_isya_jamaah',
+        intro: 'Sholat Isya berjamaah pahalanya setara dengan sholat setengah malam.',
+        fadhilah: [
+            'Pahala 27 derajat berjamaah',
+            'Pembeda dengan orang munafik (karena beratnya isya & subuh)',
+            'Mendapatkan ketenangan tidur dalam lindungan Allah'
+        ],
+        source: 'HR. Muslim no. 656'
     }
 };

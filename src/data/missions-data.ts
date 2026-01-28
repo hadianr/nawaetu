@@ -11,6 +11,8 @@ export interface ValidationConfig {
     timeWindow?: { start: number; end: number }; // Hours window (e.g., pagi: 4-10)
 }
 
+export type Hukum = 'wajib' | 'sunnah' | 'mubah' | 'makruh' | 'harram';
+
 export interface Mission {
     id: string;
     title: string;
@@ -21,8 +23,14 @@ export interface Mission {
     dalil?: string;
     type: 'daily' | 'weekly' | 'tracker';
     category: 'ibadah' | 'quran' | 'dzikir' | 'puasa' | 'sholat';
+    hukum: Hukum;
     validationType: ValidationType;
     validationConfig?: ValidationConfig;
+    completionOptions?: {
+        label: string;
+        xpReward: number;
+        icon?: string;
+    }[];
 }
 
 // Prayer names mapping
@@ -31,7 +39,8 @@ export const PRAYER_NAMES: Record<string, string> = {
     dhuhr: 'Dzuhur',
     asr: 'Ashar',
     maghrib: 'Maghrib',
-    isha: 'Isya'
+    isha: 'Isya',
+    dhuha: 'Dhuha'
 };
 
 // Universal missions (for all genders)
@@ -46,6 +55,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Muzzammil:20',
         type: 'daily',
         category: 'quran',
+        hukum: 'sunnah',
         validationType: 'auto',
         validationConfig: { requiredCount: 10 }
     },
@@ -59,6 +69,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'HR Bukhari 6329',
         type: 'daily',
         category: 'dzikir',
+        hukum: 'sunnah',
         validationType: 'auto',
         validationConfig: { requiredCount: 99 }
     },
@@ -72,6 +83,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'Al-Ma\'thurat',
         type: 'daily',
         category: 'dzikir',
+        hukum: 'sunnah',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 4, end: 10 } }
     },
@@ -85,6 +97,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'Al-Ma\'thurat',
         type: 'daily',
         category: 'dzikir',
+        hukum: 'sunnah',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 15, end: 18 } }
     },
@@ -99,8 +112,13 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Baqarah:238',
         type: 'daily',
         category: 'sholat',
+        hukum: 'wajib',
         validationType: 'time',
-        validationConfig: { afterPrayer: 'fajr' }
+        validationConfig: { afterPrayer: 'fajr' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
     },
     {
         id: 'sholat_dzuhur',
@@ -112,8 +130,13 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Baqarah:238',
         type: 'daily',
         category: 'sholat',
+        hukum: 'wajib',
         validationType: 'time',
-        validationConfig: { afterPrayer: 'dhuhr' }
+        validationConfig: { afterPrayer: 'dhuhr' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
     },
     {
         id: 'sholat_ashar',
@@ -125,8 +148,13 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Baqarah:238',
         type: 'daily',
         category: 'sholat',
+        hukum: 'wajib',
         validationType: 'time',
-        validationConfig: { afterPrayer: 'asr' }
+        validationConfig: { afterPrayer: 'asr' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
     },
     {
         id: 'sholat_maghrib',
@@ -138,8 +166,13 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Baqarah:238',
         type: 'daily',
         category: 'sholat',
+        hukum: 'wajib',
         validationType: 'time',
-        validationConfig: { afterPrayer: 'maghrib' }
+        validationConfig: { afterPrayer: 'maghrib' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
     },
     {
         id: 'sholat_isya',
@@ -151,8 +184,13 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Baqarah:238',
         type: 'daily',
         category: 'sholat',
+        hukum: 'wajib',
         validationType: 'time',
-        validationConfig: { afterPrayer: 'isha' }
+        validationConfig: { afterPrayer: 'isha' },
+        completionOptions: [
+            { label: 'Sholat Sendiri', xpReward: 25 },
+            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+        ]
     },
     {
         id: 'puasa_sunnah',
@@ -164,6 +202,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'HR Muslim 1162',
         type: 'weekly',
         category: 'puasa',
+        hukum: 'sunnah',
         validationType: 'day',
         validationConfig: { allowedDays: [1, 4] } // Monday = 1, Thursday = 4
     }
@@ -181,6 +220,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'HR Muslim 335 - Aisyah r.a.',
         type: 'tracker',
         category: 'puasa',
+        hukum: 'sunnah',
         validationType: 'manual'
     },
     {
@@ -193,6 +233,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Amalan saat haid',
         type: 'daily',
         category: 'dzikir',
+        hukum: 'sunnah',
         validationType: 'manual'
     },
     {
@@ -205,6 +246,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Ahzab:56',
         type: 'daily',
         category: 'dzikir',
+        hukum: 'sunnah',
         validationType: 'manual'
     }
 ];
@@ -221,20 +263,9 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Jumu\'ah:9',
         type: 'weekly',
         category: 'sholat',
+        hukum: 'wajib',
         validationType: 'day',
         validationConfig: { allowedDays: [5] } // Friday = 5
-    },
-    {
-        id: 'sholat_berjamaah',
-        title: 'Sholat Berjamaah',
-        description: 'Sholat fardhu berjamaah di masjid',
-        xpReward: 75,
-        icon: '👥',
-        gender: 'male',
-        dalil: 'HR Bukhari 645 - 27 derajat',
-        type: 'daily',
-        category: 'sholat',
-        validationType: 'manual'
     },
     {
         id: 'sholat_dhuha',
@@ -246,6 +277,7 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'HR Muslim 748',
         type: 'daily',
         category: 'sholat',
+        hukum: 'sunnah',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 8, end: 11 } }
     }
