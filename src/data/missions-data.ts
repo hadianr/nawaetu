@@ -26,6 +26,7 @@ export interface Mission {
     hukum: Hukum;
     validationType: ValidationType;
     validationConfig?: ValidationConfig;
+    phase?: 'all_year' | 'ramadhan_prep' | 'ramadhan_during';
     completionOptions?: {
         label: string;
         xpReward: number;
@@ -56,6 +57,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'quran',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'auto',
         validationConfig: { requiredCount: 10 }
     },
@@ -70,6 +72,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'dzikir',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'auto',
         validationConfig: { requiredCount: 99 }
     },
@@ -84,6 +87,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'dzikir',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 4, end: 10 } }
     },
@@ -98,6 +102,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'dzikir',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 15, end: 18 } }
     },
@@ -113,6 +118,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'sholat',
         hukum: 'wajib',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'fajr' },
         completionOptions: [
@@ -131,6 +137,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'sholat',
         hukum: 'wajib',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'dhuhr' },
         completionOptions: [
@@ -149,6 +156,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'sholat',
         hukum: 'wajib',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'asr' },
         completionOptions: [
@@ -167,6 +175,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'sholat',
         hukum: 'wajib',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'maghrib' },
         completionOptions: [
@@ -185,6 +194,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'sholat',
         hukum: 'wajib',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'isha' },
         completionOptions: [
@@ -203,6 +213,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         type: 'weekly',
         category: 'puasa',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'day',
         validationConfig: { allowedDays: [1, 4] } // Monday = 1, Thursday = 4
     }
@@ -221,6 +232,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         type: 'tracker',
         category: 'puasa',
         hukum: 'sunnah',
+        phase: 'ramadhan_prep',
         validationType: 'manual'
     },
     {
@@ -234,6 +246,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'dzikir',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'manual'
     },
     {
@@ -247,6 +260,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'dzikir',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'manual'
     }
 ];
@@ -264,6 +278,7 @@ export const MALE_MISSIONS: Mission[] = [
         type: 'weekly',
         category: 'sholat',
         hukum: 'wajib',
+        phase: 'all_year',
         validationType: 'day',
         validationConfig: { allowedDays: [5] } // Friday = 5
     },
@@ -278,6 +293,7 @@ export const MALE_MISSIONS: Mission[] = [
         type: 'daily',
         category: 'sholat',
         hukum: 'sunnah',
+        phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 8, end: 11 } }
     }
@@ -318,3 +334,137 @@ export const DEFAULT_QADHA_DATA: QadhaPuasaData = {
     completedDays: 0,
     lastUpdated: new Date().toISOString()
 };
+
+// Ramadhan Missions Data
+export const RAMADHAN_MISSIONS: Mission[] = [
+    {
+        id: 'qadha_puasa',
+        title: 'Bayar Qadha Puasa',
+        description: 'Bayar hutang puasa Ramadhan tahun lalu',
+        category: 'puasa',
+        xpReward: 30,
+        icon: '📅',
+        hukum: 'wajib',
+        type: 'tracker',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'QS. Al-Baqarah: 184'
+    },
+    {
+        id: 'cek_kesehatan',
+        title: 'Cek Kesehatan (Checkup)',
+        description: 'Pastikan tubuh fit sebelum Ramadhan',
+        category: 'ibadah',
+        xpReward: 10,
+        icon: '🩺',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Mukmin yang kuat lebih dicintai Allah'
+    },
+    {
+        id: 'puasa_sunnah_ramadhan_prep',
+        title: 'Puasa Sunnah (Min. 1x)',
+        description: 'Latihan puasa sunnah (Senin/Kamis)',
+        category: 'puasa',
+        xpReward: 15,
+        icon: '🥤',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'HR. Tirmidzi 743'
+    },
+    {
+        id: 'baca_article',
+        title: 'Baca Artikel Fiqih',
+        description: 'Pelajari hukum dan fiqih puasa',
+        category: 'ibadah',
+        xpReward: 5,
+        icon: '📚',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Menuntut ilmu itu wajib'
+    },
+    {
+        id: 'sedekah_subuh',
+        title: 'Rutin Sedekah Subuh',
+        description: 'Sedekah di waktu subuh setiap hari',
+        category: 'ibadah',
+        xpReward: 15,
+        icon: '💰',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Malaikat mendoakan orang yang bersedekah'
+    },
+    {
+        id: 'maaf_maafan',
+        title: 'Saling Memaafkan',
+        description: 'Minta maaf kepada orang tua & teman',
+        category: 'ibadah',
+        xpReward: 10,
+        icon: '🤝',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Pemaaf adalah sifat mulia'
+    },
+    {
+        id: 'target_khatam',
+        title: "Set Target Khatam",
+        description: 'Buat target tilawah harian',
+        category: 'quran',
+        xpReward: 10,
+        icon: '🎯',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_prep',
+        gender: null,
+        dalil: 'Bacalah Al-Quran, ia memberi syafaat'
+    },
+    {
+        id: 'sholat_tarawih',
+        title: "Sholat Tarawih",
+        description: 'Tunaikan sholat sunnah Tarawih',
+        category: 'sholat',
+        xpReward: 50,
+        icon: '🕌',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_during',
+        gender: null,
+        dalil: 'Qiyamul Lail di bulan Ramadhan'
+    },
+    {
+        id: 'bukber_hemat',
+        title: "Buka Puasa Sederhana",
+        description: 'Buka puasa tidak berlebihan',
+        category: 'ibadah',
+        xpReward: 20,
+        icon: 'dates',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_during',
+        gender: null,
+        dalil: 'Makan dan minumlah, jangan berlebihan'
+    },
+];
+
+export function getRamadhanMissions(): Mission[] {
+    return RAMADHAN_MISSIONS;
+}

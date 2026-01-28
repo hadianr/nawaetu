@@ -97,12 +97,11 @@ export function checkMissionValidation(
         }
 
         if (nowHour >= end) {
-            // For Dzikir (Sunnah), we don't necessarily need to flag 'isLate' as a warning
-            // But we can keep it for UI color coding if desired. 
-            // User said "untuk dzikir tidak perlu", so we'll disable the 'isLate' flag for non-sholat.
+            // Updated: User requested dynamic filtering("current time"), so we need to flag 'isLate' even for Dzikir/Sunnah
+            // so we can sort them to the bottom.
             return {
                 locked: false,
-                isLate: mission.category === 'sholat',
+                isLate: true,
                 reason: `Sudah lewat jendela waktu (${start}:00 - ${end}:00)`
             };
         }
