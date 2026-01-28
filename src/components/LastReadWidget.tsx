@@ -99,17 +99,14 @@ export default function LastReadWidget() {
     return (
         <div className="w-full h-full animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
             <Link href={`/quran/${lastRead.surahId}`} className="block group h-full">
-                <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/10">
+                <div className="relative overflow-hidden rounded-3xl bg-black/20 backdrop-blur-md border border-white/10 p-4 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/20">
 
-                    {/* Header: Badge + Surah Name */}
-                    <div className="w-full flex items-center justify-between mb-1 opacity-60">
-                        <div className="flex items-center gap-1.5">
-                            <Bookmark className="h-3 w-3 text-emerald-400 fill-current" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
-                                Lanjut Baca
-                            </span>
-                        </div>
-                        <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-white transition-colors" />
+                    {/* Header: Label */}
+                    <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
+                        <Bookmark className="h-3 w-3 text-emerald-400 fill-current" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
+                            Terakhir Baca
+                        </span>
                     </div>
 
                     {/* Content: Arabic Preview - Centered content feeling */}
@@ -118,19 +115,24 @@ export default function LastReadWidget() {
                             <div className="h-4 bg-white/10 rounded w-3/4 animate-pulse" />
                         </div>
                     ) : verseContent ? (
-                        <div className="flex-1 flex flex-col justify-center items-end py-1">
-                            <p className="text-right text-lg leading-relaxed text-white/90 line-clamp-1 font-arabic w-full">
+                        <div className="flex-1 flex flex-col justify-center items-center py-1 text-center scale-110">
+                            <p className="text-xl leading-relaxed text-white/90 line-clamp-1 font-arabic w-full">
                                 {verseContent.arabic}
                             </p>
-                            <h3 className="text-[10px] font-medium text-emerald-500/80 mt-1">
-                                QS. {lastRead.surahName} : {lastRead.verseId}
-                            </h3>
                         </div>
                     ) : (
                         <div className="flex-1" />
                     )}
 
-                    {/* Footer removed, merged into content center */}
+                    {/* Footer: Context */}
+                    <div className="text-center group-hover:translate-x-1 transition-transform">
+                        <div className="flex items-center justify-center gap-1">
+                            <span className="text-[10px] font-medium text-white/40">
+                                QS. {lastRead.surahName} : {lastRead.verseId}
+                            </span>
+                            <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-emerald-400 transition-colors" />
+                        </div>
+                    </div>
                 </div>
             </Link>
         </div>

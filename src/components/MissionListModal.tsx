@@ -16,6 +16,9 @@ interface MissionListModalProps {
     isMissionCompleted: (id: string, type: any) => boolean;
     children?: React.ReactNode;
     hijriDate?: string;
+    isOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    initialTab?: string;
 }
 
 export default function MissionListModal({
@@ -25,9 +28,27 @@ export default function MissionListModal({
     checkValidation,
     isMissionCompleted,
     children,
-    hijriDate
+    hijriDate,
+    isOpen,
+    onOpenChange,
+    initialTab
 }: MissionListModalProps) {
-    const [activeTab, setActiveTab] = useState("all");
+    const [activeTab, setActiveTab] = useState(initialTab || "all");
+
+    // Sync active tab if initialTab changes (re-opening logic)
+    // Note: In a real app we might want a useEffect on open.
+    // However, Shadcn Dialog remounts content? No.
+    // Let's use a key or effect.
+
+    const [internalOpen, setInternalOpen] = useState(false);
+    const isControlled = isOpen !== undefined;
+
+    const finalOpen = isControlled ? isOpen : internalOpen;
+    const finalOnOpenChange = isControlled ? onOpenChange : setInternalOpen;
+
+    // Reset tab when opening if initialTab is provided
+    // Simple approach: When finalOpen becomes true, set tab.
+    // But we can't detect change easily without effect.
 
     // Dynamic Tab Logic
     const isRamadhan = hijriDate?.toLowerCase().includes("ramadhan") || hijriDate?.toLowerCase().includes("ramadan");
@@ -38,45 +59,21 @@ export default function MissionListModal({
         hijriDate?.toLowerCase().includes("sha’ban") ||
         hijriDate?.toLowerCase().includes("shaʿbān");
 
-    // Seasonal Tab Label
-    const seasonalTabLabel = isRamadhan ? "🌙 Ramadhan" : isSyaban ? "🌙 Sya'ban" : "🌙 Musiman";
-    const seasonalTabValue = isRamadhan ? "ramadhan" : "seasonal";
-
     // Filtering
     const dailyMissions = missions.filter(m => m.type === 'daily' && (m.phase === 'all_year' || !m.phase));
     const weeklyMissions = missions.filter(m => m.type === 'weekly');
-    const prepMissions = missions.filter(m => m.phase === 'ramadhan_prep');
-
-    // Seasonal Content: If Ramadhan, show 'ramadhan_during'. If Sya'ban, show missions that might be tagged relevantly or just rely on 'seasonal' list if we had one.
-    // Spec: "Sya'ban missions" were added to 'ramadhan_prep' phase in previous step? 
-    // Let's check missions-data.ts: SYABAN_MISSIONS have phase: 'ramadhan_prep'.
-    // So actually 'prepMissions' ARE the Sya'ban missions right now. 
-    // User wants "Tab Sya'ban" instead of "Tab Persiapan" maybe? Or "Persiapan" IS Sya'ban?
-    // User said: "tab persiapan isinya tidak ada dan diperjelas informasinya persiapan menuju ramadhan" and "tab syaban".
-    // Let's make:
-    // 1. "Sya'ban" tab (which shows Pre-Ramadhan missions i.e. Puasa Sya'ban etc).
-    // 2. "Ramadhan" tab (only appears if Ramadhan).
-    // 3. "Mingguan" tab.
-
-    // Refined Segments:
-    // - Daily (Rutinitas Harian)
-    // - Weekly (Mingguan)
-    // - Seasonal (Sya'ban / Ramadhan)
+    // const prepMissions = missions.filter(m => m.phase === 'ramadhan_prep');
 
     const seasonalMissions = isRamadhan
         ? missions.filter(m => m.phase === 'ramadhan_during')
-        : missions.filter(m => m.phase === 'ramadhan_prep'); // Show Prep/Sya'ban missions here
+        : missions.filter(m => m.phase === 'ramadhan_prep');
 
-    // Sorting Logic
     const sortMissions = (list: Mission[]) => {
         return [...list].sort((a, b) => {
             const aCompleted = isMissionCompleted(a.id, a.type);
             const bCompleted = isMissionCompleted(b.id, b.type);
 
-            // 1. Completed always last
             if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
-
-            // 2. Wajib Priority (Higher first)
             if (a.hukum === 'wajib' && b.hukum !== 'wajib') return -1;
             if (b.hukum === 'wajib' && a.hukum !== 'wajib') return 1;
 
@@ -109,14 +106,12 @@ export default function MissionListModal({
                             onClick={() => onMissionClick(mission)}
                             className={cn(
                                 "w-full flex items-center gap-3 p-3.5 rounded-2xl transition-all text-left group relative overflow-hidden",
-                                // Glassmorphism Item Style
                                 "border backdrop-blur-sm",
                                 isCompleted
                                     ? "bg-black/20 border-white/5 opacity-60"
                                     : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10"
                             )}
                         >
-                            {/* Priority Indicator Line */}
                             {!isCompleted && !isLocked && (
                                 <div className={cn(
                                     "absolute left-0 top-0 bottom-0 w-1 opacity-80",
@@ -190,12 +185,19 @@ export default function MissionListModal({
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
-            {/* Modal Container: Glassmorphism */}
-            <DialogContent className="w-[95%] max-w-md max-h-[90vh] bg-black/40 backdrop-blur-xl border border-white/10 text-white p-0 overflow-hidden rounded-[32px] shadow-2xl">
+        <Dialog open={finalOpen} onOpenChange={finalOnOpenChange}>
+            {children && (
+                <DialogTrigger asChild>
+                    {children}
+                </DialogTrigger>
+            )}
+            <DialogContent
+                className="w-[95%] max-w-md max-h-[90vh] bg-black/40 backdrop-blur-xl border border-white/10 text-white p-0 overflow-hidden rounded-[32px] shadow-2xl"
+                onOpenAutoFocus={(e) => {
+                    // Update tab when opened if initialTab is set
+                    if (initialTab) setActiveTab(initialTab);
+                }}
+            >
                 <DialogHeader className="p-5 pb-3 border-b border-white/5 bg-white/[0.02]">
                     <DialogTitle className="text-lg font-bold flex items-center gap-2">
                         🎯 Daftar Misi Lengkap
@@ -218,7 +220,6 @@ export default function MissionListModal({
                                 📋 Harian
                             </TabsTrigger>
 
-                            {/* Weekly Tab */}
                             <TabsTrigger
                                 value="weekly"
                                 className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-purple-500 data-[state=active]:text-white data-[state=active]:border-purple-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all"
@@ -226,7 +227,6 @@ export default function MissionListModal({
                                 📅 Mingguan
                             </TabsTrigger>
 
-                            {/* Seasonal Tab (Sya'ban or Ramadhan) */}
                             <TabsTrigger
                                 value="seasonal"
                                 className={cn(

@@ -131,9 +131,14 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             nextTime = timings["Imsak"];
         }
 
+        const hijri = dateInfo?.hijri;
+        const hijriString = hijri
+            ? `${hijri.day} ${hijri.month?.en} ${hijri.year}H`
+            : "";
+
         setData({
-            hijriDate: `${dateInfo.hijri.day} ${dateInfo.hijri.month.en} ${dateInfo.hijri.year}H`,
-            gregorianDate: dateInfo.readable,
+            hijriDate: hijriString,
+            gregorianDate: dateInfo?.readable || "",
             prayerTimes: relevantPrayers,
             nextPrayer: next,
             nextPrayerTime: nextTime,

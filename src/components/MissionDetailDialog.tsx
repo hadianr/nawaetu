@@ -61,7 +61,7 @@ export default function MissionDetailDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-[#0a0a0a] border-white/10 text-white max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
+            <DialogContent className="bg-black/80 backdrop-blur-3xl border-white/10 text-white max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl">
                 <DialogHeader className="p-6 pb-2">
                     <div className="flex items-center gap-3">
                         <div className="text-3xl bg-white/5 w-12 h-12 rounded-xl flex items-center justify-center border border-white/10">
@@ -121,29 +121,29 @@ export default function MissionDetailDialog({
                                             <div className="space-y-3">
                                                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                    Niat Sholat
+                                                    {mission.category === 'sholat' ? 'Niat Sholat' : mission.category === 'puasa' ? 'Niat Puasa' : 'Lafadz Niat'}
                                                 </h3>
-                                                <Tabs defaultValue="sendiri" className="w-full">
-                                                    <TabsList className="bg-white/5 border border-white/10 w-full justify-start h-8 p-1 mb-2">
-                                                        <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Sendiri</TabsTrigger>
-                                                        {content.niat.makmum && (
+
+                                                {/* CONDITIONAL RENDERING: Tabs only if Munfarid AND Makmum exist */}
+                                                {content.niat.makmum ? (
+                                                    <Tabs defaultValue="sendiri" className="w-full">
+                                                        <TabsList className="bg-white/5 border border-white/10 w-full justify-start h-8 p-1 mb-2">
+                                                            <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Sendiri</TabsTrigger>
                                                             <TabsTrigger value="makmum" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Makmum</TabsTrigger>
-                                                        )}
-                                                    </TabsList>
-                                                    <TabsContent value="sendiri" className="mt-0">
-                                                        <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
-                                                            <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
-                                                                {content.niat.munfarid.arabic}
-                                                            </p>
-                                                            <p className="text-xs text-emerald-100/70 italic mb-1">
-                                                                {content.niat.munfarid.latin}
-                                                            </p>
-                                                            <p className="text-[10px] text-white/50">
-                                                                {content.niat.munfarid.translation}
-                                                            </p>
-                                                        </div>
-                                                    </TabsContent>
-                                                    {content.niat.makmum && (
+                                                        </TabsList>
+                                                        <TabsContent value="sendiri" className="mt-0">
+                                                            <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
+                                                                <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
+                                                                    {content.niat.munfarid.arabic}
+                                                                </p>
+                                                                <p className="text-xs text-emerald-100/70 italic mb-1">
+                                                                    {content.niat.munfarid.latin}
+                                                                </p>
+                                                                <p className="text-[10px] text-white/50">
+                                                                    {content.niat.munfarid.translation}
+                                                                </p>
+                                                            </div>
+                                                        </TabsContent>
                                                         <TabsContent value="makmum" className="mt-0">
                                                             <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
                                                                 <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
@@ -157,8 +157,21 @@ export default function MissionDetailDialog({
                                                                 </p>
                                                             </div>
                                                         </TabsContent>
-                                                    )}
-                                                </Tabs>
+                                                    </Tabs>
+                                                ) : (
+                                                    // SINGLE VIEW (No Tabs) - For Puasa/General
+                                                    <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
+                                                        <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
+                                                            {content.niat.munfarid.arabic}
+                                                        </p>
+                                                        <p className="text-xs text-emerald-100/70 italic mb-1">
+                                                            {content.niat.munfarid.latin}
+                                                        </p>
+                                                        <p className="text-[10px] text-white/50">
+                                                            {content.niat.munfarid.translation}
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 

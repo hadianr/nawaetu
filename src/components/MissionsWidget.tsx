@@ -108,6 +108,7 @@ export default function MissionsWidget() {
         };
         setCompleted(newCompleted);
         localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+        window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         setIsDialogOpen(false);
     };
@@ -126,9 +127,27 @@ export default function MissionsWidget() {
 
         setCompleted(newCompleted);
         localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+        window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         setIsDialogOpen(false);
     };
+
+    // Modal Control State
+    const [showMissionModal, setShowMissionModal] = useState(false);
+    const [initialModalTab, setInitialModalTab] = useState("all");
+
+    useEffect(() => {
+        // Listener for external trigger (e.g. from RamadhanCountdown)
+        const handleOpenModal = (e: any) => {
+            if (e.detail?.tab) {
+                setInitialModalTab(e.detail.tab);
+            }
+            setShowMissionModal(true);
+        };
+
+        window.addEventListener("open_mission_modal", handleOpenModal);
+        return () => window.removeEventListener("open_mission_modal", handleOpenModal);
+    }, []);
 
     // Count completed today (for progress bar) - Widget Header
     const completedCount = missions.filter(m => isMissionCompleted(m.id, m.type)).length;
@@ -190,7 +209,7 @@ export default function MissionsWidget() {
         <div className={cn(
             "relative overflow-hidden rounded-3xl p-5 transition-all group",
             // Glassmorphism Base
-            "bg-black/20 backdrop-blur-md border border-white/5 hover:bg-black/30 hover:border-white/10"
+            "bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30 hover:border-white/20"
         )}>
             {/* Soft Glow based on gender/theme */}
             <div className={cn(
@@ -199,7 +218,7 @@ export default function MissionsWidget() {
             )} />
 
             {/* Header */}
-            <div className="flex items-center justify-between mb-4 relative z-10">
+            <div className="flex items-center justify-between mb-4 relative z-10 w-full">
                 <div className="flex items-center gap-2.5">
                     {/* Icon Container */}
                     <div className={cn(
@@ -235,7 +254,7 @@ export default function MissionsWidget() {
                     const isLocked = !isCompleted && validation.locked;
                     const isSpecial = mission.phase === 'ramadhan_prep';
 
-                    // Dynamic Urgency Logic for Sholat
+                    // ... (URGENCY LOGIC REMOVED FROM SNIPPET FOR BREVITY - KEEPING EXISTING LOGIC)
                     let urgencyNode = null;
                     if (mission.category === 'sholat' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
                         // Determine current prayer key based on ID (e.g. sholat_ashar -> Asr)
@@ -355,7 +374,7 @@ export default function MissionsWidget() {
                                             "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
                                             mission.hukum === 'wajib'
                                                 ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                                : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                                : "bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
                                         )}>
                                             {mission.hukum}
                                         </span>
@@ -410,12 +429,16 @@ export default function MissionsWidget() {
                     checkValidation={checkValidation}
                     isMissionCompleted={isMissionCompleted}
                     hijriDate={prayerData?.hijriDate}
+                    isOpen={showMissionModal}
+                    onOpenChange={setShowMissionModal}
+                    initialTab={initialModalTab}
                 >
                     <button
                         className={cn(
                             "w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium transition-all",
                             "bg-white/5 hover:bg-white/10 active:scale-95 border border-white/5 text-white/70 hover:text-white"
                         )}
+                        onClick={() => setShowMissionModal(true)}
                     >
                         <span>Lihat Semua Misi ({missions.length})</span>
                         <ChevronRight className="w-3 h-3" />

@@ -463,6 +463,20 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         gender: null,
         dalil: 'Makan dan minumlah, jangan berlebihan'
     },
+    {
+        id: 'sahur_berkah',
+        title: "Makan Sahur Berkah",
+        description: 'Makan sahur sebelum subuh untuk keberkahan',
+        category: 'ibadah',
+        xpReward: 20,
+        icon: '🥣',
+        hukum: 'sunnah',
+        type: 'daily',
+        validationType: 'manual',
+        phase: 'ramadhan_during',
+        gender: null,
+        dalil: 'Bersahurlah, karena pada sahur ada keberkahan'
+    },
 ];
 
 export const SYABAN_MISSIONS: Mission[] = [

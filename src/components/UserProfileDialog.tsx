@@ -137,7 +137,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="w-[90%] max-w-sm rounded-[32px] bg-slate-950 border border-white/10 overflow-hidden text-white backdrop-blur-3xl h-[85vh] flex flex-col p-0 shadow-2xl">
+            <DialogContent className="w-[90%] max-w-sm rounded-[32px] bg-slate-950/80 border border-white/10 overflow-hidden text-white backdrop-blur-3xl h-[85vh] flex flex-col p-0 shadow-2xl">
                 <DialogTitle className="sr-only">Profil Pengguna</DialogTitle>
 
                 {/* HEADER SECTION */}

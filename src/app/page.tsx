@@ -23,10 +23,10 @@ export default function Home() {
 
         {/* 3. Quick Status Grid */}
         <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200">
-          <div className="w-full h-28">
+          <div className="w-full h-32">
             <NextPrayerWidget />
           </div>
-          <div className="w-full h-28">
+          <div className="w-full h-32">
             <LastReadWidget />
           </div>
         </section>

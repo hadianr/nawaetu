@@ -330,7 +330,8 @@ export default function TasbihCounter() {
                             <span className="text-xs">Pilih Doa</span>
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-[90%] max-w-sm max-h-[80vh] overflow-y-auto rounded-[24px] border-white/10 bg-black/95 backdrop-blur-xl text-white">
+                    <DialogContent className="w-[90%] max-w-sm max-h-[80vh] overflow-y-auto rounded-[24px] border-white/10 bg-black/80 backdrop-blur-xl text-white">
+
                         <DialogHeader>
                             <DialogTitle className="text-center text-lg font-bold">Pilih Bacaan Zikir</DialogTitle>
                         </DialogHeader>
@@ -396,7 +397,7 @@ export default function TasbihCounter() {
             {/* REWARD DIALOG */}
             <Dialog open={showReward} onOpenChange={setShowReward}>
                 <DialogContent
-                    className="w-[90%] max-w-sm rounded-[32px] bg-slate-950/90 border border-emerald-500/20 text-white backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center shadow-2xl shadow-emerald-900/20 [&>button]:hidden"
+                    className="w-[90%] max-w-sm rounded-[32px] bg-slate-950/80 border border-emerald-500/20 text-white backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center shadow-2xl shadow-emerald-900/20 [&>button]:hidden"
                     onInteractOutside={(e) => e.preventDefault()}
                 >
                     <DialogTitle className="sr-only">Target Tercapai</DialogTitle>

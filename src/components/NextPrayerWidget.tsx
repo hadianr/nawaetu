@@ -75,35 +75,22 @@ export default function NextPrayerWidget() {
     // === ADZAN MODE (Sekarang!) ===
     if (isAdzanNow) {
         return (
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-800 border-2 border-emerald-400 p-4 h-full group transition-all animate-in zoom-in-95 duration-500 shadow-[0_0_30px_-5px_rgba(16,185,129,0.4)]">
-                {/* Dynamic Background Pulse */}
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+            <div className="relative overflow-hidden rounded-3xl bg-emerald-600 border border-emerald-500 p-4 h-full flex flex-col justify-center items-center text-center shadow-lg group">
+                {/* Minimalist Pulse */}
                 <div className="absolute inset-0 bg-emerald-400/20 animate-pulse" />
 
-                {/* Ripples */}
-                <span className="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl animate-pulse" />
-
-                <div className="relative z-10 flex flex-col h-full items-center justify-center text-center space-y-3">
-                    <div className="bg-white/20 p-2.5 rounded-full animate-bounce shadow-lg backdrop-blur-sm">
-                        <Volume2 className="w-6 h-6 text-white" />
+                <div className="relative z-10 space-y-2">
+                    <div className="bg-white/20 p-2 rounded-full w-fit mx-auto backdrop-blur-sm">
+                        <Volume2 className="w-5 h-5 text-white" />
                     </div>
-
-                    <div className="space-y-1">
-                        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-200 animate-pulse">
-                            Sedang Berlangsung
-                        </h3>
-                        <h2 className="text-2xl font-bold text-white font-serif leading-none drop-shadow-md">
+                    <div>
+                        <h2 className="text-xl font-bold text-white leading-tight">
                             Adzan {displayPrayerName}
                         </h2>
+                        <p className="text-[10px] text-white/80 mt-0.5">
+                            Selamat menunaikan sholat
+                        </p>
                     </div>
-
-                    <div className="w-full bg-black/20 rounded-full h-1 mt-2 overflow-hidden">
-                        <div className="h-full bg-emerald-300 animate-[progress_2s_ease-in-out_infinite]" style={{ width: '100%' }} />
-                    </div>
-
-                    <p className="text-[10px] text-white/80 italic">
-                        "Panggilah Sholat telah tiba..."
-                    </p>
                 </div>
             </div>
         );
@@ -112,35 +99,29 @@ export default function NextPrayerWidget() {
     // === PREPARATION MODE (< 15 minutes) ===
     if (isPreparationTime) {
         return (
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-900/50 to-emerald-950/80 border border-emerald-500/40 p-4 h-full group hover:border-emerald-400/60 transition-all animate-in fade-in duration-500">
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-emerald-500/10 animate-pulse pointer-events-none" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-900/80 to-black border border-emerald-500/30 p-4 h-full flex flex-col justify-between group">
+                {/* Header: Label */}
+                <div className="flex items-center gap-1.5 opacity-80">
+                    <Sparkles className="w-3 h-3 text-emerald-400" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                        Persiapan
+                    </span>
+                </div>
 
-                {/* Content */}
-                <div className="relative z-10 flex flex-col h-full">
-                    {/* Badge */}
-                    <div className="flex items-center gap-1.5 mb-3">
-                        <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
-                            Persiapan Sholat
-                        </span>
-                    </div>
+                {/* Main: Countdown */}
+                <div className="flex-1 flex items-center justify-center">
+                    <PrayerCountdown
+                        targetTime={data.nextPrayerTime}
+                        prayerName={data.nextPrayer}
+                        compact={true}
+                    />
+                </div>
 
-                    {/* Countdown - Prominent */}
-                    <div className="flex-1 flex items-center">
-                        <PrayerCountdown
-                            targetTime={data.nextPrayerTime}
-                            prayerName={data.nextPrayer}
-                            compact={true}
-                        />
-                    </div>
-
-                    {/* Quote - Small Footer */}
-                    <div className="mt-2 pt-2 border-t border-emerald-500/20">
-                        <p className="text-[10px] text-emerald-300/70 line-clamp-1 italic">
-                            "{activeQuote.text}" — {activeQuote.source}
-                        </p>
-                    </div>
+                {/* Footer: Context */}
+                <div className="text-center">
+                    <span className="text-[10px] font-medium text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        Menuju {displayPrayerName}
+                    </span>
                 </div>
             </div>
         );
@@ -148,25 +129,29 @@ export default function NextPrayerWidget() {
 
     // === NORMAL MODE (Time is far) ===
     return (
-        <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-5 h-full flex flex-col justify-center items-center text-center group hover:bg-black/30 hover:border-white/10 transition-all">
-            {/* Subtle decoration */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
-
+        <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex flex-col justify-between group hover:bg-black/30 hover:border-white/10 transition-all">
             {/* Header: Label */}
-            <div className="relative z-10 flex items-center gap-1.5 mb-2 opacity-60">
+            <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
                 <Clock className="w-3 h-3 text-emerald-400" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
-                    Menuju {displayPrayerName}
+                    Selanjutnya
                 </span>
             </div>
 
-            {/* Main: Countdown Timer - Centered */}
-            <div className="relative z-10 scale-110">
+            {/* Main: Countdown */}
+            <div className="flex-1 flex items-center justify-center scale-110">
                 <PrayerCountdown
                     targetTime={data.nextPrayerTime}
                     prayerName={data.nextPrayer}
                     compact={true}
                 />
+            </div>
+
+            {/* Footer: Target */}
+            <div className="text-center">
+                <span className="text-[10px] font-medium text-white/40">
+                    {displayPrayerName} {data.nextPrayerTime}
+                </span>
             </div>
         </div>
     );
