@@ -94,24 +94,36 @@ export default function SettingsPage() {
         };
     }, [audio]);
 
-    const toggleAudioPreview = (reciterId: string) => {
-        const selectedQari = QURAN_RECITER_OPTIONS.find(r => r.id.toString() === reciterId);
-        if (!selectedQari) return;
-
-        // If clicking the same one that is playing
-        if (playingId === reciterId && isPlaying) {
+    const toggleAudioPreview = (id: string, type: 'qari' | 'muadzin' = 'qari') => {
+        // Stop current audio if playing same ID
+        if (playingId === id && isPlaying) {
             stopCurrentAudio();
             return;
         }
 
-        // Stop current audio if playing
         stopCurrentAudio();
-
         setIsLoading(true);
-        setPlayingId(reciterId);
+        setPlayingId(id);
 
-        // Al-Fatihah Verse 1 sample
-        const audioUrl = selectedQari.audio_url_format.replace("{verse}", "1");
+        let audioUrl = "";
+
+        if (type === 'qari') {
+            const selectedQari = QURAN_RECITER_OPTIONS.find(r => r.id.toString() === id);
+            if (!selectedQari) {
+                stopCurrentAudio();
+                return;
+            }
+            // Al-Fatihah Verse 1 sample
+            audioUrl = selectedQari.audio_url_format.replace("{verse}", "1");
+        } else {
+            const selectedMuadzin = MUADZIN_OPTIONS.find(m => m.id === id);
+            if (!selectedMuadzin || !selectedMuadzin.audio_url) {
+                stopCurrentAudio();
+                return;
+            }
+            audioUrl = selectedMuadzin.audio_url;
+        }
+
         const newAudio = new Audio(audioUrl);
 
         newAudio.oncanplaythrough = () => {
@@ -181,6 +193,7 @@ export default function SettingsPage() {
     };
 
     const handleMuadzinChange = (value: string) => {
+        stopCurrentAudio();
         setMuadzin(value);
         localStorage.setItem("settings_muadzin", value);
     };
@@ -354,9 +367,31 @@ export default function SettingsPage() {
 
                         {/* Muadzin Select */}
                         <div className="flex items-center justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-white/60">Suara Adzan</p>
-                                <p className="text-sm text-white font-medium truncate">{currentMuadzin?.label || "Makkah"}</p>
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs text-white/60">Suara Adzan</p>
+                                    <p className="text-sm text-white font-medium truncate">{currentMuadzin?.label || "Makkah"}</p>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn(
+                                        "h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 shrink-0",
+                                        isPlaying && playingId === muadzin && !currentMuadzin?.audio_url && "opacity-50 cursor-not-allowed",
+                                        isPlaying && playingId === muadzin && "text-amber-400 bg-amber-500/10"
+                                    )}
+                                    onClick={() => toggleAudioPreview(muadzin, 'muadzin')}
+                                    disabled={isLoading || !currentMuadzin?.audio_url}
+                                >
+                                    {isLoading && playingId === muadzin ? (
+                                        <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                                    ) : isPlaying && playingId === muadzin ? (
+                                        <Volume2 className="w-4 h-4 animate-pulse" />
+                                    ) : (
+                                        <Music className="w-4 h-4" />
+                                    )}
+                                </Button>
                             </div>
                             <Select value={muadzin} onValueChange={handleMuadzinChange}>
                                 <SelectTrigger className="w-auto min-w-[100px] h-8 text-xs bg-white/5 border-white/10 text-white">

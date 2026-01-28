@@ -1,9 +1,10 @@
 // Muadzin / Adzan Sound Options
 export const MUADZIN_OPTIONS = [
-    { id: "makkah", label: "Makkah", description: "Sheikh Ali Mullah" },
-    { id: "madinah", label: "Madinah", description: "Sheikh Abdul Rahman" },
-    { id: "egypt", label: "Mesir", description: "Sheikh Abdul Basit" },
-    { id: "mishary", label: "Mishary Rashid", description: "Kuwait" },
+    { id: "makkah", label: "Makkah", description: "Sheikh Ali Mullah", audio_url: "https://raw.githubusercontent.com/achaudhry/adhan/master/Adhan-Makkah.mp3" },
+    { id: "madinah", label: "Madinah", description: "Sheikh Abdul Rahman", audio_url: "https://raw.githubusercontent.com/achaudhry/adhan/master/Adhan-Madinah.mp3" },
+    { id: "egypt", label: "Mesir", description: "Sheikh Abdul Basit", audio_url: "https://www.ayouby.com/multimedia/Call_of_Prayer/Athan_AB.mp3" },
+    { id: "mishary", label: "Mishary Rashid", description: "Kuwait", audio_url: "https://raw.githubusercontent.com/achaudhry/adhan/master/Adhan-Mishary-Rashid-Al-Afasy.mp3" },
+    { id: "muzammil", label: "Muzammil Hasballah", description: "Indonesia", audio_url: "" },
 ];
 
 // Quran Reciter Options (using quran.com API identifiers)
