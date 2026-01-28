@@ -89,36 +89,37 @@ export default function SurahList({ chapters }: SurahListProps) {
                 </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3">
                 {filteredChapters.map((chapter) => (
                     <Link
                         key={chapter.id}
                         href={`/quran/${chapter.id}`}
-                        className="group relative flex items-center justify-between overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/30 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/30 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] gap-3"
                     >
-                        <div className="flex items-center gap-4">
-                            {/* Surah Number Circle */}
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 font-bold text-emerald-400 ring-1 ring-emerald-500/20 transition-all group-hover:bg-emerald-500/20 group-hover:text-emerald-300">
-                                {chapter.id}
-                            </div>
-
-                            <div className="flex flex-col">
-                                <span className="font-bold text-white group-hover:text-emerald-100">
-                                    {chapter.name_simple}
-                                </span>
-                                <span className="text-xs text-emerald-400/80">
-                                    {chapter.translated_name.name}
-                                </span>
+                        <div className="flex items-start justify-between w-full">
+                            <div className="flex items-center gap-2">
+                                {/* Surah Number Circle */}
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-400 ring-1 ring-emerald-500/20 transition-all group-hover:bg-emerald-500/20 group-hover:text-emerald-300">
+                                    {chapter.id}
+                                </div>
+                                <div className="flex flex-col min-w-0">
+                                    <span className="font-bold text-sm text-white truncate group-hover:text-emerald-100">
+                                        {chapter.name_simple}
+                                    </span>
+                                    <span className="text-[10px] text-emerald-400/80 truncate">
+                                        {chapter.translated_name.name}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="text-right">
-                            <span className="font-amiri text-xl text-white/90">
-                                {chapter.name_arabic}
-                            </span>
-                            <p className="mt-1 text-[10px] text-white/40">
+                        <div className="flex items-end justify-between w-full">
+                            <p className="text-[9px] text-white/40">
                                 {chapter.verses_count} Ayat • {chapter.revelation_place === "makkah" ? "Mekah" : "Madinah"}
                             </p>
+                            <span className="font-amiri text-lg text-white/90 leading-none">
+                                {chapter.name_arabic}
+                            </span>
                         </div>
                     </Link>
                 ))}

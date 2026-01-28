@@ -273,7 +273,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             <style>{tajweedStyles}</style>
 
             {/* Sticky Header */}
-            <div className="sticky top-0 z-20 -mx-4 flex items-center justify-between border-b border-white/10 bg-black/60 px-4 py-4 backdrop-blur-xl md:static md:mx-0 md:rounded-xl md:border md:bg-white/5 md:px-6">
+            <div className="sticky top-0 z-20 -mx-4 flex items-center justify-between border-b border-white/10 bg-black/60 px-3 py-2 backdrop-blur-xl md:static md:mx-0 md:rounded-xl md:border md:bg-white/5 md:px-6 md:py-4">
                 {/* Left: Back Button */}
                 <div className="shrink-0">
                     <Button variant="ghost" size="icon" asChild className="rounded-full text-white/70 hover:bg-white/10 hover:text-white" title="Kembali ke Daftar Surat">
@@ -317,7 +317,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         <button
                             onClick={() => setTajweedMode(!tajweedMode)}
                             className={`
-                                h-10 px-4 rounded-full border text-xs font-medium transition-all
+                                h-9 w-9 md:w-auto md:h-10 md:px-4 justify-center rounded-full border text-xs font-medium transition-all
                                 flex items-center gap-x-2
                                 ${tajweedMode
                                     ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
@@ -325,10 +325,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             `}
                             title="Aktifkan Mode Tajwid Berwarna"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 md:w-3.5 md:h-3.5">
                                 <path fillRule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813a3.75 3.75 0 002.576-2.576l.813-2.846A.75.75 0 019 4.5zM6.97 15.03a.75.75 0 10-1.06-1.06l-1.47 1.47a.75.75 0 101.06 1.06l1.47-1.47zm.002-12.002a.75.75 0 10-1.06 1.06l1.47 1.47a.75.75 0 101.06-1.06l-1.47-1.47zm12 0a.75.75 0 10-1.06 1.06l1.47 1.47a.75.75 0 101.06-1.06l-1.47-1.47z" clipRule="evenodd" />
                             </svg>
-                            <span>Tajwid</span>
+                            <span className="hidden md:inline">Tajwid</span>
                         </button>
                     </div>
 
