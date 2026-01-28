@@ -150,7 +150,33 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [isPlaying, setIsPlaying] = useState(false);
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [tajweedMode, setTajweedMode] = useState(false);
+    const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
     const audioRef = useRef<HTMLAudioElement>(null);
+
+    // Font size configurations
+    const fontSizes = {
+        small: {
+            arabic: 'text-2xl md:text-3xl',
+            arabicLeading: 'leading-loose md:leading-[2]',
+            translation: 'text-xs md:text-sm',
+            mushaf: 'text-xl md:text-2xl',
+            mushafLeading: 'leading-[3rem] md:leading-[3.5rem]'
+        },
+        medium: {
+            arabic: 'text-3xl md:text-4xl',
+            arabicLeading: 'leading-loose md:leading-[2.5]',
+            translation: 'text-sm md:text-base',
+            mushaf: 'text-2xl md:text-3xl',
+            mushafLeading: 'leading-[3.5rem] md:leading-[4.5rem]'
+        },
+        large: {
+            arabic: 'text-4xl md:text-5xl',
+            arabicLeading: 'leading-loose md:leading-[3]',
+            translation: 'text-base md:text-lg',
+            mushaf: 'text-3xl md:text-4xl',
+            mushafLeading: 'leading-[4rem] md:leading-[5rem]'
+        }
+    };
 
     // Get current reciter name for display
     const currentReciterName = QURAN_RECITER_OPTIONS.find(r => r.id === currentReciterId)?.label || "Mishary Rashid Alafasy";
@@ -171,7 +197,18 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         if (savedReciter) {
             setSelectedReciter(parseInt(savedReciter));
         }
+
+        // Load font size setting
+        const savedFontSize = localStorage.getItem("quran_font_size");
+        if (savedFontSize && ['small', 'medium', 'large'].includes(savedFontSize)) {
+            setFontSize(savedFontSize as 'small' | 'medium' | 'large');
+        }
     }, []);
+
+    const handleFontSizeChange = (size: 'small' | 'medium' | 'large') => {
+        setFontSize(size);
+        localStorage.setItem("quran_font_size", size);
+    };
 
     useEffect(() => {
         const saved = localStorage.getItem("quran_last_read");
@@ -352,6 +389,30 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </svg>
                             <span className="hidden md:inline">Tajwid</span>
                         </button>
+
+                        {/* Font Size Selector */}
+                        <div className="flex items-center gap-0.5 pl-3">
+                            {[
+                                { size: 'small' as const, label: 'A-', title: 'Kecil' },
+                                { size: 'medium' as const, label: 'A', title: 'Sedang' },
+                                { size: 'large' as const, label: 'A+', title: 'Besar' }
+                            ].map(({ size, label, title }) => (
+                                <button
+                                    key={size}
+                                    onClick={() => handleFontSizeChange(size)}
+                                    className={`
+                                        h-9 w-9 flex items-center justify-center rounded-full text-xs font-bold transition-all
+                                        ${fontSize === size
+                                            ? 'bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
+                                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                                        }
+                                    `}
+                                    title={`Ukuran ${title}`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {audioUrl ? (
@@ -401,7 +462,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 // MUSHAF MODE: Continuous Text Block
                 <div className="p-4 md:p-8 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
                     <div
-                        className="text-right text-2xl leading-[3.5rem] md:text-3xl md:leading-[4.5rem] font-amiri text-justify text-slate-200"
+                        className={`text-right ${fontSizes[fontSize].mushaf} ${fontSizes[fontSize].mushafLeading} font-amiri text-justify text-slate-200 transition-all duration-200`}
                         dir="rtl"
                     >
                         {verses.map((verse) => (
@@ -432,7 +493,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         >
                             {/* Arabic */}
                             <div className="text-right" dir="rtl">
-                                <p className="font-amiri text-3xl leading-loose text-white md:text-4xl md:leading-[2.5] flex flex-row items-center flex-wrap gap-2">
+                                <p className={`font-amiri ${fontSizes[fontSize].arabic} ${fontSizes[fontSize].arabicLeading} text-white flex flex-row items-center flex-wrap gap-2 transition-all duration-200`}>
                                     <span
                                         className={tajweedMode ? "tajweed-text" : ""}
                                         dangerouslySetInnerHTML={{
@@ -471,7 +532,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                             {/* Translation */}
                             <div className="flex items-start justify-between gap-x-4 group">
-                                <p className="text-sm leading-relaxed text-slate-400 md:text-base">
+                                <p className={`${fontSizes[fontSize].translation} leading-relaxed text-slate-400 transition-all duration-200`}>
                                     {
                                         cleanTranslation((verse.translations.find((t) => t.resource_id === 33) || verse.translations[0])?.text.replace(/<[^>]*>?/gm, ""))
                                     }
