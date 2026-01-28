@@ -24,7 +24,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string) => {
         try {
             setLoading(true);
-            const today = new Date().toLocaleDateString("en-GB").split("/").reverse().join("-"); // YYYY-MM-DD
+            const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
 
             // fetch location name if not cached
             let locationName = cachedLocationName || "Lokasi Anda";
@@ -184,7 +184,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
     useEffect(() => {
         // Attempt to load cached prayer data for today IMMEDIATELY before even checking location
-        const today = new Date().toLocaleDateString("en-GB").split("/").reverse().join("-");
+        const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
         const cachedData = localStorage.getItem("prayer_data");
         if (cachedData) {
             const { date, data: savedData, locationName } = JSON.parse(cachedData);

@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Check, Sparkles, Trophy } from "lucide-react";
-import { getMissionsForGender, Mission, Gender, FEMALE_MISSIONS, MALE_MISSIONS } from "@/data/missions-data";
+import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
+import { getMissionsForGender, Mission, Gender } from "@/data/missions-data";
 import { addXP } from "@/lib/leveling";
+import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import MissionDetailDialog from "@/components/MissionDetailDialog";
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -18,10 +21,17 @@ export default function MisiPage() {
     const [gender, setGender] = useState<Gender>(null);
     const [missions, setMissions] = useState<Mission[]>([]);
     const [completed, setCompleted] = useState<CompletedMissions>({});
+    const [today, setToday] = useState<string>("");
 
-    const today = new Date().toISOString().split('T')[0];
+    // Dialog State
+    const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const { data: prayerData } = usePrayerTimes();
 
     useEffect(() => {
+        setToday(new Date().toISOString().split('T')[0]);
+
         const savedGender = localStorage.getItem("user_gender") as Gender;
         setGender(savedGender);
         setMissions(getMissionsForGender(savedGender));
@@ -38,28 +48,73 @@ export default function MisiPage() {
         return completed[missionId]?.date === today;
     };
 
-    const handleToggleMission = (mission: Mission) => {
-        const isCompleted = isMissionCompletedToday(mission.id);
-
-        if (isCompleted) {
-            const newCompleted = { ...completed };
-            delete newCompleted[mission.id];
-            setCompleted(newCompleted);
-            localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
-        } else {
-            addXP(mission.xpReward);
-            window.dispatchEvent(new CustomEvent("xp_updated"));
-
-            const newCompleted = {
-                ...completed,
-                [mission.id]: {
-                    completedAt: new Date().toISOString(),
-                    date: today
-                }
-            };
-            setCompleted(newCompleted);
-            localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+    // --- Validation Logic ---
+    const checkValidation = (mission: Mission): { locked: boolean; reason?: string } => {
+        if (!mission.validationType || mission.validationType === 'manual' || mission.validationType === 'auto') {
+            return { locked: false };
         }
+
+        if (mission.validationType === 'time' && mission.validationConfig?.afterPrayer && prayerData?.prayerTimes) {
+            const prayerTimeStr = prayerData.prayerTimes[mission.validationConfig.afterPrayer]; // "04:30"
+            if (!prayerTimeStr) return { locked: true, reason: "Waktu tidak tersedia" };
+
+            const now = new Date();
+            const [pHours, pMinutes] = prayerTimeStr.split(':').map(Number);
+            const prayerDate = new Date();
+            prayerDate.setHours(pHours, pMinutes, 0, 0);
+
+            if (now < prayerDate) {
+                return { locked: true, reason: `Belum masuk waktu ${mission.validationConfig.afterPrayer}` };
+            }
+        }
+
+        if (mission.validationType === 'time' && mission.validationConfig?.timeWindow) {
+            const nowHour = new Date().getHours();
+            const { start, end } = mission.validationConfig.timeWindow;
+            if (nowHour < start || nowHour >= end) {
+                return { locked: true, reason: `Tersedia jam ${start}:00 - ${end}:00` };
+            }
+        }
+
+        if (mission.validationType === 'day' && mission.validationConfig?.allowedDays) {
+            const currentDay = new Date().getDay(); // 0=Sun, 1=Mon...
+            if (!mission.validationConfig.allowedDays.includes(currentDay)) {
+                return { locked: true, reason: "Bukan jadwal hari ini" };
+            }
+        }
+
+        return { locked: false };
+    };
+
+    const handleMissionClick = (mission: Mission) => {
+        setSelectedMission(mission);
+        setIsDialogOpen(true);
+    };
+
+    const handleCompleteMission = () => {
+        if (!selectedMission) return;
+
+        const mission = selectedMission;
+        addXP(mission.xpReward);
+        window.dispatchEvent(new CustomEvent("xp_updated"));
+
+        // Update streak (only on first mission of the day)
+        const completedToday = Object.values(completed).filter(c => c.date === today).length;
+        if (completedToday === 0) {
+            updateStreak();
+        }
+
+        const newCompleted = {
+            ...completed,
+            [mission.id]: {
+                completedAt: new Date().toISOString(),
+                date: today
+            }
+        };
+        setCompleted(newCompleted);
+        localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+
+        setIsDialogOpen(false);
     };
 
     const completedCount = missions.filter(m => isMissionCompletedToday(m.id)).length;
@@ -79,23 +134,27 @@ export default function MisiPage() {
     const renderMission = (mission: Mission) => {
         const isCompleted = isMissionCompletedToday(mission.id);
         const isGenderSpecific = mission.gender !== null;
+        const validation = checkValidation(mission);
+        const isLocked = !isCompleted && validation.locked;
 
         return (
             <button
                 key={mission.id}
-                onClick={() => handleToggleMission(mission)}
+                onClick={() => handleMissionClick(mission)}
                 className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
                     isCompleted
                         ? `bg-${theme.accent}-500/10 border-${theme.accent}-500/20`
-                        : "bg-white/5 border-white/10 hover:border-white/20"
+                        : isLocked
+                            ? "bg-white/[0.02] border border-white/5 opacity-60 cursor-not-allowed"
+                            : "bg-white/5 border-white/10 hover:border-white/20"
                 )}
                 style={isCompleted ? {
                     backgroundColor: gender === 'female' ? 'rgba(236,72,153,0.1)' : gender === 'male' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)',
                     borderColor: gender === 'female' ? 'rgba(236,72,153,0.2)' : gender === 'male' ? 'rgba(59,130,246,0.2)' : 'rgba(16,185,129,0.2)'
                 } : {}}
             >
-                <span className={cn("text-2xl", isCompleted && "grayscale")}>
+                <span className={cn("text-2xl", isCompleted && "grayscale", isLocked && "opacity-50 grayscale")}>
                     {mission.icon}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -116,9 +175,13 @@ export default function MisiPage() {
                             </span>
                         )}
                     </div>
-                    <p className="text-[10px] text-white/40">{mission.description}</p>
-                    {mission.dalil && (
-                        <p className="text-[9px] text-white/30 mt-0.5 italic">{mission.dalil}</p>
+                    {isLocked ? (
+                        <div className="flex items-center gap-1 mt-1 text-amber-500/70">
+                            <AlertCircle className="w-3 h-3" />
+                            <p className="text-[10px] font-medium">{validation.reason}</p>
+                        </div>
+                    ) : (
+                        <p className="text-[10px] text-white/40">{mission.description}</p>
                     )}
                 </div>
                 <div className="flex flex-col items-end gap-1">
@@ -226,6 +289,18 @@ export default function MisiPage() {
                             💡 Pilih jenis kelamin di <Link href="/atur" className="underline">Pengaturan</Link> untuk misi yang lebih personal
                         </p>
                     </div>
+                )}
+
+                {selectedMission && (
+                    <MissionDetailDialog
+                        mission={selectedMission}
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        isCompleted={isMissionCompletedToday(selectedMission.id)}
+                        isLocked={checkValidation(selectedMission).locked}
+                        lockReason={checkValidation(selectedMission).reason}
+                        onComplete={handleCompleteMission}
+                    />
                 )}
 
             </div>
