@@ -2,8 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff, BookOpen, AlignJustify, Square, Copy, Check, CheckCircle, Palette, Bookmark } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff, BookOpen, AlignJustify, Square, Copy, Check, CheckCircle, Palette, Bookmark, Share2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import VerseShareDialog from "./VerseShareDialog";
 import { Chapter } from "@/components/quran/SurahList";
 import { AyahMarker } from "./AyahMarker";
 import { surahNames } from "@/lib/surahData";
@@ -92,6 +96,34 @@ const tajweedStyles = `
   /* Other rules */
   .tajweed-text .sl, .tajweed-text .tajweed-sl { color: #facc15 !important; font-weight: bold !important; } /* Silah - Yellow */
   .tajweed-text .pp, .tajweed-text .tajweed-pp { color: #fb923c !important; font-weight: bold !important; } /* Waqf - Orange */
+
+  /* Highlight Animation */
+  @keyframes highlight-pulse {
+      0% { background-color: rgba(16, 185, 129, 0.4); }
+      50% { background-color: rgba(16, 185, 129, 0.2); }
+      100% { background-color: transparent; }
+  }
+  
+  .highlight-verse {
+      animation: highlight-pulse 2s ease-out;
+      border-radius: 0.5rem;
+      position: relative;
+  }
+  
+  .highlight-verse::before {
+      content: '';
+      position: absolute;
+      left: -4px; right: -4px; top: -4px; bottom: -4px;
+      border: 2px solid rgba(16, 185, 129, 0.6);
+      border-radius: 0.75rem;
+      pointer-events: none;
+      animation: fade-out-border 2s ease-out forwards;
+  }
+
+  @keyframes fade-out-border {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.02); }
+  }
 `;
 
 const cleanTajweedText = (htmlText: string) => {
@@ -151,7 +183,44 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [tajweedMode, setTajweedMode] = useState(false);
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
+    // State
+    const [bookmarkedVerseKey, setBookmarkedVerseKey] = useState<string | null>(null);
+    const [sharingVerse, setSharingVerse] = useState<Verse | null>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
+    const [isJumpDialogOpen, setIsJumpDialogOpen] = useState(false);
+    const [jumpTarget, setJumpTarget] = useState("");
+
+    const handleJumpToVerse = (e: React.FormEvent) => {
+        e.preventDefault();
+        const verseNum = parseInt(jumpTarget);
+        if (!verseNum || verseNum < 1 || verseNum > chapter.verses_count) return;
+
+        setIsJumpDialogOpen(false);
+        setJumpTarget("");
+
+        const elementId = `${chapter.id}:${verseNum}`;
+        const element = document.getElementById(elementId);
+
+        const ITEMS_PER_PAGE = 20;
+        const targetPage = Math.ceil(verseNum / ITEMS_PER_PAGE);
+
+        if (targetPage !== currentPage) {
+            // Navigate to different page with hash
+            window.location.href = `?page=${targetPage}#${chapter.id}:${verseNum}`;
+            return;
+        }
+
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.querySelectorAll('.highlight-verse').forEach(el => el.classList.remove('highlight-verse'));
+            setTimeout(() => {
+                element.classList.add('highlight-verse');
+                setTimeout(() => element.classList.remove('highlight-verse'), 3000);
+            }, 100);
+        } else {
+            window.location.reload();
+        }
+    };
 
     // Font size configurations
     const fontSizes = {
@@ -186,7 +255,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const verseAudioRef = useRef<HTMLAudioElement | null>(null);
 
     // Bookmark State
-    const [bookmarkedVerseKey, setBookmarkedVerseKey] = useState<string | null>(null);
+
 
     // Reciter Setting
     const [selectedReciter, setSelectedReciter] = useState(DEFAULT_SETTINGS.reciter);
@@ -359,6 +428,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 <div className="shrink-0 flex items-center gap-x-4">
                     {/* Group: Visual Settings */}
                     <div className="flex items-center gap-x-2 border-r border-white/10 pr-4">
+                        {/* Jump Verse Toggle */}
+                        <button
+                            onClick={() => setIsJumpDialogOpen(true)}
+                            className="h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all mr-2"
+                            title="Cari Ayat"
+                        >
+                            <Search className="h-4 w-4" />
+                        </button>
+
                         {/* View Mode Toggle */}
                         <button
                             onClick={() => setViewMode(viewMode === 'list' ? 'mushaf' : 'list')}
@@ -518,6 +596,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                             )}
                                         </button>
 
+                                        {/* Share Button */}
+                                        <button
+                                            onClick={() => setSharingVerse(verse)}
+                                            className="p-1.5 rounded-full text-slate-500 hover:text-pink-400 transition-colors flex items-center justify-center focus:outline-none"
+                                            title="Bagikan Ayat"
+                                        >
+                                            <Share2 className="w-4 h-4" />
+                                        </button>
+
                                         {/* Bookmark Button */}
                                         <button
                                             onClick={() => handleBookmark(verse)}
@@ -625,6 +712,44 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     </div>
                 </div>
             )}
+            {/* Jump To Verse Dialog */}
+            <Dialog open={isJumpDialogOpen} onOpenChange={setIsJumpDialogOpen}>
+                <DialogContent className="max-w-xs bg-slate-950 border-white/10 text-white">
+                    <DialogHeader>
+                        <DialogTitle>Lompat ke Ayat</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleJumpToVerse} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="verse-num" className="text-slate-400">Nomor Ayat (1-{chapter.verses_count})</Label>
+                            <Input
+                                id="verse-num"
+                                type="number"
+                                min={1}
+                                max={chapter.verses_count}
+                                value={jumpTarget}
+                                onChange={(e) => setJumpTarget(e.target.value)}
+                                placeholder="Contoh: 10"
+                                className="bg-slate-900 border-white/10 focus:ring-[rgb(var(--color-primary))]"
+                                autoFocus
+                            />
+                        </div>
+                        <DialogFooter>
+                            <Button type="submit" className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))]">
+                                Cari Ayat
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* Verse Share Dialog */}
+            <VerseShareDialog
+                open={!!sharingVerse}
+                onOpenChange={(open) => !open && setSharingVerse(null)}
+                verse={sharingVerse}
+                surahName={chapter.name_simple}
+                surahNumber={chapter.id}
+            />
         </div>
     );
 }
