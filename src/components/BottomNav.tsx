@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, BookOpen, Compass, Settings, Fingerprint } from "lucide-react";
@@ -7,6 +8,11 @@ import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
     const pathname = usePathname();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const navItems = [
         { href: "/", label: "Beranda", icon: Home },
@@ -19,7 +25,7 @@ export default function BottomNav() {
     return (
         <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-white/10 bg-black/80 backdrop-blur-xl pb-safe">
             <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2">
-                {navItems.map(({ href, label, icon: Icon }) => {
+                {mounted && navItems.map(({ href, label, icon: Icon }) => {
                     const isActive = href === "/"
                         ? pathname === "/"
                         : pathname.startsWith(href);

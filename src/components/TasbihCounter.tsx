@@ -148,44 +148,52 @@ export default function TasbihCounter() {
             {/* Tap Area Overlay */}
             <div className="absolute inset-0 z-0 cursor-pointer active:bg-white/5 transition-colors" onClick={handleIncrement} />
 
-            {/* Header Area */}
-            <div className="w-full text-center z-10 pointer-events-none mb-2 shrink-0">
-                <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white mb-0.5">Tasbih Digital</h1>
-                <p className="text-white/40 text-[9px] md:text-xs uppercase tracking-widest">Zikir Penenang Hati</p>
+            {/* Top: Branding + Zikir Text */}
+            <div className="w-full text-center z-10 pointer-events-none mt-1 xs:mt-6 shrink-0">
+                <div className="mb-0.5 xs:mb-2">
+                    <h1 className="text-lg xs:text-xl font-bold tracking-tight text-white/90 leading-tight">Tasbih Digital</h1>
+                    <p className="text-[9px] xs:text-[10px] text-white/40 uppercase tracking-[0.2em]">Zikir Penenang Hati</p>
+                </div>
 
-                {activeZikir && (
-                    <div className="mt-4 flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500">
-                        <h2 className="text-3xl xs:text-4xl md:text-5xl font-bold text-white font-serif leading-tight">
-                            {activeZikir.arab}
-                        </h2>
-                        <p className="text-[rgb(var(--color-primary-light))] font-extrabold text-sm md:text-base tracking-tight uppercase mt-1">
-                            {activeZikir.latin}
-                        </p>
-                        <p className="text-white/30 text-[10px] md:text-xs italic line-clamp-1 max-w-[80%] mt-0.5">
-                            {activeZikir.tadabbur}
-                        </p>
+                {activeZikir ? (
+                    <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2">
+                        <div className="px-4 pt-4 xs:pt-20 pb-0.5 xs:pb-1"> {/* Fills taller screens (390px+ width often = 800px+ height) */}
+                            <h2 className="text-2xl xs:text-5xl font-bold text-white drop-shadow-2xl font-serif leading-none">
+                                {activeZikir.arab}
+                            </h2>
+                        </div>
+                        <div className="mt-1 xs:mt-3 flex flex-col items-center">
+                            <p className="text-[rgb(var(--color-primary-light))] font-extrabold text-[10px] xs:text-base tracking-tight uppercase">
+                                {activeZikir.latin}
+                            </p>
+                            <p className="text-white/40 text-[8px] xs:text-xs italic line-clamp-1 max-w-[85%] mt-0.5 xs:mt-1.5">
+                                {activeZikir.tadabbur}
+                            </p>
+                        </div>
                     </div>
+                ) : (
+                    <p className="text-white/20 text-[10px] italic">Mode Bebas</p>
                 )}
             </div>
 
-            {/* Middle: Circle - Highly responsive size */}
-            <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0">
-                <div className="relative w-44 h-44 xs:w-56 md:w-80 flex items-center justify-center pointer-events-auto shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-full">
-                    {/* Progress Circle Blur */}
-                    <div className="absolute inset-[-10px] rounded-full blur-2xl bg-emerald-500/5 transition-all duration-700" />
+            {/* Middle: Digital Counter - Responsive Size */}
+            <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10">
+                {/* Balanced Size: SE (375px) = w-52 (208px) fill space. Modern iPhones (390px+, xs) = w-64. Large Desktop = w-80 */}
+                <div className="relative w-52 h-52 xs:w-64 xs:h-64 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto shadow-[0_0_60px_rgba(0,0,0,0.6)] rounded-full transition-all duration-300">
+                    <div className="absolute inset-[-10px] rounded-full blur-3xl bg-emerald-500/5 transition-all duration-700" />
 
-                    <div className="absolute inset-0 rounded-full border-[8px] md:border-[12px] border-white/5" />
+                    <div className="absolute inset-0 rounded-full border-[6px] md:border-[12px] border-white/5" />
 
                     {target && (
-                        <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" viewBox="0 0 100 100">
+                        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
                             <circle
-                                cx="50" cy="50" r="46"
+                                cx="50" cy="50" r="46.5"
                                 fill="transparent"
                                 stroke="rgb(var(--color-primary))"
-                                strokeWidth="4"
+                                strokeWidth="3"
                                 strokeLinecap="round"
-                                strokeDasharray="289"
-                                strokeDashoffset={289 - (289 * progress) / 100}
+                                strokeDasharray="292"
+                                strokeDashoffset={292 - (292 * progress) / 100}
                                 className="transition-all duration-300 ease-out"
                             />
                         </svg>
@@ -193,15 +201,17 @@ export default function TasbihCounter() {
 
                     <button
                         onClick={(e) => { e.stopPropagation(); handleIncrement(); }}
-                        className="absolute inset-2 md:inset-4 rounded-full bg-gradient-to-br from-emerald-950 to-black border border-emerald-500/20 active:scale-[0.97] transition-all duration-75 flex flex-col items-center justify-center group z-20"
+                        className="absolute inset-1.5 md:inset-4 rounded-full bg-gradient-to-br from-emerald-950 to-black border border-emerald-500/10 active:scale-95 transition-transform duration-75 flex flex-col items-center justify-center group z-20 shadow-xl"
                     >
-                        <span className="text-white/30 text-[8px] md:text-xs font-bold tracking-widest uppercase mb-1">
-                            {activeZikir?.label || "Counter"}
+                        <span className="text-white/30 text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5">
+                            {activeZikir ? activeZikir.label : "Counter"}
                         </span>
-                        <span className="text-6xl xs:text-7xl md:text-9xl font-mono font-bold text-white tracking-tighter drop-shadow-2xl">
+                        <span className="text-7xl xs:text-8xl md:text-9xl font-mono font-bold text-white tracking-tighter drop-shadow-2xl">
                             {count}
                         </span>
-                        <div className="mt-1 text-emerald-500/40 text-[9px] animate-pulse">Tap</div>
+                        <div className="mt-1 text-[rgb(var(--color-primary))]/40 text-[8px] md:text-sm animate-pulse">
+                            Tap
+                        </div>
                     </button>
                 </div>
             </div>
@@ -287,18 +297,57 @@ export default function TasbihCounter() {
 
             {/* Achievement Layer */}
             <Dialog open={showReward} onOpenChange={setShowReward}>
-                <DialogContent className="w-[85%] max-w-xs rounded-[40px] bg-neutral-900/90 border-emerald-500/20 text-white backdrop-blur-2xl flex flex-col items-center p-8 text-center [&>button]:hidden shadow-2xl">
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20">
-                        <Check className="w-8 h-8 text-emerald-400" />
+                <DialogContent className="w-[85%] max-w-xs rounded-[40px] bg-neutral-900/95 border-emerald-500/20 text-white backdrop-blur-2xl flex flex-col items-center p-6 md:p-8 text-center [&>button.absolute]:hidden shadow-2xl">
+                    <DialogHeader className="flex flex-col items-center">
+                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20">
+                            <Check className="w-8 h-8 text-emerald-400" />
+                        </div>
+                        <DialogTitle className="text-2xl font-bold mb-1">Alhamdulillah!</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-white/40 text-sm mb-6 px-4">Target {target}x tercapai dengan baik.</p>
+
+                    <div className="flex flex-row items-stretch gap-3 w-full">
+                        {(() => {
+                            const currentIndex = activeZikir ? ZIKIR_PRESETS.findIndex(z => z.label === activeZikir.label) : -1;
+                            const nextZikir = currentIndex !== -1 && currentIndex < ZIKIR_PRESETS.length - 1
+                                ? ZIKIR_PRESETS[currentIndex + 1]
+                                : null;
+
+                            return (
+                                <>
+                                    {nextZikir ? (
+                                        <>
+                                            <Button
+                                                onClick={() => {
+                                                    handlePresetSelect(nextZikir);
+                                                    setShowReward(false);
+                                                }}
+                                                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-14 rounded-2xl flex flex-col items-center justify-center p-0"
+                                            >
+                                                <span className="text-[9px] opacity-70 uppercase tracking-widest mb-0.5">Lanjut ke</span>
+                                                <span className="text-sm">{nextZikir.label}</span>
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() => { setCount(0); setShowReward(false); }}
+                                                className="w-24 text-white/30 hover:text-white/60 hover:bg-transparent text-[10px] font-bold uppercase tracking-wider h-14 flex flex-col items-center justify-center p-0"
+                                            >
+                                                <RotateCcw className="h-3.5 w-3.5 mb-1" />
+                                                Ulangi
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Button
+                                            onClick={() => { setCount(0); setShowReward(false); }}
+                                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 rounded-2xl w-full"
+                                        >
+                                            Ulangi Bacaan
+                                        </Button>
+                                    )}
+                                </>
+                            );
+                        })()}
                     </div>
-                    <h2 className="text-2xl font-bold mb-1">Alhamdulillah!</h2>
-                    <p className="text-white/40 text-sm mb-8 px-4">Target {target}x tercapai dengan baik.</p>
-                    <Button
-                        onClick={() => { setCount(0); setShowReward(false); }}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 rounded-2xl w-full"
-                    >
-                        Lanjutkan
-                    </Button>
                 </DialogContent>
             </Dialog>
         </div>
