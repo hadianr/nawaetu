@@ -78,7 +78,7 @@ const AVAILABLE_TITLES = [
         color: "text-[rgb(var(--color-primary-light))]",
         minLevel: 5,
         description: "Berjuang menjaga hati di tengah riuh dunia, belajar ikhlas dalam setiap sujud dan sedekah.",
-        rewards: ["Unlock Statistik Mingguan", "Akses 'Streak Saver' [PREMIUM]"]
+        rewards: ["Unlock Statistik Mingguan", "Akses 'Streak Saver' [PRO]"]
     },
     {
         id: "pejuang",
@@ -87,7 +87,7 @@ const AVAILABLE_TITLES = [
         color: "text-[rgb(var(--color-primary-light))]",
         minLevel: 10,
         description: "Tak lagi goyah oleh suasana hati. Ibadah telah menjadi kebutuhan, bukan sekadar kewajiban.",
-        rewards: ["Unlock Kustomisasi Tema [PREMIUM]", "Mode Fokus [PREMIUM]"]
+        rewards: ["Unlock Kustomisasi Tema [PRO]", "Mode Fokus [PRO]"]
     },
     {
         id: "ridha",
@@ -96,7 +96,7 @@ const AVAILABLE_TITLES = [
         color: "text-violet-400",
         minLevel: 15,
         description: "Mata tak lagi tertuju pada surga atau neraka, melainkan pada senyum ridha Sang Pencipta. Lelah menjadi Lillah.",
-        rewards: ["Unlock Fitur 'Target Hafalan'", "Analisis Ibadah Bulanan [PREMIUM]"]
+        rewards: ["Unlock Fitur 'Target Hafalan'", "Analisis Ibadah Bulanan [PRO]"]
     },
     {
         id: "cahaya",
@@ -105,7 +105,7 @@ const AVAILABLE_TITLES = [
         color: "text-amber-400",
         minLevel: 20,
         description: "Ketaatan yang memancar, memberi ketenangan bagi sekitar. Lisannya basah oleh dzikir, hatinya sibuk dengan pikir.",
-        rewards: ["Akses Mentor AI (Beta) [PREMIUM]", "Rekomendasi Misi Personal"]
+        rewards: ["Akses Mentor AI (Beta) [PRO]", "Rekomendasi Misi Personal"]
     },
     {
         id: "kekasih",
@@ -114,7 +114,7 @@ const AVAILABLE_TITLES = [
         color: "text-yellow-300",
         minLevel: 30,
         description: "Puncak perjalanan cinta. Ketika Allah menjadi pendengaran, penglihatan, dan tujuannya.",
-        rewards: ["Badge Mahkota Abadi", "Efek Visual 'Glow' Avatar [PREMIUM]"]
+        rewards: ["Badge Mahkota Abadi", "Efek Visual 'Glow' Avatar [PRO]"]
     },
 ];
 
@@ -244,8 +244,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             ]
         },
         premium: {
-            label: "Premium",
-            description: "Exclusive premium designs",
+            label: "PRO Collection",
+            description: "Exclusive PRO designs",
             locked: !isPremium,
             avatars: [
                 // Luxury gradient tier
@@ -343,8 +343,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                             <div className="space-y-3">
                                 <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Privilege & Rewards</h3>
                                 {selectedTier.rewards?.map((reward, i) => {
-                                    const isPrem = reward.includes("[PREMIUM]");
-                                    const displayReward = reward.replace(" [PREMIUM]", "");
+                                    const isPrem = reward.includes("[PRO]");
+                                    const displayReward = reward.replace(" [PRO]", "");
                                     const isLockedPremium = isPrem && !isPremium;
 
                                     return (
@@ -373,7 +373,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                     {displayReward}
                                                 </span>
                                                 {isLockedPremium && (
-                                                    <p className="text-[10px] text-amber-500/60 leading-none mt-0.5">Premium Only</p>
+                                                    <p className="text-[10px] text-amber-500/60 leading-none mt-0.5">PRO Only</p>
                                                 )}
                                             </div>
                                             {isLockedPremium && <Crown className="w-3 h-3 text-amber-500" />}

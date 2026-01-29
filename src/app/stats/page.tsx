@@ -47,7 +47,7 @@ export default function StatsPage() {
                     {isPremium && (
                         <div className="flex items-center gap-1 px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded-full">
                             <Crown className="w-3 h-3 text-amber-400" />
-                            <span className="text-xs font-bold text-amber-400">Premium</span>
+                            <span className="text-xs font-bold text-amber-400">PRO</span>
                         </div>
                     )}
                 </div>
@@ -135,7 +135,7 @@ export default function StatsPage() {
                         {!isPremium && (
                             <div className="flex items-center gap-1 px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded-full">
                                 <Lock className="w-3 h-3 text-amber-400" />
-                                <span className="text-xs font-bold text-amber-400">Premium</span>
+                                <span className="text-xs font-bold text-amber-400">PRO</span>
                             </div>
                         )}
                     </div>
@@ -177,7 +177,7 @@ export default function StatsPage() {
                                         className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-black font-bold"
                                     >
                                         <Crown className="w-4 h-4 mr-2" />
-                                        Upgrade Premium
+                                        Upgrade PRO
                                     </Button>
                                 </div>
                             </div>

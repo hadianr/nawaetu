@@ -81,8 +81,8 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
     const benefits = [
         {
             icon: Palette,
-            title: "6 Tema Premium",
-            desc: "Midnight, Sunset, Lavender, Ocean, Royal.",
+            title: "Koleksi Tema PRO",
+            desc: "Akses semua tema eksklusif: Midnight, Sunset, Lavender, Ocean, dan Royal.",
             color: "text-[rgb(var(--color-primary-light))]",
             bg: "bg-[rgb(var(--color-primary))]/10"
         },
@@ -137,7 +137,7 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
                 {/* Content with space for overlapping crown */}
                 <div className="px-6 pt-10 pb-6">
                     <DialogTitle className="text-center text-xl font-bold mb-1">
-                        Nawaetu Premium 🚀
+                        Nawaetu PRO 🚀
                     </DialogTitle>
                     <p className="text-center text-xs text-white/60 mb-5">
                         Harga spesial 1000 pengguna pertama! ✨

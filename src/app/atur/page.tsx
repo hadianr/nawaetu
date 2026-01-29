@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -244,11 +244,11 @@ export default function SettingsPage() {
     };
 
     const prayerNames = [
-        { key: "Fajr", label: "Subuh", icon: "🌙" },
-        { key: "Dhuhr", label: "Dzuhur", icon: "☀️" },
-        { key: "Asr", label: "Ashar", icon: "🌤️" },
-        { key: "Maghrib", label: "Maghrib", icon: "🌅" },
-        { key: "Isha", label: "Isya", icon: "🌃" },
+        { key: "Fajr", label: "Subuh", Icon: Sunrise },
+        { key: "Dhuhr", label: "Dzuhur", Icon: Sun },
+        { key: "Asr", label: "Ashar", Icon: CloudSun },
+        { key: "Maghrib", label: "Maghrib", Icon: Sunset },
+        { key: "Isha", label: "Isya", Icon: Moon },
     ];
 
     const handleRefreshLocation = async () => {
@@ -303,21 +303,42 @@ export default function SettingsPage() {
                     </div>
                 </UserProfileDialog>
 
-                {/* Quick Settings Row */}
+                {/* Quick Stats Entry */}
+                <Link
+                    href="/stats"
+                    className="w-full p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-3 hover:border-amber-500/40 transition-all group active:scale-[0.98]"
+                >
+                    <div className="h-10 w-10 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all">
+                        <BarChart3 className="w-5 h-5 text-amber-400" />
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="text-sm font-bold text-amber-200 group-hover:text-amber-100 transition-colors">Statistik Ibadah</h3>
+                        <div className="flex items-center gap-2">
+                            <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full bg-amber-500 w-[70%]" />
+                            </div>
+                            <span className="text-[10px] text-amber-200/60">Level 5</span>
+                        </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-amber-500/50 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
+                </Link>
+
+                {/* Worship Configuration Hub */}
                 <div className="grid grid-cols-2 gap-3">
                     {/* Location - Clickable to Refresh */}
                     <button
                         onClick={handleRefreshLocation}
                         disabled={isRefreshing}
-                        className="p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-blue-500/30 transition-all group disabled:opacity-70"
+                        className="p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-blue-500/30 transition-all group disabled:opacity-70 flex flex-col justify-between min-h-[80px]"
                     >
-                        <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center justify-between w-full mb-1">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">Lokasi</span>
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Lokasi</span>
                             </div>
                             <svg
                                 className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${isRefreshing ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
+                                xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -325,202 +346,238 @@ export default function SettingsPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                         </div>
-                        <p className="text-sm text-white font-medium truncate">
+                        <p className="text-xs text-white font-medium line-clamp-2 leading-relaxed">
                             {isRefreshing ? "Memperbarui..." : (data?.locationName?.split(',')[0] || "Mendeteksi...")}
                         </p>
                     </button>
 
-                    {/* Notification Status - Shows how many prayers enabled */}
-                    {(() => {
-                        const enabledCount = notificationsEnabled
-                            ? Object.values(preferences).filter(Boolean).length
-                            : 0;
-                        const isAnyEnabled = enabledCount > 0;
-
-                        return (
-                            <button
-                                onClick={!notificationsEnabled ? requestPermission : undefined}
-                                className={`p-3 rounded-xl border text-left transition-all ${isAnyEnabled
-                                    ? 'bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20'
-                                    : notificationsEnabled
-                                        ? 'bg-amber-500/10 border-amber-500/20'
-                                        : 'bg-red-500/10 border-red-500/20 hover:border-red-500/40'
-                                    }`}
-                            >
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Bell className={`w-4 h-4 ${isAnyEnabled ? 'text-[rgb(var(--color-primary-light))]' : notificationsEnabled ? 'text-amber-400' : 'text-red-400'
-                                        }`} />
-                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">Notifikasi</span>
+                    {/* Calculation Method - Moved from bottom */}
+                    {/* Calculation Method - Entire Card is now Trigger */}
+                    {/* Calculation Method - Overlay Pattern for 100% Hit Area */}
+                    <div className="relative group bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors min-h-[80px]">
+                        {/* Visual Layer (Pointer events none to let clicks pass to absolute trigger if needed, but z-index handles it) */}
+                        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none">
+                            <div className="flex items-center justify-between w-full mb-1">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="w-4 h-4 text-sky-400" />
+                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Metode</span>
                                 </div>
-                                <p className={`text-sm font-medium ${isAnyEnabled ? 'text-[rgb(var(--color-primary-light))]' : notificationsEnabled ? 'text-amber-400' : 'text-red-400'
-                                    }`}>
-                                    {!notificationsEnabled
-                                        ? "Nonaktif"
-                                        : isAnyEnabled
-                                            ? `${enabledCount}/5 Aktif`
-                                            : "0 Aktif"
-                                    }
-                                </p>
-                            </button>
-                        );
-                    })()}
+                                {/* Visual Chevron */}
+                                <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
+                            </div>
+                            <span className="text-xs text-white font-medium text-left truncate w-full pr-4">{currentMethod?.label || "Kemenag RI"}</span>
+                        </div>
+
+                        {/* Functional Layer - Invisible Trigger covering the whole card */}
+                        <Select value={calculationMethod} onValueChange={handleCalculationMethodChange}>
+                            <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden">
+                                <SelectValue placeholder="Pilih metode" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-slate-900 border-white/10 max-h-[300px]">
+                                {CALCULATION_METHODS.map((option) => (
+                                    <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10">
+                                        <span>{option.label}</span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
-                {/* Main Settings Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden divide-y divide-white/5">
+                {/* Prayer Notifications Card */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Volume2 className="w-4 h-4 text-amber-400" />
+                            <span className="text-sm font-semibold text-white">Notifikasi Adzan</span>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-5 gap-2">
+                        {prayerNames.map((prayer) => {
+                            const isEnabled = preferences[prayer.key] && notificationsEnabled;
+                            return (
+                                <button
+                                    key={prayer.key}
+                                    onClick={() => togglePrayer(prayer.key)}
+                                    disabled={!notificationsEnabled}
+                                    className={cn(
+                                        "flex flex-col items-center gap-2 p-3 rounded-2xl transition-all relative group",
+                                        isEnabled
+                                            ? 'bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary))]/5 border border-[rgb(var(--color-primary))]/30 shadow-lg shadow-[rgb(var(--color-primary))]/10'
+                                            : 'bg-white/5 border border-white/10 opacity-60 hover:opacity-100 hover:bg-white/10'
+                                    )}
+                                >
+                                    <prayer.Icon className={cn(
+                                        "w-6 h-6 transition-transform group-hover:scale-110 duration-300",
+                                        isEnabled ? "text-[rgb(var(--color-primary-light))]" : "text-slate-400"
+                                    )} strokeWidth={1.5} />
 
-                    {/* Prayer Notifications Section */}
-                    <div className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                                <Volume2 className="w-4 h-4 text-amber-400" />
-                                <span className="text-sm font-semibold text-white">Notifikasi Adzan</span>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-5 gap-2">
-                            {prayerNames.map((prayer) => {
-                                const isEnabled = preferences[prayer.key] && notificationsEnabled;
-                                return (
-                                    <button
-                                        key={prayer.key}
-                                        onClick={() => togglePrayer(prayer.key)}
-                                        disabled={!notificationsEnabled}
-                                        className={cn(
-                                            "flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all relative",
-                                            isEnabled
-                                                ? 'bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30'
-                                                : 'bg-white/5 border border-white/10 opacity-60'
-                                        )}
-                                    >
-                                        <span className="text-base">{prayer.icon}</span>
-                                        <span className={cn(
-                                            "text-[9px] font-medium",
-                                            isEnabled ? 'text-[rgb(var(--color-primary-light))]' : 'text-white/60'
-                                        )}>
-                                            {prayer.label}
-                                        </span>
-                                        {isEnabled && (
-                                            <div className="absolute -top-1 -right-1 bg-[rgb(var(--color-primary))] rounded-full p-0.5">
-                                                <Check className="w-2 h-2 text-black" />
-                                            </div>
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        {!notificationsEnabled && (
-                            <p className="text-xs text-amber-400/70 mt-2 text-center">
-                                Aktifkan notifikasi untuk menerima pengingat adzan
-                            </p>
-                        )}
+                                    <span className={cn(
+                                        "text-[10px] font-bold tracking-wide",
+                                        isEnabled ? 'text-[rgb(var(--color-primary-light))]' : 'text-white/40'
+                                    )}>
+                                        {prayer.label}
+                                    </span>
+                                    {isEnabled && (
+                                        <div className="absolute -top-1.5 -right-1.5 bg-[rgb(var(--color-primary))] rounded-full p-1 shadow-md ring-4 ring-black">
+                                            <Check className="w-2.5 h-2.5 text-black" strokeWidth={3} />
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    {!notificationsEnabled && (
+                        <p className="text-xs text-amber-400/70 text-center">
+                            Aktifkan notifikasi untuk menerima pengingat adzan
+                        </p>
+                    )}
+                </div>
+
+                {/* Theme Configuration Card */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-center gap-2 text-[rgb(var(--color-primary))]">
+                        <Palette className="w-4 h-4" />
+                        <span className="text-sm font-semibold text-white">Tampilan Aplikasi</span>
                     </div>
 
-                    {/* Theme Appearance Section */}
-                    <div className="p-4">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Palette className="w-4 h-4 text-[rgb(var(--color-primary))]" />
-                            <span className="text-sm font-semibold text-white">Tampilan Aplikasi</span>
-                        </div>
+                    <div className="relative -mx-2">
+                        {/* Scroll Indicators */}
+                        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/80 to-transparent z-10 pointer-events-none" />
+                        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/80 to-transparent z-10 pointer-events-none" />
 
-                        <div className="grid grid-cols-2 gap-3">
-                            {Object.values(THEMES).map((theme) => {
+                        <div className="flex items-center gap-4 overflow-x-auto px-4 pb-4 pt-2 scrollbar-hide snap-x">
+                            {Object.values(THEMES).sort((a, b) => (a.isPremium === b.isPremium ? 0 : a.isPremium ? 1 : -1)).map((theme, index, array) => {
                                 const isSelected = currentTheme === theme.id;
                                 const isLocked = theme.isPremium && !isPremium;
-                                const hasPattern = theme.pattern && theme.pattern.type !== 'none';
+
+                                // Check if this is the first PRO item to add a divider
+                                const showDivider = index > 0 && theme.isPremium && !array[index - 1].isPremium;
 
                                 return (
-                                    <button
-                                        key={theme.id}
-                                        onClick={() => handleThemeSelect(theme.id)}
-                                        className={cn(
-                                            "relative p-3 rounded-xl border transition-all text-left group overflow-hidden",
-                                            isSelected
-                                                ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 ring-1 ring-[rgb(var(--color-primary))]/50"
-                                                : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
+                                    <div key={theme.id} className="flex items-center gap-4 snap-start">
+                                        {showDivider && (
+                                            <div className="h-12 w-px bg-white/10 mx-2" />
                                         )}
-                                    >
-                                        {/* Theme Preview Bar */}
-                                        <div className="flex gap-1 mb-2">
-                                            <div
-                                                className="h-5 flex-1 rounded"
-                                                style={{ backgroundColor: `rgb(${theme.colors.primary})` }}
-                                            />
-                                            <div
-                                                className="h-5 flex-1 rounded"
-                                                style={{ backgroundColor: `rgb(${theme.colors.accent})` }}
-                                            />
-                                        </div>
 
-                                        {/* Theme Info */}
-                                        <div className="space-y-0.5">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-1">
-                                                    <h3 className="font-bold text-xs text-white">{theme.name}</h3>
-                                                    {hasPattern && !isLocked && (
-                                                        <Sparkles className="w-2.5 h-2.5 text-[rgb(var(--color-primary))]" />
-                                                    )}
+                                        <button
+                                            onClick={() => handleThemeSelect(theme.id)}
+                                            className="flex flex-col items-center gap-3 group transition-all relative py-2"
+                                        >
+                                            <div className={cn(
+                                                "relative rounded-full transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
+                                                isSelected ? "w-16 h-16 z-10 ring-2 ring-[rgb(var(--color-primary))] ring-offset-4 ring-offset-black" : "w-12 h-12 hover:scale-110 opacity-60 hover:opacity-100 grayscale hover:grayscale-0"
+                                            )}>
+
+                                                {/* Ambient Glow for Selected */}
+                                                {isSelected && (
+                                                    <div
+                                                        className="absolute inset-0 rounded-full blur-md opacity-60 transition-all duration-500 animate-pulse"
+                                                        style={{ backgroundColor: `rgb(${theme.colors.primary})` }}
+                                                    />
+                                                )}
+
+                                                {/* Main Circle Content */}
+                                                <div className="absolute inset-0 rounded-full overflow-hidden flex flex-col border border-white/10 z-10 shadow-2xl bg-black">
+                                                    <div className="h-1/2 w-full transition-colors duration-500" style={{ backgroundColor: `rgb(${theme.colors.primary})` }} />
+                                                    <div className="h-1/2 w-full flex">
+                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: `rgb(${theme.colors.accent})` }} />
+                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: `rgb(${theme.colors.surface})` }} />
+                                                    </div>
                                                 </div>
-                                                {isLocked ? (
-                                                    <Lock className="w-3 h-3 text-amber-400" />
-                                                ) : isSelected ? (
-                                                    <Check className="w-3 h-3 text-[rgb(var(--color-primary))]" />
-                                                ) : null}
-                                            </div>
-                                            <p className="text-[9px] text-white/60 leading-tight line-clamp-2">{theme.description}</p>
-                                        </div>
 
-                                        {/* Locked Overlay */}
-                                        {isLocked && (
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center pb-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span className="text-[8px] font-bold text-amber-400 flex items-center gap-0.5">
-                                                    <Crown className="w-2.5 h-2.5" />
-                                                    Premium
-                                                </span>
+                                                {/* Premium/Lock Indicators - Floating outside for pop styling */}
+                                                {theme.isPremium && (
+                                                    <div className={cn(
+                                                        "absolute -bottom-1 -right-1 rounded-full border-2 border-black z-20 shadow-lg flex items-center justify-center transition-all duration-300",
+                                                        isSelected ? "w-6 h-6 bg-amber-500" : "w-4 h-4 bg-slate-800 border-amber-500/30"
+                                                    )}>
+                                                        {isLocked ? (
+                                                            <Lock className={cn("text-black transition-all", isSelected ? "w-3 h-3" : "w-2 h-2")} />
+                                                        ) : (
+                                                            <Crown className={cn("transition-all", isSelected ? "w-3 h-3 text-black" : "w-2 h-2 text-amber-500")} />
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* Selected Check Indicator */}
+                                                {isSelected && (
+                                                    <div className="absolute -top-1 -right-1 bg-[rgb(var(--color-primary))] rounded-full p-1 border-2 border-black z-20 shadow-lg scale-100 animate-in zoom-in duration-300">
+                                                        <Check className="w-3 h-3 text-black" strokeWidth={3} />
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
-                                    </button>
+
+                                            <span className={cn(
+                                                "text-[10px] font-bold transition-all duration-300 truncate max-w-[70px]",
+                                                isSelected ? "text-[rgb(var(--color-primary-light))] scale-110 translate-y-1" : "text-white/40 group-hover:text-white"
+                                            )}>
+                                                {theme.name}
+                                            </span>
+                                        </button>
+                                    </div>
                                 );
                             })}
                         </div>
                     </div>
+                </div>
 
-                    {/* Audio Settings Section */}
-                    <div className="p-4 space-y-3">
-                        <div className="flex items-center gap-2 mb-1">
-                            <Headphones className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                            <span className="text-sm font-semibold text-white">Pengaturan Audio</span>
-                        </div>
+                {/* Audio Configuration Card */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-20">
+                    <div className="flex items-center gap-2 text-sky-400">
+                        <Headphones className="w-4 h-4" />
+                        <span className="text-sm font-semibold text-white">Pengaturan Audio</span>
+                    </div>
 
+                    <div className="space-y-3">
                         {/* Muadzin Select */}
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-white/60">Suara Adzan</p>
+                        <div className="relative group bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-white/10 transition-all">
+                            {/* Visual Layer */}
+                            <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
+                                <div className="p-2 rounded-full bg-sky-500/10 shrink-0">
+                                    <Volume2 className="w-4 h-4 text-sky-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">Suara Adzan</p>
                                     <p className="text-sm text-white font-medium truncate">{currentMuadzin?.label || "Makkah"}</p>
                                 </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                {/* Preview Button (Z-20 to sit above Select Trigger) */}
                                 <Button
                                     type="button"
                                     variant="ghost"
                                     size="icon"
                                     className={cn(
-                                        "h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 shrink-0",
-                                        isPlaying && playingId === muadzin && !currentMuadzin?.audio_url && "opacity-50 cursor-not-allowed",
-                                        isPlaying && playingId === muadzin && "text-amber-400 bg-amber-500/10"
+                                        "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
+                                        isPlaying && playingId === muadzin
+                                            ? "bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))] shadow-[0_0_15px_rgba(var(--color-primary),0.4)] scale-110"
+                                            : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
                                     )}
-                                    onClick={() => toggleAudioPreview(muadzin, 'muadzin')}
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleAudioPreview(muadzin, 'muadzin');
+                                    }}
                                     disabled={isLoading || !currentMuadzin?.audio_url}
                                 >
                                     {isLoading && playingId === muadzin ? (
-                                        <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     ) : isPlaying && playingId === muadzin ? (
-                                        <Volume2 className="w-4 h-4 animate-pulse" />
+                                        <Pause className="w-3 h-3 fill-current" />
                                     ) : (
-                                        <Music className="w-4 h-4" />
+                                        <Play className="w-3 h-3 ml-0.5" />
                                     )}
                                 </Button>
+
+                                {/* Chevron Indicator */}
+                                <ChevronDown className="w-4 h-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                             </div>
+
+                            {/* Select Overlay (Z-10) */}
                             <Select value={muadzin} onValueChange={handleMuadzinChange}>
-                                <SelectTrigger className="w-auto min-w-[100px] h-8 text-xs bg-white/5 border-white/10 text-white">
+                                <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-900 border-white/10">
@@ -534,65 +591,56 @@ export default function SettingsPage() {
                         </div>
 
                         {/* Reciter Select */}
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-white/60">Qari Al-Quran</p>
+                        <div className="relative group bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-white/10 transition-all">
+                            {/* Visual Layer */}
+                            <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
+                                <div className="p-2 rounded-full bg-emerald-500/10 shrink-0">
+                                    <BookOpen className="w-4 h-4 text-emerald-400" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">Qari Al-Quran</p>
                                     <p className="text-sm text-white font-medium truncate">{currentReciter?.label || "Mishary Rashid"}</p>
                                 </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                {/* Preview Button (Z-20) */}
                                 <Button
                                     type="button"
                                     variant="ghost"
                                     size="icon"
                                     className={cn(
-                                        "h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 shrink-0",
-                                        isPlaying && playingId === reciter && "text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10"
+                                        "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
+                                        isPlaying && playingId === reciter
+                                            ? "bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))] shadow-[0_0_15px_rgba(var(--color-primary),0.4)] scale-110"
+                                            : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
                                     )}
-                                    onClick={() => toggleAudioPreview(reciter)}
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleAudioPreview(reciter);
+                                    }}
                                     disabled={isLoading}
                                 >
                                     {isLoading && playingId === reciter ? (
-                                        <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     ) : isPlaying && playingId === reciter ? (
-                                        <Volume2 className="w-4 h-4 animate-pulse" />
+                                        <Pause className="w-3 h-3 fill-current" />
                                     ) : (
-                                        <Music className="w-4 h-4" />
+                                        <Play className="w-3 h-3 ml-0.5" />
                                     )}
                                 </Button>
+
+                                <ChevronDown className="w-4 h-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                             </div>
+
+                            {/* Select Overlay (Z-10) */}
                             <Select value={reciter} onValueChange={handleReciterChange}>
-                                <SelectTrigger className="w-auto min-w-[100px] h-8 text-xs bg-white/5 border-white/10 text-white">
+                                <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-900 border-white/10">
                                     {QURAN_RECITER_OPTIONS.map((option) => (
-                                        <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10">
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-
-                    {/* Calculation Method Section */}
-                    <div className="p-4">
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className="p-2 rounded-lg bg-sky-500/10">
-                                    <Clock className="w-4 h-4 text-sky-400" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-xs text-white/60">Metode Perhitungan</p>
-                                    <p className="text-sm text-white font-medium truncate">{currentMethod?.label || "Kemenag RI"}</p>
-                                </div>
-                            </div>
-                            <Select value={calculationMethod} onValueChange={handleCalculationMethodChange}>
-                                <SelectTrigger className="w-auto min-w-[120px] h-8 text-xs bg-white/5 border-white/10 text-white">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10">
-                                    {CALCULATION_METHODS.map((option) => (
                                         <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10">
                                             <span>{option.label}</span>
                                         </SelectItem>
@@ -605,19 +653,6 @@ export default function SettingsPage() {
 
                 {/* App Info - Footer Style */}
                 <div className="space-y-3">
-                    <Link href="/stats" className="block p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl hover:border-amber-500/30 transition-all group">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-amber-500/20 rounded-lg">
-                                <Star className="w-4 h-4 text-amber-400" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="text-sm font-bold text-amber-200">Lihat Statistik Ibadah</h3>
-                                <p className="text-xs text-amber-200/70">Pantau perkembangan spiritualmu</p>
-                            </div>
-                            <ChevronRight className="w-5 h-5 text-amber-400/50 group-hover:text-amber-400 transition-colors" />
-                        </div>
-                    </Link>
-
                     <div className="flex items-center justify-center gap-2 py-4 opacity-40">
                         <span className="text-xs text-white">Nawaetu</span>
                         <span className="text-[8px] text-white/50">•</span>
@@ -627,6 +662,6 @@ export default function SettingsPage() {
             </div>
 
             <PricingModal isOpen={showPricing} onClose={() => setShowPricing(false)} />
-        </div>
+        </div >
     );
 }
