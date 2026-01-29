@@ -441,12 +441,11 @@ export default function SettingsPage() {
                         <span className="text-sm font-semibold text-white">Tampilan Aplikasi</span>
                     </div>
 
-                    <div className="relative -mx-2">
-                        {/* Scroll Indicators */}
-                        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/80 to-transparent z-10 pointer-events-none" />
-                        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/80 to-transparent z-10 pointer-events-none" />
+                    <div className="relative">
+                        <div className="flex items-center gap-5 overflow-x-auto py-6 px-4 scrollbar-hide snap-x">
+                            {/* Physical Spacer to prevent clipping (40px) */}
+                            <div className="min-w-[40px] shrink-0" />
 
-                        <div className="flex items-center gap-4 overflow-x-auto px-4 pb-4 pt-2 scrollbar-hide snap-x">
                             {Object.values(THEMES).sort((a, b) => (a.isPremium === b.isPremium ? 0 : a.isPremium ? 1 : -1)).map((theme, index, array) => {
                                 const isSelected = currentTheme === theme.id;
                                 const isLocked = theme.isPremium && !isPremium;
@@ -462,7 +461,7 @@ export default function SettingsPage() {
 
                                         <button
                                             onClick={() => handleThemeSelect(theme.id)}
-                                            className="flex flex-col items-center gap-3 group transition-all relative py-2"
+                                            className="flex flex-col items-center gap-3 group transition-all relative py-2 px-2"
                                         >
                                             <div className={cn(
                                                 "relative rounded-full transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
@@ -518,6 +517,8 @@ export default function SettingsPage() {
                                     </div>
                                 );
                             })}
+                            {/* Physical Spacer End (40px) */}
+                            <div className="min-w-[40px] shrink-0" />
                         </div>
                     </div>
                 </div>

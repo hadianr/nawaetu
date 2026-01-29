@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { getDisplayStreak } from "./streak-utils";
+
 // Activity Tracker - tracks user activities for mission validation
 // Stores daily activity counts in localStorage
 
@@ -129,4 +132,65 @@ export function isAfterPrayerTime(prayerName: string, prayerTimes: Record<string
 export function isTodayDay(allowedDays: number[]): boolean {
     const today = new Date().getDay();
     return allowedDays.includes(today);
+}
+
+// React Hooks for UI Components
+
+export function useUserActivity() {
+    const [stats, setStats] = useState({
+        streakDays: 0,
+        todayAyat: 0,
+        todayTasbih: 0,
+        prayersLogged: [] as string[]
+    });
+
+    useEffect(() => {
+        const load = () => {
+            const streak = getDisplayStreak();
+            const activity = getActivityData();
+            setStats({
+                streakDays: streak.streak,
+                todayAyat: activity.quranAyat,
+                todayTasbih: activity.tasbihCount,
+                prayersLogged: activity.prayersLogged
+            });
+        };
+        load();
+
+        const handleUpdate = () => load();
+        window.addEventListener("activity_updated", handleUpdate);
+        window.addEventListener("streak_updated", handleUpdate);
+        return () => {
+            window.removeEventListener("activity_updated", handleUpdate);
+            window.removeEventListener("streak_updated", handleUpdate);
+        };
+    }, []);
+
+    return { stats };
+}
+
+export function useUserProfile() {
+    const [profile, setProfile] = useState({
+        name: "Hamba Allah",
+        title: "Hamba Allah"
+    });
+
+    useEffect(() => {
+        const load = () => {
+            // Safe check for window
+            if (typeof window !== 'undefined') {
+                const name = localStorage.getItem("user_name");
+                const title = localStorage.getItem("user_title");
+                if (name || title) {
+                    setProfile({
+                        name: name || "Hamba Allah",
+                        title: title || "Hamba Allah"
+                    });
+                }
+            }
+        };
+        load();
+    }, []);
+
+    return { profile };
 }
