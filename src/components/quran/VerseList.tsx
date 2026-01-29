@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff, BookOpen, AlignJustify, Square, Copy, Check, CheckCircle, Palette, Bookmark, Share2, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff, BookOpen, AlignJustify, Square, Copy, Check, CheckCircle, Palette, Bookmark, Share2, Search, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -180,6 +180,8 @@ const TajweedLegend = () => (
 
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId }: VerseListProps) {
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [tajweedMode, setTajweedMode] = useState(false);
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -401,115 +403,57 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             <style>{tajweedStyles}</style>
 
             {/* Sticky Header */}
-            <div className="sticky top-0 z-20 -mx-4 flex items-center justify-between border-b border-white/10 bg-black/60 px-3 py-2 backdrop-blur-xl md:static md:mx-0 md:rounded-xl md:border md:bg-white/5 md:px-6 md:py-4">
+            <div className="sticky top-0 z-20 -mx-4 flex items-center justify-between border-b border-white/10 bg-black/60 px-3 py-2 backdrop-blur-xl md:static md:mx-0 md:rounded-xl md:border md:bg-white/5 md:px-6 md:py-4 transition-all">
                 {/* Left: Back Button */}
-                <div className="shrink-0">
-                    <Button variant="ghost" size="icon" asChild className="rounded-full text-white/70 hover:bg-white/10 hover:text-white" title="Kembali ke Daftar Surat">
+                <div className="shrink-0 mr-1">
+                    <Button variant="ghost" size="icon" asChild className="rounded-full h-8 w-8 md:h-10 md:w-10 text-white/70 hover:bg-white/10 hover:text-white" title="Kembali">
                         <Link href="/quran">
-                            <ChevronLeft className="h-6 w-6" />
+                            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
                         </Link>
                     </Button>
                 </div>
 
-                {/* Center: Title Stack */}
-                <div className="flex flex-1 flex-col items-center justify-center px-4">
-                    <span className="inline-flex items-center justify-center rounded-full border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-2 py-0.5 mb-1 text-[9px] font-bold tracking-widest text-[rgb(var(--color-primary-light))] uppercase">
+                {/* Center: Title Stack (Compact on Mobile) */}
+                <div className="flex flex-1 flex-col items-center justify-center px-1 min-w-0">
+                    <span className="inline-flex items-center justify-center rounded-full border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-2 py-0.5 mb-0.5 text-[9px] font-bold tracking-widest text-[rgb(var(--color-primary-light))] uppercase hidden md:inline-flex">
                         SURAT KE-{chapter.id}
                     </span>
-                    <h1 className="text-xl font-bold text-white leading-tight text-center tracking-tight">
-                        {chapter.name_simple}
-                    </h1>
-                    <p className="mt-0.5 text-[10px] font-medium text-slate-400 text-center">
+                    <div className="flex items-baseline gap-2 w-full justify-center">
+                        <h1 className="text-sm md:text-xl font-bold text-white leading-tight text-center tracking-tight truncate max-w-full">
+                            {chapter.name_simple}
+                        </h1>
+                        <span className="text-[10px] md:hidden font-medium text-slate-500 shrink-0">
+                            ({chapter.verses_count})
+                        </span>
+                    </div>
+
+                    <p className="mt-0.5 text-[10px] font-medium text-slate-400 text-center hidden md:block">
                         {chapter.translated_name.name} • {chapter.verses_count} Ayat • {chapter.revelation_place === "makkah" ? "Mekah" : "Madinah"}
                     </p>
                 </div>
 
                 {/* Right: Controls */}
-                <div className="shrink-0 flex items-center gap-x-4">
-                    {/* Group: Visual Settings */}
-                    <div className="flex items-center gap-x-2 border-r border-white/10 pr-4">
-                        {/* Jump Verse Toggle */}
-                        <button
-                            onClick={() => setIsJumpDialogOpen(true)}
-                            className="h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all mr-2"
-                            title="Cari Ayat"
-                        >
-                            <Search className="h-4 w-4" />
-                        </button>
+                <div className="shrink-0 flex items-center gap-x-1 md:gap-x-4">
+                    {/* Search / Jump Verse (Always Visible) */}
+                    <button
+                        onClick={() => setIsJumpDialogOpen(true)}
+                        className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all"
+                        title="Cari Ayat"
+                    >
+                        <Search className="h-4 w-4" />
+                    </button>
 
-                        {/* View Mode Toggle */}
-                        <button
-                            onClick={() => setViewMode(viewMode === 'list' ? 'mushaf' : 'list')}
-                            className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all"
-                            title={viewMode === 'list' ? "Ganti ke Tampilan Mushaf" : "Ganti ke Tampilan List"}
-                        >
-                            {viewMode === 'list' ? (
-                                <BookOpen className="h-4 w-4" />
-                            ) : (
-                                <AlignJustify className="h-4 w-4" />
-                            )}
-                        </button>
-
-                        {/* Tajweed Toggle */}
-                        <button
-                            onClick={() => setTajweedMode(!tajweedMode)}
-                            className={`
-                                h-9 w-9 md:w-auto md:h-10 md:px-4 justify-center rounded-full border text-xs font-medium transition-all
-                                flex items-center gap-x-2
-                                ${tajweedMode
-                                    ? 'bg-[rgb(var(--color-primary-dark))]/30 border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
-                                    : 'bg-slate-800/40 border-white/10 text-slate-400 hover:bg-slate-700/50 hover:text-slate-200'}
-                            `}
-                            title="Aktifkan Mode Tajwid Berwarna"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 md:w-3.5 md:h-3.5">
-                                <path fillRule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813a3.75 3.75 0 002.576-2.576l.813-2.846A.75.75 0 019 4.5zM6.97 15.03a.75.75 0 10-1.06-1.06l-1.47 1.47a.75.75 0 101.06 1.06l1.47-1.47zm.002-12.002a.75.75 0 10-1.06 1.06l1.47 1.47a.75.75 0 101.06-1.06l-1.47-1.47zm12 0a.75.75 0 10-1.06 1.06l1.47 1.47a.75.75 0 101.06-1.06l-1.47-1.47z" clipRule="evenodd" />
-                            </svg>
-                            <span className="hidden md:inline">Tajwid</span>
-                        </button>
-
-                        {/* Font Size Selector */}
-                        <div className="flex items-center gap-0.5 pl-3">
-                            {[
-                                { size: 'small' as const, label: 'A-', title: 'Kecil' },
-                                { size: 'medium' as const, label: 'A', title: 'Sedang' },
-                                { size: 'large' as const, label: 'A+', title: 'Besar' }
-                            ].map(({ size, label, title }) => (
-                                <button
-                                    key={size}
-                                    onClick={() => handleFontSizeChange(size)}
-                                    className={`
-                                        h-9 w-9 flex items-center justify-center rounded-full text-xs font-bold transition-all
-                                        ${fontSize === size
-                                            ? 'bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
-                                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                                        }
-                                    `}
-                                    title={`Ukuran ${title}`}
-                                >
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {audioUrl ? (
-                        <div className="flex items-center gap-3">
-                            {/* Reciter Badge - Subtle Pill */}
-                            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
-                                <span className="text-[10px] text-white/40">Qari:</span>
-                                <span className="text-[10px] font-medium text-[rgb(var(--color-primary-light))]">
-                                    {currentReciterName}
-                                </span>
-                            </div>
-
+                    {/* Play Button (Always Visible - Compact) */}
+                    {audioUrl && (
+                        <div className="flex items-center gap-1">
                             <Button
                                 onClick={toggleAudio}
-                                className="h-10 gap-2 rounded-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-dark))] px-6"
-                                title={`${isPlaying ? "Jeda" : "Putar"} - ${currentReciterName}`}
+                                size="icon"
+                                className="h-8 w-8 md:h-10 md:w-auto md:px-6 rounded-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-dark))]"
+                                title={`${isPlaying ? "Jeda" : "Putar"}`}
                             >
                                 {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                                <span className="hidden sm:inline font-medium">{isPlaying ? "Jeda" : "Putar"}</span>
+                                <span className="hidden md:inline ml-2 font-medium">{isPlaying ? "Jeda" : "Putar"}</span>
                             </Button>
                             <audio
                                 ref={audioRef}
@@ -518,60 +462,81 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 className="hidden"
                             />
                         </div>
-                    ) : (
-                        <div className="w-10" />
                     )}
+
+                    {/* Desktop: Visual Settings Group */}
+                    <div className="hidden md:flex items-center gap-x-2 border-l border-white/10 pl-4 ml-2">
+                        {/* View Mode */}
+                        <button
+                            onClick={() => setViewMode(viewMode === 'list' ? 'mushaf' : 'list')}
+                            className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all"
+                            title={viewMode === 'list' ? "Ganti ke Tampilan Mushaf" : "Ganti ke Tampilan List"}
+                        >
+                            {viewMode === 'list' ? <BookOpen className="h-4 w-4" /> : <AlignJustify className="h-4 w-4" />}
+                        </button>
+
+                        {/* Tajweed Toggle */}
+                        <button
+                            onClick={() => setTajweedMode(!tajweedMode)}
+                            className={`h-10 px-4 flex items-center gap-2 rounded-full border text-xs font-medium transition-all ${tajweedMode ? 'bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))]' : 'bg-slate-800/40 border-white/10 text-slate-400'}`}
+                        >
+                            <Palette className="w-4 h-4" />
+                            <span>Tajwid</span>
+                        </button>
+
+                        {/* Font Size */}
+                        <div className="flex items-center gap-0.5 pl-2 bg-slate-800/40 rounded-full border border-white/10 p-1">
+                            {([
+                                { size: 'small' as const, label: 'A-', title: 'Kecil' },
+                                { size: 'medium' as const, label: 'A', title: 'Sedang' },
+                                { size: 'large' as const, label: 'A+', title: 'Besar' }
+                            ]).map(({ size, label, title }) => (
+                                <button
+                                    key={size}
+                                    onClick={() => handleFontSizeChange(size)}
+                                    className={`h-8 w-8 flex items-center justify-center rounded-full text-[10px] font-bold transition-all ${fontSize === size ? 'bg-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Mobile: Settings Toggle */}
+                    <button
+                        onClick={() => setIsSettingsOpen(true)}
+                        className="md:hidden h-8 w-8 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all ml-1"
+                    >
+                        <Settings className="h-4 w-4" />
+                    </button>
                 </div>
             </div>
 
+
             {/* Bismillah */}
-            {chapter.id !== 1 && chapter.id !== 9 && currentPage === 1 && (
-                <div className="flex justify-center py-6 text-2xl font-amiri text-white/80 md:text-3xl">
-                    بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-                </div>
-            )}
+            {
+                chapter.id !== 1 && chapter.id !== 9 && currentPage === 1 && (
+                    <div className="flex justify-center py-6 text-2xl font-amiri text-white/80 md:text-3xl">
+                        بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+                    </div>
+                )
+            }
 
             {/* Tajweed Legend */}
             {tajweedMode && <TajweedLegend />}
 
 
             {/* Content Area */}
-            {viewMode === 'mushaf' ? (
-                // MUSHAF MODE: Continuous Text Block
-                <div className="p-4 md:p-8 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
-                    <div
-                        className={`text-right ${fontSizes[fontSize].mushaf} ${fontSizes[fontSize].mushafLeading} font-amiri text-justify text-slate-200 transition-all duration-200`}
-                        dir="rtl"
-                    >
-                        {verses.map((verse) => (
-                            <span key={verse.id}>
-                                <span
-                                    className={tajweedMode ? "tajweed-text" : ""}
-                                    dangerouslySetInnerHTML={{
-                                        __html: tajweedMode && verse.text_uthmani_tajweed
-                                            ? cleanTajweedText(verse.text_uthmani_tajweed)
-                                            : cleanTajweedText(verse.text_uthmani)
-                                    }}
-                                />
-                                <span className="inline-block align-middle mx-1.5">
-                                    <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(":")[1]))} />
-                                </span>
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            ) : (
-                // LIST MODE: Vertical Stack
-                <div className="space-y-6 flex-1">
-                    {verses.map((verse) => (
+            {
+                viewMode === 'mushaf' ? (
+                    // MUSHAF MODE: Continuous Text Block
+                    <div className="p-4 md:p-8 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
                         <div
-                            key={verse.id}
-                            id={verse.verse_key}
-                            className="flex flex-col gap-6 border-b border-white/5 pb-6 last:border-0 scroll-mt-24"
+                            className={`text-right ${fontSizes[fontSize].mushaf} ${fontSizes[fontSize].mushafLeading} font-amiri text-justify text-slate-200 transition-all duration-200`}
+                            dir="rtl"
                         >
-                            {/* Arabic */}
-                            <div className="text-right" dir="rtl">
-                                <p className={`font-amiri ${fontSizes[fontSize].arabic} ${fontSizes[fontSize].arabicLeading} text-white flex flex-row items-center flex-wrap gap-2 transition-all duration-200`}>
+                            {verses.map((verse) => (
+                                <span key={verse.id}>
                                     <span
                                         className={tajweedMode ? "tajweed-text" : ""}
                                         dangerouslySetInnerHTML={{
@@ -580,66 +545,94 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                                 : cleanTajweedText(verse.text_uthmani)
                                         }}
                                     />
-                                    <span className="inline-flex items-center gap-x-3 ms-2 align-middle">
+                                    <span className="inline-block align-middle mx-1.5">
                                         <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(":")[1]))} />
-
-                                        {/* Play Button */}
-                                        <button
-                                            onClick={() => handlePlayVerse(verse.id, verse.audio.url)}
-                                            className="p-1.5 rounded-full text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors flex items-center justify-center focus:outline-none"
-                                            title={playingVerseId === verse.id ? "Jeda Ayat Ini" : "Dengarkan Ayat Ini"}
-                                        >
-                                            {playingVerseId === verse.id ? (
-                                                <Square className="w-4 h-4 fill-current" />
-                                            ) : (
-                                                <Play className="w-4 h-4 fill-current" />
-                                            )}
-                                        </button>
-
-                                        {/* Share Button */}
-                                        <button
-                                            onClick={() => setSharingVerse(verse)}
-                                            className="p-1.5 rounded-full text-slate-500 hover:text-pink-400 transition-colors flex items-center justify-center focus:outline-none"
-                                            title="Bagikan Ayat"
-                                        >
-                                            <Share2 className="w-4 h-4" />
-                                        </button>
-
-                                        {/* Bookmark Button */}
-                                        <button
-                                            onClick={() => handleBookmark(verse)}
-                                            className={`p-1.5 rounded-full transition-colors flex items-center justify-center focus:outline-none ${bookmarkedVerseKey === verse.verse_key ? 'text-amber-400' : 'text-slate-500 hover:text-amber-400'}`}
-                                            title="Tandai Terakhir Dibaca"
-                                        >
-                                            <Bookmark className={`w-4 h-4 ${bookmarkedVerseKey === verse.verse_key ? 'fill-current' : ''}`} />
-                                        </button>
                                     </span>
-                                </p>
-                            </div>
-
-                            {/* Translation */}
-                            <div className="flex items-start justify-between gap-x-4 group">
-                                <p className={`${fontSizes[fontSize].translation} leading-relaxed text-slate-400 transition-all duration-200`}>
-                                    {
-                                        cleanTranslation((verse.translations.find((t) => t.resource_id === 33) || verse.translations[0])?.text.replace(/<[^>]*>?/gm, ""))
-                                    }
-                                </p>
-                                <button
-                                    onClick={() => handleCopyVerse(verse)}
-                                    className="p-1.5 rounded-md text-slate-600 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
-                                    title="Salin Terjemahan"
-                                >
-                                    {copiedVerseId === verse.id ? (
-                                        <Check className="w-4 h-4" />
-                                    ) : (
-                                        <Copy className="w-4 h-4" />
-                                    )}
-                                </button>
-                            </div>
+                                </span>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
+                ) : (
+                    // LIST MODE: Vertical Stack
+                    <div className="space-y-6 flex-1">
+                        {verses.map((verse) => (
+                            <div
+                                key={verse.id}
+                                id={verse.verse_key}
+                                className="flex flex-col gap-6 border-b border-white/5 pb-6 last:border-0 scroll-mt-24"
+                            >
+                                {/* Arabic */}
+                                <div className="text-right" dir="rtl">
+                                    <p className={`font-amiri ${fontSizes[fontSize].arabic} ${fontSizes[fontSize].arabicLeading} text-white flex flex-row items-center flex-wrap gap-2 transition-all duration-200`}>
+                                        <span
+                                            className={tajweedMode ? "tajweed-text" : ""}
+                                            dangerouslySetInnerHTML={{
+                                                __html: tajweedMode && verse.text_uthmani_tajweed
+                                                    ? cleanTajweedText(verse.text_uthmani_tajweed)
+                                                    : cleanTajweedText(verse.text_uthmani)
+                                            }}
+                                        />
+                                        <span className="inline-flex items-center gap-x-3 ms-2 align-middle">
+                                            <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(":")[1]))} />
+
+                                            {/* Play Button */}
+                                            <button
+                                                onClick={() => handlePlayVerse(verse.id, verse.audio.url)}
+                                                className="p-1.5 rounded-full text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors flex items-center justify-center focus:outline-none"
+                                                title={playingVerseId === verse.id ? "Jeda Ayat Ini" : "Dengarkan Ayat Ini"}
+                                            >
+                                                {playingVerseId === verse.id ? (
+                                                    <Square className="w-4 h-4 fill-current" />
+                                                ) : (
+                                                    <Play className="w-4 h-4 fill-current" />
+                                                )}
+                                            </button>
+
+                                            {/* Share Button */}
+                                            <button
+                                                onClick={() => setSharingVerse(verse)}
+                                                className="p-1.5 rounded-full text-slate-500 hover:text-pink-400 transition-colors flex items-center justify-center focus:outline-none"
+                                                title="Bagikan Ayat"
+                                            >
+                                                <Share2 className="w-4 h-4" />
+                                            </button>
+
+                                            {/* Bookmark Button */}
+                                            <button
+                                                onClick={() => handleBookmark(verse)}
+                                                className={`p-1.5 rounded-full transition-colors flex items-center justify-center focus:outline-none ${bookmarkedVerseKey === verse.verse_key ? 'text-amber-400' : 'text-slate-500 hover:text-amber-400'}`}
+                                                title="Tandai Terakhir Dibaca"
+                                            >
+                                                <Bookmark className={`w-4 h-4 ${bookmarkedVerseKey === verse.verse_key ? 'fill-current' : ''}`} />
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+
+                                {/* Translation */}
+                                <div className="flex items-start justify-between gap-x-4 group">
+                                    <p className={`${fontSizes[fontSize].translation} leading-relaxed text-slate-400 transition-all duration-200`}>
+                                        {
+                                            cleanTranslation((verse.translations.find((t) => t.resource_id === 33) || verse.translations[0])?.text.replace(/<[^>]*>?/gm, ""))
+                                        }
+                                    </p>
+                                    <button
+                                        onClick={() => handleCopyVerse(verse)}
+                                        className="p-1.5 rounded-md text-slate-600 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                                        title="Salin Terjemahan"
+                                    >
+                                        {copiedVerseId === verse.id ? (
+                                            <Check className="w-4 h-4" />
+                                        ) : (
+                                            <Copy className="w-4 h-4" />
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            }
 
             {/* Pagination & Navigation */}
             <div className="flex flex-col gap-2 mt-0 px-4 mb-0 pb-0">
@@ -704,14 +697,83 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 </div>
             </div>
             {/* Floating Copy Toast */}
-            {copiedVerseId !== null && (
-                <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    <div className="bg-[rgb(var(--color-primary-dark))]/90 border border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] px-4 py-2 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                        <span className="text-xs font-medium">Terjemahan berhasil disalin</span>
+            {
+                copiedVerseId !== null && (
+                    <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                        <div className="bg-[rgb(var(--color-primary-dark))]/90 border border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] px-4 py-2 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                            <span className="text-xs font-medium">Terjemahan berhasil disalin</span>
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
+            {/* Mobile Settings Dialog */}
+            <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+                <DialogContent className="max-w-xs w-[90%] bg-slate-950/95 border-white/10 text-white backdrop-blur-xl rounded-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-sm uppercase tracking-widest text-slate-400">
+                            <Settings className="w-4 h-4" />
+                            Pengaturan Tampilan
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-6 pt-4">
+                        {/* 1. View Mode */}
+                        <div className="flex items-center justify-between">
+                            <Label className="text-white font-medium">Mode Baca</Label>
+                            <div className="flex bg-slate-900 rounded-lg p-1 border border-white/10">
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    List
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('mushaf')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                    Mushaf
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* 2. Tajweed */}
+                        <div className="flex items-center justify-between">
+                            <Label className="text-white font-medium">Warna Tajwid</Label>
+                            <button
+                                onClick={() => setTajweedMode(!tajweedMode)}
+                                className={`w-12 h-6 rounded-full transition-colors relative ${tajweedMode ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-800'}`}
+                            >
+                                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${tajweedMode ? 'left-7' : 'left-1'}`} />
+                            </button>
+                        </div>
+
+                        {/* 3. Font Size */}
+                        <div className="space-y-3">
+                            <Label className="text-white font-medium">Ukuran Teks Arab</Label>
+                            <div className="flex justify-between items-center bg-slate-900/50 rounded-xl border border-white/10 p-2">
+                                <button onClick={() => handleFontSizeChange('small')} className={`p-2 rounded-lg ${fontSize === 'small' ? 'bg-white/10 text-white ring-1 ring-white/20' : 'text-slate-500'}`}>
+                                    <span className="text-xs font-bold">Aa</span>
+                                </button>
+                                <div className="h-px flex-1 bg-white/10 mx-2" />
+                                <button onClick={() => handleFontSizeChange('medium')} className={`p-2 rounded-lg ${fontSize === 'medium' ? 'bg-white/10 text-white ring-1 ring-white/20' : 'text-slate-500'}`}>
+                                    <span className="text-base font-bold">Aa</span>
+                                </button>
+                                <div className="h-px flex-1 bg-white/10 mx-2" />
+                                <button onClick={() => handleFontSizeChange('large')} className={`p-2 rounded-lg ${fontSize === 'large' ? 'bg-white/10 text-white ring-1 ring-white/20' : 'text-slate-500'}`}>
+                                    <span className="text-xl font-bold">Aa</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button className="w-full bg-white/10 hover:bg-white/20 text-white mt-2">Tutup</Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             {/* Jump To Verse Dialog */}
             <Dialog open={isJumpDialogOpen} onOpenChange={setIsJumpDialogOpen}>
                 <DialogContent className="max-w-xs bg-slate-950 border-white/10 text-white">
@@ -750,6 +812,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 surahName={chapter.name_simple}
                 surahNumber={chapter.id}
             />
-        </div>
+        </div >
     );
 }

@@ -11,7 +11,7 @@ interface PageProps {
 
 export default function SurahDetailPage({ params, searchParams }: PageProps) {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))] px-4 pt-8 pb-[80px] text-white font-sans sm:px-6">
+        <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))] px-4 pt-0 md:pt-8 pb-[80px] text-white font-sans sm:px-6">
             <Suspense fallback={<VerseListSkeleton />}>
                 <VerseBrowser params={params} searchParams={searchParams} />
             </Suspense>
