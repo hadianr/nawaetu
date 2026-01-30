@@ -109,24 +109,24 @@ export default function SurahList({ chapters }: SurahListProps) {
                 return (
                     <Link
                         href={`/quran/${lastRead.surahId}?page=${targetPage}#${lastRead.surahId}:${lastRead.verseId}`}
-                        className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent p-4 backdrop-blur-sm transition-all duration-300 hover:border-amber-400/50 hover:shadow-[0_0_30px_rgba(251,146,60,0.15)] flex items-center justify-between"
+                        className="group relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/60 bg-gradient-to-br from-[rgb(var(--color-primary))]/25 via-[rgb(var(--color-primary))]/10 to-transparent p-4 backdrop-blur-sm transition-all duration-300 hover:border-[rgb(var(--color-primary))] hover:shadow-[0_0_30px_rgba(var(--color-primary),0.25)] flex items-center justify-between shadow-[0_0_15px_rgba(var(--color-primary),0.1)]"
                     >
                         {/* Glowing Background Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                         <div className="relative flex items-start gap-4 flex-1">
                             {/* Bookmark Icon */}
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-500/20 ring-1 ring-amber-400/30">
-                                <Bookmark className="h-5 w-5 text-amber-400 fill-current" />
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/30 ring-1 ring-[rgb(var(--color-primary))]/50">
+                                <Bookmark className="h-5 w-5 text-[rgb(var(--color-primary))] fill-current" />
                             </div>
 
                             {/* Text Content */}
                             <div className="flex flex-col gap-1 flex-1">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/80">Terakhir Dibaca</span>
-                                    <Clock className="h-3 w-3 text-amber-400/60" />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-light))]">Terakhir Dibaca</span>
+                                    <Clock className="h-3 w-3 text-[rgb(var(--color-primary-light))]/80" />
                                 </div>
-                                <h3 className="text-base font-bold text-white group-hover:text-amber-200 transition-colors">
+                                <h3 className="text-base font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">
                                     {lastRead.surahName}
                                 </h3>
                                 <p className="text-xs text-slate-400">
@@ -136,7 +136,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                         </div>
 
                         {/* Arrow Icon */}
-                        <ChevronRight className="h-5 w-5 text-amber-400/60 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" />
+                        <ChevronRight className="h-5 w-5 text-[rgb(var(--color-primary))]/80 group-hover:text-[rgb(var(--color-primary))] group-hover:translate-x-1 transition-all" />
                     </Link>
                 );
             })()}
@@ -149,16 +149,16 @@ export default function SurahList({ chapters }: SurahListProps) {
                             key={chapter.id}
                             href={`/quran/${chapter.id}`}
                             className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 gap-3 ${isBookmarked
-                                ? 'border-amber-500/40 bg-amber-500/5 hover:border-amber-400/60 hover:bg-amber-500/10 hover:shadow-[0_0_25px_rgba(251,146,60,0.15)]'
-                                : 'border-white/10 bg-white/5 hover:border-[rgb(var(--color-primary))]/30 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.1)]'
+                                ? 'border-[rgb(var(--color-primary))]/70 bg-[rgb(var(--color-primary))]/15 hover:border-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/20 hover:shadow-[0_0_25px_rgba(var(--color-primary),0.25)] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
+                                : 'border-white/10 bg-white/5 hover:border-[rgb(var(--color-primary))]/50 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)]'
                                 }`}
                         >
                             {/* Bookmark Badge */}
                             {isBookmarked && (
                                 <div className="absolute top-2 right-2 z-10">
-                                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 ring-1 ring-amber-400/30 backdrop-blur-sm">
-                                        <Bookmark className="h-2.5 w-2.5 text-amber-400 fill-current" />
-                                        <span className="text-[8px] font-bold text-amber-400">Ditandai</span>
+                                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[rgb(var(--color-primary))]/20 ring-1 ring-[rgb(var(--color-primary))]/30 backdrop-blur-sm">
+                                        <Bookmark className="h-2.5 w-2.5 text-[rgb(var(--color-primary))] fill-current" />
+                                        <span className="text-[8px] font-bold text-[rgb(var(--color-primary))]">Ditandai</span>
                                     </div>
                                 </div>
                             )}
@@ -167,20 +167,20 @@ export default function SurahList({ chapters }: SurahListProps) {
                                 <div className="flex items-center gap-2">
                                     {/* Surah Number Circle */}
                                     <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1 transition-all ${isBookmarked
-                                        ? 'bg-amber-500/15 text-amber-400 ring-amber-400/30 group-hover:bg-amber-500/25'
+                                        ? 'bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary))] ring-[rgb(var(--color-primary))]/30 group-hover:bg-[rgb(var(--color-primary))]/25'
                                         : 'bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] ring-[rgb(var(--color-primary))]/20 group-hover:bg-[rgb(var(--color-primary))]/20 group-hover:text-[rgb(var(--color-primary))]'
                                         }`}>
                                         {chapter.id}
                                     </div>
                                     <div className="flex flex-col min-w-0">
                                         <span className={`font-bold text-sm truncate transition-colors ${isBookmarked
-                                            ? 'text-amber-100 group-hover:text-amber-200'
+                                            ? 'text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))]'
                                             : 'text-white group-hover:text-[rgb(var(--color-primary-light))]'
                                             }`}>
                                             {chapter.name_simple}
                                         </span>
                                         <span className={`text-[10px] truncate ${isBookmarked
-                                            ? 'text-amber-400/80'
+                                            ? 'text-[rgb(var(--color-primary))]/80'
                                             : 'text-[rgb(var(--color-primary-light))]/80'
                                             }`}>
                                             {chapter.translated_name.name}
