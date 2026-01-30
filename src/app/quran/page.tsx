@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 import QuranBrowser from "@/components/quran/QuranBrowser";
@@ -19,6 +19,13 @@ export default function QuranPage() {
                         <h1 className="text-2xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">Al-Quran</h1>
                         <p className="text-sm text-white/60">Baca dan Dengarkan Al-Qur'an</p>
                     </div>
+
+                    <Button variant="outline" size="sm" asChild className="ml-auto rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-xs gap-2">
+                        <Link href="/bookmarks">
+                            <Bookmark className="w-4 h-4" />
+                            <span className="hidden sm:inline">Tanda Baca</span>
+                        </Link>
+                    </Button>
                 </div>
 
                 <Suspense fallback={<SurahListSkeleton />}>

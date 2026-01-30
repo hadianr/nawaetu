@@ -13,6 +13,9 @@ import { Chapter } from "@/components/quran/SurahList";
 import { AyahMarker } from "./AyahMarker";
 import { surahNames } from "@/lib/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import BookmarkEditDialog from "./BookmarkEditDialog";
+import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
 
 export interface Verse {
     id: number;
@@ -190,7 +193,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [showTransliteration, setShowTransliteration] = useState(false);
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
     // State
-    const [bookmarkedVerseKey, setBookmarkedVerseKey] = useState<string | null>(null);
+    const { isBookmarked, getBookmark, refresh: refreshBookmarks } = useBookmarks();
+    const [activeBookmark, setActiveBookmark] = useState<BookmarkType | null>(null);
+    const [isBookmarkDialogOpen, setIsBookmarkDialogOpen] = useState(false);
+
     const [sharingVerse, setSharingVerse] = useState<Verse | null>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
     const [isJumpDialogOpen, setIsJumpDialogOpen] = useState(false);
@@ -333,18 +339,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     };
 
     useEffect(() => {
-        const saved = localStorage.getItem("quran_last_read");
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                // Specifically check if it's THIS Surah
-                if (parsed.surahId === chapter.id) {
-                    setBookmarkedVerseKey(`${chapter.id}:${parsed.verseId} `);
-                }
-            } catch (e) {
-                console.error("Failed to parse bookmark", e);
-            }
-        }
+        // Legacy: We might want to highlight the last read verse differently in the future
+        // For now, removing the manual state sync since we use the hook
     }, [chapter.id]);
 
     // Auto-scroll to bookmarked verse
@@ -437,19 +433,39 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         setTimeout(() => setCopiedVerseId(null), 2000);
     };
 
-    const handleBookmark = (verse: Verse) => {
-        const verseNum = parseInt(verse.verse_key.split(":")[1]);
-        const bookmarkData = {
-            surahId: chapter.id,
-            surahName: chapter.name_simple,
-            verseId: verseNum,
-            timestamp: Date.now()
-        };
-        localStorage.setItem("quran_last_read", JSON.stringify(bookmarkData));
-        setBookmarkedVerseKey(verse.verse_key);
+    const handleBookmarkClick = (verse: Verse) => {
+        const verseKey = verse.verse_key;
 
-        // Optional: Trigger a toast or effect 
-        // For now simple state update is enough visual feedback
+        if (isBookmarked(verseKey)) {
+            // Already bookmarked -> Open Edit Dialog
+            const bookmark = getBookmark(verseKey);
+            if (bookmark) {
+                setActiveBookmark(bookmark);
+                setIsBookmarkDialogOpen(true);
+            }
+        } else {
+            // Not bookmarked -> Add immediately
+            const verseNum = parseInt(verse.verse_key.split(":")[1]);
+
+            // 1. Save to Bookmarks
+            saveBookmark({
+                surahId: chapter.id,
+                surahName: chapter.name_simple,
+                verseId: verseNum,
+                verseText: verse.text_uthmani, // Save Arabic preview
+            });
+
+            // 2. Refresh hook
+            refreshBookmarks();
+
+            // 3. Show Toast (Temporary minimal feedback, UI generic toast would be better)
+            // Ideally we use a toast library component here
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] px-4 py-2 rounded-full text-sm font-medium z-50 animate-in fade-in slide-in-from-bottom-2 shadow-lg shadow-[rgb(var(--color-primary))]/20';
+            toast.innerText = 'Disimpan 🔖. Klik lagi untuk Catatan & Terakhir Baca';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
     };
 
     return (
@@ -694,11 +710,11 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                                             {/* Bookmark Button */}
                                             <button
-                                                onClick={() => handleBookmark(verse)}
-                                                className={`p - 1.5 rounded - full transition - colors flex items - center justify - center focus: outline - none ${bookmarkedVerseKey === verse.verse_key ? 'text-amber-400' : 'text-slate-500 hover:text-amber-400'} `}
-                                                title="Tandai Terakhir Dibaca"
+                                                onClick={() => handleBookmarkClick(verse)}
+                                                className={`p-1.5 rounded-full transition-colors flex items-center justify-center focus:outline-none ${isBookmarked(verse.verse_key) ? 'text-amber-400 bg-amber-400/10' : 'text-slate-500 hover:text-amber-400'} `}
+                                                title={isBookmarked(verse.verse_key) ? "Edit Catatan / Hapus" : "Simpan Ayat"}
                                             >
-                                                <Bookmark className={`w - 4 h - 4 ${bookmarkedVerseKey === verse.verse_key ? 'fill-current' : ''} `} />
+                                                <Bookmark className={`w-4 h-4 ${isBookmarked(verse.verse_key) ? 'fill-current' : ''}`} />
                                             </button>
                                         </span>
                                     </p>
@@ -848,6 +864,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 <DialogContent className="max-w-xs w-[90%] bg-slate-950/95 border-white/10 text-white backdrop-blur-xl rounded-2xl">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-sm uppercase tracking-widest text-slate-400">
+
                             <Settings className="w-4 h-4" />
                             Pengaturan Tampilan
                         </DialogTitle>
@@ -959,6 +976,17 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 surahName={chapter.name_simple}
                 surahNumber={chapter.id}
             />
-        </div >
+
+            {/* Bookmark Edit Dialog */}
+            <BookmarkEditDialog
+                open={isBookmarkDialogOpen}
+                onOpenChange={setIsBookmarkDialogOpen}
+                bookmark={activeBookmark}
+                onSave={refreshBookmarks}
+                onDelete={refreshBookmarks}
+            />
+        </div>
     );
 }
+
+
