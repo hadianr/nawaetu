@@ -62,14 +62,23 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
         getVerseAudio(id, currentPage, reciterId)
     ]);
 
-    // Merge audio data into verses
+    // Merge audio data and extract transliteration into verses
     const verses = versesData.map((verse: any) => {
         const audio = verseAudioData.find((a: any) => a.verse_key === verse.verse_key);
+
+        // Extract and join transliteration from words
+        const transliteration = verse.words
+            ?.filter((word: any) => word.char_type_name === 'word') // Skip end markers
+            ?.map((word: any) => word.transliteration?.text || '')
+            .filter(Boolean)
+            .join(' ') || '';
+
         return {
             ...verse,
             audio: {
                 url: audio ? `https://verses.quran.com/${audio.url}` : ""
-            }
+            },
+            transliteration
         };
     });
 
