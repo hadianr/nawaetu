@@ -12,8 +12,17 @@ export default function BookmarksPage() {
     const { bookmarks, refresh } = useBookmarks();
     const [mounted, setMounted] = useState(false);
 
+    const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number } | null>(null);
+
     useEffect(() => {
         setMounted(true);
+        // Check current last read
+        const saved = localStorage.getItem("quran_last_read");
+        if (saved) {
+            try {
+                setLastRead(JSON.parse(saved));
+            } catch (e) { }
+        }
     }, []);
 
     const handleDelete = (id: string, e: React.MouseEvent) => {
@@ -25,83 +34,139 @@ export default function BookmarksPage() {
         }
     };
 
+    const handleSetLastRead = (bookmark: any, e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const lastReadData = {
+            surahId: bookmark.surahId,
+            surahName: bookmark.surahName,
+            verseId: bookmark.verseId,
+            timestamp: Date.now()
+        };
+        localStorage.setItem("quran_last_read", JSON.stringify(lastReadData));
+        setLastRead(lastReadData);
+
+        // Show feedback (could be better with toast)
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] px-4 py-2 rounded-full text-sm font-medium z-50 animate-in fade-in slide-in-from-bottom-2 shadow-lg shadow-[rgb(var(--color-primary))]/20';
+        toast.innerText = 'Ditandai sebagai Terakhir Baca 📖';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    };
+
     if (!mounted) return null;
 
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 pt-8 pb-32 text-white font-sans sm:px-6">
-            <div className="w-full max-w-2xl space-y-6">
+            <div className="w-full max-w-2xl space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild className="rounded-full text-white/70 hover:bg-white/10 hover:text-white">
+                    <Button variant="ghost" size="icon" asChild className="rounded-full text-white/70 hover:bg-white/10 hover:text-white transition-colors">
                         <Link href="/quran">
                             <ChevronLeft className="h-6 w-6" />
                         </Link>
                     </Button>
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">Tanda Baca</h1>
-                        <p className="text-sm text-white/60">Ayat-ayat yang Anda simpan</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">Koleksi Tanda Baca</h1>
+                        <p className="text-sm text-white/60">Catatan dan ayat pilihan Anda</p>
                     </div>
                 </div>
 
                 {/* List */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {bookmarks.length === 0 ? (
-                        <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10">
-                            <BookmarkIcon className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-slate-300">Belum ada tanda baca</h3>
-                            <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto">
-                                Tandai ayat saat membaca Al-Quran untuk menyimpannya di sini.
+                        <div className="text-center py-24 bg-white/5 rounded-[2.5rem] border border-white/5">
+                            <div className="bg-[rgb(var(--color-primary))]/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <BookmarkIcon className="w-10 h-10 text-[rgb(var(--color-primary))]" />
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-2">Belum ada koleksi</h3>
+                            <p className="text-white/40 max-w-xs mx-auto mb-8 leading-relaxed">
+                                Jelajahi Al-Quran dan simpan ayat yang menyentuh hati Anda.
                             </p>
-                            <Button asChild className="mt-6 bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/30">
+                            <Button asChild className="h-12 px-8 rounded-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-[rgb(var(--color-primary-foreground))] font-semibold shadow-xl shadow-[rgb(var(--color-primary))]/20">
                                 <Link href="/quran">Mulai Membaca</Link>
                             </Button>
                         </div>
                     ) : (
-                        bookmarks.map((bookmark) => (
-                            <Link
-                                href={`/quran/${bookmark.surahId}#${bookmark.id}`}
-                                key={bookmark.id}
-                                className="block group relative overflow-hidden rounded-2xl bg-black/20 border border-white/10 p-5 hover:bg-black/30 hover:border-white/20 transition-all active:scale-[0.99]"
-                            >
-                                <div className="flex justify-between items-start gap-4">
-                                    <div className="space-y-2 flex-1 min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <span className="inline-flex items-center justify-center h-8 px-3 rounded-full bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-xs font-bold">
-                                                QS. {bookmark.surahName} : {bookmark.verseId}
-                                            </span>
-                                            <span className="flex items-center gap-1 text-[10px] text-slate-500">
+                        bookmarks.map((bookmark) => {
+                            const isCurrentLastRead = lastRead?.surahId === bookmark.surahId && lastRead?.verseId === bookmark.verseId;
+
+                            return (
+                                <Link
+                                    href={`/quran/${bookmark.surahId}#${bookmark.surahId}:${bookmark.verseId}`}
+                                    key={bookmark.id}
+                                    className={`block group relative overflow-hidden rounded-[2rem] border transition-all duration-300 ${isCurrentLastRead
+                                        ? 'bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/50 hover:border-[rgb(var(--color-primary))] shadow-[0_0_20px_rgba(var(--color-primary),0.1)]'
+                                        : 'bg-[#0f172a]/40 border-white/5 hover:border-white/10 hover:bg-[#0f172a]/60'
+                                        }`}
+                                >
+                                    {/* Active Indicator Strip */}
+                                    {isCurrentLastRead && (
+                                        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[rgb(var(--color-primary))]" />
+                                    )}
+
+                                    <div className="p-6 sm:p-7">
+                                        <div className="flex justify-between items-start gap-4 mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`h-10 px-4 rounded-full flex items-center justify-center text-xs font-bold tracking-wide uppercase transition-colors ${isCurrentLastRead
+                                                    ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]'
+                                                    : 'bg-white/5 text-slate-400 border border-white/5'
+                                                    }`}>
+                                                    QS. {bookmark.surahName} : {bookmark.verseId}
+                                                </div>
+                                                {isCurrentLastRead && (
+                                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest hidden sm:block">
+                                                        Terakhir Dibaca
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-black/20 px-2 py-1 rounded-lg">
                                                 <Calendar className="w-3 h-3" />
                                                 {new Date(bookmark.updatedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
-                                            </span>
+                                            </div>
                                         </div>
 
-                                        <p className="font-amiri text-xl text-white/90 leading-loose line-clamp-2 text-right dir-rtl py-1">
+                                        <p className="font-amiri text-2xl sm:text-3xl text-white/95 leading-[2.2] text-right dir-rtl mb-6">
                                             {bookmark.verseText}
                                         </p>
 
-                                        {bookmark.note && (
-                                            <div className="flex items-start gap-2 pt-2 border-t border-white/5 mt-2">
-                                                <FileText className="w-3 h-3 text-slate-500 mt-1 shrink-0" />
-                                                <p className="text-xs text-slate-400 italic line-clamp-2">
+                                        {bookmark.note ? (
+                                            <div className="relative bg-black/20 rounded-2xl p-4 border border-white/5">
+                                                <FileText className="absolute top-4 left-4 w-4 h-4 text-[rgb(var(--color-primary))]/60" />
+                                                <p className="text-sm text-slate-300 pl-7 italic leading-relaxed">
                                                     "{bookmark.note}"
                                                 </p>
                                             </div>
+                                        ) : (
+                                            <div className="h-2" />
                                         )}
-                                    </div>
 
-                                    <div className="flex flex-col gap-2 items-end">
-                                        <button
-                                            onClick={(e) => handleDelete(bookmark.id, e)}
-                                            className="p-2 rounded-full text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-colors z-10"
-                                            title="Hapus"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                        <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-[rgb(var(--color-primary-light))] transition-colors mt-auto" />
+                                        <div className="flex items-center justify-between mt-6 pt-6 border-t border-white/5">
+                                            <button
+                                                onClick={(e) => handleSetLastRead(bookmark, e)}
+                                                disabled={isCurrentLastRead}
+                                                className={`text-xs font-medium px-4 py-2 rounded-full transition-all ${isCurrentLastRead
+                                                    ? 'text-[rgb(var(--color-primary-light))] opacity-50 cursor-default'
+                                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                                    }`}
+                                            >
+                                                {isCurrentLastRead ? 'Sedang Dibaca' : 'Jadikan Terakhir Baca'}
+                                            </button>
+
+                                            <button
+                                                onClick={(e) => handleDelete(bookmark.id, e)}
+                                                className="group/del flex items-center gap-2 px-4 py-2 rounded-full text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                                <span className="text-xs group-hover/del:underline">Hapus</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))
+                                </Link>
+                            );
+                        })
                     )}
                 </div>
             </div>
