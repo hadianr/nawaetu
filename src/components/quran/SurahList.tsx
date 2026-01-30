@@ -69,15 +69,30 @@ interface SurahListProps {
 export default function SurahList({ chapters }: SurahListProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number; surahName: string; timestamp: number } | null>(null);
+    const [bookmarkCount, setBookmarkCount] = useState(0);
 
-    // Load bookmark on mount
+    // Load data on mount
     useEffect(() => {
-        const saved = localStorage.getItem("quran_last_read");
-        if (saved) {
+        // Last Read
+        const savedRead = localStorage.getItem("quran_last_read");
+        if (savedRead) {
             try {
-                setLastRead(JSON.parse(saved));
+                setLastRead(JSON.parse(savedRead));
             } catch (e) {
-                console.error("Failed to  parse bookmark", e);
+                console.error("Failed to parse last read", e);
+            }
+        }
+
+        // Bookmarks Count
+        const savedBookmarks = localStorage.getItem("nawaetu_bookmarks");
+        if (savedBookmarks) {
+            try {
+                const parsed = JSON.parse(savedBookmarks);
+                if (Array.isArray(parsed)) {
+                    setBookmarkCount(parsed.length);
+                }
+            } catch (e) {
+                console.error("Failed to parse bookmarks", e);
             }
         }
     }, []);
@@ -89,58 +104,99 @@ export default function SurahList({ chapters }: SurahListProps) {
 
     return (
         <div className="w-full max-w-4xl space-y-6">
-            {/* Sticky Search Header */}
-            <div className="sticky top-0 z-20 -mx-4 px-4 py-4 backdrop-blur-xl md:static md:mx-0 md:p-0">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
+            {/* Dashboard Grid - Grouping Last Read & Bookmarks */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                {/* Main Card: Continue Reading (Full width on mobile, 2 cols on desktop) */}
+                {lastRead ? (() => {
+                    const targetPage = Math.ceil(lastRead.verseId / 20);
+                    const safeLastRead = lastRead;
+                    return (
+                        <Link
+                            href={`/quran/${safeLastRead.surahId}?page=${targetPage}#${safeLastRead.surahId}:${safeLastRead.verseId}`}
+                            className="col-span-2 group relative overflow-hidden rounded-3xl border border-[rgb(var(--color-primary))]/50 bg-[#0f172a] shadow-lg shadow-[rgb(var(--color-primary))]/5 transition-all duration-500 hover:shadow-[rgb(var(--color-primary))]/20 hover:-translate-y-0.5"
+                        >
+                            {/* Dynamic Background Mesh */}
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--color-primary),0.15),transparent_50%)]" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/10 via-transparent to-transparent opacity-50" />
+
+                            <div className="relative p-5 md:p-6 flex items-center justify-between gap-4 h-full">
+                                <div className="flex flex-col justify-center gap-1.5 h-full">
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-primary-light))]">
+                                            Terakhir Dibaca
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">
+                                            {safeLastRead.surahName}
+                                        </h3>
+                                        <p className="text-xs md:text-sm text-slate-400 font-medium mt-0.5">
+                                            Ayat {safeLastRead.verseId}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 group-hover:bg-[rgb(var(--color-primary))] group-hover:border-[rgb(var(--color-primary))] transition-all">
+                                    <Clock className="h-5 w-5 md:h-6 md:w-6 text-[rgb(var(--color-primary))] group-hover:text-white" />
+                                </div>
+                            </div>
+                        </Link>
+                    );
+                })() : (
+                    <div className="col-span-2 rounded-3xl border border-white/5 bg-[#0f172a]/40 p-5 flex flex-col justify-center gap-1">
+                        <h3 className="text-base font-bold text-white/50">Belum ada riwayat</h3>
+                        <p className="text-xs text-slate-500">Mulai membaca sekarang.</p>
+                    </div>
+                )}
+
+                {/* Secondary Card: Bookmarks - Compact on Mobile */}
+                <Link
+                    href="/bookmarks"
+                    className="col-span-2 md:col-span-1 group relative overflow-hidden rounded-3xl border border-white/10 bg-[#0f172a]/40 backdrop-blur-sm p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:bg-[#0f172a]/80 hover:border-[rgb(var(--color-primary))]/30 hover:shadow-lg"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    <div className="relative flex items-center md:flex-col md:items-start gap-4 md:gap-0 w-full">
+                        <div className="h-10 w-10 md:h-10 md:w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-[rgb(var(--color-primary))]/20 group-hover:border-[rgb(var(--color-primary))]/30 transition-colors md:mb-4">
+                            <Bookmark className="h-5 w-5 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                        </div>
+
+                        <div className="flex-1">
+                            <h3 className="text-base md:text-lg font-bold text-white mb-0.5">Tanda Baca</h3>
+                            <p className="text-xs text-slate-400 group-hover:text-slate-300">
+                                {bookmarkCount} ayat tersimpan
+                            </p>
+                        </div>
+
+                        <ChevronRight className="h-5 w-5 text-slate-500 md:hidden" />
+                    </div>
+                </Link>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative group pt-1">
+                <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl" />
+                <div className="relative bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center px-4 py-2.5 shadow-lg focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/30 transition-all">
+                    <Search className="w-4 h-4 text-slate-400 group-focus-within:text-[rgb(var(--color-primary))] transition-colors" />
                     <Input
-                        placeholder="Cari Surat atau Arti..."
+                        placeholder="Cari Surat (e.g. Al-Kahf) atau Arti..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/40 focus-visible:ring-[rgb(var(--color-primary))]/50"
+                        className="border-none bg-transparent text-sm text-white placeholder:text-slate-500 focus-visible:ring-0 px-3 h-auto py-1"
                     />
                 </div>
             </div>
 
-            {/* Continue Reading Banner */}
-            {lastRead && (() => {
-                // Calculate which page the verse is on (20 verses per page)
-                const targetPage = Math.ceil(lastRead.verseId / 20);
-                return (
-                    <Link
-                        href={`/quran/${lastRead.surahId}?page=${targetPage}#${lastRead.surahId}:${lastRead.verseId}`}
-                        className="group relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/60 bg-gradient-to-br from-[rgb(var(--color-primary))]/25 via-[rgb(var(--color-primary))]/10 to-transparent p-4 backdrop-blur-sm transition-all duration-300 hover:border-[rgb(var(--color-primary))] hover:shadow-[0_0_30px_rgba(var(--color-primary),0.25)] flex items-center justify-between shadow-[0_0_15px_rgba(var(--color-primary),0.1)]"
-                    >
-                        {/* Glowing Background Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            {/* Surah List Header */}
+            <div className="flex items-center justify-between px-2 pt-1">
+                <h2 className="text-xl font-bold text-white">Surat-Surat</h2>
+                <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">
+                    {filteredChapters.length} SURAT
+                </span>
+            </div>
 
-                        <div className="relative flex items-start gap-4 flex-1">
-                            {/* Bookmark Icon */}
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/30 ring-1 ring-[rgb(var(--color-primary))]/50">
-                                <Bookmark className="h-5 w-5 text-[rgb(var(--color-primary))] fill-current" />
-                            </div>
-
-                            {/* Text Content */}
-                            <div className="flex flex-col gap-1 flex-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-light))]">Terakhir Dibaca</span>
-                                    <Clock className="h-3 w-3 text-[rgb(var(--color-primary-light))]/80" />
-                                </div>
-                                <h3 className="text-base font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">
-                                    {lastRead.surahName}
-                                </h3>
-                                <p className="text-xs text-slate-400">
-                                    Ayat {lastRead.verseId} • Tap untuk melanjutkan
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Arrow Icon */}
-                        <ChevronRight className="h-5 w-5 text-[rgb(var(--color-primary))]/80 group-hover:text-[rgb(var(--color-primary))] group-hover:translate-x-1 transition-all" />
-                    </Link>
-                );
-            })()}
-
+            {/* Surah Grid */}
             <div className="grid gap-3 grid-cols-2 lg:grid-cols-3">
                 {filteredChapters.map((chapter) => {
                     const isBookmarked = lastRead?.surahId === chapter.id;
@@ -153,12 +209,11 @@ export default function SurahList({ chapters }: SurahListProps) {
                                 : 'border-white/10 bg-white/5 hover:border-[rgb(var(--color-primary))]/50 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)]'
                                 }`}
                         >
-                            {/* Bookmark Badge */}
+                            {/* Bookmark Badge - Compact Icon Only */}
                             {isBookmarked && (
-                                <div className="absolute top-2 right-2 z-10">
-                                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[rgb(var(--color-primary))]/20 ring-1 ring-[rgb(var(--color-primary))]/30 backdrop-blur-sm">
-                                        <Bookmark className="h-2.5 w-2.5 text-[rgb(var(--color-primary))] fill-current" />
-                                        <span className="text-[8px] font-bold text-[rgb(var(--color-primary))]">Ditandai</span>
+                                <div className="absolute top-0 right-0 z-10">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-bl-xl bg-[rgb(var(--color-primary))]/20 backdrop-blur-sm border-b border-l border-[rgb(var(--color-primary))]/30">
+                                        <Bookmark className="h-3 w-3 text-[rgb(var(--color-primary))] fill-current" />
                                     </div>
                                 </div>
                             )}
@@ -201,6 +256,6 @@ export default function SurahList({ chapters }: SurahListProps) {
                     );
                 })}
             </div>
-        </div >
+        </div>
     );
 }

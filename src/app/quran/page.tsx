@@ -16,16 +16,9 @@ export default function QuranPage() {
                         </Link>
                     </Button>
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">Al-Quran</h1>
-                        <p className="text-sm text-white/60">Baca dan Dengarkan Al-Qur'an</p>
+                        <h1 className="text-xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">Al-Qur'an Digital</h1>
+                        <p className="text-xs text-white/60">Lebih dari sekedar membaca</p>
                     </div>
-
-                    <Button variant="outline" size="sm" asChild className="ml-auto rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-xs gap-2">
-                        <Link href="/bookmarks">
-                            <Bookmark className="w-4 h-4" />
-                            <span className="hidden sm:inline">Tanda Baca</span>
-                        </Link>
-                    </Button>
                 </div>
 
                 <Suspense fallback={<SurahListSkeleton />}>
