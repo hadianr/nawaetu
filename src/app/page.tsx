@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { Sparkles, MessageCircle } from "lucide-react";
 import PrayerTimesDisplay from "@/components/PrayerTimesDisplay";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
@@ -46,19 +46,32 @@ export default function Home() {
         </section>
 
       </main>
-      {/* AI Mentor FAB */}
-      <Link
-        href="/tanya-ustadz"
-        className="fixed bottom-24 right-4 z-40 group animate-in zoom-in duration-500 delay-1000 slide-in-from-bottom-10"
-      >
-        <div className="absolute inset-0 bg-[rgb(var(--color-primary))] rounded-full blur-lg opacity-40 group-hover:opacity-60 transition-opacity animate-pulse" />
-        <div className="relative w-14 h-14 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full flex items-center justify-center border border-white/20 shadow-xl group-hover:scale-110 transition-transform">
-          <Sparkles className="w-7 h-7 text-white fill-white/20" />
+      {/* AI Mentor Access Point */}
+      <div className="fixed bottom-[90px] left-0 right-0 z-40 pointer-events-none">
+        <div className="max-w-md mx-auto w-full relative px-4">
+          <Link
+            href="/tanya-ustadz"
+            className="absolute right-4 bottom-0 pointer-events-auto group animate-in slide-in-from-right-4 fade-in duration-700 delay-500"
+          >
+            <div className="relative flex items-center gap-2 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] p-1 pr-4 pl-1.5 rounded-full border border-white/20 shadow-[0_8px_32px_rgba(var(--color-primary),0.3)] hover:scale-105 active:scale-95 transition-all">
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-[rgb(var(--color-primary))] rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
+
+              {/* Icon Circle */}
+              <div className="relative w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10">
+                <MessageCircle className="w-5 h-5 text-white" />
+                <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-amber-300 animate-pulse" />
+              </div>
+
+              {/* Label */}
+              <div className="relative flex flex-col">
+                <span className="text-[11px] font-bold text-white leading-none">Tanya Ustadz</span>
+                <span className="text-[9px] text-white/70 leading-normal">AI Mentor</span>
+              </div>
+            </div>
+          </Link>
         </div>
-        <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-black/80 backdrop-blur text-white text-xs font-bold px-3 py-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-          Tanya Ustadz
-        </span>
-      </Link>
+      </div>
     </div>
   );
 }

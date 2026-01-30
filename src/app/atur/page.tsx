@@ -137,7 +137,11 @@ export default function SettingsPage() {
 
         newAudio.oncanplaythrough = () => {
             setIsLoading(false);
-            newAudio.play();
+            newAudio.play().catch(err => {
+                console.warn("Playback blocked by browser (Interaction required):", err);
+                setIsPlaying(false);
+                setIsLoading(false);
+            });
             setIsPlaying(true);
         };
 
@@ -428,9 +432,13 @@ export default function SettingsPage() {
                         })}
                     </div>
                     {!notificationsEnabled && (
-                        <p className="text-xs text-amber-400/70 text-center">
-                            Aktifkan notifikasi untuk menerima pengingat adzan
-                        </p>
+                        <button
+                            onClick={requestPermission}
+                            className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-xl text-amber-400 text-sm font-semibold hover:bg-amber-500/30 hover:border-amber-500/50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                            <Bell className="w-4 h-4" />
+                            Aktifkan Notifikasi Adzan
+                        </button>
                     )}
                 </div>
 

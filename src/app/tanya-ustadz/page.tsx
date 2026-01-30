@@ -5,7 +5,12 @@ import Link from "next/link";
 import { ArrowLeft, Send, Sparkles, User, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserActivity, useUserProfile } from "@/lib/activity-tracker";
-import { generateResponse, ChatMessage, UserContext } from "@/lib/mock-ai";
+import { askUstadz } from "./ai-action";
+import { ChatMessage } from "@/lib/mock-ai";
+import { saveChatHistory, loadChatHistory } from "@/lib/chat-storage";
+import { retryWithBackoff } from "@/lib/retry-helper";
+import { getCurrentTimeContext, getTimeSensitiveGreeting } from "@/lib/time-context";
+import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
 
 const QUICK_PROMPTS = [
     "Saya merasa malas sholat...",
@@ -23,32 +28,85 @@ export default function TanyaUstadzPage() {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Initialize Greeting based on context
-    useEffect(() => {
-        // Determine context
-        const context: UserContext = {
-            name: profile.name || "Hamba Allah",
-            prayerStreak: stats.streakDays,
-            lastPrayer: "Subuh", // Mock for now, or derive from stats if available
-            missedPrayers: 0
-        };
+    // Initialize: Load chat history or show greeting
+    const hasInitialized = useRef(false);
 
-        // Only if empty
-        if (messages.length === 0) {
-            setIsTyping(true);
-            generateResponse("assalamualaikum", context).then((response) => {
-                setMessages([
-                    {
+    useEffect(() => {
+        // Load chat history from localStorage on mount
+        if (!hasInitialized.current) {
+            hasInitialized.current = true;
+            const storedMessages = loadChatHistory();
+
+            if (storedMessages.length > 0) {
+                // Restore previous chat
+                setMessages(storedMessages);
+            } else if (profile.name) {
+                // Show greeting for new chat
+                setIsTyping(true);
+                const context = {
+                    name: profile.name || "Hamba Allah",
+                    prayerStreak: stats.streakDays,
+                    lastPrayer: "Subuh"
+                };
+
+                // Get time context for greeting
+                const timeCtx = getCurrentTimeContext();
+
+                // Try to get AI greeting with retries, fall back to static greeting
+                const getGreetingWithFallback = async (retries = 3): Promise<string> => {
+                    for (let i = 0; i < retries; i++) {
+                        try {
+                            const response = await askUstadz("berikan salam pembuka yang hangat", context, [], timeCtx);
+                            // If response is an error message, throw to retry
+                            if (response.includes("kendala teknis") || response.includes("sibuk banget")) {
+                                throw new Error("API error response");
+                            }
+                            return response;
+                        } catch (error) {
+                            console.log(`Initial greeting attempt ${i + 1} failed, retrying...`);
+                            if (i < retries - 1) {
+                                // Wait before retry (exponential backoff)
+                                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                            }
+                        }
+                    }
+
+                    // All retries failed, return static greeting based on time
+                    const { currentPeriod } = timeCtx;
+                    const staticGreetings: Record<string, string> = {
+                        subuh: `Assalamu'alaikum kak! 🙏 Semoga hari ini menjadi hari yang berkah dan penuh dengan kebaikan. Aku senang kamu mau ngobrol tentang ibadah dan spiritualitas Islam. *Mari kita mulai dengan hati yang bersih dan penuh harapan!* ⭐`,
+                        pagi: `Assalamu'alaikum kak! ☀️ Alhamdulillah pagi yang cerah! Semoga hari ini penuh berkah. Aku siap menemani kamu dalam perjalanan spiritualmu.`,
+                        siang: `Assalamu'alaikum kak! 🌤️ Gimana harinya? Semoga lancar ya. Aku di sini kalau kamu mau diskusi tentang ibadah atau spiritualitas Islam.`,
+                        sore: `Assalamu'alaikum kak! 🌅 Alhamdulillah hari ini penuh berkah ya. Aku siap menemani diskusi spiritualmu.`,
+                        malam: `Assalamu'alaikum kak! 🌙 Semoga harimu menyenangkan. Mau curhat atau tanya-tanya seputar ibadah? Aku siap dengerin~`
+                    };
+
+                    return staticGreetings[currentPeriod as keyof typeof staticGreetings] || staticGreetings.pagi;
+                };
+
+                getGreetingWithFallback().then((response) => {
+                    const greeting = {
                         id: 'init-1',
-                        role: 'assistant',
+                        role: 'assistant' as const,
                         content: response,
                         timestamp: Date.now()
-                    }
-                ]);
-                setIsTyping(false);
-            });
+                    };
+                    setMessages([greeting]);
+                    setIsTyping(false);
+                }).catch((error) => {
+                    setMessages([fallback]);
+                    setIsTyping(false);
+                });
+            }
         }
-    }, []);
+    }, [profile.name, stats.streakDays]);
+
+    // Save messages to localStorage whenever they change
+    useEffect(() => {
+        if (messages.length > 0) {
+            saveChatHistory(messages);
+        }
+    }, [messages]);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -70,17 +128,27 @@ export default function TanyaUstadzPage() {
         setInput("");
         setIsTyping(true);
 
-        // Context for AI
-        const context: UserContext = {
-            name: profile.name || "Hamba Allah",
-            prayerStreak: stats.streakDays,
-            lastPrayer: "Unknown",
-            missedPrayers: 0
-        };
-
         try {
-            // Get AI Response
-            const response = await generateResponse(text, context);
+            // Get AI Response from Gemini with chat history
+            const context = {
+                name: profile.name || "Hamba Allah",
+                prayerStreak: stats.streakDays,
+                lastPrayer: "Unknown"
+            };
+
+            // Convert messages to chat history format (exclude the greeting)
+            const chatHistory = messages
+                .filter(msg => msg.id !== 'init-1') // Exclude initial greeting
+                .map(msg => ({
+                    role: msg.role as 'user' | 'assistant',
+                    content: msg.content
+                }));
+
+            // Retry API call with exponential backoff for better reliability
+            const response = await retryWithBackoff(
+                () => askUstadz(text, context, chatHistory),
+                { maxRetries: 2, initialDelay: 1000 }
+            );
 
             const aiMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
@@ -90,6 +158,17 @@ export default function TanyaUstadzPage() {
             };
 
             setMessages(prev => [...prev, aiMsg]);
+        } catch (error: any) {
+            console.error("Error getting AI response:", error);
+
+            // Show user-friendly error message
+            const errorMsg: ChatMessage = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: error?.message || "Maaf, lagi ada kendala teknis. Coba lagi ya 🙏",
+                timestamp: Date.now()
+            };
+            setMessages(prev => [...prev, errorMsg]);
         } finally {
             setIsTyping(false);
         }
@@ -101,7 +180,7 @@ export default function TanyaUstadzPage() {
             <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
                 <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Link href="/atur" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
+                        <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
                             <ArrowLeft className="w-5 h-5 text-white" />
                         </Link>
                         <div className="flex items-center gap-3">
@@ -125,7 +204,7 @@ export default function TanyaUstadzPage() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 pt-24 pb-32 px-4 max-w-md mx-auto w-full space-y-4">
+            <div className="flex-1 pt-24 pb-64 px-4 max-w-md mx-auto w-full space-y-4">
                 {/* Date Divider (Mock) */}
                 <div className="flex justify-center my-4">
                     <span className="text-[10px] bg-white/5 px-2 py-1 rounded-full text-white/40">Hari Ini</span>
@@ -154,7 +233,17 @@ export default function TanyaUstadzPage() {
                                         ? "bg-[rgb(var(--color-primary))] text-white rounded-tr-none px-4"
                                         : "bg-white/10 text-white/90 rounded-tl-none border border-white/5"
                                 )}>
-                                    <p>{msg.content}</p>
+                                    {isUser ? (
+                                        <p>{msg.content}</p>
+                                    ) : (() => {
+                                        const parsed = parseAIResponse(msg.content);
+                                        return (
+                                            <div
+                                                className="prose prose-invert prose-sm max-w-none [&_strong]:text-[rgb(var(--color-primary-light))] [&_strong]:font-bold [&_em]:italic"
+                                                dangerouslySetInnerHTML={{ __html: formatMarkdown(parsed.mainMessage) }}
+                                            />
+                                        );
+                                    })()}
                                     <span className="text-[10px] opacity-40 mt-1 block text-right">
                                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
@@ -184,23 +273,53 @@ export default function TanyaUstadzPage() {
             </div>
 
             {/* Input Area */}
-            <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl border-t border-white/10 pb-6 pt-4">
+            <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 pb-16 md:pb-12 pt-4 z-[60]">
                 <div className="max-w-md mx-auto px-4 space-y-3">
-                    {/* Quick Prompts - Only show if messages are few or user hasn't typed */}
-                    {messages.length < 3 && (
-                        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                            {QUICK_PROMPTS.map((prompt, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => handleSend(prompt)}
-                                    disabled={isTyping}
-                                    className="whitespace-nowrap px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-xs text-white/70 hover:text-white transition-colors flex-shrink-0"
-                                >
-                                    {prompt}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    {/* Follow-up Questions or Quick Prompts */}
+                    {(() => {
+                        // Get last AI message (skip initial greeting)
+                        const lastAIMessage = [...messages]
+                            .reverse()
+                            .find(m => m.role === 'assistant' && m.id !== 'init-1');
+                        const followUpQuestions = lastAIMessage
+                            ? parseAIResponse(lastAIMessage.content).followUpQuestions
+                            : [];
+
+                        // Show follow-up if available, otherwise show quick prompts for new chats
+                        if (followUpQuestions.length > 0) {
+                            return (
+                                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                                    {followUpQuestions.map((question, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => handleSend(question)}
+                                            disabled={isTyping}
+                                            className="whitespace-nowrap px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[rgb(var(--color-primary))]/50 rounded-full text-xs text-white/70 hover:text-white transition-colors flex items-center gap-1.5 flex-shrink-0"
+                                        >
+                                            <span className="text-[rgb(var(--color-primary-light))]">🔹</span>
+                                            <span>{question}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            );
+                        } else if (messages.length < 3) {
+                            return (
+                                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                                    {QUICK_PROMPTS.map((prompt, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => handleSend(prompt)}
+                                            disabled={isTyping}
+                                            className="whitespace-nowrap px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-xs text-white/70 hover:text-white transition-colors flex-shrink-0"
+                                        >
+                                            {prompt}
+                                        </button>
+                                    ))}
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
 
                     <form
                         onSubmit={(e) => { e.preventDefault(); handleSend(); }}

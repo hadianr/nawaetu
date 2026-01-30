@@ -69,7 +69,14 @@ export function useAdhanNotifications() {
         try {
             const newAudio = new Audio(selectedMuadzin.audio_url);
             audioRef.current = newAudio;
-            newAudio.play().catch(e => console.error("Autoplay prevented or failed:", e));
+            newAudio.play().catch(e => {
+                if (e.name === 'NotAllowedError') {
+                    console.warn("Adhan autoplay was blocked. It will auto-play on next prayer after your next interaction.");
+                    // Optional: You could set a 'blocked' state here to show a UI hint
+                } else {
+                    console.error("Adhan audio failed for other reasons:", e);
+                }
+            });
         } catch (e) {
             console.error("Failed to play Adhan audio", e);
         }

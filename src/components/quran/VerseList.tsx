@@ -329,7 +329,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             if (isPlaying) {
                 audioRef.current.pause();
             } else {
-                audioRef.current.play();
+                audioRef.current.play().catch(err => {
+                    console.warn("Audio playback prevented by browser policy:", err);
+                    setIsPlaying(false);
+                });
             }
             setIsPlaying(!isPlaying);
         }

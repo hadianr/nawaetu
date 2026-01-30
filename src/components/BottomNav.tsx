@@ -22,6 +22,8 @@ export default function BottomNav() {
         { href: "/atur", label: "Atur", icon: Settings },
     ];
 
+    if (!mounted || pathname === "/tanya-ustadz") return null;
+
     return (
         <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-white/10 bg-black/80 backdrop-blur-xl pb-safe">
             <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2">

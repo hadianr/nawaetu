@@ -1,0 +1,22 @@
+/* Global styles for formatted AI messages */
+
+.formatted-message strong {
+    color: rgb(var(--color-primary-light));
+    font-weight: 700;
+}
+
+.formatted-message em {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.formatted-message br {
+    display: block;
+    content: "";
+    margin-top: 0.5rem;
+}
+
+/* Improve line height for better readability */
+.formatted-message {
+    line-height: 1.6;
+}
