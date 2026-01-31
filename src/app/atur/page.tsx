@@ -21,7 +21,6 @@ import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
 import { usePremium } from "@/context/PremiumContext";
 import {
     MUADZIN_OPTIONS,
-    QURAN_RECITER_OPTIONS,
     CALCULATION_METHODS,
     DEFAULT_SETTINGS,
 } from "@/data/settings-data";
@@ -59,7 +58,6 @@ export default function SettingsPage() {
 
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
-    const [reciter, setReciter] = useState(DEFAULT_SETTINGS.reciter.toString());
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
 
     // Audio Preview State
@@ -103,7 +101,7 @@ export default function SettingsPage() {
         };
     }, [audio]);
 
-    const toggleAudioPreview = (id: string, type: 'qari' | 'muadzin' = 'qari') => {
+    const toggleAudioPreview = (id: string) => {
         // Stop current audio if playing same ID
         if (playingId === id && isPlaying) {
             stopCurrentAudio();
@@ -116,22 +114,12 @@ export default function SettingsPage() {
 
         let audioUrl = "";
 
-        if (type === 'qari') {
-            const selectedQari = QURAN_RECITER_OPTIONS.find(r => r.id.toString() === id);
-            if (!selectedQari) {
-                stopCurrentAudio();
-                return;
-            }
-            // Al-Fatihah Verse 1 sample
-            audioUrl = selectedQari.audio_url_format.replace("{verse}", "1");
-        } else {
-            const selectedMuadzin = MUADZIN_OPTIONS.find(m => m.id === id);
-            if (!selectedMuadzin || !selectedMuadzin.audio_url) {
-                stopCurrentAudio();
-                return;
-            }
-            audioUrl = selectedMuadzin.audio_url;
+        const selectedMuadzin = MUADZIN_OPTIONS.find(m => m.id === id);
+        if (!selectedMuadzin || !selectedMuadzin.audio_url) {
+            stopCurrentAudio();
+            return;
         }
+        audioUrl = selectedMuadzin.audio_url;
 
         const newAudio = new Audio(audioUrl);
 
@@ -176,10 +164,8 @@ export default function SettingsPage() {
 
         // Load new settings
         const savedMuadzin = localStorage.getItem("settings_muadzin");
-        const savedReciter = localStorage.getItem("settings_reciter");
         const savedMethod = localStorage.getItem("settings_calculation_method");
         if (savedMuadzin) setMuadzin(savedMuadzin);
-        if (savedReciter) setReciter(savedReciter);
         if (savedMethod) setCalculationMethod(savedMethod);
     }, []);
 
@@ -230,16 +216,6 @@ export default function SettingsPage() {
         localStorage.setItem("settings_muadzin", value);
     };
 
-    const handleReciterChange = (value: string) => {
-        // Stop audio if playing when changing reciter
-        stopCurrentAudio();
-
-        setReciter(value);
-        localStorage.setItem("settings_reciter", value);
-        // Also set cookie for server-side access (VerseBrowser)
-        document.cookie = `settings_reciter=${value}; path=/; max-age=31536000`; // 1 year expiry
-    };
-
     const handleCalculationMethodChange = (value: string) => {
         setCalculationMethod(value);
         localStorage.setItem("settings_calculation_method", value);
@@ -264,7 +240,6 @@ export default function SettingsPage() {
 
     // Get current selection labels
     const currentMuadzin = MUADZIN_OPTIONS.find(m => m.id === muadzin);
-    const currentReciter = QURAN_RECITER_OPTIONS.find(r => r.id.toString() === reciter);
     const currentMethod = CALCULATION_METHODS.find(m => m.id.toString() === calculationMethod);
 
     return (
@@ -379,7 +354,7 @@ export default function SettingsPage() {
                             </SelectTrigger>
                             <SelectContent className="bg-slate-900 border-white/10 max-h-[300px]">
                                 {CALCULATION_METHODS.map((option) => (
-                                    <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10">
+                                    <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors">
                                         <span>{option.label}</span>
                                     </SelectItem>
                                 ))}
@@ -567,7 +542,7 @@ export default function SettingsPage() {
                                     onPointerDown={(e) => e.stopPropagation()}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        toggleAudioPreview(muadzin, 'muadzin');
+                                        toggleAudioPreview(muadzin);
                                     }}
                                     disabled={isLoading || !currentMuadzin?.audio_url}
                                 >
@@ -591,66 +566,7 @@ export default function SettingsPage() {
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-900 border-white/10">
                                     {MUADZIN_OPTIONS.map((option) => (
-                                        <SelectItem key={option.id} value={option.id} className="text-white text-xs hover:bg-white/10">
-                                            <span>{option.label}</span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {/* Reciter Select */}
-                        <div className="relative group bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-white/10 transition-all">
-                            {/* Visual Layer */}
-                            <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
-                                <div className="p-2 rounded-full bg-emerald-500/10 shrink-0">
-                                    <BookOpen className="w-4 h-4 text-emerald-400" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">Qari Al-Quran</p>
-                                    <p className="text-sm text-white font-medium truncate">{currentReciter?.label || "Mishary Rashid"}</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                                {/* Preview Button (Z-20) */}
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    className={cn(
-                                        "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
-                                        isPlaying && playingId === reciter
-                                            ? "bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))] shadow-[0_0_15px_rgba(var(--color-primary),0.4)] scale-110"
-                                            : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
-                                    )}
-                                    onPointerDown={(e) => e.stopPropagation()}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleAudioPreview(reciter);
-                                    }}
-                                    disabled={isLoading}
-                                >
-                                    {isLoading && playingId === reciter ? (
-                                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    ) : isPlaying && playingId === reciter ? (
-                                        <Pause className="w-3 h-3 fill-current" />
-                                    ) : (
-                                        <Play className="w-3 h-3 ml-0.5" />
-                                    )}
-                                </Button>
-
-                                <ChevronDown className="w-4 h-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
-                            </div>
-
-                            {/* Select Overlay (Z-10) */}
-                            <Select value={reciter} onValueChange={handleReciterChange}>
-                                <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10">
-                                    {QURAN_RECITER_OPTIONS.map((option) => (
-                                        <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10">
+                                        <SelectItem key={option.id} value={option.id} className="text-white text-xs hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors">
                                             <span>{option.label}</span>
                                         </SelectItem>
                                     ))}

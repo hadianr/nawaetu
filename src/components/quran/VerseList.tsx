@@ -3,12 +3,19 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash } from 'lucide-react';
+import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash, Headphones } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import VerseShareDialog from "./VerseShareDialog";
 import { Chapter } from "@/components/quran/SurahList";
@@ -97,6 +104,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [activeVerseForShare, setActiveVerseForShare] = useState<Verse | null>(null);
+
+    const handleReciterChange = (value: string) => {
+        // Update cookie for server-side
+        document.cookie = `settings_reciter=${value}; path=/; max-age=31536000`;
+        // Update localStorage for client-side persistence (Settings page sync)
+        localStorage.setItem("settings_reciter", value);
+        // Refresh to get new audio URLs from VerseBrowser
+        router.refresh();
+    };
 
     // Bookmarking
     const { isBookmarked: checkIsBookmarked, getBookmark } = useBookmarks();
@@ -549,6 +565,26 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                                     </button>
                                                 ))}
                                             </div>
+                                        </div>
+
+                                        {/* Qari Selection */}
+                                        <div className="space-y-3">
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Pilih Qari</Label>
+                                            <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange}>
+                                                <SelectTrigger className="w-full bg-white/5 border-white/10 text-white rounded-xl h-12">
+                                                    <div className="flex items-center gap-3">
+                                                        <Headphones className="h-4 w-4 text-sky-400" />
+                                                        <SelectValue placeholder="Pilih Qari" />
+                                                    </div>
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-slate-900 border-white/10 text-white">
+                                                    {QURAN_RECITER_OPTIONS.map((qari) => (
+                                                        <SelectItem key={qari.id} value={qari.id.toString()} className="hover:bg-white/10 focus:bg-white/10 focus:text-white text-white cursor-pointer transition-colors">
+                                                            {qari.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                     </div>
                                 </DialogContent>
