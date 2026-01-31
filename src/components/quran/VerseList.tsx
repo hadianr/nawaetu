@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
@@ -141,6 +141,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     // Audio State
     const [isContinuous, setIsContinuous] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [loopMode, setLoopMode] = useState<'off' | '1' | '3' | 'infinity'>('off');
+    const [repeatCount, setRepeatCount] = useState(0);
 
     // Audio Logic
     const handleStop = () => {
@@ -151,7 +153,9 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         setPlayingVerseKey(null);
         setCurrentAudioUrl(null);
         setIsContinuous(false);
+        setIsContinuous(false);
         setIsPlaying(false);
+        setRepeatCount(0); // Reset repeat on stop
     };
 
     const handlePause = () => {
@@ -179,7 +183,9 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setIsContinuous(continuous);
             setPlayingVerseKey(verse.verse_key);
             setCurrentAudioUrl(verse.audio.url);
+            setCurrentAudioUrl(verse.audio.url);
             setIsPlaying(true);
+            setRepeatCount(0); // Reset repeat on new play
         }
     };
 
@@ -207,7 +213,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setPlayingVerseKey(nextVerse.verse_key);
             setCurrentAudioUrl(nextVerse.audio.url);
             scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
+            setCurrentAudioUrl(nextVerse.audio.url);
+            scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
             setIsPlaying(true);
+            setRepeatCount(0); // Reset repeat on manual next
         } else {
             handleStop();
         }
@@ -222,17 +231,39 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setPlayingVerseKey(prevVerse.verse_key);
             setCurrentAudioUrl(prevVerse.audio.url);
             scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
+            setCurrentAudioUrl(prevVerse.audio.url);
+            scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
             setIsPlaying(true);
+            setRepeatCount(0); // Reset repeat on manual prev
         }
     };
 
     const handleAudioEnded = () => {
+        // Loop Logic
+        if (loopMode === 'infinity') {
+            if (audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play();
+            }
+            return;
+        }
+
+        const limit = loopMode === '1' ? 1 : loopMode === '3' ? 3 : 0;
+        if (limit > 0 && repeatCount < limit) {
+            setRepeatCount(prev => prev + 1);
+            if (audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play();
+            }
+            return;
+        }
+
+        // If loop finished or off, continue or stop
+        setRepeatCount(0);
         if (isContinuous) {
             handleNextVerse();
         } else {
-            setIsPlaying(false); // Just pause at end of single verse
-            // Or stop? Usually single playback stops after verse.
-            // Let's call handleStop to clear the player if it's single mode.
+            setIsPlaying(false);
             handleStop();
         }
     };
@@ -560,6 +591,23 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         <div className="flex items-center gap-1">
                             <Button variant="ghost" size="icon" onClick={handlePrevVerse} disabled={currentPlayingIndex <= 0} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
                                 <ChevronLeft className="h-5 w-5" />
+                            </Button>
+
+                            {/* Loop Button */}
+                            <Button
+                                onClick={() => {
+                                    const modes: ('off' | '1' | '3' | 'infinity')[] = ['off', '1', '3', 'infinity'];
+                                    const nextIndex = (modes.indexOf(loopMode) + 1) % modes.length;
+                                    setLoopMode(modes[nextIndex]);
+                                }}
+                                size="icon"
+                                variant="ghost"
+                                className={`h-8 w-8 rounded-full hover:bg-white/10 ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10' : 'text-slate-400'}`}
+                            >
+                                {loopMode === 'infinity' ? <InfinityIcon className="h-4 w-4" /> :
+                                    loopMode === 'off' ? <Repeat className="h-4 w-4" /> :
+                                        <span className="text-[10px] font-bold border rounded px-0.5 border-current w-4 h-4 flex items-center justify-center">{loopMode}x</span>
+                                }
                             </Button>
 
                             {/* Stop Button */}
