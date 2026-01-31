@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,14 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [showTransliteration, setShowTransliteration] = useState(true);
     const [tajweedMode, setTajweedMode] = useState(true);
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
+    const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
+    const router = useRouter();
+
+    const handlePerPageChange = (value: number) => {
+        setPerPage(value);
+        document.cookie = `settings_verses_per_page=${value}; path=/; max-age=31536000`; // 1 year
+        router.refresh();
+    };
 
     // Interactive State
     const [searchQuery, setSearchQuery] = useState("");
@@ -98,6 +107,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [loadingTafsir, setLoadingTafsir] = useState<Set<string>>(new Set());
     const [tafsirCache, setTafsirCache] = useState<Map<string, TafsirContent>>(new Map());
     const [activeTafsirVerse, setActiveTafsirVerse] = useState<string | null>(null);
+
+    // Load settings from Cookies on Mount
+    useEffect(() => {
+        const cookies = document.cookie.split(';');
+        const perPageCookie = cookies.find(c => c.trim().startsWith('settings_verses_per_page='));
+        if (perPageCookie) {
+            setPerPage(parseInt(perPageCookie.split('=')[1]));
+        }
+    }, []);
 
     // Scroll to verse handler
     const scrollToVerse = (verseNum: number) => {
@@ -416,6 +434,22 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                                 <button onClick={() => setFontSize('small')} className={`flex-1 h-8 rounded-lg text-sm font-bold ${fontSize === 'small' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A-</button>
                                                 <button onClick={() => setFontSize('medium')} className={`flex-1 h-8 rounded-lg text-base font-bold ${fontSize === 'medium' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A</button>
                                                 <button onClick={() => setFontSize('large')} className={`flex-1 h-8 rounded-lg text-lg font-bold ${fontSize === 'large' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A+</button>
+                                            </div>
+                                        </div>
+
+                                        {/* Verses Per Page */}
+                                        <div className="space-y-3">
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Ayat per Halaman</Label>
+                                            <div className="grid grid-cols-4 gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
+                                                {[10, 20, 30, 50].map((num) => (
+                                                    <button
+                                                        key={num}
+                                                        onClick={() => handlePerPageChange(num)}
+                                                        className={`h-8 rounded-lg text-xs font-bold transition-all ${perPage === num ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                                                    >
+                                                        {num}
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
                                     </div>
