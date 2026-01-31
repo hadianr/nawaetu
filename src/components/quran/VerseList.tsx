@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon } from 'lucide-react';
+import { useRouter, usePathname } from "next/navigation";
+import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
@@ -85,6 +85,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
     const router = useRouter();
+    const pathname = usePathname();
 
     const handlePerPageChange = (value: number) => {
         setPerPage(value);
@@ -133,10 +134,37 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const verseNum = parseInt(searchQuery);
-        if (!isNaN(verseNum) && verseNum > 0 && verseNum <= verses.length) {
-            scrollToVerse(verseNum);
+        // Validate against total verses in chapter, not just current page
+        if (!isNaN(verseNum) && verseNum > 0 && verseNum <= (chapter.verses_count || 286)) {
+            const targetPage = Math.ceil(verseNum / perPage);
+
+            if (targetPage === currentPage) {
+                scrollToVerse(verseNum);
+            } else {
+                router.push(`/quran/${chapter.id}?page=${targetPage}#verse-${verseNum}`);
+                setIsSearchOpen(false);
+            }
         }
     };
+
+    // Handle hash scrolling on mount/update
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.location.hash) {
+            const hash = window.location.hash;
+            const verseId = hash.substring(1); // remove #
+            // Small delay to ensure render
+            setTimeout(() => {
+                const element = document.getElementById(verseId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.classList.add('bg-[rgb(var(--color-primary))]/20');
+                    setTimeout(() => {
+                        element.classList.remove('bg-[rgb(var(--color-primary))]/20');
+                    }, 2000);
+                }
+            }, 500);
+        }
+    }, [verses, currentPage]);
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {
@@ -158,7 +186,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
         setPlayingVerseKey(null);
         setCurrentAudioUrl(null);
-        setIsContinuous(false);
         setIsContinuous(false);
         setIsPlaying(false);
         setRepeatCount(0); // Reset repeat on stop
@@ -189,7 +216,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setIsContinuous(continuous);
             setPlayingVerseKey(verse.verse_key);
             setCurrentAudioUrl(verse.audio.url);
-            setCurrentAudioUrl(verse.audio.url);
             setIsPlaying(true);
             setRepeatCount(0); // Reset repeat on new play
         }
@@ -219,8 +245,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setPlayingVerseKey(nextVerse.verse_key);
             setCurrentAudioUrl(nextVerse.audio.url);
             scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
-            setCurrentAudioUrl(nextVerse.audio.url);
-            scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
             setIsPlaying(true);
             setRepeatCount(0); // Reset repeat on manual next
         } else {
@@ -235,8 +259,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             const prevVerse = verses[currentIndex - 1];
             // Keep isContinuous state
             setPlayingVerseKey(prevVerse.verse_key);
-            setCurrentAudioUrl(prevVerse.audio.url);
-            scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
             setCurrentAudioUrl(prevVerse.audio.url);
             scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
             setIsPlaying(true);
@@ -275,18 +297,45 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     };
 
     useEffect(() => {
-        if (currentAudioUrl && audioRef.current) {
-            audioRef.current.src = currentAudioUrl;
-            // Only auto-play if we are in a 'playing' state intent
-            // But usually setting URL implies we want to play (changed track)
-            // unless we are just restoring state (not applicable here yet)
-            if (isPlaying) {
-                audioRef.current.play().catch(e => console.error("Play failed", e));
+        if (!audioRef.current) return;
+
+        if (currentAudioUrl) {
+            // Update src only if it's different and not already playing the same url
+            if (audioRef.current.src !== currentAudioUrl) {
+                audioRef.current.src = currentAudioUrl;
             }
+
+            if (isPlaying) {
+                const playPromise = audioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        if (error.name === 'AbortError') {
+                            // Silently catch AbortError as it's a common interruption
+                        } else {
+                            console.error("Playback failed:", error);
+                        }
+                    });
+                }
+            } else {
+                audioRef.current.pause();
+            }
+        } else {
+            audioRef.current.pause();
+            audioRef.current.src = "";
         }
-    }, [currentAudioUrl]); // Dependency on isPlaying logic handled inside handlers? 
-    // Actually, when we change verses, currentAudioUrl changes. We want it to play.
-    // So 'isPlaying' should be true. which we set in handleVersePlay/Next/Prev.
+    }, [currentAudioUrl, isPlaying]);
+
+    // Stop audio on unmount or pathname change
+    useEffect(() => {
+        const audioInstance = audioRef.current;
+        return () => {
+            if (audioInstance) {
+                audioInstance.pause();
+                audioInstance.src = "";
+                audioInstance.load();
+            }
+        };
+    }, [pathname]); // Fires whenever pathname changes
 
 
     // Bookmarking Logic
@@ -404,28 +453,40 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </button>
                         )}
 
-                        {/* Search / Jump */}
-                        <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? 'w-full absolute inset-0 bg-[#0f172a] px-4 z-40' : ''}`}>
-                            {isSearchOpen ? (
-                                <form onSubmit={handleSearchSubmit} className="flex items-center w-full gap-2">
-                                    <Search className="h-5 w-5 text-[rgb(var(--color-primary))]" />
-                                    <Input
-                                        autoFocus
-                                        placeholder="Cari kata atau loncat ke ayat (cth: 5)"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="border-none bg-transparent focus-visible:ring-0 text-white placeholder:text-slate-500 h-14"
-                                    />
-                                    <button type="button" onClick={() => { setIsSearchOpen(false); setSearchQuery(""); }} className="p-2 text-slate-400 hover:text-white">
-                                        <X className="h-5 w-5" />
-                                    </button>
-                                </form>
-                            ) : (
-                                <button onClick={() => setIsSearchOpen(true)} className="p-2 rounded-full hover:bg-white/10 text-slate-300 transition-colors">
-                                    <Search className="h-5 w-5" />
+                        {/* Jump to Verse Button */}
+                        <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                            <DialogTrigger asChild>
+                                <button className="p-2 rounded-full hover:bg-white/10 text-slate-300 transition-colors" aria-label="Loncat ke Ayat">
+                                    <CornerDownRight className="h-5 w-5" />
                                 </button>
-                            )}
-                        </div>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-xs bg-[#0f172a]/95 backdrop-blur-xl border-white/10 text-white p-6 gap-6 shadow-2xl">
+                                <DialogHeader>
+                                    <DialogTitle className="text-center text-xl font-bold">Loncat ke Ayat</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleSearchSubmit} className="flex flex-col gap-4">
+                                    <div className="relative flex items-center justify-center">
+                                        <div className="absolute left-4 text-slate-500">
+                                            <Hash className="h-5 w-5" />
+                                        </div>
+                                        <Input
+                                            autoFocus
+                                            type="tel"
+                                            placeholder="1"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="h-16 text-center text-3xl font-bold tracking-widest bg-white/5 border-white/10 focus-visible:ring-[rgb(var(--color-primary))] focus-visible:border-[rgb(var(--color-primary))] rounded-2xl placeholder:text-slate-700"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-center text-slate-400 font-medium uppercase tracking-wider">
+                                        Surat {chapter.name_simple} • 1 - {chapter.verses_count || 286}
+                                    </p>
+                                    <Button type="submit" className="w-full h-12 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all active:scale-95">
+                                        Pergi ke Ayat
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
 
                         {/* Settings Button */}
                         {!isSearchOpen && (
