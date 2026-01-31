@@ -549,7 +549,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </Button>
                         </div>
                     )}
+
+
                 </div>
+
             ) : (
                 // --- List Mode View ---
                 <div className="space-y-4 px-0 md:px-0">
@@ -632,8 +635,46 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </Button>
                         </div>
                     )}
+
+                    {/* Surah Navigation Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 pt-8 border-t border-white/5 pb-24">
+                        {chapter.id > 1 ? (
+                            <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
+                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-[rgb(var(--color-primary))]">Surat Sebelumnya</span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
+                                            <ArrowLeft className="h-5 w-5 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                                        </div>
+                                        <span className="text-xl font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors">{surahNames[chapter.id - 1]}</span>
+                                    </div>
+                                    <span className="text-3xl font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white">
+                                        {chapter.id - 1}
+                                    </span>
+                                </div>
+                            </Link>
+                        ) : <div />}
+
+                        {chapter.id < 114 ? (
+                            <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
+                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-[rgb(var(--color-primary))]">Surat Berikutnya</span>
+                                <div className="flex items-center justify-between flex-row-reverse">
+                                    <div className="flex items-center gap-3 flex-row-reverse">
+                                        <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
+                                            <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                                        </div>
+                                        <span className="text-xl font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors">{surahNames[chapter.id + 1]}</span>
+                                    </div>
+                                    <span className="text-3xl font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white">
+                                        {chapter.id + 1}
+                                    </span>
+                                </div>
+                            </Link>
+                        ) : <div />}
+                    </div>
                 </div>
             )}
+
 
             {/* --- Navigation Footer & Player --- */}
             <div className="fixed bottom-6 left-0 right-0 z-20 pointer-events-none flex flex-col items-center gap-3 px-4">
@@ -643,7 +684,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     <div className="pointer-events-auto bg-[#0f172a]/95 backdrop-blur-xl border border-white/10 rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-2xl animate-in slide-in-from-bottom-5">
                         <div className="flex flex-col">
                             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sedang Memutar</span>
-                            <span className="text-xs font-bold text-white">Ayat {toArabicNumber(parseInt(playingVerseKey.split(':')[1]))}</span>
+                            <span className="text-xs font-bold text-white">Ayat {toArabicNumber(parseInt((playingVerseKey || '1:1').split(':')[1]))}</span>
                         </div>
                         <div className="h-8 w-px bg-white/10" />
                         <div className="flex items-center gap-1">
@@ -722,6 +763,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 bookmark={activeBookmark}
                 onSave={() => setEditingBookmarkKey(null)}
             />
-        </div>
+        </div >
     );
 }
