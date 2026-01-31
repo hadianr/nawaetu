@@ -138,6 +138,12 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
     };
 
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            router.push(`/quran/${chapter.id}?page=${newPage}`);
+        }
+    };
+
     // Audio State
     const [isContinuous, setIsContinuous] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -517,6 +523,32 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </span>
                         ))}
                     </div>
+                    {/* Pagination Controls (Mushaf Mode) */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between py-8 mt-4 border-t border-white/5" dir="ltr">
+                            <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                            >
+                                <ChevronLeft className="h-4 w-4 mr-2" />
+                                Sebelumnya
+                            </Button>
+                            <span className="text-sm font-medium text-slate-400">
+                                Halaman {currentPage} dari {totalPages}
+                            </span>
+                            <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                            >
+                                Selanjutnya
+                                <ChevronRight className="h-4 w-4 ml-2" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
             ) : (
                 // --- List Mode View ---
@@ -574,6 +606,32 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </div>
                         );
                     })}
+                    {/* Pagination Controls (List Mode) */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between py-8 px-4 mt-4 border-t border-white/5">
+                            <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                            >
+                                <ChevronLeft className="h-4 w-4 mr-2" />
+                                Sebelumnya
+                            </Button>
+                            <span className="text-sm font-medium text-slate-400">
+                                Halaman {currentPage} dari {totalPages}
+                            </span>
+                            <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                            >
+                                Selanjutnya
+                                <ChevronRight className="h-4 w-4 ml-2" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
             )}
 
