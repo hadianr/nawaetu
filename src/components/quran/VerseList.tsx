@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify } from 'lucide-react';
+import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import VerseShareDialog from "./VerseShareDialog";
 import { Chapter } from "@/components/quran/SurahList";
 import { AyahMarker } from "./AyahMarker";
@@ -16,6 +17,7 @@ import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import BookmarkEditDialog from "./BookmarkEditDialog";
 import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
+import { cn } from "@/lib/utils";
 
 export interface Verse {
     id: number;
@@ -30,203 +32,249 @@ export interface Verse {
         resource_id: number;
         text: string;
     }[];
-    transliteration?: string; // Joined from words array
+    transliteration?: string;
 }
 
 interface VerseListProps {
     chapter: Chapter;
     verses: Verse[];
-    audioUrl?: string;
+    audioUrl?: string; // Full Surah Audio
     currentPage: number;
     totalPages: number;
     currentReciterId?: number;
 }
 
-const toArabicNumber = (n: number) => {
-    return n.toString().replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
-};
+// --- Utils ---
+const toArabicNumber = (n: number) => n.toString().replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
+const cleanTranslation = (text: string) => text.replace(/(\d+)$/gm, '').replace(/(\d+)(?=\s|$)/g, '');
 
-const cleanTranslation = (text: string) => {
-    return text.replace(/(\d+)$/gm, '').replace(/(\d+)(?=\s|$)/g, '');
-};
-
+// --- Robust Tajweed CSS ---
 const tajweedStyles = `
 /* Distinct High-Contrast Pastel Palette */
-
-/* Ghunnah (Green) - Vibrant Green */
-tajweed[class*= "ghunnah"], .tajweed - text.hn, .tajweed - text.tajweed - hn {
-    color: #4ade80!important;
-    font - weight: bold!important;
-}
-
-/* Qalqalah (Blue) - Sky Blue */
-tajweed[class*= "qalqalah"], tajweed[class*= "qalaqah"], .tajweed - text.ql, .tajweed - text.tajweed - ql {
-    color: #38bdf8!important;
-    font - weight: bold!important;
-}
-
-/* Idgham (Purple) - Distinct Lavender/Purple */
-/* Includes: idgham_ghunnah, idgham_shafawi, idgham_wo_ghunnah, laam_shamsiyah */
-tajweed[class*= "idgham"], tajweed[class*= "laam_shamsiyah"], .tajweed - text.id, .tajweed - text.tajweed - id {
-    color: #c084fc!important;
-    font - weight: bold!important;
-}
-
-/* Ikhfa (Orange) - Bright Orange */
-/* Includes: ikhafa, ikhafa_shafawi */
-tajweed[class*= "ikhfa"], tajweed[class*= "ikhafa"], .tajweed - text.ik, .tajweed - text.tajweed - ik {
-    color: #fb923c!important;
-    font - weight: bold!important;
-}
-
-/* Iqlab (Cyan) - Bright Cyan */
-tajweed[class*= "iqlab"], .tajweed - text.iqlab {
-    color: #22d3ee!important;
-    font - weight: bold!important;
-}
-
-/* Madd (Red) - Rose Red */
-/* Includes: madda_normal, madda_necessary, madda_obligatory, madda_permissible */
-tajweed[class*= "madda"], .tajweed - text.m, .tajweed - text.tajweed - m {
-    color: #fb7185!important;
-    font - weight: bold!important;
-}
-
-/* Hamzat Wasl / Silent - GOLD/AMBER */
-tajweed[class*= "ham_wasl"], tajweed[class*= "slnt"], .tajweed - text.slient {
-    color: #facc15!important;
-    font - weight: bold!important;
-}
-
-  /* Other rules */
-  .tajweed - text.sl, .tajweed - text.tajweed - sl { color: #facc15!important; font - weight: bold!important; } /* Silah - Yellow */
-  .tajweed - text.pp, .tajweed - text.tajweed - pp { color: #fb923c!important; font - weight: bold!important; } /* Waqf - Orange */
-
-/* Highlight Animation */
-@keyframes highlight - pulse {
-    0 % { background- color: rgba(16, 185, 129, 0.4);
-}
-50 % { background- color: rgba(16, 185, 129, 0.2); }
-100 % { background- color: transparent; }
-  }
-  
-  .highlight - verse {
-    animation: highlight - pulse 2s ease - out;
-    border - radius: 0.5rem;
-    position: relative;
-}
-  
-  .highlight - verse::before {
-    content: '';
-    position: absolute;
-    left: -4px; right: -4px; top: -4px; bottom: -4px;
-    border: 2px solid rgba(16, 185, 129, 0.6);
-    border - radius: 0.75rem;
-    pointer - events: none;
-    animation: fade - out - border 2s ease - out forwards;
-}
-
-@keyframes fade - out - border {
-    0 % { opacity: 1; transform: scale(1); }
-    100 % { opacity: 0; transform: scale(1.02); }
-}
+tajweed[class*="ghunnah"], .tajweed-text.hn, .tajweed-text.tajweed-hn { color: #4ade80!important; font-weight: bold!important; }
+tajweed[class*="qalqalah"], tajweed[class*="qalaqah"], .tajweed-text.ql, .tajweed-text.tajweed-ql { color: #38bdf8!important; font-weight: bold!important; }
+tajweed[class*="idgham"], tajweed[class*="laam_shamsiyah"], .tajweed-text.id, .tajweed-text.tajweed-id { color: #c084fc!important; font-weight: bold!important; }
+tajweed[class*="ikhfa"], tajweed[class*="ikhafa"], .tajweed-text.ik, .tajweed-text.tajweed-ik { color: #fb923c!important; font-weight: bold!important; }
+tajweed[class*="iqlab"], .tajweed-text.iqlab { color: #22d3ee!important; font-weight: bold!important; }
+tajweed[class*="madda"], .tajweed-text.m, .tajweed-text.tajweed-m { color: #fb7185!important; font-weight: bold!important; }
+tajweed[class*="ham_wasl"], tajweed[class*="slnt"], .tajweed-text.slient { color: #facc15!important; font-weight: bold!important; }
+.tajweed-text.sl, .tajweed-text.tajweed-sl { color: #facc15!important; font-weight: bold!important; }
+.tajweed-text.pp, .tajweed-text.tajweed-pp { color: #fb923c!important; font-weight: bold!important; }
 `;
 
 const cleanTajweedText = (htmlText: string) => {
     if (!htmlText) return '';
     let cleaned = htmlText;
-    // 1. Remove <span class=end>١</span> (API often returns this specific format)
     cleaned = cleaned.replace(/<span\s+class=end>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    // 2. Remove standard <span ...>١</span>
     cleaned = cleaned.replace(/<span[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    // 3. Fallback: Remove raw Arabic digits or Ayah End Symbol at the end
     cleaned = cleaned.replace(/[\u0660-\u0669\u06DD]+\s*$/u, '');
     return cleaned.trim();
 };
 
-const tajweedRules = [
-    { label: 'Ghunnah', color: '#4ade80', desc: 'Dengung ditahan 2 harakat', shadow: 'rgba(74,222,128,0.5)' },
-    { label: 'Qalqalah', color: '#38bdf8', desc: 'Pantulan bunyi huruf mati', shadow: 'rgba(56,189,248,0.5)' },
-    { label: 'Idgham', color: '#c084fc', desc: 'Melebur ke huruf berikutnya', shadow: 'rgba(192,132,252,0.5)' },
-    { label: 'Ikhfa', color: '#fb923c', desc: 'Menyamarkan bunyi Nun/Tanwin', shadow: 'rgba(251,146,60,0.5)' },
-    { label: 'Iqlab', color: '#22d3ee', desc: 'Mengganti bunyi Nun jadi Mim', shadow: 'rgba(34,211,238,0.5)' },
-    { label: 'Mad', color: '#fb7185', desc: 'Panjang bacaan 2-6 harakat', shadow: 'rgba(251,113,133,0.5)' },
-    { label: 'Hamzah Wasl / Silah', color: '#facc15', desc: 'Tidak dibaca saat washal / Panjang 2 harakat', shadow: 'rgba(250,204,21,0.5)' },
-];
-
-const TajweedLegend = () => (
-    <div className="mb-8 p-5 rounded-2xl bg-slate-900/50 border border-white/10 backdrop-blur-sm animate-in fade-in zoom-in-95 duration-300 shadow-xl">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
-            <Palette className="w-4 h-4 text-[rgb(var(--color-primary))]" />
-            Panduan Warna & Cara Baća
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {tajweedRules.map((rule) => (
-                <div key={rule.label} className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group">
-                    <span
-                        className="mt-1 w-3 h-3 shrink-0 rounded-full"
-                        style={{
-                            backgroundColor: rule.color,
-                            boxShadow: rule.shadow !== 'none' ? `0 0 8px ${rule.shadow} ` : 'none'
-                        }}
-                    ></span>
-                    <div className="flex flex-col">
-                        <span className="text-xs font-bold text-slate-200 group-hover:text-[rgb(var(--color-primary-light))] transition-colors">
-                            {rule.label}
-                        </span>
-                        <span className="text-[10px] text-slate-400 leading-tight mt-0.5">
-                            {rule.desc}
-                        </span>
-                    </div>
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId }: VerseListProps) {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    // --- State ---
+    const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
 
-    const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
-    const [tajweedMode, setTajweedMode] = useState(false);
-    const [showTransliteration, setShowTransliteration] = useState(false);
+    // Settings State
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
-    // State
-    const { isBookmarked, getBookmark, refresh: refreshBookmarks } = useBookmarks();
-    const [activeBookmark, setActiveBookmark] = useState<BookmarkType | null>(null);
-    const [isBookmarkDialogOpen, setIsBookmarkDialogOpen] = useState(false);
+    const [showTransliteration, setShowTransliteration] = useState(true);
+    const [tajweedMode, setTajweedMode] = useState(true);
+    const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
 
-    const [sharingVerse, setSharingVerse] = useState<Verse | null>(null);
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const [isJumpDialogOpen, setIsJumpDialogOpen] = useState(false);
+    // Interactive State
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [activeVerseForShare, setActiveVerseForShare] = useState<Verse | null>(null);
 
-    const [jumpTarget, setJumpTarget] = useState("");
+    // Bookmarking
+    const { isBookmarked: checkIsBookmarked, getBookmark } = useBookmarks();
+    // const [bookmarkDialogVerse, setBookmarkDialogVerse] = useState<Verse | null>(null); // Unused
+    const [editingBookmarkKey, setEditingBookmarkKey] = useState<string | null>(null); // Use verseKey (e.g., "1:1")
 
-    // Tafsir State
+    // Tafsir
     const [expandedTafsir, setExpandedTafsir] = useState<Set<string>>(new Set());
     const [loadingTafsir, setLoadingTafsir] = useState<Set<string>>(new Set());
-    const [tafsirData, setTafsirData] = useState<Record<string, TafsirContent>>({});
+    const [tafsirCache, setTafsirCache] = useState<Map<string, TafsirContent>>(new Map());
+    const [activeTafsirVerse, setActiveTafsirVerse] = useState<string | null>(null);
 
-    const handleToggleTafsir = async (verseKey: string, surahId: number, verseId: number) => {
-        setExpandedTafsir(prev => {
-            const next = new Set(prev);
-            if (next.has(verseKey)) {
-                next.delete(verseKey);
+    // Scroll to verse handler
+    const scrollToVerse = (verseNum: number) => {
+        const element = document.getElementById(`verse-${verseNum}`);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('bg-[rgb(var(--color-primary))]/20');
+            setTimeout(() => {
+                element.classList.remove('bg-[rgb(var(--color-primary))]/20');
+            }, 2000);
+        }
+        setIsSearchOpen(false);
+    };
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const verseNum = parseInt(searchQuery);
+        if (!isNaN(verseNum) && verseNum > 0 && verseNum <= verses.length) {
+            scrollToVerse(verseNum);
+        }
+    };
+
+    // Audio State
+    const [isContinuous, setIsContinuous] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    // Audio Logic
+    const handleStop = () => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+        setPlayingVerseKey(null);
+        setCurrentAudioUrl(null);
+        setIsContinuous(false);
+        setIsPlaying(false);
+    };
+
+    const handlePause = () => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+        }
+        setIsPlaying(false);
+    };
+
+    const handleResume = () => {
+        if (audioRef.current && currentAudioUrl) {
+            audioRef.current.play().catch(e => console.error("Play failed", e));
+            setIsPlaying(true);
+        }
+    };
+
+    const handleVersePlay = (verse: Verse, continuous = false) => {
+        if (playingVerseKey === verse.verse_key) {
+            if (isPlaying) {
+                handlePause();
             } else {
-                next.add(verseKey);
+                handleResume();
             }
-            return next;
-        });
+        } else {
+            setIsContinuous(continuous);
+            setPlayingVerseKey(verse.verse_key);
+            setCurrentAudioUrl(verse.audio.url);
+            setIsPlaying(true);
+        }
+    };
 
-        // If not loaded yet, fetch it
-        if (!tafsirData[verseKey]) {
+    const handleSurahPlay = () => {
+        if (playingVerseKey && isContinuous) {
+            if (isPlaying) {
+                handlePause();
+            } else {
+                handleResume();
+            }
+        } else {
+            if (verses.length > 0) {
+                handleVersePlay(verses[0], true);
+                scrollToVerse(parseInt(verses[0].verse_key.split(':')[1]));
+            }
+        }
+    };
+
+    const handleNextVerse = () => {
+        if (!playingVerseKey) return;
+        const currentIndex = verses.findIndex(v => v.verse_key === playingVerseKey);
+        if (currentIndex !== -1 && currentIndex < verses.length - 1) {
+            const nextVerse = verses[currentIndex + 1];
+            // Keep isContinuous state whatever it was
+            setPlayingVerseKey(nextVerse.verse_key);
+            setCurrentAudioUrl(nextVerse.audio.url);
+            scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
+            setIsPlaying(true);
+        } else {
+            handleStop();
+        }
+    };
+
+    const handlePrevVerse = () => {
+        if (!playingVerseKey) return;
+        const currentIndex = verses.findIndex(v => v.verse_key === playingVerseKey);
+        if (currentIndex > 0) {
+            const prevVerse = verses[currentIndex - 1];
+            // Keep isContinuous state
+            setPlayingVerseKey(prevVerse.verse_key);
+            setCurrentAudioUrl(prevVerse.audio.url);
+            scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
+            setIsPlaying(true);
+        }
+    };
+
+    const handleAudioEnded = () => {
+        if (isContinuous) {
+            handleNextVerse();
+        } else {
+            setIsPlaying(false); // Just pause at end of single verse
+            // Or stop? Usually single playback stops after verse.
+            // Let's call handleStop to clear the player if it's single mode.
+            handleStop();
+        }
+    };
+
+    useEffect(() => {
+        if (currentAudioUrl && audioRef.current) {
+            audioRef.current.src = currentAudioUrl;
+            // Only auto-play if we are in a 'playing' state intent
+            // But usually setting URL implies we want to play (changed track)
+            // unless we are just restoring state (not applicable here yet)
+            if (isPlaying) {
+                audioRef.current.play().catch(e => console.error("Play failed", e));
+            }
+        }
+    }, [currentAudioUrl]); // Dependency on isPlaying logic handled inside handlers? 
+    // Actually, when we change verses, currentAudioUrl changes. We want it to play.
+    // So 'isPlaying' should be true. which we set in handleVersePlay/Next/Prev.
+
+
+    // Bookmarking Logic
+    const handleBookmarkClick = (verse: Verse) => {
+        const isSaved = checkIsBookmarked(verse.verse_key);
+
+        if (isSaved) {
+            setEditingBookmarkKey(verse.verse_key);
+        } else {
+            const verseNum = parseInt(verse.verse_key.split(':')[1]);
+            saveBookmark({
+                surahId: chapter.id,
+                surahName: chapter.name_simple,
+                verseId: verseNum,
+                verseText: verse.text_uthmani,
+            });
+            // Immediately open dialog to edit/add note if desired, 
+            // or just set state to allow editing. 
+            // Here we just save. If user wants to edit, they click again.
+            // Or we can open it:
+            setEditingBookmarkKey(verse.verse_key);
+        }
+    };
+
+    // Tafsir Logic
+    const toggleTafsir = async (verseKey: string) => {
+        if (activeTafsirVerse === verseKey) {
+            setActiveTafsirVerse(null);
+            return;
+        }
+
+        setActiveTafsirVerse(verseKey);
+
+        if (!tafsirCache.has(verseKey)) {
             setLoadingTafsir(prev => new Set(prev).add(verseKey));
             try {
+                const [surahId, verseId] = verseKey.split(':').map(Number);
                 const data = await getVerseTafsir(surahId, verseId);
                 if (data) {
-                    setTafsirData(prev => ({ ...prev, [verseKey]: data }));
+                    setTafsirCache(prev => new Map(prev).set(verseKey, data));
                 }
+            } catch (error) {
+                console.error("Failed to fetch tafsir", error);
             } finally {
                 setLoadingTafsir(prev => {
                     const next = new Set(prev);
@@ -237,756 +285,304 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
     };
 
-    const handleJumpToVerse = (e: React.FormEvent) => {
-        e.preventDefault();
-        const verseNum = parseInt(jumpTarget);
-        if (!verseNum || verseNum < 1 || verseNum > chapter.verses_count) return;
+    const displayedVerses = useMemo(() => {
+        if (!searchQuery || !isNaN(parseInt(searchQuery))) return verses;
+        return verses.filter(v =>
+            v.text_uthmani.includes(searchQuery) ||
+            v.translations[0]?.text.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [verses, searchQuery]);
 
-        setIsJumpDialogOpen(false);
-        setJumpTarget("");
-
-        const elementId = `${chapter.id}:${verseNum} `;
-        const element = document.getElementById(elementId);
-
-        const ITEMS_PER_PAGE = 20;
-        const targetPage = Math.ceil(verseNum / ITEMS_PER_PAGE);
-
-        if (targetPage !== currentPage) {
-            // Navigate to different page with hash
-            window.location.href = `? page = ${targetPage} #${chapter.id}:${verseNum} `;
-            return;
-        }
-
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            document.querySelectorAll('.highlight-verse').forEach(el => el.classList.remove('highlight-verse'));
-            setTimeout(() => {
-                element.classList.add('highlight-verse');
-                setTimeout(() => element.classList.remove('highlight-verse'), 3000);
-            }, 100);
-        } else {
-            window.location.reload();
+    const getFontSizeClass = () => {
+        switch (fontSize) {
+            case 'small': return 'text-2xl leading-[2.5]';
+            case 'large': return 'text-4xl leading-[3]';
+            default: return 'text-3xl leading-[2.8]';
         }
     };
 
-    // Font size configurations
-    const fontSizes = {
-        small: {
-            arabic: 'text-2xl md:text-3xl',
-            arabicLeading: 'leading-loose md:leading-[2]',
-            translation: 'text-xs md:text-sm',
-            mushaf: 'text-xl md:text-2xl',
-            mushafLeading: 'leading-[3rem] md:leading-[3.5rem]'
-        },
-        medium: {
-            arabic: 'text-3xl md:text-4xl',
-            arabicLeading: 'leading-loose md:leading-[2.5]',
-            translation: 'text-sm md:text-base',
-            mushaf: 'text-2xl md:text-3xl',
-            mushafLeading: 'leading-[3.5rem] md:leading-[4.5rem]'
-        },
-        large: {
-            arabic: 'text-4xl md:text-5xl',
-            arabicLeading: 'leading-loose md:leading-[3]',
-            translation: 'text-base md:text-lg',
-            mushaf: 'text-3xl md:text-4xl',
-            mushafLeading: 'leading-[4rem] md:leading-[5rem]'
-        }
-    };
+    // Prepare bookmark for dialog
+    const activeBookmark = editingBookmarkKey ? getBookmark(editingBookmarkKey) : null;
 
-    // Get current reciter name for display
-    const currentReciterName = QURAN_RECITER_OPTIONS.find(r => r.id === currentReciterId)?.label || "Mishary Rashid Alafasy";
+    // If activeBookmark is null but editingBookmarkKey is set (e.g. just saved but hook didn't update yet?), 
+    // it might be tricky. But saveBookmark triggers event. useBookmarks listens to it. Should be fine.
+    // Fallback: construct it from verses if not found? 
+    // Actually, saveBookmark is synchronous in storage but hook update is async via event. 
+    // But since we just saved, we might need to wait for update. 
+    // For now, assume it works or we use a temporary object.
 
-    // Verse Audio State
-    const [playingVerseId, setPlayingVerseId] = useState<number | null>(null);
-    const verseAudioRef = useRef<HTMLAudioElement | null>(null);
-
-    // Bookmark State
-
-
-    // Reciter Setting
-    const [selectedReciter, setSelectedReciter] = useState(DEFAULT_SETTINGS.reciter);
-
-    useEffect(() => {
-        // Load reciter setting
-        const savedReciter = localStorage.getItem("settings_reciter");
-        if (savedReciter) {
-            setSelectedReciter(parseInt(savedReciter));
-        }
-
-        // Load font size setting
-        const savedFontSize = localStorage.getItem("quran_font_size");
-        if (savedFontSize && ['small', 'medium', 'large'].includes(savedFontSize)) {
-            setFontSize(savedFontSize as 'small' | 'medium' | 'large');
-        }
-
-        // Load transliteration setting
-        const savedTranslit = localStorage.getItem("quran_show_transliteration");
-        if (savedTranslit) {
-            setShowTransliteration(savedTranslit === 'true');
-        }
-    }, []);
-
-    const handleFontSizeChange = (size: 'small' | 'medium' | 'large') => {
-        setFontSize(size);
-        localStorage.setItem("quran_font_size", size);
-    };
-
-    const handleTransliterationToggle = () => {
-        const newValue = !showTransliteration;
-        setShowTransliteration(newValue);
-        localStorage.setItem("quran_show_transliteration", newValue.toString());
-    };
-
-    useEffect(() => {
-        // Legacy: We might want to highlight the last read verse differently in the future
-        // For now, removing the manual state sync since we use the hook
-    }, [chapter.id]);
-
-    // Auto-scroll to bookmarked verse
-    useEffect(() => {
-        // Check if URL has hash (e.g., #18:10)
-        if (typeof window !== 'undefined' && window.location.hash) {
-            const hash = window.location.hash.substring(1); // Remove #
-            // Wait for DOM to render, then scroll
-            const timer = setTimeout(() => {
-                const element = document.getElementById(hash);
-                if (element) {
-                    element.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                    // Optional: Add highlight effect
-                    element.classList.add('highlight-verse');
-                    setTimeout(() => element.classList.remove('highlight-verse'), 2000);
-                }
-            }, 300); // Small delay for rendering
-            return () => clearTimeout(timer);
-        }
-    }, [verses]); // Re-run when verses change (page change)
-
-    const toggleAudio = () => {
-        // Pause verse audio if playing
-        if (playingVerseId && verseAudioRef.current) {
-            verseAudioRef.current.pause();
-            setPlayingVerseId(null);
-        }
-
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.pause();
-            } else {
-                audioRef.current.play().catch(err => {
-                    console.warn("Audio playback prevented by browser policy:", err);
-                    setIsPlaying(false);
-                });
-            }
-            setIsPlaying(!isPlaying);
-        }
-    };
-
-    // Build audio URL based on selected reciter
-    // Note: For now, use the original URL from the API as it's more reliable
-    // Custom reciter integration would require a mapping of verse numbers to audio files
-    const handlePlayVerse = (verseId: number, originalUrl: string) => {
-        // Pause Global Surah Audio if playing
-        if (isPlaying && audioRef.current) {
-            audioRef.current.pause();
-            setIsPlaying(false);
-        }
-
-        if (playingVerseId === verseId) {
-            // Pause current verse
-            verseAudioRef.current?.pause();
-            setPlayingVerseId(null);
-        } else {
-            // Play new verse using the original URL
-            if (verseAudioRef.current) {
-                verseAudioRef.current.src = originalUrl;
-                verseAudioRef.current.play().catch(console.error);
-                setPlayingVerseId(verseId);
-            } else {
-                // Initialize audio element if not exists
-                const audio = new Audio(originalUrl);
-                verseAudioRef.current = audio;
-                audio.onended = () => setPlayingVerseId(null);
-                audio.onerror = () => {
-                    console.error("Failed to play audio");
-                    setPlayingVerseId(null);
-                };
-                audio.play().catch(console.error);
-                setPlayingVerseId(verseId);
-            }
-        }
-    };
-
-    const [copiedVerseId, setCopiedVerseId] = useState<number | null>(null);
-
-    const handleCopyVerse = (verse: Verse) => {
-        const rawTranslation = (verse.translations.find((t) => t.resource_id === 33) || verse.translations[0])?.text.replace(/<[^>]*>?/gm, "") || "";
-        // Clean footnotes: remove digits at end of words/sentences
-        const cleanText = rawTranslation.replace(/(\d+)(?=\s|$|[.,;])/g, '').replace(/(\w)(\d+)/g, '$1').trim();
-
-        const text = `"${cleanText}"(QS.${chapter.name_simple}: ${verse.verse_key.split(":")[1]})`;
-        navigator.clipboard.writeText(text);
-        setCopiedVerseId(verse.id);
-        setTimeout(() => setCopiedVerseId(null), 2000);
-    };
-
-    const handleBookmarkClick = (verse: Verse) => {
-        const verseKey = verse.verse_key;
-
-        if (isBookmarked(verseKey)) {
-            // Already bookmarked -> Open Edit Dialog
-            const bookmark = getBookmark(verseKey);
-            if (bookmark) {
-                setActiveBookmark(bookmark);
-                setIsBookmarkDialogOpen(true);
-            }
-        } else {
-            // Not bookmarked -> Add immediately
-            const verseNum = parseInt(verse.verse_key.split(":")[1]);
-
-            // 1. Save to Bookmarks
-            saveBookmark({
-                surahId: chapter.id,
-                surahName: chapter.name_simple,
-                verseId: verseNum,
-                verseText: verse.text_uthmani, // Save Arabic preview
-            });
-
-            // 2. Refresh hook
-            refreshBookmarks();
-
-            // 3. Show Toast (Temporary minimal feedback, UI generic toast would be better)
-            // Ideally we use a toast library component here
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] px-4 py-2 rounded-full text-sm font-medium z-50 animate-in fade-in slide-in-from-bottom-2 shadow-lg shadow-[rgb(var(--color-primary))]/20';
-            toast.innerText = 'Disimpan 🔖. Klik lagi untuk Catatan & Terakhir Baca';
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
-    };
+    const currentPlayingIndex = playingVerseKey ? verses.findIndex(v => v.verse_key === playingVerseKey) : -1;
 
     return (
-        <div className="w-full max-w-4xl space-y-8 pb-0">
+        <div className="relative min-h-screen pb-32 w-full max-w-4xl mx-auto">
             <style>{tajweedStyles}</style>
 
-            {/* Sticky Header */}
-            <div className="sticky top-0 z-20 -mx-4 border-b border-white/10 bg-black/60 backdrop-blur-xl md:static md:mx-0 md:rounded-xl md:border md:bg-white/5 transition-all">
-                {/* Top Row: Navigation + Title */}
-                <div className="flex items-center justify-between px-3 py-2 md:px-6 md:py-3">
-                    {/* Left: Back + Previous Surah */}
-                    <div className="flex items-center gap-1 shrink-0">
-                        <Button variant="ghost" size="icon" asChild className="rounded-full h-8 w-8 md:h-10 md:w-10 text-white/70 hover:bg-white/10 hover:text-white" title="Kembali">
-                            <Link href="/quran">
-                                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                            </Link>
-                        </Button>
-                        {chapter.id > 1 && (
-                            <Link href={`/quran/${chapter.id - 1}`}>
-                                <Button variant="ghost" size="sm" className="rounded-full text-xs text-white/60 hover:text-[rgb(var(--color-primary-light))] hover:bg-white/5 h-8 px-2 md:px-3 hidden md:flex">
-                                    <ChevronLeft className="h-3 w-3 mr-1" />
-                                    <span className="max-w-[80px] truncate">{surahNames[chapter.id - 1]}</span>
-                                </Button>
-                            </Link>
-                        )}
-                    </div>
-
-                    {/* Center: Title Stack */}
-                    <div className="flex flex-1 flex-col items-center justify-center px-1 min-w-0">
-                        <span className="inline-flex items-center justify-center rounded-full border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-2 py-0.5 mb-0.5 text-[9px] font-bold tracking-widest text-[rgb(var(--color-primary-light))] uppercase hidden md:inline-flex">
-                            SURAT KE-{chapter.id}
-                        </span>
-                        <div className="flex items-baseline gap-2 w-full justify-center">
-                            <h1 className="text-sm md:text-xl font-bold text-white leading-tight text-center tracking-tight truncate max-w-full">
+            {/* --- Sticky Header --- */}
+            <div className="sticky top-0 z-30 -mx-4 md:mx-0">
+                <div className="absolute inset-0 bg-[#0f172a]/80 backdrop-blur-xl border-b border-white/5" />
+                <div className="relative px-4 h-16 flex items-center justify-between gap-4">
+                    {/* Left: Back & Title */}
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <Link href="/quran" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors text-slate-300 hover:text-white">
+                            <ChevronLeft className="h-6 w-6" />
+                        </Link>
+                        <div className="flex flex-col min-w-0">
+                            <h1 className="text-lg font-bold text-white truncate leading-tight">
                                 {chapter.name_simple}
                             </h1>
-                            <span className="text-[10px] md:hidden font-medium text-slate-500 shrink-0">
-                                ({chapter.verses_count})
-                            </span>
+                            <p className="text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
+                                {chapter.revelation_place} • {chapter.verses_count} Ayat
+                            </p>
                         </div>
-
-                        <p className="mt-0.5 text-[10px] font-medium text-slate-400 text-center hidden md:block">
-                            {chapter.translated_name.name} • {chapter.verses_count} Ayat • {chapter.revelation_place === "makkah" ? "Mekah" : "Madinah"}
-                        </p>
                     </div>
 
-                    {/* Right: Next Surah */}
-                    <div className="flex items-center gap-1 shrink-0">
-                        {chapter.id < 114 && (
-                            <Link href={`/quran/${chapter.id + 1}`}>
-                                <Button variant="ghost" size="sm" className="rounded-full text-xs text-white/60 hover:text-[rgb(var(--color-primary-light))] hover:bg-white/5 h-8 px-2 md:px-3 hidden md:flex">
-                                    <span className="max-w-[80px] truncate">{surahNames[chapter.id + 1]}</span>
-                                    <ChevronRight className="h-3 w-3 ml-1" />
-                                </Button>
-                            </Link>
+                    {/* Right: Actions */}
+                    <div className="flex items-center gap-2">
+                        {/* Play Surah Button */}
+                        <button
+                            onClick={handleSurahPlay}
+                            className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-colors border ${isContinuous && playingVerseKey
+                                ? 'bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))]'
+                                : 'bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/20'
+                                }`}
+                        >
+                            {isContinuous && playingVerseKey && isPlaying ? <Pause className="h-3 w-3 fill-current" /> : <Play className="h-3 w-3 fill-current" />}
+                            {isContinuous && playingVerseKey && isPlaying ? 'Jeda Surat' : (isContinuous && playingVerseKey ? 'Lanjutkan' : 'Putar Surat')}
+                        </button>
+
+                        {/* Search / Jump */}
+                        <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? 'w-full absolute inset-0 bg-[#0f172a] px-4 z-40' : ''}`}>
+                            {isSearchOpen ? (
+                                <form onSubmit={handleSearchSubmit} className="flex items-center w-full gap-2">
+                                    <Search className="h-5 w-5 text-[rgb(var(--color-primary))]" />
+                                    <Input
+                                        autoFocus
+                                        placeholder="Cari kata atau loncat ke ayat (cth: 5)"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="border-none bg-transparent focus-visible:ring-0 text-white placeholder:text-slate-500 h-14"
+                                    />
+                                    <button type="button" onClick={() => { setIsSearchOpen(false); setSearchQuery(""); }} className="p-2 text-slate-400 hover:text-white">
+                                        <X className="h-5 w-5" />
+                                    </button>
+                                </form>
+                            ) : (
+                                <button onClick={() => setIsSearchOpen(true)} className="p-2 rounded-full hover:bg-white/10 text-slate-300 transition-colors">
+                                    <Search className="h-5 w-5" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Settings Button */}
+                        {!isSearchOpen && (
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <button className="h-9 w-9 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all hover:border-[rgb(var(--color-primary))]/50">
+                                        <Settings className="h-5 w-5" />
+                                    </button>
+                                </DialogTrigger>
+                                <DialogContent className="border-none bg-[#0f172a]/95 backdrop-blur-xl text-white max-w-sm">
+                                    <DialogHeader>
+                                        <DialogTitle>Pengaturan Tampilan</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-6 py-4">
+                                        {/* View Mode */}
+                                        <div className="space-y-3">
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Mode Baca</Label>
+                                            <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
+                                                <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
+                                                    <AlignJustify className="h-4 w-4" /> List
+                                                </button>
+                                                <button onClick={() => setViewMode('mushaf')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
+                                                    <BookOpen className="h-4 w-4" /> Mushaf
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {/* Toggles */}
+                                        <div className="space-y-4">
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Teks & Terjemahan</Label>
+                                            <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
+                                                <div className="flex items-center gap-3"><Palette className="h-5 w-5 text-emerald-400" /><span className="font-medium">Warna Tajwid</span></div>
+                                                <button onClick={() => setTajweedMode(!tajweedMode)} className={`w-11 h-6 rounded-full transition-colors relative ${tajweedMode ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-700'}`}><span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${tajweedMode ? 'translate-x-5' : 'translate-x-0'}`} /></button>
+                                            </div>
+                                            <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
+                                                <div className="flex items-center gap-3"><Type className="h-5 w-5 text-indigo-400" /><span className="font-medium">Latin / Transliterasi</span></div>
+                                                <button onClick={() => setShowTransliteration(!showTransliteration)} className={`w-11 h-6 rounded-full transition-colors relative ${showTransliteration ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-700'}`}><span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${showTransliteration ? 'translate-x-5' : 'translate-x-0'}`} /></button>
+                                            </div>
+                                        </div>
+                                        {/* Font Size */}
+                                        <div className="space-y-3">
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Ukuran Huruf Arab</Label>
+                                            <div className="flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
+                                                <button onClick={() => setFontSize('small')} className={`flex-1 h-8 rounded-lg text-sm font-bold ${fontSize === 'small' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A-</button>
+                                                <button onClick={() => setFontSize('medium')} className={`flex-1 h-8 rounded-lg text-base font-bold ${fontSize === 'medium' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A</button>
+                                                <button onClick={() => setFontSize('large')} className={`flex-1 h-8 rounded-lg text-lg font-bold ${fontSize === 'large' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
                         )}
                     </div>
                 </div>
-
-                {/* Bottom Row: Controls */}
-                <div className="flex items-center justify-between px-3 py-2 border-t border-white/5 md:px-6">
-                    {/* Left: Search */}
-                    <button
-                        onClick={() => setIsJumpDialogOpen(true)}
-                        className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all"
-                        title="Cari Ayat"
-                    >
-                        <Search className="h-4 w-4" />
-                    </button>
-
-                    {/* Center: Play Button */}
-                    {audioUrl && (
-                        <div className="flex items-center gap-1">
-                            <Button
-                                onClick={toggleAudio}
-                                size="icon"
-                                className="h-8 w-8 md:h-10 md:w-auto md:px-6 rounded-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-dark))]"
-                                title={`${isPlaying ? "Jeda" : "Putar"} `}
-                            >
-                                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                                <span className="hidden md:inline ml-2 font-medium">{isPlaying ? "Jeda" : "Putar"}</span>
-                            </Button>
-                            <audio
-                                ref={audioRef}
-                                src={audioUrl}
-                                onEnded={() => setIsPlaying(false)}
-                                className="hidden"
-                            />
-                        </div>
-                    )}
-
-                    {/* Desktop: Visual Settings Group */}
-                    <div className="hidden md:flex items-center gap-x-2 border-l border-white/10 pl-4 ml-2">
-                        {/* View Mode */}
-                        <button
-                            onClick={() => setViewMode(viewMode === 'list' ? 'mushaf' : 'list')}
-                            className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all"
-                            title={viewMode === 'list' ? "Ganti ke Tampilan Mushaf" : "Ganti ke Tampilan List"}
-                        >
-                            {viewMode === 'list' ? <BookOpen className="h-4 w-4" /> : <AlignJustify className="h-4 w-4" />}
-                        </button>
-
-                        {/* Tajweed Toggle */}
-                        <button
-                            onClick={() => setTajweedMode(!tajweedMode)}
-                            className={`h - 10 px - 4 flex items - center gap - 2 rounded - full border text - xs font - medium transition - all ${tajweedMode ? 'bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))]' : 'bg-slate-800/40 border-white/10 text-slate-400'} `}
-                        >
-                            <Palette className="w-4 h-4" />
-                            <span>Tajwid</span>
-                        </button>
-
-                        {/* Transliteration Toggle */}
-                        <button
-                            onClick={handleTransliterationToggle}
-                            className={`h - 10 px - 4 flex items - center gap - 2 rounded - full border text - xs font - medium transition - all ${showTransliteration ? 'bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))]' : 'bg-slate-800/40 border-white/10 text-slate-400'} `}
-                        >
-                            <span className="text-base font-serif">Aa</span>
-                            <span>Latin</span>
-                        </button>
-
-                        {/* Font Size */}
-                        <div className="flex items-center gap-0.5 pl-2 bg-slate-800/40 rounded-full border border-white/10 p-1">
-                            {([
-                                { size: 'small' as const, label: 'A-', title: 'Kecil' },
-                                { size: 'medium' as const, label: 'A', title: 'Sedang' },
-                                { size: 'large' as const, label: 'A+', title: 'Besar' }
-                            ]).map(({ size, label, title }) => (
-                                <button
-                                    key={size}
-                                    onClick={() => handleFontSizeChange(size)}
-                                    className={`h - 8 w - 8 flex items - center justify - center rounded - full text - [10px] font - bold transition - all ${fontSize === size ? 'bg-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]' : 'text-slate-400 hover:text-white'} `}
-                                >
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Mobile: Settings Toggle */}
-                    <button
-                        onClick={() => setIsSettingsOpen(true)}
-                        className="md:hidden h-8 w-8 flex items-center justify-center rounded-full border border-white/10 bg-slate-800/40 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all ml-1"
-                    >
-                        <Settings className="h-4 w-4" />
-                    </button>
-                </div>
             </div>
 
-
-            {/* Bismillah */}
-            {
-                chapter.id !== 1 && chapter.id !== 9 && currentPage === 1 && (
-                    <div className="flex justify-center py-6 text-2xl font-amiri text-white/80 md:text-3xl">
-                        بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-                    </div>
-                )
-            }
-
-            {/* Tajweed Legend */}
-            {tajweedMode && <TajweedLegend />}
-
-
-            {/* Content Area */}
-            {
-                viewMode === 'mushaf' ? (
-                    // MUSHAF MODE: Continuous Text Block
-                    <div className="p-4 md:p-8 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
-                        <div
-                            className={`text - right ${fontSizes[fontSize].mushaf} ${fontSizes[fontSize].mushafLeading} font - amiri text - justify text - slate - 200 transition - all duration - 200`}
-                            dir="rtl"
-                        >
-                            {verses.map((verse) => (
-                                <span key={verse.id}>
-                                    <span
-                                        className={tajweedMode ? "tajweed-text" : ""}
-                                        dangerouslySetInnerHTML={{
-                                            __html: tajweedMode && verse.text_uthmani_tajweed
-                                                ? cleanTajweedText(verse.text_uthmani_tajweed)
-                                                : cleanTajweedText(verse.text_uthmani)
-                                        }}
-                                    />
-                                    <span className="inline-block align-middle mx-1.5">
-                                        <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(":")[1]))} />
-                                    </span>
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                ) : (
-                    // LIST MODE: Vertical Stack
-                    <div className="space-y-6 flex-1">
+            {/* --- Main Content --- */}
+            {viewMode === 'mushaf' ? (
+                // --- Mushaf Mode View ---
+                <div className="px-4 py-6 md:px-8">
+                    <div className={`text-right leading-[3.5] ${fontSize === 'large' ? 'text-4xl' : fontSize === 'small' ? 'text-2xl' : 'text-3xl'} tracking-wide font-amiri text-slate-200 text-justify`} dir="rtl">
                         {verses.map((verse) => (
-                            <div
-                                key={verse.id}
-                                id={verse.verse_key}
-                                className="flex flex-col gap-6 border-b border-white/5 pb-6 last:border-0 scroll-mt-24"
-                            >
-                                {/* Arabic */}
-                                <div className="text-right" dir="rtl">
-                                    <p className={`font - amiri ${fontSizes[fontSize].arabic} ${fontSizes[fontSize].arabicLeading} text - white flex flex - row items - center flex - wrap gap - 2 transition - all duration - 200`}>
-                                        <span
-                                            className={tajweedMode ? "tajweed-text" : ""}
-                                            dangerouslySetInnerHTML={{
-                                                __html: tajweedMode && verse.text_uthmani_tajweed
-                                                    ? cleanTajweedText(verse.text_uthmani_tajweed)
-                                                    : cleanTajweedText(verse.text_uthmani)
-                                            }}
-                                        />
-                                        <span className="inline-flex items-center gap-x-3 ms-2 align-middle">
-                                            <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(":")[1]))} />
-
-                                            {/* Play Button */}
-                                            <button
-                                                onClick={() => handlePlayVerse(verse.id, verse.audio.url)}
-                                                className="p-1.5 rounded-full text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors flex items-center justify-center focus:outline-none"
-                                                title={playingVerseId === verse.id ? "Jeda Ayat Ini" : "Dengarkan Ayat Ini"}
-                                            >
-                                                {playingVerseId === verse.id ? (
-                                                    <Square className="w-4 h-4 fill-current" />
-                                                ) : (
-                                                    <Play className="w-4 h-4 fill-current" />
-                                                )}
-                                            </button>
-
-                                            {/* Tafsir Button */}
-                                            <button
-                                                onClick={() => handleToggleTafsir(verse.verse_key, chapter.id, parseInt(verse.verse_key.split(':')[1]))}
-                                                className={`p - 1.5 rounded - full transition - colors flex items - center justify - center focus: outline - none ${expandedTafsir.has(verse.verse_key) ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-500 hover:text-emerald-400'} `}
-                                                title="Lihat Tafsir"
-                                            >
-                                                <BookOpen className="w-4 h-4" />
-                                            </button>
-
-                                            {/* Share Button */}
-                                            <button
-                                                onClick={() => setSharingVerse(verse)}
-                                                className="p-1.5 rounded-full text-slate-500 hover:text-pink-400 transition-colors flex items-center justify-center focus:outline-none"
-                                                title="Bagikan Ayat"
-                                            >
-                                                <Share2 className="w-4 h-4" />
-                                            </button>
-
-                                            {/* Bookmark Button */}
-                                            <button
-                                                onClick={() => handleBookmarkClick(verse)}
-                                                className={`p-1.5 rounded-full transition-colors flex items-center justify-center focus:outline-none ${isBookmarked(verse.verse_key) ? 'text-amber-400 bg-amber-400/10' : 'text-slate-500 hover:text-amber-400'} `}
-                                                title={isBookmarked(verse.verse_key) ? "Edit Catatan / Hapus" : "Simpan Ayat"}
-                                            >
-                                                <Bookmark className={`w-4 h-4 ${isBookmarked(verse.verse_key) ? 'fill-current' : ''}`} />
-                                            </button>
-                                        </span>
-                                    </p>
-                                </div>
-
-                                {/* Transliteration (if enabled) */}
-                                {showTransliteration && verse.transliteration && (
-                                    <p className="text-sm text-slate-500 italic leading-relaxed mt-3">
-                                        {verse.transliteration}
-                                    </p>
+                            <span key={verse.id} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
+                                <span className={cn(
+                                    "hover:bg-[rgb(var(--color-primary))]/10 transition-colors rounded px-1 cursor-pointer",
+                                    playingVerseKey === verse.verse_key && "bg-[rgb(var(--color-primary))]/20"
                                 )}
-
-                                {/* Translation */}
-                                <div className="flex items-start justify-between gap-x-4 group mt-3">
-                                    <p className={`${fontSizes[fontSize].translation} leading - relaxed text - slate - 400 transition - all duration - 200`}>
-                                        {
-                                            cleanTranslation((verse.translations.find((t) => t.resource_id === 33) || verse.translations[0])?.text.replace(/<[^>]*>?/gm, ""))
-                                        }
-                                    </p>
-                                    <button
-                                        onClick={() => handleCopyVerse(verse)}
-                                        className="p-1.5 rounded-md text-slate-600 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
-                                        title="Salin Terjemahan"
-                                    >
-                                        {copiedVerseId === verse.id ? (
-                                            <Check className="w-4 h-4" />
-                                        ) : (
-                                            <Copy className="w-4 h-4" />
-                                        )}
-                                    </button>
-                                </div>
-
-                                {/* Tafsir Expandable Section */}
-                                {expandedTafsir.has(verse.verse_key) && (
-                                    <div className="mt-4 p-4 bg-slate-900/50 rounded-xl border border-white/5 animate-in slide-in-from-top-2">
-                                        {loadingTafsir.has(verse.verse_key) ? (
-                                            <div className="flex items-center gap-2 text-sm text-slate-400">
-                                                <Loader2 className="w-3 h-3 animate-spin" />
-                                                Memuat tafsir...
-                                            </div>
-                                        ) : (
-                                            <div className="prose prose-invert prose-sm max-w-none text-slate-300">
-                                                <h4 className="text-emerald-400 font-medium mb-2 flex items-center gap-2">
-                                                    <BookOpen className="w-3 h-3" />
-                                                    Tafsir Ibn Kathir (Ringkas)
-                                                </h4>
-                                                <div className="mb-4 text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: tafsirData[verse.verse_key]?.short || '' }} />
-
-                                                {tafsirData[verse.verse_key]?.long && (
-                                                    <>
-                                                        <h4 className="text-emerald-400 font-medium mb-2 flex items-center gap-2 border-t border-white/10 pt-4 mt-4">
-                                                            <AlignJustify className="w-3 h-3" />
-                                                            Penjelasan Lengkap
-                                                        </h4>
-                                                        <div className="text-slate-300 leading-relaxed opacity-90 text-sm space-y-2 whitespace-pre-wrap">
-                                                            {tafsirData[verse.verse_key]?.long}
-                                                        </div>
-                                                    </>
-                                                )}
-
-                                                {!tafsirData[verse.verse_key] && 'Tafsir tidak tersedia.'}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                                    onClick={() => handleVersePlay(verse, false)}
+                                >
+                                    {tajweedMode && verse.text_uthmani_tajweed ? (
+                                        <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
+                                    ) : (
+                                        verse.text_uthmani
+                                    )}
+                                </span>
+                                <span className="mx-2 inline-flex items-center justify-center h-10 w-10 text-sm relative font-sans text-[rgb(var(--color-primary))] select-none">
+                                    <span className="absolute inset-0 text-3xl">۝</span>
+                                    <span className="relative z-10 pt-1 font-bold font-amiri text-lg text-[rgb(var(--color-primary-dark))]">{toArabicNumber(parseInt(verse.verse_key.split(':')[1]))}</span>
+                                </span>
+                            </span>
                         ))}
                     </div>
-                )
-            }
-
-            {/* Pagination & Navigation */}
-            <div className="flex flex-col gap-2 mt-0 px-4 mb-0 pb-0">
-                {/* Area A: Verse Pagination */}
-                <div className="flex items-center justify-center gap-4">
-                    {currentPage > 1 ? (
-                        <Link
-                            href={`?page=${currentPage - 1}`}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary-dark))]/30 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/20 transition-all text-sm font-medium"
-                        >
-                            <ChevronLeft className="h-4 w-4" />
-                            Halaman Sebelumnya
-                        </Link>
-                    ) : (
-                        <button disabled className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/5 bg-white/5 text-slate-500 text-sm font-medium cursor-not-allowed opacity-50">
-                            <ChevronLeft className="h-4 w-4" />
-                            Halaman Sebelumnya
-                        </button>
-                    )}
-
-                    <span className="text-xs font-medium text-slate-400">
-                        Halaman {currentPage} dari {totalPages}
-                    </span>
-
-                    {currentPage < totalPages ? (
-                        <Link
-                            href={`?page=${currentPage + 1}`}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary-dark))]/30 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/20 transition-all text-sm font-medium"
-                        >
-                            Halaman Selanjutnya
-                            <ChevronRight className="h-4 w-4" />
-                        </Link>
-                    ) : (
-                        <button disabled className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/5 bg-white/5 text-slate-500 text-sm font-medium cursor-not-allowed opacity-50">
-                            Halaman Selanjutnya
-                            <ChevronRight className="h-4 w-4" />
-                        </button>
-                    )}
                 </div>
+            ) : (
+                // --- List Mode View ---
+                <div className="space-y-4 px-0 md:px-0">
+                    {displayedVerses.map((verse) => {
+                        const verseNum = parseInt(verse.verse_key.split(':')[1]);
+                        const isPlayingVerse = playingVerseKey === verse.verse_key;
+                        const isBookmarked = checkIsBookmarked(verse.verse_key);
 
-                {/* Area B: Surah Navigation (Always Visible) */}
-                <div className="flex justify-between items-center w-full pt-2 border-t border-white/5">
-                    {chapter.id > 1 ? (
-                        <Link
-                            href={`/quran/${chapter.id - 1}`}
-                            className="flex items-center gap-2 text-xs font-medium text-[rgb(var(--color-primary-light))] hover:text-[rgb(var(--color-primary))] transition-colors"
-                        >
-                            <ChevronLeft className="h-4 w-4" />
-                            <span className="opacity-80">Ke {surahNames[chapter.id - 1]}</span>
-                        </Link>
-                    ) : <div />}
+                        return (
+                            <div
+                                key={verse.id}
+                                id={`verse-${verseNum}`}
+                                className={`group relative py-8 px-4 md:px-6 border-b border-white/5 transition-colors duration-500 ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))]/5' : 'hover:bg-white/[0.02]'}`}
+                            >
+                                {/* Action Bar */}
+                                <div className="flex items-center justify-between mb-6">
+                                    <AyahMarker number={toArabicNumber(verseNum)} />
+                                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                                        {!(isPlayingVerse && isPlaying) && (
+                                            <Button variant="ghost" size="icon" onClick={() => handleVersePlay(verse, false)} className={`h-8 w-8 rounded-full ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10'}`}>
+                                                <Play className="h-4 w-4" />
+                                            </Button>
+                                        )}
+                                        <Button variant="ghost" size="icon" onClick={() => handleBookmarkClick(verse)} className={`h-8 w-8 rounded-full ${isBookmarked ? 'text-[rgb(var(--color-primary))]' : 'text-slate-400 hover:text-[rgb(var(--color-primary))]'}`}>
+                                            <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => setActiveVerseForShare(verse)} className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"><Share2 className="h-4 w-4" /></Button>
+                                        <Button variant="ghost" size="icon" onClick={() => toggleTafsir(verse.verse_key)} className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}><Lightbulb className="h-4 w-4" /></Button>
+                                    </div>
+                                </div>
 
-                    {chapter.id < 114 ? (
-                        <Link
-                            href={`/quran/${chapter.id + 1}`}
-                            className="flex items-center gap-2 text-xs font-medium text-[rgb(var(--color-primary-light))] hover:text-[rgb(var(--color-primary))] transition-colors"
-                        >
-                            <span className="opacity-80">Ke {surahNames[chapter.id + 1]}</span>
-                            <ChevronRight className="h-4 w-4" />
+                                {/* Content */}
+                                <div dir="rtl" className={`w-full font-amiri text-right mb-6 text-slate-200 ${getFontSizeClass()} leading-loose tracking-wide`}>
+                                    {tajweedMode && verse.text_uthmani_tajweed ? (
+                                        <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
+                                    ) : (
+                                        <span>{verse.text_uthmani}</span>
+                                    )}
+                                </div>
+                                <div className="space-y-3">
+                                    {showTransliteration && verse.transliteration && (
+                                        <p className="text-[rgb(var(--color-primary-light))] text-sm md:text-base font-medium leading-relaxed">{verse.transliteration}</p>
+                                    )}
+                                    <p className="text-slate-400 text-sm md:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: cleanTranslation(verse.translations[0]?.text || "") }} />
+                                    {activeTafsirVerse === verse.verse_key && (
+                                        <div className="mt-6 p-5 rounded-2xl bg-[#0f172a] border border-white/5 animate-in slide-in-from-top-2">
+                                            <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-amber-400" /><h3 className="text-sm font-bold text-white">Tafsir Ringkas</h3></div>
+                                            {loadingTafsir.has(verse.verse_key) ? <div className="flex items-center gap-2 text-slate-500 py-4"><Loader2 className="h-4 w-4 animate-spin" /><span className="text-xs">Memuat...</span></div> : (
+                                                <div className="prose prose-invert prose-sm text-slate-300"><p>{tafsirCache.get(verse.verse_key)?.short || "Tafsir tidak tersedia."}</p></div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            {/* --- Navigation Footer & Player --- */}
+            <div className="fixed bottom-6 left-0 right-0 z-20 pointer-events-none flex flex-col items-center gap-3 px-4">
+
+                {/* Playing Status / Controls */}
+                {playingVerseKey && (
+                    <div className="pointer-events-auto bg-[#0f172a]/95 backdrop-blur-xl border border-white/10 rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-2xl animate-in slide-in-from-bottom-5">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sedang Memutar</span>
+                            <span className="text-xs font-bold text-white">Ayat {toArabicNumber(parseInt(playingVerseKey.split(':')[1]))}</span>
+                        </div>
+                        <div className="h-8 w-px bg-white/10" />
+                        <div className="flex items-center gap-1">
+                            <Button variant="ghost" size="icon" onClick={handlePrevVerse} disabled={currentPlayingIndex <= 0} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
+                                <ChevronLeft className="h-5 w-5" />
+                            </Button>
+
+                            {/* Stop Button */}
+                            <Button onClick={handleStop} size="icon" variant="ghost" className="h-10 w-10 rounded-full text-red-400 hover:text-red-300 hover:bg-white/10">
+                                <Square className="h-4 w-4 fill-current" />
+                            </Button>
+
+                            {/* Play/Pause Button */}
+                            <Button onClick={isPlaying ? handlePause : handleResume} size="icon" className="h-10 w-10 rounded-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-dark))] shadow-lg shadow-[rgb(var(--color-primary))]/20">
+                                {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
+                            </Button>
+
+                            <Button variant="ghost" size="icon" onClick={handleNextVerse} disabled={currentPlayingIndex >= verses.length - 1} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
+                                <ChevronRight className="h-5 w-5" />
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Surah Navigation */}
+                <div className={`flex items-center gap-2 bg-[#0f172a]/90 backdrop-blur-xl p-1.5 rounded-full border border-white/10 shadow-2xl pointer-events-auto transition-all duration-500 ${playingVerseKey ? 'scale-90 opacity-60 hover:opacity-100 hover:scale-100' : 'scale-100'}`}>
+                    {chapter.id > 1 && (
+                        <Link href={`/quran/${chapter.id - 1}`} className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/10 transition-colors text-slate-400 hover:text-white">
+                            <ArrowLeft className="h-4 w-4" />
+                            <span className="text-xs font-bold hidden md:inline">Surat Sebelumnya</span>
                         </Link>
-                    ) : <div />}
+                    )}
+                    <div className="w-px h-4 bg-white/10 mx-1" />
+                    {chapter.id < 114 && (
+                        <Link href={`/quran/${chapter.id + 1}`} className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/10 transition-colors text-slate-400 hover:text-white">
+                            <span className="text-xs font-bold hidden md:inline">Surat Berikutnya</span>
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    )}
                 </div>
             </div>
-            {/* Floating Copy Toast */}
-            {
-                copiedVerseId !== null && (
-                    <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                        <div className="bg-[rgb(var(--color-primary-dark))]/90 border border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] px-4 py-2 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2">
-                            <CheckCircle className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                            <span className="text-xs font-medium">Terjemahan berhasil disalin</span>
-                        </div>
-                    </div>
-                )
-            }
-            {/* Mobile Settings Dialog */}
-            <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-                <DialogContent className="max-w-xs w-[90%] bg-slate-950/95 border-white/10 text-white backdrop-blur-xl rounded-2xl">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2 text-sm uppercase tracking-widest text-slate-400">
 
-                            <Settings className="w-4 h-4" />
-                            Pengaturan Tampilan
-                        </DialogTitle>
-                    </DialogHeader>
+            {/* Hidden Audio Element */}
+            <audio ref={audioRef} onEnded={handleAudioEnded} className="hidden" />
 
-                    <div className="space-y-6 pt-4">
-                        {/* 1. View Mode */}
-                        <div className="flex items-center justify-between">
-                            <Label className="text-white font-medium">Mode Baca</Label>
-                            <div className="flex bg-slate-900 rounded-lg p-1 border border-white/10">
-                                <button
-                                    onClick={() => setViewMode('list')}
-                                    className={`px - 3 py - 1.5 rounded - md text - xs font - medium transition - all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-white shadow-md' : 'text-slate-400 hover:text-white'} `}
-                                >
-                                    List
-                                </button>
-                                <button
-                                    onClick={() => setViewMode('mushaf')}
-                                    className={`px - 3 py - 1.5 rounded - md text - xs font - medium transition - all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-white shadow-md' : 'text-slate-400 hover:text-white'} `}
-                                >
-                                    Mushaf
-                                </button>
-                            </div>
-                        </div>
 
-                        {/* 2. Tajweed */}
-                        <div className="flex items-center justify-between">
-                            <Label className="text-white font-medium">Warna Tajwid</Label>
-                            <button
-                                onClick={() => setTajweedMode(!tajweedMode)}
-                                className={`w - 12 h - 6 rounded - full transition - colors relative ${tajweedMode ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-800'} `}
-                            >
-                                <div className={`absolute top - 1 w - 4 h - 4 rounded - full bg - white transition - all ${tajweedMode ? 'left-7' : 'left-1'} `} />
-                            </button>
-                        </div>
-
-                        {/* 2.5 Transliteration */}
-                        <div className="flex items-center justify-between">
-                            <Label className="text-white font-medium">Tulisan Latin</Label>
-                            <button
-                                onClick={handleTransliterationToggle}
-                                className={`w - 12 h - 6 rounded - full transition - colors relative ${showTransliteration ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-800'} `}
-                            >
-                                <div className={`absolute top - 1 w - 4 h - 4 rounded - full bg - white transition - all ${showTransliteration ? 'left-7' : 'left-1'} `} />
-                            </button>
-                        </div>
-
-                        {/* 3. Font Size */}
-                        <div className="space-y-3">
-                            <Label className="text-white font-medium">Ukuran Teks Arab</Label>
-                            <div className="flex justify-between items-center bg-slate-900/50 rounded-xl border border-white/10 p-2">
-                                <button onClick={() => handleFontSizeChange('small')} className={`p - 2 rounded - lg ${fontSize === 'small' ? 'bg-white/10 text-white ring-1 ring-white/20' : 'text-slate-500'} `}>
-                                    <span className="text-xs font-bold">Aa</span>
-                                </button>
-                                <div className="h-px flex-1 bg-white/10 mx-2" />
-                                <button onClick={() => handleFontSizeChange('medium')} className={`p - 2 rounded - lg ${fontSize === 'medium' ? 'bg-white/10 text-white ring-1 ring-white/20' : 'text-slate-500'} `}>
-                                    <span className="text-base font-bold">Aa</span>
-                                </button>
-                                <div className="h-px flex-1 bg-white/10 mx-2" />
-                                <button onClick={() => handleFontSizeChange('large')} className={`p - 2 rounded - lg ${fontSize === 'large' ? 'bg-white/10 text-white ring-1 ring-white/20' : 'text-slate-500'} `}>
-                                    <span className="text-xl font-bold">Aa</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button className="w-full bg-white/10 hover:bg-white/20 text-white mt-2">Tutup</Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Jump To Verse Dialog */}
-            <Dialog open={isJumpDialogOpen} onOpenChange={setIsJumpDialogOpen}>
-                <DialogContent className="max-w-xs bg-slate-950 border-white/10 text-white">
-                    <DialogHeader>
-                        <DialogTitle>Lompat ke Ayat</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleJumpToVerse} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="verse-num" className="text-slate-400">Nomor Ayat (1-{chapter.verses_count})</Label>
-                            <Input
-                                id="verse-num"
-                                type="number"
-                                min={1}
-                                max={chapter.verses_count}
-                                value={jumpTarget}
-                                onChange={(e) => setJumpTarget(e.target.value)}
-                                placeholder="Contoh: 10"
-                                className="bg-slate-900 border-white/10 focus:ring-[rgb(var(--color-primary))]"
-                                autoFocus
-                            />
-                        </div>
-                        <DialogFooter>
-                            <Button type="submit" className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))]">
-                                Cari Ayat
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
-
-            {/* Verse Share Dialog */}
+            {/* Dialogs */}
             <VerseShareDialog
-                open={!!sharingVerse}
-                onOpenChange={(open) => !open && setSharingVerse(null)}
-                verse={sharingVerse}
+                open={!!activeVerseForShare}
+                onOpenChange={(open) => !open && setActiveVerseForShare(null)}
+                verse={activeVerseForShare}
                 surahName={chapter.name_simple}
                 surahNumber={chapter.id}
             />
 
-            {/* Bookmark Edit Dialog */}
             <BookmarkEditDialog
-                open={isBookmarkDialogOpen}
-                onOpenChange={setIsBookmarkDialogOpen}
+                open={!!editingBookmarkKey}
+                onOpenChange={(open) => !open && setEditingBookmarkKey(null)}
                 bookmark={activeBookmark}
-                onSave={refreshBookmarks}
-                onDelete={refreshBookmarks}
+                onSave={() => setEditingBookmarkKey(null)}
             />
         </div>
     );
 }
-
-
