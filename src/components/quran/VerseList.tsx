@@ -339,16 +339,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     {/* Right: Actions */}
                     <div className="flex items-center gap-2">
                         {/* Play Surah Button */}
-                        <button
-                            onClick={handleSurahPlay}
-                            className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-colors border ${isContinuous && playingVerseKey
-                                ? 'bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))]'
-                                : 'bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/20'
-                                }`}
-                        >
-                            {isContinuous && playingVerseKey && isPlaying ? <Pause className="h-3 w-3 fill-current" /> : <Play className="h-3 w-3 fill-current" />}
-                            {isContinuous && playingVerseKey && isPlaying ? 'Jeda Surat' : (isContinuous && playingVerseKey ? 'Lanjutkan' : 'Putar Surat')}
-                        </button>
+                        {!playingVerseKey && (
+                            <button
+                                onClick={handleSurahPlay}
+                                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
+                            >
+                                <Play className="h-3 w-3 fill-current" />
+                                Putar Surat
+                            </button>
+                        )}
 
                         {/* Search / Jump */}
                         <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? 'w-full absolute inset-0 bg-[#0f172a] px-4 z-40' : ''}`}>
