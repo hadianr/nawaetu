@@ -1,5 +1,6 @@
 "use client";
 
+import TajweedLegend from "./TajweedLegend";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -598,6 +599,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             {viewMode === 'mushaf' ? (
                 // --- Mushaf Mode View ---
                 <div className="px-4 py-6 md:px-8">
+                    {tajweedMode && <TajweedLegend />}
                     <div className={`text-right leading-[3.5] ${fontSize === 'large' ? 'text-4xl' : fontSize === 'small' ? 'text-2xl' : 'text-3xl'} tracking-wide font-amiri text-slate-200 text-justify`} dir="rtl">
                         {verses.map((verse) => (
                             <span key={verse.id} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
@@ -653,6 +655,11 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             ) : (
                 // --- List Mode View ---
                 <div className="space-y-4 px-0 md:px-0">
+                    {tajweedMode && (
+                        <div className="px-4 md:px-0">
+                            <TajweedLegend />
+                        </div>
+                    )}
                     {displayedVerses.map((verse) => {
                         const verseNum = parseInt(verse.verse_key.split(':')[1]);
                         const isPlayingVerse = playingVerseKey === verse.verse_key;
