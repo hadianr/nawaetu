@@ -66,7 +66,7 @@ export default function HomeHeader() {
                 <h1 className="text-2xl font-bold text-white tracking-tight leading-none min-h-[2rem]">
                     {isMounted ? userName : "Sobat Nawaetu"}
                 </h1>
-                <span className="inline-block mt-1 text-[10px] uppercase tracking-widest text-white/40 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                <span className="inline-block mt-1 text-[10px] uppercase tracking-widest text-white/70 bg-white/10 px-2 py-0.5 rounded-full border border-white/10">
                     {userTitle}
                 </span>
             </div>
@@ -82,7 +82,7 @@ export default function HomeHeader() {
                         </span>
                     </div>
                 </div>
-                <span className="text-[10px] text-white/40 font-medium px-1">
+                <span className="text-[10px] text-white/60 font-medium px-1">
                     {data?.hijriDate || "Loading..."}
                 </span>
             </div>

@@ -168,7 +168,7 @@ export default function RamadhanCountdown() {
                             <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-lg">
                                 {isMounted ? timeLeft.days : "..."}
                             </span>
-                            <span className="text-sm font-medium text-white/60">Hari Lagi</span>
+                            <span className="text-sm font-medium text-white/80">Hari Lagi</span>
                         </div>
                     </div>
 
@@ -188,10 +188,10 @@ export default function RamadhanCountdown() {
                             e.stopPropagation();
                             setShowInfo(true);
                         }}>
-                            <div className="text-[9px] text-white/30 font-medium cursor-pointer hover:text-white/50 transition-colors">
+                            <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
                                 {progress}% Persiapan
                             </div>
-                            <Info className="w-3 h-3 text-white/20 hover:text-white/60 cursor-pointer" />
+                            <Info className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
                         </div>
                     </div>
                 </div>

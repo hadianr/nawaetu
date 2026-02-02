@@ -149,7 +149,7 @@ export default function NextPrayerWidget() {
 
             {/* Footer: Target */}
             <div className="text-center">
-                <span className="text-[10px] font-medium text-white/40">
+                <span className="text-[10px] font-medium text-white/60">
                     {displayPrayerName} {data.nextPrayerTime}
                 </span>
             </div>

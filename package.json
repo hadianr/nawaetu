@@ -2,6 +2,11 @@
   "name": "ramadhan-app",
   "version": "1.0.0",
   "private": true,
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "> 0.2%"
+  ],
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
