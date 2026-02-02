@@ -708,7 +708,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 </div>
 
                                 {/* Content */}
-                                <div dir="rtl" className={`w-full ${scriptType === 'indopak' ? 'font-lateef text-4xl leading-[4]' : 'font-amiri ' + getFontSizeClass()} text-right mb-6 text-slate-200 leading-loose tracking-wide`}>
+                                <div dir="rtl" className={`w-full ${scriptType === 'indopak' ? 'font-scheherazade text-5xl leading-[3] font-bold' : 'font-amiri ' + getFontSizeClass()} text-right mb-6 text-slate-200 leading-loose tracking-wide`}>
                                     {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
                                         <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
                                     ) : (
