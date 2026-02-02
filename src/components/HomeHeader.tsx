@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import StreakBadge from "@/components/StreakBadge";
 
+import { MapPin } from "lucide-react";
+
 export default function HomeHeader() {
     const { data } = usePrayerTimes();
     const [userName, setUserName] = useState("Sobat Nawaetu");

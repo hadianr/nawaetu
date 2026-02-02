@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { RefreshCw, Edit2 } from "lucide-react";
+import { RefreshCw, Edit2, MapPin, Navigation } from "lucide-react";
 import PrayerTimeCard from "@/components/PrayerTimeCard";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import PrayerCountdown from "@/components/PrayerCountdown";
@@ -64,6 +64,15 @@ export default function PrayerTimesDisplay() {
             <div className="relative space-y-4">
                 <div className="flex items-center justify-between px-1">
                     <h3 className="text-lg font-semibold text-white/80">Jadwal Sholat Hari Ini</h3>
+                    <a
+                        href="https://www.google.com/maps/search/?api=1&query=masjid+terdekat"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
+                    >
+                        <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Cari Masjid</span>
+                    </a>
                 </div>
 
                 <PrayerTimeCard {...data} />
