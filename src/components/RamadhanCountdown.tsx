@@ -144,19 +144,15 @@ export default function RamadhanCountdown() {
         <>
             <button
                 onClick={handleCardClick}
-                className="w-full relative mb-4 group transition-all duration-500 hover:scale-[1.01] text-left appearance-none"
+                className="w-full relative mb-4 group transition-transform duration-300 hover:scale-[1.01] text-left appearance-none will-change-transform"
             >
-                {/* Background with Dynamic Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl blur-xl -z-10 opacity-70 transition-all duration-1000`} />
+                {/* Background with Dynamic Gradient - Reduced Blur for Performance */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl -z-10 opacity-60`} />
 
-                <div className={`relative w-full bg-black/40 backdrop-blur-md border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden transition-all duration-500`}>
-                    {/* Decorative Glow */}
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 ${styles.glow} rounded-full blur-[60px] pointer-events-none transition-all duration-1000`} />
+                <div className={`relative w-full bg-black/80 backdrop-blur-sm border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
 
-                    {/* Sparkles for High Intensity */}
-                    {timeLeft.days <= 10 && (
-                        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay pointer-events-none" />
-                    )}
+                    {/* Simplified Decorative Glow -> Radial Gradient instead of Blur */}
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-radial from-${styles.glow}/20 to-transparent opacity-50 pointer-events-none`} />
 
                     {/* Left: Text & Title */}
                     <div className="flex flex-col gap-1.5 z-10">
@@ -165,7 +161,7 @@ export default function RamadhanCountdown() {
                             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Menuju Ramadhan</span>
                         </div>
                         <div className="flex items-baseline gap-2.5">
-                            <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-lg">
+                            <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md">
                                 {isMounted ? timeLeft.days : "..."}
                             </span>
                             <span className="text-sm font-medium text-white/80">Hari Lagi</span>
