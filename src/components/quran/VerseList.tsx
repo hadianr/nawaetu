@@ -3,7 +3,7 @@
 import TajweedLegend from "./TajweedLegend";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash, Headphones } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
@@ -119,6 +119,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
     const router = useRouter();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const autoplay = searchParams.get('autoplay') === 'true';
 
     const handlePerPageChange = (value: number) => {
         setPerPage(value);
@@ -159,6 +161,17 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setPerPage(parseInt(perPageCookie.split('=')[1]));
         }
     }, []);
+
+    // Handle Autoplay from Surah List
+    useEffect(() => {
+        if (autoplay && verses.length > 0 && !playingVerseKey) {
+            // Small delay to ensure everything is ready
+            const timer = setTimeout(() => {
+                handleSurahPlay();
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [autoplay, verses]); // Run when verses are loaded if autoplay is true
 
     // Scroll to verse handler
     const scrollToVerse = (verseNum: number) => {
@@ -488,10 +501,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         {!playingVerseKey && (
                             <button
                                 onClick={handleSurahPlay}
-                                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-[10px] md:text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
                             >
                                 <Play className="h-3 w-3 fill-current" />
-                                Putar Surat
+                                <span>Putar Surat</span>
                             </button>
                         )}
 

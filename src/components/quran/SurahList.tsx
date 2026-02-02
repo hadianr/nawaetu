@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bookmark, ChevronRight, Clock } from "lucide-react";
+import { Search, Bookmark, ChevronRight, Clock, Play } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export interface DateType {
@@ -248,9 +248,22 @@ export default function SurahList({ chapters }: SurahListProps) {
                                 <p className="text-[9px] text-white/40">
                                     {chapter.verses_count} Ayat • {chapter.revelation_place === "makkah" ? "Mekah" : "Madinah"}
                                 </p>
-                                <span className="font-amiri text-lg text-white/90 leading-none">
-                                    {chapter.name_arabic}
-                                </span>
+                                <div className="flex items-center gap-3">
+                                    <span className="font-amiri text-lg text-white/90 leading-none">
+                                        {chapter.name_arabic}
+                                    </span>
+                                    {/* Quick Play Button */}
+                                    <div
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            window.location.href = `/quran/${chapter.id}?autoplay=true`;
+                                        }}
+                                        className="h-7 w-7 flex items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))] hover:text-white transition-all cursor-pointer"
+                                    >
+                                        <Play className="h-3 w-3 fill-current ml-0.5" />
+                                    </div>
+                                </div>
                             </div>
                         </Link>
                     );
