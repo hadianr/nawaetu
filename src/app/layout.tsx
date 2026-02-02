@@ -39,6 +39,7 @@ export const metadata: Metadata = {
 
 import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
+import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
@@ -60,6 +61,7 @@ export default function RootLayout({
           <InfaqProvider>
             <PatternOverlay />
             <NotificationWatcher />
+            <OnboardingOverlay />
             {children}
             <Suspense fallback={null}>
               <BottomNav />

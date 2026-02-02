@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -284,25 +284,24 @@ export default function SettingsPage() {
                     </div>
                 </UserProfileDialog>
 
-                {/* Quick Stats Entry */}
-                <Link
-                    href="/stats"
-                    className="w-full p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-3 hover:border-amber-500/40 transition-all group active:scale-[0.98]"
-                >
-                    <div className="h-10 w-10 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all">
-                        <BarChart3 className="w-5 h-5 text-amber-400" />
+                {/* Quick Stats Entry - COMING SOON STATE */}
+                <div className="w-full p-3 bg-white/5 border border-white/5 rounded-2xl flex items-center gap-3 opacity-60 cursor-not-allowed group relative overflow-hidden">
+                    {/* Subtle Coming Soon Pattern */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(var(--color-primary),0.05),transparent)]" />
+
+                    <div className="h-10 w-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center transition-all">
+                        <BarChart3 className="w-5 h-5 text-slate-500" />
                     </div>
-                    <div className="flex-1">
-                        <h3 className="text-sm font-bold text-amber-200 group-hover:text-amber-100 transition-colors">Statistik Ibadah</h3>
+                    <div className="flex-1 relative z-10">
                         <div className="flex items-center gap-2">
-                            <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
-                                <div className="h-full bg-amber-500 w-[70%]" />
-                            </div>
-                            <span className="text-[10px] text-amber-200/60">Level 5</span>
+                            <h3 className="text-sm font-bold text-slate-400">Statistik Ibadah</h3>
+                            <span className="text-[8px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold uppercase tracking-wider">
+                                Coming Soon
+                            </span>
                         </div>
+                        <p className="text-[10px] text-slate-500">Matangkan niat, pantau hasil nanti ✨</p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-amber-500/50 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
-                </Link>
+                </div>
 
                 {/* Worship Configuration Hub */}
                 <div className="grid grid-cols-2 gap-3">
@@ -576,6 +575,28 @@ export default function SettingsPage() {
                             </Select>
                         </div>
                     </div>
+                </div>
+
+                {/* Support Card (Persistent) */}
+                <div className="bg-gradient-to-br from-emerald-900/40 to-teal-900/40 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Heart className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
+                            <span className="text-sm font-bold text-white">Dukung Nawaetu</span>
+                        </div>
+                        <p className="text-[10px] text-emerald-200/70 max-w-[200px] leading-relaxed">
+                            {isMuhsinin
+                                ? "Terima kasih telah menjadi Muhsinin! Hasil infaq digunakan untuk server & pengembangan."
+                                : "Bantu kami menjaga aplikasi tetap gratis dan bebas iklan selamanya."}
+                        </p>
+                    </div>
+                    <Button
+                        onClick={() => setShowInfaqModal(true)}
+                        size="sm"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-emerald-500/20"
+                    >
+                        {isMuhsinin ? "Infaq Lagi" : "Infaq"}
+                    </Button>
                 </div>
 
                 {/* App Info - Footer Style */}

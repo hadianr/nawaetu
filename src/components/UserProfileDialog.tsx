@@ -514,9 +514,17 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             <Heart className="w-3 h-3" /> Dukung
                                         </button>
                                     ) : (
-                                        <div className="ml-2 bg-emerald-500 rounded-full p-1 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                                        <button
+                                            onClick={() => setShowInfaqModal(true)}
+                                            className="ml-2 bg-emerald-500 rounded-full p-1 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] hover:bg-emerald-400 transition-colors cursor-pointer group/infaq relative"
+                                            title="Tambah Infaq"
+                                        >
                                             <Heart className="w-3 h-3 text-white fill-white" />
-                                        </div>
+                                            {/* Tooltip hint on hover */}
+                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-[10px] text-white rounded opacity-0 group-hover/infaq:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                                Tambah Infaq
+                                            </div>
+                                        </button>
                                     )}
                                 </div>
                             </div>

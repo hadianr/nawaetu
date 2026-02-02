@@ -11,6 +11,8 @@ import { toast } from "sonner";
 interface InfaqModalProps {
     isOpen: boolean;
     onClose: () => void;
+    headerTitle?: string;
+    headerDescription?: string;
 }
 
 const INFAQ_OPTIONS = [
@@ -20,8 +22,8 @@ const INFAQ_OPTIONS = [
     { value: 100000, label: "Rp 100.000", emoji: "🎁" },
 ];
 
-export default function InfaqModal({ isOpen, onClose }: InfaqModalProps) {
-    const { submitInfaq } = useInfaq();
+export default function InfaqModal({ isOpen, onClose, headerTitle, headerDescription }: InfaqModalProps) {
+    const { submitInfaq, totalInfaq, isMuhsinin } = useInfaq();
     const [selectedAmount, setSelectedAmount] = useState<number>(25000);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [customValue, setCustomValue] = useState("");
@@ -48,7 +50,7 @@ export default function InfaqModal({ isOpen, onClose }: InfaqModalProps) {
             return;
         }
 
-        // 1. Record Infaq (Trust Based / Husnuzan)
+        // 1. Record Infaq Locally
         submitInfaq(finalAmount);
 
         // 2. Generate WA Link
@@ -92,12 +94,14 @@ export default function InfaqModal({ isOpen, onClose }: InfaqModalProps) {
 
                 <div className="px-6 pb-8 relative z-30 -mt-4">
                     <DialogTitle className="text-center text-xl font-bold mb-2">
-                        {step === 'selection' ? "Dukung Nawaetu 🕌" : step === 'transfer' ? "Selesaikan Infaq ✨" : "Jazakumullah Khair! ✨"}
+                        {step === 'selection'
+                            ? (headerTitle || "Dukung Nawaetu 🕌")
+                            : step === 'transfer' ? "Selesaikan Infaq ✨" : "Jazakumullah Khair! ✨"}
                     </DialogTitle>
 
                     <p className="text-center text-xs text-slate-400 mb-6 leading-relaxed">
                         {step === 'selection'
-                            ? "Aplikasi ini gratis dan bebas iklan. Infaq Anda digunakan untuk biaya operasional server dan pengembangan aplikasi agar terus bermanfaat."
+                            ? (headerDescription || "Aplikasi ini gratis dan bebas iklan. Infaq Anda digunakan untuk biaya operasional server dan pengembangan aplikasi agar terus bermanfaat.")
                             : step === 'transfer'
                                 ? "Silakan transfer ke rekening di bawah ini. Akadnya saling percaya (husnuzan) ya kak."
                                 : "Terima kasih sudah menjadi bagian dari perjuangan kami. Semoga setiap ayat yang dibaca menjadi pahala jariyah untuk Anda."}
@@ -240,8 +244,26 @@ export default function InfaqModal({ isOpen, onClose }: InfaqModalProps) {
                     ) : (
                         /* STEP 3: SUCCESS FEEDBACK */
                         <div className="space-y-6 animate-in fade-in zoom-in duration-500 text-center">
-                            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                                <p className="text-sm text-slate-300 mb-4 italic leading-relaxed">
+
+                            {/* Total Impact Card */}
+                            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-8 bg-[rgb(var(--color-primary))]/10 rounded-full blur-2xl group-hover:bg-[rgb(var(--color-primary))]/20 transition-all"></div>
+
+                                <p className="text-xs text-slate-400 mb-1 font-medium">Total Infaq Tersalurkan</p>
+                                <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 mb-2">
+                                    Rp {totalInfaq.toLocaleString('id-ID')}
+                                </h3>
+
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                                    <Heart className="w-3 h-3 text-emerald-500 fill-emerald-500" />
+                                    <span className="text-[10px] font-bold text-emerald-400">
+                                        Resmi Menjadi Muhsinin
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                                <p className="text-sm text-slate-300 mb-2 italic leading-relaxed">
                                     "Apabila manusia meninggal dunia, maka terputuslah amalannya kecuali tiga perkara: sedekah jariyah, ilmu yang bermanfaat, atau doa anak yang shalih."
                                 </p>
                                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-none">(HR. Muslim)</p>

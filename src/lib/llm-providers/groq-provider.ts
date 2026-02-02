@@ -78,7 +78,7 @@ export class GroqProvider implements LLMProvider {
 
             // Add current message with context (only on first message)
             const contextualMessage = history.length === 0
-                ? `${message}\n\n[User: ${context.name}, Streak: ${context.prayerStreak} hari]`
+                ? `${message}\n\n[User: ${context.name}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`
                 : message;
 
             messages.push({
