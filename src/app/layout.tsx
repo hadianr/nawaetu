@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
@@ -62,6 +63,7 @@ export default function RootLayout({
             <PatternOverlay />
             <NotificationWatcher />
             <OnboardingOverlay />
+            <PWAInstallPrompt />
             {children}
             <Suspense fallback={null}>
               <BottomNav />
