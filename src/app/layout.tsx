@@ -58,7 +58,6 @@ export const metadata: Metadata = {
     description: "Jadwal Sholat, Al Quran, dan Kiblat Akurat dalam satu aplikasi.",
     url: "https://nawaetu.com",
     siteName: "Nawaetu",
-    siteName: "Nawaetu",
     locale: "id_ID",
     type: "website",
   },
