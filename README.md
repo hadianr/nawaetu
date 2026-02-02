@@ -1,4 +1,4 @@
-# Nawaetu
+# Nawaetu 🕌
 
 > *"Innamal A'malu Binniyat" (Sesungguhnya amal itu tergantung niatnya).*
 
@@ -6,95 +6,57 @@
 
 ---
 
-## 🕌 Brand DNA
-
-### Core Philosophy
-Setiap langkah ibadah dimulai dari hati. Nawaetu hadir bukan untuk menggantikan esensi ibadah, melainkan sebagai **Sahabat (The Companion)** yang menemani perjalanan spiritual Anda tanpa menggurui.
-
-### Mission
-Menjadi teman digital yang paling fokus dan bebas gangguan bagi Muslim modern dalam mempersiapkan bekal akhiratnya, dimulai dari hal terjujur: **Niat**.
-
----
-
-## 🌟 Fitur Unggulan
+## 🌟 Fitur Unggulan (v1.0.0)
 
 Aplikasi ini dirancang dengan pendekatan *essentialist* dan estetika *premium dark mode*:
 
-### 1. 🎯 Gamifikasi & Motivasi (Misi Harian)
-*   **System Misi**: Daftar amal harian (Daily Missions) yang dipersonalisasi berdasarkan gender.
-*   **XP & Leveling**: Dapatkan XP untuk setiap ibadah yang terlaksana dan tingkatkan level profile Anda.
-*   **The Streak (🔥)**: Pantau konsistensi ibadah Anda dengan sistem *streak* harian dan raih bonus XP pada *milestone* tertentu.
-*   **Authentic References**: Setiap misi disertai dalil Al-Qur'an atau Hadist Shahih sebagai landasan beramal.
+### 1. 🤖 AI Ustadz (Mentor Virtual)
+*   **Sahabat Cerita**: Curhat masalah ibadah atau tanya hukum Islam dengan privasi terjaga.
+*   **Valid & Aman**: Semua jawaban AI diprogram untuk selalu menyertakan **Dalil Al-Qur'an & Hadits Shahih**.
+*   **Context Aware**: AI mengetahui tanggal hari ini dan streak ibadah Anda untuk memberikan jawaban yang relevan.
 
-### 2. 👩‍💼 Personalitas & Experience
-*   **Gender Based UI**: Personalisasi tema warna (Blue untuk Laki-laki, Pink untuk Perempuan) dan penyesuaian misi ibadah (seperti reminder Sholat Jumat atau tracker Qadha Puasa).
-*   **Profile Management**: Kustomisasi nama dan koleksi gelar berdasarkan level pencapaian spiritual Anda.
+### 2. 📖 Al-Qur'an & Tajwid Interaktif
+*   **Verse-by-Verse Audio**: Klik ayat untuk dengar murattal (Mishary Rashid, dll).
+*   **Tajwid Legend**: Panduan warna tajwid interaktif (Ghunnah, Qalqalah, Mad) yang muncul otomatis saat mode tajwid aktif.
+*   **Mushaf & List View**: Pilihan tampilan senyaman mushaf cetak atau daftar scroll.
 
-### 3. 📖 Al-Qur'an & Audio Digital
-*   **Multimedia Experience**: Pilihan Qari internasional (Mishary Rashid Alafasy, dll) yang terintegrasi secara global.
-*   **Audio Per-Ayat**: Membantu hafalan dan tilawah dengan kontrol audio yang presisi.
-*   **Dynamic UI**: Menampilkan informasi pembacaan terakhir dan navigasi surat yang intuitif.
+### 3. 🎁 Sistem Infaq & Muhsinin
+*   **100% Gratis & Bebas Iklan**: Aplikasi ini gratis untuk semua umat.
+*   **Muhsinin (Donatur)**: Fitur premium seperti *Unlimited AI Chat* & *Premium Themes* terbuka bagi mereka yang berinfaq untuk mendukung operasional server.
 
-### 4. 🧭 Navigasi & Waktu
-*   **Dashboard Adaptif**: Widget cerdas yang menampilkan hitung mundur sholat, countdown Ramadhan, dan progres bacaan Al-Qur'an.
-*   **Smart Qibla Finder**: Kompas visual minimalis dengan indikator Ka'bah untuk akurasi arah kiblat.
-*   **Advanced Calculation**: Pilihan metode perhitungan waktu sholat (Kemenag RI, MWL, ISNA, dll) dan sinkronisasi lokasi otomatis.
+### 4. 🎯 Gamifikasi & Misi Harian
+*   **Daily Missions**: Daftar amal harian yang dipersonalisasi.
+*   **Streak & XP**: Jaga konsistensi ibadah dan naikkan level spiritual Anda.
 
-### 5. 📿 Tasbih Digital
-*   **Full Screen Tap**: Menghitung zikir tanpa harus melihat layar dengan *haptic feedback* yang premium.
-*   **Presets & Targets**: Pilihan zikir siap pakai dengan target yang bisa disesuaikan.
+### 5. 🛠️ Tech Stack Modern
+Dibangun dengan teknologi web terkini untuk performa & experience terbaik:
 
----
-
-## 🛠️ Tech Stack
-
-*   **Framework**: [Next.js](https://nextjs.org/) (App Router & Server Components)
-*   **Language**: [TypeScript](https://www.typescriptlang.org/)
-*   **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
-*   **Persistence**: Persistence via LocalStorage & Cookies for Server-side Sync.
-*   **Animations**: [Framer Motion](https://www.framer.com/motion/)
-*   **Icons**: [Lucide React](https://lucide.dev/)
+*   **Core**: [Next.js 15](https://nextjs.org/) (App Router), [TypeScript](https://www.typescriptlang.org/)
+*   **AI**: [Google Gemini](https://deepmind.google/technologies/gemini/) & [Groq](https://groq.com/)
+*   **Monitoring**: [Sentry](https://sentry.io/) (Error Tracking), [Google Analytics 4](https://analytics.google.com/)
+*   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/), [Shadcn UI](https://ui.shadcn.com/), [Framer Motion](https://www.framer.com/motion/)
+*   **PWA**: Installable di Android & iOS (Native-like experience).
 
 ---
 
-## 🚀 Memulai (Getting Started)
+## 🚀 Deployment (Vercel)
 
-### Prasyarat
-*   Node.js v18+
+Aplikasi ini siap di-deploy ke Vercel dengan konfigurasi minimal.
 
-### Instalasi & Menjalankan
+1.  **Environment Variables**:
+    Pastikan Anda mengisi variabel berikut di dashboard Vercel (lihat `.env.example`):
+    *   `GEMINI_API_KEY`
+    *   `GROQ_API_KEY`
+    *   `SENTRY_AUTH_TOKEN`
+    *   `NEXT_PUBLIC_GA_MEASUREMENT_ID`
 
-1.  **Clone Repository**
-    ```bash
-    git clone https://github.com/username/nawaetu.git
-    cd nawaetu
-    ```
-
-2.  **Instal Dependencies**
-    ```bash
-    npm install
-    ```
-
-3.  **Jalankan Development Server**
-    ```bash
-    npm run dev
-    ```
-
-    Buka [http://localhost:3000](http://localhost:3000) untuk melihat aplikasi.
-
-## 📂 Struktur Project
-
-```
-src/
-├── app/              # App Router (Pages: Home, Quran, Kiblat, Tasbih)
-├── components/       # Reusable Components
-│   ├── ui/           # Shadcn UI Components
-│   ├── quran/        # Komponen spesifik Al-Qur'an
-│   └── icons/        # Custom SVG Icons
-├── lib/              # Utilities & Helpers
-└── hooks/            # Custom React Hooks (usePrayerTimes, etc.)
-```
+2.  **Build Command**: `npm run build` atau `next build`.
 
 ---
 
-*Nawaetu — Mulai dari Niat.*
+## 🤝 Kontribusi & Lisensi
+
+Dibuat dengan ❤️ oleh **Antigravity** untuk umat.
+Kode ini *Open Source* untuk tujuan dakwah & edukasi.
+
+*#LuruskanNiat #SempurnakanIbadah*
