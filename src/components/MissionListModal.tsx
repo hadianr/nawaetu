@@ -93,7 +93,7 @@ export default function MissionListModal({
         }
 
         return (
-            <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-1 pb-20 custom-scrollbar">
                 {sortedList.map((mission) => {
                     const isCompleted = isMissionCompleted(mission.id, mission.type);
                     const validation = checkValidation(mission);
@@ -192,7 +192,7 @@ export default function MissionListModal({
                 </DialogTrigger>
             )}
             <DialogContent
-                className="w-[95%] max-w-md max-h-[90vh] bg-black/40 backdrop-blur-xl border border-white/10 text-white p-0 overflow-hidden rounded-[32px] shadow-2xl"
+                className="w-[95%] max-w-md h-auto max-h-[85vh] bg-black/40 backdrop-blur-xl border border-white/10 text-white p-0 overflow-hidden rounded-[32px] shadow-2xl flex flex-col"
                 onOpenAutoFocus={(e) => {
                     // Update tab when opened if initialTab is set
                     if (initialTab) setActiveTab(initialTab);
@@ -204,25 +204,25 @@ export default function MissionListModal({
                     </DialogTitle>
                 </DialogHeader>
 
-                <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col h-full">
-                    <div className="px-5 py-3 bg-black/20 scrollbar-hide overflow-x-auto border-b border-white/5">
-                        <TabsList className="bg-transparent h-auto p-0 gap-3 flex w-max">
+                <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col overflow-hidden">
+                    <div className="px-5 py-4 bg-black/20 border-b border-white/5 overflow-x-auto scrollbar-hide">
+                        <TabsList className="bg-transparent h-auto p-0 gap-3 flex flex-nowrap w-max justify-start items-center border-none shadow-none ring-0">
                             <TabsTrigger
                                 value="all"
-                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-white data-[state=active]:text-black text-xs px-4 py-2 h-auto text-white/60 transition-all"
+                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-white data-[state=active]:text-black text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
                             >
                                 Semua
                             </TabsTrigger>
                             <TabsTrigger
                                 value="daily"
-                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:border-blue-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all"
+                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:border-blue-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
                             >
                                 📋 Harian
                             </TabsTrigger>
 
                             <TabsTrigger
                                 value="weekly"
-                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-purple-500 data-[state=active]:text-white data-[state=active]:border-purple-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all"
+                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-purple-500 data-[state=active]:text-white data-[state=active]:border-purple-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
                             >
                                 📅 Mingguan
                             </TabsTrigger>
@@ -230,7 +230,7 @@ export default function MissionListModal({
                             <TabsTrigger
                                 value="seasonal"
                                 className={cn(
-                                    "rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white text-xs px-4 py-2 h-auto text-white/60 transition-all flex items-center gap-1",
+                                    "rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white text-xs px-4 py-2 h-auto text-white/60 transition-all flex items-center gap-1 flex-none",
                                     isRamadhan
                                         ? "data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
                                         : "data-[state=active]:bg-amber-500 data-[state=active]:text-black"
