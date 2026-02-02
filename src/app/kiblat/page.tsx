@@ -1,25 +1,22 @@
-"use client";
-
 import QiblaCompass from "@/components/QiblaCompass";
-import { ArrowLeft } from "lucide-react";
-import { trackKiblatView } from "@/lib/analytics";
-import { useEffect, useState } from "react";
+import KiblatTracker from "@/components/KiblatTracker";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Arah Kiblat Online Akurat - Nawaetu",
+    description: "Cari arah kiblat online tanpa aplikasi (kompas kiblat). Akurat menggunakan GPS dan sensor HP. Temukan kiblat di mana saja.",
+    keywords: ["Arah Kiblat", "Kompas Kiblat", "Kiblat Online", "Arah Ka'bah", "Kompas Sholat"],
+    alternates: {
+        canonical: "https://nawaetu.com/kiblat",
+    },
+};
 
 export default function KiblatPage() {
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        // Track usage
-        trackKiblatView();
-
-        const handleOrientation = (event: DeviceOrientationEvent) => {
-            // This part of the useEffect seems incomplete in the provided snippet.
-            // I'm adding it as is, assuming it's part of a larger intended change.
-        };
-    }, []); // Added dependency array for useEffect
-
     return (
         <div className="flex h-[100dvh] w-screen flex-col items-center justify-center bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))] text-white font-sans overflow-hidden fixed inset-0">
+            {/* Analytics Tracker */}
+            <KiblatTracker />
+
             {/* Main Content - Centered & Full Width */}
             <div className="w-full h-full flex items-center justify-center relative">
                 <QiblaCompass />

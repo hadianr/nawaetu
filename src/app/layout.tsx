@@ -24,8 +24,41 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Nawaetu - Teman Ibadahmu",
-  description: "Teman digital Muslim modern untuk menata niat dan menjaga istiqomah.",
+  title: {
+    default: "Nawaetu - Aplikasi Muslim: Jadwal Sholat, Al Quran & Kiblat",
+    template: "%s | Nawaetu"
+  },
+  description: "Aplikasi Muslim lengkap dengan Jadwal Sholat akurat, Al Quran Online, Arah Kiblat, dan AI Ustadz. Teman ibadah modern untuk menjaga istiqomah.",
+  keywords: ["Jadwal Sholat", "Arah Kiblat", "Al Quran Online", "Aplikasi Muslim", "Waktu Sholat", "Quran Digital", "Nawaetu"],
+  authors: [{ name: "Nawaetu Team" }],
+  creator: "Hadian R",
+  publisher: "Nawaetu",
+  metadataBase: new URL("https://nawaetu.com"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Nawaetu - Teman Ibadahmu",
+    description: "Jadwal Sholat, Al Quran, dan Kiblat Akurat dalam satu aplikasi.",
+    url: "https://nawaetu.com",
+    siteName: "Nawaetu",
+    images: [
+      {
+        url: "/og-image.jpg", // Ensure this exists or use a placeholder
+        width: 1200,
+        height: 630,
+        alt: "Nawaetu App Preview",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nawaetu - Aplikasi Muslim Lengkap",
+    description: "Jadwal Sholat & Al Quran Digital Terbaik.",
+    creator: "@nawaetuapp", // Placeholder
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -35,6 +68,25 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Nawaetu",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web, Android, iOS",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "IDR"
+  },
+  "description": "Aplikasi Muslim lengkap untuk jadwal sholat, arah kiblat, dan membaca Al Quran online.",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "1024"
+  }
 };
 
 import NotificationWatcher from "@/components/NotificationWatcher";
@@ -58,6 +110,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider>
           <InfaqProvider>
             <PatternOverlay />

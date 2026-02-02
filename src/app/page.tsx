@@ -9,6 +9,16 @@ import HomeHeader from "@/components/HomeHeader";
 import NextPrayerWidget from "@/components/NextPrayerWidget";
 import MissionsWidget from "@/components/MissionsWidget";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Jadwal Sholat & Ibadah Harian - Nawaetu",
+  description: "Cek jadwal sholat hari ini, imsakiyah, dan waktu berbuka puasa yang akurat sesuai lokasi Anda.",
+  alternates: {
+    canonical: "https://nawaetu.com",
+  },
+};
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 py-6 font-sans sm:px-6">
