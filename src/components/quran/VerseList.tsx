@@ -81,6 +81,30 @@ const cleanTajweedText = (htmlText: string) => {
     return cleaned.trim();
 };
 
+const cleanIndopakText = (text: string) => {
+    if (!text) return '';
+    return text
+        .replace(/[\uE000-\uF8FF]/g, '') // Remove PUA characters
+        .replace(/\u2002/g, ' ') // Replace EN SPACE with standard space
+        .replace(/\s+/g, ' ') // Normalize spaces
+        .trim();
+};
+
+const getVerseFontClass = (script: string, size: string) => {
+    if (script === 'indopak') {
+        const base = 'font-lateef tracking-wide';
+        // Lateef requires significantly larger sizes to match Amiri's visual weight
+        if (size === 'large') return `${base} text-6xl leading-[2.6]`;
+        if (size === 'small') return `${base} text-4xl leading-[2.3]`;
+        return `${base} text-5xl leading-[2.4]`; // Medium
+    }
+    // Tajweed (Amiri)
+    const base = 'font-amiri';
+    if (size === 'large') return `${base} text-4xl leading-[2.5]`;
+    if (size === 'small') return `${base} text-2xl leading-[2.2]`;
+    return `${base} text-3xl leading-[2.3]`; // Medium
+};
+
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId }: VerseListProps) {
     // --- State ---
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
@@ -619,7 +643,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                 <div className="px-4 py-6 md:px-8">
                     {scriptType === 'tajweed' && <TajweedLegend />}
-                    <div className={`text-right leading-[3.5] ${fontSize === 'large' ? 'text-4xl' : fontSize === 'small' ? 'text-2xl' : 'text-3xl'} tracking-wide ${scriptType === 'indopak' ? 'font-lateef text-4xl leading-[4]' : 'font-amiri'} text-slate-200 text-justify`} dir="rtl">
+                    <div className={`text-right ${getVerseFontClass(scriptType, fontSize)} text-slate-200`} dir="rtl">
                         {verses.map((verse) => (
                             <span key={verse.id} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
                                 <span className={cn(
@@ -631,7 +655,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                     {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
                                         <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
                                     ) : (
-                                        verse.text_indopak || verse.text_uthmani
+                                        verse.text_indopak ? cleanIndopakText(verse.text_indopak) : verse.text_uthmani
                                     )}
                                 </span>
                                 <span className="mx-2 inline-flex items-center justify-center h-10 w-10 text-sm relative font-sans text-[rgb(var(--color-primary))] select-none">
@@ -708,11 +732,11 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 </div>
 
                                 {/* Content */}
-                                <div dir="rtl" className={`w-full ${scriptType === 'indopak' ? 'font-scheherazade text-5xl leading-[3] font-bold' : 'font-amiri ' + getFontSizeClass()} text-right mb-6 text-slate-200 leading-loose tracking-wide`}>
+                                <div dir="rtl" className={`w-full ${getVerseFontClass(scriptType, fontSize)} text-right mb-6 text-slate-200`}>
                                     {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
                                         <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
                                     ) : (
-                                        <span>{verse.text_indopak || verse.text_uthmani}</span>
+                                        <span>{verse.text_indopak ? cleanIndopakText(verse.text_indopak) : verse.text_uthmani}</span>
                                     )}
                                 </div>
                                 <div className="space-y-3">
