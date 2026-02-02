@@ -1,13 +1,26 @@
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Sparkles, MessageCircle } from "lucide-react";
 import PrayerTimesDisplay from "@/components/PrayerTimesDisplay";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
-import LastReadWidget from "@/components/LastReadWidget";
 import HomeHeader from "@/components/HomeHeader";
 import NextPrayerWidget from "@/components/NextPrayerWidget";
-import MissionsWidget from "@/components/MissionsWidget";
+
+// Skeletons
+import WidgetSkeleton from "@/components/skeleton/WidgetSkeleton";
+import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
+
+// Lazy Loaded Components
+const LastReadWidget = dynamic(() => import("@/components/LastReadWidget"), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+});
+const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
+  loading: () => <MissionSkeleton />,
+  ssr: false
+});
 
 import { Metadata } from "next";
 

@@ -99,10 +99,13 @@ const jsonLd = {
 
 import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
-import OnboardingOverlay from "@/components/OnboardingOverlay";
-import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+
+import dynamic from "next/dynamic";
+
+const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), { ssr: false });
+const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
 
 // ... (Metadata export remains)
 
