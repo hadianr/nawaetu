@@ -25,9 +25,9 @@ const SLIDES = [
         color: "text-emerald-400",
         bg: "bg-emerald-500/10",
         border: "border-emerald-500/20",
-        title: "Al-Qur'an Lengkap & Mentor AI",
-        description: "Baca Al-Qur'an dengan audio per ayat, tafsir, dan tanya jawab agama privat dengan AI Ustadz.",
-        highlight: "Fitur MVP: Audio Playback & Tanya Ustadz."
+        title: "Al-Qur'an & Mentor AI Terpercaya",
+        description: "Baca Al-Qur'an, tafsir, dan tanya jawab agama. Semua konten AI dipastikan bersumber dari Al-Qur'an & Hadits Shahih.",
+        highlight: "Tenang, sumbernya valid & dapat dipertanggungjawabkan."
     },
     {
         id: "gamification",

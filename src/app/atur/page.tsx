@@ -600,11 +600,31 @@ export default function SettingsPage() {
                 </div>
 
                 {/* App Info - Footer Style */}
-                <div className="space-y-3">
-                    <div className="flex items-center justify-center gap-2 py-4 opacity-40">
-                        <span className="text-xs text-white">Nawaetu</span>
-                        <span className="text-[8px] text-white/50">•</span>
-                        <span className="text-xs text-white/70">v1.0.0 Beta</span>
+                {/* About Nawaetu Card */}
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center space-y-4 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    <div className="relative z-10">
+                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[rgb(var(--color-primary))] to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-[rgb(var(--color-primary))]/20 mb-3 rotate-3 group-hover:rotate-6 transition-transform">
+                            <span className="text-3xl font-bold text-white">N</span>
+                        </div>
+
+                        <h2 className="text-xl font-bold text-white mb-1">Nawaetu</h2>
+                        <p className="text-[10px] text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] font-bold mb-3">
+                            Luruskan Niat, Sempurnakan Ibadah
+                        </p>
+
+                        <p className="text-xs text-slate-400 leading-relaxed max-w-[260px] mx-auto mb-4">
+                            Teman ibadah digital yang menjaga setiap langkahmu tetap sesuai tuntunan Al-Qur'an & Sunnah.
+                        </p>
+
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all cursor-default">
+                            <span className="text-blue-400 font-bold text-xs">#LuruskanNiat</span>
+                        </div>
+
+                        <div className="mt-6 flex items-center justify-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
+                            <span className="text-[10px] text-white">v1.0.0 (Production)</span>
+                        </div>
                     </div>
                 </div>
             </div>
