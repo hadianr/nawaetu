@@ -15,10 +15,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import UserProfileDialog from "@/components/UserProfileDialog";
-import PricingModal from "@/components/PricingModal";
+import InfaqModal from "@/components/InfaqModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
-import { usePremium } from "@/context/PremiumContext";
+import { useInfaq } from "@/context/InfaqContext";
 import {
     MUADZIN_OPTIONS,
     CALCULATION_METHODS,
@@ -45,8 +45,8 @@ const DEFAULT_PREFS: AdhanPreferences = {
 export default function SettingsPage() {
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimes();
     const { currentTheme, setTheme } = useTheme();
-    const { isPremium } = usePremium();
-    const [showPricing, setShowPricing] = useState(false);
+    const { isMuhsinin } = useInfaq();
+    const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [preferences, setPreferences] = useState<AdhanPreferences>(DEFAULT_PREFS);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -202,8 +202,8 @@ export default function SettingsPage() {
         const theme = THEMES[themeId];
 
         // Check if theme is premium and user is not premium
-        if (theme.isPremium && !isPremium) {
-            setShowPricing(true);
+        if (theme.isPremium && !isMuhsinin) {
+            setShowInfaqModal(true);
             return;
         }
 
@@ -257,20 +257,22 @@ export default function SettingsPage() {
                 {/* Profile Card - Compact */}
                 <UserProfileDialog onProfileUpdate={refreshProfile}>
                     <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
-                        <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold relative overflow-hidden">
-                            {/* Avatar Display - Image/Emoji/Initial */}
-                            {userAvatar ? (
-                                userAvatar.startsWith('data:') ? (
-                                    <img src={userAvatar} alt="Profile" className="w-full h-full object-cover" />
+                        <div className="relative">
+                            <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden">
+                                {/* Avatar Display - Image/Emoji/Initial */}
+                                {userAvatar ? (
+                                    userAvatar.startsWith('data:') ? (
+                                        <img src={userAvatar} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-2xl">{userAvatar}</span>
+                                    )
                                 ) : (
-                                    <span className="text-2xl">{userAvatar}</span>
-                                )
-                            ) : (
-                                <span>{userName.charAt(0).toUpperCase()}</span>
-                            )}
-                            {isPremium && (
-                                <div className="absolute -top-1 -right-1 bg-amber-400 rounded-full p-0.5 border-2 border-black z-10">
-                                    <Crown className="w-3 h-3 text-black fill-black" />
+                                    <span>{userName.charAt(0).toUpperCase()}</span>
+                                )}
+                            </div>
+                            {isMuhsinin && (
+                                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
+                                    <Crown className="w-2.5 h-2.5 text-white fill-white" />
                                 </div>
                             )}
                         </div>
@@ -431,7 +433,7 @@ export default function SettingsPage() {
 
                             {Object.values(THEMES).sort((a, b) => (a.isPremium === b.isPremium ? 0 : a.isPremium ? 1 : -1)).map((theme, index, array) => {
                                 const isSelected = currentTheme === theme.id;
-                                const isLocked = theme.isPremium && !isPremium;
+                                const isLocked = theme.isPremium && !isMuhsinin;
 
                                 // Check if this is the first PRO item to add a divider
                                 const showDivider = index > 0 && theme.isPremium && !array[index - 1].isPremium;
@@ -586,7 +588,7 @@ export default function SettingsPage() {
                 </div>
             </div>
 
-            <PricingModal isOpen={showPricing} onClose={() => setShowPricing(false)} />
+            <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
         </div >
     );
 }

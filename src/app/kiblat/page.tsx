@@ -1,3 +1,5 @@
+"use client";
+
 import QiblaCompass from "@/components/QiblaCompass";
 import { ArrowLeft } from "lucide-react";
 import { trackKiblatView } from "@/lib/analytics";

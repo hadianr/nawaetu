@@ -16,8 +16,8 @@ import { Progress } from "@/components/ui/progress";
 import { getPlayerStats, PlayerStats } from "@/lib/leveling";
 import { getStreak, StreakData } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
-import { usePremium } from "@/context/PremiumContext";
-import PricingModal from "./PricingModal";
+import { useInfaq } from "@/context/InfaqContext";
+import InfaqModal from "./InfaqModal";
 
 interface UserProfileData {
     name: string;
@@ -124,8 +124,8 @@ interface UserProfileDialogProps {
 }
 
 export default function UserProfileDialog({ children, onProfileUpdate }: UserProfileDialogProps) {
-    const { isPremium } = usePremium();
-    const [showPricing, setShowPricing] = useState(false);
+    const { isMuhsinin } = useInfaq();
+    const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [profile, setProfile] = useState<UserProfileData>({
         name: "Sobat Nawaetu",
@@ -244,9 +244,9 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             ]
         },
         premium: {
-            label: "PRO Collection",
-            description: "Exclusive PRO designs",
-            locked: !isPremium,
+            label: "Koleksi Muhsinin",
+            description: isMuhsinin ? "Terbuka - Terima kasih orang baik!" : "Khusus untuk donatur Nawaetu",
+            locked: !isMuhsinin,
             avatars: [
                 // Luxury gradient tier
                 { id: 'crown', name: 'Crown', emoji: '👑' },
@@ -345,12 +345,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 {selectedTier.rewards?.map((reward, i) => {
                                     const isPrem = reward.includes("[PRO]");
                                     const displayReward = reward.replace(" [PRO]", "");
-                                    const isLockedPremium = isPrem && !isPremium;
+                                    const isLockedPremium = isPrem && !isMuhsinin;
 
                                     return (
                                         <div
                                             key={i}
-                                            onClick={() => isLockedPremium && setShowPricing(true)}
+                                            onClick={() => isLockedPremium && setShowInfaqModal(true)}
                                             className={cn(
                                                 "flex items-center gap-3 p-3 border rounded-xl transition-all",
                                                 isLockedPremium
@@ -463,7 +463,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                     {AVATAR_COLLECTIONS.premium.avatars.map((avatar) => (
                                                         <button
                                                             key={avatar.id}
-                                                            onClick={() => AVATAR_COLLECTIONS.premium.locked ? setShowPricing(true) : handleAvatarSelect(avatar.emoji)}
+                                                            onClick={() => AVATAR_COLLECTIONS.premium.locked ? setShowInfaqModal(true) : handleAvatarSelect(avatar.emoji)}
                                                             className={cn("w-9 h-9 flex items-center justify-center rounded-lg transition-all text-xl relative", AVATAR_COLLECTIONS.premium.locked ? "opacity-40 grayscale" : "hover:bg-amber-500/10 hover:scale-110")}
                                                             title={avatar.name}
                                                         >
@@ -506,16 +506,16 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 </div>
                                 <div className="flex items-center gap-2 mt-0.5">
                                     <p className="text-sm font-medium text-[rgb(var(--color-primary-light))]/80 tracking-wide">{profile.title}</p>
-                                    {!isPremium ? (
+                                    {!isMuhsinin ? (
                                         <button
-                                            onClick={() => setShowPricing(true)}
-                                            className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400/20 to-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 transition flex items-center gap-1 animate-pulse"
+                                            onClick={() => setShowInfaqModal(true)}
+                                            className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition flex items-center gap-1 animate-pulse"
                                         >
-                                            <Crown className="w-3 h-3" /> Upgrade
+                                            <Heart className="w-3 h-3" /> Dukung
                                         </button>
                                     ) : (
-                                        <div className="ml-2 bg-amber-500 rounded-full p-1 border border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)]">
-                                            <Crown className="w-3 h-3 text-black fill-black" />
+                                        <div className="ml-2 bg-emerald-500 rounded-full p-1 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                                            <Heart className="w-3 h-3 text-white fill-white" />
                                         </div>
                                     )}
                                 </div>
@@ -782,7 +782,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     </>
                 )}
             </DialogContent>
-            <PricingModal isOpen={showPricing} onClose={() => setShowPricing(false)} />
+            <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
         </Dialog>
     );
 }

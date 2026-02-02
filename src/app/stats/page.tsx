@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, TrendingUp, Calendar, Flame, Trophy, Lock, Crown, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePremium } from "@/context/PremiumContext";
-import PricingModal from "@/components/PricingModal";
+import { useInfaq } from "@/context/InfaqContext";
+import InfaqModal from "@/components/InfaqModal";
 import { getWeeklyStats, getMonthlyStats, getDailyActivityHistory, generateMockData } from "@/lib/analytics-utils";
 import { cn } from "@/lib/utils";
 
 export default function StatsPage() {
-    const { isPremium } = usePremium();
-    const [showPricing, setShowPricing] = useState(false);
+    const { isMuhsinin } = useInfaq();
+    const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [weeklyStats, setWeeklyStats] = useState(getWeeklyStats());
     const [monthlyStats, setMonthlyStats] = useState(getMonthlyStats());
     const [history, setHistory] = useState(getDailyActivityHistory());
@@ -44,10 +44,10 @@ export default function StatsPage() {
                         <h1 className="text-xl font-bold">Statistik Ibadah</h1>
                         <p className="text-xs text-white/60">Pantau perkembangan spiritualmu</p>
                     </div>
-                    {isPremium && (
-                        <div className="flex items-center gap-1 px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded-full">
-                            <Crown className="w-3 h-3 text-amber-400" />
-                            <span className="text-xs font-bold text-amber-400">PRO</span>
+                    {isMuhsinin && (
+                        <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full">
+                            <Crown className="w-3 h-3 text-emerald-400" />
+                            <span className="text-xs font-bold text-emerald-400">MUHSININ</span>
                         </div>
                     )}
                 </div>
@@ -60,7 +60,7 @@ export default function StatsPage() {
                     {/* Weekly XP */}
                     <div className={cn(
                         "p-4 rounded-2xl border relative overflow-hidden",
-                        !isPremium && "blur-sm"
+                        !isMuhsinin && "blur-sm"
                     )}>
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent" />
                         <div className="relative z-10">
@@ -76,7 +76,7 @@ export default function StatsPage() {
                     {/* Streak */}
                     <div className={cn(
                         "p-4 rounded-2xl border relative overflow-hidden",
-                        !isPremium && "blur-sm"
+                        !isMuhsinin && "blur-sm"
                     )}>
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent" />
                         <div className="relative z-10">
@@ -92,7 +92,7 @@ export default function StatsPage() {
                     {/* Monthly Missions */}
                     <div className={cn(
                         "p-4 rounded-2xl border relative overflow-hidden",
-                        !isPremium && "blur-sm"
+                        !isMuhsinin && "blur-sm"
                     )}>
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent" />
                         <div className="relative z-10">
@@ -108,7 +108,7 @@ export default function StatsPage() {
                     {/* Consistency */}
                     <div className={cn(
                         "p-4 rounded-2xl border relative overflow-hidden",
-                        !isPremium && "blur-sm"
+                        !isMuhsinin && "blur-sm"
                     )}>
                         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent" />
                         <div className="relative z-10">
@@ -125,23 +125,23 @@ export default function StatsPage() {
                 {/* XP Growth Chart */}
                 <div className={cn(
                     "relative p-5 rounded-2xl border border-white/10 bg-white/[0.02]",
-                    !isPremium && "overflow-hidden"
+                    !isMuhsinin && "overflow-hidden"
                 )}>
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                             <BarChart3 className="w-5 h-5 text-[rgb(var(--color-primary))]" />
                             <h2 className="font-bold">Grafik XP (30 Hari)</h2>
                         </div>
-                        {!isPremium && (
+                        {!isMuhsinin && (
                             <div className="flex items-center gap-1 px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded-full">
                                 <Lock className="w-3 h-3 text-amber-400" />
-                                <span className="text-xs font-bold text-amber-400">PRO</span>
+                                <span className="text-xs font-bold text-amber-400">LOCKED</span>
                             </div>
                         )}
                     </div>
 
                     {/* Chart */}
-                    <div className={cn("space-y-2", !isPremium && "blur-md")}>
+                    <div className={cn("space-y-2", !isMuhsinin && "blur-md")}>
                         {chartData.slice(-14).map((day, i) => {
                             const percentage = (day.xpGained / maxXP) * 100;
                             const date = new Date(day.date);
@@ -163,21 +163,21 @@ export default function StatsPage() {
                     </div>
 
                     {/* Premium Lock Overlay */}
-                    {!isPremium && (
+                    {!isMuhsinin && (
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center">
                             <div className="text-center space-y-3 p-6">
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-500/20 border-2 border-amber-500/30 rounded-full">
-                                    <Lock className="w-8 h-8 text-amber-400" />
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/20 border-2 border-emerald-500/30 rounded-full">
+                                    <Lock className="w-8 h-8 text-emerald-400" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-white mb-1">Unlock Deep Analytics</h3>
-                                    <p className="text-sm text-white/70 mb-4">Lihat grafik lengkap dan insight mendalam</p>
+                                    <p className="text-sm text-white/70 mb-4">Lihat grafik lengkap dan insight mendalam. Infaq seikhlasnya.</p>
                                     <Button
-                                        onClick={() => setShowPricing(true)}
-                                        className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-black font-bold"
+                                        onClick={() => setShowInfaqModal(true)}
+                                        className="bg-gradient-to-r from-emerald-400 to-teal-600 hover:from-emerald-500 hover:to-teal-700 text-white font-bold"
                                     >
                                         <Crown className="w-4 h-4 mr-2" />
-                                        Upgrade PRO
+                                        Jadi Muhsinin
                                     </Button>
                                 </div>
                             </div>
@@ -186,11 +186,11 @@ export default function StatsPage() {
                 </div>
 
                 {/* Best Day */}
-                {isPremium && monthlyStats.bestDay.xp > 0 && (
-                    <div className="p-5 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent">
+                {isMuhsinin && monthlyStats.bestDay.xp > 0 && (
+                    <div className="p-5 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent">
                         <div className="flex items-start gap-3">
-                            <div className="p-2 bg-amber-500/20 rounded-lg">
-                                <Trophy className="w-5 h-5 text-amber-400" />
+                            <div className="p-2 bg-emerald-500/20 rounded-lg">
+                                <Trophy className="w-5 h-5 text-emerald-400" />
                             </div>
                             <div>
                                 <h3 className="font-bold text-amber-200 mb-1">Hari Terbaikmu</h3>
@@ -208,7 +208,7 @@ export default function StatsPage() {
                 )}
             </div>
 
-            <PricingModal isOpen={showPricing} onClose={() => setShowPricing(false)} />
+            <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
         </div>
     );
 }

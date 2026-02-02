@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
 import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
-import { PremiumProvider } from "@/context/PremiumContext";
+import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 // ... (Metadata export remains)
@@ -57,14 +57,14 @@ export default function RootLayout({
       >
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
         <ThemeProvider>
-          <PremiumProvider>
+          <InfaqProvider>
             <PatternOverlay />
             <NotificationWatcher />
             {children}
             <Suspense fallback={null}>
               <BottomNav />
             </Suspense>
-          </PremiumProvider>
+          </InfaqProvider>
         </ThemeProvider>
       </body>
     </html>

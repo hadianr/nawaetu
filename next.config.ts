@@ -14,7 +14,6 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
   experimental: {
   },
 };
