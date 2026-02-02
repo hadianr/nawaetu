@@ -15,7 +15,7 @@ async function getChapter(id: string) {
 
 async function getVerses(id: string, page: number = 1, perPage: number = 20) {
     const res = await fetch(
-        `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=id&words=true&translations=33&fields=text_uthmani,text_uthmani_tajweed,audio&page=${page}&per_page=${perPage}`
+        `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=id&words=true&translations=33&fields=text_uthmani,text_uthmani_tajweed,text_indopak,audio&page=${page}&per_page=${perPage}`
     );
     if (!res.ok) throw new Error("Failed to fetch verses");
     const data = await res.json();

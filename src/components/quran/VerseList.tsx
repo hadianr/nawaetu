@@ -33,6 +33,7 @@ export interface Verse {
     verse_key: string;
     text_uthmani: string;
     text_uthmani_tajweed?: string;
+    text_indopak?: string;
     audio: {
         url: string;
     };
@@ -89,7 +90,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     // Settings State
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
     const [showTransliteration, setShowTransliteration] = useState(true);
-    const [tajweedMode, setTajweedMode] = useState(true);
+    const [scriptType, setScriptType] = useState<'tajweed' | 'indopak'>('indopak'); // Default to Indopak for clarity
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
     const router = useRouter();
@@ -530,13 +531,30 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                                 </button>
                                             </div>
                                         </div>
+                                        {/* Script Type Toggle */}
+                                        <div className="space-y-4">
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Jenis Teks Arab</Label>
+                                            <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
+                                                <button
+                                                    onClick={() => setScriptType('indopak')}
+                                                    className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                                >
+                                                    <span className="font-bold text-lg mb-1 font-amiri">بِسْمِ</span>
+                                                    <span className="text-[10px] md:text-xs">Standar Indonesia</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => setScriptType('tajweed')}
+                                                    className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                                >
+                                                    <span className="font-bold text-lg mb-1 font-amiri"><span style={{ color: '#fb923c' }}>بِسْ</span><span style={{ color: '#4ade80' }}>مِ</span></span>
+                                                    <span className="text-[10px] md:text-xs">Tajweed Berwarna</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         {/* Toggles */}
                                         <div className="space-y-4">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Teks & Terjemahan</Label>
-                                            <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
-                                                <div className="flex items-center gap-3"><Palette className="h-5 w-5 text-emerald-400" /><span className="font-medium">Warna Tajwid</span></div>
-                                                <button onClick={() => setTajweedMode(!tajweedMode)} className={`w-11 h-6 rounded-full transition-colors relative ${tajweedMode ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-700'}`}><span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${tajweedMode ? 'translate-x-5' : 'translate-x-0'}`} /></button>
-                                            </div>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Tampilan Lainnya</Label>
                                             <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
                                                 <div className="flex items-center gap-3"><Type className="h-5 w-5 text-indigo-400" /><span className="font-medium">Latin / Transliterasi</span></div>
                                                 <button onClick={() => setShowTransliteration(!showTransliteration)} className={`w-11 h-6 rounded-full transition-colors relative ${showTransliteration ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-700'}`}><span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${showTransliteration ? 'translate-x-5' : 'translate-x-0'}`} /></button>
@@ -598,9 +616,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             {/* --- Main Content --- */}
             {viewMode === 'mushaf' ? (
                 // --- Mushaf Mode View ---
+
                 <div className="px-4 py-6 md:px-8">
-                    {tajweedMode && <TajweedLegend />}
-                    <div className={`text-right leading-[3.5] ${fontSize === 'large' ? 'text-4xl' : fontSize === 'small' ? 'text-2xl' : 'text-3xl'} tracking-wide font-amiri text-slate-200 text-justify`} dir="rtl">
+                    {scriptType === 'tajweed' && <TajweedLegend />}
+                    <div className={`text-right leading-[3.5] ${fontSize === 'large' ? 'text-4xl' : fontSize === 'small' ? 'text-2xl' : 'text-3xl'} tracking-wide ${scriptType === 'indopak' ? 'font-lateef text-4xl leading-[4]' : 'font-amiri'} text-slate-200 text-justify`} dir="rtl">
                         {verses.map((verse) => (
                             <span key={verse.id} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
                                 <span className={cn(
@@ -609,10 +628,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 )}
                                     onClick={() => handleVersePlay(verse, false)}
                                 >
-                                    {tajweedMode && verse.text_uthmani_tajweed ? (
+                                    {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
                                         <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
                                     ) : (
-                                        verse.text_uthmani
+                                        verse.text_indopak || verse.text_uthmani
                                     )}
                                 </span>
                                 <span className="mx-2 inline-flex items-center justify-center h-10 w-10 text-sm relative font-sans text-[rgb(var(--color-primary))] select-none">
@@ -655,7 +674,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             ) : (
                 // --- List Mode View ---
                 <div className="space-y-4 px-0 md:px-0">
-                    {tajweedMode && (
+                    {scriptType === 'tajweed' && (
                         <div className="px-4 md:px-0">
                             <TajweedLegend />
                         </div>
@@ -689,11 +708,11 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 </div>
 
                                 {/* Content */}
-                                <div dir="rtl" className={`w-full font-amiri text-right mb-6 text-slate-200 ${getFontSizeClass()} leading-loose tracking-wide`}>
-                                    {tajweedMode && verse.text_uthmani_tajweed ? (
+                                <div dir="rtl" className={`w-full ${scriptType === 'indopak' ? 'font-lateef text-4xl leading-[4]' : 'font-amiri ' + getFontSizeClass()} text-right mb-6 text-slate-200 leading-loose tracking-wide`}>
+                                    {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
                                         <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
                                     ) : (
-                                        <span>{verse.text_uthmani}</span>
+                                        <span>{verse.text_indopak || verse.text_uthmani}</span>
                                     )}
                                 </div>
                                 <div className="space-y-3">
