@@ -18,8 +18,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import VerseShareDialog from "./VerseShareDialog";
+import dynamic from "next/dynamic";
 import { Chapter } from "@/components/quran/SurahList";
+
+const VerseShareDialog = dynamic(() => import("./VerseShareDialog"), { ssr: false });
 import { AyahMarker } from "./AyahMarker";
 import { surahNames } from "@/lib/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";

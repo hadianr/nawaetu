@@ -12,14 +12,18 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function RamadhanCountdown() {
-    const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number } | null>(null);
+    // Initialize with a default object to allow immediate rendering (LCP optimization)
+    const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({ days: 0, hours: 0, minutes: 0 });
     const [progress, setProgress] = useState(0);
     const [showInfo, setShowInfo] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     // Target: Estimated 1 Ramadhan 1447H (Feb 18, 2026)
     const TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
 
     useEffect(() => {
+        setIsMounted(true);
+
         // Countdown Logic
         const calculateTimeLeft = () => {
             const now = new Date();
@@ -101,8 +105,6 @@ export default function RamadhanCountdown() {
         window.dispatchEvent(new CustomEvent("open_mission_modal", { detail: { tab: 'seasonal' } }));
     };
 
-    if (!timeLeft) return null;
-
     // Dynamic Intensity Logic
     const getIntensityStyles = (days: number) => {
         if (days <= 10) {
@@ -135,7 +137,8 @@ export default function RamadhanCountdown() {
         };
     };
 
-    const styles = getIntensityStyles(timeLeft.days);
+    // Use a safe default (e.g., 300 days) for SSR/Initial Render to avoid red flash
+    const styles = getIntensityStyles(isMounted ? timeLeft.days : 300);
 
     return (
         <>
@@ -163,7 +166,7 @@ export default function RamadhanCountdown() {
                         </div>
                         <div className="flex items-baseline gap-2.5">
                             <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-lg">
-                                {timeLeft.days}
+                                {isMounted ? timeLeft.days : "..."}
                             </span>
                             <span className="text-sm font-medium text-white/60">Hari Lagi</span>
                         </div>
