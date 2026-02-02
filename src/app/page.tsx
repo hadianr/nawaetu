@@ -75,8 +75,8 @@ export default function Home() {
 
               {/* Label */}
               <div className="relative flex flex-col">
-                <span className="text-[11px] font-bold text-white leading-none">Tanya Ustadz</span>
-                <span className="text-[9px] text-white/70 leading-normal">AI Mentor</span>
+                <span className="text-[11px] font-bold text-white leading-none">Tanya Nawaetu</span>
+                <span className="text-[9px] text-white/70 leading-normal">Asisten Muslim AI</span>
               </div>
             </div>
           </Link>

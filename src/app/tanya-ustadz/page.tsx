@@ -211,7 +211,7 @@ export default function TanyaUstadzPage() {
                                 <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-black animate-pulse" />
                             </div>
                             <div>
-                                <h1 className="text-sm font-bold text-white">Ustadz Nawaetu</h1>
+                                <h1 className="text-sm font-bold text-white">Tanya Nawaetu</h1>
                                 <div className="flex items-center gap-2">
                                     <p className="text-xs text-[rgb(var(--color-primary-light))] flex items-center gap-1">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
