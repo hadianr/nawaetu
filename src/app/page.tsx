@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Sparkles, MessageCircle } from "lucide-react";
 import PrayerTimesDisplay from "@/components/PrayerTimesDisplay";
@@ -7,20 +6,7 @@ import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
 import HomeHeader from "@/components/HomeHeader";
 import NextPrayerWidget from "@/components/NextPrayerWidget";
-
-// Skeletons
-import WidgetSkeleton from "@/components/skeleton/WidgetSkeleton";
-import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
-
-// Lazy Loaded Components
-const LastReadWidget = dynamic(() => import("@/components/LastReadWidget"), {
-  loading: () => <WidgetSkeleton />,
-  ssr: false
-});
-const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
-  loading: () => <MissionSkeleton />,
-  ssr: false
-});
+import { HomeLastRead, HomeMissions } from "@/components/HomeWidgets";
 
 import { Metadata } from "next";
 
@@ -51,14 +37,12 @@ export default function Home() {
           <div className="w-full h-32">
             <NextPrayerWidget />
           </div>
-          <div className="w-full h-32">
-            <LastReadWidget />
-          </div>
+          <HomeLastRead />
         </section>
 
         {/* 4. Daily Missions */}
         <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-          <MissionsWidget />
+          <HomeMissions />
         </section>
 
         {/* 5. Prayer Times List */}

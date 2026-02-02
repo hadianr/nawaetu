@@ -99,13 +99,9 @@ const jsonLd = {
 
 import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
+import AppOverlays from "@/components/AppOverlays";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
-
-import dynamic from "next/dynamic";
-
-const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), { ssr: false });
-const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
 
 // ... (Metadata export remains)
 
@@ -129,8 +125,7 @@ export default function RootLayout({
           <InfaqProvider>
             <PatternOverlay />
             <NotificationWatcher />
-            <OnboardingOverlay />
-            <PWAInstallPrompt />
+            <AppOverlays />
             {children}
             <Suspense fallback={null}>
               <BottomNav />
