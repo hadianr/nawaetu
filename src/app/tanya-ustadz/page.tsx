@@ -11,6 +11,7 @@ import { saveChatHistory, loadChatHistory } from "@/lib/chat-storage";
 import { retryWithBackoff } from "@/lib/retry-helper";
 import { getCurrentTimeContext, getTimeSensitiveGreeting } from "@/lib/time-context";
 import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
+import { trackAIQuery } from "@/lib/analytics";
 
 const QUICK_PROMPTS = [
     "Saya merasa malas sholat...",
@@ -94,6 +95,12 @@ export default function TanyaUstadzPage() {
                     setMessages([greeting]);
                     setIsTyping(false);
                 }).catch((error) => {
+                    const fallback: ChatMessage = {
+                        id: 'fallback-error',
+                        role: 'assistant',
+                        content: "Assalamu'alaikum! Mohon maaf sepertinya ada sedikit gangguan koneksi. Tapi Ustadz tetap siap menemani diskusimu. Ada yang ingin ditanyakan?",
+                        timestamp: Date.now()
+                    };
                     setMessages([fallback]);
                     setIsTyping(false);
                 });
@@ -149,6 +156,9 @@ export default function TanyaUstadzPage() {
                 () => askUstadz(text, context, chatHistory),
                 { maxRetries: 2, initialDelay: 1000 }
             );
+
+            // Track usage
+            trackAIQuery();
 
             const aiMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),

@@ -99,6 +99,16 @@ export function getRecentActivity(days: number = 7): DailyActivity[] {
  * Get weekly stats (last 7 days)
  */
 export function getWeeklyStats(): WeeklyStats {
+    if (typeof window === "undefined") {
+        return {
+            totalXP: 0,
+            totalMissions: 0,
+            totalPrayers: 0,
+            averageDaily: 0,
+            streak: 0,
+        };
+    }
+
     const recent = getRecentActivity(7);
 
     const totalXP = recent.reduce((sum, a) => sum + a.xpGained, 0);
@@ -136,6 +146,17 @@ export function getWeeklyStats(): WeeklyStats {
  * Get monthly stats (last 30 days)
  */
 export function getMonthlyStats(): MonthlyStats {
+    if (typeof window === "undefined") {
+        return {
+            totalXP: 0,
+            totalMissions: 0,
+            totalPrayers: 0,
+            averageDaily: 0,
+            bestDay: { date: "", xp: 0 },
+            consistency: 0,
+        };
+    }
+
     const recent = getRecentActivity(30);
 
     const totalXP = recent.reduce((sum, a) => sum + a.xpGained, 0);
