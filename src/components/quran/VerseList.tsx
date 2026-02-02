@@ -474,7 +474,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const currentPlayingIndex = playingVerseKey ? verses.findIndex(v => v.verse_key === playingVerseKey) : -1;
 
     return (
-        <div className="relative min-h-screen pb-32 w-full max-w-4xl mx-auto">
+        <div className="relative min-h-screen pb-16 w-full max-w-4xl mx-auto">
             <style>{tajweedStyles}</style>
 
             {/* --- Sticky Header --- */}
@@ -487,10 +487,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             <ChevronLeft className="h-6 w-6" />
                         </Link>
                         <div className="flex flex-col min-w-0">
-                            <h1 className="text-lg font-bold text-white truncate leading-tight">
+                            <h1 className="text-base md:text-lg font-bold text-white truncate leading-tight">
                                 {chapter.name_simple}
                             </h1>
-                            <p className="text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
+                            <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
                                 {chapter.revelation_place} • {chapter.verses_count} Ayat
                             </p>
                         </div>
@@ -502,10 +502,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         {!playingVerseKey && (
                             <button
                                 onClick={handleSurahPlay}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-[10px] md:text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
+                                className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-[10px] md:text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
                             >
                                 <Play className="h-3 w-3 fill-current" />
-                                <span>Putar Surat</span>
+                                <span className="hidden md:inline">Putar Surat</span>
                             </button>
                         )}
 
@@ -678,30 +678,67 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     </div>
                     {/* Pagination Controls (Mushaf Mode) */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between py-8 mt-4 border-t border-white/5" dir="ltr">
+                        <div className="flex items-center justify-between py-6 mt-4 border-t border-white/5" dir="ltr">
                             <Button
                                 variant="outline"
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
-                                <ChevronLeft className="h-4 w-4 mr-2" />
-                                Sebelumnya
+                                <ChevronLeft className="h-4 w-4 md:mr-2" />
+                                <span className="hidden md:inline">Sebelumnya</span>
                             </Button>
-                            <span className="text-sm font-medium text-slate-400">
-                                Halaman {currentPage} dari {totalPages}
+                            <span className="text-xs md:text-sm font-medium text-slate-400">
+                                <span className="hidden md:inline">Halaman </span>{currentPage}/{totalPages}
                             </span>
                             <Button
                                 variant="outline"
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
-                                Selanjutnya
-                                <ChevronRight className="h-4 w-4 ml-2" />
+                                <span className="hidden md:inline">Selanjutnya</span>
+                                <ChevronRight className="h-4 w-4 md:ml-2" />
                             </Button>
                         </div>
                     )}
+
+                    {/* Surah Navigation Cards (Mushaf Mode - Compact) */}
+                    <div className="grid grid-cols-2 gap-2 mt-2 pt-4 border-t border-white/5 px-1 md:px-0">
+                        {chapter.id > 1 ? (
+                            <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Sebelumnya</span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5 min-w-0 pr-1">
+                                        <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
+                                            <ArrowLeft className="h-3 w-3 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                                        </div>
+                                        <span className="text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">{surahNames[chapter.id - 1]}</span>
+                                    </div>
+                                    <span className="text-lg font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white flex-shrink-0">
+                                        {chapter.id - 1}
+                                    </span>
+                                </div>
+                            </Link>
+                        ) : <div />}
+
+                        {chapter.id < 114 ? (
+                            <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Berikutnya</span>
+                                <div className="flex items-center justify-between flex-row-reverse">
+                                    <div className="flex items-center gap-1.5 flex-row-reverse min-w-0 pl-1">
+                                        <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
+                                            <ArrowRight className="h-3 w-3 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                                        </div>
+                                        <span className="text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">{surahNames[chapter.id + 1]}</span>
+                                    </div>
+                                    <span className="text-lg font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white flex-shrink-0">
+                                        {chapter.id + 1}
+                                    </span>
+                                </div>
+                            </Link>
+                        ) : <div />}
+                    </div>
 
 
                 </div>
@@ -770,44 +807,44 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     })}
                     {/* Pagination Controls (List Mode) */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between py-8 px-4 mt-4 border-t border-white/5">
+                        <div className="flex items-center justify-between py-6 px-4 mt-4 border-t border-white/5">
                             <Button
                                 variant="outline"
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
-                                <ChevronLeft className="h-4 w-4 mr-2" />
-                                Sebelumnya
+                                <ChevronLeft className="h-4 w-4 md:mr-2" />
+                                <span className="hidden md:inline">Sebelumnya</span>
                             </Button>
-                            <span className="text-sm font-medium text-slate-400">
-                                Halaman {currentPage} dari {totalPages}
+                            <span className="text-xs md:text-sm font-medium text-slate-400">
+                                <span className="hidden md:inline">Halaman </span>{currentPage}/{totalPages}
                             </span>
                             <Button
                                 variant="outline"
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10"
+                                className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
-                                Selanjutnya
-                                <ChevronRight className="h-4 w-4 ml-2" />
+                                <span className="hidden md:inline">Selanjutnya</span>
+                                <ChevronRight className="h-4 w-4 md:ml-2" />
                             </Button>
                         </div>
                     )}
 
-                    {/* Surah Navigation Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 pt-8 border-t border-white/5 pb-24">
+                    {/* Surah Navigation Cards (List Mode - Compact) */}
+                    <div className="grid grid-cols-2 gap-2 mt-2 pt-4 border-t border-white/5 px-1 md:px-0">
                         {chapter.id > 1 ? (
-                            <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
-                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-[rgb(var(--color-primary))]">Surat Sebelumnya</span>
+                            <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Sebelumnya</span>
                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
-                                            <ArrowLeft className="h-5 w-5 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                                    <div className="flex items-center gap-1.5 min-w-0 pr-1">
+                                        <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
+                                            <ArrowLeft className="h-3 w-3 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
                                         </div>
-                                        <span className="text-xl font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors">{surahNames[chapter.id - 1]}</span>
+                                        <span className="text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">{surahNames[chapter.id - 1]}</span>
                                     </div>
-                                    <span className="text-3xl font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white">
+                                    <span className="text-lg font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white flex-shrink-0">
                                         {chapter.id - 1}
                                     </span>
                                 </div>
@@ -815,22 +852,23 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         ) : <div />}
 
                         {chapter.id < 114 ? (
-                            <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
-                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-[rgb(var(--color-primary))]">Surat Berikutnya</span>
+                            <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Berikutnya</span>
                                 <div className="flex items-center justify-between flex-row-reverse">
-                                    <div className="flex items-center gap-3 flex-row-reverse">
-                                        <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
-                                            <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                                    <div className="flex items-center gap-1.5 flex-row-reverse min-w-0 pl-1">
+                                        <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
+                                            <ArrowRight className="h-3 w-3 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
                                         </div>
-                                        <span className="text-xl font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors">{surahNames[chapter.id + 1]}</span>
+                                        <span className="text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">{surahNames[chapter.id + 1]}</span>
                                     </div>
-                                    <span className="text-3xl font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white">
+                                    <span className="text-lg font-amiri opacity-20 group-hover:opacity-100 transition-opacity text-white flex-shrink-0">
                                         {chapter.id + 1}
                                     </span>
                                 </div>
                             </Link>
                         ) : <div />}
                     </div>
+                    {/* Old Surah Navigation Cards Removed */}
                 </div>
             )}
 
@@ -885,22 +923,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     </div>
                 )}
 
-                {/* Surah Navigation */}
-                <div className={`flex items-center gap-2 bg-[#0f172a]/90 backdrop-blur-xl p-1.5 rounded-full border border-white/10 shadow-2xl pointer-events-auto transition-all duration-500 ${playingVerseKey ? 'scale-90 opacity-60 hover:opacity-100 hover:scale-100' : 'scale-100'}`}>
-                    {chapter.id > 1 && (
-                        <Link href={`/quran/${chapter.id - 1}`} className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/10 transition-colors text-slate-400 hover:text-white">
-                            <ArrowLeft className="h-4 w-4" />
-                            <span className="text-xs font-bold hidden md:inline">Surat Sebelumnya</span>
-                        </Link>
-                    )}
-                    <div className="w-px h-4 bg-white/10 mx-1" />
-                    {chapter.id < 114 && (
-                        <Link href={`/quran/${chapter.id + 1}`} className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/10 transition-colors text-slate-400 hover:text-white">
-                            <span className="text-xs font-bold hidden md:inline">Surat Berikutnya</span>
-                            <ArrowRight className="h-4 w-4" />
-                        </Link>
-                    )}
-                </div>
+                {/* Surah Navigation Removed (Redundant with Cards) */}
             </div>
 
             {/* Hidden Audio Element */}
