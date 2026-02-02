@@ -27,6 +27,7 @@ import { useBookmarks } from "@/hooks/useBookmarks";
 import BookmarkEditDialog from "./BookmarkEditDialog";
 import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
 import { cn } from "@/lib/utils";
+import MurojaahRecorder from "./MurojaahRecorder";
 
 export interface Verse {
     id: number;
@@ -739,6 +740,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         <Button variant="ghost" size="icon" onClick={() => handleBookmarkClick(verse)} className={`h-8 w-8 rounded-full ${isBookmarked ? 'text-[rgb(var(--color-primary))]' : 'text-slate-400 hover:text-[rgb(var(--color-primary))]'}`}>
                                             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
                                         </Button>
+                                        <MurojaahRecorder verse={verse} chapterName={chapter.name_simple} />
                                         <Button variant="ghost" size="icon" onClick={() => setActiveVerseForShare(verse)} className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"><Share2 className="h-4 w-4" /></Button>
                                         <Button variant="ghost" size="icon" onClick={() => toggleTafsir(verse.verse_key)} className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}><Lightbulb className="h-4 w-4" /></Button>
                                     </div>
