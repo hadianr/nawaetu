@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toPng } from "html-to-image";
-import { Download, Share2, X, Instagram, Check, Quote } from "lucide-react";
+import { Download, Share2, X, Instagram, Check, Quote, MessageCircle } from "lucide-react"; // MessageCircle for WA
 import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Verse } from "@/components/quran/VerseList";
+import { useTheme, Theme } from "@/context/ThemeContext";
+import { cn } from "@/lib/utils";
 
 interface VerseShareDialogProps {
     open: boolean;
@@ -15,34 +17,44 @@ interface VerseShareDialogProps {
     surahNumber: number;
 }
 
-const GRADIENTS = [
-    // Dark Themes (Mindful)
-    { name: "Midnight", class: "bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950", text: "text-white" },
-    { name: "Forest", class: "bg-gradient-to-b from-green-950 via-emerald-950 to-green-950", text: "text-white" },
-    { name: "Earth", class: "bg-gradient-to-b from-stone-950 via-neutral-900 to-stone-950", text: "text-white" },
-    { name: "Berry", class: "bg-gradient-to-b from-slate-950 via-rose-950 to-slate-950", text: "text-white" },
-    // Pastel Themes (Soft)
-    { name: "Lilac", class: "bg-gradient-to-br from-purple-100 via-purple-200 to-indigo-100", text: "text-slate-800" },
-    { name: "Peach", class: "bg-gradient-to-br from-orange-50 via-amber-100 to-yellow-50", text: "text-stone-800" },
-    { name: "Mint", class: "bg-gradient-to-br from-emerald-50 via-teal-100 to-cyan-50", text: "text-teal-900" },
-];
+// Map app themes to beautiful gradients for the card
+const getThemeGradient = (theme: Theme) => {
+    switch (theme.id) {
+        case 'midnight':
+            return "bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#1e1b4b]"; // Deep Blue
+        case 'sunset':
+            return "bg-gradient-to-br from-[#451a03] via-[#7c2d12] to-[#431407]"; // Warm Orange/Brown
+        case 'lavender':
+            return "bg-gradient-to-br from-[#2e1065] via-[#4c1d95] to-[#3b0764]"; // Deep Violet
+        case 'ocean':
+            return "bg-gradient-to-br from-[#042f2e] via-[#115e59] to-[#042f2e]"; // Deep Teal
+        case 'royal':
+            return "bg-gradient-to-br from-[#4c0519] via-[#881337] to-[#4c0519]"; // Deep Rose
+        default: // Default (Emerald)
+            return "bg-gradient-to-br from-[#022c22] via-[#064e3b] to-[#022c22]";
+    }
+};
 
-const PATTERNS = [
-    // Full Pattern: Islamic
-    { name: "Islamic", url: "data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='currentColor' fill-rule='evenodd'%3E%3Cpath d='M20 20l10-10L20 0l-10 10zM0 20l10-10L0 0l-10 10zM40 20l10-10L40 0l-10 10zM20 40l10-10L20 20l-10 10zM0 40l10-10L0 20l-10 10zM40 40l10-10L40 20l-10 10z' fill-opacity='0.4'/%3E%3C/g%3E%3C/svg%3E", size: "40px", type: "full" },
-    // Full Pattern: Batik Cloud
-    { name: "Batik", url: "data:image/svg+xml,%3Csvg width='100' height='60' viewBox='0 0 100 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 35c-5 0-9-2-12-5-4 4-10 4-14 0 2 8 10 12 18 10 4 4 12 4 16 0-3-4-3-8-8-5zm30-15c-5 0-9-2-12-5-4 4-10 4-14 0 2 8 10 12 18 10 4 4 12 4 16 0-3-4-3-8-8-5zm30 15c-5 0-9-2-12-5-4 4-10 4-14 0 2 8 10 12 18 10 4 4 12 4 16 0-3-4-3-8-8-5zM10 15c5 0 9-2 12-5 4 4 10 4 14 0-2 8-10 12-18 10-4 4-12 4-16 0 3-4 3-8 8-5zm30 30c5 0 9-2 12-5 4 4 10 4 14 0-2 8-10 12-18 10-4 4-12 4-16 0 3-4 3-8 8-5zm30-30c5 0 9-2 12-5 4 4 10 4 14 0-2 8-10 12-18 10-4 4-12 4-16 0 3-4 3-8 8-5z' fill='currentColor' fill-opacity='0.4'/%3E%3C/g%3E%3C/svg%3E", size: "80px", type: "full" },
-    // Border Pattern
-    { name: "Frame", url: "data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm2 2v36h36V2H2z' fill='currentColor' fill-opacity='0.8'/%3E%3C/svg%3E", size: "100%", type: "frame" },
-    // No Pattern
-    { name: "None", url: "", size: "auto", type: "none" },
-];
+const getThemePattern = (theme: Theme) => {
+    // We can map theme ID to the SVG patterns we had before, or simplified ones
+    // Using the same simple SVG data strings for now
+    switch (theme.id) {
+        case 'midnight': // Stars
+            return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.2' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E";
+        case 'sunset': // Waves (Simplified)
+            return "data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275h6.335zm0-20C13.258 2.892 8.077 4 0 4V2c5.744 0 9.951-.574 14.85-2h6.334zM77.38 0C85.239 2.966 90.502 4 100 4V2c-6.842 0-11.386-.542-16.396-2h-6.225zM0 14c8.44 0 13.718-1.21 22.272-4.402l1.768-.661C33.64 5.347 39.647 4 50 4c10.271 0 15.362 1.222 24.629 4.928C84.112 12.722 89.438 14 100 14v-2c-10.271 0-15.362-1.222-24.629-4.928C65.888 3.278 60.562 2 50 2 39.374 2 33.145 3.397 23.34 7.063l-1.767.662C13.223 10.84 8.163 12 0 12v2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3C/path%3E%3C/svg%3E";
+        case 'lavender': // Geometric
+        case 'royal':
+            return "data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-rule='evenodd'%3E%3Cpath d='M20 20l10-10L20 0l-10 10zM0 20l10-10L0 0l-10 10zM40 20l10-10L40 0l-10 10zM20 40l10-10L20 20l-10 10zM0 40l10-10L0 20l-10 10zM40 40l10-10L40 20l-10 10z' fill-opacity='0.1'/%3E%3C/g%3E%3C/svg%3E";
+        default:
+            return null; // Clean/None for default or ocean for minimalist
+    }
+};
 
 export default function VerseShareDialog({ open, onOpenChange, verse, surahName, surahNumber }: VerseShareDialogProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [selectedGradient, setSelectedGradient] = useState(GRADIENTS[0]);
-    const [selectedPattern, setSelectedPattern] = useState(PATTERNS[0]);
+    const { theme } = useTheme(); // Use global active theme
 
     if (!verse) return null;
 
@@ -54,12 +66,11 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
         if (!cardRef.current) return;
         setIsGenerating(true);
         try {
-            // Force high resolution capture (1080x1920 logical)
             const dataUrl = await toPng(cardRef.current, {
                 cacheBust: true,
-                pixelRatio: 3,
-                width: 360, // Base width
-                height: 640 // Base height (9:16)
+                pixelRatio: 4, // Higher quality
+                width: 1080,
+                height: 1920
             });
             const link = document.createElement("a");
             link.download = `nawaetu-qs-${surahNumber}-${verse.verse_key.split(":")[1]}.png`;
@@ -73,25 +84,29 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
         }
     };
 
-    const handleShare = async () => {
+    const handleShare = async (platform: 'instagram' | 'whatsapp' | 'system') => {
         if (!cardRef.current) return;
         setIsGenerating(true);
         try {
             const dataUrl = await toPng(cardRef.current, {
                 cacheBust: true,
-                pixelRatio: 3,
-                width: 360,
-                height: 640
+                pixelRatio: 4,
+                width: 1080,
+                height: 1920
             });
             const blob = await (await fetch(dataUrl)).blob();
             const file = new File([blob], "verse.png", { type: "image/png" });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
+                // If it's a specific platform request, we unfortunately can't force the app picker in Web Share Level 1/2 consistently
+                // But we can update the title/text to be relevant
+                let shareData = {
                     files: [file],
                     title: `QS. ${surahName} Ayat ${verse.verse_key.split(":")[1]}`,
                     text: `Baca Al-Qur'an di Nawaetu`
-                });
+                };
+
+                await navigator.share(shareData);
             } else {
                 handleDownload();
             }
@@ -105,200 +120,122 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
         }
     };
 
-    // Logic to determine optimal font size & line height based on character count
-    // "Tadabbur" focus: Increased line-height (leading-loose) for slower, contemplative reading
+    // Typography scaling
     const getTypographyClass = (length: number) => {
-        if (length < 60) return "text-3xl md:text-4xl leading-[2]";
-        if (length < 100) return "text-2xl md:text-3xl leading-[1.8]";
-        if (length < 200) return "text-lg md:text-xl leading-[1.8]";
-        if (length < 300) return "text-base md:text-lg leading-loose";
-        if (length < 400) return "text-sm md:text-base leading-loose";
-        return "text-xs md:text-sm leading-loose";
+        if (length < 60) return "text-[2rem] leading-[1.6]";
+        if (length < 100) return "text-[1.75rem] leading-[1.6]";
+        if (length < 200) return "text-[1.5rem] leading-[1.6]";
+        if (length < 300) return "text-[1.25rem] leading-[1.6]";
+        if (length < 400) return "text-base leading-relaxed";
+        return "text-sm leading-relaxed";
     };
 
-    const isLightText = selectedGradient.text === "text-white";
-    const pillBg = isLightText ? "bg-white/10 border-white/10 text-white" : "bg-black/5 border-black/5 text-slate-800";
+    const gradientClass = getThemeGradient(theme);
+    const patternUrl = getThemePattern(theme);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[90vw] md:max-w-4xl max-h-[90vh] bg-slate-950 border-white/10 text-white p-0 gap-0 overflow-hidden flex flex-col md:flex-row">
+            <DialogContent className="max-w-sm sm:max-w-md bg-transparent border-none p-0 shadow-none overflow-visible flex flex-col items-center justify-center">
                 <DialogTitle className="sr-only">Bagikan Ayat</DialogTitle>
 
-                {/* Close Button (Absolute on Mobile) */}
-                <div className="absolute top-4 right-4 z-50 md:hidden">
-                    <DialogClose className="rounded-full p-2 bg-black/50 text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
-                        <X className="w-5 h-5" />
-                    </DialogClose>
-                </div>
+                {/* --- 1. PREVIEW CARD (Central Focus) --- */}
+                {/* 9:16 Aspect Ratio Container */}
+                <div className="relative w-[280px] sm:w-[320px] aspect-[9/16] rounded-[2rem] overflow-hidden shadow-2xl ring-4 ring-white/10 select-none">
 
-                {/* LEFT/TOP: PREVIEW AREA */}
-                <div className="flex-1 bg-slate-900/50 p-8 flex items-center justify-center overflow-y-auto">
-                    {/* Container for centering and scaling based on screen size */}
-                    <div className="scale-90 md:scale-100 origin-center drop-shadow-2xl">
-                        {/*
-                            THE CAPTURE CARD
-                            Fixed Size: 360 x 640 (exact 9:16 ratio)
-                        */}
-                        <div
-                            ref={cardRef}
-                            className={`w-[360px] h-[640px] ${selectedGradient.class} relative flex flex-col items-center text-center px-8 py-12 shrink-0 overflow-hidden select-none transition-colors duration-700`}
-                        >
-                            {/* Decorative Pattern Overlay - Very Subtle */}
+                    {/* The Actual Capture Target */}
+                    <div
+                        ref={cardRef}
+                        className={cn(
+                            "absolute inset-0 w-full h-full flex flex-col items-center text-center px-8 py-12",
+                            gradientClass,
+                            "text-white"
+                        )}
+                    >
+                        {/* Pattern Overlay */}
+                        {patternUrl && (
                             <div
-                                className={`absolute inset-0 transition-all duration-300 ${selectedPattern.type === 'frame' ? 'opacity-30' : 'opacity-10'} mix-blend-overlay pointer-events-none`}
+                                className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none"
                                 style={{
-                                    backgroundImage: selectedPattern.url ? `url("${selectedPattern.url}")` : undefined,
-                                    backgroundSize: selectedPattern.size === '100%' ? '100% 100%' : selectedPattern.size,
-                                    backgroundRepeat: selectedPattern.type === 'frame' ? 'no-repeat' : 'repeat',
-                                    color: isLightText ? 'white' : 'black'
+                                    backgroundImage: `url('${patternUrl}')`,
+                                    backgroundSize: '40px 40px'
                                 }}
                             />
+                        )}
 
-                            {/* Vignette Overlay for Focus */}
-                            <div className={`absolute inset-0 pointer-events-none bg-gradient-to-b ${isLightText ? 'from-black/10 via-transparent to-black/60' : 'from-white/20 via-transparent to-white/40'}`} />
+                        {/* Vignette & Noise */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
-                            {/* --- DECORATIVE CONTENT --- */}
-                            {/* Giant Quote Watermark - More Subtle & Centered */}
-                            <Quote className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rotate-0 pointer-events-none transition-colors ${isLightText ? 'text-white/5' : 'text-black/5'}`} />
+                        {/* --- CONTENT --- */}
+                        <div className="relative z-10 flex flex-col items-center justify-between h-full">
 
-                            {/* --- MAIN CONTENT --- */}
-
-                            {/* Flexible Spacer Top */}
-                            <div className="flex-[2] min-h-[10%]" />
-
-                            {/* Center Content: Text */}
-                            <div className="relative z-10 w-full flex flex-col items-center gap-6">
-                                {/* REMOVED SMALL QUOTE ICON */}
-
-                                <div className="w-full relative">
-                                    <p className={`
-                                        font-serif italic text-center drop-shadow-md text-balance font-normal tracking-wide transition-colors
-                                        ${getTypographyClass(cleanTranslationText.length)}
-                                        ${selectedGradient.text}
-                                    `}>
-                                        "{cleanTranslationText}"
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Flexible Spacer Bottom */}
-                            <div className="flex-[3] min-h-[15%]" />
-
-                            {/* Footer: Metadata in Minimalist Pill */}
-                            <div className="relative z-10 w-full flex flex-col items-center gap-4 pb-4">
-                                <div className={`px-5 py-2 rounded-full backdrop-blur-[2px] border flex items-center justify-center gap-3 transition-colors ${pillBg} shadow-sm`}>
-                                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase font-sans opacity-90">
-                                        QS. {surahName}
-                                    </span>
-                                    <div className={`w-0.5 h-2 rounded-full opacity-30 ${isLightText ? 'bg-white' : 'bg-black'}`} />
-                                    <span className="text-[10px] font-medium tracking-[0.1em] font-sans opacity-80">
-                                        AYAT {verse.verse_key.split(":")[1]}
-                                    </span>
-                                </div>
-
-                                <span className={`text-[7px] font-medium tracking-[0.3em] uppercase opacity-30 ${selectedGradient.text}`}>
-                                    Nawaetu.com
+                            {/* Top: Branding */}
+                            <div className="pt-2">
+                                <span className="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-[0.2em] font-bold shadow-sm">
+                                    Nawaetu
                                 </span>
                             </div>
 
+                            {/* Middle: Quote */}
+                            <div className="flex-1 flex flex-col items-center justify-center relative">
+                                <Quote className="w-12 h-12 text-white/10 absolute -top-6 -left-2 rotate-180" />
+                                <p className={cn(
+                                    "font-serif italic drop-shadow-md",
+                                    getTypographyClass(cleanTranslationText.length)
+                                )}>
+                                    "{cleanTranslationText}"
+                                </p>
+                                <Quote className="w-12 h-12 text-white/10 absolute -bottom-6 -right-2" />
+                            </div>
+
+                            {/* Bottom: Info */}
+                            <div className="flex flex-col items-center gap-2 pb-4">
+                                <div className="h-px w-12 bg-white/30 rounded-full mb-1" />
+                                <p className="text-sm font-bold tracking-widest uppercase">
+                                    {surahName}
+                                </p>
+                                <p className="text-[10px] tracking-wider opacity-80">
+                                    Ayat {verse.verse_key.split(":")[1]}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* RIGHT/BOTTOM: CONTROLS */}
-                <div className="w-full md:w-96 bg-slate-950 border-t md:border-t-0 md:border-l border-white/10 p-6 flex flex-col gap-8 z-20 shrink-0 overflow-y-auto max-h-[50vh] md:max-h-none">
+                {/* --- 2. ACTION BUTTONS (Floating Below) --- */}
+                <div className="flex items-center gap-3 mt-6 w-full max-w-[320px] animate-in slide-in-from-bottom-4 fade-in duration-500">
+                    <Button
+                        onClick={() => handleShare('instagram')}
+                        disabled={isGenerating}
+                        className="flex-1 h-12 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-pink-500/20 border-0"
+                    >
+                        <Instagram className="w-5 h-5 mr-2" />
+                        <span className="text-xs font-bold">Story</span>
+                    </Button>
 
-                    {/* Header (Desktop) */}
-                    <div className="hidden md:flex items-center justify-between">
-                        <h3 className="text-lg font-bold text-slate-200">Kustomisasi</h3>
-                        <DialogClose className="rounded-full p-1.5 hover:bg-white/10 transition-colors">
-                            <X className="w-5 h-5 text-slate-400" />
-                        </DialogClose>
-                    </div>
+                    <Button
+                        onClick={() => handleShare('whatsapp')}
+                        disabled={isGenerating}
+                        className="flex-1 h-12 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all shadow-lg shadow-green-500/20 border-0 text-white"
+                    >
+                        <MessageCircle className="w-5 h-5 mr-2" />
+                        <span className="text-xs font-bold">WhatsApp</span>
+                    </Button>
 
-                    {/* Gradient Selector */}
-                    <div className="space-y-4">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Pilih Tema Background</label>
-                        <div className="grid grid-cols-4 gap-3">
-                            {GRADIENTS.map((gradient) => (
-                                <button
-                                    key={gradient.name}
-                                    onClick={() => setSelectedGradient(gradient)}
-                                    className={`
-                                        aspect-square rounded-xl ${gradient.class}
-                                        ring-2 ring-offset-2 ring-offset-slate-950 transition-all
-                                        flex items-center justify-center
-                                        ${selectedGradient.name === gradient.name ? 'ring-emerald-500 scale-105 shadow-lg shadow-emerald-900/20' : 'ring-transparent opacity-60 hover:opacity-100'}
-                                    `}
-                                    title={gradient.name}
-                                >
-                                    {selectedGradient.name === gradient.name && <Check className="w-5 h-5 text-white drop-shadow-md" />}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    <Button
+                        onClick={handleDownload}
+                        disabled={isGenerating}
+                        size="icon"
+                        variant="outline"
+                        className="h-12 w-12 rounded-xl bg-white/10 border-white/10 backdrop-blur-md hover:bg-white/20 text-white"
+                    >
+                        <Download className="w-5 h-5" />
+                    </Button>
+                </div>
 
-                    {/* Pattern Selector */}
-                    <div className="space-y-4">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Pilih Pattern Overlay</label>
-                        <div className="grid grid-cols-4 gap-3">
-                            {PATTERNS.map((pattern) => (
-                                <button
-                                    key={pattern.name}
-                                    onClick={() => setSelectedPattern(pattern)}
-                                    className={`
-                                        aspect-square rounded-xl bg-slate-800 border border-white/10
-                                        ring-2 ring-offset-2 ring-offset-slate-950 transition-all
-                                        flex items-center justify-center overflow-hidden relative
-                                        ${selectedPattern.name === pattern.name ? 'ring-emerald-500 scale-105 shadow-md' : 'ring-transparent opacity-80 hover:opacity-100'}
-                                    `}
-                                    title={pattern.name}
-                                >
-                                    {pattern.url && (
-                                        <div
-                                            className="absolute inset-0 opacity-100"
-                                            style={{
-                                                backgroundImage: `url("${pattern.url}")`,
-                                                backgroundSize: '40%', // Smaller scale for button
-                                                backgroundPosition: 'center',
-                                                backgroundRepeat: 'repeat',
-                                                filter: 'brightness(2) contrast(1.5)' // Make it pop
-                                            }}
-                                        />
-                                    )}
-
-                                    {selectedPattern.name === pattern.name && <Check className="relative z-10 w-5 h-5 text-white drop-shadow-md" />}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="hidden md:block flex-1" />
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-3">
-                        <Button
-                            onClick={handleShare}
-                            disabled={isGenerating}
-                            className="w-full h-14 text-base font-semibold gap-2 bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white shadow-lg shadow-pink-900/20 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                            {isGenerating ? "Memproses..." : (
-                                <>
-                                    <Instagram className="w-5 h-5" />
-                                    Share ke Story
-                                </>
-                            )}
-                        </Button>
-                        <Button
-                            onClick={handleDownload}
-                            disabled={isGenerating}
-                            variant="outline"
-                            className="w-full h-12 text-sm font-semibold gap-2 bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700 hover:text-white rounded-xl shadow-lg shadow-black/20"
-                        >
-                            <Download className="w-4 h-4" />
-                            Simpan ke Galeri
-                        </Button>
-                    </div>
+                <div className="mt-4">
+                    <DialogClose className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-colors">
+                        <X className="w-6 h-6" />
+                    </DialogClose>
                 </div>
 
             </DialogContent>
