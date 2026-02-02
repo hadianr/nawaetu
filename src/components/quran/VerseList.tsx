@@ -672,10 +672,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         verse.text_indopak ? cleanIndopakText(verse.text_indopak) : verse.text_uthmani
                                     )}
                                 </span>
-                                <span className="mx-2 inline-flex items-center justify-center h-10 w-10 text-sm relative font-sans text-[rgb(var(--color-primary))] select-none">
-                                    <span className="absolute inset-0 text-3xl">۝</span>
-                                    <span className="relative z-10 pt-1 font-bold font-amiri text-lg text-[rgb(var(--color-primary-dark))]">{toArabicNumber(parseInt(verse.verse_key.split(':')[1]))}</span>
-                                </span>
+                                <AyahMarker number={toArabicNumber(parseInt(verse.verse_key.split(':')[1]))} size={fontSize} />
                             </span>
                         ))}
                     </div>
@@ -730,7 +727,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             >
                                 {/* Action Bar */}
                                 <div className="flex items-center justify-between mb-6">
-                                    <AyahMarker number={toArabicNumber(verseNum)} />
+                                    <AyahMarker number={toArabicNumber(verseNum)} size={fontSize} />
                                     <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                                         {!(isPlayingVerse && isPlaying) && (
                                             <Button variant="ghost" size="icon" onClick={() => handleVersePlay(verse, false)} className={`h-8 w-8 rounded-full ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10'}`}>
