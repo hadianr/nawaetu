@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
   // Ensure heavy libraries are transpiled to match our modern browserslist
   transpilePackages: ["lucide-react", "date-fns", "lodash"],
   serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
+  productionBrowserSourceMaps: true,
   
   // Performance optimizations
   compress: true,

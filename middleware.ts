@@ -24,14 +24,6 @@ export function middleware(request: NextRequest) {
     response.headers.set(key, value);
   });
 
-  // Add early hints for critical resources
-  if (request.nextUrl.pathname === '/') {
-    response.headers.set(
-      'Link',
-      '</fonts/geist-sans.woff2>; rel=preload; as=font; crossorigin=anonymous'
-    );
-  }
-
   return response;
 }
 
