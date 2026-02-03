@@ -56,7 +56,7 @@ export default function HomeHeader() {
 
     // ... existing start of return ...
     return (
-        <div className="w-full flex items-start justify-between animate-in slide-in-from-top-4 duration-700">
+        <div className="w-full flex items-start justify-between">
             <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 mb-1">
                     <div className="text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">

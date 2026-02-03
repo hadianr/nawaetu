@@ -30,7 +30,7 @@ export default function Home() {
         <HomeHeader />
 
         {/* 2. Ramadhan Countdown (Hero) */}
-        <section className="w-full animate-in slide-in-from-bottom-2 fade-in duration-700 delay-100">
+        <section className="w-full">
           <RamadhanCountdown initialDays={daysLeft} />
         </section>
 
