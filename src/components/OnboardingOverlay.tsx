@@ -63,7 +63,7 @@ export default function OnboardingOverlay() {
     useEffect(() => {
         const hasSeen = localStorage.getItem(ONBOARDING_KEY);
         if (!hasSeen) {
-            setTimeout(() => setIsVisible(true), 500);
+            setTimeout(() => setIsVisible(true), 2000); // Delayed to prioritize LCP of main content
         }
     }, []);
 
@@ -109,7 +109,7 @@ export default function OnboardingOverlay() {
                     className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col animate-in slide-in-from-right-8 fade-in duration-300"
                 >
                     {/* Background Pattern */}
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
+                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
 
                     <div className={cn(
                         "w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border shadow-lg relative z-10",
@@ -146,7 +146,7 @@ export default function OnboardingOverlay() {
                     key="setup-name"
                     className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden animate-in zoom-in-95 fade-in duration-300"
                 >
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
+                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
                     <div className="relative z-10 w-full space-y-6">
                         <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
                             <span className="text-3xl">👋</span>
