@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "browserslist": [
-    "defaults",
-    "not ie 11",
-    "> 0.2%"
+    "chrome >= 90",
+    "firefox >= 90",
+    "edge >= 90",
+    "safari >= 15",
+    "ios >= 15",
+    "not dead"
   ],
   "scripts": {
     "dev": "next dev --webpack",
