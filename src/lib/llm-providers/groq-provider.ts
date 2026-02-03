@@ -1,138 +1,74 @@
 import 'server-only';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
 
 const SYSTEM_INSTRUCTION = `Kamu adalah Tanya Nawaetu - Asisten Muslim yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Jangan sebut dirimu Ustadz. Bisakan menjawab dengan singkat dan padat serta informatif.
 
-[PRINSIP UTAMA - WAJIB DIPATUHI]
-1. **BERDASARKAN DALIL**: Setiap jawaban mengenai hukum Islam, tata cara ibadah, atau akidah **WAJIB** menyertakan landasan dalil dari **Al-Quran** (sertakan Nama Surat & Ayat) atau **Hadits Shahih** (sertakan Perawi, misal: HR. Bukhari/Muslim).
-2. **HINDARI OPINI PRIBADI**: DILARANG KERAS menggunakan frasa "menurut pendapat saya". Ganti dengan "Allah SWT berfirman...", "Rasulullah SAW bersabda...", atau "Para ulama jumhur berpendapat...".
-3. **KETEPATAN**: Pastikan terjemahan ayat atau matan hadits akurat.
-4. **KEHATI-HATIAN**: Jika pertanyaan terlalu spesifik (fatwa rumit), sarankan konsultasi ke ulama setempat.
-5. **WALLAHU A'LAM**: Akhiri pembahasan hukum dengan *"Wallahu a'lam bish-shawab"*.
+[PRINSIP UTAMA]
+1. Landaskan jawaban pada Al-Quran & Hadits.
+2. Hindari opini pribadi yang spekulatif.
+3. Gunakan bahasa Indonesia yang sopan dan mudah dipahami.
+4. Akhiri fatwa/hukum dengan "Wallahu a'lam bish-shawab".
 
-[GAYA KOMUNIKASI "EASY TO READ"]
-- **ANTI WALL-OF-TEXT**: Pecah paragraf panjang! Maksimal 3-4 baris per paragraf.
-- **Poin-Poin**: Gunakan bullet points (1, 2, 3 atau -) untuk menjelaskan langkah, daftar, atau opsi.
-- **Struktur Rapi**:
-  - Paragraf 1: Jawaban inti (Langsung to-the-point).
-  - Paragraf 2: Dalil pendukung (Al-Quran/Hadits).
-  - Paragraf 3: Penjelasan/Kesimpulan praktis.
-- **Formatting**: Gunakan **Bold** untuk kata kunci/dalil penting agar mata user nyaman.
+[VISUAL FORMATTING]
+- Gunakan paragraf pendek.
+- Gunakan bullet points.
+- Bold kata-kata kunci.
 
-[BATASAN TOPIK]
-✅ Ibadah Islam, Al-Quran & Hadits, Motivasi Spiritual, Fitur Nawaetu.
-❌ Politik praktis, SARA, debat kusir, ramalan, topik non-Islam.
+[CONTOH JAWABAN]
+"Wa'alaikumussalam. Boleh, sholat sambil duduk bagi yang sakit itu sah. (HR. Bukhari)."`;
 
-[STRUKTUR JAWABAN]
-1. **Sapaan Singkat**: Sapa dengan hangat.
-2. **Isi Jawaban (Terstruktur)**: Gunakan poin-poin jika memungkinkan.
-3. **Dalil**: Kutip dengan jelas namun ringkas.
-4. **Penutup**: Doa/Semangat.
-5. **Traffic Control**: Di baris paling bawah, berikan **HANYA 1** saran pertanyaan lain:
-   "🔹 [Pertanyaan lanjutan yang relevan]"
-
-Contoh Jawaban Bagus:
-"Wa'alaikumussalam Kak. MasyaAllah, pertanyaan bagus! ✨
-
-Hukum sholat sambil duduk bagi yang sakit adalah **boleh dan sah**. Islam agama yang memudahkan.
-
-Allah SWT berfirman:
-*“...Dia tidak menjadikan kesukaran untukmu dalam agama...”* (**QS. Al-Hajj: 78**)
-
-Rasulullah SAW juga bersabda kepada Imran bin Husain:
-1. Sholatlah sambil berdiri.
-2. Jika tidak mampu, sambil duduk.
-3. Jika tidak mampu, sambil berbaring. (**HR. Bukhari**)
-
-Jadi jangan dipaksakan ya Kak, sesuaikan dengan kemampuan fisik. Semoga lekas sembuh! Wallahu a'lam bish-shawab.
-
-🔹 Bagaimana tata cara sujud saat sholat duduk?"`;
-
-export class GeminiProvider implements LLMProvider {
-    name = 'Gemini';
-    private genAI: GoogleGenerativeAI;
-    private model: any;
+export class GroqProvider implements LLMProvider {
+    name = 'Groq';
+    private groq: Groq;
+    private modelName: string;
 
     constructor() {
-        const apiKey = process.env.GEMINI_API_KEY;
+        const apiKey = process.env.GROQ_API_KEY;
         if (!apiKey) {
-            throw new Error('GEMINI_API_KEY not found in environment variables');
+            throw new Error('GROQ_API_KEY not found in environment variables');
         }
 
-        this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({
-            model: "gemini-flash-lite-latest",
-            systemInstruction: SYSTEM_INSTRUCTION,
-            generationConfig: {
-                temperature: 0.9,
-                topP: 0.9,
-                topK: 30,
-                maxOutputTokens: 2000,
-            },
-        });
+        this.groq = new Groq({ apiKey });
+        this.modelName = "llama3-8b-8192"; // Default minimal latency model
     }
 
     async chat(message: string, context: UserContext, history: ChatMessage[]): Promise<string> {
         try {
-            // Convert history to Gemini format
-            const geminiHistory = history.slice(-10).map(msg => ({
-                role: msg.role === 'user' ? 'user' : 'model',
-                parts: [{ text: msg.content }]
-            }));
+            // Convert history to Groq format (OpenAI compatible)
+            const groqMessages: any[] = [
+                { role: "system", content: SYSTEM_INSTRUCTION },
+                ...history.map(msg => ({
+                    role: msg.role === 'user' ? 'user' : 'assistant', // Groq uses 'assistant' not 'model'
+                    content: msg.content
+                })),
+                {
+                    role: "user",
+                    content: `${message}\n\n[Context: User=${context.name}, Streak=${context.prayerStreak}]`
+                }
+            ];
 
-            // Start chat session with history
-            const chat = this.model.startChat({ history: geminiHistory });
-
-            // Send message with context (only on first message)
-            const contextualMessage = history.length === 0
-                ? `${message}\n\n[User: ${context.name}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`
-                : message;
-
-            const result = await chat.sendMessage(contextualMessage);
-            const response = await result.response;
-            return response.text();
-
-        } catch (error: any) {
-            console.error('Gemini Provider Error:', {
-                message: error.message,
-                status: error.status,
-                code: error.code
+            const chatCompletion = await this.groq.chat.completions.create({
+                messages: groqMessages,
+                model: this.modelName,
+                temperature: 0.7,
+                max_tokens: 1024,
+                top_p: 1,
             });
 
-            // Map Gemini errors to ProviderError
-            if (error.status === 429 || error.code === 'RESOURCE_EXHAUSTED') {
-                throw new ProviderError(
-                    'Rate limit exceeded',
-                    429,
-                    'RATE_LIMIT',
-                    true
-                );
+            return chatCompletion.choices[0]?.message?.content || "Maaf, saya tidak dapat menjawab saat ini.";
+
+        } catch (error: any) {
+            console.error('Groq Provider Error:', error);
+
+            if (error.status === 429) {
+                throw new ProviderError('Rate limit exceeded', 429, 'RATE_LIMIT', true);
             }
 
-            if (error.status === 404 || error.message?.includes('models/')) {
-                throw new ProviderError(
-                    'Model not found',
-                    404,
-                    'MODEL_NOT_FOUND',
-                    false
-                );
-            }
-
-            if (error.status === 401 || error.status === 403) {
-                throw new ProviderError(
-                    'Authentication failed',
-                    error.status,
-                    'AUTH_ERROR',
-                    false
-                );
-            }
-
-            // Generic error
             throw new ProviderError(
-                error.message || 'Unknown Gemini error',
-                error.status,
-                error.code,
+                error.message || 'Unknown Groq error',
+                error.status || 500,
+                error.code || 'UNKNOWN',
                 true
             );
         }
