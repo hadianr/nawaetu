@@ -85,7 +85,7 @@ export default function LastReadWidget() {
                             </div>
                             <div>
                                 <h3 className="text-sm font-semibold text-white">Mulai Tilawah</h3>
-                                <p className="text-[10px] text-white/40">Baca Al-Quran hari ini</p>
+                                <p className="text-[10px] text-white/70">Baca Al-Quran hari ini</p>
                             </div>
                         </div>
                         <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
@@ -127,7 +127,7 @@ export default function LastReadWidget() {
                     {/* Footer: Context */}
                     <div className="text-center group-hover:translate-x-1 transition-transform">
                         <div className="flex items-center justify-center gap-1">
-                            <span className="text-[10px] font-medium text-white/40">
+                            <span className="text-[10px] font-medium text-white/70">
                                 QS. {lastRead.surahName} : {lastRead.verseId}
                             </span>
                             <ChevronRight className="h-3 w-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />

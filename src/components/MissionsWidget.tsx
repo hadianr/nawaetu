@@ -235,7 +235,7 @@ export default function MissionsWidget() {
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-white leading-none">Fokus Ibadah</h3>
-                        <p className="text-[10px] text-white/40 mt-0.5">Target harianmu</p>
+                        <p className="text-[10px] text-white/70 mt-0.5">Target harianmu</p>
                     </div>
                 </div>
 
@@ -382,7 +382,7 @@ export default function MissionsWidget() {
                                         )}>
                                             {mission.hukum}
                                         </span>
-                                        <p className="text-[10px] text-white/40 truncate">
+                                        <p className="text-[10px] text-white/70 truncate">
                                             +{mission.xpReward} XP
                                         </p>
 
