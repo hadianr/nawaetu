@@ -29,7 +29,7 @@ export default function Home() {
 
         {/* 2. Ramadhan Countdown (Hero) */}
         <section className="w-full animate-in slide-in-from-bottom-2 fade-in duration-700 delay-100">
-          <RamadhanCountdown />
+          <RamadhanCountdown initialDays={Math.max(0, Math.floor((new Date("2026-02-18T00:00:00+07:00").getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} />
         </section>
 
         {/* 3. Quick Status Grid */}

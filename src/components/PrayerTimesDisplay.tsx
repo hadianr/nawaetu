@@ -68,6 +68,7 @@ export default function PrayerTimesDisplay() {
                         href="https://www.google.com/maps/search/?api=1&query=masjid+terdekat"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Cari Masjid Terdekat via Google Maps"
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
                     >
                         <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />

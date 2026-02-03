@@ -11,9 +11,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export default function RamadhanCountdown() {
-    // Initialize with a default object to allow immediate rendering (LCP optimization)
-    const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({ days: 0, hours: 0, minutes: 0 });
+interface Props {
+    initialDays?: number;
+}
+
+export default function RamadhanCountdown({ initialDays = 0 }: Props) {
+    // Initialize with server-provided value to allow immediate rendering (LCP optimization)
+    // We assume hours/minutes start at 0 until hydration takes over for precision
+    const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({
+        days: initialDays,
+        hours: 0,
+        minutes: 0
+    });
     const [progress, setProgress] = useState(0);
     const [showInfo, setShowInfo] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
@@ -38,6 +47,8 @@ export default function RamadhanCountdown() {
             // If passed, maybe return 0
             return { days: 0, hours: 0, minutes: 0 };
         };
+
+        // Immediately update on mount to catch up seconds/hours
         setTimeLeft(calculateTimeLeft());
         const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
 
@@ -137,8 +148,8 @@ export default function RamadhanCountdown() {
         };
     };
 
-    // Use a safe default (e.g., 300 days) for SSR/Initial Render to avoid red flash
-    const styles = getIntensityStyles(isMounted ? timeLeft.days : 300);
+    // Use timeLeft.days directly (Server init or Client update)
+    const styles = getIntensityStyles(timeLeft.days);
 
     return (
         <>
@@ -162,7 +173,7 @@ export default function RamadhanCountdown() {
                         </div>
                         <div className="flex items-baseline gap-2.5">
                             <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md">
-                                {isMounted ? timeLeft.days : "..."}
+                                {timeLeft.days}
                             </span>
                             <span className="text-sm font-medium text-white/80">Hari Lagi</span>
                         </div>

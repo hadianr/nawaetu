@@ -131,15 +131,15 @@ export default function NextPrayerWidget() {
     return (
         <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex flex-col justify-between group hover:bg-black/30 hover:border-white/10 transition-all">
             {/* Header: Label */}
-            <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
+            <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
                 <Clock className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-200">
                     Selanjutnya
                 </span>
             </div>
 
             {/* Main: Countdown */}
-            <div className="flex-1 flex items-center justify-center scale-110">
+            <div className="flex-1 flex items-center justify-center scale-110" role="timer" aria-live="off" aria-label={`Hitungan mundur ke ${displayPrayerName}`}>
                 <PrayerCountdown
                     targetTime={data.nextPrayerTime}
                     prayerName={data.nextPrayer}
@@ -149,7 +149,7 @@ export default function NextPrayerWidget() {
 
             {/* Footer: Target */}
             <div className="text-center">
-                <span className="text-[10px] font-medium text-white/60">
+                <span className="text-[10px] font-medium text-white/80">
                     {displayPrayerName} {data.nextPrayerTime}
                 </span>
             </div>
