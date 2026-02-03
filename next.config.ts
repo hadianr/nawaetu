@@ -27,14 +27,7 @@ const nextConfig: NextConfig = {
   // Modern output configuration
   output: 'standalone',
   
-  // Image optimization
-  images: {
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 31536000,
-    deviceSizes: [640, 750, 828, 1080, 1200],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
-  },
-  
+  // CSS optimization - defer non-critical CSS
   experimental: {
     optimizePackageImports: [
       "lucide-react",
@@ -50,9 +43,17 @@ const nextConfig: NextConfig = {
       "sentry",
       "@sentry/nextjs"
     ],
-    // Enable modern optimizations
-    optimizeCss: true,
+    optimizeCss: true, // Inline critical CSS, defer non-critical
     webpackBuildWorker: true,
+    scrollRestoration: false,
+  },
+  
+  // Image optimization
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
   
   // Webpack optimizations
@@ -65,8 +66,14 @@ const nextConfig: NextConfig = {
         runtimeChunk: 'single',
         usedExports: true, // Enable tree-shaking for unused code removal
         sideEffects: false,
+        minimize: true,
+        minimizer: config.optimization.minimizer || [],
         splitChunks: {
           chunks: 'all',
+          maxInitialRequests: 3,  // Limit initial chunks - reduce render-blocking
+          maxAsyncRequests: 5,
+          minSize: 20000,         // Increase min size to merge small chunks
+          minRemainingSize: 0,
           cacheGroups: {
             default: false,
             vendors: false,
@@ -76,8 +83,9 @@ const nextConfig: NextConfig = {
               test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription|next)[\\/]/,
               priority: 40,
               enforce: true,
+              reuseExistingChunk: true,
             },
-            // Common libraries
+            // Common libraries - be selective
             lib: {
               test: /[\\/]node_modules[\\/]/,
               name(module: any) {
@@ -87,16 +95,18 @@ const nextConfig: NextConfig = {
                 return `npm.${packageName?.replace('@', '')}`;
               },
               priority: 30,
-              minChunks: 1,
+              minChunks: 2,  // Revert to 2, but with minSize increase
               reuseExistingChunk: true,
+              enforce: true,
             },
             // Shared components (reduce unused code)
             commons: {
               name: 'commons',
-              minChunks: 3, // Only truly shared modules - increased from 2
+              minChunks: 3,
               priority: 20,
               reuseExistingChunk: true,
               enforce: true,
+              minSize: 30000,  // Only create commons if it saves space
             },
           },
         },
