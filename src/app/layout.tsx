@@ -5,6 +5,15 @@ import { Suspense } from "react";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 
+// Inline critical CSS to reduce initial CSS payload
+const criticalCSS = `
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif; background: #0a0a0a; color: #fff; }
+  main, nav, [role="main"] { display: block; width: 100%; }
+  img { max-width: 100%; height: auto; display: block; }
+`;
+
 // Optimize font loading with fallback and preload
 const geistSans = Geist({
   variable: "--font-geist-sans",

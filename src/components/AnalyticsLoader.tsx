@@ -7,8 +7,13 @@ export default function AnalyticsLoader() {
     const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
     if (!id || process.env.NODE_ENV !== "production") return;
 
+    let analyticsLoaded = false;
+
     const loadGtag = () => {
-      if (document.querySelector(`script[data-ga="${id}"]`)) return;
+      if (analyticsLoaded || document.querySelector(`script[data-ga="${id}"]`)) {
+        return;
+      }
+      analyticsLoaded = true;
 
       const script = document.createElement("script");
       script.async = true;
@@ -23,13 +28,36 @@ export default function AnalyticsLoader() {
       (window as any).gtag = gtag;
       gtag("js", new Date());
       gtag("config", id, { page_path: window.location.pathname });
+
+      // Remove event listeners after loading
+      document.removeEventListener("click", onUserInteraction);
+      document.removeEventListener("scroll", onUserInteraction);
+      document.removeEventListener("keydown", onUserInteraction);
+      document.removeEventListener("touchstart", onUserInteraction);
     };
 
-    if ("requestIdleCallback" in window) {
-      (window as any).requestIdleCallback(loadGtag, { timeout: 6000 });
-    } else {
-      setTimeout(loadGtag, 6000);
-    }
+    const onUserInteraction = () => {
+      loadGtag();
+    };
+
+    // Add listeners for first user interaction (very low cost)
+    // This way GA doesn't block FCP/LCP but still captures all engaged users
+    document.addEventListener("click", onUserInteraction, { once: true, passive: true });
+    document.addEventListener("scroll", onUserInteraction, { once: true, passive: true });
+    document.addEventListener("keydown", onUserInteraction, { once: true, passive: true });
+    document.addEventListener("touchstart", onUserInteraction, { once: true, passive: true });
+
+    // Fallback: load after 15 seconds if user hasn't interacted
+    // (captures users who just read the page without clicking)
+    const timeout = setTimeout(loadGtag, 15000);
+
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener("click", onUserInteraction);
+      document.removeEventListener("scroll", onUserInteraction);
+      document.removeEventListener("keydown", onUserInteraction);
+      document.removeEventListener("touchstart", onUserInteraction);
+    };
   }, []);
 
   return null;
