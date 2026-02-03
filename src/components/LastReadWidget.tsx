@@ -84,7 +84,7 @@ export default function LastReadWidget() {
                                 <BookOpen className="h-4 w-4" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-semibold text-white">Mulai Tilawah</h3>
+                                <h2 className="text-sm font-semibold text-white">Mulai Tilawah</h2>
                                 <p className="text-[10px] text-white/70">Baca Al-Quran hari ini</p>
                             </div>
                         </div>

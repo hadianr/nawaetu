@@ -234,7 +234,7 @@ export default function MissionsWidget() {
                         {gender === 'female' ? '🌸' : gender === 'male' ? '💠' : '✨'}
                     </div>
                     <div>
-                        <h3 className="text-sm font-bold text-white leading-none">Fokus Ibadah</h3>
+                        <h2 className="text-sm font-bold text-white leading-none">Fokus Ibadah</h2>
                         <p className="text-[10px] text-white/70 mt-0.5">Target harianmu</p>
                     </div>
                 </div>
