@@ -21,6 +21,70 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const processData = useCallback((result: any, locationName: string, isCached: boolean = false) => {
+        const timings = result.data.timings;
+        const dateInfo = result.data.date;
+
+        const relevantPrayers = {
+            Imsak: timings.Imsak,
+            Fajr: timings.Fajr,
+            Sunrise: timings.Sunrise,
+            Dhuhr: timings.Dhuhr,
+            Asr: timings.Asr,
+            Maghrib: timings.Maghrib,
+            Isha: timings.Isha,
+        };
+
+        const now = new Date();
+        const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+
+        let next = "Imsak";
+        let nextTime = timings["Imsak"];
+        const prayerOrder = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
+        let found = false;
+        for (const prayer of prayerOrder) {
+            if (timings[prayer] > currentTime) {
+                next = prayer;
+                nextTime = timings[prayer];
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            next = "Imsak";
+            nextTime = timings["Imsak"];
+        }
+
+        const hijri = dateInfo?.hijri;
+        const hijriString = hijri
+            ? `${hijri.day} ${hijri.month?.en} ${hijri.year}H`
+            : "";
+
+        setData({
+            hijriDate: hijriString,
+            gregorianDate: dateInfo?.readable || "",
+            prayerTimes: relevantPrayers,
+            nextPrayer: next,
+            nextPrayerTime: nextTime,
+            locationName
+        });
+
+        if (isCached) setLoading(false);
+    }, []);
+
+    const syncFromCache = useCallback(() => {
+        const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
+        const cachedData = localStorage.getItem("prayer_data");
+        if (cachedData) {
+            const { date, data: savedData, locationName } = JSON.parse(cachedData);
+            if (date === today) {
+                processData(savedData, locationName || "Lokasi Tersimpan", true);
+            }
+        }
+    }, [processData]);
+
     const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string) => {
         try {
             setLoading(true);
@@ -80,73 +144,16 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             processData(result, locationName);
             setError(null);
+
+            // Notify other instances
+            window.dispatchEvent(new CustomEvent('prayer_data_updated'));
         } catch (err) {
             console.error(err);
-            // If offline and we have cache (even if old?), maybe we shouldn't show error? 
-            // For now, let's just default to error if no cache was loaded.
             setError(err instanceof Error ? err.message : "Failed to load data");
         } finally {
             setLoading(false);
         }
-    }, []);
-
-    const processData = (result: any, locationName: string, isCached: boolean = false) => {
-        const timings = result.data.timings;
-        const dateInfo = result.data.date;
-
-        const relevantPrayers = {
-            Imsak: timings.Imsak,
-            Fajr: timings.Fajr,
-            Sunrise: timings.Sunrise, // Add Sunrise
-            Dhuhr: timings.Dhuhr,
-            Asr: timings.Asr,
-            Maghrib: timings.Maghrib,
-            Isha: timings.Isha,
-        };
-
-        const now = new Date();
-        const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-
-        let next = "Imsak";
-        let nextTime = timings["Imsak"]; // Default
-        const prayerOrder = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
-
-        // Find next prayer today
-        let found = false;
-        for (const prayer of prayerOrder) {
-            if (timings[prayer] > currentTime) {
-                next = prayer;
-                nextTime = timings[prayer];
-                found = true;
-                break;
-            }
-        }
-
-        // If not found (all passed), it's Imsak/Fajr of tomorrow, but simpler to just show Imsak/Fajr of today as a placeholder or handle wrap-around in component. 
-        // For simplicity, if we wrap around, we point to Fajr (or Imsak) but we might need logic for "tomorrow" date. 
-        // Let's assume the API returns valid times for "tomorrow" via a new fetch or we rely on the component to handle the "tomorrow" logic if time < now.
-        // Actually for now let's just default to the first prayer of the day if we passed everything.
-        if (!found) {
-            next = "Imsak";
-            nextTime = timings["Imsak"];
-        }
-
-        const hijri = dateInfo?.hijri;
-        const hijriString = hijri
-            ? `${hijri.day} ${hijri.month?.en} ${hijri.year}H`
-            : "";
-
-        setData({
-            hijriDate: hijriString,
-            gregorianDate: dateInfo?.readable || "",
-            prayerTimes: relevantPrayers,
-            nextPrayer: next,
-            nextPrayerTime: nextTime,
-            locationName
-        });
-
-        if (isCached) setLoading(false);
-    };
+    }, [processData]);
 
     const getLocationAndFetch = useCallback(() => {
         if (!navigator.geolocation) {
@@ -155,15 +162,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             return;
         }
 
-        // Always try to get fresh location to update cache
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                // Fetch with fresh location (will update cache inside fetchPrayerTimes)
                 fetchPrayerTimes(latitude, longitude);
             },
             (err) => {
-                // If we have cache, suppress the error
                 const cachedLocation = localStorage.getItem("user_location");
                 if (cachedLocation) {
                     console.warn("Location refresh failed, using cached location");
@@ -177,33 +181,28 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     }, [fetchPrayerTimes]);
 
     useEffect(() => {
-        // 1. Attempt to load cached prayer data for today IMMEDIATELY
-        const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
-        const cachedData = localStorage.getItem("prayer_data");
-        if (cachedData) {
-            const { date, data: savedData, locationName } = JSON.parse(cachedData);
-            if (date === today) {
-                processData(savedData, locationName || "Lokasi Tersimpan", true);
-            }
-        }
+        // 1. Initial Sync
+        syncFromCache();
 
         // 2. Check if we have a saved location
         const cachedLocation = localStorage.getItem("user_location");
         if (cachedLocation) {
-            // Use cached location to fetch fresh DATA transparently, BUT DO NOT REQUEST GEO PERMISSION
-            // This avoids "Geolocation on load" warning for returning users
+            const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
+            const cachedData = localStorage.getItem("prayer_data");
             const { lat, lng, name } = JSON.parse(cachedLocation);
-            // We already processed data above if it matched today. 
-            // If data was old, we fetch using cached LAT/LNG without prompting permission.
+
             if (!cachedData || JSON.parse(cachedData).date !== today) {
                 fetchPrayerTimes(lat, lng, name);
             }
         } else {
-            // 3. User New / No Cache -> DO NOT Request Permission Automatically
-            // Just finish loading so the UI can show the "Grant Permission" state
             setLoading(false);
         }
-    }, [fetchPrayerTimes]);
+
+        // 3. Listen for global updates
+        const handleUpdate = () => syncFromCache();
+        window.addEventListener('prayer_data_updated', handleUpdate);
+        return () => window.removeEventListener('prayer_data_updated', handleUpdate);
+    }, [fetchPrayerTimes, syncFromCache]);
 
     // NEW: interval to update "nextPrayer" dynamically as time passes
     useEffect(() => {
