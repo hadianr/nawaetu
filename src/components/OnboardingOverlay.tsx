@@ -226,18 +226,18 @@ export default function OnboardingOverlay() {
                             <h2 className="text-xl font-bold text-white">Tipe Pejuang Ibadah?</h2>
                             <p className="text-xs text-slate-400 mt-1">Menentukan target misi harianmu.</p>
                         </div>
-                        <div className="space-y-2 flex-1 overflow-y-auto pr-1 scrollbar-hide">
+                        <div className="space-y-2 flex-1 overflow-y-auto pr-2 scrollbar-hide">
                             {[
-                                { id: 'pemula', label: 'Pemula', desc: 'Fokus Ibadah Wajib', icon: '🌱', color: 'text-emerald-400', border: 'border-emerald-500/30', bg: 'bg-emerald-500/10' },
-                                { id: 'penggerak', label: 'Penggerak', desc: 'Wajib + Sunnah Ringan', icon: '⚡', color: 'text-blue-400', border: 'border-blue-500/30', bg: 'bg-blue-500/10' },
-                                { id: 'mujahid', label: 'Mujahid', desc: 'Target Ibadah Tinggi', icon: '🔥', color: 'text-amber-400', border: 'border-amber-500/30', bg: 'bg-amber-500/10' },
+                                { id: 'pemula', label: 'Pemula', desc: 'Fokus Ibadah Wajib', icon: '🌱', color: 'text-emerald-400', border: 'border-emerald-400', bg: 'bg-emerald-500/20' },
+                                { id: 'penggerak', label: 'Penggerak', desc: 'Wajib + Sunnah Ringan', icon: '⚡', color: 'text-blue-400', border: 'border-blue-400', bg: 'bg-blue-500/20' },
+                                { id: 'mujahid', label: 'Mujahid', desc: 'Target Ibadah Tinggi', icon: '🔥', color: 'text-amber-400', border: 'border-amber-400', bg: 'bg-amber-500/20' },
                             ].map((type) => (
                                 <button
                                     key={type.id}
                                     onClick={() => setArchetype(type.id as any)}
                                     className={cn(
-                                        "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
-                                        archetype === type.id ? `${type.bg} ${type.border} ring-1 ring-offset-0` : "bg-white/5 border-white/5 hover:bg-white/10"
+                                        "w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left",
+                                        archetype === type.id ? `${type.bg} ${type.border}` : "bg-white/5 border border-white/5 hover:bg-white/10"
                                     )}
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-black/20 flex items-center justify-center text-xl">
