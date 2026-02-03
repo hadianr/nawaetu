@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), { ssr: false });
+import OnboardingOverlay from "@/components/OnboardingOverlay";
 const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
 
 export default function AppOverlays() {
