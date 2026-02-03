@@ -20,7 +20,7 @@ export const trackQuranRead = (surahName: string, ayahCount?: number) => {
 };
 
 /**
- * Track when user asks the AI Ustadz
+ * Track when user asks the Asisten Muslim AI
  */
 export const trackAIQuery = () => {
     sendGAEvent('ai_query', {

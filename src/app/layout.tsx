@@ -55,11 +55,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Nawaetu - Aplikasi Muslim: Jadwal Sholat, Al Quran & Kiblat",
+    default: "Nawaetu - #NiatAjaDulu | Habit Tracker Ibadah dengan Gamifikasi",
     template: "%s | Nawaetu"
   },
-  description: "Aplikasi Muslim lengkap dengan Jadwal Sholat akurat, Al Quran Online, Arah Kiblat, dan AI Ustadz. Teman ibadah modern untuk menjaga istiqomah.",
-  keywords: ["Jadwal Sholat", "Arah Kiblat", "Al Quran Online", "Aplikasi Muslim", "Waktu Sholat", "Quran Digital", "Nawaetu"],
+  description: "Nawaetu - Build ibadah habits dengan gamifikasi seru: Daily Missions, Streak System, XP & Leveling. Lengkap dengan Asisten Muslim AI, Jadwal Sholat, Al Quran, dan Kiblat. #NiatAjaDulu",
+  keywords: ["Nawaetu", "NiatAjaDulu", "Gamifikasi Ibadah", "Habit Tracker", "Daily Missions", "Streak System", "Jadwal Sholat", "Al Quran", "Asisten Muslim AI"],
   authors: [{ name: "Nawaetu Team" }],
   creator: "Hadian R",
   publisher: "Nawaetu",
@@ -68,8 +68,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Nawaetu - Teman Ibadahmu",
-    description: "Jadwal Sholat, Al Quran, dan Kiblat Akurat dalam satu aplikasi.",
+    title: "Nawaetu - #NiatAjaDulu",
+    description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak, XP. Luruskan niat, konsisten beramal.",
     url: "https://nawaetu.com",
     siteName: "Nawaetu",
     locale: "id_ID",
@@ -77,9 +77,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nawaetu - Aplikasi Muslim Lengkap",
-    description: "Jadwal Sholat & Al Quran Digital Terbaik.",
-    creator: "@nawaetuapp", // Placeholder
+    title: "Nawaetu - #NiatAjaDulu",
+    description: "Habit tracker ibadah dengan gamifikasi! Daily Missions, Streak System, Al Quran, & Jadwal Sholat.",
+    creator: "@nawaetuapp",
   },
   manifest: "/manifest.json",
   appleWebApp: {

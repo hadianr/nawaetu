@@ -1,7 +1,7 @@
 {
-    "name": "Nawaetu - Ramadhan & Daily Muslim App",
+    "name": "Nawaetu - #NiatAjaDulu | Teman Ibadah Muslim",
     "short_name": "Nawaetu",
-    "description": "Your daily companion for Zikir, Prayer Times, and Qibla.",
+    "description": "Habit tracker ibadah dengan gamifikasi: Daily Missions, Streak, XP. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#000000",
