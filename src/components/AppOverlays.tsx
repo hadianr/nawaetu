@@ -12,6 +12,7 @@ export default function AppOverlays() {
     useEffect(() => {
         const show = () => setShowPwaPrompt(true);
 
+        // Only show PWA prompt after first user interaction (not on page load)
         const onInteraction = () => {
             show();
             document.removeEventListener("click", onInteraction);
@@ -36,7 +37,7 @@ export default function AppOverlays() {
     return (
         <>
             <OnboardingOverlay />
-            {showPwaPrompt ? <PWAInstallPrompt /> : null}
+            <PWAInstallPrompt shouldShow={showPwaPrompt} />
         </>
     );
 }

@@ -5,20 +5,23 @@ import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { X, Share, PlusSquare, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function PWAInstallPrompt() {
+interface PWAInstallPromptProps {
+    shouldShow?: boolean;
+}
+
+export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPromptProps) {
     const { isStandalone, isIOS, deferredPrompt, promptInstall } = usePWAInstall();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        // Show prompt only if not installed and (we have a prompt OR it's iOS)
-        if (!isStandalone && (deferredPrompt || isIOS)) {
-            // Check if user dismissed it recently (e.g., in last 24 hours)
+        // Only show if parent says it's ok (after interaction) AND not installed AND (has prompt OR iOS)
+        if (shouldShow && !isStandalone && (deferredPrompt || isIOS)) {
             const lastDismissed = localStorage.getItem("pwa_prompt_dismissed");
             if (!lastDismissed || Date.now() - parseInt(lastDismissed) > 24 * 60 * 60 * 1000) {
                 setIsVisible(true);
             }
         }
-    }, [isStandalone, deferredPrompt, isIOS]);
+    }, [shouldShow, isStandalone, deferredPrompt, isIOS]);
 
     const handleDismiss = () => {
         setIsVisible(false);

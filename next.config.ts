@@ -63,6 +63,8 @@ const nextConfig: NextConfig = {
         ...config.optimization,
         moduleIds: 'deterministic',
         runtimeChunk: 'single',
+        usedExports: true, // Enable tree-shaking for unused code removal
+        sideEffects: false,
         splitChunks: {
           chunks: 'all',
           cacheGroups: {
@@ -88,11 +90,13 @@ const nextConfig: NextConfig = {
               minChunks: 1,
               reuseExistingChunk: true,
             },
-            // Shared components
+            // Shared components (reduce unused code)
             commons: {
               name: 'commons',
-              minChunks: 2,
+              minChunks: 3, // Only truly shared modules - increased from 2
               priority: 20,
+              reuseExistingChunk: true,
+              enforce: true,
             },
           },
         },
