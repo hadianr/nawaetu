@@ -10,6 +10,7 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
 import { checkMissionValidation, filterMissionsByArchetype } from "@/lib/mission-utils";
+import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -23,6 +24,7 @@ export default function MissionsWidget() {
     const [missions, setMissions] = useState<Mission[]>([]);
     const [completed, setCompleted] = useState<CompletedMissions>({});
     const [today, setToday] = useState<string>("");
+    const [mounted, setMounted] = useState(false);
 
     // Dialog State
     const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
@@ -31,6 +33,7 @@ export default function MissionsWidget() {
     const { data: prayerData } = usePrayerTimes();
 
     useEffect(() => {
+        setMounted(true);
         // 1. Initial Load: Date & Completed Missions
         setToday(new Date().toISOString().split('T')[0]);
 
@@ -208,6 +211,8 @@ export default function MissionsWidget() {
 
     // Show top 2 only
     const displayMissions = widgetMissions.slice(0, 2);
+
+    if (!mounted) return <MissionSkeleton />;
 
     return (
         <div className={cn(

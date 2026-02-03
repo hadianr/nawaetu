@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, ChevronRight, Bookmark } from "lucide-react";
+import WidgetSkeleton from "@/components/skeleton/WidgetSkeleton";
 
 interface LastReadData {
     surahId: number;
@@ -71,7 +72,7 @@ export default function LastReadWidget() {
         }
     };
 
-    if (!mounted) return null;
+    if (!mounted) return <WidgetSkeleton />;
 
     // === No Last Read - Prompt to Start ===
     if (!lastRead) {
