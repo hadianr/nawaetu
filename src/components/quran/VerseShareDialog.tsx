@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { toPng } from "html-to-image";
+// import { toPng } from "html-to-image"; // Moved to dynamic import
 import { Download, Share2, X, Instagram, Check, Quote, MessageCircle } from "lucide-react"; // MessageCircle for WA
 import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -66,6 +66,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
         if (!cardRef.current) return;
         setIsGenerating(true);
         try {
+            const { toPng } = await import("html-to-image");
             const dataUrl = await toPng(cardRef.current, {
                 cacheBust: true,
                 pixelRatio: 4, // Higher quality
@@ -88,6 +89,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
         if (!cardRef.current) return;
         setIsGenerating(true);
         try {
+            const { toPng } = await import("html-to-image");
             const dataUrl = await toPng(cardRef.current, {
                 cacheBust: true,
                 pixelRatio: 4,

@@ -14,6 +14,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // Ensure heavy libraries are transpiled to match our modern browserslist
+  transpilePackages: ["lucide-react", "date-fns", "lodash"],
   serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
   experimental: {
     optimizePackageImports: [
@@ -22,7 +24,7 @@ const nextConfig: NextConfig = {
       "lodash",
       "@radix-ui/react-dialog",
       "@radix-ui/react-slot",
-      "framer-motion" // In case it creeps back or for other dependencies
+      "framer-motion"
     ],
   },
 };

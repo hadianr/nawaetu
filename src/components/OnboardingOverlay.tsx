@@ -63,7 +63,7 @@ export default function OnboardingOverlay() {
     useEffect(() => {
         const hasSeen = localStorage.getItem(ONBOARDING_KEY);
         if (!hasSeen) {
-            setTimeout(() => setIsVisible(true), 2000); // Delayed to prioritize LCP of main content
+            setIsVisible(true);
         }
     }, []);
 
