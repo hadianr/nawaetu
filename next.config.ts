@@ -14,8 +14,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  // Ensure heavy libraries are transpiled to match our modern browserslist
-  transpilePackages: ["lucide-react", "date-fns", "lodash"],
+  // Only transpile what's absolutely necessary - let bundler handle tree-shaking
+  // Modern browsers support ES6 modules natively
+  transpilePackages: [],
   serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
   productionBrowserSourceMaps: true,
   

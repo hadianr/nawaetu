@@ -126,7 +126,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <head />
+      <head>
+        {/* Defer script execution for faster LCP */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Mark when first byte is received - helps trace LCP
+              window.__pageLoadStart = performance.now();
+            `
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} antialiased`}
         suppressHydrationWarning
