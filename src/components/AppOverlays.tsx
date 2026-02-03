@@ -12,13 +12,6 @@ export default function AppOverlays() {
     useEffect(() => {
         const show = () => setShowPwaPrompt(true);
 
-        // Defer PWA prompt until idle or first interaction to avoid LCP delay
-        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-            (window as Window).requestIdleCallback(show, { timeout: 3000 });
-        } else {
-            setTimeout(show, 1000);
-        }
-
         const onInteraction = () => {
             show();
             document.removeEventListener("click", onInteraction);

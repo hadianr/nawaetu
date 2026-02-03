@@ -11,18 +11,13 @@ export default function PWAInstallPrompt() {
 
     useEffect(() => {
         // Show prompt only if not installed and (we have a prompt OR it's iOS)
-        // Delay showing to not overwhelm user immediately on load
-        const timer = setTimeout(() => {
-            if (!isStandalone && (deferredPrompt || isIOS)) {
-                // Check if user dismissed it recently (e.g., in last 24 hours)
-                const lastDismissed = localStorage.getItem("pwa_prompt_dismissed");
-                if (!lastDismissed || Date.now() - parseInt(lastDismissed) > 24 * 60 * 60 * 1000) {
-                    setIsVisible(true);
-                }
+        if (!isStandalone && (deferredPrompt || isIOS)) {
+            // Check if user dismissed it recently (e.g., in last 24 hours)
+            const lastDismissed = localStorage.getItem("pwa_prompt_dismissed");
+            if (!lastDismissed || Date.now() - parseInt(lastDismissed) > 24 * 60 * 60 * 1000) {
+                setIsVisible(true);
             }
-        }, 3000); // 3 seconds delay
-
-        return () => clearTimeout(timer);
+        }
     }, [isStandalone, deferredPrompt, isIOS]);
 
     const handleDismiss = () => {
