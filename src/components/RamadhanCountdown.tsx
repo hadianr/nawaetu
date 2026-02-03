@@ -156,13 +156,13 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 onClick={handleCardClick}
                 className="w-full relative mb-4 group transition-transform duration-300 hover:scale-[1.01] text-left appearance-none will-change-transform"
             >
-                {/* Background with Dynamic Gradient - Reduced Blur for Performance */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl -z-10 opacity-60`} />
+                {/* Optimized Background: Solid colors/simple gradients only, no heavy blur/radial calculations */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl -z-10 opacity-80`} />
 
-                <div className={`relative w-full bg-black/80 backdrop-blur-sm border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
+                <div className={`relative w-full bg-black/40 border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
 
-                    {/* Simplified Decorative Glow -> Radial Gradient instead of Blur */}
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-radial from-${styles.glow}/20 to-transparent opacity-50 pointer-events-none`} />
+                    {/* Simple decorative glow */}
+                    <div className={`absolute -right-10 -top-10 w-32 h-32 bg-${styles.glow.split('-')[1]}-500/20 rounded-full blur-2xl pointer-events-none`} />
 
                     {/* Left: Text & Title */}
                     <div className="flex flex-col gap-1.5 z-10">
