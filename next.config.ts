@@ -41,9 +41,13 @@ const nextConfig: NextConfig = {
       "lodash",
       "@radix-ui/react-dialog",
       "@radix-ui/react-slot",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-popover",
       "react-markdown",
       "@google/generative-ai",
-      "groq-sdk"
+      "groq-sdk",
+      "sentry",
+      "@sentry/nextjs"
     ],
     // Enable modern optimizations
     optimizeCss: true,

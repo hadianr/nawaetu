@@ -33,7 +33,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     useEffect(() => {
         setIsMounted(true);
 
-        // Countdown Logic
+        // Countdown Logic - optimized to not block render
         const calculateTimeLeft = () => {
             const now = new Date();
             const difference = TARGET_DATE.getTime() - now.getTime();
@@ -44,34 +44,31 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     minutes: Math.floor((difference / 1000 / 60) % 60),
                 };
             }
-            // If passed, maybe return 0
             return { days: 0, hours: 0, minutes: 0 };
         };
 
         // Immediately update on mount to catch up seconds/hours
         setTimeLeft(calculateTimeLeft());
+        
+        // Update every 60 seconds instead of 1s to reduce re-renders
+        // This significantly reduces main-thread work during render
         const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
 
+        // Defer progress loading to not block initial render (LCP optimization)
         const loadProgress = () => {
             const savedCompleted = localStorage.getItem("completed_missions");
             if (savedCompleted) {
                 try {
                     const completedMap = JSON.parse(savedCompleted);
-
-                    // Use SYABAN_MISSIONS as the "Prep" benchmark for now
                     const targetMissions = SYABAN_MISSIONS;
 
                     const currentXP = targetMissions.reduce((acc, m) => {
                         const record = completedMap[m.id];
                         if (!record) return acc;
-
-                        const isDone = true; // Use simple existential check for progress accumulation in general scope
-
-                        return isDone ? acc + m.xpReward : acc;
+                        return acc + m.xpReward;
                     }, 0);
 
                     const totalXP = targetMissions.reduce((acc, m) => acc + m.xpReward, 0);
-                    // Capped at 100%
                     const p = totalXP > 0 ? Math.round((currentXP / totalXP) * 100) : 0;
                     setProgress(Math.min(100, p));
                 } catch (e) {
@@ -83,31 +80,35 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             }
         };
 
-        const scheduleProgressLoad = () => {
-            if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-                (window as Window).requestIdleCallback(() => loadProgress(), { timeout: 1000 });
-            } else {
-                setTimeout(loadProgress, 250);
-            }
-        };
-
-        scheduleProgressLoad();
+        // Use requestIdleCallback to defer progress load (don't block LCP)
+        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+            (window as Window).requestIdleCallback(() => loadProgress(), { timeout: 3000 });
+        } else {
+            setTimeout(loadProgress, 100);
+        }
 
         // Listen for internal mission updates (same tab)
-        window.addEventListener("mission_storage_updated", scheduleProgressLoad);
+        window.addEventListener("mission_storage_updated", loadProgress);
 
         // Backup listener: wait a bit to ensure storage is written if sync failed
         const handleBackupUpdate = () => setTimeout(loadProgress, 50);
         window.addEventListener("xp_updated", handleBackupUpdate);
 
         // Listen for storage updates (cross tab)
-        window.addEventListener("storage", scheduleProgressLoad);
+        const handleStorageUpdate = () => {
+            if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+                (window as Window).requestIdleCallback(() => loadProgress(), { timeout: 3000 });
+            } else {
+                setTimeout(loadProgress, 100);
+            }
+        };
+        window.addEventListener("storage", handleStorageUpdate);
 
         return () => {
             clearInterval(timer);
-            window.removeEventListener("mission_storage_updated", scheduleProgressLoad);
+            window.removeEventListener("mission_storage_updated", loadProgress);
             window.removeEventListener("xp_updated", handleBackupUpdate);
-            window.removeEventListener("storage", scheduleProgressLoad);
+            window.removeEventListener("storage", handleStorageUpdate);
         };
     }, []);
 
