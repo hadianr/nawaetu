@@ -1,4 +1,5 @@
-import Groq from 'groq-sdk';
+import 'server-only';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
 
 const SYSTEM_INSTRUCTION = `Kamu adalah Tanya Nawaetu - Asisten Muslim yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Jangan sebut dirimu Ustadz. Bisakan menjawab dengan singkat dan padat serta informatif.
@@ -48,74 +49,73 @@ Jadi jangan dipaksakan ya Kak, sesuaikan dengan kemampuan fisik. Semoga lekas se
 
 🔹 Bagaimana tata cara sujud saat sholat duduk?"`;
 
-export class GroqProvider implements LLMProvider {
-    name = 'Groq';
-    private client: Groq;
-    private model = 'llama-3.3-70b-versatile'; // Best quality model
+export class GeminiProvider implements LLMProvider {
+    name = 'Gemini';
+    private genAI: GoogleGenerativeAI;
+    private model: any;
 
     constructor() {
-        const apiKey = process.env.GROQ_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            throw new Error('GROQ_API_KEY not found in environment variables');
+            throw new Error('GEMINI_API_KEY not found in environment variables');
         }
-        this.client = new Groq({ apiKey });
+
+        this.genAI = new GoogleGenerativeAI(apiKey);
+        this.model = this.genAI.getGenerativeModel({
+            model: "gemini-flash-lite-latest",
+            systemInstruction: SYSTEM_INSTRUCTION,
+            generationConfig: {
+                temperature: 0.9,
+                topP: 0.9,
+                topK: 30,
+                maxOutputTokens: 2000,
+            },
+        });
     }
 
     async chat(message: string, context: UserContext, history: ChatMessage[]): Promise<string> {
         try {
-            // Convert history to Groq format
-            const messages: any[] = [
-                { role: 'system', content: SYSTEM_INSTRUCTION }
-            ];
+            // Convert history to Gemini format
+            const geminiHistory = history.slice(-10).map(msg => ({
+                role: msg.role === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.content }]
+            }));
 
-            // Add conversation history (last 10 messages)
-            history.slice(-10).forEach(msg => {
-                messages.push({
-                    role: msg.role === 'user' ? 'user' : 'assistant',
-                    content: msg.content
-                });
-            });
+            // Start chat session with history
+            const chat = this.model.startChat({ history: geminiHistory });
 
-            // Add current message with context (only on first message)
+            // Send message with context (only on first message)
             const contextualMessage = history.length === 0
                 ? `${message}\n\n[User: ${context.name}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`
                 : message;
 
-            messages.push({
-                role: 'user',
-                content: contextualMessage
-            });
-
-            // Call Groq API
-            const completion = await this.client.chat.completions.create({
-                messages,
-                model: this.model,
-                temperature: 0.9,
-                max_tokens: 2000,
-                top_p: 0.9,
-            });
-
-            const response = completion.choices[0]?.message?.content;
-            if (!response) {
-                throw new ProviderError('No response from Groq', undefined, 'NO_RESPONSE');
-            }
-
-            return response;
+            const result = await chat.sendMessage(contextualMessage);
+            const response = await result.response;
+            return response.text();
 
         } catch (error: any) {
-            console.error('Groq Provider Error:', {
+            console.error('Gemini Provider Error:', {
                 message: error.message,
                 status: error.status,
                 code: error.code
             });
 
-            // Map Groq errors to ProviderError
-            if (error.status === 429) {
+            // Map Gemini errors to ProviderError
+            if (error.status === 429 || error.code === 'RESOURCE_EXHAUSTED') {
                 throw new ProviderError(
                     'Rate limit exceeded',
                     429,
                     'RATE_LIMIT',
-                    true // Retryable
+                    true
+                );
+            }
+
+            if (error.status === 404 || error.message?.includes('models/')) {
+                throw new ProviderError(
+                    'Model not found',
+                    404,
+                    'MODEL_NOT_FOUND',
+                    false
                 );
             }
 
@@ -130,7 +130,7 @@ export class GroqProvider implements LLMProvider {
 
             // Generic error
             throw new ProviderError(
-                error.message || 'Unknown Groq error',
+                error.message || 'Unknown Gemini error',
                 error.status,
                 error.code,
                 true
