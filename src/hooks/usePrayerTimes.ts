@@ -199,10 +199,11 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 fetchPrayerTimes(lat, lng, name);
             }
         } else {
-            // 3. User New / No Cache -> Request Permission strictly
-            getLocationAndFetch();
+            // 3. User New / No Cache -> DO NOT Request Permission Automatically
+            // Just finish loading so the UI can show the "Grant Permission" state
+            setLoading(false);
         }
-    }, [getLocationAndFetch]);
+    }, [fetchPrayerTimes]);
 
     // NEW: interval to update "nextPrayer" dynamically as time passes
     useEffect(() => {

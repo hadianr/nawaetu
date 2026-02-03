@@ -14,6 +14,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
   experimental: {
   },
 };
