@@ -16,6 +16,14 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
   experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+      "lodash",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-slot",
+      "framer-motion" // In case it creeps back or for other dependencies
+    ],
   },
 };
 

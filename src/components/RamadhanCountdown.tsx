@@ -17,7 +17,6 @@ interface Props {
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
-    // We assume hours/minutes start at 0 until hydration takes over for precision
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({
         days: initialDays,
         hours: 0,
