@@ -876,7 +876,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
 
             {/* --- Navigation Footer & Player --- */}
-            <div className="fixed bottom-6 left-0 right-0 z-20 pointer-events-none flex flex-col items-center gap-3 px-4">
+            <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none flex flex-col items-center gap-3 px-4">
 
                 {/* Playing Status / Controls */}
                 {playingVerseKey && (
