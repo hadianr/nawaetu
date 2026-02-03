@@ -109,7 +109,7 @@ export default function OnboardingOverlay() {
                     className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col"
                 >
                     {/* Background Pattern */}
-                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
+                    <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
 
                     <div className={cn(
                         "w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border shadow-lg relative z-10",
@@ -146,7 +146,7 @@ export default function OnboardingOverlay() {
                     key="setup-name"
                     className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden"
                 >
-                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
+                    <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
                     <div className="relative z-10 w-full space-y-6">
                         <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
                             <span className="text-3xl">👋</span>
@@ -267,7 +267,7 @@ export default function OnboardingOverlay() {
                             <div
                                 key={idx}
                                 className={cn(
-                                    "h-1 flex-1 rounded-full transition-all duration-300",
+                                    "h-1 flex-1 rounded-full",
                                     idx <= currentSlide ? "bg-white" : "bg-white/20"
                                 )}
                             />
@@ -278,9 +278,9 @@ export default function OnboardingOverlay() {
                 {/* SETUP Progress Dots */}
                 {step !== 'intro' && (
                     <div className="absolute top-0 left-0 right-0 flex justify-center gap-2 p-1">
-                        <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
-                        <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
-                        <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-archetype' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-archetype' ? "bg-white w-6" : "bg-white/20")} />
                     </div>
                 )}
 
