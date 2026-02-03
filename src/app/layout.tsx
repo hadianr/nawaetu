@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
-import Script from "next/script";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 
@@ -118,6 +117,7 @@ import AppOverlays from "@/components/AppOverlays";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WebVitals } from "@/components/WebVitals";
+import AnalyticsLoader from "@/components/AnalyticsLoader";
 
 export default function RootLayout({
   children,
@@ -126,31 +126,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <head>
-        {/* Preconnect to external domains */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-      </head>
+      <head />
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} antialiased`}
         suppressHydrationWarning
       >
         <WebVitals />
-        {/* Load analytics after page interactive */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
-          strategy="lazyOnload"
-        />
-        <Script id="google-analytics" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
-              page_path: window.location.pathname,
-            });
-          `}
-        </Script>
+        <AnalyticsLoader />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
