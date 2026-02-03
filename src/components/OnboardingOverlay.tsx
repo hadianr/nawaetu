@@ -106,7 +106,7 @@ export default function OnboardingOverlay() {
             return (
                 <div
                     key={currentSlide}
-                    className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col animate-in slide-in-from-right-8 fade-in duration-300"
+                    className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col"
                 >
                     {/* Background Pattern */}
                     <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
@@ -144,7 +144,7 @@ export default function OnboardingOverlay() {
             return (
                 <div
                     key="setup-name"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden animate-in zoom-in-95 fade-in duration-300"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden"
                 >
                     <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
                     <div className="relative z-10 w-full space-y-6">
@@ -173,7 +173,7 @@ export default function OnboardingOverlay() {
             return (
                 <div
                     key="setup-gender"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden animate-in slide-in-from-right-8 fade-in duration-300"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden"
                 >
                     <div className="relative z-10 w-full space-y-4">
                         <div className="text-center mb-2">
@@ -219,7 +219,7 @@ export default function OnboardingOverlay() {
             return (
                 <div
                     key="setup-archetype"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden animate-in slide-in-from-right-8 fade-in duration-300"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden"
                 >
                     <div className="relative z-10 w-full flex-1 flex flex-col">
                         <div className="text-center mb-4">
@@ -258,7 +258,7 @@ export default function OnboardingOverlay() {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
             <div className="w-full max-w-sm relative">
                 {/* Progress Bar - Only valid in Intro Phase */}
                 {step === 'intro' && (
