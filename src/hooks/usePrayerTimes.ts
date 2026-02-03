@@ -149,21 +149,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     };
 
     const getLocationAndFetch = useCallback(() => {
-        // Try to load cached location first to speed up
-        const cachedLocation = localStorage.getItem("user_location");
-        let hasUsedCache = false;
-
-        if (cachedLocation) {
-            const { lat, lng, name } = JSON.parse(cachedLocation);
-            fetchPrayerTimes(lat, lng, name);
-            hasUsedCache = true;
-        }
-
         if (!navigator.geolocation) {
-            if (!hasUsedCache) {
-                setError("Geolocation is not supported by your browser");
-                setLoading(false);
-            }
+            setError("Geolocation is not supported");
+            setLoading(false);
             return;
         }
 
@@ -175,20 +163,21 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 fetchPrayerTimes(latitude, longitude);
             },
             (err) => {
-                // If we used cache, suppress the error
-                if (!hasUsedCache) {
+                // If we have cache, suppress the error
+                const cachedLocation = localStorage.getItem("user_location");
+                if (cachedLocation) {
+                    console.warn("Location refresh failed, using cached location");
+                } else {
                     setError("Please enable location services to see prayer times.");
                     setLoading(false);
-                } else {
-                    console.warn("Location refresh failed, using cached location");
                 }
             },
-            { timeout: 10000, maximumAge: 60000 } // Use cached GPS if recently obtained
+            { timeout: 10000, maximumAge: 60000 }
         );
     }, [fetchPrayerTimes]);
 
     useEffect(() => {
-        // Attempt to load cached prayer data for today IMMEDIATELY before even checking location
+        // 1. Attempt to load cached prayer data for today IMMEDIATELY
         const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
         const cachedData = localStorage.getItem("prayer_data");
         if (cachedData) {
@@ -198,7 +187,21 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
         }
 
-        getLocationAndFetch();
+        // 2. Check if we have a saved location
+        const cachedLocation = localStorage.getItem("user_location");
+        if (cachedLocation) {
+            // Use cached location to fetch fresh DATA transparently, BUT DO NOT REQUEST GEO PERMISSION
+            // This avoids "Geolocation on load" warning for returning users
+            const { lat, lng, name } = JSON.parse(cachedLocation);
+            // We already processed data above if it matched today. 
+            // If data was old, we fetch using cached LAT/LNG without prompting permission.
+            if (!cachedData || JSON.parse(cachedData).date !== today) {
+                fetchPrayerTimes(lat, lng, name);
+            }
+        } else {
+            // 3. User New / No Cache -> Request Permission strictly
+            getLocationAndFetch();
+        }
     }, [getLocationAndFetch]);
 
     // NEW: interval to update "nextPrayer" dynamically as time passes

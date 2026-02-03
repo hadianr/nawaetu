@@ -63,7 +63,7 @@ export default function PrayerTimesDisplay() {
 
             <div className="relative space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <h3 className="text-lg font-semibold text-white/80">Jadwal Sholat Hari Ini</h3>
+                    <h2 className="text-lg font-semibold text-white/80">Jadwal Sholat Hari Ini</h2>
                     <a
                         href="https://www.google.com/maps/search/?api=1&query=masjid+terdekat"
                         target="_blank"

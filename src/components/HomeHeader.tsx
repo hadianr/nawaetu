@@ -59,9 +59,9 @@ export default function HomeHeader() {
         <div className="w-full flex items-start justify-between animate-in slide-in-from-top-4 duration-700">
             <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">
+                    <div className="text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">
                         {greeting}
-                    </h2>
+                    </div>
                 </div>
                 <h1 className="text-2xl font-bold text-white tracking-tight leading-none min-h-[2rem]">
                     {isMounted ? userName : "Sobat Nawaetu"}
