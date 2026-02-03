@@ -37,7 +37,9 @@ export default function Home() {
           <div className="w-full h-32">
             <NextPrayerWidget />
           </div>
-          <HomeLastRead />
+          <div className="w-full h-32">
+            <HomeLastRead />
+          </div>
         </section>
 
         {/* 4. Daily Missions */}

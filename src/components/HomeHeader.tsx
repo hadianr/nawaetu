@@ -77,7 +77,7 @@ export default function HomeHeader() {
                     <StreakBadge gender={gender} />
                     <div className="flex items-center gap-1.5 bg-[rgb(var(--color-primary))]/10 px-2 py-1 rounded-full border border-[rgb(var(--color-primary))]/20">
                         <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
-                        <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest">
+                        <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest min-w-[60px] text-center inline-block whitespace-nowrap overflow-hidden text-ellipsis">
                             {data?.locationName?.split(",")[0] || "Lokasi..."}
                         </span>
                     </div>

@@ -53,7 +53,7 @@ export default function NextPrayerWidget() {
 
     if (!data || !data.nextPrayer || !data.nextPrayerTime) {
         return (
-            <div className="h-full w-full rounded-2xl bg-white/5 border border-white/10 animate-pulse min-h-[100px]" />
+            <div className="h-full w-full rounded-3xl bg-white/5 border border-white/10 animate-pulse min-h-[100px]" />
         );
     }
 
