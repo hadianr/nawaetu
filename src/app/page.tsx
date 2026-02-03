@@ -1,38 +1,12 @@
-import { Suspense } from "react";
-import Link from "next/link";
-import { Sparkles, MessageCircle } from "lucide-react";
-import dynamic from "next/dynamic";
 import { Metadata } from "next";
 
 // Critical components - load immediately
 import HomeHeader from "@/components/HomeHeader";
-import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
+import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 
 // Above-the-fold priority components
-import NextPrayerWidget from "@/components/NextPrayerWidget";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
 
-// Below-the-fold components - lazy load
-const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay"), {
-  loading: () => <PrayerCardSkeleton />,
-  ssr: true,
-});
-
-const HomeLastRead = dynamic(
-  () => import("@/components/HomeWidgets").then(mod => ({ default: mod.HomeLastRead })),
-  {
-    loading: () => <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />,
-    ssr: true,
-  }
-);
-
-const HomeMissions = dynamic(
-  () => import("@/components/HomeWidgets").then(mod => ({ default: mod.HomeMissions })),
-  {
-    loading: () => <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />,
-    ssr: true,
-  }
-);
 
 export const metadata: Metadata = {
   title: "Jadwal Sholat & Ibadah Harian - Nawaetu",
@@ -59,61 +33,10 @@ export default function Home() {
             <RamadhanCountdown initialDays={daysLeft} />
           </section>
 
-          {/* 3. Quick Status Grid */}
-          <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200">
-            <div className="w-full h-32">
-              <NextPrayerWidget />
-            </div>
-            <div className="w-full h-32">
-              <Suspense fallback={<div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />}>
-                <HomeLastRead />
-              </Suspense>
-            </div>
-          </section>
-
-          {/* 4. Daily Missions */}
-          <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-            <Suspense fallback={<div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />}>
-              <HomeMissions />
-            </Suspense>
-          </section>
-
-          {/* 5. Prayer Times List */}
-          <section className="w-full">
-            <Suspense fallback={<PrayerCardSkeleton />}>
-              <PrayerTimesDisplay />
-            </Suspense>
-          </section>
+          <DeferredBelowFold />
 
         </main>
         
-        {/* AI Mentor Access Point - Lazy loaded */}
-        <div className="fixed bottom-[90px] left-0 right-0 z-40 pointer-events-none">
-          <div className="max-w-md mx-auto w-full relative px-4">
-            <Link
-              href="/tanya-ustadz"
-              className="absolute right-4 bottom-0 pointer-events-auto group animate-in slide-in-from-right-4 fade-in duration-700 delay-500"
-              prefetch={false}
-            >
-              <div className="relative flex items-center gap-2 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] p-1 pr-4 pl-1.5 rounded-full border border-white/20 shadow-[0_8px_32px_rgba(var(--color-primary),0.3)] hover:scale-105 active:scale-95 transition-all">
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-[rgb(var(--color-primary))] rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
-
-                {/* Icon Circle */}
-                <div className="relative w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10">
-                  <MessageCircle className="w-5 h-5 text-white" />
-                  <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-amber-300 animate-pulse" />
-                </div>
-
-                {/* Label */}
-                <div className="relative flex flex-col">
-                  <span className="text-[11px] font-bold text-white leading-none">Tanya Nawaetu</span>
-                  <span className="text-[9px] text-white/70 leading-normal">Asisten Muslim AI</span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </div>
       </div>
     </>
   );
