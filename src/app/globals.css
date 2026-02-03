@@ -128,49 +128,26 @@
     @apply bg-[#0a0a0a] text-white;
     min-height: 100%;
   }
+  
+  /* Improve rendering performance */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* GPU acceleration for animations */
+  .animate-in,
+  [class*="animate-"] {
+    will-change: transform, opacity;
+  }
+  
+  /* Reduce layout shifts */
+  img, video, iframe {
+    height: auto;
+    max-width: 100%;
+  }
 }
-
-/* TAJWEED COLOR RULES (Quran.com API v4 Compatible) */
-.tajweed-hn {
-  color: #7cc78f !important;
-}
-
-/* Ghunnah (Green) */
-.tajweed-lk {
-  color: #8ecae6 !important;
-}
-
-/* Idgham w/o Ghunnah (Blue) */
-.tajweed-ql {
-  color: #8ecae6 !important;
-}
-
-/* Qalqalah (Blue) */
-.tajweed-id {
-  color: #a8a8a8 !important;
-}
-
-/* Idgham w/ Ghunnah (Gray) */
-.tajweed-m {
-  color: #f28482 !important;
-}
-
-/* Iqlab/Mad Wajib (Redish) */
-.tajweed-sl {
-  color: #ffb703 !important;
-}
-
-/* Silah (Gold) */
-.tajweed-pm {
-  color: #1d3557 !important;
-}
-
-/* Necessary Prolongation */
-.tajweed-n {
-  color: #7cc78f !important;
-}
-
-/* Noon/Meem Mushaddad */
 
 @layer utilities {
   .scrollbar-hide::-webkit-scrollbar {

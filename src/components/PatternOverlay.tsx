@@ -1,8 +1,9 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
+import { memo } from "react";
 
-export default function PatternOverlay() {
+const PatternOverlay = memo(function PatternOverlay() {
     const { theme } = useTheme();
 
     if (!theme.pattern || theme.pattern.type === 'none') {
@@ -14,7 +15,7 @@ export default function PatternOverlay() {
     // SVG Pattern Definitions
     const patterns = {
         stars: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
                 <defs>
                     <pattern id="stars-pattern" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
                         <circle cx="10" cy="10" r="1.5" fill="currentColor" opacity="0.4" />
@@ -28,7 +29,7 @@ export default function PatternOverlay() {
             </svg>
         ),
         waves: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
                 <defs>
                     <pattern id="waves-pattern" x="0" y="0" width="200" height="40" patternUnits="userSpaceOnUse">
                         <path
@@ -51,7 +52,7 @@ export default function PatternOverlay() {
             </svg>
         ),
         geometric: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
                 <defs>
                     <pattern id="geometric-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
                         {/* Islamic Star Pattern */}
@@ -73,7 +74,7 @@ export default function PatternOverlay() {
             </svg>
         ),
         organic: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
                 <defs>
                     <pattern id="organic-pattern" x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
                         {/* Water Ripple Effect */}
@@ -88,7 +89,7 @@ export default function PatternOverlay() {
             </svg>
         ),
         damask: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
                 <defs>
                     <pattern id="damask-pattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
                         {/* Elegant Floral Damask */}
@@ -111,8 +112,10 @@ export default function PatternOverlay() {
     };
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
+        <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{ contentVisibility: 'auto' }}>
             {patterns[type]}
         </div>
     );
-}
+});
+
+export default PatternOverlay;

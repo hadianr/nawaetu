@@ -1,3 +1,4 @@
+import "./tajweed.css";
 import Link from "next/link";
 import { ChevronLeft, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";

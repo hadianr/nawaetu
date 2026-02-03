@@ -47,7 +47,7 @@ export default function NextPrayerWidget() {
         };
 
         checkTime();
-        const timer = setInterval(checkTime, 1000); // Check every second for smoother updates
+        const timer = setInterval(checkTime, 30000); // Check every 30 seconds to reduce main-thread work
         return () => clearInterval(timer);
     }, [data?.nextPrayerTime]);
 

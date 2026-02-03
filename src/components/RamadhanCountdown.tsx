@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import { Moon, Info } from "lucide-react";
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "@/data/missions-data";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+
+// Lazy load dialog for better initial load
+const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
+const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
+const DialogHeader = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogHeader), { ssr: false });
+const DialogTitle = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogTitle), { ssr: false });
 
 interface Props {
     initialDays?: number;
@@ -82,23 +83,31 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             }
         };
 
-        loadProgress();
+        const scheduleProgressLoad = () => {
+            if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+                (window as Window).requestIdleCallback(() => loadProgress(), { timeout: 1000 });
+            } else {
+                setTimeout(loadProgress, 250);
+            }
+        };
+
+        scheduleProgressLoad();
 
         // Listen for internal mission updates (same tab)
-        window.addEventListener("mission_storage_updated", loadProgress);
+        window.addEventListener("mission_storage_updated", scheduleProgressLoad);
 
         // Backup listener: wait a bit to ensure storage is written if sync failed
         const handleBackupUpdate = () => setTimeout(loadProgress, 50);
         window.addEventListener("xp_updated", handleBackupUpdate);
 
         // Listen for storage updates (cross tab)
-        window.addEventListener("storage", loadProgress);
+        window.addEventListener("storage", scheduleProgressLoad);
 
         return () => {
             clearInterval(timer);
-            window.removeEventListener("mission_storage_updated", loadProgress);
+            window.removeEventListener("mission_storage_updated", scheduleProgressLoad);
             window.removeEventListener("xp_updated", handleBackupUpdate);
-            window.removeEventListener("storage", loadProgress);
+            window.removeEventListener("storage", scheduleProgressLoad);
         };
     }, []);
 

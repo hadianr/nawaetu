@@ -6,25 +6,36 @@ import Script from "next/script";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 
+// Optimize font loading with fallback and preload
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+  adjustFontFallback: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false, // Only preload primary font
+  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+  adjustFontFallback: true,
 });
 
 import { Amiri, Lateef } from "next/font/google";
 
+// Arabic fonts - only load when needed
 const amiri = Amiri({
   variable: "--font-amiri",
   subsets: ["arabic"],
   weight: ["400", "700"],
   display: "swap",
+  preload: false,
+  fallback: ['serif'],
+  adjustFontFallback: true,
 });
 
 const lateef = Lateef({
@@ -32,6 +43,9 @@ const lateef = Lateef({
   subsets: ["arabic"],
   weight: ["400", "700"],
   display: "swap",
+  preload: false,
+  fallback: ['serif'],
+  adjustFontFallback: true,
 });
 
 export const viewport: Viewport = {
@@ -103,8 +117,7 @@ import PatternOverlay from "@/components/PatternOverlay";
 import AppOverlays from "@/components/AppOverlays";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
-
-// ... (Metadata export remains)
+import { WebVitals } from "@/components/WebVitals";
 
 export default function RootLayout({
   children,
@@ -112,11 +125,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
+      <head>
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} antialiased`}
         suppressHydrationWarning
       >
+        <WebVitals />
+        {/* Load analytics after page interactive */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
           strategy="lazyOnload"

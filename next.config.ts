@@ -17,6 +17,23 @@ const nextConfig: NextConfig = {
   // Ensure heavy libraries are transpiled to match our modern browserslist
   transpilePackages: ["lucide-react", "date-fns", "lodash"],
   serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
+  
+  // Performance optimizations
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  
+  // Modern output configuration
+  output: 'standalone',
+  
+  // Image optimization
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+  },
+  
   experimental: {
     optimizePackageImports: [
       "lucide-react",
@@ -24,8 +41,59 @@ const nextConfig: NextConfig = {
       "lodash",
       "@radix-ui/react-dialog",
       "@radix-ui/react-slot",
-      "framer-motion"
+      "react-markdown",
+      "@google/generative-ai",
+      "groq-sdk"
     ],
+    // Enable modern optimizations
+    optimizeCss: true,
+    webpackBuildWorker: true,
+  },
+  
+  // Webpack optimizations
+  webpack: (config, { dev, isServer }) => {
+    // Production optimizations
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'deterministic',
+        runtimeChunk: 'single',
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk for react/next
+            framework: {
+              name: 'framework',
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription|next)[\\/]/,
+              priority: 40,
+              enforce: true,
+            },
+            // Common libraries
+            lib: {
+              test: /[\\/]node_modules[\\/]/,
+              name(module: any) {
+                const packageName = module.context.match(
+                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+                )?.[1];
+                return `npm.${packageName?.replace('@', '')}`;
+              },
+              priority: 30,
+              minChunks: 1,
+              reuseExistingChunk: true,
+            },
+            // Shared components
+            commons: {
+              name: 'commons',
+              minChunks: 2,
+              priority: 20,
+            },
+          },
+        },
+      };
+    }
+    return config;
   },
 };
 

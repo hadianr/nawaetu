@@ -42,3 +42,8 @@ next-env.d.ts
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Local Knowledge (Do not push)
+*.md
+!README.md
+!SECURITY.md
