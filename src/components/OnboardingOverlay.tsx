@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -105,13 +104,9 @@ export default function OnboardingOverlay() {
         if (step === 'intro') {
             const slide = SLIDES[currentSlide];
             return (
-                <motion.div
+                <div
                     key={currentSlide}
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -20, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col"
+                    className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col animate-in slide-in-from-right-8 fade-in duration-300"
                 >
                     {/* Background Pattern */}
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
@@ -139,7 +134,7 @@ export default function OnboardingOverlay() {
                         "absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-[50px] opacity-30",
                         slide.bg.replace('/10', '/30')
                     )} />
-                </motion.div>
+                </div>
             );
         }
 
@@ -147,11 +142,9 @@ export default function OnboardingOverlay() {
 
         if (step === 'setup-name') {
             return (
-                <motion.div
+                <div
                     key="setup-name"
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden animate-in zoom-in-95 fade-in duration-300"
                 >
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
                     <div className="relative z-10 w-full space-y-6">
@@ -172,17 +165,15 @@ export default function OnboardingOverlay() {
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
                     </div>
-                </motion.div>
+                </div>
             );
         }
 
         if (step === 'setup-gender') {
             return (
-                <motion.div
+                <div
                     key="setup-gender"
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden animate-in slide-in-from-right-8 fade-in duration-300"
                 >
                     <div className="relative z-10 w-full space-y-4">
                         <div className="text-center mb-2">
@@ -220,17 +211,15 @@ export default function OnboardingOverlay() {
                             </button>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             );
         }
 
         if (step === 'setup-archetype') {
             return (
-                <motion.div
+                <div
                     key="setup-archetype"
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden animate-in slide-in-from-right-8 fade-in duration-300"
                 >
                     <div className="relative z-10 w-full flex-1 flex flex-col">
                         <div className="text-center mb-4">
@@ -263,88 +252,79 @@ export default function OnboardingOverlay() {
                             ))}
                         </div>
                     </div>
-                </motion.div>
+                </div>
             );
         }
     };
 
     return (
-        <AnimatePresence>
-            {isVisible && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4"
-                >
-                    <div className="w-full max-w-sm relative">
-                        {/* Progress Bar - Only valid in Intro Phase */}
-                        {step === 'intro' && (
-                            <div className="absolute top-0 left-0 right-0 flex gap-1 p-1">
-                                {SLIDES.map((_, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={cn(
-                                            "h-1 flex-1 rounded-full transition-all duration-300",
-                                            idx <= currentSlide ? "bg-white" : "bg-white/20"
-                                        )}
-                                    />
-                                ))}
-                            </div>
-                        )}
-
-                        {/* SETUP Progress Dots */}
-                        {step !== 'intro' && (
-                            <div className="absolute top-0 left-0 right-0 flex justify-center gap-2 p-1">
-                                <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
-                                <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
-                                <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-archetype' ? "bg-white w-6" : "bg-white/20")} />
-                            </div>
-                        )}
-
-                        {/* RENDER CURRENT CONTENT */}
-                        {renderContent()}
-
-                        {/* Actions */}
-                        <div className="mt-8 flex items-center justify-between gap-4">
-                            {step === 'intro' && (
-                                <button
-                                    onClick={() => setStep('setup-name')}
-                                    className="text-sm text-slate-500 font-medium px-4 py-2 hover:text-white transition-colors"
-                                >
-                                    Skip Intro
-                                </button>
-                            )}
-
-                            {step !== 'intro' && (
-                                <button
-                                    onClick={() => {
-                                        if (step === 'setup-name') setStep('intro');
-                                        if (step === 'setup-gender') setStep('setup-name');
-                                        if (step === 'setup-archetype') setStep('setup-gender');
-                                    }}
-                                    className="text-sm text-slate-500 font-medium px-4 py-2 hover:text-white transition-colors"
-                                >
-                                    Back
-                                </button>
-                            )}
-
-                            <Button
-                                onClick={handleNext}
-                                disabled={
-                                    (step === 'setup-name' && !name.trim()) ||
-                                    (step === 'setup-gender' && !gender) ||
-                                    (step === 'setup-archetype' && !archetype)
-                                }
-                                className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {step === 'setup-archetype' ? "Selesai & Mulai 🚀" : "Lanjut"}
-                                {step !== 'setup-archetype' && <ChevronRight className="w-4 h-4 ml-1" />}
-                            </Button>
-                        </div>
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-500">
+            <div className="w-full max-w-sm relative">
+                {/* Progress Bar - Only valid in Intro Phase */}
+                {step === 'intro' && (
+                    <div className="absolute top-0 left-0 right-0 flex gap-1 p-1">
+                        {SLIDES.map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={cn(
+                                    "h-1 flex-1 rounded-full transition-all duration-300",
+                                    idx <= currentSlide ? "bg-white" : "bg-white/20"
+                                )}
+                            />
+                        ))}
                     </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                )}
+
+                {/* SETUP Progress Dots */}
+                {step !== 'intro' && (
+                    <div className="absolute top-0 left-0 right-0 flex justify-center gap-2 p-1">
+                        <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full transition-all", step === 'setup-archetype' ? "bg-white w-6" : "bg-white/20")} />
+                    </div>
+                )}
+
+                {/* RENDER CURRENT CONTENT */}
+                {renderContent()}
+
+                {/* Actions */}
+                <div className="mt-8 flex items-center justify-between gap-4">
+                    {step === 'intro' && (
+                        <button
+                            onClick={() => setStep('setup-name')}
+                            className="text-sm text-slate-500 font-medium px-4 py-2 hover:text-white transition-colors"
+                        >
+                            Skip Intro
+                        </button>
+                    )}
+
+                    {step !== 'intro' && (
+                        <button
+                            onClick={() => {
+                                if (step === 'setup-name') setStep('intro');
+                                if (step === 'setup-gender') setStep('setup-name');
+                                if (step === 'setup-archetype') setStep('setup-gender');
+                            }}
+                            className="text-sm text-slate-500 font-medium px-4 py-2 hover:text-white transition-colors"
+                        >
+                            Back
+                        </button>
+                    )}
+
+                    <Button
+                        onClick={handleNext}
+                        disabled={
+                            (step === 'setup-name' && !name.trim()) ||
+                            (step === 'setup-gender' && !gender) ||
+                            (step === 'setup-archetype' && !archetype)
+                        }
+                        className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {step === 'setup-archetype' ? "Selesai & Mulai 🚀" : "Lanjut"}
+                        {step !== 'setup-archetype' && <ChevronRight className="w-4 h-4 ml-1" />}
+                    </Button>
+                </div>
+            </div>
+        </div>
     );
 }

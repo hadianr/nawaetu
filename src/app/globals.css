@@ -47,7 +47,6 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --breakpoint-xs: 389px;
-  --breakpoint-short: (max-height: 670px);
 }
 
 :root {
