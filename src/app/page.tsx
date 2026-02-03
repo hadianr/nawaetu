@@ -9,10 +9,23 @@ import RamadhanCountdown from "@/components/RamadhanCountdown";
 
 
 export const metadata: Metadata = {
-  title: "Jadwal Sholat & Ibadah Harian - Nawaetu",
-  description: "Cek jadwal sholat hari ini, imsakiyah, dan waktu berbuka puasa yang akurat sesuai lokasi Anda.",
+  title: "Nawaetu - #NiatAjaDulu | Habit Tracker Ibadah dengan Gamifikasi",
+  description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak System, XP & Leveling. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
   alternates: {
     canonical: "https://nawaetu.com",
+  },
+  openGraph: {
+    title: "Nawaetu - #NiatAjaDulu",
+    description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak, XP. Luruskan niat, konsisten beramal.",
+    url: "https://nawaetu.com",
+    siteName: "Nawaetu",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nawaetu - #NiatAjaDulu",
+    description: "Habit tracker ibadah dengan gamifikasi! Daily Missions, Streak System, Al Quran, & Jadwal Sholat.",
   },
 };
 
