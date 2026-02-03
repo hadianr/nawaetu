@@ -249,7 +249,7 @@ export default function MissionsWidget() {
                     "text-[10px] px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
                     completedCount === missions.length
                         ? "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]"
-                        : "bg-white/5 border-white/10 text-white/50"
+                        : "bg-white/5 border-white/10 text-white/80"
                 )}>
                     {completedCount}/{missions.length} Selesai
                 </div>

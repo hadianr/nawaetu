@@ -66,7 +66,7 @@ export default function PrayerTimesDisplay() {
                     <div className="pt-2 w-full max-w-xs space-y-3">
                         <Button
                             onClick={refreshLocation}
-                            className="w-full h-12 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold rounded-xl shadow-[0_0_20px_rgba(var(--color-primary),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full h-12 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-[rgb(var(--color-primary-foreground))] font-bold rounded-xl shadow-[0_0_20px_rgba(var(--color-primary),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
                         >
                             <Navigation className="w-4 h-4 fill-current" />
                             Aktifkan Lokasi
