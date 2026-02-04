@@ -1,15 +1,9 @@
 import SurahList, { Chapter } from "@/components/quran/SurahList";
+import { getKemenagChapters } from "@/lib/kemenag-api";
 
 async function getChapters(): Promise<Chapter[]> {
-    // Add a small artificial delay to demonstrate streaming if needed, 
-    // but simpler to just fetch.
-    // The API is fast, but Suspense will handle the network duration.
-    const res = await fetch("https://api.quran.com/api/v4/chapters?language=id");
-    if (!res.ok) {
-        throw new Error("Failed to fetch chapters");
-    }
-    const data = await res.json();
-    return data.chapters;
+    // Using Kemenag API for authentic Indonesian Quran standard
+    return await getKemenagChapters();
 }
 
 export default async function QuranBrowser() {

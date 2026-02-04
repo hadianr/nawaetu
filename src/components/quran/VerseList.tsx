@@ -1,7 +1,7 @@
 "use client";
 
 import TajweedLegend from "./TajweedLegend";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash, Headphones } from 'lucide-react';
@@ -74,14 +74,24 @@ tajweed[class*="madda"], .tajweed-text.m, .tajweed-text.tajweed-m { color: #fb71
 tajweed[class*="ham_wasl"], tajweed[class*="slnt"], .tajweed-text.slient { color: #facc15!important; font-weight: bold!important; }
 .tajweed-text.sl, .tajweed-text.tajweed-sl { color: #facc15!important; font-weight: bold!important; }
 .tajweed-text.pp, .tajweed-text.tajweed-pp { color: #fb923c!important; font-weight: bold!important; }
+/* Waqof marks styling - Pause indicators */
+[data-waqf], waqf, .waqf { color: #a78bfa!important; font-weight: bold!important; }
+/* Arabic End of Ayah and pause marks */
+[class*="waqf"], [class*="pause"], [class*="stop"] { display: inline!important; margin: 0 2px!important; }
 `;
 
 const cleanTajweedText = (htmlText: string) => {
     if (!htmlText) return '';
     let cleaned = htmlText;
-    cleaned = cleaned.replace(/<span\s+class=end>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    cleaned = cleaned.replace(/<span[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    cleaned = cleaned.replace(/[\u0660-\u0669\u06DD]+\s*$/u, '');
+    
+    // Remove verse number spans at the end only
+    // Do NOT remove waqof marks - preserve all Arabic characters and diacritics
+    cleaned = cleaned.replace(/<span\s+class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
+    cleaned = cleaned.replace(/<span[^>]*class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
+    
+    // Remove only trailing verse numbers (1-3 digits)
+    cleaned = cleaned.replace(/[\u0660-\u0669]{1,3}\s*$/u, '');
+    
     return cleaned.trim();
 };
 
@@ -114,6 +124,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
+    const [autoplayExecuted, setAutoplayExecuted] = useState(false);
 
     // Settings State
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -121,30 +132,31 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [scriptType, setScriptType] = useState<'tajweed' | 'indopak'>('indopak'); // Default to Indopak for clarity
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
+    const [isPending, startTransition] = useTransition();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const autoplay = searchParams.get('autoplay') === 'true';
 
-    const handlePerPageChange = (value: number) => {
+    const handlePerPageChange = useCallback((value: number) => {
         setPerPage(value);
         document.cookie = `settings_verses_per_page=${value}; path=/; max-age=31536000`; // 1 year
-        router.refresh();
-    };
+        startTransition(() => router.refresh());
+    }, [router]);
 
     // Interactive State
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [activeVerseForShare, setActiveVerseForShare] = useState<Verse | null>(null);
 
-    const handleReciterChange = (value: string) => {
+    const handleReciterChange = useCallback((value: string) => {
         // Update cookie for server-side
         document.cookie = `settings_reciter=${value}; path=/; max-age=31536000`;
         // Update localStorage for client-side persistence (Settings page sync)
         localStorage.setItem("settings_reciter", value);
         // Refresh to get new audio URLs from VerseBrowser
-        router.refresh();
-    };
+        startTransition(() => router.refresh());
+    }, [router]);
 
     // Bookmarking
     const { isBookmarked: checkIsBookmarked, getBookmark } = useBookmarks();
@@ -166,16 +178,17 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
     }, []);
 
-    // Handle Autoplay from Surah List
+    // Handle Autoplay from Surah List - Only on initial page load
     useEffect(() => {
-        if (autoplay && verses.length > 0 && !playingVerseKey) {
+        if (autoplay && verses.length > 0 && !playingVerseKey && !autoplayExecuted) {
             // Small delay to ensure everything is ready
             const timer = setTimeout(() => {
                 handleSurahPlay();
+                setAutoplayExecuted(true); // Prevent future auto-plays
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [autoplay, verses]); // Run when verses are loaded if autoplay is true
+    }, [autoplay]); // Only depend on autoplay, not verses
 
     // Scroll to verse handler
     const scrollToVerse = (verseNum: number) => {
@@ -619,8 +632,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                                     <button
                                                         key={num}
                                                         onClick={() => handlePerPageChange(num)}
-                                                        className={`h-8 rounded-lg text-xs font-bold transition-all ${perPage === num ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                                                        disabled={isPending}
+                                                        className={`h-8 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1 ${perPage === num ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-500 hover:text-slate-300'} ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                     >
+                                                        {isPending && perPage === num ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
                                                         {num}
                                                     </button>
                                                 ))}
@@ -630,10 +645,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         {/* Qari Selection */}
                                         <div className="space-y-3">
                                             <Label className="text-slate-400 text-xs uppercase tracking-wider">Pilih Qari</Label>
-                                            <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange}>
-                                                <SelectTrigger className="w-full bg-white/5 border-white/10 text-white rounded-xl h-12">
+                                            <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
+                                                <SelectTrigger className={`w-full bg-white/5 border-white/10 text-white rounded-xl h-12 ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                     <div className="flex items-center gap-3">
-                                                        <Headphones className="h-4 w-4 text-sky-400" />
+                                                        {isPending ? <Loader2 className="h-4 w-4 animate-spin text-sky-400" /> : <Headphones className="h-4 w-4 text-sky-400" />}
                                                         <SelectValue placeholder="Pilih Qari" />
                                                     </div>
                                                 </SelectTrigger>

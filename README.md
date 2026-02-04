@@ -38,7 +38,8 @@ Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kam
 *   **Tajwid Color-Coded**: Panduan warna tajwid interaktif (Ghunnah, Qalqalah, Mad)
 *   **Mushaf & List View**: Pilih tampilan senyaman mushaf cetak atau scroll modern
 *   **Bookmark & Last Read**: Otomatis nyimpen posisi bacaan terakhir
-*   **Translation**: Terjemahan Indonesia langsung di bawah ayat
+*   **Translation**: Terjemahan Indonesia (Kemenag) langsung di bawah ayat
+*   **Sumber Mushaf**: Arabic text menggunakan Kemenag + Uthmani (harakat lengkap) untuk tampilan yang akurat
 
 ### 3. 🕌 Prayer Times - Gak Bakal Kelewat Lagi
 *   **Akurat & Real-time**: Jadwal sholat otomatis sesuai lokasi GPS
@@ -117,7 +118,8 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 *   **Google Gemini 2.0 Flash** - Fast & accurate AI responses
 *   **Groq Llama 3.3 70B** - High-performance inference
 *   **Prayer Times API** - Accurate prayer schedules
-*   **Tafsir API** - Indonesian Quran interpretation
+*   **Kemenag Quran API** - Surah, terjemahan & tafsir Indonesia
+*   **Quran.com API (Uthmani)** - Arabic text dengan harakat lengkap
 
 ### Styling & UI
 *   **Tailwind CSS v4** - Utility-first CSS framework
