@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/context/LocaleContext";
 
 interface PrayerTimeCardProps {
     hijriDate: string;
@@ -13,14 +14,16 @@ export default function PrayerTimeCard({
     prayerTimes,
     nextPrayer,
 }: PrayerTimeCardProps) {
+    const { t } = useLocale();
+    
     const prayers = [
-        { key: "Imsak", label: "Imsak" },
-        { key: "Fajr", label: "Subuh" },
-        { key: "Sunrise", label: "Terbit" }, // Distinct
-        { key: "Dhuhr", label: "Dzuhur" },
-        { key: "Asr", label: "Ashar" },
-        { key: "Maghrib", label: "Maghrib" },
-        { key: "Isha", label: "Isya" },
+        { key: "Imsak", label: t.prayerImsak },
+        { key: "Fajr", label: t.prayerFajr },
+        { key: "Sunrise", label: t.prayerSunrise },
+        { key: "Dhuhr", label: t.prayerDhuhr },
+        { key: "Asr", label: t.prayerAsr },
+        { key: "Maghrib", label: t.prayerMaghrib },
+        { key: "Isha", label: t.prayerIsha },
     ];
 
     return (

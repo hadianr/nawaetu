@@ -2,36 +2,38 @@
 
 import { useState, useEffect } from "react";
 import { Quote } from "lucide-react";
+import { useLocale } from "@/context/LocaleContext";
 
 interface QuoteData {
     text: string;
     source: string;
 }
 
-const QUOTES: QuoteData[] = [
-    { text: "Maka sesungguhnya bersama kesulitan ada kemudahan.", source: "QS. Al-Insyirah: 5" },
-    { text: "Dan berikanlah berita gembira kepada orang-orang yang sabar.", source: "QS. Al-Baqarah: 155" },
-    { text: "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.", source: "QS. Al-Baqarah: 286" },
-    { text: "Barangsiapa bertakwa kepada Allah niscaya Dia akan mengadakan baginya jalan keluar.", source: "QS. At-Talaq: 2" },
-    { text: "Dan Dia memberinya rezeki dari arah yang tiada disangka-sangkanya.", source: "QS. At-Talaq: 3" },
-    { text: "Ingatlah, hanya dengan mengingati Allah-lah hati menjadi tenteram.", source: "QS. Ar-Ra'd: 28" },
-    { text: "Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia.", source: "HR. Ahmad" },
-    { text: "Senyummu di hadapan saudaramu adalah sedekah.", source: "HR. Tirmidzi" },
-    { text: "Janganlah kamu marah, maka bagimu surga.", source: "HR. Thabrani" },
-    { text: "Sholat itu adalah tiang agama.", source: "HR. Tirmidzi" }
-];
-
 export default function QuoteOfDay() {
-    const [quote, setQuote] = useState<QuoteData | null>(null);
+    const { t } = useLocale();
+    const [quoteIndex, setQuoteIndex] = useState<number>(0);
+
+    const QUOTES: QuoteData[] = [
+        { text: t.quoteText1, source: t.quoteSource1 },
+        { text: t.quoteText2, source: t.quoteSource2 },
+        { text: t.quoteText3, source: t.quoteSource3 },
+        { text: t.quoteText4, source: t.quoteSource4 },
+        { text: t.quoteText5, source: t.quoteSource5 },
+        { text: t.quoteText6, source: t.quoteSource6 },
+        { text: t.quoteText7, source: t.quoteSource7 },
+        { text: t.quoteText8, source: t.quoteSource8 },
+        { text: t.quoteText9, source: t.quoteSource9 },
+        { text: t.quoteText10, source: t.quoteSource10 },
+    ];
 
     useEffect(() => {
         // Simple daily rotation based on day of year
         const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
         const index = dayOfYear % QUOTES.length;
-        setQuote(QUOTES[index]);
+        setQuoteIndex(index);
     }, []);
 
-    if (!quote) return null;
+    const quote = QUOTES[quoteIndex];
 
     return (
         <div className="w-full max-w-md mt-6 mb-2 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
