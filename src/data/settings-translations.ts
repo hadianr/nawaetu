@@ -521,7 +521,7 @@ export const SETTINGS_TRANSLATIONS = {
     homeLastReadStartTitle: "Start Recitation",
     homeLastReadStartSubtitle: "Read the Quran today",
     homeLastReadLabel: "Last Read",
-    homeMissionFocusTitle: "Worship Focus",
+    homeMissionFocusTitle: "Daily Goals",
     homeMissionDailyTarget: "Your daily target",
     homeMissionCompleted: "Completed",
     homeMissionViewAll: "View All Missions",
