@@ -245,6 +245,17 @@ export const SETTINGS_TRANSLATIONS = {
     missionEmptySeasonalTitle: "Belum ada misi khusus bulan ini.",
     missionEmptySeasonalDesc: "Nantikan misi spesial Ramadhan segera!",
 
+    // Mission Completion Options
+    missionCompletionAlone: "Sholat Sendiri",
+    missionCompletionCongregation: "Berjamaah di Masjid",
+
+    // Mission Hukum Labels
+    hukumWajib: "Wajib",
+    hukumSunnah: "Sunnah",
+    hukumMubah: "Mubah",
+    hukumMakruh: "Makruh",
+    hukumHaram: "Haram",
+
     // Quran Browser
     quranLastRead: "Terakhir Dibaca",
     quranVerse: "Ayat",
@@ -584,6 +595,17 @@ export const SETTINGS_TRANSLATIONS = {
     missionEmptyCategory: "No missions in this category yet.",
     missionEmptySeasonalTitle: "No special missions this month.",
     missionEmptySeasonalDesc: "Stay tuned for special Ramadhan missions soon!",
+
+    // Mission Completion Options
+    missionCompletionAlone: "Pray Alone",
+    missionCompletionCongregation: "Congregational at Mosque",
+
+    // Mission Hukum Labels
+    hukumWajib: "Obligatory",
+    hukumSunnah: "Recommended",
+    hukumMubah: "Permissible",
+    hukumMakruh: "Disliked",
+    hukumHaram: "Forbidden",
 
     // Quran Browser
     quranLastRead: "Last Read",

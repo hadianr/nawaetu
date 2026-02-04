@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Moon, Info } from "lucide-react";
-import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "@/data/missions-data";
+import { RAMADHAN_MISSIONS, SYABAN_MISSIONS, getLocalizedMission } from "@/data/missions-data";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({
         days: initialDays,

@@ -1,6 +1,8 @@
 // Missions data with gender-specific tasks based on Al-Quran and Sunnah
 // Includes validation types for hybrid tracking system
 
+import { getMissionTranslation } from './missions-translations';
+
 export type Gender = 'male' | 'female' | null;
 export type ValidationType = 'auto' | 'time' | 'day' | 'manual';
 
@@ -696,4 +698,44 @@ export function getSeasonalMissions(hijriDateStr?: string): Mission[] {
 
     // Default or other months
     return [];
+}
+
+// Helper function to get localized mission
+export function getLocalizedMission(mission: Mission, locale: string): Mission {
+    const translation = getMissionTranslation(mission.id, locale);
+    
+    if (translation) {
+        const localizedMission = {
+            ...mission,
+            title: translation.title,
+            description: translation.description
+        };
+
+        // Localize completion options if they exist
+        if (mission.completionOptions) {
+            localizedMission.completionOptions = mission.completionOptions.map(option => ({
+                ...option,
+                label: option.label === 'Sholat Sendiri' 
+                    ? (locale === 'en' ? 'Pray Alone' : 'Sholat Sendiri')
+                    : (locale === 'en' ? 'Congregational at Mosque' : 'Berjamaah di Masjid')
+            }));
+        }
+
+        return localizedMission;
+    }
+    
+    // Fallback to original (Indonesian) if translation not found
+    return mission;
+}
+
+// Helper function to get all missions with translations
+export function getAllMissionsLocalized(locale: string): Mission[] {
+    return [...UNIVERSAL_MISSIONS, ...MALE_MISSIONS, ...FEMALE_MISSIONS]
+        .map(mission => getLocalizedMission(mission, locale));
+}
+
+// Helper function to get seasonal missions with translations
+export function getSeasonalMissionsLocalized(hijriDateStr: string, locale: string): Mission[] {
+    const missions = getSeasonalMissions(hijriDateStr);
+    return missions.map(mission => getLocalizedMission(mission, locale));
 }

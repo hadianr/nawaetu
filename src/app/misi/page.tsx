@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
-import { getMissionsForGender, Mission, Gender } from "@/data/missions-data";
+import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions-data";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import Link from "next/link";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
 import { checkMissionValidation } from "@/lib/mission-utils";
+import { useLocale } from "@/context/LocaleContext";
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -19,7 +20,19 @@ interface CompletedMissions {
 }
 
 export default function MisiPage() {
+    const { t, locale } = useLocale();
     const [gender, setGender] = useState<Gender>(null);
+
+    const getHukumLabel = (hukum: string) => {
+        const labels: Record<string, keyof typeof t> = {
+            'wajib': 'hukumWajib',
+            'sunnah': 'hukumSunnah',
+            'mubah': 'hukumMubah',
+            'makruh': 'hukumMakruh',
+            'harram': 'hukumHaram'
+        };
+        return t[labels[hukum]] || hukum;
+    };
     const [missions, setMissions] = useState<Mission[]>([]);
     const [completed, setCompleted] = useState<CompletedMissions>({});
     const [today, setToday] = useState<string>("");
@@ -35,7 +48,10 @@ export default function MisiPage() {
 
         const savedGender = localStorage.getItem("user_gender") as Gender;
         setGender(savedGender);
-        setMissions(getMissionsForGender(savedGender));
+        
+        const allMissions = getMissionsForGender(savedGender);
+        const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
+        setMissions(localizedMissions);
 
         const savedCompleted = localStorage.getItem("completed_missions");
         if (savedCompleted) {
@@ -43,7 +59,7 @@ export default function MisiPage() {
                 setCompleted(JSON.parse(savedCompleted));
             } catch (e) { }
         }
-    }, []);
+    }, [locale]);
 
     const isMissionCompletedToday = (missionId: string) => {
         return completed[missionId]?.date === today;
@@ -163,7 +179,7 @@ export default function MisiPage() {
                                     ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                     : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                             )}>
-                                {mission.hukum}
+                                {getHukumLabel(mission.hukum)}
                             </span>
                         </div>
                         {isGenderSpecific && (

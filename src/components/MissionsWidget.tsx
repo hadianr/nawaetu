@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Check, ChevronRight, Sparkles, AlertCircle } from "lucide-react";
-import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender } from "@/data/missions-data";
+import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions-data";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ interface CompletedMissions {
 }
 
 export default function MissionsWidget() {
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
     const [gender, setGender] = useState<Gender>(null);
     const [missions, setMissions] = useState<Mission[]>([]);
     const [completed, setCompleted] = useState<CompletedMissions>({});
@@ -62,9 +62,11 @@ export default function MissionsWidget() {
         const allMissions = [...seasonal, ...weekly, ...daily];
         const filteredMissions = filterMissionsByArchetype(allMissions, savedArchetype);
 
-        setMissions(filteredMissions);
+        // Localize missions
+        const localizedMissions = filteredMissions.map(mission => getLocalizedMission(mission, locale));
+        setMissions(localizedMissions);
 
-    }, [prayerData?.hijriDate]); // Refresh seasonal missions when hijri date is available
+    }, [prayerData?.hijriDate, locale]); // Refresh when locale or hijri date changes
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
         const record = completed[missionId];
