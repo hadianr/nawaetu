@@ -20,6 +20,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import dynamic from "next/dynamic";
 import { Chapter } from "@/components/quran/SurahList";
+import { useLocale } from "@/context/LocaleContext";
 
 const VerseShareDialog = dynamic(() => import("./VerseShareDialog"), { ssr: false });
 import { AyahMarker } from "./AyahMarker";
@@ -138,6 +139,7 @@ const getVerseFontClass = (script: string, size: string) => {
 };
 
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
+    const { t } = useLocale();
     // --- State ---
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -538,7 +540,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 {chapter.name_simple}
                             </h1>
                             <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
-                                {chapter.revelation_place} • {chapter.verses_count} Ayat
+                                {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah} • {chapter.verses_count} {t.quranVerseCount}
                             </p>
                         </div>
                     </div>
@@ -552,20 +554,20 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-[10px] md:text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
                             >
                                 <Play className="h-3 w-3 fill-current" />
-                                <span className="hidden md:inline">Putar Surat</span>
+                                <span className="hidden md:inline">{t.quranPlaySurah}</span>
                             </button>
                         )}
 
                         {/* Jump to Verse Button */}
                         <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
                             <DialogTrigger asChild>
-                                <button className="p-2 rounded-full hover:bg-white/10 text-slate-300 transition-colors" aria-label="Loncat ke Ayat">
+                                <button className="p-2 rounded-full hover:bg-white/10 text-slate-300 transition-colors" aria-label={t.quranJumpToVerse}>
                                     <CornerDownRight className="h-5 w-5" />
                                 </button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-xs bg-[#0f172a]/95 backdrop-blur-xl border-white/10 text-white p-6 gap-6 shadow-2xl">
                                 <DialogHeader>
-                                    <DialogTitle className="text-center text-xl font-bold">Loncat ke Ayat</DialogTitle>
+                                    <DialogTitle className="text-center text-xl font-bold">{t.quranJumpToVerseTitle}</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleSearchSubmit} className="flex flex-col gap-4">
                                     <div className="relative flex items-center justify-center">
@@ -582,10 +584,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         />
                                     </div>
                                     <p className="text-xs text-center text-slate-400 font-medium uppercase tracking-wider">
-                                        Surat {chapter.name_simple} • 1 - {chapter.verses_count || 286}
+                                        {chapter.name_simple} • 1 - {chapter.verses_count || 286}
                                     </p>
                                     <Button type="submit" className="w-full h-12 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all active:scale-95">
-                                        Pergi ke Ayat
+                                        {t.quranGoToVerse}
                                     </Button>
                                 </form>
                             </DialogContent>
@@ -601,53 +603,53 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 </DialogTrigger>
                                 <DialogContent className="border-none bg-[#0f172a]/95 backdrop-blur-xl text-white max-w-sm">
                                     <DialogHeader>
-                                        <DialogTitle>Pengaturan Tampilan</DialogTitle>
+                                        <DialogTitle>{t.quranSettingsTitle}</DialogTitle>
                                     </DialogHeader>
                                     <div className="space-y-6 py-4">
                                         {/* View Mode */}
                                         <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Mode Baca</Label>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranModeRead}</Label>
                                             <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
                                                 <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
-                                                    <AlignJustify className="h-4 w-4" /> List
+                                                    <AlignJustify className="h-4 w-4" /> {t.quranModeList}
                                                 </button>
                                                 <button onClick={() => setViewMode('mushaf')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
-                                                    <BookOpen className="h-4 w-4" /> Mushaf
+                                                    <BookOpen className="h-4 w-4" /> {t.quranModeMushaf}
                                                 </button>
                                             </div>
                                         </div>
                                         {/* Script Type Toggle */}
                                         <div className="space-y-4">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Jenis Teks Arab</Label>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranScriptType}</Label>
                                             <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
                                                 <button
                                                     onClick={() => setScriptType('indopak')}
                                                     className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                                                 >
                                                     <span className="font-bold text-lg mb-1 font-amiri">بِسْمِ</span>
-                                                    <span className="text-[10px] md:text-xs">Standar Indonesia</span>
+                                                    <span className="text-[10px] md:text-xs">{t.quranScriptStandard}</span>
                                                 </button>
                                                 <button
                                                     onClick={() => setScriptType('tajweed')}
                                                     className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                                                 >
                                                     <span className="font-bold text-lg mb-1 font-amiri"><span style={{ color: '#fb923c' }}>بِسْ</span><span style={{ color: '#4ade80' }}>مِ</span></span>
-                                                    <span className="text-[10px] md:text-xs">Tajweed Berwarna</span>
+                                                    <span className="text-[10px] md:text-xs">{t.quranScriptTajweed}</span>
                                                 </button>
                                             </div>
                                         </div>
 
                                         {/* Toggles */}
                                         <div className="space-y-4">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Tampilan Lainnya</Label>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranOtherDisplay}</Label>
                                             <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
-                                                <div className="flex items-center gap-3"><Type className="h-5 w-5 text-indigo-400" /><span className="font-medium">Latin / Transliterasi</span></div>
+                                                <div className="flex items-center gap-3"><Type className="h-5 w-5 text-indigo-400" /><span className="font-medium">{t.quranTransliteration}</span></div>
                                                 <button onClick={() => setShowTransliteration(!showTransliteration)} className={`w-11 h-6 rounded-full transition-colors relative ${showTransliteration ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-700'}`}><span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${showTransliteration ? 'translate-x-5' : 'translate-x-0'}`} /></button>
                                             </div>
                                         </div>
                                         {/* Font Size */}
                                         <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Ukuran Huruf Arab</Label>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranFontSize}</Label>
                                             <div className="flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
                                                 <button onClick={() => setFontSize('small')} className={`flex-1 h-8 rounded-lg text-sm font-bold ${fontSize === 'small' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A-</button>
                                                 <button onClick={() => setFontSize('medium')} className={`flex-1 h-8 rounded-lg text-base font-bold ${fontSize === 'medium' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A</button>
@@ -657,7 +659,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                                         {/* Verses Per Page */}
                                         <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Ayat per Halaman</Label>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranVersesPerPage}</Label>
                                             <div className="grid grid-cols-4 gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
                                                 {[10, 20, 30, 50].map((num) => (
                                                     <button
@@ -675,12 +677,12 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                                         {/* Qari Selection */}
                                         <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">Pilih Qari</Label>
+                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranSelectQari}</Label>
                                             <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
                                                 <SelectTrigger className={`w-full bg-white/5 border-white/10 text-white rounded-xl h-12 ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                     <div className="flex items-center gap-3">
                                                         {isPending ? <Loader2 className="h-4 w-4 animate-spin text-sky-400" /> : <Headphones className="h-4 w-4 text-sky-400" />}
-                                                        <SelectValue placeholder="Pilih Qari" />
+                                                        <SelectValue placeholder={t.quranSelectQari} />
                                                     </div>
                                                 </SelectTrigger>
                                                 <SelectContent className="bg-slate-900 border-white/10 text-white">
@@ -737,10 +739,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
                                 <ChevronLeft className="h-4 w-4 md:mr-2" />
-                                <span className="hidden md:inline">Sebelumnya</span>
+                                <span className="hidden md:inline">{t.quranPrevious}</span>
                             </Button>
                             <span className="text-xs md:text-sm font-medium text-slate-400">
-                                <span className="hidden md:inline">Halaman </span>{currentPage}/{totalPages}
+                                <span className="hidden md:inline">{t.quranPage} </span>{currentPage}{t.quranOf}{totalPages}
                             </span>
                             <Button
                                 variant="outline"
@@ -748,7 +750,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 disabled={currentPage === totalPages}
                                 className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
-                                <span className="hidden md:inline">Selanjutnya</span>
+                                <span className="hidden md:inline">{t.quranNext}</span>
                                 <ChevronRight className="h-4 w-4 md:ml-2" />
                             </Button>
                         </div>
@@ -758,7 +760,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     <div className="grid grid-cols-2 gap-2 mt-2 pt-4 border-t border-white/5 px-1 md:px-0">
                         {chapter.id > 1 ? (
                             <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Sebelumnya</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">{t.quranPrevious}</span>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5 min-w-0 pr-1">
                                         <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
@@ -775,7 +777,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                         {chapter.id < 114 ? (
                             <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Berikutnya</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">{t.quranNext}</span>
                                 <div className="flex items-center justify-between flex-row-reverse">
                                     <div className="flex items-center gap-1.5 flex-row-reverse min-w-0 pl-1">
                                         <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
@@ -882,10 +884,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
                                 <ChevronLeft className="h-4 w-4 md:mr-2" />
-                                <span className="hidden md:inline">Sebelumnya</span>
+                                <span className="hidden md:inline">{t.quranPrevious}</span>
                             </Button>
                             <span className="text-xs md:text-sm font-medium text-slate-400">
-                                <span className="hidden md:inline">Halaman </span>{currentPage}/{totalPages}
+                                <span className="hidden md:inline">{t.quranPage} </span>{currentPage}{t.quranOf}{totalPages}
                             </span>
                             <Button
                                 variant="outline"
@@ -893,7 +895,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 disabled={currentPage === totalPages}
                                 className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 h-8 px-2 md:px-4"
                             >
-                                <span className="hidden md:inline">Selanjutnya</span>
+                                <span className="hidden md:inline">{t.quranNext}</span>
                                 <ChevronRight className="h-4 w-4 md:ml-2" />
                             </Button>
                         </div>
@@ -903,7 +905,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     <div className="grid grid-cols-2 gap-2 mt-2 pt-4 border-t border-white/5 px-1 md:px-0">
                         {chapter.id > 1 ? (
                             <Link href={`/quran/${chapter.id - 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Sebelumnya</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">{t.quranPrevious}</span>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5 min-w-0 pr-1">
                                         <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">
@@ -920,7 +922,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                         {chapter.id < 114 ? (
                             <Link href={`/quran/${chapter.id + 1}`} className="group flex flex-col p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 transition-all duration-300 text-right">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">Berikutnya</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 group-hover:text-[rgb(var(--color-primary))]">{t.quranNext}</span>
                                 <div className="flex items-center justify-between flex-row-reverse">
                                     <div className="flex items-center gap-1.5 flex-row-reverse min-w-0 pl-1">
                                         <div className="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[rgb(var(--color-primary))]/20 transition-colors">

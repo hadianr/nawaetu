@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, Bookmark, ChevronRight, Clock, Play } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useLocale } from "@/context/LocaleContext";
 
 export interface DateType {
     hijri: {
@@ -60,6 +61,7 @@ export interface Chapter {
         language_name: string;
         name: string;
     };
+    translated_name_en?: string;
 }
 
 interface SurahListProps {
@@ -67,6 +69,7 @@ interface SurahListProps {
 }
 
 export default function SurahList({ chapters }: SurahListProps) {
+    const { t, locale } = useLocale();
     const [searchQuery, setSearchQuery] = useState("");
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number; surahName: string; timestamp: number } | null>(null);
     const [bookmarkCount, setBookmarkCount] = useState(0);
@@ -99,7 +102,8 @@ export default function SurahList({ chapters }: SurahListProps) {
 
     const filteredChapters = chapters.filter((chapter) =>
         chapter.name_simple.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        chapter.translated_name.name.toLowerCase().includes(searchQuery.toLowerCase())
+        chapter.translated_name.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (chapter.translated_name_en && chapter.translated_name_en.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     return (
@@ -124,7 +128,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     <div className="flex items-center gap-2">
                                         <div className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse" />
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-primary-light))]">
-                                            Terakhir Dibaca
+                                            {t.quranLastRead}
                                         </span>
                                     </div>
                                     <div>
@@ -132,7 +136,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             {safeLastRead.surahName}
                                         </h3>
                                         <p className="text-xs md:text-sm text-slate-400 font-medium mt-0.5">
-                                            Ayat {safeLastRead.verseId}
+                                            {t.quranVerse} {safeLastRead.verseId}
                                         </p>
                                     </div>
                                 </div>
@@ -145,8 +149,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                     );
                 })() : (
                     <div className="col-span-2 rounded-3xl border border-white/5 bg-[#0f172a]/40 p-5 flex flex-col justify-center gap-1">
-                        <h3 className="text-base font-bold text-white/50">Belum ada riwayat</h3>
-                        <p className="text-xs text-slate-500">Mulai membaca sekarang.</p>
+                        <h3 className="text-base font-bold text-white/50">{t.quranNoHistory}</h3>
+                        <p className="text-xs text-slate-500">{t.quranStartReading}</p>
                     </div>
                 )}
 
@@ -163,9 +167,9 @@ export default function SurahList({ chapters }: SurahListProps) {
                         </div>
 
                         <div className="flex-1">
-                            <h3 className="text-base md:text-lg font-bold text-white mb-0.5">Tanda Baca</h3>
+                            <h3 className="text-base md:text-lg font-bold text-white mb-0.5">{t.quranBookmarks}</h3>
                             <p className="text-xs text-slate-400 group-hover:text-slate-300">
-                                {bookmarkCount} ayat tersimpan
+                                {bookmarkCount} {t.quranVersesSaved}
                             </p>
                         </div>
 
@@ -180,7 +184,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                 <div className="relative bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center px-4 py-2.5 shadow-lg focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/30 transition-all">
                     <Search className="w-4 h-4 text-slate-400 group-focus-within:text-[rgb(var(--color-primary))] transition-colors" />
                     <Input
-                        placeholder="Cari Surat (e.g. Al-Kahf) atau Arti..."
+                        placeholder={t.quranSearchPlaceholder}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="border-none bg-transparent text-sm text-white placeholder:text-slate-500 focus-visible:ring-0 px-3 h-auto py-1"
@@ -190,9 +194,9 @@ export default function SurahList({ chapters }: SurahListProps) {
 
             {/* Surah List Header */}
             <div className="flex items-center justify-between px-2 pt-1">
-                <h2 className="text-xl font-bold text-white">Surat-Surat</h2>
+                <h2 className="text-xl font-bold text-white">{t.quranSurahList}</h2>
                 <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">
-                    {filteredChapters.length} SURAT
+                    {filteredChapters.length} {t.quranSurahCount}
                 </span>
             </div>
 
@@ -238,7 +242,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                             ? 'text-[rgb(var(--color-primary))]/80'
                                             : 'text-[rgb(var(--color-primary-light))]/80'
                                             }`}>
-                                            {chapter.translated_name.name}
+                                            {locale === 'en' && chapter.translated_name_en ? chapter.translated_name_en : chapter.translated_name.name}
                                         </span>
                                     </div>
                                 </div>
@@ -246,7 +250,7 @@ export default function SurahList({ chapters }: SurahListProps) {
 
                             <div className="flex items-end justify-between w-full">
                                 <p className="text-[9px] text-white/40">
-                                    {chapter.verses_count} Ayat • {chapter.revelation_place === "makkah" ? "Mekah" : "Madinah"}
+                                    {chapter.verses_count} {t.quranVerseCount} • {chapter.revelation_place === "makkah" ? t.quranMakkah : t.quranMadinah}
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className="font-amiri text-lg text-white/90 leading-none">

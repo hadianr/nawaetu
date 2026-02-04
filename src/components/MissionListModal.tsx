@@ -89,7 +89,7 @@ export default function MissionListModal({
         if (sortedList.length === 0) {
             return (
                 <div className="text-center py-8 text-white/40 text-sm">
-                    Belum ada misi di kategori ini.
+                    {t.missionEmptyCategory}
                 </div>
             );
         }
@@ -213,20 +213,20 @@ export default function MissionListModal({
                                 value="all"
                                 className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-white data-[state=active]:text-black text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
                             >
-                                Semua
+                                {t.missionTabAll}
                             </TabsTrigger>
                             <TabsTrigger
                                 value="daily"
                                 className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:border-blue-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
                             >
-                                📋 Harian
+                                {t.missionTabDaily}
                             </TabsTrigger>
 
                             <TabsTrigger
                                 value="weekly"
                                 className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-purple-500 data-[state=active]:text-white data-[state=active]:border-purple-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
                             >
-                                📅 Mingguan
+                                {t.missionTabWeekly}
                             </TabsTrigger>
 
                             <TabsTrigger
@@ -238,7 +238,7 @@ export default function MissionListModal({
                                         : "data-[state=active]:bg-amber-500 data-[state=active]:text-black"
                                 )}
                             >
-                                {isRamadhan ? "🌙 Ramadhan" : isSyaban ? "🌙 Sya'ban" : "🌙 Musiman"}
+                                {isRamadhan ? t.missionTabRamadhan : isSyaban ? t.missionTabSyaban : t.missionTabSeasonal}
                             </TabsTrigger>
                         </TabsList>
                     </div>
@@ -252,8 +252,8 @@ export default function MissionListModal({
                             {seasonalMissions.length > 0 ? renderMissionList(seasonalMissions) : (
                                 <div className="flex flex-col items-center justify-center h-48 text-center px-4">
                                     <Sparkles className="w-8 h-8 text-white/20 mb-3" />
-                                    <p className="text-sm font-medium text-white/60">Belum ada misi khusus bulan ini.</p>
-                                    <p className="text-xs text-white/40 mt-1">Nantikan misi spesial Ramadhan segera!</p>
+                                    <p className="text-sm font-medium text-white/60">{t.missionEmptySeasonalTitle}</p>
+                                    <p className="text-xs text-white/40 mt-1">{t.missionEmptySeasonalDesc}</p>
                                 </div>
                             )}
                         </TabsContent>

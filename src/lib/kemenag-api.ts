@@ -109,6 +109,7 @@ export async function getKemenagChapters(): Promise<Chapter[]> {
         language_name: "Indonesian",
         name: surah.name.translation.id,
       },
+      translated_name_en: surah.name.translation.en,
     }));
   } catch (error) {
     console.error("Error fetching chapters from Kemenag API:", error);
