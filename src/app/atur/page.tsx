@@ -25,6 +25,7 @@ import {
     DEFAULT_SETTINGS,
     LANGUAGE_OPTIONS,
 } from "@/data/settings-data";
+import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 
 interface AdhanPreferences {
     Fajr: boolean;
@@ -262,7 +263,7 @@ export default function SettingsPage() {
                     <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
                         <ArrowLeft className="w-6 h-6 text-white" />
                     </Link>
-                    <h1 className="text-2xl font-bold text-white">Pengaturan</h1>
+                    <h1 className="text-2xl font-bold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].title}</h1>
                 </div>
 
                 {/* Profile Card - Compact */}
@@ -305,12 +306,12 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex-1 relative z-10">
                         <div className="flex items-center gap-2">
-                            <h3 className="text-sm font-bold text-slate-400">Statistik Ibadah</h3>
+                            <h3 className="text-sm font-bold text-slate-400">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsLabel}</h3>
                             <span className="text-[8px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold uppercase tracking-wider">
-                                Coming Soon
+                                {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsComingSoon}
                             </span>
                         </div>
-                        <p className="text-[10px] text-slate-500">Matangkan niat, pantau hasil nanti ✨</p>
+                        <p className="text-[10px] text-slate-500">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsDescription}</p>
                     </div>
                 </div>
 
@@ -325,7 +326,7 @@ export default function SettingsPage() {
                         <div className="flex items-center justify-between w-full mb-1">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Lokasi</span>
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationLabel}</span>
                             </div>
                             <svg
                                 className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${isRefreshing ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
@@ -338,7 +339,7 @@ export default function SettingsPage() {
                             </svg>
                         </div>
                         <p className="text-xs text-white font-medium line-clamp-2 leading-relaxed">
-                            {isRefreshing ? "Memperbarui..." : (data?.locationName?.split(',')[0] || "Mendeteksi...")}
+                            {isRefreshing ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationUpdating : (data?.locationName?.split(',')[0] || SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationDetecting)}
                         </p>
                     </button>
 
@@ -351,7 +352,7 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between w-full mb-1">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-sky-400" />
-                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Metode</span>
+                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].methodLabel}</span>
                                 </div>
                                 {/* Visual Chevron */}
                                 <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
@@ -380,7 +381,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Volume2 className="w-4 h-4 text-amber-400" />
-                            <span className="text-sm font-semibold text-white">Notifikasi Adzan</span>
+                            <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].notificationTitle}</span>
                         </div>
                     </div>
                     <div className="grid grid-cols-5 gap-2">
@@ -424,7 +425,7 @@ export default function SettingsPage() {
                             className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-xl text-amber-400 text-sm font-semibold hover:bg-amber-500/30 hover:border-amber-500/50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                         >
                             <Bell className="w-4 h-4" />
-                            Aktifkan Notifikasi Adzan
+                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].notificationButton}
                         </button>
                     )}
                 </div>
@@ -433,7 +434,7 @@ export default function SettingsPage() {
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2 text-[rgb(var(--color-primary))]">
                         <Palette className="w-4 h-4" />
-                        <span className="text-sm font-semibold text-white">Tampilan Aplikasi</span>
+                        <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].themeTitle}</span>
                     </div>
 
                     <div className="relative">
@@ -522,7 +523,7 @@ export default function SettingsPage() {
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
                     <div className="flex items-center gap-2 text-sky-400">
                         <Headphones className="w-4 h-4" />
-                        <span className="text-sm font-semibold text-white">Pengaturan Audio</span>
+                        <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].audioTitle}</span>
                     </div>
 
                     <div className="space-y-3">
@@ -534,7 +535,7 @@ export default function SettingsPage() {
                                     <Volume2 className="w-4 h-4 text-sky-400" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">Suara Adzan</p>
+                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].muadzinLabel}</p>
                                     <p className="text-sm text-white font-medium truncate">{currentMuadzin?.label || "Makkah"}</p>
                                 </div>
                             </div>
@@ -592,7 +593,7 @@ export default function SettingsPage() {
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2">
                         <Globe className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                        <span className="text-sm font-semibold text-white">{locale === "en" ? "Language" : "Bahasa"}</span>
+                        <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].languageTitle}</span>
                     </div>
 
                     <Select value={locale} onValueChange={handleLocaleChange}>
@@ -616,9 +617,7 @@ export default function SettingsPage() {
                     </Select>
 
                     <p className="text-[10px] text-white/40 leading-relaxed">
-                        {locale === "en"
-                            ? "The app language will change according to your selection."
-                            : "Bahasa aplikasi akan berubah sesuai pilihan."}
+                        {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].languageDescription}
                     </p>
                 </div>
 
@@ -627,12 +626,12 @@ export default function SettingsPage() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Heart className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
-                            <span className="text-sm font-bold text-white">Dukung Nawaetu</span>
+                            <span className="text-sm font-bold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportTitle}</span>
                         </div>
                         <p className="text-[10px] text-emerald-200/70 max-w-[200px] leading-relaxed">
                             {isMuhsinin
-                                ? "Terima kasih telah menjadi Muhsinin! Hasil infaq digunakan untuk server & pengembangan."
-                                : "Bantu kami menjaga aplikasi tetap gratis dan bebas iklan selamanya."}
+                                ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportPremiumText
+                                : SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportText}
                         </p>
                     </div>
                     <Button
@@ -640,7 +639,7 @@ export default function SettingsPage() {
                         size="sm"
                         className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-emerald-500/20"
                     >
-                        {isMuhsinin ? "Infaq Lagi" : "Infaq"}
+                        {isMuhsinin ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].infaqButtonPremium : SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].infaqButton}
                     </Button>
                 </div>
 
@@ -654,21 +653,21 @@ export default function SettingsPage() {
                             <span className="text-3xl font-bold text-white">N</span>
                         </div>
 
-                        <h2 className="text-xl font-bold text-white mb-1">Nawaetu</h2>
+                        <h2 className="text-xl font-bold text-white mb-1">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName}</h2>
                         <p className="text-[10px] text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] font-bold mb-3">
-                            Luruskan Niat, Sempurnakan Ibadah
+                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutTagline}
                         </p>
 
                         <p className="text-xs text-slate-400 leading-relaxed max-w-[260px] mx-auto mb-4">
-                            Teman ibadah digital yang menjaga setiap langkahmu tetap sesuai tuntunan Al-Qur'an & Sunnah.
+                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutDescription}
                         </p>
 
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all cursor-default">
-                            <span className="text-blue-400 font-bold text-xs">#LuruskanNiat</span>
+                            <span className="text-blue-400 font-bold text-xs">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutHashtag}</span>
                         </div>
 
                         <div className="mt-6 flex items-center justify-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
-                            <span className="text-[10px] text-white">v1.0.0 (Production)</span>
+                            <span className="text-[10px] text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutVersion}</span>
                         </div>
                     </div>
                 </div>
