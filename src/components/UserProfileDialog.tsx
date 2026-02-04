@@ -17,6 +17,7 @@ import { getPlayerStats, PlayerStats } from "@/lib/leveling";
 import { getStreak, StreakData } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
+import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import InfaqModal from "./InfaqModal";
 
 interface UserProfileData {
@@ -140,6 +141,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [editName, setEditName] = useState("");
     const [selectedTier, setSelectedTier] = useState<typeof AVAILABLE_TITLES[0] | null>(null);
     const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+    const [locale, setLocale] = useState("id");
 
     const loadData = () => {
         const savedName = localStorage.getItem("user_name");
@@ -147,6 +149,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         const savedGender = localStorage.getItem("user_gender") as 'male' | 'female' | null;
         const savedArchetype = localStorage.getItem("user_archetype") as 'pemula' | 'penggerak' | 'mujahid' | null;
         const savedAvatar = localStorage.getItem("user_avatar");
+        const savedLocale = localStorage.getItem("settings_locale") || "id";
         const currentStats = getPlayerStats();
         const currentStreak = getStreak();
 
@@ -160,6 +163,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         });
         setStats(currentStats);
         setStreak(currentStreak);
+        setLocale(savedLocale);
     };
 
     useEffect(() => {
@@ -322,18 +326,18 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                             <div className="text-center">
                                 {stats.level >= selectedTier.minLevel ? (
                                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-xl text-[rgb(var(--color-primary-light))] text-sm font-bold">
-                                        <Check className="w-4 h-4" /> Gelar Terbuka
+                                        <Check className="w-4 h-4" /> {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileTitleUnlock}
                                     </div>
                                 ) : (
                                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 text-sm font-bold">
-                                        <Lock className="w-4 h-4" /> Terkunci (Butuh Lv.{selectedTier.minLevel})
+                                        <Lock className="w-4 h-4" /> {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileTitleLocked?.replace("{level}", selectedTier.minLevel.toString())}
                                     </div>
                                 )}
                             </div>
 
                             {/* Philosophy */}
                             <div className="bg-white/[0.03] p-5 rounded-2xl border border-white/5">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Filosofi Gelar</h3>
+                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profilePhilosophy}</h3>
                                 <p className="text-sm text-slate-300 leading-relaxed italic">
                                     "{selectedTier.description}"
                                 </p>
@@ -341,7 +345,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                             {/* Rewards */}
                             <div className="space-y-3">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Privilege & Rewards</h3>
+                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileRewards}</h3>
                                 {selectedTier.rewards?.map((reward, i) => {
                                     const isPrem = reward.includes("[PRO]");
                                     const displayReward = reward.replace(" [PRO]", "");
@@ -388,13 +392,13 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-12 rounded-xl mt-4"
                                     onClick={() => handleTitleSelect(selectedTier.label)}
                                 >
-                                    Pasang Gelar Ini
+                                    {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileUseTitle}
                                 </Button>
                             )}
 
                             {profile.title === selectedTier.label && (
                                 <div className="text-center text-xs text-[rgb(var(--color-primary))] font-medium mt-4">
-                                    Sedang Digunakan
+                                    {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileCurrentTitle}
                                 </div>
                             )}
                         </div>
@@ -499,27 +503,27 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setIsEditing(true)}>
-                                            <h3 className="text-xl font-bold text-white tracking-tight">{profile.name}</h3>
+                                            <h3 className="text-xl font-bold text-white tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">{profile.name}</h3>
                                             <Edit2 className="w-3 h-3 text-[rgb(var(--color-primary))]/50 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex items-center gap-2 mt-0.5">
-                                    <p className="text-sm font-medium text-[rgb(var(--color-primary-light))]/80 tracking-wide">{profile.title}</p>
+                                <div className="flex items-center gap-2 mt-1 bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+                                    <p className="text-sm font-medium text-[rgb(var(--color-primary-light))] tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{profile.title}</p>
                                     {!isMuhsinin ? (
                                         <button
                                             onClick={() => setShowInfaqModal(true)}
-                                            className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition flex items-center gap-1 animate-pulse"
+                                            className="ml-2 text-[10px] font-bold px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500/30 to-teal-600/30 text-emerald-300 border border-emerald-500/40 hover:from-emerald-500/40 hover:to-teal-600/40 transition-all flex items-center gap-1 animate-pulse shadow-lg"
                                         >
                                             <Heart className="w-3 h-3" /> Dukung
                                         </button>
                                     ) : (
                                         <button
                                             onClick={() => setShowInfaqModal(true)}
-                                            className="ml-2 bg-emerald-500 rounded-full p-1 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] hover:bg-emerald-400 transition-colors cursor-pointer group/infaq relative"
+                                            className="ml-2 bg-emerald-500 rounded-full p-1.5 border-2 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)] hover:bg-emerald-400 transition-all hover:scale-110 cursor-pointer group/infaq relative"
                                             title="Tambah Infaq"
                                         >
-                                            <Heart className="w-3 h-3 text-white fill-white" />
+                                            <Heart className="w-3.5 h-3.5 text-white fill-white" />
                                             {/* Tooltip hint on hover */}
                                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-[10px] text-white rounded opacity-0 group-hover/infaq:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                                                 Tambah Infaq
@@ -534,7 +538,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                             {/* GENDER SELECTION */}
                             <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 border border-white/5">
-                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Jenis Kelamin</Label>
+                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileGenderLabel}</Label>
                                 <div className="grid grid-cols-2 gap-3">
                                     <button
                                         onClick={() => handleGenderSelect('male')}
@@ -546,7 +550,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         )}
                                     >
                                         <span className="text-xl">👨</span>
-                                        <span className="text-sm font-semibold">Laki-laki</span>
+                                        <span className="text-sm font-semibold">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileMale}</span>
                                     </button>
                                     <button
                                         onClick={() => handleGenderSelect('female')}
@@ -558,19 +562,19 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         )}
                                     >
                                         <span className="text-xl">👩</span>
-                                        <span className="text-sm font-semibold">Perempuan</span>
+                                        <span className="text-sm font-semibold">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileFemale}</span>
                                     </button>
                                 </div>
                                 {!profile.gender && (
                                     <p className="text-[10px] text-amber-400/70 mt-2 text-center">
-                                        Pilih untuk menyesuaikan misi dan fitur
+                                        {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileGenderHint}
                                     </p>
                                 )}
                             </div>
 
                             {/* ARCHETYPE SELECTION (FOKUS IBADAH) */}
                             <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 border border-white/5">
-                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Fokus Ibadah (Tipe Pejuang)</Label>
+                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileArchetypeLabel}</Label>
                                 <div className="space-y-2">
                                     {ARCHETYPES.map((type) => (
                                         <button
@@ -616,7 +620,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 </div>
 
                                 <div className="flex justify-between items-end mb-2 relative z-10">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Progress Level</span>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileProgressLabel}</span>
                                     <span className="text-xs font-mono font-bold text-[rgb(var(--color-primary-light))]">
                                         {stats.xp} <span className="text-slate-500">/</span> {stats.nextLevelXp} XP
                                     </span>
@@ -631,7 +635,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 </div>
 
                                 <p className="text-[10px] text-slate-500 mt-2 text-center font-medium">
-                                    Butuh <span className="text-white font-bold">{stats.nextLevelXp - stats.xp} XP</span> lagi untuk naik ke Level {stats.level + 1}
+                                    {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileNeedXP?.replace("{xp}", (stats.nextLevelXp - stats.xp).toString()).replace("{level}", (stats.level + 1).toString())}
                                 </p>
                             </div>
 
@@ -648,14 +652,14 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             <div className="p-1.5 bg-orange-500/20 rounded-lg">
                                                 <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
                                             </div>
-                                            <span className="text-[10px] font-bold text-orange-200 uppercase tracking-wider">Streak</span>
+                                            <span className="text-[10px] font-bold text-orange-200 uppercase tracking-wider">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileStreak}</span>
                                         </div>
                                         <div className="flex items-baseline gap-1">
                                             <span className="text-2xl font-black text-white">{streak.currentStreak}</span>
-                                            <span className="text-xs font-bold text-orange-300">Hari</span>
+                                            <span className="text-xs font-bold text-orange-300">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileDays}</span>
                                         </div>
                                         <p className="text-[10px] text-orange-200/60 font-medium leading-tight mt-1">
-                                            Pertahankan istiqamahmu setiap hari!
+                                            {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileStreakMaintain}
                                         </p>
                                     </div>
                                 </div>
@@ -670,14 +674,14 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             <div className="p-1.5 bg-slate-800 rounded-lg">
                                                 <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                                             </div>
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Rekor</span>
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileRecord}</span>
                                         </div>
                                         <div className="flex items-baseline gap-1">
                                             <span className="text-2xl font-black text-white">{streak.longestStreak}</span>
-                                            <span className="text-xs font-bold text-slate-500">Hari</span>
+                                            <span className="text-xs font-bold text-slate-500">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileDays}</span>
                                         </div>
                                         <p className="text-[10px] text-slate-500 font-medium leading-tight mt-1">
-                                            Pencapaian istiqamah terbaikmu.
+                                            {SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileBestAchievement}
                                         </p>
                                     </div>
                                 </div>
@@ -686,7 +690,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                             {/* TITLE COLLECTION */}
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between px-1">
-                                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Koleksi Gelar</Label>
+                                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-widest">{SETTINGS_TRANSLATIONS[localStorage.getItem("settings_locale") as keyof typeof SETTINGS_TRANSLATIONS || "id"]?.profileTitleCollection}</Label>
                                     <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">
                                         {AVAILABLE_TITLES.filter(t => stats.level >= t.minLevel).length}/{AVAILABLE_TITLES.length}
                                     </span>
@@ -754,34 +758,34 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                             {/* FOOTER INFO */}
                             <div className="pt-6 border-t border-white/5">
-                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block text-center">Cara Mendapatkan XP</Label>
+                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block text-center">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpSectionTitle}</Label>
                                 <div className="grid grid-cols-2 gap-3">
                                     <Link href="/quran" onClick={() => setIsOpen(false)} className="bg-slate-900/50 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center gap-2 hover:bg-slate-800/50 hover:border-blue-500/30 transition-all cursor-pointer group">
                                         <BookOpen className="w-5 h-5 text-[rgb(var(--color-primary-light))] group-hover:scale-110 transition-transform" />
                                         <div>
-                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">Baca Quran</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-mono">+5 XP/ayat</span>
+                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpMethodReadQuran}</span>
+                                            <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-mono">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpReadQuranReward}</span>
                                         </div>
                                     </Link>
                                     <Link href="/tasbih" onClick={() => setIsOpen(false)} className="bg-slate-900/50 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center gap-2 hover:bg-slate-800/50 hover:border-[rgb(var(--color-primary))]/30 transition-all cursor-pointer group">
                                         <Fingerprint className="w-5 h-5 text-[rgb(var(--color-primary-light))] group-hover:scale-110 transition-transform" />
                                         <div>
-                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">Tasbih</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-mono">+50 XP/sesi</span>
+                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpMethodTasbih}</span>
+                                            <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-mono">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpTasbihReward}</span>
                                         </div>
                                     </Link>
                                     <Link href="/" onClick={() => setIsOpen(false)} className="bg-slate-900/50 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center gap-2 hover:bg-slate-800/50 hover:border-purple-500/30 transition-all cursor-pointer group">
                                         <Check className="w-5 h-5 text-[rgb(var(--color-accent))] group-hover:scale-110 transition-transform" />
                                         <div>
-                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-accent))] transition-colors">Misi Harian</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-accent))] font-mono">+25-100 XP/misi</span>
+                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-accent))] transition-colors">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpMethodDailyMission}</span>
+                                            <span className="text-[10px] text-[rgb(var(--color-accent))] font-mono">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpDailyMissionReward}</span>
                                         </div>
                                     </Link>
                                     <Link href="/stats" onClick={() => setIsOpen(false)} className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 p-3 rounded-xl border border-amber-500/20 flex flex-col items-center text-center gap-2 hover:bg-amber-500/20 hover:border-amber-500/30 transition-all cursor-pointer group">
                                         <Star className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
                                         <div>
-                                            <span className="block text-xs font-bold text-amber-200 group-hover:text-amber-100 transition-colors">Statistik</span>
-                                            <span className="text-[10px] text-amber-400/70 font-mono">Lihat Progress</span>
+                                            <span className="block text-xs font-bold text-amber-200 group-hover:text-amber-100 transition-colors">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpMethodStatistics}</span>
+                                            <span className="text-[10px] text-amber-400/70 font-mono">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].xpStatisticsHint}</span>
                                         </div>
                                     </Link>
                                 </div>
