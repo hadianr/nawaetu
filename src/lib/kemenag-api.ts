@@ -162,7 +162,7 @@ export const getKemenagVerses = cache(
         const transliteration = verse.words?.map((w: any) => w.transliteration?.text || '').join(' ') || '';
         
         return {
-          id: verse.number_in_quran,
+          id: verse.id, // Global verse ID from quran.com
           verse_number: verse.verse_number,
           verse_key: verse.verse_key,
           text_uthmani: verse.text_uthmani,
