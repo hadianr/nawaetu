@@ -13,18 +13,21 @@ import { getCurrentTimeContext, getTimeSensitiveGreeting } from "@/lib/time-cont
 import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
 import { trackAIQuery } from "@/lib/analytics";
 import { useInfaq } from "@/context/InfaqContext";
+import { useLocale } from "@/context/LocaleContext";
 import InfaqModal from "@/components/InfaqModal";
 
-const QUICK_PROMPTS = [
-    "Saya merasa malas sholat...",
-    "Sedang banyak pikiran",
-    "Tips khusyuk?",
-    "Apa keutamaan subuh?",
-];
 
 export default function TanyaUstadzPage() {
     const { stats } = useUserActivity();
     const { profile } = useUserProfile();
+    const { t } = useLocale();
+
+    const QUICK_PROMPTS = [
+        t.tanyaPrompt1,
+        t.tanyaPrompt2,
+        t.tanyaPrompt3,
+        t.tanyaPrompt4,
+    ];
 
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState("");
@@ -64,11 +67,11 @@ export default function TanyaUstadzPage() {
 
                 // Simplified greeting fetch for brevity in this block, essentially same as before
                 const staticGreetings: Record<string, string> = {
-                    subuh: `Assalamu'alaikum kak! 🙏 Semoga hari ini penuh berkah. Ada yang ingin ditanyakan?`,
-                    pagi: `Assalamu'alaikum kak! ☀️ Selamat pagi! Aku siap menemani diskusi spiritualmu.`,
-                    siang: `Assalamu'alaikum kak! 🌤️ Siang ini ada yang mau diceritakan?`,
-                    sore: `Assalamu'alaikum kak! 🌅 Sore yang indah. Yuk ngobrol seputar ibadah.`,
-                    malam: `Assalamu'alaikum kak! 🌙 Selamat malam. Mau curhat atau tanya hukum islam?`
+                    subuh: t.tanyaGreetingMorning,
+                    pagi: t.tanyaGreetingDay,
+                    siang: t.tanyaGreetingNoon,
+                    sore: t.tanyaGreetingAfternoon,
+                    malam: t.tanyaGreetingEvening
                 };
 
                 const greetingContent = staticGreetings[timeCtx.currentPeriod as keyof typeof staticGreetings] || staticGreetings.pagi;
@@ -130,7 +133,7 @@ export default function TanyaUstadzPage() {
         const userMsg: ChatMessage = {
             id: Date.now().toString(),
             role: 'user',
-            content: text,
+            content: input,
             timestamp: Date.now()
         };
         setMessages(prev => [...prev, userMsg]);
@@ -356,7 +359,7 @@ export default function TanyaUstadzPage() {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Ceritakan masalah ibadahmu..."
+                                placeholder={t.tanyaPlaceholder}
                                 className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-white/30 py-2.5 min-h-[44px]"
                                 disabled={isTyping}
                             />
@@ -375,8 +378,8 @@ export default function TanyaUstadzPage() {
             <InfaqModal
                 isOpen={showLimitBlocking}
                 onClose={() => setShowLimitBlocking(false)}
-                headerTitle="Kuota Harian Habis 😓"
-                headerDescription="Kamu sudah mencapai batas 5 pertanyaan hari ini. Jadilah Muhsinin untuk akses unlimited atau tunggu besok ya kak! ✨"
+                headerTitle={t.tanyaDailyLimit}
+                headerDescription={t.tanyaLimitReached + ". " + t.tanyaLimitReset}
             />
         </div>
     );

@@ -15,6 +15,7 @@ import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sp
 import { Mission, ValidationType } from "@/data/missions-data";
 import { MISSION_CONTENTS, MissionContent } from "@/data/mission-content";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/context/LocaleContext";
 
 interface MissionDetailDialogProps {
     mission: Mission;
@@ -41,6 +42,7 @@ export default function MissionDetailDialog({
     isEarly,
     onReset
 }: MissionDetailDialogProps) {
+    const { t } = useLocale();
     const content = MISSION_CONTENTS[mission.id];
     const [readingIndex, setReadingIndex] = useState(0);
     const [isConfirmingReset, setIsConfirmingReset] = useState(false); // Add this
@@ -306,13 +308,13 @@ export default function MissionDetailDialog({
                         <div className="mb-3 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
                             <div className="flex items-center gap-2 mb-1">
                                 <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-                                <p className="text-xs font-bold text-red-400">Sholat Terlewat (Qadha)</p>
+                                <p className="text-xs font-bold text-red-400">{t.homeMissionLatePrayerTitle}</p>
                             </div>
                             <p className="text-[10px] text-red-200/80 leading-tight italic">
-                                "Maka celakalah bagi orang-orang yang shalat, (yaitu) orang-orang yang lalai dari shalatnya." (QS. Al-Ma'un: 4-5)
+                                {t.homeMissionLateWarningQuote}
                             </p>
                             <p className="text-[10px] text-zinc-400 mt-1">
-                                Segera tunaikan sholatmu meskipun waktunya sudah lewat. Lebih baik terlambat daripada tidak sama sekali.
+                                {t.homeMissionLateWarningDesc}
                             </p>
                         </div>
                     )}
@@ -322,7 +324,7 @@ export default function MissionDetailDialog({
                         <div className="mb-3 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-2">
                             <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
                             <p className="text-[10px] text-amber-200/80 leading-tight">
-                                Waktu utama misi ini sudah lewat, namun Kamu tetap bisa memvalidasi jika sudah mengamalkannya.
+                                {t.homeMissionLateNotice}
                             </p>
                         </div>
                     )}
@@ -332,10 +334,10 @@ export default function MissionDetailDialog({
                         <div className="mb-3 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
                             <div className="flex items-center gap-2 mb-1">
                                 <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-                                <p className="text-xs font-bold text-emerald-400">Keutamaan Sholat Awal Waktu</p>
+                                <p className="text-xs font-bold text-emerald-400">{t.homeMissionEarlyPrayerTitle}</p>
                             </div>
                             <p className="text-[10px] text-emerald-200/80 leading-tight italic">
-                                "Amalan yang paling dicintai Allah adalah sholat pada waktunya." (HR. Bukhari & Muslim)
+                                {t.homeMissionEarlyPraiseQuote}
                             </p>
                         </div>
                     )}
@@ -343,7 +345,7 @@ export default function MissionDetailDialog({
                     {isCompleted ? (
                         <div className="flex flex-col gap-2">
                             <Button className="w-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10 border border-emerald-500/20 cursor-default" disabled>
-                                <Check className="w-4 h-4 mr-2" /> Misi Sudah Selesai
+                                <Check className="w-4 h-4 mr-2" /> {t.homeMissionCompletedLabel}
                             </Button>
 
                             {isConfirmingReset ? (
@@ -356,14 +358,14 @@ export default function MissionDetailDialog({
                                             setIsConfirmingReset(false);
                                         }}
                                     >
-                                        Ya, Batalkan (-{mission.xpReward} XP)
+                                        {t.homeMissionUndoConfirm} (-{mission.xpReward} XP)
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         className="flex-1 py-5 text-xs font-bold text-white/60"
                                         onClick={() => setIsConfirmingReset(false)}
                                     >
-                                        Batal
+                                        {t.homeMissionUndoCancel}
                                     </Button>
                                 </div>
                             ) : (
@@ -372,13 +374,13 @@ export default function MissionDetailDialog({
                                     className="w-full text-white/30 hover:text-red-400 hover:bg-red-400/10 text-[10px] mt-1"
                                     onClick={() => setIsConfirmingReset(true)}
                                 >
-                                    Batalkan Penyelesaian?
+                                    {t.homeMissionUndoPrompt}
                                 </Button>
                             )}
                         </div>
                     ) : isLocked ? (
                         <Button className="w-full bg-white/5 text-white/40 hover:bg-white/5 border border-white/10" disabled>
-                            <Lock className="w-4 h-4 mr-2" /> {lockReason || "Terkunci"}
+                            <Lock className="w-4 h-4 mr-2" /> {lockReason || t.homeMissionLockedFallback}
                         </Button>
                     ) : mission.completionOptions ? (
                         <div className="flex gap-2">
@@ -419,7 +421,7 @@ export default function MissionDetailDialog({
                             onClick={() => onComplete(mission.xpReward)}
                         >
                             {isLate ? <Check className="w-4 h-4 mr-2" /> : <Check className="w-4 h-4 mr-2" />}
-                            {isLate ? "Catat Amalan (Terlewat)" : "Selesaikan Misi"} (+{mission.xpReward} XP)
+                            {isLate ? t.homeMissionCompleteLate : t.homeMissionComplete} (+{mission.xpReward} XP)
                         </Button>
                     )}
                 </div>

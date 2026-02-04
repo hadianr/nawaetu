@@ -116,6 +116,7 @@ import PatternOverlay from "@/components/PatternOverlay";
 import AppOverlays from "@/components/AppOverlays";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { LocaleProvider } from "@/context/LocaleContext";
 import { WebVitals } from "@/components/WebVitals";
 import AnalyticsLoader from "@/components/AnalyticsLoader";
 
@@ -147,17 +148,19 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <ThemeProvider>
-          <InfaqProvider>
-            <PatternOverlay />
-            <NotificationWatcher />
-            <AppOverlays />
-            {children}
-            <Suspense fallback={null}>
-              <BottomNav />
-            </Suspense>
-          </InfaqProvider>
-        </ThemeProvider>
+        <LocaleProvider>
+          <ThemeProvider>
+            <InfaqProvider>
+              <PatternOverlay />
+              <NotificationWatcher />
+              <AppOverlays />
+              {children}
+              <Suspense fallback={null}>
+                <BottomNav />
+              </Suspense>
+            </InfaqProvider>
+          </ThemeProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

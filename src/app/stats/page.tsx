@@ -5,12 +5,14 @@ import Link from "next/link";
 import { ChevronLeft, TrendingUp, Calendar, Flame, Trophy, Lock, Crown, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInfaq } from "@/context/InfaqContext";
+import { useLocale } from "@/context/LocaleContext";
 import InfaqModal from "@/components/InfaqModal";
 import { getWeeklyStats, getMonthlyStats, getDailyActivityHistory, generateMockData } from "@/lib/analytics-utils";
 import { cn } from "@/lib/utils";
 
 export default function StatsPage() {
     const { isMuhsinin } = useInfaq();
+    const { t } = useLocale();
     const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [weeklyStats, setWeeklyStats] = useState(getWeeklyStats());
     const [monthlyStats, setMonthlyStats] = useState(getMonthlyStats());
@@ -41,8 +43,8 @@ export default function StatsPage() {
                         </Link>
                     </Button>
                     <div className="flex-1">
-                        <h1 className="text-xl font-bold">Statistik Ibadah</h1>
-                        <p className="text-xs text-white/60">Pantau perkembangan spiritualmu</p>
+                        <h1 className="text-xl font-bold">{t.statsPageTitle}</h1>
+                        <p className="text-xs text-white/60">{t.statsPageSubtitle}</p>
                     </div>
                     {isMuhsinin && (
                         <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full">
@@ -60,12 +62,12 @@ export default function StatsPage() {
                     <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mb-6 animate-pulse border border-blue-500/30">
                         <BarChart3 className="w-10 h-10 text-blue-400" />
                     </div>
-                    <h2 className="text-2xl font-black text-white mb-3">Fitur Sedang Dimatangkan ✨</h2>
+                    <h2 className="text-2xl font-black text-white mb-3">{t.statsComingSoonFeature}</h2>
                     <p className="text-sm text-slate-300 max-w-xs leading-relaxed">
-                        Kami sedang menyempurnakan algoritma statistik agar jurnal ibadah Anda lebih akurat dan bermakna. Sabar ya, Kak!
+                        {t.statsComingSoonMessage}
                     </p>
                     <Button asChild className="mt-8 bg-white/10 hover:bg-white/20 text-white rounded-xl px-8">
-                        <Link href="/">Kembali ke Beranda</Link>
+                        <Link href="/">{t.statsBackHome}</Link>
                     </Button>
                 </div>
 

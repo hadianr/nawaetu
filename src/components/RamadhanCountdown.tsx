@@ -5,6 +5,7 @@ import { Moon, Info } from "lucide-react";
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "@/data/missions-data";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/context/LocaleContext";
 
 // Lazy load dialog for better initial load
 const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
+    const { t } = useLocale();
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({
         days: initialDays,
@@ -113,11 +115,11 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     }, []);
 
     const getLevelTitle = (p: number) => {
-        if (p === 100) return "Ramadhan Ready! 🌙";
-        if (p >= 75) return "Pejuang Istiqomah";
-        if (p >= 50) return "Siap Melangkah";
-        if (p >= 25) return "Niat Terpasang";
-        return "Newbie Ramadhan";
+        if (p === 100) return t.ramadhanReady;
+        if (p >= 75) return t.ramadhanLevel75;
+        if (p >= 50) return t.ramadhanLevel50;
+        if (p >= 25) return t.ramadhanLevel25;
+        return t.ramadhanLevel0;
     };
 
     const handleCardClick = () => {
@@ -178,13 +180,13 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     <div className="flex flex-col gap-1.5 z-10">
                         <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                             <Moon className={`w-4 h-4 ${styles.icon}`} />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Menuju Ramadhan</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{t.ramadhanHeading}</span>
                         </div>
                         <div className="flex items-baseline gap-2.5">
                             <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md">
                                 {timeLeft.days}
                             </span>
-                            <span className="text-sm font-medium text-white/80">Hari Lagi</span>
+                            <span className="text-sm font-medium text-white/80">{t.ramadhanDaysLeft}</span>
                         </div>
                     </div>
 
@@ -205,7 +207,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             setShowInfo(true);
                         }}>
                             <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
-                                {progress}% Persiapan
+                                {progress}% {t.ramadhanPreparationLabel}
                             </div>
                             <Info className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
                         </div>
@@ -218,23 +220,23 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 <DialogContent className="bg-black/80 backdrop-blur-xl border border-white/10 text-white w-[90%] rounded-2xl">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                            <Moon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> Persiapan Ramadhan
+                            <Moon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> {t.ramadhanInfoTitle}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 pt-2">
                         <p className="text-sm text-white/70 leading-relaxed">
-                            Persentase <strong>"Persiapan"</strong> dihitung dari penyelesaian misi-misi khusus di bulan <strong>Sya'ban</strong> (seperti Puasa Sunnah, Baca Quran, dll).
+                            {t.ramadhanInfoDesc}
                         </p>
                         <div className="bg-[rgb(var(--color-primary-dark))]/20 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
-                            <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] mb-1">🎯 Cara Meningkatkan:</p>
+                            <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] mb-1">{t.ramadhanImproveTitle}</p>
                             <ul className="list-disc list-inside text-xs text-[rgb(var(--color-primary))]/70 space-y-1">
-                                <li>Selesaikan misi Puasa Sunnah Sya'ban</li>
-                                <li>Lakukan Sedekah Subuh</li>
-                                <li>Mulai rutinkan baca Al-Quran</li>
+                                <li>{t.ramadhanImproveItem1}</li>
+                                <li>{t.ramadhanImproveItem2}</li>
+                                <li>{t.ramadhanImproveItem3}</li>
                             </ul>
                         </div>
                         <Button onClick={() => setShowInfo(false)} className="w-full bg-white/10 hover:bg-white/20 text-white">
-                            Mengerti
+                            {t.ramadhanUnderstand}
                         </Button>
                     </div>
                 </DialogContent>

@@ -6,9 +6,11 @@ import { Clock, Sparkles, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PREPARATION_QUOTES } from "@/data/prayerQuotes";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/context/LocaleContext";
 
 export default function NextPrayerWidget() {
     const { data } = usePrayerTimes();
+    const { t } = useLocale();
     const [minutesLeft, setMinutesLeft] = useState<number>(Infinity);
     const [quoteIndex, setQuoteIndex] = useState(0);
 
@@ -85,10 +87,10 @@ export default function NextPrayerWidget() {
                     </div>
                     <div>
                         <h2 className="text-xl font-bold text-white leading-tight">
-                            Adzan {displayPrayerName}
+                            {t.homeAdzanNow.replace("{prayer}", displayPrayerName)}
                         </h2>
                         <p className="text-[10px] text-white/80 mt-0.5">
-                            Selamat menunaikan sholat
+                            {t.homeAdzanMessage}
                         </p>
                     </div>
                 </div>
@@ -104,7 +106,7 @@ export default function NextPrayerWidget() {
                 <div className="flex items-center gap-1.5 opacity-80">
                     <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-primary-light))]">
-                        Persiapan
+                        {t.homePreparation}
                     </span>
                 </div>
 
@@ -120,7 +122,7 @@ export default function NextPrayerWidget() {
                 {/* Footer: Context */}
                 <div className="text-center">
                     <span className="text-[10px] font-medium text-[rgb(var(--color-primary-light))]/80 bg-[rgb(var(--color-primary))]/10 px-2 py-0.5 rounded-full border border-[rgb(var(--color-primary))]/20">
-                        Menuju {displayPrayerName}
+                        {t.homeTowards.replace("{prayer}", displayPrayerName)}
                     </span>
                 </div>
             </div>
@@ -134,12 +136,12 @@ export default function NextPrayerWidget() {
             <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
                 <Clock className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-200">
-                    Selanjutnya
+                    {t.homeNextLabel}
                 </span>
             </div>
 
             {/* Main: Countdown */}
-            <div className="flex-1 flex items-center justify-center scale-110" role="timer" aria-live="off" aria-label={`Hitungan mundur ke ${displayPrayerName}`}>
+            <div className="flex-1 flex items-center justify-center scale-110" role="timer" aria-live="off" aria-label={`${t.homeNextLabel} ${displayPrayerName}`}>
                 <PrayerCountdown
                     targetTime={data.nextPrayerTime}
                     prayerName={data.nextPrayer}

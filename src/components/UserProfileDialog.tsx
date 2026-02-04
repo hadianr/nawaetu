@@ -17,7 +17,7 @@ import { getPlayerStats, PlayerStats } from "@/lib/leveling";
 import { getStreak, StreakData } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { useLocale } from "@/context/LocaleContext";
 import InfaqModal from "./InfaqModal";
 
 interface UserProfileData {
@@ -141,10 +141,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [editName, setEditName] = useState("");
     const [selectedTier, setSelectedTier] = useState<typeof AVAILABLE_TITLES[0] | null>(null);
     const [isEditingAvatar, setIsEditingAvatar] = useState(false);
-    const [locale, setLocale] = useState("id");
-
-    // Helper to get translations safely
-    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
+    
+    const { t } = useLocale();
 
     const loadData = () => {
         const savedName = localStorage.getItem("user_name");
@@ -152,7 +150,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         const savedGender = localStorage.getItem("user_gender") as 'male' | 'female' | null;
         const savedArchetype = localStorage.getItem("user_archetype") as 'pemula' | 'penggerak' | 'mujahid' | null;
         const savedAvatar = localStorage.getItem("user_avatar");
-        const savedLocale = localStorage.getItem("settings_locale") || "id";
         const currentStats = getPlayerStats();
         const currentStreak = getStreak();
 
@@ -166,7 +163,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         });
         setStats(currentStats);
         setStreak(currentStreak);
-        setLocale(savedLocale);
     };
 
     useEffect(() => {

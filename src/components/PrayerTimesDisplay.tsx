@@ -9,10 +9,12 @@ import QuoteOfDay from "@/components/QuoteOfDay";
 import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/context/LocaleContext";
 
 
 export default function PrayerTimesDisplay() {
     const { data, loading, error, refreshLocation } = usePrayerTimes();
+    const { t } = useLocale();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
 
@@ -30,10 +32,10 @@ export default function PrayerTimesDisplay() {
     // Greeting Logic
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour >= 4 && hour < 10) return "Selamat Pagi";
-        if (hour >= 10 && hour < 15) return "Selamat Siang";
-        if (hour >= 15 && hour < 18) return "Selamat Sore";
-        return "Selamat Malam";
+        if (hour >= 4 && hour < 10) return t.homeGreetingMorning;
+        if (hour >= 10 && hour < 15) return t.homeGreetingNoon;
+        if (hour >= 15 && hour < 18) return t.homeGreetingAfternoon;
+        return t.homeGreetingEvening;
     };
 
     if (loading) {
@@ -57,9 +59,9 @@ export default function PrayerTimesDisplay() {
                     </div>
 
                     <div className="space-y-2">
-                        <h3 className="text-lg font-bold text-white">Izin Lokasi Diperlukan</h3>
+                        <h3 className="text-lg font-bold text-white">{t.homeLocationRequiredTitle}</h3>
                         <p className="text-sm text-slate-400 leading-relaxed max-w-[280px] mx-auto">
-                            Nawaetu membutuhkan lokasi Anda untuk menghitung jadwal sholat dan arah kiblat yang akurat.
+                            {t.homeLocationRequiredDesc}
                         </p>
                     </div>
 
@@ -69,12 +71,12 @@ export default function PrayerTimesDisplay() {
                             className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
                         >
                             <Navigation className="w-4 h-4 fill-current" />
-                            Aktifkan Lokasi
+                            {t.homeEnableLocation}
                         </Button>
 
                         {!error && (
                             <p className="text-[10px] text-slate-500">
-                                Browser akan meminta izin setelah tombol diklik.
+                                {t.homeLocationHint}
                             </p>
                         )}
 
@@ -95,16 +97,16 @@ export default function PrayerTimesDisplay() {
 
             <div className="relative space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="text-lg font-semibold text-white/80">Jadwal Sholat Hari Ini</h2>
+                    <h2 className="text-lg font-semibold text-white/80">{t.homePrayerTimesToday}</h2>
                     <a
                         href="https://www.google.com/maps/search/?api=1&query=masjid+terdekat"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="Cari Masjid Terdekat via Google Maps"
+                        aria-label={t.homeFindMosqueAria}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
                     >
                         <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Cari Masjid</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeFindMosque}</span>
                     </a>
                 </div>
 

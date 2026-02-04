@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, ChevronRight, Bookmark } from "lucide-react";
 import WidgetSkeleton from "@/components/skeleton/WidgetSkeleton";
+import { useLocale } from "@/context/LocaleContext";
 
 interface LastReadData {
     surahId: number;
@@ -18,6 +19,7 @@ interface VerseContent {
 }
 
 export default function LastReadWidget() {
+    const { t } = useLocale();
     const [lastRead, setLastRead] = useState<LastReadData | null>(null);
     const [verseContent, setVerseContent] = useState<VerseContent | null>(null);
     const [mounted, setMounted] = useState(false);
@@ -85,8 +87,8 @@ export default function LastReadWidget() {
                                 <BookOpen className="h-4 w-4" />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Mulai Tilawah</h2>
-                                <p className="text-[10px] text-white/70">Baca Al-Quran hari ini</p>
+                                <h2 className="text-sm font-semibold text-white">{t.homeLastReadStartTitle}</h2>
+                                <p className="text-[10px] text-white/70">{t.homeLastReadStartSubtitle}</p>
                             </div>
                         </div>
                         <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
@@ -106,7 +108,7 @@ export default function LastReadWidget() {
                     <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
                         <Bookmark className="h-3 w-3 text-[rgb(var(--color-primary-light))] fill-current" />
                         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300">
-                            Terakhir Baca
+                            {t.homeLastReadLabel}
                         </span>
                     </div>
 

@@ -11,6 +11,7 @@ import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
 import { checkMissionValidation, filterMissionsByArchetype } from "@/lib/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
+import { useLocale } from "@/context/LocaleContext";
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -20,6 +21,7 @@ interface CompletedMissions {
 }
 
 export default function MissionsWidget() {
+    const { t } = useLocale();
     const [gender, setGender] = useState<Gender>(null);
     const [missions, setMissions] = useState<Mission[]>([]);
     const [completed, setCompleted] = useState<CompletedMissions>({});
@@ -239,8 +241,8 @@ export default function MissionsWidget() {
                         {gender === 'female' ? '🌸' : gender === 'male' ? '💠' : '✨'}
                     </div>
                     <div>
-                        <h2 className="text-sm font-bold text-white leading-none">Fokus Ibadah</h2>
-                        <p className="text-[10px] text-white/70 mt-0.5">Target harianmu</p>
+                        <h2 className="text-sm font-bold text-white leading-none">{t.homeMissionFocusTitle}</h2>
+                        <p className="text-[10px] text-white/70 mt-0.5">{t.homeMissionDailyTarget}</p>
                     </div>
                 </div>
 
@@ -251,7 +253,7 @@ export default function MissionsWidget() {
                         ? "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]"
                         : "bg-white/5 border-white/10 text-white/80"
                 )}>
-                    {completedCount}/{missions.length} Selesai
+                    {completedCount}/{missions.length} {t.homeMissionCompleted}
                 </div>
             </div>
 
@@ -311,8 +313,8 @@ export default function MissionsWidget() {
                                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
                                             <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))] mt-0.5 shrink-0" />
                                             <div>
-                                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">Keutamaan Awal Waktu</p>
-                                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">"Amalan terbaik: Shalat di awal waktu." (HR. Tirmidzi)</p>
+                                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">{t.homeMissionEarlyTitle}</p>
+                                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">{t.homeMissionEarlyQuote}</p>
                                             </div>
                                         </div>
                                     );
@@ -322,8 +324,8 @@ export default function MissionsWidget() {
                                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-amber-500/10 border border-amber-500/20">
                                             <AlertCircle className="w-3 h-3 text-amber-500 mt-0.5 shrink-0" />
                                             <div>
-                                                <p className="text-[10px] font-bold text-amber-500 leading-tight">Waktu Hampir Habis! ({Math.floor(minsRemaining)} menit)</p>
-                                                <p className="text-[9px] text-amber-500/70 leading-tight italic">"Janganlah kalian lalai terhadap shalat." (QS. Al-Ma'un: 5)</p>
+                                                <p className="text-[10px] font-bold text-amber-500 leading-tight">{t.homeMissionLateTitle.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
+                                                <p className="text-[9px] text-amber-500/70 leading-tight italic">{t.homeMissionLateQuote}</p>
                                             </div>
                                         </div>
                                     );
@@ -374,7 +376,7 @@ export default function MissionsWidget() {
                                         </p>
                                         {isSpecial && !isCompleted && !isLocked && (
                                             <span className="text-[8px] px-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                                                Special
+                                                {t.homeMissionSpecial}
                                             </span>
                                         )}
                                     </div>
@@ -394,15 +396,15 @@ export default function MissionsWidget() {
                                         {/* Validation Status Badges */}
                                         {isLocked ? (
                                             <span className="text-[9px] text-white/30 flex items-center gap-0.5 ml-auto">
-                                                Locked
+                                                {t.homeMissionLocked}
                                             </span>
                                         ) : validation.isLate ? (
                                             <span className="text-[9px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
-                                                <AlertCircle className="w-2.5 h-2.5" /> Terlewat
+                                                <AlertCircle className="w-2.5 h-2.5" /> {t.homeMissionLate}
                                             </span>
                                         ) : validation.isEarly ? (
                                             <span className="text-[9px] text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
-                                                <Sparkles className="w-2.5 h-2.5" /> Awal Waktu
+                                                <Sparkles className="w-2.5 h-2.5" /> {t.homeMissionEarly}
                                             </span>
                                         ) : null}
                                     </div>
@@ -449,7 +451,7 @@ export default function MissionsWidget() {
                         )}
                         onClick={() => setShowMissionModal(true)}
                     >
-                        <span>Lihat Semua Misi ({missions.length})</span>
+                        <span>{t.homeMissionViewAll} ({missions.length})</span>
                         <ChevronRight className="w-3 h-3" />
                     </button>
                 </MissionListModal>
@@ -459,7 +461,7 @@ export default function MissionsWidget() {
             {!gender && (
                 <div className="mt-3 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
                     <p className="text-[10px] text-amber-400 text-center">
-                        💡 Pilih jenis kelamin di Profil untuk misi yang lebih personal
+                        {t.homeMissionSelectGenderHint}
                     </p>
                 </div>
             )}

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { KaabaIcon } from "@/components/icons/KaabaIcon";
 import { Compass } from "lucide-react";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { useLocale } from "@/context/LocaleContext";
 
 interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
     webkitCompassHeading?: number;
@@ -22,13 +22,12 @@ export default function QiblaCompass() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [aligned, setAligned] = useState<boolean>(false);
-    const [locale, setLocale] = useState("id");
 
     // Refs to track absolute values for wrapping logic
     const lastHeadingRef = useRef<number>(0);
 
     // Helper to get translations
-    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
+    const { t } = useLocale();
 
     const handleOrientation = useCallback((e: DeviceOrientationEvent) => {
         let rawHeading: number | null = null;
@@ -74,19 +73,6 @@ export default function QiblaCompass() {
             setError(t.qiblaGeoError);
             setLoading(false);
         }
-        
-        // Load locale from localStorage
-        const savedLocale = localStorage.getItem("settings_locale") || "id";
-        setLocale(savedLocale);
-        
-        // Listen for locale changes
-        const handleStorageChange = () => {
-            const newLocale = localStorage.getItem("settings_locale") || "id";
-            setLocale(newLocale);
-        };
-        
-        window.addEventListener("storage", handleStorageChange);
-        return () => window.removeEventListener("storage", handleStorageChange);
     }, [t]);
 
     const startCompass = useCallback(() => {

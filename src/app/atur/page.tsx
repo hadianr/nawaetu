@@ -19,6 +19,7 @@ import InfaqModal from "@/components/InfaqModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
 import { useInfaq } from "@/context/InfaqContext";
+import { useLocale } from "@/context/LocaleContext";
 import {
     MUADZIN_OPTIONS,
     CALCULATION_METHODS,
@@ -48,6 +49,7 @@ export default function SettingsPage() {
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimes();
     const { currentTheme, setTheme } = useTheme();
     const { isMuhsinin } = useInfaq();
+    const { locale, setLocale, t } = useLocale();
     const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [preferences, setPreferences] = useState<AdhanPreferences>(DEFAULT_PREFS);
@@ -61,7 +63,6 @@ export default function SettingsPage() {
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
-    const [locale, setLocale] = useState(DEFAULT_SETTINGS.locale);
 
     // Audio Preview State
     const [isPlaying, setIsPlaying] = useState(false);
@@ -168,10 +169,8 @@ export default function SettingsPage() {
         // Load new settings
         const savedMuadzin = localStorage.getItem("settings_muadzin");
         const savedMethod = localStorage.getItem("settings_calculation_method");
-        const savedLocale = localStorage.getItem("settings_locale");
         if (savedMuadzin) setMuadzin(savedMuadzin);
         if (savedMethod) setCalculationMethod(savedMethod);
-        if (savedLocale) setLocale(savedLocale);
     }, []);
 
     // Real-time avatar sync listener
@@ -230,9 +229,6 @@ export default function SettingsPage() {
 
     const handleLocaleChange = (value: string) => {
         setLocale(value);
-        localStorage.setItem("settings_locale", value);
-        document.cookie = `settings_locale=${value}; path=/; max-age=31536000`;
-        window.location.reload();
     };
 
     const prayerNames = [

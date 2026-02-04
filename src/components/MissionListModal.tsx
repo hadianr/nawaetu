@@ -7,6 +7,7 @@ import { Mission, Gender } from "@/data/missions-data";
 import { cn } from "@/lib/utils";
 import { Check, CheckCircle2, Sparkles, AlertCircle } from "lucide-react";
 import MissionDetailDialog from "./MissionDetailDialog";
+import { useLocale } from "@/context/LocaleContext";
 
 interface MissionListModalProps {
     missions: Mission[];
@@ -34,6 +35,7 @@ export default function MissionListModal({
     initialTab
 }: MissionListModalProps) {
     const [activeTab, setActiveTab] = useState(initialTab || "all");
+    const { t } = useLocale();
 
     // Sync active tab if initialTab changes (re-opening logic)
     // Note: In a real app we might want a useEffect on open.
@@ -153,17 +155,17 @@ export default function MissionListModal({
 
                                     {isLocked && (
                                         <span className="text-[9px] text-white/30 flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 border border-white/5">
-                                            Locked
+                                            {t.homeMissionLocked}
                                         </span>
                                     )}
                                     {!isLocked && validation.isLate && (
                                         <span className="text-[9px] text-red-400 flex items-center gap-1 font-bold bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
-                                            <AlertCircle className="w-3 h-3" /> Terlewat
+                                            <AlertCircle className="w-3 h-3" /> {t.homeMissionLate}
                                         </span>
                                     )}
                                     {!isLocked && validation.isEarly && (
                                         <span className="text-[9px] text-emerald-400 flex items-center gap-1 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                                            <Sparkles className="w-3 h-3" /> Awal Waktu
+                                            <Sparkles className="w-3 h-3" /> {t.homeMissionEarly}
                                         </span>
                                     )}
                                 </div>
@@ -200,7 +202,7 @@ export default function MissionListModal({
             >
                 <DialogHeader className="p-5 pb-3 border-b border-white/5 bg-white/[0.02]">
                     <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                        🎯 Daftar Misi Lengkap
+                        {t.homeMissionListTitle}
                     </DialogTitle>
                 </DialogHeader>
 

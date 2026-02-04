@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
+import { useLocale } from "@/context/LocaleContext";
 
 const NextPrayerWidget = dynamic(() => import("@/components/NextPrayerWidget"), {
   ssr: false,
@@ -33,6 +34,7 @@ const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay
 
 export default function DeferredBelowFold() {
   const [ready, setReady] = useState(false);
+  const { t } = useLocale();
 
   useEffect(() => {
     if ("requestIdleCallback" in window) {
@@ -100,8 +102,8 @@ export default function DeferredBelowFold() {
 
               {/* Label */}
               <div className="relative flex flex-col">
-                <span className="text-[11px] font-bold text-white leading-none">Tanya Nawaetu</span>
-                <span className="text-[9px] text-white/70 leading-normal">Asisten Muslim AI</span>
+                <span className="text-[11px] font-bold text-white leading-none">{t.homeAiTitle}</span>
+                <span className="text-[9px] text-white/70 leading-normal">{t.homeAiSubtitle}</span>
               </div>
             </div>
           </Link>

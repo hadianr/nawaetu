@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { addXP } from "@/lib/leveling";
+import { useLocale } from "@/context/LocaleContext";
 
 const playTick = (ctx: AudioContext) => {
     const osc = ctx.createOscillator();
@@ -29,6 +30,7 @@ const ZIKIR_PRESETS = [
 ];
 
 export default function TasbihCounter() {
+    const { t } = useLocale();
     const [count, setCount] = useState(0);
     const [target, setTarget] = useState<number | null>(33);
     const [activeZikir, setActiveZikir] = useState<typeof ZIKIR_PRESETS[0] | null>(ZIKIR_PRESETS[0]);
@@ -127,7 +129,7 @@ export default function TasbihCounter() {
         setCount(prev => (target && prev + 1 > target) ? 1 : prev + 1);
     };
 
-    const handleReset = () => { if (confirm("Reset hitungan?")) setCount(0); };
+    const handleReset = () => { if (confirm(t.tasbihResetConfirm)) setCount(0); };
     const toggleFeedback = () => {
         const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = ['vibrate', 'sound', 'both', 'none'];
         setFeedbackMode(modes[(modes.indexOf(feedbackMode) + 1) % modes.length]);
@@ -151,8 +153,8 @@ export default function TasbihCounter() {
             {/* Top: Branding + Zikir Text */}
             <div className="w-full text-center z-10 pointer-events-none mt-1 xs:mt-6 shrink-0">
                 <div className="mb-0.5 xs:mb-2">
-                    <h1 className="text-lg xs:text-xl font-bold tracking-tight text-white/90 leading-tight">Tasbih Digital</h1>
-                    <p className="text-[9px] xs:text-[10px] text-white/40 uppercase tracking-[0.2em]">Zikir Penenang Hati</p>
+                    <h1 className="text-lg xs:text-xl font-bold tracking-tight text-white/90 leading-tight">{t.tasbihTitle}</h1>
+                    <p className="text-[9px] xs:text-[10px] text-white/40 uppercase tracking-[0.2em]">{t.tasbihSubtitle}</p>
                 </div>
 
                 {activeZikir ? (
@@ -172,7 +174,7 @@ export default function TasbihCounter() {
                         </div>
                     </div>
                 ) : (
-                    <p className="text-white/20 text-[10px] italic">Mode Bebas</p>
+                    <p className="text-white/20 text-[10px] italic">{t.tasbihFreeMode}</p>
                 )}
             </div>
 
@@ -204,13 +206,13 @@ export default function TasbihCounter() {
                         className="absolute inset-1.5 md:inset-4 rounded-full bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border border-[rgb(var(--color-primary)/0.15)] active:scale-95 transition-transform duration-75 flex flex-col items-center justify-center group z-20 shadow-xl"
                     >
                         <span className="text-white/30 text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5">
-                            {activeZikir ? activeZikir.label : "Counter"}
+                            {activeZikir ? activeZikir.label : t.tasbihCounterLabel}
                         </span>
                         <span className="text-7xl xs:text-8xl md:text-9xl font-mono font-bold text-white tracking-tighter drop-shadow-2xl">
                             {count}
                         </span>
                         <div className="mt-1 text-[rgb(var(--color-primary))]/40 text-[8px] md:text-sm animate-pulse">
-                            Tap
+                            {t.tasbihTap}
                         </div>
                     </button>
                 </div>
@@ -223,11 +225,11 @@ export default function TasbihCounter() {
                 <div className="flex justify-center gap-3 text-white/30 text-[9px] font-bold uppercase tracking-widest mb-4">
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
                         <CalendarDays className="h-3.5 w-3.5 text-[rgb(var(--color-primary-light)/0.4)]" />
-                        <span>HARI INI: <span className="text-white">{dailyCount}</span></span>
+                        <span>{t.tasbihDaily}: <span className="text-white">{dailyCount}</span></span>
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
                         <Flame className="h-3.5 w-3.5 text-orange-500/60" />
-                        <span>STREAK: <span className="text-white">{streak}</span> HARI</span>
+                        <span>{t.tasbihStreak}: <span className="text-white">{streak}</span> {t.tasbihDays}</span>
                     </div>
                 </div>
 
@@ -239,7 +241,7 @@ export default function TasbihCounter() {
                         className="flex flex-col h-auto py-3 gap-1 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5"
                     >
                         <RotateCcw className="h-4 w-4 text-white/60" />
-                        <span className="text-[10px] text-white/40 font-medium">Reset</span>
+                        <span className="text-[10px] text-white/40 font-medium">{t.tasbihReset}</span>
                     </Button>
 
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -250,12 +252,12 @@ export default function TasbihCounter() {
                                 className="flex flex-col h-auto py-3 gap-1 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5"
                             >
                                 <Settings2 className="h-4 w-4 text-white/60" />
-                                <span className="text-[10px] text-white/40 font-medium">Doa</span>
+                                <span className="text-[10px] text-white/40 font-medium">{t.tasbihSelectZikir}</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="w-[90%] max-w-sm rounded-[32px] border-white/10 bg-neutral-950/98 backdrop-blur-3xl text-white">
                             <DialogHeader>
-                                <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">Daftar Bacaan</DialogTitle>
+                                <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">{t.tasbihListTitle}</DialogTitle>
                             </DialogHeader>
                             <div className="flex flex-col gap-2 py-4">
                                 {ZIKIR_PRESETS.map((p) => (
@@ -289,7 +291,7 @@ export default function TasbihCounter() {
                     >
                         <FeedbackIcon className="h-4 w-4" />
                         <span className="text-[10px] font-medium uppercase tracking-tighter">
-                            {feedbackMode === 'vibrate' ? "Getar" : feedbackMode === 'sound' ? "Suara" : feedbackMode === 'both' ? "Dual" : "Mute"}
+                            {feedbackMode === 'vibrate' ? t.tasbihVibrate : feedbackMode === 'sound' ? t.tasbihSound : feedbackMode === 'both' ? t.tasbihDual : t.tasbihMute}
                         </span>
                     </Button>
                 </div>
@@ -302,9 +304,9 @@ export default function TasbihCounter() {
                         <div className="w-14 h-14 rounded-full bg-[rgb(var(--color-primary)/0.1)] flex items-center justify-center mb-4 border border-[rgb(var(--color-primary)/0.2)]">
                             <Check className="w-7 h-7 text-[rgb(var(--color-primary-light))]" />
                         </div>
-                        <DialogTitle className="text-xl font-bold mb-1">Alhamdulillah!</DialogTitle>
+                        <DialogTitle className="text-xl font-bold mb-1">{t.tasbihComplete}</DialogTitle>
                     </DialogHeader>
-                    <p className="text-white/40 text-[13px] mb-6 px-2 leading-relaxed">Target {target}x tercapai dengan baik.</p>
+                    <p className="text-white/40 text-[13px] mb-6 px-2 leading-relaxed">{t.tasbihCompleteMessage}</p>
 
                     <div className="flex flex-row items-stretch gap-2.5 w-full">
                         {(() => {

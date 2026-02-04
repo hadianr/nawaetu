@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Flame } from "lucide-react";
 import { getDisplayStreak, STREAK_MILESTONES } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/context/LocaleContext";
 
 interface StreakBadgeProps {
     gender?: 'male' | 'female' | null;
@@ -11,6 +12,7 @@ interface StreakBadgeProps {
 }
 
 export default function StreakBadge({ gender, showLabel = false }: StreakBadgeProps) {
+    const { t } = useLocale();
     const [streak, setStreak] = useState(0);
     const [isActiveToday, setIsActiveToday] = useState(false);
 
@@ -54,7 +56,9 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
                             "bg-orange-500/20 border border-orange-500/30"
                     : "bg-white/5 border border-white/10"
             )}
-            title={nextMilestone ? `${daysToNext} hari lagi ke ${nextMilestone.label}` : "Streak terpanjang!"}
+            title={nextMilestone
+                ? t.streakNextMilestone.replace("{days}", String(daysToNext)).replace("{label}", nextMilestone.label)
+                : t.streakLongest}
         >
             <Flame
                 className={cn(
@@ -82,7 +86,7 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
                 {streak}
             </span>
             {showLabel && streak > 0 && (
-                <span className="text-[10px] text-white/40">hari</span>
+                <span className="text-[10px] text-white/40">{t.streakDaysLabel}</span>
             )}
         </div>
     );

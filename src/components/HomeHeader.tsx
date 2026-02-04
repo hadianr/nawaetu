@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { useLocale } from "@/context/LocaleContext";
 import StreakBadge from "@/components/StreakBadge";
 
 import { MapPin } from "lucide-react";
 
 export default function HomeHeader() {
     const { data } = usePrayerTimes();
+    const { t } = useLocale();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
@@ -42,17 +44,17 @@ export default function HomeHeader() {
         }
     }, []);
 
-    const [greeting, setGreeting] = useState("Selamat Datang");
+    const [greeting, setGreeting] = useState(t.homeGreetingWelcome);
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
         const hour = new Date().getHours();
-        if (hour >= 4 && hour < 10) setGreeting("Selamat Pagi");
-        else if (hour >= 10 && hour < 15) setGreeting("Selamat Siang");
-        else if (hour >= 15 && hour < 18) setGreeting("Selamat Sore");
-        else setGreeting("Selamat Malam");
-    }, []);
+        if (hour >= 4 && hour < 10) setGreeting(t.homeGreetingMorning);
+        else if (hour >= 10 && hour < 15) setGreeting(t.homeGreetingNoon);
+        else if (hour >= 15 && hour < 18) setGreeting(t.homeGreetingAfternoon);
+        else setGreeting(t.homeGreetingEvening);
+    }, [t]);
 
     // ... existing start of return ...
     return (
@@ -78,12 +80,12 @@ export default function HomeHeader() {
                     <div className="flex items-center gap-1.5 bg-[rgb(var(--color-primary))]/10 px-2 py-1 rounded-full border border-[rgb(var(--color-primary))]/20">
                         <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
                         <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest min-w-[60px] text-center inline-block whitespace-nowrap overflow-hidden text-ellipsis">
-                            {data?.locationName?.split(",")[0] || "Lokasi..."}
+                            {data?.locationName?.split(",")[0] || t.homeLoading}
                         </span>
                     </div>
                 </div>
                 <span className="text-[10px] text-white/60 font-medium px-1">
-                    {data?.hijriDate || "Loading..."}
+                    {data?.hijriDate || t.homeLoading}
                 </span>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { useLocale } from "@/context/LocaleContext";
 import { X, Share, PlusSquare, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +12,7 @@ interface PWAInstallPromptProps {
 
 export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPromptProps) {
     const { isStandalone, isIOS, deferredPrompt, promptInstall } = usePWAInstall();
+    const { t } = useLocale();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -49,20 +51,20 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                     </div>
 
                     <div className="flex-1">
-                        <h3 className="font-bold text-white text-sm">Install Nawaetu</h3>
+                        <h3 className="font-bold text-white text-sm">{t.pwaInstallTitle}</h3>
                         <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                            Akses lebih cepat, hemat kuota, dan fitur full screen tanpa perlu download di Store.
+                            {t.pwaInstallDesc}
                         </p>
 
                         {isIOS ? (
                             <div className="mt-3 space-y-2 bg-black/20 p-2 rounded-lg border border-white/5">
                                 <div className="flex items-center gap-2 text-xs text-slate-300">
                                     <span className="flex items-center justify-center w-5 h-5 bg-white/10 rounded-md">1</span>
-                                    <span>Tap tombol <strong>Share</strong> <Share className="w-3 h-3 inline mx-1" /></span>
+                                    <span>{t.pwaInstallIosStep1} <Share className="w-3 h-3 inline mx-1" /></span>
                                 </div>
                                 <div className="flex items-center gap-2 text-xs text-slate-300">
                                     <span className="flex items-center justify-center w-5 h-5 bg-white/10 rounded-md">2</span>
-                                    <span>Pilih <strong>Add to Home Screen</strong> <PlusSquare className="w-3 h-3 inline mx-1" /></span>
+                                    <span>{t.pwaInstallIosStep2} <PlusSquare className="w-3 h-3 inline mx-1" /></span>
                                 </div>
                             </div>
                         ) : (
@@ -74,7 +76,7 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                                 className="mt-3 w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 text-xs"
                             >
                                 <Download className="w-3 h-3 mr-2" />
-                                Install sekarang
+                                {t.pwaInstallButton}
                             </Button>
                         )}
                     </div>
