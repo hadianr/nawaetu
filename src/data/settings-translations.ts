@@ -91,6 +91,13 @@ export const SETTINGS_TRANSLATIONS = {
     xpDailyMissionReward: "+25-100 XP/misi",
     xpMethodStatistics: "Statistik",
     xpStatisticsHint: "Lihat Progress",
+    
+    // Navigation Menu
+    navHome: "Beranda",
+    navQuran: "Al-Qur'an",
+    navTasbih: "Tasbih",
+    navQibla: "Kiblat",
+    navSettings: "Atur",
   },
   en: {
     // Header
@@ -179,6 +186,13 @@ export const SETTINGS_TRANSLATIONS = {
     xpDailyMissionReward: "+25-100 XP/mission",
     xpMethodStatistics: "Statistics",
     xpStatisticsHint: "View Progress",
+    
+    // Navigation Menu
+    navHome: "Home",
+    navQuran: "Quran",
+    navTasbih: "Tasbih",
+    navQibla: "Qibla",
+    navSettings: "Settings",
   }
 };
 

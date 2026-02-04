@@ -5,21 +5,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, BookOpen, Compass, Settings, Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 
 const BottomNav = memo(function BottomNav() {
     const pathname = usePathname();
     const [mounted, setMounted] = useState(false);
+    const [locale, setLocale] = useState("id");
 
     useEffect(() => {
         setMounted(true);
+        // Load locale from localStorage
+        const savedLocale = localStorage.getItem("settings_locale") || "id";
+        setLocale(savedLocale);
+        
+        // Listen for locale changes
+        const handleStorageChange = () => {
+            const newLocale = localStorage.getItem("settings_locale") || "id";
+            setLocale(newLocale);
+        };
+        
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
     }, []);
 
+    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
+
     const navItems = [
-        { href: "/", label: "Beranda", icon: Home },
-        { href: "/quran", label: "Al-Qur'an", icon: BookOpen },
-        { href: "/tasbih", label: "Tasbih", icon: Fingerprint },
-        { href: "/kiblat", label: "Kiblat", icon: Compass },
-        { href: "/atur", label: "Atur", icon: Settings },
+        { href: "/", label: t.navHome, icon: Home },
+        { href: "/quran", label: t.navQuran, icon: BookOpen },
+        { href: "/tasbih", label: t.navTasbih, icon: Fingerprint },
+        { href: "/kiblat", label: t.navQibla, icon: Compass },
+        { href: "/atur", label: t.navSettings, icon: Settings },
     ];
 
     if (!mounted || pathname === "/tanya-ustadz") return null;
