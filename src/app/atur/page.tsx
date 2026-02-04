@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -23,6 +23,7 @@ import {
     MUADZIN_OPTIONS,
     CALCULATION_METHODS,
     DEFAULT_SETTINGS,
+    LANGUAGE_OPTIONS,
 } from "@/data/settings-data";
 
 interface AdhanPreferences {
@@ -59,6 +60,7 @@ export default function SettingsPage() {
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
+    const [locale, setLocale] = useState(DEFAULT_SETTINGS.locale);
 
     // Audio Preview State
     const [isPlaying, setIsPlaying] = useState(false);
@@ -165,8 +167,10 @@ export default function SettingsPage() {
         // Load new settings
         const savedMuadzin = localStorage.getItem("settings_muadzin");
         const savedMethod = localStorage.getItem("settings_calculation_method");
+        const savedLocale = localStorage.getItem("settings_locale");
         if (savedMuadzin) setMuadzin(savedMuadzin);
         if (savedMethod) setCalculationMethod(savedMethod);
+        if (savedLocale) setLocale(savedLocale);
     }, []);
 
     // Real-time avatar sync listener
@@ -221,6 +225,13 @@ export default function SettingsPage() {
         localStorage.setItem("settings_calculation_method", value);
         // Trigger refresh of prayer times with new method
         window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: value } }));
+    };
+
+    const handleLocaleChange = (value: string) => {
+        setLocale(value);
+        localStorage.setItem("settings_locale", value);
+        document.cookie = `settings_locale=${value}; path=/; max-age=31536000`;
+        window.location.reload();
     };
 
     const prayerNames = [
@@ -508,7 +519,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Audio Configuration Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-20">
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
                     <div className="flex items-center gap-2 text-sky-400">
                         <Headphones className="w-4 h-4" />
                         <span className="text-sm font-semibold text-white">Pengaturan Audio</span>
@@ -575,6 +586,40 @@ export default function SettingsPage() {
                             </Select>
                         </div>
                     </div>
+                </div>
+
+                {/* Language Settings Card */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                        <span className="text-sm font-semibold text-white">{locale === "en" ? "Language" : "Bahasa"}</span>
+                    </div>
+
+                    <Select value={locale} onValueChange={handleLocaleChange}>
+                        <SelectTrigger className="w-full bg-white/5 border-white/10 text-white">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-white/10">
+                            {LANGUAGE_OPTIONS.map((lang) => (
+                                <SelectItem
+                                    key={lang.id}
+                                    value={lang.id}
+                                    className="text-white text-sm hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors"
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <span className="text-lg">{lang.flag}</span>
+                                        <span>{lang.label}</span>
+                                    </span>
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <p className="text-[10px] text-white/40 leading-relaxed">
+                        {locale === "en"
+                            ? "The app language will change according to your selection."
+                            : "Bahasa aplikasi akan berubah sesuai pilihan."}
+                    </p>
                 </div>
 
                 {/* Support Card (Persistent) */}

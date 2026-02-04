@@ -4,6 +4,7 @@
  * API URL: https://quran-api-id.vercel.app (hosted by gadingnst)
  */
 
+import { cache } from "react";
 import type { Chapter } from "@/components/quran/SurahList";
 
 const KEMENAG_API_BASE_URL = "https://quran-api-id.vercel.app";
@@ -128,79 +129,67 @@ export async function getKemenagChapter(chapterId: string | number): Promise<Cha
 }
 
 // Get verses for a chapter from Kemenag API
-export async function getKemenagVerses(
-  chapterId: string | number,
-  page: number = 1,
-  perPage: number = 20
-) {
-  try {
-    // Fetch from both APIs in parallel for best quality data
-    const [kemenagRes, quranComRes] = await Promise.all([
-      fetch(`${KEMENAG_API_BASE_URL}/surah/${chapterId}`, { next: { revalidate: 86400 } }),
-      fetch(
-        `https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?language=id&words=false&translations=33&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`,
-        { next: { revalidate: 86400 } }
-      ),
-    ]);
+// Wrapped with React's cache to deduplicate identical requests within same render
+export const getKemenagVerses = cache(
+  async (
+    chapterId: string | number,
+    page: number = 1,
+    perPage: number = 20,
+    locale: string = "id"
+  ) => {
+    try {
+      // Determine translation ID based on locale
+      // 20 = Saheeh International (English), 33 = Indonesian (Kemenag)
+      const translationId = locale === "en" ? 20 : 33;
+      
+      // Single API call - use quran.com only (faster, no dual API bottleneck)
+      // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
+      const apiUrl = `https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?language=${locale}&words=true&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
+      
+      const res = await fetch(apiUrl, { 
+        next: { revalidate: 86400 }, // Cache for 24 hours
+        signal: AbortSignal.timeout(8000) // 8s timeout to prevent hanging
+      });
 
-    if (!kemenagRes.ok) throw new Error(`Failed to fetch verses for chapter ${chapterId}`);
+      if (!res.ok) throw new Error(`Failed to fetch verses: ${res.status}`);
 
-    const response: GadingQuranResponse = await kemenagRes.json();
-    const surah = response.data as GadingSurah;
-    const allVerses = surah.verses || [];
+      const data = await res.json();
+      const verses = data.verses || [];
 
-    // Get quran.com data for better harakat (especially for muqaṭṭaʿāt letters)
-    let quranComVerses: any[] = [];
-    if (quranComRes.ok) {
-      const quranComData = await quranComRes.json();
-      quranComVerses = quranComData.verses || [];
+      // Transform to match app structure - simple, fast transformation
+      return verses.map((verse: any) => {
+        // Build transliteration from words
+        const transliteration = verse.words?.map((w: any) => w.transliteration?.text || '').join(' ') || '';
+        
+        return {
+          id: verse.number_in_quran,
+          verse_number: verse.verse_number,
+          verse_key: verse.verse_key,
+          text_uthmani: verse.text_uthmani,
+          text_uthmani_tajweed: verse.text_uthmani_tajweed || verse.text_uthmani,
+          translations: verse.translations || [],
+          transliteration: transliteration,
+          words: verse.words || [], // Now we have word-level data
+          audio: {
+            url: verse.audio?.url || "",
+            primary: verse.audio?.url || "",
+            secondary: [],
+          },
+          tafsir: locale === "id" ? {
+            kemenag: {
+              short: "",
+              long: "",
+            },
+          } : undefined,
+          meta: verse.meta,
+        };
+      });
+    } catch (error) {
+      console.error(`Error fetching verses for chapter ${chapterId}:`, error);
+      throw error;
     }
-
-    // Apply pagination
-    const startIdx = (page - 1) * perPage;
-    const paginatedVerses = allVerses.slice(startIdx, startIdx + perPage);
-
-    // Transform to match app structure, using quran.com text for better harakat
-    return paginatedVerses.map((verse: GadingVerse) => {
-      const quranComVerse = quranComVerses.find(
-        (v: any) => v.verse_number === verse.number.inSurah
-      );
-
-      return {
-        id: verse.number.inQuran,
-        verse_number: verse.number.inSurah,
-        verse_key: `${chapterId}:${verse.number.inSurah}`,
-        // Use quran.com text_uthmani for complete harakat, fallback to Kemenag
-        text_uthmani: quranComVerse?.text_uthmani || verse.text.arab,
-        text_uthmani_tajweed: quranComVerse?.text_uthmani_tajweed || verse.text.arab,
-        translations: [
-          {
-            id: 33, // Indonesian translation ID
-            resource_id: 33,
-            text: verse.translation.id,
-          },
-        ],
-        transliteration: verse.text.transliteration.en,
-        words: [], // API doesn't provide word-level data
-        audio: {
-          url: verse.audio.primary,
-          primary: verse.audio.primary,
-          secondary: verse.audio.secondary,
-        },
-        tafsir: {
-          kemenag: {
-            short: verse.tafsir.id.short,
-            long: verse.tafsir.id.long,
-          },
-        },
-        meta: verse.meta,
-      };
-    });
-  } catch (error) {
-    console.error(`Error fetching verses for chapter ${chapterId}:`, error);
-    throw error;
   }
-}
+);
 
 // Get single verse with details
 export async function getKemenagVerse(chapterId: string | number, verseNumber: string | number) {
@@ -260,3 +249,41 @@ export function getVerseAudioUrl(verseId: number, reciterId: number): string {
   return `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.name}/${verseId}.mp3`;
 }
 
+// Prefetch utility for popular surahs during idle time
+// Call this on app startup to preload chapters 1-10 + frequently read surahs
+export function prefetchPopularSurahs(locale: string = "id"): void {
+  if (typeof window === "undefined") return; // Only in browser
+  
+  // Popular surahs: Al-Fatiha(1), Al-Baqarah(2), Ali-Imran(3), An-Nisa(4), Al-Ma'idah(5),
+  // Al-An'am(6), Al-A'raf(7), Al-Anfal(8), At-Tawbah(9), Yunus(10), Ar-Rahman(55), Ya-Seen(36)
+  const popularSurahs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 36, 55];
+  
+  // Use requestIdleCallback to prefetch without blocking user interaction
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(() => {
+      popularSurahs.forEach((surah) => {
+        // Trigger fetch via cache() - this will cache the result
+        getKemenagVerses(surah, 1, 20, locale).catch(() => {
+          // Silently ignore prefetch errors
+        });
+      });
+    });
+  }
+}
+
+// Fallback for failed API calls - returns minimal verse structure
+function createFallbackVerse(verseKey: string): any {
+  const [chapter, verse] = verseKey.split(":");
+  return {
+    id: parseInt(verseKey.replace(":", "")),
+    verse_number: parseInt(verse),
+    verse_key: verseKey,
+    text_uthmani: "",
+    text_uthmani_tajweed: "",
+    translations: [{ text: "Unable to load translation" }],
+    transliteration: "",
+    words: [],
+    audio: { url: "", primary: "", secondary: [] },
+    meta: null,
+  };
+}

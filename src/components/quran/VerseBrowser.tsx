@@ -21,9 +21,12 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
     const perPageCookie = cookieStore.get("settings_verses_per_page");
     const perPage = perPageCookie ? parseInt(perPageCookie.value) : DEFAULT_SETTINGS.versesPerPage;
 
+    const localeCookie = cookieStore.get("settings_locale");
+    const locale = localeCookie ? localeCookie.value : DEFAULT_SETTINGS.locale;
+
     // Fetch data from Kemenag API (via quran-api-id wrapper)
     const chapter = await getKemenagChapter(id);
-    const versesData = await getKemenagVerses(id, currentPage, perPage);
+    const versesData = await getKemenagVerses(id, currentPage, perPage, locale);
 
     // Enhance verses with audio URLs from selected reciter (override default audio)
     const verses = versesData.map((verse: any) => ({
@@ -43,6 +46,7 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
             currentPage={currentPage}
             totalPages={totalPages}
             currentReciterId={reciterId}
+            currentLocale={locale}
         />
     );
 }

@@ -25,10 +25,17 @@ export const CALCULATION_METHODS = [
     { id: 1, label: "Karachi", description: "University of Islamic Sciences, Karachi" },
 ];
 
+// Language Options
+export const LANGUAGE_OPTIONS = [
+    { id: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+    { id: "en", label: "English", flag: "🇬🇧" },
+];
+
 // Default Settings
 export const DEFAULT_SETTINGS = {
     muadzin: "makkah",
     reciter: 7, // Mishary Rashid
     calculationMethod: 20, // Kemenag RI
     versesPerPage: 20,
+    locale: "id", // Default Indonesian
 };

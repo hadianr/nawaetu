@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import OnboardingOverlay from "@/components/OnboardingOverlay";
+import { initializeQuranOptimizations } from "@/lib/optimize-quran";
 const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
 
 export default function AppOverlays() {
@@ -32,6 +33,12 @@ export default function AppOverlays() {
             document.removeEventListener("keydown", onInteraction);
             document.removeEventListener("touchstart", onInteraction);
         };
+    }, []);
+
+    // Initialize Quran API optimizations on first client load
+    useEffect(() => {
+        const locale = localStorage.getItem("settings_locale") || "id";
+        initializeQuranOptimizations(locale);
     }, []);
 
     return (

@@ -56,11 +56,29 @@ interface VerseListProps {
     currentPage: number;
     totalPages: number;
     currentReciterId?: number;
+    currentLocale?: string;
 }
 
 // --- Utils ---
 const toArabicNumber = (n: number) => n.toString().replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
-const cleanTranslation = (text: string) => text.replace(/(\d+)$/gm, '').replace(/(\d+)(?=\s|$)/g, '');
+const formatFootnotes = (htmlText: string) => {
+    if (!htmlText) return '';
+    let formatted = htmlText;
+    // Convert inline footnote numbers to superscript (e.g., contracts.1 -> contracts.<sup>1</sup>)
+    formatted = formatted
+        .replace(/([\.,;:!?\]])\s*(\d{1,2})(?=\s|$)/g, '$1<sup>$2</sup>')
+        .replace(/\s(\d{1,2})(?=\s|$)/g, ' <sup>$1</sup>');
+    return formatted;
+};
+const cleanTranslation = (text: string) => {
+    if (!text) return '';
+    let cleaned = text;
+    // Remove stray leading "0" or "O" from some translations
+    cleaned = cleaned.replace(/^\s*[0O]\s+/, '').replace(/^\s*[0O]\./, '');
+    // Remove trailing isolated verse numbers only
+    cleaned = cleaned.replace(/\s*[\(\[]?\d{1,3}[\)\]]?\s*$/g, '');
+    return formatFootnotes(cleaned.trim());
+};
 
 // --- Robust Tajweed CSS ---
 const tajweedStyles = `
@@ -119,7 +137,7 @@ const getVerseFontClass = (script: string, size: string) => {
     return `${base} text-3xl leading-[2.3]`; // Medium
 };
 
-export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId }: VerseListProps) {
+export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
     // --- State ---
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -132,6 +150,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [scriptType, setScriptType] = useState<'tajweed' | 'indopak'>('indopak'); // Default to Indopak for clarity
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
+    const [locale, setLocale] = useState<string>(currentLocale);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
     const pathname = usePathname();
@@ -158,6 +177,16 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         startTransition(() => router.refresh());
     }, [router]);
 
+    const handleLocaleChange = useCallback((value: string) => {
+        setLocale(value);
+        // Update cookie for server-side
+        document.cookie = `settings_locale=${value}; path=/; max-age=31536000`;
+        // Update localStorage for client-side persistence
+        localStorage.setItem("settings_locale", value);
+        // Refresh to get new translation
+        startTransition(() => router.refresh());
+    }, [router]);
+
     // Bookmarking
     const { isBookmarked: checkIsBookmarked, getBookmark } = useBookmarks();
     // const [bookmarkDialogVerse, setBookmarkDialogVerse] = useState<Verse | null>(null); // Unused
@@ -168,6 +197,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [loadingTafsir, setLoadingTafsir] = useState<Set<string>>(new Set());
     const [tafsirCache, setTafsirCache] = useState<Map<string, TafsirContent>>(new Map());
     const [activeTafsirVerse, setActiveTafsirVerse] = useState<string | null>(null);
+    const [tafsirModalOpen, setTafsirModalOpen] = useState(false);
+    const [tafsirModalContent, setTafsirModalContent] = useState<{verseKey: string, tafsir: TafsirContent} | null>(null);
 
     // Load settings from Cookies on Mount
     useEffect(() => {
@@ -445,7 +476,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setLoadingTafsir(prev => new Set(prev).add(verseKey));
             try {
                 const [surahId, verseId] = verseKey.split(':').map(Number);
-                const data = await getVerseTafsir(surahId, verseId);
+                const data = await getVerseTafsir(surahId, verseId, locale);
                 if (data) {
                     setTafsirCache(prev => new Map(prev).set(verseKey, data));
                 }
@@ -674,10 +705,12 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 // --- Mushaf Mode View ---
 
                 <div className="px-4 py-6 md:px-8">
-                    {scriptType === 'tajweed' && <TajweedLegend />}
+                    <div key="tajweed-legend-mushaf" className={scriptType === 'tajweed' ? '' : 'hidden'}>
+                        <TajweedLegend />
+                    </div>
                     <div className={`text-right ${getVerseFontClass(scriptType, fontSize)} text-slate-200`} dir="rtl">
                         {verses.map((verse) => (
-                            <span key={verse.id} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
+                            <span key={`mushaf-${verse.verse_key}`} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
                                 <span className={cn(
                                     "hover:bg-[rgb(var(--color-primary))]/10 transition-colors rounded px-1 cursor-pointer",
                                     playingVerseKey === verse.verse_key && "bg-[rgb(var(--color-primary))]/20"
@@ -764,11 +797,9 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             ) : (
                 // --- List Mode View ---
                 <div className="space-y-4 px-0 md:px-0">
-                    {scriptType === 'tajweed' && (
-                        <div className="px-4 md:px-0">
-                            <TajweedLegend />
-                        </div>
-                    )}
+                    <div key="tajweed-legend" className={`px-4 md:px-0 ${scriptType === 'tajweed' ? '' : 'hidden'}`}>
+                        <TajweedLegend />
+                    </div>
                     {displayedVerses.map((verse) => {
                         const verseNum = parseInt(verse.verse_key.split(':')[1]);
                         const isPlayingVerse = playingVerseKey === verse.verse_key;
@@ -776,7 +807,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
                         return (
                             <div
-                                key={verse.id}
+                                key={`verse-${verse.verse_key}`}
                                 id={`verse-${verseNum}`}
                                 className={`group relative py-8 px-4 md:px-6 border-b border-white/5 transition-colors duration-500 ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))]/5' : 'hover:bg-white/[0.02]'}`}
                             >
@@ -784,11 +815,14 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 <div className="flex items-center justify-between mb-6">
                                     <AyahMarker number={toArabicNumber(verseNum)} size={fontSize} />
                                     <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                                        {!(isPlayingVerse && isPlaying) && (
-                                            <Button variant="ghost" size="icon" onClick={() => handleVersePlay(verse, false)} className={`h-8 w-8 rounded-full ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10'}`}>
-                                                <Play className="h-4 w-4" />
-                                            </Button>
-                                        )}
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon" 
+                                            onClick={() => handleVersePlay(verse, false)} 
+                                            className={`h-8 w-8 rounded-full ${isPlayingVerse && isPlaying ? 'opacity-0 pointer-events-none' : ''} ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10'}`}
+                                        >
+                                            <Play className="h-4 w-4" />
+                                        </Button>
                                         <Button variant="ghost" size="icon" onClick={() => handleBookmarkClick(verse)} className={`h-8 w-8 rounded-full ${isBookmarked ? 'text-[rgb(var(--color-primary))]' : 'text-slate-400 hover:text-[rgb(var(--color-primary))]'}`}>
                                             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
                                         </Button>
@@ -810,14 +844,30 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         <p className="text-[rgb(var(--color-primary-light))] text-sm md:text-base font-medium leading-relaxed">{verse.transliteration}</p>
                                     )}
                                     <p className="text-slate-400 text-sm md:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: cleanTranslation(verse.translations[0]?.text || "") }} />
-                                    {activeTafsirVerse === verse.verse_key && (
-                                        <div className="mt-6 p-5 rounded-2xl bg-[#0f172a] border border-white/5 animate-in slide-in-from-top-2">
-                                            <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-amber-400" /><h3 className="text-sm font-bold text-white">Tafsir Ringkas</h3></div>
-                                            {loadingTafsir.has(verse.verse_key) ? <div className="flex items-center gap-2 text-slate-500 py-4"><Loader2 className="h-4 w-4 animate-spin" /><span className="text-xs">Memuat...</span></div> : (
-                                                <div className="prose prose-invert prose-sm text-slate-300"><p>{tafsirCache.get(verse.verse_key)?.short || "Tafsir tidak tersedia."}</p></div>
-                                            )}
+                                    <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-slate-900 border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
+                                        <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary))]" /><h3 className="text-sm font-bold text-white">{locale === "en" ? "Brief Explanation" : "Tafsir Ringkas"}</h3></div>
+                                        <div className={`flex items-center gap-2 text-slate-500 py-4 ${loadingTafsir.has(verse.verse_key) ? '' : 'hidden'}`}>
+                                            <Loader2 className="h-4 w-4 animate-spin" /><span className="text-xs">{locale === "en" ? "Loading..." : "Memuat..."}</span>
                                         </div>
-                                    )}
+                                        <div className={loadingTafsir.has(verse.verse_key) ? 'hidden' : 'space-y-3'}>
+                                            <div
+                                                className="prose prose-invert prose-sm text-slate-300"
+                                                dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirCache.get(verse.verse_key)?.short || (locale === "en" ? "Tafsir not available." : "Tafsir tidak tersedia.")) }}
+                                            />
+                                            <button
+                                                onClick={() => {
+                                                    const tafsir = tafsirCache.get(verse.verse_key);
+                                                    if (tafsir) {
+                                                        setTafsirModalContent({verseKey: verse.verse_key, tafsir});
+                                                        setTafsirModalOpen(true);
+                                                    }
+                                                }}
+                                                className={`text-xs font-semibold mt-2 transition-colors ${tafsirCache.get(verse.verse_key)?.long && tafsirCache.get(verse.verse_key)?.long !== tafsirCache.get(verse.verse_key)?.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
+                                            >
+                                                {locale === "en" ? "Read Full Explanation →" : "Baca Penjelasan Lengkap →"}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -962,6 +1012,44 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 bookmark={activeBookmark}
                 onSave={() => setEditingBookmarkKey(null)}
             />
-        </div >
+
+            {/* Tafsir Modal */}
+            <Dialog open={tafsirModalOpen} onOpenChange={setTafsirModalOpen}>
+                <DialogContent className="w-[98vw] max-w-lg sm:max-w-xl max-h-[80vh] sm:max-h-[85vh] rounded-2xl sm:rounded-3xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-slate-900/50 to-slate-950/40 backdrop-blur-3xl shadow-2xl shadow-black/60 p-0 overflow-hidden">
+                    {/* Hidden DialogTitle for accessibility */}
+                    <DialogTitle className="sr-only">
+                        {locale === "en" ? "Tafsir Full Explanation" : "Penjelasan Lengkap Tafsir"}
+                    </DialogTitle>
+                    
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-slate-900 to-slate-800/50 border-b border-[rgb(var(--color-primary))]/20 px-4 sm:px-6 py-4 sm:py-6">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/40 to-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/50 shadow-lg shadow-[rgb(var(--color-primary))]/20">
+                                <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 text-[rgb(var(--color-primary))]" />
+                            </div>
+                            <div className="flex-1">
+                                <h2 className="text-lg sm:text-xl font-bold text-white tracking-wide">
+                                    {locale === "en" ? "Tafsir" : "Tafsir"}
+                                </h2>
+                                <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+                                    {locale === "en" ? "Full Explanation" : "Penjelasan Lengkap"}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Content */}
+                    <ScrollArea className="max-h-[calc(80vh-100px)] sm:max-h-[calc(85vh-120px)]">
+                        {tafsirModalContent && (
+                            <div className="px-4 sm:px-6 py-4 sm:py-6 space-y-4 text-slate-200">
+                                <div
+                                    className="text-sm sm:text-base [&>p]:mb-4 sm:[&>p]:mb-5 [&>p]:leading-relaxed sm:[&>p]:leading-loose [&>p]:text-slate-300 [&>p:first-child]:text-base sm:[&>p:first-child]:text-lg [&>p:first-child]:font-medium [&>p:first-child]:text-white/95 [&>h3]:text-base sm:[&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-white [&>h3]:mt-5 sm:[&>h3]:mt-6 [&>h3]:mb-2 sm:[&>h3]:mb-3 [&>ul]:my-3 sm:[&>ul]:my-4 [&>ul]:ml-1 sm:[&>ul]:ml-2 [&>ul]:space-y-2 sm:[&>ul]:space-y-3 [&>ul]:pl-1 sm:[&>ul]:pl-2 [&>ol]:my-3 sm:[&>ol]:my-4 [&>ol]:ml-1 sm:[&>ol]:ml-2 [&>ol]:space-y-2 sm:[&>ol]:space-y-3 [&>ol]:pl-1 sm:[&>ol]:pl-2 [&>ol]:list-decimal [&>ol]:list-outside [&>ul]:list-disc [&>ul]:list-outside [&>li]:leading-relaxed sm:[&>li]:leading-loose [&>li]:pl-2 sm:[&>li]:pl-3 [&>li]:py-1 sm:[&>li]:py-2 [&>li]:px-2 sm:[&>li]:px-3 [&>li]:rounded-md [&>li]:bg-white/4 [&>li]:border [&>li]:border-white/10 [&>li>strong]:text-[rgb(var(--color-primary))]/95 [&>li>strong]:font-semibold [&>ol>li]:marker:text-[rgb(var(--color-primary))] [&>ol>li]:marker:font-bold [&>ul>li]:marker:text-[rgb(var(--color-primary))] [&_sup]:text-[rgb(var(--color-primary))]/85 [&_sup]:font-semibold [&>ol>li>ol]:my-2 sm:[&>ol>li>ol]:my-3 [&>ol>li>ol]:ml-2 sm:[&>ol>li>ol]:ml-3 [&>ol>li>ol]:space-y-1 sm:[&>ol>li>ol]:space-y-2 [&>ol>li>ol]:pl-0 [&>ol>li>ol]:list-lower-alpha [&>ol>li>ol]:list-outside [&>ol>li>ol>li]:bg-white/3 [&>ol>li>ol>li]:border-white/5 [&>ol>li>ol>li]:py-1 sm:[&>ol>li>ol>li]:py-1.5 [&>ol>li>ol>li]:px-2 sm:[&>ol>li>ol>li]:px-2.5 [&>ol>li>ol>li]:pl-1.5 sm:[&>ol>li>ol>li]:pl-2 [&>ol>li>ol>li]:rounded-sm [&>ol>li>ol>li]:marker:text-white/50 [&>ol>li>ol>li]:marker:font-semibold"
+                                    dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirModalContent.tafsir.long) }}
+                                />
+                            </div>
+                        )}
+                    </ScrollArea>
+                </DialogContent>
+            </Dialog>        </div>
     );
 }
