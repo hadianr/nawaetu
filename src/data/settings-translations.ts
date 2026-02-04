@@ -98,6 +98,19 @@ export const SETTINGS_TRANSLATIONS = {
     navTasbih: "Tasbih",
     navQibla: "Kiblat",
     navSettings: "Atur",
+    
+    // Qibla Page
+    qiblaFinding: "CARI KIBLAT",
+    qiblaAligned: "MENGHADAP KIBLAT",
+    qiblaPermissionTitle: "Izin Akses Kompas",
+    qiblaPermissionDesc: "Nawaetu memerlukan akses sensor gerak HP Anda untuk menentukan arah kiblat dengan presisi.",
+    qiblaPermissionButton: "Aktifkan Sensor",
+    qiblaLocationError: "Izin lokasi diperlukan untuk menghitung arah kiblat.",
+    qiblaGeoError: "Geolocation tidak didukung di browser ini.",
+    qiblaCompassDenied: "Izin kompas ditolak.",
+    qiblaCompassFailed: "Gagal meminta izin kompas.",
+    qiblaDistance: "Jarak ke Ka'bah: {distance} km",
+    qiblaSearching: "Mencari lokasi...",
   },
   en: {
     // Header
@@ -193,6 +206,19 @@ export const SETTINGS_TRANSLATIONS = {
     navTasbih: "Tasbih",
     navQibla: "Qibla",
     navSettings: "Settings",
+    
+    // Qibla Page
+    qiblaFinding: "FIND QIBLA",
+    qiblaAligned: "FACING QIBLA",
+    qiblaPermissionTitle: "Compass Permission",
+    qiblaPermissionDesc: "Nawaetu needs access to your device's motion sensors to determine the Qibla direction with precision.",
+    qiblaPermissionButton: "Enable Sensor",
+    qiblaLocationError: "Location permission is required to calculate the Qibla direction.",
+    qiblaGeoError: "Geolocation is not supported in this browser.",
+    qiblaCompassDenied: "Compass permission denied.",
+    qiblaCompassFailed: "Failed to request compass permission.",
+    qiblaDistance: "Distance to Ka'bah: {distance} km",
+    qiblaSearching: "Finding location...",
   }
 };
 

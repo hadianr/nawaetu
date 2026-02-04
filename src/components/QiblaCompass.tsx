@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { KaabaIcon } from "@/components/icons/KaabaIcon";
 import { Compass } from "lucide-react";
+import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 
 interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
     webkitCompassHeading?: number;
@@ -21,9 +22,13 @@ export default function QiblaCompass() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [aligned, setAligned] = useState<boolean>(false);
+    const [locale, setLocale] = useState("id");
 
     // Refs to track absolute values for wrapping logic
     const lastHeadingRef = useRef<number>(0);
+
+    // Helper to get translations
+    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
 
     const handleOrientation = useCallback((e: DeviceOrientationEvent) => {
         let rawHeading: number | null = null;
@@ -61,15 +66,28 @@ export default function QiblaCompass() {
                     setLoading(false);
                 },
                 (err) => {
-                    setError("Izin lokasi diperlukan untuk menghitung arah kiblat.");
+                    setError(t.qiblaLocationError);
                     setLoading(false);
                 }
             );
         } else {
-            setError("Geolocation tidak didukung di browser ini.");
+            setError(t.qiblaGeoError);
             setLoading(false);
         }
-    }, []);
+        
+        // Load locale from localStorage
+        const savedLocale = localStorage.getItem("settings_locale") || "id";
+        setLocale(savedLocale);
+        
+        // Listen for locale changes
+        const handleStorageChange = () => {
+            const newLocale = localStorage.getItem("settings_locale") || "id";
+            setLocale(newLocale);
+        };
+        
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
+    }, [t]);
 
     const startCompass = useCallback(() => {
         setPermissionGranted(true);
@@ -87,10 +105,10 @@ export default function QiblaCompass() {
                 if (response === "granted") {
                     startCompass();
                 } else {
-                    setError("Izin kompas ditolak.");
+                    setError(t.qiblaCompassDenied);
                 }
             } catch (e) {
-                setError("Gagal meminta izin kompas.");
+                setError(t.qiblaCompassFailed);
             }
         } else {
             startCompass();
@@ -127,7 +145,7 @@ export default function QiblaCompass() {
         };
     }, [handleOrientation]);
 
-    if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">Mencari lokasi...</div>;
+    if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">{t.qiblaSearching}</div>;
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] w-full relative">
@@ -145,16 +163,16 @@ export default function QiblaCompass() {
                         <Compass className="w-10 h-10 text-emerald-400 animate-[spin_3s_linear_infinite]" />
                     </div>
 
-                    <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Izin Akses Kompas</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">{t.qiblaPermissionTitle}</h3>
                     <p className="text-white/60 max-w-xs mb-10 leading-relaxed">
-                        Nawaetu memerlukan akses sensor gerak HP Anda untuk menentukan arah kiblat dengan presisi.
+                        {t.qiblaPermissionDesc}
                     </p>
 
                     <Button
                         onClick={requestCompassPermission}
                         className="bg-[rgb(var(--color-primary-dark))] hover:bg-[rgb(var(--color-primary))] text-white rounded-full px-10 py-7 text-lg font-medium shadow-[0_0_30px_rgba(var(--color-primary),0.25)] transition-all hover:scale-105 active:scale-95"
                     >
-                        Aktifkan Sensor
+                        {t.qiblaPermissionButton}
                     </Button>
                 </div>
             )}
@@ -241,7 +259,7 @@ export default function QiblaCompass() {
                         {/* 3. FIX: Text Animation (Scale + Glow) */}
                         <div className={`transition-all duration-500 transform ${aligned ? 'scale-110' : 'scale-100'}`}>
                             <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_20px_rgba(var(--color-primary),0.6)]' : 'text-white/30'}`}>
-                                {aligned ? "MENGHADAP KIBLAT" : "CARI KIBLAT"}
+                                {aligned ? t.qiblaAligned : t.qiblaFinding}
                             </h2>
                         </div>
 
@@ -251,7 +269,7 @@ export default function QiblaCompass() {
                             </div>
                             {distance && (
                                 <div className="text-sm text-white/40 font-medium bg-white/5 px-4 py-1.5 rounded-full border border-white/5 backdrop-blur-sm mt-2">
-                                    Jarak ke Ka'bah: {distance.toLocaleString()} km
+                                    {t.qiblaDistance?.replace("{distance}", distance.toLocaleString())}
                                 </div>
                             )}
                         </div>
