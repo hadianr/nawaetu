@@ -6,6 +6,15 @@ import * as Sentry from "@sentry/nextjs";
 
 // Defer Sentry initialization to idle callback to avoid blocking FCP
 const initSentry = () => {
+  // Only initialize Sentry in production environment (nawaetu.com)
+  const isProduction = typeof window !== "undefined" && 
+    (window.location.hostname === "nawaetu.com" || window.location.hostname === "www.nawaetu.com");
+  
+  if (!isProduction) {
+    console.log("[Sentry] Skipped - Not running on nawaetu.com");
+    return;
+  }
+
   Sentry.init({
     dsn: "https://01c92628e40472d65fa8216a0628ddd9@o4510815612960768.ingest.us.sentry.io/4510815614468096",
 
