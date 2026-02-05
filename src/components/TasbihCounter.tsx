@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -21,19 +21,66 @@ const playTick = (ctx: AudioContext) => {
     osc.stop(ctx.currentTime + 0.05);
 };
 
-const ZIKIR_PRESETS = [
-    { label: "Tasbih", arab: "سُبْحَانَ ٱللَّٰهِ", latin: "Subhanallah", tadabbur: "Maha Suci Allah dari segala kekurangan.", target: 33 },
-    { label: "Tahmid", arab: "ٱلْحَمْدُ لِلَّٰهِ", latin: "Alhamdulillah", tadabbur: "Segala puji bagi Allah atas segala nikmat.", target: 33 },
-    { label: "Takbir", arab: "ٱللَّٰهُ أَكْبَرُ", latin: "Allahu Akbar", tadabbur: "Allah Maha Besar.", target: 33 },
-    { label: "Istighfar", arab: "أَسْتَغْفِرُ ٱللَّٰهَ", latin: "Astaghfirullah", tadabbur: "Aku memohon ampunan kepada Allah SWT.", target: 100 },
-    { label: "Sholawat Jibril", arab: "صَلَّى ٱللَّٰهُ عَلَىٰ مُحَمَّدٍ", latin: "Shallallahu 'ala Muhammad", tadabbur: "Semoga Allah melimpahkan rahmat kepada Nabi Muhammad.", target: 1000 },
-];
+type ZikirPreset = {
+    id: string;
+    label: string;
+    arab: string;
+    latin: string;
+    tadabbur: string;
+    target: number;
+};
 
 export default function TasbihCounter() {
     const { t } = useLocale();
+    const zikirPresets = useMemo<ZikirPreset[]>(
+        () => [
+            {
+                id: "tasbih",
+                label: t.tasbihPresetTasbihLabel,
+                arab: "سُبْحَانَ ٱللَّٰهِ",
+                latin: t.tasbihPresetTasbihLatin,
+                tadabbur: t.tasbihPresetTasbihTadabbur,
+                target: 33
+            },
+            {
+                id: "tahmid",
+                label: t.tasbihPresetTahmidLabel,
+                arab: "ٱلْحَمْدُ لِلَّٰهِ",
+                latin: t.tasbihPresetTahmidLatin,
+                tadabbur: t.tasbihPresetTahmidTadabbur,
+                target: 33
+            },
+            {
+                id: "takbir",
+                label: t.tasbihPresetTakbirLabel,
+                arab: "ٱللَّٰهُ أَكْبَرُ",
+                latin: t.tasbihPresetTakbirLatin,
+                tadabbur: t.tasbihPresetTakbirTadabbur,
+                target: 33
+            },
+            {
+                id: "istighfar",
+                label: t.tasbihPresetIstighfarLabel,
+                arab: "أَسْتَغْفِرُ ٱللَّٰهَ",
+                latin: t.tasbihPresetIstighfarLatin,
+                tadabbur: t.tasbihPresetIstighfarTadabbur,
+                target: 100
+            },
+            {
+                id: "sholawat_jibril",
+                label: t.tasbihPresetSholawatJibrilLabel,
+                arab: "صَلَّى ٱللَّٰهُ عَلَىٰ مُحَمَّدٍ",
+                latin: t.tasbihPresetSholawatJibrilLatin,
+                tadabbur: t.tasbihPresetSholawatJibrilTadabbur,
+                target: 1000
+            }
+        ],
+        [t]
+    );
     const [count, setCount] = useState(0);
     const [target, setTarget] = useState<number | null>(33);
-    const [activeZikir, setActiveZikir] = useState<typeof ZIKIR_PRESETS[0] | null>(ZIKIR_PRESETS[0]);
+    const [activeZikirId, setActiveZikirId] = useState<string>(zikirPresets[0]?.id ?? "tasbih");
+    const activeZikir = zikirPresets.find((zikir) => zikir.id === activeZikirId) || null;
     const [feedbackMode, setFeedbackMode] = useState<'vibrate' | 'sound' | 'both' | 'none'>('vibrate');
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -47,10 +94,16 @@ export default function TasbihCounter() {
         if (savedCount) setCount(parseInt(savedCount));
         const savedTarget = localStorage.getItem("tasbih_target");
         if (savedTarget) setTarget(savedTarget === "inf" ? null : parseInt(savedTarget));
-        const savedZikir = localStorage.getItem("tasbih_zikir_label");
-        if (savedZikir) {
-            const found = ZIKIR_PRESETS.find(z => z.label === savedZikir);
-            if (found) setActiveZikir(found);
+        const savedZikirId = localStorage.getItem("tasbih_zikir_id");
+        if (savedZikirId) {
+            const found = zikirPresets.find(z => z.id === savedZikirId);
+            if (found) setActiveZikirId(found.id);
+        } else {
+            const savedZikirLabel = localStorage.getItem("tasbih_zikir_label");
+            if (savedZikirLabel) {
+                const found = zikirPresets.find(z => z.label === savedZikirLabel);
+                if (found) setActiveZikirId(found.id);
+            }
         }
         const savedDaily = localStorage.getItem("tasbih_daily_count");
         if (savedDaily) setDailyCount(parseInt(savedDaily));
@@ -75,7 +128,7 @@ export default function TasbihCounter() {
 
     useEffect(() => { localStorage.setItem("tasbih_count", count.toString()); }, [count]);
     useEffect(() => { localStorage.setItem("tasbih_target", target ? target.toString() : "inf"); }, [target]);
-    useEffect(() => { if (activeZikir) localStorage.setItem("tasbih_zikir_label", activeZikir.label); }, [activeZikir]);
+    useEffect(() => { if (activeZikirId) localStorage.setItem("tasbih_zikir_id", activeZikirId); }, [activeZikirId]);
     useEffect(() => { localStorage.setItem("tasbih_daily_count", dailyCount.toString()); }, [dailyCount]);
     useEffect(() => { localStorage.setItem("tasbih_streak", streak.toString()); }, [streak]);
     useEffect(() => { if (lastZikirDate) localStorage.setItem("tasbih_last_date", lastZikirDate); }, [lastZikirDate]);
@@ -134,9 +187,9 @@ export default function TasbihCounter() {
         const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = ['vibrate', 'sound', 'both', 'none'];
         setFeedbackMode(modes[(modes.indexOf(feedbackMode) + 1) % modes.length]);
     };
-    const handlePresetSelect = (preset: typeof ZIKIR_PRESETS[0]) => {
+    const handlePresetSelect = (preset: ZikirPreset) => {
         setTarget(preset.target);
-        setActiveZikir(preset);
+        setActiveZikirId(preset.id);
         setCount(0);
         setIsDialogOpen(false);
     };
@@ -228,7 +281,7 @@ export default function TasbihCounter() {
                         <span>{t.tasbihDaily}: <span className="text-white">{dailyCount}</span></span>
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
-                        <Flame className="h-3.5 w-3.5 text-orange-500/60" />
+                        <Flame className="h-3.5 w-3.5 text-[rgb(var(--color-accent))]/70" />
                         <span>{t.tasbihStreak}: <span className="text-white">{streak}</span> {t.tasbihDays}</span>
                     </div>
                 </div>
@@ -260,14 +313,14 @@ export default function TasbihCounter() {
                                 <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">{t.tasbihListTitle}</DialogTitle>
                             </DialogHeader>
                             <div className="flex flex-col gap-2 py-4">
-                                {ZIKIR_PRESETS.map((p) => (
+                                {zikirPresets.map((p) => (
                                     <Button
-                                        key={p.label}
+                                        key={p.id}
                                         variant="outline"
                                         onClick={() => handlePresetSelect(p)}
                                         className={cn(
                                             "justify-between h-auto py-3 px-4 border-white/5 bg-white/5 rounded-2xl",
-                                            activeZikir?.label === p.label && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
+                                            activeZikir?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
                                         )}
                                     >
                                         <div className="flex flex-col items-start text-left">
@@ -310,9 +363,9 @@ export default function TasbihCounter() {
 
                     <div className="flex flex-row items-stretch gap-2.5 w-full">
                         {(() => {
-                            const currentIndex = activeZikir ? ZIKIR_PRESETS.findIndex(z => z.label === activeZikir.label) : -1;
-                            const nextZikir = currentIndex !== -1 && currentIndex < ZIKIR_PRESETS.length - 1
-                                ? ZIKIR_PRESETS[currentIndex + 1]
+                            const currentIndex = activeZikir ? zikirPresets.findIndex(z => z.id === activeZikir.id) : -1;
+                            const nextZikir = currentIndex !== -1 && currentIndex < zikirPresets.length - 1
+                                ? zikirPresets[currentIndex + 1]
                                 : null;
 
                             return (
@@ -326,7 +379,7 @@ export default function TasbihCounter() {
                                                 }}
                                                 className="flex-[1.5] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold h-11 rounded-xl flex flex-col items-center justify-center p-0"
                                             >
-                                                <span className="text-[7px] opacity-70 uppercase tracking-widest mb-0.5">Lanjut ke</span>
+                                                <span className="text-[7px] opacity-70 uppercase tracking-widest mb-0.5">{t.tasbihNextUp}</span>
                                                 <span className="text-xs">{nextZikir.label}</span>
                                             </Button>
                                             <Button
@@ -335,7 +388,7 @@ export default function TasbihCounter() {
                                                 className="flex-1 bg-white/5 hover:bg-white/10 text-white/50 border border-white/10 h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3"
                                             >
                                                 <RotateCcw className="h-3 w-3 opacity-70" />
-                                                <span className="text-[9px] font-bold uppercase tracking-wider">Ulangi</span>
+                                                <span className="text-[9px] font-bold uppercase tracking-wider">{t.tasbihRepeat}</span>
                                             </Button>
                                         </>
                                     ) : (
@@ -343,7 +396,7 @@ export default function TasbihCounter() {
                                             onClick={() => { setCount(0); setShowReward(false); }}
                                             className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold h-11 rounded-xl w-full"
                                         >
-                                            Ulangi Bacaan
+                                            {t.tasbihRepeatReading}
                                         </Button>
                                     )}
                                 </>
