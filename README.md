@@ -1,6 +1,5 @@
 # Nawaetu 🌙✨
 
-[![Build & Test](https://github.com/hadianr/nawaetu/actions/workflows/build.yml/badge.svg)](https://github.com/hadianr/nawaetu/actions/workflows/build.yml)
 [![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -162,7 +161,7 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 ```
 Push ke main branch
     ↓
-GitHub Actions: Build & Test
+Vercel: Auto-Build & Test
     ↓
 Vercel: Auto-Deploy (production)
     ↓
@@ -171,9 +170,9 @@ Live pada nawaetu.com ✅
 
 **Deployment Flow:**
 1. Code pushed ke GitHub `main` branch
-2. GitHub Actions menjalankan build & test
-3. Jika semua checks pass ✅
-4. Vercel automatically deploy to production
+2. Vercel automatically triggers build & test
+3. Jika build success ✅
+4. Vercel automatically deploy to production (~2-5 min)
 5. Deploy logs bisa dilihat di Vercel dashboard
 
 ### Deployment Status
@@ -196,7 +195,7 @@ Gunakan untuk testing sebelum merge!
 ### Monitoring & Performance
 
 - **Vercel Analytics**: Response time, error tracking, performance metrics
-- **GitHub Status Checks**: Build results di setiap PR
+- **Vercel Build Logs**: Real-time build output dan error tracking
 - **Automatic Rollback**: Jika issue, mudah di-revert via Vercel dashboard
 
 ---
@@ -402,25 +401,23 @@ npm run release v1.2.0
     ├─ Create tag
     └─ git push origin tag
                            │
-                           ├─ Build Workflow
-                           │  ├─ Lint
-                           │  ├─ Test
-                           │  └─ Build (~3-5 min)
-                           │
                            ├─ Release Workflow
-                           │  ├─ Build
+                           │  ├─ Build (~3-5 min)
                            │  ├─ Extract Changelog
                            │  ├─ Create Release
-                           │  └─ Update package.json (~4-7 min)
+                           │  └─ Update package.json
                            │
-                           └─ Deploy Workflow
+                           └─ Trigger Vercel
                                            │
+                                           ├─ Build & Test
                                            ├─ Preview Deploy
                                            └─ Production Deploy (~2-5 min)
                                               https://nawaetu.com
 ```
 
 **Total time:** ~10-20 minutes dari `npm run release` sampai live di production.
+
+**Note:** Vercel handles all build & test automation. GitHub Actions hanya untuk release management.
 
 ---
 

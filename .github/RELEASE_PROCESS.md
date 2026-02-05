@@ -142,23 +142,9 @@ gh release create v1.2.0 --generate-notes
 
 ## 🤖 Automated Workflow
 
-Setelah tag di-push, GitHub Actions otomatis:
+Setelah tag di-push, otomatis terjadi:
 
-### 1️⃣ Build Workflow (`.github/workflows/build.yml`)
-
-```yaml
-Trigger: git push
-├─ Setup Node.js
-├─ Install dependencies
-├─ Run ESLint
-├─ Build Next.js
-├─ Type check
-└─ Status: ✅ Success
-```
-
-⏱️ Duration: ~3-5 minutes
-
-### 2️⃣ Release Workflow (`.github/workflows/release.yml`)
+### 1️⃣ Release Workflow (`.github/workflows/release.yml`)
 
 ```yaml
 Trigger: git push tags (v*.*.*)
@@ -179,16 +165,19 @@ Trigger: git push tags (v*.*.*)
 - ✅ Release notes dari CHANGELOG.md
 - ✅ Attached files (package.json, CHANGELOG.md, README.md)
 
-### 3️⃣ Vercel Deployment
+### 2️⃣ Vercel Deployment
 
 ```
-main branch push
-└─ Vercel auto-deploys
-   ├─ Preview deploy: https://nawaetu-pr-*.vercel.app
-   └─ Production deploy: https://nawaetu.com
+Tag push → Vercel webhook
+└─ Vercel auto-build & deploy
+   ├─ Build & Test (~3-5 min)
+   ├─ Deploy to CDN
+   └─ Production: https://nawaetu.com
 ```
 
-⏱️ Duration: ~2-5 minutes
+⏱️ Duration: ~3-5 minutes
+
+**Note:** Vercel handles all build, test, dan deployment. GitHub Actions hanya untuk release management.
 
 ## 📊 Monitoring Release
 
@@ -198,8 +187,16 @@ main branch push
    ```
    https://github.com/hadianr/nawaetu/actions
    ```
+   Lihat release workflow status
+
+2. **Vercel Dashboard:**
+   ```
+   https://vercel.com/dashboard
+   ```
+   Lihat build & deployment progress
    Lihat build, release, dan deployment status
 
+2. **GitHub Releases:**
 2. **GitHub Releases:**
    ```
    https://github.com/hadianr/nawaetu/releases
@@ -208,9 +205,9 @@ main branch push
 
 3. **Vercel Dashboard:**
    ```
-   https://vercel.com/projects
+   https://vercel.com/dashboard
    ```
-   Lihat deployment status dan logs
+   Lihat build progress, deployment status, dan performance logs
 
 ### Check Release Success
 

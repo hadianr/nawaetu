@@ -53,35 +53,25 @@ git commit -m "feat: add new feature"
 git push origin main
 ```
 
-### 2. GitHub Actions Triggers
+### 2. Vercel Auto-Deploy
 
 ```
 Push to main branch detected
     ↓
-GitHub Actions: Build & Test
-  - npm install
-  - npm run build
-  - TypeScript check
-  - All checks PASS ✅
-    ↓
-Vercel receives webhook
-```
-
-### 3. Vercel Auto-Deploy
-
-```
-Vercel detects GitHub push
+Vercel receives webhook from GitHub
     ↓
 1. Build optimization (Turbopack)
 2. Install dependencies
-3. Build project
-4. Run tests
+3. Build project (npm run build)
+4. Run type checking
 5. Deploy to CDN
     ↓
 Production URL: nawaetu.com ✅
 ```
 
-### 4. Deployment Complete
+**Note:** Vercel handles all build, test, and deployment. No GitHub Actions required for builds!
+
+### 3. Deployment Complete
 
 ```
 ✅ Build successful
