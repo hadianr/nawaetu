@@ -34,7 +34,7 @@ Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kam
 
 ---
 
-## 🌟 Fitur Unggulan (v1.0.0)
+## 🌟 Fitur Unggulan (v1.1.0)
 
 ### 1. 🤖 Asisten Muslim AI - Your 24/7 Spiritual Buddy
 *   **No Judgment Zone**: Curhat masalah ibadah atau tanya hukum Islam dengan privasi penuh
@@ -66,6 +66,13 @@ Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kam
 *   **100% Gratis & Bebas Iklan**: Core features tetap gratis untuk semua
 *   **Premium Perks**: Unlimited AI chat, premium themes, priority support
 *   **Infaq Transparan**: Donasi digunakan untuk operasional server & pengembangan
+
+### 6. 🌍 Multi-Language & Theme System (v1.1.0)
+*   **Dual Language**: Indonesian & English interface
+*   **Dynamic Theme System**: CSS variables untuk consistent theming
+*   **Dark Mode**: Auto-switch berdasarkan sistem preference
+*   **Localized Content**: Missions, presets, dan UI text support ID/EN
+*   **Persistent Settings**: Theme dan language preferences tersimpan
 
 ---
 
@@ -210,7 +217,7 @@ Gunakan untuk testing sebelum merge!
 
 ```bash
 # Clone repo
-git clone https://github.com/yourusername/nawaetu.git
+git clone https://github.com/hadianr/nawaetu.git
 cd nawaetu
 
 # Install dependencies
@@ -346,8 +353,9 @@ npm run analyze      # Analyze bundle size
 **Build Workflow:**
 1. Make changes di branch baru
 2. Push & create Pull Request
-3. GitHub Actions akan automatically build & test
+3. Vercel akan automatically build & test (preview deployment)
 4. Merge ke main setelah approval
+5. Vercel automatically deploy to production
 
 ---
 
@@ -373,9 +381,10 @@ npm run release -- v1.2.0
 4. ✅ Create annotated git tag
 5. ✅ Push tag to origin
 6. ✅ Trigger GitHub Actions workflows:
-   - Build & Test
-   - Create Release
-   - Deploy to Vercel
+   - Create GitHub Release
+   - Extract changelog
+   - Update package.json
+7. ✅ Vercel auto-deploys to production
 
 ### Detailed Release Guide
 
@@ -516,4 +525,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: February 3, 2026*
+*Last updated: February 5, 2026*

@@ -71,7 +71,7 @@ Configure in [Google Cloud Console](https://console.cloud.google.com/apis/creden
 **Application Restrictions:**
 ```
 HTTP referrers (websites):
-- https://yourapp.com/*
+- https://nawaetu.com/*
 - https://*.vercel.app/*
 ```
 
@@ -159,8 +159,29 @@ Adjust based on your user base and needs.
 | Topic guardrails | ✅ Implemented | Focused responses |
 | API restrictions | ⚠️ Manual setup | Domain/API limiting |
 | Budget alerts | ⚠️ Manual setup | Cost monitoring |
+| Vercel Security | ✅ Auto-enabled | DDoS protection, SSL |
 
 **Next Steps:**
-1. Set up Google Cloud API restrictions
-2. Configure budget alerts
+1. Set up Google Cloud API restrictions (domain: nawaetu.com)
+2. Configure budget alerts ($10-20/month recommended)
 3. Monitor usage for first week
+4. Review Vercel security settings
+
+---
+
+## 🌐 Deployment Security
+
+**Vercel Auto-Security Features:**
+- ✅ **Automatic SSL/HTTPS** - Free SSL certificates
+- ✅ **DDoS Protection** - Edge network protection
+- ✅ **Environment Variable Encryption** - Secure storage
+- ✅ **Preview Deployments** - Isolated test environments
+- ✅ **Secure Headers** - CSP, HSTS, X-Frame-Options
+
+**Production URL:** https://nawaetu.com
+
+**Preview Deployments:** Each PR gets isolated preview URL with same security
+
+---
+
+*Last updated: February 5, 2026*
