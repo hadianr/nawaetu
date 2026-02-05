@@ -53,7 +53,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
         // Immediately update on mount to catch up seconds/hours
         setTimeLeft(calculateTimeLeft());
-        
+
         // Update every 60 seconds instead of 1s to reduce re-renders
         // This significantly reduces main-thread work during render
         const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
@@ -65,15 +65,15 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             if (savedCompleted) {
                 try {
                     const completedData = typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted;
-                    
+
                     // Support both formats: array (new) and object (old)
                     const completedMap: Record<string, any> = Array.isArray(completedData)
                         ? completedData.reduce((acc, m) => {
                             acc[m.id] = m;
                             return acc;
-                          }, {} as Record<string, any>)
+                        }, {} as Record<string, any>)
                         : completedData;
-                    
+
                     const targetMissions = SYABAN_MISSIONS;
 
                     const currentXP = targetMissions.reduce((acc, m) => {
@@ -195,7 +195,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{t.ramadhanHeading}</span>
                         </div>
                         <div className="flex items-baseline gap-2.5">
-                            <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md">
+                            <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
                                 {timeLeft.days}
                             </span>
                             <span className="text-sm font-medium text-white/80">{t.ramadhanDaysLeft}</span>

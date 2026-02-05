@@ -29,9 +29,9 @@ export const metadata: Metadata = {
   },
 };
 
-const daysLeft = Math.max(0, Math.floor((new Date("2026-02-18T00:00:00+07:00").getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-
 export default function Home() {
+  const daysLeft = Math.max(0, Math.floor((new Date("2026-02-18T00:00:00+07:00").getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+
   return (
     <>
       <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 py-6 font-sans sm:px-6">
@@ -49,7 +49,7 @@ export default function Home() {
           <DeferredBelowFold />
 
         </main>
-        
+
       </div>
     </>
   );

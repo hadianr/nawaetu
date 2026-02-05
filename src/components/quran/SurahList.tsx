@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, Bookmark, ChevronRight, Clock, Play } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useLocale } from "@/context/LocaleContext";
@@ -72,6 +73,7 @@ interface SurahListProps {
 
 export default function SurahList({ chapters }: SurahListProps) {
     const { t, locale } = useLocale();
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number; surahName: string; timestamp: number } | null>(null);
     const [bookmarkCount, setBookmarkCount] = useState(0);
@@ -79,7 +81,7 @@ export default function SurahList({ chapters }: SurahListProps) {
     // Load data on mount
     useEffect(() => {
         const storage = getStorageService();
-        
+
         // Last Read
         const savedRead = storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ);
         if (savedRead) {
@@ -209,9 +211,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                 {filteredChapters.map((chapter) => {
                     const isBookmarked = lastRead?.surahId === chapter.id;
                     return (
-                        <Link
+                        <div
                             key={chapter.id}
-                            href={`/quran/${chapter.id}`}
                             className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 gap-3 ${isBookmarked
                                 ? 'border-[rgb(var(--color-primary))]/70 bg-[rgb(var(--color-primary))]/15 hover:border-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/20 hover:shadow-[0_0_25px_rgba(var(--color-primary),0.25)] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
                                 : 'border-white/10 bg-white/5 hover:border-[rgb(var(--color-primary))]/50 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)]'
@@ -219,7 +220,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                         >
                             {/* Bookmark Badge - Compact Icon Only */}
                             {isBookmarked && (
-                                <div className="absolute top-0 right-0 z-10">
+                                <div className="absolute top-0 right-0 z-10 pointer-events-none">
                                     <div className="flex h-6 w-6 items-center justify-center rounded-bl-xl bg-[rgb(var(--color-primary))]/20 backdrop-blur-sm border-b border-l border-[rgb(var(--color-primary))]/30">
                                         <Bookmark className="h-3 w-3 text-[rgb(var(--color-primary))] fill-current" />
                                     </div>
@@ -235,13 +236,15 @@ export default function SurahList({ chapters }: SurahListProps) {
                                         }`}>
                                         {chapter.id}
                                     </div>
-                                    <div className="flex flex-col min-w-0">
-                                        <span className={`font-bold text-sm truncate transition-colors ${isBookmarked
-                                            ? 'text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))]'
-                                            : 'text-white group-hover:text-[rgb(var(--color-primary-light))]'
-                                            }`}>
-                                            {chapter.name_simple}
-                                        </span>
+                                    <div className="flex flex-col min-w-0 relative z-0">
+                                        <Link href={`/quran/${chapter.id}`} className="font-bold text-sm truncate transition-colors focus:outline-none after:absolute after:inset-0">
+                                            <span className={isBookmarked
+                                                ? 'text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))]'
+                                                : 'text-white group-hover:text-[rgb(var(--color-primary-light))]'
+                                            }>
+                                                {chapter.name_simple}
+                                            </span>
+                                        </Link>
                                         <span className={`text-[10px] truncate ${isBookmarked
                                             ? 'text-[rgb(var(--color-primary))]/80'
                                             : 'text-[rgb(var(--color-primary-light))]/80'
@@ -252,7 +255,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                 </div>
                             </div>
 
-                            <div className="flex items-end justify-between w-full">
+                            <div className="flex items-end justify-between w-full pointer-events-none">
                                 <p className="text-[9px] text-white/40">
                                     {chapter.verses_count} {t.quranVerseCount} • {chapter.revelation_place === "makkah" ? t.quranMakkah : t.quranMadinah}
                                 </p>
@@ -260,20 +263,20 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     <span className="font-amiri text-lg text-white/90 leading-none">
                                         {chapter.name_arabic}
                                     </span>
-                                    {/* Quick Play Button */}
-                                    <div
+                                    {/* Quick Play Button - High Z-Index to stay above stretched link */}
+                                    <button
                                         onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            window.location.href = `/quran/${chapter.id}?autoplay=true`;
+                                            router.push(`/quran/${chapter.id}?autoplay=true`);
                                         }}
-                                        className="h-7 w-7 flex items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))] hover:text-white transition-all cursor-pointer"
+                                        className="pointer-events-auto relative z-10 h-7 w-7 flex items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))] hover:text-white transition-all cursor-pointer"
                                     >
                                         <Play className="h-3 w-3 fill-current ml-0.5" />
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
-                        </Link>
+                        </div>
                     );
                 })}
             </div>
