@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogC
 import { Button } from "@/components/ui/button";
 import { Bookmark, saveBookmark, removeBookmark } from "@/lib/bookmark-storage";
 import { Trash2, Bookmark as BookmarkIcon } from "lucide-react";
+import { useLocale } from "@/context/LocaleContext";
 
 interface BookmarkEditDialogProps {
     open: boolean;
@@ -22,6 +23,7 @@ export default function BookmarkEditDialog({
     onSave,
     onDelete
 }: BookmarkEditDialogProps) {
+    const { t } = useLocale();
     const [note, setNote] = useState("");
     const [isLastRead, setIsLastRead] = useState(false);
 
@@ -86,7 +88,7 @@ export default function BookmarkEditDialog({
                 <DialogHeader className="px-6 pt-6 pb-2 relative z-10 flex flex-row items-center justify-between">
                     <DialogTitle className="flex items-center gap-2 text-lg font-semibold text-white">
                         <BookmarkIcon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
-                        Edit Bookmark
+                        {t.bookmarksEditTitle}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -108,7 +110,7 @@ export default function BookmarkEditDialog({
                     <div className="space-y-2 group">
                         <textarea
                             id="note"
-                            placeholder="Tulis catatan Anda di sini..."
+                            placeholder={t.bookmarksNotePlaceholder}
                             className="flex w-full rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 text-sm ring-offset-background placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgb(var(--color-primary))]/50 focus-visible:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-50 resize-none min-h-[100px] transition-all text-slate-200"
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
@@ -119,21 +121,21 @@ export default function BookmarkEditDialog({
                     <div
                         onClick={() => setIsLastRead(!isLastRead)}
                         className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isLastRead
-                            ? 'bg-amber-500/10 border-amber-500/30'
+                            ? 'bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/30'
                             : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
                     >
                         <div className={`h-5 w-5 rounded-full border flex items-center justify-center transition-colors ${isLastRead
-                            ? 'bg-amber-500 border-amber-500 text-black'
+                            ? 'bg-[rgb(var(--color-accent))] border-[rgb(var(--color-accent))] text-black'
                             : 'border-slate-500 text-transparent'
                             }`}>
                             <BookmarkIcon className="w-3 h-3 fill-current" />
                         </div>
                         <div className="flex-1">
-                            <p className={`text-sm font-medium ${isLastRead ? 'text-amber-400' : 'text-slate-300'}`}>
-                                Tandai Terakhir Dibaca
+                            <p className={`text-sm font-medium ${isLastRead ? 'text-[rgb(var(--color-accent-light))]' : 'text-slate-300'}`}>
+                                {t.bookmarksMarkAsLastRead}
                             </p>
                             <p className="text-[10px] text-slate-500">
-                                Update progress membaca di halaman beranda
+                                {t.bookmarksUpdateProgress}
                             </p>
                         </div>
                     </div>
@@ -146,14 +148,14 @@ export default function BookmarkEditDialog({
                         className="h-12 px-4 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
                     >
                         <Trash2 className="w-5 h-5" />
-                        <span className="sr-only sm:not-sr-only sm:ml-2">Hapus</span>
+                        <span className="sr-only sm:not-sr-only sm:ml-2">{t.bookmarksDelete}</span>
                     </Button>
 
                     <Button
                         onClick={handleSave}
                         className="h-12 flex-1 rounded-xl bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-[rgb(var(--color-primary-foreground))] font-semibold shadow-lg shadow-[rgb(var(--color-primary))]/25 transition-all active:scale-[0.98]"
                     >
-                        Simpan Perubahan
+                        {t.bookmarksSave}
                     </Button>
                 </DialogFooter>
             </DialogContent>

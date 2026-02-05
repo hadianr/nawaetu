@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { removeBookmark } from "@/lib/bookmark-storage";
 import { useState, useEffect } from "react";
+import { useLocale } from "@/context/LocaleContext";
 
 export default function BookmarksPage() {
     const { bookmarks, refresh } = useBookmarks();
+    const { t } = useLocale();
     const [mounted, setMounted] = useState(false);
 
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number } | null>(null);
@@ -28,7 +30,7 @@ export default function BookmarksPage() {
     const handleDelete = (id: string, e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (confirm("Hapus tanda baca ini?")) {
+        if (confirm(t.bookmarksDeleteConfirm)) {
             removeBookmark(id);
             refresh();
         }
@@ -50,7 +52,7 @@ export default function BookmarksPage() {
         // Show feedback (could be better with toast)
         const toast = document.createElement('div');
         toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] px-4 py-2 rounded-full text-sm font-medium z-50 animate-in fade-in slide-in-from-bottom-2 shadow-lg shadow-[rgb(var(--color-primary))]/20';
-        toast.innerText = 'Ditandai sebagai Terakhir Baca 📖';
+        toast.innerText = t.bookmarksMarkedAsLastRead;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2000);
     };
@@ -68,8 +70,8 @@ export default function BookmarksPage() {
                         </Link>
                     </Button>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">Koleksi Tanda Baca</h1>
-                        <p className="text-sm text-white/60">Catatan dan ayat pilihan Anda</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">{t.bookmarksTitle}</h1>
+                        <p className="text-sm text-white/60">{t.bookmarksSubtitle}</p>
                     </div>
                 </div>
 
@@ -80,12 +82,12 @@ export default function BookmarksPage() {
                             <div className="bg-[rgb(var(--color-primary))]/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <BookmarkIcon className="w-10 h-10 text-[rgb(var(--color-primary))]" />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Belum ada koleksi</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">{t.bookmarksEmptyTitle}</h3>
                             <p className="text-white/40 max-w-xs mx-auto mb-8 leading-relaxed">
-                                Jelajahi Al-Quran dan simpan ayat yang menyentuh hati Anda.
+                                {t.bookmarksEmptyDesc}
                             </p>
                             <Button asChild className="h-12 px-8 rounded-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-[rgb(var(--color-primary-foreground))] font-semibold shadow-xl shadow-[rgb(var(--color-primary))]/20">
-                                <Link href="/quran">Mulai Membaca</Link>
+                                <Link href="/quran">{t.bookmarksStartReading}</Link>
                             </Button>
                         </div>
                     ) : (
@@ -117,7 +119,7 @@ export default function BookmarksPage() {
                                                 </div>
                                                 {isCurrentLastRead && (
                                                     <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest hidden sm:block">
-                                                        Terakhir Dibaca
+                                                        {t.bookmarksLastReadLabel}
                                                     </span>
                                                 )}
                                             </div>
@@ -152,7 +154,7 @@ export default function BookmarksPage() {
                                                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                                                     }`}
                                             >
-                                                {isCurrentLastRead ? 'Sedang Dibaca' : 'Jadikan Terakhir Baca'}
+                                                {isCurrentLastRead ? t.bookmarksCurrentlyReading : t.bookmarksSetLastRead}
                                             </button>
 
                                             <button
@@ -160,7 +162,7 @@ export default function BookmarksPage() {
                                                 className="group/del flex items-center gap-2 px-4 py-2 rounded-full text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                                             >
                                                 <Trash2 className="w-4 h-4" />
-                                                <span className="text-xs group-hover/del:underline">Hapus</span>
+                                                <span className="text-xs group-hover/del:underline">{t.bookmarksDelete}</span>
                                             </button>
                                         </div>
                                     </div>

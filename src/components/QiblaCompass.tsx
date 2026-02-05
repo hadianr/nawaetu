@@ -144,9 +144,9 @@ export default function QiblaCompass() {
             {/* Permission Overlay - FIXED POSITION (No Gaps) */}
             {!permissionGranted && !error && (
                 <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0a0a] p-6 text-center">
-                    <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 ring-1 ring-emerald-500/20">
+                    <div className="w-20 h-20 bg-[rgb(var(--color-primary))]/10 rounded-full flex items-center justify-center mb-6 ring-1 ring-[rgb(var(--color-primary))]/20">
                         {/* Animated Compass Icon */}
-                        <Compass className="w-10 h-10 text-emerald-400 animate-[spin_3s_linear_infinite]" />
+                        <Compass className="w-10 h-10 text-[rgb(var(--color-primary-light))] animate-[spin_3s_linear_infinite]" />
                     </div>
 
                     <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">{t.qiblaPermissionTitle}</h3>
@@ -169,12 +169,12 @@ export default function QiblaCompass() {
                     <div className="relative flex items-center justify-center w-[85vw] h-[85vw] max-w-[320px] max-h-[320px] md:max-w-[360px] md:max-h-[360px]">
 
                         {/* 1. FIX: Radial Gradient Ambient Glow (No Boxy Edges) */}
-                        {/* Scales up significantly when aligned to fill screen with green vibe */}
+                        {/* Scales up significantly when aligned to fill screen with theme vibe */}
                         <div
                             className={`absolute inset-[-50%] rounded-full transition-all duration-1000 ease-out z-0 pointer-events-none ${aligned ? 'opactity-100 scale-125' : 'opacity-0 scale-90'}`}
                             style={{
                                 background: aligned
-                                    ? 'radial-gradient(circle at center, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.05) 50%, transparent 70%)'
+                                    ? 'radial-gradient(circle at center, rgba(var(--color-primary),0.25) 0%, rgba(var(--color-primary),0.05) 50%, transparent 70%)'
                                     : 'none'
                             }}
                         />
