@@ -43,7 +43,43 @@ next-env.d.ts
 # Sentry Config File
 .env.sentry-build-plugin
 
-# Local Knowledge (Do not push)
-*.md
-!README.md
-!SECURITY.md
+# Development Documentation (Do not push)
+# These are generated during development and analysis
+COMMAND_REFERENCE.md
+DOCUMENTATION_INDEX.md
+FILE_MANIFEST.md
+I18N_ANALYSIS.md
+I18N_ARCHITECTURE.md
+I18N_BEST_PRACTICES.md
+I18N_DOCUMENTATION_INDEX.md
+I18N_REVIEW_SUMMARY.md
+IMPLEMENTATION_SUMMARY.md
+OPTIMIZATION_CHECKLIST.md
+OPTIMIZATION_QUICK_REF.md
+OPTIMIZATION_REPORT.md
+PERFORMANCE_OPTIMIZATION.md
+PERFORMANCE_OPTIMIZATIONS.md
+PERFORMANCE_README.md
+QURAN_COMPONENT_AUDIT.md
+START_HERE.md
+VERIFICATION_SUMMARY.md
+
+# Official Documentation (SHOULD push)
+# README.md
+# SECURITY.md
+# CHANGELOG.md
+# CONTRIBUTING.md
+# .github/RELEASE_GUIDE.md
+# .github/VERCEL_DEPLOYMENT.md
+# .github/pull_request_template.md
+
+# IDE and Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
