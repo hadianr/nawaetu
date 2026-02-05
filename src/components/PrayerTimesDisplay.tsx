@@ -112,6 +112,20 @@ export default function PrayerTimesDisplay() {
                 </div>
 
                 <PrayerTimeCard {...data} />
+
+                {data.isDefaultLocation && (
+                    <div className="flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mt-2 animate-in fade-in slide-in-from-top-2 duration-500">
+                        <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+                            <Navigation className="w-5 h-5 text-amber-500" />
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-xs font-bold text-amber-200">{t.homeLocationDefaultTitle || "Lokasi Default (Jakarta)"}</p>
+                            <p className="text-[10px] text-amber-200/60 leading-tight mt-0.5">
+                                {t.homeLocationDefaultDesc || "Jadwal sholat saat ini berdasarkan Jakarta. Ketuk ikon lokasi di atas untuk memperbarui ke lokasi Anda."}
+                            </p>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Quote of The Day */}

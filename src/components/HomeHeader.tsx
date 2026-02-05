@@ -6,11 +6,11 @@ import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import StreakBadge from "@/components/StreakBadge";
-
-import { MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { MapPin, Navigation } from "lucide-react";
 
 export default function HomeHeader() {
-    const { data } = usePrayerTimes();
+    const { data, refreshLocation } = usePrayerTimes();
     const { t } = useLocale();
     const storage = getStorageService();
     const [userName, setUserName] = useState("Sobat Nawaetu");
@@ -26,7 +26,7 @@ export default function HomeHeader() {
             STORAGE_KEYS.USER_GENDER,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
-        
+
         if (savedName) setUserName(savedName as string);
         if (savedTitle) setUserTitle(savedTitle as string);
         setGender(savedGender as 'male' | 'female' | null);
@@ -63,7 +63,6 @@ export default function HomeHeader() {
         else setGreeting(t.homeGreetingEvening);
     }, [t]);
 
-    // ... existing start of return ...
     const locationLabel = data?.locationName?.split(",")[0] || "";
     const hijriLabel = data?.hijriDate || "";
 
@@ -99,16 +98,31 @@ export default function HomeHeader() {
             <div className="flex shrink-0 flex-col items-end gap-1.5 text-right min-w-[120px]">
                 <div className="flex items-center gap-2">
                     <StreakBadge gender={gender} />
-                    <div className="flex items-center gap-1.5 bg-[rgb(var(--color-primary))]/10 px-2 py-1 rounded-full border border-[rgb(var(--color-primary))]/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
-                        <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest w-24 xs:w-28 text-center inline-block whitespace-nowrap overflow-hidden text-ellipsis">
+                    <button
+                        onClick={refreshLocation}
+                        className={cn(
+                            "flex items-center gap-1.5 px-2 py-1 rounded-full border transition-all active:scale-95",
+                            data?.isDefaultLocation
+                                ? "bg-amber-500/20 border-amber-500/40 hover:bg-amber-500/30"
+                                : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 hover:bg-[rgb(var(--color-primary))]/20"
+                        )}
+                    >
+                        {data?.isDefaultLocation ? (
+                            <Navigation className="w-3 h-3 text-amber-400 animate-pulse" />
+                        ) : (
+                            <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
+                        )}
+                        <span className={cn(
+                            "text-[10px] font-bold uppercase tracking-widest min-w-[60px] xs:min-w-[70px] text-center inline-block whitespace-nowrap overflow-hidden text-ellipsis",
+                            data?.isDefaultLocation ? "text-amber-200" : "text-[rgb(var(--color-primary-light))]"
+                        )}>
                             {locationLabel ? (
-                                locationLabel
+                                data?.isDefaultLocation ? t.homeSetLocationNow || "Set Lokasi" : locationLabel
                             ) : (
                                 <span className="inline-block w-16 h-3 rounded bg-white/10 animate-pulse align-middle" />
                             )}
                         </span>
-                    </div>
+                    </button>
                 </div>
                 <span className="text-[10px] text-white/60 font-medium px-1 min-h-[0.875rem]">
                     {hijriLabel ? (

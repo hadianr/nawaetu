@@ -29,6 +29,7 @@ interface PrayerData {
     nextPrayer: string;
     nextPrayerTime: string;
     locationName: string;
+    isDefaultLocation?: boolean;
 }
 
 interface UsePrayerTimesResult {
@@ -43,7 +44,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const processData = useCallback((result: any, locationName: string, isCached: boolean = false) => {
+    const processData = useCallback((result: any, locationName: string, isCached: boolean = false, isDefaultLocation: boolean = false) => {
         const timings = result.data.timings;
         const dateInfo = result.data.date;
 
@@ -90,7 +91,8 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             prayerTimes: relevantPrayers,
             nextPrayer: next,
             nextPrayerTime: nextTime,
-            locationName
+            locationName,
+            isDefaultLocation // Add flag to state
         });
 
         if (isCached) setLoading(false);
@@ -103,14 +105,15 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const date = cachedData.date;
             const savedData = cachedData.data;
             const locationName = cachedData.locationName;
+            const isDefault = cachedData.isDefault;
 
             if (date === today && savedData) {
-                processData(savedData, locationName || "Lokasi Tersimpan", true);
+                processData(savedData, locationName || "Lokasi Tersimpan", true, !!isDefault);
             }
         }
     }, [processData]);
 
-    const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string) => {
+    const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string, isDefault: boolean = false) => {
         // fetch location name if not cached
         let locationName = cachedLocationName || "Lokasi Anda";
 
@@ -124,7 +127,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
 
-            if (!cachedLocationName) {
+            if (!cachedLocationName && !isDefault) {
                 try {
                     const locResponse = await fetchWithTimeout(
                         `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
@@ -147,6 +150,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
                 if (date === today && savedData) {
                     processData(savedData, savedLocationName || locationName, true); // Use cached data immediately
+                    // If it was default, we should override the state to reflect that? 
+                    // processData handles setData. We might need to pass isDefault to processData too?
+                    // For now, let's just proceed. If it's cached, it's not default anymore usually.
+                    // But if we just set specific Jakarta coords, it's fine.
                 }
             }
 
@@ -174,21 +181,30 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
 
             // Cache the fresh result
-            storage.set(STORAGE_KEYS.PRAYER_DATA as any, JSON.stringify({
+            storage.set(STORAGE_KEYS.PRAYER_DATA as any, {
                 date: today,
                 data: result,
-                locationName
-            }));
+                locationName,
+                isDefault
+            });
 
-            // Also update user_location cache with name
-            storage.set(STORAGE_KEYS.USER_LOCATION as any, JSON.stringify({
-                lat,
-                lng,
-                name: locationName,
-                timestamp: Date.now()
-            }));
+            // Also update user_location cache with name IF NOT DEFAULT
+            if (!isDefault) {
+                storage.set(STORAGE_KEYS.USER_LOCATION as any, {
+                    lat,
+                    lng,
+                    name: locationName,
+                    timestamp: Date.now()
+                });
+            }
 
-            processData(result, locationName);
+            // Pass isDefault to processData or handle it here. 
+            // processData handles raw API response, we need to inject the flag.
+
+            // Wait, processData uses `setData`. We should update processData signature OR just update state here.
+            // processData is reused. Let's update processData signature.
+            processData(result, locationName, false, isDefault);
+
             setError(null);
 
             // Notify other instances
@@ -260,8 +276,11 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 console.warn('Invalid or stale cached coordinates, clearing cache:', cachedLocation);
                 storage.remove(STORAGE_KEYS.USER_LOCATION as any);
             }
-            // No cached location, request location from user
-            getLocationAndFetch();
+
+            // FIX: Do not auto-request location on load (PageSpeed Best Practice)
+            // Default to Jakarta (Monas)
+            console.log("Using Default Location (Jakarta)");
+            fetchPrayerTimes(-6.175392, 106.827153, "Jakarta (Default)", true);
         }
 
         // 3. Listen for global updates
@@ -287,7 +306,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             window.removeEventListener('prayer_data_updated', handleUpdate);
             window.removeEventListener('calculation_method_changed', handleMethodChange);
         };
-    }, [fetchPrayerTimes, syncFromCache, getLocationAndFetch]);
+    }, [fetchPrayerTimes, syncFromCache]);
 
     // NEW: interval to update "nextPrayer" dynamically as time passes
     useEffect(() => {

@@ -19,7 +19,7 @@ export default function QiblaCompass() {
     const [qiblaBearing, setQiblaBearing] = useState<number | null>(null);
     const [distance, setDistance] = useState<number | null>(null);
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false); // Start false
     const [error, setError] = useState<string | null>(null);
     const [aligned, setAligned] = useState<boolean>(false);
 
@@ -52,9 +52,9 @@ export default function QiblaCompass() {
         setCompassRotate(-lastHeadingRef.current);
     }, []);
 
-    useEffect(() => {
-        // Get User Location
+    const getLocation = useCallback(() => {
         if ("geolocation" in navigator) {
+            setLoading(true);
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
@@ -82,7 +82,9 @@ export default function QiblaCompass() {
         } else {
             (window as any).addEventListener("deviceorientation", handleOrientation);
         }
-    }, [handleOrientation]);
+        // Also get location now
+        getLocation();
+    }, [handleOrientation, getLocation]);
 
     const requestCompassPermission = async () => {
         if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
