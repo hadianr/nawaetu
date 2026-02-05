@@ -204,6 +204,15 @@ export const SETTINGS_TRANSLATIONS = {
     homePrayerTimesToday: "Jadwal Sholat Hari Ini",
     homeFindMosque: "Cari Masjid",
     homeFindMosqueAria: "Cari Masjid Terdekat via Google Maps",
+
+    // Mosque Finder Modal
+    mosqueFinderTitle: "Mau Sholat di Mana?",
+    mosqueFinderDesc: "Pilih jenis tempat sholat yang kamu butuhkan:",
+    mosqueFinderOptionNearby: "Masjid Terdekat",
+    mosqueFinderOptionMusholla: "Musholla",
+    mosqueFinderOptionGrand: "Masjid Raya",
+    mosqueFinderOptionRestArea: "Rest Area",
+    mosqueFinderButton: "Buka Google Maps",
     homeLocationRequiredTitle: "Izin Lokasi Diperlukan",
     homeLocationRequiredDesc: "Nawaetu membutuhkan lokasi Anda untuk menghitung jadwal sholat dan arah kiblat yang akurat.",
     homeEnableLocation: "Aktifkan Lokasi",
@@ -402,6 +411,13 @@ export const SETTINGS_TRANSLATIONS = {
     tanyaPrompt2: "Sedang banyak pikiran",
     tanyaPrompt3: "Tips khusyuk?",
     tanyaPrompt4: "Apa keutamaan subuh?",
+
+    // Toast Messages
+    toastMissionComplete: "Misi Selesai!",
+    toastMissionMsg1: "Masya Allah! Istiqamah terus ya ✨",
+    toastMissionMsg2: "Alhamdulillah, satu kebaikan tercatat 🤲",
+    toastMissionMsg3: "Barakallah! Semangat ibadahnya 🔥",
+    toastMissionMsg4: "Keren! Niat lurus, amal mulus 💎",
   },
   en: {
     // Header
@@ -603,6 +619,15 @@ export const SETTINGS_TRANSLATIONS = {
     homePrayerTimesToday: "Today's Prayer Times",
     homeFindMosque: "Find Mosque",
     homeFindMosqueAria: "Find Nearby Mosque via Google Maps",
+
+    // Mosque Finder Modal
+    mosqueFinderTitle: "Where to Pray?",
+    mosqueFinderDesc: "Choose the type of prayer place you need:",
+    mosqueFinderOptionNearby: "Nearest Mosque",
+    mosqueFinderOptionMusholla: "Musholla (Small)",
+    mosqueFinderOptionGrand: "Grand Mosque",
+    mosqueFinderOptionRestArea: "Rest Area",
+    mosqueFinderButton: "Open Google Maps",
     homeLocationRequiredTitle: "Location Permission Required",
     homeLocationRequiredDesc: "Nawaetu needs your location to calculate accurate prayer times and Qibla direction.",
     homeEnableLocation: "Enable Location",
@@ -801,6 +826,13 @@ export const SETTINGS_TRANSLATIONS = {
     tanyaPrompt2: "I'm feeling overwhelmed",
     tanyaPrompt3: "Tips for khushu?",
     tanyaPrompt4: "What's the virtue of Fajr?",
+
+    // Toast Messages
+    toastMissionComplete: "Mission Complete!",
+    toastMissionMsg1: "Masya Allah! Keep it consistent ✨",
+    toastMissionMsg2: "Alhamdulillah, one good deed recorded 🤲",
+    toastMissionMsg3: "Barakallah! Keep the spirit high 🔥",
+    toastMissionMsg4: "Awesome! Pure intention, smooth action 💎",
   }
 };
 

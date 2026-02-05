@@ -15,6 +15,7 @@ import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { toast } from "sonner";
 export default function MissionsWidget() {
     const { t, locale } = useLocale();
     const { completedMissions, completeMission, isCompleted } = useMissions();
@@ -41,7 +42,7 @@ export default function MissionsWidget() {
     const { data: prayerData } = usePrayerTimes();
 
     // Convert completedMissions array to object for MissionListModal compatibility
-    const completedMissionsMap = Array.isArray(completedMissions) 
+    const completedMissionsMap = Array.isArray(completedMissions)
         ? completedMissions.reduce((acc, m) => {
             const completedDate = new Date(m.completedAt).toISOString().split('T')[0];
             acc[m.id] = { date: completedDate };
@@ -126,6 +127,21 @@ export default function MissionsWidget() {
         completeMission(mission.id, reward);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
+        // UX Feedback: Toast
+        const messages = [
+            t.toastMissionMsg1,
+            t.toastMissionMsg2,
+            t.toastMissionMsg3,
+            t.toastMissionMsg4
+        ];
+        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+
+        toast.success(t.toastMissionComplete, {
+            description: `${randomMsg} (+${reward} XP)`,
+            duration: 3000,
+            icon: "🎉"
+        });
+
         setIsDialogOpen(false);
     };
 
@@ -142,7 +158,7 @@ export default function MissionsWidget() {
         if (current) {
             try {
                 const currentData = typeof current === 'string' ? JSON.parse(current) : current;
-                
+
                 // Support both formats: array (new) and object (old)
                 if (Array.isArray(currentData)) {
                     const filtered = currentData.filter((m: any) => m.id !== mission.id);

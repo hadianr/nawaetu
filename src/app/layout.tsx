@@ -120,6 +120,8 @@ import { LocaleProvider } from "@/context/LocaleContext";
 import { WebVitals } from "@/components/WebVitals";
 import AnalyticsLoader from "@/components/AnalyticsLoader";
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -155,6 +157,7 @@ export default function RootLayout({
               <NotificationWatcher />
               <AppOverlays />
               {children}
+
               <Suspense fallback={null}>
                 <BottomNav />
               </Suspense>

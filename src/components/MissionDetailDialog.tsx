@@ -74,7 +74,7 @@ export default function MissionDetailDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-black/80 backdrop-blur-3xl border-white/10 text-white max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl">
+            <DialogContent className="bg-[rgb(var(--color-background))]/90 backdrop-blur-3xl border-white/10 text-white max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl">
                 <DialogHeader className="p-6 pb-2">
                     <div className="flex items-center gap-3">
                         <div className="text-3xl bg-white/5 w-12 h-12 rounded-xl flex items-center justify-center border border-white/10">
@@ -86,16 +86,16 @@ export default function MissionDetailDialog({
                                 <span className={cn(
                                     "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
                                     mission.hukum === 'wajib'
-                                        ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                        : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                        ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
+                                        : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                 )}>
                                     {getHukumLabel(mission.hukum)}
                                 </span>
                             </div>
                             <p className="text-xs text-white/50 mt-1">{mission.description}</p>
                         </div>
-                        <div className="ml-auto flex items-center gap-1 bg-amber-500/10 px-2 py-1 rounded-full border border-amber-500/20">
-                            <span className="text-xs font-bold text-amber-500">+{mission.xpReward} XP</span>
+                        <div className="ml-auto flex items-center gap-1 bg-[rgb(var(--color-accent))]/10 px-2 py-1 rounded-full border border-[rgb(var(--color-accent))]/20">
+                            <span className="text-xs font-bold text-[rgb(var(--color-accent))]">+{mission.xpReward} XP</span>
                         </div>
                     </div>
                 </DialogHeader>
@@ -107,13 +107,13 @@ export default function MissionDetailDialog({
                                 <TabsList variant="line" className="w-full bg-transparent p-0 h-12 justify-start gap-8 border-none">
                                     <TabsTrigger
                                         value="guide"
-                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
+                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
                                         Panduan
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="info"
-                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-emerald-500 text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-500 after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
+                                        className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
                                         Info & Dalil
                                     </TabsTrigger>
@@ -133,7 +133,7 @@ export default function MissionDetailDialog({
                                         {content.niat && (
                                             <div className="space-y-3">
                                                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
                                                     {mission.category === 'sholat' ? 'Niat Sholat' : mission.category === 'puasa' ? 'Niat Puasa' : 'Lafadz Niat'}
                                                 </h3>
 
@@ -141,15 +141,15 @@ export default function MissionDetailDialog({
                                                 {content.niat.makmum ? (
                                                     <Tabs defaultValue="sendiri" className="w-full">
                                                         <TabsList className="bg-white/5 border border-white/10 w-full justify-start h-8 p-1 mb-2">
-                                                            <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Sendiri</TabsTrigger>
-                                                            <TabsTrigger value="makmum" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-emerald-400 text-white/50">Makmum</TabsTrigger>
+                                                            <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50">Sendiri</TabsTrigger>
+                                                            <TabsTrigger value="makmum" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50">Makmum</TabsTrigger>
                                                         </TabsList>
                                                         <TabsContent value="sendiri" className="mt-0">
-                                                            <div className="bg-emerald-900/10 p-4 rounded-xl border border-emerald-500/10">
+                                                            <div className="bg-[rgb(var(--color-primary-dark))]/10 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
                                                                 <p className="text-lg md:text-xl font-serif text-right text-white mb-2 leading-relaxed">
                                                                     {content.niat.munfarid.arabic}
                                                                 </p>
-                                                                <p className="text-xs text-emerald-100/70 italic mb-1">
+                                                                <p className="text-xs text-[rgb(var(--color-primary-light))]/70 italic mb-1">
                                                                     {content.niat.munfarid.latin}
                                                                 </p>
                                                                 <p className="text-[10px] text-white/50">
@@ -201,7 +201,7 @@ export default function MissionDetailDialog({
                                                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 space-y-4 relative min-h-[220px] flex flex-col justify-center">
                                                     <div>
                                                         {currentReading?.title && (
-                                                            <h4 className="text-sm font-bold text-emerald-400 mb-2">{currentReading.title}</h4>
+                                                            <h4 className="text-sm font-bold text-[rgb(var(--color-primary-light))] mb-2">{currentReading.title}</h4>
                                                         )}
                                                         <p className="text-xl md:text-2xl font-serif leading-relaxed text-right text-white">
                                                             {currentReading?.arabic}
@@ -247,7 +247,7 @@ export default function MissionDetailDialog({
                                                 <div className="space-y-3">
                                                     {content.guides.map((step, idx) => (
                                                         <div key={idx} className="flex gap-3 text-sm">
-                                                            <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">
+                                                            <div className="w-6 h-6 rounded-full bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] flex items-center justify-center text-xs font-bold shrink-0">
                                                                 {idx + 1}
                                                             </div>
                                                             <p className="text-white/80 pt-0.5">{step}</p>
@@ -265,13 +265,13 @@ export default function MissionDetailDialog({
                                     <div className="p-6 space-y-6">
                                         {content.fadhilah && (
                                             <div className="space-y-3">
-                                                <h3 className="flex items-center gap-2 text-sm font-bold text-amber-400">
+                                                <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-accent))]">
                                                     <SparklesIcon className="w-4 h-4" /> Keutamaan (Fadhilah)
                                                 </h3>
                                                 <ul className="space-y-2">
                                                     {content.fadhilah.map((item, idx) => (
                                                         <li key={idx} className="flex gap-2 text-sm text-white/80 bg-white/5 p-3 rounded-lg border border-white/5">
-                                                            <span className="text-amber-500">•</span>
+                                                            <span className="text-[rgb(var(--color-accent))]">•</span>
                                                             {item}
                                                         </li>
                                                     ))}
@@ -281,13 +281,13 @@ export default function MissionDetailDialog({
 
                                         {mission.dalil && (
                                             <div className="space-y-2">
-                                                <h3 className="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                                                <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-primary-light))]">
                                                     <BookOpen className="w-4 h-4" /> Sumber Dalil
                                                 </h3>
-                                                <div className="bg-emerald-950/30 p-4 rounded-xl border border-emerald-500/20">
+                                                <div className="bg-[rgb(var(--color-primary-dark))]/30 p-4 rounded-xl border border-[rgb(var(--color-primary))]/20">
                                                     <p className="text-sm text-white/90 italic">"{mission.dalil}"</p>
                                                     {content.source && (
-                                                        <p className="text-xs text-emerald-400 mt-2 font-medium">Ref: {content.source}</p>
+                                                        <p className="text-xs text-[rgb(var(--color-primary-light))] mt-2 font-medium">Ref: {content.source}</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -332,9 +332,9 @@ export default function MissionDetailDialog({
 
                     {/* LATE NOTICE (Generic) - For non-Sholat (e.g. Dzikir) OR Sunnah Sholat (e.g. Dhuha) */}
                     {isLate && !isCompleted && !isLocked && (mission.category !== 'sholat' || !mission.validationConfig?.afterPrayer) && (
-                        <div className="mb-3 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-2">
-                            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-                            <p className="text-[10px] text-amber-200/80 leading-tight">
+                        <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-lg flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4 text-[rgb(var(--color-accent))] shrink-0" />
+                            <p className="text-[10px] text-[rgb(var(--color-accent))]/80 leading-tight">
                                 {t.homeMissionLateNotice}
                             </p>
                         </div>
@@ -342,12 +342,12 @@ export default function MissionDetailDialog({
 
                     {/* EARLY PRAISE (Awal Waktu) - Only for Sholat */}
                     {isEarly && !isCompleted && !isLocked && mission.category === 'sholat' && (
-                        <div className="mb-3 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                        <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-lg">
                             <div className="flex items-center gap-2 mb-1">
-                                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-                                <p className="text-xs font-bold text-emerald-400">{t.homeMissionEarlyPrayerTitle}</p>
+                                <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))] shrink-0" />
+                                <p className="text-xs font-bold text-[rgb(var(--color-primary-light))]">{t.homeMissionEarlyPrayerTitle}</p>
                             </div>
-                            <p className="text-[10px] text-emerald-200/80 leading-tight italic">
+                            <p className="text-[10px] text-[rgb(var(--color-primary-light))]/80 leading-tight italic">
                                 {t.homeMissionEarlyPraiseQuote}
                             </p>
                         </div>
@@ -355,7 +355,7 @@ export default function MissionDetailDialog({
 
                     {isCompleted ? (
                         <div className="flex flex-col gap-2">
-                            <Button className="w-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/10 border border-emerald-500/20 cursor-default" disabled>
+                            <Button className="w-full bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 cursor-default" disabled>
                                 <Check className="w-4 h-4 mr-2" /> {t.homeMissionCompletedLabel}
                             </Button>
 
@@ -401,14 +401,14 @@ export default function MissionDetailDialog({
                                     className={cn(
                                         "flex-1 font-bold py-6 text-sm relative overflow-hidden group",
                                         option.xpReward > 50
-                                            ? "bg-emerald-600 hover:bg-emerald-500 text-white" // High reward (Berjamaah)
+                                            ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white" // High reward (Berjamaah)
                                             : "bg-white/10 hover:bg-white/20 text-white/80"    // Low reward (Sendiri)
                                     )}
                                     onClick={() => onComplete(option.xpReward)}
                                 >
                                     {/* Highlight effect for high reward */}
                                     {option.xpReward > 50 && (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-white/10 to-emerald-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary-light))]/0 via-white/10 to-[rgb(var(--color-primary-light))]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                                     )}
 
                                     <div className="flex flex-col items-center gap-0.5 z-10">
@@ -426,8 +426,8 @@ export default function MissionDetailDialog({
                             className={cn(
                                 "w-full font-bold py-6 text-base transition-all",
                                 isLate
-                                    ? "bg-amber-600 hover:bg-amber-500 text-white"
-                                    : "bg-emerald-600 hover:bg-emerald-500 text-white"
+                                    ? "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))] text-white"
+                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white"
                             )}
                             onClick={() => onComplete(mission.xpReward)}
                         >

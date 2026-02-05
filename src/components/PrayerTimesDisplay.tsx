@@ -7,6 +7,7 @@ import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import PrayerCountdown from "@/components/PrayerCountdown";
 import QuoteOfDay from "@/components/QuoteOfDay";
 import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
+import MosqueFinderModal from "@/components/MosqueFinderModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
@@ -19,6 +20,7 @@ export default function PrayerTimesDisplay() {
     const { t } = useLocale();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
+    const [showMosqueFinder, setShowMosqueFinder] = useState(false);
 
     const refreshProfile = () => {
         const storage = getStorageService();
@@ -99,16 +101,14 @@ export default function PrayerTimesDisplay() {
             <div className="relative space-y-4">
                 <div className="flex items-center justify-between px-1">
                     <h2 className="text-lg font-semibold text-white/80">{t.homePrayerTimesToday}</h2>
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=masjid+terdekat"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <button
+                        onClick={() => setShowMosqueFinder(true)}
                         aria-label={t.homeFindMosqueAria}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
                     >
                         <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeFindMosque}</span>
-                    </a>
+                    </button>
                 </div>
 
                 <PrayerTimeCard {...data} />
@@ -119,6 +119,11 @@ export default function PrayerTimesDisplay() {
 
             {/* Bottom spacer to Ensure scrolling fits everything above bottom nav */}
             <div className="h-4" />
+
+            <MosqueFinderModal
+                isOpen={showMosqueFinder}
+                onClose={() => setShowMosqueFinder(false)}
+            />
         </div>
     );
 }

@@ -54,8 +54,12 @@ const cleanupDynamicCaches = () => {
     }
 };
 
+import { Toaster } from "sonner";
+import { useTheme } from "@/context/ThemeContext";
+
 export default function AppOverlays() {
     const [showPwaPrompt, setShowPwaPrompt] = useState(false);
+    const { currentTheme } = useTheme();
 
     useEffect(() => {
         const show = () => setShowPwaPrompt(true);
@@ -98,6 +102,20 @@ export default function AppOverlays() {
         <>
             <OnboardingOverlay />
             <PWAInstallPrompt shouldShow={showPwaPrompt} />
+            <Toaster
+                position="top-center"
+                theme="dark"
+                toastOptions={{
+                    classNames: {
+                        toast: "group toast group-[.toaster]:bg-[rgb(var(--color-surface))] group-[.toaster]:text-white group-[.toaster]:border-[rgb(var(--color-primary))]/30 group-[.toaster]:shadow-lg group-[.toaster]:backdrop-blur-xl",
+                        description: "group-[.toast]:text-white/70 font-medium",
+                        actionButton: "group-[.toast]:bg-[rgb(var(--color-primary))] group-[.toast]:text-white",
+                        cancelButton: "group-[.toast]:bg-white/10 group-[.toast]:text-white",
+                        title: "group-[.toast]:text-[rgb(var(--color-primary-light))]",
+                        icon: "group-[.toast]:text-[rgb(var(--color-primary-light))]"
+                    }
+                }}
+            />
         </>
     );
 }
