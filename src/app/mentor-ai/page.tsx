@@ -42,12 +42,15 @@ export default function MentorAIPage() {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Rate Limiting Logic (5 Questions/Day)
-    const DAILY_LIMIT = 5;
+    const { isMuhsinin } = useInfaq(); // From Context - Moved UP
+
+    // Rate Limiting Logic (5/Day Free, 25/Day Muhsinin)
+    const FREE_LIMIT = 5;
+    const MUHSININ_LIMIT = 25;
+    const DAILY_LIMIT = isMuhsinin ? MUHSININ_LIMIT : FREE_LIMIT;
     const [dailyCount, setDailyCount] = useState(0);
     const [lastResetDate, setLastResetDate] = useState("");
     const [showLimitBlocking, setShowLimitBlocking] = useState(false);
-    const { isMuhsinin } = useInfaq(); // From Context
 
     // Initialize: Load Sessions and Rate Limit
     useEffect(() => {
@@ -136,8 +139,8 @@ export default function MentorAIPage() {
     const handleSend = async (text: string = input) => {
         if (!text.trim()) return;
 
-        // CHECK RATE LIMIT (Skip for Muhsinin)
-        if (!isMuhsinin && dailyCount >= DAILY_LIMIT) {
+        // CHECK RATE LIMIT (Both Free and Muhsinin have limits now)
+        if (dailyCount >= DAILY_LIMIT) {
             setShowLimitBlocking(true);
             return;
         }
@@ -186,11 +189,9 @@ export default function MentorAIPage() {
         }
 
         // INCREMENT COUNT
-        if (!isMuhsinin) {
-            const newCount = dailyCount + 1;
-            setDailyCount(newCount);
-            storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: lastResetDate, count: newCount }));
-        }
+        const newCount = dailyCount + 1;
+        setDailyCount(newCount);
+        storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: lastResetDate, count: newCount }));
 
         try {
             // Get AI Response...
@@ -271,6 +272,12 @@ export default function MentorAIPage() {
                                     <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
                                     Online
                                 </p>
+                                <span className={cn(
+                                    "text-[10px] px-1.5 py-0.5 rounded-full border",
+                                    dailyCount >= DAILY_LIMIT ? "bg-red-500/20 text-red-400 border-red-500/30" : "bg-white/5 text-white/50 border-white/10"
+                                )}>
+                                    {Math.max(0, DAILY_LIMIT - dailyCount)} Sisa
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -478,7 +485,7 @@ export default function MentorAIPage() {
             <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 pb-16 md:pb-12 pt-4 z-30">
                 <div className="max-w-md mx-auto px-4 space-y-3">
                     {/* Limit Reached Card */}
-                    {(!isMuhsinin && dailyCount >= DAILY_LIMIT) ? (
+                    {(dailyCount >= DAILY_LIMIT) ? (
                         <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-4 shadow-2xl relative overflow-hidden animate-in slide-in-from-bottom-5">
                             {/* Decorative Background */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-[rgb(var(--color-primary))]/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
@@ -488,18 +495,24 @@ export default function MentorAIPage() {
                                     <span className="text-2xl">🛑</span>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-sm font-bold text-white mb-0.5">Kuota Harian Habis</h3>
+                                    <h3 className="text-sm font-bold text-white mb-0.5">
+                                        {isMuhsinin ? "Batas Harian Tercapai" : "Kuota Harian Habis"}
+                                    </h3>
                                     <p className="text-[10px] text-slate-400 leading-tight">
-                                        Tunggu besok atau jadi Muhsinin untuk akses tanpa batas.
+                                        {isMuhsinin
+                                            ? "Batas penggunaan wajar 25x per hari tercapai. Lanjut besok ya!"
+                                            : "Tunggu besok atau jadi Muhsinin untuk kuota 5x lebih banyak (25/hari)."}
                                     </p>
                                 </div>
-                                <button
-                                    onClick={() => setShowLimitBlocking(true)}
-                                    className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all flex items-center gap-1.5 whitespace-nowrap"
-                                >
-                                    <Sparkles className="w-3.5 h-3.5" />
-                                    Upgrade
-                                </button>
+                                {!isMuhsinin && (
+                                    <button
+                                        onClick={() => setShowLimitBlocking(true)}
+                                        className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                                    >
+                                        <Sparkles className="w-3.5 h-3.5" />
+                                        Upgrade
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -530,8 +543,10 @@ export default function MentorAIPage() {
             <InfaqModal
                 isOpen={showLimitBlocking}
                 onClose={() => setShowLimitBlocking(false)}
-                headerTitle={t.tanyaDailyLimit}
-                headerDescription={t.tanyaLimitReached + ". " + t.tanyaLimitReset}
+                headerTitle={isMuhsinin ? "Batas Harian Tercapai" : t.tanyaDailyLimit}
+                headerDescription={isMuhsinin
+                    ? "Anda telah mencapai batas penggunaan wajar (25 pertanyaan/hari). Silakan kembali lagi besok."
+                    : t.tanyaLimitReached + ". Upgrade jadi Muhsinin untuk 25 kuota per hari."}
             />
         </div>
     );
