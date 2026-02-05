@@ -181,7 +181,7 @@ export const SETTINGS_TRANSLATIONS = {
     homeLastReadStartTitle: "Mulai Tilawah",
     homeLastReadStartSubtitle: "Baca Al-Quran hari ini",
     homeLastReadLabel: "Terakhir Baca",
-    homeMissionFocusTitle: "Fokus Ibadah",
+    homeMissionFocusTitle: "Target Harian",
     homeMissionDailyTarget: "Target harianmu",
     homeMissionCompleted: "Selesai",
     homeMissionViewAll: "Lihat Semua Misi",

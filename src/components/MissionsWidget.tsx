@@ -32,6 +32,17 @@ export default function MissionsWidget() {
     const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const getHukumLabel = (hukum: string) => {
+        const labels: Record<string, keyof typeof t> = {
+            wajib: "hukumWajib",
+            sunnah: "hukumSunnah",
+            mubah: "hukumMubah",
+            makruh: "hukumMakruh",
+            harram: "hukumHaram"
+        };
+        return t[labels[hukum]] || hukum;
+    };
+
     const { data: prayerData } = usePrayerTimes();
 
     useEffect(() => {
@@ -389,7 +400,7 @@ export default function MissionsWidget() {
                                                 ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                                 : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/20"
                                         )}>
-                                            {mission.hukum}
+                                            {getHukumLabel(mission.hukum)}
                                         </span>
                                         <p className="text-[10px] text-white/70 truncate">
                                             +{mission.xpReward} XP
