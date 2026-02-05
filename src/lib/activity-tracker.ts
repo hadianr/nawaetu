@@ -1,93 +1,71 @@
 import { useState, useEffect } from "react";
 import { getDisplayStreak } from "./streak-utils";
+import { getActivityRepository } from "@/core/repositories/activity.repository";
+import { DateUtils } from "@/lib/utils/date";
 
-// Activity Tracker - tracks user activities for mission validation
-// Stores daily activity counts in localStorage
+// ====================================================================
+// DEPRECATED: This file is kept for backward compatibility
+// NEW CODE SHOULD USE:
+// - useActivity() hook from @/hooks/useActivity
+// - ActivityRepository from @/core/repositories/activity.repository
+// ====================================================================
 
-const STORAGE_KEY = "activity_tracker";
+const repository = getActivityRepository();
 
-export interface ActivityData {
-    date: string; // YYYY-MM-DD
-    quranAyat: number; // Ayat read today
-    tasbihCount: number; // Total tasbih today
-    prayersLogged: string[]; // e.g. ['fajr', 'dhuhr', 'asr']
-}
+// Re-export ActivityData type from repository
+export type { ActivityData } from "@/core/repositories/activity.repository";
 
+/**
+ * @deprecated Use DateUtils.today() from @/lib/utils/date
+ */
 function getTodayString(): string {
-    return new Date().toISOString().split('T')[0];
-}
-
-function getDefaultActivity(): ActivityData {
-    return {
-        date: getTodayString(),
-        quranAyat: 0,
-        tasbihCount: 0,
-        prayersLogged: []
-    };
-}
-
-export function getActivityData(): ActivityData {
-    if (typeof window === "undefined") return getDefaultActivity();
-
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return getDefaultActivity();
-
-    try {
-        const data = JSON.parse(saved) as ActivityData;
-        // Reset if it's a new day
-        if (data.date !== getTodayString()) {
-            return getDefaultActivity();
-        }
-        return data;
-    } catch {
-        return getDefaultActivity();
-    }
-}
-
-function saveActivityData(data: ActivityData): void {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    window.dispatchEvent(new CustomEvent("activity_updated"));
+    return DateUtils.today();
 }
 
 /**
+ * @deprecated Use getActivityRepository().getActivity()
+ */
+export function getActivityData() {
+    return repository.getActivity();
+}
+
+/**
+ * @deprecated Internal function, use repository methods
+ */
+function saveActivityData(data: any): void {
+    repository.saveActivity(data);
+}
+
+/**
+ * @deprecated Use ActivityRepository.trackQuran() or useActivity hook
  * Track Quran reading. Called from VerseList when user reads verses.
  */
 export function trackQuranRead(ayatCount: number): void {
-    const data = getActivityData();
-    data.quranAyat += ayatCount;
-    data.date = getTodayString();
-    saveActivityData(data);
+    repository.trackQuran(ayatCount);
 }
 
 /**
+ * @deprecated Use ActivityRepository.trackTasbih() or useActivity hook
  * Track Tasbih count. Called from TasbihCounter.
  */
 export function trackTasbih(count: number): void {
-    const data = getActivityData();
-    data.tasbihCount += count;
-    data.date = getTodayString();
-    saveActivityData(data);
+    repository.trackTasbih(count);
 }
 
 /**
+ * @deprecated Use ActivityRepository.logPrayer() or useActivity hook
  * Log a prayer as completed. 
  */
 export function logPrayer(prayerName: string): void {
-    const data = getActivityData();
-    if (!data.prayersLogged.includes(prayerName)) {
-        data.prayersLogged.push(prayerName);
-    }
-    data.date = getTodayString();
-    saveActivityData(data);
+    repository.logPrayer(prayerName);
 }
 
 /**
+ * @deprecated Use ActivityRepository.isPrayerLogged() or useActivity hook
  * Check if a prayer has been logged today.
  */
 export function isPrayerLogged(prayerName: string): boolean {
-    const data = getActivityData();
-    return data.prayersLogged.includes(prayerName);
+    return repository.isPrayerLogged(prayerName);
 }
 
 /**
@@ -111,6 +89,7 @@ export function getMissionProgress(missionId: string): { current: number; requir
 /**
  * Check if current time is after a specific prayer time.
  * prayerTimes should come from usePrayerTimes hook.
+ * @deprecated Use DateUtils from @/lib/utils/date for date comparisons
  */
 export function isAfterPrayerTime(prayerName: string, prayerTimes: Record<string, string> | null): boolean {
     if (!prayerTimes) return false;
@@ -128,6 +107,7 @@ export function isAfterPrayerTime(prayerName: string, prayerTimes: Record<string
 
 /**
  * Check if today is a specific day (0=Sunday, 1=Monday, etc.)
+ * @deprecated Use DateUtils from @/lib/utils/date for date operations
  */
 export function isTodayDay(allowedDays: number[]): boolean {
     const today = new Date().getDay();
@@ -136,6 +116,10 @@ export function isTodayDay(allowedDays: number[]): boolean {
 
 // React Hooks for UI Components
 
+/**
+ * @deprecated Use useActivity hook from @/hooks/useActivity instead
+ * This hook delegates to the new repository pattern for backward compatibility
+ */
 export function useUserActivity() {
     const [stats, setStats] = useState({
         streakDays: 0,
@@ -169,6 +153,10 @@ export function useUserActivity() {
     return { stats };
 }
 
+/**
+ * @deprecated Use useActivity or direct storage access via StorageService
+ * This hook will be moved to a dedicated user profile module
+ */
 export function useUserProfile() {
     const [profile, setProfile] = useState({
         name: "Hamba Allah",
