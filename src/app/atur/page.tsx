@@ -279,7 +279,7 @@ export default function SettingsPage() {
                                 )}
                             </div>
                             {isMuhsinin && (
-                                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
+                                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
                                     <Crown className="w-2.5 h-2.5 text-white fill-white" />
                                 </div>
                             )}
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                     <div className="flex-1 relative z-10">
                         <div className="flex items-center gap-2">
                             <h3 className="text-sm font-bold text-slate-400">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsLabel}</h3>
-                            <span className="text-[8px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold uppercase tracking-wider">
+                            <span className="text-[8px] px-1.5 py-0.5 rounded bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30 font-bold uppercase tracking-wider">
                                 {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsComingSoon}
                             </span>
                         </div>
@@ -317,7 +317,7 @@ export default function SettingsPage() {
                     <button
                         onClick={handleRefreshLocation}
                         disabled={isRefreshing}
-                        className="p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-blue-500/30 transition-all group disabled:opacity-70 flex flex-col justify-between min-h-[80px]"
+                        className="p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between min-h-[80px]"
                     >
                         <div className="flex items-center justify-between w-full mb-1">
                             <div className="flex items-center gap-2">
@@ -347,7 +347,7 @@ export default function SettingsPage() {
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none">
                             <div className="flex items-center justify-between w-full mb-1">
                                 <div className="flex items-center gap-2">
-                                    <Clock className="w-4 h-4 text-sky-400" />
+                                    <Clock className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                     <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].methodLabel}</span>
                                 </div>
                                 {/* Visual Chevron */}
@@ -376,7 +376,7 @@ export default function SettingsPage() {
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <Volume2 className="w-4 h-4 text-amber-400" />
+                            <Volume2 className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                             <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].notificationTitle}</span>
                         </div>
                     </div>
@@ -418,7 +418,7 @@ export default function SettingsPage() {
                     {!notificationsEnabled && (
                         <button
                             onClick={requestPermission}
-                            className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-xl text-amber-400 text-sm font-semibold hover:bg-amber-500/30 hover:border-amber-500/50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                            className="w-full py-2.5 px-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border border-[rgb(var(--color-primary))]/30 rounded-xl text-[rgb(var(--color-primary-light))] text-sm font-semibold hover:bg-[rgb(var(--color-primary))]/30 hover:border-[rgb(var(--color-primary))]/50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                         >
                             <Bell className="w-4 h-4" />
                             {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].notificationButton}
@@ -481,12 +481,12 @@ export default function SettingsPage() {
                                                 {theme.isPremium && (
                                                     <div className={cn(
                                                         "absolute -bottom-1 -right-1 rounded-full border-2 border-black z-20 shadow-lg flex items-center justify-center transition-all duration-300",
-                                                        isSelected ? "w-6 h-6 bg-amber-500" : "w-4 h-4 bg-slate-800 border-amber-500/30"
+                                                        isSelected ? "w-6 h-6 bg-[rgb(var(--color-accent))]" : "w-4 h-4 bg-slate-800 border-[rgb(var(--color-accent))]/30"
                                                     )}>
                                                         {isLocked ? (
                                                             <Lock className={cn("text-black transition-all", isSelected ? "w-3 h-3" : "w-2 h-2")} />
                                                         ) : (
-                                                            <Crown className={cn("transition-all", isSelected ? "w-3 h-3 text-black" : "w-2 h-2 text-amber-500")} />
+                                                            <Crown className={cn("transition-all", isSelected ? "w-3 h-3 text-black" : "w-2 h-2 text-[rgb(var(--color-accent))]")} />
                                                         )}
                                                     </div>
                                                 )}
@@ -517,7 +517,7 @@ export default function SettingsPage() {
 
                 {/* Audio Configuration Card */}
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
-                    <div className="flex items-center gap-2 text-sky-400">
+                    <div className="flex items-center gap-2 text-[rgb(var(--color-primary-light))]">
                         <Headphones className="w-4 h-4" />
                         <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].audioTitle}</span>
                     </div>
@@ -527,8 +527,8 @@ export default function SettingsPage() {
                         <div className="relative group bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-white/10 transition-all">
                             {/* Visual Layer */}
                             <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
-                                <div className="p-2 rounded-full bg-sky-500/10 shrink-0">
-                                    <Volume2 className="w-4 h-4 text-sky-400" />
+                                <div className="p-2 rounded-full bg-[rgb(var(--color-primary))]/10 shrink-0">
+                                    <Volume2 className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].muadzinLabel}</p>
@@ -618,13 +618,13 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Support Card (Persistent) */}
-                <div className="bg-gradient-to-br from-emerald-900/40 to-teal-900/40 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
+                <div className="bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/40 to-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/20 rounded-2xl p-4 flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <Heart className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
+                            <Heart className="w-4 h-4 text-[rgb(var(--color-primary-light))] fill-[rgb(var(--color-primary))]/20" />
                             <span className="text-sm font-bold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportTitle}</span>
                         </div>
-                        <p className="text-[10px] text-emerald-200/70 max-w-[200px] leading-relaxed">
+                        <p className="text-[10px] text-[rgb(var(--color-primary-light))]/70 max-w-[200px] leading-relaxed">
                             {isMuhsinin
                                 ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportPremiumText
                                 : SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportText}
@@ -633,7 +633,7 @@ export default function SettingsPage() {
                     <Button
                         onClick={() => setShowInfaqModal(true)}
                         size="sm"
-                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-emerald-500/20"
+                        className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20"
                     >
                         {isMuhsinin ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].infaqButtonPremium : SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].infaqButton}
                     </Button>
@@ -645,7 +645,7 @@ export default function SettingsPage() {
                     <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                     <div className="relative z-10">
-                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[rgb(var(--color-primary))] to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-[rgb(var(--color-primary))]/20 mb-3 rotate-3 group-hover:rotate-6 transition-transform">
+                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-2xl flex items-center justify-center shadow-lg shadow-[rgb(var(--color-primary))]/20 mb-3 rotate-3 group-hover:rotate-6 transition-transform">
                             <span className="text-3xl font-bold text-white">N</span>
                         </div>
 
@@ -659,7 +659,7 @@ export default function SettingsPage() {
                         </p>
 
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all cursor-default">
-                            <span className="text-blue-400 font-bold text-xs">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutHashtag}</span>
+                            <span className="text-[rgb(var(--color-primary-light))] font-bold text-xs">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutHashtag}</span>
                         </div>
 
                         <div className="mt-6 flex items-center justify-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
