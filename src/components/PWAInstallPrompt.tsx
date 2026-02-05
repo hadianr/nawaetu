@@ -39,13 +39,14 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
         <div className="fixed bottom-20 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-10 fade-in duration-700">
             <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl relative overflow-hidden">
                 {/* Background Noise */}
-                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none"></div>
 
                 <button
                     onClick={handleDismiss}
-                    className="absolute top-2 right-2 p-1 bg-white/5 rounded-full hover:bg-white/10 transition-colors z-10"
+                    className="absolute top-2 right-2 p-3 bg-white/5 rounded-full hover:bg-white/10 active:scale-90 transition-all z-20 cursor-pointer touch-manipulation flex items-center justify-center"
+                    aria-label="Close"
                 >
-                    <X className="w-4 h-4 text-slate-400" />
+                    <X className="w-5 h-5 text-slate-400" />
                 </button>
 
                 <div className="relative z-10 flex gap-4">

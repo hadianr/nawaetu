@@ -84,7 +84,7 @@ export default function SettingsPage() {
             STORAGE_KEYS.USER_TITLE,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
-        
+
         if (savedName) setUserName(savedName as string);
         if (savedTitle) setUserTitle(savedTitle as string);
         setUserAvatar(savedAvatar as string | null);
@@ -245,17 +245,17 @@ export default function SettingsPage() {
         if (typeof window !== "undefined" && "Notification" in window) {
             setNotificationsEnabled(Notification.permission === "granted");
         }
-        
+
         const [saved, savedMuadzin, savedMethod] = storage.getMany([
             STORAGE_KEYS.ADHAN_PREFERENCES,
             STORAGE_KEYS.SETTINGS_MUADZIN,
             STORAGE_KEYS.SETTINGS_CALCULATION_METHOD
         ]).values();
-        
+
         if (saved) {
             try { setPreferences(typeof saved === 'string' ? JSON.parse(saved) : saved); } catch (e) { }
         }
-        
+
         refreshProfile();
 
         // Load new settings
@@ -701,13 +701,9 @@ export default function SettingsPage() {
                             ))}
                         </SelectContent>
                     </Select>
-
-                    <p className="text-[10px] text-white/40 leading-relaxed">
-                        {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].languageDescription}
-                    </p>
                 </div>
 
-                {/* Support Card (Persistent) */}
+                {/* Support Card (Persistent) - Swapped Back Up */}
                 <div className="bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/40 to-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/20 rounded-2xl p-4 flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -729,36 +725,23 @@ export default function SettingsPage() {
                     </Button>
                 </div>
 
-                {/* App Info - Footer Style */}
-                {/* About Nawaetu Card - Compact */}
-                <button
-                    onClick={() => setShowAboutModal(true)}
-                    className="w-full bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-5 text-center relative overflow-hidden group hover:border-[rgb(var(--color-primary))]/30 transition-all active:scale-[0.98]"
-                >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                    <div className="relative z-10 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-xl flex items-center justify-center shadow-lg shadow-[rgb(var(--color-primary))]/20">
-                                <span className="text-2xl font-bold text-white">N</span>
-                            </div>
-                            
-                            <div className="text-left">
-                                <h2 className="text-lg font-bold text-white mb-0.5">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName}</h2>
-                                <p className="text-[10px] text-[rgb(var(--color-primary-light))] font-semibold">
-                                    {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutVersion}
-                                </p>
-                            </div>
+                {/* Compact App Info Link - Swapped Back Down */}
+                <div className="flex justify-center pt-2">
+                    <button
+                        onClick={() => setShowAboutModal(true)}
+                        className="flex items-center gap-2 group transition-all active:scale-[0.98] py-2 px-4 rounded-full bg-white/5 border border-white/5 hover:bg-white/10"
+                    >
+                        <div className="w-5 h-5 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-md flex items-center justify-center">
+                            <span className="text-[10px] font-bold text-white">N</span>
                         </div>
+                        <span className="text-[10px] font-bold text-white/60 group-hover:text-white transition-colors">
+                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName} {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutVersion.split('•')[0].trim()}
+                        </span>
+                        <ChevronRight className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors" />
+                    </button>
+                </div>
 
-                        <div className="text-right">
-                            <Info className="w-5 h-5 text-[rgb(var(--color-primary-light))] group-hover:scale-110 transition-transform" />
-                            <p className="text-[9px] text-slate-500 mt-1">
-                                {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutTapForInfo}
-                            </p>
-                        </div>
-                    </div>
-                </button>
+
             </div>
 
             <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />

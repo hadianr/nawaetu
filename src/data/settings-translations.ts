@@ -62,6 +62,9 @@ export const SETTINGS_TRANSLATIONS = {
     aboutFeature2: "Waktu Sholat",
     aboutFeature3: "Mentor AI",
     aboutFeature4: "Multi-Bahasa",
+    aboutWhatIsTitle: "Apa itu Nawaetu?",
+    aboutApproachTitle: "Pendekatan Kami",
+    aboutApproachDesc: "Kami menggabungkan panduan ibadah dengan gamifikasi (Misi & Streak) serta asisten AI untuk membangun kebiasaan yang istiqomah.",
     aboutLastUpdate: "Diperbarui: 5 Februari 2026",
 
     // Profile Dialog
@@ -465,8 +468,8 @@ export const SETTINGS_TRANSLATIONS = {
 
     // About Section
     aboutAppName: "Nawaetu",
-    aboutTagline: "Perfect Your Intention, Perfect Your Worship",
-    aboutDescription: "Your digital worship companion keeping every step aligned with the Quran & Sunnah.",
+    aboutTagline: "#NiatAjaDulu",
+    aboutDescription: "Your digital worship companion for consistent habits based on Quran & Sunnah.",
     aboutHashtag: "#PerfectYourIntention",
     aboutVersion: "v1.3.0 • Production",
     aboutTapForInfo: "Tap for more info",
@@ -480,6 +483,9 @@ export const SETTINGS_TRANSLATIONS = {
     aboutFeature2: "Prayer Times",
     aboutFeature3: "Mentor AI",
     aboutFeature4: "Multi-Language",
+    aboutWhatIsTitle: "What is Nawaetu?",
+    aboutApproachTitle: "Our Approach",
+    aboutApproachDesc: "We blend worship guidance with gamification (Missions & Streak) and AI to help you build steadfast habits.",
     aboutLastUpdate: "Updated: February 5, 2026",
 
     // Profile Dialog
