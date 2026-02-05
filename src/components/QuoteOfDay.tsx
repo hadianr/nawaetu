@@ -38,14 +38,14 @@ export default function QuoteOfDay() {
     return (
         <div className="w-full max-w-md mt-6 mb-2 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
             <div className="relative rounded-3xl bg-black/20 border border-white/5 p-6 backdrop-blur-md">
-                <Quote className="absolute top-4 left-4 h-6 w-6 text-emerald-500/20 rotate-180" />
+                <Quote className="absolute top-4 left-4 h-6 w-6 text-[rgb(var(--color-primary))]/20 rotate-180" />
 
                 <div className="relative z-10 flex flex-col items-center text-center space-y-3 px-2">
                     <p className="text-white/90 font-medium italic text-sm md:text-base leading-relaxed">
                         "{quote.text}"
                     </p>
-                    <div className="h-px w-10 bg-emerald-500/30"></div>
-                    <p className="text-emerald-400/80 text-xs tracking-wider uppercase font-semibold">
+                    <div className="h-px w-10 bg-[rgb(var(--color-primary))]/30"></div>
+                    <p className="text-[rgb(var(--color-primary-light))]/80 text-xs tracking-wider uppercase font-semibold">
                         {quote.source}
                     </p>
                 </div>
