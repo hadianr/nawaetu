@@ -52,9 +52,8 @@ export default function MentorAIPage() {
     const [lastResetDate, setLastResetDate] = useState("");
     const [showLimitBlocking, setShowLimitBlocking] = useState(false);
 
-    // Initialize: Load Sessions and Rate Limit
+    // Initialize: Load Sessions (Run Once)
     useEffect(() => {
-        // 1. Load Sessions
         const loadedSessions = getAllSessions();
         setSessions(loadedSessions);
 
@@ -63,33 +62,54 @@ export default function MentorAIPage() {
             setActiveSessionId(loadedSessions[0].id);
             setMessages(loadedSessions[0].messages);
         } else {
-            // No sessions? Initialize first one (but don't save yet until first message to avoid empty spam)
-            // Or maybe just show empty state. Let's start clean.
+            // No sessions? Initialize first one
             handleNewChat();
         }
+    }, []);
 
-        // 2. Load Rate Limit from Storage
+    // Initialize & Watch: Rate Limit Logic (Run on mount & when isMuhsinin changes)
+    useEffect(() => {
         const savedUsage = storage.getOptional<any>(STORAGE_KEYS.AI_USAGE as any);
         const today = new Date().toDateString();
+        const currentTier = isMuhsinin ? 'muhsinin' : 'free';
 
         if (savedUsage) {
             const parsed = typeof savedUsage === 'string' ? JSON.parse(savedUsage) : savedUsage;
-            const { date, count } = parsed;
+            // Support legacy format (without tier)
+            const { date, count, tier } = parsed;
+
             if (date === today) {
-                setDailyCount(count);
-                setLastResetDate(date);
+                // Check if user just upgraded (Stored as Free, now is Muhsinin)
+                if ((!tier || tier === 'free') && isMuhsinin) {
+                    // RESET QUOTA to give full 25 fresh credits
+                    setDailyCount(0);
+                    setLastResetDate(today);
+                    storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                        date: today,
+                        count: 0,
+                        tier: 'muhsinin'
+                    }));
+                } else {
+                    // Normal Load
+                    setDailyCount(count);
+                    setLastResetDate(date);
+
+                    // If tier is missing or outdated but no upgrade event, just update logic context
+                    // (We don't force save here to avoid unnecessary writes unless needed)
+                }
             } else {
-                // Reset if new day
+                // New Day Reset
                 setDailyCount(0);
                 setLastResetDate(today);
-                storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0 }));
+                storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0, tier: currentTier }));
             }
         } else {
+            // Initial Start
             setLastResetDate(today);
-            storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0 }));
+            setDailyCount(0);
+            storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0, tier: currentTier }));
         }
-
-    }, []);
+    }, [isMuhsinin]);
 
     // Auto-scroll
     useEffect(() => {
@@ -191,7 +211,11 @@ export default function MentorAIPage() {
         // INCREMENT COUNT
         const newCount = dailyCount + 1;
         setDailyCount(newCount);
-        storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: lastResetDate, count: newCount }));
+        storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+            date: lastResetDate,
+            count: newCount,
+            tier: isMuhsinin ? 'muhsinin' : 'free'
+        }));
 
         try {
             // Get AI Response...
