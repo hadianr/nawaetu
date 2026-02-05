@@ -354,41 +354,73 @@ npm run analyze      # Analyze bundle size
 
 ## 📦 Release Management
 
-### How to Release a New Version
+### Quick Release
 
-**Step 1: Update version numbers**
+**Cara tercepat untuk release:**
+
 ```bash
-# Update version di package.json
-npm version minor  # or patch, major
+# 1. Ensure main branch & latest code
+git checkout main
+git pull origin main
+
+# 2. Use release script (fully automated)
+npm run release -- v1.2.0
 ```
 
-**Step 2: Update CHANGELOG.md**
-Document semua perubahan di bagian `[Unreleased]`
+**Apa yang terjadi otomatis:**
+1. ✅ Validate version format (vX.Y.Z)
+2. ✅ Check working directory clean
+3. ✅ Verify all commits pushed
+4. ✅ Create annotated git tag
+5. ✅ Push tag to origin
+6. ✅ Trigger GitHub Actions workflows:
+   - Build & Test
+   - Create Release
+   - Deploy to Vercel
 
-**Step 3: Commit & push**
-```bash
-git add .
-git commit -m "chore: prepare v1.2.0 release"
-git push origin develop
+### Detailed Release Guide
+
+Untuk panduan lengkap dan troubleshooting: [RELEASE_PROCESS.md](.github/RELEASE_PROCESS.md)
+
+**Topik yang covered:**
+- Pre-release checklist
+- Manual release (jika script error)
+- GitHub CLI alternative
+- Monitoring release status
+- Rollback procedures
+- FAQ
+
+### Release Workflow Overview
+
+```
+Local Machine              GitHub               Vercel
+────────────────────────  ──────────────────   ──────────
+npm run release v1.2.0
+    │
+    ├─ Validate version
+    ├─ Check git status
+    ├─ Create tag
+    └─ git push origin tag
+                           │
+                           ├─ Build Workflow
+                           │  ├─ Lint
+                           │  ├─ Test
+                           │  └─ Build (~3-5 min)
+                           │
+                           ├─ Release Workflow
+                           │  ├─ Build
+                           │  ├─ Extract Changelog
+                           │  ├─ Create Release
+                           │  └─ Update package.json (~4-7 min)
+                           │
+                           └─ Deploy Workflow
+                                           │
+                                           ├─ Preview Deploy
+                                           └─ Production Deploy (~2-5 min)
+                                              https://nawaetu.com
 ```
 
-**Step 4: Create git tag**
-```bash
-git tag v1.2.0
-git push origin v1.2.0
-```
-
-**Automatic Flow:**
-1. ✅ GitHub Actions detects tag `v*.*.*`
-2. ✅ Build & test otomatis
-3. ✅ Extract changelog dari CHANGELOG.md
-4. ✅ Create GitHub Release dengan artifacts
-5. ✅ Update package.json version
-
-**Hasil:**
-- Release muncul di [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
-- Artifacts (build files) tersedia untuk download
-- CHANGELOG otomatis embedded di release notes
+**Total time:** ~10-20 minutes dari `npm run release` sampai live di production.
 
 ---
 
