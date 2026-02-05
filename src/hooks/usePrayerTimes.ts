@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { API_CONFIG } from "@/config/apis";
 
 const storage = getStorageService();
 
@@ -102,7 +103,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const date = cachedData.date;
             const savedData = cachedData.data;
             const locationName = cachedData.locationName;
-            
+
             if (date === today && savedData) {
                 processData(savedData, locationName || "Lokasi Tersimpan", true);
             }
@@ -112,21 +113,21 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string) => {
         // fetch location name if not cached
         let locationName = cachedLocationName || "Lokasi Anda";
-        
+
         try {
             setLoading(true);
-            
+
             // Validate coordinates
             if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
                 throw new Error("Invalid coordinates");
             }
-            
+
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
 
             if (!cachedLocationName) {
                 try {
                     const locResponse = await fetchWithTimeout(
-                        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
+                        `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
                         {},
                         { timeoutMs: 8000 }
                     );
@@ -143,7 +144,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 const date = cachedData.date;
                 const savedData = cachedData.data;
                 const savedLocationName = cachedData.locationName;
-                
+
                 if (date === today && savedData) {
                     processData(savedData, savedLocationName || locationName, true); // Use cached data immediately
                 }
@@ -154,7 +155,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
 
             const response = await fetchWithTimeout(
-                `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}`,
+                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}`,
                 {},
                 { timeoutMs: 8000 }
             );
@@ -196,7 +197,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             console.error('Prayer times fetch error:', err);
             const errorMessage = err instanceof Error ? err.message : "Failed to load prayer data";
             setError(errorMessage);
-            
+
             // Try to use cached data if available
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
             if (cachedData && typeof cachedData === 'object' && cachedData.data) {
@@ -248,7 +249,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         if (isFreshLocation(cachedLocation)) {
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
-            
+
             if (!cachedData || cachedData.date !== today) {
                 fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
             } else {
@@ -265,7 +266,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
         // 3. Listen for global updates
         const handleUpdate = () => syncFromCache();
-        
+
         // Listen for calculation method changes
         const handleMethodChange = () => {
             const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
@@ -278,10 +279,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 storage.remove(STORAGE_KEYS.USER_LOCATION as any);
             }
         };
-        
+
         window.addEventListener('prayer_data_updated', handleUpdate);
         window.addEventListener('calculation_method_changed', handleMethodChange);
-        
+
         return () => {
             window.removeEventListener('prayer_data_updated', handleUpdate);
             window.removeEventListener('calculation_method_changed', handleMethodChange);

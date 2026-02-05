@@ -1,5 +1,6 @@
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { API_CONFIG } from "@/config/apis";
 
 const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Kamu adalah mentor spiritual yang membantu pengguna memahami dan menjalankan ibadah dengan lebih baik. Bisakan menjawab dengan singkat dan padat serta informatif.
 
@@ -51,7 +52,7 @@ Jadi jangan dipaksakan ya Kak, sesuaikan dengan kemampuan fisik. Semoga lekas se
 export class OpenRouterProvider implements LLMProvider {
     name = 'OpenRouter';
     private apiKey: string;
-    private baseURL = 'https://openrouter.ai/api/v1';
+    private baseURL = API_CONFIG.OPENROUTER.BASE_URL;
     // Using free Gemini Flash via OpenRouter
     private model = 'google/gemini-flash-1.5';
 

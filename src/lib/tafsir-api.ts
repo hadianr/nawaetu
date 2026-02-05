@@ -1,5 +1,6 @@
 import { getStorageService } from "@/core/infrastructure/storage";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { API_CONFIG } from "@/config/apis";
 
 export interface TafsirContent {
     short: string;
@@ -59,7 +60,7 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
             // Verse ID format must match: surahId:verseId (same as Kemenag API)
             const verseKey = `${surahId}:${verseId}`;
             const res = await fetchWithTimeout(
-                `https://api.quran.com/api/v4/tafsirs/169/by_ayah/${verseKey}`,
+                `${API_CONFIG.QURAN_COM.BASE_URL}/tafsirs/169/by_ayah/${verseKey}`,
                 {},
                 { timeoutMs: 8000 }
             );
@@ -83,7 +84,7 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
             // 2b. Fetch Indonesian tafsir from Kemenag API
             // Verse ID format: surahId/verseId (Kemenag uses slash separator)
             const res = await fetchWithTimeout(
-                `https://api.quran.gading.dev/surah/${surahId}/${verseId}`,
+                `${API_CONFIG.QURAN_GADING.BASE_URL}/surah/${surahId}/${verseId}`,
                 {},
                 { timeoutMs: 8000 }
             );

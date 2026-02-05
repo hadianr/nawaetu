@@ -7,8 +7,7 @@
 import { cache } from "react";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import type { Chapter } from "@/components/quran/SurahList";
-
-const KEMENAG_API_BASE_URL = "https://quran-api-id.vercel.app";
+import { API_CONFIG } from "@/config/apis";
 
 interface GadingQuranResponse {
   code: number;
@@ -87,7 +86,7 @@ interface GadingVerse {
 export async function getKemenagChapters(): Promise<Chapter[]> {
   try {
     const res = await fetchWithTimeout(
-      `${KEMENAG_API_BASE_URL}/surah`,
+      `${API_CONFIG.QURAN_ID.BASE_URL}/surah`,
       { next: { revalidate: 86400 } },
       { timeoutMs: 8000 }
     );
@@ -145,11 +144,11 @@ export const getKemenagVerses = cache(
       // Determine translation ID based on locale
       // 20 = Saheeh International (English), 33 = Indonesian (Kemenag)
       const translationId = locale === "en" ? 20 : 33;
-      
+
       // Single API call - use quran.com only (faster, no dual API bottleneck)
       // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
-      const apiUrl = `https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?language=${locale}&words=true&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
-      
+      const apiUrl = `${API_CONFIG.QURAN_COM.BASE_URL}/verses/by_chapter/${chapterId}?language=${locale}&words=true&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
+
       const res = await fetchWithTimeout(
         apiUrl,
         { next: { revalidate: 86400 } },
@@ -165,7 +164,7 @@ export const getKemenagVerses = cache(
       return verses.map((verse: any) => {
         // Build transliteration from words
         const transliteration = verse.words?.map((w: any) => w.transliteration?.text || '').join(' ') || '';
-        
+
         return {
           id: verse.id, // Global verse ID from quran.com
           verse_number: verse.verse_number,
@@ -200,7 +199,7 @@ export const getKemenagVerses = cache(
 export async function getKemenagVerse(chapterId: string | number, verseNumber: string | number) {
   try {
     const res = await fetchWithTimeout(
-      `${KEMENAG_API_BASE_URL}/surah/${chapterId}/${verseNumber}`,
+      `${API_CONFIG.QURAN_ID.BASE_URL}/surah/${chapterId}/${verseNumber}`,
       { next: { revalidate: 86400 } },
       { timeoutMs: 8000 }
     );
@@ -252,18 +251,18 @@ export function getVerseAudioUrl(verseId: number, reciterId: number): string {
   };
 
   const reciter = reciterMap[reciterId] || reciterMap[7];
-  return `https://cdn.islamic.network/quran/audio/${reciter.bitrate}/ar.${reciter.name}/${verseId}.mp3`;
+  return `${API_CONFIG.AUDIO.ISLAMIC_NETWORK_CDN}/${reciter.bitrate}/ar.${reciter.name}/${verseId}.mp3`;
 }
 
 // Prefetch utility for popular surahs during idle time
 // Call this on app startup to preload chapters 1-10 + frequently read surahs
 export function prefetchPopularSurahs(locale: string = "id"): void {
   if (typeof window === "undefined") return; // Only in browser
-  
+
   // Popular surahs: Al-Fatiha(1), Al-Baqarah(2), Ali-Imran(3), An-Nisa(4), Al-Ma'idah(5),
   // Al-An'am(6), Al-A'raf(7), Al-Anfal(8), At-Tawbah(9), Yunus(10), Ar-Rahman(55), Ya-Seen(36)
   const popularSurahs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 36, 55];
-  
+
   // Use requestIdleCallback to prefetch without blocking user interaction
   if ("requestIdleCallback" in window) {
     requestIdleCallback(() => {
