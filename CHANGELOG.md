@@ -5,6 +5,34 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-02-05
+
+### Added
+- **Smart Rate Limiting**: Limit pintar dengan auto-reset
+  - Free users: 5 chat/hari
+  - Muhsinin users: 25 chat/hari
+  - **Instant Reset**: Upgrade ke Muhsinin langsung reset kuota ke 0 (dapat 25 chat baru) tanpa menunggu besok
+- **Mentor AI Chat History**:
+  - Riwayat chat kini tersimpan di local storage
+  - Bisa melanjutkan percakapan antar sesi (refresh page tidak hilang)
+  - Mendukung multi-session management
+- **Streamlined AI Responses**:
+  - Instruksi sistem baru untuk Gemini, Groq, dan OpenRouter
+  - Jawaban lebih to-the-point tanpa basa-basi salam (kecuali disalamin duluan)
+  - Tone lebih profesional namun tetap hangat sebagai "Mentor Spiritual"
+
+### Changed
+- **Translations**: Updated English & Indonesian settings translations to reflect new features
+- **About Section**: Updated app improvements list in Settings page
+- **README**: Detailed new feature capabilities and version bump
+
+### Fixed
+- Rate limit counter logic issue during tier upgrades
+
+### Performance
+- Optimized quota check logic to minimize unnecessary writes to storage
+
+---
 ## [1.2.0] - 2026-02-05
 
 ### Added
