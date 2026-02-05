@@ -1,85 +1,147 @@
 // Utility for chat history management using StorageService
 import { getStorageService } from "@/core/infrastructure/storage";
 
-const CHAT_STORAGE_KEY = 'nawaetu_chat_history';
-const MAX_STORED_MESSAGES = 50; // Limit to prevent storage overflow
+const CHAT_SESSIONS_KEY = 'nawaetu_chat_sessions';
+const OLD_CHAT_HISTORY_KEY = 'nawaetu_chat_history'; // For migration
+const MAX_SESSIONS = 50;
+const MAX_MESSAGES_PER_SESSION = 50;
 
 const storage = getStorageService();
 
-export interface StoredMessage {
+export interface ChatMessage {
     id: string;
     role: 'user' | 'assistant';
     content: string;
     timestamp: number;
 }
 
-/**
- * Save chat messages to storage
- */
-export function saveChatHistory(messages: StoredMessage[]): boolean {
-    try {
-        // Only store last N messages to save space
-        const messagesToStore = messages.slice(-MAX_STORED_MESSAGES);
-        storage.set(CHAT_STORAGE_KEY as any, JSON.stringify(messagesToStore));
-        return true;
-    } catch (error) {
-        console.error('Failed to save chat history:', error);
-        // Storage might be full or disabled
-        return false;
-    }
+export interface ChatSession {
+    id: string;
+    title: string;
+    messages: ChatMessage[];
+    createdAt: number;
+    updatedAt: number;
 }
 
 /**
- * Load chat messages from storage
+ * Get all chat sessions
  */
-export function loadChatHistory(): StoredMessage[] {
+export function getAllSessions(): ChatSession[] {
     try {
-        const stored = storage.getOptional<string>(CHAT_STORAGE_KEY as any);
-        if (!stored) return [];
+        // 1. Check for new session storage
+        const storedSessions = storage.getOptional<string>(CHAT_SESSIONS_KEY as any);
+        if (storedSessions) {
+            const sessions = JSON.parse(storedSessions) as ChatSession[];
+            return sessions.sort((a, b) => b.updatedAt - a.updatedAt);
+        }
 
-        const messages = JSON.parse(stored) as StoredMessage[];
+        // 2. Migration: Check for old history and convert to first session
+        const oldHistory = storage.getOptional<string>(OLD_CHAT_HISTORY_KEY as any);
+        if (oldHistory) {
+            const messages = JSON.parse(oldHistory) as ChatMessage[];
+            if (messages.length > 0) {
+                // Create a session from old history
+                const firstUserMsg = messages.find(m => m.role === 'user');
+                const title = firstUserMsg ? truncateTitle(firstUserMsg.content) : "Percakapan Lama";
 
-        // Validate messages structure
-        if (!Array.isArray(messages)) return [];
+                const initialSession: ChatSession = {
+                    id: crypto.randomUUID(),
+                    title: title,
+                    messages: messages,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                };
 
-        // Filter out invalid messages and old messages (> 7 days)
-        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-        return messages.filter(msg =>
-            msg.id &&
-            msg.role &&
-            msg.content &&
-            msg.timestamp &&
-            msg.timestamp > sevenDaysAgo
-        );
+                // Save to new format and clear old
+                saveAllSessions([initialSession]);
+                storage.remove(OLD_CHAT_HISTORY_KEY as any);
+                return [initialSession];
+            }
+        }
+
+        return [];
     } catch (error) {
-        console.error('Failed to load chat history:', error);
+        console.error('Failed to load chat sessions:', error);
         return [];
     }
 }
 
 /**
- * Clear chat history from storage
+ * Get a specific session by ID
  */
-export function clearChatHistory(): boolean {
+export function getSession(id: string): ChatSession | null {
+    const sessions = getAllSessions();
+    return sessions.find(s => s.id === id) || null;
+}
+
+/**
+ * Save a specific session (create or update)
+ */
+export function saveSession(session: ChatSession): void {
+    const sessions = getAllSessions();
+    const index = sessions.findIndex(s => s.id === session.id);
+
+    // Limit messages in session
+    const cleanedSession = {
+        ...session,
+        messages: session.messages.slice(-MAX_MESSAGES_PER_SESSION)
+    };
+
+    if (index >= 0) {
+        sessions[index] = cleanedSession;
+    } else {
+        sessions.unshift(cleanedSession);
+    }
+
+    // Limit total number of sessions
+    if (sessions.length > MAX_SESSIONS) {
+        sessions.length = MAX_SESSIONS;
+    }
+
+    saveAllSessions(sessions);
+}
+
+/**
+ * Create a new empty session
+ */
+export function createNewSession(): ChatSession {
+    return {
+        id: crypto.randomUUID(),
+        title: "Percakapan Baru",
+        messages: [],
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+    };
+}
+
+/**
+ * Delete a session
+ */
+export function deleteSession(id: string): void {
+    const sessions = getAllSessions().filter(s => s.id !== id);
+    saveAllSessions(sessions);
+}
+
+/**
+ * Internal: Save full list of sessions
+ */
+function saveAllSessions(sessions: ChatSession[]): void {
     try {
-        storage.remove(CHAT_STORAGE_KEY as any);
-        return true;
+        storage.set(CHAT_SESSIONS_KEY as any, JSON.stringify(sessions));
     } catch (error) {
-        console.error('Failed to clear chat history:', error);
-        return false;
+        console.error('Failed to save sessions:', error);
     }
 }
 
 /**
- * Check if storage is available
+ * Helper: Truncate message for title
  */
-export function isStorageAvailable(): boolean {
-    try {
-        const test = '__storage_test__';
-        storage.set(test as any, test);
-        storage.remove(test as any);
-        return true;
-    } catch {
-        return false;
-    }
+function truncateTitle(content: string, maxLength = 30): string {
+    const clean = content.replace(/\n/g, ' ').trim();
+    return clean.length > maxLength ? clean.substring(0, maxLength) + '...' : clean;
 }
+
+// Deprecated functions (kept for compatibility during refactor if needed, or safe to remove if we update all calls)
+export function loadChatHistory() { return []; }
+export function saveChatHistory() { return false; }
+
