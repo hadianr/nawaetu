@@ -43,11 +43,44 @@ next-env.d.ts
 # Sentry Config File
 .env.sentry-build-plugin
 
-# Development Documentation (Do not push)
-# These are generated during development and analysis
+# ============================================
+# Development & Internal Documentation (Do NOT push)
+# These are generated during development/refactoring
+# and are not needed in production
+# ============================================
+
+# Analysis & Assessment Reports
+CODE_QUALITY_ASSESSMENT.md
+QURAN_COMPONENT_AUDIT.md
+
+# Development Guides (temp)
 COMMAND_REFERENCE.md
 DOCUMENTATION_INDEX.md
 FILE_MANIFEST.md
+
+# Performance Optimization (obsolete)
+PERFORMANCE_*.md
+OPTIMIZATION_*.md
+PERFORMANCE_README.md
+
+# Component Migration Phase Docs (internal process)
+COMPONENT_MIGRATION_PHASE*.md
+MIGRATION_GUIDE.md
+REFACTORING_IMPLEMENTATION.md
+
+# Internationalization Analysis (internal)
+I18N_*.md
+
+# Development Summaries & Status (internal)
+PRIORITY_*.md
+QUICK_REFERENCE.md
+VERIFICATION_SUMMARY.md
+WEEK_*.md
+ARCHITECTURE.md
+IMPLEMENTATION_SUMMARY.md
+
+# Performance optimization scripts (temp)
+verify-optimizations.sh
 I18N_ANALYSIS.md
 I18N_ARCHITECTURE.md
 I18N_BEST_PRACTICES.md
