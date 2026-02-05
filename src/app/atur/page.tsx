@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import UserProfileDialog from "@/components/UserProfileDialog";
 import InfaqModal from "@/components/InfaqModal";
+import AboutAppModal from "@/components/AboutAppModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
 import { useInfaq } from "@/context/InfaqContext";
@@ -51,6 +52,7 @@ export default function SettingsPage() {
     const { isMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const [showInfaqModal, setShowInfaqModal] = useState(false);
+    const [showAboutModal, setShowAboutModal] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [preferences, setPreferences] = useState<AdhanPreferences>(DEFAULT_PREFS);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -640,36 +642,39 @@ export default function SettingsPage() {
                 </div>
 
                 {/* App Info - Footer Style */}
-                {/* About Nawaetu Card */}
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center space-y-4 relative overflow-hidden group">
+                {/* About Nawaetu Card - Compact */}
+                <button
+                    onClick={() => setShowAboutModal(true)}
+                    className="w-full bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-5 text-center relative overflow-hidden group hover:border-[rgb(var(--color-primary))]/30 transition-all active:scale-[0.98]"
+                >
                     <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                    <div className="relative z-10">
-                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-2xl flex items-center justify-center shadow-lg shadow-[rgb(var(--color-primary))]/20 mb-3 rotate-3 group-hover:rotate-6 transition-transform">
-                            <span className="text-3xl font-bold text-white">N</span>
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-xl flex items-center justify-center shadow-lg shadow-[rgb(var(--color-primary))]/20">
+                                <span className="text-2xl font-bold text-white">N</span>
+                            </div>
+                            
+                            <div className="text-left">
+                                <h2 className="text-lg font-bold text-white mb-0.5">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName}</h2>
+                                <p className="text-[10px] text-[rgb(var(--color-primary-light))] font-semibold">
+                                    {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutVersion}
+                                </p>
+                            </div>
                         </div>
 
-                        <h2 className="text-xl font-bold text-white mb-1">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName}</h2>
-                        <p className="text-[10px] text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] font-bold mb-3">
-                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutTagline}
-                        </p>
-
-                        <p className="text-xs text-slate-400 leading-relaxed max-w-[260px] mx-auto mb-4">
-                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutDescription}
-                        </p>
-
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all cursor-default">
-                            <span className="text-[rgb(var(--color-primary-light))] font-bold text-xs">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutHashtag}</span>
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
-                            <span className="text-[10px] text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutVersion}</span>
+                        <div className="text-right">
+                            <Info className="w-5 h-5 text-[rgb(var(--color-primary-light))] group-hover:scale-110 transition-transform" />
+                            <p className="text-[9px] text-slate-500 mt-1">
+                                {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutTapForInfo}
+                            </p>
                         </div>
                     </div>
-                </div>
+                </button>
             </div>
 
             <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
+            <AboutAppModal open={showAboutModal} onOpenChange={setShowAboutModal} />
         </div >
     );
 }

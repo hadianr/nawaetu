@@ -1,6 +1,6 @@
 {
-  "name": "ramadhan-app",
-  "version": "1.0.0",
+  "name": "nawaetu",
+  "version": "1.1.0",
   "private": true,
   "browserslist": [
     "chrome >= 100",
