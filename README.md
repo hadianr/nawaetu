@@ -5,11 +5,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.1.0-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.2.0-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Current Version: v1.1.0** | [See Changelog](CHANGELOG.md) | [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
+**Current Version: v1.2.0** | [See Changelog](CHANGELOG.md) | [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
 
 **Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah di tengah hiruk-pikuk kehidupan modern. Kami percaya setiap amal dimulai dari **niat yang lurus**—dan gamification bisa jadi motivasi untuk konsisten beribadah.
 
@@ -34,13 +34,14 @@ Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kam
 
 ---
 
-## 🌟 Fitur Unggulan (v1.1.0)
+## 🌟 Fitur Unggulan (v1.2.0)
 
-### 1. 🤖 Asisten Muslim AI - Your 24/7 Spiritual Buddy
+### 1. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor
 *   **No Judgment Zone**: Curhat masalah ibadah atau tanya hukum Islam dengan privasi penuh
 *   **Dalil-Based**: Semua jawaban AI disertai **Dalil Al-Qur'an & Hadits Shahih**
 *   **Context Aware**: AI tau tanggal hari ini dan streak kamu buat kasih saran yang relevan
 *   **Multi-Model**: Powered by Google Gemini 2.0 Flash & Groq Llama 3.3 70B
+*   **Route**: Akses via `/mentor-ai` (sebelumnya `/tanya-ustadz`)
 
 ### 2. 📖 Al-Qur'an Digital - Mushaf di Genggaman
 *   **Verse-by-Verse Audio**: Tap ayat buat denger murattal (Mishary Rashid, dll)

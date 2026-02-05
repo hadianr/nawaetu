@@ -13,7 +13,7 @@ interface ChatMessage {
 // Initialize model router (with Gemini primary, Groq fallback)
 const modelRouter = new ModelRouter();
 
-export async function askUstadz(
+export async function askMentor(
     message: string,
     context: { name: string; prayerStreak: number; lastPrayer: string },
     chatHistory: ChatMessage[] = [], // Chat history untuk context

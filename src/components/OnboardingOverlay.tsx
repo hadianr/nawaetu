@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const ONBOARDING_KEY = "hasSeenOnboarding_v1"; // Versioning to force show on major updates
+const ONBOARDING_KEY = STORAGE_KEYS.ONBOARDING_COMPLETED; // Now type-safe!
 
 const SLIDES = [
     {
@@ -59,13 +61,14 @@ export default function OnboardingOverlay() {
     const [name, setName] = useState("");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [archetype, setArchetype] = useState<'pemula' | 'penggerak' | 'mujahid' | null>(null);
+    const storage = getStorageService();
 
     useEffect(() => {
-        const hasSeen = localStorage.getItem(ONBOARDING_KEY);
+        const hasSeen = storage.getOptional<boolean>(ONBOARDING_KEY);
         if (!hasSeen) {
             setIsVisible(true);
         }
-    }, []);
+    }, [storage]);
 
     const handleNext = () => {
         if (step === 'intro') {
@@ -84,14 +87,14 @@ export default function OnboardingOverlay() {
     };
 
     const handleFinish = () => {
-        // Save Profile
-        localStorage.setItem("user_name", name || "Sobat Nawaetu");
-        if (gender) localStorage.setItem("user_gender", gender);
-        if (archetype) localStorage.setItem("user_archetype", archetype);
+        // Save Profile (type-safe with individual operations)
+        storage.set(STORAGE_KEYS.USER_NAME, name || "Sobat Nawaetu");
+        storage.set(STORAGE_KEYS.USER_GENDER, gender);
+        storage.set(STORAGE_KEYS.USER_ARCHETYPE, archetype);
+        storage.set(ONBOARDING_KEY as any, true);
 
         // Mark Onboarding Done
         setIsVisible(false);
-        localStorage.setItem(ONBOARDING_KEY, "true");
 
         // Trigger generic update event
         window.dispatchEvent(new Event('storage'));
@@ -153,7 +156,7 @@ export default function OnboardingOverlay() {
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white">Siapa namamu?</h2>
-                            <p className="text-sm text-slate-400 mt-1">Agar Ustadz AI bisa menyapamu dengan akrab.</p>
+                            <p className="text-sm text-slate-400 mt-1">Agar Nawaetu AI bisa menyapamu dengan akrab.</p>
                         </div>
                         <input
                             autoFocus

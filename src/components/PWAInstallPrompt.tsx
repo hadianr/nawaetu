@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { X, Share, PlusSquare, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -14,20 +16,21 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
     const { isStandalone, isIOS, deferredPrompt, promptInstall } = usePWAInstall();
     const { t } = useLocale();
     const [isVisible, setIsVisible] = useState(false);
+    const storage = getStorageService();
 
     useEffect(() => {
         // Only show if parent says it's ok (after interaction) AND not installed AND (has prompt OR iOS)
         if (shouldShow && !isStandalone && (deferredPrompt || isIOS)) {
-            const lastDismissed = localStorage.getItem("pwa_prompt_dismissed");
-            if (!lastDismissed || Date.now() - parseInt(lastDismissed) > 24 * 60 * 60 * 1000) {
+            const lastDismissed = storage.getOptional<number>(STORAGE_KEYS.PWA_PROMPT_DISMISSED);
+            if (!lastDismissed || Date.now() - lastDismissed > 24 * 60 * 60 * 1000) {
                 setIsVisible(true);
             }
         }
-    }, [shouldShow, isStandalone, deferredPrompt, isIOS]);
+    }, [shouldShow, isStandalone, deferredPrompt, isIOS, storage]);
 
     const handleDismiss = () => {
         setIsVisible(false);
-        localStorage.setItem("pwa_prompt_dismissed", Date.now().toString());
+        storage.set(STORAGE_KEYS.PWA_PROMPT_DISMISSED, Date.now());
     };
 
     if (!isVisible) return null;

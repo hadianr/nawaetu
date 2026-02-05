@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,10 @@ import {
     LANGUAGE_OPTIONS,
 } from "@/data/settings-data";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
 
 interface AdhanPreferences {
     Fajr: boolean;
@@ -71,18 +75,26 @@ export default function SettingsPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [playingId, setPlayingId] = useState<string | null>(null);
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+    const audioRequestRef = useRef(0);
+    const isMountedRef = useRef(true);
 
     const refreshProfile = () => {
-        const savedName = localStorage.getItem("user_name");
-        const savedTitle = localStorage.getItem("user_title");
-        const savedAvatar = localStorage.getItem("user_avatar");
-        if (savedName) setUserName(savedName);
-        if (savedTitle) setUserTitle(savedTitle);
-        setUserAvatar(savedAvatar);
+        const [savedName, savedTitle, savedAvatar] = storage.getMany([
+            STORAGE_KEYS.USER_NAME,
+            STORAGE_KEYS.USER_TITLE,
+            STORAGE_KEYS.USER_AVATAR
+        ]).values();
+        
+        if (savedName) setUserName(savedName as string);
+        if (savedTitle) setUserTitle(savedTitle as string);
+        setUserAvatar(savedAvatar as string | null);
     };
 
     // Helper to safely stop audio without triggering error
-    const stopCurrentAudio = () => {
+    const stopCurrentAudio = (bumpRequest: boolean = true) => {
+        if (bumpRequest) {
+            audioRequestRef.current += 1;
+        }
         if (audio) {
             audio.onended = null;
             audio.onerror = null;
@@ -90,12 +102,21 @@ export default function SettingsPage() {
             audio.src = "";
             setAudio(null);
         }
+        if (!isMountedRef.current) return;
         setIsPlaying(false);
         setPlayingId(null);
         setIsLoading(false);
     };
 
-    // Cleanup audio on unmount
+    // Track mounted state for async audio callbacks
+    useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
+
+    // Cleanup audio on unmount or audio instance change
     useEffect(() => {
         return () => {
             if (audio) {
@@ -114,7 +135,7 @@ export default function SettingsPage() {
             return;
         }
 
-        stopCurrentAudio();
+        stopCurrentAudio(false);
         setIsLoading(true);
         setPlayingId(id);
 
@@ -127,24 +148,84 @@ export default function SettingsPage() {
         }
         audioUrl = selectedMuadzin.audio_url;
 
-        const newAudio = new Audio(audioUrl);
+        const requestId = audioRequestRef.current + 1;
+        audioRequestRef.current = requestId;
 
-        newAudio.oncanplaythrough = () => {
+        const newAudio = new Audio(audioUrl);
+        newAudio.preload = "auto";
+
+        let loadingTimeout: ReturnType<typeof setTimeout> | null = null;
+        const clearLoadingTimeout = () => {
+            if (loadingTimeout) {
+                clearTimeout(loadingTimeout);
+                loadingTimeout = null;
+            }
+        };
+
+        loadingTimeout = setTimeout(() => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
             setIsLoading(false);
-            newAudio.play().catch(err => {
-                console.warn("Playback blocked by browser (Interaction required):", err);
-                setIsPlaying(false);
-                setIsLoading(false);
-            });
+        }, 4000);
+
+        const markPlayable = () => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
+            clearLoadingTimeout();
+            setIsLoading(false);
+        };
+
+        const markPlaying = () => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
+            clearLoadingTimeout();
+            setIsLoading(false);
             setIsPlaying(true);
         };
 
+        newAudio.onloadeddata = markPlayable;
+        newAudio.oncanplay = markPlayable;
+        newAudio.onplaying = markPlaying;
+        newAudio.onplay = markPlaying;
+
+        newAudio.oncanplaythrough = () => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
+            clearLoadingTimeout();
+            setIsLoading(false);
+            const playPromise = newAudio.play();
+            if (playPromise) {
+                playPromise.catch(err => {
+                    const message = err instanceof Error ? err.message : "";
+                    if (err?.name === "AbortError" || message.includes("interrupted by a call to pause")) {
+                        return;
+                    }
+                    if (!isMountedRef.current) return;
+                    console.warn("Playback blocked by browser (Interaction required):", err);
+                    setIsPlaying(false);
+                    setIsLoading(false);
+                });
+            }
+        };
+
+        newAudio.onpause = () => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
+            setIsPlaying(false);
+        };
+
         newAudio.onended = () => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
+            clearLoadingTimeout();
             setIsPlaying(false);
             setPlayingId(null);
         };
 
         newAudio.onerror = () => {
+            if (audioRequestRef.current !== requestId) return;
+            if (!isMountedRef.current) return;
+            clearLoadingTimeout();
             setIsLoading(false);
             setIsPlaying(false);
             setPlayingId(null);
@@ -154,6 +235,8 @@ export default function SettingsPage() {
             }
         };
 
+        newAudio.load();
+
         setAudio(newAudio);
     };
 
@@ -162,17 +245,22 @@ export default function SettingsPage() {
         if (typeof window !== "undefined" && "Notification" in window) {
             setNotificationsEnabled(Notification.permission === "granted");
         }
-        const saved = localStorage.getItem("adhan_preferences");
+        
+        const [saved, savedMuadzin, savedMethod] = storage.getMany([
+            STORAGE_KEYS.ADHAN_PREFERENCES,
+            STORAGE_KEYS.SETTINGS_MUADZIN,
+            STORAGE_KEYS.SETTINGS_CALCULATION_METHOD
+        ]).values();
+        
         if (saved) {
-            try { setPreferences(JSON.parse(saved)); } catch (e) { }
+            try { setPreferences(typeof saved === 'string' ? JSON.parse(saved) : saved); } catch (e) { }
         }
+        
         refreshProfile();
 
         // Load new settings
-        const savedMuadzin = localStorage.getItem("settings_muadzin");
-        const savedMethod = localStorage.getItem("settings_calculation_method");
-        if (savedMuadzin) setMuadzin(savedMuadzin);
-        if (savedMethod) setCalculationMethod(savedMethod);
+        if (savedMuadzin) setMuadzin(savedMuadzin as string);
+        if (savedMethod) setCalculationMethod(savedMethod as string);
     }, []);
 
     // Real-time avatar sync listener
@@ -201,7 +289,7 @@ export default function SettingsPage() {
         }
         const newPrefs = { ...preferences, [prayer]: !preferences[prayer] };
         setPreferences(newPrefs);
-        localStorage.setItem("adhan_preferences", JSON.stringify(newPrefs));
+        storage.set(STORAGE_KEYS.ADHAN_PREFERENCES as any, JSON.stringify(newPrefs));
     };
 
     const handleThemeSelect = (themeId: ThemeId) => {
@@ -219,12 +307,12 @@ export default function SettingsPage() {
     const handleMuadzinChange = (value: string) => {
         stopCurrentAudio();
         setMuadzin(value);
-        localStorage.setItem("settings_muadzin", value);
+        storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, value);
     };
 
     const handleCalculationMethodChange = (value: string) => {
         setCalculationMethod(value);
-        localStorage.setItem("settings_calculation_method", value);
+        storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, value);
         // Trigger refresh of prayer times with new method
         window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: value } }));
     };
@@ -253,7 +341,7 @@ export default function SettingsPage() {
     const currentMethod = CALCULATION_METHODS.find(m => m.id.toString() === calculationMethod);
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-24">
+        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
 
             <div className="w-full max-w-md space-y-6">
                 {/* Header */}
@@ -318,7 +406,7 @@ export default function SettingsPage() {
                     {/* Location - Clickable to Refresh */}
                     <button
                         onClick={handleRefreshLocation}
-                        disabled={isRefreshing}
+                        disabled={isRefreshing || locationLoading}
                         className="p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between min-h-[80px]"
                     >
                         <div className="flex items-center justify-between w-full mb-1">
@@ -327,7 +415,7 @@ export default function SettingsPage() {
                                 <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationLabel}</span>
                             </div>
                             <svg
-                                className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${isRefreshing ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
+                                className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -337,7 +425,7 @@ export default function SettingsPage() {
                             </svg>
                         </div>
                         <p className="text-xs text-white font-medium line-clamp-2 leading-relaxed">
-                            {isRefreshing ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationUpdating : (data?.locationName?.split(',')[0] || SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationDetecting)}
+                            {(isRefreshing || locationLoading) ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationUpdating : (data?.locationName?.split(',')[0] || SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationDetecting)}
                         </p>
                     </button>
 

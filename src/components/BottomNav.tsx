@@ -24,7 +24,7 @@ const BottomNav = memo(function BottomNav() {
         { href: "/atur", label: t.navSettings, icon: Settings },
     ];
 
-    if (!mounted || pathname === "/tanya-ustadz") return null;
+    if (!mounted || pathname === "/mentor-ai") return null;
 
     return (
         <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-white/10 bg-black/80 backdrop-blur-xl pb-safe" style={{ contentVisibility: 'auto' }}>

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Bookmark, saveBookmark, removeBookmark } from "@/lib/bookmark-storage";
 import { Trash2, Bookmark as BookmarkIcon } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 interface BookmarkEditDialogProps {
     open: boolean;
@@ -32,7 +34,8 @@ export default function BookmarkEditDialog({
             setNote(bookmark.note || "");
 
             // Check if this is the last read verse
-            const lastRead = localStorage.getItem("quran_last_read");
+            const storage = getStorageService();
+            const lastRead = storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ) as string | null;
             if (lastRead) {
                 try {
                     const parsed = JSON.parse(lastRead);
@@ -57,13 +60,14 @@ export default function BookmarkEditDialog({
 
         // Handle Last Read
         if (isLastRead) {
+            const storage = getStorageService();
             const lastReadData = {
                 surahId: bookmark.surahId,
                 surahName: bookmark.surahName,
                 verseId: bookmark.verseId,
                 timestamp: Date.now()
             };
-            localStorage.setItem("quran_last_read", JSON.stringify(lastReadData));
+            storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, JSON.stringify(lastReadData));
         }
 
         onOpenChange(false);

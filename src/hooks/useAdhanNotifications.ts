@@ -3,6 +3,10 @@
 import { useEffect, useRef } from "react";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { MUADZIN_OPTIONS } from "@/data/settings-data";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
 
 export function useAdhanNotifications() {
     const { data } = usePrayerTimes();
@@ -53,14 +57,14 @@ export function useAdhanNotifications() {
 
     const playAdhanAudio = (prayerKey: string) => {
         // Check preferences first (if disabled, don't play)
-        const savedPrefs = localStorage.getItem("adhan_preferences");
+        const savedPrefs = storage.getOptional<any>(STORAGE_KEYS.ADHAN_PREFERENCES as any);
         if (savedPrefs) {
-            const prefs = JSON.parse(savedPrefs);
+            const prefs = typeof savedPrefs === 'string' ? JSON.parse(savedPrefs) : savedPrefs;
             if (!prefs[prayerKey]) return; // Notification disabled for this prayer
         }
 
         // Get selected Muadzin
-        const muadzinId = localStorage.getItem("settings_muadzin") || "makkah";
+        const muadzinId = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_MUADZIN as any) || "makkah";
         const selectedMuadzin = MUADZIN_OPTIONS.find(m => m.id === muadzinId);
 
         // If Muzammil (no audio) or not found, fallback to Makkah or silent
@@ -87,9 +91,9 @@ export function useAdhanNotifications() {
         if (Notification.permission !== "granted") return;
 
         // Check preferences
-        const savedPrefs = localStorage.getItem("adhan_preferences");
+        const savedPrefs = storage.getOptional<any>(STORAGE_KEYS.ADHAN_PREFERENCES as any);
         if (savedPrefs) {
-            const prefs = JSON.parse(savedPrefs);
+            const prefs = typeof savedPrefs === 'string' ? JSON.parse(savedPrefs) : savedPrefs;
             if (!prefs[prayerKey]) return; // Notification disabled for this prayer
         }
 

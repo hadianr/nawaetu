@@ -1,6 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export type ThemeId = "default" | "midnight" | "sunset" | "lavender" | "ocean" | "royal";
 
@@ -145,7 +147,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     // Load saved theme on mount
     useEffect(() => {
-        const saved = localStorage.getItem("app_theme") as ThemeId;
+        const storage = getStorageService();
+        const saved = storage.getOptional(STORAGE_KEYS.SETTINGS_THEME) as ThemeId;
         if (saved && THEMES[saved]) {
             setCurrentTheme(saved);
         }
@@ -169,8 +172,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }, [currentTheme]);
 
     const setTheme = (themeId: ThemeId) => {
+        const storage = getStorageService();
         setCurrentTheme(themeId);
-        localStorage.setItem("app_theme", themeId);
+        storage.set(STORAGE_KEYS.SETTINGS_THEME, themeId);
         window.dispatchEvent(new CustomEvent("theme_changed", { detail: { themeId } }));
     };
 

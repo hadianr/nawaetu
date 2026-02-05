@@ -1,7 +1,10 @@
-// Utility for localStorage chat history management
+// Utility for chat history management using StorageService
+import { getStorageService } from "@/core/infrastructure/storage";
 
 const CHAT_STORAGE_KEY = 'nawaetu_chat_history';
-const MAX_STORED_MESSAGES = 50; // Limit to prevent localStorage overflow
+const MAX_STORED_MESSAGES = 50; // Limit to prevent storage overflow
+
+const storage = getStorageService();
 
 export interface StoredMessage {
     id: string;
@@ -11,27 +14,27 @@ export interface StoredMessage {
 }
 
 /**
- * Save chat messages to localStorage
+ * Save chat messages to storage
  */
 export function saveChatHistory(messages: StoredMessage[]): boolean {
     try {
         // Only store last N messages to save space
         const messagesToStore = messages.slice(-MAX_STORED_MESSAGES);
-        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messagesToStore));
+        storage.set(CHAT_STORAGE_KEY as any, JSON.stringify(messagesToStore));
         return true;
     } catch (error) {
         console.error('Failed to save chat history:', error);
-        // localStorage might be full or disabled
+        // Storage might be full or disabled
         return false;
     }
 }
 
 /**
- * Load chat messages from localStorage
+ * Load chat messages from storage
  */
 export function loadChatHistory(): StoredMessage[] {
     try {
-        const stored = localStorage.getItem(CHAT_STORAGE_KEY);
+        const stored = storage.getOptional<string>(CHAT_STORAGE_KEY as any);
         if (!stored) return [];
 
         const messages = JSON.parse(stored) as StoredMessage[];
@@ -55,11 +58,11 @@ export function loadChatHistory(): StoredMessage[] {
 }
 
 /**
- * Clear chat history from localStorage
+ * Clear chat history from storage
  */
 export function clearChatHistory(): boolean {
     try {
-        localStorage.removeItem(CHAT_STORAGE_KEY);
+        storage.remove(CHAT_STORAGE_KEY as any);
         return true;
     } catch (error) {
         console.error('Failed to clear chat history:', error);
@@ -68,13 +71,13 @@ export function clearChatHistory(): boolean {
 }
 
 /**
- * Check if localStorage is available
+ * Check if storage is available
  */
 export function isStorageAvailable(): boolean {
     try {
         const test = '__storage_test__';
-        localStorage.setItem(test, test);
-        localStorage.removeItem(test);
+        storage.set(test as any, test);
+        storage.remove(test as any);
         return true;
     } catch {
         return false;

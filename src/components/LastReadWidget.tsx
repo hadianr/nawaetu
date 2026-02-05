@@ -5,6 +5,9 @@ import Link from "next/link";
 import { BookOpen, ChevronRight, Bookmark } from "lucide-react";
 import WidgetSkeleton from "@/components/skeleton/WidgetSkeleton";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 interface LastReadData {
     surahId: number;
@@ -18,6 +21,15 @@ interface VerseContent {
     translation: string;
 }
 
+const VERSE_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const VERSE_CACHE_VERSION = 1;
+
+type VerseCacheEntry = {
+    data: VerseContent;
+    ts: number;
+    v: number;
+};
+
 export default function LastReadWidget() {
     const { t } = useLocale();
     const [lastRead, setLastRead] = useState<LastReadData | null>(null);
@@ -27,17 +39,34 @@ export default function LastReadWidget() {
 
     useEffect(() => {
         setMounted(true);
-        const saved = localStorage.getItem("quran_last_read");
+        const storage = getStorageService();
+        const saved = storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ);
         if (saved) {
             try {
-                const data = JSON.parse(saved);
+                const data = typeof saved === 'string' ? JSON.parse(saved) : saved;
                 setLastRead(data);
 
                 const cacheKey = `verse_${data.surahId}_${data.verseId}`;
-                const cached = localStorage.getItem(cacheKey);
+                const cached = storage.getOptional(cacheKey);
 
                 if (cached) {
-                    setVerseContent(JSON.parse(cached));
+                    try {
+                        const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
+                        if (parsed && typeof parsed === 'object' && 'data' in parsed && 'ts' in parsed) {
+                            const entry = parsed as VerseCacheEntry;
+                            if (entry.v === VERSE_CACHE_VERSION && Date.now() - entry.ts <= VERSE_CACHE_TTL_MS) {
+                                setVerseContent(entry.data);
+                            } else {
+                                storage.remove(cacheKey as any);
+                                fetchVerseContent(data.surahId, data.verseId);
+                            }
+                        } else {
+                            setVerseContent(parsed as VerseContent);
+                        }
+                    } catch (e) {
+                        storage.remove(cacheKey as any);
+                        fetchVerseContent(data.surahId, data.verseId);
+                    }
                 } else {
                     fetchVerseContent(data.surahId, data.verseId);
                 }
@@ -50,8 +79,10 @@ export default function LastReadWidget() {
     const fetchVerseContent = async (surahId: number, verseId: number) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `https://api.quran.com/api/v4/verses/by_key/${surahId}:${verseId}?language=id&fields=text_uthmani&translations=33`
+            const res = await fetchWithTimeout(
+                `https://api.quran.com/api/v4/verses/by_key/${surahId}:${verseId}?language=id&fields=text_uthmani&translations=33`,
+                {},
+                { timeoutMs: 8000 }
             );
 
             if (!res.ok) throw new Error("Failed to fetch verse");
@@ -65,8 +96,10 @@ export default function LastReadWidget() {
             };
 
             setVerseContent(content);
+            const storage = getStorageService();
             const cacheKey = `verse_${surahId}_${verseId}`;
-            localStorage.setItem(cacheKey, JSON.stringify(content));
+            const entry: VerseCacheEntry = { data: content, ts: Date.now(), v: VERSE_CACHE_VERSION };
+            storage.set(cacheKey as any, JSON.stringify(entry));
         } catch (error) {
             console.error("Error fetching verse:", error);
         } finally {

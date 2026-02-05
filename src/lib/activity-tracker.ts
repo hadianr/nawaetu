@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { getDisplayStreak } from "./streak-utils";
 import { getActivityRepository } from "@/core/repositories/activity.repository";
 import { DateUtils } from "@/lib/utils/date";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 // ====================================================================
 // DEPRECATED: This file is kept for backward compatibility
@@ -11,6 +13,7 @@ import { DateUtils } from "@/lib/utils/date";
 // ====================================================================
 
 const repository = getActivityRepository();
+const storage = getStorageService();
 
 // Re-export ActivityData type from repository
 export type { ActivityData } from "@/core/repositories/activity.repository";
@@ -70,20 +73,12 @@ export function isPrayerLogged(prayerName: string): boolean {
 
 /**
  * Get progress for a specific mission type.
+ * @deprecated Use getMissionRepository().getProgress() or useMissions hook instead
  */
 export function getMissionProgress(missionId: string): { current: number; required: number; isComplete: boolean } {
-    const data = getActivityData();
-
-    switch (missionId) {
-        case 'quran_10_ayat':
-            return { current: data.quranAyat, required: 10, isComplete: data.quranAyat >= 10 };
-        case 'tasbih_99':
-            return { current: data.tasbihCount, required: 99, isComplete: data.tasbihCount >= 99 };
-        case 'tasbih_33':
-            return { current: data.tasbihCount, required: 33, isComplete: data.tasbihCount >= 33 };
-        default:
-            return { current: 0, required: 0, isComplete: false };
-    }
+    console.warn("[DEPRECATED] getMissionProgress: Use getMissionRepository() or useMissions hook instead");
+    const { getMissionRepository } = require("@/core/repositories/mission.repository");
+    return getMissionRepository().getProgress(missionId);
 }
 
 /**
@@ -167,12 +162,15 @@ export function useUserProfile() {
         const load = () => {
             // Safe check for window
             if (typeof window !== 'undefined') {
-                const name = localStorage.getItem("user_name");
-                const title = localStorage.getItem("user_title");
+                const [name, title] = storage.getMany([
+                    STORAGE_KEYS.USER_NAME,
+                    STORAGE_KEYS.USER_TITLE
+                ]).values();
+                
                 if (name || title) {
                     setProfile({
-                        name: name || "Hamba Allah",
-                        title: title || "Hamba Allah"
+                        name: (name as string) || "Hamba Allah",
+                        title: (title as string) || "Hamba Allah"
                     });
                 }
             }

@@ -24,6 +24,33 @@
    - Rejects empty messages
    - Prevents excessive token usage
 
+5. **Fetch Timeout Protection** (v1.2.0)
+   - Global `fetchWithTimeout` utility (15s default)
+   - Applied to all external API calls:
+     - Prayer times API (Kemenag)
+     - LLM providers (Gemini, Groq, OpenRouter)
+     - Tafsir API (Quran.com)
+     - Location reverse-geocoding (OpenStreetMap)
+   - Prevents hanging requests and resource exhaustion
+
+### Cache & Storage Strategy (v1.2.0)
+
+1. **Client-Side Cache TTL**
+   - **Prayer Times**: 30 days (location-based cache)
+   - **Tafsir Data**: 7 days (verse-specific tafsir)
+   - **Last Read Position**: 7 days
+   - Automatic versioning to invalidate cache on schema changes
+
+2. **Global Cache Cleanup**
+   - AppOverlays component cleans expired cache entries
+   - TTL + version check ensures stale data removal
+   - Reduces localStorage bloat
+
+3. **Direct localStorage Exception**
+   - Tasbih counter uses direct localStorage (not StorageService abstraction)
+   - Reason: Requires immediate persistence on every increment
+   - Mitigated with NaN validation and hydration guards
+
 ---
 
 ## 💰 Billing Protection
@@ -47,6 +74,12 @@
 4. **Error Handling**
    - Quota errors handled gracefully
    - User-friendly messages (no retries on user errors)
+   - Timeout protection prevents zombie requests
+
+5. **Request Tracing** (v1.2.0)
+   - Request IDs for audio preview (prevent race conditions)
+   - Prevents duplicate API calls
+   - Better error tracking in logs
 
 ### Estimated Costs
 
@@ -96,6 +129,32 @@ Monitor in Google Cloud Console:
 - Check API usage daily for first week
 - Look for unusual spikes
 - Adjust rate limits if needed
+
+### 4. Timeout Monitoring (v1.2.0)
+
+Monitor request timeouts:
+```bash
+# Check server logs for timeout errors
+tail -f logs/server.log | grep "timeout\|AbortError"
+```
+
+Set alerts for:
+- Excessive timeouts (>5% of requests)
+- Specific API endpoint failures
+- Network connectivity issues
+
+---
+
+## 📊 v1.2.0 Security Improvements
+
+| Feature | Impact | Status |
+|---------|--------|--------|
+| Fetch Timeout Protection | Prevents resource exhaustion | ✅ Implemented |
+| Cache TTL + Versioning | Reduces data staleness & storage usage | ✅ Implemented |
+| Request ID Tracing | Prevents race conditions | ✅ Implemented |
+| NaN Validation | Prevents data corruption | ✅ Validated |
+| Hydration Guards | Prevents flash of bad state | ✅ Implemented |
+| Reduced-motion Support | Better UX for accessibility | ✅ Implemented |
 
 ---
 

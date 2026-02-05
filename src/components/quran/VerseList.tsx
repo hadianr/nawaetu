@@ -30,6 +30,8 @@ import { useBookmarks } from "@/hooks/useBookmarks";
 import BookmarkEditDialog from "./BookmarkEditDialog";
 import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
 import { cn } from "@/lib/utils";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 
 export interface Verse {
@@ -174,7 +176,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         // Update cookie for server-side
         document.cookie = `settings_reciter=${value}; path=/; max-age=31536000`;
         // Update localStorage for client-side persistence (Settings page sync)
-        localStorage.setItem("settings_reciter", value);
+        const storage = getStorageService();
+        storage.set(STORAGE_KEYS.SETTINGS_RECITER as any, value);
         // Refresh to get new audio URLs from VerseBrowser
         startTransition(() => router.refresh());
     }, [router]);
@@ -184,7 +187,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         // Update cookie for server-side
         document.cookie = `settings_locale=${value}; path=/; max-age=31536000`;
         // Update localStorage for client-side persistence
-        localStorage.setItem("settings_locale", value);
+        const storage = getStorageService();
+        storage.set(STORAGE_KEYS.SETTINGS_LOCALE as any, value);
         // Refresh to get new translation
         startTransition(() => router.refresh());
     }, [router]);
@@ -197,7 +201,9 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     // Tafsir
     const [expandedTafsir, setExpandedTafsir] = useState<Set<string>>(new Set());
     const [loadingTafsir, setLoadingTafsir] = useState<Set<string>>(new Set());
-    const [tafsirCache, setTafsirCache] = useState<Map<string, TafsirContent>>(new Map());
+    const TAFSIR_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+    type TafsirCacheEntry = { data: TafsirContent; ts: number };
+    const [tafsirCache, setTafsirCache] = useState<Map<string, TafsirCacheEntry>>(new Map());
     const [activeTafsirVerse, setActiveTafsirVerse] = useState<string | null>(null);
     const [tafsirModalOpen, setTafsirModalOpen] = useState(false);
     const [tafsirModalContent, setTafsirModalContent] = useState<{verseKey: string, tafsir: TafsirContent} | null>(null);
@@ -474,13 +480,22 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
         setActiveTafsirVerse(verseKey);
 
+        const cachedEntry = tafsirCache.get(verseKey);
+        if (cachedEntry && Date.now() - cachedEntry.ts > TAFSIR_CACHE_TTL_MS) {
+            setTafsirCache(prev => {
+                const next = new Map(prev);
+                next.delete(verseKey);
+                return next;
+            });
+        }
+
         if (!tafsirCache.has(verseKey)) {
             setLoadingTafsir(prev => new Set(prev).add(verseKey));
             try {
                 const [surahId, verseId] = verseKey.split(':').map(Number);
                 const data = await getVerseTafsir(surahId, verseId, locale);
                 if (data) {
-                    setTafsirCache(prev => new Map(prev).set(verseKey, data));
+                    setTafsirCache(prev => new Map(prev).set(verseKey, { data, ts: Date.now() }));
                 }
             } catch (error) {
                 console.error("Failed to fetch tafsir", error);
@@ -854,17 +869,17 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         <div className={loadingTafsir.has(verse.verse_key) ? 'hidden' : 'space-y-3'}>
                                             <div
                                                 className="prose prose-invert prose-sm text-slate-300"
-                                                dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirCache.get(verse.verse_key)?.short || (locale === "en" ? "Tafsir not available." : "Tafsir tidak tersedia.")) }}
+                                                dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirCache.get(verse.verse_key)?.data.short || (locale === "en" ? "Tafsir not available." : "Tafsir tidak tersedia.")) }}
                                             />
                                             <button
                                                 onClick={() => {
-                                                    const tafsir = tafsirCache.get(verse.verse_key);
+                                                    const tafsir = tafsirCache.get(verse.verse_key)?.data;
                                                     if (tafsir) {
                                                         setTafsirModalContent({verseKey: verse.verse_key, tafsir});
                                                         setTafsirModalOpen(true);
                                                     }
                                                 }}
-                                                className={`text-xs font-semibold mt-2 transition-colors ${tafsirCache.get(verse.verse_key)?.long && tafsirCache.get(verse.verse_key)?.long !== tafsirCache.get(verse.verse_key)?.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
+                                                className={`text-xs font-semibold mt-2 transition-colors ${tafsirCache.get(verse.verse_key)?.data.long && tafsirCache.get(verse.verse_key)?.data.long !== tafsirCache.get(verse.verse_key)?.data.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
                                             >
                                                 {locale === "en" ? "Read Full Explanation →" : "Baca Penjelasan Lengkap →"}
                                             </button>

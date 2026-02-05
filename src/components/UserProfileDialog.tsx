@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { getPlayerStats, PlayerStats } from "@/lib/leveling";
 import { getStreak, StreakData } from "@/lib/streak-utils";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
@@ -141,25 +143,30 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [editName, setEditName] = useState("");
     const [selectedTier, setSelectedTier] = useState<typeof AVAILABLE_TITLES[0] | null>(null);
     const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+    const storage = getStorageService();
     
     const { t } = useLocale();
 
     const loadData = () => {
-        const savedName = localStorage.getItem("user_name");
-        const savedTitle = localStorage.getItem("user_title");
-        const savedGender = localStorage.getItem("user_gender") as 'male' | 'female' | null;
-        const savedArchetype = localStorage.getItem("user_archetype") as 'pemula' | 'penggerak' | 'mujahid' | null;
-        const savedAvatar = localStorage.getItem("user_avatar");
+        // Batch read for performance
+        const [savedName, savedTitle, savedGender, savedArchetype, savedAvatar] = storage.getMany([
+            STORAGE_KEYS.USER_NAME,
+            STORAGE_KEYS.USER_TITLE,
+            STORAGE_KEYS.USER_GENDER,
+            STORAGE_KEYS.USER_ARCHETYPE,
+            STORAGE_KEYS.USER_AVATAR
+        ]).values();
+        
         const currentStats = getPlayerStats();
         const currentStreak = getStreak();
 
         setProfile({
-            name: savedName || "Sobat Nawaetu",
-            title: savedTitle || "Hamba Allah",
+            name: (savedName as string) || "Sobat Nawaetu",
+            title: (savedTitle as string) || "Hamba Allah",
             level: currentStats.level,
-            gender: savedGender,
-            archetype: savedArchetype,
-            avatar: savedAvatar || undefined
+            gender: savedGender as 'male' | 'female' | null,
+            archetype: savedArchetype as 'pemula' | 'penggerak' | 'mujahid' | null,
+            avatar: (savedAvatar as string) || undefined
         });
         setStats(currentStats);
         setStreak(currentStreak);
@@ -182,7 +189,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
     const handleSaveName = () => {
         if (editName.trim()) {
-            localStorage.setItem("user_name", editName);
+            storage.set(STORAGE_KEYS.USER_NAME, editName);
             setProfile(prev => ({ ...prev, name: editName }));
             setIsEditing(false);
             if (onProfileUpdate) onProfileUpdate();
@@ -192,18 +199,18 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     // Just select the title if unlocked
     const handleTitleSelect = (titleLabel: string) => {
         setProfile(prev => ({ ...prev, title: titleLabel }));
-        localStorage.setItem("user_title", titleLabel);
+        storage.set(STORAGE_KEYS.USER_TITLE, titleLabel);
     };
 
     const handleGenderSelect = (gender: 'male' | 'female') => {
         setProfile(prev => ({ ...prev, gender }));
-        localStorage.setItem("user_gender", gender);
+        storage.set(STORAGE_KEYS.USER_GENDER, gender);
         if (onProfileUpdate) onProfileUpdate();
     };
 
     const handleArchetypeSelect = (archetype: 'pemula' | 'penggerak' | 'mujahid') => {
         setProfile(prev => ({ ...prev, archetype }));
-        localStorage.setItem("user_archetype", archetype);
+        storage.set(STORAGE_KEYS.USER_ARCHETYPE, archetype);
         if (onProfileUpdate) onProfileUpdate();
     };
 
@@ -213,7 +220,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             const reader = new FileReader();
             reader.onloadend = () => {
                 const base64 = reader.result as string;
-                localStorage.setItem("user_avatar", base64);
+                storage.set(STORAGE_KEYS.USER_AVATAR, base64);
                 setProfile(prev => ({ ...prev, avatar: base64 }));
                 window.dispatchEvent(new Event('avatar_updated'));
             };
@@ -222,7 +229,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     };
 
     const handleAvatarSelect = (emoji: string) => {
-        localStorage.setItem("user_avatar", emoji);
+        storage.set(STORAGE_KEYS.USER_AVATAR, emoji);
         setProfile(prev => ({ ...prev, avatar: emoji }));
         window.dispatchEvent(new Event('avatar_updated'));
         setIsEditingAvatar(false); // Close after selection

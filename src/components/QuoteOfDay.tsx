@@ -36,7 +36,7 @@ export default function QuoteOfDay() {
     const quote = QUOTES[quoteIndex];
 
     return (
-        <div className="w-full max-w-md mt-6 mb-2 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
+        <div className="w-full max-w-md mt-2 mb-2 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
             <div className="relative rounded-3xl bg-black/20 border border-white/5 p-6 backdrop-blur-md">
                 <Quote className="absolute top-4 left-4 h-6 w-6 text-[rgb(var(--color-primary))]/20 rotate-180" />
 

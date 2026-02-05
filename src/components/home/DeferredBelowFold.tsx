@@ -82,7 +82,7 @@ export default function DeferredBelowFold() {
       <div className="fixed bottom-[90px] left-0 right-0 z-40 pointer-events-none">
         <div className="max-w-md mx-auto w-full relative px-4">
           <Link
-            href="/tanya-ustadz"
+            href="/mentor-ai"
             className="absolute right-4 bottom-0 pointer-events-auto group animate-in slide-in-from-right-4 fade-in duration-700 delay-500"
             prefetch={false}
           >

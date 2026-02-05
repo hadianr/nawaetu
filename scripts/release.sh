@@ -2,7 +2,14 @@
 
 # Nawaetu Release Script
 # Usage: ./scripts/release.sh v1.2.0
-# or: npm run release -- v1.2.0
+# or: npm run release v1.2.0
+#
+# This script will:
+# 1. Validate version format
+# 2. Commit version bump changes (if any)
+# 3. Create an annotated git tag
+# 4. Push commits and tags to GitHub
+# 5. Trigger GitHub Actions for build & deploy
 
 set -e
 
@@ -11,6 +18,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Check if version argument is provided
@@ -22,6 +30,7 @@ if [ -z "$1" ]; then
 fi
 
 VERSION=$1
+VERSION_NUMBER="${VERSION#v}"  # Remove 'v' prefix
 
 # Validate version format (vX.Y.Z)
 if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -44,40 +53,84 @@ if [ "$CURRENT_BRANCH" != "main" ]; then
     exit 1
 fi
 
-# Check if working directory is clean
-if ! git diff-index --quiet HEAD --; then
-    echo -e "${RED}❌ Error: Working directory has uncommitted changes${NC}"
-    echo -e "${YELLOW}Commit or stash changes before releasing${NC}"
-    git status
+# Check git remote
+if ! git remote get-url origin > /dev/null 2>&1; then
+    echo -e "${RED}❌ Error: No git remote 'origin' configured${NC}"
     exit 1
+fi
+
+GITHUB_REPO=$(git remote get-url origin | sed 's/.*://;s/\.git$//')
+
+# Show release info
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}🚀 Nawaetu Release: $VERSION${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "Repository: ${CYAN}$GITHUB_REPO${NC}"
+echo -e "Branch: ${GREEN}$CURRENT_BRANCH${NC}"
+echo -e "Release: ${YELLOW}$VERSION${NC}"
+echo ""
+
+# Check for uncommitted changes
+if ! git diff-index --quiet HEAD --; then
+    echo -e "${YELLOW}⚠️  Found uncommitted changes in working directory${NC}"
+    echo ""
+    git status --short
+    echo ""
+    echo -e "${BLUE}This is likely version bump files (package.json, CHANGELOG.md, etc.)${NC}"
+    echo -e "${BLUE}Will commit them with message: 'chore: release $VERSION'${NC}"
+    echo ""
+    
+    read -p "Continue and commit these changes? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${RED}❌ Release cancelled${NC}"
+        exit 1
+    fi
+    
+    echo -e "${BLUE}📝 Committing version bump changes...${NC}"
+    git add .
+    git commit -m "chore: release $VERSION" -m "- Update package.json version
+- Update CHANGELOG.md
+- Update README.md
+- Update SECURITY.md"
+    echo -e "${GREEN}✅ Changes committed${NC}"
+    echo ""
+else
+    echo -e "${GREEN}✅ Working directory is clean${NC}"
 fi
 
 # Check if there are unpushed commits
-if [ -z "$(git log origin/main..HEAD)" ]; then
-    echo -e "${BLUE}✅ All commits are pushed${NC}"
+UNPUSHED=$(git log origin/main..HEAD --oneline 2>/dev/null || echo "")
+if [ -n "$UNPUSHED" ]; then
+    echo -e "${YELLOW}⚠️  Found unpushed commits:${NC}"
+    echo "$UNPUSHED"
+    echo ""
+    
+    read -p "Push these commits first? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${RED}❌ Release cancelled${NC}"
+        exit 1
+    fi
+    
+    echo -e "${BLUE}📤 Pushing commits to origin...${NC}"
+    git push origin main
+    echo -e "${GREEN}✅ Commits pushed${NC}"
+    echo ""
 else
-    echo -e "${RED}❌ Error: You have unpushed commits${NC}"
-    echo -e "${YELLOW}Push changes first with: git push${NC}"
-    git log origin/main..HEAD --oneline
-    exit 1
+    echo -e "${GREEN}✅ All commits are synced with origin${NC}"
 fi
 
-# Confirm version bump
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}🚀 Nawaetu Release: $VERSION${NC}"
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo ""
-echo -e "Current branch: ${GREEN}$CURRENT_BRANCH${NC}"
-echo -e "Release version: ${YELLOW}$VERSION${NC}"
-echo ""
-
 # Show what will happen
-echo -e "${BLUE}This will:${NC}"
-echo "  1. Create annotated git tag: $VERSION"
-echo "  2. Push tag to origin"
-echo "  3. Trigger GitHub Actions workflows"
-echo "  4. Auto-create GitHub Release with changelog"
-echo "  5. Auto-deploy to Vercel"
+echo -e "${BLUE}This release will:${NC}"
+echo "  1. ✅ Create annotated git tag: $VERSION"
+echo "  2. ✅ Push tag to GitHub origin"
+echo "  3. ✅ Trigger GitHub Actions workflows:"
+echo "     - Run tests"
+echo "     - Build optimized bundle"
+echo "     - Create GitHub Release (auto from CHANGELOG)"
+echo "     - Deploy to Vercel (production)"
 echo ""
 
 read -p "Continue with release? (y/n) " -n 1 -r
@@ -88,35 +141,44 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BLUE}📝 Creating release tag...${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
 
 # Create annotated tag with message
-git tag -a "$VERSION" -m "Release $VERSION"
+CHANGELOG_SNIPPET=$(sed -n "/## \[$VERSION_NUMBER\]/,/## \[/p" CHANGELOG.md 2>/dev/null | head -n -1 || echo "See CHANGELOG.md for details")
+
+git tag -a "$VERSION" -m "Release $VERSION" -m "$CHANGELOG_SNIPPET"
 
 echo -e "${GREEN}✅ Tag created: $VERSION${NC}"
 echo ""
 
 # Push tag to origin
-echo -e "${BLUE}📤 Pushing tag to origin...${NC}"
+echo -e "${BLUE}📤 Pushing tag to GitHub...${NC}"
 git push origin "$VERSION"
 
 echo -e "${GREEN}✅ Tag pushed to origin${NC}"
 echo ""
 
-# Show success info
+# Final success
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}✨ Release $VERSION successfully created!${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "${BLUE}🔗 Resources:${NC}"
-echo "  📊 Build Status: https://github.com/$GITHUB_REPOSITORY/actions"
-echo "  📦 Release Page: https://github.com/$GITHUB_REPOSITORY/releases/tag/$VERSION"
+echo -e "${CYAN}🔗 Resources:${NC}"
+echo "  📊 Build Status: https://github.com/$GITHUB_REPO/actions"
+echo "  📦 GitHub Release: https://github.com/$GITHUB_REPO/releases/tag/$VERSION"
 echo "  🌐 Live Demo: https://nawaetu.com"
 echo ""
-echo -e "${BLUE}⏳ What's happening:${NC}"
-echo "  1. GitHub Actions build workflow starting..."
-echo "  2. Tests running..."
-echo "  3. Release notes auto-generated from CHANGELOG.md"
-echo "  4. Deploying to Vercel in ~2-5 minutes"
+echo -e "${CYAN}⏳ Deployment Pipeline:${NC}"
+echo "  1. GitHub Actions: Running tests & build..."
+echo "  2. Creating GitHub Release with changelog..."
+echo "  3. Deploying to Vercel (production)..."
+echo "  4. ETA: ~3-5 minutes for live deployment"
 echo ""
-echo -e "${YELLOW}💡 Tip: Check GitHub Actions for build status${NC}"
+echo -e "${YELLOW}💡 Tips:${NC}"
+echo "  • Monitor build: https://github.com/$GITHUB_REPO/actions"
+echo "  • Check deploy status: https://vercel.com"
+echo "  • View live site: https://nawaetu.com"
+echo ""

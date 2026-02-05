@@ -1,6 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
 
 interface InfaqTransaction {
     id: string;
@@ -24,11 +28,13 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         // Load persist state
-        const savedTotal = localStorage.getItem("user_total_infaq");
-        const savedHistory = localStorage.getItem("user_infaq_history");
+        const [savedTotal, savedHistory] = storage.getMany([
+            STORAGE_KEYS.USER_TOTAL_INFAQ,
+            STORAGE_KEYS.USER_INFAQ_HISTORY
+        ]).values();
 
-        if (savedTotal) setTotalInfaq(parseInt(savedTotal, 10));
-        if (savedHistory) setInfaqHistory(JSON.parse(savedHistory));
+        if (savedTotal) setTotalInfaq(parseInt(savedTotal as string, 10));
+        if (savedHistory) setInfaqHistory(typeof savedHistory === 'string' ? JSON.parse(savedHistory) : savedHistory);
     }, []);
 
     const submitInfaq = (amount: number) => {
@@ -44,8 +50,10 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
         setInfaqHistory(newHistory);
 
         // Persist
-        localStorage.setItem("user_total_infaq", newTotal.toString());
-        localStorage.setItem("user_infaq_history", JSON.stringify(newHistory));
+        storage.setMany(new Map([
+            [STORAGE_KEYS.USER_TOTAL_INFAQ as any, newTotal.toString()],
+            [STORAGE_KEYS.USER_INFAQ_HISTORY as any, JSON.stringify(newHistory)]
+        ]));
 
         // Dispatch event for UI updates
         window.dispatchEvent(new CustomEvent("infaq_updated", {
@@ -56,8 +64,8 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
     const resetInfaq = () => {
         setTotalInfaq(0);
         setInfaqHistory([]);
-        localStorage.removeItem("user_total_infaq");
-        localStorage.removeItem("user_infaq_history");
+        storage.remove(STORAGE_KEYS.USER_TOTAL_INFAQ as any);
+        storage.remove(STORAGE_KEYS.USER_INFAQ_HISTORY as any);
         window.dispatchEvent(new CustomEvent("infaq_updated", {
             detail: { isMuhsinin: false, total: 0 }
         }));

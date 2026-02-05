@@ -2,9 +2,10 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 const DEFAULT_LOCALE = "id";
-const STORAGE_KEY = "settings_locale";
 
 interface LocaleContextType {
   locale: string;
@@ -25,7 +26,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Initialize from localStorage on client mount
   useEffect(() => {
     try {
-      const savedLocale = localStorage.getItem(STORAGE_KEY) || DEFAULT_LOCALE;
+      const storage = getStorageService();
+      const savedLocale = (storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string) || DEFAULT_LOCALE;
       setLocaleState(savedLocale);
     } catch (error) {
       console.warn("Failed to load locale from localStorage", error);
@@ -38,7 +40,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Listen for localStorage changes from other tabs/windows
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
+      if (e.key === STORAGE_KEYS.SETTINGS_LOCALE && e.newValue) {
         setLocaleState(e.newValue);
       }
     };
@@ -50,11 +52,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // Safe setLocale that updates both state and storage
   const setLocale = (newLocale: string) => {
     try {
+      const storage = getStorageService();
       setLocaleState(newLocale);
-      localStorage.setItem(STORAGE_KEY, newLocale);
+      storage.set(STORAGE_KEYS.SETTINGS_LOCALE, newLocale);
       
       // Also update cookie for server-side rendering
-      document.cookie = `${STORAGE_KEY}=${newLocale}; path=/; max-age=31536000`;
+      document.cookie = `settings_locale=${newLocale}; path=/; max-age=31536000`;
       
       // Dispatch custom event for any component that needs to react
       window.dispatchEvent(

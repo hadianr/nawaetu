@@ -7,24 +7,19 @@ import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { useMissions } from "@/hooks/useMissions";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
 import { checkMissionValidation, filterMissionsByArchetype } from "@/lib/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
-
-interface CompletedMissions {
-    [missionId: string]: {
-        completedAt: string;
-        date: string; // YYYY-MM-DD format for daily reset
-    };
-}
-
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 export default function MissionsWidget() {
     const { t, locale } = useLocale();
+    const { completedMissions, completeMission, isCompleted } = useMissions();
     const [gender, setGender] = useState<Gender>(null);
     const [missions, setMissions] = useState<Mission[]>([]);
-    const [completed, setCompleted] = useState<CompletedMissions>({});
     const [today, setToday] = useState<string>("");
     const [mounted, setMounted] = useState(false);
 
@@ -45,25 +40,26 @@ export default function MissionsWidget() {
 
     const { data: prayerData } = usePrayerTimes();
 
+    // Convert completedMissions array to object for MissionListModal compatibility
+    const completedMissionsMap = Array.isArray(completedMissions) 
+        ? completedMissions.reduce((acc, m) => {
+            const completedDate = new Date(m.completedAt).toISOString().split('T')[0];
+            acc[m.id] = { date: completedDate };
+            return acc;
+        }, {} as Record<string, { date: string }>)
+        : {};
+
     useEffect(() => {
         setMounted(true);
-        // 1. Initial Load: Date & Completed Missions
+        // 1. Initial Load: Date
         setToday(new Date().toISOString().split('T')[0]);
-
-        const savedCompleted = localStorage.getItem("completed_missions");
-        if (savedCompleted) {
-            try {
-                setCompleted(JSON.parse(savedCompleted));
-            } catch (e) {
-                console.error("Failed to parse completed missions");
-            }
-        }
     }, []);
 
     useEffect(() => {
         // 2. Missions Data Load (Depends on Gender & Prayer Data/Seasonal)
-        const savedGender = localStorage.getItem("user_gender") as Gender;
-        const savedArchetype = localStorage.getItem("user_archetype");
+        const storage = getStorageService();
+        const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
+        const savedArchetype = storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) as string | null;
         setGender(savedGender);
 
         const daily = getDailyMissions(savedGender);
@@ -80,12 +76,14 @@ export default function MissionsWidget() {
     }, [prayerData?.hijriDate, locale]); // Refresh when locale or hijri date changes
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
-        const record = completed[missionId];
+        const record = completedMissions.find(m => m.id === missionId);
         if (!record) return false;
 
-        // If it's a daily mission (or undefined), it must match today's date
+        // If it's a daily mission (or undefined), check if completed today
         if (type === 'daily' || !type) {
-            return record.date === today;
+            // Parse the ISO timestamp to get date
+            const completedDate = new Date(record.completedAt).toISOString().split('T')[0];
+            return completedDate === today;
         }
 
         // If it's a tracker (one-time) or weekly (handled elsewhere but let's say tracker), it's done forever
@@ -116,20 +114,16 @@ export default function MissionsWidget() {
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
         // Update streak (only on first mission of the day)
-        const completedCountToday = Object.values(completed).filter(c => c.date === today).length;
+        const completedCountToday = completedMissions.filter(m => {
+            const completedDate = new Date(m.completedAt).toISOString().split('T')[0];
+            return completedDate === today;
+        }).length;
         if (completedCountToday === 0) {
             updateStreak();
         }
 
-        const newCompleted = {
-            ...completed,
-            [mission.id]: {
-                completedAt: new Date().toISOString(),
-                date: today
-            }
-        };
-        setCompleted(newCompleted);
-        localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+        // Use repository to save mission
+        completeMission(mission.id, reward);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         setIsDialogOpen(false);
@@ -137,18 +131,30 @@ export default function MissionsWidget() {
 
     const handleResetMission = () => {
         if (!selectedMission) return;
-
         const mission = selectedMission;
         // Subtract XP
         addXP(-mission.xpReward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
-        // Remove from completed
-        const newCompleted = { ...completed };
-        delete newCompleted[mission.id];
-
-        setCompleted(newCompleted);
-        localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+        // Remove from completed (read and rewrite)
+        const storage = getStorageService();
+        const current = storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS);
+        if (current) {
+            try {
+                const currentData = typeof current === 'string' ? JSON.parse(current) : current;
+                
+                // Support both formats: array (new) and object (old)
+                if (Array.isArray(currentData)) {
+                    const filtered = currentData.filter((m: any) => m.id !== mission.id);
+                    storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, JSON.stringify(filtered));
+                } else {
+                    delete currentData[mission.id];
+                    storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, JSON.stringify(currentData));
+                }
+            } catch (e) {
+                console.error("Failed to reset mission:", e);
+            }
+        }
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         setIsDialogOpen(false);
@@ -448,7 +454,7 @@ export default function MissionsWidget() {
             <div className="mt-3">
                 <MissionListModal
                     missions={missions}
-                    completed={completed}
+                    completed={completedMissionsMap}
                     onMissionClick={handleMissionClick}
                     checkValidation={checkValidation}
                     isMissionCompleted={isMissionCompleted}

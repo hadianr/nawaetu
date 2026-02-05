@@ -10,6 +10,8 @@ import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 
 export default function PrayerTimesDisplay() {
@@ -19,10 +21,13 @@ export default function PrayerTimesDisplay() {
     const [userTitle, setUserTitle] = useState("Hamba Allah");
 
     const refreshProfile = () => {
-        const savedName = localStorage.getItem("user_name");
-        const savedTitle = localStorage.getItem("user_title");
-        if (savedName) setUserName(savedName);
-        if (savedTitle) setUserTitle(savedTitle);
+        const storage = getStorageService();
+        const [savedName, savedTitle] = storage.getMany([
+            STORAGE_KEYS.USER_NAME,
+            STORAGE_KEYS.USER_TITLE
+        ]).values();
+        if (savedName) setUserName(savedName as string);
+        if (savedTitle) setUserTitle(savedTitle as string);
     };
 
     useEffect(() => {
@@ -37,10 +42,6 @@ export default function PrayerTimesDisplay() {
         if (hour >= 15 && hour < 18) return t.homeGreetingAfternoon;
         return t.homeGreetingEvening;
     };
-
-    if (loading) {
-        return <PrayerCardSkeleton />;
-    }
 
     if (loading) {
         return <PrayerCardSkeleton />;

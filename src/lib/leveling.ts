@@ -1,5 +1,8 @@
 "use client";
 
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
 export const LEVEL_THRESHOLDS = [
     0,      // Level 1 starts at 0 XP
     100,    // Level 2
@@ -26,7 +29,8 @@ export function getPlayerStats(): PlayerStats {
         return { xp: 0, level: 1, nextLevelXp: 100, progress: 0 };
     }
 
-    let currentXP = parseInt(localStorage.getItem("user_xp") || "0");
+    const storage = getStorageService();
+    let currentXP = parseInt((storage.getOptional(STORAGE_KEYS.USER_XP) as string) || "0");
     if (isNaN(currentXP)) currentXP = 0;
 
     // Calculate Level
@@ -59,12 +63,13 @@ export function getPlayerStats(): PlayerStats {
 export function addXP(amount: number) {
     if (typeof window === "undefined") return;
 
-    let currentXP = parseInt(localStorage.getItem("user_xp") || "0");
+    const storage = getStorageService();
+    let currentXP = parseInt((storage.getOptional(STORAGE_KEYS.USER_XP) as string) || "0");
     if (isNaN(currentXP)) currentXP = 0;
 
     const newXP = currentXP + amount;
 
-    localStorage.setItem("user_xp", newXP.toString());
+    storage.set(STORAGE_KEYS.USER_XP, newXP.toString());
 
     // Dispatch events to update UI
     window.dispatchEvent(new Event("xp_updated"));

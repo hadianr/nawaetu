@@ -6,6 +6,8 @@ import { RAMADHAN_MISSIONS, SYABAN_MISSIONS, getLocalizedMission } from "@/data/
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 // Lazy load dialog for better initial load
 const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
@@ -58,10 +60,20 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
         // Defer progress loading to not block initial render (LCP optimization)
         const loadProgress = () => {
-            const savedCompleted = localStorage.getItem("completed_missions");
+            const storage = getStorageService();
+            const savedCompleted = storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS);
             if (savedCompleted) {
                 try {
-                    const completedMap = JSON.parse(savedCompleted);
+                    const completedData = typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted;
+                    
+                    // Support both formats: array (new) and object (old)
+                    const completedMap: Record<string, any> = Array.isArray(completedData)
+                        ? completedData.reduce((acc, m) => {
+                            acc[m.id] = m;
+                            return acc;
+                          }, {} as Record<string, any>)
+                        : completedData;
+                    
                     const targetMissions = SYABAN_MISSIONS;
 
                     const currentXP = targetMissions.reduce((acc, m) => {

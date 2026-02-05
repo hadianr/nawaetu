@@ -1,0 +1,142 @@
+import { getStorageService } from '@/core/infrastructure/storage';
+import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
+import { getActivityRepository } from './activity.repository';
+
+export interface MissionProgress {
+  missionId: string;
+  current: number;
+  required: number;
+  isComplete: boolean;
+}
+
+export interface CompletedMission {
+  id: string;
+  completedAt: string; // ISO timestamp
+  xpEarned: number;
+}
+
+export interface MissionRepository {
+  getProgress(missionId: string): MissionProgress;
+  getCompletedMissions(): CompletedMission[];
+  completeMission(missionId: string, xpEarned: number): void;
+  isCompleted(missionId: string): boolean;
+  resetCompletedMissions(): void;
+}
+
+export class LocalMissionRepository implements MissionRepository {
+  private storage = getStorageService();
+  private activity = getActivityRepository();
+
+  getProgress(missionId: string): MissionProgress {
+    const activity = this.activity.getActivity();
+
+    // Common missions based on activity tracking
+    switch (missionId) {
+      case 'quran_10_ayat':
+        return {
+          missionId,
+          current: activity.quranAyat,
+          required: 10,
+          isComplete: activity.quranAyat >= 10
+        };
+      case 'tasbih_99':
+        return {
+          missionId,
+          current: activity.tasbihCount,
+          required: 99,
+          isComplete: activity.tasbihCount >= 99
+        };
+      case 'tasbih_33':
+        return {
+          missionId,
+          current: activity.tasbihCount,
+          required: 33,
+          isComplete: activity.tasbihCount >= 33
+        };
+      default:
+        return {
+          missionId,
+          current: 0,
+          required: 0,
+          isComplete: false
+        };
+    }
+  }
+
+  getCompletedMissions(): CompletedMission[] {
+    const data = this.storage.getOptional<any>(
+      STORAGE_KEYS.COMPLETED_MISSIONS
+    );
+    
+    if (!data) return [];
+    
+    // Handle old format (object) - convert to new format (array)
+    if (!Array.isArray(data)) {
+      const converted: CompletedMission[] = [];
+      for (const [id, value] of Object.entries(data)) {
+        if (typeof value === 'object' && value !== null && 'date' in value) {
+          converted.push({
+            id,
+            completedAt: (value as any).completedAt || new Date().toISOString(),
+            xpEarned: 0 // Unknown for old data
+          });
+        }
+      }
+      // Save in new format to migrate data
+      if (converted.length > 0) {
+        this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, converted);
+      }
+      return converted;
+    }
+    
+    return data as CompletedMission[];
+  }
+
+  completeMission(missionId: string, xpEarned: number): void {
+    const completed = this.getCompletedMissions();
+    
+    // Check if already completed
+    if (completed.some(m => m.id === missionId)) {
+      return;
+    }
+
+    completed.push({
+      id: missionId,
+      completedAt: new Date().toISOString(),
+      xpEarned
+    });
+
+    this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, completed);
+    
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('mission_updated', { detail: { missionId, completed: true } })
+      );
+    }
+  }
+
+  isCompleted(missionId: string): boolean {
+    const completed = this.getCompletedMissions();
+    return completed.some(m => m.id === missionId);
+  }
+
+  resetCompletedMissions(): void {
+    this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, []);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('missions_reset'));
+    }
+  }
+}
+
+let repositoryInstance: MissionRepository | null = null;
+
+export function getMissionRepository(): MissionRepository {
+  if (!repositoryInstance) {
+    repositoryInstance = new LocalMissionRepository();
+  }
+  return repositoryInstance;
+}
+
+export function resetMissionRepository(): void {
+  repositoryInstance = null;
+}

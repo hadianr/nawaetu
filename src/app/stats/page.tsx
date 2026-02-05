@@ -33,7 +33,7 @@ export default function StatsPage() {
     const maxXP = Math.max(...chartData.map((d) => d.xpGained), 100);
 
     return (
-        <div className="min-h-screen bg-[rgb(var(--color-background))] text-white pb-20">
+        <div className="min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
             {/* Header */}
             <div className="sticky top-0 z-10 bg-gradient-to-b from-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">

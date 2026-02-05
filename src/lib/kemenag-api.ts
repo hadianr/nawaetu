@@ -5,6 +5,7 @@
  */
 
 import { cache } from "react";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 import type { Chapter } from "@/components/quran/SurahList";
 
 const KEMENAG_API_BASE_URL = "https://quran-api-id.vercel.app";
@@ -85,9 +86,11 @@ interface GadingVerse {
 // Get all chapters from Kemenag API
 export async function getKemenagChapters(): Promise<Chapter[]> {
   try {
-    const res = await fetch(`${KEMENAG_API_BASE_URL}/surah`, {
-      next: { revalidate: 86400 }, // Cache for 24 hours
-    });
+    const res = await fetchWithTimeout(
+      `${KEMENAG_API_BASE_URL}/surah`,
+      { next: { revalidate: 86400 } },
+      { timeoutMs: 8000 }
+    );
 
     if (!res.ok) throw new Error(`Failed to fetch chapters: ${res.status}`);
 
@@ -147,10 +150,11 @@ export const getKemenagVerses = cache(
       // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
       const apiUrl = `https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?language=${locale}&words=true&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
       
-      const res = await fetch(apiUrl, { 
-        next: { revalidate: 86400 }, // Cache for 24 hours
-        signal: AbortSignal.timeout(8000) // 8s timeout to prevent hanging
-      });
+      const res = await fetchWithTimeout(
+        apiUrl,
+        { next: { revalidate: 86400 } },
+        { timeoutMs: 8000 }
+      );
 
       if (!res.ok) throw new Error(`Failed to fetch verses: ${res.status}`);
 
@@ -195,9 +199,10 @@ export const getKemenagVerses = cache(
 // Get single verse with details
 export async function getKemenagVerse(chapterId: string | number, verseNumber: string | number) {
   try {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `${KEMENAG_API_BASE_URL}/surah/${chapterId}/${verseNumber}`,
-      { next: { revalidate: 86400 } }
+      { next: { revalidate: 86400 } },
+      { timeoutMs: 8000 }
     );
 
     if (!res.ok) throw new Error(`Verse ${chapterId}:${verseNumber} not found`);

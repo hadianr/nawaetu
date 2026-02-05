@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Send, Sparkles, User, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserActivity, useUserProfile } from "@/lib/activity-tracker";
-import { askUstadz } from "./ai-action";
+import { askMentor } from "./ai-action";
 import { ChatMessage } from "@/lib/mock-ai";
 import { saveChatHistory, loadChatHistory } from "@/lib/chat-storage";
 import { retryWithBackoff } from "@/lib/retry-helper";
@@ -15,9 +15,13 @@ import { trackAIQuery } from "@/lib/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import InfaqModal from "@/components/InfaqModal";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
 
 
-export default function TanyaUstadzPage() {
+export default function MentorAIPage() {
     const { stats } = useUserActivity();
     const { profile } = useUserProfile();
     const { t } = useLocale();
@@ -87,12 +91,13 @@ export default function TanyaUstadzPage() {
             }
         }
 
-        // Load Rate Limit from LocalStorage
-        const savedUsage = localStorage.getItem("ai_usage_v1");
+        // Load Rate Limit from Storage
+        const savedUsage = storage.getOptional<any>(STORAGE_KEYS.AI_USAGE as any);
         const today = new Date().toDateString();
 
         if (savedUsage) {
-            const { date, count } = JSON.parse(savedUsage);
+            const parsed = typeof savedUsage === 'string' ? JSON.parse(savedUsage) : savedUsage;
+            const { date, count } = parsed;
             if (date === today) {
                 setDailyCount(count);
                 setLastResetDate(date);
@@ -100,11 +105,11 @@ export default function TanyaUstadzPage() {
                 // Reset if new day
                 setDailyCount(0);
                 setLastResetDate(today);
-                localStorage.setItem("ai_usage_v1", JSON.stringify({ date: today, count: 0 }));
+                storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0 }));
             }
         } else {
             setLastResetDate(today);
-            localStorage.setItem("ai_usage_v1", JSON.stringify({ date: today, count: 0 }));
+            storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0 }));
         }
 
     }, [profile.name, stats.streakDays]);
@@ -144,7 +149,7 @@ export default function TanyaUstadzPage() {
         if (!isMuhsinin) {
             const newCount = dailyCount + 1;
             setDailyCount(newCount);
-            localStorage.setItem("ai_usage_v1", JSON.stringify({ date: lastResetDate, count: newCount }));
+            storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: lastResetDate, count: newCount }));
         }
 
         try {
@@ -163,7 +168,7 @@ export default function TanyaUstadzPage() {
                 }));
 
             const response = await retryWithBackoff(
-                () => askUstadz(text, context, chatHistory),
+                () => askMentor(text, context, chatHistory),
                 { maxRetries: 2, initialDelay: 1000 }
             );
 

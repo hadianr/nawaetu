@@ -11,6 +11,10 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
 import { checkMissionValidation } from "@/lib/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
 
 interface CompletedMissions {
     [missionId: string]: {
@@ -46,17 +50,20 @@ export default function MisiPage() {
     useEffect(() => {
         setToday(new Date().toISOString().split('T')[0]);
 
-        const savedGender = localStorage.getItem("user_gender") as Gender;
-        setGender(savedGender);
+        const [savedGender, savedCompleted] = storage.getMany([
+            STORAGE_KEYS.USER_GENDER,
+            STORAGE_KEYS.COMPLETED_MISSIONS
+        ]).values();
         
-        const allMissions = getMissionsForGender(savedGender);
+        setGender(savedGender as Gender);
+        
+        const allMissions = getMissionsForGender(savedGender as Gender);
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         setMissions(localizedMissions);
 
-        const savedCompleted = localStorage.getItem("completed_missions");
         if (savedCompleted) {
             try {
-                setCompleted(JSON.parse(savedCompleted));
+                setCompleted(typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted);
             } catch (e) { }
         }
     }, [locale]);
@@ -97,7 +104,7 @@ export default function MisiPage() {
             }
         };
         setCompleted(newCompleted);
-        localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+        storage.set(STORAGE_KEYS.COMPLETED_MISSIONS as any, JSON.stringify(newCompleted));
 
         setIsDialogOpen(false);
     };
@@ -115,7 +122,7 @@ export default function MisiPage() {
         delete newCompleted[mission.id];
 
         setCompleted(newCompleted);
-        localStorage.setItem("completed_missions", JSON.stringify(newCompleted));
+        storage.set(STORAGE_KEYS.COMPLETED_MISSIONS as any, JSON.stringify(newCompleted));
 
         setIsDialogOpen(false);
     };
@@ -236,7 +243,7 @@ export default function MisiPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] px-4 py-6 font-sans sm:px-6 pb-24">
+        <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] px-4 py-6 font-sans sm:px-6 pb-nav">
             <div className="w-full max-w-md space-y-6">
 
                 {/* Header */}

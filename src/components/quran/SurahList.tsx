@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Search, Bookmark, ChevronRight, Clock, Play } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export interface DateType {
     hijri: {
@@ -76,21 +78,23 @@ export default function SurahList({ chapters }: SurahListProps) {
 
     // Load data on mount
     useEffect(() => {
+        const storage = getStorageService();
+        
         // Last Read
-        const savedRead = localStorage.getItem("quran_last_read");
+        const savedRead = storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ);
         if (savedRead) {
             try {
-                setLastRead(JSON.parse(savedRead));
+                setLastRead(typeof savedRead === 'string' ? JSON.parse(savedRead) : savedRead);
             } catch (e) {
                 console.error("Failed to parse last read", e);
             }
         }
 
         // Bookmarks Count
-        const savedBookmarks = localStorage.getItem("nawaetu_bookmarks");
+        const savedBookmarks = storage.getOptional(STORAGE_KEYS.QURAN_BOOKMARKS);
         if (savedBookmarks) {
             try {
-                const parsed = JSON.parse(savedBookmarks);
+                const parsed = typeof savedBookmarks === 'string' ? JSON.parse(savedBookmarks) : savedBookmarks;
                 if (Array.isArray(parsed)) {
                     setBookmarkCount(parsed.length);
                 }

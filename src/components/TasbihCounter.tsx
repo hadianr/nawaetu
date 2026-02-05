@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { addXP } from "@/lib/leveling";
 import { useLocale } from "@/context/LocaleContext";
+import { useTasbihPersistence } from "@/hooks/useTasbihPersistence";
 
 const playTick = (ctx: AudioContext) => {
     const osc = ctx.createOscillator();
@@ -77,61 +78,17 @@ export default function TasbihCounter() {
         ],
         [t]
     );
-    const [count, setCount] = useState(0);
-    const [target, setTarget] = useState<number | null>(33);
-    const [activeZikirId, setActiveZikirId] = useState<string>(zikirPresets[0]?.id ?? "tasbih");
-    const activeZikir = zikirPresets.find((zikir) => zikir.id === activeZikirId) || null;
     const [feedbackMode, setFeedbackMode] = useState<'vibrate' | 'sound' | 'both' | 'none'>('vibrate');
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [dailyCount, setDailyCount] = useState(0);
-    const [streak, setStreak] = useState(0);
-    const [lastZikirDate, setLastZikirDate] = useState<string>("");
     const [showReward, setShowReward] = useState(false);
-
-    useEffect(() => {
-        const savedCount = localStorage.getItem("tasbih_count");
-        if (savedCount) setCount(parseInt(savedCount));
-        const savedTarget = localStorage.getItem("tasbih_target");
-        if (savedTarget) setTarget(savedTarget === "inf" ? null : parseInt(savedTarget));
-        const savedZikirId = localStorage.getItem("tasbih_zikir_id");
-        if (savedZikirId) {
-            const found = zikirPresets.find(z => z.id === savedZikirId);
-            if (found) setActiveZikirId(found.id);
-        } else {
-            const savedZikirLabel = localStorage.getItem("tasbih_zikir_label");
-            if (savedZikirLabel) {
-                const found = zikirPresets.find(z => z.label === savedZikirLabel);
-                if (found) setActiveZikirId(found.id);
-            }
-        }
-        const savedDaily = localStorage.getItem("tasbih_daily_count");
-        if (savedDaily) setDailyCount(parseInt(savedDaily));
-        const savedStreak = localStorage.getItem("tasbih_streak");
-        if (savedStreak) setStreak(parseInt(savedStreak));
-        const savedDate = localStorage.getItem("tasbih_last_date");
-        const today = new Date().toISOString().split('T')[0];
-        if (savedDate) {
-            setLastZikirDate(savedDate);
-            if (savedDate !== today) {
-                setDailyCount(0);
-                const last = new Date(savedDate);
-                const curr = new Date(today);
-                const diffTime = Math.abs(curr.getTime() - last.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                if (diffDays > 1) setStreak(0);
-            }
-        } else {
-            setLastZikirDate(today);
-        }
-    }, []);
-
-    useEffect(() => { localStorage.setItem("tasbih_count", count.toString()); }, [count]);
-    useEffect(() => { localStorage.setItem("tasbih_target", target ? target.toString() : "inf"); }, [target]);
-    useEffect(() => { if (activeZikirId) localStorage.setItem("tasbih_zikir_id", activeZikirId); }, [activeZikirId]);
-    useEffect(() => { localStorage.setItem("tasbih_daily_count", dailyCount.toString()); }, [dailyCount]);
-    useEffect(() => { localStorage.setItem("tasbih_streak", streak.toString()); }, [streak]);
-    useEffect(() => { if (lastZikirDate) localStorage.setItem("tasbih_last_date", lastZikirDate); }, [lastZikirDate]);
+    const { state: tasbihState, updateState, hasHydrated } = useTasbihPersistence({
+        defaultActiveId: zikirPresets[0]?.id ?? "tasbih",
+        validActiveIds: zikirPresets.map((preset) => preset.id),
+        defaultTarget: 33
+    });
+    const { count, target, activeZikirId, dailyCount, streak, lastZikirDate } = tasbihState;
+    const activeZikir = zikirPresets.find((zikir) => zikir.id === activeZikirId) || null;
 
     const initAudio = () => {
         if (!audioContext && typeof window !== "undefined") {
@@ -161,17 +118,21 @@ export default function TasbihCounter() {
         if (ctx && ctx.state === 'suspended') ctx.resume();
 
         const today = new Date().toISOString().split('T')[0];
+        let newDailyCount = dailyCount;
+        let newStreak = streak;
+        let newLastDate = lastZikirDate;
+
         if (lastZikirDate !== today) {
-            setDailyCount(1);
-            setLastZikirDate(today);
+            newDailyCount = 1;
+            newLastDate = today;
             const last = new Date(lastZikirDate);
             const curr = new Date(today);
             const diffDays = Math.ceil(Math.abs(curr.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
-            if (diffDays === 1) setStreak(prev => prev + 1);
-            else setStreak(1);
+            if (diffDays === 1) newStreak = streak + 1;
+            else newStreak = 1;
         } else {
-            setDailyCount(prev => prev + 1);
-            if (streak === 0) setStreak(1);
+            newDailyCount = dailyCount + 1;
+            if (streak === 0) newStreak = 1;
         }
 
         if ((feedbackMode === 'vibrate' || feedbackMode === 'both') && typeof navigator !== "undefined" && navigator.vibrate) {
@@ -179,26 +140,42 @@ export default function TasbihCounter() {
         }
         if ((feedbackMode === 'sound' || feedbackMode === 'both') && ctx) playTick(ctx);
 
-        setCount(prev => (target && prev + 1 > target) ? 1 : prev + 1);
+        // Calculate new count and save immediately
+        const newCount = (target && count + 1 > target) ? 1 : count + 1;
+        updateState({
+            count: newCount,
+            dailyCount: newDailyCount,
+            streak: newStreak,
+            lastZikirDate: newLastDate
+        });
     };
 
-    const handleReset = () => { if (confirm(t.tasbihResetConfirm)) setCount(0); };
+    const handleReset = () => { 
+        if (confirm(t.tasbihResetConfirm)) {
+            updateState({ count: 0 });
+        }
+    };
+    
     const toggleFeedback = () => {
         const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = ['vibrate', 'sound', 'both', 'none'];
         setFeedbackMode(modes[(modes.indexOf(feedbackMode) + 1) % modes.length]);
     };
+    
     const handlePresetSelect = (preset: ZikirPreset) => {
-        setTarget(preset.target);
-        setActiveZikirId(preset.id);
-        setCount(0);
+        // Save preset and reset count immediately
+        updateState({
+            target: preset.target,
+            activeZikirId: preset.id,
+            count: 0
+        });
         setIsDialogOpen(false);
     };
 
     const FeedbackIcon = { vibrate: Smartphone, sound: Volume2, both: Volume2, none: VolumeX }[feedbackMode] || Smartphone;
-    const progress = target ? (count / target) * 100 : 0;
+    const progress = target && hasHydrated ? (count / target) * 100 : 0;
 
     return (
-        <div className="flex flex-col items-center w-full h-full relative px-4 pb-[100px] pt-4 overflow-hidden">
+        <div className="flex flex-col items-center w-full h-full relative px-4 pb-nav pt-4 overflow-hidden">
 
             {/* Tap Area Overlay */}
             <div className="absolute inset-0 z-0 cursor-pointer active:bg-white/5 transition-colors" onClick={handleIncrement} />
@@ -262,7 +239,11 @@ export default function TasbihCounter() {
                             {activeZikir ? activeZikir.label : t.tasbihCounterLabel}
                         </span>
                         <span className="text-7xl xs:text-8xl md:text-9xl font-mono font-bold text-white tracking-tighter drop-shadow-2xl">
-                            {count}
+                            {hasHydrated ? (
+                                count
+                            ) : (
+                                <span className="inline-block w-12 xs:w-16 md:w-20 h-10 xs:h-12 md:h-14 rounded bg-white/10 animate-pulse align-middle" />
+                            )}
                         </span>
                         <div className="mt-1 text-[rgb(var(--color-primary))]/40 text-[8px] md:text-sm animate-pulse">
                             {t.tasbihTap}
@@ -278,11 +259,22 @@ export default function TasbihCounter() {
                 <div className="flex justify-center gap-3 text-white/30 text-[9px] font-bold uppercase tracking-widest mb-4">
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
                         <CalendarDays className="h-3.5 w-3.5 text-[rgb(var(--color-primary-light)/0.4)]" />
-                        <span>{t.tasbihDaily}: <span className="text-white">{dailyCount}</span></span>
+                        <span>
+                            {t.tasbihDaily}:{" "}
+                            <span className="text-white">
+                                {hasHydrated ? (isNaN(dailyCount) ? 0 : dailyCount) : "--"}
+                            </span>
+                        </span>
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
                         <Flame className="h-3.5 w-3.5 text-[rgb(var(--color-accent))]/70" />
-                        <span>{t.tasbihStreak}: <span className="text-white">{streak}</span> {t.tasbihDays}</span>
+                        <span>
+                            {t.tasbihStreak}:{" "}
+                            <span className="text-white">
+                                {hasHydrated ? (isNaN(streak) ? 0 : streak) : "--"}
+                            </span>{" "}
+                            {t.tasbihDays}
+                        </span>
                     </div>
                 </div>
 
@@ -384,7 +376,7 @@ export default function TasbihCounter() {
                                             </Button>
                                             <Button
                                                 variant="ghost"
-                                                onClick={() => { setCount(0); setShowReward(false); }}
+                                                onClick={() => { updateState({ count: 0 }); setShowReward(false); }}
                                                 className="flex-1 bg-white/5 hover:bg-white/10 text-white/50 border border-white/10 h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3"
                                             >
                                                 <RotateCcw className="h-3 w-3 opacity-70" />
@@ -393,7 +385,7 @@ export default function TasbihCounter() {
                                         </>
                                     ) : (
                                         <Button
-                                            onClick={() => { setCount(0); setShowReward(false); }}
+                                            onClick={() => { updateState({ count: 0 }); setShowReward(false); }}
                                             className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold h-11 rounded-xl w-full"
                                         >
                                             {t.tasbihRepeatReading}

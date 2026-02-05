@@ -1,5 +1,10 @@
 "use client";
 
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
+
 export interface DailyActivity {
     date: string; // YYYY-MM-DD format
     xpGained: number;
@@ -25,8 +30,6 @@ export interface MonthlyStats {
     bestDay: { date: string; xp: number };
     consistency: number; // percentage of active days
 }
-
-const STORAGE_KEY = "daily_activity_history";
 
 /**
  * Record today's activity
@@ -68,7 +71,7 @@ export function recordDailyActivity(activity: Partial<DailyActivity>) {
         .filter((a) => a.date >= cutoff)
         .sort((a, b) => a.date.localeCompare(b.date));
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    storage.set(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any, JSON.stringify(filtered));
 }
 
 /**
@@ -77,7 +80,7 @@ export function recordDailyActivity(activity: Partial<DailyActivity>) {
 export function getDailyActivityHistory(): DailyActivity[] {
     if (typeof window === "undefined") return [];
 
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = storage.getOptional<string>(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any);
     if (!stored) return [];
 
     try {
@@ -214,5 +217,5 @@ export function generateMockData() {
         });
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(mockData));
+    storage.set(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any, JSON.stringify(mockData));
 }

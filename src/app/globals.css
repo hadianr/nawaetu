@@ -141,6 +141,22 @@
   [class*="animate-"] {
     will-change: transform, opacity;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    .animate-in,
+    [class*="animate-"] {
+      animation: none !important;
+    }
+  }
   
   /* Reduce layout shifts */
   img, video, iframe {
@@ -157,5 +173,9 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .pb-nav {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
   }
 }

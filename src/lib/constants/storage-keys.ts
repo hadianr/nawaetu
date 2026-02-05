@@ -57,6 +57,10 @@ export const STORAGE_KEYS = {
   TASBIH_LAST_DATE: 'tasbih_last_date',
   TASBIH_DAILY_COUNT: 'tasbih_daily_count',
   
+  // Infaq/Donation
+  USER_TOTAL_INFAQ: 'user_total_infaq',
+  USER_INFAQ_HISTORY: 'user_infaq_history',
+  
   // UI State
   PWA_PROMPT_DISMISSED: 'pwa_prompt_dismissed',
   ONBOARDING_COMPLETED: 'onboarding_completed',

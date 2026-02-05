@@ -8,6 +8,10 @@ import { useBookmarks } from "@/hooks/useBookmarks";
 import { removeBookmark } from "@/lib/bookmark-storage";
 import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const storage = getStorageService();
 
 export default function BookmarksPage() {
     const { bookmarks, refresh } = useBookmarks();
@@ -19,10 +23,10 @@ export default function BookmarksPage() {
     useEffect(() => {
         setMounted(true);
         // Check current last read
-        const saved = localStorage.getItem("quran_last_read");
+        const saved = storage.getOptional<any>(STORAGE_KEYS.QURAN_LAST_READ as any);
         if (saved) {
             try {
-                setLastRead(JSON.parse(saved));
+                setLastRead(typeof saved === 'string' ? JSON.parse(saved) : saved);
             } catch (e) { }
         }
     }, []);
@@ -46,7 +50,7 @@ export default function BookmarksPage() {
             verseId: bookmark.verseId,
             timestamp: Date.now()
         };
-        localStorage.setItem("quran_last_read", JSON.stringify(lastReadData));
+        storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, JSON.stringify(lastReadData));
         setLastRead(lastReadData);
 
         // Show feedback (could be better with toast)
@@ -60,7 +64,7 @@ export default function BookmarksPage() {
     if (!mounted) return null;
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 pt-8 pb-32 text-white font-sans sm:px-6">
+        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 pt-8 pb-nav text-white font-sans sm:px-6">
             <div className="w-full max-w-2xl space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-4">

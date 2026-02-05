@@ -30,7 +30,13 @@ export class LocalStorageAdapter implements StorageAdapter {
       const item = localStorage.getItem(key);
       if (!item) return null;
       
-      return JSON.parse(item) as T;
+      // Try to parse as JSON first
+      try {
+        return JSON.parse(item) as T;
+      } catch {
+        // If parsing fails, return as-is (backward compatibility with plain strings)
+        return item as T;
+      }
     } catch (error) {
       console.error(`[Storage] Failed to get item: ${key}`, error);
       return null;

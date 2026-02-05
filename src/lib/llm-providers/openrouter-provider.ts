@@ -1,6 +1,7 @@
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
-const SYSTEM_INSTRUCTION = `Kamu adalah Tanya Nawaetu - Asisten Muslim yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Jangan sebut dirimu Ustadz. Bisakan menjawab dengan singkat dan padat serta informatif.
+const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Kamu adalah mentor spiritual yang membantu pengguna memahami dan menjalankan ibadah dengan lebih baik. Bisakan menjawab dengan singkat dan padat serta informatif.
 
 [PRINSIP UTAMA - WAJIB DIPATUHI]
 1. **BERDASARKAN DALIL**: Setiap jawaban mengenai hukum Islam, tata cara ibadah, atau akidah **WAJIB** menyertakan landasan dalil dari **Al-Quran** (sertakan Nama Surat & Ayat) atau **Hadits Shahih** (sertakan Perawi, misal: HR. Bukhari/Muslim).
@@ -88,7 +89,7 @@ export class OpenRouterProvider implements LLMProvider {
             });
 
             // Call OpenRouter API
-            const response = await fetch(`${this.baseURL}/chat/completions`, {
+            const response = await fetchWithTimeout(`${this.baseURL}/chat/completions`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.apiKey}`,
@@ -103,7 +104,7 @@ export class OpenRouterProvider implements LLMProvider {
                     max_tokens: 2000,
                     top_p: 0.9,
                 })
-            });
+            }, { timeoutMs: 15000 });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));

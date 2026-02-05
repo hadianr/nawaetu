@@ -383,9 +383,9 @@ export const SETTINGS_TRANSLATIONS = {
     statsComingSoonMessage: "Kami sedang menyempurnakan algoritma statistik agar jurnal ibadah Anda lebih akurat dan bermakna. Sabar ya, Kak!",
     statsBackHome: "Kembali ke Beranda",
     
-    // Tanya Ustadz Page
-    tanyaTitle: "Tanya Ustadz",
-    tanyaSubtitle: "Asisten Muslim AI",
+    // Nawaetu AI Page
+    tanyaTitle: "Nawaetu AI",
+    tanyaSubtitle: "Asisten Muslim Digital",
     tanyaGreetingMorning: "Assalamu'alaikum kak! 🙏 Semoga hari ini penuh berkah. Ada yang ingin ditanyakan?",
     tanyaGreetingDay: "Assalamu'alaikum kak! ☀️ Selamat pagi! Aku siap menemani diskusi spiritualmu.",
     tanyaGreetingNoon: "Assalamu'alaikum kak! 🌤️ Siang ini ada yang mau diceritakan?",
@@ -782,9 +782,9 @@ export const SETTINGS_TRANSLATIONS = {
     statsComingSoonMessage: "We're perfecting our statistics algorithm so your worship journal is more accurate and meaningful. Please be patient!",
     statsBackHome: "Back to Home",
     
-    // Tanya Ustadz Page
-    tanyaTitle: "Ask Ustadz",
-    tanyaSubtitle: "Muslim AI Assistant",
+    // Nawaetu AI Page
+    tanyaTitle: "Nawaetu AI",
+    tanyaSubtitle: "Digital Muslim Assistant",
     tanyaGreetingMorning: "Assalamu'alaikum! 🙏 Hope your day is full of blessings. What would you like to ask?",
     tanyaGreetingDay: "Assalamu'alaikum! ☀️ Good morning! I'm ready to accompany your spiritual discussion.",
     tanyaGreetingNoon: "Assalamu'alaikum! 🌤️ Afternoon, is there anything you'd like to talk about?",

@@ -5,6 +5,58 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-05
+
+### Added
+- **UX Polish & Performance**:
+  - Hydration placeholders for Tasbih counter (prevents flash of default state)
+  - Layout stabilization for HomeHeader (skeleton loading for profile data)
+  - Shared bottom navigation padding utility (`pb-nav`) for consistent spacing across all pages
+  - Reduced-motion support for users with motion sensitivity preferences
+
+- **AI Assistant Rebranding**:
+  - Renamed from "Tanya Ustadz" to "Nawaetu AI" (more inclusive & less sensitive)
+  - Route updated: `/tanya-ustadz` → `/mentor-ai`
+  - Function refactor: `askUstadz()` → `askMentor()`
+  - System prompts updated to "Nawaetu AI - Asisten Muslim Digital"
+  - Updated onboarding text and UI references
+
+- **Cache & Storage Improvements**:
+  - TTL + versioning for tafsir (7 days), last-read (7 days), prayer times (30 days)
+  - Global cache cleanup in AppOverlays component
+  - Comprehensive fetch timeout protection (15s default)
+
+### Changed
+- **Mobile UX**: 
+  - Quote of the Day spacing reduced for better visual hierarchy
+  - All page wrappers now use consistent `pb-nav` (6rem + safe-area-inset-bottom)
+  - HomeHeader sections reserved minimum space to prevent layout shift
+  
+- **System Prompts**:
+  - Removed "Jangan sebut dirimu Ustadz" instruction
+  - Enhanced identity as "mentor spiritual"
+  - Emphasis on educational support role
+
+### Technical
+- Added `prefers-reduced-motion` media query support
+- Fetch timeout helper with AbortSignal.any() support
+- Improved storage exception documentation for direct localStorage (Tasbih)
+- NaN validation across Tasbih persistence layer
+- Build: 0 errors, 9/9 tests passing, 4.6s compile time
+
+### Fixed
+- HomeHeader layout shifts during data hydration
+- Tasbih counter flash before localStorage data loads
+- Quote section spacing inconsistency
+- Animation performance for users with motion sensitivity
+
+### Performance
+- No bundle size increase despite new features
+- Decreased CLS (Cumulative Layout Shift) improvements
+- Reduced paint operations with hydration guards
+
+---
+
 ## [1.1.0] - 2026-02-05
 
 ### Added
@@ -68,5 +120,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[1.1.0]: https://github.com/yourusername/nawaetu/releases/tag/v1.1.0
-[1.0.0]: https://github.com/yourusername/nawaetu/releases/tag/v1.0.0
+[1.2.0]: https://github.com/hadianr/nawaetu/releases/tag/v1.2.0
+[1.1.0]: https://github.com/hadianr/nawaetu/releases/tag/v1.1.0
+[1.0.0]: https://github.com/hadianr/nawaetu/releases/tag/v1.0.0
