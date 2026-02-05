@@ -138,6 +138,12 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 *   **Kemenag Quran API** - Surah, terjemahan & tafsir Indonesia
 *   **Quran.com API (Uthmani)** - Arabic text dengan harakat lengkap
 
+### Backend & Database (v1.2.0 Ready)
+*   **Drizzle ORM** - TypeScript ORM for scaling
+*   **Postgres Ready** - Architecture prepared for database migration
+*   **NextAuth.js** - Authentication ready
+*   **Centralized API Config** - DRY architecture for external services
+
 ### Styling & UI
 *   **Tailwind CSS v4** - Utility-first CSS framework
 *   **Shadcn UI** - Beautiful & accessible components

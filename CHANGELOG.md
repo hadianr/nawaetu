@@ -8,11 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2026-02-05
 
 ### Added
+- **Backend Architecture Readiness**:
+  - **Drizzle ORM Integration**: Installed and configured for type-safe database access
+  - **Database Schema**: Defined Users, Accounts (SSO), Sessions, and Bookmarks tables
+  - **Repository Pattern**: Implemented `DbBookmarkRepository` for future migration from LocalStorage
+  - **API Config**: Centralized external API constants to adhere to DRY principle
+  - **NextAuth Preparation**: Schema ready for authenticating via Google/Apple
+  
 - **UX Polish & Performance**:
   - Hydration placeholders for Tasbih counter (prevents flash of default state)
   - Layout stabilization for HomeHeader (skeleton loading for profile data)
   - Shared bottom navigation padding utility (`pb-nav`) for consistent spacing across all pages
   - Reduced-motion support for users with motion sensitivity preferences
+
 
 - **AI Assistant Rebranding**:
   - Renamed from "Tanya Ustadz" to "Nawaetu AI" (more inclusive & less sensitive)

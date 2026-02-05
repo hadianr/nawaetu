@@ -116,3 +116,7 @@ VERIFICATION_SUMMARY.md
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Drizzle artifacts
+/drizzle
+

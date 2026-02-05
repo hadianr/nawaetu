@@ -7,50 +7,50 @@ export const SETTINGS_TRANSLATIONS = {
   id: {
     // Header
     title: "Pengaturan",
-    
+
     // Stats Section
     statsLabel: "Statistik Ibadah",
     statsComingSoon: "Segera Hadir",
     statsDescription: "Matangkan niat, pantau hasil nanti ✨",
-    
+
     // Location Section
     locationLabel: "Lokasi",
     locationUpdating: "Memperbarui...",
     locationDetecting: "Mendeteksi...",
-    
+
     // Calculation Method
     methodLabel: "Metode",
     methodPlaceholder: "Pilih metode",
-    
+
     // Prayer Notifications
     notificationTitle: "Notifikasi Adzan",
     notificationButton: "Aktifkan Notifikasi Adzan",
     notificationDenied: "Izin notifikasi ditolak. Mohon aktifkan di pengaturan browser Anda.",
-    
+
     // Theme
     themeTitle: "Tampilan Aplikasi",
-    
+
     // Audio Settings
     audioTitle: "Pengaturan Audio",
     muadzinLabel: "Suara Adzan",
-    
+
     // Language Settings
     languageTitle: "Bahasa",
     languageDescription: "Bahasa aplikasi akan berubah sesuai pilihan.",
-    
+
     // Support Card
     supportTitle: "Dukung Nawaetu",
     supportPremiumText: "Terima kasih telah menjadi Muhsinin! Hasil infaq digunakan untuk server & pengembangan.",
     supportText: "Bantu kami menjaga aplikasi tetap gratis dan bebas iklan selamanya.",
     infaqButtonPremium: "Infaq Lagi",
     infaqButton: "Infaq",
-    
+
     // About Section
     aboutAppName: "Nawaetu",
     aboutTagline: "Luruskan Niat, Sempurnakan Ibadah",
     aboutDescription: "Teman ibadah digital yang menjaga setiap langkahmu tetap sesuai tuntunan Al-Qur'an & Sunnah.",
     aboutHashtag: "#LuruskanNiat",
-    aboutVersion: "v1.1.0 • Production",
+    aboutVersion: "v1.2.0 • Production",
     aboutTapForInfo: "Ketuk untuk info lengkap",
     aboutWhatsNew: "Apa yang Baru",
     aboutUpdate1: "Dukungan multi-bahasa (Indonesia & English)",
@@ -83,7 +83,7 @@ export const SETTINGS_TRANSLATIONS = {
     profileUseTitle: "Pasang Gelar Ini",
     profileCurrentTitle: "Sedang Digunakan",
     profileMinimalLevel: "Minimal Level {level}",
-    
+
     // Streak & Progress
     profileNeedXP: "Butuh {xp} XP lagi untuk naik ke Level {level}",
     profileStreak: "Streak",
@@ -92,7 +92,7 @@ export const SETTINGS_TRANSLATIONS = {
     profileStreakMaintain: "Pertahankan istiqamahmu setiap hari!",
     profileBestAchievement: "Pencapaian istiqamah terbaikmu.",
     profileTitleCollection: "Koleksi Gelar",
-    
+
     // XP Earning Methods Section
     xpSectionTitle: "Cara Mendapatkan XP",
     xpMethodReadQuran: "Baca Quran",
@@ -103,14 +103,14 @@ export const SETTINGS_TRANSLATIONS = {
     xpDailyMissionReward: "+25-100 XP/misi",
     xpMethodStatistics: "Statistik",
     xpStatisticsHint: "Lihat Progress",
-    
+
     // Navigation Menu
     navHome: "Beranda",
     navQuran: "Al-Qur'an",
     navTasbih: "Tasbih",
     navQibla: "Kiblat",
     navSettings: "Atur",
-    
+
     // Qibla Page
     qiblaFinding: "CARI KIBLAT",
     qiblaAligned: "MENGHADAP KIBLAT",
@@ -164,7 +164,7 @@ export const SETTINGS_TRANSLATIONS = {
     tasbihPresetSholawatJibrilLabel: "Sholawat Jibril",
     tasbihPresetSholawatJibrilLatin: "Shallallahu 'ala Muhammad",
     tasbihPresetSholawatJibrilTadabbur: "Semoga Allah melimpahkan rahmat kepada Nabi Muhammad.",
-    
+
     // Quran Page
     quranTitle: "Al-Qur'an Digital",
     quranSubtitle: "Lebih dari sekedar membaca",
@@ -174,7 +174,7 @@ export const SETTINGS_TRANSLATIONS = {
     quranCopy: "Salin",
     quranTafsir: "Tafsir",
     quranAudio: "Audio",
-    
+
     // Home Page
     homeGreetingMorning: "Selamat Pagi",
     homeGreetingNoon: "Selamat Siang",
@@ -183,7 +183,7 @@ export const SETTINGS_TRANSLATIONS = {
     homeGreetingWelcome: "Selamat Datang",
     homeLocation: "Lokasi",
     homeLoading: "Loading...",
-    
+
     // Home Widgets
     widgetLastRead: "Terakhir Dibaca",
     widgetContinueReading: "Lanjut Baca",
@@ -372,7 +372,7 @@ export const SETTINGS_TRANSLATIONS = {
     quoteSource9: "HR. Thabrani",
     quoteText10: "Sholat itu adalah tiang agama.",
     quoteSource10: "HR. Tirmidzi",
-    
+
     // Stats Page
     statsPageTitle: "Statistik Ibadah",
     statsPageSubtitle: "Pantau perkembangan spiritualmu",
@@ -382,7 +382,7 @@ export const SETTINGS_TRANSLATIONS = {
     statsComingSoonFeature: "Fitur Sedang Dimatangkan ✨",
     statsComingSoonMessage: "Kami sedang menyempurnakan algoritma statistik agar jurnal ibadah Anda lebih akurat dan bermakna. Sabar ya, Kak!",
     statsBackHome: "Kembali ke Beranda",
-    
+
     // Nawaetu AI Page
     tanyaTitle: "Nawaetu AI",
     tanyaSubtitle: "Asisten Muslim Digital",
@@ -406,50 +406,50 @@ export const SETTINGS_TRANSLATIONS = {
   en: {
     // Header
     title: "Settings",
-    
+
     // Stats Section
     statsLabel: "Worship Statistics",
     statsComingSoon: "Coming Soon",
     statsDescription: "Perfect your intention, monitor results later ✨",
-    
+
     // Location Section
     locationLabel: "Location",
     locationUpdating: "Updating...",
     locationDetecting: "Detecting...",
-    
+
     // Calculation Method
     methodLabel: "Method",
     methodPlaceholder: "Select method",
-    
+
     // Prayer Notifications
     notificationTitle: "Prayer Notifications",
     notificationButton: "Enable Prayer Notifications",
     notificationDenied: "Notification permission denied. Please enable it in your browser settings.",
-    
+
     // Theme
     themeTitle: "App Appearance",
-    
+
     // Audio Settings
     audioTitle: "Audio Settings",
     muadzinLabel: "Adhan Voice",
-    
+
     // Language Settings
     languageTitle: "Language",
     languageDescription: "The app language will change according to your selection.",
-    
+
     // Support Card
     supportTitle: "Support Nawaetu",
     supportPremiumText: "Thank you for being a Muhsinin! Your donations support server and development.",
     supportText: "Help us keep the app free and ad-free forever.",
     infaqButtonPremium: "Donate Again",
     infaqButton: "Donate",
-    
+
     // About Section
     aboutAppName: "Nawaetu",
     aboutTagline: "Perfect Your Intention, Perfect Your Worship",
     aboutDescription: "Your digital worship companion keeping every step aligned with the Quran & Sunnah.",
     aboutHashtag: "#PerfectYourIntention",
-    aboutVersion: "v1.1.0 • Production",
+    aboutVersion: "v1.2.0 • Production",
     aboutTapForInfo: "Tap for more info",
     aboutWhatsNew: "What's New",
     aboutUpdate1: "Multi-language support (Indonesian & English)",
@@ -482,7 +482,7 @@ export const SETTINGS_TRANSLATIONS = {
     profileUseTitle: "Equip This Title",
     profileCurrentTitle: "Currently Using",
     profileMinimalLevel: "Minimal Level {level}",
-    
+
     // Streak & Progress
     profileNeedXP: "Need {xp} more XP to reach Level {level}",
     profileStreak: "Streak",
@@ -491,7 +491,7 @@ export const SETTINGS_TRANSLATIONS = {
     profileStreakMaintain: "Maintain your commitment every day!",
     profileBestAchievement: "Your best achievement.",
     profileTitleCollection: "Title Collection",
-    
+
     // XP Earning Methods Section
     xpSectionTitle: "How to Earn XP",
     xpMethodReadQuran: "Read Quran",
@@ -502,14 +502,14 @@ export const SETTINGS_TRANSLATIONS = {
     xpDailyMissionReward: "+25-100 XP/mission",
     xpMethodStatistics: "Statistics",
     xpStatisticsHint: "View Progress",
-    
+
     // Navigation Menu
     navHome: "Home",
     navQuran: "Quran",
     navTasbih: "Tasbih",
     navQibla: "Qibla",
     navSettings: "Settings",
-    
+
     // Qibla Page
     qiblaFinding: "FIND QIBLA",
     qiblaAligned: "FACING QIBLA",
@@ -563,7 +563,7 @@ export const SETTINGS_TRANSLATIONS = {
     tasbihPresetSholawatJibrilLabel: "Salawat Jibril",
     tasbihPresetSholawatJibrilLatin: "Shallallahu 'ala Muhammad",
     tasbihPresetSholawatJibrilTadabbur: "May Allah send blessings upon Prophet Muhammad.",
-    
+
     // Quran Page
     quranTitle: "Digital Qur'an",
     quranSubtitle: "More than just reading",
@@ -573,7 +573,7 @@ export const SETTINGS_TRANSLATIONS = {
     quranCopy: "Copy",
     quranTafsir: "Tafsir",
     quranAudio: "Audio",
-    
+
     // Home Page
     homeGreetingMorning: "Good Morning",
     homeGreetingNoon: "Good Afternoon",
@@ -582,7 +582,7 @@ export const SETTINGS_TRANSLATIONS = {
     homeGreetingWelcome: "Welcome",
     homeLocation: "Location",
     homeLoading: "Loading...",
-    
+
     // Home Widgets
     widgetLastRead: "Last Read",
     widgetContinueReading: "Continue Reading",
@@ -771,7 +771,7 @@ export const SETTINGS_TRANSLATIONS = {
     quoteSource9: "HR. Thabrani",
     quoteText10: "Prayer is the pillar of religion.",
     quoteSource10: "HR. Tirmidzi",
-    
+
     // Stats Page
     statsPageTitle: "Worship Statistics",
     statsPageSubtitle: "Monitor your spiritual progress",
@@ -781,7 +781,7 @@ export const SETTINGS_TRANSLATIONS = {
     statsComingSoonFeature: "Feature Coming Soon ✨",
     statsComingSoonMessage: "We're perfecting our statistics algorithm so your worship journal is more accurate and meaningful. Please be patient!",
     statsBackHome: "Back to Home",
-    
+
     // Nawaetu AI Page
     tanyaTitle: "Nawaetu AI",
     tanyaSubtitle: "Digital Muslim Assistant",
