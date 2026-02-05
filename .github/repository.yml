@@ -1,0 +1,44 @@
+# GitHub repository configuration
+# This file helps GitHub display the repository correctly
+
+name: Nawaetu
+description: "Habit tracker ibadah dengan gamifikasi. Teman digital untuk build konsistensi ibadah dengan sistem missions, streaks, dan leveling. #LuruskanNiat"
+
+topics:
+  - habit-tracker
+  - islamic
+  - gamification
+  - quran
+  - muslim
+  - prayer-times
+  - nextjs
+  - pwa
+  - typescript
+  - react
+  - ai-assistant
+
+homepage: "https://nawaetu.com"
+
+# Keywords for search
+keywords:
+  - nawaetu
+  - ibadah
+  - habit tracker
+  - gamification
+  - quran
+  - prayer times
+  - muslim app
+  - islamic
+  - niat
+  - istiqomah
+  - daily missions
+  - streaks
+  - xp leveling
+  - ai assistant
+
+# Project links
+links:
+  website: "https://nawaetu.com"
+  documentation: "https://github.com/hadianr/nawaetu/wiki"
+  issues: "https://github.com/hadianr/nawaetu/issues"
+  discussions: "https://github.com/hadianr/nawaetu/discussions"

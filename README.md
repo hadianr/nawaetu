@@ -1,8 +1,16 @@
 # Nawaetu 🌙✨
 
+[![Build & Test](https://github.com/hadianr/nawaetu/actions/workflows/build.yml/badge.svg)](https://github.com/hadianr/nawaetu/actions/workflows/build.yml)
+[![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
+[![Version](https://img.shields.io/badge/Version-v1.1.0-blue)](https://github.com/hadianr/nawaetu/releases)
+
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Current Version: v1.1.0** | [See Changelog](CHANGELOG.md)
+**Current Version: v1.1.0** | [See Changelog](CHANGELOG.md) | [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
 
 **Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah di tengah hiruk-pikuk kehidupan modern. Kami percaya setiap amal dimulai dari **niat yang lurus**—dan gamification bisa jadi motivasi untuk konsisten beribadah.
 
@@ -142,6 +150,57 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 
 ---
 
+## 🚀 Deployment
+
+### Live Demo
+- 🌐 **Production**: [nawaetu.com](https://nawaetu.com)
+- 📊 **Vercel Dashboard**: [Vercel Console](https://vercel.com)
+
+### Auto-Deployment Pipeline
+
+**Trigger Events:**
+```
+Push ke main branch
+    ↓
+GitHub Actions: Build & Test
+    ↓
+Vercel: Auto-Deploy (production)
+    ↓
+Live pada nawaetu.com ✅
+```
+
+**Deployment Flow:**
+1. Code pushed ke GitHub `main` branch
+2. GitHub Actions menjalankan build & test
+3. Jika semua checks pass ✅
+4. Vercel automatically deploy to production
+5. Deploy logs bisa dilihat di Vercel dashboard
+
+### Deployment Status
+
+| Environment | URL | Status |
+|---|---|---|
+| **Production** | https://nawaetu.com | 🟢 Active |
+| **Preview** | Each PR → Vercel preview URL | 🟢 Auto-generated |
+
+### Preview Deployments
+
+Setiap Pull Request otomatis mendapat **preview URL**:
+
+```
+PR #123 → https://nawaetu-pr-123.vercel.app
+
+Gunakan untuk testing sebelum merge!
+```
+
+### Monitoring & Performance
+
+- **Vercel Analytics**: Response time, error tracking, performance metrics
+- **GitHub Status Checks**: Build results di setiap PR
+- **Automatic Rollback**: Jika issue, mudah di-revert via Vercel dashboard
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -237,6 +296,151 @@ Developed with ❤️ by **Antigravity** for the ummah.
 - Website: [nawaetu.com](https://nawaetu.com)
 - Instagram: [@nawaetuapp](https://instagram.com/nawaetuapp) (coming soon)
 - Twitter: [@nawaetuapp](https://twitter.com/nawaetuapp) (coming soon)
+- GitHub: [hadianr/nawaetu](https://github.com/hadianr/nawaetu)
+
+---
+
+## 🚀 Getting Started
+
+### For Users
+1. Visit [nawaetu.com](https://nawaetu.com)
+2. Allow location permission untuk fitur jadwal sholat
+3. Mulai complete daily missions!
+4. Optional: Install as PWA (add to home screen)
+
+### For Developers
+
+**Prerequisites:**
+- Node.js 20+
+- npm atau yarn
+- Git
+
+**Installation:**
+```bash
+# Clone repository
+git clone https://github.com/hadianr/nawaetu.git
+cd nawaetu
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env.local
+# Edit .env.local dengan konfigurasi Anda
+
+# Run development server
+npm run dev
+
+# Open browser
+# http://localhost:3000
+```
+
+**Available Scripts:**
+```bash
+npm run dev          # Start dev server with hot reload
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run analyze      # Analyze bundle size
+```
+
+**Build Workflow:**
+1. Make changes di branch baru
+2. Push & create Pull Request
+3. GitHub Actions akan automatically build & test
+4. Merge ke main setelah approval
+
+---
+
+## 📦 Release Management
+
+### How to Release a New Version
+
+**Step 1: Update version numbers**
+```bash
+# Update version di package.json
+npm version minor  # or patch, major
+```
+
+**Step 2: Update CHANGELOG.md**
+Document semua perubahan di bagian `[Unreleased]`
+
+**Step 3: Commit & push**
+```bash
+git add .
+git commit -m "chore: prepare v1.2.0 release"
+git push origin develop
+```
+
+**Step 4: Create git tag**
+```bash
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+**Automatic Flow:**
+1. ✅ GitHub Actions detects tag `v*.*.*`
+2. ✅ Build & test otomatis
+3. ✅ Extract changelog dari CHANGELOG.md
+4. ✅ Create GitHub Release dengan artifacts
+5. ✅ Update package.json version
+
+**Hasil:**
+- Release muncul di [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
+- Artifacts (build files) tersedia untuk download
+- CHANGELOG otomatis embedded di release notes
+
+---
+
+## 🤝 Contributing
+
+Contributions adalah welcome! Berikut cara contribute:
+
+1. **Fork** repository ini
+2. **Create feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Commit changes** (`git commit -m 'feat: add amazing feature'`)
+4. **Push to branch** (`git push origin feature/amazing-feature`)
+5. **Open Pull Request**
+
+**Commit Message Convention:**
+```
+feat: add new feature
+fix: fix bug
+docs: update documentation
+style: formatting changes
+refactor: code restructuring
+test: add tests
+chore: maintenance tasks
+```
+
+**Code Standards:**
+- TypeScript strict mode
+- ESLint configuration
+- Prettier formatting
+- React best practices
+
+---
+
+## 📋 Project Structure
+
+```
+nawaetu/
+├── src/
+│   ├── app/              # Next.js app pages
+│   ├── components/       # React components
+│   ├── context/          # React context providers
+│   ├── data/             # Static data & translations
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utility functions & helpers
+│   └── instrumentation.ts
+├── public/               # Static assets
+├── .github/
+│   └── workflows/        # GitHub Actions CI/CD
+├── .env.example          # Environment variables template
+├── CHANGELOG.md          # Version history
+├── package.json
+└── README.md
+```
 
 ---
 
@@ -245,11 +449,39 @@ Developed with ❤️ by **Antigravity** for the ummah.
 Punya pertanyaan atau feedback? Reach out:
 - 📧 Email: support@nawaetu.com
 - 💬 In-app: Tanya Nawaetu (Asisten Muslim AI)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/nawaetu/issues)
+- 🐛 Issues: [GitHub Issues](https://github.com/hadianr/nawaetu/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/hadianr/nawaetu/discussions)
+
+---
+
+## 📄 License
+
+Nawaetu is licensed under the **MIT License**. See [LICENSE](LICENSE) file untuk details.
+
+---
+
+## 👤 Author
+
+**Hadianr**
+- GitHub: [@hadianr](https://github.com/hadianr)
+- Email: hadianr@example.com
+
+---
+
+## 🙏 Acknowledgments
+
+- Murattal by Mishary Rashid Al-Afasy
+- Quran API by [Quran.com](https://quran.com)
+- Prayer times calculation by [Aladhan API](https://aladhan.com)
+- Icons by [Lucide Icons](https://lucide.dev)
+- UI Components by [shadcn/ui](https://ui.shadcn.com)
+- AI powered by [Google Gemini](https://gemini.google.com) & [Groq](https://groq.com)
 
 ---
 
 **"Innama al-a'malu bin-niyyat" - Start with intention, end with blessings.**
+
+**#LuruskanNiat #BuildHabits #IstiqomahDaily**
 
 Let's make ibadah easier, one niat at a time. 🚀🌙
 
