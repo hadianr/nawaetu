@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, BellOff, MapPin } from "lucide-react";
+import { Bell, BellOff, MapPin, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
@@ -13,6 +13,7 @@ export default function NotificationSettings() {
     const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS];
     const [isEnabled, setIsEnabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isInitializing, setIsInitializing] = useState(false); // New: for showing prayer list skeleton
     const [fcmToken, setFcmToken] = useState<string | null>(null);
     const [preferences, setPreferences] = useState<PrayerPreferences>(DEFAULT_PRAYER_PREFERENCES);
 
@@ -46,26 +47,37 @@ export default function NotificationSettings() {
             localStorage.removeItem("fcm_token");
             localStorage.removeItem("prayer_preferences");
         } else {
-            // Enable notifications
+            // Enable notifications with optimistic UI
             setIsLoading(true);
+            setIsInitializing(true); // Show skeleton immediately
+
             try {
                 const token = await registerServiceWorkerAndGetToken();
                 if (token) {
                     setFcmToken(token);
-                    setIsEnabled(true);
+                    setIsEnabled(true); // Optimistic: enable immediately after getting token
 
-                    // Subscribe to backend
-                    await fetch("/api/notifications/subscribe", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ token }),
+                    // Run backend operations in parallel (non-blocking)
+                    Promise.all([
+                        fetch("/api/notifications/subscribe", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ token }),
+                        }),
+                        savePreferences(token, preferences)
+                    ]).catch(error => {
+                        console.error("Background operations failed:", error);
+                        // Don't revert UI - token is still valid
+                    }).finally(() => {
+                        setIsInitializing(false); // Hide skeleton after background ops
                     });
-
-                    // Save default preferences
-                    await savePreferences(token, preferences);
+                } else {
+                    setIsInitializing(false);
                 }
             } catch (error) {
                 console.error("Failed to enable notifications:", error);
+                setIsEnabled(false); // Revert on error
+                setIsInitializing(false);
             } finally {
                 setIsLoading(false);
             }
@@ -137,11 +149,19 @@ export default function NotificationSettings() {
                     <div className="flex items-center gap-3">
                         {isEnabled ? (
                             <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 flex items-center justify-center">
-                                <Bell className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                                {isLoading ? (
+                                    <Loader2 className="w-5 h-5 text-[rgb(var(--color-primary))] animate-spin" />
+                                ) : (
+                                    <Bell className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                                )}
                             </div>
                         ) : (
                             <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-                                <BellOff className="w-5 h-5 text-white/40" />
+                                {isLoading ? (
+                                    <Loader2 className="w-5 h-5 text-white/60 animate-spin" />
+                                ) : (
+                                    <BellOff className="w-5 h-5 text-white/40" />
+                                )}
                             </div>
                         )}
                         <div>
@@ -149,9 +169,11 @@ export default function NotificationSettings() {
                                 {t.prayerNotifications}
                             </h3>
                             <p className="text-sm text-white/50">
-                                {isEnabled
-                                    ? t.notificationsEnabled
-                                    : t.notificationsDisabled}
+                                {isLoading
+                                    ? (locale === 'id' ? 'Mengaktifkan...' : 'Enabling...')
+                                    : isEnabled
+                                        ? t.notificationsEnabled
+                                        : t.notificationsDisabled}
                             </p>
                         </div>
                     </div>
@@ -171,20 +193,36 @@ export default function NotificationSettings() {
                     </h4>
 
                     <div className="space-y-2">
-                        {(Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
-                            (prayer) => (
-                                <div
-                                    key={prayer}
-                                    className="flex items-center justify-between py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200"
-                                >
-                                    <span className="text-white/80 capitalize font-medium">
-                                        {prayerNames[prayer]}
-                                    </span>
-                                    <Switch
-                                        checked={preferences[prayer]}
-                                        onCheckedChange={() => togglePrayer(prayer)}
-                                    />
-                                </div>
+                        {isInitializing ? (
+                            // Skeleton loading state
+                            <>
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                    <div
+                                        key={i}
+                                        className="flex items-center justify-between py-3 px-3 bg-white/5 rounded-xl border border-white/5 animate-pulse"
+                                    >
+                                        <div className="h-4 bg-white/10 rounded w-20"></div>
+                                        <div className="h-6 bg-white/10 rounded-full w-11"></div>
+                                    </div>
+                                ))}
+                            </>
+                        ) : (
+                            // Actual prayer toggles
+                            (Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
+                                (prayer) => (
+                                    <div
+                                        key={prayer}
+                                        className="flex items-center justify-between py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200"
+                                    >
+                                        <span className="text-white/80 capitalize font-medium">
+                                            {prayerNames[prayer]}
+                                        </span>
+                                        <Switch
+                                            checked={preferences[prayer]}
+                                            onCheckedChange={() => togglePrayer(prayer)}
+                                        />
+                                    </div>
+                                )
                             )
                         )}
                     </div>
