@@ -183,11 +183,11 @@ export default function QiblaCompass() {
 
                         {/* MAIN ROTATING DIAL */}
                         <div
-                            className="absolute inset-0 will-change-transform z-10"
+                            className="absolute inset-0 will-change-transform z-10 transition-transform duration-[400ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
                             style={{
-                                transform: `rotate(${compassRotate}deg)`,
-                                transition: 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                            }}
+                                '--compass-rotate': `${compassRotate}deg`,
+                                transform: 'rotate(var(--compass-rotate))'
+                            } as React.CSSProperties}
                         >
                             {/* Dial Background */}
                             <div className={`w-full h-full rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-[rgb(var(--color-primary))]/60 shadow-[0_0_30px_rgba(var(--color-primary),0.2)]' : ''}`}>
@@ -211,7 +211,10 @@ export default function QiblaCompass() {
                             {/* KAABA ICON */}
                             <div
                                 className="absolute inset-0"
-                                style={{ transform: `rotate(${qiblaRelativeRotate}deg)` }}
+                                style={{
+                                    '--qibla-rotate': `${qiblaRelativeRotate}deg`,
+                                    transform: 'rotate(var(--qibla-rotate))'
+                                } as React.CSSProperties}
                             >
                                 <div className="absolute top-8 left-1/2 -translate-x-1/2">
                                     {/* 2. FIX: Radar Ping Animation */}
