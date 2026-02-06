@@ -16,11 +16,28 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 let messaging: Messaging | undefined;
 
-if (typeof window !== "undefined") {
+/**
+ * Lazy initialize messaging - only when user explicitly enables notifications
+ * This prevents premature permission requests on mobile browsers
+ */
+function getMessagingInstance(): Messaging | undefined {
+    if (typeof window === "undefined") {
+        return undefined;
+    }
+
+    // Return existing instance if already initialized
+    if (messaging) {
+        return messaging;
+    }
+
+    // Initialize messaging only when needed
     try {
         messaging = getMessaging(app);
+        console.log("✅ Firebase Messaging initialized (lazy)");
+        return messaging;
     } catch (err) {
         console.error("Failed to initialize Firebase Messaging:", err);
+        return undefined;
     }
 }
 
@@ -28,8 +45,15 @@ if (typeof window !== "undefined") {
  * Register service worker and get FCM token
  */
 export async function registerServiceWorkerAndGetToken(): Promise<string | null> {
-    if (typeof window === "undefined" || !messaging) {
-        console.warn("Not in browser environment or messaging not initialized");
+    if (typeof window === "undefined") {
+        console.warn("Not in browser environment");
+        return null;
+    }
+
+    // Initialize messaging only when user explicitly enables notifications
+    const messagingInstance = getMessagingInstance();
+    if (!messagingInstance) {
+        console.error("Failed to initialize messaging");
         return null;
     }
 
@@ -72,7 +96,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             return null;
         }
 
-        const token = await getToken(messaging, {
+        const token = await getToken(messagingInstance, {
             vapidKey,
             serviceWorkerRegistration: registration,
         });
@@ -95,6 +119,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
 
 /**
  * Subscribe to foreground messages
+ * Only works if messaging is already initialized (user has enabled notifications)
  */
 export function subscribeForegroundMessages(callback: (payload: any) => void) {
     if (typeof window === "undefined") {
@@ -102,8 +127,10 @@ export function subscribeForegroundMessages(callback: (payload: any) => void) {
         return;
     }
 
+    // Only subscribe if messaging is already initialized
+    // Don't trigger initialization here to avoid permission requests
     if (!messaging) {
-        console.warn("⚠️ Messaging not initialized yet");
+        console.warn("⚠️ Messaging not initialized yet - user needs to enable notifications first");
         return;
     }
 
