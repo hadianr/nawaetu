@@ -120,3 +120,5 @@ Thumbs.db
 # Drizzle artifacts
 /drizzle
 
+# Firebase service account (contains sensitive credentials)
+firebase-service-account.json

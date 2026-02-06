@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdhanNotifications } from "@/hooks/useAdhanNotifications";
+import { useFCM } from "@/hooks/useFCM";
 
 /**
  * This component has no UI. It simply activates the Adhan Notification hook
@@ -8,5 +9,6 @@ import { useAdhanNotifications } from "@/hooks/useAdhanNotifications";
  */
 export default function NotificationWatcher() {
     useAdhanNotifications();
+    useFCM();
     return null;
 }

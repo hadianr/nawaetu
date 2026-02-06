@@ -26,6 +26,18 @@ export const SETTINGS_TRANSLATIONS = {
     notificationTitle: "Notifikasi Adzan",
     notificationButton: "Aktifkan Notifikasi Adzan",
     notificationDenied: "Izin notifikasi ditolak. Mohon aktifkan di pengaturan browser Anda.",
+    prayerNotifications: "Notifikasi Waktu Sholat",
+    notificationsEnabled: "Notifikasi aktif",
+    notificationsDisabled: "Notifikasi nonaktif",
+    selectPrayerTimes: "Pilih Waktu Sholat",
+    notificationLocationNote: "Notifikasi akan dikirim berdasarkan lokasi yang tersimpan di aplikasi.",
+
+    // Prayer Names
+    fajr: "Subuh",
+    dhuhr: "Dzuhur",
+    asr: "Ashar",
+    maghrib: "Maghrib",
+    isha: "Isya",
 
     // Theme
     themeTitle: "Tampilan Aplikasi",
@@ -447,6 +459,18 @@ export const SETTINGS_TRANSLATIONS = {
     notificationTitle: "Prayer Notifications",
     notificationButton: "Enable Prayer Notifications",
     notificationDenied: "Notification permission denied. Please enable it in your browser settings.",
+    prayerNotifications: "Prayer Time Notifications",
+    notificationsEnabled: "Notifications enabled",
+    notificationsDisabled: "Notifications disabled",
+    selectPrayerTimes: "Select Prayer Times",
+    notificationLocationNote: "Notifications will be sent based on your saved location in the app.",
+
+    // Prayer Names
+    fajr: "Fajr",
+    dhuhr: "Dhuhr",
+    asr: "Asr",
+    maghrib: "Maghrib",
+    isha: "Isha",
 
     // Theme
     themeTitle: "App Appearance",

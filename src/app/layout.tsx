@@ -118,6 +118,7 @@ import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { WebVitals } from "@/components/WebVitals";
+import FCMHandler from "@/components/FCMHandler";
 import AnalyticsLoader from "@/components/AnalyticsLoader";
 
 
@@ -156,6 +157,7 @@ export default function RootLayout({
               <PatternOverlay />
               <NotificationWatcher />
               <AppOverlays />
+              <FCMHandler />
               {children}
 
               <Suspense fallback={null}>

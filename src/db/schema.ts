@@ -82,8 +82,31 @@ export const bookmarks = pgTable("bookmark", {
     updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const pushSubscriptions = pgTable("push_subscription", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    deviceType: text("device_type"), // 'ios', 'android', 'web'
+    active: integer("active").default(1), // 1 for active, 0 for inactive
+
+    // Prayer notification preferences (JSON: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true })
+    prayerPreferences: text("prayer_preferences"),
+
+    // User location for prayer time calculation (JSON: { lat: number, lng: number, city: string })
+    userLocation: text("user_location"),
+
+    // Timezone for accurate prayer time scheduling (e.g., "Asia/Jakarta")
+    timezone: text("timezone"),
+
+    lastUsedAt: timestamp("last_used_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Types for application use
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Bookmark = typeof bookmarks.$inferSelect;
 export type NewBookmark = typeof bookmarks.$inferInsert;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;

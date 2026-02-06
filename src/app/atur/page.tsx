@@ -21,6 +21,7 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
+import { useFCM } from "@/hooks/useFCM";
 import {
     MUADZIN_OPTIONS,
     CALCULATION_METHODS,
@@ -30,6 +31,7 @@ import {
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import NotificationSettings from "@/components/NotificationSettings";
 
 const storage = getStorageService();
 
@@ -55,6 +57,7 @@ export default function SettingsPage() {
     const { currentTheme, setTheme } = useTheme();
     const { isMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
+    const { token: fcmToken } = useFCM();
     const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [showAboutModal, setShowAboutModal] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -462,59 +465,8 @@ export default function SettingsPage() {
                     </div>
                 </div>
 
-                {/* Prayer Notifications Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <Volume2 className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                            <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].notificationTitle}</span>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-5 gap-2">
-                        {prayerNames.map((prayer) => {
-                            const isEnabled = preferences[prayer.key] && notificationsEnabled;
-                            return (
-                                <button
-                                    key={prayer.key}
-                                    onClick={() => togglePrayer(prayer.key)}
-                                    disabled={!notificationsEnabled}
-                                    className={cn(
-                                        "flex flex-col items-center gap-2 p-3 rounded-2xl transition-all relative group",
-                                        isEnabled
-                                            ? 'bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary))]/5 border border-[rgb(var(--color-primary))]/30 shadow-lg shadow-[rgb(var(--color-primary))]/10'
-                                            : 'bg-white/5 border border-white/10 opacity-60 hover:opacity-100 hover:bg-white/10'
-                                    )}
-                                >
-                                    <prayer.Icon className={cn(
-                                        "w-6 h-6 transition-transform group-hover:scale-110 duration-300",
-                                        isEnabled ? "text-[rgb(var(--color-primary-light))]" : "text-slate-400"
-                                    )} strokeWidth={1.5} />
-
-                                    <span className={cn(
-                                        "text-[10px] font-bold tracking-wide",
-                                        isEnabled ? 'text-[rgb(var(--color-primary-light))]' : 'text-white/40'
-                                    )}>
-                                        {prayer.label}
-                                    </span>
-                                    {isEnabled && (
-                                        <div className="absolute -top-1.5 -right-1.5 bg-[rgb(var(--color-primary))] rounded-full p-1 shadow-md ring-4 ring-black">
-                                            <Check className="w-2.5 h-2.5 text-black" strokeWidth={3} />
-                                        </div>
-                                    )}
-                                </button>
-                            );
-                        })}
-                    </div>
-                    {!notificationsEnabled && (
-                        <button
-                            onClick={requestPermission}
-                            className="w-full py-2.5 px-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border border-[rgb(var(--color-primary))]/30 rounded-xl text-[rgb(var(--color-primary-light))] text-sm font-semibold hover:bg-[rgb(var(--color-primary))]/30 hover:border-[rgb(var(--color-primary))]/50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                        >
-                            <Bell className="w-4 h-4" />
-                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].notificationButton}
-                        </button>
-                    )}
-                </div>
+                {/* Prayer Notifications Card - Using NotificationSettings Component */}
+                <NotificationSettings />
 
                 {/* Theme Configuration Card */}
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
@@ -741,7 +693,23 @@ export default function SettingsPage() {
                     </button>
                 </div>
 
-
+                {/* Debug - FCM Token (Only for testing) */}
+                {fcmToken && (
+                    <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-2">
+                        <div className="flex items-center gap-2 text-white/40">
+                            <Settings2 className="w-3 h-3" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Debug Info (FCM Token)</span>
+                        </div>
+                        <div className="bg-black/60 p-3 rounded-xl border border-white/10">
+                            <p className="text-[10px] font-mono text-[rgb(var(--color-primary-light))]/70 break-all leading-relaxed">
+                                {fcmToken}
+                            </p>
+                        </div>
+                        <p className="text-[9px] text-white/20 italic">
+                            *Token ini digunakan untuk mengirim notifikasi push ke perangkat Anda.
+                        </p>
+                    </div>
+                )}
             </div>
 
             <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
