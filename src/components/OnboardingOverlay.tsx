@@ -299,9 +299,10 @@ export default function OnboardingOverlay() {
                     {step === 'intro' && (
                         <button
                             onClick={() => setStep('setup-name')}
-                            className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
+                            className="text-sm text-white/80 font-semibold px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all flex items-center gap-2"
                         >
-                            Skip Intro
+                            <span>Skip Intro</span>
+                            <ChevronRight className="w-4 h-4" />
                         </button>
                     )}
 
