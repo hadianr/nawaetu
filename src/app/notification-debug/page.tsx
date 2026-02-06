@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { registerServiceWorkerAndGetToken, subscribeForegroundMessages } from "@/lib/notifications/fcm-init";
+import { notFound } from "next/navigation";
 
 export default function NotificationDebugPage() {
+    // Disable this page in production
+    // Check at render time, not in useEffect
+    if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+        notFound();
+    }
+
     const [permission, setPermission] = useState<NotificationPermission>("default");
     const [swStatus, setSwStatus] = useState<string>("Checking...");
     const [token, setToken] = useState<string>("");
