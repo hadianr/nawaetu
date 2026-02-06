@@ -693,8 +693,8 @@ export default function SettingsPage() {
                     </button>
                 </div>
 
-                {/* Debug - FCM Token (Only for testing) */}
-                {fcmToken && (
+                {/* Debug - FCM Token (Only for development) */}
+                {process.env.NODE_ENV === 'development' && fcmToken && (
                     <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-2">
                         <div className="flex items-center gap-2 text-white/40">
                             <Settings2 className="w-3 h-3" />
