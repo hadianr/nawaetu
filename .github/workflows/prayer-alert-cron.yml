@@ -1,0 +1,32 @@
+name: Prayer Alert Cron
+
+on:
+    schedule:
+        # Runs every 5 minutes
+        - cron: "*/5 * * * *"
+    workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+    trigger-prayer-alert:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Call Prayer Alert API
+              env:
+                  CRON_SECRET: ${{ secrets.CRON_SECRET }}
+              run: |
+                  response=$(curl -X POST https://nawaetu.com/api/notifications/prayer-alert \
+                    -H "Authorization: Bearer $CRON_SECRET" \
+                    -H "Content-Type: application/json" \
+                    --write-out "%{http_code}" \
+                    --silent \
+                    --output /dev/null)
+
+                  echo "API Response Code: $response"
+
+                  if [ $response -eq 200 ]; then
+                    echo "✅ Prayer alert triggered successfully"
+                  else
+                    echo "❌ Prayer alert failed with status $response"
+                    exit 1
+                  fi

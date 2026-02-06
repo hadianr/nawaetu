@@ -1,8 +1,0 @@
-{
-    "crons": [
-        {
-            "path": "/api/notifications/prayer-alert",
-            "schedule": "*/5 * * * *"
-        }
-    ]
-}
