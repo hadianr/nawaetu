@@ -56,6 +56,15 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         // Wait for service worker to be ready
         await navigator.serviceWorker.ready;
 
+        // Send Firebase config to service worker
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'FIREBASE_CONFIG',
+                config: firebaseConfig
+            });
+            console.log("✅ Firebase config sent to service worker");
+        }
+
         // Get FCM token
         const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
         if (!vapidKey) {
