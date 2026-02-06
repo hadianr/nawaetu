@@ -40,8 +40,8 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
     if (streak === 0 && !isActiveToday) {
         return (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5 border border-white/10">
-                <Flame className="w-4 h-4 text-white/30" />
-                <span className="text-xs font-bold text-white/30">0</span>
+                <Flame className="w-4 h-4 text-white/60" />
+                <span className="text-xs font-bold text-white/60">0</span>
             </div>
         );
     }
@@ -86,7 +86,7 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
                 {streak}
             </span>
             {showLabel && streak > 0 && (
-                <span className="text-[10px] text-white/40">{t.streakDaysLabel}</span>
+                <span className="text-[10px] text-white/70">{t.streakDaysLabel}</span>
             )}
         </div>
     );

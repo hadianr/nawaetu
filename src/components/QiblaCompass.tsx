@@ -193,9 +193,9 @@ export default function QiblaCompass() {
                             <div className={`w-full h-full rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-[rgb(var(--color-primary))]/60 shadow-[0_0_30px_rgba(var(--color-primary),0.2)]' : ''}`}>
                                 {/* Cardinal Points */}
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[rgb(var(--color-primary-light))] font-bold text-lg md:text-xl transform -translate-y-1">N</div>
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/30 font-medium md:text-lg transform translate-y-1">S</div>
-                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 font-medium md:text-lg transform -translate-x-1">W</div>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-medium md:text-lg transform translate-x-1">E</div>
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 font-medium md:text-lg transform translate-y-1">S</div>
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 font-medium md:text-lg transform -translate-x-1">W</div>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 font-medium md:text-lg transform translate-x-1">E</div>
 
                                 {/* Ticks */}
                                 <div
@@ -249,7 +249,7 @@ export default function QiblaCompass() {
                     <div className="mt-16 text-center space-y-3 z-30">
                         {/* 3. FIX: Text Animation (Scale + Glow) */}
                         <div className={`transition-all duration-500 transform ${aligned ? 'scale-110' : 'scale-100'}`}>
-                            <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_20px_rgba(var(--color-primary),0.6)]' : 'text-white/30'}`}>
+                            <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_20px_rgba(var(--color-primary),0.6)]' : 'text-white/70'}`}>
                                 {aligned ? t.qiblaAligned : t.qiblaFinding}
                             </h2>
                         </div>
@@ -259,7 +259,7 @@ export default function QiblaCompass() {
                                 {Math.round((-compassRotate + 3600) % 360)}°
                             </div>
                             {distance && (
-                                <div className="text-sm text-white/40 font-medium bg-white/5 px-4 py-1.5 rounded-full border border-white/5 backdrop-blur-sm mt-2">
+                                <div className="text-sm text-white/70 font-medium bg-white/5 px-4 py-1.5 rounded-full border border-white/5 backdrop-blur-sm mt-2">
                                     {t.qiblaDistance?.replace("{distance}", distance.toLocaleString())}
                                 </div>
                             )}
