@@ -123,12 +123,12 @@ export default function OnboardingOverlay() {
 
                     <div className="space-y-3 relative z-10 flex-1">
                         <h2 className="text-2xl font-bold text-white leading-tight">{slide.title}</h2>
-                        <p className="text-sm text-slate-300 leading-relaxed">{slide.description}</p>
+                        <p className="text-sm text-white/90 leading-relaxed">{slide.description}</p>
                         <div className="bg-white/5 border border-white/5 rounded-xl p-3 flex items-start gap-3 mt-4">
                             <div className="bg-white/10 rounded-full p-1 mt-0.5">
                                 <Check className="w-3 h-3 text-emerald-400" />
                             </div>
-                            <p className="text-xs text-slate-400 italic">{slide.highlight}</p>
+                            <p className="text-xs text-white/70 italic">{slide.highlight}</p>
                         </div>
                     </div>
 
@@ -156,7 +156,7 @@ export default function OnboardingOverlay() {
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white">Siapa namamu?</h2>
-                            <p className="text-sm text-slate-400 mt-1">Agar Nawaetu AI bisa menyapamu dengan akrab.</p>
+                            <p className="text-sm text-white/70 mt-1">Agar Nawaetu AI bisa menyapamu dengan akrab.</p>
                         </div>
                         <input
                             autoFocus
@@ -164,6 +164,7 @@ export default function OnboardingOverlay() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Nama Panggilan"
+                            aria-label="Masukkan nama panggilan Anda"
                             className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-lg font-bold"
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
@@ -181,11 +182,12 @@ export default function OnboardingOverlay() {
                     <div className="relative z-10 w-full space-y-4">
                         <div className="text-center mb-2">
                             <h2 className="text-xl font-bold text-white">Apa Jenis Kelaminmu?</h2>
-                            <p className="text-xs text-slate-400 mt-1">Untuk menyesuaikan fiqih ibadah & tema.</p>
+                            <p className="text-xs text-white/70 mt-1">Untuk menyesuaikan fiqih ibadah & tema.</p>
                         </div>
                         <div className="grid gap-3">
                             <button
                                 onClick={() => setGender('male')}
+                                aria-label="Pilih jenis kelamin laki-laki"
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
                                     gender === 'male' ? "bg-blue-500/20 border-blue-500 text-blue-100" : "bg-white/5 border-white/5 hover:bg-white/10"
@@ -200,6 +202,7 @@ export default function OnboardingOverlay() {
                             </button>
                             <button
                                 onClick={() => setGender('female')}
+                                aria-label="Pilih jenis kelamin perempuan"
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
                                     gender === 'female' ? "bg-pink-500/20 border-pink-500 text-pink-100" : "bg-white/5 border-white/5 hover:bg-white/10"
@@ -227,7 +230,7 @@ export default function OnboardingOverlay() {
                     <div className="relative z-10 w-full flex-1 flex flex-col">
                         <div className="text-center mb-4">
                             <h2 className="text-xl font-bold text-white">Tipe Pejuang Ibadah?</h2>
-                            <p className="text-xs text-slate-400 mt-1">Menentukan target misi harianmu.</p>
+                            <p className="text-xs text-white/70 mt-1">Menentukan target misi harianmu.</p>
                         </div>
                         <div className="space-y-2 flex-1 overflow-y-auto pr-2 scrollbar-hide">
                             {[
@@ -238,6 +241,7 @@ export default function OnboardingOverlay() {
                                 <button
                                     key={type.id}
                                     onClick={() => setArchetype(type.id as any)}
+                                    aria-label={`Pilih tipe pejuang ${type.label}`}
                                     className={cn(
                                         "w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left",
                                         archetype === type.id ? `${type.bg} ${type.border}` : "bg-white/5 border border-white/5 hover:bg-white/10"
@@ -247,8 +251,8 @@ export default function OnboardingOverlay() {
                                         {type.icon}
                                     </div>
                                     <div className="flex-1">
-                                        <span className={cn("font-bold block text-sm", archetype === type.id ? "text-white" : "text-slate-300")}>{type.label}</span>
-                                        <span className="text-[10px] text-slate-500">{type.desc}</span>
+                                        <span className={cn("font-bold block text-sm", archetype === type.id ? "text-white" : "text-white/90")}>{type.label}</span>
+                                        <span className="text-[10px] text-white/60">{type.desc}</span>
                                     </div>
                                     {archetype === type.id && <Check className={cn("w-4 h-4", type.color)} />}
                                 </button>
@@ -295,7 +299,7 @@ export default function OnboardingOverlay() {
                     {step === 'intro' && (
                         <button
                             onClick={() => setStep('setup-name')}
-                            className="text-sm text-slate-500 font-medium px-4 py-2 hover:text-white transition-colors"
+                            className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
                         >
                             Skip Intro
                         </button>
@@ -308,7 +312,7 @@ export default function OnboardingOverlay() {
                                 if (step === 'setup-gender') setStep('setup-name');
                                 if (step === 'setup-archetype') setStep('setup-gender');
                             }}
-                            className="text-sm text-slate-500 font-medium px-4 py-2 hover:text-white transition-colors"
+                            className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
                         >
                             Back
                         </button>

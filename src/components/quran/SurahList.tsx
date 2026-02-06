@@ -141,7 +141,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                         <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">
                                             {safeLastRead.surahName}
                                         </h3>
-                                        <p className="text-xs md:text-sm text-slate-400 font-medium mt-0.5">
+                                        <p className="text-xs md:text-sm text-white/70 font-medium mt-0.5">
                                             {t.quranVerse} {safeLastRead.verseId}
                                         </p>
                                     </div>
@@ -155,8 +155,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                     );
                 })() : (
                     <div className="col-span-2 rounded-3xl border border-white/5 bg-[#0f172a]/40 p-5 flex flex-col justify-center gap-1">
-                        <h3 className="text-base font-bold text-white/50">{t.quranNoHistory}</h3>
-                        <p className="text-xs text-slate-500">{t.quranStartReading}</p>
+                        <h3 className="text-base font-bold text-white/70">{t.quranNoHistory}</h3>
+                        <p className="text-xs text-white/50">{t.quranStartReading}</p>
                     </div>
                 )}
 
@@ -169,12 +169,12 @@ export default function SurahList({ chapters }: SurahListProps) {
 
                     <div className="relative flex items-center md:flex-col md:items-start gap-4 md:gap-0 w-full">
                         <div className="h-10 w-10 md:h-10 md:w-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-[rgb(var(--color-primary))]/20 group-hover:border-[rgb(var(--color-primary))]/30 transition-colors md:mb-4">
-                            <Bookmark className="h-5 w-5 text-slate-400 group-hover:text-[rgb(var(--color-primary))]" />
+                            <Bookmark className="h-5 w-5 text-white/70 group-hover:text-[rgb(var(--color-primary))]" />
                         </div>
 
                         <div className="flex-1">
                             <h3 className="text-base md:text-lg font-bold text-white mb-0.5">{t.quranBookmarks}</h3>
-                            <p className="text-xs text-slate-400 group-hover:text-slate-300">
+                            <p className="text-xs text-white/70 group-hover:text-white/90">
                                 {bookmarkCount} {t.quranVersesSaved}
                             </p>
                         </div>
@@ -201,7 +201,7 @@ export default function SurahList({ chapters }: SurahListProps) {
             {/* Surah List Header */}
             <div className="flex items-center justify-between px-2 pt-1">
                 <h2 className="text-xl font-bold text-white">{t.quranSurahList}</h2>
-                <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">
+                <span className="text-xs text-white/70 font-medium uppercase tracking-wider">
                     {filteredChapters.length} {t.quranSurahCount}
                 </span>
             </div>
@@ -256,7 +256,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                             </div>
 
                             <div className="flex items-end justify-between w-full pointer-events-none">
-                                <p className="text-[9px] text-white/40">
+                                <p className="text-[9px] text-white/70">
                                     {chapter.verses_count} {t.quranVerseCount} • {chapter.revelation_place === "makkah" ? t.quranMakkah : t.quranMadinah}
                                 </p>
                                 <div className="flex items-center gap-3">

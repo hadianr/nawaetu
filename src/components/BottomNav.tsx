@@ -42,7 +42,7 @@ const BottomNav = memo(function BottomNav() {
                                 "flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
                                 isActive
                                     ? "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"
-                                    : "text-slate-500 hover:text-white/80"
+                                    : "text-slate-400 hover:text-white/90"
                             )}
                             prefetch={true}
                         >

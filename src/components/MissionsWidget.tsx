@@ -277,7 +277,7 @@ export default function MissionsWidget() {
                     </div>
                     <div>
                         <h2 className="text-sm font-bold text-white leading-none">{t.homeMissionFocusTitle}</h2>
-                        <p className="text-[10px] text-white/70 mt-0.5">{t.homeMissionDailyTarget}</p>
+                        <p className="text-[10px] text-white/90 mt-0.5">{t.homeMissionDailyTarget}</p>
                     </div>
                 </div>
 
@@ -424,13 +424,13 @@ export default function MissionsWidget() {
                                         )}>
                                             {getHukumLabel(mission.hukum)}
                                         </span>
-                                        <p className="text-[10px] text-white/70 truncate">
+                                        <p className="text-[10px] text-white/90 truncate">
                                             +{mission.xpReward} XP
                                         </p>
 
                                         {/* Validation Status Badges */}
                                         {isLocked ? (
-                                            <span className="text-[9px] text-white/30 flex items-center gap-0.5 ml-auto">
+                                            <span className="text-[9px] text-white/60 flex items-center gap-0.5 ml-auto">
                                                 {t.homeMissionLocked}
                                             </span>
                                         ) : validation.isLate ? (

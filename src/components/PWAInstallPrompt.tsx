@@ -46,7 +46,7 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                     className="absolute top-2 right-2 p-3 bg-white/5 rounded-full hover:bg-white/10 active:scale-90 transition-all z-20 cursor-pointer touch-manipulation flex items-center justify-center"
                     aria-label="Close"
                 >
-                    <X className="w-5 h-5 text-slate-400" />
+                    <X className="w-5 h-5 text-slate-300" />
                 </button>
 
                 <div className="relative z-10 flex gap-4">
@@ -56,7 +56,7 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
 
                     <div className="flex-1">
                         <h3 className="font-bold text-white text-sm">{t.pwaInstallTitle}</h3>
-                        <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                        <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                             {t.pwaInstallDesc}
                         </p>
 
