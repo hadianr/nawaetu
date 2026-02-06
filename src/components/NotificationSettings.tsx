@@ -131,58 +131,69 @@ export default function NotificationSettings() {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                <div className="flex items-center gap-3">
-                    {isEnabled ? (
-                        <Bell className="w-5 h-5 text-emerald-600" />
-                    ) : (
-                        <BellOff className="w-5 h-5 text-gray-400" />
-                    )}
-                    <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                            {t.prayerNotifications}
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {isEnabled
-                                ? t.notificationsEnabled
-                                : t.notificationsDisabled}
-                        </p>
+            {/* Main Toggle Card - Glassmorphism Style */}
+            <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-2xl">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        {isEnabled ? (
+                            <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 flex items-center justify-center">
+                                <Bell className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                            </div>
+                        ) : (
+                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                <BellOff className="w-5 h-5 text-white/40" />
+                            </div>
+                        )}
+                        <div>
+                            <h3 className="font-semibold text-white">
+                                {t.prayerNotifications}
+                            </h3>
+                            <p className="text-sm text-white/50">
+                                {isEnabled
+                                    ? t.notificationsEnabled
+                                    : t.notificationsDisabled}
+                            </p>
+                        </div>
                     </div>
+                    <Switch
+                        checked={isEnabled}
+                        onCheckedChange={toggleNotifications}
+                        disabled={isLoading}
+                    />
                 </div>
-                <Switch
-                    checked={isEnabled}
-                    onCheckedChange={toggleNotifications}
-                    disabled={isLoading}
-                />
             </div>
 
+            {/* Prayer Selection Card - Glassmorphism Style */}
             {isEnabled && (
-                <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm space-y-3">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+                <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-2xl space-y-4">
+                    <h4 className="font-semibold text-white text-sm">
                         {t.selectPrayerTimes}
                     </h4>
 
-                    {(Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
-                        (prayer) => (
-                            <div
-                                key={prayer}
-                                className="flex items-center justify-between py-2"
-                            >
-                                <span className="text-gray-700 dark:text-gray-300 capitalize">
-                                    {prayerNames[prayer]}
-                                </span>
-                                <Switch
-                                    checked={preferences[prayer]}
-                                    onCheckedChange={() => togglePrayer(prayer)}
-                                />
-                            </div>
-                        )
-                    )}
+                    <div className="space-y-2">
+                        {(Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
+                            (prayer) => (
+                                <div
+                                    key={prayer}
+                                    className="flex items-center justify-between py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200"
+                                >
+                                    <span className="text-white/80 capitalize font-medium">
+                                        {prayerNames[prayer]}
+                                    </span>
+                                    <Switch
+                                        checked={preferences[prayer]}
+                                        onCheckedChange={() => togglePrayer(prayer)}
+                                    />
+                                </div>
+                            )
+                        )}
+                    </div>
 
-                    <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    {/* Location Note - Glassmorphism Info Box */}
+                    <div className="mt-4 p-3 bg-[rgb(var(--color-primary))]/10 backdrop-blur-sm rounded-xl border border-[rgb(var(--color-primary))]/20">
                         <div className="flex items-start gap-2">
-                            <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5" />
-                            <p className="text-sm text-blue-800 dark:text-blue-300">
+                            <MapPin className="w-4 h-4 text-[rgb(var(--color-primary))] mt-0.5 flex-shrink-0" />
+                            <p className="text-xs text-[rgb(var(--color-primary-light))]/90 leading-relaxed">
                                 {t.notificationLocationNote}
                             </p>
                         </div>
