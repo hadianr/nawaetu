@@ -124,7 +124,7 @@ export default function HomeHeader() {
                         </span>
                     </button>
                 </div>
-                npm                 <span className="text-[10px] text-white/80 font-medium px-1 min-h-[0.875rem]">
+                <span className="text-[10px] text-white/80 font-medium px-1 min-h-[0.875rem]">
                     {hijriLabel ? (
                         hijriLabel
                     ) : (
