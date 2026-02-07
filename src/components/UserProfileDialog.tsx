@@ -75,49 +75,49 @@ const AVAILABLE_TITLES = [
         rewards: ["Akses Misi Harian", "Badge Hati"]
     },
     {
-        id: "penjaga",
-        label: "Penjaga Niat",
+        id: "ikhlas",
+        label: "Belajar Ikhlas",
         icon: Compass,
         color: "text-[rgb(var(--color-primary-light))]",
         minLevel: 5,
-        description: "Berjuang menjaga hati di tengah riuh dunia, belajar ikhlas dalam setiap sujud dan sedekah.",
+        description: "Terus belajar menjaga niat tetap ikhlas. Perjalanan panjang yang tak pernah selesai.",
         rewards: ["Unlock Statistik Mingguan", "Akses 'Streak Saver' [PRO]"]
     },
     {
-        id: "pejuang",
-        label: "Pilar Istiqamah",
+        id: "konsisten",
+        label: "Pejuang Konsisten",
         icon: Mountain,
         color: "text-[rgb(var(--color-primary-light))]",
         minLevel: 10,
-        description: "Tak lagi goyah oleh suasana hati. Ibadah telah menjadi kebutuhan, bukan sekadar kewajiban.",
+        description: "Berusaha konsisten meski suasana hati berubah. Istiqamah adalah perjuangan seumur hidup.",
         rewards: ["Unlock Kustomisasi Tema [PRO]", "Mode Fokus [PRO]"]
     },
     {
-        id: "ridha",
-        label: "Pencari Ridha",
-        icon: Gem,
-        color: "text-violet-400",
+        id: "pembaca",
+        label: "Pembaca Setia",
+        icon: BookOpen,
+        color: "text-emerald-400",
         minLevel: 15,
-        description: "Mata tak lagi tertuju pada surga atau neraka, melainkan pada senyum ridha Sang Pencipta. Lelah menjadi Lillah.",
+        description: "Konsisten membaca Al-Quran setiap hari. Mushaf menjadi teman setia di setiap waktu.",
         rewards: ["Unlock Fitur 'Target Hafalan'", "Analisis Ibadah Bulanan [PRO]"]
     },
     {
-        id: "cahaya",
-        label: "Cahaya Taqwa",
+        id: "pagi",
+        label: "Pejuang Fajar",
         icon: Sun,
         color: "text-amber-400",
         minLevel: 20,
-        description: "Ketaatan yang memancar, memberi ketenangan bagi sekitar. Lisannya basah oleh dzikir, hatinya sibuk dengan pikir.",
+        description: "Bangun sebelum fajar, menjaga sholat Subuh dengan istiqamah. Pagi adalah awal keberkahan.",
         rewards: ["Akses Mentor AI (Beta) [PRO]", "Rekomendasi Misi Personal"]
     },
     {
-        id: "kekasih",
-        label: "Kekasih Allah",
-        icon: Crown,
-        color: "text-yellow-300",
+        id: "mukhlis",
+        label: "Hamba yang Berusaha",
+        icon: Gem,
+        color: "text-violet-400",
         minLevel: 30,
-        description: "Puncak perjalanan cinta. Ketika Allah menjadi pendengaran, penglihatan, dan tujuannya.",
-        rewards: ["Badge Mahkota Abadi", "Efek Visual 'Glow' Avatar [PRO]"]
+        description: "Perjalanan panjang menuju keikhlasan. Terus berusaha memperbaiki diri setiap hari.",
+        rewards: ["Badge Permata Istiqamah", "Efek Visual 'Glow' Avatar [PRO]"]
     },
 ];
 
@@ -144,7 +144,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [selectedTier, setSelectedTier] = useState<typeof AVAILABLE_TITLES[0] | null>(null);
     const [isEditingAvatar, setIsEditingAvatar] = useState(false);
     const storage = getStorageService();
-    
+
     const { t } = useLocale();
 
     const loadData = () => {
@@ -156,7 +156,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             STORAGE_KEYS.USER_ARCHETYPE,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
-        
+
         const currentStats = getPlayerStats();
         const currentStreak = getStreak();
 
