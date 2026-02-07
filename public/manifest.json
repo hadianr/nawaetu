@@ -3,19 +3,66 @@
     "short_name": "Nawaetu",
     "description": "Habit tracker ibadah dengan gamifikasi: Daily Missions, Streak, XP. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
+    "orientation": "portrait",
     "background_color": "#000000",
     "theme_color": "#0a0a0a",
+    "categories": [
+        "lifestyle",
+        "productivity",
+        "education"
+    ],
     "icons": [
         {
             "src": "/icon-192x192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         },
         {
             "src": "/icon-512x512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Baca Al-Quran",
+            "short_name": "Quran",
+            "description": "Baca Al-Quran langsung",
+            "url": "/quran",
+            "icons": [
+                {
+                    "src": "/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Tasbih Digital",
+            "short_name": "Tasbih",
+            "description": "Dzikir dengan tasbih digital",
+            "url": "/tasbih",
+            "icons": [
+                {
+                    "src": "/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Arah Kiblat",
+            "short_name": "Kiblat",
+            "description": "Cari arah kiblat",
+            "url": "/kiblat",
+            "icons": [
+                {
+                    "src": "/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
         }
     ]
 }

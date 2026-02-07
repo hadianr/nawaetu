@@ -139,6 +139,14 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://api.aladhan.com" />
 
+        {/* iOS PWA Support */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Nawaetu" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
         {/* Defer script execution for faster LCP */}
         <script
           dangerouslySetInnerHTML={{
