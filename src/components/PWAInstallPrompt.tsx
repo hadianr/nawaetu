@@ -73,9 +73,15 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                             </div>
                         ) : (
                             <Button
-                                onClick={() => {
-                                    promptInstall();
-                                    setIsVisible(false);
+                                onClick={async () => {
+                                    const success = await promptInstall();
+                                    if (success) {
+                                        setIsVisible(false);
+                                    } else {
+                                        // If install failed, keep prompt visible
+                                        // User can try again or dismiss manually
+                                        console.log('[PWA Install] Install attempt failed, keeping prompt visible');
+                                    }
                                 }}
                                 className="mt-3 w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 text-xs"
                             >

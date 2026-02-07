@@ -40,13 +40,35 @@ export function usePWAInstall() {
     }, []);
 
     const promptInstall = async () => {
-        if (!deferredPrompt) return;
+        if (!deferredPrompt) {
+            console.warn('[PWA Install] No deferred prompt available');
+            return false;
+        }
 
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        try {
+            console.log('[PWA Install] Showing install prompt...');
 
-        if (outcome === "accepted") {
+            // Show the install prompt
+            await deferredPrompt.prompt();
+
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+
+            console.log(`[PWA Install] User response: ${outcome}`);
+
+            if (outcome === 'accepted') {
+                console.log('[PWA Install] User accepted the install prompt');
+                setDeferredPrompt(null);
+                return true;
+            } else {
+                console.log('[PWA Install] User dismissed the install prompt');
+                return false;
+            }
+        } catch (error) {
+            console.error('[PWA Install] Error showing install prompt:', error);
+            // Reset the prompt so user can try again
             setDeferredPrompt(null);
+            return false;
         }
     };
 
