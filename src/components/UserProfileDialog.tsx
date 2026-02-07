@@ -71,17 +71,19 @@ const AVAILABLE_TITLES = [
         icon: Heart,
         color: "text-rose-400",
         minLevel: 1,
-        description: "Langkah pertama seorang hamba yang mulai merindukan pulang, mengetuk pintu langit dengan doa-doa lirih.",
-        rewards: ["Akses Misi Harian", "Badge Hati"]
+        description: "Langkah pertama dalam perjalanan spiritual. Setiap langkah kecil adalah awal yang berharga.",
+        rewards: ["Badge Hati 💗", "Pesan Motivasi Harian", "Akses Komunitas Nawaetu"],
+        infaqFeatures: []
     },
     {
         id: "ikhlas",
         label: "Belajar Ikhlas",
-        icon: Compass,
+        icon: Heart,
         color: "text-[rgb(var(--color-primary-light))]",
         minLevel: 5,
         description: "Terus belajar menjaga niat tetap ikhlas. Perjalanan panjang yang tak pernah selesai.",
-        rewards: ["Unlock Statistik Mingguan", "Akses 'Streak Saver' [PRO]"]
+        rewards: ["Statistik Mingguan 📊", "Insight Pola Ibadah", "Doa Penjaga Niat"],
+        infaqFeatures: ["Streak Saver"]
     },
     {
         id: "konsisten",
@@ -90,7 +92,8 @@ const AVAILABLE_TITLES = [
         color: "text-[rgb(var(--color-primary-light))]",
         minLevel: 10,
         description: "Berusaha konsisten meski suasana hati berubah. Istiqamah adalah perjuangan seumur hidup.",
-        rewards: ["Unlock Kustomisasi Tema [PRO]", "Mode Fokus [PRO]"]
+        rewards: ["Badge Gunung Istiqamah ⛰️", "Laporan Konsistensi 10 Hari", "Tips Menjaga Konsistensi"],
+        infaqFeatures: ["Kustomisasi Tema", "Mode Fokus"]
     },
     {
         id: "pembaca",
@@ -99,7 +102,8 @@ const AVAILABLE_TITLES = [
         color: "text-emerald-400",
         minLevel: 15,
         description: "Konsisten membaca Al-Quran setiap hari. Mushaf menjadi teman setia di setiap waktu.",
-        rewards: ["Unlock Fitur 'Target Hafalan'", "Analisis Ibadah Bulanan [PRO]"]
+        rewards: ["Badge Mushaf 📖", "Statistik Bacaan Quran", "Rekomendasi Surah Harian", "Target Hafalan"],
+        infaqFeatures: ["Analisis Ibadah Bulanan"]
     },
     {
         id: "pagi",
@@ -108,16 +112,18 @@ const AVAILABLE_TITLES = [
         color: "text-amber-400",
         minLevel: 20,
         description: "Bangun sebelum fajar, menjaga sholat Subuh dengan istiqamah. Pagi adalah awal keberkahan.",
-        rewards: ["Akses Mentor AI (Beta) [PRO]", "Rekomendasi Misi Personal"]
+        rewards: ["Badge Matahari Fajar ☀️", "Statistik Sholat Subuh", "Doa Bangun Pagi", "Rekomendasi Misi Personal"],
+        infaqFeatures: ["Mentor AI (Beta)"]
     },
     {
         id: "mukhlis",
         label: "Hamba yang Berusaha",
-        icon: Gem,
+        icon: Sprout,
         color: "text-violet-400",
         minLevel: 30,
         description: "Perjalanan panjang menuju keikhlasan. Terus berusaha memperbaiki diri setiap hari.",
-        rewards: ["Badge Permata Istiqamah", "Efek Visual 'Glow' Avatar [PRO]"]
+        rewards: ["Badge Tunas Keikhlasan 🌱", "Refleksi Perjalanan 30 Hari", "Pesan Khusus dari Tim Nawaetu", "Sertifikat Istiqamah Digital"],
+        infaqFeatures: ["Efek Visual 'Glow' Avatar"]
     },
 ];
 
@@ -341,56 +347,84 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 )}
                             </div>
 
-                            {/* Philosophy */}
+                            {/* Makna Gelar */}
                             <div className="bg-white/[0.03] p-5 rounded-2xl border border-white/5">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">{t?.profilePhilosophy}</h3>
-                                <p className="text-sm text-slate-300 leading-relaxed italic">
-                                    "{selectedTier.description}"
+                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Makna Gelar</h3>
+                                <p className="text-sm text-slate-300 leading-relaxed">
+                                    {selectedTier.description}
                                 </p>
                             </div>
 
-                            {/* Rewards */}
+                            {/* Pencapaian Kamu (Free Rewards) */}
                             <div className="space-y-3">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">{t?.profileRewards}</h3>
-                                {selectedTier.rewards?.map((reward, i) => {
-                                    const isPrem = reward.includes("[PRO]");
-                                    const displayReward = reward.replace(" [PRO]", "");
-                                    const isLockedPremium = isPrem && !isMuhsinin;
+                                <div className="flex items-center gap-2 px-1">
+                                    <h3 className="text-xs font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest">Pencapaian Kamu</h3>
+                                    <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
+                                </div>
+                                {selectedTier.rewards?.map((reward, i) => (
+                                    <div
+                                        key={i}
+                                        className="flex items-center gap-3 p-3 border rounded-xl bg-gradient-to-r from-[rgb(var(--color-primary-dark))]/10 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20"
+                                    >
+                                        <div className="p-2 rounded-lg shrink-0 bg-[rgb(var(--color-primary))]/10">
+                                            <Check className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <span className="text-sm font-medium text-slate-200">
+                                                {reward}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
-                                    return (
+                            {/* Fitur Muhsinin (Infaq Features) */}
+                            {selectedTier.infaqFeatures && selectedTier.infaqFeatures.length > 0 && (
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 px-1">
+                                        <h3 className="text-xs font-bold text-amber-400 uppercase tracking-widest">Fitur Muhsinin</h3>
+                                        <Crown className="w-3 h-3 text-amber-400" />
+                                    </div>
+                                    {selectedTier.infaqFeatures.map((feature, i) => (
                                         <div
                                             key={i}
-                                            onClick={() => isLockedPremium && setShowInfaqModal(true)}
+                                            onClick={() => !isMuhsinin && setShowInfaqModal(true)}
                                             className={cn(
                                                 "flex items-center gap-3 p-3 border rounded-xl transition-all",
-                                                isLockedPremium
-                                                    ? "bg-amber-500/5 border-amber-500/20 cursor-pointer hover:bg-amber-500/10"
-                                                    : "bg-gradient-to-r from-slate-900/80 to-slate-900/40 border-white/5"
+                                                isMuhsinin
+                                                    ? "bg-gradient-to-r from-amber-500/10 to-orange-500/5 border-amber-500/20"
+                                                    : "bg-amber-500/5 border-amber-500/20 cursor-pointer hover:bg-amber-500/10"
                                             )}
                                         >
-                                            <div className={cn(
-                                                "p-2 rounded-lg shrink-0",
-                                                isLockedPremium ? "bg-amber-500/10" : "bg-white/5"
-                                            )}>
-                                                {isLockedPremium ? (
-                                                    <Lock className="w-3 h-3 text-amber-500" />
+                                            <div className="p-2 rounded-lg shrink-0 bg-amber-500/10">
+                                                {isMuhsinin ? (
+                                                    <Check className="w-3 h-3 text-amber-400" />
                                                 ) : (
-                                                    <Sparkles className="w-3 h-3 text-amber-400" />
+                                                    <Lock className="w-3 h-3 text-amber-500" />
                                                 )}
                                             </div>
                                             <div className="flex-1">
-                                                <span className={cn("text-sm font-medium", isLockedPremium ? "text-amber-200" : "text-slate-200")}>
-                                                    {displayReward}
+                                                <span className={cn("text-sm font-medium", isMuhsinin ? "text-amber-200" : "text-amber-300")}>
+                                                    {feature}
                                                 </span>
-                                                {isLockedPremium && (
-                                                    <p className="text-[10px] text-amber-500/60 leading-none mt-0.5">PRO Only</p>
+                                                {!isMuhsinin && (
+                                                    <p className="text-[10px] text-amber-500/60 leading-none mt-0.5">Khusus Muhsinin</p>
                                                 )}
                                             </div>
-                                            {isLockedPremium && <Crown className="w-3 h-3 text-amber-500" />}
+                                            {!isMuhsinin && <Crown className="w-3 h-3 text-amber-500" />}
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                    ))}
+                                    {!isMuhsinin && (
+                                        <button
+                                            onClick={() => setShowInfaqModal(true)}
+                                            className="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold h-10 rounded-xl transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <Heart className="w-4 h-4" />
+                                            Dukung Nawaetu
+                                        </button>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Action Button */}
                             {stats.level >= selectedTier.minLevel && profile.title !== selectedTier.label && (
