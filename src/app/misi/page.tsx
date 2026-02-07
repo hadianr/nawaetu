@@ -13,6 +13,10 @@ import { checkMissionValidation } from "@/lib/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { Metadata } from "next";
+
+// Note: Metadata export cannot be used in client components
+// SEO metadata is handled in layout.tsx for this page
 
 const storage = getStorageService();
 
@@ -54,9 +58,9 @@ export default function MisiPage() {
             STORAGE_KEYS.USER_GENDER,
             STORAGE_KEYS.COMPLETED_MISSIONS
         ]).values();
-        
+
         setGender(savedGender as Gender);
-        
+
         const allMissions = getMissionsForGender(savedGender as Gender);
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         setMissions(localizedMissions);

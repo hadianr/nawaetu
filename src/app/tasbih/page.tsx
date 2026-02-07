@@ -1,6 +1,16 @@
 import { Suspense } from "react";
 import TasbihCounter from "@/components/TasbihCounter";
 import { Loader2 } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Tasbih Digital Online - Counter Dzikir Gratis | Nawaetu",
+    description: "Tasbih digital online untuk dzikir harian. Counter tasbih gratis dengan fitur simpan otomatis, target dzikir, dan riwayat. Praktis untuk Subhanallah, Alhamdulillah, Allahu Akbar.",
+    keywords: ["Tasbih Digital", "Counter Dzikir", "Tasbih Online", "Dzikir Counter", "Tasbih Gratis", "Subhanallah Counter"],
+    alternates: {
+        canonical: "https://nawaetu.com/tasbih",
+    },
+};
 
 export default function TasbihPage() {
     return (
