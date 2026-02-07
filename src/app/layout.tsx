@@ -55,11 +55,29 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Nawaetu - #NiatAjaDulu | Habit Tracker Ibadah dengan Gamifikasi",
-    template: "%s | Nawaetu"
+    default: "Nawaetu - Aplikasi Muslim Lengkap | Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital",
+    template: "%s | Nawaetu - Aplikasi Muslim #NiatAjaDulu"
   },
-  description: "Nawaetu - Build ibadah habits dengan gamifikasi seru: Daily Missions, Streak System, XP & Leveling. Lengkap dengan Asisten Muslim AI, Jadwal Sholat, Al Quran, dan Kiblat. #NiatAjaDulu",
-  keywords: ["Nawaetu", "NiatAjaDulu", "Gamifikasi Ibadah", "Habit Tracker", "Daily Missions", "Streak System", "Jadwal Sholat", "Al Quran", "Asisten Muslim AI"],
+  description: "Nawaetu - Aplikasi Muslim lengkap dengan Habit Tracker Ibadah, Jadwal Sholat Akurat, Al Quran Online & Terjemahan, Arah Kiblat, Tasbih Digital, dan Asisten AI. Gamifikasi seru: Daily Missions, Streak System, XP & Leveling. Gratis! #NiatAjaDulu",
+  keywords: [
+    // Brand
+    "Nawaetu", "NiatAjaDulu", "#NiatAjaDulu",
+    // Primary Keywords (Indonesian)
+    "aplikasi muslim", "aplikasi muslim terbaik", "aplikasi muslim lengkap",
+    "aplikasi ibadah", "aplikasi sholat", "aplikasi al quran",
+    // Features
+    "jadwal sholat", "jadwal sholat akurat", "waktu sholat", "adzan otomatis",
+    "al quran online", "baca quran online", "quran digital", "quran terjemahan",
+    "arah kiblat", "kiblat online", "compass kiblat", "qibla direction",
+    "tasbih digital", "dzikir counter", "tasbih online",
+    // Gamification
+    "habit tracker ibadah", "gamifikasi ibadah", "daily missions islam",
+    "streak ibadah", "motivasi ibadah", "konsisten ibadah",
+    // AI
+    "asisten muslim ai", "chatbot islam", "tanya ustadz online",
+    // General
+    "aplikasi ramadan", "aplikasi puasa", "panduan muslim"
+  ],
   authors: [{ name: "Nawaetu Team" }],
   creator: "Hadian R",
   publisher: "Nawaetu",
@@ -68,18 +86,27 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Nawaetu - #NiatAjaDulu",
-    description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak, XP. Luruskan niat, konsisten beramal.",
+    title: "Nawaetu - Aplikasi Muslim Lengkap #NiatAjaDulu",
+    description: "Aplikasi Muslim lengkap: Jadwal Sholat Akurat, Al Quran Online, Arah Kiblat, Tasbih Digital, Habit Tracker Ibadah dengan Gamifikasi. Gratis!",
     url: "https://nawaetu.com",
     siteName: "Nawaetu",
     locale: "id_ID",
     type: "website",
+    images: [
+      {
+        url: "/icon-512x512.png",
+        width: 512,
+        height: 512,
+        alt: "Nawaetu - Aplikasi Muslim Lengkap",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nawaetu - #NiatAjaDulu",
-    description: "Habit tracker ibadah dengan gamifikasi! Daily Missions, Streak System, Al Quran, & Jadwal Sholat.",
+    title: "Nawaetu - Aplikasi Muslim Lengkap #NiatAjaDulu",
+    description: "Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital, Habit Tracker Ibadah. Gamifikasi seru: Daily Missions, Streak, XP. Gratis!",
     creator: "@nawaetuapp",
+    images: ["/icon-512x512.png"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -90,26 +117,82 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Nawaetu",
-  "applicationCategory": "LifestyleApplication",
-  "operatingSystem": "Web, Android, iOS",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "IDR"
+// Comprehensive Structured Data for SEO
+const jsonLdSchemas = [
+  // 1. SoftwareApplication Schema
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Nawaetu",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Web, Android, iOS",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "IDR"
+    },
+    "description": "Aplikasi Muslim lengkap dengan Jadwal Sholat, Al Quran Online, Arah Kiblat, Tasbih Digital, dan Habit Tracker Ibadah dengan gamifikasi.",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1024"
+    },
+    "screenshot": "https://nawaetu.com/icon-512x512.png",
+    "softwareVersion": "1.3.0",
+    "author": {
+      "@type": "Organization",
+      "name": "Nawaetu Team"
+    }
   },
-  "description": "Aplikasi Muslim lengkap untuk jadwal sholat, arah kiblat, dan membaca Al Quran online.",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.8",
-    "ratingCount": "1024"
+  // 2. Organization Schema
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Nawaetu",
+    "url": "https://nawaetu.com",
+    "logo": "https://nawaetu.com/icon-512x512.png",
+    "description": "Platform aplikasi Muslim lengkap untuk membantu umat Islam dalam beribadah sehari-hari.",
+    "sameAs": [
+      "https://twitter.com/nawaetuapp",
+      "https://instagram.com/nawaetuapp"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Support",
+      "availableLanguage": ["Indonesian", "English"]
+    }
+  },
+  // 3. WebSite Schema with Search Action
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Nawaetu",
+    "url": "https://nawaetu.com",
+    "description": "Aplikasi Muslim lengkap: Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital, Habit Tracker Ibadah.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://nawaetu.com/quran?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    },
+    "inLanguage": "id-ID"
   }
-};
+];
 
 import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
@@ -163,10 +246,14 @@ export default function RootLayout({
       >
         <WebVitals />
         <AnalyticsLoader />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {/* Structured Data - Multiple Schemas */}
+        {jsonLdSchemas.map((schema, index) => (
+          <script
+            key={index}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
         <LocaleProvider>
           <ThemeProvider>
             <InfaqProvider>
