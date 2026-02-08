@@ -523,7 +523,7 @@ Nawaetu is licensed under the **MIT License**. See [LICENSE](LICENSE) file untuk
 - UI Components by [shadcn/ui](https://ui.shadcn.com)
 - AI powered by [Google Gemini](https://gemini.google.com) & [Groq](https://groq.com)
 
----
+----
 
 **"Innama al-a'malu bin-niyyat" - Start with intention, end with blessings.**
 

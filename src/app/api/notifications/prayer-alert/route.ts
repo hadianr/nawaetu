@@ -119,6 +119,46 @@ export async function POST(req: NextRequest) {
                         prayer: currentPrayer,
                         timestamp: new Date().toISOString(),
                     },
+                    // iOS-specific APNS configuration for background notifications
+                    apns: {
+                        payload: {
+                            aps: {
+                                alert: {
+                                    title: `🕌 Waktu ${prayerNames[currentPrayer]}`,
+                                    body: `Sudah masuk waktu sholat ${prayerNames[currentPrayer]}. Yuk, segera tunaikan sholat!`,
+                                },
+                                sound: "default",
+                                badge: 1,
+                                // Enable background notification delivery
+                                "content-available": 1,
+                            },
+                        },
+                        headers: {
+                            // High priority for timely delivery
+                            "apns-priority": "10",
+                            // Alert type notification
+                            "apns-push-type": "alert",
+                        },
+                    },
+                    // Android-specific configuration
+                    android: {
+                        priority: "high" as const,
+                        notification: {
+                            channelId: "prayer_alerts",
+                            priority: "high" as const,
+                            defaultSound: true,
+                            defaultVibrateTimings: true,
+                        },
+                    },
+                    // Web push configuration
+                    webpush: {
+                        notification: {
+                            icon: "/icon.png",
+                            badge: "/icon.png",
+                            requireInteraction: true,
+                            tag: "prayer_alert",
+                        },
+                    },
                     token: subscription.token,
                 };
 
