@@ -3,6 +3,8 @@
  * Localized text for settings page in Indonesian and English
  */
 
+import { APP_CONFIG } from "@/config/app-config";
+
 export const SETTINGS_TRANSLATIONS = {
   id: {
     // Header
@@ -62,7 +64,7 @@ export const SETTINGS_TRANSLATIONS = {
     aboutTagline: "Luruskan Niat, Sempurnakan Ibadah",
     aboutDescription: "Teman ibadah digital yang menjaga setiap langkahmu tetap sesuai tuntunan Al-Qur'an & Sunnah.",
     aboutHashtag: "#LuruskanNiat",
-    aboutVersion: "v1.3.0 • Production",
+    aboutVersion: `v${APP_CONFIG.version} • ${APP_CONFIG.status}`,
     aboutTapForInfo: "Ketuk untuk info lengkap",
     aboutWhatsNew: "Apa yang Baru",
     aboutUpdate1: "Riwayat Chat AI tersimpan antar sesi",
@@ -77,7 +79,7 @@ export const SETTINGS_TRANSLATIONS = {
     aboutWhatIsTitle: "Apa itu Nawaetu?",
     aboutApproachTitle: "Pendekatan Kami",
     aboutApproachDesc: "Kami menggabungkan panduan ibadah dengan gamifikasi (Misi & Streak) serta asisten AI untuk membangun kebiasaan yang istiqomah.",
-    aboutLastUpdate: "Diperbarui: 5 Februari 2026",
+    aboutLastUpdate: `Diperbarui: ${APP_CONFIG.lastUpdated}`,
 
     // Profile Dialog
     profileGenderLabel: "Jenis Kelamin",
@@ -495,7 +497,7 @@ export const SETTINGS_TRANSLATIONS = {
     aboutTagline: "#NiatAjaDulu",
     aboutDescription: "Your digital worship companion for consistent habits based on Quran & Sunnah.",
     aboutHashtag: "#PerfectYourIntention",
-    aboutVersion: "v1.3.0 • Production",
+    aboutVersion: `v${APP_CONFIG.version} • ${APP_CONFIG.status}`,
     aboutTapForInfo: "Tap for more info",
     aboutWhatsNew: "What's New",
     aboutUpdate1: "Mentor AI Chat History (Multi-session support)",
@@ -510,7 +512,7 @@ export const SETTINGS_TRANSLATIONS = {
     aboutWhatIsTitle: "What is Nawaetu?",
     aboutApproachTitle: "Our Approach",
     aboutApproachDesc: "We blend worship guidance with gamification (Missions & Streak) and AI to help you build steadfast habits.",
-    aboutLastUpdate: "Updated: February 5, 2026",
+    aboutLastUpdate: `Updated: ${APP_CONFIG.lastUpdated}`,
 
     // Profile Dialog
     profileGenderLabel: "Gender",

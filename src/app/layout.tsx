@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { APP_CONFIG } from "@/config/app-config";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -151,7 +152,7 @@ const jsonLdSchemas = [
       "ratingCount": "1024"
     },
     "screenshot": "https://nawaetu.com/icon-512x512.png",
-    "softwareVersion": "1.3.0",
+    "softwareVersion": APP_CONFIG.version,
     "author": {
       "@type": "Organization",
       "name": "Nawaetu Team"

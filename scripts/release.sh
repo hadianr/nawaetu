@@ -89,6 +89,13 @@ if ! git diff-index --quiet HEAD --; then
     fi
     
     echo -e "${BLUE}📝 Committing version bump changes...${NC}"
+    
+    # Update app-config.ts version and date
+    CURRENT_DATE=$(date +%Y-%m-%d)
+    sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-config.ts
+    sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
+    echo -e "${GREEN}✅ Dynamic app-config.ts updated${NC}"
+
     git add .
     git commit -m "chore: release $VERSION" -m "- Update package.json version
 - Update CHANGELOG.md
