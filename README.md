@@ -5,11 +5,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.3.0-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.4.0-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Current Version: v1.3.0** | [See Changelog](CHANGELOG.md) | [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
+**Current Version: v1.4.0** | [See Changelog](CHANGELOG.md) | [GitHub Releases](https://github.com/hadianr/nawaetu/releases)
 
 **Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah di tengah hiruk-pikuk kehidupan modern. Kami percaya setiap amal dimulai dari **niat yang lurus**—dan gamification bisa jadi motivasi untuk konsisten beribadah.
 
@@ -34,9 +34,15 @@ Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kam
 
 ---
 
-## 🌟 Fitur Unggulan (v1.3.0)
+## 🌟 Fitur Unggulan (v1.4.0)
 
-### 1. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor (Updated)
+### 1. 🔔 iOS & Background Notifications (New)
+*   **iOS Fix**: Notifikasi tetap muncul di iPhone meskipun app di background/lock screen [NEW v1.4.0]
+*   **Hybrid Sync**: Kombinasi Server Sync (1x/hari) & Client-side notification (real-time) [NEW v1.4.0]
+*   **APNS Optimized**: Payload khusus Apple untuk background delivery yang handal
+*   **Silent Token Refresh**: Memastikan token FCM tetap fresh di sisi server secara otomatis
+
+### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor (Updated)
 *   **Smart Rate Limiting**: Limit pintar (5x/hari Free, 25x/hari Muhsinin) dengan auto-reset saat upgrade [NEW v1.3.0]
 *   **Chat History**: Percakapan tersimpan antar sesi, lanjut ngobrol kapan aja [NEW v1.3.0]
 *   **Direct & Concise**: Jawaban AI lebih ringkas, to-the-point, dan tanpa basa-basi berlebih [NEW v1.3.0]
@@ -138,6 +144,8 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 *   **Prayer Times API** - Accurate prayer schedules
 *   **Kemenag Quran API** - Surah, terjemahan & tafsir Indonesia
 *   **Quran.com API (Uthmani)** - Arabic text dengan harakat lengkap
+*   **Firebase Admin SDK** - Server-side messaging & notifications [NEW v1.4.0]
+*   **Vercel Cron** - Scheduled background tasks [NEW v1.4.0]
 
 ### Backend & Database (v1.2.0 Ready)
 *   **Drizzle ORM** - TypeScript ORM for scaling
@@ -533,4 +541,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: February 5, 2026*
+*Last updated: February 8, 2026*

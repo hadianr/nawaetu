@@ -5,6 +5,37 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-02-08
+
+### Added
+- **iOS Background Notifications Fix**: 
+  - Reliable delivery of prayer alerts on iOS (Safari, Chrome, etc.)
+  - Server-side notification triggering via Firebase Admin SDK
+  - Scheduled delivery using Vercel Cron Jobs
+  - APNS payload optimization for background wakeup and content-available
+- **Hybrid Notification Approach**:
+  - Daily server-side token sync (Vercel Hobby plan compatible)
+  - Real-time client-side prayer time detection (every 5 seconds)
+  - Seamless fallback between server-side health checks and client-side alerts
+- **Advanced Notification Debugging**:
+  - `scripts/test-notification.sh` for endpoint verification
+  - Comprehensive documentation for iOS setup and troubleshooting
+- **New Documentation**:
+  - [IOS_NOTIFICATION_SETUP.md](docs/IOS_NOTIFICATION_SETUP.md)
+  - [HYBRID_NOTIFICATION_APPROACH.md](docs/HYBRID_NOTIFICATION_APPROACH.md)
+  - [VERCEL_CRON_WORKAROUND.md](docs/VERCEL_CRON_WORKAROUND.md)
+
+### Changed
+- **Cron Configuration**: Switched to daily sync schedule (0 4 * * *) to support Vercel Hobby plan
+- **Prayer Alert API**: Refactored as a silent background sync job to keep tokens fresh
+- **README**: Full update with iOS notification setup and versioning
+
+### Technical
+- Integrated `firebase-admin` SDK
+- Implemented Base64 service account credential handling for secure Vercel deployment
+- Configured dynamic `vercel.json` cron paths
+
+---
 ## [1.3.0] - 2026-02-05
 
 ### Added
