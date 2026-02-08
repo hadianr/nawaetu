@@ -23,8 +23,9 @@ elif [ "$ENV" = "local" ]; then
     API_URL="http://localhost:3000"
     echo -e "${YELLOW}Testing LOCAL environment${NC}"
 else
-    API_URL="$ENV"
-    echo -e "${YELLOW}Testing custom URL: $ENV${NC}"
+    # Strip trailing slash if present
+    API_URL="${ENV%/}"
+    echo -e "${YELLOW}Testing custom URL: $API_URL${NC}"
 fi
 
 # Get CRON_SECRET from environment or use default for local
