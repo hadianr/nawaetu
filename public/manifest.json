@@ -1,7 +1,7 @@
 {
-    "name": "Nawaetu - #NiatAjaDulu | Teman Ibadah Muslim",
+    "name": "Nawaetu - #StartWithIntention | Muslim Habit Tracker",
     "short_name": "Nawaetu",
-    "description": "Habit tracker ibadah dengan gamifikasi: Daily Missions, Streak, XP. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
+    "description": "Islamic habit tracker with gamification: Daily Missions, Streak, XP. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
     "gcm_sender_id": "103953800507",
     "start_url": "/",
     "scope": "/",

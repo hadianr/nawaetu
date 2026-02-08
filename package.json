@@ -9,6 +9,7 @@
     "safari >= 16",
     "ios >= 16"
   ],
+  "description": "Gamified Islamic habit tracker app featuring Al-Quran, Prayer Times, Qibla Compass, and AI Spiritual Assistant. Built with Next.js and TypeScript.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

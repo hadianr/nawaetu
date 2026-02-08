@@ -8,5 +8,6 @@ export const APP_CONFIG = {
     version: "1.4.0", // Updated automatically by release script
     status: "Production",
     lastUpdated: "2026-02-08",
-    hashtag: "#NiatAjaDulu",
+    hashtag: "#StartWithIntention",
+    description: "Islamic habit tracker with gamification: Daily Missions, Streak, XP. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
 };
