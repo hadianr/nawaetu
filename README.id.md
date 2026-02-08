@@ -48,7 +48,7 @@ Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kam
 *   **Direct & Concise**: Jawaban AI lebih ringkas, to-the-point, dan tanpa basa-basi berlebih [NEW v1.3.0]
 *   **Dalil-Based**: Semua jawaban AI disertai **Dalil Al-Qur'an & Hadits Shahih**
 *   **No Judgment Zone**: Curhat masalah ibadah atau tanya hukum Islam dengan privasi penuh
-*   **Multi-Model**: Powered by Google Gemini 2.0 Flash & Groq Llama 3.3 70B
+*   **Multi-Model**: Powered by Google Gemini 2.5 Flash-Lite & Groq Llama 3.3 70B
 
 ### 2. 📖 Al-Qur'an Digital - Mushaf di Genggaman
 *   **Verse-by-Verse Audio**: Tap ayat buat denger murattal (Mishary Rashid, dll)
@@ -139,7 +139,7 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 *   **React 19** - Latest React with concurrent features
 
 ### AI & APIs
-*   **Google Gemini 2.0 Flash** - Fast & accurate AI responses
+*   **Google Gemini 2.5 Flash-Lite** - Fast & accurate AI responses
 *   **Groq Llama 3.3 70B** - High-performance inference
 *   **Prayer Times API** - Accurate prayer schedules
 *   **Kemenag Quran API** - Surah, terjemahan & tafsir Indonesia

@@ -39,7 +39,7 @@ Nawaetu combines habit-building psychology with Islamic principles. In an era fu
 *   **APNS Optimized**: Custom payloads designed for iOS background delivery.
 
 ### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor
-*   **Smart Assistant**: Powered by Google Gemini 2.0 Flash & Groq Llama 3 for fast, accurate Islamic guidance.
+*   **Smart Assistant**: Powered by Google Gemini 2.5 Flash-Lite & Groq Llama 3 for fast, accurate Islamic guidance.
 *   **Dalil-Backed**: All answers include references from the Quran & Sahih Hadith.
 *   **Chat History**: Continue your spiritual conversations across sessions.
 
@@ -81,7 +81,7 @@ Built with bleeding-edge technology for the best developer experience:
 *   **Vercel Cron** - Scheduled tasks
 
 ### AI & APIs
-*   **Google Gemini 2.0 Flash**
+*   **Google Gemini 2.5 Flash-Lite**
 *   **Groq Llama 3.3 70B**
 *   **Aladhan API** (Prayer Times)
 *   **Quran.com API**
