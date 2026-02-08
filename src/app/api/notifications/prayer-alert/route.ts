@@ -4,18 +4,11 @@ import { pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { messagingAdmin } from "@/lib/notifications/firebase-admin";
 
-// Prayer time calculation helper (simplified - you may want to use a library like adhan-js)
-interface PrayerTimes {
-    fajr: string;
-    dhuhr: string;
-    asr: string;
-    maghrib: string;
-    isha: string;
-}
-
 /**
- * API endpoint for sending daily prayer alerts
- * This should be called by a cron job (e.g., Vercel Cron)
+ * API endpoint for daily prayer notification sync
+ * Runs once per day via Vercel Cron (Hobby plan compatible)
+ * Sends a silent background sync notification to keep FCM tokens fresh
+ * Actual prayer time notifications are handled client-side via useAdhanNotifications hook
  */
 export async function POST(req: NextRequest) {
     try {
@@ -27,7 +20,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        console.log("=== Daily Prayer Alert Job Started ===");
+        console.log("=== Daily Prayer Notification Sync Started ===");
         console.log("Time:", new Date().toISOString());
 
         // Get all active subscriptions
@@ -47,122 +40,41 @@ export async function POST(req: NextRequest) {
             total: subscriptions.length,
             sent: 0,
             failed: 0,
-            skipped: 0,
             errors: [] as string[],
         };
 
-        // Get current prayer time (simplified - in production, calculate based on location)
-        const currentHour = new Date().getHours();
-        const currentMinute = new Date().getMinutes();
-        let currentPrayer: keyof PrayerTimes | null = null;
-
-        // Determine which prayer time it is (example times for Jakarta)
-        // In production, calculate based on user's location and timezone
-        if (currentHour === 4 && currentMinute >= 30 && currentMinute < 35) {
-            currentPrayer = "fajr";
-        } else if (currentHour === 12 && currentMinute >= 0 && currentMinute < 5) {
-            currentPrayer = "dhuhr";
-        } else if (currentHour === 15 && currentMinute >= 15 && currentMinute < 20) {
-            currentPrayer = "asr";
-        } else if (currentHour === 18 && currentMinute >= 0 && currentMinute < 5) {
-            currentPrayer = "maghrib";
-        } else if (currentHour === 19 && currentMinute >= 15 && currentMinute < 20) {
-            currentPrayer = "isha";
-        }
-
-        if (!currentPrayer) {
-            console.log("Not a prayer time notification window");
-            return NextResponse.json({
-                message: "Not a prayer time notification window",
-                currentTime: `${currentHour}:${currentMinute}`,
-            });
-        }
-
-        console.log(`Current prayer time: ${currentPrayer}`);
-
-        // Prayer names in Indonesian
-        const prayerNames: Record<keyof PrayerTimes, string> = {
-            fajr: "Subuh",
-            dhuhr: "Dzuhur",
-            asr: "Ashar",
-            maghrib: "Maghrib",
-            isha: "Isya",
+        // Send a daily sync notification to keep tokens fresh
+        // This is a silent "health check" notification
+        const syncMessage = {
+            data: {
+                type: "daily_sync",
+                timestamp: new Date().toISOString(),
+                message: "Prayer times synced for today"
+            },
+            // Silent notification - won't show to user
+            apns: {
+                payload: {
+                    aps: {
+                        "content-available": 1,
+                    },
+                },
+                headers: {
+                    "apns-priority": "5",
+                    "apns-push-type": "background",
+                },
+            },
+            android: {
+                priority: "normal" as const,
+            },
         };
 
-        // Send notifications to eligible users
+        // Send sync notification to all active subscriptions
         for (const subscription of subscriptions) {
             try {
-                // Check if user has preferences
-                let shouldSend = true;
-                if (subscription.prayerPreferences) {
-                    try {
-                        const prefs = JSON.parse(subscription.prayerPreferences);
-                        shouldSend = prefs[currentPrayer] === true;
-                    } catch (e) {
-                        console.error("Failed to parse preferences:", e);
-                    }
-                }
-
-                if (!shouldSend) {
-                    results.skipped++;
-                    continue;
-                }
-
-                // Send notification
-                const message = {
-                    notification: {
-                        title: `🕌 Waktu ${prayerNames[currentPrayer]}`,
-                        body: `Sudah masuk waktu sholat ${prayerNames[currentPrayer]}. Yuk, segera tunaikan sholat!`,
-                    },
-                    data: {
-                        type: "prayer_alert",
-                        prayer: currentPrayer,
-                        timestamp: new Date().toISOString(),
-                    },
-                    // iOS-specific APNS configuration for background notifications
-                    apns: {
-                        payload: {
-                            aps: {
-                                alert: {
-                                    title: `🕌 Waktu ${prayerNames[currentPrayer]}`,
-                                    body: `Sudah masuk waktu sholat ${prayerNames[currentPrayer]}. Yuk, segera tunaikan sholat!`,
-                                },
-                                sound: "default",
-                                badge: 1,
-                                // Enable background notification delivery
-                                "content-available": 1,
-                            },
-                        },
-                        headers: {
-                            // High priority for timely delivery
-                            "apns-priority": "10",
-                            // Alert type notification
-                            "apns-push-type": "alert",
-                        },
-                    },
-                    // Android-specific configuration
-                    android: {
-                        priority: "high" as const,
-                        notification: {
-                            channelId: "prayer_alerts",
-                            priority: "high" as const,
-                            defaultSound: true,
-                            defaultVibrateTimings: true,
-                        },
-                    },
-                    // Web push configuration
-                    webpush: {
-                        notification: {
-                            icon: "/icon.png",
-                            badge: "/icon.png",
-                            requireInteraction: true,
-                            tag: "prayer_alert",
-                        },
-                    },
+                await messagingAdmin.send({
+                    ...syncMessage,
                     token: subscription.token,
-                };
-
-                await messagingAdmin.send(message);
+                });
                 results.sent++;
 
                 // Update last used timestamp
@@ -187,20 +99,21 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        console.log("=== Daily Prayer Alert Job Completed ===");
+        console.log("=== Daily Prayer Notification Sync Completed ===");
         console.log("Results:", results);
 
         return NextResponse.json({
             success: true,
-            prayer: currentPrayer,
+            message: "Daily sync completed",
             results,
+            note: "Prayer time notifications are handled client-side. This is a daily token refresh.",
         });
 
     } catch (error: any) {
-        console.error("=== Error in daily prayer alert job ===");
+        console.error("=== Error in daily prayer sync job ===");
         console.error(error);
         return NextResponse.json({
-            error: "Failed to send prayer alerts",
+            error: "Failed to complete daily sync",
             details: error?.message || "Unknown error",
         }, { status: 500 });
     }
