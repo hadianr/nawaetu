@@ -1,7 +1,7 @@
 {
     "crons": [
         {
-            "path": "/api/notifications/prayer-alert",
+            "path": "/api/notifications/prayer-alert?mode=sync",
             "schedule": "0 4 * * *"
         }
     ]
