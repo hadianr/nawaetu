@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, uuid, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "next-auth/adapters";
 
 // --- Users & Auth (Compatible with NextAuth.js) ---
@@ -11,6 +11,12 @@ export const users = pgTable("user", {
     email: text("email").notNull().unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
+
+    // Niat Streak Tracking
+    niatStreakCurrent: integer("niat_streak_current").default(0),
+    niatStreakLongest: integer("niat_streak_longest").default(0),
+    lastNiatDate: date("last_niat_date"),
+
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -82,6 +88,32 @@ export const bookmarks = pgTable("bookmark", {
     updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// --- Intention Journal ---
+
+export const intentions = pgTable("intention", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("userId")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+
+    // Intention data
+    niatText: text("niat_text").notNull(),
+    niatType: text("niat_type").default("daily"), // 'daily', 'prayer', 'custom'
+    niatDate: date("niat_date").notNull(),
+
+    // Reflection data (optional)
+    reflectionText: text("reflection_text"),
+    reflectionRating: integer("reflection_rating"), // 1-5 scale
+    reflectedAt: timestamp("reflected_at", { mode: "date" }),
+
+    // Privacy
+    isPrivate: boolean("is_private").default(true),
+
+    // Metadata
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const pushSubscriptions = pgTable("push_subscription", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
@@ -108,5 +140,7 @@ export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Bookmark = typeof bookmarks.$inferSelect;
 export type NewBookmark = typeof bookmarks.$inferInsert;
+export type Intention = typeof intentions.$inferSelect;
+export type NewIntention = typeof intentions.$inferInsert;
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
