@@ -522,9 +522,24 @@ Semoga Allah membalas kebaikan Anda dengan pahala yang berlipat ganda. Jazakumul
 
 ---
 
-## 📄 License
+## 📄 Lisensi (Dual Licensing)
 
-Nawaetu is licensed under the **MIT License**. See [LICENSE](LICENSE) file untuk details.
+**Nawaetu** menerapkan model **Dual Licensing** untuk menjaga keberlanjutan proyek dan melindungi komunitas:
+
+### 1. Edisi Komunitas (Gratis & Open Source)
+Berlisensi di bawah **AGPLv3 (GNU Affero General Public License v3)**.
+- ✅ Gratis digunakan, dimodifikasi, dan didistribusikan.
+- ⚠️ Jika Anda memodifikasi dan mendistribusikan (termasuk menjalankannya sebagai layanan SaaS), **Anda WAJIB membuka source code Anda** di bawah lisensi AGPLv3.
+- **Cocok untuk**: Individu, komunitas, belajar, dan kontribusi open source.
+
+### 2. Lisensi Komersial (Berbayar/White Label)
+Untuk perusahaan atau individu yang ingin menggunakan Nawaetu untuk **tujuan komersial**, **white-label**, atau **tanpa membuka source code**.
+- ✅ Source code tetap privat (tidak perlu open source).
+- ✅ Boleh rebranding (White Label).
+- ✅ Priority support & fitur enterprise.
+- 📩 Kontak: **license@nawaetu.com** untuk harga dan detail.
+
+Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
 ---
 

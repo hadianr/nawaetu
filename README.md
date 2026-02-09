@@ -147,8 +147,22 @@ May Allah reward your generosity with goodness. Jazakumullah Khairan Katsiran! �
 
 ## 📄 License
 
-**Nawaetu** is open-source software licensed under the **MIT License**.
-See the [LICENSE](LICENSE) file for more details.
+**Nawaetu** adopts a **Dual Licensing** model to ensure sustainability and protect the open-source community:
+
+### 1. Community Edition (Free & Open Source)
+Licensed under **AGPLv3 (GNU Affero General Public License v3)**.
+- ✅ Free to use, modify, and distribute.
+- ⚠️ If you modify and distribute (or run as a service), **you must open-source your code** under AGPLv3.
+- Best for: Individuals, non-profits, and open-source contributions.
+
+### 2. Commercial License (Proprietary)
+For companies or individuals who wish to use Nawaetu for **commercial purposes**, **white-label**, or **without open-sourcing their code**.
+- ✅ Private source code (no open-source requirement).
+- ✅ White labeling allowed.
+- ✅ Priority support & enterprise features.
+- 📩 Contact: **license@nawaetu.com** for pricing and details.
+
+See the [LICENSE](LICENSE) file for the full AGPLv3 text.
 
 ---
 
