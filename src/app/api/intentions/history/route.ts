@@ -1,99 +1,134 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
-import { intentions, users } from "@/db/schema";
+import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 
-/**
- * GET /api/intentions/history?limit=30&offset=0
- * Get user's intention history with stats
- */
 export async function GET(req: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
-
-        if (!session?.user?.email) {
-            return NextResponse.json(
-                { success: false, error: "Unauthorized" },
-                { status: 401 }
-            );
-        }
-
-        // Get query params
         const { searchParams } = new URL(req.url);
-        const limit = parseInt(searchParams.get("limit") || "30");
+        const user_token = searchParams.get("user_token");
+        const limit = parseInt(searchParams.get("limit") || "20");
         const offset = parseInt(searchParams.get("offset") || "0");
 
-        // Get user
+        if (!user_token) {
+            return NextResponse.json({ success: false, error: "User token is required" }, { status: 401 });
+        }
+
+        let userId: string | null = null;
+        let streak = 0;
+
+        // 1. Try to find in pushSubscriptions (FCM Token)
+        const [subscription] = await db
+            .select()
+            .from(pushSubscriptions)
+            .where(eq(pushSubscriptions.token, user_token))
+            .limit(1);
+
+        if (subscription && subscription.userId) {
+            userId = subscription.userId;
+        } else {
+            // 2. Try to find anonymous user
+            const anonymousEmail = user_token.startsWith("anon_")
+                ? `${user_token}@nawaetu.local`
+                : null;
+
+            if (anonymousEmail) {
+                const [user] = await db
+                    .select()
+                    .from(users)
+                    .where(eq(users.email, anonymousEmail))
+                    .limit(1);
+
+                if (user) {
+                    userId = user.id;
+                    streak = user.niatStreakCurrent || 0;
+                }
+            }
+        }
+
+        // If no user found, return empty history
+        if (!userId) {
+            return NextResponse.json({
+                success: true,
+                data: {
+                    intentions: [],
+                    stats: {
+                        current_streak: 0,
+                        total_intentions: 0,
+                        reflection_rate: 0,
+                    },
+                    pagination: {
+                        limit,
+                        offset,
+                        total: 0,
+                        has_more: false,
+                    },
+                },
+            });
+        }
+
+        // Fetch user stats
         const [user] = await db
             .select()
             .from(users)
-            .where(eq(users.email, session.user.email))
+            .where(eq(users.id, userId))
             .limit(1);
 
-        if (!user) {
-            return NextResponse.json(
-                { success: false, error: "User not found" },
-                { status: 404 }
-            );
-        }
-
-        // Get intentions
+        // Fetch intentions
         const userIntentions = await db
-            .select({
-                id: intentions.id,
-                niat_text: intentions.niatText,
-                niat_date: intentions.niatDate,
-                reflection_text: intentions.reflectionText,
-                reflection_rating: intentions.reflectionRating,
-                reflected_at: intentions.reflectedAt,
-            })
+            .select()
             .from(intentions)
-            .where(eq(intentions.userId, user.id))
+            .where(eq(intentions.userId, userId))
             .orderBy(desc(intentions.niatDate))
             .limit(limit)
             .offset(offset);
 
-        // Get total count
-        const [{ count }] = await db
+        // Count total intentions
+        const [countResult] = await db
             .select({ count: sql<number>`count(*)` })
             .from(intentions)
-            .where(eq(intentions.userId, user.id));
+            .where(eq(intentions.userId, userId));
 
-        // Calculate reflection rate
-        const [{ reflectedCount }] = await db
-            .select({ reflectedCount: sql<number>`count(*)` })
+        const total = Number(countResult.count);
+
+        // Calculate stats
+        const totalReflections = userIntentions.filter(i => i.reflectedAt).length; // Rough calc based on visible page
+        // Better: count all reflected
+        const [totalReflectedResult] = await db
+            .select({ count: sql<number>`count(*)` })
             .from(intentions)
-            .where(
-                sql`${intentions.userId} = ${user.id} AND ${intentions.reflectedAt} IS NOT NULL`
-            );
+            .where(sql`${intentions.userId} = ${userId} AND ${intentions.reflectedAt} IS NOT NULL`);
 
-        const reflectionRate = count > 0 ? Math.round((reflectedCount / count) * 100) : 0;
+        const totalReflected = Number(totalReflectedResult.count);
+        const reflectionRate = total > 0 ? Math.round((totalReflected / total) * 100) : 0;
 
         return NextResponse.json({
             success: true,
             data: {
-                intentions: userIntentions,
+                intentions: userIntentions.map(i => ({
+                    id: i.id,
+                    niat_text: i.niatText,
+                    niat_date: i.niatDate,
+                    reflection_text: i.reflectionText,
+                    reflection_rating: i.reflectionRating,
+                    reflected_at: i.reflectedAt,
+                })),
                 stats: {
-                    current_streak: user.niatStreakCurrent || 0,
-                    longest_streak: user.niatStreakLongest || 0,
-                    total_intentions: count,
+                    current_streak: user?.niatStreakCurrent || 0,
+                    total_intentions: total,
                     reflection_rate: reflectionRate,
                 },
                 pagination: {
                     limit,
                     offset,
-                    total: count,
-                    has_more: offset + limit < count,
+                    total,
+                    has_more: offset + limit < total,
                 },
             },
         });
+
     } catch (error) {
         console.error("Error fetching intention history:", error);
-        return NextResponse.json(
-            { success: false, error: "Internal server error" },
-            { status: 500 }
-        );
+        return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
     }
 }

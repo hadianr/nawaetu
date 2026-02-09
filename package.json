@@ -19,7 +19,9 @@
     "analyze": "ANALYZE=true next build",
     "test": "VITE_CJS_IGNORE_WARNING=1 vitest",
     "test:run": "VITE_CJS_IGNORE_WARNING=1 vitest run",
-    "release": "bash scripts/release.sh"
+    "release": "bash scripts/release.sh",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
@@ -39,6 +41,7 @@
     "drizzle-orm": "^0.45.1",
     "firebase": "^12.9.0",
     "firebase-admin": "^13.6.1",
+    "framer-motion": "^12.33.0",
     "groq-sdk": "^0.37.0",
     "html-to-image": "^1.11.13",
     "lru-cache": "^11.2.5",

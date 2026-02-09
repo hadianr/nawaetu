@@ -1,27 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
-import { intentions } from "@/db/schema";
+import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 /**
  * POST /api/intentions/reflect
  * Add evening reflection to an intention
+ * 
+ * Supports both guest and authenticated users
+ * 
+ * Body: { user_token: string, intention_id: string, reflection_rating: number, reflection_text?: string }
  */
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        const body = await req.json();
+        const { intention_id, reflection_text, reflection_rating, user_token } = body;
 
-        if (!session?.user?.email) {
+        // Token-based auth
+        if (!user_token) {
             return NextResponse.json(
-                { success: false, error: "Unauthorized" },
+                { success: false, error: "User token is required" },
                 { status: 401 }
             );
         }
-
-        const body = await req.json();
-        const { intention_id, reflection_text, reflection_rating } = body;
 
         // Validation
         if (!intention_id) {
@@ -45,6 +46,43 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        let userId: string | null = null;
+
+        // 1. Try to find in pushSubscriptions (FCM Token)
+        const [subscription] = await db
+            .select()
+            .from(pushSubscriptions)
+            .where(eq(pushSubscriptions.token, user_token))
+            .limit(1);
+
+        if (subscription && subscription.userId) {
+            userId = subscription.userId;
+        } else {
+            // 2. Try to find anonymous user
+            const anonymousEmail = user_token.startsWith("anon_")
+                ? `${user_token}@nawaetu.local`
+                : null;
+
+            if (anonymousEmail) {
+                const [user] = await db
+                    .select()
+                    .from(users)
+                    .where(eq(users.email, anonymousEmail))
+                    .limit(1);
+
+                if (user) {
+                    userId = user.id;
+                }
+            }
+        }
+
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: "User not found or invalid token" },
+                { status: 404 }
+            );
+        }
+
         // Get intention and verify ownership
         const [intention] = await db
             .select()
@@ -60,14 +98,9 @@ export async function POST(req: NextRequest) {
         }
 
         // Verify user owns this intention
-        const [user] = await db.query.users.findMany({
-            where: (users, { eq }) => eq(users.email, session.user.email!),
-            limit: 1,
-        });
-
-        if (!user || intention.userId !== user.id) {
+        if (intention.userId !== userId) {
             return NextResponse.json(
-                { success: false, error: "Unauthorized" },
+                { success: false, error: "Unauthorized - this intention belongs to another user" },
                 { status: 403 }
             );
         }

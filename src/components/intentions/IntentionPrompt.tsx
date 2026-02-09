@@ -1,7 +1,8 @@
-"use client";
-
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
+import { useLocale } from "@/context/LocaleContext";
+import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 interface IntentionPromptProps {
     onSubmit: (niatText: string) => Promise<void>;
@@ -9,35 +10,43 @@ interface IntentionPromptProps {
     onClose?: () => void;
 }
 
-const SUGGESTED_INTENTIONS = [
-    "Be patient with my family",
-    "Focus on quality over quantity in my work",
-    "Remember Allah in every action",
-    "Speak only words of kindness today",
-    "Be grateful for every blessing",
-    "Help someone without expecting anything in return",
-    "Control my anger and respond with wisdom",
-    "Make every prayer with full presence",
-];
-
 export default function IntentionPrompt({
     onSubmit,
     currentStreak = 0,
     onClose,
 }: IntentionPromptProps) {
+    const { locale } = useLocale();
+    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+
     const [niatText, setNiatText] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const [greeting, setGreeting] = useState({ text: t.morning_title, emoji: "🌅" });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    useEffect(() => {
+        setMounted(true);
 
+        // Determine greeting based on time of day
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 11) {
+            setGreeting({ text: t.morning_title, emoji: "🌅" });
+        } else if (hour >= 11 && hour < 15) {
+            setGreeting({ text: t.afternoon_title, emoji: "☀️" });
+        } else if (hour >= 15 && hour < 19) {
+            setGreeting({ text: t.evening_title, emoji: "🌇" });
+        } else {
+            setGreeting({ text: t.night_title, emoji: "🌙" });
+        }
+
+        return () => setMounted(false);
+    }, [t]);
+
+    const handleSubmit = async () => {
         if (!niatText.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
         try {
-            await onSubmit(niatText.trim());
-            setNiatText("");
+            await onSubmit(niatText);
         } catch (error) {
             console.error("Error submitting intention:", error);
         } finally {
@@ -45,140 +54,133 @@ export default function IntentionPrompt({
         }
     };
 
-    const useSuggestion = (suggestion: string) => {
+    const handleSuggestionClick = (suggestion: string) => {
         setNiatText(suggestion);
-        setShowSuggestions(false);
     };
 
-    const randomSuggestions = SUGGESTED_INTENTIONS
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3);
-
-    return (
+    const content = (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-            onClick={onClose}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
+            {/* Backdrop with high blur to block distinct view of background */}
+            <div
+                className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                onClick={onClose}
+            />
+
             <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full p-6 md:p-8"
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+                className="relative w-full max-w-md bg-[#0f172a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden z-[101]"
                 onClick={(e) => e.stopPropagation()}
             >
+                {/* Glow Effect */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-[rgb(var(--color-primary))]/20 blur-3xl rounded-full pointer-events-none" />
+
                 {/* Header */}
-                <div className="text-center mb-6">
-                    <div className="text-4xl mb-2">🌅</div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                        Good Morning!
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        What's your intention for today?
-                    </p>
-                </div>
-
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <textarea
-                            value={niatText}
-                            onChange={(e) => setNiatText(e.target.value)}
-                            placeholder="Ya Allah, today I intend to..."
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
-                            rows={4}
-                            maxLength={500}
-                            autoFocus
-                        />
-                        <div className="flex justify-between items-center mt-2 text-sm">
-                            <button
-                                type="button"
-                                onClick={() => setShowSuggestions(!showSuggestions)}
-                                className="text-emerald-600 dark:text-emerald-400 hover:underline"
-                            >
-                                💡 Need inspiration?
-                            </button>
-                            <span className="text-gray-500 dark:text-gray-400">
-                                {niatText.length}/500
-                            </span>
-                        </div>
+                <div className="relative p-6 pb-4 border-b border-white/5">
+                    <div className="text-center relative z-10">
+                        <div className="text-5xl mb-4 drop-shadow-lg">{greeting.emoji}</div>
+                        <h2 className="text-2xl font-bold text-white mb-1">{greeting.text}</h2>
+                        <p className="text-white/60 text-sm">{t.prompt_question}</p>
                     </div>
-
-                    {/* Suggestions */}
-                    <AnimatePresence>
-                        {showSuggestions && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="overflow-hidden"
-                            >
-                                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 space-y-2">
-                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                        Examples:
-                                    </p>
-                                    {randomSuggestions.map((suggestion, index) => (
-                                        <button
-                                            key={index}
-                                            type="button"
-                                            onClick={() => useSuggestion(suggestion)}
-                                            className="block w-full text-left px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-sm text-gray-700 dark:text-gray-300 transition-colors"
-                                        >
-                                            • {suggestion}
-                                        </button>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
 
                     {/* Streak Display */}
                     {currentStreak > 0 && (
-                        <div className="flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl">
-                            <span className="text-2xl">🔥</span>
-                            <div className="text-center">
-                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Current Streak
-                                </p>
-                                <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
-                                    {currentStreak} {currentStreak === 1 ? "day" : "days"}
-                                </p>
-                            </div>
+                        <div className="mt-4 flex items-center justify-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 w-fit mx-auto">
+                            <span className="text-xl">🔥</span>
+                            <span className="text-sm font-semibold text-white">
+                                {currentStreak} {t.streak_label}
+                            </span>
                         </div>
                     )}
 
+                    {/* Close Button */}
+                    {onClose && (
+                        <button
+                            onClick={onClose}
+                            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all z-20"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    )}
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-5 relative z-10">
+                    {/* Textarea */}
+                    <div className="relative group">
+                        <textarea
+                            value={niatText}
+                            onChange={(e) => setNiatText(e.target.value)}
+                            placeholder={t.placeholder}
+                            maxLength={500}
+                            rows={4}
+                            className="w-full bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-[rgb(var(--color-primary))]/50 focus:ring-1 focus:ring-[rgb(var(--color-primary))]/50 resize-none transition-all text-base leading-relaxed"
+                            autoFocus
+                        />
+                        <div className="absolute bottom-3 right-3 text-xs text-white/40 group-focus-within:text-white/60 transition-colors">
+                            {niatText.length}/500
+                        </div>
+                    </div>
+
+                    {/* Inspiration Suggestions */}
+                    <div>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="text-xs font-medium text-white/50 uppercase tracking-wider">{t.need_inspiration}</label>
+                            <button
+                                onClick={() => {
+                                    const randomSuggestion = t.suggestions[
+                                        Math.floor(Math.random() * t.suggestions.length)
+                                    ];
+                                    handleSuggestionClick(randomSuggestion);
+                                }}
+                                className="text-xs text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-light))] flex items-center gap-1 transition-colors"
+                            >
+                                <span>🎲</span>
+                                {t.random_btn}
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {t.suggestions.slice(0, 3).map((suggestion, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    className="text-xs px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white/70 hover:text-white transition-all text-left"
+                                >
+                                    {suggestion}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Submit Button */}
                     <button
-                        type="submit"
+                        onClick={handleSubmit}
                         disabled={!niatText.trim() || isSubmitting}
-                        className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-xl bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] hover:shadow-[0_0_20px_rgba(var(--color-primary),0.3)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold shadow-lg transition-all transform active:scale-[0.98] text-lg"
                     >
                         {isSubmitting ? (
-                            <>
+                            <div className="flex items-center justify-center gap-2">
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                <span>Setting your niat...</span>
-                            </>
+                                <span>{t.setting_intention}</span>
+                            </div>
                         ) : (
-                            <>
-                                <span>Set My Niat</span>
-                                <span>🎯</span>
-                            </>
+                            t.set_intention_btn
                         )}
                     </button>
-                </form>
-
-                {/* Quote */}
-                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <p className="text-center text-sm italic text-gray-600 dark:text-gray-400">
-                        "Innama al-a'malu bin-niyyat"
-                    </p>
-                    <p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-1">
-                        Indeed, actions are judged by intentions
-                    </p>
                 </div>
             </motion.div>
         </motion.div>
     );
+
+    return mounted ? createPortal(content, document.body) : null;
 }

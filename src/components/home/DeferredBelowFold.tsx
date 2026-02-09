@@ -27,6 +27,14 @@ const HomeMissions = dynamic(
   }
 );
 
+const IntentionJournalWidget = dynamic(
+  () => import("@/components/intentions/IntentionJournalWidget"),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />,
+  }
+);
+
 const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay"), {
   ssr: false,
   loading: () => <PrayerCardSkeleton />,
@@ -70,6 +78,15 @@ export default function DeferredBelowFold() {
           <HomeMissions />
         ) : (
           <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />
+        )}
+      </section>
+
+      {/* 4.5 Intention Journal - New Killer Feature */}
+      <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-350">
+        {ready ? (
+          <IntentionJournalWidget />
+        ) : (
+          <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />
         )}
       </section>
 

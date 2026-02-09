@@ -51,13 +51,13 @@ export default function MisiPage() {
 
     const { data: prayerData } = usePrayerTimes();
 
-    useEffect(() => {
-        setToday(new Date().toISOString().split('T')[0]);
-
+    const loadData = () => {
         const [savedGender, savedCompleted] = storage.getMany([
             STORAGE_KEYS.USER_GENDER,
             STORAGE_KEYS.COMPLETED_MISSIONS
         ]).values();
+
+        console.log("Loading Mission Data - Gender:", savedGender); // Debug log
 
         setGender(savedGender as Gender);
 
@@ -70,6 +70,24 @@ export default function MisiPage() {
                 setCompleted(typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted);
             } catch (e) { }
         }
+    };
+
+    useEffect(() => {
+        setToday(new Date().toISOString().split('T')[0]);
+
+        // Initial load
+        loadData();
+
+        // Listen for updates from Onboarding or Settings
+        const handleStorageUpdate = () => loadData();
+
+        window.addEventListener('storage', handleStorageUpdate);
+        window.addEventListener('profile_updated', handleStorageUpdate);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageUpdate);
+            window.removeEventListener('profile_updated', handleStorageUpdate);
+        };
     }, [locale]);
 
     const isMissionCompletedToday = (missionId: string) => {

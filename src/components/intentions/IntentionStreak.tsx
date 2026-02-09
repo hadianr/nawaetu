@@ -1,6 +1,6 @@
-"use client";
-
 import { motion } from "framer-motion";
+import { useLocale } from "@/context/LocaleContext";
+import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 interface IntentionStreakProps {
     currentStreak: number;
@@ -8,103 +8,104 @@ interface IntentionStreakProps {
     className?: string;
 }
 
+const MILESTONES = [
+    { days: 7, label: "1 Week", emoji: "🌟" },
+    { days: 30, label: "1 Month", emoji: "🏆" },
+    { days: 100, label: "100 Days", emoji: "💎" },
+];
+
 export default function IntentionStreak({
     currentStreak,
     longestStreak,
     className = "",
 }: IntentionStreakProps) {
+    const { locale } = useLocale();
+    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+
+    const nextMilestone = MILESTONES.find((m) => m.days > currentStreak) || MILESTONES[MILESTONES.length - 1];
+    const progress = Math.min((currentStreak / nextMilestone.days) * 100, 100);
+
+    const getEncouragementMessage = () => {
+        if (currentStreak === 0) return t.start_journey;
+        if (currentStreak < 3) return t.great_start;
+        if (currentStreak < 7) return t.building_momentum;
+        if (currentStreak < 30) return t.on_fire;
+        if (currentStreak < 100) return t.incredible;
+        return t.legendary;
+    };
+
     return (
         <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className={`bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl p-6 border-2 border-orange-200 dark:border-orange-800 ${className}`}
+            className={`relative overflow-hidden rounded-3xl bg-black/20 backdrop-blur-md border border-white/10 p-5 shadow-lg ${className}`}
         >
-            <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🔥</span>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                    Niat Streak
-                </h3>
-            </div>
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent pointer-events-none" />
 
-            <div className="grid grid-cols-2 gap-4">
-                {/* Current Streak */}
-                <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-xl">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                        Current
-                    </p>
-                    <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                        {currentStreak}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                        {currentStreak === 1 ? "day" : "days"}
-                    </p>
+            <div className="relative space-y-4">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <span className="text-3xl">🔥</span>
+                        <div>
+                            <h3 className="text-white font-bold text-lg">{t.niat_streak}</h3>
+                            <p className="text-white/50 text-xs">{getEncouragementMessage()}</p>
+                        </div>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-3xl font-bold text-white">{currentStreak}</div>
+                        <div className="text-xs text-white/50">{t.days}</div>
+                    </div>
                 </div>
+
+                {/* Progress to Next Milestone */}
+                {currentStreak < nextMilestone.days && (
+                    <div>
+                        <div className="flex items-center justify-between text-xs text-white/60 mb-2">
+                            <span>{t.next_milestone}: {nextMilestone.label}</span>
+                            <span>
+                                {currentStreak}/{nextMilestone.days}
+                            </span>
+                        </div>
+                        <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                transition={{ duration: 1, ease: "easeOut" }}
+                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full"
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {/* Longest Streak */}
-                <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-xl">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                        Longest
-                    </p>
-                    <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                        {longestStreak}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                        {longestStreak === 1 ? "day" : "days"}
-                    </p>
+                {longestStreak > currentStreak && (
+                    <div className="flex items-center gap-2 text-xs text-white/50 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 w-fit">
+                        <span>🏅</span>
+                        <span>{t.best_streak}: {longestStreak} {t.days}</span>
+                    </div>
+                )}
+
+                {/* Milestones */}
+                <div className="flex gap-2">
+                    {MILESTONES.map((milestone) => {
+                        const achieved = currentStreak >= milestone.days;
+                        return (
+                            <div
+                                key={milestone.days}
+                                className={`flex-1 text-center py-2 rounded-xl border transition-all ${achieved
+                                        ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/30 text-white"
+                                        : "bg-white/5 border-white/10 text-white/40"
+                                    }`}
+                            >
+                                <div className="text-lg">{milestone.emoji}</div>
+                                <div className="text-[10px] font-medium">{milestone.label}</div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
-
-            {/* Encouragement */}
-            <div className="mt-4 text-center">
-                {currentStreak === 0 && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Start your streak today! 🌟
-                    </p>
-                )}
-                {currentStreak > 0 && currentStreak < 7 && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Keep it going! 💪
-                    </p>
-                )}
-                {currentStreak >= 7 && currentStreak < 30 && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Amazing consistency! 🎉
-                    </p>
-                )}
-                {currentStreak >= 30 && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Masha Allah! You're unstoppable! 🚀
-                    </p>
-                )}
-            </div>
-
-            {/* Milestone Progress */}
-            {currentStreak > 0 && currentStreak < 100 && (
-                <div className="mt-4">
-                    <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
-                        <span>Next milestone</span>
-                        <span>
-                            {currentStreak < 7 && "7 days"}
-                            {currentStreak >= 7 && currentStreak < 30 && "30 days"}
-                            {currentStreak >= 30 && currentStreak < 100 && "100 days"}
-                        </span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{
-                                width: `${currentStreak < 7
-                                        ? (currentStreak / 7) * 100
-                                        : currentStreak < 30
-                                            ? (currentStreak / 30) * 100
-                                            : (currentStreak / 100) * 100
-                                    }%`,
-                            }}
-                            className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full"
-                        />
-                    </div>
-                </div>
-            )}
         </motion.div>
     );
 }

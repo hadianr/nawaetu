@@ -56,11 +56,13 @@ export default function MissionsWidget() {
         setToday(new Date().toISOString().split('T')[0]);
     }, []);
 
-    useEffect(() => {
-        // 2. Missions Data Load (Depends on Gender & Prayer Data/Seasonal)
+    const loadData = () => {
         const storage = getStorageService();
         const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
         const savedArchetype = storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) as string | null;
+
+        console.log("Loading Mission Widget Data - Gender:", savedGender); // Debug log
+
         setGender(savedGender);
 
         const daily = getDailyMissions(savedGender);
@@ -73,7 +75,20 @@ export default function MissionsWidget() {
         // Localize missions
         const localizedMissions = filteredMissions.map(mission => getLocalizedMission(mission, locale));
         setMissions(localizedMissions);
+    };
 
+    useEffect(() => {
+        // 2. Missions Data Load (Depends on Gender & Prayer Data/Seasonal)
+        loadData();
+
+        const handleUpdate = () => loadData();
+        window.addEventListener('profile_updated', handleUpdate);
+        window.addEventListener('storage', handleUpdate);
+
+        return () => {
+            window.removeEventListener('profile_updated', handleUpdate);
+            window.removeEventListener('storage', handleUpdate);
+        };
     }, [prayerData?.hijriDate, locale]); // Refresh when locale or hijri date changes
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
