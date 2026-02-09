@@ -2,7 +2,8 @@
 
 [![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
+[![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](README.md#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
 [![Version](https://img.shields.io/badge/Version-v1.4.0-blue)](https://github.com/hadianr/nawaetu/releases)
@@ -11,7 +12,9 @@
 
 **Current Version: v1.4.0** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md)
 
-**Nawaetu** (derived from "Niat" or Intention) is a gamified Islamic habit tracker designed to help you stay consistent (istiqamah) in your worship amidst the busy modern life. We believe every good deed starts with a **sincere intention**—and gamification can be a powerful motivator to build lasting spiritual habits.
+**Nawaetu** (derived from "Niat" or Intention) is a gamified Islamic habit tracker designed to help you stay consistent (istiqamah).
+
+> ⚠️ **Note:** This project is **Dual Licensed**. It is free for open-source use under **AGPLv3**, but requires a **Commercial License** for proprietary/closed-source use. See [License Section](#license) for details.
 
 ---
 

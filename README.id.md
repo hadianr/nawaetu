@@ -2,7 +2,8 @@
 
 [![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
+[![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](README.id.md#lisensi-dual-licensing)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
 [![Version](https://img.shields.io/badge/Version-v1.4.0-blue)](https://github.com/hadianr/nawaetu/releases)
@@ -10,6 +11,10 @@
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
 **Versi Saat Ini: v1.4.0** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md)
+
+**Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah.
+
+> ⚠️ **Catatan Penting:** Proyek ini menggunakan **Dual Licensing**. Gratis untuk open-source di bawah **AGPLv3**, tetapi memerlukan **Lisensi Komersial** untuk penggunaan tertutup/komersial. Lihat [Bagian Lisensi](#lisensi-dual-licensing) untuk detailnya.
 
 **Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah di tengah hiruk-pikuk kehidupan modern. Kami percaya setiap amal dimulai dari **niat yang lurus**—dan gamification bisa jadi motivasi untuk konsisten beribadah.
 
