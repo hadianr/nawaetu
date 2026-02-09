@@ -2,8 +2,23 @@ name: Prayer Alert Cron
 
 on:
   schedule:
-    # Runs every 5 minutes for prayer time notifications
-    - cron: "*/5 * * * *"
+    # Subuh: 04:00 - 05:30 WIB (21:00 - 22:30 UTC prev day)
+    - cron: "*/5 21 * * *"
+    - cron: "0-30/5 22 * * *"
+
+    # Dzuhur: 11:30 - 12:30 WIB (04:30 - 05:30 UTC)
+    - cron: "30-59/5 4 * * *"
+    - cron: "0-30/5 5 * * *"
+
+    # Ashar: 14:45 - 15:45 WIB (07:45 - 08:45 UTC)
+    - cron: "45-59/5 7 * * *"
+    - cron: "0-45/5 8 * * *"
+
+    # Maghrib & Isya: 17:30 - 19:30 WIB (10:30 - 12:30 UTC)
+    - cron: "30-59/5 10 * * *"
+    - cron: "*/5 11 * * *"
+    - cron: "0-30/5 12 * * *"
+
   workflow_dispatch: # Allow manual trigger for testing
 
 jobs:

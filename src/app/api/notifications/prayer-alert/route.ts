@@ -9,33 +9,56 @@ import { messagingAdmin } from "@/lib/notifications/firebase-admin";
  * 
  * Supports two modes:
  * 1. mode=sync  - Daily token validation (Vercel Cron, once per day)
- * 2. mode=alert - Prayer time notifications (GitHub Actions, every 5 minutes)
- * 
- * This dual-mode approach ensures:
- * - Reliable iOS notifications via server-side alerts
- * - Token health maintenance via daily sync
- * - No conflicts between different cron jobs
+ * 2. mode=alert - Prayer time notifications (GitHub Actions, targeted schedules)
  */
 
-// In-memory deduplication cache (resets on cold start, which is fine)
+// In-memory cache for prayer times to avoid repeated API calls in the same request
+const prayerTimesCache = new Map<string, any>();
+
+// In-memory deduplication cache
 const recentNotifications = new Map<string, number>();
 const DEDUP_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const PRAYER_WINDOW_MS = 5 * 60 * 1000; // ±5 minutes tolerance
 
-// Prayer time window tolerance (±5 minutes)
-const PRAYER_WINDOW_MS = 5 * 60 * 1000;
+// Default Coordinates: Jakarta (Monas)
+const DEFAULT_LAT = -6.175392;
+const DEFAULT_LNG = 106.827153;
 
-// Helper: Check if current time is within prayer time window
-function isWithinPrayerWindow(prayerTime: Date): boolean {
-    const now = new Date();
-    const diff = Math.abs(now.getTime() - prayerTime.getTime());
-    return diff <= PRAYER_WINDOW_MS;
+// Helper: Check if two times are within window
+function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
+    const [cHour, cMin] = currentTime.split(":").map(Number);
+    const [pHour, pMin] = prayerTime.split(":").map(Number);
+
+    const currentTotalMin = cHour * 60 + cMin;
+    const prayerTotalMin = pHour * 60 + pMin;
+
+    return Math.abs(currentTotalMin - prayerTotalMin) <= 5;
 }
 
-// Helper: Get current prayer name if within window
-function getCurrentPrayer(): string | null {
-    // This is a simplified version - in production, you'd fetch actual prayer times
-    // For now, we'll return null and let the client-side handle it
-    // TODO: Integrate with prayer times calculation
+// Helper: Fetch prayer times from Aladhan API
+async function fetchPrayerTimes(lat: number, lng: number): Promise<any> {
+    const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
+    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${today}`;
+
+    if (prayerTimesCache.has(cacheKey)) {
+        return prayerTimesCache.get(cacheKey);
+    }
+
+    try {
+        const response = await fetch(
+            `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=20` // Method 20 = Kemenag RI
+        );
+
+        if (!response.ok) return null;
+
+        const result = await response.json();
+        if (result && result.data && result.data.timings) {
+            prayerTimesCache.set(cacheKey, result.data.timings);
+            return result.data.timings;
+        }
+    } catch (e) {
+        console.error("Failed to fetch prayer times in API", e);
+    }
     return null;
 }
 
@@ -43,24 +66,16 @@ function getCurrentPrayer(): string | null {
 function wasRecentlyNotified(key: string): boolean {
     const lastSent = recentNotifications.get(key);
     if (!lastSent) return false;
-
     const now = Date.now();
     if (now - lastSent > DEDUP_WINDOW_MS) {
         recentNotifications.delete(key);
         return false;
     }
-
     return true;
-}
-
-// Helper: Mark notification as sent
-function markNotificationSent(key: string): void {
-    recentNotifications.set(key, Date.now());
 }
 
 export async function POST(req: NextRequest) {
     try {
-        // Verify cron secret for security
         const authHeader = req.headers.get("authorization");
         const cronSecret = process.env.CRON_SECRET;
 
@@ -68,23 +83,17 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Get mode from query parameter
         const { searchParams } = new URL(req.url);
-        const mode = searchParams.get("mode") || "sync"; // Default to sync for backward compatibility
+        const mode = searchParams.get("mode") || "sync";
 
         console.log(`=== Prayer Notification API (mode: ${mode}) Started ===`);
-        console.log("Time:", new Date().toISOString());
 
-        // Get all active subscriptions
         const subscriptions = await db
             .select()
             .from(pushSubscriptions)
             .where(eq(pushSubscriptions.active, 1));
 
-        console.log(`Found ${subscriptions.length} active subscriptions`);
-
         if (!messagingAdmin) {
-            console.error("Firebase Admin not initialized");
             return NextResponse.json({ error: "Firebase Admin not initialized" }, { status: 500 });
         }
 
@@ -96,197 +105,148 @@ export async function POST(req: NextRequest) {
             errors: [] as string[],
         };
 
-        // MODE: SYNC - Daily token validation
+        const now = new Date();
+        // Convert to WIB (UTC+7) manually for logging/checking if needed, 
+        // but Aladhan API uses local time based on lat/lng.
+        // We compare against the server's current time (which should be UTC or intended local).
+        // Let's use the actual local time of the user's location if possible.
+
+        // Aladhan timings are in 24h format "HH:mm" based on the location.
+        // We need to compare it with the current time in that location.
+
         if (mode === "sync") {
             const syncMessage = {
                 data: {
                     type: "daily_sync",
-                    timestamp: new Date().toISOString(),
-                    message: "Prayer times synced for today"
+                    timestamp: now.toISOString(),
                 },
-                // Silent notification - won't show to user
                 apns: {
-                    payload: {
-                        aps: {
-                            "content-available": 1,
-                        },
-                    },
-                    headers: {
-                        "apns-priority": "5",
-                        "apns-push-type": "background",
-                    },
+                    payload: { aps: { "content-available": 1 } },
+                    headers: { "apns-priority": "5", "apns-push-type": "background" },
                 },
-                android: {
-                    priority: "normal" as const,
-                },
+                android: { priority: "normal" as const },
             };
 
-            for (const subscription of subscriptions) {
+            for (const sub of subscriptions) {
                 try {
-                    await messagingAdmin.send({
-                        ...syncMessage,
-                        token: subscription.token,
-                    });
+                    await messagingAdmin.send({ ...syncMessage, token: sub.token });
                     results.sent++;
-
-                    // Update last used timestamp
-                    await db
-                        .update(pushSubscriptions)
-                        .set({ lastUsedAt: new Date() })
-                        .where(eq(pushSubscriptions.id, subscription.id));
-
-                } catch (error: any) {
-                    console.error(`Failed to send to ${subscription.id}:`, error.message);
+                    await db.update(pushSubscriptions).set({ lastUsedAt: new Date() }).where(eq(pushSubscriptions.id, sub.id));
+                } catch (e: any) {
                     results.failed++;
-                    results.errors.push(`${subscription.id}: ${error.message}`);
-
-                    // If token is invalid, mark as inactive
-                    if (error.code === "messaging/invalid-registration-token" ||
-                        error.code === "messaging/registration-token-not-registered") {
-                        await db
-                            .update(pushSubscriptions)
-                            .set({ active: 0 })
-                            .where(eq(pushSubscriptions.id, subscription.id));
+                    if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                        await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
                     }
                 }
             }
-
-            console.log("=== Daily Sync Completed ===");
-            console.log("Results:", results);
-
-            return NextResponse.json({
-                success: true,
-                mode: "sync",
-                message: "Daily token sync completed",
-                results,
-            });
+            return NextResponse.json({ success: true, mode: "sync", results });
         }
 
-        // MODE: ALERT - Prayer time notifications
         if (mode === "alert") {
-            // Check if we're within a prayer time window
-            const currentPrayer = getCurrentPrayer();
+            const todayStr = now.toISOString().split('T')[0];
 
-            if (!currentPrayer) {
-                console.log("Not within any prayer time window, skipping notifications");
-                return NextResponse.json({
-                    success: true,
-                    mode: "alert",
-                    message: "No prayer time detected in current window",
-                    results: {
-                        total: subscriptions.length,
-                        sent: 0,
-                        skipped: subscriptions.length,
-                    },
-                });
-            }
-
-            console.log(`Prayer time detected: ${currentPrayer}`);
-
-            const today = new Date().toISOString().split('T')[0];
-
-            for (const subscription of subscriptions) {
+            for (const sub of subscriptions) {
                 try {
-                    // Check deduplication
-                    const dedupKey = `${subscription.userId}-${currentPrayer}-${today}`;
-                    if (wasRecentlyNotified(dedupKey)) {
-                        console.log(`Skipping duplicate notification for ${subscription.userId} - ${currentPrayer}`);
+                    // 1. Get location (parse from JSON string in DB)
+                    let lat = DEFAULT_LAT;
+                    let lng = DEFAULT_LNG;
+                    let timezone = sub.timezone || "Asia/Jakarta";
+
+                    if (sub.userLocation) {
+                        try {
+                            const loc = JSON.parse(sub.userLocation);
+                            if (loc.lat && loc.lng) {
+                                lat = loc.lat;
+                                lng = loc.lng;
+                            }
+                        } catch (e) { }
+                    }
+
+                    // 2. Fetch prayer times for this location
+                    const timings = await fetchPrayerTimes(lat, lng);
+                    if (!timings) {
                         results.skipped++;
                         continue;
                     }
 
-                    // Check user preferences (if stored in subscription)
-                    // TODO: Add prayer preferences check here
+                    // 3. Get current time in that timezone
+                    const localTimeStr = now.toLocaleTimeString("en-US", {
+                        timeZone: timezone,
+                        hour12: false,
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    });
 
-                    // Send prayer notification
-                    const alertMessage = {
-                        notification: {
-                            title: `Waktu ${currentPrayer}`,
-                            body: `Saatnya menunaikan sholat ${currentPrayer}`,
-                        },
-                        data: {
-                            type: "prayer_alert",
-                            prayer: currentPrayer,
-                            timestamp: new Date().toISOString(),
-                        },
-                        apns: {
-                            payload: {
-                                aps: {
-                                    alert: {
-                                        title: `Waktu ${currentPrayer}`,
-                                        body: `Saatnya menunaikan sholat ${currentPrayer}`,
-                                    },
-                                    sound: "default",
-                                    badge: 1,
-                                },
-                            },
-                            headers: {
-                                "apns-priority": "10", // High priority for alerts
-                                "apns-push-type": "alert",
-                            },
-                        },
-                        android: {
-                            priority: "high" as const,
-                            notification: {
-                                channelId: "prayer-alerts",
-                                sound: "default",
-                            },
-                        },
+                    // 4. Check each prayer
+                    const relevantPrayers = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+                    let activePrayer: string | null = null;
+
+                    for (const prayer of relevantPrayers) {
+                        if (isTimeInWindow(localTimeStr, timings[prayer])) {
+                            activePrayer = prayer;
+                            break;
+                        }
+                    }
+
+                    if (!activePrayer) {
+                        results.skipped++;
+                        continue;
+                    }
+
+                    // 5. Deduplication
+                    const dedupKey = `${sub.userId}-${activePrayer}-${todayStr}`;
+                    if (wasRecentlyNotified(dedupKey)) {
+                        results.skipped++;
+                        continue;
+                    }
+
+                    // 6. Check preferences
+                    if (sub.prayerPreferences) {
+                        try {
+                            const prefs = JSON.parse(sub.prayerPreferences);
+                            const key = activePrayer.toLowerCase();
+                            if (prefs[key] === false) {
+                                results.skipped++;
+                                continue;
+                            }
+                        } catch (e) { }
+                    }
+
+                    // 7. Send Notification
+                    const prayerLabels: Record<string, string> = {
+                        Fajr: "Subuh", Dhuhr: "Dzuhur", Asr: "Ashar", Maghrib: "Maghrib", Isha: "Isya"
                     };
+                    const label = prayerLabels[activePrayer];
 
                     await messagingAdmin.send({
-                        ...alertMessage,
-                        token: subscription.token,
+                        notification: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` },
+                        data: { type: "prayer_alert", prayer: activePrayer },
+                        token: sub.token,
+                        apns: {
+                            payload: { aps: { alert: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` }, sound: "default", badge: 1 } },
+                            headers: { "apns-priority": "10", "apns-push-type": "alert" },
+                        },
+                        android: { priority: "high", notification: { channelId: "prayer-alerts", sound: "default" } },
                     });
 
                     results.sent++;
-                    markNotificationSent(dedupKey);
+                    recentNotifications.set(dedupKey, Date.now());
+                    await db.update(pushSubscriptions).set({ lastUsedAt: new Date() }).where(eq(pushSubscriptions.id, sub.id));
 
-                    // Update last used timestamp
-                    await db
-                        .update(pushSubscriptions)
-                        .set({ lastUsedAt: new Date() })
-                        .where(eq(pushSubscriptions.id, subscription.id));
-
-                } catch (error: any) {
-                    console.error(`Failed to send alert to ${subscription.id}:`, error.message);
+                } catch (e: any) {
                     results.failed++;
-                    results.errors.push(`${subscription.id}: ${error.message}`);
-
-                    // If token is invalid, mark as inactive
-                    if (error.code === "messaging/invalid-registration-token" ||
-                        error.code === "messaging/registration-token-not-registered") {
-                        await db
-                            .update(pushSubscriptions)
-                            .set({ active: 0 })
-                            .where(eq(pushSubscriptions.id, subscription.id));
+                    if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                        await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
                     }
                 }
             }
-
-            console.log("=== Prayer Alert Completed ===");
-            console.log("Results:", results);
-
-            return NextResponse.json({
-                success: true,
-                mode: "alert",
-                message: `Prayer alert sent for ${currentPrayer}`,
-                results,
-            });
+            return NextResponse.json({ success: true, mode: "alert", results });
         }
 
-        // Invalid mode
-        return NextResponse.json({
-            error: "Invalid mode parameter",
-            message: "Mode must be either 'sync' or 'alert'",
-        }, { status: 400 });
+        return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
 
     } catch (error: any) {
-        console.error("=== Error in prayer notification API ===");
-        console.error(error);
-        return NextResponse.json({
-            error: "Failed to process request",
-            details: error?.message || "Unknown error",
-        }, { status: 500 });
+        console.error("Prayer API Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
