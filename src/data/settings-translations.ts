@@ -292,6 +292,10 @@ export const SETTINGS_TRANSLATIONS = {
     pwaInstallIosStep1: "Tap tombol Share",
     pwaInstallIosStep2: "Pilih Add to Home Screen",
     pwaInstallButton: "Install sekarang",
+    pwaUpdateAvailableTitle: "Update Tersedia",
+    pwaUpdateAvailableDesc: "Versi baru Nawaetu telah tersedia.",
+    pwaUpdateAction: "Update Sekarang",
+
 
     // Mission List Modal Tabs
     missionTabAll: "Semua",
@@ -725,6 +729,10 @@ export const SETTINGS_TRANSLATIONS = {
     pwaInstallIosStep1: "Tap the Share button",
     pwaInstallIosStep2: "Select Add to Home Screen",
     pwaInstallButton: "Install now",
+    pwaUpdateAvailableTitle: "Update Available",
+    pwaUpdateAvailableDesc: "A new version of Nawaetu is available.",
+    pwaUpdateAction: "Update Now",
+
 
     // Mission List Modal Tabs
     missionTabAll: "All",

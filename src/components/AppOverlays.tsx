@@ -8,6 +8,8 @@ import { initializeQuranOptimizations } from "@/lib/optimize-quran";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
+const SWUpdatePrompt = dynamic(() => import("@/components/SWUpdatePrompt"), { ssr: false });
+
 
 const CACHE_CLEANUP_RULES = [
     { prefix: "quran_tafsir_", ttlMs: 7 * 24 * 60 * 60 * 1000 },
@@ -102,6 +104,8 @@ export default function AppOverlays() {
         <>
             <OnboardingOverlay />
             <PWAInstallPrompt shouldShow={showPwaPrompt} />
+            <SWUpdatePrompt />
+
             <Toaster
                 position="top-center"
                 theme="dark"
