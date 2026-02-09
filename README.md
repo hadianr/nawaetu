@@ -130,7 +130,20 @@ We welcome contributions from the global community! Whether it's bug fixes, new 
 4. **Push to branch** (`git push origin feature/AmazingFeature`)
 5. **Open Pull Request**
 
+
+## ☕ Support the Mission
+
+Nawaetu is an open-source project built for the Ummah. Your support helps cover server costs (database, hosting) and fuels further development.
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
+[![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr)
+
+May Allah reward your generosity with goodness. Jazakumullah Khairan Katsiran! 🤲
+
 ---
+
 
 ## 📄 License
 

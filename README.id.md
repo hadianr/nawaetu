@@ -508,6 +508,20 @@ Punya pertanyaan atau feedback? Reach out:
 
 ---
 
+
+## ☕ Dukung Pengembangan
+
+Nawaetu adalah proyek open-source untuk umat. Dukungan Anda membantu menutupi biaya server (database, hosting) dan mempercepat pengembangan fitur baru.
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
+[![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr)
+
+Semoga Allah membalas kebaikan Anda dengan pahala yang berlipat ganda. Jazakumullah Khairan Katsiran! 🤲
+
+---
+
 ## 📄 License
 
 Nawaetu is licensed under the **MIT License**. See [LICENSE](LICENSE) file untuk details.
