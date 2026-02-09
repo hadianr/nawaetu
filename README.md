@@ -10,27 +10,30 @@
 
 > *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
 
-**Current Version: v1.4.0** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md)
+**Current Version: v1.4.0** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
 
-**Nawaetu** (derived from "Niat" or Intention) is a gamified Islamic habit tracker designed to help you stay consistent (istiqamah).
+**Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.
+
+### 🎯 "Track Your Niat, Build Your Legacy"
 
 > ⚠️ **Note:** This project is **Dual Licensed**. It is free for open-source use under **AGPLv3**, but requires a **Commercial License** for proprietary/closed-source use. See [License Section](#license) for details.
 
 ---
 
-## 🎯 Philosophy: Start with the Right Intention
+## 🎯 What Makes Nawaetu Different?
 
-**"Pure Intention, Build Habits, Consistent Action"**
+**Every Islamic app has prayer times, Quran, and qibla. But none focus on the *why* behind your worship.**
 
-Nawaetu combines habit-building psychology with Islamic principles. In an era full of distractions, maintaining consistency is hard. Nawaetu serves as your *habit-building companion* to make worship more engaging:
+Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are judged by intentions.**
 
-- 🎨 **Aesthetic & Minimal** - Modern UI that brings peace, not distraction.
-- 🤖 **AI-Powered** - Ask anything, 24/7, with dalil-backed answers.
-- 🎮 **Gamified System** - Daily Missions, Streak Counter, XP & Level Up.
-- 🚀 **Lightning Fast** - Optimized performance, feels like a native app.
-- 💯 **100% Ad-Free** - Focus on worship, not ads.
+### The Nawaetu Difference:
 
-**Tagline**: *"Level up your faith, one habit at a time"* 🚀
+- 🎯 **Intention-First Approach** - Track not just *what* you do, but *why* you do it
+- 🤖 **AI Niat Coach** - Personal spiritual mentor, not just a Q&A bot
+- 🎮 **Meaningful Gamification** - Niat Points & Islamic milestones, not generic XP
+- 📔 **Reflection Loop** - Daily intention setting + evening reflection (coming soon)
+- 🚀 **Built for Istiqamah** - Designed to help you stay consistent, not just start strong
+- 💯 **100% Ad-Free** - Your spiritual journey, uninterrupted
 
 ---
 

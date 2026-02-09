@@ -10,32 +10,30 @@
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.4.0** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md)
+**Versi Saat Ini: v1.4.0** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
 
-**Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah.
+**Nawaetu** (dari kata "niat") adalah **satu-satunya aplikasi Islam** yang membantu kamu membangun kebiasaan ibadah yang lasting dengan memulai dari niat yang murni—menggabungkan AI mentorship, gamifikasi, dan intention tracking untuk membuat istiqomah terasa natural, bukan dipaksakan.
 
-> ⚠️ **Catatan Penting:** Proyek ini menggunakan **Dual Licensing**. Gratis untuk open-source di bawah **AGPLv3**, tetapi memerlukan **Lisensi Komersial** untuk penggunaan tertutup/komersial. Lihat [Bagian Lisensi](#lisensi-dual-licensing) untuk detailnya.
+### 🎯 "Track Your Niat, Build Your Legacy"
 
-**Nawaetu** (dari kata "niat") adalah habit tracker ibadah dengan gamifikasi yang bikin kamu tetap istiqomah di tengah hiruk-pikuk kehidupan modern. Kami percaya setiap amal dimulai dari **niat yang lurus**—dan gamification bisa jadi motivasi untuk konsisten beribadah.
+> ⚠️ **Catatan Penting:** Proyek ini menggunakan **Dual Licensing**. Gratis untuk open-source di bawah **AGPLv3**, tetapi memerlukan **Lisensi Komersial** untuk penggunaan tertutup/komersial. Lihat [Bagian Lisensi](#lisensi) untuk detailnya.
 
 ---
 
-## 🎯 Philosophy: Start with the Right Intention
+## 🎯 Apa yang Bikin Nawaetu Beda?
 
-**"Niat Lurus, Build Habits, Amal Konsisten"**
+**Semua aplikasi Islam punya jadwal sholat, Quran, dan kiblat. Tapi tidak ada yang fokus ke *kenapa* kamu beribadah.**
 
-**Nawaetu** = Niat + Gamifikasi. Di era yang penuh distraksi, susah jaga konsistensi. Nawaetu hadir sebagai *habit-building companion* yang bikin ibadah lebih engaging:
-- 🎨 **Aesthetic & Minimal** - UI modern yang bikin betah, bukan distraksi
-- 🤖 **AI-Powered** - Tanya kapan aja, 24/7 tanpa judgement
-- 🎮 **Gamified System** - Daily Missions, Streak Counter, XP & Level Up
-- 🚀 **Lightning Fast** - Performa optimized, kayak lagi main game AAA
-- 💯 **100% Bebas Iklan** - Fokus ibadah, bukan iklan
+Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal itu tergantung niatnya.**
 
-**Tagline**: *"Level up your faith, one habit at a time"* 🚀
+### Keunggulan Nawaetu:
 
-**Slogan**: *"#NiatAjaDulu - Karena semua dimulai dari niat"*
-
-Karena di akhir, semua kembali ke **niat**. Dan Nawaetu hadir untuk membantu kamu **build ibadah habits** yang konsisten dengan sistem gamifikasi yang seru.
+- 🎯 **Pendekatan Niat-First** - Track bukan cuma *apa* yang kamu lakukan, tapi *kenapa* kamu melakukannya
+- 🤖 **AI Niat Coach** - Mentor spiritual personal, bukan sekadar bot tanya-jawab
+- 🎮 **Gamifikasi Bermakna** - Niat Points & milestone Islami, bukan XP generik
+- 📔 **Reflection Loop** - Set niat harian + refleksi malam (segera hadir)
+- 🚀 **Dibangun untuk Istiqomah** - Dirancang agar kamu konsisten, bukan cuma semangat di awal
+- 💯 **100% Bebas Iklan** - Perjalanan spiritual kamu, tanpa gangguan
 
 ---
 
