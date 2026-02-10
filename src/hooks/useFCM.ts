@@ -21,11 +21,28 @@ export function useFCM() {
                         setToken(currentToken);
                         console.log("FCM Token:", currentToken);
 
-                        // Send token to backend
+                        // Get current location from storage if available
+                        const storage = typeof window !== 'undefined' ? localStorage.getItem("nawaetu_user_location") : null;
+                        let userLocation = null;
+                        if (storage) {
+                            try {
+                                const parsed = JSON.parse(storage);
+                                if (parsed.lat && parsed.lng) {
+                                    userLocation = { lat: parsed.lat, lng: parsed.lng };
+                                }
+                            } catch (e) { }
+                        }
+
+                        // Send token to backend with metadata
                         await fetch("/api/notifications/subscribe", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ token: currentToken, deviceType: "web" }),
+                            body: JSON.stringify({
+                                token: currentToken,
+                                deviceType: "web",
+                                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                userLocation: userLocation
+                            }),
                         });
                     } else {
                         console.warn("No registration token available. Request permission to generate one.");

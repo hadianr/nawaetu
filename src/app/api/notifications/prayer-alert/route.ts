@@ -18,7 +18,7 @@ const prayerTimesCache = new Map<string, any>();
 // In-memory deduplication cache
 const recentNotifications = new Map<string, number>();
 const DEDUP_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const PRAYER_WINDOW_MS = 5 * 60 * 1000; // ±5 minutes tolerance
+const PRAYER_WINDOW_MS = 20 * 60 * 1000; // ±20 minutes tolerance (GHA can be delayed)
 
 // Default Coordinates: Jakarta (Monas)
 const DEFAULT_LAT = -6.175392;
@@ -32,13 +32,12 @@ function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
     const currentTotalMin = cHour * 60 + cMin;
     const prayerTotalMin = pHour * 60 + pMin;
 
-    return Math.abs(currentTotalMin - prayerTotalMin) <= 5;
+    return Math.abs(currentTotalMin - prayerTotalMin) <= 20;
 }
 
 // Helper: Fetch prayer times from Aladhan API
-async function fetchPrayerTimes(lat: number, lng: number): Promise<any> {
-    const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
-    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${today}`;
+async function fetchPrayerTimes(lat: number, lng: number, dateStr: string): Promise<any> {
+    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}`;
 
     if (prayerTimesCache.has(cacheKey)) {
         return prayerTimesCache.get(cacheKey);
@@ -46,7 +45,7 @@ async function fetchPrayerTimes(lat: number, lng: number): Promise<any> {
 
     try {
         const response = await fetch(
-            `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=20` // Method 20 = Kemenag RI
+            `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=20` // Method 20 = Kemenag RI
         );
 
         if (!response.ok) return null;
@@ -162,8 +161,15 @@ export async function POST(req: NextRequest) {
                         } catch (e) { }
                     }
 
-                    // 2. Fetch prayer times for this location
-                    const timings = await fetchPrayerTimes(lat, lng);
+                    // 2. Fetch prayer times for this location (timezone-aware date)
+                    const localDateStr = now.toLocaleDateString("en-GB", {
+                        timeZone: timezone,
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric"
+                    }).split("/").join("-"); // DD-MM-YYYY
+
+                    const timings = await fetchPrayerTimes(lat, lng, localDateStr);
                     if (!timings) {
                         results.skipped++;
                         continue;
@@ -220,13 +226,36 @@ export async function POST(req: NextRequest) {
 
                     await messagingAdmin.send({
                         notification: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` },
-                        data: { type: "prayer_alert", prayer: activePrayer },
+                        data: {
+                            type: "prayer_alert",
+                            prayer: activePrayer,
+                            click_action: "FLUTTER_NOTIFICATION_CLICK" // Standard fallback for some wrappers
+                        },
                         token: sub.token,
                         apns: {
-                            payload: { aps: { alert: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` }, sound: "default", badge: 1 } },
-                            headers: { "apns-priority": "10", "apns-push-type": "alert" },
+                            payload: {
+                                aps: {
+                                    alert: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` },
+                                    sound: "default",
+                                    badge: 1,
+                                    "mutable-content": 1
+                                }
+                            },
+                            headers: {
+                                "apns-priority": "10",
+                                "apns-push-type": "alert",
+                                "apns-topic": "com.nawaetu.app" // Optional but good practice
+                            },
                         },
-                        android: { priority: "high", notification: { channelId: "prayer-alerts", sound: "default" } },
+                        android: {
+                            priority: "high",
+                            notification: {
+                                channelId: "prayer-alerts",
+                                sound: "default",
+                                priority: "max",
+                                visibility: "public"
+                            }
+                        },
                     });
 
                     results.sent++;

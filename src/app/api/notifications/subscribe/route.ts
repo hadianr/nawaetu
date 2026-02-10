@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     try {
-        const { token, deviceType } = await req.json();
+        const { token, deviceType, timezone, userLocation } = await req.json();
 
         if (!token) {
             return NextResponse.json({ error: "Token is required" }, { status: 400 });
@@ -18,24 +18,25 @@ export async function POST(req: NextRequest) {
             .where(eq(pushSubscriptions.token, token))
             .limit(1);
 
+        const data = {
+            updatedAt: new Date(),
+            active: 1,
+            deviceType: deviceType || "web",
+            timezone: timezone || "Asia/Jakarta",
+            userLocation: userLocation ? JSON.stringify(userLocation) : null,
+        };
+
         if (existing.length > 0) {
             await db
                 .update(pushSubscriptions)
-                .set({
-                    updatedAt: new Date(),
-                    active: 1,
-                    deviceType: deviceType || existing[0].deviceType,
-                })
+                .set(data)
                 .where(eq(pushSubscriptions.token, token));
         } else {
             await db.insert(pushSubscriptions).values({
                 token,
-                deviceType: deviceType || "web",
-                active: 1,
+                ...data,
                 userId: null,
                 prayerPreferences: null,
-                userLocation: null,
-                timezone: null,
                 lastUsedAt: null,
             });
         }
