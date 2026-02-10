@@ -141,9 +141,13 @@ SELECT * FROM push_subscriptions WHERE active = 1;
 
 **Symptom**: Cron runs but no notifications
 **Checklist**:
-- [ ] Firebase Admin SDK credentials correct?
-- [ ] User has active subscription in database?
-- [ ] Prayer time matches current time?
+- [ ] **Check GitHub Actions Logs**: Go to your GitHub Repo -> Actions -> 'Prayer Alert Cron'. 
+    - Is there a green checkmark for the recent time?
+    - Click on it -> 'trigger-prayer-alert' -> 'Call Prayer Alert API'.
+    - Check the "Response body". Does it say "sent: X"?
+- [ ] **iOS Limit**: iOS PWA processes are killed quickly. 
+    - Try opening the app ~5-10 minutes before prayer time to "wake" the service worker.
+    - If this works, the issue is iOS killing the background worker (common PWA limitation).
 - [ ] User enabled notification for this prayer?
 
 ### 401 Unauthorized
