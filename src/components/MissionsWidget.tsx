@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, Sparkles, AlertCircle } from "lucide-react";
 import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions-data";
 import { addXP } from "@/lib/leveling";
@@ -16,6 +17,11 @@ import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
+import IntentionInputForm from "./intentions/IntentionInputForm";
+import ReflectionInputForm from "./intentions/ReflectionInputForm";
+import IntentionPrompt from "./intentions/IntentionPrompt";
+import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
+
 export default function MissionsWidget() {
     const { t, locale } = useLocale();
     const { completedMissions, completeMission, isCompleted } = useMissions();
@@ -23,10 +29,19 @@ export default function MissionsWidget() {
     const [missions, setMissions] = useState<Mission[]>([]);
     const [today, setToday] = useState<string>("");
     const [mounted, setMounted] = useState(false);
+    const [userToken, setUserToken] = useState<string | null>(null);
+    const [todayIntention, setTodayIntention] = useState<{
+        id: string;
+        text: string;
+        reflection?: { rating: number; text: string } | null;
+    } | null>(null);
 
     // Dialog State
     const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    // Intention Prompt State
+    const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
 
     const getHukumLabel = (hukum: string) => {
         const labels: Record<string, keyof typeof t> = {
@@ -54,7 +69,42 @@ export default function MissionsWidget() {
         setMounted(true);
         // 1. Initial Load: Date
         setToday(new Date().toISOString().split('T')[0]);
+
+        // Load or Generate User Token for Intentions
+        let token = localStorage.getItem("user_token");
+        if (!token) {
+            try {
+                token = crypto.randomUUID();
+            } catch (e) {
+                token = `anon_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+            }
+            localStorage.setItem("user_token", token);
+        }
+        setUserToken(token);
     }, []);
+
+    // Fetch Today's Intention
+    useEffect(() => {
+        if (!userToken) return;
+
+        const fetchIntention = async () => {
+            try {
+                const res = await fetch(`/api/intentions/today?user_token=${userToken}`);
+                const data = await res.json();
+                if (data.success && data.data.has_intention) {
+                    setTodayIntention({
+                        id: data.data.intention.id,
+                        text: data.data.intention.niat_text,
+                        reflection: data.data.has_reflection ? data.data.reflection : null
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to fetch intention:", error);
+            }
+        };
+
+        fetchIntention();
+    }, [userToken]);
 
     const loadData = () => {
         const storage = getStorageService();
@@ -191,6 +241,60 @@ export default function MissionsWidget() {
         setIsDialogOpen(false);
     };
 
+    // Handle Intention Submit from Modal
+    const handleIntentionSubmit = async (text: string) => {
+        if (!userToken) return;
+
+        try {
+            const response = await fetch("/api/intentions/daily", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_token: userToken,
+                    niat_text: text,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const mission = missions.find(m => m.id === 'niat_harian');
+                if (mission) {
+                    addXP(mission.xpReward);
+                    window.dispatchEvent(new CustomEvent("xp_updated"));
+
+                    const completedCountToday = completedMissions.filter(m => {
+                        const completedDate = new Date(m.completedAt).toISOString().split('T')[0];
+                        return completedDate === today;
+                    }).length;
+                    if (completedCountToday === 0) updateStreak();
+
+                    completeMission(mission.id, mission.xpReward);
+                    window.dispatchEvent(new CustomEvent("mission_storage_updated"));
+
+                    // Update Local State for Widget Display
+                    setTodayIntention({
+                        id: data.data.id,
+                        text: text,
+                        reflection: null
+                    });
+
+                    toast.success(t.toastMissionComplete, {
+                        description: `Niat Terpasang! (+${mission.xpReward} XP)`,
+                        duration: 3000,
+                        icon: "🎉"
+                    });
+                }
+                setShowIntentionPrompt(false);
+            } else {
+                toast.error("Gagal menyimpan niat");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Terjadi kesalahan");
+        }
+    };
+
     // Modal Control State
     const [showMissionModal, setShowMissionModal] = useState(false);
     const [initialModalTab, setInitialModalTab] = useState("all");
@@ -217,12 +321,11 @@ export default function MissionsWidget() {
     // NOTE: We MUST hide 'ramadhan_during' missions from the Widget if it's not Ramadhan.
     // Assuming we are in 'Prep' phase, 'ramadhan_during' should be hidden.
     const widgetMissions = [...missions]
-        .filter(m => m.phase !== 'ramadhan_during') // Hide Tarawih, Bukber, etc. from Widget
+        .filter(m => m.phase !== 'ramadhan_during' && m.id !== 'niat_harian' && m.id !== 'muhasabah') // Hide intentional missions
         .sort((a, b) => {
             const aCompleted = isMissionCompleted(a.id, a.type);
             const bCompleted = isMissionCompleted(b.id, b.type);
 
-            // 1. Completed always last
             if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
 
             const aVal = checkValidation(a);
@@ -508,33 +611,87 @@ export default function MissionsWidget() {
             </div>
 
             {/* No gender selected prompt */}
-            {!gender && (
-                <div className="mt-3 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                    <p className="text-[10px] text-amber-400 text-center">
-                        {t.homeMissionSelectGenderHint}
-                    </p>
-                </div>
-            )}
+            {
+                !gender && (
+                    <div className="mt-3 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                        <p className="text-[10px] text-amber-400 text-center">
+                            {t.homeMissionSelectGenderHint}
+                        </p>
+                    </div>
+                )
+            }
 
-            {selectedMission && (
-                (() => {
-                    const validation = checkValidation(selectedMission);
-                    return (
-                        <MissionDetailDialog
-                            mission={selectedMission}
-                            isOpen={isDialogOpen}
-                            onClose={() => setIsDialogOpen(false)}
-                            isCompleted={isMissionCompleted(selectedMission.id, selectedMission.type)}
-                            isLocked={validation.locked}
-                            lockReason={validation.reason}
-                            isLate={validation.isLate}
-                            isEarly={validation.isEarly}
-                            onComplete={handleCompleteMission}
-                            onReset={handleResetMission}
-                        />
-                    );
-                })()
-            )}
-        </div>
+            {
+                selectedMission && (
+                    (() => {
+                        const validation = checkValidation(selectedMission);
+
+                        let customContent = null;
+                        if (selectedMission.id === 'niat_harian' && userToken) {
+                            if (todayIntention) {
+                                customContent = (
+                                    <ReflectionInputForm
+                                        userToken={userToken}
+                                        intentionId={todayIntention.id}
+                                        intentionText={todayIntention.text}
+                                        onComplete={() => {
+                                            setTodayIntention(prev => prev ? { ...prev, reflection: { rating: 5, text: "Done" } } : null);
+                                            const muhasabah = missions.find(m => m.id === 'muhasabah');
+                                            if (muhasabah) handleCompleteMission(muhasabah.xpReward);
+                                        }}
+                                    />
+                                );
+                            } else {
+                                customContent = (
+                                    <IntentionInputForm
+                                        userToken={userToken}
+                                        onComplete={() => handleCompleteMission(selectedMission.xpReward)}
+                                    />
+                                );
+                            }
+                        } else if (selectedMission.id === 'muhasabah' && userToken) {
+                            // For now we pass a dummy ID or handle it inside. 
+                            // Ideally we fetch the daily intention ID here.
+                            // Assuming the API might handle 'latest' or we need to fetch it.
+                            // TODO: Fetch real intention ID
+                            customContent = (
+                                <ReflectionInputForm
+                                    userToken={userToken}
+                                    intentionId="latest" // Placeholder, backend needs to support or we fetch
+                                    onComplete={() => handleCompleteMission(selectedMission.xpReward)}
+                                />
+                            );
+                        }
+
+                        return (
+                            <MissionDetailDialog
+                                mission={selectedMission}
+                                isOpen={isDialogOpen}
+                                onClose={() => setIsDialogOpen(false)}
+                                isCompleted={isMissionCompleted(selectedMission.id, selectedMission.type)}
+                                isLocked={validation.locked}
+                                lockReason={validation.reason}
+                                isLate={validation.isLate}
+                                isEarly={validation.isEarly}
+                                onComplete={handleCompleteMission}
+                                onReset={handleResetMission}
+                                customContent={customContent}
+                            />
+                        );
+                    })()
+                )
+            }
+
+            {/* Legacy Intention Prompt Modal */}
+            <AnimatePresence>
+                {showIntentionPrompt && (
+                    <IntentionPrompt
+                        onSubmit={handleIntentionSubmit}
+                        currentStreak={0} // Logic to fetch streak is in another widget, 0 is fine/hidden for now or we fetch it
+                        onClose={() => setShowIntentionPrompt(false)}
+                    />
+                )}
+            </AnimatePresence>
+        </div >
     );
 }

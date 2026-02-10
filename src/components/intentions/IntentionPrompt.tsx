@@ -8,17 +8,19 @@ interface IntentionPromptProps {
     onSubmit: (niatText: string) => Promise<void>;
     currentStreak?: number;
     onClose?: () => void;
+    initialValue?: string;
 }
 
 export default function IntentionPrompt({
     onSubmit,
     currentStreak = 0,
     onClose,
+    initialValue = "",
 }: IntentionPromptProps) {
     const { locale } = useLocale();
     const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
 
-    const [niatText, setNiatText] = useState("");
+    const [niatText, setNiatText] = useState(initialValue);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [greeting, setGreeting] = useState({ text: t.morning_title, emoji: "🌅" });

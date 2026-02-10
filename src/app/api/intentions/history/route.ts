@@ -28,9 +28,7 @@ export async function GET(req: NextRequest) {
             userId = subscription.userId;
         } else {
             // 2. Try to find anonymous user
-            const anonymousEmail = user_token.startsWith("anon_")
-                ? `${user_token}@nawaetu.local`
-                : null;
+            const anonymousEmail = `${user_token}@nawaetu.local`;
 
             if (anonymousEmail) {
                 const [user] = await db
@@ -115,6 +113,7 @@ export async function GET(req: NextRequest) {
                 })),
                 stats: {
                     current_streak: user?.niatStreakCurrent || 0,
+                    longest_streak: user?.niatStreakLongest || 0,
                     total_intentions: total,
                     reflection_rate: reflectionRate,
                 },

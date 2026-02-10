@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import {
     Dialog,
     DialogContent,
@@ -28,6 +28,7 @@ interface MissionDetailDialogProps {
     lockReason?: string;
     isLate?: boolean;
     isEarly?: boolean;
+    customContent?: ReactNode;
 }
 
 export default function MissionDetailDialog({
@@ -40,7 +41,8 @@ export default function MissionDetailDialog({
     lockReason,
     isLate,
     isEarly,
-    onReset
+    onReset,
+    customContent,
 }: MissionDetailDialogProps) {
     const { t } = useLocale();
     const content = MISSION_CONTENTS[mission.id];
@@ -101,7 +103,11 @@ export default function MissionDetailDialog({
                 </DialogHeader>
 
                 <div className="flex-1 overflow-hidden flex flex-col">
-                    {content ? (
+                    {customContent ? (
+                        <ScrollArea className="flex-1">
+                            {customContent}
+                        </ScrollArea>
+                    ) : content ? (
                         <Tabs defaultValue="guide" className="flex-1 flex flex-col">
                             <div className="px-6 border-b border-white/10">
                                 <TabsList variant="line" className="w-full bg-transparent p-0 h-12 justify-start gap-8 border-none">
@@ -313,129 +319,131 @@ export default function MissionDetailDialog({
                     )}
                 </div>
 
-                <div className="p-4 border-t border-white/10 bg-[#0F0F0F]">
-                    {/* LATE WARNING (Lalai) - Only for Fardhu Sholat (Punya afterPrayer config) */}
-                    {isLate && !isCompleted && !isLocked && mission.category === 'sholat' && mission.validationConfig?.afterPrayer && (
-                        <div className="mb-3 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
-                            <div className="flex items-center gap-2 mb-1">
-                                <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-                                <p className="text-xs font-bold text-red-400">{t.homeMissionLatePrayerTitle}</p>
+                {(!customContent || isCompleted) && (
+                    <div className="p-4 border-t border-white/10 bg-[#0F0F0F]">
+                        {/* LATE WARNING (Lalai) - Only for Fardhu Sholat (Punya afterPrayer config) */}
+                        {isLate && !isCompleted && !isLocked && mission.category === 'sholat' && mission.validationConfig?.afterPrayer && (
+                            <div className="mb-3 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                                    <p className="text-xs font-bold text-red-400">{t.homeMissionLatePrayerTitle}</p>
+                                </div>
+                                <p className="text-[10px] text-red-200/80 leading-tight italic">
+                                    {t.homeMissionLateWarningQuote}
+                                </p>
+                                <p className="text-[10px] text-zinc-400 mt-1">
+                                    {t.homeMissionLateWarningDesc}
+                                </p>
                             </div>
-                            <p className="text-[10px] text-red-200/80 leading-tight italic">
-                                {t.homeMissionLateWarningQuote}
-                            </p>
-                            <p className="text-[10px] text-zinc-400 mt-1">
-                                {t.homeMissionLateWarningDesc}
-                            </p>
-                        </div>
-                    )}
+                        )}
 
-                    {/* LATE NOTICE (Generic) - For non-Sholat (e.g. Dzikir) OR Sunnah Sholat (e.g. Dhuha) */}
-                    {isLate && !isCompleted && !isLocked && (mission.category !== 'sholat' || !mission.validationConfig?.afterPrayer) && (
-                        <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-lg flex items-center gap-2">
-                            <AlertCircle className="w-4 h-4 text-[rgb(var(--color-accent))] shrink-0" />
-                            <p className="text-[10px] text-[rgb(var(--color-accent))]/80 leading-tight">
-                                {t.homeMissionLateNotice}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* EARLY PRAISE (Awal Waktu) - Only for Sholat */}
-                    {isEarly && !isCompleted && !isLocked && mission.category === 'sholat' && (
-                        <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-lg">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))] shrink-0" />
-                                <p className="text-xs font-bold text-[rgb(var(--color-primary-light))]">{t.homeMissionEarlyPrayerTitle}</p>
+                        {/* LATE NOTICE (Generic) - For non-Sholat (e.g. Dzikir) OR Sunnah Sholat (e.g. Dhuha) */}
+                        {isLate && !isCompleted && !isLocked && (mission.category !== 'sholat' || !mission.validationConfig?.afterPrayer) && (
+                            <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-lg flex items-center gap-2">
+                                <AlertCircle className="w-4 h-4 text-[rgb(var(--color-accent))] shrink-0" />
+                                <p className="text-[10px] text-[rgb(var(--color-accent))]/80 leading-tight">
+                                    {t.homeMissionLateNotice}
+                                </p>
                             </div>
-                            <p className="text-[10px] text-[rgb(var(--color-primary-light))]/80 leading-tight italic">
-                                {t.homeMissionEarlyPraiseQuote}
-                            </p>
-                        </div>
-                    )}
+                        )}
 
-                    {isCompleted ? (
-                        <div className="flex flex-col gap-2">
-                            <Button className="w-full bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 cursor-default" disabled>
-                                <Check className="w-4 h-4 mr-2" /> {t.homeMissionCompletedLabel}
-                            </Button>
+                        {/* EARLY PRAISE (Awal Waktu) - Only for Sholat */}
+                        {isEarly && !isCompleted && !isLocked && mission.category === 'sholat' && (
+                            <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-lg">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))] shrink-0" />
+                                    <p className="text-xs font-bold text-[rgb(var(--color-primary-light))]">{t.homeMissionEarlyPrayerTitle}</p>
+                                </div>
+                                <p className="text-[10px] text-[rgb(var(--color-primary-light))]/80 leading-tight italic">
+                                    {t.homeMissionEarlyPraiseQuote}
+                                </p>
+                            </div>
+                        )}
 
-                            {isConfirmingReset ? (
-                                <div className="flex items-center gap-2 mt-2">
-                                    <Button
-                                        variant="destructive"
-                                        className="flex-1 py-5 text-xs font-bold"
-                                        onClick={() => {
-                                            onReset();
-                                            setIsConfirmingReset(false);
-                                        }}
-                                    >
-                                        {t.homeMissionUndoConfirm} (-{mission.xpReward} XP)
-                                    </Button>
+                        {isCompleted ? (
+                            <div className="flex flex-col gap-2">
+                                <Button className="w-full bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 cursor-default" disabled>
+                                    <Check className="w-4 h-4 mr-2" /> {t.homeMissionCompletedLabel}
+                                </Button>
+
+                                {isConfirmingReset ? (
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Button
+                                            variant="destructive"
+                                            className="flex-1 py-5 text-xs font-bold"
+                                            onClick={() => {
+                                                onReset();
+                                                setIsConfirmingReset(false);
+                                            }}
+                                        >
+                                            {t.homeMissionUndoConfirm} (-{mission.xpReward} XP)
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="flex-1 py-5 text-xs font-bold text-white/60"
+                                            onClick={() => setIsConfirmingReset(false)}
+                                        >
+                                            {t.homeMissionUndoCancel}
+                                        </Button>
+                                    </div>
+                                ) : (
                                     <Button
                                         variant="ghost"
-                                        className="flex-1 py-5 text-xs font-bold text-white/60"
-                                        onClick={() => setIsConfirmingReset(false)}
+                                        className="w-full text-white/30 hover:text-red-400 hover:bg-red-400/10 text-[10px] mt-1"
+                                        onClick={() => setIsConfirmingReset(true)}
                                     >
-                                        {t.homeMissionUndoCancel}
+                                        {t.homeMissionUndoPrompt}
                                     </Button>
-                                </div>
-                            ) : (
-                                <Button
-                                    variant="ghost"
-                                    className="w-full text-white/30 hover:text-red-400 hover:bg-red-400/10 text-[10px] mt-1"
-                                    onClick={() => setIsConfirmingReset(true)}
-                                >
-                                    {t.homeMissionUndoPrompt}
-                                </Button>
-                            )}
-                        </div>
-                    ) : isLocked ? (
-                        <Button className="w-full bg-white/5 text-white/40 hover:bg-white/5 border border-white/10" disabled>
-                            <Lock className="w-4 h-4 mr-2" /> {lockReason || t.homeMissionLockedFallback}
-                        </Button>
-                    ) : mission.completionOptions ? (
-                        <div className="flex gap-2">
-                            {mission.completionOptions.map((option, idx) => (
-                                <Button
-                                    key={idx}
-                                    className={cn(
-                                        "flex-1 font-bold py-6 text-sm relative overflow-hidden group",
-                                        option.xpReward > 50
-                                            ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white" // High reward (Berjamaah)
-                                            : "bg-white/10 hover:bg-white/20 text-white/80"    // Low reward (Sendiri)
-                                    )}
-                                    onClick={() => onComplete(option.xpReward)}
-                                >
-                                    {/* Highlight effect for high reward */}
-                                    {option.xpReward > 50 && (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary-light))]/0 via-white/10 to-[rgb(var(--color-primary-light))]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                                    )}
+                                )}
+                            </div>
+                        ) : isLocked ? (
+                            <Button className="w-full bg-white/5 text-white/40 hover:bg-white/5 border border-white/10" disabled>
+                                <Lock className="w-4 h-4 mr-2" /> {lockReason || t.homeMissionLockedFallback}
+                            </Button>
+                        ) : mission.completionOptions ? (
+                            <div className="flex gap-2">
+                                {mission.completionOptions.map((option, idx) => (
+                                    <Button
+                                        key={idx}
+                                        className={cn(
+                                            "flex-1 font-bold py-6 text-sm relative overflow-hidden group",
+                                            option.xpReward > 50
+                                                ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white" // High reward (Berjamaah)
+                                                : "bg-white/10 hover:bg-white/20 text-white/80"    // Low reward (Sendiri)
+                                        )}
+                                        onClick={() => onComplete(option.xpReward)}
+                                    >
+                                        {/* Highlight effect for high reward */}
+                                        {option.xpReward > 50 && (
+                                            <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary-light))]/0 via-white/10 to-[rgb(var(--color-primary-light))]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                                        )}
 
-                                    <div className="flex flex-col items-center gap-0.5 z-10">
-                                        <span className="flex items-center gap-1.5">
-                                            {option.icon && <span>{option.icon}</span>}
-                                            {option.label}
-                                        </span>
-                                        <span className="text-[10px] opacity-80">+{option.xpReward} XP</span>
-                                    </div>
-                                </Button>
-                            ))}
-                        </div>
-                    ) : (
-                        <Button
-                            className={cn(
-                                "w-full font-bold py-6 text-base transition-all",
-                                isLate
-                                    ? "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))] text-white"
-                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white"
-                            )}
-                            onClick={() => onComplete(mission.xpReward)}
-                        >
-                            {isLate ? <Check className="w-4 h-4 mr-2" /> : <Check className="w-4 h-4 mr-2" />}
-                            {isLate ? t.homeMissionCompleteLate : t.homeMissionComplete} (+{mission.xpReward} XP)
-                        </Button>
-                    )}
-                </div>
+                                        <div className="flex flex-col items-center gap-0.5 z-10">
+                                            <span className="flex items-center gap-1.5">
+                                                {option.icon && <span>{option.icon}</span>}
+                                                {option.label}
+                                            </span>
+                                            <span className="text-[10px] opacity-80">+{option.xpReward} XP</span>
+                                        </div>
+                                    </Button>
+                                ))}
+                            </div>
+                        ) : (
+                            <Button
+                                className={cn(
+                                    "w-full font-bold py-6 text-base transition-all",
+                                    isLate
+                                        ? "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))] text-white"
+                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white"
+                                )}
+                                onClick={() => onComplete(mission.xpReward)}
+                            >
+                                {isLate ? <Check className="w-4 h-4 mr-2" /> : <Check className="w-4 h-4 mr-2" />}
+                                {isLate ? t.homeMissionCompleteLate : t.homeMissionComplete} (+{mission.xpReward} XP)
+                            </Button>
+                        )}
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     );

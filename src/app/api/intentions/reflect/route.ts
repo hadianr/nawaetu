@@ -59,9 +59,8 @@ export async function POST(req: NextRequest) {
             userId = subscription.userId;
         } else {
             // 2. Try to find anonymous user
-            const anonymousEmail = user_token.startsWith("anon_")
-                ? `${user_token}@nawaetu.local`
-                : null;
+            // Allow any token format (UUID or anon_*)
+            const anonymousEmail = `${user_token}@nawaetu.local`;
 
             if (anonymousEmail) {
                 const [user] = await db

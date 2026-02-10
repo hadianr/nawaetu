@@ -9,6 +9,8 @@ interface ReflectionPromptProps {
     intentionId: string;
     onSubmit: (rating: number, reflectionText?: string) => Promise<void>;
     onSkip?: () => void;
+    initialValue?: string;
+    initialRating?: number;
 }
 
 export default function ReflectionPrompt({
@@ -16,6 +18,8 @@ export default function ReflectionPrompt({
     intentionId,
     onSubmit,
     onSkip,
+    initialValue = "",
+    initialRating = 0,
 }: ReflectionPromptProps) {
     const { locale } = useLocale();
     const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
@@ -28,8 +32,8 @@ export default function ReflectionPrompt({
         { emoji: "🤩", label: t.rating_excellent, color: "text-emerald-400" },
     ];
 
-    const [rating, setRating] = useState<number>(0);
-    const [reflectionText, setReflectionText] = useState("");
+    const [rating, setRating] = useState<number>(initialRating);
+    const [reflectionText, setReflectionText] = useState(initialValue);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mounted, setMounted] = useState(false);
 
@@ -119,8 +123,8 @@ export default function ReflectionPrompt({
                                         key={index}
                                         onClick={() => setRating(ratingValue)}
                                         className={`flex flex-col items-center gap-2 p-2 rounded-2xl transition-all duration-300 w-16 ${isSelected
-                                                ? "bg-white/10 border-white/20 scale-110 shadow-lg"
-                                                : "hover:bg-white/5 opacity-60 hover:opacity-100 scale-100"
+                                            ? "bg-white/10 border-white/20 scale-110 shadow-lg"
+                                            : "hover:bg-white/5 opacity-60 hover:opacity-100 scale-100"
                                             }`}
                                     >
                                         <span className={`text-3xl transition-transform ${isSelected ? 'scale-125' : ''}`}>{item.emoji}</span>

@@ -38,9 +38,7 @@ export async function GET(req: NextRequest) {
         } else {
             // 2. Try to find anonymous user
             // Anonymous format: email = token + "@nawaetu.local"
-            const anonymousEmail = user_token.startsWith("anon_")
-                ? `${user_token}@nawaetu.local`
-                : null;
+            const anonymousEmail = `${user_token}@nawaetu.local`;
 
             if (anonymousEmail) {
                 const [user] = await db

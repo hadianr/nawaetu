@@ -61,6 +61,7 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 *   **Qibla Compass**: Precise direction finder using device sensors.
 
 ### 5. 🎮 Gamification - Make Worship Fun
+*   **Intention-First Missions**: Setting your intention ("Niat") is the primary daily mission.
 *   **Daily Missions**: Curated missions (e.g., Sunnah fasting, Dhuha prayer).
 *   **Streak System**: Visual progress tracker to maintain consistency.
 *   **XP & Leveling**: Level up from "Newbie" to "Spiritual Warrior".

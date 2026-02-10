@@ -11,6 +11,10 @@ export const INTENTION_TRANSLATIONS = {
         random_btn: "Acak",
         setting_intention: "Menyimpan Niat...",
         set_intention_btn: "Tetapkan Niat",
+        placeholder_niat: "Contoh: Saya berniat bekerja dengan jujur karena Allah...",
+        error_generic: "Terjadi kesalahan. Silakan coba lagi.",
+        prompt_reflection_rating: "Bagaimana kualitas ibadahmu?",
+        prompt_reflection_text: "Catatan Muhasabah:",
         streak_label: "hari beruntun",
 
         // Reflection Prompt
@@ -85,6 +89,10 @@ export const INTENTION_TRANSLATIONS = {
         random_btn: "Random",
         setting_intention: "Setting Intention...",
         set_intention_btn: "Set Intention",
+        placeholder_niat: "Example: I intend to work honestly...",
+        error_generic: "An error occurred. Please try again.",
+        prompt_reflection_rating: "How was your worship quality?",
+        prompt_reflection_text: "Reflection Notes:",
         streak_label: "day streak",
 
         // Reflection Prompt

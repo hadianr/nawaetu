@@ -49,6 +49,20 @@ export const PRAYER_NAMES: Record<string, string> = {
 // Universal missions (for all genders)
 export const UNIVERSAL_MISSIONS: Mission[] = [
     {
+        id: 'niat_harian',
+        title: 'Luruskan Niat',
+        description: 'Tetapkan niat kebaikan hari ini',
+        xpReward: 50,
+        icon: '🎯',
+        gender: null,
+        dalil: 'HR. Bukhari no. 1: "Segala amal itu tergantung niatnya..."',
+        type: 'daily',
+        category: 'ibadah',
+        hukum: 'wajib', // Foundation of all ibadah
+        phase: 'all_year',
+        validationType: 'manual', // Will be handled by custom form
+    },
+    {
         id: 'quran_10_ayat',
         title: 'Baca 10 Ayat Quran',
         description: 'Membaca minimal 10 ayat Al-Quran',
@@ -108,6 +122,21 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { timeWindow: { start: 15, end: 18 } }
     },
+    {
+        id: 'muhasabah',
+        title: 'Muhasabah Harian',
+        description: 'Refleksi ibadah di penghujung hari',
+        xpReward: 50,
+        icon: '📝',
+        gender: null,
+        dalil: 'QS. Al-Hashr: 18: "Dan hendaklah setiap diri memperhatikan apa yang telah diperbuatnya..."',
+        type: 'daily',
+        category: 'ibadah',
+        hukum: 'sunnah',
+        phase: 'all_year',
+        validationType: 'manual', // Will be handled by custom form
+    },
+
     // Individual prayer missions (MOVED TO GENDER SPECIFIC)
     {
         id: 'puasa_sunnah',
@@ -703,7 +732,7 @@ export function getSeasonalMissions(hijriDateStr?: string): Mission[] {
 // Helper function to get localized mission
 export function getLocalizedMission(mission: Mission, locale: string): Mission {
     const translation = getMissionTranslation(mission.id, locale);
-    
+
     if (translation) {
         const localizedMission = {
             ...mission,
@@ -715,7 +744,7 @@ export function getLocalizedMission(mission: Mission, locale: string): Mission {
         if (mission.completionOptions) {
             localizedMission.completionOptions = mission.completionOptions.map(option => ({
                 ...option,
-                label: option.label === 'Sholat Sendiri' 
+                label: option.label === 'Sholat Sendiri'
                     ? (locale === 'en' ? 'Pray Alone' : 'Sholat Sendiri')
                     : (locale === 'en' ? 'Congregational at Mosque' : 'Berjamaah di Masjid')
             }));
@@ -723,7 +752,7 @@ export function getLocalizedMission(mission: Mission, locale: string): Mission {
 
         return localizedMission;
     }
-    
+
     // Fallback to original (Indonesian) if translation not found
     return mission;
 }

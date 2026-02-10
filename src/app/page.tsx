@@ -6,6 +6,7 @@ import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 
 // Above-the-fold priority components
 import RamadhanCountdown from "@/components/RamadhanCountdown";
+import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
 
 
 export const metadata: Metadata = {
@@ -44,6 +45,11 @@ export default function Home() {
           {/* 2. Ramadhan Countdown (Hero) - Critical for LCP */}
           <section className="w-full">
             <RamadhanCountdown initialDays={daysLeft} />
+          </section>
+
+          {/* 3. Nawaetu Journal - The core uniqueness */}
+          <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-700">
+            <IntentionJournalWidget />
           </section>
 
           <DeferredBelowFold />
