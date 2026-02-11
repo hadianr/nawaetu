@@ -71,6 +71,16 @@ echo -e "Branch: ${GREEN}$CURRENT_BRANCH${NC}"
 echo -e "Release: ${YELLOW}$VERSION${NC}"
 echo ""
 
+# CRITICAL: Update version files BEFORE checking git status
+echo -e "${BLUE}📝 Updating version files...${NC}"
+CURRENT_DATE=$(date +%Y-%m-%d)
+sed -i '' "s/\"version\": \".*\"/\"version\": \"$VERSION_NUMBER\"/" package.json
+sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-config.ts
+sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
+echo -e "${GREEN}✅ package.json → $VERSION_NUMBER${NC}"
+echo -e "${GREEN}✅ app-config.ts → $VERSION_NUMBER (updated: $CURRENT_DATE)${NC}"
+echo ""
+
 # Check for uncommitted changes
 if ! git diff-index --quiet HEAD --; then
     echo -e "${YELLOW}⚠️  Found uncommitted changes in working directory${NC}"
@@ -90,12 +100,6 @@ if ! git diff-index --quiet HEAD --; then
     # fi
     
     echo -e "${BLUE}📝 Committing version bump changes...${NC}"
-    
-    # Update app-config.ts version and date
-    CURRENT_DATE=$(date +%Y-%m-%d)
-    sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-config.ts
-    sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
-    echo -e "${GREEN}✅ Dynamic app-config.ts updated${NC}"
 
     git add .
     git commit -m "chore: release $VERSION" -m "- Update package.json version
