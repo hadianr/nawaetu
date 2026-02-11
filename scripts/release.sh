@@ -81,12 +81,13 @@ if ! git diff-index --quiet HEAD --; then
     echo -e "${BLUE}Will commit them with message: 'chore: release $VERSION'${NC}"
     echo ""
     
-    read -p "Continue and commit these changes? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}❌ Release cancelled${NC}"
-        exit 1
-    fi
+    # Auto-approve if running non-interactively or just assume yes for release flow
+    # read -p "Continue and commit these changes? (y/n) " -n 1 -r
+    # echo
+    # if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    #     echo -e "${RED}❌ Release cancelled${NC}"
+    #     exit 1
+    # fi
     
     echo -e "${BLUE}📝 Committing version bump changes...${NC}"
     
@@ -107,27 +108,8 @@ else
     echo -e "${GREEN}✅ Working directory is clean${NC}"
 fi
 
-# Check if there are unpushed commits
-UNPUSHED=$(git log origin/main..HEAD --oneline 2>/dev/null || echo "")
-if [ -n "$UNPUSHED" ]; then
-    echo -e "${YELLOW}⚠️  Found unpushed commits:${NC}"
-    echo "$UNPUSHED"
-    echo ""
-    
-    read -p "Push these commits first? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}❌ Release cancelled${NC}"
-        exit 1
-    fi
-    
-    echo -e "${BLUE}📤 Pushing commits to origin...${NC}"
-    git push origin main
-    echo -e "${GREEN}✅ Commits pushed${NC}"
-    echo ""
-else
-    echo -e "${GREEN}✅ All commits are synced with origin${NC}"
-fi
+# Skip intermediate "unpushed" check because we likely just created a commit above.
+# We will push everything (commits + tags) at the end.
 
 # Show what will happen
 echo -e "${BLUE}This release will:${NC}"
@@ -162,10 +144,11 @@ echo -e "${GREEN}✅ Tag created: $VERSION${NC}"
 echo ""
 
 # Push tag to origin
-echo -e "${BLUE}📤 Pushing tag to GitHub...${NC}"
+echo -e "${BLUE}📤 Pushing changes and tag to GitHub...${NC}"
+git push origin main
 git push origin "$VERSION"
 
-echo -e "${GREEN}✅ Tag pushed to origin${NC}"
+echo -e "${GREEN}✅ Changes & Tag pushed to origin${NC}"
 echo ""
 
 # Final success
