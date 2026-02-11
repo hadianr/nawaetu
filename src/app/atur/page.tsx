@@ -32,6 +32,7 @@ import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import NotificationSettings from "@/components/NotificationSettings";
+import { APP_CONFIG } from "@/config/app-config";
 
 const storage = getStorageService();
 
@@ -652,11 +653,16 @@ export default function SettingsPage() {
                             <span className="text-[10px] font-bold text-white">N</span>
                         </div>
                         <span className="text-[10px] font-bold text-white/60 group-hover:text-white transition-colors">
-                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName} {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutVersion.split('•')[0].trim()}
+                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName} {APP_CONFIG.version}
                         </span>
                         <ChevronRight className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors" />
                     </button>
                 </div>
+
+                {/* Update Available Banner - New Feature v1.5.5 */}
+                {typeof window !== 'undefined' && (
+                    <UpdateChecker currentVersion={APP_CONFIG.version} />
+                )}
 
                 {/* Debug Tools - Only visible in development */}
                 {process.env.NODE_ENV === 'development' && (
@@ -691,5 +697,70 @@ export default function SettingsPage() {
             <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
             <AboutAppModal open={showAboutModal} onOpenChange={setShowAboutModal} />
         </div >
+    );
+}
+
+// Internal Component for Version Checking
+function UpdateChecker({ currentVersion }: { currentVersion: string }) {
+    const [serverVersion, setServerVersion] = useState<string | null>(null);
+    const [checking, setChecking] = useState(false);
+
+    useEffect(() => {
+        const check = async () => {
+            try {
+                const res = await fetch('/api/system/version');
+                if (res.ok) {
+                    const data = await res.json();
+                    setServerVersion(data.version);
+                }
+            } catch (e) {
+                console.error("Version check failed", e);
+            }
+        };
+        check();
+    }, []);
+
+    // Helper to compare semver loosely
+    const isUpdateAvailable = () => {
+        if (!serverVersion) return false;
+        return serverVersion !== currentVersion;
+    };
+
+    const handleUpdate = () => {
+        setChecking(true);
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                regs.forEach(reg => reg.update());
+            });
+        }
+        // Force reload after short delay to let SW update
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    };
+
+    if (!isUpdateAvailable()) return null;
+
+    return (
+        <div className="fixed bottom-20 left-4 right-4 z-50">
+            <div className="bg-emerald-900/90 backdrop-blur-md border border-emerald-500/30 p-4 rounded-2xl flex items-center justify-between shadow-2xl animate-in slide-in-from-bottom-5">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center animate-pulse">
+                        <Sparkles className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-white font-bold text-sm">Update Tersedia!</h3>
+                        <p className="text-emerald-200/70 text-xs">v{serverVersion} siap diinstall.</p>
+                    </div>
+                </div>
+                <Button
+                    onClick={handleUpdate}
+                    disabled={checking}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-9 rounded-xl"
+                >
+                    {checking ? "Updating..." : "Update Sekarang"}
+                </Button>
+            </div>
+        </div>
     );
 }
