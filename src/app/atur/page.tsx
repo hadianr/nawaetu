@@ -770,7 +770,7 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
     useEffect(() => {
         const check = async () => {
             try {
-                const res = await fetch('/api/system/version');
+                const res = await fetch(`/api/system/version?t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     setServerVersion(data.version);
@@ -782,10 +782,29 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
         check();
     }, []);
 
-    // Helper to compare semver loosely
+    const parseSemver = (version: string) =>
+        version.replace(/^v/, "").split(".").map((part) => Number(part));
+
+    const compareSemver = (a: string, b: string) => {
+        const aParts = parseSemver(a);
+        const bParts = parseSemver(b);
+
+        if (aParts.some(Number.isNaN) || bParts.some(Number.isNaN)) return 0;
+
+        const length = Math.max(aParts.length, bParts.length);
+        for (let i = 0; i < length; i += 1) {
+            const aVal = aParts[i] ?? 0;
+            const bVal = bParts[i] ?? 0;
+            if (aVal > bVal) return 1;
+            if (aVal < bVal) return -1;
+        }
+
+        return 0;
+    };
+
     const isUpdateAvailable = () => {
         if (!serverVersion) return false;
-        return serverVersion !== currentVersion;
+        return compareSemver(serverVersion, currentVersion) === 1;
     };
 
     const handleUpdate = async () => {
