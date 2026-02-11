@@ -67,6 +67,7 @@ export const STORAGE_KEYS = {
   // UI State
   PWA_PROMPT_DISMISSED: 'pwa_prompt_dismissed',
   ONBOARDING_COMPLETED: 'onboarding_completed',
+  APP_VERSION: 'app_version',
 } as const;
 
 // Type for storage keys

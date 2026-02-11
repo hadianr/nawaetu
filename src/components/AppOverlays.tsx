@@ -7,6 +7,7 @@ import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { initializeQuranOptimizations } from "@/lib/optimize-quran";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { APP_CONFIG } from "@/config/app-config";
 const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
 const SWUpdatePrompt = dynamic(() => import("@/components/SWUpdatePrompt"), { ssr: false });
 
@@ -98,6 +99,43 @@ export default function AppOverlays() {
     // Cleanup dynamic cache keys on first client load
     useEffect(() => {
         cleanupDynamicCaches();
+    }, []);
+
+    // iOS hard refresh on version change to prevent reverting to old PWA shell
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        const isIOS =
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+        if (!isIOS) return;
+
+        const storage = getStorageService();
+        const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
+
+        if (storedVersion === APP_CONFIG.version) return;
+
+        const forceRefresh = async () => {
+            try {
+                if ("serviceWorker" in navigator) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map((reg) => reg.unregister()));
+                }
+
+                if ("caches" in window) {
+                    const keys = await caches.keys();
+                    await Promise.all(keys.map((key) => caches.delete(key)));
+                }
+            } catch (error) {
+                console.error("[PWA] iOS refresh failed:", error);
+            } finally {
+                storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
+                window.location.href = `/?v=${APP_CONFIG.version}&refresh=${Date.now()}`;
+            }
+        };
+
+        forceRefresh();
     }, []);
 
     return (
