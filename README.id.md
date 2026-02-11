@@ -44,7 +44,12 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 *   **Smart Deduplication**: Mencegah notifikasi ganda dengan tracking database, aman meski cron berjalan tiap menit.
 *   **iOS Killed State Fix**: Notifikasi tembus meskipun aplikasi di-kill/force quit di iOS (Direct Hit Verified).
 *   **Icon Baru**: Tampilan premium dengan icon opaque (penuh) yang seragam di semua platform.
-*   **Hybrid Sync**: Kombinasi Server Sync & Client-side notification.
+
+### 2. 📔 Jurnal Niat Harian (New)
+*   **Morning Niat**: Mulai harimu dengan menetapkan niat yang lurus.
+*   **Evening Reflection**: Muhasabah di malam hari—apakah niatmu tercapai?
+*   **Riwayat Spiritual**: Pantau perjalanan niatmu dari waktu ke waktu.
+*   **AI Feedback**: Dapatkan masukan personal dari Nawaetu AI tentang kualitas niatmu.
 
 ### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor (Updated)
 *   **Smart Rate Limiting**: Limit pintar (5x/hari Free, 25x/hari Muhsinin) dengan auto-reset saat upgrade [NEW v1.3.0]
@@ -148,8 +153,8 @@ Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
 *   **Prayer Times API** - Accurate prayer schedules
 *   **Kemenag Quran API** - Surah, terjemahan & tafsir Indonesia
 *   **Quran.com API (Uthmani)** - Arabic text dengan harakat lengkap
-*   **Firebase Admin SDK** - Server-side messaging & notifications [NEW v1.4.0]
-*   **Vercel Cron** - Scheduled background tasks [NEW v1.4.0]
+*   **Firebase Admin SDK** - Server-side messaging & notifications [NEW v1.5.0]
+*   **Vercel Cron** - Scheduled background tasks [NEW v1.5.0]
 
 ### Backend & Database (v1.2.0 Ready)
 *   **Drizzle ORM** - TypeScript ORM for scaling
@@ -408,7 +413,7 @@ npm run release -- v1.2.0
 
 ### Detailed Release Guide
 
-Untuk panduan lengkap dan troubleshooting: [RELEASE_PROCESS.md](.github/RELEASE_PROCESS.md)
+Untuk panduan lengkap dan troubleshooting: [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md)
 
 **Topik yang covered:**
 - Pre-release checklist

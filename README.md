@@ -37,12 +37,19 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ---
 
-## 🌟 Key Features (v1.4.0)
+## 🌟 Key Features (v1.5.0)
 
-### 1. 🔔 iOS & Background Notifications (New)
-*   **Reliable Alerts**: Notifications work perfectly using Vercel Cron & Firebase Admin SDK.
-*   **Hybrid Sync System**: Smart combination of server-side daily sync and client-side real-time checks.
-*   **APNS Optimized**: Custom payloads designed for iOS background delivery.
+### 1. 🔔 High-Precision Notifications (New v1.5.0)
+*   **1-Minute Accuracy**: External Cron optimization ensures Adhan alerts are timely (< 60s delay).
+*   **Smart Deduplication**: DB-level tracking prevents duplicate notifications.
+*   **iOS Killed State**: Notifications arrive even when the app is force-quit (Direct Hit verified).
+*   **Standardized Icons**: Premium opaque icons for iOS/Android/Web.
+
+### 2. 📔 Daily Intention Journal (New)
+*   **Morning Niat**: Set your intention at the start of the day to align your heart.
+*   **Evening Reflection**: Review your day—did you fulfill your intention? (Self-Muhasabah).
+*   **History Tracking**: Look back at your spiritual journey over time.
+*   **AI Insights**: Get personalized feedback on your intentions from Nawaetu AI.
 
 ### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor
 *   **Smart Assistant**: Powered by Google Gemini 2.5 Flash-Lite & Groq Llama 3 for fast, accurate Islamic guidance.
