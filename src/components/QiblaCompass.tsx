@@ -19,31 +19,37 @@ export default function QiblaCompass() {
     const [qiblaBearing, setQiblaBearing] = useState<number | null>(null);
     const [distance, setDistance] = useState<number | null>(null);
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false); // Start false
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [aligned, setAligned] = useState<boolean>(false);
+    const [noSensor, setNoSensor] = useState<boolean>(false);
 
-    // Refs to track absolute values for wrapping logic
+    // Refs
     const lastHeadingRef = useRef<number>(0);
+    const sensorCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const gotFirstEventRef = useRef<boolean>(false);
 
-    // Helper to get translations
     const { t } = useLocale();
 
     const handleOrientation = useCallback((e: DeviceOrientationEvent) => {
-        let rawHeading: number | null = null;
+        // Mark sensor as active
+        gotFirstEventRef.current = true;
+        if (sensorCheckTimeoutRef.current) {
+            clearTimeout(sensorCheckTimeoutRef.current);
+            sensorCheckTimeoutRef.current = null;
+        }
+        setNoSensor(false);
 
+        let rawHeading: number | null = null;
+        // ... (rest of logic remains the same)
         if ((e as DeviceOrientationEventiOS).webkitCompassHeading !== undefined) {
-            // iOS: use webkitCompassHeading
             rawHeading = (e as DeviceOrientationEventiOS).webkitCompassHeading!;
         } else if (e.alpha !== null) {
-            // Android/Standard: alpha is usually 0-360 counter-clockwise.
-            // Compass heading is clockwise. So 360 - alpha.
             rawHeading = 360 - e.alpha;
         }
 
         if (rawHeading === null) return;
 
-        // Performance: Continuous Rotation Logic
         let delta = rawHeading - (lastHeadingRef.current % 360);
         if (delta > 180) delta -= 360;
         if (delta < -180) delta += 360;
@@ -77,14 +83,40 @@ export default function QiblaCompass() {
 
     const startCompass = useCallback(() => {
         setPermissionGranted(true);
+        // Persist permission
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('nawaetu_qibla_permission', 'granted');
+        }
+
+        // Reset state
+        gotFirstEventRef.current = false;
+        setNoSensor(false);
+
+        // Start Sensor Listeners
         if ('ondeviceorientationabsolute' in window) {
             (window as any).addEventListener("deviceorientationabsolute", handleOrientation);
         } else {
             (window as any).addEventListener("deviceorientation", handleOrientation);
         }
-        // Also get location now
+
+        // Start Timeout to detect "No Sensor" devices
+        sensorCheckTimeoutRef.current = setTimeout(() => {
+            if (!gotFirstEventRef.current) {
+                setNoSensor(true);
+                // Don't error out, just show alternative UI
+            }
+        }, 3000);
+
         getLocation();
     }, [handleOrientation, getLocation]);
+
+    // Check persistence on mount
+    useEffect(() => {
+        const savedPermission = localStorage.getItem('nawaetu_qibla_permission');
+        if (savedPermission === 'granted') {
+            startCompass();
+        }
+    }, [startCompass]);
 
     const requestCompassPermission = async () => {
         if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
@@ -94,6 +126,7 @@ export default function QiblaCompass() {
                     startCompass();
                 } else {
                     setError(t.qiblaCompassDenied);
+                    localStorage.removeItem('nawaetu_qibla_permission'); // Reset if denied
                 }
             } catch (e) {
                 setError(t.qiblaCompassFailed);
@@ -103,29 +136,10 @@ export default function QiblaCompass() {
         }
     };
 
-    useEffect(() => {
-        if (qiblaBearing !== null) {
-            const currentHeading = (-compassRotate) % 360;
-            const normalizedHeading = currentHeading < 0 ? currentHeading + 360 : currentHeading;
-
-            const diff = Math.abs(normalizedHeading - qiblaBearing);
-
-            // Strict tolerance for "Locked In" feel
-            const isAligned = diff < 3 || diff > 357;
-
-            if (isAligned && !aligned) {
-                if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
-                setAligned(true);
-            } else if (!isAligned && aligned) {
-                setAligned(false);
-            }
-
-            setQiblaRelativeRotate(qiblaBearing);
-        }
-    }, [compassRotate, qiblaBearing, aligned]);
-
+    // Cleanup
     useEffect(() => {
         return () => {
+            if (sensorCheckTimeoutRef.current) clearTimeout(sensorCheckTimeoutRef.current);
             window.removeEventListener("deviceorientation", handleOrientation);
             if ('ondeviceorientationabsolute' in window) {
                 (window as any).removeEventListener("deviceorientationabsolute", handleOrientation);
@@ -135,6 +149,28 @@ export default function QiblaCompass() {
 
     if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">{t.qiblaSearching}</div>;
 
+    // No Sensor Fallback UI
+    if (noSensor) {
+        return (
+            <div className="flex flex-col items-center justify-center p-6 text-center max-w-sm mx-auto z-50">
+                <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/20">
+                    <Compass className="w-8 h-8 text-red-400 opacity-50" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Sensor Tidak Ditemukan</h3>
+                <p className="text-white/60 text-sm mb-6">
+                    HP Anda sepertinya tidak memiliki sensor kompas (magnetometer). Fitur ini tidak dapat berjalan.
+                </p>
+                <Button
+                    onClick={() => window.location.reload()}
+                    variant="outline"
+                    className="border-white/10 text-white hover:bg-white/10"
+                >
+                    Coba Lagi
+                </Button>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] w-full relative">
             {error && (
@@ -143,7 +179,7 @@ export default function QiblaCompass() {
                 </div>
             )}
 
-            {/* Permission Overlay - FIXED POSITION (No Gaps) */}
+            {/* Permission Overlay */}
             {!permissionGranted && !error && (
                 <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0a0a] p-6 text-center">
                     <div className="w-20 h-20 bg-[rgb(var(--color-primary))]/10 rounded-full flex items-center justify-center mb-6 ring-1 ring-[rgb(var(--color-primary))]/20">
