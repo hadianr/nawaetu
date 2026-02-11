@@ -119,9 +119,12 @@ export default function QiblaCompass() {
     // FIX: Check persistence on mount - only run once, no dependency on startCompass
     useEffect(() => {
         const savedPermission = localStorage.getItem('nawaetu_qibla_permission');
-        if (savedPermission === 'granted' && !compassStartedRef.current) {
-            // For iOS, need to check if permission API exists and request again
+        
+        // Always try to init if permission was saved, regardless of compassStartedRef
+        // This fixes the issue where app close/reopen didn't reinitialize
+        if (savedPermission === 'granted') {
             const initCompass = async () => {
+                // Double-check to prevent race conditions
                 if (compassStartedRef.current) return;
                 
                 // iOS requires explicit permission request even if saved
@@ -253,7 +256,8 @@ export default function QiblaCompass() {
                 (window as any).removeEventListener("deviceorientationabsolute", handleOrientation);
             }
             
-            // Reset flags for next mount
+            // IMPORTANT: Reset flags for next mount (app close/reopen)
+            // This allows the compass to reinitialize properly
             compassStartedRef.current = false;
             gotFirstEventRef.current = false;
         };
