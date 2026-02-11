@@ -176,6 +176,7 @@ For companies or individuals who wish to use Nawaetu for **commercial purposes**
 - ✅ White labeling allowed.
 - ✅ Priority support & enterprise features.
 - 📩 Contact: **license@nawaetu.com** for pricing and details.
+- 📖 For complete guide and troubleshooting: [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md)
 
 See the [LICENSE](LICENSE) file for the full AGPLv3 text.
 
