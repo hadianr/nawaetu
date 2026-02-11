@@ -151,28 +151,36 @@ export default function SWUpdatePrompt() {
             }
         };
 
-        // 4. iOS REVERT BUG FIX (v1.5.8)
-        // Ensure we kill any "Zombie" Service Workers from v1.5.3
+        // 4. iOS REVERT BUG FIX (v1.5.9)
+        // Ensure we kill "sw.js" (Zombie v1.5.3) but KEEP "sw-v158.js" (New)
         const nukeOldCaches = async () => {
-            const FIX_KEY = `nawaetu_ios_fix_${APP_CONFIG.version}`; // e.g., nawaetu_ios_fix_1.5.8
+            const FIX_KEY = `nawaetu_ios_fix_${APP_CONFIG.version}_smart`;
 
-            // Only run this cleanup ONCE per version update
+            // Run this cleanup to ensure old SW is dead
             if (typeof window !== 'undefined' && !localStorage.getItem(FIX_KEY)) {
-                console.log("[SW] Executing Zombie SW Cleanup...");
+                console.log("[SW] Executing Smart Zombie Cleanup...");
 
                 try {
-                    // 1. Unregister all SWs to be safe
+                    let reloadNeeded = false;
+
+                    // 1. Unregister ONLY old 'sw.js'
                     if ('serviceWorker' in navigator) {
                         const regs = await navigator.serviceWorker.getRegistrations();
                         for (const reg of regs) {
-                            await reg.unregister();
-                            console.log("[SW] Unregistered worker:", reg.scope);
+                            // Check if this is the OLD worker
+                            if (reg.active?.scriptURL.includes('sw.js') || reg.waiting?.scriptURL.includes('sw.js')) {
+                                console.log("[SW] Unregistering Legacy Zombie:", reg.scope);
+                                await reg.unregister();
+                                reloadNeeded = true;
+                            }
                         }
                     }
 
-                    // 2. Clear All Caches (Force fresh assets)
+                    // 2. Clear All Caches (Force fresh assets) - Still good to do once
                     if ('caches' in window) {
                         const keys = await caches.keys();
+                        // Optional: Only clear if we really need to. 
+                        // But to be safe against v1.5.3 HTML cache, lets clear.
                         await Promise.all(keys.map(key => caches.delete(key)));
                         console.log("[SW] Cleared caches:", keys);
                     }
@@ -180,8 +188,10 @@ export default function SWUpdatePrompt() {
                     // 3. Mark as fixed
                     localStorage.setItem(FIX_KEY, 'true');
 
-                    // 4. Force Reload to install fresh SW
-                    window.location.reload();
+                    // 4. Force Reload if we killed something
+                    if (reloadNeeded) {
+                        window.location.reload();
+                    }
 
                 } catch (e) {
                     console.error("[SW] Cleanup failed:", e);
