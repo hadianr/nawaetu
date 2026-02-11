@@ -29,6 +29,7 @@ export default function QiblaCompass() {
     const sensorCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const gotFirstEventRef = useRef<boolean>(false);
     const compassStartedRef = useRef<boolean>(false); // Prevent duplicate starts
+    const orientationHandlerRef = useRef<((e: DeviceOrientationEvent) => void) | null>(null);
 
     const { t } = useLocale();
 
@@ -170,6 +171,9 @@ export default function QiblaCompass() {
                     setCompassRotate(-lastHeadingRef.current);
                 };
 
+                // Save handler reference for cleanup
+                orientationHandlerRef.current = orientationHandler;
+
                 if ('ondeviceorientationabsolute' in window) {
                     (window as any).addEventListener("deviceorientationabsolute", orientationHandler);
                 } else {
@@ -229,11 +233,29 @@ export default function QiblaCompass() {
     // Cleanup
     useEffect(() => {
         return () => {
-            if (sensorCheckTimeoutRef.current) clearTimeout(sensorCheckTimeoutRef.current);
+            // Clear timeout
+            if (sensorCheckTimeoutRef.current) {
+                clearTimeout(sensorCheckTimeoutRef.current);
+                sensorCheckTimeoutRef.current = null;
+            }
+            
+            // Remove event listeners (both possible references)
+            if (orientationHandlerRef.current) {
+                window.removeEventListener("deviceorientation", orientationHandlerRef.current);
+                if ('ondeviceorientationabsolute' in window) {
+                    (window as any).removeEventListener("deviceorientationabsolute", orientationHandlerRef.current);
+                }
+                orientationHandlerRef.current = null;
+            }
+            
             window.removeEventListener("deviceorientation", handleOrientation);
             if ('ondeviceorientationabsolute' in window) {
                 (window as any).removeEventListener("deviceorientationabsolute", handleOrientation);
             }
+            
+            // Reset flags for next mount
+            compassStartedRef.current = false;
+            gotFirstEventRef.current = false;
         };
     }, [handleOrientation]);
 
