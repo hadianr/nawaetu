@@ -138,6 +138,27 @@ Real stories from real Muslims.
 
 ---
 
+---
+
+### 🌐 Expansion & Accessibility
+
+#### 🧩 Nawaetu Browser Extension (Chrome/Edge)
+**Status:** 🏗️ POC (Proof of Concept)
+
+We're bringing the Nawaetu experience to your desktop browser.
+
+**Features:**
+- **Sidebar Companion:** Read Quran & check prayer times without leaving your current tab.
+- **Focus Mode:** Block distracting sites during prayer times (optional).
+- **Instant Niat:** Set intention for browsing sessions ("Study", "Work", "Research").
+
+**Technical Strategy:**
+- **Single Codebase**: We use a hybrid build system to deploy the same code to Web (PWA) and Extension.
+- **Privacy First**: No tracking, runs entirely offline.
+- [View Architecture Doc](docs/EXTENSION_ARCH.md)
+
+---
+
 ### Q4 2026: Premium & Sustainability
 
 **Theme:** *Making Nawaetu sustainable for the long run*
