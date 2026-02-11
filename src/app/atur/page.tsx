@@ -621,21 +621,21 @@ export default function SettingsPage() {
                     </Select>
                 </div>
 
-                {/* Troubleshooting / Reset App (v1.5.10) */}
-                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 space-y-2">
+                {/* Troubleshooting / Reset App (v1.5.10) - Friendly UI */}
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-2">
                     <div className="flex items-center gap-2 mb-1">
-                        <RefreshCcw className="w-4 h-4 text-red-400" />
-                        <span className="text-sm font-bold text-white">Pemecahan Masalah</span>
+                        <RefreshCcw className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                        <span className="text-sm font-bold text-white">Perbaiki Masalah Update</span>
                     </div>
                     <p className="text-[10px] text-white/50 mb-3 leading-relaxed">
-                        Jika aplikasi terasa berat atau versi tidak berubah (stuck), gunakan tombol ini untuk membersihkan cache.
+                        Jika ada fitur yang tidak muncul atau versi aplikasi tidak berubah, coba bersihkan cache aplikasi.
                     </p>
                     <Button
                         onClick={handleManualReset}
-                        variant="destructive"
-                        className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 font-bold h-9 rounded-xl"
+                        variant="ghost"
+                        className="w-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold h-9 rounded-xl transition-all"
                     >
-                        Reset & Perbaiki Aplikasi
+                        Bersihkan Cache & Reload
                     </Button>
                 </div>
 
@@ -744,32 +744,58 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
         return serverVersion !== currentVersion;
     };
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         setChecking(true);
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                regs.forEach(reg => reg.update());
-            });
+
+        // AUTO-FIX: Perform cleanup silently when updating
+        try {
+            if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (const reg of regs) {
+                    await reg.unregister();
+                }
+            }
+            if ('caches' in window) {
+                const keys = await caches.keys();
+                await Promise.all(keys.map(key => caches.delete(key)));
+            }
+        } catch (e) {
+            console.error("Cleanup failed during update:", e);
         }
-        // Force reload after short delay to let SW update
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+
+        // Force reload with cache busting
+        window.location.href = '/?updated=' + Date.now();
     };
 
     if (!isUpdateAvailable()) return null;
 
     return (
-        // ... (existing JSX)
         <div className="fixed bottom-20 left-4 right-4 z-50">
-            {/* ... */}
+            <div className="bg-emerald-900/95 backdrop-blur-md border border-emerald-500/30 p-4 rounded-2xl flex items-center justify-between shadow-2xl animate-in slide-in-from-bottom-5">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center animate-pulse">
+                        <Sparkles className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-white font-bold text-sm">Update Tersedia!</h3>
+                        <p className="text-emerald-200/70 text-xs">Versi {serverVersion} siap digunakan.</p>
+                    </div>
+                </div>
+                <Button
+                    onClick={handleUpdate}
+                    disabled={checking}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-9 rounded-xl"
+                >
+                    {checking ? "Memproses..." : "Update Sekarang"}
+                </Button>
+            </div>
         </div>
     );
 }
 
 // Manual Reset/Repair Function
 const handleManualReset = async () => {
-    if (!confirm("Aplikasi akan dimuat ulang untuk memperbaiki masalah update/cache. Lanjutkan?")) return;
+    if (!confirm("Aplikasi akan dibersihkan dan dimuat ulang untuk memastikan versi terbaru berjalan lancar. Lanjutkan?")) return;
 
     try {
         // 1. Unregister ALL Service Workers
