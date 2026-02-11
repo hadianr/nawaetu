@@ -76,9 +76,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
         }
 
-        // Update Transaction Status
+        // Update Transaction (Status and ensure real Transaction ID is stored)
         await db.update(transactions)
-            .set({ status: status.toLowerCase() })
+            .set({
+                status: status.toLowerCase(),
+                mayarId: mayarId // Always ensure the actual Transaction ID is stored
+            })
             .where(eq(transactions.id, transaction.id));
 
         // If Paid (SETTLEMENT), Update User to Muhsinin

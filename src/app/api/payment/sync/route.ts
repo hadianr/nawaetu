@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
         });
 
         if (!user) {
+            console.log("[Payment Sync] User Not Found in DB:", session.user.email);
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
@@ -31,7 +32,7 @@ export async function GET(req: NextRequest) {
             orderBy: [desc(transactions.createdAt)]
         });
 
-        if (!latestTx || !latestTx.mayarId) {
+        if (!latestTx || (!latestTx.mayarId && !latestTx.paymentLinkId)) {
             return NextResponse.json({
                 status: "nothing_to_check",
                 isMuhsinin: user.isMuhsinin
@@ -39,25 +40,32 @@ export async function GET(req: NextRequest) {
         }
 
         // 2. Check with Mayar API
-        // Docs: Check Single Payment
         const apiKey = process.env.MAYAR_API_KEY;
         if (!apiKey) {
             return NextResponse.json({ error: "Mayar API Key not configured" }, { status: 500 });
         }
 
-        const mayarUrl = `https://api.mayar.id/hl/v1/payment/check/${latestTx.mayarId}`;
-        const mayarRes = await fetch(mayarUrl, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
+        let status = latestTx.status;
+        let method = "none";
+
+        if (latestTx.mayarId) {
+            const mayarUrl = `https://api.mayar.id/hl/v1/payment/check/${latestTx.mayarId}`;
+            const mayarRes = await fetch(mayarUrl, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (mayarRes.ok) {
+                const mayarData = await mayarRes.json();
+                status = mayarData.data?.status || latestTx.status;
+                method = "direct_id";
             }
-        });
+        }
 
-        if (!mayarRes.ok) {
-            console.log(`[Payment Sync] User ${user.email} | Direct ID Check Failed. Trying List Transactions...`);
-
-            // Fallback: List transactions by email
+        if (status !== "PAID" && status !== "SETTLEMENT") {
             const listUrl = `https://api.mayar.id/hl/v1/transactions?email=${encodeURIComponent(session.user.email)}&limit=5`;
             const listRes = await fetch(listUrl, {
                 method: "GET",
@@ -79,8 +87,6 @@ export async function GET(req: NextRequest) {
                 );
 
                 if (matchedTx) {
-                    console.log(`[Payment Sync] Found matching transaction via List: ${matchedTx.id} (LinkID: ${matchedTx.link_id || 'N/A'})`);
-
                     // Update Local Transaction with correct Mayar ID
                     await db.update(transactions)
                         .set({
@@ -89,38 +95,11 @@ export async function GET(req: NextRequest) {
                         })
                         .where(eq(transactions.id, latestTx.id));
 
-                    // Use this status
-                    const status = matchedTx.status;
-                    // 3. Update User if PAID/SETTLEMENT
-                    if (status === "PAID" || status === "SETTLEMENT") {
-                        await db.update(users)
-                            .set({
-                                isMuhsinin: true,
-                                muhsininSince: new Date(),
-                                totalInfaq: sql`${users.totalInfaq} + ${latestTx.amount}`
-                            })
-                            .where(eq(users.id, user.id));
-
-                        return NextResponse.json({
-                            status: "verified",
-                            isMuhsinin: true,
-                            method: "fallback_list"
-                        });
-                    }
+                    status = matchedTx.status;
+                    method = "fallback_list";
                 }
             }
-
-            return NextResponse.json({
-                status: "failed_to_check_mayar",
-                txStatus: latestTx.status
-            });
         }
-
-        const mayarData = await mayarRes.json();
-        // Mayar status usually: PENDING, PAID, SETTLEMENT, EXPIRED, FAILED
-        const status = mayarData.data?.status || latestTx.status;
-
-        console.log(`[Payment Sync] User ${user.email} | Mayar Status: ${status}`);
 
         // 3. Update if PAID/SETTLEMENT
         if (status === "PAID" || status === "SETTLEMENT") {
@@ -140,7 +119,8 @@ export async function GET(req: NextRequest) {
 
             return NextResponse.json({
                 status: "verified",
-                isMuhsinin: true
+                isMuhsinin: true,
+                method: method
             });
         }
 
