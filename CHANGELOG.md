@@ -5,6 +5,34 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-02-11
+
+### Added
+- **High-Precision Notification System**:
+  - **External Cron Support**: Optimized for high-frequency (1-minute) triggers using external services (e.g., cron-job.org).
+  - **Smart Deduplication**: DB-level tracking (`lastNotificationSent`) prevents duplicate alerts even with 1-minute polling.
+  - **Strict Prayer Window**: Logic (`0-15m strict`) prevents "False Early Adhan" and ensures accurate timing.
+- **Visual Identity Update**:
+  - **New App Icon**: Premium, opaque, full-bleed design for iOS/Android/Web to match native app standards.
+  - **Standardized Assets**: Consistent branding across `manifest.json`, `apple-touch-icon`, and favicon.
+- **Direct Hit Debugging**:
+  - New `/notification-debug` features: Manual Token Input to test "Killed State" delivery on real devices.
+
+### Changed
+- **Notification Architecture**:
+  - **Replaced**: GitHub Actions Cron (unreliable/delayed) with External Cron documentation.
+  - **Secured**: Debug APIs (`/debug/send`, `/debug/check`) now return 404 in Production for security.
+- **PWA Configuration**:
+  - **iOS Optimization**: Explicit `apple-touch-icon-precomposed` link to fix 404 errors.
+  - **Manifest**: Updated icons to use new opaque assets.
+
+### Fixed
+- **iOS Killed State**: Notifications now successfully arrive even when the app is swiped away (Force Quit).
+- **Service Worker Conflict**: Removed aggressive lifecycle listeners in `firebase-messaging-sw.js` that caused reload loops.
+- **Toggle State Sync**: Fixed optimistic UI glitches when toggling prayer alerts.
+- **Location Data**: Fixed null `userLocation` in subscriptions, ensuring timezone-accurate prayer times.
+
+---
 ## [1.4.0] - 2026-02-08
 
 ### Added

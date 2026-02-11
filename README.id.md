@@ -6,11 +6,11 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.4.0-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.5.0-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.4.0** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+**Versi Saat Ini: v1.5.0** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
 
 **Nawaetu** (dari kata "niat") adalah **satu-satunya aplikasi Islam** yang membantu kamu membangun kebiasaan ibadah yang lasting dengan memulai dari niat yang murni—menggabungkan AI mentorship, gamifikasi, dan intention tracking untuk membuat istiqomah terasa natural, bukan dipaksakan.
 
@@ -37,13 +37,14 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ---
 
-## 🌟 Fitur Unggulan (v1.4.0)
+## 🌟 Fitur Unggulan (v1.5.0)
 
-### 1. 🔔 iOS & Background Notifications (New)
-*   **iOS Fix**: Notifikasi tetap muncul di iPhone meskipun app di background/lock screen [NEW v1.4.0]
-*   **Hybrid Sync**: Kombinasi Server Sync (1x/hari) & Client-side notification (real-time) [NEW v1.4.0]
-*   **APNS Optimized**: Payload khusus Apple untuk background delivery yang handal
-*   **Silent Token Refresh**: Memastikan token FCM tetap fresh di sisi server secara otomatis
+### 1. 🔔 Sistem Notifikasi Presisi Tinggi (New v1.5.0)
+*   **Akurasi 1 Menit**: Menggunakan External Cron untuk ketepatan waktu adzan (maksimal delay < 60 detik).
+*   **Smart Deduplication**: Mencegah notifikasi ganda dengan tracking database, aman meski cron berjalan tiap menit.
+*   **iOS Killed State Fix**: Notifikasi tembus meskipun aplikasi di-kill/force quit di iOS (Direct Hit Verified).
+*   **Icon Baru**: Tampilan premium dengan icon opaque (penuh) yang seragam di semua platform.
+*   **Hybrid Sync**: Kombinasi Server Sync & Client-side notification.
 
 ### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor (Updated)
 *   **Smart Rate Limiting**: Limit pintar (5x/hari Free, 25x/hari Muhsinin) dengan auto-reset saat upgrade [NEW v1.3.0]
