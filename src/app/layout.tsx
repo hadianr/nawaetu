@@ -120,7 +120,7 @@ export const metadata: Metadata = {
     creator: "@nawaetuapp",
     images: ["/og-image.png"],
   },
-  manifest: "/manifest.webmanifest",
+  manifest: `/manifest.webmanifest?v=${APP_CONFIG.version}`,
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
