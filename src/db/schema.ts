@@ -86,7 +86,8 @@ export const transactions = pgTable("transaction", {
     status: text("status").notNull(), // 'pending', 'settlement', 'expired', 'failed'
 
     // Mayar Specifics
-    mayarId: text("mayar_id").unique(), // Transaction ID from Mayar
+    mayarId: text("mayar_id").unique(), // Transaction ID from Mayar (Set by webhook)
+    paymentLinkId: text("payment_link_id").unique(), // Payment Link ID from Create (Set by app)
     paymentUrl: text("payment_url"),
     customerName: text("customer_name"),
     customerEmail: text("customer_email"),

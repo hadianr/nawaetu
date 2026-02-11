@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, or } from "drizzle-orm";
 import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
@@ -26,9 +26,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid Payload" }, { status: 400 });
         }
 
-        // Find Transaction
+        // Find Transaction by ID (Transaction ID or Payment Link ID)
+        const conditions = [eq(transactions.mayarId, mayarId)];
+        if (body.link_id) {
+            conditions.push(eq(transactions.paymentLinkId, body.link_id));
+        }
+        // Also check if stored paymentLinkId matches incoming Transaction ID (e.g. sometimes same?)
+        conditions.push(eq(transactions.paymentLinkId, mayarId));
+
         let transaction = await db.query.transactions.findFirst({
-            where: eq(transactions.mayarId, mayarId)
+            where: or(...conditions)
         });
 
         if (!transaction) {
@@ -51,7 +58,7 @@ export async function POST(req: NextRequest) {
                     console.log(`[Mayar Webhook] Fallback matched transaction: ${potentialTx.id}`);
                     // Update the transaction with the real Transaction ID from webhook
                     await db.update(transactions)
-                        .set({ mayarId: mayarId }) // Update link ID to actual transaction ID
+                        .set({ mayarId: mayarId })
                         .where(eq(transactions.id, potentialTx.id));
 
                     // Assign to transaction variable

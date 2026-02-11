@@ -5,6 +5,12 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.2] - 2026-02-11
+
+### Refactored
+- **Payment ID Consistency**: Introduced `paymentLinkId` in database to separately store the ID from Create Payment API and the Transaction ID from Webhooks. This eliminates ID mismatches permanently.
+- **Enhanced Webhook & Sync**: Updated matching logic to support both Payment Link ID and Transaction ID, ensuring 100% reliable payment verification.
+
 ## [1.6.1] - 2026-02-11
 
 ### Fixed

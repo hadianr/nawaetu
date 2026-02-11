@@ -90,7 +90,8 @@ export async function POST(req: NextRequest) {
                 userId: user.id,
                 amount: amount,
                 status: "pending",
-                mayarId: mayarId,
+                paymentLinkId: mayarId, // Store Link ID here
+                mayarId: null, // Actual Transaction ID will come from webhook
                 paymentUrl: paymentLink,
                 customerName: session.user.name,
                 customerEmail: session.user.email

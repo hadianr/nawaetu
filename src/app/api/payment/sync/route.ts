@@ -71,14 +71,15 @@ export async function GET(req: NextRequest) {
                 const listData = await listRes.json();
                 const transactionsList = listData.data || [];
 
-                // Find matching transaction (amount + recent)
+                // Find matching transaction (Link ID or Amount + recent)
                 const matchedTx = transactionsList.find((tx: any) =>
-                    tx.amount === latestTx.amount &&
-                    (tx.status === "PAID" || tx.status === "SETTLEMENT")
+                    (latestTx.paymentLinkId && tx.link_id === latestTx.paymentLinkId) ||
+                    (tx.amount === latestTx.amount &&
+                        (tx.status === "PAID" || tx.status === "SETTLEMENT"))
                 );
 
                 if (matchedTx) {
-                    console.log(`[Payment Sync] Found matching transaction via List: ${matchedTx.id}`);
+                    console.log(`[Payment Sync] Found matching transaction via List: ${matchedTx.id} (LinkID: ${matchedTx.link_id || 'N/A'})`);
 
                     // Update Local Transaction with correct Mayar ID
                     await db.update(transactions)
