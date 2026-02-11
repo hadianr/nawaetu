@@ -277,8 +277,18 @@ export default function QiblaCompass() {
         if (angleDiff > 180) angleDiff = 360 - angleDiff;
         
         // Aligned if within ±8° threshold
-        setAligned(angleDiff <= 8);
-    }, [compassRotate, qiblaBearing]);
+        const isAligned = angleDiff <= 8;
+        
+        // Haptic feedback on alignment change
+        if (isAligned && !aligned) {
+            // Vibrate when becoming aligned
+            if ('vibrate' in navigator) {
+                navigator.vibrate([50, 30, 50]); // Pattern: vibrate-pause-vibrate
+            }
+        }
+        
+        setAligned(isAligned);
+    }, [compassRotate, qiblaBearing, aligned]);
 
     if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">{t.qiblaSearching}</div>;
 
@@ -342,13 +352,21 @@ export default function QiblaCompass() {
                         {/* 1. FIX: Radial Gradient Ambient Glow (No Boxy Edges) */}
                         {/* Scales up significantly when aligned to fill screen with theme vibe */}
                         <div
-                            className={`absolute inset-[-50%] rounded-full transition-all duration-1000 ease-out z-0 pointer-events-none ${aligned ? 'opactity-100 scale-125' : 'opacity-0 scale-90'}`}
+                            className={`absolute inset-[-50%] rounded-full transition-all duration-700 ease-out z-0 pointer-events-none ${aligned ? 'opacity-100 scale-150 animate-pulse' : 'opacity-0 scale-90'}`}
                             style={{
                                 background: aligned
-                                    ? 'radial-gradient(circle at center, rgba(var(--color-primary),0.25) 0%, rgba(var(--color-primary),0.05) 50%, transparent 70%)'
+                                    ? 'radial-gradient(circle at center, rgba(var(--color-primary),0.35) 0%, rgba(var(--color-primary),0.15) 40%, rgba(var(--color-primary),0.05) 60%, transparent 75%)'
                                     : 'none'
                             }}
                         />
+                        
+                        {/* Success Rings Animation */}
+                        {aligned && (
+                            <>
+                                <div className="absolute inset-[-30%] rounded-full border-2 border-[rgb(var(--color-primary))]/30 animate-[ping_2s_ease-out_infinite]" />
+                                <div className="absolute inset-[-40%] rounded-full border border-[rgb(var(--color-primary))]/20 animate-[ping_2.5s_ease-out_infinite]" style={{ animationDelay: '0.3s' }} />
+                            </>
+                        )}
 
                         {/* MAIN ROTATING DIAL */}
                         <div
@@ -359,7 +377,7 @@ export default function QiblaCompass() {
                             } as React.CSSProperties}
                         >
                             {/* Dial Background */}
-                            <div className={`w-full h-full rounded-full border border-white/10 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-[rgb(var(--color-primary))]/60 shadow-[0_0_30px_rgba(var(--color-primary),0.2)]' : ''}`}>
+                            <div className={`w-full h-full rounded-full border-2 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm transition-all duration-500 ${aligned ? 'border-[rgb(var(--color-primary))] shadow-[0_0_50px_rgba(var(--color-primary),0.5),inset_0_0_30px_rgba(var(--color-primary),0.15)]' : 'border-white/10'}`}>
                                 {/* Cardinal Points */}
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[rgb(var(--color-primary-light))] font-bold text-lg md:text-xl transform -translate-y-1">N</div>
                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 font-medium md:text-lg transform translate-y-1">S</div>
@@ -387,41 +405,52 @@ export default function QiblaCompass() {
                             >
                                 <div className="absolute top-8 left-1/2 -translate-x-1/2">
                                     {/* 2. FIX: Radar Ping Animation */}
-                                    <div className={`relative transition-all duration-700 flex items-center justify-center transform ${aligned ? 'scale-125' : 'scale-100'}`}>
+                                    <div className={`relative transition-all duration-700 flex items-center justify-center transform ${aligned ? 'scale-150' : 'scale-100'}`}>
 
                                         {/* Ping Rings */}
                                         {aligned && (
                                             <>
-                                                <div className="absolute w-full h-full bg-[rgb(var(--color-primary))]/30 rounded-full animate-ping opacity-75" />
-                                                <div className="absolute w-[140%] h-[140%] border border-[rgb(var(--color-primary))]/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite] delay-100" />
+                                                <div className="absolute w-[120%] h-[120%] bg-[rgb(var(--color-primary))]/40 rounded-full animate-ping opacity-75" />
+                                                <div className="absolute w-[160%] h-[160%] border-2 border-[rgb(var(--color-primary))]/50 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                                                <div className="absolute w-[200%] h-[200%] border border-[rgb(var(--color-primary))]/30 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" style={{ animationDelay: '0.4s' }} />
                                             </>
                                         )}
 
-                                        <KaabaIcon className={`w-12 h-12 md:w-14 md:h-14 drop-shadow-2xl text-zinc-900 relative z-10 transition-opacity duration-300 ${aligned ? 'opacity-100' : 'opacity-80'}`} />
+                                        <KaabaIcon className={`w-12 h-12 md:w-14 md:h-14 drop-shadow-2xl relative z-10 transition-all duration-300 ${aligned ? 'opacity-100 brightness-110 drop-shadow-[0_0_15px_rgba(var(--color-primary),0.8)] text-[rgb(var(--color-primary-light))]' : 'opacity-80 text-zinc-900'}`} />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* CENTER ORNAMENT */}
-                        <div className="absolute w-4 h-4 rounded-full bg-white/20 backdrop-blur-md z-20 border border-white/10 flex items-center justify-center shadow-lg">
-                            <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${aligned ? 'bg-[rgb(var(--color-primary-light))]' : 'bg-white/50'}`} />
+                        <div className={`absolute w-5 h-5 rounded-full backdrop-blur-md z-20 border-2 flex items-center justify-center transition-all duration-500 ${aligned ? 'bg-[rgb(var(--color-primary))]/40 border-[rgb(var(--color-primary))] shadow-[0_0_20px_rgba(var(--color-primary),0.8)] scale-125' : 'bg-white/20 border-white/10 shadow-lg scale-100'}`}>
+                            <div className={`w-2 h-2 rounded-full transition-all duration-500 ${aligned ? 'bg-[rgb(var(--color-primary-light))] animate-pulse shadow-[0_0_10px_rgba(var(--color-primary-light),0.8)]' : 'bg-white/50'}`} />
                         </div>
 
                         {/* TOP INDICATOR */}
                         <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
-                            <div className={`w-1 h-3 rounded-full transition-all duration-500 ${aligned ? 'bg-[rgb(var(--color-primary-light))] h-4 shadow-[0_0_15px_rgb(var(--color-primary-light))]' : 'bg-white/30'}`} />
+                            <div className={`w-1.5 rounded-full transition-all duration-500 ${aligned ? 'bg-[rgb(var(--color-primary-light))] h-6 shadow-[0_0_25px_rgb(var(--color-primary-light))] animate-pulse' : 'bg-white/30 h-3'}`} />
                         </div>
                     </div>
 
                     {/* STATUS DISPLAY */}
-                    <div className="mt-16 text-center space-y-3 z-30">
+                    <div className="mt-16 text-center space-y-4 z-30">
                         {/* 3. FIX: Text Animation (Scale + Glow) */}
                         <div className={`transition-all duration-500 transform ${aligned ? 'scale-110' : 'scale-100'}`}>
-                            <h2 className={`text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 uppercase ${aligned ? 'text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_20px_rgba(var(--color-primary),0.6)]' : 'text-white/70'}`}>
-                                {aligned ? t.qiblaAligned : t.qiblaFinding}
+                            <h2 className={`text-2xl md:text-3xl font-bold tracking-[0.3em] transition-all duration-300 uppercase ${aligned ? 'text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_30px_rgba(var(--color-primary),0.9)] animate-pulse' : 'text-white/70'}`}>
+                                {aligned ? '✓ ' + t.qiblaAligned : t.qiblaFinding}
                             </h2>
                         </div>
+                        
+                        {/* Alignment Success Badge */}
+                        {aligned && (
+                            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/50 backdrop-blur-sm shadow-[0_0_20px_rgba(var(--color-primary),0.4)] animate-pulse">
+                                <div className="w-2.5 h-2.5 rounded-full bg-[rgb(var(--color-primary-light))] animate-pulse shadow-[0_0_10px_rgba(var(--color-primary-light),0.8)]" />
+                                <span className="text-sm font-semibold text-[rgb(var(--color-primary-light))] tracking-wide">
+                                    {t.qiblaAligned === 'ALIGNED' ? 'Perfect Direction' : 'Arah Tepat'}
+                                </span>
+                            </div>
+                        )}
 
                         <div className="flex flex-col items-center gap-1">
                             <div className="text-5xl font-mono font-bold text-white tracking-tighter">
