@@ -127,3 +127,5 @@ firebase-service-account.json
 check_tx.ts
 MAYAR_ERROR.log
 scripts/simulate_webhook.ts
+scripts/fix_dataplay_status.ts
+scripts/diagnose_payment.ts

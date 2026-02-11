@@ -55,6 +55,60 @@ export async function GET(req: NextRequest) {
         });
 
         if (!mayarRes.ok) {
+            console.log(`[Payment Sync] User ${user.email} | Direct ID Check Failed. Trying List Transactions...`);
+
+            // Fallback: List transactions by email
+            const listUrl = `https://api.mayar.id/hl/v1/transactions?email=${encodeURIComponent(session.user.email)}&limit=5`;
+            const listRes = await fetch(listUrl, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (listRes.ok) {
+                const listData = await listRes.json();
+                const transactionsList = listData.data || [];
+
+                // Find matching transaction (amount + recent)
+                const matchedTx = transactionsList.find((tx: any) =>
+                    tx.amount === latestTx.amount &&
+                    (tx.status === "PAID" || tx.status === "SETTLEMENT")
+                );
+
+                if (matchedTx) {
+                    console.log(`[Payment Sync] Found matching transaction via List: ${matchedTx.id}`);
+
+                    // Update Local Transaction with correct Mayar ID
+                    await db.update(transactions)
+                        .set({
+                            mayarId: matchedTx.id,
+                            status: matchedTx.status.toLowerCase()
+                        })
+                        .where(eq(transactions.id, latestTx.id));
+
+                    // Use this status
+                    const status = matchedTx.status;
+                    // 3. Update User if PAID/SETTLEMENT
+                    if (status === "PAID" || status === "SETTLEMENT") {
+                        await db.update(users)
+                            .set({
+                                isMuhsinin: true,
+                                muhsininSince: new Date(),
+                                totalInfaq: sql`${users.totalInfaq} + ${latestTx.amount}`
+                            })
+                            .where(eq(users.id, user.id));
+
+                        return NextResponse.json({
+                            status: "verified",
+                            isMuhsinin: true,
+                            method: "fallback_list"
+                        });
+                    }
+                }
+            }
+
             return NextResponse.json({
                 status: "failed_to_check_mayar",
                 txStatus: latestTx.status

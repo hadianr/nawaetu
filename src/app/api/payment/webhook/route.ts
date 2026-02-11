@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
@@ -27,10 +27,44 @@ export async function POST(req: NextRequest) {
         }
 
         // Find Transaction
-        const transaction = await db.query.transactions.findFirst({
+        let transaction = await db.query.transactions.findFirst({
             where: eq(transactions.mayarId, mayarId)
         });
 
+        if (!transaction) {
+            console.log(`[Mayar Webhook] Transaction not found by ID: ${mayarId}. Trying fallback by email/amount...`);
+            // Fallback: Find pending transaction by email and amount
+            const email = body.customer?.email || body.customer_email;
+            const amount = body.amount;
+
+            if (email && amount) {
+                const potentialTx = await db.query.transactions.findFirst({
+                    where: and(
+                        eq(transactions.customerEmail, email),
+                        eq(transactions.amount, amount),
+                        eq(transactions.status, "pending")
+                    ),
+                    orderBy: [desc(transactions.createdAt)]
+                });
+
+                if (potentialTx) {
+                    console.log(`[Mayar Webhook] Fallback matched transaction: ${potentialTx.id}`);
+                    // Update the transaction with the real Transaction ID from webhook
+                    await db.update(transactions)
+                        .set({ mayarId: mayarId }) // Update link ID to actual transaction ID
+                        .where(eq(transactions.id, potentialTx.id));
+
+                    // Assign to transaction variable
+                    transaction = potentialTx;
+                } else {
+                    return NextResponse.json({ message: "Transaction not found (fallback failed)" }, { status: 404 });
+                }
+            } else {
+                return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
+            }
+        }
+
+        // Safety check again
         if (!transaction) {
             return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
         }
