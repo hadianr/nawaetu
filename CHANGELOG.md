@@ -5,6 +5,11 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.8] - 2026-02-11
+
+### Fixed
+- **iOS PWA Revert Bug**: Added a "Nuclear Update" mechanism to force-clean old caches and Service Workers that were causing the app to revert to v1.5.3 after a restart.
+
 ## [1.5.7] - 2026-02-11
 
 ### Fixed
