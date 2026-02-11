@@ -79,6 +79,91 @@ sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-confi
 sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
 echo -e "${GREEN}✅ package.json → $VERSION_NUMBER${NC}"
 echo -e "${GREEN}✅ app-config.ts → $VERSION_NUMBER (updated: $CURRENT_DATE)${NC}"
+
+# Update CHANGELOG.md if entry doesn't exist
+if ! grep -q "## \[$VERSION_NUMBER\]" CHANGELOG.md; then
+    echo -e "${BLUE}📝 Auto-generating CHANGELOG entry from git commits...${NC}"
+    
+    # Get last release tag
+    LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+    
+    # Create temp file with new entry
+    TEMP_CHANGELOG=$(mktemp)
+    
+    # Read header (first 7 lines)
+    head -n 7 CHANGELOG.md > "$TEMP_CHANGELOG"
+    
+    # Add new version entry header
+    echo "" >> "$TEMP_CHANGELOG"
+    echo "## [$VERSION_NUMBER] - $CURRENT_DATE" >> "$TEMP_CHANGELOG"
+    echo "" >> "$TEMP_CHANGELOG"
+    
+    # Auto-generate from git commits if last tag exists
+    if [ -n "$LAST_TAG" ]; then
+        # Parse commits into categories
+        FEATURES=$(git log --no-merges --pretty=format:"- %s" "$LAST_TAG..HEAD" | grep -i "^- feat" | sed 's/^- feat[:(].*[):] */- **/' | sed 's/$/**/' || true)
+        FIXES=$(git log --no-merges --pretty=format:"- %s" "$LAST_TAG..HEAD" | grep -i "^- fix" | sed 's/^- fix[:(].*[):] */- **/' | sed 's/$/**/' || true)
+        IMPROVEMENTS=$(git log --no-merges --pretty=format:"- %s" "$LAST_TAG..HEAD" | grep -i "^- \(refactor\|perf\|improve\)" | sed 's/^- [^:]*: */- **/' | sed 's/$/**/' || true)
+        
+        # Add sections with actual commits
+        if [ -n "$FEATURES" ]; then
+            echo "### Added" >> "$TEMP_CHANGELOG"
+            echo "$FEATURES" >> "$TEMP_CHANGELOG"
+            echo "" >> "$TEMP_CHANGELOG"
+        fi
+        
+        if [ -n "$FIXES" ]; then
+            echo "### Fixed" >> "$TEMP_CHANGELOG"
+            echo "$FIXES" >> "$TEMP_CHANGELOG"
+            echo "" >> "$TEMP_CHANGELOG"
+        fi
+        
+        if [ -n "$IMPROVEMENTS" ]; then
+            echo "### Changed" >> "$TEMP_CHANGELOG"
+            echo "$IMPROVEMENTS" >> "$TEMP_CHANGELOG"
+            echo "" >> "$TEMP_CHANGELOG"
+        fi
+        
+        # If no categorized commits found, add placeholder
+        if [ -z "$FEATURES" ] && [ -z "$FIXES" ] && [ -z "$IMPROVEMENTS" ]; then
+            echo "### Added" >> "$TEMP_CHANGELOG"
+            echo "- Update features and improvements" >> "$TEMP_CHANGELOG"
+            echo "" >> "$TEMP_CHANGELOG"
+            echo "### Fixed" >> "$TEMP_CHANGELOG"
+            echo "- Bug fixes and optimizations" >> "$TEMP_CHANGELOG"
+            echo "" >> "$TEMP_CHANGELOG"
+        fi
+    else
+        # Fallback template if no previous tag
+        echo "### Added" >> "$TEMP_CHANGELOG"
+        echo "- Update features and improvements" >> "$TEMP_CHANGELOG"
+        echo "" >> "$TEMP_CHANGELOG"
+        echo "### Fixed" >> "$TEMP_CHANGELOG"
+        echo "- Bug fixes and optimizations" >> "$TEMP_CHANGELOG"
+        echo "" >> "$TEMP_CHANGELOG"
+    fi
+    
+    # Append rest of changelog
+    tail -n +8 CHANGELOG.md >> "$TEMP_CHANGELOG"
+    
+    # Replace original
+    mv "$TEMP_CHANGELOG" CHANGELOG.md
+    
+    echo -e "${GREEN}✅ CHANGELOG.md → Auto-generated [$VERSION_NUMBER] from commits since $LAST_TAG${NC}"
+    echo -e "${YELLOW}⚠️  Please review and edit CHANGELOG.md to refine the descriptions!${NC}"
+    echo ""
+    
+    # Open changelog in editor (optional, comment out if not needed)
+    if command -v code &> /dev/null; then
+        code CHANGELOG.md
+    fi
+    
+    echo -e "${YELLOW}Press any key after reviewing CHANGELOG.md to continue...${NC}"
+    read -n 1 -s -r
+    echo ""
+else
+    echo -e "${GREEN}✅ CHANGELOG.md already has [$VERSION_NUMBER] entry${NC}"
+fi
 echo ""
 
 # Check for uncommitted changes

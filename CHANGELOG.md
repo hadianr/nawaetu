@@ -5,6 +5,29 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.5] - 2026-02-11
+
+### Fixed
+- **Qibla Compass Accuracy**: Fixed Kaaba icon rotation calculation - now properly rotates based on actual qibla bearing relative to device heading
+- **Permission Glitching**: Prevented duplicate compass initialization that caused permission re-prompts despite prior grant
+- **Sensor Detection**: Increased timeout from 3s to 6s and added iOS-specific permission check on mount for better sensor reliability
+- **Alignment Detection**: Improved qibla alignment logic with proper 360°/0° wraparound handling (±8° threshold)
+
+## [1.6.4] - 2026-02-11
+
+### Fixed
+- **iOS PWA Version Persistence (Final)**: Implemented comprehensive fix for version reversion bug:
+  - Dynamic manifest generation with versioned start_url (`/?v=1.6.4`)
+  - iOS-specific hard refresh logic: detects version mismatch → unregister SW → clear caches → force reload
+  - Added semver comparison in UpdateChecker to prevent downgrade prompts
+  - No-cache headers for manifest and service worker files
+  - Release script now atomically updates all version files before git operations
+
+## [1.6.3] - 2026-02-11
+
+### Fixed
+- **iOS PWA Version Bug**: Updated service worker filename alignment and incremented manifest start_url version to break persistent cache
+
 ## [1.6.2] - 2026-02-11
 
 ### Refactored
