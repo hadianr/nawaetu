@@ -14,7 +14,7 @@ This roadmap outlines our vision for making Nawaetu the **most meaningful Islami
 
 ---
 
-## 📍 Where We Are Now (v1.4.0)
+## 📍 Where We Are Now (v1.6.0)
 
 ### ✅ Foundation Complete
 
@@ -24,6 +24,7 @@ This roadmap outlines our vision for making Nawaetu the **most meaningful Islami
 - **AI Assistant** - 24/7 Islamic guidance powered by Gemini & Groq
 - **Basic Gamification** - Daily missions, streaks, XP system
 - **Multi-language** - Full English & Indonesian support
+- **Infaq & Muhsinin Status** - Support the mission, earn special badge
 - **Dual Licensing** - Sustainable open-source business model
 
 **Current Users:** Growing community of Muslims building better habits

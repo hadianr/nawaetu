@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react"; // Import useSession
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,6 +18,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import UserProfileDialog from "@/components/UserProfileDialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar
 import InfaqModal from "@/components/InfaqModal";
 import AboutAppModal from "@/components/AboutAppModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
@@ -53,10 +57,12 @@ const DEFAULT_PREFS: AdhanPreferences = {
     Isha: true,
 };
 
-export default function SettingsPage() {
+function SettingsPageContent() {
+    const searchParams = useSearchParams();
+    const { data: session, status, update } = useSession(); // Add update
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimes();
     const { currentTheme, setTheme } = useTheme();
-    const { isMuhsinin } = useInfaq();
+    const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
     const [showInfaqModal, setShowInfaqModal] = useState(false);
@@ -64,6 +70,37 @@ export default function SettingsPage() {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Profile State
+    const isAuthenticated = status === "authenticated";
+    // FIXED: Only logged in users can be Muhsinin
+    const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin);
+
+    // Payment Feedback & Sync Status
+    useEffect(() => {
+        const paymentStatus = searchParams.get("payment");
+        if (paymentStatus === "success") {
+            toast.success("Terima kasih! Infaq Anda berhasil diterima.", {
+                description: "Status Muhsinin sedang diaktifkan...",
+                duration: 5000
+            });
+
+            // Trigger manual sync for localhost or webhook delays
+            fetch("/api/payment/sync")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "verified") {
+                        toast.success("Alhamdulillah, status Muhsinin Anda telah aktif!");
+                        update(); // Refresh session data
+                    }
+                })
+                .catch(err => {
+                    console.error("Sync error:", err);
+                    // Even if sync fail, we can suggest user to reload
+                });
+        } else if (paymentStatus === "failed") {
+            toast.error("Maaf, pembayaran Anda tidak berhasil. Silakan coba lagi.");
+        }
+    }, [searchParams, update]);
+
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
@@ -87,16 +124,28 @@ export default function SettingsPage() {
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
-        if (savedName) setUserName(savedName as string);
+        // 1. Prefer Session Name/Avatar if logged in
+        if (session?.user?.name) setUserName(session.user.name);
+        else if (savedName) setUserName(savedName as string);
+
+        if (session?.user?.image) setUserAvatar(session.user.image);
+        else setUserAvatar(savedAvatar as string | null);
+
         if (savedTitle) setUserTitle(savedTitle as string);
-        setUserAvatar(savedAvatar as string | null);
     };
+
+    // Update profile when session changes
+    useEffect(() => {
+        refreshProfile();
+    }, [session]);
 
     // Helper to safely stop audio without triggering error
     const stopCurrentAudio = (bumpRequest: boolean = true) => {
         if (bumpRequest) {
             audioRequestRef.current += 1;
         }
+
+
         if (audio) {
             audio.onended = null;
             audio.onerror = null;
@@ -261,6 +310,19 @@ export default function SettingsPage() {
         return () => window.removeEventListener('avatar_updated', handleAvatarUpdate);
     }, []);
 
+    const saveSettingsToCloud = async (key: string, value: any) => {
+        if (!isAuthenticated) return;
+        try {
+            await fetch("/api/user/settings", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ settings: { [key]: value } }) // Send partial update
+            });
+        } catch (e) {
+            console.error("Failed to save setting to cloud", e);
+        }
+    };
+
     const handleThemeSelect = (themeId: ThemeId) => {
         const theme = THEMES[themeId];
 
@@ -271,17 +333,22 @@ export default function SettingsPage() {
         }
 
         setTheme(themeId);
+        // ThemeContext usually saves to localStorage, but we need to explicit or hook into it.
+        // Assuming setTheme updates context and local storage, but let's explicit save to cloud for sync
+        saveSettingsToCloud('theme', themeId);
     };
 
     const handleMuadzinChange = (value: string) => {
         stopCurrentAudio();
         setMuadzin(value);
         storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, value);
+        saveSettingsToCloud('muadzin', value);
     };
 
     const handleCalculationMethodChange = (value: string) => {
         setCalculationMethod(value);
         storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, value);
+        saveSettingsToCloud('calculationMethod', value);
         // Trigger refresh of prayer times with new method
         window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: value } }));
     };
@@ -325,19 +392,15 @@ export default function SettingsPage() {
                 <UserProfileDialog onProfileUpdate={refreshProfile}>
                     <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
                         <div className="relative">
-                            <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden">
-                                {/* Avatar Display - Image/Emoji/Initial */}
-                                {userAvatar ? (
-                                    userAvatar.startsWith('data:') ? (
-                                        <img src={userAvatar} alt="Profile" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <span className="text-2xl">{userAvatar}</span>
-                                    )
-                                ) : (
-                                    <span>{userName.charAt(0).toUpperCase()}</span>
-                                )}
+                            <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden p-0.5">
+                                <Avatar className="w-full h-full rounded-full">
+                                    <AvatarImage src={userAvatar || ""} className="object-cover" />
+                                    <AvatarFallback className="bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-lg font-bold">
+                                        {userName.charAt(0).toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
                             </div>
-                            {isMuhsinin && (
+                            {(isMuhsinin || session?.user?.isMuhsinin) && (
                                 <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
                                     <Crown className="w-2.5 h-2.5 text-white fill-white" />
                                 </div>
@@ -351,24 +414,7 @@ export default function SettingsPage() {
                     </div>
                 </UserProfileDialog>
 
-                {/* Quick Stats Entry - COMING SOON STATE */}
-                <div className="w-full p-3 bg-white/5 border border-white/5 rounded-2xl flex items-center gap-3 opacity-60 cursor-not-allowed group relative overflow-hidden">
-                    {/* Subtle Coming Soon Pattern */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(var(--color-primary),0.05),transparent)]" />
 
-                    <div className="h-10 w-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center transition-all">
-                        <BarChart3 className="w-5 h-5 text-slate-500" />
-                    </div>
-                    <div className="flex-1 relative z-10">
-                        <div className="flex items-center gap-2">
-                            <h3 className="text-sm font-bold text-slate-400">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsLabel}</h3>
-                            <span className="text-[8px] px-1.5 py-0.5 rounded bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30 font-bold uppercase tracking-wider">
-                                {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsComingSoon}
-                            </span>
-                        </div>
-                        <p className="text-[10px] text-slate-500">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].statsDescription}</p>
-                    </div>
-                </div>
 
                 {/* Worship Configuration Hub */}
                 <div className="grid grid-cols-2 gap-3">
@@ -376,9 +422,9 @@ export default function SettingsPage() {
                     <button
                         onClick={handleRefreshLocation}
                         disabled={isRefreshing || locationLoading}
-                        className="p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between min-h-[80px]"
+                        className="h-[84px] p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between"
                     >
-                        <div className="flex items-center justify-between w-full mb-1">
+                        <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                 <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationLabel}</span>
@@ -393,37 +439,35 @@ export default function SettingsPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                         </div>
-                        <p className="text-xs text-white font-medium line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-0.5">
                             {(isRefreshing || locationLoading) ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationUpdating : (data?.locationName?.split(',')[0] || SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationDetecting)}
                         </p>
                     </button>
 
-                    {/* Calculation Method - Moved from bottom */}
-                    {/* Calculation Method - Entire Card is now Trigger */}
-                    {/* Calculation Method - Overlay Pattern for 100% Hit Area */}
-                    <div className="relative group bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors min-h-[80px]">
-                        {/* Visual Layer (Pointer events none to let clicks pass to absolute trigger if needed, but z-index handles it) */}
-                        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none">
-                            <div className="flex items-center justify-between w-full mb-1">
+                    <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors h-[84px]">
+                        {/* Visual Layer - Exact copy of Location card structure */}
+                        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
+                            <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                     <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].methodLabel}</span>
                                 </div>
-                                {/* Visual Chevron */}
                                 <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                             </div>
-                            <span className="text-xs text-white font-medium text-left truncate w-full pr-4">{currentMethod?.label || "Kemenag RI"}</span>
+                            <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-0.5">
+                                {currentMethod?.label || "Kemenag RI"}
+                            </p>
                         </div>
 
-                        {/* Functional Layer - Invisible Trigger covering the whole card */}
+                        {/* Functional Layer - Invisible Select covering the whole card */}
                         <Select value={calculationMethod} onValueChange={handleCalculationMethodChange}>
-                            <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden">
-                                <SelectValue placeholder="Pilih metode" />
+                            <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
+                                <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-white/10 max-h-[300px]">
-                                {CALCULATION_METHODS.map((option) => (
-                                    <SelectItem key={option.id} value={option.id.toString()} className="text-white text-xs hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors">
-                                        <span>{option.label}</span>
+                            <SelectContent className="bg-slate-900 border-slate-800">
+                                {CALCULATION_METHODS.map((method) => (
+                                    <SelectItem key={method.id} value={method.id.toString()} className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                        {method.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -790,6 +834,21 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
                 </Button>
             </div>
         </div>
+    );
+}
+
+export default function SettingsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex min-h-screen items-center justify-center bg-[#0F172A] text-white">
+                <div className="flex flex-col items-center gap-4">
+                    <RefreshCcw className="w-8 h-8 animate-spin text-emerald-500" />
+                    <p className="text-sm animate-pulse">Memuat Pengaturan...</p>
+                </div>
+            </div>
+        }>
+            <SettingsPageContent />
+        </Suspense>
     );
 }
 

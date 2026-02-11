@@ -8,10 +8,13 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import StreakBadge from "@/components/StreakBadge";
 import { cn } from "@/lib/utils";
 import { MapPin, Navigation } from "lucide-react";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 export default function HomeHeader() {
     const { data, refreshLocation } = usePrayerTimes();
     const { t } = useLocale();
+    const { data: session } = useSession();
     const storage = getStorageService();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [userTitle, setUserTitle] = useState("Hamba Allah");
@@ -27,15 +30,22 @@ export default function HomeHeader() {
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
-        if (savedName) setUserName(savedName as string);
+        // 1. Prefer Session Name/Avatar if logged in
+        if (session?.user?.name) setUserName(session.user.name);
+        else if (savedName) setUserName(savedName as string);
+
+        if (session?.user?.image) setUserAvatar(session.user.image);
+        else setUserAvatar(savedAvatar as string | null);
+
         if (savedTitle) setUserTitle(savedTitle as string);
         setGender(savedGender as 'male' | 'female' | null);
-        setUserAvatar(savedAvatar as string | null);
     };
 
     useEffect(() => {
         refreshProfile();
+    }, [storage, session]); // Add session dependency
 
+    useEffect(() => {
         // Listen for storage events (in case changed in Settings) and custom XP events
         const handleStorage = () => refreshProfile();
         window.addEventListener("storage", handleStorage);

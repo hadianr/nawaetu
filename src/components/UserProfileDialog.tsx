@@ -1,61 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { User, Edit2, Sparkles, Trophy, Crown, Star, Lock, BookOpen, Fingerprint, Check, Flame, Zap, Sprout, Shield, Target, Heart, Compass, Mountain, Gem, Sun, Camera, Image } from "lucide-react";
-import {
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { getPlayerStats, PlayerStats } from "@/lib/leveling";
-import { getStreak, StreakData } from "@/lib/streak-utils";
-import { getStorageService } from "@/core/infrastructure/storage";
-import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+    Settings, Edit2, Camera, LogOut, Crown, Flame, Share2, ChevronRight, Sparkles, AlertCircle, Calendar, Check, Lock, Heart, Trophy, Zap, Mountain, BookOpen, Sun, Sprout, Target, Shield, X
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
-import InfaqModal from "./InfaqModal";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useDataSync } from "@/hooks/useDataSync";
+import { useProfile } from "@/hooks/useProfile";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { Loader2, RefreshCw } from "lucide-react";
 
-interface UserProfileData {
-    name: string;
-    title: string;
-    level: number;
-    gender: 'male' | 'female' | null;
-    archetype: 'pemula' | 'penggerak' | 'mujahid' | null;
-    avatar?: string; // Base64 image or emoji
-}
+// --- CONSTANTS & DATA ---
 
 const ARCHETYPES = [
     {
         id: "pemula",
         label: "Pemula",
-        sub: "Fokus Wajib",
         icon: Sprout,
-        color: "text-[rgb(var(--color-primary-light))]",
-        bg: "bg-[rgb(var(--color-primary))]/10",
-        border: "border-[rgb(var(--color-primary))]/20",
+        color: "text-emerald-400",
+        bg: "bg-emerald-500/10",
+        border: "border-emerald-500/20",
         description: "Membangun pondasi yang kokoh dengan menjaga ibadah wajib."
     },
     {
         id: "penggerak",
         label: "Penggerak",
-        sub: "Wajib + Sunnah",
-        icon: Target, // Or Zap
-        color: "text-[rgb(var(--color-primary-light))]",
-        bg: "bg-[rgb(var(--color-primary))]/10",
+        icon: Target,
+        color: "text-blue-400",
+        bg: "bg-blue-500/10",
         border: "border-blue-500/20",
         description: "Menambah amalan sunnah ringan untuk mendekatkan diri."
     },
     {
         id: "mujahid",
         label: "Mujahid",
-        sub: "Extra Strong",
         icon: Shield,
         color: "text-amber-400",
         bg: "bg-amber-500/10",
@@ -65,776 +54,375 @@ const ARCHETYPES = [
 ];
 
 const AVAILABLE_TITLES = [
-    {
-        id: "hamba",
-        label: "Hamba Perindu",
-        icon: Heart,
-        color: "text-rose-400",
-        minLevel: 1,
-        description: "Langkah pertama dalam perjalanan spiritual. Setiap langkah kecil adalah awal yang berharga.",
-        rewards: ["Badge Hati 💗", "Pesan Motivasi Harian", "Akses Komunitas Nawaetu"],
-        infaqFeatures: []
-    },
-    {
-        id: "ikhlas",
-        label: "Belajar Ikhlas",
-        icon: Heart,
-        color: "text-[rgb(var(--color-primary-light))]",
-        minLevel: 5,
-        description: "Terus belajar menjaga niat tetap ikhlas. Perjalanan panjang yang tak pernah selesai.",
-        rewards: ["Statistik Mingguan 📊", "Insight Pola Ibadah", "Doa Penjaga Niat"],
-        infaqFeatures: ["Streak Saver"]
-    },
-    {
-        id: "konsisten",
-        label: "Pejuang Konsisten",
-        icon: Mountain,
-        color: "text-[rgb(var(--color-primary-light))]",
-        minLevel: 10,
-        description: "Berusaha konsisten meski suasana hati berubah. Istiqamah adalah perjuangan seumur hidup.",
-        rewards: ["Badge Gunung Istiqamah ⛰️", "Laporan Konsistensi 10 Hari", "Tips Menjaga Konsistensi"],
-        infaqFeatures: ["Kustomisasi Tema", "Mode Fokus"]
-    },
-    {
-        id: "pembaca",
-        label: "Pembaca Setia",
-        icon: BookOpen,
-        color: "text-emerald-400",
-        minLevel: 15,
-        description: "Konsisten membaca Al-Quran setiap hari. Mushaf menjadi teman setia di setiap waktu.",
-        rewards: ["Badge Mushaf 📖", "Statistik Bacaan Quran", "Rekomendasi Surah Harian", "Target Hafalan"],
-        infaqFeatures: ["Analisis Ibadah Bulanan"]
-    },
-    {
-        id: "pagi",
-        label: "Pejuang Fajar",
-        icon: Sun,
-        color: "text-amber-400",
-        minLevel: 20,
-        description: "Bangun sebelum fajar, menjaga sholat Subuh dengan istiqamah. Pagi adalah awal keberkahan.",
-        rewards: ["Badge Matahari Fajar ☀️", "Statistik Sholat Subuh", "Doa Bangun Pagi", "Rekomendasi Misi Personal"],
-        infaqFeatures: ["Mentor AI (Beta)"]
-    },
-    {
-        id: "mukhlis",
-        label: "Hamba yang Berusaha",
-        icon: Sprout,
-        color: "text-violet-400",
-        minLevel: 30,
-        description: "Perjalanan panjang menuju keikhlasan. Terus berusaha memperbaiki diri setiap hari.",
-        rewards: ["Badge Tunas Keikhlasan 🌱", "Refleksi Perjalanan 30 Hari", "Pesan Khusus dari Tim Nawaetu", "Sertifikat Istiqamah Digital"],
-        infaqFeatures: ["Efek Visual 'Glow' Avatar"]
-    },
+    { id: "hamba", label: "Hamba Allah", icon: Heart, minLevel: 1, color: "text-slate-400" },
+    { id: "pencari", label: "Pencari Ilmu", icon: BookOpen, minLevel: 5, color: "text-blue-400" },
+    { id: "pejuang", label: "Pejuang Subuh", icon: Sun, minLevel: 10, color: "text-orange-400" },
+    { id: "ahli", label: "Ahli Dzikir", icon: Zap, minLevel: 20, color: "text-purple-400" },
+    { id: "muhsinin", label: "Sahabat Nawaetu", icon: Crown, minLevel: 0, color: "text-amber-400", locked: true } // Special
 ];
 
+const AVATAR_LIST = [
+    { id: 'boy-1', src: 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg' },
+    { id: 'girl-1', src: 'https://img.freepik.com/free-psd/3d-illustration-person-with-pink-hair_23-2149436186.jpg' },
+    { id: 'boy-2', src: 'https://img.freepik.com/free-psd/3d-illustration-person-with-glasses_23-2149436190.jpg' },
+    { id: 'girl-2', src: 'https://img.freepik.com/free-psd/3d-illustration-person_23-2149436192.jpg' },
+];
+
+// ... props type
 interface UserProfileDialogProps {
     children: React.ReactNode;
     onProfileUpdate?: () => void;
 }
 
 export default function UserProfileDialog({ children, onProfileUpdate }: UserProfileDialogProps) {
-    const { isMuhsinin } = useInfaq();
-    const [showInfaqModal, setShowInfaqModal] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [profile, setProfile] = useState<UserProfileData>({
-        name: "Sobat Nawaetu",
-        title: "Hamba Allah",
-        level: 1,
-        gender: null,
-        archetype: null
-    });
-    const [stats, setStats] = useState<PlayerStats>({ xp: 0, level: 1, nextLevelXp: 100, progress: 0 });
-    const [streak, setStreak] = useState<StreakData>({ currentStreak: 0, longestStreak: 0, lastActiveDate: "", milestones: [] });
+    const { data: session, status } = useSession();
+    const { isMuhsinin: contextIsMuhsinin } = useInfaq();
+    const router = useRouter();
+    const { t } = useLocale();
+    const { syncData, isSyncing } = useDataSync();
+    const { updateProfile, isUpdating } = useProfile();
+
+    // Derived State
+    const isAuthenticated = status === "authenticated";
+    // FIXED: Only logged in users can be Muhsinin
+    const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
+    const userName = session?.user?.name || "Hamba Allah";
+    const userRole = isMuhsinin ? "Muhsinin Nawaetu" : "Pengguna Setia";
+    const userImage = session?.user?.image || AVATAR_LIST[0].src;
+
+    // State for Editing
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState("");
-    const [selectedTier, setSelectedTier] = useState<typeof AVAILABLE_TITLES[0] | null>(null);
-    const [isEditingAvatar, setIsEditingAvatar] = useState(false);
-    const storage = getStorageService();
+    const [isOpen, setIsOpen] = useState(false);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-    const { t } = useLocale();
+    useEffect(() => {
+        if (session?.user?.name) {
+            setEditName(session.user.name);
+        }
+    }, [session]);
 
-    const loadData = () => {
-        // Batch read for performance
-        const [savedName, savedTitle, savedGender, savedArchetype, savedAvatar] = storage.getMany([
-            STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE,
-            STORAGE_KEYS.USER_GENDER,
-            STORAGE_KEYS.USER_ARCHETYPE,
-            STORAGE_KEYS.USER_AVATAR
-        ]).values();
+    const handleLogin = () => signIn("google");
 
-        const currentStats = getPlayerStats();
-        const currentStreak = getStreak();
+    const { resetInfaq } = useInfaq(); // Get reset function from context
 
-        setProfile({
-            name: (savedName as string) || "Sobat Nawaetu",
-            title: (savedTitle as string) || "Hamba Allah",
-            level: currentStats.level,
-            gender: savedGender as 'male' | 'female' | null,
-            archetype: savedArchetype as 'pemula' | 'penggerak' | 'mujahid' | null,
-            avatar: (savedAvatar as string) || undefined
-        });
-        setStats(currentStats);
-        setStreak(currentStreak);
+    const handleLogout = async () => {
+        // 1. Clear User Specific Data
+        const storage = getStorageService();
+
+        // Profile
+        storage.remove(STORAGE_KEYS.USER_NAME);
+        storage.remove(STORAGE_KEYS.USER_AVATAR);
+        storage.remove(STORAGE_KEYS.USER_TITLE);
+        storage.remove(STORAGE_KEYS.USER_GENDER);
+        storage.remove(STORAGE_KEYS.USER_ARCHETYPE);
+
+        // Activity & Content
+        storage.remove(STORAGE_KEYS.USER_TOTAL_INFAQ);
+        storage.remove(STORAGE_KEYS.USER_INFAQ_HISTORY);
+        storage.remove(STORAGE_KEYS.QURAN_BOOKMARKS);
+        storage.remove(STORAGE_KEYS.INTENTION_JOURNAL);
+        storage.remove(STORAGE_KEYS.QURAN_LAST_READ);
+
+        // Gamification & Progress
+        storage.remove(STORAGE_KEYS.USER_STREAK);
+        storage.remove(STORAGE_KEYS.USER_LEVEL);
+        storage.remove(STORAGE_KEYS.USER_XP);
+        storage.remove(STORAGE_KEYS.COMPLETED_MISSIONS);
+        storage.remove(STORAGE_KEYS.ACTIVITY_TRACKER);
+        storage.remove(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY);
+
+        // Tasbih
+        storage.remove(STORAGE_KEYS.TASBIH_COUNT);
+        storage.remove(STORAGE_KEYS.TASBIH_TARGET);
+        storage.remove(STORAGE_KEYS.TASBIH_ACTIVE_PRESET);
+        storage.remove(STORAGE_KEYS.TASBIH_STREAK);
+        storage.remove(STORAGE_KEYS.TASBIH_LAST_DATE);
+        storage.remove(STORAGE_KEYS.TASBIH_DAILY_COUNT);
+
+        // Settings
+        storage.remove(STORAGE_KEYS.SETTINGS_THEME);
+        storage.remove(STORAGE_KEYS.SETTINGS_MUADZIN);
+        storage.remove(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD);
+        storage.remove(STORAGE_KEYS.SETTINGS_LOCALE);
+        storage.remove(STORAGE_KEYS.SETTINGS_RECITER);
+
+        // AI Chat
+        storage.remove(STORAGE_KEYS.AI_CHAT_HISTORY);
+        storage.remove(STORAGE_KEYS.AI_USAGE);
+
+        // Sync Flags
+        localStorage.removeItem("nawaetu_synced_v1");
+
+        // 2. Reset Context State
+        resetInfaq();
+
+        // 3. Force Sign Out
+        await signOut({ callbackUrl: "/" });
     };
 
-    useEffect(() => {
-        if (isOpen) {
-            loadData();
-        }
-    }, [isOpen]);
+    const handleSaveProfile = async () => {
+        if (!editName.trim()) return;
 
-    // Listen for external updates (e.g. from TasbihCounter) even if open
-    useEffect(() => {
-        const handleUpdate = () => {
-            if (isOpen) loadData();
-        };
-        window.addEventListener("xp_updated", handleUpdate);
-        return () => window.removeEventListener("xp_updated", handleUpdate);
-    }, [isOpen]);
-
-    const handleSaveName = () => {
-        if (editName.trim()) {
-            storage.set(STORAGE_KEYS.USER_NAME, editName);
-            setProfile(prev => ({ ...prev, name: editName }));
+        const success = await updateProfile({ name: editName });
+        if (success) {
             setIsEditing(false);
             if (onProfileUpdate) onProfileUpdate();
         }
     };
 
-    // Just select the title if unlocked
-    const handleTitleSelect = (titleLabel: string) => {
-        setProfile(prev => ({ ...prev, title: titleLabel }));
-        storage.set(STORAGE_KEYS.USER_TITLE, titleLabel);
-    };
-
-    const handleGenderSelect = (gender: 'male' | 'female') => {
-        setProfile(prev => ({ ...prev, gender }));
-        storage.set(STORAGE_KEYS.USER_GENDER, gender);
-        if (onProfileUpdate) onProfileUpdate();
-    };
-
-    const handleArchetypeSelect = (archetype: 'pemula' | 'penggerak' | 'mujahid') => {
-        setProfile(prev => ({ ...prev, archetype }));
-        storage.set(STORAGE_KEYS.USER_ARCHETYPE, archetype);
-        if (onProfileUpdate) onProfileUpdate();
-    };
-
-    const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file && file.size <= 1024 * 1024) { // Max 1MB
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64 = reader.result as string;
-                storage.set(STORAGE_KEYS.USER_AVATAR, base64);
-                setProfile(prev => ({ ...prev, avatar: base64 }));
-                window.dispatchEvent(new Event('avatar_updated'));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleAvatarSelect = (emoji: string) => {
-        storage.set(STORAGE_KEYS.USER_AVATAR, emoji);
-        setProfile(prev => ({ ...prev, avatar: emoji }));
-        window.dispatchEvent(new Event('avatar_updated'));
-        setIsEditingAvatar(false); // Close after selection
-    };
-
-    // Avatar Collections - Free vs Premium (matches subscription tiers)
-    const AVATAR_COLLECTIONS = {
-        free: {
-            label: "Gratis",
-            description: "Islamic & peaceful themes",
-            avatars: [
-                { id: 'moon', name: 'Crescent Moon', emoji: '🌙' },
-                { id: 'mosque', name: 'Mosque', emoji: '🕌' },
-                { id: 'beads', name: 'Prayer Beads', emoji: '📿' },
-                { id: 'book', name: 'Quran', emoji: '📖' },
-                { id: 'lantern', name: 'Lantern', emoji: '🏮' },
-                { id: 'droplet', name: 'Water', emoji: '💧' },
-                { id: 'pattern', name: 'Islamic Pattern', emoji: '✨' },
-                { id: 'leaf', name: 'Nature', emoji: '🍃' },
-                { id: 'compass', name: 'Compass', emoji: '🧭' },
-                { id: 'star', name: 'Star', emoji: '⭐' },
-            ]
-        },
-        premium: {
-            label: "Koleksi Muhsinin",
-            description: isMuhsinin ? "Terbuka - Terima kasih orang baik!" : "Khusus untuk donatur Nawaetu",
-            locked: !isMuhsinin,
-            avatars: [
-                // Luxury gradient tier
-                { id: 'crown', name: 'Crown', emoji: '👑' },
-                { id: 'diamond', name: 'Diamond', emoji: '💎' },
-                { id: 'trophy', name: 'Trophy', emoji: '🏆' },
-                { id: 'lightning', name: 'Lightning', emoji: '⚡' },
-                { id: 'flame', name: 'Flame', emoji: '🔥' },
-                { id: 'butterfly', name: 'Butterfly', emoji: '🦋' },
-                { id: 'palette', name: 'Art', emoji: '🎨' },
-                { id: 'blossom', name: 'Blossom', emoji: '🌸' },
-                // Epic creatures tier
-                { id: 'dragon', name: 'Dragon', emoji: '🐉' },
-                { id: 'eagle', name: 'Eagle', emoji: '🦅' },
-                { id: 'lion', name: 'Lion', emoji: '🦁' },
-                { id: 'wolf', name: 'Wolf', emoji: '🐺' },
-                { id: 'unicorn', name: 'Unicorn', emoji: '🦄' },
-                { id: 'peacock', name: 'Peacock', emoji: '🦚' },
-                { id: 'phoenix', name: 'Phoenix', emoji: '🔥' },
-                { id: 'nebula', name: 'Nebula', emoji: '🌌' },
-            ]
-        }
+    const handleManualSync = async () => {
+        await syncData();
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => {
-            setIsOpen(open);
-            if (open) {
-                setEditName(profile.name);
-                setIsEditing(false);
-                setSelectedTier(null);
-            }
-        }}>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="w-[90%] max-w-sm rounded-[32px] bg-slate-950/80 border border-white/10 overflow-hidden text-white backdrop-blur-3xl h-[85vh] flex flex-col p-0 shadow-2xl">
+            <DialogContent className="max-w-[90vw] w-[380px] bg-[#0F172A] border-white/10 text-white p-0 rounded-3xl overflow-hidden">
                 <DialogTitle className="sr-only">Profil Pengguna</DialogTitle>
 
-                {selectedTier ? (
-                    // TIER DETAIL OVERLAY
-                    <div className="flex flex-col h-full animate-in fade-in slide-in-from-bottom-10 duration-300">
-                        {/* Header */}
-                        <div className="flex-none p-6 pt-8 bg-gradient-to-b from-slate-900 to-slate-950 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay"></div>
+                {/* 1. Header & Cover */}
+                <div className="relative">
+                    <div className={cn(
+                        "h-32 w-full absolute top-0 left-0",
+                        isMuhsinin
+                            ? "bg-gradient-to-r from-emerald-600 to-teal-800"
+                            : "bg-gradient-to-r from-slate-700 to-slate-900"
+                    )}>
+                        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                        {isMuhsinin && <div className="absolute inset-0 bg-emerald-500/20 mix-blend-overlay"></div>}
+                    </div>
 
-                            <button
-                                onClick={() => setSelectedTier(null)}
-                                className="absolute top-4 left-4 p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors z-20"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                            </button>
-
-                            <div className="flex flex-col items-center justify-center pt-4 relative z-10">
-                                <div className={cn(
-                                    "w-24 h-24 rounded-2xl flex items-center justify-center mb-4 shadow-2xl border-4 border-slate-950",
-                                    selectedTier.minLevel > stats.level ? "bg-slate-800 opacity-50 grayscale" : "bg-slate-900",
-                                    selectedTier.color.replace('text-', 'bg-').replace('400', '900/50')
-                                )}>
-                                    <selectedTier.icon className={cn("w-12 h-12", selectedTier.color)} />
-                                </div>
-                                <h2 className={cn("text-2xl font-bold tracking-tight mb-1 text-center", selectedTier.color)}>
-                                    {selectedTier.label}
-                                </h2>
-                                <span className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono font-bold text-slate-400 border border-white/5">
-                                    Minimal Level {selectedTier.minLevel}
-                                </span>
+                    {/* Top Actions */}
+                    <div className="relative z-20 flex justify-between items-center p-4">
+                        {!isAuthenticated ? (
+                            <div className="px-3 py-1 bg-black/20 backdrop-blur-md rounded-full border border-white/10 text-[10px] items-center flex gap-1">
+                                <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                                Guest Mode
                             </div>
-                        </div>
+                        ) : (
+                            <div /> // Spacer
+                        )}
 
-                        {/* Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-950/50">
-                            {/* Status */}
-                            <div className="text-center">
-                                {stats.level >= selectedTier.minLevel ? (
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-xl text-[rgb(var(--color-primary-light))] text-sm font-bold">
-                                        <Check className="w-4 h-4" /> {t?.profileTitleUnlock}
-                                    </div>
-                                ) : (
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 border border-white/5 rounded-xl text-slate-400 text-sm font-bold">
-                                        <Lock className="w-4 h-4" /> {t?.profileTitleLocked?.replace("{level}", selectedTier.minLevel.toString())}
-                                    </div>
-                                )}
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="w-8 h-8 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors"
+                        >
+                            <X className="w-4 h-4 text-white" />
+                        </button>
+                    </div>
+
+                    {/* Profile Picture Area */}
+                    <div className="relative z-10 px-6 pt-8 flex items-end justify-between">
+                        <div className="relative">
+                            <div className={cn(
+                                "w-24 h-24 rounded-full p-1 bg-[#0F172A]",
+                                isMuhsinin ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]" : "ring-2 ring-slate-700 ring-offset-2 ring-offset-[#0F172A]"
+                            )}>
+                                <Avatar className="w-full h-full rounded-full border border-white/10">
+                                    <AvatarImage src={userImage} className="object-cover" />
+                                    <AvatarFallback>NA</AvatarFallback>
+                                </Avatar>
                             </div>
-
-                            {/* Makna Gelar */}
-                            <div className="bg-white/[0.03] p-5 rounded-2xl border border-white/5">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Makna Gelar</h3>
-                                <p className="text-sm text-slate-300 leading-relaxed">
-                                    {selectedTier.description}
-                                </p>
-                            </div>
-
-                            {/* Pencapaian Kamu (Free Rewards) */}
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2 px-1">
-                                    <h3 className="text-xs font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest">Pencapaian Kamu</h3>
-                                    <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
-                                </div>
-                                {selectedTier.rewards?.map((reward, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex items-center gap-3 p-3 border rounded-xl bg-gradient-to-r from-[rgb(var(--color-primary-dark))]/10 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20"
-                                    >
-                                        <div className="p-2 rounded-lg shrink-0 bg-[rgb(var(--color-primary))]/10">
-                                            <Check className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <span className="text-sm font-medium text-slate-200">
-                                                {reward}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Fitur Muhsinin (Infaq Features) */}
-                            {selectedTier.infaqFeatures && selectedTier.infaqFeatures.length > 0 && (
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2 px-1">
-                                        <h3 className="text-xs font-bold text-amber-400 uppercase tracking-widest">Fitur Muhsinin</h3>
-                                        <Crown className="w-3 h-3 text-amber-400" />
-                                    </div>
-                                    {selectedTier.infaqFeatures.map((feature, i) => (
-                                        <div
-                                            key={i}
-                                            onClick={() => !isMuhsinin && setShowInfaqModal(true)}
-                                            className={cn(
-                                                "flex items-center gap-3 p-3 border rounded-xl transition-all",
-                                                isMuhsinin
-                                                    ? "bg-gradient-to-r from-amber-500/10 to-orange-500/5 border-amber-500/20"
-                                                    : "bg-amber-500/5 border-amber-500/20 cursor-pointer hover:bg-amber-500/10"
-                                            )}
-                                        >
-                                            <div className="p-2 rounded-lg shrink-0 bg-amber-500/10">
-                                                {isMuhsinin ? (
-                                                    <Check className="w-3 h-3 text-amber-400" />
-                                                ) : (
-                                                    <Lock className="w-3 h-3 text-amber-500" />
-                                                )}
-                                            </div>
-                                            <div className="flex-1">
-                                                <span className={cn("text-sm font-medium", isMuhsinin ? "text-amber-200" : "text-amber-300")}>
-                                                    {feature}
-                                                </span>
-                                                {!isMuhsinin && (
-                                                    <p className="text-[10px] text-amber-500/60 leading-none mt-0.5">Khusus Muhsinin</p>
-                                                )}
-                                            </div>
-                                            {!isMuhsinin && <Crown className="w-3 h-3 text-amber-500" />}
-                                        </div>
-                                    ))}
-                                    {!isMuhsinin && (
-                                        <button
-                                            onClick={() => setShowInfaqModal(true)}
-                                            className="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold h-10 rounded-xl transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <Heart className="w-4 h-4" />
-                                            Dukung Nawaetu
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Action Button */}
-                            {stats.level >= selectedTier.minLevel && profile.title !== selectedTier.label && (
-                                <Button
-                                    className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-12 rounded-xl mt-4"
-                                    onClick={() => handleTitleSelect(selectedTier.label)}
-                                >
-                                    {t?.profileUseTitle}
-                                </Button>
-                            )}
-
-                            {profile.title === selectedTier.label && (
-                                <div className="text-center text-xs text-[rgb(var(--color-primary))] font-medium mt-4">
-                                    {t?.profileCurrentTitle}
+                            {isMuhsinin && (
+                                <div className="absolute -top-3 -right-3">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-orange-500 shadow-lg text-white">
+                                        <Crown className="w-4 h-4 fill-white" />
+                                    </span>
                                 </div>
                             )}
                         </div>
                     </div>
-                ) : (
-                    // MAIN PROFILE VIEW
-                    <>
-                        {/* HEADER SECTION */}
-                        <div className="flex-none relative h-40 bg-gradient-to-b from-[rgb(var(--color-primary-dark))] via-slate-900 to-slate-950 shrink-0">
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay"></div>
+                </div>
 
-                            {/* Avatar & Name */}
-                            <div className="absolute -bottom-14 left-0 right-0 flex flex-col items-center">
-                                <div className="relative group">
-                                    <div className="w-28 h-28 rounded-full bg-slate-900 border-[6px] border-slate-950 flex items-center justify-center shadow-2xl relative z-10 overflow-hidden cursor-pointer">
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-[rgb(var(--color-primary))]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                                        {/* Avatar Display - Image, Emoji, or Initial */}
-                                        {profile.avatar ? (
-                                            profile.avatar.startsWith('data:') ? (
-                                                <img src={profile.avatar} alt="Profile" className="w-full h-full object-cover" />
-                                            ) : (
-                                                <span className="text-5xl">{profile.avatar}</span>
-                                            )
-                                        ) : (
-                                            <span className="text-4xl font-bold text-[rgb(var(--color-primary))] drop-shadow-[0_0_15px_rgba(var(--color-primary),0.5)]">
-                                                {profile.name ? profile.name.charAt(0).toUpperCase() : "N"}
-                                            </span>
-                                        )}
-
-                                        {/* Camera Overlay */}
-                                        <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                                            <Camera className="w-8 h-8 text-white" />
-                                        </label>
-                                        <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-                                    </div>
-
-                                    {/* Tiered Avatar Selector */}
-                                    <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-30 pointer-events-none group-hover:pointer-events-auto">
-                                        <div className="bg-slate-900/98 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-2xl w-80">
-                                            {/* Free Collection */}
-                                            <div className="mb-3">
-                                                <p className="text-[9px] uppercase tracking-wider text-white/40 font-bold mb-2 px-1">{AVATAR_COLLECTIONS.free.label}</p>
-                                                <p className="text-[8px] text-white/30 mb-2 px-1">{AVATAR_COLLECTIONS.free.description}</p>
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {AVATAR_COLLECTIONS.free.avatars.map((avatar) => (
-                                                        <button
-                                                            key={avatar.id}
-                                                            onClick={() => handleAvatarSelect(avatar.emoji)}
-                                                            className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-lg transition-all text-xl hover:scale-110 active:scale-95 group relative"
-                                                            title={avatar.name}
-                                                        >
-                                                            {avatar.emoji}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            {/* Premium Collection */}
-                                            <div className="mb-3">
-                                                <div className="flex items-center gap-1.5 mb-2">
-                                                    <p className="text-[9px] uppercase tracking-wider text-amber-400 font-bold px-1">{AVATAR_COLLECTIONS.premium.label}</p>
-                                                    {AVATAR_COLLECTIONS.premium.locked && <Lock className="w-3 h-3 text-amber-400" />}
-                                                </div>
-                                                <p className="text-[8px] text-amber-400/60 mb-2 px-1">{AVATAR_COLLECTIONS.premium.description}</p>
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {AVATAR_COLLECTIONS.premium.avatars.map((avatar) => (
-                                                        <button
-                                                            key={avatar.id}
-                                                            onClick={() => AVATAR_COLLECTIONS.premium.locked ? setShowInfaqModal(true) : handleAvatarSelect(avatar.emoji)}
-                                                            className={cn("w-9 h-9 flex items-center justify-center rounded-lg transition-all text-xl relative", AVATAR_COLLECTIONS.premium.locked ? "opacity-40 grayscale" : "hover:bg-amber-500/10 hover:scale-110")}
-                                                            title={avatar.name}
-                                                        >
-                                                            {avatar.emoji}
-                                                            {AVATAR_COLLECTIONS.premium.locked && <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-lg"><Lock className="w-3 h-3 text-white" /></div>}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-20 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 text-[10px] font-black px-3 py-0.5 rounded-full border-[3px] border-slate-950 shadow-lg flex items-center gap-1 min-w-max uppercase tracking-wider">
-                                        <Crown className="w-3 h-3 fill-current" />
-                                        <span>LEVEL {stats.level}</span>
-                                    </div>
-                                </div>
-
-                                {/* Editable Name */}
-                                <div className="mt-4 flex items-center gap-2 relative z-10">
-                                    {isEditing ? (
-                                        <div className="flex items-center gap-1 animate-in fade-in zoom-in duration-200">
-                                            <Input
-                                                value={editName}
-                                                onChange={(e) => setEditName(e.target.value)}
-                                                className="h-8 bg-slate-800/80 border-[rgb(var(--color-primary))]/50 text-center font-bold text-lg w-40 p-0 rounded-lg focus:ring-1 focus:ring-[rgb(var(--color-primary))]"
-                                                autoFocus
-                                                onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
-                                            />
-                                            <Button size="icon" className="h-8 w-8 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] rounded-full" onClick={handleSaveName}>
-                                                <Check className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setIsEditing(true)}>
-                                            <h3 className="text-xl font-bold text-white tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">{profile.name}</h3>
-                                            <Edit2 className="w-3 h-3 text-[rgb(var(--color-primary))]/50 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-2 mt-1 bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-                                    <p className="text-sm font-medium text-[rgb(var(--color-primary-light))] tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{profile.title}</p>
-                                    {!isMuhsinin ? (
-                                        <button
-                                            onClick={() => setShowInfaqModal(true)}
-                                            className="ml-2 text-[10px] font-bold px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500/30 to-teal-600/30 text-emerald-300 border border-emerald-500/40 hover:from-emerald-500/40 hover:to-teal-600/40 transition-all flex items-center gap-1 animate-pulse shadow-lg"
-                                        >
-                                            <Heart className="w-3 h-3" /> Dukung
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => setShowInfaqModal(true)}
-                                            className="ml-2 bg-emerald-500 rounded-full p-1.5 border-2 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)] hover:bg-emerald-400 transition-all hover:scale-110 cursor-pointer group/infaq relative"
-                                            title="Tambah Infaq"
-                                        >
-                                            <Heart className="w-3.5 h-3.5 text-white fill-white" />
-                                            {/* Tooltip hint on hover */}
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-[10px] text-white rounded opacity-0 group-hover/infaq:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                                Tambah Infaq
-                                            </div>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex-1 overflow-y-auto px-6 pt-16 pb-6 space-y-6 scrollbar-hide">
-
-                            {/* GENDER SELECTION */}
-                            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 border border-white/5">
-                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">{t?.profileGenderLabel}</Label>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button
-                                        onClick={() => handleGenderSelect('male')}
-                                        className={cn(
-                                            "flex items-center justify-center gap-2 p-3 rounded-xl border transition-all",
-                                            profile.gender === 'male'
-                                                ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-light))]"
-                                                : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
-                                        )}
-                                    >
-                                        <span className="text-xl">👨</span>
-                                        <span className="text-sm font-semibold">{t?.profileMale}</span>
-                                    </button>
-                                    <button
-                                        onClick={() => handleGenderSelect('female')}
-                                        className={cn(
-                                            "flex items-center justify-center gap-2 p-3 rounded-xl border transition-all",
-                                            profile.gender === 'female'
-                                                ? "bg-pink-500/20 border-pink-500/50 text-pink-400"
-                                                : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
-                                        )}
-                                    >
-                                        <span className="text-xl">👩</span>
-                                        <span className="text-sm font-semibold">{t?.profileFemale}</span>
-                                    </button>
-                                </div>
-                                {!profile.gender && (
-                                    <p className="text-[10px] text-amber-400/70 mt-2 text-center">
-                                        {t?.profileGenderHint}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* ARCHETYPE SELECTION (FOKUS IBADAH) */}
-                            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 border border-white/5">
-                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">{t?.profileArchetypeLabel}</Label>
-                                <div className="space-y-2">
-                                    {ARCHETYPES.map((type) => (
-                                        <button
-                                            key={type.id}
-                                            onClick={() => handleArchetypeSelect(type.id as any)}
-                                            className={cn(
-                                                "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left group relative overflow-hidden",
-                                                profile.archetype === type.id
-                                                    ? `bg-slate-800 ${type.border} ring-1 ring-offset-0 ${type.color.replace('text-', 'ring-')}`
-                                                    : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
-                                            )}
-                                        >
-                                            {profile.archetype === type.id && (
-                                                <div className={cn("absolute inset-0 opacity-10", type.bg)} />
-                                            )}
-
-                                            <div className={cn(
-                                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border",
-                                                profile.archetype === type.id
-                                                    ? `bg-slate-900 ${type.border}`
-                                                    : "bg-slate-900 border-white/5 text-slate-500"
-                                            )}>
-                                                <type.icon className={cn("w-5 h-5", profile.archetype === type.id ? type.color : "text-slate-500")} />
-                                            </div>
-
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center justify-between">
-                                                    <span className={cn("text-sm font-bold", profile.archetype === type.id ? "text-white" : "text-slate-300")}>
-                                                        {type.label}
-                                                    </span>
-                                                    {profile.archetype === type.id && <Check className="w-4 h-4 text-[rgb(var(--color-primary))]" />}
-                                                </div>
-                                                <p className="text-[10px] text-slate-400 leading-tight mt-0.5">{type.description}</p>
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            {/* XP PROGRESS CARD */}
-                            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-5 border border-white/5 shadow-inner relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <Sparkles className="w-12 h-12 text-[rgb(var(--color-primary-light))]" />
-                                </div>
-
-                                <div className="flex justify-between items-end mb-2 relative z-10">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t?.profileProgressLabel}</span>
-                                    <span className="text-xs font-mono font-bold text-[rgb(var(--color-primary-light))]">
-                                        {stats.xp} <span className="text-slate-500">/</span> {stats.nextLevelXp} XP
-                                    </span>
-                                </div>
-
-                                {/* High Visibility Progress Bar */}
-                                <div className="h-3 w-full bg-slate-950 rounded-full overflow-hidden border border-white/5 relative z-10">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-[rgb(var(--color-primary-dark))] via-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] shadow-[0_0_10px_rgba(var(--color-primary),0.5)] transition-all duration-1000 ease-out"
-                                        style={{ width: `${stats.progress}%` }}
+                {/* 2. User Info */}
+                {/* 2. User Info */}
+                <div className="px-6 pb-6 pt-3 relative z-10">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="flex-1">
+                            {isEditing ? (
+                                <div className="space-y-2 mb-2">
+                                    <Input
+                                        type="text"
+                                        value={editName}
+                                        onChange={(e) => setEditName(e.target.value)}
+                                        className="h-9 bg-white/5 border-white/10"
                                     />
-                                </div>
-
-                                <p className="text-[10px] text-slate-500 mt-2 text-center font-medium">
-                                    {t?.profileNeedXP?.replace("{xp}", (stats.nextLevelXp - stats.xp).toString()).replace("{level}", (stats.level + 1).toString())}
-                                </p>
-                            </div>
-
-                            {/* STREAK & STATS CARD */}
-                            <div className="grid grid-cols-2 gap-3">
-                                {/* Current Streak */}
-                                <div className="bg-gradient-to-br from-orange-900/50 to-amber-900/50 rounded-2xl p-4 border border-orange-500/20 relative overflow-hidden group">
-                                    <div className="absolute -right-2 -top-2 opacity-10 group-hover:opacity-20 transition-opacity rotate-12">
-                                        <Flame className="w-16 h-16 text-orange-500" />
-                                    </div>
-
-                                    <div className="relative z-10">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div className="p-1.5 bg-orange-500/20 rounded-lg">
-                                                <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
-                                            </div>
-                                            <span className="text-[10px] font-bold text-orange-200 uppercase tracking-wider">{t?.profileStreak}</span>
-                                        </div>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-2xl font-black text-white">{streak.currentStreak}</span>
-                                            <span className="text-xs font-bold text-orange-300">{t?.profileDays}</span>
-                                        </div>
-                                        <p className="text-[10px] text-orange-200/60 font-medium leading-tight mt-1">
-                                            {t?.profileStreakMaintain}
-                                        </p>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            size="sm"
+                                            onClick={handleSaveProfile}
+                                            disabled={isUpdating}
+                                            className="h-7 text-xs bg-emerald-600"
+                                        >
+                                            {isUpdating ? "..." : "Simpan"}
+                                        </Button>
+                                        <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)} className="h-7 text-xs">Batal</Button>
                                     </div>
                                 </div>
-
-                                {/* Longest Streak (Best Record) */}
-                                <div className="bg-slate-900/80 rounded-2xl p-4 border border-white/5 relative overflow-hidden">
-                                    <div className="absolute -right-2 -top-2 opacity-5 rotate-12">
-                                        <Trophy className="w-16 h-16 text-white" />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div className="p-1.5 bg-slate-800 rounded-lg">
-                                                <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                                            </div>
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t?.profileRecord}</span>
-                                        </div>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-2xl font-black text-white">{streak.longestStreak}</span>
-                                            <span className="text-xs font-bold text-slate-500">{t?.profileDays}</span>
-                                        </div>
-                                        <p className="text-[10px] text-slate-500 font-medium leading-tight mt-1">
-                                            {t?.profileBestAchievement}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* TITLE COLLECTION */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between px-1">
-                                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t?.profileTitleCollection}</Label>
-                                    <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">
-                                        {AVAILABLE_TITLES.filter(t => stats.level >= t.minLevel).length}/{AVAILABLE_TITLES.length}
-                                    </span>
-                                </div>
-
-                                <div className="grid gap-3">
-                                    {AVAILABLE_TITLES.map((t) => {
-                                        const isLocked = stats.level < t.minLevel;
-                                        const isSelected = profile.title === t.label;
-
-                                        return (
-                                            <button
-                                                key={t.id}
-                                                onClick={() => setSelectedTier(t)}
-                                                className={cn(
-                                                    "relative flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 group overflow-hidden w-full text-left",
-                                                    isLocked
-                                                        ? "bg-slate-900/50 border-white/5 opacity-60 grayscale"
-                                                        : "bg-gradient-to-r from-slate-900 to-slate-800 border-white/10 hover:border-[rgb(var(--color-primary))]/30 cursor-pointer shadow-lg hover:shadow-[rgb(var(--color-primary-dark))]/10",
-                                                    isSelected && "ring-1 ring-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/50 bg-[rgb(var(--color-primary-dark))]/20"
-                                                )}
-                                            >
-                                                {/* Selection Indicator */}
-                                                {isSelected && (
-                                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-[rgb(var(--color-primary))] shadow-[0_0_10px_rgba(var(--color-primary),0.8)]" />
-                                                )}
-
-                                                {/* Icon Box */}
-                                                <div className={cn(
-                                                    "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border shadow-inner transition-colors",
-                                                    isLocked
-                                                        ? "bg-slate-950 border-slate-800 text-slate-700"
-                                                        : cn("bg-slate-950 border-white/5", t.color)
-                                                )}>
-                                                    {isLocked ? <Lock className="w-5 h-5" /> : <t.icon className="w-6 h-6" />}
-                                                </div>
-
-                                                {/* Content */}
-                                                <div className="flex-1 min-w-0 py-0.5">
-                                                    <div className="flex items-center justify-between mb-1">
-                                                        <h4 className={cn(
-                                                            "font-bold text-sm tracking-tight",
-                                                            isSelected ? "text-[rgb(var(--color-primary-light))]" : (isLocked ? "text-slate-500" : "text-white group-hover:text-[rgb(var(--color-primary-light))]")
-                                                        )}>
-                                                            {t.label}
-                                                        </h4>
-                                                        {isLocked && (
-                                                            <span className="text-[9px] font-black text-slate-950 bg-slate-600 px-1.5 py-0.5 rounded uppercase">
-                                                                Lvl {t.minLevel}
-                                                            </span>
-                                                        )}
-                                                        {!isLocked && isSelected && (
-                                                            <Check className="w-4 h-4 text-[rgb(var(--color-primary))]" />
-                                                        )}
-                                                    </div>
-                                                    <p className="text-[10px] text-slate-400 font-medium leading-relaxed truncate">
-                                                        {t.description}
-                                                    </p>
-                                                </div>
+                            ) : (
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-xl font-bold text-white leading-tight">{userName}</h2>
+                                        {isAuthenticated && (
+                                            <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
+                                                <Edit2 className="w-3.5 h-3.5" />
                                             </button>
-                                        );
-                                    })}
+                                        )}
+                                    </div>
+                                    <div className="flex flex-col gap-1 mt-1">
+                                        <div className="flex items-center gap-1.5 text-slate-400">
+                                            {isMuhsinin ? (
+                                                <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                                                    <Sparkles className="w-3 h-3" />
+                                                    {userRole}
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-slate-400">{userRole}</span>
+                                            )}
+                                        </div>
+                                        {isAuthenticated && session?.user?.email && (
+                                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                                                <div className="w-3 h-3 rounded-full bg-white/10 flex items-center justify-center">
+                                                    <span className="text-[6px] font-bold text-white">G</span>
+                                                </div>
+                                                {session.user.email}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+                        </div>
+                    </div>
 
-                            {/* FOOTER INFO */}
-                            <div className="pt-6 border-t border-white/5">
-                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block text-center">{t.xpSectionTitle}</Label>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <Link href="/quran" onClick={() => setIsOpen(false)} className="bg-slate-900/50 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center gap-2 hover:bg-slate-800/50 hover:border-blue-500/30 transition-all cursor-pointer group">
-                                        <BookOpen className="w-5 h-5 text-[rgb(var(--color-primary-light))] group-hover:scale-110 transition-transform" />
-                                        <div>
-                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{t.xpMethodReadQuran}</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-mono">{t.xpReadQuranReward}</span>
-                                        </div>
-                                    </Link>
-                                    <Link href="/tasbih" onClick={() => setIsOpen(false)} className="bg-slate-900/50 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center gap-2 hover:bg-slate-800/50 hover:border-[rgb(var(--color-primary))]/30 transition-all cursor-pointer group">
-                                        <Fingerprint className="w-5 h-5 text-[rgb(var(--color-primary-light))] group-hover:scale-110 transition-transform" />
-                                        <div>
-                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{t.xpMethodTasbih}</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-mono">{t.xpTasbihReward}</span>
-                                        </div>
-                                    </Link>
-                                    <Link href="/" onClick={() => setIsOpen(false)} className="bg-slate-900/50 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center gap-2 hover:bg-slate-800/50 hover:border-purple-500/30 transition-all cursor-pointer group">
-                                        <Check className="w-5 h-5 text-[rgb(var(--color-accent))] group-hover:scale-110 transition-transform" />
-                                        <div>
-                                            <span className="block text-xs font-bold text-white group-hover:text-[rgb(var(--color-accent))] transition-colors">{t.xpMethodDailyMission}</span>
-                                            <span className="text-[10px] text-[rgb(var(--color-accent))] font-mono">{t.xpDailyMissionReward}</span>
-                                        </div>
-                                    </Link>
-                                    <Link href="/stats" onClick={() => setIsOpen(false)} className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 p-3 rounded-xl border border-amber-500/20 flex flex-col items-center text-center gap-2 hover:bg-amber-500/20 hover:border-amber-500/30 transition-all cursor-pointer group">
-                                        <Star className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
-                                        <div>
-                                            <span className="block text-xs font-bold text-amber-200 group-hover:text-amber-100 transition-colors">{t.xpMethodStatistics}</span>
-                                            <span className="text-[10px] text-amber-400/70 font-mono">{t.xpStatisticsHint}</span>
-                                        </div>
-                                    </Link>
+                    {/* 3. Auth Call to Action (If Guest) */}
+                    {!isAuthenticated && (
+                        <div className="mb-6 bg-slate-800/50 border border-white/5 rounded-xl p-4 text-center">
+                            <div className="w-10 h-10 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <Settings className="w-5 h-5 text-slate-300" />
+                            </div>
+                            <h3 className="text-sm font-bold text-white mb-1">Simpan Progress Ibadahmu</h3>
+                            <p className="text-xs text-slate-400 mb-4 leading-relaxed">Login untuk menyimpan data streak, bookmark, dan status donatur secara permanen di cloud.</p>
+                            <Button
+                                onClick={handleLogin}
+                                className="w-full bg-white text-slate-900 hover:bg-slate-200 font-bold h-10 flex items-center gap-2"
+                            >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                                </svg>
+                                Login dengan Google
+                            </Button>
+                        </div>
+                    )}
+
+                    {/* 4. Stats Placeholder */}
+                    {isAuthenticated && (
+                        <div className="grid grid-cols-2 gap-3 mb-6">
+                            <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                                <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center mb-2">
+                                    <Flame className="w-4 h-4 text-orange-400" />
                                 </div>
+                                <span className="text-2xl font-black text-white">0</span>
+                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">Hari Streak</span>
+                            </div>
+                            <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
+                                    <Calendar className="w-4 h-4 text-blue-400" />
+                                </div>
+                                <span className="text-2xl font-black text-white">0</span>
+                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">Total Hari</span>
                             </div>
                         </div>
-                    </>
-                )}
+                    )}
+
+                    {/* 5. Menu Items */}
+                    <div className="space-y-1">
+                        <button onClick={() => { setIsOpen(false); router.push('/atur'); }} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                                    <Settings className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                                </div>
+                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">Pengaturan Aplikasi</span>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
+                        </button>
+
+                        {isAuthenticated && (
+                            <button
+                                onClick={handleManualSync}
+                                disabled={isSyncing}
+                                className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                                        {isSyncing ? (
+                                            <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
+                                        ) : (
+                                            <RefreshCw className="w-4 h-4 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                                        )}
+                                    </div>
+                                    <span className="text-sm font-medium text-slate-300 group-hover:text-white">
+                                        {isSyncing ? "Menyinkronkan..." : "Sinkronisasi Data"}
+                                    </span>
+                                </div>
+                                {!isSyncing && <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />}
+                            </button>
+                        )}
+
+                        <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                                    <Share2 className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                                </div>
+                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">Bagikan Aplikasi</span>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
+                        </button>
+
+                        {isAuthenticated && (
+                            !showLogoutConfirm ? (
+                                <button onClick={() => setShowLogoutConfirm(true)} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-red-500/10 transition-colors group mt-2 border border-transparent hover:border-red-500/20">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                                            <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
+                                        </div>
+                                        <span className="text-sm font-medium text-red-400 group-hover:text-red-300">Keluar</span>
+                                    </div>
+                                </button>
+                            ) : (
+                                <div className="mt-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <p className="text-xs text-red-200 mb-3 text-center">Yakin ingin keluar akun?</p>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handleLogout}
+                                            className="flex-1 h-8 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors"
+                                        >
+                                            Ya, Keluar
+                                        </button>
+                                        <button
+                                            onClick={() => setShowLogoutConfirm(false)}
+                                            className="flex-1 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium transition-colors"
+                                        >
+                                            Batal
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-6 pt-6 border-t border-white/5 text-center">
+                        <p className="text-[10px] text-slate-600">Terima kasih telah menggunakan Nawaetu</p>
+                    </div>
+
+                </div>
             </DialogContent>
-            <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
         </Dialog>
     );
 }

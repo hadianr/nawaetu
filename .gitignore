@@ -122,3 +122,8 @@ Thumbs.db
 
 # Firebase service account (contains sensitive credentials)
 firebase-service-account.json
+
+# Local test scripts & logs
+check_tx.ts
+MAYAR_ERROR.log
+scripts/simulate_webhook.ts

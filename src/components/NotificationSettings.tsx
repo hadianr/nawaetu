@@ -297,20 +297,23 @@ export default function NotificationSettings() {
                         ) : (
                             // Actual prayer toggles
                             (Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
-                                (prayer) => (
-                                    <div
-                                        key={prayer}
-                                        className="flex items-center justify-between py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200"
-                                    >
-                                        <span className="text-white/80 capitalize font-medium">
-                                            {prayerNames[prayer]}
-                                        </span>
-                                        <Switch
-                                            checked={preferences[prayer]}
-                                            onCheckedChange={() => togglePrayer(prayer)}
-                                        />
-                                    </div>
-                                )
+                                (prayer) => {
+                                    const label = prayerNames[prayer.toLowerCase() as keyof typeof prayerNames] || prayer;
+                                    return (
+                                        <div
+                                            key={prayer}
+                                            className="flex items-center justify-between py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200"
+                                        >
+                                            <span className="text-white/80 capitalize font-medium">
+                                                {label}
+                                            </span>
+                                            <Switch
+                                                checked={preferences[prayer]}
+                                                onCheckedChange={() => togglePrayer(prayer)}
+                                            />
+                                        </div>
+                                    );
+                                }
                             )
                         )}
                     </div>

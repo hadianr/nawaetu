@@ -215,6 +215,8 @@ import { LocaleProvider } from "@/context/LocaleContext";
 import { WebVitals } from "@/components/WebVitals";
 import FCMHandler from "@/components/FCMHandler";
 import AnalyticsLoader from "@/components/AnalyticsLoader";
+import AuthSessionProvider from "@/components/AuthSessionProvider";
+import DataSyncer from "@/components/DataSyncer";
 
 
 
@@ -268,17 +270,20 @@ export default function RootLayout({
         ))}
         <LocaleProvider>
           <ThemeProvider>
-            <InfaqProvider>
-              <PatternOverlay />
-              <NotificationWatcher />
-              <AppOverlays />
-              <FCMHandler />
-              {children}
+            <AuthSessionProvider>
+              <InfaqProvider>
+                <DataSyncer />
+                <PatternOverlay />
+                <NotificationWatcher />
+                <AppOverlays />
+                <FCMHandler />
+                {children}
 
-              <Suspense fallback={null}>
-                <BottomNav />
-              </Suspense>
-            </InfaqProvider>
+                <Suspense fallback={null}>
+                  <BottomNav />
+                </Suspense>
+              </InfaqProvider>
+            </AuthSessionProvider>
           </ThemeProvider>
         </LocaleProvider>
       </body>

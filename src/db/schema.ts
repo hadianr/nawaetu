@@ -17,9 +17,19 @@ export const users = pgTable("user", {
     niatStreakLongest: integer("niat_streak_longest").default(0),
     lastNiatDate: date("last_niat_date"),
 
+    // Muhsinin & Donation Tracking (v1.6.0)
+    isMuhsinin: boolean("is_muhsinin").default(false),
+    muhsininSince: timestamp("muhsinin_since"),
+    totalInfaq: integer("total_infaq").default(0), // Track total donation amount
+
+    // User Preferences (v1.7.0)
+    settings: text("settings"), // JSON: { theme, muadzin, calculationMethod, locale }
+
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// ... (accounts, sessions, verificationTokens tables remain same)
 
 export const accounts = pgTable(
     "account",
@@ -65,7 +75,27 @@ export const verificationTokens = pgTable(
     })
 );
 
-// --- App Specific Logic ---
+// --- Transactions / Payments (Mayar.id) ---
+
+export const transactions = pgTable("transaction", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("userId").references(() => users.id), // Can be null if guest, but ideally linked
+
+    // Payment Details
+    amount: integer("amount").notNull(),
+    status: text("status").notNull(), // 'pending', 'settlement', 'expired', 'failed'
+
+    // Mayar Specifics
+    mayarId: text("mayar_id").unique(), // Transaction ID from Mayar
+    paymentUrl: text("payment_url"),
+    customerName: text("customer_name"),
+    customerEmail: text("customer_email"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ... (bookmarks, intentions, pushSubscriptions remain the same)
 
 export const bookmarks = pgTable("bookmark", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -147,3 +177,5 @@ export type Intention = typeof intentions.$inferSelect;
 export type NewIntention = typeof intentions.$inferInsert;
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
+export type Transaction = typeof transactions.$inferSelect;
+export type NewTransaction = typeof transactions.$inferInsert;
