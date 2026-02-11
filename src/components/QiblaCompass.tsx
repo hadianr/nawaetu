@@ -28,6 +28,7 @@ export default function QiblaCompass() {
     const lastHeadingRef = useRef<number>(0);
     const sensorCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const gotFirstEventRef = useRef<boolean>(false);
+    const compassStartedRef = useRef<boolean>(false); // Prevent duplicate starts
 
     const { t } = useLocale();
 
@@ -82,6 +83,10 @@ export default function QiblaCompass() {
     }, [t]);
 
     const startCompass = useCallback(() => {
+        // FIX: Prevent duplicate starts (glitching permission issue)
+        if (compassStartedRef.current) return;
+        compassStartedRef.current = true;
+
         setPermissionGranted(true);
         // Persist permission
         if (typeof window !== 'undefined') {
@@ -110,13 +115,79 @@ export default function QiblaCompass() {
         getLocation();
     }, [handleOrientation, getLocation]);
 
-    // Check persistence on mount
+    // FIX: Check persistence on mount - only run once, no dependency on startCompass
     useEffect(() => {
         const savedPermission = localStorage.getItem('nawaetu_qibla_permission');
-        if (savedPermission === 'granted') {
-            startCompass();
+        if (savedPermission === 'granted' && !compassStartedRef.current) {
+            // Call functions directly using refs to avoid dependency issues
+            if (compassStartedRef.current) return;
+            compassStartedRef.current = true;
+
+            setPermissionGranted(true);
+            gotFirstEventRef.current = false;
+            setNoSensor(false);
+
+            // Start Sensor Listeners
+            const orientationHandler = (e: DeviceOrientationEvent) => {
+                // Mark sensor as active
+                gotFirstEventRef.current = true;
+                if (sensorCheckTimeoutRef.current) {
+                    clearTimeout(sensorCheckTimeoutRef.current);
+                    sensorCheckTimeoutRef.current = null;
+                }
+                setNoSensor(false);
+
+                let rawHeading: number | null = null;
+                if ((e as DeviceOrientationEventiOS).webkitCompassHeading !== undefined) {
+                    rawHeading = (e as DeviceOrientationEventiOS).webkitCompassHeading!;
+                } else if (e.alpha !== null) {
+                    rawHeading = 360 - e.alpha;
+                }
+
+                if (rawHeading === null) return;
+
+                let delta = rawHeading - (lastHeadingRef.current % 360);
+                if (delta > 180) delta -= 360;
+                if (delta < -180) delta += 360;
+
+                lastHeadingRef.current += delta;
+                setCompassRotate(-lastHeadingRef.current);
+            };
+
+            if ('ondeviceorientationabsolute' in window) {
+                (window as any).addEventListener("deviceorientationabsolute", orientationHandler);
+            } else {
+                (window as any).addEventListener("deviceorientation", orientationHandler);
+            }
+
+            // Start Timeout to detect "No Sensor" devices
+            sensorCheckTimeoutRef.current = setTimeout(() => {
+                if (!gotFirstEventRef.current) {
+                    setNoSensor(true);
+                }
+            }, 3000);
+
+            // Get location
+            if ("geolocation" in navigator) {
+                setLoading(true);
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const bearing = calculateQiblaDirection(latitude, longitude);
+                        const dist = calculateDistanceToKaaba(latitude, longitude);
+                        setQiblaBearing(bearing);
+                        setDistance(dist);
+                        setLoading(false);
+                    },
+                    (err) => {
+                        setError(t.qiblaLocationError);
+                        setLoading(false);
+                    }
+                );
+            }
         }
-    }, [startCompass]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Run only once on mount
 
     const requestCompassPermission = async () => {
         if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
@@ -146,6 +217,23 @@ export default function QiblaCompass() {
             }
         };
     }, [handleOrientation]);
+
+    // FIX: Calculate Qibla relative rotation and alignment detection
+    useEffect(() => {
+        if (qiblaBearing === null) return;
+
+        // Current compass heading (absolute)
+        const currentHeading = ((-compassRotate % 360) + 360) % 360;
+        
+        // Calculate relative angle to Qibla
+        const relativeAngle = qiblaBearing - currentHeading;
+        setQiblaRelativeRotate(relativeAngle);
+
+        // Alignment detection (within ±8° threshold)
+        const angleDiff = Math.abs(relativeAngle);
+        const normalizedDiff = Math.min(angleDiff, 360 - angleDiff);
+        setAligned(normalizedDiff <= 8);
+    }, [compassRotate, qiblaBearing]);
 
     if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">{t.qiblaSearching}</div>;
 
