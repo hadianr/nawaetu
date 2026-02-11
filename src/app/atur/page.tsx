@@ -658,32 +658,34 @@ export default function SettingsPage() {
                     </button>
                 </div>
 
-                {/* Debug Tools */}
-                <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-3">
-                    <div className="flex items-center justify-between text-white/40">
-                        <div className="flex items-center gap-2">
-                            <Settings2 className="w-3 h-3" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">Developer Tools</span>
+                {/* Debug Tools - Only visible in development */}
+                {process.env.NODE_ENV === 'development' && (
+                    <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-3">
+                        <div className="flex items-center justify-between text-white/40">
+                            <div className="flex items-center gap-2">
+                                <Settings2 className="w-3 h-3" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest">Developer Tools</span>
+                            </div>
+                            <Link
+                                href="/notification-debug"
+                                className="text-[10px] bg-red-900/30 text-red-400 px-2 py-1 rounded border border-red-900/50 hover:bg-red-900/50 transition-colors"
+                            >
+                                Open Debugger
+                            </Link>
                         </div>
-                        <Link
-                            href="/notification-debug"
-                            className="text-[10px] bg-red-900/30 text-red-400 px-2 py-1 rounded border border-red-900/50 hover:bg-red-900/50 transition-colors"
-                        >
-                            Open Debugger
-                        </Link>
-                    </div>
-                    {fcmToken ? (
-                        <div className="bg-black/60 p-3 rounded-xl border border-white/10">
-                            <p className="text-[10px] font-mono text-[rgb(var(--color-primary-light))]/70 break-all leading-relaxed">
-                                {fcmToken}
+                        {fcmToken ? (
+                            <div className="bg-black/60 p-3 rounded-xl border border-white/10">
+                                <p className="text-[10px] font-mono text-[rgb(var(--color-primary-light))]/70 break-all leading-relaxed">
+                                    {fcmToken}
+                                </p>
+                            </div>
+                        ) : (
+                            <p className="text-[9px] text-white/20 italic">
+                                Token belum tersedia. Klik "Open Debugger" untuk mencoba mengambil token.
                             </p>
-                        </div>
-                    ) : (
-                        <p className="text-[9px] text-white/20 italic">
-                            Token belum tersedia. Klik "Open Debugger" untuk mencoba mengambil token.
-                        </p>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
