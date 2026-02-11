@@ -274,8 +274,8 @@ export async function POST(req: NextRequest) {
                             notification: {
                                 title: title,
                                 body: body,
-                                icon: "/icon.png",
-                                badge: "/icon.png",
+                                icon: "/icon-192x192.png?v=1.5.7",
+                                badge: "/icon-192x192.png?v=1.5.7",
                                 tag: `prayer-${activePrayer.toLowerCase()}`,
                                 requireInteraction: true,
                                 data: {
