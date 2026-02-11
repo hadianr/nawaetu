@@ -236,15 +236,34 @@ export async function POST(req: NextRequest) {
                     };
                     const label = prayerLabels[activePrayer];
 
+                    // Mindfulness Wording
+                    const titles = [
+                        `Waktunya Sholat ${label}`,
+                        `Panggilan ${label} Telah Tiba`,
+                        `${label} Telah Masuk`
+                    ];
+
+                    const bodies = [
+                        `Mari sejenak menghadap Sang Pencipta.`,
+                        `Segarkan jiwa dengan air wudhu dan sholat.`,
+                        `"Hayya 'alas shalah" - Mari meraih kemenangan.`,
+                        `Rehat sejenak dari dunia, tunaikan kewajiban.`
+                    ];
+
+                    // Randomize for variety
+                    const title = titles[Math.floor(Math.random() * titles.length)];
+                    const body = bodies[Math.floor(Math.random() * bodies.length)];
+
                     await messagingAdmin.send({
                         token: sub.token,
                         notification: {
-                            title: `Waktu ${label}`,
-                            body: `Saatnya menunaikan sholat ${label}`
+                            title: title,
+                            body: body
                         },
                         data: {
                             type: "prayer_alert",
                             prayer: activePrayer,
+                            url: "/jadwal-sholat" // Open specific page
                         },
                         // CRITICAL for iOS Safari PWA
                         webpush: {
@@ -253,12 +272,15 @@ export async function POST(req: NextRequest) {
                                 "TTL": "86400"
                             },
                             notification: {
-                                title: `Waktu ${label}`,
-                                body: `Saatnya menunaikan sholat ${label}`,
+                                title: title,
+                                body: body,
                                 icon: "/icon.png",
                                 badge: "/icon.png",
                                 tag: `prayer-${activePrayer.toLowerCase()}`,
-                                requireInteraction: true
+                                requireInteraction: true,
+                                data: {
+                                    url: "/jadwal-sholat"
+                                }
                             }
                         },
                         android: {
