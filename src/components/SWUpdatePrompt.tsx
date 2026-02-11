@@ -83,6 +83,34 @@ export default function SWUpdatePrompt() {
             });
         });
 
+        // 3. AGGRESSIVE CHECK: Force update check on mount, interval, and visibility change
+        const checkUpdate = () => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then((reg) => {
+                    reg.update().catch(err => console.error('SW Update Check Failed:', err));
+                });
+            }
+        };
+
+        // Check immediately
+        checkUpdate();
+
+        // Check every 1 hour
+        const interval = setInterval(checkUpdate, 60 * 60 * 1000);
+
+        // Check when window becomes visible (user comes back to app)
+        const onVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                checkUpdate();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisibilityChange);
+        };
+
     }, [t]);
 
     return null; // This component handles logic only, UI is via Toast
