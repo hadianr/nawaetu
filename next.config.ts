@@ -4,7 +4,7 @@ import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
-  sw: "sw-v158.js", // UNIQUE FILENAME to break iOS text-pwa cache loop (v1.5.3 zombie)
+  sw: "sw-v1512.js", // UNIQUE FILENAME v1.5.12 to break cache again
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
@@ -129,7 +129,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/sw-v158.js", // MATCH THE NEW FILENAME
+        source: "/sw-v1512.js", // MATCH THE NEW FILENAME
         headers: [
           {
             key: "Cache-Control",

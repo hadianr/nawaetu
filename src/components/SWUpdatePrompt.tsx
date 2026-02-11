@@ -163,12 +163,17 @@ export default function SWUpdatePrompt() {
                 try {
                     let reloadNeeded = false;
 
-                    // 1. Unregister ONLY old 'sw.js'
+                    // 1. Unregister OLD 'sw.js' and 'sw-v158.js' (zombies)
                     if ('serviceWorker' in navigator) {
                         const regs = await navigator.serviceWorker.getRegistrations();
                         for (const reg of regs) {
-                            // Check if this is the OLD worker
-                            if (reg.active?.scriptURL.includes('sw.js') || reg.waiting?.scriptURL.includes('sw.js')) {
+                            // Check if this is an OLD worker
+                            if (
+                                reg.active?.scriptURL.includes('sw.js') ||
+                                reg.waiting?.scriptURL.includes('sw.js') ||
+                                reg.active?.scriptURL.includes('sw-v158.js') ||
+                                reg.waiting?.scriptURL.includes('sw-v158.js')
+                            ) {
                                 console.log("[SW] Unregistering Legacy Zombie:", reg.scope);
                                 await reg.unregister();
                                 reloadNeeded = true;
