@@ -60,8 +60,6 @@ export default function SettingsPage() {
     const { token: fcmToken } = useFCM();
     const [showInfaqModal, setShowInfaqModal] = useState(false);
     const [showAboutModal, setShowAboutModal] = useState(false);
-    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-    const [preferences, setPreferences] = useState<AdhanPreferences>(DEFAULT_PREFS);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Profile State
@@ -244,24 +242,13 @@ export default function SettingsPage() {
     };
 
     useEffect(() => {
-        // Init logic
-        if (typeof window !== "undefined" && "Notification" in window) {
-            setNotificationsEnabled(Notification.permission === "granted");
-        }
-
-        const [saved, savedMuadzin, savedMethod] = storage.getMany([
-            STORAGE_KEYS.ADHAN_PREFERENCES,
+        const [savedMuadzin, savedMethod] = storage.getMany([
             STORAGE_KEYS.SETTINGS_MUADZIN,
             STORAGE_KEYS.SETTINGS_CALCULATION_METHOD
         ]).values();
 
-        if (saved) {
-            try { setPreferences(typeof saved === 'string' ? JSON.parse(saved) : saved); } catch (e) { }
-        }
-
         refreshProfile();
 
-        // Load new settings
         if (savedMuadzin) setMuadzin(savedMuadzin as string);
         if (savedMethod) setCalculationMethod(savedMethod as string);
     }, []);
@@ -272,28 +259,6 @@ export default function SettingsPage() {
         window.addEventListener('avatar_updated', handleAvatarUpdate);
         return () => window.removeEventListener('avatar_updated', handleAvatarUpdate);
     }, []);
-
-    const requestPermission = async () => {
-        if (!("Notification" in window)) {
-            alert("Browser ini tidak mendukung notifikasi.");
-            return;
-        }
-        const permission = await Notification.requestPermission();
-        setNotificationsEnabled(permission === "granted");
-        if (permission !== "granted") {
-            alert("Izin notifikasi ditolak. Mohon aktifkan di pengaturan browser Anda.");
-        }
-    };
-
-    const togglePrayer = (prayer: string) => {
-        if (!notificationsEnabled) {
-            requestPermission();
-            return;
-        }
-        const newPrefs = { ...preferences, [prayer]: !preferences[prayer] };
-        setPreferences(newPrefs);
-        storage.set(STORAGE_KEYS.ADHAN_PREFERENCES as any, JSON.stringify(newPrefs));
-    };
 
     const handleThemeSelect = (themeId: ThemeId) => {
         const theme = THEMES[themeId];
@@ -693,23 +658,32 @@ export default function SettingsPage() {
                     </button>
                 </div>
 
-                {/* Debug - FCM Token (Only for development) */}
-                {process.env.NODE_ENV === 'development' && fcmToken && (
-                    <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-2">
-                        <div className="flex items-center gap-2 text-white/40">
+                {/* Debug Tools */}
+                <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center justify-between text-white/40">
+                        <div className="flex items-center gap-2">
                             <Settings2 className="w-3 h-3" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">Debug Info (FCM Token)</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Developer Tools</span>
                         </div>
+                        <Link
+                            href="/notification-debug"
+                            className="text-[10px] bg-red-900/30 text-red-400 px-2 py-1 rounded border border-red-900/50 hover:bg-red-900/50 transition-colors"
+                        >
+                            Open Debugger
+                        </Link>
+                    </div>
+                    {fcmToken ? (
                         <div className="bg-black/60 p-3 rounded-xl border border-white/10">
                             <p className="text-[10px] font-mono text-[rgb(var(--color-primary-light))]/70 break-all leading-relaxed">
                                 {fcmToken}
                             </p>
                         </div>
+                    ) : (
                         <p className="text-[9px] text-white/20 italic">
-                            *Token ini digunakan untuk mengirim notifikasi push ke perangkat Anda.
+                            Token belum tersedia. Klik "Open Debugger" untuk mencoba mengambil token.
                         </p>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
 
             <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />

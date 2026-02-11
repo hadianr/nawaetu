@@ -1,17 +1,11 @@
 name: Prayer Alert Cron
 
 on:
-  schedule:
-    # INDONESIA-WIDE COVERAGE (WIB, WITA, WIT)
-    # ----------------------------------------
-
-    # 1. Subuh Block: 04:00 WIT - 06:00 WIB
-    # UTC: 19:00 - 23:00 (Previous Day)
-    - cron: "7,17,27,37,47,57 19-23 * * *"
-
-    # 2. Day & Night Block: 11:00 WIT - 20:00 WIB (Dzuhur to Isya)
-    # UTC: 02:00 - 13:00
-    - cron: "2,12,22,32,42,52 2-13 * * *"
+  # schedule:
+  #   REMOVED: Now using external cron (cron-job.org) for 1-minute precision.
+  #   Old schedule was:
+  #   - cron: "7,17,27,37,47,57 19-23 * * *"
+  #   - cron: "2,12,22,32,42,52 2-13 * * *"
 
   workflow_dispatch: # Allow manual trigger for testing
 

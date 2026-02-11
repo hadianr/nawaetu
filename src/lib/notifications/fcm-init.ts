@@ -44,6 +44,9 @@ function getMessagingInstance(): Messaging | undefined {
 /**
  * Register service worker and get FCM token
  */
+/**
+ * Register service worker and get FCM token with robust retry logic
+ */
 export async function registerServiceWorkerAndGetToken(): Promise<string | null> {
     if (typeof window === "undefined") {
         console.warn("Not in browser environment");
@@ -58,6 +61,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
     }
 
     try {
+        console.log("Starting registration process...");
         // Check if notifications are supported
         if (!("Notification" in window)) {
             console.error("This browser does not support notifications");
@@ -65,53 +69,109 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         }
 
         // Request notification permission
-        const permission = await Notification.requestPermission();
+        console.log("Requesting permission...");
+        const permission = await window.Notification.requestPermission();
+        console.log("Permission status:", permission);
         if (permission !== "granted") {
             console.warn("Notification permission not granted");
             return null;
         }
 
-        // Register service worker
-        const registration = await navigator.serviceWorker.register(
-            "/firebase-messaging-sw.js"
-        );
-        console.log("Service Worker registered:", registration);
+        // 1. Try to reuse the existing service worker registration (Best Practice for PWAs)
+        // This avoids overlapping registrations that trigger page reloads.
+        let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
 
-        // Wait for service worker to be ready
-        await navigator.serviceWorker.ready;
+        try {
+            console.log("Checking for ready service worker...");
+            // navigator.serviceWorker.ready is the most reliable way to get the active registration
+            // We use a timeout as a fallback for development mode where PWA might be disabled
+            const readyPromise = navigator.serviceWorker.ready;
+            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000));
 
-        // Send Firebase config to service worker
-        if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
+            serviceWorkerRegistration = await Promise.race([readyPromise, timeoutPromise]);
+
+            if (serviceWorkerRegistration) {
+                console.log("✅ Reusing ready service worker:", serviceWorkerRegistration.scope);
+            }
+        } catch (err) {
+            console.warn("Error waiting for service worker ready:", err);
+        }
+
+        // 2. Fallback: Register manually if no ready worker found (e.g., first visit or Dev mode)
+        if (!serviceWorkerRegistration) {
+            console.log("No ready SW found. Registering /firebase-messaging-sw.js...");
+            serviceWorkerRegistration = await navigator.serviceWorker.register(
+                "/firebase-messaging-sw.js"
+            );
+            console.log("Service Worker registered manually:", serviceWorkerRegistration.scope);
+        }
+
+        // 3. Ensure the worker is active before sending messages
+        if (serviceWorkerRegistration.installing) {
+            console.log("Worker is installing, waiting...");
+            await new Promise<void>((resolve) => {
+                serviceWorkerRegistration!.installing?.addEventListener('statechange', (e: any) => {
+                    if (e.target.state === 'activated') resolve();
+                });
+                setTimeout(resolve, 2000); // Safety fallback
+            });
+        }
+
+        // 4. Send Firebase config to service worker
+        if (serviceWorkerRegistration.active) {
+            console.log("Sending config to worker...");
+            serviceWorkerRegistration.active.postMessage({
                 type: 'FIREBASE_CONFIG',
                 config: firebaseConfig
             });
-            console.log("✅ Firebase config sent to service worker");
         }
 
-        // Get FCM token
+        // Get FCM token with RETRY logic
         const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
         if (!vapidKey) {
             console.error("VAPID key not found in environment variables");
             return null;
         }
 
-        const token = await getToken(messagingInstance, {
-            vapidKey,
-            serviceWorkerRegistration: registration,
-        });
+        const getTokenWithRetry = async (retries = 3, delay = 1000): Promise<string | null> => {
+            try {
+                console.log(`Calling getToken() (attempts left: ${retries})...`);
+                // Note: We use the registration we found/created
+                return await getToken(messagingInstance, {
+                    vapidKey,
+                    serviceWorkerRegistration: serviceWorkerRegistration!,
+                });
+            } catch (err: any) {
+                if (retries > 0) {
+                    console.warn(`getToken failed, retrying in ${delay}ms...`, err);
+                    await new Promise(res => setTimeout(res, delay));
+                    return getTokenWithRetry(retries - 1, delay * 2);
+                }
+                throw err;
+            }
+        };
+
+        const token = await getTokenWithRetry();
 
         if (token) {
-            console.log("FCM Token obtained:", token);
-            // Store token in localStorage for easy access
+            console.log("✅ FCM Token obtained:", token);
             localStorage.setItem("fcm_token", token);
             return token;
         } else {
             console.warn("No FCM token available");
             return null;
         }
-    } catch (error) {
-        console.error("Error in registerServiceWorkerAndGetToken:", error);
+    } catch (error: any) {
+        console.error("❌ Error in registerServiceWorkerAndGetToken:", error);
+        // Throw or alert more detail if possible
+        if (error.code === 'messaging/permission-blocked') {
+            alert(error.message); // Show actual firebase error message which is usually clean
+        } else if (error.message.includes("Registration failed")) {
+            alert("Gagal registrasi Service Worker: " + error.message);
+        } else {
+            // Generic error
+            console.error("FCM Initialization Error: " + error.message);
+        }
         return null;
     }
 }
@@ -145,4 +205,4 @@ export function subscribeForegroundMessages(callback: (payload: any) => void) {
     }
 }
 
-export { app, messaging };
+export { app, messaging, onMessage };

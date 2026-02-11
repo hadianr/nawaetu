@@ -27,6 +27,9 @@ export const SETTINGS_TRANSLATIONS = {
     // Prayer Notifications
     notificationTitle: "Notifikasi Adzan",
     notificationButton: "Aktifkan Notifikasi Adzan",
+    notificationPermissionTitle: "Aktifkan Notifikasi Sholat",
+    notificationPermissionDesc: "Untuk mendapatkan pengingat waktu sholat yang akurat, mohon izinkan akses notifikasi pada perangkat Anda.",
+    notificationPermissionButton: "Izinkan Akses Notifikasi",
     notificationDenied: "Izin notifikasi ditolak. Mohon aktifkan di pengaturan browser Anda.",
     prayerNotifications: "Notifikasi Waktu Sholat",
     notificationsEnabled: "Notifikasi aktif",
@@ -464,6 +467,9 @@ export const SETTINGS_TRANSLATIONS = {
     // Prayer Notifications
     notificationTitle: "Prayer Notifications",
     notificationButton: "Enable Prayer Notifications",
+    notificationPermissionTitle: "Enable Prayer Notifications",
+    notificationPermissionDesc: "To receive accurate prayer time reminders, please allow notification access on your device.",
+    notificationPermissionButton: "Allow Notification Access",
     notificationDenied: "Notification permission denied. Please enable it in your browser settings.",
     prayerNotifications: "Prayer Time Notifications",
     notificationsEnabled: "Notifications enabled",

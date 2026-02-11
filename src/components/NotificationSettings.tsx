@@ -7,29 +7,46 @@ import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
 import { useLocale } from "@/context/LocaleContext";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export default function NotificationSettings() {
     const { locale } = useLocale();
     const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS];
+
+    // State Management
     const [isEnabled, setIsEnabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isInitializing, setIsInitializing] = useState(false); // New: for showing prayer list skeleton
+    const [isInitializing, setIsInitializing] = useState(false);
     const [fcmToken, setFcmToken] = useState<string | null>(null);
     const [preferences, setPreferences] = useState<PrayerPreferences>(DEFAULT_PRAYER_PREFERENCES);
+    const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>("default");
 
     useEffect(() => {
-        // Check if notifications are already enabled
-        const token = localStorage.getItem("fcm_token");
-        if (token) {
-            setFcmToken(token);
-            setIsEnabled(true);
-            loadPreferences(token);
+        if (typeof window !== "undefined" && "Notification" in window) {
+            setPermissionStatus(window.Notification.permission);
+
+            // Check if notifications are already enabled (Token exists)
+            const token = localStorage.getItem("fcm_token");
+            if (token) {
+                setFcmToken(token);
+                setIsEnabled(true);
+                loadPreferences(token);
+            }
         }
     }, []);
 
+    async function tryGetTokenSilently() {
+        try {
+            const token = await registerServiceWorkerAndGetToken();
+            if (token) {
+                setFcmToken(token);
+                loadPreferences(token);
+            }
+        } catch (e) { }
+    }
+
     async function loadPreferences(token: string) {
-        // Load saved preferences from localStorage
-        const saved = localStorage.getItem("prayer_preferences");
+        const saved = localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES);
         if (saved) {
             try {
                 setPreferences(JSON.parse(saved));
@@ -39,76 +56,105 @@ export default function NotificationSettings() {
         }
     }
 
+    // Step 1: Explicit Permission Request
+    async function requestPermission() {
+        if (!("Notification" in window)) {
+            alert("Browser tidak mendukung notifikasi");
+            return;
+        }
+
+        try {
+            const permission = await window.Notification.requestPermission();
+            setPermissionStatus(permission);
+            if (permission !== "granted") {
+                alert(t.notificationDenied);
+            }
+        } catch (error) {
+            console.error("Error requesting permission:", error);
+        }
+    }
+
+    function getCurrentLocation() {
+        const locationStr = localStorage.getItem(STORAGE_KEYS.USER_LOCATION);
+        if (locationStr) {
+            try {
+                const loc = JSON.parse(locationStr);
+                // The app uses name/lat/lng in usePrayerTimes, but city/latitude/longitude elsewhere.
+                // We handle both for maximum compatibility.
+                return {
+                    lat: loc.lat ?? loc.latitude ?? -6.2088,
+                    lng: loc.lng ?? loc.longitude ?? 106.8456,
+                    city: loc.name || loc.city || loc.locality || "Unknown",
+                };
+            } catch (e) {
+                console.error("Failed to parse location from storage", e);
+            }
+        }
+        // Default Fallback to Jakarta
+        return {
+            lat: -6.2088,
+            lng: 106.8456,
+            city: "Jakarta (Default)",
+        };
+    }
+
+    // Step 2: Toggle Notifications (Only when Permission is GRANTED)
     async function toggleNotifications() {
         if (isEnabled) {
-            // Disable notifications
+            // Disable
             setIsEnabled(false);
             setFcmToken(null);
             localStorage.removeItem("fcm_token");
-            localStorage.removeItem("prayer_preferences");
+            localStorage.removeItem(STORAGE_KEYS.ADHAN_PREFERENCES);
         } else {
-            // Enable notifications with optimistic UI
+            // Enable (Optimistic UI)
+            setIsEnabled(true);
             setIsLoading(true);
-            setIsInitializing(true); // Show skeleton immediately
+            setIsInitializing(true);
 
             try {
+                // Determine if we need to wait a bit for permission propagation?
+                // Typically not needed if permissionStatus is already 'granted'
+
                 const token = await registerServiceWorkerAndGetToken();
+
                 if (token) {
                     setFcmToken(token);
-                    setIsEnabled(true); // Optimistic: enable immediately after getting token
+                    const userLocation = getCurrentLocation();
+                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-                    // Run backend operations in parallel (non-blocking)
-                    Promise.all([
-                        fetch("/api/notifications/subscribe", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ token }),
+                    // Single API Call (Upsert + Preferences + Location)
+                    await fetch("/api/notifications/subscribe", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            token,
+                            prayerPreferences: preferences,
+                            userLocation,
+                            timezone
                         }),
-                        savePreferences(token, preferences)
-                    ]).catch(error => {
-                        console.error("Background operations failed:", error);
-                        // Don't revert UI - token is still valid
-                    }).finally(() => {
-                        setIsInitializing(false); // Hide skeleton after background ops
                     });
                 } else {
-                    setIsInitializing(false);
+                    throw new Error("Gagal mendapatkan token notifikasi. Pastikan internet lancar.");
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to enable notifications:", error);
-                setIsEnabled(false); // Revert on error
-                setIsInitializing(false);
+                alert("Gagal mengaktifkan notifikasi: " + (error.message || "Unknown error"));
+                setIsEnabled(false);
+                setFcmToken(null);
             } finally {
                 setIsLoading(false);
+                setIsInitializing(false);
             }
         }
     }
 
     async function savePreferences(token: string, prefs: PrayerPreferences) {
         try {
-            // Save to localStorage
-            localStorage.setItem("prayer_preferences", JSON.stringify(prefs));
-
-            // Get user location if available
-            const locationStr = localStorage.getItem("userLocation");
-            let userLocation = null;
-            if (locationStr) {
-                try {
-                    const loc = JSON.parse(locationStr);
-                    userLocation = {
-                        lat: loc.latitude,
-                        lng: loc.longitude,
-                        city: loc.city || "Unknown",
-                    };
-                } catch (e) {
-                    console.error("Failed to parse location:", e);
-                }
-            }
-
-            // Get timezone
+            localStorage.setItem(STORAGE_KEYS.ADHAN_PREFERENCES, JSON.stringify(prefs));
+            const userLocation = getCurrentLocation();
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            // Update backend
             await fetch("/api/notifications/preferences", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -127,7 +173,6 @@ export default function NotificationSettings() {
     async function togglePrayer(prayer: keyof PrayerPreferences) {
         const newPrefs = { ...preferences, [prayer]: !preferences[prayer] };
         setPreferences(newPrefs);
-
         if (fcmToken) {
             await savePreferences(fcmToken, newPrefs);
         }
@@ -141,6 +186,49 @@ export default function NotificationSettings() {
         isha: t.isha,
     };
 
+    // RENDER: PRE-PERMISSION STATE
+    if (permissionStatus === "default") {
+        return (
+            <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl text-center space-y-4">
+                <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
+                    <Bell className="w-8 h-8 text-[rgb(var(--color-primary))]" />
+                </div>
+                <h3 className="text-lg font-bold text-white">
+                    {(t as any).notificationPermissionTitle || "Aktifkan Notifikasi Sholat"}
+                </h3>
+                <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto">
+                    {(t as any).notificationPermissionDesc || "Untuk mendapatkan pengingat waktu sholat, mohon izinkan akses notifikasi."}
+                </p>
+                <div className="pt-2">
+                    <button
+                        onClick={requestPermission}
+                        className="w-full py-3 px-4 bg-[rgb(var(--color-primary))] text-white font-semibold rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 hover:opacity-90 transition-all active:scale-[0.98]"
+                    >
+                        {(t as any).notificationPermissionButton || "Izinkan Notifikasi"}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // RENDER: DENIED STATE
+    if (permissionStatus === "denied") {
+        return (
+            <div className="bg-red-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4 shadow-2xl flex items-start gap-3">
+                <BellOff className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+                <div>
+                    <h3 className="font-semibold text-red-400 text-sm mb-1">
+                        {locale === 'id' ? 'Akses Ditolak' : 'Permission Denied'}
+                    </h3>
+                    <p className="text-xs text-red-400/80 leading-relaxed">
+                        {t.notificationDenied}
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    // RENDER: SETTINGS STATE (GRANTED)
     return (
         <div className="space-y-4">
             {/* Main Toggle Card - Glassmorphism Style */}

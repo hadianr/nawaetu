@@ -1,244 +1,398 @@
+
 "use client";
 
-import { useEffect, useState } from "react";
-import { registerServiceWorkerAndGetToken, subscribeForegroundMessages } from "@/lib/notifications/fcm-init";
+import { useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 
 export default function NotificationDebugPage() {
-    // Disable this page in production
-    // Check at render time, not in useEffect
-    if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
         notFound();
     }
 
-    const [permission, setPermission] = useState<NotificationPermission>("default");
-    const [swStatus, setSwStatus] = useState<string>("Checking...");
-    const [token, setToken] = useState<string>("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [lastMessage, setLastMessage] = useState<string>("");
+    const [token, setToken] = useState<string | null>(null);
+    const [dbStatus, setDbStatus] = useState<any>(null);
+    const [sendResult, setSendResult] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
+    const [permission, setPermission] = useState<string>("default");
+    const [errorLog, setErrorLog] = useState<string[]>([]);
 
+    const [lastMessage, setLastMessage] = useState<any>(null);
+
+    // Capture console logs
     useEffect(() => {
-        checkStatus();
+        const originalError = console.error;
+        const originalLog = console.log;
 
-        // Subscribe to foreground messages
-        subscribeForegroundMessages((payload) => {
-            console.log("Foreground message received:", payload);
-            setLastMessage(JSON.stringify(payload, null, 2));
+        console.error = (...args) => {
+            setErrorLog(prev => [...prev, `[ERROR] ${args.join(' ')}`]);
+            originalError(...args);
+        };
 
-            // Show notification manually for foreground messages
-            if (payload.notification) {
-                new Notification(payload.notification.title, {
-                    body: payload.notification.body,
-                    icon: '/icon.png',
-                });
+        console.log = (...args) => {
+            const msg = args.join(' ');
+            if (msg.includes('FCM') || msg.includes('Service Worker') || msg.includes('Permission') || msg.includes('VAPID')) {
+                setErrorLog(prev => [...prev, `[LOG] ${msg}`]);
             }
-        });
+            originalLog(...args);
+        };
+
+        return () => {
+            console.error = originalError;
+            console.log = originalLog;
+        };
     }, []);
 
-    async function checkStatus() {
-        // Check permission
+    useEffect(() => {
         if (typeof window !== "undefined") {
-            setPermission(Notification.permission);
-        }
-
-        // Check service worker
-        if ("serviceWorker" in navigator) {
-            const registration = await navigator.serviceWorker.getRegistration();
-            if (registration) {
-                setSwStatus(`✅ Registered at: ${registration.scope}`);
+            if ("Notification" in window) {
+                setPermission(Notification.permission);
             } else {
-                setSwStatus("❌ Not registered");
+                setPermission("unsupported");
             }
-        }
+            const storedToken = localStorage.getItem("fcm_token");
+            if (storedToken) setToken(storedToken);
 
-        // Check FCM token
-        const storedToken = localStorage.getItem("fcm_token");
-        if (storedToken) {
-            setToken(storedToken);
+            // Listen for foreground messages
+            import("@/lib/notifications/fcm-init").then(({ messaging, onMessage }) => {
+                if (messaging) {
+                    onMessage(messaging, (payload) => {
+                        console.log("Foreground message received:", payload);
+                        setLastMessage(payload);
+                        // Trigger a local toast/notification for visual confirmation
+                        if (payload.notification) {
+                            new Notification(payload.notification.title || "Foreground Msg", {
+                                body: payload.notification.body
+                            });
+                        }
+                    });
+                }
+            });
         }
-    }
+    }, []);
 
-    async function clearAndReregister() {
-        setIsLoading(true);
+    const handleGetToken = async () => {
+        setLoading(true);
         try {
-            // Unregister all service workers
-            if ("serviceWorker" in navigator) {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const registration of registrations) {
-                    await registration.unregister();
-                    console.log("Unregistered service worker:", registration.scope);
+            // CRITICAL: Request permission FIRST before any async jumps to preserve "User Gesture" context
+            if (typeof window !== "undefined" && "Notification" in window) {
+                const permission = await Notification.requestPermission();
+                setPermission(permission);
+                if (permission !== "granted") {
+                    alert("Permission denied or dismissed.");
+                    setLoading(false);
+                    return;
                 }
             }
 
-            // Clear localStorage
-            localStorage.removeItem("fcm_token");
+            // Now do the heavy lifting
+            const { registerServiceWorkerAndGetToken } = await import("@/lib/notifications/fcm-init");
+            const currentToken = await registerServiceWorkerAndGetToken();
 
-            // Clear state
-            setToken("");
-            setSwStatus("❌ Not registered");
+            if (currentToken) {
+                setToken(currentToken);
 
-            alert("✅ Cleared! Now click 'Register Service Worker' to get a fresh token.");
-            checkStatus();
-        } catch (error: any) {
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsLoading(false);
-        }
-    }
+                // CRITICAL: Also sync with backend from debug page
+                const userLocationKey = "user_location";
+                const storage = localStorage.getItem(userLocationKey);
+                let userLocation = null;
+                if (storage) {
+                    try {
+                        const parsed = JSON.parse(storage);
+                        if (parsed.lat && parsed.lng) {
+                            userLocation = { lat: parsed.lat, lng: parsed.lng };
+                        }
+                    } catch (e) { }
+                }
 
-    async function requestPermissionAndRegister() {
-        setIsLoading(true);
-        try {
-            const fcmToken = await registerServiceWorkerAndGetToken();
-            if (fcmToken) {
-                alert(`✅ Success! Token obtained (${fcmToken.length} chars)`);
-
-                // Subscribe to backend
-                const response = await fetch("/api/notifications/subscribe", {
+                await fetch("/api/notifications/subscribe", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ token: fcmToken }),
+                    body: JSON.stringify({
+                        token: currentToken,
+                        deviceType: "web",
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        userLocation: userLocation
+                    }),
                 });
-
-                const data = await response.json();
-                console.log("Subscribe response:", data);
-
-                checkStatus();
+                console.log("✅ Debug token synced to backend");
             } else {
-                alert("❌ Failed to get FCM token. Check console for details.");
+                alert("Failed to get token. Check console for details. (Messaging might not be initialized or permission denied)");
             }
-        } catch (error: any) {
-            alert(`Error: ${error.message}`);
+        } catch (err) {
+            console.error("An error occurred while retrieving token. ", err);
+            alert("Error retrieving token: " + err);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
-    }
+    };
 
-    async function sendTestNotification() {
-        if (!token) {
-            alert("No FCM token found. Please register first.");
-            return;
-        }
-
-        setIsLoading(true);
+    const checkDbStatus = async () => {
+        if (!token) return;
+        setLoading(true);
         try {
-            const response = await fetch("/api/notifications/test-push", {
+            const res = await fetch(`/api/notifications/debug/check?token=${token}`);
+            const data = await res.json();
+            setDbStatus(data);
+        } catch (e: any) {
+            setDbStatus({ error: e.message });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const [manualToken, setManualToken] = useState("");
+
+    const sendTestNotification = async () => {
+        const targetToken = manualToken || token;
+        if (!targetToken) return;
+
+        // Countdown sequence (only if sending to self for dramatic effect, but fine to keep)
+        if (!manualToken) {
+            for (let i = 5; i > 0; i--) {
+                setLoading(true);
+                setSendResult({ message: `Sending in ${i}s... QUICKLY CLOSE THE APP NOW!` });
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+
+        setLoading(true);
+        setSendResult({ message: `Sending to ${manualToken ? 'Manual Token' : 'This Device'}...` });
+
+        try {
+            const res = await fetch("/api/notifications/debug/send", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    token: token,
-                    title: "🎉 Test Nawaetu",
-                    body: "Alhamdulillah, notifikasi berhasil diterima!",
-                }),
+                body: JSON.stringify({ token: targetToken }),
             });
-            const data = await response.json();
-
-            if (data.success) {
-                alert(`✅ Notification sent!\n\nMessage ID: ${data.messageId}\n\nCheck your browser for the notification!`);
-            } else {
-                alert(`❌ Failed: ${JSON.stringify(data)}`);
-            }
-        } catch (error: any) {
-            alert(`Error: ${error.message}`);
+            const data = await res.json();
+            setSendResult(data);
+        } catch (e: any) {
+            setSendResult({ error: e.message });
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white p-8">
-            <div className="max-w-2xl mx-auto">
-                <h1 className="text-3xl font-bold text-emerald-900 mb-6">
-                    🔔 Push Notification Debug
-                </h1>
+        <div className="p-6 max-w-2xl mx-auto space-y-6 pb-24">
+            <h1 className="text-2xl font-bold">Notification Debugger</h1>
 
-                <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
-                    <div className="p-4 bg-gray-50 rounded">
-                        <h2 className="font-semibold mb-2">Permission Status:</h2>
-                        <p
-                            className={
-                                permission === "granted"
-                                    ? "text-green-600 font-semibold"
-                                    : "text-red-600 font-semibold"
-                            }
-                        >
-                            {permission}
-                        </p>
-                    </div>
-
-                    <div className="p-4 bg-gray-50 rounded">
-                        <h2 className="font-semibold mb-2">Service Worker Status:</h2>
-                        <p
-                            className={
-                                swStatus.includes("✅") ? "text-green-600" : "text-red-600"
-                            }
-                        >
-                            {swStatus}
-                        </p>
-                    </div>
-
-                    <div className="p-4 bg-gray-50 rounded">
-                        <h2 className="font-semibold mb-2">FCM Token:</h2>
-                        <p
-                            className={
-                                token
-                                    ? "text-green-600 break-all text-sm"
-                                    : "text-red-600"
-                            }
-                        >
-                            {token || "❌ No token found"}
-                        </p>
-                    </div>
-
-                    {lastMessage && (
-                        <div className="p-4 bg-green-50 rounded border border-green-200">
-                            <h2 className="font-semibold mb-2 text-green-900">Last Message Received:</h2>
-                            <pre className="text-xs text-green-800 overflow-auto">
-                                {lastMessage}
-                            </pre>
-                        </div>
-                    )}
-
-                    <div className="p-4 bg-yellow-50 rounded border border-yellow-200">
-                        <h3 className="font-semibold text-yellow-900 mb-2">⚠️ Got "NotRegistered" Error?</h3>
-                        <p className="text-sm text-yellow-800 mb-2">
-                            Your old token is invalid. Click the button below to clear everything and start fresh.
-                        </p>
+            {/* Error Log Display */}
+            {errorLog.length > 0 && (
+                <div className="p-4 bg-red-900/30 border border-red-500 rounded-lg">
+                    <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-bold text-red-300">📋 Console Logs</h3>
                         <button
-                            onClick={clearAndReregister}
-                            disabled={isLoading}
-                            className="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => setErrorLog([])}
+                            className="text-xs bg-red-800 px-2 py-1 rounded"
                         >
-                            {isLoading ? "Clearing..." : "🗑️ Clear & Reset Everything"}
+                            Clear
                         </button>
                     </div>
+                    <pre className="text-[10px] overflow-auto max-h-60 bg-black/50 p-2 rounded whitespace-pre-wrap">
+                        {errorLog.join('\n')}
+                    </pre>
+                </div>
+            )}
 
+            <div className="p-4 bg-gray-900 rounded-lg space-y-2">
+                <p>
+                    <strong>Permission:</strong>
+                    <span className={permission === 'granted' ? 'text-green-500' : permission === 'denied' ? 'text-red-500' : 'text-yellow-500'}>
+                        {` ${permission.toUpperCase()}`}
+                    </span>
+                </p>
+                {permission === 'denied' && (
+                    <div className="text-[11px] bg-red-900/40 p-2 rounded border border-red-800 text-red-200 mt-2">
+                        <strong>Cara Memperbaiki:</strong><br />
+                        1. Buka <b>Settings</b> iPhone.<br />
+                        2. Pilih <b>Notifications</b>.<br />
+                        3. Cari <b>Nawaetu</b> dan aktifkan <b>Allow Notifications</b>.<br />
+                        4. Refresh halaman ini.
+                    </div>
+                )}
+                <div className="break-all">
+                    <strong>Token:</strong>
+                    <p className="font-mono text-xs mt-1 text-gray-400">
+                        {token || "No token found"}
+                    </p>
+                </div>
+                <button
+                    onClick={handleGetToken}
+                    className="bg-blue-600 px-4 py-2 rounded text-sm text-white mt-2 w-full"
+                    disabled={loading}
+                >
+                    Request Permission & Get Token
+                </button>
+
+                <button
+                    onClick={async () => {
+                        if (confirm("Reset will delete token and unregister Service Worker. Continue?")) {
+                            setLoading(true);
+                            localStorage.removeItem("fcm_token");
+                            try {
+                                const reg = await navigator.serviceWorker.getRegistration();
+                                if (reg) {
+                                    await reg.unregister();
+                                    console.log("Service Worker unregistered");
+                                }
+                            } catch (e) { console.error(e); }
+                            setToken(null);
+                            setLoading(false);
+                            alert("Reset complete. Please refresh the page.");
+                            window.location.reload();
+                        }
+                    }}
+                    className="bg-red-900/50 border border-red-800 text-red-200 px-4 py-2 rounded text-sm mt-2 w-full"
+                    disabled={loading}
+                >
+                    ⚠️ Reset / Delete Token (Fix Stuck State)
+                </button>
+            </div>
+
+            {/* Last Message Log */}
+            {lastMessage && (
+                <div className="p-4 bg-indigo-900/50 border border-indigo-500 rounded-lg">
+                    <h3 className="font-bold text-indigo-300 mb-2">🔔 Incoming Message Detected!</h3>
+                    <pre className="text-[10px] overflow-auto max-h-40 bg-black/50 p-2 rounded">
+                        {JSON.stringify(lastMessage, null, 2)}
+                    </pre>
+                </div>
+            )}
+
+            <div className="space-y-4">
+                <div className="border p-4 rounded-lg border-gray-700">
+                    <h2 className="font-semibold mb-2">1. OS-Level Check (Crucial)</h2>
+                    <p className="text-sm text-gray-400 mb-2">
+                        Tests if the OS allows ANY notification from this PWA.
+                    </p>
                     <button
-                        onClick={requestPermissionAndRegister}
-                        disabled={isLoading}
-                        className="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => {
+                            if (!("Notification" in window)) {
+                                alert("Notifications not supported");
+                                return;
+                            }
+                            if (Notification.permission !== "granted") {
+                                alert("Permission not granted! Status: " + Notification.permission);
+                                return;
+                            }
+                            try {
+                                const notif = new Notification("Test Lokal OS", {
+                                    body: "Jika Anda melihat tab ini, berarti Izin OS OK! 📲",
+                                    icon: "/icon.png"
+                                });
+                                notif.onclick = () => window.focus();
+                                alert("Notification triggered! Check notif center if not visible.");
+                            } catch (e: any) {
+                                alert("Error triggering native notif: " + e.message);
+                            }
+                        }}
+                        className="bg-yellow-600 px-4 py-2 rounded text-sm text-white font-bold w-full"
                     >
-                        {isLoading ? "Processing..." : "🚀 Register Service Worker & Get Token"}
+                        Force Local Notification (No FCM)
                     </button>
+                    <p className="text-[10px] text-gray-500 mt-2">
+                        *If this fails, check iOS Settings &rarr; Notifications &rarr; Nawaetu.
+                    </p>
+                </div>
+
+                <div className="border p-4 rounded-lg border-gray-700">
+                    <h2 className="font-semibold mb-2">2. Check DB Status</h2>
+                    <button
+                        onClick={checkDbStatus}
+                        className="bg-green-600 px-4 py-2 rounded text-sm text-white disabled:opacity-50"
+                        disabled={!token || loading}
+                    >
+                        Check Token in DB
+                    </button>
+                    {dbStatus && (
+                        <pre className="mt-2 text-xs bg-black p-2 rounded overflow-auto">
+                            {JSON.stringify(dbStatus, null, 2)}
+                        </pre>
+                    )}
+                </div>
+
+                <div className="border p-4 rounded-lg border-gray-700">
+                    <h2 className="font-semibold mb-2">2. Update Location Data</h2>
+                    <p className="text-sm text-gray-400 mb-2">
+                        Forcing GPS detection to fix "userLocation: null".
+                    </p>
+                    <button
+                        onClick={async () => {
+                            setLoading(true);
+                            if (!navigator.geolocation) {
+                                alert("Geolocation not supported");
+                                setLoading(false);
+                                return;
+                            }
+                            navigator.geolocation.getCurrentPosition(
+                                async (pos) => {
+                                    const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                                    localStorage.setItem("user_location", JSON.stringify(loc));
+
+                                    // If token exists, sync to DB
+                                    if (token) {
+                                        await fetch("/api/notifications/subscribe", {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify({
+                                                token: token,
+                                                deviceType: "web",
+                                                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                                userLocation: loc
+                                            }),
+                                        });
+                                    }
+                                    alert("Location updated successfully!");
+                                    setLoading(false);
+                                },
+                                (err) => {
+                                    alert("Error: " + err.message);
+                                    setLoading(false);
+                                }
+                            );
+                        }}
+                        className="bg-purple-600 px-4 py-2 rounded text-sm text-white disabled:opacity-50"
+                        disabled={loading}
+                    >
+                        Detect & Sync My Location
+                    </button>
+                </div>
+
+                <div className="border p-4 rounded-lg border-gray-700">
+                    <h2 className="font-semibold mb-2">3. Force Test Notification</h2>
+                    <p className="text-sm text-gray-400 mb-2">
+                        Sends an immediate high-priority notification to a specific token.
+                    </p>
+
+                    <div className="mb-2">
+                        <label className="text-xs text-gray-400 block mb-1">Target Token (Optional - Paste from Phone):</label>
+                        <input
+                            type="text"
+                            className="w-full bg-black/50 border border-gray-600 rounded px-2 py-1 text-xs font-mono text-white mb-2"
+                            placeholder="Paste FCM token here to test another device..."
+                            value={manualToken}
+                            onChange={(e) => setManualToken(e.target.value)}
+                        />
+                    </div>
 
                     <button
                         onClick={sendTestNotification}
-                        disabled={isLoading || !token}
-                        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-red-600 px-4 py-2 rounded text-sm text-white disabled:opacity-50 w-full"
+                        disabled={(!token && !manualToken) || loading}
                     >
-                        {isLoading ? "Sending..." : "📤 Send Test Notification"}
+                        {manualToken ? "Send to Manual Token" : "Send to This Device"}
                     </button>
-
-                    <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
-                        <h3 className="font-semibold text-blue-900 mb-2">💡 Troubleshooting:</h3>
-                        <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">
-                            <li><strong>Tab must be open</strong> - Keep this tab visible when testing</li>
-                            <li><strong>Check browser settings</strong> - Ensure notifications are enabled for localhost</li>
-                            <li><strong>macOS users</strong> - Check System Settings → Notifications → Chrome/Safari</li>
-                            <li><strong>Console logs</strong> - Open DevTools Console to see message reception</li>
-                        </ul>
-                    </div>
+                    {sendResult && (
+                        <pre className="mt-2 text-xs bg-black p-2 rounded overflow-auto">
+                            {JSON.stringify(sendResult, null, 2)}
+                        </pre>
+                    )}
                 </div>
+            </div>
+
+            <div className="text-sm text-gray-500">
+                <p>Note for iOS: Ensure you have added the app to Home Screen and opened it from there.</p>
             </div>
         </div>
     );

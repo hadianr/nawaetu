@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     try {
-        const { token, deviceType, timezone, userLocation } = await req.json();
+        const { token, deviceType, timezone, userLocation, prayerPreferences } = await req.json();
 
         if (!token) {
             return NextResponse.json({ error: "Token is required" }, { status: 400 });
@@ -24,6 +24,8 @@ export async function POST(req: NextRequest) {
             deviceType: deviceType || "web",
             timezone: timezone || "Asia/Jakarta",
             userLocation: userLocation ? JSON.stringify(userLocation) : null,
+            // If provided, update preferences; otherwise keep existing or null
+            prayerPreferences: prayerPreferences ? JSON.stringify(prayerPreferences) : undefined,
         };
 
         if (existing.length > 0) {
@@ -35,8 +37,9 @@ export async function POST(req: NextRequest) {
             await db.insert(pushSubscriptions).values({
                 token,
                 ...data,
+                // For new insert, use provided prefs or null
+                prayerPreferences: prayerPreferences ? JSON.stringify(prayerPreferences) : null,
                 userId: null,
-                prayerPreferences: null,
                 lastUsedAt: null,
             });
         }

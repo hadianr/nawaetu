@@ -18,13 +18,13 @@ const prayerTimesCache = new Map<string, any>();
 // In-memory deduplication cache
 const recentNotifications = new Map<string, number>();
 const DEDUP_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const PRAYER_WINDOW_MS = 20 * 60 * 1000; // ±20 minutes tolerance (GHA can be delayed)
+const PRAYER_WINDOW_MS = 15 * 60 * 1000; // +15 minutes tolerance only (No early notifications)
 
 // Default Coordinates: Jakarta (Monas)
 const DEFAULT_LAT = -6.175392;
 const DEFAULT_LNG = 106.827153;
 
-// Helper: Check if two times are within window
+// Helper: Check if current time is AFTER prayer time but within window
 function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
     const [cHour, cMin] = currentTime.split(":").map(Number);
     const [pHour, pMin] = prayerTime.split(":").map(Number);
@@ -32,7 +32,12 @@ function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
     const currentTotalMin = cHour * 60 + cMin;
     const prayerTotalMin = pHour * 60 + pMin;
 
-    return Math.abs(currentTotalMin - prayerTotalMin) <= 20;
+    const diff = currentTotalMin - prayerTotalMin;
+
+    // STRICT LOGIC:
+    // 1. Must be AFTER or EQUAL to prayer time (diff >= 0) -> No early Adhan!
+    // 2. Must be within 15 minutes (diff <= 15) -> Catches 10-min cron delays
+    return diff >= 0 && diff <= 15;
 }
 
 // Helper: Fetch prayer times from Aladhan API
@@ -199,9 +204,16 @@ export async function POST(req: NextRequest) {
                         continue;
                     }
 
-                    // 5. Deduplication
-                    const dedupKey = `${sub.userId}-${activePrayer}-${todayStr}`;
-                    if (wasRecentlyNotified(dedupKey)) {
+                    // 5. Deduplication (DB-based for precision)
+                    let lastSentMap: Record<string, string> = {};
+                    if (sub.lastNotificationSent) {
+                        try {
+                            lastSentMap = JSON.parse(sub.lastNotificationSent);
+                        } catch (e) { }
+                    }
+
+                    if (lastSentMap[activePrayer] === todayStr) {
+                        // Already sent for today
                         results.skipped++;
                         continue;
                     }
@@ -225,33 +237,34 @@ export async function POST(req: NextRequest) {
                     const label = prayerLabels[activePrayer];
 
                     await messagingAdmin.send({
-                        notification: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` },
+                        token: sub.token,
+                        notification: {
+                            title: `Waktu ${label}`,
+                            body: `Saatnya menunaikan sholat ${label}`
+                        },
                         data: {
                             type: "prayer_alert",
                             prayer: activePrayer,
-                            click_action: "FLUTTER_NOTIFICATION_CLICK" // Standard fallback for some wrappers
                         },
-                        token: sub.token,
-                        apns: {
-                            payload: {
-                                aps: {
-                                    alert: { title: `Waktu ${label}`, body: `Saatnya menunaikan sholat ${label}` },
-                                    sound: "default",
-                                    badge: 1,
-                                    "mutable-content": 1
-                                }
-                            },
+                        // CRITICAL for iOS Safari PWA
+                        webpush: {
                             headers: {
-                                "apns-priority": "10",
-                                "apns-push-type": "alert",
-                                "apns-topic": "com.nawaetu.app" // Optional but good practice
+                                "Urgency": "high",
+                                "TTL": "86400"
                             },
+                            notification: {
+                                title: `Waktu ${label}`,
+                                body: `Saatnya menunaikan sholat ${label}`,
+                                icon: "/icon.png",
+                                badge: "/icon.png",
+                                tag: `prayer-${activePrayer.toLowerCase()}`,
+                                requireInteraction: true
+                            }
                         },
                         android: {
                             priority: "high",
                             notification: {
                                 channelId: "prayer-alerts",
-                                sound: "default",
                                 priority: "max",
                                 visibility: "public"
                             }
@@ -259,8 +272,14 @@ export async function POST(req: NextRequest) {
                     });
 
                     results.sent++;
-                    recentNotifications.set(dedupKey, Date.now());
-                    await db.update(pushSubscriptions).set({ lastUsedAt: new Date() }).where(eq(pushSubscriptions.id, sub.id));
+
+                    // Update DB with new "last sent" map
+                    lastSentMap[activePrayer] = todayStr;
+
+                    await db.update(pushSubscriptions).set({
+                        lastUsedAt: new Date(),
+                        lastNotificationSent: JSON.stringify(lastSentMap)
+                    }).where(eq(pushSubscriptions.id, sub.id));
 
                 } catch (e: any) {
                     results.failed++;

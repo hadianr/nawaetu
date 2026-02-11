@@ -10,6 +10,7 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   workboxOptions: {
     disableDevLogs: true,
+    importScripts: ["/firebase-messaging-sw.js"], // Import Firebase logic into the main PWA SW
   },
 });
 
