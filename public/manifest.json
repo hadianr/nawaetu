@@ -3,7 +3,7 @@
     "short_name": "Nawaetu",
     "description": "Islamic habit tracker with gamification: Daily Missions, Streak, XP. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
     "gcm_sender_id": "103953800507",
-    "start_url": "/?v=1.5.12",
+    "start_url": "/?v=1.6.1",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
