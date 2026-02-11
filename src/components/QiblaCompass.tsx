@@ -263,17 +263,21 @@ export default function QiblaCompass() {
     useEffect(() => {
         if (qiblaBearing === null) return;
 
-        // Current compass heading (absolute)
-        const currentHeading = ((-compassRotate % 360) + 360) % 360;
-        
-        // Calculate relative angle to Qibla
-        const relativeAngle = qiblaBearing - currentHeading;
-        setQiblaRelativeRotate(relativeAngle);
+        // Since dial is already counter-rotated by compassRotate (which keeps North at top),
+        // Kaaba icon simply needs to point to the qibla bearing from North
+        setQiblaRelativeRotate(qiblaBearing);
 
-        // Alignment detection (within ±8° threshold)
-        const angleDiff = Math.abs(relativeAngle);
-        const normalizedDiff = Math.min(angleDiff, 360 - angleDiff);
-        setAligned(normalizedDiff <= 8);
+        // For alignment detection: check if device heading matches qibla bearing
+        // compassRotate = -deviceHeading, so deviceHeading = -compassRotate
+        const deviceHeading = ((-compassRotate % 360) + 360) % 360;
+        
+        // Calculate difference between device heading and qibla bearing
+        let angleDiff = Math.abs(deviceHeading - qiblaBearing);
+        // Handle 360°/0° wraparound (e.g., 359° vs 1° should be 2° diff, not 358°)
+        if (angleDiff > 180) angleDiff = 360 - angleDiff;
+        
+        // Aligned if within ±8° threshold
+        setAligned(angleDiff <= 8);
     }, [compassRotate, qiblaBearing]);
 
     if (loading) return <div className="text-white/60 animate-pulse text-center mt-20">{t.qiblaSearching}</div>;
