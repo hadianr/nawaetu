@@ -64,6 +64,7 @@ import { useTheme } from "@/context/ThemeContext";
 export default function AppOverlays() {
     const [showPwaPrompt, setShowPwaPrompt] = useState(false);
     const { currentTheme } = useTheme();
+    const isDev = process.env.NODE_ENV === "development";
 
     useEffect(() => {
         const show = () => setShowPwaPrompt(true);
@@ -111,10 +112,7 @@ export default function AppOverlays() {
         const GLOBAL_SESSION_KEY = 'nawaetu_app_initialized';
         const wasInitialized = sessionStorage.getItem(GLOBAL_SESSION_KEY) === 'true';
         
-        console.log('[AppOverlays] Init check - Already initialized:', wasInitialized);
-        
         if (wasInitialized) {
-            console.log('[AppOverlays] ✓ Already initialized, skipping version check');
             return;
         }
 
@@ -122,23 +120,13 @@ export default function AppOverlays() {
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
         const currentVersion = APP_CONFIG.version;
         
-        console.log('[AppOverlays] Version check:');
-        console.log('[AppOverlays]   - Stored version:', storedVersion);
-        console.log('[AppOverlays]   - Current version:', currentVersion);
-        console.log('[AppOverlays]   - Match:', storedVersion === currentVersion);
-
         // Mark as initialized IMMEDIATELY to prevent redirect loop
         sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
-        console.log('[AppOverlays] ✓ Marked as initialized');
 
         // If version mismatch, just update localStorage and log it
         // Don't redirect - AppOverlays may mount multiple times during navigation
         if (storedVersion !== currentVersion) {
-            console.log('[AppOverlays] ⚠️  Version mismatch - updating localStorage');
             storage.set(STORAGE_KEYS.APP_VERSION, currentVersion);
-            console.log('[AppOverlays] Updated to:', currentVersion);
-        } else {
-            console.log('[AppOverlays] ✓ Version match - no action needed');
         }
 
     }, []);
@@ -148,7 +136,7 @@ export default function AppOverlays() {
             <OnboardingOverlay />
             <PWAInstallPrompt shouldShow={showPwaPrompt} />
             <SWUpdatePrompt />
-            <MobileDebugConsole />
+            {isDev && <MobileDebugConsole />}
 
             <Toaster
                 position="top-center"

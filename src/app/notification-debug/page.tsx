@@ -20,26 +20,7 @@ export default function NotificationDebugPage() {
 
     // Capture console logs
     useEffect(() => {
-        const originalError = console.error;
-        const originalLog = console.log;
-
-        console.error = (...args) => {
-            setErrorLog(prev => [...prev, `[ERROR] ${args.join(' ')}`]);
-            originalError(...args);
-        };
-
-        console.log = (...args) => {
-            const msg = args.join(' ');
-            if (msg.includes('FCM') || msg.includes('Service Worker') || msg.includes('Permission') || msg.includes('VAPID')) {
-                setErrorLog(prev => [...prev, `[LOG] ${msg}`]);
-            }
-            originalLog(...args);
-        };
-
-        return () => {
-            console.error = originalError;
-            console.log = originalLog;
-        };
+        // Intentionally empty after log cleanup.
     }, []);
 
     useEffect(() => {
@@ -56,7 +37,6 @@ export default function NotificationDebugPage() {
             import("@/lib/notifications/fcm-init").then(({ messaging, onMessage }) => {
                 if (messaging) {
                     onMessage(messaging, (payload) => {
-                        console.log("Foreground message received:", payload);
                         setLastMessage(payload);
                         // Trigger a local toast/notification for visual confirmation
                         if (payload.notification) {
@@ -114,12 +94,10 @@ export default function NotificationDebugPage() {
                         userLocation: userLocation
                     }),
                 });
-                console.log("✅ Debug token synced to backend");
             } else {
                 alert("Failed to get token. Check console for details. (Messaging might not be initialized or permission denied)");
             }
         } catch (err) {
-            console.error("An error occurred while retrieving token. ", err);
             alert("Error retrieving token: " + err);
         } finally {
             setLoading(false);
@@ -234,11 +212,13 @@ export default function NotificationDebugPage() {
                                 const reg = await navigator.serviceWorker.getRegistration();
                                 if (reg) {
                                     await reg.unregister();
-                                    console.log("Service Worker unregistered");
                                 }
-                            } catch (e) { console.error(e); }
-                            setToken(null);
-                            setLoading(false);
+                            } catch (error) {
+                                alert("Reset failed: " + error);
+                                return;
+                            } finally {
+                                setLoading(false);
+                            }
                             alert("Reset complete. Please refresh the page.");
                             window.location.reload();
                         }

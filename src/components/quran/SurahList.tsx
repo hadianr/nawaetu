@@ -88,7 +88,6 @@ export default function SurahList({ chapters }: SurahListProps) {
             try {
                 setLastRead(typeof savedRead === 'string' ? JSON.parse(savedRead) : savedRead);
             } catch (e) {
-                console.error("Failed to parse last read", e);
             }
         }
 
@@ -101,7 +100,6 @@ export default function SurahList({ chapters }: SurahListProps) {
                     setBookmarkCount(parsed.length);
                 }
             } catch (e) {
-                console.error("Failed to parse bookmarks", e);
             }
         }
     }, []);

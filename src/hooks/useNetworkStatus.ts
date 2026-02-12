@@ -49,7 +49,6 @@ interface NetworkStatus {
  * const { isOnline, isLoading } = useNetworkStatus({
  *   onStatusChange: (online) => {
  *     if (online) {
- *       console.log('Came online - trigger sync');
  *     }
  *   }
  * });
@@ -74,7 +73,6 @@ export function useNetworkStatus(
    * Handler for online/offline events
    */
   const handleOnline = useCallback(() => {
-    console.log('[NetworkStatus] Came online');
     setStatus(prev => ({
       ...prev,
       isOnline: true,
@@ -85,7 +83,6 @@ export function useNetworkStatus(
   }, [onStatusChange]);
 
   const handleOffline = useCallback(() => {
-    console.log('[NetworkStatus] Went offline');
     setStatus(prev => ({
       ...prev,
       isOnline: false,
@@ -101,7 +98,6 @@ export function useNetworkStatus(
    */
   const handleVisibilityChange = useCallback(() => {
     if (!document.hidden) {
-      console.log('[NetworkStatus] App came to foreground, verifying status');
       
       const isCurrentlyOnline = navigator.onLine;
       setStatus(prev => {
@@ -143,9 +139,6 @@ export function useNetworkStatus(
         const isCurrentlyOnline = navigator.onLine;
         setStatus(prev => {
           if (prev.isOnline !== isCurrentlyOnline) {
-            console.log(
-              `[NetworkStatus] Poll detected status change: ${isCurrentlyOnline}`
-            );
             onStatusChange?.(isCurrentlyOnline);
             return {
               ...prev,

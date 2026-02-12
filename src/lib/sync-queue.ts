@@ -94,10 +94,8 @@ class SyncQueueManager {
       const stored = window.localStorage?.getItem(this.STORAGE_KEY);
       if (stored) {
         this.queue = JSON.parse(stored);
-        console.log(`[SyncQueue] Loaded ${this.queue.length} pending entries from storage`);
       }
     } catch (error) {
-      console.error('[SyncQueue] Failed to load from storage:', error);
       this.queue = [];
     }
   }
@@ -111,7 +109,6 @@ class SyncQueueManager {
       
       window.localStorage?.setItem(this.STORAGE_KEY, JSON.stringify(this.queue));
     } catch (error) {
-      console.error('[SyncQueue] Failed to save to storage:', error);
     }
   }
 
@@ -135,7 +132,6 @@ class SyncQueueManager {
 
     // Check queue size limit
     if (this.queue.length >= this.MAX_QUEUE_SIZE) {
-      console.warn(`[SyncQueue] Queue at max size (${this.MAX_QUEUE_SIZE}), removing oldest entry`);
       this.queue.shift();
     }
 
@@ -152,7 +148,6 @@ class SyncQueueManager {
     this.queue.push(entry);
     this.saveToStorage();
 
-    console.log(`[SyncQueue] Added entry: ${entry.id} (${type}/${action})`);
     return entry.id;
   }
 
@@ -202,9 +197,7 @@ class SyncQueueManager {
       entry.status = 'synced';
       entry.lastAttemptAt = Date.now();
       this.saveToStorage();
-      console.log(`[SyncQueue] Marked as synced: ${id}`);
     } else {
-      console.warn(`[SyncQueue] Entry not found: ${id}`);
     }
   }
 
@@ -218,7 +211,6 @@ class SyncQueueManager {
       entry.error = error;
       entry.lastAttemptAt = Date.now();
       this.saveToStorage();
-      console.log(`[SyncQueue] Marked as failed: ${id} - ${error}`);
     }
   }
 
@@ -234,9 +226,6 @@ class SyncQueueManager {
       if (entry.retryCount > this.MAX_RETRY_COUNT) {
         entry.status = 'failed';
         entry.error = `Max retry count (${this.MAX_RETRY_COUNT}) exceeded`;
-        console.warn(
-          `[SyncQueue] Max retries exceeded for ${id}: ${entry.error}`
-        );
       }
       
       this.saveToStorage();
@@ -253,7 +242,6 @@ class SyncQueueManager {
     if (index !== -1) {
       const removed = this.queue.splice(index, 1)[0];
       this.saveToStorage();
-      console.log(`[SyncQueue] Removed from queue: ${id}`);
     }
   }
 
@@ -267,7 +255,6 @@ class SyncQueueManager {
     
     if (removed > 0) {
       this.saveToStorage();
-      console.log(`[SyncQueue] Cleared ${removed} synced entries`);
     }
     
     return removed;
@@ -285,7 +272,6 @@ class SyncQueueManager {
     
     if (removed > 0) {
       this.saveToStorage();
-      console.log(`[SyncQueue] Cleared ${removed} synced entries of type ${type}`);
     }
     
     return removed;
@@ -316,7 +302,6 @@ class SyncQueueManager {
     const size = this.queue.length;
     this.queue = [];
     this.saveToStorage();
-    console.warn(`[SyncQueue] Cleared all ${size} entries`);
   }
 
   /**

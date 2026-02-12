@@ -50,7 +50,6 @@ export default function IntentionPrompt({
         try {
             await onSubmit(niatText);
         } catch (error) {
-            console.error("Error submitting intention:", error);
         } finally {
             setIsSubmitting(false);
         }

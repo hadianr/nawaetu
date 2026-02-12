@@ -51,7 +51,6 @@ export default function NotificationSettings() {
             try {
                 setPreferences(JSON.parse(saved));
             } catch (e) {
-                console.error("Failed to parse preferences:", e);
             }
         }
     }
@@ -70,7 +69,6 @@ export default function NotificationSettings() {
                 alert(t.notificationDenied);
             }
         } catch (error) {
-            console.error("Error requesting permission:", error);
         }
     }
 
@@ -87,7 +85,6 @@ export default function NotificationSettings() {
                     city: loc.name || loc.city || loc.locality || "Unknown",
                 };
             } catch (e) {
-                console.error("Failed to parse location from storage", e);
             }
         }
         // Default Fallback to Jakarta
@@ -138,7 +135,6 @@ export default function NotificationSettings() {
                     throw new Error("Gagal mendapatkan token notifikasi. Pastikan internet lancar.");
                 }
             } catch (error: any) {
-                console.error("Failed to enable notifications:", error);
                 alert("Gagal mengaktifkan notifikasi: " + (error.message || "Unknown error"));
                 setIsEnabled(false);
                 setFcmToken(null);
@@ -166,7 +162,6 @@ export default function NotificationSettings() {
                 }),
             });
         } catch (error) {
-            console.error("Failed to save preferences:", error);
         }
     }
 

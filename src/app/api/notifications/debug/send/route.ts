@@ -60,7 +60,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true, messageId: result });
 
     } catch (error: any) {
-        console.error("Test Notification Error:", error);
         return NextResponse.json({
             success: false,
             error: error.message,

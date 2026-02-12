@@ -49,7 +49,6 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
                     return parsed as TafsirContent;
                 }
             } catch (e) {
-                console.warn('Failed to parse cached tafsir:', e);
             }
         }
 
@@ -109,13 +108,11 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
                 storage.set(cacheKey as any, JSON.stringify(entry));
             } catch (e) {
                 // Handle quota exceeded or other storage errors silently
-                console.warn('Failed to cache tafsir:', e);
             }
         }
 
         return content;
     } catch (error) {
-        console.error('Error fetching tafsir:', error);
         return null;
     }
 }

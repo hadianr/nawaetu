@@ -76,7 +76,6 @@ export function isPrayerLogged(prayerName: string): boolean {
  * @deprecated Use getMissionRepository().getProgress() or useMissions hook instead
  */
 export function getMissionProgress(missionId: string): { current: number; required: number; isComplete: boolean } {
-    console.warn("[DEPRECATED] getMissionProgress: Use getMissionRepository() or useMissions hook instead");
     const { getMissionRepository } = require("@/core/repositories/mission.repository");
     return getMissionRepository().getProgress(missionId);
 }

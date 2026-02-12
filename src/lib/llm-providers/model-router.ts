@@ -36,7 +36,6 @@ export class ModelRouter {
         } catch (primaryError) {
             // Only fallback on rate limit errors
             if (primaryError instanceof ProviderError && primaryError.status === 429) {
-                console.log(`⚠️ ${this.primaryProvider.name} quota exceeded, switching to ${this.secondaryProvider.name}`);
 
                 // Try secondary provider (Groq)
                 try {
@@ -48,7 +47,6 @@ export class ModelRouter {
                 } catch (secondaryError) {
                     // If secondary also fails with rate limit, try tertiary
                     if (secondaryError instanceof ProviderError && secondaryError.status === 429) {
-                        console.log(`⚠️ ${this.secondaryProvider.name} also exceeded, switching to ${this.tertiaryProvider.name}`);
 
                         try {
                             const response = await this.tertiaryProvider.chat(message, context, history);
@@ -57,7 +55,6 @@ export class ModelRouter {
                                 provider: this.tertiaryProvider.name
                             };
                         } catch (tertiaryError) {
-                            console.error(`❌ All providers failed. Last error from ${this.tertiaryProvider.name}:`, tertiaryError);
                             throw tertiaryError;
                         }
                     }

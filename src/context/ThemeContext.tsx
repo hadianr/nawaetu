@@ -163,7 +163,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const root = document.documentElement;
 
         if (!validTheme?.colors) {
-            console.warn(`Theme "${currentTheme}" not found, falling back to default`);
             return;
         }
 
@@ -182,7 +181,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const setTheme = (themeId: ThemeId) => {
         // Validate theme exists
         if (!THEMES[themeId]) {
-            console.error(`Invalid theme ID: ${themeId}. Falling back to 'default'`);
             return;
         }
         

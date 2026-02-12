@@ -49,7 +49,6 @@ export default function ReflectionPrompt({
         try {
             await onSubmit(rating, reflectionText || undefined);
         } catch (error) {
-            console.error("Error submitting reflection:", error);
         } finally {
             setIsSubmitting(false);
         }

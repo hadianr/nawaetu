@@ -57,9 +57,6 @@ export default function MisiPage() {
             STORAGE_KEYS.COMPLETED_MISSIONS
         ]).values();
 
-        console.log("Loading Mission Data - Gender:", savedGender); // Debug log
-
-        setGender(savedGender as Gender);
 
         const allMissions = getMissionsForGender(savedGender as Gender);
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));

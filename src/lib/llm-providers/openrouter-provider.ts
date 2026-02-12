@@ -128,11 +128,6 @@ export class OpenRouterProvider implements LLMProvider {
             return content;
 
         } catch (error: any) {
-            console.error('OpenRouter Provider Error:', {
-                message: error.message,
-                status: error.status,
-                code: error.code
-            });
 
             // If already a ProviderError, re-throw
             if (error instanceof ProviderError) {

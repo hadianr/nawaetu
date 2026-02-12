@@ -17,7 +17,6 @@ export function initializeQuranOptimizations(locale: string = "id"): void {
 
   // Monitor API performance and log metrics (optional)
   if (process.env.NODE_ENV === "development") {
-    console.log(`[Quran Optimization] Initialized with locale: ${locale}`);
   }
 }
 
@@ -40,12 +39,10 @@ export async function measureFetchTime<T>(
     const result = await fn();
     const duration = performance.now() - start;
     if (process.env.NODE_ENV === "development") {
-      console.log(`[${label}] Completed in ${duration.toFixed(2)}ms`);
     }
     return result;
   } catch (error) {
     const duration = performance.now() - start;
-    console.error(`[${label}] Failed after ${duration.toFixed(2)}ms`, error);
     throw error;
   }
 }

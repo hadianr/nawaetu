@@ -103,7 +103,6 @@ function QiblaCompass() {
         // FIX: Prevent duplicate starts (glitching permission issue)
         if (compassStartedRef.current) return;
         
-        console.log('🧭 startCompass called (from button)');
         
         // Reset heading for fresh start
         lastHeadingRef.current = 0;
@@ -125,7 +124,6 @@ function QiblaCompass() {
 
         // Start Sensor Listeners
         const eventType = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
-        console.log(`📡 Attaching listener: ${eventType}`);
         
         if (eventType === 'deviceorientationabsolute') {
             (window as any).addEventListener("deviceorientationabsolute", handleOrientation, { passive: true, capture: true });
@@ -134,13 +132,10 @@ function QiblaCompass() {
         }
 
         // Start Timeout to detect "No Sensor" devices
-        console.log('⏱️ Starting 10s sensor timeout...');
         sensorCheckTimeoutRef.current = setTimeout(() => {
             if (!gotFirstEventRef.current) {
-                console.error('❌ No sensor events after 10s!');
                 setNoSensor(true);
             } else {
-                console.log('✅ Sensor working!');
             }
         }, 10000);
 
@@ -154,19 +149,16 @@ function QiblaCompass() {
         const sessionActive = sessionStorage.getItem('nawaetu_qibla_session');
         setShowSessionNote(sessionActive !== 'active');
         
-        console.log('🔍 Mount - Permission:', savedPermission, '| Session:', sessionActive);
         
         // Auto-init if permission granted AND session is active (not app restart)
         // This allows seamless navigation between pages without re-clicking button
         if (savedPermission === 'granted' && sessionActive === 'active') {
-            console.log('♻️ Same session detected - auto-initializing...');
             setPermissionGranted(true);
             setLoading(true);
             
             const initCompass = async () => {
                 if (compassStartedRef.current) return;
                 
-                console.log('🧭 Initializing compass (auto)...');
                 lastHeadingRef.current = 0;
                 smoothHeadingRef.current = 0;
                 lastUpdateRef.current = 0;
@@ -177,7 +169,6 @@ function QiblaCompass() {
                     try {
                         const response = await (DeviceOrientationEvent as any).requestPermission();
                         if (response !== "granted") {
-                            console.warn('❌ Permission denied on remount');
                             localStorage.removeItem('nawaetu_qibla_permission');
                             sessionStorage.removeItem('nawaetu_qibla_session');
                             setError(t.qiblaCompassDenied);
@@ -188,7 +179,6 @@ function QiblaCompass() {
                         }
                     } catch (e) {
                         // If error (no user gesture), fallback to showing button
-                        console.warn('⚠️ Auto-init failed (needs user gesture):', e);
                         sessionStorage.removeItem('nawaetu_qibla_session');
                         setPermissionGranted(false); // Revert optimistic state
                         setLoading(false);
@@ -228,7 +218,6 @@ function QiblaCompass() {
                 orientationHandlerRef.current = orientationHandler;
 
                 const eventType = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
-                console.log(`📡 Attaching listener: ${eventType}`);
                 
                 if (eventType === 'deviceorientationabsolute') {
                     (window as any).addEventListener(eventType, orientationHandler, { passive: true, capture: true });
@@ -236,14 +225,11 @@ function QiblaCompass() {
                     window.addEventListener(eventType, orientationHandler, { passive: true, capture: true });
                 }
 
-                console.log('⏱️ Starting 10s sensor timeout...');
                 sensorCheckTimeoutRef.current = setTimeout(() => {
                     if (!gotFirstEventRef.current) {
-                        console.error('❌ No sensor events after 10s!');
                         setNoSensor(true);
                         setLoading(false);
                     } else {
-                        console.log('✅ Sensor working!');
                     }
                 }, 10000);
 
@@ -258,16 +244,13 @@ function QiblaCompass() {
                             setQiblaBearing(bearing);
                             setDistance(dist);
                             setLoading(false); // Stop loading after location received
-                            console.log(`✅ Location: ${latitude}, ${longitude} | Qibla: ${bearing}°`);
                         },
                         (err) => {
-                            console.error('❌ Geolocation error:', err);
                             setError(t.qiblaLocationError);
                             setLoading(false);
                         }
                     );
                 } else {
-                    console.error('❌ Geolocation not available');
                     setError(t.qiblaGeoError);
                     setLoading(false);
                 }
@@ -275,7 +258,6 @@ function QiblaCompass() {
             
             initCompass();
         } else if (savedPermission === 'granted' && !sessionActive) {
-            console.log('ℹ️ Permission saved but new session - show button for user gesture');
             // Make sure loading is false if we're showing button
             setLoading(false);
         } else {
@@ -307,7 +289,6 @@ function QiblaCompass() {
     // Cleanup
     useEffect(() => {
         return () => {
-            console.log('🧹 Cleanup on unmount');
             
             // Clear timeout
             if (sensorCheckTimeoutRef.current) {

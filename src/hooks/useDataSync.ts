@@ -60,7 +60,6 @@ export function useDataSync() {
             return { success: true };
 
         } catch (e) {
-            console.error("Sync error:", e);
             toast.error("Gagal sinkronisasi data", { id: toastId });
             return { success: false, message: "Terjadi kesalahan saat sinkronisasi" };
         } finally {

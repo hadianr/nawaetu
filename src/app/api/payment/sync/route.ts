@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
         });
 
         if (!user) {
-            console.log("[Payment Sync] User Not Found in DB:", session.user.email);
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
@@ -130,7 +129,6 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (e) {
-        console.error("[Payment Sync Error]", e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

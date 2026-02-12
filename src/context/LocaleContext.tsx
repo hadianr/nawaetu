@@ -30,7 +30,6 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       const savedLocale = (storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string) || DEFAULT_LOCALE;
       setLocaleState(savedLocale);
     } catch (error) {
-      console.warn("Failed to load locale from localStorage", error);
       setLocaleState(DEFAULT_LOCALE);
     } finally {
       setIsLoading(false);
@@ -64,7 +63,6 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         new CustomEvent("locale-changed", { detail: { locale: newLocale } })
       );
     } catch (error) {
-      console.warn("Failed to set locale", error);
     }
   };
 

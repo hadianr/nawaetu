@@ -9,19 +9,12 @@ export async function POST(request: NextRequest) {
         const metric = await request.json();
 
         // Log metrics in production for monitoring
-        console.log("[Analytics] Web Vitals metric received:", {
-            name: metric.name,
-            value: metric.value,
-            rating: metric.rating,
-            id: metric.id,
-        });
 
         // TODO: In future, send to analytics service (Google Analytics, Vercel Analytics, etc.)
         // Example: await sendToGoogleAnalytics(metric);
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
-        console.error("[Analytics] Error processing metric:", error);
         return NextResponse.json(
             { error: "Failed to process metric" },
             { status: 500 }

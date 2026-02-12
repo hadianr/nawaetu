@@ -41,7 +41,6 @@ export function useProfile() {
             return true;
 
         } catch (e) {
-            console.error("Profile update error:", e);
             toast.error("Gagal memperbarui profil", { id: toastId });
             return false;
         } finally {

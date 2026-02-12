@@ -86,7 +86,6 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     const p = totalXP > 0 ? Math.round((currentXP / totalXP) * 100) : 0;
                     setProgress(Math.min(100, p));
                 } catch (e) {
-                    console.error("Failed to parse mission progress:", e);
                     setProgress(0);
                 }
             } else {

@@ -35,7 +35,6 @@ export function useAdhanNotifications() {
 
         // Don't run interval when page is hidden (battery optimization)
         if (!isPageVisible) {
-            console.log("Page hidden, pausing prayer time checks");
             return;
         }
 
@@ -103,13 +102,10 @@ export function useAdhanNotifications() {
             audioRef.current = newAudio;
             newAudio.play().catch(e => {
                 if (e.name === 'NotAllowedError') {
-                    console.warn("Adhan autoplay was blocked. It will auto-play on next prayer after your next interaction.");
                 } else {
-                    console.error("Adhan audio failed for other reasons:", e);
                 }
             });
         } catch (e) {
-            console.error("Failed to play Adhan audio", e);
         }
     };
 

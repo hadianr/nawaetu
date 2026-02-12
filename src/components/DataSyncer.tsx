@@ -61,7 +61,6 @@ export default function DataSyncer() {
                             createdAt: b.createdAt
                         }));
                         localStorage.setItem(STORAGE_KEYS.QURAN_BOOKMARKS, JSON.stringify(bookmarksData));
-                        console.log('[DataSyncer] ✓ Restored', bookmarksData.length, 'bookmarks');
                     }
 
                     // 3. Restore Intentions (Journal)
@@ -77,14 +76,11 @@ export default function DataSyncer() {
                             createdAt: i.createdAt
                         }));
                         localStorage.setItem(STORAGE_KEYS.INTENTION_JOURNAL, JSON.stringify(intentionsData));
-                        console.log('[DataSyncer] ✓ Restored', intentionsData.length, 'intentions');
                     }
 
-                    console.log('[DataSyncer] ✓ All cloud data restored successfully');
                 }
             }
         } catch (e) {
-            console.error("Failed to restore settings", e);
         }
     }, [setTheme, setLocale]);
 

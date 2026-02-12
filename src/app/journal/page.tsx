@@ -56,7 +56,6 @@ export default function JournalPage() {
                 setHasMore(data.data.pagination.has_more);
             }
         } catch (error) {
-            console.error("Error fetching history:", error);
         } finally {
             setIsLoading(false);
         }

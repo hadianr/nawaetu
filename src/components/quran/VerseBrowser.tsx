@@ -33,7 +33,6 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
         const locale = localeCookie ? localeCookie.value : DEFAULT_SETTINGS.locale;
 
         // Fetch data with explicit error handling
-        console.log(`[VerseBrowser] Loading chapter ${chapterId}, page ${currentPage}`);
         const startTime = Date.now();
         
         const [chapter, versesData] = await Promise.all([
@@ -60,7 +59,6 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
         const totalPages = Math.ceil(chapter.verses_count / perPage);
         const elapsedMs = Date.now() - startTime;
 
-        console.log(`[VerseBrowser] ✓ Loaded ${verses.length} verses in ${elapsedMs}ms, pages: ${totalPages}`);
 
         return (
             <>
@@ -78,7 +76,6 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
         );
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error(`[VerseBrowser] Failed for chapter ${id}:`, errorMessage);
         
         // Return error UI instead of crashing
         return (

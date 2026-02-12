@@ -60,7 +60,6 @@ export class GroqProvider implements LLMProvider {
             return chatCompletion.choices[0]?.message?.content || "Maaf, saya tidak dapat menjawab saat ini.";
 
         } catch (error: any) {
-            console.error('Groq Provider Error:', error);
 
             if (error.status === 429) {
                 throw new ProviderError('Rate limit exceeded', 429, 'RATE_LIMIT', true);

@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Subscription not found" }, { status: 404 });
         }
     } catch (error) {
-        console.error("Error updating notification preferences:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

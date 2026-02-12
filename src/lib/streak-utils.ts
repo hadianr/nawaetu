@@ -15,7 +15,6 @@ export type { StreakData, StreakMilestone };
  * @deprecated Use getStreakRepository().getStreak() or useStreak hook instead
  */
 export function getStreak(): StreakData {
-    console.warn("[DEPRECATED] getStreak: Use getStreakRepository() or useStreak hook instead");
     return getStreakRepository().getStreak();
 }
 
@@ -23,7 +22,6 @@ export function getStreak(): StreakData {
  * @deprecated Use getStreakRepository().saveStreak() instead
  */
 export function saveStreak(data: StreakData): void {
-    console.warn("[DEPRECATED] saveStreak: Use getStreakRepository() instead");
     getStreakRepository().saveStreak(data);
 }
 
@@ -34,7 +32,6 @@ export function saveStreak(data: StreakData): void {
  * @deprecated Use getStreakRepository().updateStreak() or useStreak hook instead
  */
 export function updateStreak(): { newMilestone: StreakMilestone | null; streak: StreakData } {
-    console.warn("[DEPRECATED] updateStreak: Use getStreakRepository() or useStreak hook instead");
     return getStreakRepository().updateStreak();
 }
 
@@ -44,6 +41,5 @@ export function updateStreak(): { newMilestone: StreakMilestone | null; streak: 
  * @deprecated Use getStreakRepository().getDisplayStreak() or useStreak hook instead
  */
 export function getDisplayStreak(): { streak: number; isActiveToday: boolean } {
-    console.warn("[DEPRECATED] getDisplayStreak: Use getStreakRepository() or useStreak hook instead");
     return getStreakRepository().getDisplayStreak();
 }

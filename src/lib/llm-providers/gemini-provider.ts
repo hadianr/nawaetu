@@ -95,11 +95,6 @@ export class GeminiProvider implements LLMProvider {
             return response.text();
 
         } catch (error: any) {
-            console.error('Gemini Provider Error:', {
-                message: error.message,
-                status: error.status,
-                code: error.code
-            });
 
             // Map Gemini errors to ProviderError
             if (error.status === 429 || error.code === 'RESOURCE_EXHAUSTED') {

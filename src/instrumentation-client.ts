@@ -11,7 +11,6 @@ const initSentry = () => {
     (window.location.hostname === "nawaetu.com" || window.location.hostname === "www.nawaetu.com");
   
   if (!isProduction) {
-    console.log("[Sentry] Skipped - Not running on nawaetu.com");
     return;
   }
 

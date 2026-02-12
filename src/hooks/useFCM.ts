@@ -18,7 +18,6 @@ export function useFCM() {
 
                 if (currentToken) {
                     setToken(currentToken);
-                    console.log("FCM Token via hook:", currentToken);
 
                     // Get current location from storage if available
                     const userLocationKey = "user_location";
@@ -46,7 +45,6 @@ export function useFCM() {
                     });
                 }
             } catch (err) {
-                console.error("An error occurred while initializing FCM:", err);
             }
         };
 
@@ -59,7 +57,6 @@ export function useFCM() {
         // Listen for foreground messages
         if (messaging) {
             const unsubscribe = onMessage(messaging, (payload) => {
-                console.log("Foreground message received:", payload);
                 if (payload.notification && typeof window !== "undefined" && "Notification" in window) {
                     const { title, body } = payload.notification;
                     new window.Notification(title || "Nawaetu", { body });

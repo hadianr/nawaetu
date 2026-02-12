@@ -137,7 +137,6 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                     const locData = await locResponse.json();
                     locationName = locData.locality || locData.city || locData.principalSubdivision || "Lokasi Terdeteksi";
                 } catch (e) {
-                    console.error("Failed to fetch location name", e);
                 }
             }
 
@@ -168,7 +167,6 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             );
 
             if (!response.ok) {
-                console.error(`Prayer API responded with status: ${response.status}`);
                 throw new Error(`Failed to fetch prayer times (Status: ${response.status})`);
             }
 
@@ -176,7 +174,6 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             // Validate response structure
             if (!result || !result.data || !result.data.timings) {
-                console.error('Invalid prayer times response:', result);
                 throw new Error("Invalid prayer times data received");
             }
 
@@ -210,14 +207,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             // Notify other instances
             window.dispatchEvent(new CustomEvent('prayer_data_updated'));
         } catch (err) {
-            console.error('Prayer times fetch error:', err);
             const errorMessage = err instanceof Error ? err.message : "Failed to load prayer data";
             setError(errorMessage);
 
             // Try to use cached data if available
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
             if (cachedData && typeof cachedData === 'object' && cachedData.data) {
-                console.log('Using cached prayer data due to fetch error');
                 processData(cachedData.data, cachedData.locationName || locationName, true);
             }
         } finally {
@@ -238,10 +233,8 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 fetchPrayerTimes(latitude, longitude);
             },
             (err) => {
-                console.warn('Geolocation error:', err);
                 const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
                 if (isFreshLocation(cachedLocation)) {
-                    console.log("Location refresh failed, using cached location");
                     fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
                     return;
                 }
@@ -273,13 +266,11 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
         } else {
             if (cachedLocation) {
-                console.warn('Invalid or stale cached coordinates, clearing cache:', cachedLocation);
                 storage.remove(STORAGE_KEYS.USER_LOCATION as any);
             }
 
             // FIX: Do not auto-request location on load (PageSpeed Best Practice)
             // Default to Jakarta (Monas)
-            console.log("Using Default Location (Jakarta)");
             fetchPrayerTimes(-6.175392, 106.827153, "Jakarta (Default)", true);
         }
 

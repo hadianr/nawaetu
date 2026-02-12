@@ -54,19 +54,12 @@ export async function askMentor(
 
         // Log which provider was used (server-side only)
         if (provider !== 'Gemini') {
-            console.log(`ℹ️ Response served by ${provider} (fallback)`);
         }
 
         return response;
 
     } catch (error: any) {
         // Log full error for debugging (server-side only)
-        console.error("LLM Provider Error:", {
-            message: error.message,
-            code: error.code,
-            status: error.status,
-            provider: error.provider
-        });
 
         // Handle ProviderError with specific messages
         if (error instanceof ProviderError) {
@@ -79,7 +72,6 @@ export async function askMentor(
             }
 
             if (error.status === 401 || error.status === 403) {
-                console.error('⚠️ CRITICAL: Authentication error');
                 return `Maaf, lagi ada kendala sistem. Tim kami akan segera perbaiki 🙏`;
             }
         }

@@ -87,11 +87,9 @@ export function AdvancedDataSyncer() {
     async (entry: SyncQueueEntry, config: RetryConfig): Promise<boolean> => {
       try {
         if (!session?.user?.id) {
-          console.log(`[Sync] Skipping sync for entry ${entry.id} - no session`);
           return false;
         }
 
-        console.log(`[Sync] Syncing entry: ${entry.id} (${entry.type}/${entry.action})`);
 
         const response = await fetch('/api/user/sync', {
           method: 'POST',
@@ -114,12 +112,10 @@ export function AdvancedDataSyncer() {
 
         if (result.success && result.synced.length > 0) {
           syncQueue.markAsSynced(entry.id);
-          console.log(`[Sync] ✓ Synced: ${entry.id}`);
           return true;
         } else if (result.failed.length > 0) {
           const failureError = result.failed[0]?.error || 'Unknown error';
           syncQueue.markAsFailed(entry.id, failureError);
-          console.error(`[Sync] ✗ Failed: ${entry.id} - ${failureError}`);
           return false;
         }
 
@@ -135,13 +131,7 @@ export function AdvancedDataSyncer() {
             syncQueue.getEntryById(entry.id)?.retryCount || 0,
             config
           );
-          console.log(
-            `[Sync] Retry scheduled in ${delay}ms for entry ${entry.id}: ${errorMessage}`
-          );
         } else {
-          console.error(
-            `[Sync] Max retries exceeded for entry ${entry.id}: ${errorMessage}`
-          );
         }
 
         return false;
@@ -156,17 +146,14 @@ export function AdvancedDataSyncer() {
   const syncAllPending = useCallback(
     async (trigger: string = 'manual'): Promise<void> => {
       if (syncInProgressRef.current) {
-        console.log('[Sync] Sync already in progress, skipping');
         return;
       }
 
       if (!session?.user?.id) {
-        console.log('[Sync] No session, skipping sync');
         return;
       }
 
       if (!isOnline) {
-        console.log('[Sync] Offline, skipping sync');
         return;
       }
 
@@ -174,12 +161,7 @@ export function AdvancedDataSyncer() {
         syncInProgressRef.current = true;
 
         const pending = syncQueue.getPendingEntries();
-        console.log(
-          `[Sync] Starting sync (trigger: ${trigger}) - ${pending.length} pending entries`
-        );
-
         if (pending.length === 0) {
-          console.log('[Sync] No pending entries to sync');
           return;
         }
 
@@ -199,18 +181,13 @@ export function AdvancedDataSyncer() {
           await new Promise(resolve => setTimeout(resolve, 50));
         }
 
-        const stats = syncQueue.getStats();
-        console.log(
-          `[Sync] Sync completed: ${successCount} synced, ${failureCount} still pending/failed`
-        );
-        console.log('[Sync] Queue stats:', stats);
+        syncQueue.getStats();
 
         // Show toast notification
         if (successCount > 0) {
           toast.success(`✓ Synced ${successCount} item${successCount > 1 ? 's' : ''}`);
         }
       } catch (error) {
-        console.error('[Sync] Sync error:', error);
         toast.error('Sync failed - will retry later');
       } finally {
         syncInProgressRef.current = false;
@@ -228,7 +205,6 @@ export function AdvancedDataSyncer() {
         clearTimeout(syncTimeoutRef.current);
       }
 
-      console.log(`[Sync] Debounced sync triggered: ${trigger} (${delayMs}ms)`);
 
       syncTimeoutRef.current = setTimeout(() => {
         syncAllPending(trigger);
@@ -243,7 +219,6 @@ export function AdvancedDataSyncer() {
   useEffect(() => {
     if (!isOnline) return;
 
-    console.log('[Sync] Online event detected');
     debouncedSync('online-event', 2000);
   }, [isOnline, debouncedSync]);
 
@@ -255,13 +230,11 @@ export function AdvancedDataSyncer() {
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        console.log('[Sync] App regained focus');
         debouncedSync('app-focus', 1000);
       }
     };
 
     const handleWindowFocus = () => {
-      console.log('[Sync] Window focus event');
       debouncedSync('window-focus', 500);
     };
 
@@ -282,7 +255,6 @@ export function AdvancedDataSyncer() {
 
     const SYNC_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
-    console.log('[Sync] Starting periodic sync (every 5 minutes)');
 
     // Initial sync after 10 seconds
     const initialTimer = setTimeout(() => {
@@ -291,7 +263,6 @@ export function AdvancedDataSyncer() {
 
     // Recurring sync every 5 minutes
     periodicSyncRef.current = setInterval(() => {
-      console.log('[Sync] Periodic sync triggered');
       debouncedSync('periodic', 500);
     }, SYNC_INTERVAL_MS);
 

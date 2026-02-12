@@ -89,7 +89,6 @@ export default function SWUpdatePrompt() {
             // A. Standard SW Update
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then((reg) => {
-                    reg.update().catch(err => console.error('SW Update Check Failed:', err));
                 });
             }
 
@@ -147,7 +146,6 @@ export default function SWUpdatePrompt() {
                     }
                 }
             } catch (e) {
-                console.error("Version check failed", e);
             }
         };
 
@@ -158,7 +156,6 @@ export default function SWUpdatePrompt() {
 
             // Run this cleanup to ensure old SW is dead
             if (typeof window !== 'undefined' && !localStorage.getItem(FIX_KEY)) {
-                console.log("[SW] Executing Smart Zombie Cleanup...");
 
                 try {
                     let reloadNeeded = false;
@@ -174,7 +171,6 @@ export default function SWUpdatePrompt() {
                                 reg.active?.scriptURL.includes('sw-v158.js') ||
                                 reg.waiting?.scriptURL.includes('sw-v158.js')
                             ) {
-                                console.log("[SW] Unregistering Legacy Zombie:", reg.scope);
                                 await reg.unregister();
                                 reloadNeeded = true;
                             }
@@ -187,7 +183,6 @@ export default function SWUpdatePrompt() {
                         // Optional: Only clear if we really need to. 
                         // But to be safe against v1.5.3 HTML cache, lets clear.
                         await Promise.all(keys.map(key => caches.delete(key)));
-                        console.log("[SW] Cleared caches:", keys);
                     }
 
                     // 3. Mark as fixed
@@ -199,7 +194,6 @@ export default function SWUpdatePrompt() {
                     }
 
                 } catch (e) {
-                    console.error("[SW] Cleanup failed:", e);
                 }
             }
         };

@@ -61,7 +61,6 @@ export function getAllSessions(): ChatSession[] {
 
         return [];
     } catch (error) {
-        console.error('Failed to load chat sessions:', error);
         return [];
     }
 }
@@ -129,7 +128,6 @@ function saveAllSessions(sessions: ChatSession[]): void {
     try {
         storage.set(CHAT_SESSIONS_KEY as any, JSON.stringify(sessions));
     } catch (error) {
-        console.error('Failed to save sessions:', error);
     }
 }
 

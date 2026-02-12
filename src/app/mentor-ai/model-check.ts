@@ -6,7 +6,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function checkAvailableModels() {
     if (!process.env.GEMINI_API_KEY) {
-        console.error("API Key missing");
         return "No Key";
     }
 
@@ -20,7 +19,6 @@ export async function checkAvailableModels() {
         const result = await model.generateContent("test");
         return "gemini-3-flash-preview is working!";
     } catch (error: any) {
-        console.error("Model Check Error:", error);
         return `Error listing/checking models: ${error.message}`;
     }
 }

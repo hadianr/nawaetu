@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error("Error in push subscription API:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

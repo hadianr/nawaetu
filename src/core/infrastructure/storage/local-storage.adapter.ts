@@ -38,7 +38,6 @@ export class LocalStorageAdapter implements StorageAdapter {
         return item as T;
       }
     } catch (error) {
-      console.error(`[Storage] Failed to get item: ${key}`, error);
       return null;
     }
   }
@@ -68,7 +67,6 @@ export class LocalStorageAdapter implements StorageAdapter {
     try {
       localStorage.removeItem(key);
     } catch (error) {
-      console.error(`[Storage] Failed to remove item: ${key}`, error);
     }
   }
 
@@ -78,7 +76,6 @@ export class LocalStorageAdapter implements StorageAdapter {
     try {
       localStorage.clear();
     } catch (error) {
-      console.error('[Storage] Failed to clear storage', error);
     }
   }
 }

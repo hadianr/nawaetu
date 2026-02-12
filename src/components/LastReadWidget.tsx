@@ -71,7 +71,6 @@ export default function LastReadWidget() {
                     fetchVerseContent(data.surahId, data.verseId);
                 }
             } catch (e) {
-                console.error("Failed to load last read", e);
             }
         }
     }, []);
@@ -107,7 +106,6 @@ export default function LastReadWidget() {
             if (typeof navigator !== "undefined" && !navigator.onLine) {
                 return;
             }
-            console.error("Error fetching verse:", error);
         } finally {
             setLoading(false);
         }

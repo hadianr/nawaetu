@@ -122,7 +122,6 @@ export async function GET(req: NextRequest) {
             },
         });
     } catch (error) {
-        console.error("Error fetching today's intention:", error);
         return NextResponse.json(
             { success: false, error: "Internal server error" },
             { status: 500 }

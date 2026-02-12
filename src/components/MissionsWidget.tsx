@@ -99,7 +99,6 @@ export default function MissionsWidget() {
                     });
                 }
             } catch (error) {
-                console.error("Failed to fetch intention:", error);
             }
         };
 
@@ -111,9 +110,6 @@ export default function MissionsWidget() {
         const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
         const savedArchetype = storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) as string | null;
 
-        console.log("Loading Mission Widget Data - Gender:", savedGender); // Debug log
-
-        setGender(savedGender);
 
         const daily = getDailyMissions(savedGender);
         const weekly = getWeeklyMissions(savedGender);
@@ -233,7 +229,6 @@ export default function MissionsWidget() {
                     storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, JSON.stringify(currentData));
                 }
             } catch (e) {
-                console.error("Failed to reset mission:", e);
             }
         }
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
@@ -290,7 +285,6 @@ export default function MissionsWidget() {
                 toast.error("Gagal menyimpan niat");
             }
         } catch (error) {
-            console.error(error);
             toast.error("Terjadi kesalahan");
         }
     };

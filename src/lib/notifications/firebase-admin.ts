@@ -13,7 +13,6 @@ if (!admin.apps.length) {
                 'base64'
             ).toString('utf-8');
             serviceAccount = JSON.parse(decoded);
-            console.log("Firebase Admin initialized from environment variable (production).");
         }
         // Development: Use local file
         else {
@@ -21,9 +20,7 @@ if (!admin.apps.length) {
 
             if (fs.existsSync(serviceAccountPath)) {
                 serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
-                console.log("Firebase Admin initialized from local file (development).");
             } else {
-                console.warn("⚠️ Firebase service account not found. Push notifications disabled.");
             }
         }
 
@@ -34,7 +31,6 @@ if (!admin.apps.length) {
             });
         }
     } catch (error) {
-        console.error("❌ Error initializing Firebase Admin SDK:", error);
     }
 }
 

@@ -80,7 +80,6 @@ export async function POST(req: NextRequest) {
                     userId = newUser.id;
                 } catch (e: any) {
                     // Possible race condition or duplicate email, try to fetch existing
-                    console.warn("User creation failed, trying to fetch:", e.message);
                     const [existing] = await db.select().from(users).where(eq(users.email, `guest_${user_token.substring(0, 16)}@nawaetu.local`)).limit(1);
                     if (existing) {
                         userId = existing.id;
@@ -122,7 +121,6 @@ export async function POST(req: NextRequest) {
                     userId = newUser.id;
                 } catch (e: any) {
                     // Possible race condition, try to fetch existing
-                    console.warn("Anonymous User creation failed, trying to fetch:", e.message);
                     const [existing] = await db.select().from(users).where(eq(users.email, anonymousEmail)).limit(1);
                     if (existing) {
                         userId = existing.id;
@@ -213,7 +211,6 @@ export async function POST(req: NextRequest) {
             },
         });
     } catch (error: any) {
-        console.error("Error setting daily intention:", error);
         // Return detailed error message for debugging
         return NextResponse.json(
             {

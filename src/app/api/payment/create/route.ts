@@ -54,14 +54,12 @@ export async function POST(req: NextRequest) {
         const mayarData = await mayarRes.json();
 
         if (!mayarRes.ok) {
-            console.error("Mayar API Error Payload:", JSON.stringify(mayarData, null, 2));
 
             // Log to local file for agent to read
             try {
                 const logMsg = `[${new Date().toISOString()}] BODY: ${JSON.stringify(body)} | ERROR: ${JSON.stringify(mayarData)}\n`;
                 fs.appendFileSync(path.join(process.cwd(), "MAYAR_ERROR.log"), logMsg);
             } catch (err) {
-                console.error("Failed to write to log file:", err);
             }
 
             // Mayar often uses 'messages' instead of 'message' or 'error'
@@ -101,7 +99,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ link: paymentLink });
 
     } catch (e) {
-        console.error("Payment creation error:", e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

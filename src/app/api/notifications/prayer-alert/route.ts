@@ -61,7 +61,6 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string): Prom
             return result.data.timings;
         }
     } catch (e) {
-        console.error("Failed to fetch prayer times in API", e);
     }
     return null;
 }
@@ -90,7 +89,6 @@ export async function POST(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const mode = searchParams.get("mode") || "sync";
 
-        console.log(`=== Prayer Notification API (mode: ${mode}) Started ===`);
 
         const subscriptions = await db
             .select()
@@ -316,7 +314,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
 
     } catch (error: any) {
-        console.error("Prayer API Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

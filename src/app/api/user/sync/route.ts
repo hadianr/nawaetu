@@ -83,7 +83,6 @@ async function handleBookmarkSync(
         throw new Error(`Unknown action: ${action}`);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error(`[Sync] Bookmark sync failed for ${entry.id}:`, errorMessage);
         return { id: entry.id, error: errorMessage };
     }
 }
@@ -126,7 +125,6 @@ async function handleIntentionSync(
         throw new Error(`Unknown action: ${action}`);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error(`[Sync] Intention sync failed for ${entry.id}:`, errorMessage);
         return { id: entry.id, error: errorMessage };
     }
 }
@@ -165,7 +163,6 @@ async function handleSettingSync(
         return { id: entry.id };
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error(`[Sync] Setting sync failed for ${entry.id}:`, errorMessage);
         return { id: entry.id, error: errorMessage };
     }
 }
@@ -183,7 +180,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         const body = await req.json();
         const userId = session.user.id;
 
-        console.log('[API Sync] Processing sync request:', body);
 
         /**
          * NEW FORMAT: Handle sync queue entries
@@ -193,7 +189,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             const failed: Array<{ id: string; error: string }> = [];
 
             for (const entry of body.entries as SyncQueueEntry[]) {
-                console.log(`[API Sync] Processing entry: ${entry.id} (${entry.type}/${entry.action})`);
 
                 let result;
 
@@ -225,7 +220,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 }
             }
 
-            console.log(`[API Sync] Sync result: ${synced.length} synced, ${failed.length} failed`);
 
             return NextResponse.json({
                 success: failed.length === 0,
@@ -313,7 +307,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             message: 'Data synchronized successfully',
         });
     } catch (e) {
-        console.error('[API Sync] Error:', e);
         const errorMessage = e instanceof Error ? e.message : 'Internal Server Error';
         return NextResponse.json(
             {

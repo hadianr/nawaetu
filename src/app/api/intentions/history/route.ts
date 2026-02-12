@@ -127,7 +127,6 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (error) {
-        console.error("Error fetching intention history:", error);
         return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
     }
 }

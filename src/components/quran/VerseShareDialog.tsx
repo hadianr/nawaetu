@@ -78,7 +78,6 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
             link.href = dataUrl;
             link.click();
         } catch (err) {
-            console.error("Failed to generate image", err);
         } finally {
             setIsGenerating(false);
             onOpenChange(false);
@@ -114,7 +113,6 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
             }
         } catch (err: any) {
             if (err.name !== 'AbortError') {
-                console.error("Failed to share", err);
             }
         } finally {
             setIsGenerating(false);

@@ -93,7 +93,6 @@ function SettingsPageContent() {
                     }
                 })
                 .catch(err => {
-                    console.error("Sync error:", err);
                     // Even if sync fail, we can suggest user to reload
                 });
         } else if (paymentStatus === "failed") {
@@ -252,7 +251,6 @@ function SettingsPageContent() {
                         return;
                     }
                     if (!isMountedRef.current) return;
-                    console.warn("Playback blocked by browser (Interaction required):", err);
                     setIsPlaying(false);
                     setIsLoading(false);
                 });
@@ -319,7 +317,6 @@ function SettingsPageContent() {
                 body: JSON.stringify({ settings: { [key]: value } }) // Send partial update
             });
         } catch (e) {
-            console.error("Failed to save setting to cloud", e);
         }
     };
 
@@ -328,7 +325,6 @@ function SettingsPageContent() {
         
         // Safety check - ensure theme exists
         if (!theme) {
-            console.error(`Theme "${themeId}" not found`);
             return;
         }
 
@@ -797,7 +793,6 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
     const [debugLog, setDebugLog] = useState<string[]>([]);
 
     const addLog = (msg: string) => {
-        console.log(msg);
         setDebugLog(prev => [...prev, msg].slice(-10)); // Keep last 10 logs
     };
 
@@ -944,7 +939,6 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
             
         } catch (e) {
             addLog(`[Update] ❌ ERROR: ${e}`);
-            console.error('[Update] Error:', e);
             toast.error(`Update gagal: ${e}`);
             setChecking(false);
         }

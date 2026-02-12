@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
 
-        console.log("[Mayar Webhook]", body);
 
         // Validate Event Type
         // Usually event is "payment.received" or similar
@@ -39,7 +38,6 @@ export async function POST(req: NextRequest) {
         });
 
         if (!transaction) {
-            console.log(`[Mayar Webhook] Transaction not found by ID: ${mayarId}. Trying fallback by email/amount...`);
             // Fallback: Find pending transaction by email and amount
             const email = body.customer?.email || body.customer_email;
             const amount = body.amount;
@@ -55,7 +53,6 @@ export async function POST(req: NextRequest) {
                 });
 
                 if (potentialTx) {
-                    console.log(`[Mayar Webhook] Fallback matched transaction: ${potentialTx.id}`);
                     // Update the transaction with the real Transaction ID from webhook
                     await db.update(transactions)
                         .set({ mayarId: mayarId })
@@ -101,7 +98,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ status: "ok" });
 
     } catch (e) {
-        console.error("Webhook Error:", e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

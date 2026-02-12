@@ -49,7 +49,6 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     setTodayData(data.data);
                 }
             } catch (error) {
-                console.error("Error checking today's intention:", error);
             } finally {
                 setIsLoading(false);
             }
@@ -77,7 +76,6 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setShowIntentionPrompt(false);
             }
         } catch (error) {
-            console.error("Error setting intention:", error);
         }
     };
 
@@ -104,7 +102,6 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setShowReflectionPrompt(false);
             }
         } catch (error) {
-            console.error("Error saving reflection:", error);
         }
     };
 

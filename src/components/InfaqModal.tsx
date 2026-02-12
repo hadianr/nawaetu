@@ -61,7 +61,6 @@ export default function InfaqModal({ isOpen, onClose, headerTitle, headerDescrip
             window.location.href = data.link;
 
         } catch (e: any) {
-            console.error(e);
             toast.error(e.message || "Terjadi kesalahan. Coba lagi nanti.");
         } finally {
             setLoading(false);

@@ -144,21 +144,7 @@ const getVerseFontClass = (script: string, size: string) => {
 
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
     const { t } = useLocale();
-    
-    // --- Debug Logging ---
-    useEffect(() => {
-        if (!chapter || !verses || verses.length === 0) {
-            console.warn(`[VerseList] Incomplete data:`, {
-                hasChapter: !!chapter,
-                versesCount: verses?.length || 0,
-                currentPage
-            });
-            return;
-        }
-        
-        console.log(`[VerseList] Rendered: ${verses.length} verses from ${chapter.name_simple} (page ${currentPage}/${totalPages})`);
-    }, [chapter, verses, currentPage, totalPages]);
-    
+
     // --- State ---
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -344,7 +330,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
     const handleResume = () => {
         if (audioRef.current && currentAudioUrl) {
-            audioRef.current.play().catch(e => console.error("Play failed", e));
             setIsPlaying(true);
         }
     };
@@ -456,7 +441,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         if (error.name === 'AbortError') {
                             // Silently catch AbortError as it's a common interruption
                         } else {
-                            console.error("Playback failed:", error);
                         }
                     });
                 }
@@ -536,7 +520,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     setTafsirCache(prev => new Map(prev).set(verseKey, { data, ts: Date.now() }));
                 }
             } catch (error) {
-                console.error("Failed to fetch tafsir", error);
             } finally {
                 setLoadingTafsir(prev => {
                     const next = new Set(prev);
@@ -570,7 +553,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
     // Safety check: if no verses, show error
     if (!verses || verses.length === 0) {
-        console.error(`[VerseList] ERROR: Cannot render - no verses provided!`, { chapter: chapter?.name_simple, versesLength: verses?.length });
         return (
             <div className="relative min-h-screen pb-16 w-full max-w-4xl mx-auto flex items-center justify-center">
                 <div className="text-center space-y-4 px-4">
@@ -946,7 +928,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             </div>
                         );
                         } catch (error) {
-                            console.error(`[VerseList] Error rendering verse ${verse.verse_key}:`, error);
                             return (
                                 <div key={`verse-error-${verse.verse_key}`} className="px-4 md:px-6 py-6 border-b border-white/5 bg-red-900/10 rounded-lg border border-red-500/30">
                                     <p className="text-red-400 text-sm font-semibold">Error rendering verse {verse.verse_key}</p>
@@ -1115,7 +1096,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             tags: bookmark.tags,
                         });
                     } catch (error) {
-                        console.error('[Bookmark] Failed to add to sync queue:', error);
                     }
                 }}
                 onDelete={(bookmark) => {
@@ -1127,7 +1107,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             verseId: bookmark.verseId,
                         });
                     } catch (error) {
-                        console.error('[Bookmark] Failed to add delete to sync queue:', error);
                     }
                 }}
             />
