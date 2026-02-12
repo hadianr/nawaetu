@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.7.0] - 2026-02-12
+
+### Added
+- **Feat: implement Phase 2 **:  Enhanced DataSyncer with auto-sync triggers and exponential backoff retry
+
+### Fixed
+- **Fix: improve bookmark handling and editing functionality in VerseList and BookmarkEditDialog components**
+- **Fix: enhance prefetching and loading performance in SurahList and VerseList components**
+- **Fix: enhance accessibility and navigation for SurahList component**
+- **Fix: add comprehensive error handling and logging to VerseList**
+- **Fix: add error handling and logging to Quran detail page**
+- **Fix: add comprehensive theme color safety checks**
+- **Fix: prevent PatternOverlay undefined error with optional chaining**
+- **Fix: restore bookmark functionality **:  fix event listener mismatch
+- **Fix: improve debug console visibility and prevent update reload loop**
+
+
 ## [1.6.8] - 2026-02-12
 
 ### Improved
