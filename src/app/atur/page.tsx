@@ -830,6 +830,16 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
             }
         };
         check();
+
+        // Listen for SW controller change (new SW activated)
+        const handleControllerChange = () => {
+            addLog('[UpdateChecker] 🎉 New Service Worker took control!');
+        };
+        navigator.serviceWorker?.addEventListener('controllerchange', handleControllerChange);
+        
+        return () => {
+            navigator.serviceWorker?.removeEventListener('controllerchange', handleControllerChange);
+        };
     }, []);
 
     const parseSemver = (version: string) =>
@@ -911,11 +921,27 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
                 addLog('[Update] ✓ All caches cleared');
             }
 
-            // STEP 5: Hard reload
-            addLog('[Update] STEP 5: Hard reload page...');
+            // STEP 5: Send SKIP_WAITING message to active Service Worker
+            addLog('[Update] STEP 5: Send SKIP_WAITING to Service Worker...');
+            if (navigator.serviceWorker?.controller) {
+                addLog('[Update] Active SW found, sending SKIP_WAITING...');
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'SKIP_WAITING'
+                });
+                addLog('[Update] ✓ SKIP_WAITING message sent');
+            } else {
+                addLog('[Update] ⚠️  No active SW, but continuing...');
+            }
+
+            // STEP 6: Wait briefly for SW activation
+            addLog('[Update] STEP 6: Waiting for SW activation...');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // STEP 7: Hard reload
+            addLog('[Update] STEP 7: Hard reload page...');
             addLog(`[Update] Redirecting to: /?v=${serverVersion}`);
             
-            // Use hard reload with cache busting
+            // Use hard reload (Ctrl+Shift+R equivalent)
             window.location.href = `/?v=${serverVersion}&updated=${Date.now()}`;
             
         } catch (e) {

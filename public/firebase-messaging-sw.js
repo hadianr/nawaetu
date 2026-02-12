@@ -45,6 +45,19 @@ messaging.onBackgroundMessage((payload) => {
 // Lifecycle listeners removed to prevent conflicts with PWA library (next-pwa)
 // The PWA library already handles activation and reload logic gracefully.
 
+// CRITICAL: Listen for SKIP_WAITING message from app
+// This allows us to force activate new SW immediately without waiting for page close
+self.addEventListener('message', (event) => {
+    console.log('[SW] Message received:', event.data);
+    
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        console.log('[SW] 🚀 SKIP_WAITING triggered! Force activating new SW...');
+        self.skipWaiting().catch(err => {
+            console.error('[SW] skipWaiting failed:', err);
+        });
+    }
+});
+
 // Handle notification click with robust window opening
 self.addEventListener('notificationclick', function (event) {
     console.log('[SW] Notification clicked:', event.notification.tag);
