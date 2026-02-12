@@ -132,8 +132,9 @@ export const SETTINGS_TRANSLATIONS = {
     navSettings: "Atur",
 
     // Qibla Page
-    qiblaFinding: "CARI KIBLAT",
-    qiblaAligned: "MENGHADAP KIBLAT",
+    qiblaFinding: "TENANG, CARI KIBLAT",
+    qiblaAligned: "HATI TENANG",
+    qiblaAlignedBadge: "KIBLAT TEPAT",
     qiblaPermissionTitle: "Izin Akses Kompas",
     qiblaPermissionDesc: "Nawaetu memerlukan akses sensor gerak HP Anda untuk menentukan arah kiblat dengan presisi.",
     qiblaPermissionButton: "Aktifkan Sensor",
@@ -143,6 +144,11 @@ export const SETTINGS_TRANSLATIONS = {
     qiblaCompassFailed: "Gagal meminta izin kompas.",
     qiblaDistance: "Jarak ke Ka'bah: {distance} km",
     qiblaSearching: "Mencari lokasi...",
+    qiblaDalilTitle: "Dalil Arah Kiblat",
+    qiblaDalilQuranRef: "QS. Al-Baqarah 2:144",
+    qiblaDalilQuranText: "Hadapkan wajah ke Masjidil Haram.",
+    qiblaDalilContextTitle: "Asbabun nuzul:",
+    qiblaDalilContextText: "Peralihan kiblat dari Baitul Maqdis ke Ka'bah.",
 
     // Tasbih Page
     tasbihTitle: "Tasbih Digital",
@@ -572,8 +578,9 @@ export const SETTINGS_TRANSLATIONS = {
     navSettings: "Settings",
 
     // Qibla Page
-    qiblaFinding: "FIND QIBLA",
-    qiblaAligned: "FACING QIBLA",
+    qiblaFinding: "BREATHE, FIND QIBLA",
+    qiblaAligned: "CALM HEART",
+    qiblaAlignedBadge: "QIBLA SET",
     qiblaPermissionTitle: "Compass Permission",
     qiblaPermissionDesc: "Nawaetu needs access to your device's motion sensors to determine the Qibla direction with precision.",
     qiblaPermissionButton: "Enable Sensor",
@@ -583,6 +590,11 @@ export const SETTINGS_TRANSLATIONS = {
     qiblaCompassFailed: "Failed to request compass permission.",
     qiblaDistance: "Distance to Ka'bah: {distance} km",
     qiblaSearching: "Finding location...",
+    qiblaDalilTitle: "Qibla References",
+    qiblaDalilQuranRef: "Quran 2:144",
+    qiblaDalilQuranText: "Turn toward Al-Masjid Al-Haram.",
+    qiblaDalilContextTitle: "Context:",
+    qiblaDalilContextText: "Qibla shifted from Jerusalem to the Ka'bah.",
 
     // Tasbih Page
     tasbihTitle: "Digital Tasbih",
