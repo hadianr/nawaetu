@@ -50,14 +50,15 @@ export default function DataSyncer() {
             if (status === "authenticated" && session?.user && !hasSyncedRef.current) {
                 hasSyncedRef.current = true;
 
-                // Logic for Welcome Toast
-                if (!sessionStorage.getItem("nawaetu_welcome_shown")) {
+                // Logic for Welcome Toast - show only once per login session
+                const welcomeKey = `nawaetu_login_welcome_${session.user.id || session.user.email}`;
+                if (!localStorage.getItem(welcomeKey)) {
                     toast.success(`Ahlan wa Sahlan, ${session.user.name?.split(' ')[0] || 'Sobat'}!`, {
                         icon: "👋",
                         description: "Login berhasil. Selamat datang kembali.",
                         duration: 4000
                     });
-                    sessionStorage.setItem("nawaetu_welcome_shown", "true");
+                    localStorage.setItem(welcomeKey, "true");
                 }
 
                 // 1. Always restore settings first to get cloud preferences
@@ -69,6 +70,15 @@ export default function DataSyncer() {
                 if (!hasSyncedFlag) {
                     await syncData();
                 }
+            } else if (status === "unauthenticated") {
+                // Clear welcome flag on logout so it shows again on next login
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.startsWith('nawaetu_login_welcome_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                hasSyncedRef.current = false;
             }
         };
 
