@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, BellOff, MapPin, Loader2 } from "lucide-react";
+import { Bell, BellOff, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
@@ -318,15 +318,7 @@ export default function NotificationSettings() {
                         )}
                     </div>
 
-                    {/* Location Note - Glassmorphism Info Box */}
-                    <div className="mt-4 p-3 bg-[rgb(var(--color-primary))]/10 backdrop-blur-sm rounded-xl border border-[rgb(var(--color-primary))]/20">
-                        <div className="flex items-start gap-2">
-                            <MapPin className="w-4 h-4 text-[rgb(var(--color-primary))] mt-0.5 flex-shrink-0" />
-                            <p className="text-xs text-[rgb(var(--color-primary-light))]/90 leading-relaxed">
-                                {t.notificationLocationNote}
-                            </p>
-                        </div>
-                    </div>
+
                 </div>
             )}
         </div>
