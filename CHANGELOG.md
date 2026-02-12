@@ -5,6 +5,19 @@ All notable changes to Nawaetu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.6.6] - 2026-02-12
+
+### Added
+- feat: auto-generate CHANGELOG entries from git commits and improve sensor handling in QiblaCompass**
+
+### Fixed
+- fix: update Qibla page translations for improved user guidance and clarity**
+- fix: ensure compass reinitialization on app reopen and improve permission handling**
+- fix: enhance Qibla alignment feedback with haptic response and visual animations**
+- fix: improve Qibla alignment detection and relative rotation calculation**
+- fix: improve cleanup of device orientation event listeners and manage handler references**
+
 ## [1.6.5] - 2026-02-11
 
 ### Fixed
