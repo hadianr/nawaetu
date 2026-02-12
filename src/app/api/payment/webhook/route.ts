@@ -7,12 +7,32 @@ import crypto from "crypto";
 export async function POST(req: NextRequest) {
     try {
         const secret = process.env.MAYAR_WEBHOOK_SECRET;
-        const signature = req.headers.get("X-Mayar-Signature"); // Check if Mayar sends signature
+        const signature = req.headers.get("X-Mayar-Signature");
 
-        // Note: Mayar Webhook verification might vary. 
-        // For now, we assume standard payload.
+        if (!secret) {
+            console.error("MAYAR_WEBHOOK_SECRET is not set");
+            return NextResponse.json({ error: "Configuration Error" }, { status: 500 });
+        }
 
-        const body = await req.json();
+        if (!signature) {
+            return NextResponse.json({ error: "Missing Signature" }, { status: 400 });
+        }
+
+        // Get raw body for signature verification
+        const rawBody = await req.text();
+
+        // Verify HMAC-SHA256 Signature
+        const hmac = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+
+        // Use timing-safe comparison to prevent timing attacks
+        const signatureBuffer = Buffer.from(signature);
+        const hmacBuffer = Buffer.from(hmac);
+
+        if (signatureBuffer.length !== hmacBuffer.length || !crypto.timingSafeEqual(signatureBuffer, hmacBuffer)) {
+            return NextResponse.json({ error: "Invalid Signature" }, { status: 401 });
+        }
+
+        const body = JSON.parse(rawBody);
 
 
         // Validate Event Type
