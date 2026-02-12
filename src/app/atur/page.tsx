@@ -812,14 +812,8 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
 
         // AUTO-FIX: Perform cleanup silently when updating
         try {
-            // 1. Clear version check session flags
-            const sessionKeys = Object.keys(sessionStorage);
-            sessionKeys.forEach(key => {
-                if (key.startsWith('nawaetu_version_checked_') || 
-                    key.startsWith('nawaetu_refresh_attempt_')) {
-                    sessionStorage.removeItem(key);
-                }
-            });
+            // 1. Clear ALL session flags to allow fresh version check after reload
+            sessionStorage.clear();
 
             // 2. Update localStorage version to latest
             if (serverVersion) {
@@ -893,14 +887,8 @@ const handleManualReset = async () => {
     if (!confirm("Aplikasi akan dibersihkan dan dimuat ulang untuk memastikan versi terbaru berjalan lancar. Lanjutkan?")) return;
 
     try {
-        // 0. Clear version check session flags
-        const sessionKeys = Object.keys(sessionStorage);
-        sessionKeys.forEach(key => {
-            if (key.startsWith('nawaetu_version_checked_') || 
-                key.startsWith('nawaetu_refresh_attempt_')) {
-                sessionStorage.removeItem(key);
-            }
-        });
+        // 0. Clear ALL session storage for fresh start
+        sessionStorage.clear();
 
         // 0.5. Update localStorage version to current
         localStorage.setItem('nawaetu_app_version', APP_CONFIG.version);

@@ -102,55 +102,36 @@ export default function AppOverlays() {
     }, []);
 
     // iOS hard refresh on version change to prevent reverting to old PWA shell
-    // FIX: Only run once per session IF version matches to prevent redirect loop
+    // FIX: Run only ONCE per browser session, not on every navigation
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        const isIOS =
-            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        // Global flag to ensure this logic runs ONLY ONCE per browser session
+        const GLOBAL_SESSION_KEY = 'nawaetu_app_initialized';
+        if (sessionStorage.getItem(GLOBAL_SESSION_KEY) === 'true') {
+            // Already initialized in this session, skip all checks
+            return;
+        }
 
         const storage = getStorageService();
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
 
-        // Session key for preventing redirect loop
-        const sessionRefreshKey = `nawaetu_version_checked_${APP_CONFIG.version}`;
-        
-        // Clean up old version session flags from previous versions
-        const allSessionKeys = Object.keys(sessionStorage);
-        allSessionKeys.forEach(key => {
-            if ((key.startsWith('nawaetu_version_checked_') || 
-                 key.startsWith('nawaetu_refresh_attempt_')) &&
-                !key.endsWith(APP_CONFIG.version)) {
-                sessionStorage.removeItem(key);
-            }
-        });
-        
-        // If version matches AND we've checked this session, skip
+        // If stored version matches current, mark as initialized and done
         if (storedVersion === APP_CONFIG.version) {
-            if (!sessionStorage.getItem(sessionRefreshKey)) {
-                sessionStorage.setItem(sessionRefreshKey, "true");
-            }
+            sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
             return;
         }
 
-        // Version mismatch detected - check if we already attempted refresh this session
-        const refreshAttemptKey = `nawaetu_refresh_attempt_${APP_CONFIG.version}`;
-        if (sessionStorage.getItem(refreshAttemptKey) === "true") {
-            // Already attempted refresh in this session but still mismatched
-            // This means we're likely in a legitimate navigation, not a loop
-            // Mark as checked to prevent further attempts
-            console.log(`[PWA] Version mismatch persists after refresh attempt, marking as current: ${APP_CONFIG.version}`);
-            sessionStorage.setItem(sessionRefreshKey, "true");
-            storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
-            return;
-        }
+        // Version mismatch detected - perform one-time update
+        const isIOS =
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-        // Mark that we're attempting refresh
-        sessionStorage.setItem(refreshAttemptKey, "true");
-
-        const forceRefresh = async () => {
-            console.log(`[PWA] Version mismatch detected: ${storedVersion} → ${APP_CONFIG.version}`);
+        const performUpdate = async () => {
+            console.log(`[PWA] Version mismatch: ${storedVersion} → ${APP_CONFIG.version}`);
+            
+            // Mark as initialized BEFORE any async operation to prevent race conditions
+            sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
             
             // Only do aggressive cleanup on iOS
             if (isIOS) {
@@ -165,15 +146,18 @@ export default function AppOverlays() {
                         await Promise.all(keys.map((key) => caches.delete(key)));
                     }
                 } catch (error) {
-                    console.error("[PWA] iOS refresh failed:", error);
+                    console.error("[PWA] Cleanup failed:", error);
                 }
             }
             
+            // Update version in localStorage
             storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
-            window.location.href = `/?v=${APP_CONFIG.version}&refresh=${Date.now()}`;
+            
+            // Redirect to home with cache busting
+            window.location.href = `/?v=${APP_CONFIG.version}&updated=${Date.now()}`;
         };
 
-        forceRefresh();
+        performUpdate();
     }, []);
 
     return (
