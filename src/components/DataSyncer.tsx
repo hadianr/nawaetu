@@ -20,24 +20,67 @@ export default function DataSyncer() {
             const res = await fetch("/api/user/settings");
             if (res.ok) {
                 const data = await res.json();
-                if (data.settings) {
-                    const s = data.settings;
+                if (data.data) {
+                    const d = data.data;
 
-                    // Apply to Local Storage & Contexts
-                    if (s.theme) {
-                        setTheme(s.theme);
+                    // 1. Restore Settings
+                    if (d.settings) {
+                        const s = d.settings;
+                        if (s.theme) {
+                            setTheme(s.theme);
+                        }
+                        if (s.locale) {
+                            setLocale(s.locale);
+                        }
+                        if (s.muadzin) {
+                            localStorage.setItem(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
+                        }
+                        if (s.calculationMethod) {
+                            localStorage.setItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
+                            // Trigger refresh of prayer times
+                            window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
+                        }
+                        if (s.notificationPreferences) {
+                            localStorage.setItem(STORAGE_KEYS.ADHAN_PREFERENCES, JSON.stringify(s.notificationPreferences));
+                        }
+                        if (s.lastReadQuran) {
+                            localStorage.setItem(STORAGE_KEYS.QURAN_LAST_READ, s.lastReadQuran);
+                        }
                     }
-                    if (s.locale) {
-                        setLocale(s.locale);
+
+                    // 2. Restore Bookmarks
+                    if (Array.isArray(d.bookmarks) && d.bookmarks.length > 0) {
+                        const bookmarksData = d.bookmarks.map((b: any) => ({
+                            surahId: b.surahId,
+                            surahName: b.surahName,
+                            verseId: b.verseId,
+                            verseText: b.verseText,
+                            key: b.key,
+                            note: b.note,
+                            tags: b.tags,
+                            createdAt: b.createdAt
+                        }));
+                        localStorage.setItem(STORAGE_KEYS.QURAN_BOOKMARKS, JSON.stringify(bookmarksData));
+                        console.log('[DataSyncer] ✓ Restored', bookmarksData.length, 'bookmarks');
                     }
-                    if (s.muadzin) {
-                        localStorage.setItem(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
+
+                    // 3. Restore Intentions (Journal)
+                    if (Array.isArray(d.intentions) && d.intentions.length > 0) {
+                        const intentionsData = d.intentions.map((i: any) => ({
+                            id: i.id,
+                            niatText: i.niatText,
+                            niatType: i.niatType,
+                            niatDate: i.niatDate,
+                            reflectionText: i.reflectionText,
+                            reflectionRating: i.reflectionRating,
+                            isPrivate: i.isPrivate ?? true,
+                            createdAt: i.createdAt
+                        }));
+                        localStorage.setItem(STORAGE_KEYS.INTENTION_JOURNAL, JSON.stringify(intentionsData));
+                        console.log('[DataSyncer] ✓ Restored', intentionsData.length, 'intentions');
                     }
-                    if (s.calculationMethod) {
-                        localStorage.setItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
-                        // Trigger refresh of prayer times
-                        window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
-                    }
+
+                    console.log('[DataSyncer] ✓ All cloud data restored successfully');
                 }
             }
         } catch (e) {

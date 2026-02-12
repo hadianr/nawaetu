@@ -17,6 +17,8 @@ export function useDataSync() {
         try {
             // 1. Gather Local Data
             const streakData = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_STREAK) || "{\"streak\":0,\"longestStreak\":0}");
+            const notificationPrefs = JSON.parse(localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES) || "{}");
+            const lastReadQuran = localStorage.getItem(STORAGE_KEYS.QURAN_LAST_READ);
 
             const localData = {
                 bookmarks: JSON.parse(localStorage.getItem(STORAGE_KEYS.QURAN_BOOKMARKS) || "[]"),
@@ -26,6 +28,8 @@ export function useDataSync() {
                     muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
                     calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
                     locale: localStorage.getItem(STORAGE_KEYS.SETTINGS_LOCALE),
+                    notificationPreferences: Object.keys(notificationPrefs).length > 0 ? notificationPrefs : null,
+                    lastReadQuran: lastReadQuran
                 },
                 streaks: {
                     current: streakData.streak || 0,
@@ -34,7 +38,7 @@ export function useDataSync() {
             };
 
             // If no data to sync, skip but mark as synced
-            if (localData.bookmarks.length === 0 && localData.intentions.length === 0 && localData.streaks.current === 0) {
+            if (localData.bookmarks.length === 0 && localData.intentions.length === 0 && localData.streaks.current === 0 && !localData.settings.notificationPreferences && !lastReadQuran) {
                 localStorage.setItem("nawaetu_synced_v1", "true");
                 toast.dismiss(toastId);
                 return { success: true, message: "Tidak ada data lokal untuk disinkronkan" };

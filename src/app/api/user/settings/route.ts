@@ -2,8 +2,56 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { users, bookmarks, intentions, pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
+
+export async function GET(req: NextRequest) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // 1. Fetch user settings
+        const user = await db.query.users.findFirst({
+            where: eq(users.id, session.user.id),
+            columns: { settings: true }
+        });
+
+        const settings = user?.settings && typeof user.settings === 'string'
+            ? JSON.parse(user.settings)
+            : (user?.settings || {});
+
+        // 2. Fetch user bookmarks
+        const userBookmarks = await db.query.bookmarks.findMany({
+            where: eq(bookmarks.userId, session.user.id)
+        });
+
+        // 3. Fetch user intentions (journal)
+        const userIntentions = await db.query.intentions.findMany({
+            where: eq(intentions.userId, session.user.id)
+        });
+
+        // 4. Fetch push subscriptions (for notification preferences check)
+        const subscriptions = await db.query.pushSubscriptions.findMany({
+            where: eq(pushSubscriptions.userId, session.user.id)
+        });
+
+        return NextResponse.json({
+            status: "success",
+            data: {
+                settings,
+                bookmarks: userBookmarks,
+                intentions: userIntentions,
+                hasNotificationSubscription: subscriptions.length > 0
+            }
+        });
+
+    } catch (e) {
+        console.error("Settings fetch error:", e);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
 
 export async function PATCH(req: NextRequest) {
     try {

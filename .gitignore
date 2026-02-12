@@ -118,7 +118,11 @@ VERIFICATION_SUMMARY.md
 Thumbs.db
 
 # Drizzle artifacts
-/drizzle
+# Allow migration SQL files (these MUST be committed)
+# But ignore metadata journals (auto-generated per environment)
+drizzle/meta/
+drizzle/0*.sql
+!drizzle/0*.sql
 
 # Firebase service account (contains sensitive credentials)
 firebase-service-account.json

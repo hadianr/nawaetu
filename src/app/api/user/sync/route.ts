@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { localBookmarks, localIntentions, localSettings } = body;
+        const { bookmarks: localBookmarks, intentions: localIntentions, settings: localSettings } = body;
 
         // 1. Sync Bookmarks
         if (Array.isArray(localBookmarks) && localBookmarks.length > 0) {
@@ -63,12 +63,29 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // 3. Sync Settings
+        // 3. Sync Settings (merge with existing)
         if (localSettings && typeof localSettings === 'object') {
-            // Merge with existing settings or overwrite? Overwrite is simpler for sync from device.
-            // Ideally we should merge if multiple devices, but let's just save for now.
+            const user = await db.query.users.findFirst({
+                where: eq(users.id, session.user.id),
+                columns: { settings: true }
+            });
+
+            const currentSettings = user?.settings && typeof user.settings === 'string'
+                ? JSON.parse(user.settings)
+                : (user?.settings || {});
+
+            const newSettings = {
+                ...currentSettings,
+                theme: localSettings.theme || currentSettings.theme,
+                muadzin: localSettings.muadzin || currentSettings.muadzin,
+                calculationMethod: localSettings.calculationMethod || currentSettings.calculationMethod,
+                locale: localSettings.locale || currentSettings.locale,
+                notificationPreferences: localSettings.notificationPreferences || currentSettings.notificationPreferences,
+                lastReadQuran: localSettings.lastReadQuran || currentSettings.lastReadQuran
+            };
+
             await db.update(users)
-                .set({ settings: JSON.stringify(localSettings) })
+                .set({ settings: JSON.stringify(newSettings) })
                 .where(eq(users.id, session.user.id));
         }
 
