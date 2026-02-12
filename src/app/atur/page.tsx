@@ -665,24 +665,6 @@ function SettingsPageContent() {
                     </Select>
                 </div>
 
-                {/* Troubleshooting / Reset App (v1.5.10) - Friendly UI */}
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-2">
-                    <div className="flex items-center gap-2 mb-1">
-                        <RefreshCcw className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                        <span className="text-sm font-bold text-white">Perbaiki Masalah Update</span>
-                    </div>
-                    <p className="text-[10px] text-white/50 mb-3 leading-relaxed">
-                        Jika ada fitur yang tidak muncul atau versi aplikasi tidak berubah, coba bersihkan cache aplikasi.
-                    </p>
-                    <Button
-                        onClick={handleManualReset}
-                        variant="ghost"
-                        className="w-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold h-9 rounded-xl transition-all"
-                    >
-                        Bersihkan Cache & Reload
-                    </Button>
-                </div>
-
                 {/* Support Card (Persistent) - Swapped Back Up */}
                 <div className="bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/40 to-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/20 rounded-2xl p-4 flex items-center justify-between">
                     <div>
@@ -1004,47 +986,4 @@ export default function SettingsPage() {
 
 // Manual Reset/Repair Function
 // This is for users who have severe caching issues and need a "nuclear" reset
-const handleManualReset = async () => {
-    if (!confirm("Aplikasi akan dibersihkan total dan dimuat ulang. Data lokal (bookmark, riwayat) akan tetap aman. Lanjutkan?")) return;
 
-    console.log('[ManualReset] Starting nuclear reset...');
-    console.log('[ManualReset] Current version:', APP_CONFIG.version);
-
-    try {
-        // 1. Update localStorage version to current
-        localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
-        console.log('[ManualReset] ✓ Set localStorage to:', APP_CONFIG.version);
-
-        // 2. Clear ALL session storage
-        sessionStorage.clear();
-        console.log('[ManualReset] ✓ Cleared sessionStorage');
-
-        // 3. Unregister ALL Service Workers (nuclear option)
-        if ('serviceWorker' in navigator) {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            console.log('[ManualReset] Unregistering', regs.length, 'service workers');
-            for (const reg of regs) {
-                await reg.unregister();
-            }
-            console.log('[ManualReset] ✓ All SW unregistered');
-        }
-
-        // 4. Delete ALL Cache Storage
-        if ('caches' in window) {
-            const keys = await caches.keys();
-            console.log('[ManualReset] Clearing', keys.length, 'caches');
-            await Promise.all(keys.map(key => caches.delete(key)));
-            console.log('[ManualReset] ✓ All caches cleared');
-        }
-
-        console.log('[ManualReset] ✓ Nuclear reset complete, reloading...');
-        
-        // 5. Hard reload - this will re-register SW from scratch
-        window.location.href = '/?reset=' + Date.now();
-        
-    } catch (e) {
-        console.error('[ManualReset] Reset failed:', e);
-        alert("Gagal melakukan reset. Coba: 1) Tutup semua tab Nawaetu 2) Buka ulang");
-        window.location.reload();
-    }
-};
