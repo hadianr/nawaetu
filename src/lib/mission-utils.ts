@@ -1,4 +1,5 @@
 import { Mission } from "@/data/missions-data";
+import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 
 export interface ValidationResult {
     locked: boolean;
@@ -158,4 +159,19 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
                 return true;
         }
     });
+}
+
+/**
+ * Gets the localized label for a mission's hukum (wajib, sunnah, etc.)
+ */
+export function getHukumLabel(hukum: string, t: typeof SETTINGS_TRANSLATIONS.id) {
+    const labels: Record<string, keyof typeof SETTINGS_TRANSLATIONS.id> = {
+        'wajib': 'hukumWajib',
+        'sunnah': 'hukumSunnah',
+        'mubah': 'hukumMubah',
+        'makruh': 'hukumMakruh',
+        'harram': 'hukumHaram'
+    };
+    const key = labels[hukum];
+    return t[key as keyof typeof SETTINGS_TRANSLATIONS.id] || hukum;
 }

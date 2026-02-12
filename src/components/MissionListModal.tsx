@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Check, CheckCircle2, Sparkles, AlertCircle } from "lucide-react";
 import MissionDetailDialog from "./MissionDetailDialog";
 import { useLocale } from "@/context/LocaleContext";
+import { getHukumLabel } from "@/lib/mission-utils";
 
 interface MissionListModalProps {
     missions: Mission[];
@@ -36,17 +37,6 @@ export default function MissionListModal({
 }: MissionListModalProps) {
     const [activeTab, setActiveTab] = useState(initialTab || "all");
     const { t } = useLocale();
-
-    const getHukumLabel = (hukum: string) => {
-        const labels: Record<string, keyof typeof t> = {
-            'wajib': 'hukumWajib',
-            'sunnah': 'hukumSunnah',
-            'mubah': 'hukumMubah',
-            'makruh': 'hukumMakruh',
-            'harram': 'hukumHaram'
-        };
-        return t[labels[hukum]] || hukum;
-    };
 
     // Sync active tab if initialTab changes (re-opening logic)
     // Note: In a real app we might want a useEffect on open.
@@ -154,7 +144,7 @@ export default function MissionListModal({
                                                 ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
                                                 : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                                         )}>
-                                            {getHukumLabel(mission.hukum)}
+                                            {getHukumLabel(mission.hukum, t)}
                                         </span>
                                     </div>
                                 </div>
