@@ -115,26 +115,34 @@ export default function AppOverlays() {
 
         const storage = getStorageService();
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
+        
+        console.log('[AppOverlays] Version Check:');
+        console.log('[AppOverlays]   Current version (APP_CONFIG):', APP_CONFIG.version);
+        console.log('[AppOverlays]   Stored version (localStorage):', storedVersion);
 
         // If stored version matches current, mark as initialized and done
         if (storedVersion === APP_CONFIG.version) {
+            console.log('[AppOverlays] ✓ Version match, marking as initialized');
             sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
             return;
         }
 
         // Version mismatch detected - perform one-time update
+        console.log('[AppOverlays] ✗ Version mismatch detected, performing update...');
+        
         const isIOS =
             /iPad|iPhone|iPod/.test(navigator.userAgent) ||
             (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
         const performUpdate = async () => {
-            console.log(`[PWA] Version mismatch: ${storedVersion} → ${APP_CONFIG.version}`);
+            console.log(`[AppOverlays] Updating: ${storedVersion} → ${APP_CONFIG.version}`);
             
             // Mark as initialized BEFORE any async operation to prevent race conditions
             sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
             
             // Only do aggressive cleanup on iOS
             if (isIOS) {
+                console.log('[AppOverlays] iOS detected, performing cleanup...');
                 try {
                     if ("serviceWorker" in navigator) {
                         const regs = await navigator.serviceWorker.getRegistrations();
@@ -146,14 +154,16 @@ export default function AppOverlays() {
                         await Promise.all(keys.map((key) => caches.delete(key)));
                     }
                 } catch (error) {
-                    console.error("[PWA] Cleanup failed:", error);
+                    console.error("[AppOverlays] Cleanup failed:", error);
                 }
             }
             
             // Update version in localStorage
             storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
+            console.log('[AppOverlays] Updated localStorage version to:', APP_CONFIG.version);
             
             // Redirect to home with cache busting
+            console.log('[AppOverlays] Redirecting to home...');
             window.location.href = `/?v=${APP_CONFIG.version}&updated=${Date.now()}`;
         };
 

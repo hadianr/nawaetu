@@ -809,20 +809,35 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
 
     const handleUpdate = async () => {
         setChecking(true);
+        
+        console.log('[Update] Starting update process...');
+        console.log('[Update] Current version:', currentVersion);
+        console.log('[Update] Server version:', serverVersion);
 
         // AUTO-FIX: Perform cleanup silently when updating
         try {
-            // 1. Clear ALL session flags to allow fresh version check after reload
-            sessionStorage.clear();
-
-            // 2. Update localStorage version to latest
+            // 1. Update localStorage version to latest FIRST (before any async operations)
             if (serverVersion) {
-                localStorage.setItem('nawaetu_app_version', serverVersion);
+                localStorage.setItem(STORAGE_KEYS.APP_VERSION, serverVersion);
+                console.log('[Update] Set localStorage APP_VERSION to:', serverVersion);
+                // Verify it was set correctly
+                const verifyVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
+                console.log('[Update] Verified localStorage APP_VERSION:', verifyVersion);
+            } else {
+                console.error('[Update] No server version available!');
+                toast.error('Gagal mendapatkan versi server. Coba lagi.');
+                setChecking(false);
+                return;
             }
+
+            // 2. Clear ALL session flags to allow fresh version check after reload
+            sessionStorage.clear();
+            console.log('[Update] Cleared sessionStorage');
 
             // 3. Unregister service workers
             if ('serviceWorker' in navigator) {
                 const regs = await navigator.serviceWorker.getRegistrations();
+                console.log('[Update] Unregistering', regs.length, 'service workers');
                 for (const reg of regs) {
                     await reg.unregister();
                 }
@@ -831,8 +846,11 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
             // 4. Clear all caches
             if ('caches' in window) {
                 const keys = await caches.keys();
+                console.log('[Update] Clearing', keys.length, 'caches');
                 await Promise.all(keys.map(key => caches.delete(key)));
             }
+            
+            console.log('[Update] Cleanup complete, reloading...');
         } catch (e) {
             console.error("Cleanup failed during update:", e);
         }
@@ -886,16 +904,26 @@ export default function SettingsPage() {
 const handleManualReset = async () => {
     if (!confirm("Aplikasi akan dibersihkan dan dimuat ulang untuk memastikan versi terbaru berjalan lancar. Lanjutkan?")) return;
 
-    try {
-        // 0. Clear ALL session storage for fresh start
-        sessionStorage.clear();
+    console.log('[ManualReset] Starting manual reset...');
+    console.log('[ManualReset] Current version:', APP_CONFIG.version);
 
-        // 0.5. Update localStorage version to current
-        localStorage.setItem('nawaetu_app_version', APP_CONFIG.version);
+    try {
+        // 0. Update localStorage version to current FIRST
+        localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
+        console.log('[ManualReset] Set localStorage APP_VERSION to:', APP_CONFIG.version);
+        
+        // Verify it was set correctly
+        const verifyVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
+        console.log('[ManualReset] Verified localStorage APP_VERSION:', verifyVersion);
+
+        // 0.5. Clear ALL session storage for fresh start
+        sessionStorage.clear();
+        console.log('[ManualReset] Cleared sessionStorage');
 
         // 1. Unregister ALL Service Workers
         if ('serviceWorker' in navigator) {
             const regs = await navigator.serviceWorker.getRegistrations();
+            console.log('[ManualReset] Unregistering', regs.length, 'service workers');
             for (const reg of regs) {
                 await reg.unregister();
             }
@@ -904,12 +932,16 @@ const handleManualReset = async () => {
         // 2. Delete ALL Cache Storage
         if ('caches' in window) {
             const keys = await caches.keys();
+            console.log('[ManualReset] Clearing', keys.length, 'caches');
             await Promise.all(keys.map(key => caches.delete(key)));
         }
 
+        console.log('[ManualReset] Cleanup complete, reloading...');
+        
         // 3. Force Hard Reload to Home with Cache Busting
         window.location.href = '/?reset=' + Date.now();
     } catch (e) {
+        console.error('[ManualReset] Reset failed:', e);
         alert("Gagal melakukan reset. Silakan coba reinstall manual.");
         window.location.reload();
     }
