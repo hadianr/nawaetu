@@ -85,16 +85,23 @@ interface GadingVerse {
 // Get all chapters from Kemenag API
 export async function getKemenagChapters(): Promise<Chapter[]> {
   try {
+    console.log(`[getKemenagChapters] Fetching all chapters...`);
     const res = await fetchWithTimeout(
       `${API_CONFIG.QURAN_ID.BASE_URL}/surah`,
       { next: { revalidate: 86400 } },
       { timeoutMs: 8000 }
     );
 
-    if (!res.ok) throw new Error(`Failed to fetch chapters: ${res.status}`);
+    if (!res.ok) throw new Error(`Failed to fetch chapters: ${res.status} ${res.statusText}`);
 
     const response: GadingQuranResponse = await res.json();
     const surahs = response.data as GadingSurah[];
+
+    if (!surahs || surahs.length === 0) {
+      throw new Error(`No chapters found in API response`);
+    }
+
+    console.log(`[getKemenagChapters] ✓ Loaded ${surahs.length} chapters`);
 
     // Transform to match SurahList.Chapter structure
     return surahs.map((surah: GadingSurah) => ({
@@ -114,21 +121,29 @@ export async function getKemenagChapters(): Promise<Chapter[]> {
       translated_name_en: surah.name.translation.en,
     }));
   } catch (error) {
-    console.error("Error fetching chapters from Kemenag API:", error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error(`[getKemenagChapters] Error fetching chapters:`, errorMsg);
     throw error;
   }
 }
 
 // Get specific chapter from Kemenag API (returns Chapter from SurahList)
 export async function getKemenagChapter(chapterId: string | number): Promise<Chapter> {
-  const chapters = await getKemenagChapters();
-  const chapter = chapters.find((ch) => ch.id === parseInt(String(chapterId)));
+  try {
+    console.log(`[getKemenagChapter] Fetching chapter: ${chapterId}`);
+    const chapters = await getKemenagChapters();
+    const chapter = chapters.find((ch) => ch.id === parseInt(String(chapterId)));
 
-  if (!chapter) {
-    throw new Error(`Chapter ${chapterId} not found`);
+    if (!chapter) {
+      throw new Error(`Chapter ${chapterId} not found in chapters list`);
+    }
+
+    console.log(`[getKemenagChapter] ✓ Found chapter: ${chapter.name_simple}`);
+    return chapter;
+  } catch (error) {
+    console.error(`[getKemenagChapter] Error:`, error);
+    throw error;
   }
-
-  return chapter;
 }
 
 // Get verses for a chapter from Kemenag API
@@ -149,16 +164,20 @@ export const getKemenagVerses = cache(
       // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
       const apiUrl = `${API_CONFIG.QURAN_COM.BASE_URL}/verses/by_chapter/${chapterId}?language=${locale}&words=true&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
 
+      console.log(`[getKemenagVerses] Fetching verses: surah=${chapterId}, page=${page}, perPage=${perPage}, locale=${locale}`);
+
       const res = await fetchWithTimeout(
         apiUrl,
         { next: { revalidate: 86400 } },
         { timeoutMs: 8000 }
       );
 
-      if (!res.ok) throw new Error(`Failed to fetch verses: ${res.status}`);
+      if (!res.ok) throw new Error(`Failed to fetch verses: ${res.status} ${res.statusText}`);
 
       const data = await res.json();
       const verses = data.verses || [];
+
+      console.log(`[getKemenagVerses] ✓ Fetched ${verses.length} verses for surah ${chapterId}`);
 
       // Transform to match app structure - simple, fast transformation
       return verses.map((verse: any) => {
@@ -189,8 +208,11 @@ export const getKemenagVerses = cache(
         };
       });
     } catch (error) {
-      console.error(`Error fetching verses for chapter ${chapterId}:`, error);
-      throw error;
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error(`[getKemenagVerses] Error fetching verses for chapter ${chapterId}:`, errorMsg);
+      
+      // Re-throw with more context
+      throw new Error(`Failed to fetch verses for surah ${chapterId}: ${errorMsg}`);
     }
   }
 );
