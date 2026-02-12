@@ -22,8 +22,8 @@ export function useBookmarks() {
         refresh();
 
         const handleUpdate = () => refresh();
-        window.addEventListener('bookmarks-updated', handleUpdate);
-        return () => window.removeEventListener('bookmarks-updated', handleUpdate);
+        window.addEventListener('bookmarks_updated', handleUpdate);
+        return () => window.removeEventListener('bookmarks_updated', handleUpdate);
     }, [refresh]);
 
     const isBookmarked = (verseKey: string) => !!bookmarkMap[verseKey];
