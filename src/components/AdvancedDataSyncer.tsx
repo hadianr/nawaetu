@@ -67,6 +67,7 @@ export function AdvancedDataSyncer() {
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const periodicSyncRef = useRef<NodeJS.Timeout | null>(null);
 
+
   /**
    * Calculate backoff delay (exponential)
    */

@@ -97,11 +97,12 @@ export default function BookmarksPage() {
                     ) : (
                         bookmarks.map((bookmark) => {
                             const isCurrentLastRead = lastRead?.surahId === bookmark.surahId && lastRead?.verseId === bookmark.verseId;
+                            const bookmarkKey = bookmark.id || `${bookmark.surahId}:${bookmark.verseId}`;
 
                             return (
                                 <Link
                                     href={`/quran/${bookmark.surahId}#${bookmark.surahId}:${bookmark.verseId}`}
-                                    key={bookmark.id}
+                                    key={bookmarkKey}
                                     className={`block group relative overflow-hidden rounded-[2rem] border transition-all duration-300 ${isCurrentLastRead
                                         ? 'bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/50 hover:border-[rgb(var(--color-primary))] shadow-[0_0_20px_rgba(var(--color-primary),0.1)]'
                                         : 'bg-[#0f172a]/40 border-white/5 hover:border-white/10 hover:bg-[#0f172a]/60'

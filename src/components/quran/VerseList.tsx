@@ -29,7 +29,7 @@ import { AyahMarker } from "./AyahMarker";
 import { surahNames } from "@/lib/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 import { useBookmarks } from "@/hooks/useBookmarks";
-import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
+import { type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -229,6 +229,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const { isBookmarked: checkIsBookmarked, getBookmark } = useBookmarks();
     // const [bookmarkDialogVerse, setBookmarkDialogVerse] = useState<Verse | null>(null); // Unused
     const [editingBookmarkKey, setEditingBookmarkKey] = useState<string | null>(null); // Use verseKey (e.g., "1:1")
+    const [editingBookmarkDraft, setEditingBookmarkDraft] = useState<BookmarkType | null>(null);
 
     // Tafsir
     const [expandedTafsir, setExpandedTafsir] = useState<Set<string>>(new Set());
@@ -486,40 +487,26 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         const isSaved = checkIsBookmarked(verse.verse_key);
 
         if (isSaved) {
+            setEditingBookmarkDraft(null);
             setEditingBookmarkKey(verse.verse_key);
-        } else {
-            const verseNum = parseInt(verse.verse_key.split(':')[1]);
-            const bookmarkData = {
-                surahId: chapter.id,
-                surahName: chapter.name_simple,
-                verseId: verseNum,
-                verseText: verse.text_uthmani,
-            };
-            
-            // Save to local storage
-            saveBookmark(bookmarkData);
-            
-            // If user is logged in, add to sync queue
-            // This will be synced to cloud when user comes online
-            if (session?.user?.id) {
-                try {
-                    syncQueue.addToQueue(
-                        'bookmark',
-                        'create',
-                        bookmarkData
-                    );
-                    console.log(`[Bookmark] Added to sync queue for user ${session.user.id}`);
-                } catch (error) {
-                    console.error('[Bookmark] Failed to add to sync queue:', error);
-                }
-            }
-            
-            // Immediately open dialog to edit/add note if desired, 
-            // or just set state to allow editing. 
-            // Here we just save. If user wants to edit, they click again.
-            // Or we can open it:
-            setEditingBookmarkKey(verse.verse_key);
+            return;
         }
+
+        const verseNum = parseInt(verse.verse_key.split(':')[1]);
+        const draftBookmark: BookmarkType = {
+            id: `${chapter.id}:${verseNum}`,
+            surahId: chapter.id,
+            surahName: chapter.name_simple,
+            verseId: verseNum,
+            verseText: verse.text_uthmani,
+            note: "",
+            tags: [],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        };
+
+        setEditingBookmarkDraft(draftBookmark);
+        setEditingBookmarkKey(verse.verse_key);
     };
 
     // Tafsir Logic
@@ -576,15 +563,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
     };
 
-    // Prepare bookmark for dialog
-    const activeBookmark = editingBookmarkKey ? getBookmark(editingBookmarkKey) : null;
-
-    // If activeBookmark is null but editingBookmarkKey is set (e.g. just saved but hook didn't update yet?), 
-    // it might be tricky. But saveBookmark triggers event. useBookmarks listens to it. Should be fine.
-    // Fallback: construct it from verses if not found? 
-    // Actually, saveBookmark is synchronous in storage but hook update is async via event. 
-    // But since we just saved, we might need to wait for update. 
-    // For now, assume it works or we use a temporary object.
+    // Prepare bookmark for dialog (draft takes precedence)
+    const activeBookmark = editingBookmarkDraft ?? (editingBookmarkKey ? getBookmark(editingBookmarkKey) : null);
 
     const currentPlayingIndex = playingVerseKey ? verses.findIndex(v => v.verse_key === playingVerseKey) : -1;
 
@@ -1111,9 +1091,45 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
             <BookmarkEditDialog
                 open={!!editingBookmarkKey}
-                onOpenChange={(open) => !open && setEditingBookmarkKey(null)}
+                isDraft={!!editingBookmarkDraft}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setEditingBookmarkKey(null);
+                        setEditingBookmarkDraft(null);
+                    }
+                }}
                 bookmark={activeBookmark}
-                onSave={() => setEditingBookmarkKey(null)}
+                onSave={(bookmark) => {
+                    const action = editingBookmarkDraft ? 'create' : 'update';
+                    setEditingBookmarkKey(null);
+                    setEditingBookmarkDraft(null);
+                    if (!session?.user?.id || !bookmark) return;
+
+                    try {
+                        syncQueue.addToQueue('bookmark', action, {
+                            surahId: bookmark.surahId,
+                            surahName: bookmark.surahName,
+                            verseId: bookmark.verseId,
+                            verseText: bookmark.verseText,
+                            note: bookmark.note,
+                            tags: bookmark.tags,
+                        });
+                    } catch (error) {
+                        console.error('[Bookmark] Failed to add to sync queue:', error);
+                    }
+                }}
+                onDelete={(bookmark) => {
+                    if (!session?.user?.id || !bookmark || editingBookmarkDraft) return;
+
+                    try {
+                        syncQueue.addToQueue('bookmark', 'delete', {
+                            surahId: bookmark.surahId,
+                            verseId: bookmark.verseId,
+                        });
+                    } catch (error) {
+                        console.error('[Bookmark] Failed to add delete to sync queue:', error);
+                    }
+                }}
             />
 
             {/* Tafsir Modal */}

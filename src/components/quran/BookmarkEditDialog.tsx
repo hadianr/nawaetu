@@ -14,14 +14,16 @@ interface BookmarkEditDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     bookmark: Bookmark | null;
-    onSave?: () => void;
-    onDelete?: () => void;
+    isDraft?: boolean;
+    onSave?: (bookmark: Bookmark) => void;
+    onDelete?: (bookmark: Bookmark) => void;
 }
 
 export default function BookmarkEditDialog({
     open,
     onOpenChange,
     bookmark,
+    isDraft = false,
     onSave,
     onDelete
 }: BookmarkEditDialogProps) {
@@ -44,6 +46,9 @@ export default function BookmarkEditDialog({
                     }
                 } catch (e) { }
             }
+        } else if (!open) {
+            setNote("");
+            setIsLastRead(false);
         }
     }, [open, bookmark]);
 
@@ -71,14 +76,18 @@ export default function BookmarkEditDialog({
         }
 
         onOpenChange(false);
-        onSave?.();
+        onSave?.({
+            ...bookmark,
+            note,
+            updatedAt: Date.now()
+        });
     };
 
     const handleDelete = () => {
-        if (!bookmark) return;
+        if (!bookmark || isDraft) return;
         removeBookmark(bookmark.id);
         onOpenChange(false);
-        onDelete?.();
+        onDelete?.(bookmark);
     };
 
     if (!bookmark) return null;
@@ -146,14 +155,16 @@ export default function BookmarkEditDialog({
                 </div>
 
                 <DialogFooter className="px-6 pb-6 pt-2 flex flex-row items-center justify-between gap-4 mt-2">
-                    <Button
-                        variant="ghost"
-                        onClick={handleDelete}
-                        className="h-12 px-4 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                    >
-                        <Trash2 className="w-5 h-5" />
-                        <span className="sr-only sm:not-sr-only sm:ml-2">{t.bookmarksDelete}</span>
-                    </Button>
+                    {!isDraft && (
+                        <Button
+                            variant="ghost"
+                            onClick={handleDelete}
+                            className="h-12 px-4 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+                        >
+                            <Trash2 className="w-5 h-5" />
+                            <span className="sr-only sm:not-sr-only sm:ml-2">{t.bookmarksDelete}</span>
+                        </Button>
+                    )}
 
                     <Button
                         onClick={handleSave}

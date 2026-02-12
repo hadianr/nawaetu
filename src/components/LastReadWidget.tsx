@@ -77,6 +77,9 @@ export default function LastReadWidget() {
     }, []);
 
     const fetchVerseContent = async (surahId: number, verseId: number) => {
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+            return;
+        }
         setLoading(true);
         try {
             const res = await fetchWithTimeout(
@@ -101,6 +104,9 @@ export default function LastReadWidget() {
             const entry: VerseCacheEntry = { data: content, ts: Date.now(), v: VERSE_CACHE_VERSION };
             storage.set(cacheKey as any, JSON.stringify(entry));
         } catch (error) {
+            if (typeof navigator !== "undefined" && !navigator.onLine) {
+                return;
+            }
             console.error("Error fetching verse:", error);
         } finally {
             setLoading(false);
