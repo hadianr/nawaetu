@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.6.7] - 2026-02-12
+
+### Added
+- **Feat: add MobileDebugConsole component for enhanced debugging capabilities**
+
+### Fixed
+- **Fix: remove unused location note from NotificationSettings component**
+- **Fix: enhance service worker activation process with SKIP_WAITING message handling**
+- **Fix: enhance logging and initialization checks in AppOverlays and UpdateChecker components**
+- **Fix: improve PWA update process with detailed best practices and enhanced logging**
+- **Fix: enhance logging and cleanup process during version updates in AppOverlays and UpdateChecker**
+- **Fix: streamline session storage management for version checks to prevent redirect loops**
+- **Fix: enhance session management for version checks to prevent redirect loops on iOS**
+- **Fix: prevent redirect loop on iOS by ensuring hard refresh runs only once per session**
+- **Fix: update CHANGELOG format and improve auto-generation script for better clarity and organization**
+
+
 ## [1.6.6] - 2026-02-12
 
 ### Performance
