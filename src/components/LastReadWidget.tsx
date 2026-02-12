@@ -139,7 +139,7 @@ export default function LastReadWidget() {
     return (
         <div className="w-full h-full animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
             <Link href={`/quran/${lastRead.surahId}#${lastRead.surahId}:${lastRead.verseId}`} className="block group h-full">
-                <div className="relative overflow-hidden rounded-3xl bg-black/20 backdrop-blur-md border border-white/10 p-4 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/20">
+                <div className="relative overflow-hidden rounded-3xl bg-black/20 backdrop-blur-md border border-white/10 p-5 sm:p-6 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/20">
 
                     {/* Header: Label */}
                     <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">

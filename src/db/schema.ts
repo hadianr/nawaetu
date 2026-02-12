@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex, jsonb } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "next-auth/adapters";
 
 // --- Users & Auth (Compatible with NextAuth.js) ---
@@ -23,7 +23,9 @@ export const users = pgTable("user", {
     totalInfaq: integer("total_infaq").default(0), // Track total donation amount
 
     // User Preferences (v1.7.0)
-    settings: text("settings"), // JSON: { theme, muadzin, calculationMethod, locale }
+    gender: text("gender").$type<"male" | "female">(), // 'male' | 'female'
+    archetype: text("archetype").$type<"beginner" | "striver" | "dedicated">(), // 'beginner' | 'striver' | 'dedicated'
+    settings: jsonb("settings"), // JSON: { theme, muadzin, calculationMethod, locale }
 
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
@@ -61,6 +63,10 @@ export const sessions = pgTable("session", {
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
     expires: timestamp("expires", { mode: "date" }).notNull(),
+}, (table) => {
+    return {
+        userIdIdx: index("session_user_id_idx").on(table.userId),
+    };
 });
 
 export const verificationTokens = pgTable(
@@ -94,6 +100,11 @@ export const transactions = pgTable("transaction", {
 
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+    return {
+        userIdIdx: index("transaction_user_id_idx").on(table.userId),
+        statusIdx: index("transaction_status_idx").on(table.status),
+    };
 });
 
 // ... (bookmarks, intentions, pushSubscriptions remain the same)
@@ -148,6 +159,11 @@ export const intentions = pgTable("intention", {
     // Metadata
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+    return {
+        userIdIdx: index("intention_user_id_idx").on(table.userId),
+        userIdDateIdx: index("intention_user_id_date_idx").on(table.userId, table.niatDate),
+    };
 });
 
 export const pushSubscriptions = pgTable("push_subscription", {
@@ -158,20 +174,24 @@ export const pushSubscriptions = pgTable("push_subscription", {
     active: integer("active").default(1), // 1 for active, 0 for inactive
 
     // Prayer notification preferences (JSON: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true })
-    prayerPreferences: text("prayer_preferences"),
+    prayerPreferences: jsonb("prayer_preferences"),
 
     // User location for prayer time calculation (JSON: { lat: number, lng: number, city: string })
-    userLocation: text("user_location"),
+    userLocation: jsonb("user_location"),
 
     // Timezone for accurate prayer time scheduling (e.g., "Asia/Jakarta")
     timezone: text("timezone"),
 
     // Track last sent notification for each prayer to prevent duplicates (JSON: { fajr: "2024-02-11", dhuhr: "2024-02-11" })
-    lastNotificationSent: text("last_notification_sent"),
+    lastNotificationSent: jsonb("last_notification_sent"),
 
     lastUsedAt: timestamp("last_used_at"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+    return {
+        userIdIdx: index("push_subscription_user_id_idx").on(table.userId),
+    };
 });
 
 // Types for application use

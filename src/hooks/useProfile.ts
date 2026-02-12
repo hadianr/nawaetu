@@ -10,7 +10,12 @@ export function useProfile() {
     const { data: session, update: updateSession } = useSession();
     const [isUpdating, setIsUpdating] = useState(false);
 
-    const updateProfile = async (data: { name?: string; image?: string }) => {
+    const updateProfile = async (data: {
+        name?: string;
+        image?: string;
+        gender?: "male" | "female";
+        archetype?: "beginner" | "striver" | "dedicated";
+    }) => {
         setIsUpdating(true);
         const toastId = toast.loading("Menyimpan profil...");
 
@@ -36,6 +41,8 @@ export function useProfile() {
             // 3. Update Local Storage Fallback
             if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
             if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
+            if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
+            if (data.archetype) storage.set(STORAGE_KEYS.USER_ARCHETYPE, data.archetype);
 
             toast.success("Profil berhasil diperbarui!", { id: toastId });
             return true;

@@ -13,16 +13,18 @@ export async function PATCH(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { name, image } = body;
+        const { name, image, gender, archetype } = body;
 
         // Validation (Basic)
-        if (!name && !image) {
+        if (!name && !image && !gender && !archetype) {
             return NextResponse.json({ error: "No data to update" }, { status: 400 });
         }
 
         const updateData: any = {};
         if (name) updateData.name = name;
         if (image) updateData.image = image;
+        if (gender) updateData.gender = gender;
+        if (archetype) updateData.archetype = archetype;
 
         await db.update(users)
             .set(updateData)

@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
             active: 1,
             deviceType: deviceType || "web",
             timezone: timezone || "Asia/Jakarta",
-            userLocation: userLocation ? JSON.stringify(userLocation) : null,
+            userLocation: userLocation || null,
             // If provided, update preferences; otherwise keep existing or null
-            prayerPreferences: prayerPreferences ? JSON.stringify(prayerPreferences) : undefined,
+            prayerPreferences: prayerPreferences || undefined,
         };
 
         if (existing.length > 0) {
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
                 token,
                 ...data,
                 // For new insert, use provided prefs or null
-                prayerPreferences: prayerPreferences ? JSON.stringify(prayerPreferences) : null,
+                prayerPreferences: prayerPreferences || null,
                 userId: null,
                 lastUsedAt: null,
             });

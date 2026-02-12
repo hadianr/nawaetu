@@ -19,17 +19,12 @@ export default function PrayerTimesDisplay() {
     const { data, loading, error, refreshLocation } = usePrayerTimes();
     const { t } = useLocale();
     const [userName, setUserName] = useState("Sobat Nawaetu");
-    const [userTitle, setUserTitle] = useState("Hamba Allah");
     const [showMosqueFinder, setShowMosqueFinder] = useState(false);
 
     const refreshProfile = () => {
         const storage = getStorageService();
-        const [savedName, savedTitle] = storage.getMany([
-            STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE
-        ]).values();
+        const savedName = storage.getOptional(STORAGE_KEYS.USER_NAME);
         if (savedName) setUserName(savedName as string);
-        if (savedTitle) setUserTitle(savedTitle as string);
     };
 
     useEffect(() => {

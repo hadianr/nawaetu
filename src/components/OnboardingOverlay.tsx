@@ -6,61 +6,74 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { useProfile } from "@/hooks/useProfile";
 
-const ONBOARDING_KEY = STORAGE_KEYS.ONBOARDING_COMPLETED; // Now type-safe!
+import { useLocale } from "@/context/LocaleContext";
 
-const SLIDES = [
-    {
-        id: "pwa",
-        icon: Smartphone,
-        color: "text-blue-400",
-        bg: "bg-blue-500/10",
-        border: "border-blue-500/20",
-        title: "Tanpa Install, Hemat Memori",
-        description: "Tidak perlu download dari PlayStore/AppStore. Cukup akses web ini, ringan dan cepat.",
-        highlight: "Hint: Tambahkan ke Home Screen untuk akses instan."
-    },
-    {
-        id: "features",
-        icon: BookOpen,
-        color: "text-emerald-400",
-        bg: "bg-emerald-500/10",
-        border: "border-emerald-500/20",
-        title: "Al-Qur'an & Mentor AI Terpercaya",
-        description: "Baca Al-Qur'an, tafsir, dan tanya jawab agama. Semua konten AI dipastikan bersumber dari Al-Qur'an & Hadits Shahih.",
-        highlight: "Tenang, sumbernya valid & dapat dipertanggungjawabkan."
-    },
-    {
-        id: "gamification",
-        icon: Trophy,
-        color: "text-amber-400",
-        bg: "bg-amber-500/10",
-        border: "border-amber-500/20",
-        title: "Gamifikasi Personal",
-        description: "Misi harian & target XP akan disesuaikan dengan profil Anda (Gender & Tipe Pejuang) agar lebih relevan.",
-        highlight: "Ibadah jadi lebih semangat dengan target yang pas."
-    },
-    {
-        id: "privacy",
-        icon: ShieldCheck,
-        color: "text-violet-400",
-        bg: "bg-violet-500/10",
-        border: "border-violet-500/20",
-        title: "Tanpa Iklan & Privasi Terjaga",
-        description: "Fokus ibadah tanpa gangguan iklan. Data tersimpan lokal di HP Anda, tidak kami jual.",
-        highlight: "PENTING: Jangan 'Clear Cache' agar data tidak hilang."
-    }
-];
+const ONBOARDING_KEY = STORAGE_KEYS.ONBOARDING_COMPLETED;
 
 export default function OnboardingOverlay() {
+    const { status } = useSession();
+    const { updateProfile } = useProfile();
+    const { t } = useLocale();
     const [isVisible, setIsVisible] = useState(false);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-archetype'>('intro');
 
+    const SLIDES = [
+        {
+            id: "pwa",
+            icon: Smartphone,
+            color: "text-blue-400",
+            bg: "bg-blue-500/10",
+            border: "border-blue-500/20",
+            title: (t as any).onboardingSlide1Title,
+            description: (t as any).onboardingSlide1Desc,
+            highlight: (t as any).onboardingSlide1Hint
+        },
+        {
+            id: "features",
+            icon: BookOpen,
+            color: "text-emerald-400",
+            bg: "bg-emerald-500/10",
+            border: "border-emerald-500/20",
+            title: (t as any).onboardingSlide2Title,
+            description: (t as any).onboardingSlide2Desc,
+            highlight: (t as any).onboardingSlide2Hint
+        },
+        {
+            id: "gamification",
+            icon: Trophy,
+            color: "text-amber-400",
+            bg: "bg-amber-500/10",
+            border: "border-amber-500/20",
+            title: (t as any).onboardingSlide3Title,
+            description: (t as any).onboardingSlide3Desc,
+            highlight: (t as any).onboardingSlide3Hint
+        },
+        {
+            id: "privacy",
+            icon: ShieldCheck,
+            color: "text-violet-400",
+            bg: "bg-violet-500/10",
+            border: "border-violet-500/20",
+            title: (t as any).onboardingSlide4Title,
+            description: (t as any).onboardingSlide4Desc,
+            highlight: (t as any).onboardingSlide4Hint
+        }
+    ];
+
+    const ARCHETYPES = [
+        { id: 'beginner', label: (t as any).onboardingArchetypeBeginnerLabel, desc: (t as any).onboardingArchetypeBeginnerDesc, icon: '🌱', color: 'text-emerald-400', border: 'border-emerald-400', bg: 'bg-emerald-500/20' },
+        { id: 'striver', label: (t as any).onboardingArchetypeStriverLabel, desc: (t as any).onboardingArchetypeStriverDesc, icon: '⚡', color: 'text-blue-400', border: 'border-blue-400', bg: 'bg-blue-500/20' },
+        { id: 'dedicated', label: (t as any).onboardingArchetypeDedicatedLabel, desc: (t as any).onboardingArchetypeDedicatedDesc, icon: '🔥', color: 'text-amber-400', border: 'border-amber-400', bg: 'bg-amber-500/20' },
+    ];
+
     // Profile State
     const [name, setName] = useState("");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
-    const [archetype, setArchetype] = useState<'pemula' | 'penggerak' | 'mujahid' | null>(null);
+    const [archetype, setArchetype] = useState<'beginner' | 'striver' | 'dedicated' | null>(null);
     const storage = getStorageService();
 
     useEffect(() => {
@@ -86,12 +99,26 @@ export default function OnboardingOverlay() {
         }
     };
 
-    const handleFinish = () => {
-        // Save Profile (type-safe with individual operations)
-        storage.set(STORAGE_KEYS.USER_NAME, name || "Sobat Nawaetu");
+    const handleFinish = async () => {
+        // 1. Local Storage Update (Immediate)
+        const finalName = name || (t as any).onboardingDefaultName;
+        storage.set(STORAGE_KEYS.USER_NAME, finalName);
         storage.set(STORAGE_KEYS.USER_GENDER, gender);
         storage.set(STORAGE_KEYS.USER_ARCHETYPE, archetype);
         storage.set(ONBOARDING_KEY as any, true);
+
+        // 2. Database Sync (If authenticated)
+        if (status === "authenticated") {
+            try {
+                await updateProfile({
+                    name: finalName,
+                    gender: gender as "male" | "female",
+                    archetype: archetype as "beginner" | "striver" | "dedicated"
+                });
+            } catch (e) {
+                console.error("Failed to sync onboarding to database", e);
+            }
+        }
 
         // Mark Onboarding Done
         setIsVisible(false);
@@ -155,16 +182,16 @@ export default function OnboardingOverlay() {
                             <span className="text-3xl">👋</span>
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">Siapa namamu?</h2>
-                            <p className="text-sm text-white/70 mt-1">Agar Nawaetu AI bisa menyapamu dengan akrab.</p>
+                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingNameTitle}</h2>
+                            <p className="text-sm text-white/70 mt-1">{(t as any).onboardingNameDesc}</p>
                         </div>
                         <input
                             autoFocus
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Nama Panggilan"
-                            aria-label="Masukkan nama panggilan Anda"
+                            placeholder={(t as any).onboardingNamePlaceholder}
+                            aria-label={(t as any).onboardingNamePlaceholder}
                             className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-lg font-bold"
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
@@ -181,13 +208,13 @@ export default function OnboardingOverlay() {
                 >
                     <div className="relative z-10 w-full space-y-4">
                         <div className="text-center mb-2">
-                            <h2 className="text-xl font-bold text-white">Apa Jenis Kelaminmu?</h2>
-                            <p className="text-xs text-white/70 mt-1">Untuk menyesuaikan fiqih ibadah & tema.</p>
+                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingGenderTitle}</h2>
+                            <p className="text-xs text-white/70 mt-1">{(t as any).onboardingGenderDesc}</p>
                         </div>
                         <div className="grid gap-3">
                             <button
                                 onClick={() => setGender('male')}
-                                aria-label="Pilih jenis kelamin laki-laki"
+                                aria-label={(t as any).onboardingMaleLabel}
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
                                     gender === 'male' ? "bg-blue-500/20 border-blue-500 text-blue-100" : "bg-white/5 border-white/5 hover:bg-white/10"
@@ -195,14 +222,14 @@ export default function OnboardingOverlay() {
                             >
                                 <span className="text-3xl">👨</span>
                                 <div>
-                                    <span className="font-bold block text-sm">Laki-laki</span>
-                                    <span className="text-[10px] opacity-70">Tema Biru, Fiqih Pria</span>
+                                    <span className="font-bold block text-sm">{(t as any).onboardingMaleLabel}</span>
+                                    <span className="text-[10px] opacity-70">{(t as any).onboardingMaleSub}</span>
                                 </div>
                                 {gender === 'male' && <Check className="ml-auto w-5 h-5 text-blue-400" />}
                             </button>
                             <button
                                 onClick={() => setGender('female')}
-                                aria-label="Pilih jenis kelamin perempuan"
+                                aria-label={(t as any).onboardingFemaleLabel}
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
                                     gender === 'female' ? "bg-pink-500/20 border-pink-500 text-pink-100" : "bg-white/5 border-white/5 hover:bg-white/10"
@@ -210,8 +237,8 @@ export default function OnboardingOverlay() {
                             >
                                 <span className="text-3xl">👩</span>
                                 <div>
-                                    <span className="font-bold block text-sm">Perempuan</span>
-                                    <span className="text-[10px] opacity-70">Tema Pink, Fiqih Wanita</span>
+                                    <span className="font-bold block text-sm">{(t as any).onboardingFemaleLabel}</span>
+                                    <span className="text-[10px] opacity-70">{(t as any).onboardingFemaleSub}</span>
                                 </div>
                                 {gender === 'female' && <Check className="ml-auto w-5 h-5 text-pink-400" />}
                             </button>
@@ -229,19 +256,15 @@ export default function OnboardingOverlay() {
                 >
                     <div className="relative z-10 w-full flex-1 flex flex-col">
                         <div className="text-center mb-4">
-                            <h2 className="text-xl font-bold text-white">Tipe Pejuang Ibadah?</h2>
-                            <p className="text-xs text-white/70 mt-1">Menentukan target misi harianmu.</p>
+                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingArchetypeTitle}</h2>
+                            <p className="text-xs text-white/70 mt-1">{(t as any).onboardingArchetypeDesc}</p>
                         </div>
                         <div className="space-y-2 flex-1 overflow-y-auto pr-2 scrollbar-hide">
-                            {[
-                                { id: 'pemula', label: 'Pemula', desc: 'Fokus Ibadah Wajib', icon: '🌱', color: 'text-emerald-400', border: 'border-emerald-400', bg: 'bg-emerald-500/20' },
-                                { id: 'penggerak', label: 'Penggerak', desc: 'Wajib + Sunnah Ringan', icon: '⚡', color: 'text-blue-400', border: 'border-blue-400', bg: 'bg-blue-500/20' },
-                                { id: 'mujahid', label: 'Mujahid', desc: 'Target Ibadah Tinggi', icon: '🔥', color: 'text-amber-400', border: 'border-amber-400', bg: 'bg-amber-500/20' },
-                            ].map((type) => (
+                            {ARCHETYPES.map((type) => (
                                 <button
                                     key={type.id}
                                     onClick={() => setArchetype(type.id as any)}
-                                    aria-label={`Pilih tipe pejuang ${type.label}`}
+                                    aria-label={(t as any).onboardingArchetypeTitle + ' ' + type.label}
                                     className={cn(
                                         "w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left",
                                         archetype === type.id ? `${type.bg} ${type.border}` : "bg-white/5 border border-white/5 hover:bg-white/10"
@@ -301,7 +324,7 @@ export default function OnboardingOverlay() {
                             onClick={() => setStep('setup-name')}
                             className="text-sm text-white/80 font-semibold px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all flex items-center gap-2"
                         >
-                            <span>Skip Intro</span>
+                            <span>{(t as any).onboardingSkip}</span>
                             <ChevronRight className="w-4 h-4" />
                         </button>
                     )}
@@ -315,7 +338,7 @@ export default function OnboardingOverlay() {
                             }}
                             className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
                         >
-                            Back
+                            {(t as any).onboardingBack}
                         </button>
                     )}
 
@@ -328,7 +351,7 @@ export default function OnboardingOverlay() {
                         }
                         className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {step === 'setup-archetype' ? "Selesai & Mulai 🚀" : "Lanjut"}
+                        {step === 'setup-archetype' ? (t as any).onboardingFinish : (t as any).onboardingNext}
                         {step !== 'setup-archetype' && <ChevronRight className="w-4 h-4 ml-1" />}
                     </Button>
                 </div>

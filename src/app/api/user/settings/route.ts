@@ -18,9 +18,7 @@ export async function GET(req: NextRequest) {
             columns: { settings: true }
         });
 
-        const settings = user?.settings && typeof user.settings === 'string'
-            ? JSON.parse(user.settings)
-            : (user?.settings || {});
+        const settings = (user?.settings || {}) as Record<string, any>;
 
         // 2. Fetch user bookmarks
         const userBookmarks = await db.query.bookmarks.findMany({
@@ -74,9 +72,7 @@ export async function PATCH(req: NextRequest) {
             columns: { settings: true }
         });
 
-        const currentSettings = user?.settings && typeof user.settings === 'string'
-            ? JSON.parse(user.settings)
-            : (user?.settings || {});
+        const currentSettings = (user?.settings || {}) as Record<string, any>;
 
         const newSettings = {
             ...currentSettings,
@@ -84,7 +80,7 @@ export async function PATCH(req: NextRequest) {
         };
 
         await db.update(users)
-            .set({ settings: JSON.stringify(newSettings) })
+            .set({ settings: newSettings })
             .where(eq(users.id, session.user.id));
 
         return NextResponse.json({

@@ -7,7 +7,6 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import StreakBadge from "@/components/StreakBadge";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 
 // Inline critical icons to avoid lucide overhead on LCP
@@ -23,15 +22,13 @@ export default function HomeHeader() {
     const { data: session } = useSession();
     const storage = getStorageService();
     const [userName, setUserName] = useState("Sobat Nawaetu");
-    const [userTitle, setUserTitle] = useState("Hamba Allah");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     const refreshProfile = () => {
         // Use batch get for performance
-        const [savedName, savedTitle, savedGender, savedAvatar] = storage.getMany([
+        const [savedName, savedGender, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE,
             STORAGE_KEYS.USER_GENDER,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
@@ -43,7 +40,6 @@ export default function HomeHeader() {
         if (session?.user?.image) setUserAvatar(session.user.image);
         else setUserAvatar(savedAvatar as string | null);
 
-        if (savedTitle) setUserTitle(savedTitle as string);
         setGender(savedGender as 'male' | 'female' | null);
     };
 
@@ -99,15 +95,6 @@ export default function HomeHeader() {
                         <span className="inline-block w-32 xs:w-40 h-7 rounded bg-white/10 animate-pulse align-middle" />
                     )}
                 </h1>
-                <span className="inline-flex items-center mt-1 text-[10px] uppercase tracking-widest text-white/70 bg-white/10 px-2 py-0.5 rounded-full border border-white/10 min-h-[1.25rem]">
-                    {isMounted ? (
-                        <span className="block truncate max-w-[10rem] xs:max-w-[12rem]">
-                            {userTitle}
-                        </span>
-                    ) : (
-                        <span className="inline-block w-20 xs:w-24 h-3 rounded bg-white/10 animate-pulse" />
-                    )}
-                </span>
             </div>
 
             {/* Location, Streak & Date Badge */}
@@ -148,6 +135,6 @@ export default function HomeHeader() {
                     )}
                 </span>
             </div>
-        </div>
+        </div >
     );
 }

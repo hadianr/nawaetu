@@ -28,8 +28,10 @@ export const authOptions: NextAuthOptions = {
         async session({ session, user }) {
             if (session.user) {
                 session.user.id = user.id;
-                // Add custom fields to session if needed
+                // Add custom fields to session
                 (session.user as any).isMuhsinin = (user as any).isMuhsinin;
+                (session.user as any).gender = (user as any).gender;
+                (session.user as any).archetype = (user as any).archetype;
             }
             return session;
         },

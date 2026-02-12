@@ -9,6 +9,8 @@ declare module "next-auth" {
             /** The user's postal address. */
             id: string
             isMuhsinin: boolean
+            gender?: "male" | "female"
+            archetype?: "beginner" | "striver" | "dedicated"
         } & DefaultSession["user"]
     }
 }

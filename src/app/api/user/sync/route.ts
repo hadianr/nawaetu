@@ -145,10 +145,7 @@ async function handleSettingSync(
             columns: { settings: true },
         });
 
-        const currentSettings =
-            user?.settings && typeof user.settings === 'string'
-                ? JSON.parse(user.settings)
-                : user?.settings || {};
+        const currentSettings = (user?.settings || {}) as Record<string, any>;
 
         const newSettings = {
             ...currentSettings,
@@ -157,7 +154,7 @@ async function handleSettingSync(
 
         await db
             .update(users)
-            .set({ settings: JSON.stringify(newSettings) })
+            .set({ settings: newSettings })
             .where(eq(users.id, userId));
 
         return { id: entry.id };
@@ -279,10 +276,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 columns: { settings: true },
             });
 
-            const currentSettings =
-                user?.settings && typeof user.settings === 'string'
-                    ? JSON.parse(user.settings)
-                    : user?.settings || {};
+            const currentSettings = (user?.settings || {}) as Record<string, any>;
 
             const newSettings = {
                 ...currentSettings,
@@ -296,7 +290,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
 
             await db
                 .update(users)
-                .set({ settings: JSON.stringify(newSettings) })
+                .set({ settings: newSettings })
                 .where(eq(users.id, userId));
         }
 

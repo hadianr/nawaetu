@@ -17,12 +17,14 @@ import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 import IntentionInputForm from "./intentions/IntentionInputForm";
 import ReflectionInputForm from "./intentions/ReflectionInputForm";
 import IntentionPrompt from "./intentions/IntentionPrompt";
 import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 export default function MissionsWidget() {
+    const { data: session } = useSession();
     const { t, locale } = useLocale();
     const { completedMissions, completeMission, isCompleted } = useMissions();
     const [gender, setGender] = useState<Gender>(null);
@@ -96,9 +98,11 @@ export default function MissionsWidget() {
 
     const loadData = () => {
         const storage = getStorageService();
-        const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
-        const savedArchetype = storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) as string | null;
+        // Priority: session > local storage
+        const savedGender = (session?.user?.gender || storage.getOptional(STORAGE_KEYS.USER_GENDER)) as Gender;
+        const savedArchetype = (session?.user?.archetype || storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE)) as string | null;
 
+        setGender(savedGender);
 
         const daily = getDailyMissions(savedGender);
         const weekly = getWeeklyMissions(savedGender);
@@ -124,7 +128,7 @@ export default function MissionsWidget() {
             window.removeEventListener('profile_updated', handleUpdate);
             window.removeEventListener('storage', handleUpdate);
         };
-    }, [prayerData?.hijriDate, locale]); // Refresh when locale or hijri date changes
+    }, [prayerData?.hijriDate, locale, session]); // Refresh when locale, hijri date, or session changes
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
         const record = completedMissions.find(m => m.id === missionId);
@@ -354,7 +358,7 @@ export default function MissionsWidget() {
 
     return (
         <div className={cn(
-            "relative overflow-hidden rounded-3xl p-5 transition-all group",
+            "relative overflow-hidden rounded-3xl p-5 sm:p-6 transition-all group",
             // Glassmorphism Base
             "bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30 hover:border-white/20"
         )}>

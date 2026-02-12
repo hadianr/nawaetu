@@ -25,31 +25,25 @@ import { Loader2, RefreshCw } from "lucide-react";
 
 const ARCHETYPES = [
     {
-        id: "pemula",
-        label: "Pemula",
+        id: "beginner",
         icon: Sprout,
         color: "text-emerald-400",
         bg: "bg-emerald-500/10",
         border: "border-emerald-500/20",
-        description: "Membangun pondasi yang kokoh dengan menjaga ibadah wajib."
     },
     {
-        id: "penggerak",
-        label: "Penggerak",
+        id: "striver",
         icon: Target,
         color: "text-blue-400",
         bg: "bg-blue-500/10",
         border: "border-blue-500/20",
-        description: "Menambah amalan sunnah ringan untuk mendekatkan diri."
     },
     {
-        id: "mujahid",
-        label: "Mujahid",
+        id: "dedicated",
         icon: Shield,
         color: "text-amber-400",
         bg: "bg-amber-500/10",
         border: "border-amber-500/20",
-        description: "Bersungguh-sungguh dengan ibadah wajib dan sunnah yang berat."
     }
 ];
 
@@ -87,18 +81,35 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     // FIXED: Only logged in users can be Muhsinin
     const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
     const userName = session?.user?.name || "Hamba Allah";
-    const userRole = isMuhsinin ? "Muhsinin Nawaetu" : "Pengguna Setia";
+    const userRole = isMuhsinin ? (t as any).profileRolePremium : (t as any).profileRoleGuest;
     const userImage = session?.user?.image || AVATAR_LIST[0].src;
+
+    // Current Archetype Details
+    const currentArchetypeId = session?.user?.archetype || 'beginner';
+    const currentArchetype = ARCHETYPES.find(a => a.id === currentArchetypeId) || ARCHETYPES[0];
+    const currentArchetypeLabel = currentArchetypeId === 'beginner'
+        ? (t as any).onboardingArchetypeBeginnerLabel
+        : currentArchetypeId === 'striver'
+            ? (t as any).onboardingArchetypeStriverLabel
+            : (t as any).onboardingArchetypeDedicatedLabel;
 
     // State for Editing
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState("");
+    const [editGender, setEditGender] = useState<"male" | "female" | null>(null);
+    const [editArchetype, setEditArchetype] = useState<"beginner" | "striver" | "dedicated" | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     useEffect(() => {
         if (session?.user?.name) {
             setEditName(session.user.name);
+        }
+        if (session?.user?.gender) {
+            setEditGender(session.user.gender as any);
+        }
+        if (session?.user?.archetype) {
+            setEditArchetype(session.user.archetype as any);
         }
     }, [session]);
 
@@ -164,7 +175,11 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const handleSaveProfile = async () => {
         if (!editName.trim()) return;
 
-        const success = await updateProfile({ name: editName });
+        const success = await updateProfile({
+            name: editName,
+            gender: editGender as "male" | "female",
+            archetype: editArchetype as "beginner" | "striver" | "dedicated"
+        });
         if (success) {
             setIsEditing(false);
             if (onProfileUpdate) onProfileUpdate();
@@ -200,7 +215,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                         {!isAuthenticated ? (
                             <div className="px-3 py-1 bg-black/20 backdrop-blur-md rounded-full border border-white/10 text-[10px] items-center flex gap-1">
                                 <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                                Guest Mode
+                                {(t as any).profileGuestMode}
                             </div>
                         ) : (
                             <div /> // Spacer
@@ -238,28 +253,78 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                 </div>
 
                 {/* 2. User Info */}
-                {/* 2. User Info */}
                 <div className="px-6 pb-6 pt-3 relative z-10">
                     <div className="flex justify-between items-start mb-6">
                         <div className="flex-1">
                             {isEditing ? (
-                                <div className="space-y-2 mb-2">
-                                    <Input
-                                        type="text"
-                                        value={editName}
-                                        onChange={(e) => setEditName(e.target.value)}
-                                        className="h-9 bg-white/5 border-white/10"
-                                    />
-                                    <div className="flex gap-2">
+                                <div className="space-y-4 mb-2 max-h-[60vh] overflow-y-auto pr-2 scrollbar-hide">
+                                    <div className="space-y-1.5">
+                                        <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileNameLabel}</Label>
+                                        <Input
+                                            type="text"
+                                            value={editName}
+                                            onChange={(e) => setEditName(e.target.value)}
+                                            className="h-10 bg-white/5 border-white/10 focus:border-blue-500/50"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileGenderLabel}</Label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <button
+                                                onClick={() => setEditGender('male')}
+                                                className={cn(
+                                                    "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
+                                                    editGender === 'male' ? "bg-blue-500/20 border-blue-500 text-blue-100" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                )}
+                                            >
+                                                <span>👨</span> {(t as any).onboardingMaleLabel}
+                                            </button>
+                                            <button
+                                                onClick={() => setEditGender('female')}
+                                                className={cn(
+                                                    "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
+                                                    editGender === 'female' ? "bg-pink-500/20 border-pink-500 text-pink-100" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                )}
+                                            >
+                                                <span>👩</span> {(t as any).onboardingFemaleLabel}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileArchetypeLabel}</Label>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {[
+                                                { id: 'beginner', label: (t as any).onboardingArchetypeBeginnerLabel, icon: '🌱', color: 'text-emerald-400' },
+                                                { id: 'striver', label: (t as any).onboardingArchetypeStriverLabel, icon: '⚡', color: 'text-blue-400' },
+                                                { id: 'dedicated', label: (t as any).onboardingArchetypeDedicatedLabel, icon: '🔥', color: 'text-amber-400' },
+                                            ].map((type) => (
+                                                <button
+                                                    key={type.id}
+                                                    onClick={() => setEditArchetype(type.id as any)}
+                                                    className={cn(
+                                                        "flex items-center gap-3 px-3 h-10 rounded-xl border transition-all text-xs font-medium",
+                                                        editArchetype === type.id ? "bg-white/10 border-white/30 text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                    )}
+                                                >
+                                                    <span className="text-lg">{type.icon}</span>
+                                                    <span className="flex-1 text-left">{type.label}</span>
+                                                    {editArchetype === type.id && <Check className={cn("w-4 h-4", type.color)} />}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2 pt-2 sticky bottom-0 bg-[#0F172A] pb-2">
                                         <Button
-                                            size="sm"
                                             onClick={handleSaveProfile}
                                             disabled={isUpdating}
-                                            className="h-7 text-xs bg-emerald-600"
+                                            className="flex-1 h-9 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"
                                         >
-                                            {isUpdating ? "..." : "Simpan"}
+                                            {isUpdating ? (t as any).locationUpdating : (t as any).bookmarksSave}
                                         </Button>
-                                        <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)} className="h-7 text-xs">Batal</Button>
+                                        <Button variant="ghost" onClick={() => setIsEditing(false)} className="h-9 text-xs text-slate-400 hover:text-white">{(t as any).tasbihBack}</Button>
                                     </div>
                                 </div>
                             ) : (
@@ -273,15 +338,21 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         )}
                                     </div>
                                     <div className="flex flex-col gap-1 mt-1">
-                                        <div className="flex items-center gap-1.5 text-slate-400">
-                                            {isMuhsinin ? (
-                                                <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                                                    <Sparkles className="w-3 h-3" />
-                                                    {userRole}
-                                                </div>
-                                            ) : (
-                                                <span className="text-xs text-slate-400">{userRole}</span>
-                                            )}
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1.5 text-slate-400">
+                                                {isMuhsinin ? (
+                                                    <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                                                        <Sparkles className="w-3 h-3" />
+                                                        {userRole}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-xs text-slate-400">{userRole}</span>
+                                                )}
+                                            </div>
+                                            <div className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1", currentArchetype.bg, currentArchetype.border, currentArchetype.color)}>
+                                                <currentArchetype.icon className="w-2.5 h-2.5" />
+                                                {currentArchetypeLabel}
+                                            </div>
                                         </div>
                                         {isAuthenticated && session?.user?.email && (
                                             <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
@@ -303,8 +374,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                             <div className="w-10 h-10 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-3">
                                 <Settings className="w-5 h-5 text-slate-300" />
                             </div>
-                            <h3 className="text-sm font-bold text-white mb-1">Simpan Progress Ibadahmu</h3>
-                            <p className="text-xs text-slate-400 mb-4 leading-relaxed">Login untuk menyimpan data streak, bookmark, dan status donatur secara permanen di cloud.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">{(t as any).profileAuthTitle}</h3>
+                            <p className="text-xs text-slate-400 mb-4 leading-relaxed">{(t as any).profileAuthDesc}</p>
                             <Button
                                 onClick={handleLogin}
                                 className="w-full bg-white text-slate-900 hover:bg-slate-200 font-bold h-10 flex items-center gap-2"
@@ -315,7 +386,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                 </svg>
-                                Login dengan Google
+                                {(t as any).profileAuthButton}
                             </Button>
                         </div>
                     )}
@@ -328,14 +399,14 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     <Flame className="w-4 h-4 text-orange-400" />
                                 </div>
                                 <span className="text-2xl font-black text-white">0</span>
-                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">Hari Streak</span>
+                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">{(t as any).profileStreakLabel}</span>
                             </div>
                             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
                                     <Calendar className="w-4 h-4 text-blue-400" />
                                 </div>
                                 <span className="text-2xl font-black text-white">0</span>
-                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">Total Hari</span>
+                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">{(t as any).profileTotalDays}</span>
                             </div>
                         </div>
                     )}
@@ -347,7 +418,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
                                     <Settings className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
                                 </div>
-                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">Pengaturan Aplikasi</span>
+                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">{(t as any).profileAppSettings}</span>
                             </div>
                             <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
                         </button>
@@ -367,7 +438,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         )}
                                     </div>
                                     <span className="text-sm font-medium text-slate-300 group-hover:text-white">
-                                        {isSyncing ? "Menyinkronkan..." : "Sinkronisasi Data"}
+                                        {isSyncing ? (t as any).profileSyncing : (t as any).profileSyncData}
                                     </span>
                                 </div>
                                 {!isSyncing && <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />}
@@ -379,7 +450,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
                                     <Share2 className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
                                 </div>
-                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">Bagikan Aplikasi</span>
+                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">{(t as any).profileShareApp}</span>
                             </div>
                             <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
                         </button>
@@ -391,24 +462,24 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
                                             <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
                                         </div>
-                                        <span className="text-sm font-medium text-red-400 group-hover:text-red-300">Keluar</span>
+                                        <span className="text-sm font-medium text-red-400 group-hover:text-red-300">{(t as any).profileLogout}</span>
                                     </div>
                                 </button>
                             ) : (
                                 <div className="mt-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 animate-in fade-in slide-in-from-top-2 duration-200">
-                                    <p className="text-xs text-red-200 mb-3 text-center">Yakin ingin keluar akun?</p>
+                                    <p className="text-xs text-red-200 mb-3 text-center">{(t as any).profileLogoutConfirm}</p>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={handleLogout}
                                             className="flex-1 h-8 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors"
                                         >
-                                            Ya, Keluar
+                                            {(t as any).profileLogoutConfirmYes}
                                         </button>
                                         <button
                                             onClick={() => setShowLogoutConfirm(false)}
                                             className="flex-1 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium transition-colors"
                                         >
-                                            Batal
+                                            {(t as any).profileLogoutConfirmNo}
                                         </button>
                                     </div>
                                 </div>
@@ -417,8 +488,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-6 pt-6 border-t border-white/5 text-center">
-                        <p className="text-[10px] text-slate-600">Terima kasih telah menggunakan Nawaetu</p>
+                    <div className="mt-6 pt-6 border-t border-white/5 text-center px-4">
+                        <p className="text-[10px] text-slate-600">{(t as any).profileFooter}</p>
                     </div>
 
                 </div>

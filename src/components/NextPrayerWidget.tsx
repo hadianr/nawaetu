@@ -131,7 +131,7 @@ export default function NextPrayerWidget() {
 
     // === NORMAL MODE (Time is far) ===
     return (
-        <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex flex-col justify-between group hover:bg-black/30 hover:border-white/10 transition-all">
+        <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-5 sm:p-6 h-full flex flex-col justify-between group hover:bg-black/30 hover:border-white/10 transition-all">
             {/* Header: Label */}
             <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
                 <Clock className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />

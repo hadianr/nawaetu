@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
 
                     if (sub.userLocation) {
                         try {
-                            const loc = JSON.parse(sub.userLocation);
+                            const loc = sub.userLocation as { lat?: number; lng?: number };
                             if (loc.lat && loc.lng) {
                                 lat = loc.lat;
                                 lng = loc.lng;
@@ -206,7 +206,7 @@ export async function POST(req: NextRequest) {
                     let lastSentMap: Record<string, string> = {};
                     if (sub.lastNotificationSent) {
                         try {
-                            lastSentMap = JSON.parse(sub.lastNotificationSent);
+                            lastSentMap = sub.lastNotificationSent as Record<string, string>;
                         } catch (e) { }
                     }
 
@@ -219,7 +219,7 @@ export async function POST(req: NextRequest) {
                     // 6. Check preferences
                     if (sub.prayerPreferences) {
                         try {
-                            const prefs = JSON.parse(sub.prayerPreferences);
+                            const prefs = sub.prayerPreferences as Record<string, boolean>;
                             const key = activePrayer.toLowerCase();
                             if (prefs[key] === false) {
                                 results.skipped++;
@@ -298,7 +298,7 @@ export async function POST(req: NextRequest) {
 
                     await db.update(pushSubscriptions).set({
                         lastUsedAt: new Date(),
-                        lastNotificationSent: JSON.stringify(lastSentMap)
+                        lastNotificationSent: lastSentMap
                     }).where(eq(pushSubscriptions.id, sub.id));
 
                 } catch (e: any) {

@@ -10,10 +10,12 @@ const AnalyticsLoader = dynamic(() => import("@/components/AnalyticsLoader"), { 
 const DataSyncer = dynamic(() => import("@/components/DataSyncer"), { ssr: false });
 const AdvancedDataSyncer = dynamic(() => import("@/components/AdvancedDataSyncer"), { ssr: false });
 const AppOverlays = dynamic(() => import("@/components/AppOverlays"), { ssr: false });
+const OfflineIndicator = dynamic(() => import("@/components/OfflineIndicator"), { ssr: false });
 
 export default function DeferredLayoutComponents() {
     return (
         <Suspense fallback={null}>
+            <OfflineIndicator />
             <AnalyticsLoader />
             <DataSyncer />
             <AdvancedDataSyncer />

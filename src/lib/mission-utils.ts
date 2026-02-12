@@ -138,20 +138,20 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
         // Decision: Stick to rules properly.
 
         switch (archetype) {
-            case 'pemula': // "Fokus Wajib"
+            case 'beginner': // (Was: pemula) "Fokus Wajib"
                 // Show Wajib (already covered) OR Simple Quran tasks
                 // Hide other Sunnah (Dhuha, Dzikir, Puasa Sunnah)
                 if (mission.category === 'quran' && mission.validationConfig?.requiredCount && mission.validationConfig.requiredCount <= 10) return true;
                 return false;
 
-            case 'penggerak': // "Wajib + Sunnah Ringan"
+            case 'striver': // (Was: penggerak) "Wajib + Sunnah Ringan"
                 // Show All Daily Missions (Wajib + Sunnah).
                 // Hide Weekly (Puasa Senin Kamis) or Trackers (Qadha Puasa is Wajib so it shows, but generic trackers maybe hide?)
                 // Actually, let's just show all 'daily' type.
                 if (mission.type === 'daily') return true;
                 return false;
 
-            case 'mujahid': // "Extra Strong"
+            case 'dedicated': // (Was: mujahid) "Extra Strong"
                 // Show EVERYTHING
                 return true;
 

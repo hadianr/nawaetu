@@ -136,20 +136,14 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
     return (
         <div className={cn("relative w-full group", className)}>
-            <div className="relative bg-black/20 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden transition-all duration-300 hover:bg-black/25 active:scale-[0.995] p-4 sm:p-5">
+            <div className="relative bg-black/20 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden transition-all duration-300 hover:bg-black/25 active:scale-[0.995] p-5 sm:p-6">
                 <div className="flex flex-col gap-2.5">
-                    {/* Compact Label & Streak */}
+                    {/* Compact Label */}
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 opacity-30 grayscale hover:opacity-50 transition-opacity">
+                        <div className="flex items-center gap-1.5 opacity-40 grayscale hover:opacity-60 transition-opacity">
                             <Compass className="w-3 h-3 text-white" />
-                            <span className="text-[9px] font-bold text-white uppercase tracking-[0.2em] whitespace-nowrap">Jurnal Niat Harian</span>
+                            <span className="text-[10px] font-bold text-white uppercase tracking-[0.2em] whitespace-nowrap">Jurnal Niat Harian</span>
                         </div>
-                        {todayData?.streak > 0 && (
-                            <div className="flex items-center gap-0.5 bg-amber-500/10 px-1.5 py-0.5 rounded-lg border border-amber-500/10">
-                                <Flame className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                                <span className="text-[9px] font-extrabold text-amber-500 leading-none">{todayData.streak}</span>
-                            </div>
-                        )}
                     </div>
 
                     {!todayData?.has_intention ? (
