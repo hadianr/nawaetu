@@ -763,6 +763,46 @@ function SettingsPageContent() {
 }
 
 // Internal Component for Version Checking
+/**
+ * UpdateChecker Component
+ * 
+ * PWA Update Best Practices:
+ * ═══════════════════════════════════════════════════════════════════════
+ * 
+ * 🔄 PWA Update Lifecycle:
+ * 1. Browser detects new service-worker.js on server
+ * 2. New SW installs in background (parallel to old SW)
+ * 3. New SW enters "waiting" state (won't activate until old tabs close)
+ * 4. Call skipWaiting() to force activation immediately
+ * 5. New SW takes control via clientsClaim()
+ * 6. Reload page to get new app shell and assets
+ * 
+ * ✅ Correct Approach (This Implementation):
+ * - Update localStorage version BEFORE reload
+ * - Keep SW registered (don't unregister!)
+ * - Trigger SW.update() to detect new version
+ * - Send SKIP_WAITING message to waiting SW
+ * - Wait for controllerchange event
+ * - Clear caches to force fresh assets
+ * - Reload page (SW will serve new content)
+ * 
+ * ❌ Common Mistakes:
+ * - Unregistering SW before reload (leaves no SW to serve content!)
+ * - Not waiting for controllerchange (timing issues)
+ * - Redirecting instead of reloading (loses SW context)
+ * - Not clearing caches (serves stale content)
+ * 
+ * 📱 Why PWA ≠ Native App Install:
+ * - PWAs are web apps cached aggressively by browser
+ * - Updates happen automatically like web apps (NO app store needed!)
+ * - User doesn't need to "reinstall" or "update from store"
+ * - Just reload the page to get latest version
+ * 
+ * 🎯 Key Insight:
+ * The service worker's job is to CACHE the app, not BE the app.
+ * When we update, we need the NEW SW to serve the NEW cached content.
+ * If we unregister SW, browser falls back to network (bypassing PWA benefits).
+ */
 function UpdateChecker({ currentVersion }: { currentVersion: string }) {
     const [serverVersion, setServerVersion] = useState<string | null>(null);
     const [checking, setChecking] = useState(false);
@@ -810,53 +850,74 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
     const handleUpdate = async () => {
         setChecking(true);
         
-        console.log('[Update] Starting update process...');
+        console.log('[Update] Starting PWA update process...');
         console.log('[Update] Current version:', currentVersion);
         console.log('[Update] Server version:', serverVersion);
 
-        // AUTO-FIX: Perform cleanup silently when updating
         try {
-            // 1. Update localStorage version to latest FIRST (before any async operations)
-            if (serverVersion) {
-                localStorage.setItem(STORAGE_KEYS.APP_VERSION, serverVersion);
-                console.log('[Update] Set localStorage APP_VERSION to:', serverVersion);
-                // Verify it was set correctly
-                const verifyVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
-                console.log('[Update] Verified localStorage APP_VERSION:', verifyVersion);
-            } else {
+            if (!serverVersion) {
                 console.error('[Update] No server version available!');
                 toast.error('Gagal mendapatkan versi server. Coba lagi.');
                 setChecking(false);
                 return;
             }
 
-            // 2. Clear ALL session flags to allow fresh version check after reload
-            sessionStorage.clear();
-            console.log('[Update] Cleared sessionStorage');
+            // 1. Update localStorage version FIRST
+            localStorage.setItem(STORAGE_KEYS.APP_VERSION, serverVersion);
+            console.log('[Update] ✓ Updated localStorage to:', serverVersion);
 
-            // 3. Unregister service workers
+            // 2. Clear session storage for fresh start
+            sessionStorage.clear();
+            console.log('[Update] ✓ Cleared sessionStorage');
+
+            // 3. Check for service worker and trigger update
             if ('serviceWorker' in navigator) {
-                const regs = await navigator.serviceWorker.getRegistrations();
-                console.log('[Update] Unregistering', regs.length, 'service workers');
-                for (const reg of regs) {
-                    await reg.unregister();
+                const registration = await navigator.serviceWorker.getRegistration();
+                
+                if (registration) {
+                    console.log('[Update] Found SW registration, checking for updates...');
+                    
+                    // Trigger update check
+                    await registration.update();
+                    
+                    // If there's a waiting SW, activate it immediately
+                    if (registration.waiting) {
+                        console.log('[Update] Waiting SW found, sending skipWaiting message...');
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        
+                        // Wait for controller change
+                        await new Promise<void>((resolve) => {
+                            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                                console.log('[Update] ✓ New SW took control');
+                                resolve();
+                            }, { once: true });
+                        });
+                    } else {
+                        console.log('[Update] No waiting SW, will use existing');
+                    }
+                } else {
+                    console.log('[Update] No SW registration found');
                 }
             }
 
             // 4. Clear all caches
             if ('caches' in window) {
                 const keys = await caches.keys();
-                console.log('[Update] Clearing', keys.length, 'caches');
+                console.log('[Update] Clearing', keys.length, 'caches...');
                 await Promise.all(keys.map(key => caches.delete(key)));
+                console.log('[Update] ✓ All caches cleared');
             }
             
-            console.log('[Update] Cleanup complete, reloading...');
+            console.log('[Update] ✓ Update complete, performing hard reload...');
+            
+            // 5. Hard reload to bypass any remaining cache
+            window.location.reload();
+            
         } catch (e) {
-            console.error("Cleanup failed during update:", e);
+            console.error('[Update] Error during update:', e);
+            toast.error('Update gagal. Coba refresh manual (Cmd/Ctrl+Shift+R)');
+            setChecking(false);
         }
-
-        // Force reload with cache busting
-        window.location.href = '/?updated=' + Date.now();
     };
 
     if (!isUpdateAvailable()) return null;
@@ -901,48 +962,48 @@ export default function SettingsPage() {
 }
 
 // Manual Reset/Repair Function
+// This is for users who have severe caching issues and need a "nuclear" reset
 const handleManualReset = async () => {
-    if (!confirm("Aplikasi akan dibersihkan dan dimuat ulang untuk memastikan versi terbaru berjalan lancar. Lanjutkan?")) return;
+    if (!confirm("Aplikasi akan dibersihkan total dan dimuat ulang. Data lokal (bookmark, riwayat) akan tetap aman. Lanjutkan?")) return;
 
-    console.log('[ManualReset] Starting manual reset...');
+    console.log('[ManualReset] Starting nuclear reset...');
     console.log('[ManualReset] Current version:', APP_CONFIG.version);
 
     try {
-        // 0. Update localStorage version to current FIRST
+        // 1. Update localStorage version to current
         localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
-        console.log('[ManualReset] Set localStorage APP_VERSION to:', APP_CONFIG.version);
-        
-        // Verify it was set correctly
-        const verifyVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
-        console.log('[ManualReset] Verified localStorage APP_VERSION:', verifyVersion);
+        console.log('[ManualReset] ✓ Set localStorage to:', APP_CONFIG.version);
 
-        // 0.5. Clear ALL session storage for fresh start
+        // 2. Clear ALL session storage
         sessionStorage.clear();
-        console.log('[ManualReset] Cleared sessionStorage');
+        console.log('[ManualReset] ✓ Cleared sessionStorage');
 
-        // 1. Unregister ALL Service Workers
+        // 3. Unregister ALL Service Workers (nuclear option)
         if ('serviceWorker' in navigator) {
             const regs = await navigator.serviceWorker.getRegistrations();
             console.log('[ManualReset] Unregistering', regs.length, 'service workers');
             for (const reg of regs) {
                 await reg.unregister();
             }
+            console.log('[ManualReset] ✓ All SW unregistered');
         }
 
-        // 2. Delete ALL Cache Storage
+        // 4. Delete ALL Cache Storage
         if ('caches' in window) {
             const keys = await caches.keys();
             console.log('[ManualReset] Clearing', keys.length, 'caches');
             await Promise.all(keys.map(key => caches.delete(key)));
+            console.log('[ManualReset] ✓ All caches cleared');
         }
 
-        console.log('[ManualReset] Cleanup complete, reloading...');
+        console.log('[ManualReset] ✓ Nuclear reset complete, reloading...');
         
-        // 3. Force Hard Reload to Home with Cache Busting
+        // 5. Hard reload - this will re-register SW from scratch
         window.location.href = '/?reset=' + Date.now();
+        
     } catch (e) {
         console.error('[ManualReset] Reset failed:', e);
-        alert("Gagal melakukan reset. Silakan coba reinstall manual.");
+        alert("Gagal melakukan reset. Coba: 1) Tutup semua tab Nawaetu 2) Buka ulang");
         window.location.reload();
     }
 };
