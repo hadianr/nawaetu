@@ -102,21 +102,40 @@ export default function AppOverlays() {
     }, []);
 
     // iOS hard refresh on version change to prevent reverting to old PWA shell
+    // FIX: Only run once per session to prevent redirect loop when navigating between pages
     useEffect(() => {
         if (typeof window === "undefined") return;
+
+        // Check if already refreshed in this session
+        const sessionRefreshKey = `nawaetu_version_checked_${APP_CONFIG.version}`;
+        if (sessionStorage.getItem(sessionRefreshKey) === "true") {
+            return;
+        }
 
         const isIOS =
             /iPad|iPhone|iPod/.test(navigator.userAgent) ||
             (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-        if (!isIOS) return;
+        if (!isIOS) {
+            // Mark as checked for non-iOS devices
+            sessionStorage.setItem(sessionRefreshKey, "true");
+            return;
+        }
 
         const storage = getStorageService();
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
 
-        if (storedVersion === APP_CONFIG.version) return;
+        // If version matches, mark as checked and skip refresh
+        if (storedVersion === APP_CONFIG.version) {
+            sessionStorage.setItem(sessionRefreshKey, "true");
+            return;
+        }
+
+        // Mark session as checked BEFORE refresh to prevent multiple triggers
+        sessionStorage.setItem(sessionRefreshKey, "true");
 
         const forceRefresh = async () => {
+            console.log(`[PWA] iOS version mismatch detected: ${storedVersion} → ${APP_CONFIG.version}`);
             try {
                 if ("serviceWorker" in navigator) {
                     const regs = await navigator.serviceWorker.getRegistrations();
