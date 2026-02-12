@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Chore: improve update process debug visibility and prevent reload loops**
 
 ### Fixed
+- **Fix: add comprehensive theme color safety checks**
+  - Added optional chaining and fallback to 'default' theme in ThemeContext
+  - Added validation in setTheme() to prevent invalid theme IDs from being stored
+  - Added defensive checks in theme application with fallback values
+  - Prevents Sentry error: 'undefined is not an object (evaluating e.colors)'
+  - Handles corrupted or missing theme data in storage gracefully
 - **Fix: prevent PatternOverlay undefined error on theme without pattern**
   - Added optional chaining for safe theme.pattern access
   - Resolves Sentry error for users with 'default' theme
