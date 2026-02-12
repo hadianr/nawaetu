@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "next-auth/adapters";
 
 // --- Users & Auth (Compatible with NextAuth.js) ---
@@ -117,6 +117,11 @@ export const bookmarks = pgTable("bookmark", {
 
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+    return {
+        keyIdx: index("bookmark_key_idx").on(table.key),
+        userKeyUniqueIdx: uniqueIndex("bookmark_user_key_unique_idx").on(table.userId, table.key),
+    };
 });
 
 // --- Intention Journal ---
