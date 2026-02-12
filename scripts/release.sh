@@ -7,9 +7,23 @@
 # This script will:
 # 1. Validate version format
 # 2. Commit version bump changes (if any)
-# 3. Create an annotated git tag
-# 4. Push commits and tags to GitHub
-# 5. Trigger GitHub Actions for build & deploy
+# 3. Auto-generate CHANGELOG from git commits (requires manual review!)
+# 4. Create an annotated git tag
+# 5. Push commits and tags to GitHub
+# 6. Trigger GitHub Actions for build & deploy
+#
+# 📝 Commit Message Best Practices for Better Changelogs:
+# ─────────────────────────────────────────────────────
+# Use this format: <type>: <title> - <description>
+#
+# Examples:
+#   feat: Qibla Compass Optimization - major performance improvements for mobile
+#   fix: Alignment Feedback - enhanced visual animations with haptic response
+#   perf: React.memo implementation - prevent unnecessary re-renders
+#   improve: Compass Session Handling - better reinitialization on app reopen
+#
+# Types: feat, fix, perf, improve, refactor, style, chore
+# The script will auto-format these into readable changelog entries!
 
 set -e
 
@@ -100,47 +114,74 @@ if ! grep -q "## \[$VERSION_NUMBER\]" CHANGELOG.md; then
     
     # Auto-generate from git commits if last tag exists
     if [ -n "$LAST_TAG" ]; then
-        # Parse commits into categories
-        FEATURES=$(git log --no-merges --pretty=format:"- %s" "$LAST_TAG..HEAD" | grep -i "^- feat" | sed 's/^- feat[:(].*[):] */- **/' | sed 's/$/**/' || true)
-        FIXES=$(git log --no-merges --pretty=format:"- %s" "$LAST_TAG..HEAD" | grep -i "^- fix" | sed 's/^- fix[:(].*[):] */- **/' | sed 's/$/**/' || true)
-        IMPROVEMENTS=$(git log --no-merges --pretty=format:"- %s" "$LAST_TAG..HEAD" | grep -i "^- \(refactor\|perf\|improve\)" | sed 's/^- [^:]*: */- **/' | sed 's/$/**/' || true)
+        # Function to clean and format commit messages into readable changelog entries
+        format_commit() {
+            local msg="$1"
+            # Remove conventional commit prefix (feat:, fix:, etc.)
+            msg=$(echo "$msg" | sed 's/^[a-z]*(\?[^)]*)\?:\s*//')
+            # Capitalize first letter
+            msg="$(echo ${msg:0:1} | tr '[:lower:]' '[:upper:]')${msg:1}"
+            # Extract title (before " - " or " – " if exists)
+            if echo "$msg" | grep -q " - \| – "; then
+                local title=$(echo "$msg" | sed 's/\s*[-–].*$//')
+                local desc=$(echo "$msg" | sed 's/^[^-–]*[-–]\s*//')
+                echo "- **${title}**: ${desc}"
+            else
+                echo "- **${msg}**"
+            fi
+        }
         
-        # Add sections with actual commits
+        # Parse commits into categories with better formatting
+        FEATURES=$(git log --no-merges --pretty=format:"%s" "$LAST_TAG..HEAD" | grep -i "^feat" || true)
+        FIXES=$(git log --no-merges --pretty=format:"%s" "$LAST_TAG..HEAD" | grep -i "^fix" || true)
+        PERF=$(git log --no-merges --pretty=format:"%s" "$LAST_TAG..HEAD" | grep -i "^perf" || true)
+        IMPROVEMENTS=$(git log --no-merges --pretty=format:"%s" "$LAST_TAG..HEAD" | grep -iE "^(refactor|improve|style|chore)" || true)
+        
+        # Add sections with formatted commits
         if [ -n "$FEATURES" ]; then
             echo "### Added" >> "$TEMP_CHANGELOG"
-            echo "$FEATURES" >> "$TEMP_CHANGELOG"
+            while IFS= read -r commit; do
+                format_commit "$commit" >> "$TEMP_CHANGELOG"
+            done <<< "$FEATURES"
+            echo "" >> "$TEMP_CHANGELOG"
+        fi
+        
+        if [ -n "$PERF" ]; then
+            echo "### Performance" >> "$TEMP_CHANGELOG"
+            while IFS= read -r commit; do
+                format_commit "$commit" >> "$TEMP_CHANGELOG"
+            done <<< "$PERF"
+            echo "" >> "$TEMP_CHANGELOG"
+        fi
+        
+        if [ -n "$IMPROVEMENTS" ]; then
+            echo "### Improved" >> "$TEMP_CHANGELOG"
+            while IFS= read -r commit; do
+                format_commit "$commit" >> "$TEMP_CHANGELOG"
+            done <<< "$IMPROVEMENTS"
             echo "" >> "$TEMP_CHANGELOG"
         fi
         
         if [ -n "$FIXES" ]; then
             echo "### Fixed" >> "$TEMP_CHANGELOG"
-            echo "$FIXES" >> "$TEMP_CHANGELOG"
-            echo "" >> "$TEMP_CHANGELOG"
-        fi
-        
-        if [ -n "$IMPROVEMENTS" ]; then
-            echo "### Changed" >> "$TEMP_CHANGELOG"
-            echo "$IMPROVEMENTS" >> "$TEMP_CHANGELOG"
+            while IFS= read -r commit; do
+                format_commit "$commit" >> "$TEMP_CHANGELOG"
+            done <<< "$FIXES"
             echo "" >> "$TEMP_CHANGELOG"
         fi
         
         # If no categorized commits found, add placeholder
-        if [ -z "$FEATURES" ] && [ -z "$FIXES" ] && [ -z "$IMPROVEMENTS" ]; then
-            echo "### Added" >> "$TEMP_CHANGELOG"
-            echo "- Update features and improvements" >> "$TEMP_CHANGELOG"
-            echo "" >> "$TEMP_CHANGELOG"
-            echo "### Fixed" >> "$TEMP_CHANGELOG"
-            echo "- Bug fixes and optimizations" >> "$TEMP_CHANGELOG"
+        if [ -z "$FEATURES" ] && [ -z "$FIXES" ] && [ -z "$IMPROVEMENTS" ] && [ -z "$PERF" ]; then
+            echo "### Changed" >> "$TEMP_CHANGELOG"
+            echo "- Updates and improvements" >> "$TEMP_CHANGELOG"
             echo "" >> "$TEMP_CHANGELOG"
         fi
     else
         # Fallback template if no previous tag
-        echo "### Added" >> "$TEMP_CHANGELOG"
-        echo "- Update features and improvements" >> "$TEMP_CHANGELOG"
+        echo "### Changed" >> "$TEMP_CHANGELOG"
+        echo "- **General Updates**: Various improvements and optimizations" >> "$TEMP_CHANGELOG"
         echo "" >> "$TEMP_CHANGELOG"
-        echo "### Fixed" >> "$TEMP_CHANGELOG"
-        echo "- Bug fixes and optimizations" >> "$TEMP_CHANGELOG"
-        echo "" >> "$TEMP_CHANGELOG"
+        echo -e "${YELLOW}⚠️  No previous tag found - please manually edit CHANGELOG.md${NC}"
     fi
     
     # Append rest of changelog
@@ -150,12 +191,23 @@ if ! grep -q "## \[$VERSION_NUMBER\]" CHANGELOG.md; then
     mv "$TEMP_CHANGELOG" CHANGELOG.md
     
     echo -e "${GREEN}✅ CHANGELOG.md → Auto-generated [$VERSION_NUMBER] from commits since $LAST_TAG${NC}"
-    echo -e "${YELLOW}⚠️  Please review and edit CHANGELOG.md to refine the descriptions!${NC}"
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${YELLOW}⚠️  IMPORTANT: Please review and refine CHANGELOG.md!${NC}"
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "${CYAN}Suggestions for improvement:${NC}"
+    echo "  • Add more descriptive details to each change"
+    echo "  • Group related changes under clear titles"
+    echo "  • Explain user impact and benefits"
+    echo "  • Use sub-bullets for technical details"
+    echo "  • Match the style of previous changelog entries"
     echo ""
     
     # Open changelog in editor (optional, comment out if not needed)
     if command -v code &> /dev/null; then
+        echo -e "${BLUE}📝 Opening CHANGELOG.md in VS Code...${NC}"
         code CHANGELOG.md
+        sleep 1
     fi
     
     echo -e "${YELLOW}Press any key after reviewing CHANGELOG.md to continue...${NC}"

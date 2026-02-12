@@ -8,15 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.6.6] - 2026-02-12
 
-### Added
-- feat: auto-generate CHANGELOG entries from git commits and improve sensor handling in QiblaCompass**
+### Performance
+- **Qibla Compass Optimization**: Major performance improvements for smooth experience on low-end mobile devices:
+  - React.memo implementation to prevent unnecessary re-renders of heavy visual elements
+  - GPU-accelerated animations with translateZ(0) for 60fps smoothness
+  - Passive event listeners to reduce event processing overhead
+  - Maintained 30fps throttling cap to prevent excessive updates
+  - Split UI components for better render optimization
+
+### Improved
+- **Qibla Page Translations**: Enhanced user guidance text and clarity across Indonesian and English languages
+- **Compass Session Handling**: Improved compass reinitialization logic when app is reopened
+- **Permission Flow**: Better handling of device orientation permission requests
 
 ### Fixed
-- fix: update Qibla page translations for improved user guidance and clarity**
-- fix: ensure compass reinitialization on app reopen and improve permission handling**
-- fix: enhance Qibla alignment feedback with haptic response and visual animations**
-- fix: improve Qibla alignment detection and relative rotation calculation**
-- fix: improve cleanup of device orientation event listeners and manage handler references**
+- **Alignment Feedback**: Enhanced visual animations and added haptic response (vibration) when device aligns with Qibla direction
+- **Rotation Accuracy**: Improved Qibla alignment detection and relative rotation calculations
+- **Event Listener Cleanup**: Better cleanup of device orientation event listeners to prevent memory leaks
 
 ## [1.6.5] - 2026-02-11
 
