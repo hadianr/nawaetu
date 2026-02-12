@@ -11,7 +11,7 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useMissions } from "@/hooks/useMissions";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
-import { checkMissionValidation, filterMissionsByArchetype } from "@/lib/mission-utils";
+import { checkMissionValidation, filterMissionsByArchetype, getHukumLabel } from "@/lib/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -42,17 +42,6 @@ export default function MissionsWidget() {
 
     // Intention Prompt State
     const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
-
-    const getHukumLabel = (hukum: string) => {
-        const labels: Record<string, keyof typeof t> = {
-            wajib: "hukumWajib",
-            sunnah: "hukumSunnah",
-            mubah: "hukumMubah",
-            makruh: "hukumMakruh",
-            harram: "hukumHaram"
-        };
-        return t[labels[hukum]] || hukum;
-    };
 
     const { data: prayerData } = usePrayerTimes();
 
@@ -534,7 +523,7 @@ export default function MissionsWidget() {
                                                 ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                                 : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/20"
                                         )}>
-                                            {getHukumLabel(mission.hukum)}
+                                            {getHukumLabel(mission.hukum, t)}
                                         </span>
                                         <p className="text-[10px] text-white/90 truncate">
                                             +{mission.xpReward} XP

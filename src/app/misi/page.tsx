@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
-import { checkMissionValidation } from "@/lib/mission-utils";
+import { checkMissionValidation, getHukumLabel } from "@/lib/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -31,16 +31,6 @@ export default function MisiPage() {
     const { t, locale } = useLocale();
     const [gender, setGender] = useState<Gender>(null);
 
-    const getHukumLabel = (hukum: string) => {
-        const labels: Record<string, keyof typeof t> = {
-            'wajib': 'hukumWajib',
-            'sunnah': 'hukumSunnah',
-            'mubah': 'hukumMubah',
-            'makruh': 'hukumMakruh',
-            'harram': 'hukumHaram'
-        };
-        return t[labels[hukum]] || hukum;
-    };
     const [missions, setMissions] = useState<Mission[]>([]);
     const [completed, setCompleted] = useState<CompletedMissions>({});
     const [today, setToday] = useState<string>("");
@@ -205,7 +195,7 @@ export default function MisiPage() {
                                     ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                     : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                             )}>
-                                {getHukumLabel(mission.hukum)}
+                                {getHukumLabel(mission.hukum, t)}
                             </span>
                         </div>
                         {isGenderSpecific && (

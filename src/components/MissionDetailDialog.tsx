@@ -16,6 +16,7 @@ import { Mission, ValidationType } from "@/data/missions-data";
 import { MISSION_CONTENTS, MissionContent } from "@/data/mission-content";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
+import { getHukumLabel } from "@/lib/mission-utils";
 
 interface MissionDetailDialogProps {
     mission: Mission;
@@ -49,17 +50,6 @@ export default function MissionDetailDialog({
     const [readingIndex, setReadingIndex] = useState(0);
     const [isConfirmingReset, setIsConfirmingReset] = useState(false); // Add this
 
-    const getHukumLabel = (hukum: string) => {
-        const labels: Record<string, keyof typeof t> = {
-            'wajib': 'hukumWajib',
-            'sunnah': 'hukumSunnah',
-            'mubah': 'hukumMubah',
-            'makruh': 'hukumMakruh',
-            'harram': 'hukumHaram'
-        };
-        return t[labels[hukum]] || hukum;
-    };
-
     const handleNextReading = () => {
         if (content && content.readings && readingIndex < content.readings.length - 1) {
             setReadingIndex(prev => prev + 1);
@@ -91,7 +81,7 @@ export default function MissionDetailDialog({
                                         ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                         : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                 )}>
-                                    {getHukumLabel(mission.hukum)}
+                                        {getHukumLabel(mission.hukum, t)}
                                 </span>
                             </div>
                             <p className="text-xs text-white/50 mt-1">{mission.description}</p>
