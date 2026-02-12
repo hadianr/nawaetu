@@ -1,6 +1,12 @@
 import type { Config } from "drizzle-kit";
 import { config } from "dotenv";
 
+// ============================================================================
+// Drizzle ORM Configuration
+// 📖 Migration Guide: See docs/DATABASE_MIGRATION_GUIDE.md
+// 🔄 Workflow: Generate → Rename → Document → Commit → Push
+// ============================================================================
+
 // Load environment variables from .env.local
 config({ path: ".env.local" });
 
