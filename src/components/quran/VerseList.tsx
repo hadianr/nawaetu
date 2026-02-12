@@ -4,6 +4,7 @@ import TajweedLegend from "./TajweedLegend";
 import { useState, useRef, useEffect, useMemo, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash, Headphones } from 'lucide-react';
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-stor
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { syncQueue } from "@/lib/sync-queue";
 
 
 export interface Verse {
@@ -157,6 +159,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [locale, setLocale] = useState<string>(currentLocale);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+    const { data: session } = useSession();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const autoplay = searchParams.get('autoplay') === 'true';
@@ -457,12 +460,31 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setEditingBookmarkKey(verse.verse_key);
         } else {
             const verseNum = parseInt(verse.verse_key.split(':')[1]);
-            saveBookmark({
+            const bookmarkData = {
                 surahId: chapter.id,
                 surahName: chapter.name_simple,
                 verseId: verseNum,
                 verseText: verse.text_uthmani,
-            });
+            };
+            
+            // Save to local storage
+            saveBookmark(bookmarkData);
+            
+            // If user is logged in, add to sync queue
+            // This will be synced to cloud when user comes online
+            if (session?.user?.id) {
+                try {
+                    syncQueue.addToQueue(
+                        'bookmark',
+                        'create',
+                        bookmarkData
+                    );
+                    console.log(`[Bookmark] Added to sync queue for user ${session.user.id}`);
+                } catch (error) {
+                    console.error('[Bookmark] Failed to add to sync queue:', error);
+                }
+            }
+            
             // Immediately open dialog to edit/add note if desired, 
             // or just set state to allow editing. 
             // Here we just save. If user wants to edit, they click again.

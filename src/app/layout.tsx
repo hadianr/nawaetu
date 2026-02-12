@@ -217,6 +217,7 @@ import FCMHandler from "@/components/FCMHandler";
 import AnalyticsLoader from "@/components/AnalyticsLoader";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 import DataSyncer from "@/components/DataSyncer";
+import { AdvancedDataSyncer } from "@/components/AdvancedDataSyncer";
 
 
 
@@ -273,6 +274,7 @@ export default function RootLayout({
             <AuthSessionProvider>
               <InfaqProvider>
                 <DataSyncer />
+                <AdvancedDataSyncer />
                 <PatternOverlay />
                 <NotificationWatcher />
                 <AppOverlays />
