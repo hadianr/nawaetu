@@ -11,10 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 - **Style: make switch toggle colors theme-aware**
 - **Chore: rename migrations with descriptive names and add documentation headers**
+- **Chore: improve update process debug visibility and prevent reload loops**
 
 ### Fixed
+- **Fix: restore bookmark functionality in Quran reader**
+  - Fixed event listener name mismatch (bookmarks_updated vs bookmarks-updated)
+  - Bookmarks now properly trigger UI state updates on save/delete
+  - Works for both logged-in and guest users
 - **Fix: remove manual reset functionality and related UI elements**
 - **Fix: update welcome toast logic to use localStorage and clear on logout**
+- **Fix: improve MobileDebugConsole visibility with higher z-index**
 
 
 ## [1.6.7] - 2026-02-12
