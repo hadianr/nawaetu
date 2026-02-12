@@ -325,6 +325,12 @@ function SettingsPageContent() {
 
     const handleThemeSelect = (themeId: ThemeId) => {
         const theme = THEMES[themeId];
+        
+        // Safety check - ensure theme exists
+        if (!theme) {
+            console.error(`Theme "${themeId}" not found`);
+            return;
+        }
 
         // Check if theme is premium and user is not premium
         if (theme.isPremium && !isMuhsinin) {
@@ -513,7 +519,7 @@ function SettingsPageContent() {
                                             )}>
 
                                                 {/* Ambient Glow for Selected */}
-                                                {isSelected && (
+                                                {isSelected && theme?.colors && (
                                                     <div
                                                         className="absolute inset-0 rounded-full blur-md opacity-60 transition-all duration-500 animate-pulse"
                                                         style={{ backgroundColor: `rgb(${theme.colors.primary})` }}
@@ -522,10 +528,10 @@ function SettingsPageContent() {
 
                                                 {/* Main Circle Content */}
                                                 <div className="absolute inset-0 rounded-full overflow-hidden flex flex-col border border-white/10 z-10 shadow-2xl bg-black">
-                                                    <div className="h-1/2 w-full transition-colors duration-500" style={{ backgroundColor: `rgb(${theme.colors.primary})` }} />
+                                                    <div className="h-1/2 w-full transition-colors duration-500" style={{ backgroundColor: theme?.colors ? `rgb(${theme.colors.primary})` : 'rgb(16 185 129)' }} />
                                                     <div className="h-1/2 w-full flex">
-                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: `rgb(${theme.colors.accent})` }} />
-                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: `rgb(${theme.colors.surface})` }} />
+                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: theme?.colors ? `rgb(${theme.colors.accent})` : 'rgb(251 191 36)' }} />
+                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: theme?.colors ? `rgb(${theme.colors.surface})` : 'rgb(15 23 42)' }} />
                                                     </div>
                                                 </div>
 

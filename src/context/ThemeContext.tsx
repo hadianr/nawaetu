@@ -157,21 +157,35 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Apply theme to document
     useEffect(() => {
         const theme = THEMES[currentTheme];
+        
+        // Fallback to default theme if current theme is invalid
+        const validTheme = theme || THEMES['default'];
         const root = document.documentElement;
 
+        if (!validTheme?.colors) {
+            console.warn(`Theme "${currentTheme}" not found, falling back to default`);
+            return;
+        }
+
         // Apply CSS variables
-        root.style.setProperty("--color-primary", theme.colors.primary);
-        root.style.setProperty("--color-primary-light", theme.colors.primaryLight);
-        root.style.setProperty("--color-primary-dark", theme.colors.primaryDark);
-        root.style.setProperty("--color-accent", theme.colors.accent);
-        root.style.setProperty("--color-background", theme.colors.background);
-        root.style.setProperty("--color-surface", theme.colors.surface);
+        root.style.setProperty("--color-primary", validTheme.colors.primary);
+        root.style.setProperty("--color-primary-light", validTheme.colors.primaryLight);
+        root.style.setProperty("--color-primary-dark", validTheme.colors.primaryDark);
+        root.style.setProperty("--color-accent", validTheme.colors.accent);
+        root.style.setProperty("--color-background", validTheme.colors.background);
+        root.style.setProperty("--color-surface", validTheme.colors.surface);
 
         // Also set data attribute for potential CSS selectors
         root.setAttribute("data-theme", currentTheme);
     }, [currentTheme]);
 
     const setTheme = (themeId: ThemeId) => {
+        // Validate theme exists
+        if (!THEMES[themeId]) {
+            console.error(`Invalid theme ID: ${themeId}. Falling back to 'default'`);
+            return;
+        }
+        
         const storage = getStorageService();
         setCurrentTheme(themeId);
         storage.set(STORAGE_KEYS.SETTINGS_THEME, themeId);
@@ -183,7 +197,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             value={{
                 currentTheme,
                 setTheme,
-                theme: THEMES[currentTheme],
+                theme: THEMES[currentTheme] || THEMES['default'],
             }}
         >
             {children}
