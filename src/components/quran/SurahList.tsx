@@ -213,7 +213,17 @@ export default function SurahList({ chapters }: SurahListProps) {
                     return (
                         <div
                             key={chapter.id}
-                            className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 gap-3 ${isBookmarked
+                            role="link"
+                            tabIndex={0}
+                            aria-label={`Buka detail surah ${chapter.name_simple}`}
+                            onClick={() => router.push(`/quran/${chapter.id}`)}
+                            onKeyDown={(event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                    event.preventDefault();
+                                    router.push(`/quran/${chapter.id}`);
+                                }
+                            }}
+                            className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 gap-3 cursor-pointer ${isBookmarked
                                 ? 'border-[rgb(var(--color-primary))]/70 bg-[rgb(var(--color-primary))]/15 hover:border-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/20 hover:shadow-[0_0_25px_rgba(var(--color-primary),0.25)] shadow-[0_0_10px_rgba(var(--color-primary),0.1)]'
                                 : 'border-white/10 bg-white/5 hover:border-[rgb(var(--color-primary))]/50 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)]'
                                 }`}
@@ -237,14 +247,12 @@ export default function SurahList({ chapters }: SurahListProps) {
                                         {chapter.id}
                                     </div>
                                     <div className="flex flex-col min-w-0 relative z-0">
-                                        <Link href={`/quran/${chapter.id}`} className="font-bold text-sm truncate transition-colors focus:outline-none after:absolute after:inset-0">
-                                            <span className={isBookmarked
-                                                ? 'text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))]'
-                                                : 'text-white group-hover:text-[rgb(var(--color-primary-light))]'
-                                            }>
-                                                {chapter.name_simple}
-                                            </span>
-                                        </Link>
+                                        <span className={`font-bold text-sm truncate transition-colors ${isBookmarked
+                                            ? 'text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))]'
+                                            : 'text-white group-hover:text-[rgb(var(--color-primary-light))]'
+                                            }`}>
+                                            {chapter.name_simple}
+                                        </span>
                                         <span className={`text-[10px] truncate ${isBookmarked
                                             ? 'text-[rgb(var(--color-primary))]/80'
                                             : 'text-[rgb(var(--color-primary-light))]/80'
