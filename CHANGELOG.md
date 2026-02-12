@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Chore: improve update process debug visibility and prevent reload loops**
 
 ### Fixed
+- **Fix: prevent PatternOverlay undefined error on theme without pattern**
+  - Added optional chaining for safe theme.pattern access
+  - Resolves Sentry error for users with 'default' theme
 - **Fix: restore bookmark functionality in Quran reader**
   - Fixed event listener name mismatch (bookmarks_updated vs bookmarks-updated)
   - Bookmarks now properly trigger UI state updates on save/delete
