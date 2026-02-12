@@ -11,7 +11,7 @@
 --   - verificationToken (Email verification tokens)
 -- ============================================================================
 
-CREATE TABLE "account" (
+CREATE TABLE IF NOT EXISTS "account" (
 	"userId" text NOT NULL,
 	"type" text NOT NULL,
 	"provider" text NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE "account" (
 	CONSTRAINT "account_provider_providerAccountId_pk" PRIMARY KEY("provider","providerAccountId")
 );
 --> statement-breakpoint
-CREATE TABLE "bookmark" (
+CREATE TABLE IF NOT EXISTS "bookmark" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" text NOT NULL,
 	"surah_id" integer NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE "bookmark" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "push_subscription" (
+CREATE TABLE IF NOT EXISTS "push_subscription" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" text,
 	"token" text NOT NULL,
@@ -52,13 +52,13 @@ CREATE TABLE "push_subscription" (
 	CONSTRAINT "push_subscription_token_unique" UNIQUE("token")
 );
 --> statement-breakpoint
-CREATE TABLE "session" (
+CREATE TABLE IF NOT EXISTS "session" (
 	"sessionToken" text PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
 	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "user" (
+CREATE TABLE IF NOT EXISTS "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"email" text NOT NULL,
@@ -69,14 +69,29 @@ CREATE TABLE "user" (
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE "verificationToken" (
+CREATE TABLE IF NOT EXISTS "verificationToken" (
 	"identifier" text NOT NULL,
 	"token" text NOT NULL,
 	"expires" timestamp NOT NULL,
 	CONSTRAINT "verificationToken_identifier_token_pk" PRIMARY KEY("identifier","token")
 );
 --> statement-breakpoint
-ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "push_subscription" ADD CONSTRAINT "push_subscription_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+DO $$ BEGIN
+ ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "push_subscription" ADD CONSTRAINT "push_subscription_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

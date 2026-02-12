@@ -13,7 +13,7 @@
 --     - user.settings (JSON: theme, muadzin, locale, notificationPreferences, etc)
 -- ============================================================================
 
-CREATE TABLE "transaction" (
+CREATE TABLE IF NOT EXISTS "transaction" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" text,
 	"amount" integer NOT NULL,
@@ -29,9 +29,32 @@ CREATE TABLE "transaction" (
 	CONSTRAINT "transaction_payment_link_id_unique" UNIQUE("payment_link_id")
 );
 --> statement-breakpoint
-ALTER TABLE "push_subscription" ADD COLUMN "last_notification_sent" text;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "is_muhsinin" boolean DEFAULT false;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "muhsinin_since" timestamp;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "total_infaq" integer DEFAULT 0;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "settings" text;--> statement-breakpoint
-ALTER TABLE "transaction" ADD CONSTRAINT "transaction_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+DO $$ BEGIN
+ ALTER TABLE "push_subscription" ADD COLUMN "last_notification_sent" text;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "is_muhsinin" boolean DEFAULT false;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "muhsinin_since" timestamp;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "total_infaq" integer DEFAULT 0;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "settings" text;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "transaction" ADD CONSTRAINT "transaction_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

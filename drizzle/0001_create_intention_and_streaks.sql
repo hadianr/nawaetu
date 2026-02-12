@@ -14,7 +14,7 @@
 --     - user.last_niat_date (Last date niat was recorded)
 -- ============================================================================
 
-CREATE TABLE "intention" (
+CREATE TABLE IF NOT EXISTS "intention" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" text NOT NULL,
 	"niat_text" text NOT NULL,
@@ -28,10 +28,37 @@ CREATE TABLE "intention" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-ALTER TABLE "push_subscription" ADD COLUMN "prayer_preferences" text;--> statement-breakpoint
-ALTER TABLE "push_subscription" ADD COLUMN "user_location" text;--> statement-breakpoint
-ALTER TABLE "push_subscription" ADD COLUMN "timezone" text;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "niat_streak_current" integer DEFAULT 0;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "niat_streak_longest" integer DEFAULT 0;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "last_niat_date" date;--> statement-breakpoint
-ALTER TABLE "intention" ADD CONSTRAINT "intention_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+DO $$ BEGIN
+ ALTER TABLE "push_subscription" ADD COLUMN "prayer_preferences" text;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "push_subscription" ADD COLUMN "user_location" text;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "push_subscription" ADD COLUMN "timezone" text;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "niat_streak_current" integer DEFAULT 0;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "niat_streak_longest" integer DEFAULT 0;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user" ADD COLUMN "last_niat_date" date;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "intention" ADD CONSTRAINT "intention_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
