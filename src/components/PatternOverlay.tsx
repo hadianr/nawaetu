@@ -6,7 +6,7 @@ import { memo } from "react";
 const PatternOverlay = memo(function PatternOverlay() {
     const { theme } = useTheme();
 
-    if (!theme.pattern || theme.pattern.type === 'none') {
+    if (!theme?.pattern || theme.pattern.type === 'none') {
         return null;
     }
 
