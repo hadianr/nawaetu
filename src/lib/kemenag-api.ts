@@ -164,55 +164,59 @@ export const getKemenagVerses = cache(
       // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
       const apiUrl = `${API_CONFIG.QURAN_COM.BASE_URL}/verses/by_chapter/${chapterId}?language=${locale}&words=true&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
 
-      console.log(`[getKemenagVerses] Fetching verses: surah=${chapterId}, page=${page}, perPage=${perPage}, locale=${locale}`);
+      console.log(`[getKemenagVerses] Fetching verses: surah=${chapterId}, page=${page}`);
 
+      const startTime = Date.now();
       const res = await fetchWithTimeout(
         apiUrl,
         { next: { revalidate: 86400 } },
-        { timeoutMs: 8000 }
+        { timeoutMs: 15000 }
       );
 
-      if (!res.ok) throw new Error(`Failed to fetch verses: ${res.status} ${res.statusText}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
 
       const data = await res.json();
-      const verses = data.verses || [];
+      if (!data) throw new Error(`Empty response from API`);
 
-      console.log(`[getKemenagVerses] ✓ Fetched ${verses.length} verses for surah ${chapterId}`);
+      const verses = Array.isArray(data.verses) ? data.verses : [];
+      if (verses.length === 0) throw new Error(`No verses in API response`);
 
-      // Transform to match app structure - simple, fast transformation
+      const duration = Date.now() - startTime;
+      console.log(`[getKemenagVerses] ✓ Fetched ${verses.length} verses in ${duration}ms`);
+
+      // Transform to match app structure - simple, fast transformation with safety checks
       return verses.map((verse: any) => {
-        // Build transliteration from words
-        const transliteration = verse.words?.map((w: any) => w.transliteration?.text || '').join(' ') || '';
+        // Safely build transliteration from words
+        const transliteration = Array.isArray(verse.words)
+          ? verse.words.map((w: any) => w?.transliteration?.text || '').filter(Boolean).join(' ')
+          : '';
+
+        // Safely access nested translation
+        const translation = Array.isArray(verse.translations) && verse.translations.length > 0
+          ? verse.translations[0]
+          : { id: -1, resource_id: -1, text: '' };
 
         return {
-          id: verse.id, // Global verse ID from quran.com
-          verse_number: verse.verse_number,
-          verse_key: verse.verse_key,
-          text_uthmani: verse.text_uthmani,
-          text_uthmani_tajweed: verse.text_uthmani_tajweed || verse.text_uthmani,
-          translations: verse.translations || [],
+          id: verse.id || -1,
+          verse_number: verse.verse_number || 0,
+          verse_key: verse.verse_key || `0:0`,
+          text_uthmani: verse.text_uthmani || '',
+          text_uthmani_tajweed: verse.text_uthmani_tajweed || verse.text_uthmani || '',
+          translations: [translation],
           transliteration: transliteration,
-          words: verse.words || [], // Now we have word-level data
+          words: Array.isArray(verse.words) ? verse.words : [],
           audio: {
             url: verse.audio?.url || "",
-            primary: verse.audio?.url || "",
-            secondary: [],
           },
-          tafsir: locale === "id" ? {
-            kemenag: {
-              short: "",
-              long: "",
-            },
-          } : undefined,
-          meta: verse.meta,
-        };
+          meta: verse.meta || {},
+        } as any;
       });
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error(`[getKemenagVerses] Error fetching verses for chapter ${chapterId}:`, errorMsg);
+      console.error(`[getKemenagVerses] Error for surah ${chapterId}:`, errorMsg);
       
-      // Re-throw with more context
-      throw new Error(`Failed to fetch verses for surah ${chapterId}: ${errorMsg}`);
+      // Re-throw with context
+      throw new Error(`Surah ${chapterId} failed: ${errorMsg.slice(0, 50)}`);
     }
   }
 );

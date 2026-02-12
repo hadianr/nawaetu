@@ -147,21 +147,17 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     
     // --- Debug Logging ---
     useEffect(() => {
-        console.log(`[VerseList] Rendered with:`, {
-            chapter: chapter?.name_simple,
-            versesCount: verses?.length,
-            currentPage,
-            totalPages,
-            currentLocale
-        });
+        if (!chapter || !verses || verses.length === 0) {
+            console.warn(`[VerseList] Incomplete data:`, {
+                hasChapter: !!chapter,
+                versesCount: verses?.length || 0,
+                currentPage
+            });
+            return;
+        }
         
-        if (!chapter) {
-            console.error(`[VerseList] ERROR: chapter prop is missing!`);
-        }
-        if (!verses || verses.length === 0) {
-            console.error(`[VerseList] ERROR: verses are missing or empty!`);
-        }
-    }, [chapter, verses, currentPage, totalPages, currentLocale]);
+        console.log(`[VerseList] Rendered: ${verses.length} verses from ${chapter.name_simple} (page ${currentPage}/${totalPages})`);
+    }, [chapter, verses, currentPage, totalPages]);
     
     // --- State ---
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
@@ -555,11 +551,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             v.text_uthmani.includes(searchQuery) ||
             v.translations[0]?.text.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        console.log(`[VerseList] displayedVerses computed:`, {
-            totalVerses: verses.length,
-            displayedCount: result.length,
-            searchQuery
-        });
         return result;
     }, [verses, searchQuery]);
 
