@@ -108,66 +108,38 @@ export default function AppOverlays() {
 
         // Global flag to ensure this logic runs ONLY ONCE per browser session
         const GLOBAL_SESSION_KEY = 'nawaetu_app_initialized';
-        if (sessionStorage.getItem(GLOBAL_SESSION_KEY) === 'true') {
-            // Already initialized in this session, skip all checks
+        const wasInitialized = sessionStorage.getItem(GLOBAL_SESSION_KEY) === 'true';
+        
+        console.log('[AppOverlays] Init check - Already initialized:', wasInitialized);
+        
+        if (wasInitialized) {
+            console.log('[AppOverlays] ✓ Already initialized, skipping version check');
             return;
         }
 
         const storage = getStorageService();
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
+        const currentVersion = APP_CONFIG.version;
         
-        console.log('[AppOverlays] Version Check:');
-        console.log('[AppOverlays]   Current version (APP_CONFIG):', APP_CONFIG.version);
-        console.log('[AppOverlays]   Stored version (localStorage):', storedVersion);
+        console.log('[AppOverlays] Version check:');
+        console.log('[AppOverlays]   - Stored version:', storedVersion);
+        console.log('[AppOverlays]   - Current version:', currentVersion);
+        console.log('[AppOverlays]   - Match:', storedVersion === currentVersion);
 
-        // If stored version matches current, mark as initialized and done
-        if (storedVersion === APP_CONFIG.version) {
-            console.log('[AppOverlays] ✓ Version match, marking as initialized');
-            sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
-            return;
+        // Mark as initialized IMMEDIATELY to prevent redirect loop
+        sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
+        console.log('[AppOverlays] ✓ Marked as initialized');
+
+        // If version mismatch, just update localStorage and log it
+        // Don't redirect - AppOverlays may mount multiple times during navigation
+        if (storedVersion !== currentVersion) {
+            console.log('[AppOverlays] ⚠️  Version mismatch - updating localStorage');
+            storage.set(STORAGE_KEYS.APP_VERSION, currentVersion);
+            console.log('[AppOverlays] Updated to:', currentVersion);
+        } else {
+            console.log('[AppOverlays] ✓ Version match - no action needed');
         }
 
-        // Version mismatch detected - perform one-time update
-        console.log('[AppOverlays] ✗ Version mismatch detected, performing update...');
-        
-        const isIOS =
-            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
-        const performUpdate = async () => {
-            console.log(`[AppOverlays] Updating: ${storedVersion} → ${APP_CONFIG.version}`);
-            
-            // Mark as initialized BEFORE any async operation to prevent race conditions
-            sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
-            
-            // Only do aggressive cleanup on iOS
-            if (isIOS) {
-                console.log('[AppOverlays] iOS detected, performing cleanup...');
-                try {
-                    if ("serviceWorker" in navigator) {
-                        const regs = await navigator.serviceWorker.getRegistrations();
-                        await Promise.all(regs.map((reg) => reg.unregister()));
-                    }
-
-                    if ("caches" in window) {
-                        const keys = await caches.keys();
-                        await Promise.all(keys.map((key) => caches.delete(key)));
-                    }
-                } catch (error) {
-                    console.error("[AppOverlays] Cleanup failed:", error);
-                }
-            }
-            
-            // Update version in localStorage
-            storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
-            console.log('[AppOverlays] Updated localStorage version to:', APP_CONFIG.version);
-            
-            // Redirect to home with cache busting
-            console.log('[AppOverlays] Redirecting to home...');
-            window.location.href = `/?v=${APP_CONFIG.version}&updated=${Date.now()}`;
-        };
-
-        performUpdate();
     }, []);
 
     return (

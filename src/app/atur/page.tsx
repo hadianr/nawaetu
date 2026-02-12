@@ -806,17 +806,27 @@ function SettingsPageContent() {
 function UpdateChecker({ currentVersion }: { currentVersion: string }) {
     const [serverVersion, setServerVersion] = useState<string | null>(null);
     const [checking, setChecking] = useState(false);
+    const [debugLog, setDebugLog] = useState<string[]>([]);
+
+    const addLog = (msg: string) => {
+        console.log(msg);
+        setDebugLog(prev => [...prev, msg].slice(-10)); // Keep last 10 logs
+    };
 
     useEffect(() => {
         const check = async () => {
+            addLog('[UpdateChecker] Mounted, checking server version...');
             try {
                 const res = await fetch(`/api/system/version?t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
+                    addLog(`[UpdateChecker] Server version: ${data.version}`);
                     setServerVersion(data.version);
+                } else {
+                    addLog(`[UpdateChecker] API error: ${res.status}`);
                 }
             } catch (e) {
-                console.error("Version check failed", e);
+                addLog(`[UpdateChecker] Fetch failed: ${e}`);
             }
         };
         check();
@@ -849,73 +859,69 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
 
     const handleUpdate = async () => {
         setChecking(true);
-        
-        console.log('[Update] Starting PWA update process...');
-        console.log('[Update] Current version:', currentVersion);
-        console.log('[Update] Server version:', serverVersion);
+        addLog('[Update] ===== UPDATE STARTED =====');
+        addLog(`[Update] Current: ${currentVersion}, Server: ${serverVersion}`);
 
         try {
             if (!serverVersion) {
-                console.error('[Update] No server version available!');
-                toast.error('Gagal mendapatkan versi server. Coba lagi.');
+                addLog('[Update] ❌ No server version!');
+                toast.error('Gagal mendapatkan versi server.');
                 setChecking(false);
                 return;
             }
 
-            // 1. Update localStorage version FIRST
+            // STEP 1: Update localStorage
+            addLog('[Update] STEP 1: Update localStorage...');
             localStorage.setItem(STORAGE_KEYS.APP_VERSION, serverVersion);
-            console.log('[Update] ✓ Updated localStorage to:', serverVersion);
+            const verified = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
+            addLog(`[Update] Stored: ${verified}, Expected: ${serverVersion}, Match: ${verified === serverVersion}`);
 
-            // 2. Clear session storage for fresh start
-            sessionStorage.clear();
-            console.log('[Update] ✓ Cleared sessionStorage');
-
-            // 3. Check for service worker and trigger update
-            if ('serviceWorker' in navigator) {
-                const registration = await navigator.serviceWorker.getRegistration();
-                
-                if (registration) {
-                    console.log('[Update] Found SW registration, checking for updates...');
-                    
-                    // Trigger update check
-                    await registration.update();
-                    
-                    // If there's a waiting SW, activate it immediately
-                    if (registration.waiting) {
-                        console.log('[Update] Waiting SW found, sending skipWaiting message...');
-                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        
-                        // Wait for controller change
-                        await new Promise<void>((resolve) => {
-                            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                                console.log('[Update] ✓ New SW took control');
-                                resolve();
-                            }, { once: true });
-                        });
-                    } else {
-                        console.log('[Update] No waiting SW, will use existing');
-                    }
-                } else {
-                    console.log('[Update] No SW registration found');
-                }
+            if (verified !== serverVersion) {
+                addLog('[Update] ❌ localStorage write failed!');
+                toast.error('Gagal menyimpan versi. Storage penuh?');
+                setChecking(false);
+                return;
             }
 
-            // 4. Clear all caches
+            // STEP 2: Clear sessionStorage
+            addLog('[Update] STEP 2: Clear sessionStorage...');
+            sessionStorage.clear();
+            addLog('[Update] ✓ sessionStorage cleared');
+
+            // STEP 3: Notify user
+            addLog('[Update] STEP 3: Update notification...');
+            toast.promise(
+                new Promise(resolve => setTimeout(resolve, 2000)),
+                {
+                    loading: 'Mengupdate aplikasi...',
+                    success: 'Update siap! Reloading...',
+                    error: 'Gagal update'
+                }
+            );
+
+            // STEP 4: Clear caches
+            addLog('[Update] STEP 4: Clear browser caches...');
             if ('caches' in window) {
                 const keys = await caches.keys();
-                console.log('[Update] Clearing', keys.length, 'caches...');
-                await Promise.all(keys.map(key => caches.delete(key)));
-                console.log('[Update] ✓ All caches cleared');
+                addLog(`[Update] Found ${keys.length} caches: ${keys.join(', ')}`);
+                await Promise.all(keys.map(key => {
+                    addLog(`[Update] Deleting cache: ${key}`);
+                    return caches.delete(key);
+                }));
+                addLog('[Update] ✓ All caches cleared');
             }
+
+            // STEP 5: Hard reload
+            addLog('[Update] STEP 5: Hard reload page...');
+            addLog(`[Update] Redirecting to: /?v=${serverVersion}`);
             
-            console.log('[Update] ✓ Update complete, performing hard reload...');
-            
-            // 5. Hard reload to bypass any remaining cache
-            window.location.reload();
+            // Use hard reload with cache busting
+            window.location.href = `/?v=${serverVersion}&updated=${Date.now()}`;
             
         } catch (e) {
-            console.error('[Update] Error during update:', e);
-            toast.error('Update gagal. Coba refresh manual (Cmd/Ctrl+Shift+R)');
+            addLog(`[Update] ❌ ERROR: ${e}`);
+            console.error('[Update] Error:', e);
+            toast.error(`Update gagal: ${e}`);
             setChecking(false);
         }
     };
@@ -942,6 +948,15 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
                     {checking ? "Memproses..." : "Update Sekarang"}
                 </Button>
             </div>
+            
+            {/* DEBUG LOGS */}
+            {debugLog.length > 0 && (
+                <div className="mt-2 bg-black/80 border border-white/10 rounded-lg p-2 text-[10px] font-mono text-white/70 max-h-32 overflow-y-auto">
+                    {debugLog.map((log, i) => (
+                        <div key={i} className="text-white/50">{log}</div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
