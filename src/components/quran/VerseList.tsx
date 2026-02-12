@@ -144,6 +144,25 @@ const getVerseFontClass = (script: string, size: string) => {
 
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
     const { t } = useLocale();
+    
+    // --- Debug Logging ---
+    useEffect(() => {
+        console.log(`[VerseList] Rendered with:`, {
+            chapter: chapter?.name_simple,
+            versesCount: verses?.length,
+            currentPage,
+            totalPages,
+            currentLocale
+        });
+        
+        if (!chapter) {
+            console.error(`[VerseList] ERROR: chapter prop is missing!`);
+        }
+        if (!verses || verses.length === 0) {
+            console.error(`[VerseList] ERROR: verses are missing or empty!`);
+        }
+    }, [chapter, verses, currentPage, totalPages, currentLocale]);
+    
     // --- State ---
     const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -532,11 +551,16 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     };
 
     const displayedVerses = useMemo(() => {
-        if (!searchQuery || !isNaN(parseInt(searchQuery))) return verses;
-        return verses.filter(v =>
+        const result = !searchQuery || !isNaN(parseInt(searchQuery)) ? verses : verses.filter(v =>
             v.text_uthmani.includes(searchQuery) ||
             v.translations[0]?.text.toLowerCase().includes(searchQuery.toLowerCase())
         );
+        console.log(`[VerseList] displayedVerses computed:`, {
+            totalVerses: verses.length,
+            displayedCount: result.length,
+            searchQuery
+        });
+        return result;
     }, [verses, searchQuery]);
 
     const getFontSizeClass = () => {
@@ -558,6 +582,22 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     // For now, assume it works or we use a temporary object.
 
     const currentPlayingIndex = playingVerseKey ? verses.findIndex(v => v.verse_key === playingVerseKey) : -1;
+
+    // Safety check: if no verses, show error
+    if (!verses || verses.length === 0) {
+        console.error(`[VerseList] ERROR: Cannot render - no verses provided!`, { chapter: chapter?.name_simple, versesLength: verses?.length });
+        return (
+            <div className="relative min-h-screen pb-16 w-full max-w-4xl mx-auto flex items-center justify-center">
+                <div className="text-center space-y-4 px-4">
+                    <h2 className="text-lg font-bold text-red-500">⚠️ No Verses Found</h2>
+                    <p className="text-slate-400 text-sm">Verses data is empty. This might be a loading error.</p>
+                    <Link href="/quran" className="inline-block px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors">
+                        Kembali ke Daftar Surah
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative min-h-screen pb-16 w-full max-w-4xl mx-auto">
@@ -839,10 +879,11 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     <div key="tajweed-legend" className={`px-4 md:px-0 ${scriptType === 'tajweed' ? '' : 'hidden'}`}>
                         <TajweedLegend />
                     </div>
-                    {displayedVerses.map((verse) => {
-                        const verseNum = parseInt(verse.verse_key.split(':')[1]);
-                        const isPlayingVerse = playingVerseKey === verse.verse_key;
-                        const isBookmarked = checkIsBookmarked(verse.verse_key);
+                    {displayedVerses.map((verse, index) => {
+                        try {
+                            const verseNum = parseInt(verse.verse_key.split(':')[1]);
+                            const isPlayingVerse = playingVerseKey === verse.verse_key;
+                            const isBookmarked = checkIsBookmarked(verse.verse_key);
 
                         return (
                             <div
@@ -910,6 +951,15 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 </div>
                             </div>
                         );
+                        } catch (error) {
+                            console.error(`[VerseList] Error rendering verse ${verse.verse_key}:`, error);
+                            return (
+                                <div key={`verse-error-${verse.verse_key}`} className="px-4 md:px-6 py-6 border-b border-white/5 bg-red-900/10 rounded-lg border border-red-500/30">
+                                    <p className="text-red-400 text-sm font-semibold">Error rendering verse {verse.verse_key}</p>
+                                    <p className="text-red-300/70 text-xs mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
+                                </div>
+                            );
+                        }
                     })}
                     {/* Pagination Controls (List Mode) */}
                     {totalPages > 1 && (
