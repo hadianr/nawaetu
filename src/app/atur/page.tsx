@@ -797,12 +797,23 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
 
     useEffect(() => {
         const check = async () => {
+            // Check if we just completed an update (reload from update process)
+            const params = new URLSearchParams(window.location.search);
+            const justUpdated = params.has('updated');
+            
+            if (justUpdated) {
+                addLog('[UpdateChecker] 🎉 Just completed update, skipping check for 5s...');
+                // Skip check for 5 seconds after update reload
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            
             addLog('[UpdateChecker] Mounted, checking server version...');
             try {
                 const res = await fetch(`/api/system/version?t=${Date.now()}`);
                 if (res.ok) {
                     const data = await res.json();
                     addLog(`[UpdateChecker] Server version: ${data.version}`);
+                    addLog(`[UpdateChecker] Current version: ${currentVersion}`);
                     setServerVersion(data.version);
                 } else {
                     addLog(`[UpdateChecker] API error: ${res.status}`);
@@ -875,10 +886,9 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
                 return;
             }
 
-            // STEP 2: Clear sessionStorage
-            addLog('[Update] STEP 2: Clear sessionStorage...');
-            sessionStorage.clear();
-            addLog('[Update] ✓ sessionStorage cleared');
+            // STEP 2: Skip clearing sessionStorage here (hard reload clears it anyway)
+            addLog('[Update] STEP 2: Preparing for hard reload...');
+            addLog('[Update] sessionStorage will be cleared by browser on reload');
 
             // STEP 3: Notify user
             addLog('[Update] STEP 3: Update notification...');

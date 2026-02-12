@@ -102,8 +102,8 @@ export default function MobileDebugConsole() {
                     setIsVisible(true);
                     setIsOpen(true);
                 }}
-                className="fixed bottom-24 right-4 z-40 w-10 h-10 bg-blue-600/80 rounded-full flex items-center justify-center text-white text-xs font-bold hover:bg-blue-700 active:scale-95 transition-all"
-                title="Enable Debug Console (Alt+D)"
+                className="fixed bottom-20 right-4 z-50 w-12 h-12 bg-blue-600/80 rounded-full flex items-center justify-center text-white text-lg font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg"
+                title="Enable Debug Console (Alt+D to toggle, long press to open)"
             >
                 🐛
             </button>
@@ -112,7 +112,7 @@ export default function MobileDebugConsole() {
 
     return (
         <div
-            className={`fixed z-40 transition-all duration-300 ${
+            className={`fixed z-50 transition-all duration-300 ${
                 isOpen
                     ? "inset-0 bg-black/40"
                     : "bottom-20 right-4 w-12 h-12"
