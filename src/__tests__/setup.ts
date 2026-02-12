@@ -49,6 +49,9 @@ vi.mock('next/server', () => ({
         async json() {
             return JSON.parse(this.body || '{}');
         }
+        async text() {
+            return this.body || '';
+        }
     }
 }))
 
