@@ -102,56 +102,75 @@ export default function AppOverlays() {
     }, []);
 
     // iOS hard refresh on version change to prevent reverting to old PWA shell
-    // FIX: Only run once per session to prevent redirect loop when navigating between pages
+    // FIX: Only run once per session IF version matches to prevent redirect loop
     useEffect(() => {
         if (typeof window === "undefined") return;
-
-        // Check if already refreshed in this session
-        const sessionRefreshKey = `nawaetu_version_checked_${APP_CONFIG.version}`;
-        if (sessionStorage.getItem(sessionRefreshKey) === "true") {
-            return;
-        }
 
         const isIOS =
             /iPad|iPhone|iPod/.test(navigator.userAgent) ||
             (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-        if (!isIOS) {
-            // Mark as checked for non-iOS devices
-            sessionStorage.setItem(sessionRefreshKey, "true");
-            return;
-        }
-
         const storage = getStorageService();
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
 
-        // If version matches, mark as checked and skip refresh
+        // Session key for preventing redirect loop
+        const sessionRefreshKey = `nawaetu_version_checked_${APP_CONFIG.version}`;
+        
+        // Clean up old version session flags from previous versions
+        const allSessionKeys = Object.keys(sessionStorage);
+        allSessionKeys.forEach(key => {
+            if ((key.startsWith('nawaetu_version_checked_') || 
+                 key.startsWith('nawaetu_refresh_attempt_')) &&
+                !key.endsWith(APP_CONFIG.version)) {
+                sessionStorage.removeItem(key);
+            }
+        });
+        
+        // If version matches AND we've checked this session, skip
         if (storedVersion === APP_CONFIG.version) {
-            sessionStorage.setItem(sessionRefreshKey, "true");
+            if (!sessionStorage.getItem(sessionRefreshKey)) {
+                sessionStorage.setItem(sessionRefreshKey, "true");
+            }
             return;
         }
 
-        // Mark session as checked BEFORE refresh to prevent multiple triggers
-        sessionStorage.setItem(sessionRefreshKey, "true");
+        // Version mismatch detected - check if we already attempted refresh this session
+        const refreshAttemptKey = `nawaetu_refresh_attempt_${APP_CONFIG.version}`;
+        if (sessionStorage.getItem(refreshAttemptKey) === "true") {
+            // Already attempted refresh in this session but still mismatched
+            // This means we're likely in a legitimate navigation, not a loop
+            // Mark as checked to prevent further attempts
+            console.log(`[PWA] Version mismatch persists after refresh attempt, marking as current: ${APP_CONFIG.version}`);
+            sessionStorage.setItem(sessionRefreshKey, "true");
+            storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
+            return;
+        }
+
+        // Mark that we're attempting refresh
+        sessionStorage.setItem(refreshAttemptKey, "true");
 
         const forceRefresh = async () => {
-            console.log(`[PWA] iOS version mismatch detected: ${storedVersion} → ${APP_CONFIG.version}`);
-            try {
-                if ("serviceWorker" in navigator) {
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    await Promise.all(regs.map((reg) => reg.unregister()));
-                }
+            console.log(`[PWA] Version mismatch detected: ${storedVersion} → ${APP_CONFIG.version}`);
+            
+            // Only do aggressive cleanup on iOS
+            if (isIOS) {
+                try {
+                    if ("serviceWorker" in navigator) {
+                        const regs = await navigator.serviceWorker.getRegistrations();
+                        await Promise.all(regs.map((reg) => reg.unregister()));
+                    }
 
-                if ("caches" in window) {
-                    const keys = await caches.keys();
-                    await Promise.all(keys.map((key) => caches.delete(key)));
+                    if ("caches" in window) {
+                        const keys = await caches.keys();
+                        await Promise.all(keys.map((key) => caches.delete(key)));
+                    }
+                } catch (error) {
+                    console.error("[PWA] iOS refresh failed:", error);
                 }
-            } catch (error) {
-                console.error("[PWA] iOS refresh failed:", error);
-            } finally {
-                storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
-                window.location.href = `/?v=${APP_CONFIG.version}&refresh=${Date.now()}`;
             }
+            
+            storage.set(STORAGE_KEYS.APP_VERSION, APP_CONFIG.version);
+            window.location.href = `/?v=${APP_CONFIG.version}&refresh=${Date.now()}`;
         };
 
         forceRefresh();

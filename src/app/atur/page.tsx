@@ -812,12 +812,29 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
 
         // AUTO-FIX: Perform cleanup silently when updating
         try {
+            // 1. Clear version check session flags
+            const sessionKeys = Object.keys(sessionStorage);
+            sessionKeys.forEach(key => {
+                if (key.startsWith('nawaetu_version_checked_') || 
+                    key.startsWith('nawaetu_refresh_attempt_')) {
+                    sessionStorage.removeItem(key);
+                }
+            });
+
+            // 2. Update localStorage version to latest
+            if (serverVersion) {
+                localStorage.setItem('nawaetu_app_version', serverVersion);
+            }
+
+            // 3. Unregister service workers
             if ('serviceWorker' in navigator) {
                 const regs = await navigator.serviceWorker.getRegistrations();
                 for (const reg of regs) {
                     await reg.unregister();
                 }
             }
+
+            // 4. Clear all caches
             if ('caches' in window) {
                 const keys = await caches.keys();
                 await Promise.all(keys.map(key => caches.delete(key)));
@@ -876,6 +893,18 @@ const handleManualReset = async () => {
     if (!confirm("Aplikasi akan dibersihkan dan dimuat ulang untuk memastikan versi terbaru berjalan lancar. Lanjutkan?")) return;
 
     try {
+        // 0. Clear version check session flags
+        const sessionKeys = Object.keys(sessionStorage);
+        sessionKeys.forEach(key => {
+            if (key.startsWith('nawaetu_version_checked_') || 
+                key.startsWith('nawaetu_refresh_attempt_')) {
+                sessionStorage.removeItem(key);
+            }
+        });
+
+        // 0.5. Update localStorage version to current
+        localStorage.setItem('nawaetu_app_version', APP_CONFIG.version);
+
         // 1. Unregister ALL Service Workers
         if ('serviceWorker' in navigator) {
             const regs = await navigator.serviceWorker.getRegistrations();
