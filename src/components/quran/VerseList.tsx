@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { syncQueue } from "@/lib/sync-queue";
+import { cleanTajweedText } from "@/lib/sanitize";
 
 
 export interface Verse {
@@ -102,21 +103,6 @@ tajweed[class*="ham_wasl"], tajweed[class*="slnt"], .tajweed-text.slient { color
 /* Arabic End of Ayah and pause marks */
 [class*="waqf"], [class*="pause"], [class*="stop"] { display: inline!important; margin: 0 2px!important; }
 `;
-
-const cleanTajweedText = (htmlText: string) => {
-    if (!htmlText) return '';
-    let cleaned = htmlText;
-    
-    // Remove verse number spans at the end only
-    // Do NOT remove waqof marks - preserve all Arabic characters and diacritics
-    cleaned = cleaned.replace(/<span\s+class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    cleaned = cleaned.replace(/<span[^>]*class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    
-    // Remove only trailing verse numbers (1-3 digits)
-    cleaned = cleaned.replace(/[\u0660-\u0669]{1,3}\s*$/u, '');
-    
-    return cleaned.trim();
-};
 
 const cleanIndopakText = (text: string) => {
     if (!text) return '';
