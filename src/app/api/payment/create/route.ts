@@ -4,8 +4,6 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import fs from "fs";
-import path from "path";
 
 export async function POST(req: NextRequest) {
     try {
@@ -54,14 +52,6 @@ export async function POST(req: NextRequest) {
         const mayarData = await mayarRes.json();
 
         if (!mayarRes.ok) {
-
-            // Log to local file for agent to read
-            try {
-                const logMsg = `[${new Date().toISOString()}] BODY: ${JSON.stringify(body)} | ERROR: ${JSON.stringify(mayarData)}\n`;
-                fs.appendFileSync(path.join(process.cwd(), "MAYAR_ERROR.log"), logMsg);
-            } catch (err) {
-            }
-
             // Mayar often uses 'messages' instead of 'message' or 'error'
             const errorMessage =
                 mayarData?.messages ||
@@ -69,9 +59,10 @@ export async function POST(req: NextRequest) {
                 mayarData?.error ||
                 (typeof mayarData === 'string' ? mayarData : "Failed to create payment link");
 
+            console.error(`[${new Date().toISOString()}] Mayar Payment Creation Failed:`, errorMessage);
+
             return NextResponse.json({
-                error: typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage,
-                debug: mayarData
+                error: typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage
             }, { status: 500 });
         }
 
