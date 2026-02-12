@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, Bookmark, ChevronRight, Clock, Play } from "lucide-react";
@@ -112,6 +112,50 @@ export default function SurahList({ chapters }: SurahListProps) {
         (chapter.translated_name_en && chapter.translated_name_en.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
+    const prefetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const scrollPrefetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const prefetchedRef = useRef<Set<number>>(new Set());
+    const prefetchedRouteRef = useRef<Set<string>>(new Set());
+
+    const prefetchSurah = useCallback((surahId: number) => {
+        if (prefetchedRef.current.has(surahId)) return;
+        if (prefetchTimeoutRef.current) {
+            clearTimeout(prefetchTimeoutRef.current);
+        }
+
+        prefetchTimeoutRef.current = setTimeout(() => {
+            router.prefetch(`/quran/${surahId}`);
+            prefetchedRef.current.add(surahId);
+        }, 120);
+    }, [router]);
+
+    const prefetchRoute = useCallback((href: string) => {
+        if (prefetchedRouteRef.current.has(href)) return;
+        router.prefetch(href);
+        prefetchedRouteRef.current.add(href);
+    }, [router]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (scrollPrefetchTimeoutRef.current) {
+                clearTimeout(scrollPrefetchTimeoutRef.current);
+            }
+
+            scrollPrefetchTimeoutRef.current = setTimeout(() => {
+                const batch = filteredChapters.slice(0, 6).map((chapter) => chapter.id);
+                batch.forEach(prefetchSurah);
+            }, 240);
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            if (scrollPrefetchTimeoutRef.current) {
+                clearTimeout(scrollPrefetchTimeoutRef.current);
+            }
+        };
+    }, [filteredChapters, prefetchSurah]);
+
     return (
         <div className="w-full max-w-4xl space-y-6">
             {/* Dashboard Grid - Grouping Last Read & Bookmarks */}
@@ -123,6 +167,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                     return (
                         <Link
                             href={`/quran/${safeLastRead.surahId}?page=${targetPage}#${safeLastRead.surahId}:${safeLastRead.verseId}`}
+                            onMouseEnter={() => prefetchSurah(safeLastRead.surahId)}
+                            onFocus={() => prefetchSurah(safeLastRead.surahId)}
                             className="col-span-2 group relative overflow-hidden rounded-3xl border border-[rgb(var(--color-primary))]/50 bg-[#0f172a] shadow-lg shadow-[rgb(var(--color-primary))]/5 transition-all duration-500 hover:shadow-[rgb(var(--color-primary))]/20 hover:-translate-y-0.5"
                         >
                             {/* Dynamic Background Mesh */}
@@ -163,6 +209,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                 {/* Secondary Card: Bookmarks - Compact on Mobile */}
                 <Link
                     href="/bookmarks"
+                    onMouseEnter={() => prefetchRoute("/bookmarks")}
+                    onFocus={() => prefetchRoute("/bookmarks")}
                     className="col-span-2 md:col-span-1 group relative overflow-hidden rounded-3xl border border-white/10 bg-[#0f172a]/40 backdrop-blur-sm p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:bg-[#0f172a]/80 hover:border-[rgb(var(--color-primary))]/30 hover:shadow-lg"
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -217,6 +265,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                             tabIndex={0}
                             aria-label={`Buka detail surah ${chapter.name_simple}`}
                             onClick={() => router.push(`/quran/${chapter.id}`)}
+                            onMouseEnter={() => prefetchSurah(chapter.id)}
+                            onFocus={() => prefetchSurah(chapter.id)}
                             onKeyDown={(event) => {
                                 if (event.key === "Enter" || event.key === " ") {
                                     event.preventDefault();

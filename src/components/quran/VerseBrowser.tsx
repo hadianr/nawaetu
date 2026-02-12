@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import VerseList from "@/components/quran/VerseList";
+import QuranTracker from "@/components/quran/QuranTracker";
 import { DEFAULT_SETTINGS } from "@/data/settings-data";
 import { getKemenagChapter, getKemenagVerses, getVerseAudioUrl } from "@/lib/kemenag-api";
 
@@ -62,15 +63,18 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
         console.log(`[VerseBrowser] ✓ Loaded ${verses.length} verses in ${elapsedMs}ms, pages: ${totalPages}`);
 
         return (
-            <VerseList
-                chapter={chapter}
-                verses={verses}
-                audioUrl=""
-                currentPage={currentPage}
-                totalPages={totalPages}
-                currentReciterId={reciterId}
-                currentLocale={locale}
-            />
+            <>
+                <QuranTracker name={chapter.name_simple} count={chapter.verses_count} />
+                <VerseList
+                    chapter={chapter}
+                    verses={verses}
+                    audioUrl=""
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    currentReciterId={reciterId}
+                    currentLocale={locale}
+                />
+            </>
         );
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);

@@ -83,7 +83,7 @@ interface GadingVerse {
 }
 
 // Get all chapters from Kemenag API
-export async function getKemenagChapters(): Promise<Chapter[]> {
+export const getKemenagChapters = cache(async (): Promise<Chapter[]> => {
   try {
     console.log(`[getKemenagChapters] Fetching all chapters...`);
     const res = await fetchWithTimeout(
@@ -125,7 +125,7 @@ export async function getKemenagChapters(): Promise<Chapter[]> {
     console.error(`[getKemenagChapters] Error fetching chapters:`, errorMsg);
     throw error;
   }
-}
+});
 
 // Get specific chapter from Kemenag API (returns Chapter from SurahList)
 export async function getKemenagChapter(chapterId: string | number): Promise<Chapter> {

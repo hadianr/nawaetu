@@ -24,11 +24,11 @@ import { Chapter } from "@/components/quran/SurahList";
 import { useLocale } from "@/context/LocaleContext";
 
 const VerseShareDialog = dynamic(() => import("./VerseShareDialog"), { ssr: false });
+const BookmarkEditDialog = dynamic(() => import("./BookmarkEditDialog"), { ssr: false });
 import { AyahMarker } from "./AyahMarker";
 import { surahNames } from "@/lib/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 import { useBookmarks } from "@/hooks/useBookmarks";
-import BookmarkEditDialog from "./BookmarkEditDialog";
 import { saveBookmark, type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -178,6 +178,20 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const autoplay = searchParams.get('autoplay') === 'true';
+
+    useEffect(() => {
+        if (!chapter?.id) return;
+        if (chapter.id > 1) {
+            router.prefetch(`/quran/${chapter.id - 1}`);
+        }
+        if (chapter.id < 114) {
+            router.prefetch(`/quran/${chapter.id + 1}`);
+        }
+    }, [chapter?.id, router]);
+
+    const prefetchShareDialog = useCallback(() => {
+        void import("./VerseShareDialog");
+    }, []);
 
     const handlePerPageChange = useCallback((value: number) => {
         setPerPage(value);
@@ -897,7 +911,16 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                         <Button variant="ghost" size="icon" onClick={() => handleBookmarkClick(verse)} className={`h-8 w-8 rounded-full ${isBookmarked ? 'text-[rgb(var(--color-primary))]' : 'text-slate-400 hover:text-[rgb(var(--color-primary))]'}`}>
                                             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
                                         </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => setActiveVerseForShare(verse)} className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"><Share2 className="h-4 w-4" /></Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onMouseEnter={prefetchShareDialog}
+                                            onFocus={prefetchShareDialog}
+                                            onClick={() => setActiveVerseForShare(verse)}
+                                            className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                                        >
+                                            <Share2 className="h-4 w-4" />
+                                        </Button>
                                         <Button variant="ghost" size="icon" onClick={() => toggleTafsir(verse.verse_key)} className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}><Lightbulb className="h-4 w-4" /></Button>
                                     </div>
                                 </div>
