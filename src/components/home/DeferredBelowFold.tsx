@@ -39,9 +39,9 @@ export default function DeferredBelowFold() {
 
   useEffect(() => {
     if ("requestIdleCallback" in window) {
-      (window as Window).requestIdleCallback(() => setReady(true), { timeout: 2000 });
+      (window as Window).requestIdleCallback(() => setReady(true), { timeout: 1500 });
     } else {
-      setTimeout(() => setReady(true), 800);
+      setTimeout(() => setReady(true), 400);
     }
   }, []);
 

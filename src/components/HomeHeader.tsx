@@ -7,9 +7,15 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import StreakBadge from "@/components/StreakBadge";
 import { cn } from "@/lib/utils";
-import { MapPin, Navigation } from "lucide-react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+
+// Inline critical icons to avoid lucide overhead on LCP
+const NavigationIcon = ({ className }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="3 11 22 2 13 21 11 13 3 11" />
+    </svg>
+);
 
 export default function HomeHeader() {
     const { data, refreshLocation } = usePrayerTimes();
@@ -118,7 +124,7 @@ export default function HomeHeader() {
                         )}
                     >
                         {data?.isDefaultLocation ? (
-                            <Navigation className="w-3 h-3 text-amber-400 animate-pulse" />
+                            <NavigationIcon className="w-3 h-3 text-amber-400 animate-pulse" />
                         ) : (
                             <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
                         )}

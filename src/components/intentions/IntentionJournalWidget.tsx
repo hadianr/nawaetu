@@ -3,8 +3,15 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ChevronRight, Book, Flame, Sparkles, CheckCircle2, Moon, Heart, Compass, Edit2 } from "lucide-react";
-import IntentionPrompt from "./IntentionPrompt";
-import ReflectionPrompt from "./ReflectionPrompt";
+import dynamic from "next/dynamic";
+
+const IntentionPrompt = dynamic(() => import("./IntentionPrompt"), {
+    ssr: false,
+});
+
+const ReflectionPrompt = dynamic(() => import("./ReflectionPrompt"), {
+    ssr: false,
+});
 import { useLocale } from "@/context/LocaleContext";
 import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 import { cn } from "@/lib/utils";
@@ -106,7 +113,25 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     };
 
     if (isLoading) {
-        return <div className="w-full h-24 bg-white/5 rounded-3xl animate-pulse" />;
+        return (
+            <div className={cn("relative w-full", className)}>
+                <div className="relative bg-black/20 backdrop-blur-md border border-white/5 rounded-3xl p-4 sm:p-5 h-[105px] animate-pulse">
+                    <div className="flex flex-col gap-2.5">
+                        <div className="flex items-center justify-between">
+                            <div className="h-3 w-24 bg-white/10 rounded-full" />
+                            <div className="h-4 w-8 bg-white/10 rounded-lg" />
+                        </div>
+                        <div className="flex items-center justify-between gap-4 mt-2">
+                            <div className="flex-1 space-y-2">
+                                <div className="h-4 w-32 bg-white/10 rounded" />
+                                <div className="h-3 w-40 bg-white/10 rounded" />
+                            </div>
+                            <div className="h-10 w-20 bg-white/10 rounded-xl" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (

@@ -206,18 +206,15 @@ const jsonLdSchemas = [
   }
 ];
 
-import NotificationWatcher from "@/components/NotificationWatcher";
 import PatternOverlay from "@/components/PatternOverlay";
-import AppOverlays from "@/components/AppOverlays";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { WebVitals } from "@/components/WebVitals";
-import FCMHandler from "@/components/FCMHandler";
-import AnalyticsLoader from "@/components/AnalyticsLoader";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
-import DataSyncer from "@/components/DataSyncer";
-import { AdvancedDataSyncer } from "@/components/AdvancedDataSyncer";
+import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { getStorageService } from "@/core/infrastructure/storage";
 
 
 
@@ -260,7 +257,6 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <WebVitals />
-        <AnalyticsLoader />
         {/* Structured Data - Multiple Schemas */}
         {jsonLdSchemas.map((schema, index) => (
           <script
@@ -273,12 +269,8 @@ export default function RootLayout({
           <ThemeProvider>
             <AuthSessionProvider>
               <InfaqProvider>
-                <DataSyncer />
-                <AdvancedDataSyncer />
                 <PatternOverlay />
-                <NotificationWatcher />
-                <AppOverlays />
-                <FCMHandler />
+                <DeferredLayoutComponents />
                 {children}
 
                 <Suspense fallback={null}>

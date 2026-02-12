@@ -1,9 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Moon, Info } from "lucide-react";
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS, getLocalizedMission } from "@/data/missions-data";
 import dynamic from "next/dynamic";
+
+// Inline critical icons to avoid lucide overhead on LCP
+const MoonIcon = ({ className }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    </svg>
+);
+
+const InfoIcon = ({ className }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4" />
+        <path d="M12 8h.01" />
+    </svg>
+);
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -190,7 +204,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     {/* Left: Text & Title */}
                     <div className="flex flex-col gap-1.5 z-10">
                         <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
-                            <Moon className={`w-4 h-4 ${styles.icon}`} />
+                            <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
                             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{t.ramadhanHeading}</span>
                         </div>
                         <div className="flex items-baseline gap-2.5">
@@ -220,7 +234,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
                                 {progress}% {t.ramadhanPreparationLabel}
                             </div>
-                            <Info className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
+                            <InfoIcon className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
                         </div>
                     </div>
                 </div>
@@ -231,7 +245,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 <DialogContent className="bg-black/80 backdrop-blur-xl border border-white/10 text-white w-[90%] rounded-2xl">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                            <Moon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> {t.ramadhanInfoTitle}
+                            <MoonIcon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> {t.ramadhanInfoTitle}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 pt-2">
