@@ -88,7 +88,7 @@ describe('Payment Sync', () => {
         // Assert: Found via link_id in list and updated locally
         expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({
             mayarId: 'real-tx-999',
-            status: 'paid'
+            status: 'settlement'
         }));
     });
 });
