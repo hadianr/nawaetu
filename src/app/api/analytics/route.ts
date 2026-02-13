@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { trackMetric, WebVitalMetric } from "@/lib/server-analytics";
 
 /**
  * Analytics API endpoint for Web Vitals metrics
@@ -6,15 +7,14 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function POST(request: NextRequest) {
     try {
-        const metric = await request.json();
+        const metric = await request.json() as WebVitalMetric;
 
-        // Log metrics in production for monitoring
-
-        // TODO: In future, send to analytics service (Google Analytics, Vercel Analytics, etc.)
-        // Example: await sendToGoogleAnalytics(metric);
+        // Log metrics using the configured analytics provider
+        await trackMetric(metric);
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
+        console.error("[Analytics API Error]", error);
         return NextResponse.json(
             { error: "Failed to process metric" },
             { status: 500 }

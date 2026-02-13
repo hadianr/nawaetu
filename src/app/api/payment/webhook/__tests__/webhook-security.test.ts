@@ -149,4 +149,42 @@ describe('Payment Webhook Security', () => {
         // Verify that it processed the update
         expect(db.update).toHaveBeenCalled();
     });
+
+    it('REJECTS webhook with signature of correct length but invalid content', async () => {
+        const payload = {
+            id: 'txn_123',
+            status: 'SETTLEMENT',
+            amount: 10000
+        };
+        const body = JSON.stringify(payload);
+
+        // Calculate valid signature first to get length
+        const validSignature = crypto.createHmac('sha256', SECRET)
+            .update(body)
+            .digest('hex');
+
+        // Create an invalid signature with same length (64 chars)
+        // Just replace the first char with something else (if 'a', make it 'b', else 'a')
+        const firstChar = validSignature[0];
+        const newFirstChar = firstChar === 'a' ? 'b' : 'a';
+        const invalidSignature = newFirstChar + validSignature.slice(1);
+
+        const req = new NextRequest('http://localhost/api/payment/webhook', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Mayar-Signature': invalidSignature
+            },
+            body: body
+        });
+
+        const res = await POST(req);
+
+        // Assert: 401 Unauthorized
+        expect(res.status).toBe(401);
+        const json = (res as any).body;
+        expect(json.error).toBe("Invalid Signature");
+
+        expect(db.update).not.toHaveBeenCalled();
+    });
 });
