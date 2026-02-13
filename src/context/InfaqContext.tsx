@@ -29,8 +29,8 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         // Load persist state
         const [savedTotal, savedHistory] = storage.getMany([
-            STORAGE_KEYS.USER_TOTAL_INFAQ,
-            STORAGE_KEYS.USER_INFAQ_HISTORY
+            STORAGE_KEYS.USER_TOTAL_DONATION,
+            STORAGE_KEYS.USER_DONATION_HISTORY
         ]).values();
 
         if (savedTotal) setTotalInfaq(parseInt(savedTotal as string, 10));
@@ -51,8 +51,8 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
 
         // Persist
         storage.setMany(new Map([
-            [STORAGE_KEYS.USER_TOTAL_INFAQ as any, newTotal.toString()],
-            [STORAGE_KEYS.USER_INFAQ_HISTORY as any, JSON.stringify(newHistory)]
+            [STORAGE_KEYS.USER_TOTAL_DONATION as any, newTotal.toString()],
+            [STORAGE_KEYS.USER_DONATION_HISTORY as any, JSON.stringify(newHistory)]
         ]));
 
         // Dispatch event for UI updates
@@ -64,8 +64,8 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
     const resetInfaq = () => {
         setTotalInfaq(0);
         setInfaqHistory([]);
-        storage.remove(STORAGE_KEYS.USER_TOTAL_INFAQ as any);
-        storage.remove(STORAGE_KEYS.USER_INFAQ_HISTORY as any);
+        storage.remove(STORAGE_KEYS.USER_TOTAL_DONATION as any);
+        storage.remove(STORAGE_KEYS.USER_DONATION_HISTORY as any);
         window.dispatchEvent(new CustomEvent("infaq_updated", {
             detail: { isMuhsinin: false, total: 0 }
         }));

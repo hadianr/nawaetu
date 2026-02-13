@@ -9,21 +9,21 @@ import { useInfaq } from "@/context/InfaqContext";
 import { toast } from "sonner";
 import { useSession, signIn } from "next-auth/react";
 
-interface InfaqModalProps {
+interface DonationModalProps {
     isOpen: boolean;
     onClose: () => void;
     headerTitle?: string;
     headerDescription?: string;
 }
 
-const INFAQ_OPTIONS = [
+const DONATION_OPTIONS = [
     { value: 10000, label: "Rp 10.000", emoji: "🍬" },
     { value: 25000, label: "Rp 25.000", emoji: "☕" },
     { value: 50000, label: "Rp 50.000", emoji: "🍛" },
     { value: 100000, label: "Rp 100.000", emoji: "🎁" },
 ];
 
-export default function InfaqModal({ isOpen, onClose, headerTitle, headerDescription }: InfaqModalProps) {
+export default function DonationModal({ isOpen, onClose, headerTitle, headerDescription }: DonationModalProps) {
     const { isMuhsinin } = useInfaq();
     const { data: session } = useSession();
     const [selectedAmount, setSelectedAmount] = useState<number>(25000);
@@ -111,7 +111,7 @@ export default function InfaqModal({ isOpen, onClose, headerTitle, headerDescrip
                     ) : (
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
-                                {INFAQ_OPTIONS.map((option) => (
+                                {DONATION_OPTIONS.map((option) => (
                                     <button
                                         key={option.value}
                                         onClick={() => {

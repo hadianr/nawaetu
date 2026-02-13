@@ -191,7 +191,7 @@ export default function MisiPage() {
                             </p>
                             <span className={cn(
                                 "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
-                                mission.hukum === 'wajib'
+                                mission.hukum === 'obligatory'
                                     ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                     : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                             )}>
@@ -325,7 +325,7 @@ export default function MisiPage() {
                 {!gender && (
                     <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
                         <p className="text-sm text-amber-400">
-                            💡 Pilih jenis kelamin di <Link href="/atur" className="underline">Pengaturan</Link> untuk misi yang lebih personal
+                            💡 Pilih jenis kelamin di <Link href="/settings" className="underline">Pengaturan</Link> untuk misi yang lebih personal
                         </p>
                     </div>
                 )}

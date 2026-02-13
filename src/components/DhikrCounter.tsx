@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { addXP } from "@/lib/leveling";
 import { useLocale } from "@/context/LocaleContext";
-import { useTasbihPersistence } from "@/hooks/useTasbihPersistence";
+import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
 
 const playTick = (ctx: AudioContext) => {
     const osc = ctx.createOscillator();
@@ -22,7 +22,7 @@ const playTick = (ctx: AudioContext) => {
     osc.stop(ctx.currentTime + 0.05);
 };
 
-type ZikirPreset = {
+type DhikrPreset = {
     id: string;
     label: string;
     arab: string;
@@ -31,9 +31,9 @@ type ZikirPreset = {
     target: number;
 };
 
-export default function TasbihCounter() {
+export default function DhikrCounter() {
     const { t } = useLocale();
-    const zikirPresets = useMemo<ZikirPreset[]>(
+    const dhikrPresets = useMemo<DhikrPreset[]>(
         () => [
             {
                 id: "tasbih",
@@ -82,13 +82,13 @@ export default function TasbihCounter() {
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [showReward, setShowReward] = useState(false);
-    const { state: tasbihState, updateState, hasHydrated } = useTasbihPersistence({
-        defaultActiveId: zikirPresets[0]?.id ?? "tasbih",
-        validActiveIds: zikirPresets.map((preset) => preset.id),
+    const { state: dhikrState, updateState, hasHydrated } = useDhikrPersistence({
+        defaultActiveId: dhikrPresets[0]?.id ?? "tasbih",
+        validActiveIds: dhikrPresets.map((preset) => preset.id),
         defaultTarget: 33
     });
-    const { count, target, activeZikirId, dailyCount, streak, lastZikirDate } = tasbihState;
-    const activeZikir = zikirPresets.find((zikir) => zikir.id === activeZikirId) || null;
+    const { count, target, activeDhikrId, dailyCount, streak, lastDhikrDate } = dhikrState;
+    const activeDhikr = dhikrPresets.find((dhikr) => dhikr.id === activeDhikrId) || null;
 
     const initAudio = () => {
         if (!audioContext && typeof window !== "undefined") {
@@ -120,12 +120,12 @@ export default function TasbihCounter() {
         const today = new Date().toISOString().split('T')[0];
         let newDailyCount = dailyCount;
         let newStreak = streak;
-        let newLastDate = lastZikirDate;
+        let newLastDate = lastDhikrDate;
 
-        if (lastZikirDate !== today) {
+        if (lastDhikrDate !== today) {
             newDailyCount = 1;
             newLastDate = today;
-            const last = new Date(lastZikirDate);
+            const last = new Date(lastDhikrDate);
             const curr = new Date(today);
             const diffDays = Math.ceil(Math.abs(curr.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
             if (diffDays === 1) newStreak = streak + 1;
@@ -146,7 +146,7 @@ export default function TasbihCounter() {
             count: newCount,
             dailyCount: newDailyCount,
             streak: newStreak,
-            lastZikirDate: newLastDate
+            lastDhikrDate: newLastDate
         });
     };
 
@@ -161,11 +161,11 @@ export default function TasbihCounter() {
         setFeedbackMode(modes[(modes.indexOf(feedbackMode) + 1) % modes.length]);
     };
     
-    const handlePresetSelect = (preset: ZikirPreset) => {
+    const handlePresetSelect = (preset: DhikrPreset) => {
         // Save preset and reset count immediately
         updateState({
             target: preset.target,
-            activeZikirId: preset.id,
+            activeDhikrId: preset.id,
             count: 0
         });
         setIsDialogOpen(false);
@@ -187,19 +187,19 @@ export default function TasbihCounter() {
                     <p className="text-[9px] xs:text-[10px] text-white/40 uppercase tracking-[0.2em]">{t.tasbihSubtitle}</p>
                 </div>
 
-                {activeZikir ? (
+                {activeDhikr ? (
                     <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2">
                         <div className="px-4 pt-4 xs:pt-20 pb-0.5 xs:pb-1"> {/* Fills taller screens (390px+ width often = 800px+ height) */}
                             <h2 className="text-2xl xs:text-5xl font-bold text-white drop-shadow-2xl font-serif leading-none">
-                                {activeZikir.arab}
+                                {activeDhikr.arab}
                             </h2>
                         </div>
                         <div className="mt-1 xs:mt-3 flex flex-col items-center">
                             <p className="text-[rgb(var(--color-primary-light))] font-extrabold text-[10px] xs:text-base tracking-tight uppercase">
-                                {activeZikir.latin}
+                                {activeDhikr.latin}
                             </p>
                             <p className="text-white/40 text-[8px] xs:text-xs italic line-clamp-2 max-w-[90%] mt-0.5 xs:mt-1.5">
-                                {activeZikir.tadabbur}
+                                {activeDhikr.tadabbur}
                             </p>
                         </div>
                     </div>
@@ -236,7 +236,7 @@ export default function TasbihCounter() {
                         className="absolute inset-1.5 md:inset-4 rounded-full bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border border-[rgb(var(--color-primary)/0.15)] active:scale-95 transition-transform duration-75 flex flex-col items-center justify-center group z-20 shadow-xl"
                     >
                         <span className="text-white/30 text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5">
-                            {activeZikir ? activeZikir.label : t.tasbihCounterLabel}
+                            {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                         </span>
                         <span className="text-7xl xs:text-8xl md:text-9xl font-mono font-bold text-white tracking-tighter drop-shadow-2xl">
                             {hasHydrated ? (
@@ -305,14 +305,14 @@ export default function TasbihCounter() {
                                 <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">{t.tasbihListTitle}</DialogTitle>
                             </DialogHeader>
                             <div className="flex flex-col gap-2 py-4">
-                                {zikirPresets.map((p) => (
+                                {dhikrPresets.map((p) => (
                                     <Button
                                         key={p.id}
                                         variant="outline"
                                         onClick={() => handlePresetSelect(p)}
                                         className={cn(
                                             "justify-between h-auto py-3 px-4 border-white/5 bg-white/5 rounded-2xl",
-                                            activeZikir?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
+                                            activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
                                         )}
                                     >
                                         <div className="flex flex-col items-start text-left">
@@ -355,9 +355,9 @@ export default function TasbihCounter() {
 
                     <div className="flex flex-row items-stretch gap-2.5 w-full">
                         {(() => {
-                            const currentIndex = activeZikir ? zikirPresets.findIndex(z => z.id === activeZikir.id) : -1;
-                            const nextZikir = currentIndex !== -1 && currentIndex < zikirPresets.length - 1
-                                ? zikirPresets[currentIndex + 1]
+                            const currentIndex = activeDhikr ? dhikrPresets.findIndex(z => z.id === activeDhikr.id) : -1;
+                            const nextZikir = currentIndex !== -1 && currentIndex < dhikrPresets.length - 1
+                                ? dhikrPresets[currentIndex + 1]
                                 : null;
 
                             return (
