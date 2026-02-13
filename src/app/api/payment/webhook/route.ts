@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
         const rawBody = await req.text();
 
         // Verify HMAC-SHA256 Signature
+        // Ensuring integrity and authenticity of the webhook payload
         const hmac = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
 
         // Use timing-safe comparison to prevent timing attacks
