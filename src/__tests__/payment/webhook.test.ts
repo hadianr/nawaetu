@@ -79,7 +79,7 @@ describe('Payment Webhook', () => {
 
         // Check first call (transaction)
         expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({
-            status: 'paid',
+            status: 'settlement',
             mayarId: 'mayar-tx-123'
         }));
 
@@ -144,7 +144,7 @@ describe('Payment Webhook', () => {
 
         // Assert: Update with fallback logic
         expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({
-            status: 'paid',
+            status: 'settlement',
             mayarId: 'mayar-tx-789'
         }));
 
@@ -167,6 +167,26 @@ describe('Payment Webhook', () => {
 
         expect(res.status).toBe(404);
         // Should NOT update DB
+        expect(db.update).not.toHaveBeenCalled();
+    });
+
+    it('should NOT update if transaction is already settled', async () => {
+        const mockSettledTx = { id: 'tx-settled', userId: 'user-settled', amount: 10000, status: 'settlement', mayarId: 'mayar-tx-settled' };
+        (db.query.transactions.findFirst as Mock).mockResolvedValue(mockSettledTx);
+
+        const payload = {
+            id: 'mayar-tx-settled',
+            status: 'SETTLEMENT',
+            amount: 10000
+        };
+
+        const req = createSignedRequest(payload);
+        const res = await POST(req);
+
+        expect(res.status).toBe(200);
+        const json = (res as any).body;
+        expect(json.message).toBe("Transaction already processed");
+
         expect(db.update).not.toHaveBeenCalled();
     });
 });
