@@ -212,12 +212,13 @@ export async function POST(req: NextRequest) {
         });
     } catch (error: any) {
         // Return detailed error message for debugging
+        const isDev = process.env.NODE_ENV === 'development';
         return NextResponse.json(
             {
                 success: false,
                 error: "Internal server error",
-                details: error.message,
-                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+                details: isDev ? error.message : undefined,
+                stack: isDev ? error.stack : undefined
             },
             { status: 500 }
         );
