@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { trackKiblatView } from "@/lib/analytics";
 
-export default function KiblatTracker() {
+export default function QiblaTracker() {
     useEffect(() => {
         trackKiblatView();
     }, []);

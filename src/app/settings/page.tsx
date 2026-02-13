@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import UserProfileDialog from "@/components/UserProfileDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar
-import InfaqModal from "@/components/InfaqModal";
+import DonationModal from "@/components/DonationModal";
 import AboutAppModal from "@/components/AboutAppModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
@@ -65,7 +65,7 @@ function SettingsPageContent() {
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
-    const [showInfaqModal, setShowInfaqModal] = useState(false);
+    const [showDonationModal, setShowDonationModal] = useState(false);
     const [showAboutModal, setShowAboutModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -330,7 +330,7 @@ function SettingsPageContent() {
 
         // Check if theme is premium and user is not premium
         if (theme.isPremium && !isMuhsinin) {
-            setShowInfaqModal(true);
+            setShowDonationModal(true);
             return;
         }
 
@@ -681,7 +681,7 @@ function SettingsPageContent() {
                         </p>
                     </div>
                     <Button
-                        onClick={() => setShowInfaqModal(true)}
+                        onClick={() => setShowDonationModal(true)}
                         size="sm"
                         className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20"
                     >
@@ -740,7 +740,7 @@ function SettingsPageContent() {
                 )}
             </div>
 
-            <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
+            <DonationModal isOpen={showDonationModal} onClose={() => setShowDonationModal(false)} />
             <AboutAppModal open={showAboutModal} onOpenChange={setShowAboutModal} />
         </div >
     );

@@ -129,8 +129,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         storage.remove(STORAGE_KEYS.USER_ARCHETYPE);
 
         // Activity & Content
-        storage.remove(STORAGE_KEYS.USER_TOTAL_INFAQ);
-        storage.remove(STORAGE_KEYS.USER_INFAQ_HISTORY);
+        storage.remove(STORAGE_KEYS.USER_TOTAL_DONATION);
+        storage.remove(STORAGE_KEYS.USER_DONATION_HISTORY);
         storage.remove(STORAGE_KEYS.QURAN_BOOKMARKS);
         storage.remove(STORAGE_KEYS.INTENTION_JOURNAL);
         storage.remove(STORAGE_KEYS.QURAN_LAST_READ);
@@ -143,13 +143,13 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         storage.remove(STORAGE_KEYS.ACTIVITY_TRACKER);
         storage.remove(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY);
 
-        // Tasbih
-        storage.remove(STORAGE_KEYS.TASBIH_COUNT);
-        storage.remove(STORAGE_KEYS.TASBIH_TARGET);
-        storage.remove(STORAGE_KEYS.TASBIH_ACTIVE_PRESET);
-        storage.remove(STORAGE_KEYS.TASBIH_STREAK);
-        storage.remove(STORAGE_KEYS.TASBIH_LAST_DATE);
-        storage.remove(STORAGE_KEYS.TASBIH_DAILY_COUNT);
+        // Dhikr
+        storage.remove(STORAGE_KEYS.DHIKR_COUNT);
+        storage.remove(STORAGE_KEYS.DHIKR_TARGET);
+        storage.remove(STORAGE_KEYS.DHIKR_ACTIVE_PRESET);
+        storage.remove(STORAGE_KEYS.DHIKR_STREAK);
+        storage.remove(STORAGE_KEYS.DHIKR_LAST_DATE);
+        storage.remove(STORAGE_KEYS.DHIKR_DAILY_COUNT);
 
         // Settings
         storage.remove(STORAGE_KEYS.SETTINGS_THEME);
@@ -413,7 +413,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* 5. Menu Items */}
                     <div className="space-y-1">
-                        <button onClick={() => { setIsOpen(false); router.push('/atur'); }} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                        <button onClick={() => { setIsOpen(false); router.push('/settings'); }} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
                                     <Settings className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />

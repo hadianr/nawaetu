@@ -77,8 +77,8 @@ export default function MissionListModal({
             const bCompleted = isMissionCompleted(b.id, b.type);
 
             if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
-            if (a.hukum === 'wajib' && b.hukum !== 'wajib') return -1;
-            if (b.hukum === 'wajib' && a.hukum !== 'wajib') return 1;
+            if (a.hukum === 'obligatory' && b.hukum !== 'obligatory') return -1;
+            if (b.hukum === 'obligatory' && a.hukum !== 'obligatory') return 1;
 
             return 0;
         });
@@ -118,7 +118,7 @@ export default function MissionListModal({
                             {!isCompleted && !isLocked && (
                                 <div className={cn(
                                     "absolute left-0 top-0 bottom-0 w-1 opacity-80",
-                                    mission.hukum === 'wajib' ? "bg-blue-500" : "bg-emerald-500/50"
+                                    mission.hukum === 'obligatory' ? "bg-blue-500" : "bg-emerald-500/50"
                                 )} />
                             )}
 
@@ -140,7 +140,7 @@ export default function MissionListModal({
                                     <div className="flex gap-1">
                                         <span className={cn(
                                             "text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border",
-                                            mission.hukum === 'wajib'
+                                            mission.hukum === 'obligatory'
                                                 ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
                                                 : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                                         )}>

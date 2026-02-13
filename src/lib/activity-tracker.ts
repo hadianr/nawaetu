@@ -49,7 +49,7 @@ export function trackQuranRead(ayatCount: number): void {
 
 /**
  * @deprecated Use ActivityRepository.trackTasbih() or useActivity hook
- * Track Tasbih count. Called from TasbihCounter.
+ * Track Tasbih count. Called from DhikrCounter.
  */
 export function trackTasbih(count: number): void {
     repository.trackTasbih(count);

@@ -13,7 +13,7 @@ import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
 import { trackAIQuery } from "@/lib/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
-import InfaqModal from "@/components/InfaqModal";
+import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -564,7 +564,7 @@ export default function MentorAIPage() {
                 </div>
             </div>
 
-            <InfaqModal
+            <DonationModal
                 isOpen={showLimitBlocking}
                 onClose={() => setShowLimitBlocking(false)}
                 headerTitle={isMuhsinin ? "Batas Harian Tercapai" : t.tanyaDailyLimit}

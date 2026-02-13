@@ -323,15 +323,15 @@ export default function MissionsWidget() {
                 if (val.locked) return -20;
                 if (val.isLate) return -10;
 
-                // Wajib Priorities
-                if (m.category === 'sholat' && m.hukum === 'wajib') return 100;
+                // Obligatory Priorities
+                if (m.category === 'prayer' && m.hukum === 'obligatory') return 100;
 
-                // Qadha Puasa is Special Wajib
-                if (m.id === 'qadha_puasa' || (m.phase === 'ramadhan_prep' && m.hukum === 'wajib')) return 90;
+                // Qadha Puasa is Special Obligatory
+                if (m.id === 'qadha_puasa' || (m.phase === 'ramadhan_prep' && m.hukum === 'obligatory')) return 90;
 
                 // Active Sunnah Priorities
-                if (m.category === 'sholat') return 80; // Sunnah Prayer
-                if (m.category === 'dzikir') return 70;
+                if (m.category === 'prayer') return 80; // Sunnah Prayer
+                if (m.category === 'dhikr') return 70;
 
                 // Special Context (Ramadhan Prep - Sunnah)
                 if (m.phase === 'ramadhan_prep') return 60;
@@ -344,9 +344,9 @@ export default function MissionsWidget() {
 
             if (scoreA !== scoreB) return scoreB - scoreA; // Descending (Higher first)
 
-            // Tie-breaker: Wajib > Sunnah
-            if (a.hukum === 'wajib' && b.hukum !== 'wajib') return -1;
-            if (b.hukum === 'wajib' && a.hukum !== 'wajib') return 1;
+            // Tie-breaker: Obligatory > Sunnah
+            if (a.hukum === 'obligatory' && b.hukum !== 'obligatory') return -1;
+            if (b.hukum === 'obligatory' && a.hukum !== 'obligatory') return 1;
 
             return 0;
         });
@@ -407,7 +407,7 @@ export default function MissionsWidget() {
 
                     // ... (URGENCY LOGIC REMOVED FROM SNIPPET FOR BREVITY - KEEPING EXISTING LOGIC)
                     let urgencyNode = null;
-                    if (mission.category === 'sholat' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
+                    if (mission.category === 'prayer' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
                         // Determine current prayer key based on ID (e.g. sholat_ashar -> Asr)
                         // Helper map
                         const idToKey: { [key: string]: string } = {
@@ -491,7 +491,7 @@ export default function MissionsWidget() {
                             {!isCompleted && !isLocked && (
                                 <div className={cn(
                                     "absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                                    mission.hukum === 'wajib' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
+                                    mission.hukum === 'obligatory' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
                                 )} />
                             )}
                             <div className="flex items-center gap-3 w-full">
@@ -523,7 +523,7 @@ export default function MissionsWidget() {
                                     <div className="flex items-center gap-2">
                                         <span className={cn(
                                             "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
-                                            mission.hukum === 'wajib'
+                                            mission.hukum === 'obligatory'
                                                 ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                                 : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/20"
                                         )}>

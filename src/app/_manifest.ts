@@ -50,7 +50,7 @@ export function buildManifest(): NawaetuManifest {
         name: "Tasbih Digital",
         short_name: "Tasbih",
         description: "Dzikir dengan tasbih digital",
-        url: "/tasbih",
+        url: "/dhikr",
         icons: [
           {
             src: "/icon-192x192.png",
@@ -62,7 +62,7 @@ export function buildManifest(): NawaetuManifest {
         name: "Arah Kiblat",
         short_name: "Kiblat",
         description: "Cari arah kiblat",
-        url: "/kiblat",
+        url: "/qibla",
         icons: [
           {
             src: "/icon-192x192.png",

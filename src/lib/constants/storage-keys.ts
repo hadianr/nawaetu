@@ -1,9 +1,9 @@
 /**
  * Centralized Storage Keys
- * Type-safe storage keys untuk prevent typos dan memudahkan refactoring
+ * Type-safe storage keys to prevent typos and facilitate refactoring
  * 
- * Note: Ini adalah single source of truth untuk semua storage keys
- * Jangan hardcode string keys di components/services
+ * Note: This is the single source of truth for all storage keys
+ * Do not hardcode string keys in components/services
  */
 export const STORAGE_KEYS = {
   // User Profile
@@ -49,17 +49,17 @@ export const STORAGE_KEYS = {
   AI_CHAT_HISTORY: 'ai_chat_history_v2',
   AI_USAGE: 'ai_usage_v1',
 
-  // Tasbih
-  TASBIH_COUNT: 'tasbih_count',
-  TASBIH_TARGET: 'tasbih_target',
-  TASBIH_ACTIVE_PRESET: 'tasbih_active_preset',
-  TASBIH_STREAK: 'tasbih_streak',
-  TASBIH_LAST_DATE: 'tasbih_last_date',
-  TASBIH_DAILY_COUNT: 'tasbih_daily_count',
+  // Dhikr (Tasbih)
+  DHIKR_COUNT: 'tasbih_count',
+  DHIKR_TARGET: 'tasbih_target',
+  DHIKR_ACTIVE_PRESET: 'tasbih_active_preset',
+  DHIKR_STREAK: 'tasbih_streak',
+  DHIKR_LAST_DATE: 'tasbih_last_date',
+  DHIKR_DAILY_COUNT: 'tasbih_daily_count',
 
-  // Infaq/Donation
-  USER_TOTAL_INFAQ: 'user_total_infaq',
-  USER_INFAQ_HISTORY: 'user_infaq_history',
+  // Donation (Infaq)
+  USER_TOTAL_DONATION: 'user_total_infaq',
+  USER_DONATION_HISTORY: 'user_infaq_history',
 
   // Intention Journal
   INTENTION_JOURNAL: 'intention_journal',

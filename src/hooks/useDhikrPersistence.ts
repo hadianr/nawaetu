@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
-type TasbihState = {
+type DhikrState = {
     count: number;
     target: number | null;
-    activeZikirId: string;
+    activeDhikrId: string;
     dailyCount: number;
     streak: number;
-    lastZikirDate: string;
+    lastDhikrDate: string;
 };
 
-type UseTasbihPersistenceOptions = {
+type UseDhikrPersistenceOptions = {
     defaultActiveId: string;
     validActiveIds: string[];
     defaultTarget?: number | null;
@@ -39,46 +39,46 @@ const safeRemoveItem = (key: string) => {
     localStorage.removeItem(key);
 };
 
-export function useTasbihPersistence(options: UseTasbihPersistenceOptions) {
+export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
     const { defaultActiveId, validActiveIds, defaultTarget = 33 } = options;
-    const [state, setState] = useState<TasbihState>({
+    const [state, setState] = useState<DhikrState>({
         count: 0,
         target: defaultTarget,
-        activeZikirId: defaultActiveId,
+        activeDhikrId: defaultActiveId,
         dailyCount: 0,
         streak: 0,
-        lastZikirDate: ""
+        lastDhikrDate: ""
     });
     const [hasHydrated, setHasHydrated] = useState(false);
     const hasInitializedRef = useRef(false);
 
-    const persistPartial = useCallback((partial: Partial<TasbihState>) => {
+    const persistPartial = useCallback((partial: Partial<DhikrState>) => {
         if (typeof window === "undefined") return;
         if (partial.count !== undefined && !isNaN(partial.count)) {
-            safeSetItem(STORAGE_KEYS.TASBIH_COUNT, partial.count.toString());
+            safeSetItem(STORAGE_KEYS.DHIKR_COUNT, partial.count.toString());
         }
         if (partial.target !== undefined && (partial.target === null || !isNaN(partial.target))) {
-            safeSetItem(STORAGE_KEYS.TASBIH_TARGET, partial.target ? partial.target.toString() : "inf");
+            safeSetItem(STORAGE_KEYS.DHIKR_TARGET, partial.target ? partial.target.toString() : "inf");
         }
-        if (partial.activeZikirId !== undefined) {
-            safeSetItem(STORAGE_KEYS.TASBIH_ACTIVE_PRESET, partial.activeZikirId);
+        if (partial.activeDhikrId !== undefined) {
+            safeSetItem(STORAGE_KEYS.DHIKR_ACTIVE_PRESET, partial.activeDhikrId);
         }
         if (partial.dailyCount !== undefined && !isNaN(partial.dailyCount)) {
-            safeSetItem(STORAGE_KEYS.TASBIH_DAILY_COUNT, partial.dailyCount.toString());
+            safeSetItem(STORAGE_KEYS.DHIKR_DAILY_COUNT, partial.dailyCount.toString());
         }
         if (partial.streak !== undefined && !isNaN(partial.streak)) {
-            safeSetItem(STORAGE_KEYS.TASBIH_STREAK, partial.streak.toString());
+            safeSetItem(STORAGE_KEYS.DHIKR_STREAK, partial.streak.toString());
         }
-        if (partial.lastZikirDate !== undefined) {
-            safeSetItem(STORAGE_KEYS.TASBIH_LAST_DATE, partial.lastZikirDate);
+        if (partial.lastDhikrDate !== undefined) {
+            safeSetItem(STORAGE_KEYS.DHIKR_LAST_DATE, partial.lastDhikrDate);
         }
     }, []);
 
-    const persistAll = useCallback((nextState: TasbihState) => {
+    const persistAll = useCallback((nextState: DhikrState) => {
         persistPartial(nextState);
     }, [persistPartial]);
 
-    const updateState = useCallback((partial: Partial<TasbihState>) => {
+    const updateState = useCallback((partial: Partial<DhikrState>) => {
         setState((prev) => ({ ...prev, ...partial }));
         persistPartial(partial);
     }, [persistPartial]);
@@ -89,10 +89,10 @@ export function useTasbihPersistence(options: UseTasbihPersistenceOptions) {
         const today = new Date().toISOString().split("T")[0];
 
         const keysToClean = [
-            STORAGE_KEYS.TASBIH_COUNT,
-            STORAGE_KEYS.TASBIH_TARGET,
-            STORAGE_KEYS.TASBIH_DAILY_COUNT,
-            STORAGE_KEYS.TASBIH_STREAK
+            STORAGE_KEYS.DHIKR_COUNT,
+            STORAGE_KEYS.DHIKR_TARGET,
+            STORAGE_KEYS.DHIKR_DAILY_COUNT,
+            STORAGE_KEYS.DHIKR_STREAK
         ];
 
         keysToClean.forEach((key) => {
@@ -102,28 +102,28 @@ export function useTasbihPersistence(options: UseTasbihPersistenceOptions) {
             }
         });
 
-        const savedCount = localStorage.getItem(STORAGE_KEYS.TASBIH_COUNT);
-        const savedTarget = localStorage.getItem(STORAGE_KEYS.TASBIH_TARGET);
-        const savedZikirId = localStorage.getItem(STORAGE_KEYS.TASBIH_ACTIVE_PRESET);
-        const savedDaily = localStorage.getItem(STORAGE_KEYS.TASBIH_DAILY_COUNT);
-        const savedStreak = localStorage.getItem(STORAGE_KEYS.TASBIH_STREAK);
-        const savedDate = localStorage.getItem(STORAGE_KEYS.TASBIH_LAST_DATE);
+        const savedCount = localStorage.getItem(STORAGE_KEYS.DHIKR_COUNT);
+        const savedTarget = localStorage.getItem(STORAGE_KEYS.DHIKR_TARGET);
+        const savedDhikrId = localStorage.getItem(STORAGE_KEYS.DHIKR_ACTIVE_PRESET);
+        const savedDaily = localStorage.getItem(STORAGE_KEYS.DHIKR_DAILY_COUNT);
+        const savedStreak = localStorage.getItem(STORAGE_KEYS.DHIKR_STREAK);
+        const savedDate = localStorage.getItem(STORAGE_KEYS.DHIKR_LAST_DATE);
 
-        const resolvedActiveId = savedZikirId && validActiveIds.includes(savedZikirId)
-            ? savedZikirId
+        const resolvedActiveId = savedDhikrId && validActiveIds.includes(savedDhikrId)
+            ? savedDhikrId
             : defaultActiveId;
 
-        let nextState: TasbihState = {
+        let nextState: DhikrState = {
             count: parseNumber(savedCount, 0),
             target: parseTarget(savedTarget, defaultTarget),
-            activeZikirId: resolvedActiveId,
+            activeDhikrId: resolvedActiveId,
             dailyCount: parseNumber(savedDaily, 0),
             streak: parseNumber(savedStreak, 0),
-            lastZikirDate: savedDate || today
+            lastDhikrDate: savedDate || today
         };
 
-        if (nextState.lastZikirDate && nextState.lastZikirDate !== today) {
-            const last = new Date(nextState.lastZikirDate);
+        if (nextState.lastDhikrDate && nextState.lastDhikrDate !== today) {
+            const last = new Date(nextState.lastDhikrDate);
             const curr = new Date(today);
             const diffTime = Math.abs(curr.getTime() - last.getTime());
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -132,7 +132,7 @@ export function useTasbihPersistence(options: UseTasbihPersistenceOptions) {
                 ...nextState,
                 dailyCount: 0,
                 streak: diffDays > 1 ? 0 : nextState.streak,
-                lastZikirDate: today
+                lastDhikrDate: today
             };
         }
 
@@ -155,10 +155,10 @@ export function useTasbihPersistence(options: UseTasbihPersistenceOptions) {
 
     useEffect(() => {
         if (!hasHydrated) return;
-        if (!validActiveIds.includes(state.activeZikirId)) {
-            updateState({ activeZikirId: defaultActiveId });
+        if (!validActiveIds.includes(state.activeDhikrId)) {
+            updateState({ activeDhikrId: defaultActiveId });
         }
-    }, [defaultActiveId, hasHydrated, state.activeZikirId, updateState, validActiveIds]);
+    }, [defaultActiveId, hasHydrated, state.activeDhikrId, updateState, validActiveIds]);
 
     return { state, updateState, hasHydrated };
 }

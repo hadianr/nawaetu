@@ -6,14 +6,14 @@ import { ChevronLeft, TrendingUp, Calendar, Flame, Trophy, Lock, Crown, BarChart
 import { Button } from "@/components/ui/button";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
-import InfaqModal from "@/components/InfaqModal";
+import DonationModal from "@/components/DonationModal";
 import { getWeeklyStats, getMonthlyStats, getDailyActivityHistory, generateMockData } from "@/lib/analytics-utils";
 import { cn } from "@/lib/utils";
 
 export default function StatsPage() {
     const { isMuhsinin } = useInfaq();
     const { t } = useLocale();
-    const [showInfaqModal, setShowInfaqModal] = useState(false);
+    const [showDonationModal, setShowDonationModal] = useState(false);
     const [weeklyStats, setWeeklyStats] = useState(getWeeklyStats());
     const [monthlyStats, setMonthlyStats] = useState(getMonthlyStats());
     const [history, setHistory] = useState(getDailyActivityHistory());
@@ -198,7 +198,7 @@ export default function StatsPage() {
                 </div>
             </div>
 
-            <InfaqModal isOpen={showInfaqModal} onClose={() => setShowInfaqModal(false)} />
+            <DonationModal isOpen={showDonationModal} onClose={() => setShowDonationModal(false)} />
         </div>
     );
 }

@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.9,
         },
         {
-            url: `${baseUrl}/kiblat`,
+            url: `${baseUrl}/qibla`,
             lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.8,
@@ -31,19 +31,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.8,
         },
         {
-            url: `${baseUrl}/tentang`,
+            url: `${baseUrl}/about`,
             lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.8,
         },
         {
-            url: `${baseUrl}/tasbih`,
+            url: `${baseUrl}/dhikr`,
             lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.7,
         },
         {
-            url: `${baseUrl}/misi`,
+            url: `${baseUrl}/missions`,
             lastModified: currentDate,
             changeFrequency: 'daily',
             priority: 0.7,
@@ -61,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.6,
         },
         {
-            url: `${baseUrl}/atur`,
+            url: `${baseUrl}/settings`,
             lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.5,

@@ -10,7 +10,7 @@ export interface ValidationResult {
 
 /**
  * Validates if a mission can be completed based on time, day, or prayer windows.
- * Allows completion of "late" missions (past window) for Sholat, while keeping Dzikir simple.
+ * Allows completion of "late" missions (past window) for Prayer, while keeping Dhikr simple.
  */
 export function checkMissionValidation(
     mission: Mission,
@@ -29,7 +29,7 @@ export function checkMissionValidation(
 
         const prayerTimeStr = prayerData.prayerTimes[prayerKey];
 
-        if (!prayerTimeStr) return { locked: true, reason: "Menunggu data waktu sholat..." };
+        if (!prayerTimeStr) return { locked: true, reason: "Waiting for prayer times..." };
 
         const [pHours, pMinutes] = prayerTimeStr.split(':').map(Number);
         const prayerDate = new Date(currentTime);
@@ -39,14 +39,14 @@ export function checkMissionValidation(
         if (currentTime < prayerDate) {
             return {
                 locked: true,
-                reason: `Belum masuk waktu ${prayerKey}`
+                reason: `Not yet time for ${prayerKey}`
             };
         }
 
-        // 2. Early (Awal Waktu): Within 60 minutes of prayer time - ONLY for Sholat
+        // 2. Early (Awal Waktu): Within 60 minutes of prayer time - ONLY for Prayer
         const diffMs = currentTime.getTime() - prayerDate.getTime();
         const diffMins = diffMs / (1000 * 60);
-        const isEarly = mission.category === 'sholat' && diffMins <= 60;
+        const isEarly = mission.category === 'prayer' && diffMins <= 60;
 
         // 3. Late (Terlewat): Find the LATEST prayer that has arrived
         let latestArrivedPrayer = "";
@@ -72,20 +72,20 @@ export function checkMissionValidation(
         if (latestArrivedPrayer) {
             return {
                 locked: false,
-                isLate: mission.category === 'sholat', // Only flag as 'Late' for Sholat
+                isLate: mission.category === 'prayer', // Only flag as 'Late' for Prayer
                 isEarly: false,
-                reason: `Sudah masuk ${latestArrivedPrayer}`
+                reason: `${latestArrivedPrayer} has arrived`
             };
         }
 
         return {
             locked: false,
             isEarly,
-            reason: isEarly ? "Awal Waktu (+XP Bonus)" : `Sudah masuk waktu ${prayerKey}`
+            reason: isEarly ? "Early Time (+XP Bonus)" : `Time for ${prayerKey}`
         };
     }
 
-    // Specific hour window validation (e.g. Dzikir Pagi 04:00-10:00)
+    // Specific hour window validation (e.g. Morning Dhikr 04:00-10:00)
     if (mission.validationType === 'time' && mission.validationConfig?.timeWindow) {
         const nowHour = currentTime.getHours();
         const { start, end } = mission.validationConfig.timeWindow;
@@ -93,17 +93,17 @@ export function checkMissionValidation(
         if (nowHour < start) {
             return {
                 locked: true,
-                reason: `Tersedia jam ${start.toString().padStart(2, '0')}:00`
+                reason: `Available at ${start.toString().padStart(2, '0')}:00`
             };
         }
 
         if (nowHour >= end) {
-            // Updated: User requested dynamic filtering("current time"), so we need to flag 'isLate' even for Dzikir/Sunnah
+            // Updated: User requested dynamic filtering("current time"), so we need to flag 'isLate' even for Dhikr/Sunnah
             // so we can sort them to the bottom.
             return {
                 locked: false,
                 isLate: true,
-                reason: `Sudah lewat jendela waktu (${start}:00 - ${end}:00)`
+                reason: `Time window passed (${start}:00 - ${end}:00)`
             };
         }
     }
@@ -112,7 +112,7 @@ export function checkMissionValidation(
     if (mission.validationType === 'day' && mission.validationConfig?.allowedDays) {
         const currentDay = currentTime.getDay();
         if (!mission.validationConfig.allowedDays.includes(currentDay)) {
-            return { locked: true, reason: "Tidak tersedia hari ini" };
+            return { locked: true, reason: "Not available today" };
         }
     }
 
@@ -122,36 +122,32 @@ export function checkMissionValidation(
 /**
  * Filters missions based on User's Spiritual Archetype (Fokus Ibadah).
  * 
- * - Pemula: Focus on Wajib + Basic Quran. Hides generic Sunnah/Trackers to prevent overwhelm.
- * - Penggerak: Focus on Daily Routine (Wajib + Sunnah). Hides heavy Weekly/Trackers.
- * - Mujahid: Shows EVERYTHING.
+ * - Beginner: Focus on Obligatory + Basic Quran. Hides generic Sunnah/Trackers to prevent overwhelm.
+ * - Striver: Focus on Daily Routine (Obligatory + Sunnah). Hides heavy Weekly/Trackers.
+ * - Dedicated: Shows EVERYTHING.
  */
 export function filterMissionsByArchetype(missions: Mission[], archetype: string | null): Mission[] {
-    if (!archetype) return missions; // Default: Show all if no archetype selected (or maybe filter to 'Penggerak' as safe default? Let's keep all for now).
+    if (!archetype) return missions; // Default: Show all if no archetype selected
 
     return missions.filter(mission => {
-        // 1. Mandatory missions (Wajib) are ALWAYS shown for everyone
-        if (mission.hukum === 'wajib') return true;
-
-        // 2. Special Case: Ramadhan Prep is high priority, show for everyone? 
-        // Let's stick to the archetype rules for consistency, but maybe allow some 'sunnah' prep for Pemula?
-        // Decision: Stick to rules properly.
+        // 1. Mandatory missions (Obligatory) are ALWAYS shown for everyone
+        if (mission.hukum === 'obligatory') return true;
 
         switch (archetype) {
-            case 'beginner': // (Was: pemula) "Fokus Wajib"
-                // Show Wajib (already covered) OR Simple Quran tasks
-                // Hide other Sunnah (Dhuha, Dzikir, Puasa Sunnah)
+            case 'beginner': // "Fokus Wajib"
+                // Show Obligatory (already covered) OR Simple Quran tasks
+                // Hide other Sunnah (Dhuha, Dhikr, Fasting Sunnah)
                 if (mission.category === 'quran' && mission.validationConfig?.requiredCount && mission.validationConfig.requiredCount <= 10) return true;
                 return false;
 
-            case 'striver': // (Was: penggerak) "Wajib + Sunnah Ringan"
-                // Show All Daily Missions (Wajib + Sunnah).
+            case 'striver': // "Wajib + Sunnah Ringan"
+                // Show All Daily Missions (Obligatory + Sunnah).
                 // Hide Weekly (Puasa Senin Kamis) or Trackers (Qadha Puasa is Wajib so it shows, but generic trackers maybe hide?)
                 // Actually, let's just show all 'daily' type.
                 if (mission.type === 'daily') return true;
                 return false;
 
-            case 'dedicated': // (Was: mujahid) "Extra Strong"
+            case 'dedicated': // "Extra Strong"
                 // Show EVERYTHING
                 return true;
 
@@ -162,15 +158,15 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
 }
 
 /**
- * Gets the localized label for a mission's hukum (wajib, sunnah, etc.)
+ * Gets the localized label for a mission's hukum (obligatory, sunnah, etc.)
  */
 export function getHukumLabel(hukum: string, t: typeof SETTINGS_TRANSLATIONS.id) {
     const labels: Record<string, keyof typeof SETTINGS_TRANSLATIONS.id> = {
-        'wajib': 'hukumWajib',
+        'obligatory': 'hukumWajib',
         'sunnah': 'hukumSunnah',
-        'mubah': 'hukumMubah',
-        'makruh': 'hukumMakruh',
-        'harram': 'hukumHaram'
+        'permissible': 'hukumMubah',
+        'disliked': 'hukumMakruh',
+        'forbidden': 'hukumHaram'
     };
     const key = labels[hukum];
     return t[key as keyof typeof SETTINGS_TRANSLATIONS.id] || hukum;
