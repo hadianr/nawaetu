@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.7.2] - 2026-02-13
+
+### Changed
+- **Refactor codebase**: Renamed folders, components, and logic to English for better maintainability.
+- **Refactor translations**: Separated settings translations into individual files per language.
+
+### Added
+- **Feature: Profile Enhancements**: Added user gender and archetype to profile for a more personalized experience.
+- **Feature: Online Status**: Introduced online status detection and an offline indicator.
+
+### Fixed
+- **Security**: Sanitized tajweed HTML to prevent potential XSS vulnerabilities in Quran view.
+
+### Improved
+- **UI: HomeHeader**: Refined the HomeHeader UI for better visual consistency.
+- **System**: Updated Drizzle migrations for improved idempotency.
+- **System**: Updated dependencies and general performance optimizations.
+
 ## [1.7.1] - 2026-02-12
 
 ### Performance
