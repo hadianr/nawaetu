@@ -26,6 +26,16 @@ vi.mock('@/db', () => ({
     }
 }));
 
+// Override/Extend the global mock for drizzle-orm to include 'ne'
+vi.mock('drizzle-orm', () => ({
+    eq: vi.fn(),
+    and: vi.fn(),
+    or: vi.fn(),
+    desc: vi.fn(),
+    sql: vi.fn(),
+    ne: vi.fn(), // Added
+}));
+
 // We need to access the mocked functions to set return values
 import { db } from '@/db';
 
@@ -134,10 +144,13 @@ describe('Payment Webhook Security', () => {
 
         vi.mocked(db.query.transactions.findFirst).mockResolvedValue(mockTransaction as any);
 
-        // Mock update
+        // Mock update to handle .returning() and plain await
         vi.mocked(db.update).mockReturnValue({
              set: vi.fn().mockReturnValue({
-                 where: vi.fn().mockResolvedValue({})
+                 where: vi.fn().mockReturnValue({
+                     returning: vi.fn().mockResolvedValue([{ status: 'settlement' }]),
+                     then: (resolve: any) => resolve({}) // Handle await on where() result
+                 })
              })
         } as any);
 

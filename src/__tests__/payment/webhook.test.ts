@@ -10,6 +10,7 @@ import crypto from 'crypto';
 const updateChain = {
     set: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
+    returning: vi.fn().mockReturnValue([{ status: 'settlement' }]), // Add returning mock
 };
 
 // Override the global mock for db strictly for this test file
@@ -23,6 +24,16 @@ vi.mock('@/db', () => ({
     }
 }));
 
+// Override/Extend the global mock for drizzle-orm to include 'ne'
+vi.mock('drizzle-orm', () => ({
+    eq: vi.fn(),
+    and: vi.fn(),
+    or: vi.fn(),
+    desc: vi.fn(),
+    sql: vi.fn(),
+    ne: vi.fn(), // Added
+}));
+
 describe('Payment Webhook', () => {
     const originalEnv = process.env;
     const SECRET = 'test-secret';
@@ -32,6 +43,9 @@ describe('Payment Webhook', () => {
         // Reset chain spies
         updateChain.set.mockClear();
         updateChain.where.mockClear();
+        updateChain.returning.mockClear(); // Clear returning spy
+        updateChain.returning.mockReturnValue([{ status: 'settlement' }]); // Default success
+
         process.env = { ...originalEnv };
         process.env.MAYAR_WEBHOOK_SECRET = SECRET;
     });
@@ -71,10 +85,6 @@ describe('Payment Webhook', () => {
         expect(res.status).toBe(200);
 
         // Assert: Transaction Updated
-        // Note: db.update is called with the table schema, not the string name in Drizzle
-        // The mock in setup.ts or here might return specific things.
-        // In the original test: expect(db.update).toHaveBeenCalledWith(transactions);
-        // We need to ensure 'transactions' and 'users' are correctly imported and used in assertion.
         expect(db.update).toHaveBeenCalledTimes(2); // Once for tx, once for user
 
         // Check first call (transaction)

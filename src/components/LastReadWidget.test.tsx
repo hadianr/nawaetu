@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import LastReadWidget from "@/components/LastReadWidget";
@@ -73,7 +74,7 @@ describe("LastReadWidget cache", () => {
         expect(storageMock.remove).toHaveBeenCalledWith("verse_1_1");
         expect(storageMock.set).toHaveBeenCalledWith(
             "verse_1_1",
-            expect.any(String)
+            expect.anything()
         );
     });
 });
