@@ -68,6 +68,7 @@ export const STORAGE_KEYS = {
   PWA_PROMPT_DISMISSED: 'pwa_prompt_dismissed',
   ONBOARDING_COMPLETED: 'onboarding_completed',
   APP_VERSION: 'app_version',
+  LAST_SYNC_USER_ID: 'last_sync_user_id',
 } as const;
 
 // Type for storage keys

@@ -24,6 +24,9 @@ export async function POST(req: NextRequest) {
                 .set({
                     prayerPreferences: prayerPreferences ? JSON.stringify(prayerPreferences) : null,
                     userLocation: userLocation ? JSON.stringify(userLocation) : null,
+                    latitude: userLocation?.lat || null,
+                    longitude: userLocation?.lng || null,
+                    city: userLocation?.city || null,
                     timezone: timezone || null,
                     updatedAt: new Date(),
                 })

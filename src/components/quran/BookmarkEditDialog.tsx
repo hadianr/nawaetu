@@ -72,7 +72,7 @@ export default function BookmarkEditDialog({
                 verseId: bookmark.verseId,
                 timestamp: Date.now()
             };
-            storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, JSON.stringify(lastReadData));
+            storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, lastReadData);
         }
 
         onOpenChange(false);

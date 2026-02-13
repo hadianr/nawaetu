@@ -13,6 +13,9 @@ import { checkMissionValidation, getHukumLabel } from "@/lib/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { toast } from "sonner";
+import { useMissions } from "@/hooks/useMissions";
+import { getMissionRepository } from "@/core/repositories/mission.repository";
 import { Metadata } from "next";
 
 // Note: Metadata export cannot be used in client components
@@ -29,11 +32,9 @@ interface CompletedMissions {
 
 export default function MisiPage() {
     const { t, locale } = useLocale();
+    const { completedMissions, completeMission, undoCompleteMission } = useMissions();
     const [gender, setGender] = useState<Gender>(null);
-
     const [missions, setMissions] = useState<Mission[]>([]);
-    const [completed, setCompleted] = useState<CompletedMissions>({});
-    const [today, setToday] = useState<string>("");
 
     // Dialog State
     const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
@@ -42,26 +43,15 @@ export default function MisiPage() {
     const { data: prayerData } = usePrayerTimes();
 
     const loadData = () => {
-        const [savedGender, savedCompleted] = storage.getMany([
-            STORAGE_KEYS.USER_GENDER,
-            STORAGE_KEYS.COMPLETED_MISSIONS
-        ]).values();
+        const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
+        setGender(savedGender);
 
-
-        const allMissions = getMissionsForGender(savedGender as Gender);
+        const allMissions = getMissionsForGender(savedGender);
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         setMissions(localizedMissions);
-
-        if (savedCompleted) {
-            try {
-                setCompleted(typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted);
-            } catch (e) { }
-        }
     };
 
     useEffect(() => {
-        setToday(new Date().toISOString().split('T')[0]);
-
         // Initial load
         loadData();
 
@@ -77,8 +67,18 @@ export default function MisiPage() {
         };
     }, [locale]);
 
-    const isMissionCompletedToday = (missionId: string) => {
-        return completed[missionId]?.date === today;
+    const isMissionCompletedToday = (missionId: string, type: Mission['type']) => {
+        const today = new Date().toISOString().split('T')[0];
+
+        // recurring check
+        if (type === 'daily' || type === 'weekly' || !type) {
+            return completedMissions.some((m: any) =>
+                m.id === missionId && m.completedAt.split('T')[0] === today
+            );
+        }
+
+        // one-time check
+        return completedMissions.some((m: any) => m.id === missionId);
     };
 
     // --- Validation Logic ---
@@ -95,48 +95,42 @@ export default function MisiPage() {
         if (!selectedMission) return;
 
         const mission = selectedMission;
-        const reward = xpAmount || mission.xpReward; // Use passed amount or default
+        const reward = xpAmount || mission.xpReward;
         addXP(reward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
         // Update streak (only on first mission of the day)
-        const completedToday = Object.values(completed).filter(c => c.date === today).length;
-        if (completedToday === 0) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const completedCountToday = completedMissions.filter((m: any) =>
+            m.completedAt.split('T')[0] === todayStr
+        ).length;
+
+        if (completedCountToday === 0) {
             updateStreak();
         }
 
-        const newCompleted = {
-            ...completed,
-            [mission.id]: {
-                completedAt: new Date().toISOString(),
-                date: today
-            }
-        };
-        setCompleted(newCompleted);
-        storage.set(STORAGE_KEYS.COMPLETED_MISSIONS as any, JSON.stringify(newCompleted));
-
+        completeMission(mission.id, reward);
         setIsDialogOpen(false);
     };
 
     const handleResetMission = () => {
         if (!selectedMission) return;
-
         const mission = selectedMission;
-        // Subtract XP
         addXP(-mission.xpReward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
-        // Remove from completed
-        const newCompleted = { ...completed };
-        delete newCompleted[mission.id];
+        undoCompleteMission(mission.id);
 
-        setCompleted(newCompleted);
-        storage.set(STORAGE_KEYS.COMPLETED_MISSIONS as any, JSON.stringify(newCompleted));
+        toast.info((t as any).toastMissionReset || "Misi dibatalkan", {
+            description: `${mission.title} telah di-reset. (-${mission.xpReward} XP)`,
+            duration: 3000,
+            icon: "🔄"
+        });
 
         setIsDialogOpen(false);
     };
 
-    const completedCount = missions.filter(m => isMissionCompletedToday(m.id)).length;
+    const completedCount = missions.filter(m => isMissionCompletedToday(m.id, m.type)).length;
 
     // Theme colors based on gender
     const theme = gender === 'female'
@@ -151,7 +145,7 @@ export default function MisiPage() {
     const trackerMissions = missions.filter(m => m.type === 'tracker');
 
     const renderMission = (mission: Mission) => {
-        const isCompleted = isMissionCompletedToday(mission.id);
+        const isCompleted = isMissionCompletedToday(mission.id, mission.type);
         const isGenderSpecific = mission.gender !== null;
         const validation = checkValidation(mission);
         const isLocked = !isCompleted && validation.locked;
@@ -335,7 +329,7 @@ export default function MisiPage() {
                         mission={selectedMission}
                         isOpen={isDialogOpen}
                         onClose={() => setIsDialogOpen(false)}
-                        isCompleted={isMissionCompletedToday(selectedMission.id)}
+                        isCompleted={isMissionCompletedToday(selectedMission.id, selectedMission.type)}
                         isLocked={checkValidation(selectedMission).locked}
                         lockReason={checkValidation(selectedMission).reason}
                         isLate={checkValidation(selectedMission).isLate}

@@ -215,6 +215,7 @@ import AuthSessionProvider from "@/components/AuthSessionProvider";
 import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
+import { GuestSyncManager } from "@/components/auth/GuestSyncManager";
 
 
 
@@ -268,6 +269,7 @@ export default function RootLayout({
         <LocaleProvider>
           <ThemeProvider>
             <AuthSessionProvider>
+              <GuestSyncManager />
               <InfaqProvider>
                 <PatternOverlay />
                 <DeferredLayoutComponents />

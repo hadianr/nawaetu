@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
             }
         }
 
-        if (status !== "PAID" && status !== "SETTLEMENT") {
+        if ((status as string) !== "PAID" && (status as string) !== "SETTLEMENT") {
             const listUrl = `https://api.mayar.id/hl/v1/transactions?email=${encodeURIComponent(session.user.email)}&limit=5`;
             const listRes = await fetch(listUrl, {
                 method: "GET",
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
                     await db.update(transactions)
                         .set({
                             mayarId: matchedTx.id,
-                            status: matchedTx.status.toLowerCase()
+                            status: (matchedTx.status.toLowerCase() === "paid" ? "settlement" : matchedTx.status.toLowerCase()) as any
                         })
                         .where(eq(transactions.id, latestTx.id));
 
@@ -101,10 +101,12 @@ export async function GET(req: NextRequest) {
         }
 
         // 3. Update if PAID/SETTLEMENT
-        if (status === "PAID" || status === "SETTLEMENT") {
+        if ((status as string) === "PAID" || (status as string) === "SETTLEMENT") {
             // Update Transaction
+            let validStatus = status.toLowerCase();
+            if (validStatus === 'paid') validStatus = 'settlement';
             await db.update(transactions)
-                .set({ status: status.toLowerCase() })
+                .set({ status: validStatus as any })
                 .where(eq(transactions.id, latestTx.id));
 
             // Update User

@@ -8,12 +8,16 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { useTheme } from "@/context/ThemeContext";
 import { useLocale } from "@/context/LocaleContext";
 
+import { getStorageService } from "@/core/infrastructure/storage";
+
 export default function DataSyncer() {
     const { data: session, status } = useSession();
     const hasSyncedRef = useRef(false);
     const { syncData } = useDataSync();
+    const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const { setTheme } = useTheme();
     const { setLocale } = useLocale();
+    const storage = getStorageService();
 
     const restoreSettings = useCallback(async () => {
         try {
@@ -33,18 +37,18 @@ export default function DataSyncer() {
                             setLocale(s.locale);
                         }
                         if (s.muadzin) {
-                            localStorage.setItem(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
+                            storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
                         }
                         if (s.calculationMethod) {
-                            localStorage.setItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
+                            storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
                             // Trigger refresh of prayer times
                             window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
                         }
                         if (s.notificationPreferences) {
-                            localStorage.setItem(STORAGE_KEYS.ADHAN_PREFERENCES, JSON.stringify(s.notificationPreferences));
+                            storage.set(STORAGE_KEYS.ADHAN_PREFERENCES, s.notificationPreferences);
                         }
                         if (s.lastReadQuran) {
-                            localStorage.setItem(STORAGE_KEYS.QURAN_LAST_READ, s.lastReadQuran);
+                            storage.set(STORAGE_KEYS.QURAN_LAST_READ, s.lastReadQuran);
                         }
                     }
 
@@ -60,7 +64,7 @@ export default function DataSyncer() {
                             tags: b.tags,
                             createdAt: b.createdAt
                         }));
-                        localStorage.setItem(STORAGE_KEYS.QURAN_BOOKMARKS, JSON.stringify(bookmarksData));
+                        storage.set(STORAGE_KEYS.QURAN_BOOKMARKS, bookmarksData);
                     }
 
                     // 3. Restore Intentions (Journal)
@@ -75,7 +79,7 @@ export default function DataSyncer() {
                             isPrivate: i.isPrivate ?? true,
                             createdAt: i.createdAt
                         }));
-                        localStorage.setItem(STORAGE_KEYS.INTENTION_JOURNAL, JSON.stringify(intentionsData));
+                        storage.set(STORAGE_KEYS.INTENTION_JOURNAL, intentionsData);
                     }
 
                 }
@@ -122,6 +126,47 @@ export default function DataSyncer() {
         };
 
         handleAuthSync();
+
+        // 3. Listen for local storage changes (Same Tab) to trigger auto-sync
+        // We only listen for specific keys that need syncing
+        const handleStorageChange = (e: Event) => {
+            if (status !== "authenticated" || !session?.user) return;
+
+            const customEvent = e as CustomEvent;
+            const key = customEvent.detail?.key;
+
+            if (!key) return;
+
+            // List of keys that should trigger a sync
+            const syncableKeys = [
+                STORAGE_KEYS.QURAN_LAST_READ,
+                STORAGE_KEYS.QURAN_BOOKMARKS,
+                STORAGE_KEYS.INTENTION_JOURNAL,
+                STORAGE_KEYS.COMPLETED_MISSIONS,
+                STORAGE_KEYS.ACTIVITY_TRACKER,
+                STORAGE_KEYS.ADHAN_PREFERENCES,
+                // Settings might be synced too but often less critical for immediate sync
+            ];
+
+            if (syncableKeys.includes(key)) {
+                // Debounce Sync
+                if (syncTimeoutRef.current) {
+                    clearTimeout(syncTimeoutRef.current);
+                }
+
+                syncTimeoutRef.current = setTimeout(() => {
+                    syncData();
+                }, 2000); // 2s debounce to avoid spamming if multiple updates occur
+            }
+        };
+
+        window.addEventListener('nawaetu_storage_change', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('nawaetu_storage_change', handleStorageChange);
+            if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+        };
+
     }, [status, session, syncData, restoreSettings]);
 
     return null; // Invisible component

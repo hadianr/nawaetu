@@ -26,10 +26,9 @@ import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 export default function MissionsWidget() {
     const { data: session } = useSession();
     const { t, locale } = useLocale();
-    const { completedMissions, completeMission, isCompleted } = useMissions();
+    const { completedMissions, completeMission, undoCompleteMission, isCompleted } = useMissions();
     const [gender, setGender] = useState<Gender>(null);
     const [missions, setMissions] = useState<Mission[]>([]);
-    const [today, setToday] = useState<string>("");
     const [mounted, setMounted] = useState(false);
     const [userToken, setUserToken] = useState<string | null>(null);
     const [todayIntention, setTodayIntention] = useState<{
@@ -58,8 +57,6 @@ export default function MissionsWidget() {
 
     useEffect(() => {
         setMounted(true);
-        // 1. Initial Load: Date
-        setToday(new Date().toISOString().split('T')[0]);
 
         // Load or Generate User Token for Intentions
         let token = localStorage.getItem("user_token");
@@ -131,19 +128,20 @@ export default function MissionsWidget() {
     }, [prayerData?.hijriDate, locale, session]); // Refresh when locale, hijri date, or session changes
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
-        const record = completedMissions.find(m => m.id === missionId);
-        if (!record) return false;
+        const todayStr = new Date().toISOString().split('T')[0];
 
-        // If it's a daily mission (or undefined), check if completed today
-        if (type === 'daily' || !type) {
-            // Parse the ISO timestamp to get date
-            const completedDate = new Date(record.completedAt).toISOString().split('T')[0];
-            return completedDate === today;
+        // For recurring missions (daily/weekly), check if completed TODAY
+        if (type === 'daily' || type === 'weekly' || !type) {
+            return completedMissions.some(m => {
+                if (m.id !== missionId) return false;
+                const completedDate = m.completedAt.split('T')[0];
+                return completedDate === todayStr;
+            });
         }
 
-        // If it's a tracker (one-time) or weekly (handled elsewhere but let's say tracker), it's done forever
+        // For one-time missions (tracker), any completion is enough
         if (type === 'tracker') {
-            return true;
+            return completedMissions.some(m => m.id === missionId);
         }
 
         return false;
@@ -169,9 +167,10 @@ export default function MissionsWidget() {
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
         // Update streak (only on first mission of the day)
+        const todayStr = new Date().toISOString().split('T')[0];
         const completedCountToday = completedMissions.filter(m => {
-            const completedDate = new Date(m.completedAt).toISOString().split('T')[0];
-            return completedDate === today;
+            const completedDate = m.completedAt.split('T')[0];
+            return completedDate === todayStr;
         }).length;
         if (completedCountToday === 0) {
             updateStreak();
@@ -202,29 +201,20 @@ export default function MissionsWidget() {
     const handleResetMission = () => {
         if (!selectedMission) return;
         const mission = selectedMission;
+
         // Subtract XP
         addXP(-mission.xpReward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
-        // Remove from completed (read and rewrite)
-        const storage = getStorageService();
-        const current = storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS);
-        if (current) {
-            try {
-                const currentData = typeof current === 'string' ? JSON.parse(current) : current;
+        // Use repository to undo
+        undoCompleteMission(mission.id);
 
-                // Support both formats: array (new) and object (old)
-                if (Array.isArray(currentData)) {
-                    const filtered = currentData.filter((m: any) => m.id !== mission.id);
-                    storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, JSON.stringify(filtered));
-                } else {
-                    delete currentData[mission.id];
-                    storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, JSON.stringify(currentData));
-                }
-            } catch (e) {
-            }
-        }
-        window.dispatchEvent(new CustomEvent("mission_storage_updated"));
+        // UX Feedback: Toast
+        toast.info((t as any).toastMissionReset || "Misi dibatalkan", {
+            description: `${mission.title} telah di-reset. (-${mission.xpReward} XP)`,
+            duration: 3000,
+            icon: "🔄"
+        });
 
         setIsDialogOpen(false);
     };
@@ -251,9 +241,10 @@ export default function MissionsWidget() {
                     addXP(mission.xpReward);
                     window.dispatchEvent(new CustomEvent("xp_updated"));
 
+                    const todayStr = new Date().toISOString().split('T')[0];
                     const completedCountToday = completedMissions.filter(m => {
-                        const completedDate = new Date(m.completedAt).toISOString().split('T')[0];
-                        return completedDate === today;
+                        const completedDate = m.completedAt.split('T')[0];
+                        return completedDate === todayStr;
                     }).length;
                     if (completedCountToday === 0) updateStreak();
 

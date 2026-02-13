@@ -110,6 +110,29 @@ export const SETTINGS_ID = {
     profileLogoutConfirmNo: "Batal",
     profileGuestMode: "Mode Guest",
     profileFooter: "Terima kasih telah menggunakan Nawaetu",
+
+    // Sync System (v1.7.3)
+    syncTitle: "Sinkronisasi Data",
+    syncGuestTitle: "Sinkronisasi Progress?",
+    syncGuestDesc: "Temukan progress di perangkat ini. Sinkron ke akun baru Anda?",
+    syncGuestConfirm: "Ya, Sinkronkan",
+    syncGuestCancel: "Mulai Baru",
+    syncConflictTitle: "Data Akun Ditemukan",
+    syncConflictDesc: "Akun ini sudah punya data. Data saat ini akan diganti.",
+    syncConflictConfirm: "Muat Data Akun",
+    syncConflictCancel: "Batal (Keluar)",
+    syncSuccess: "Data berhasil disinkronkan! ✨",
+    syncError: "Gagal menyinkronkan data.",
+    syncLoading: "Menyinkronkan...",
+    syncHydrating: "Memuat...",
+
+    // New Active Feedback (GuestSyncManager)
+    syncUploadLoading: "🚀 Sedang memindahkan data tamu kamu ke akun baru...",
+    syncUploadSuccess: "✨ Berhasil! Progress tamu kamu sudah aman di akun ini.",
+    syncHydrateLoading: "📂 Sedang mengambil data lama kamu dari server...",
+    syncHydrateSuccess: "✅ Sip! Data akun lamamu sudah kembali. Yuk lanjut ibadah!",
+    syncHydrateInfo: "⚠️ Data tamu di HP ini telah kami ganti dengan data akun utamamu.",
+
     profileAuthTitle: "Simpan Progress Ibadahmu",
     profileAuthDesc: "Login untuk menyimpan data streak, bookmark, dan status donatur secara permanen di cloud.",
     profileAuthButton: "Login dengan Google",

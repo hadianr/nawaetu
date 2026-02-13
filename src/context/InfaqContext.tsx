@@ -50,9 +50,9 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
         setInfaqHistory(newHistory);
 
         // Persist
-        storage.setMany(new Map([
+        storage.setMany(new Map<string, any>([
             [STORAGE_KEYS.USER_TOTAL_DONATION as any, newTotal.toString()],
-            [STORAGE_KEYS.USER_DONATION_HISTORY as any, JSON.stringify(newHistory)]
+            [STORAGE_KEYS.USER_DONATION_HISTORY as any, newHistory]
         ]));
 
         // Dispatch event for UI updates

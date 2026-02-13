@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
-import { bookmarks, intentions, users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import {
+    bookmarks,
+    intentions,
+    users,
+    userCompletedMissions,
+    dailyActivities,
+    userReadingState
+} from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { type SyncQueueEntry } from "@/lib/sync-queue";
 
 /**
@@ -75,7 +82,7 @@ async function handleBookmarkSync(
             // Delete bookmark
             await db
                 .delete(bookmarks)
-                .where(eq(bookmarks.key, key) && eq(bookmarks.userId, userId));
+                .where(and(eq(bookmarks.key, key), eq(bookmarks.userId, userId)));
 
             return { id: entry.id };
         }
@@ -109,7 +116,7 @@ async function handleIntentionSync(
                     reflectionText: data.reflectionText,
                     reflectionRating: data.reflectionRating,
                     isPrivate: data.isPrivate ?? true,
-                    createdAt: new Date(data.createdAt) || new Date(),
+                    createdAt: new Date(data.createdAt || Date.now()),
                 })
                 .returning({ id: intentions.id });
 
@@ -123,6 +130,86 @@ async function handleIntentionSync(
         }
 
         throw new Error(`Unknown action: ${action}`);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        return { id: entry.id, error: errorMessage };
+    }
+}
+
+/**
+ * Handle mission sync
+ */
+async function handleMissionSync(
+    userId: string,
+    entry: SyncQueueEntry,
+    action: 'create' | 'update'
+): Promise<{ id: string; cloudId?: string } | { id: string; error: string }> {
+    try {
+        const data = entry.data;
+
+        if (action === 'create' || action === 'update') {
+            // Check if mission already completed
+            const existing = await db.query.userCompletedMissions.findFirst({
+                where: (ucm, { eq, and }) =>
+                    and(eq(ucm.userId, userId), eq(ucm.missionId, data.id)),
+            });
+
+            if (!existing) {
+                const result = await db
+                    .insert(userCompletedMissions)
+                    .values({
+                        userId,
+                        missionId: data.id,
+                        xpEarned: data.xpEarned,
+                        completedAt: new Date(data.completedAt),
+                    })
+                    .returning({ id: userCompletedMissions.id });
+                return { id: entry.id, cloudId: result[0]?.id };
+            }
+            return { id: entry.id, cloudId: existing.id };
+        }
+        return { id: entry.id };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        return { id: entry.id, error: errorMessage };
+    }
+}
+
+/**
+ * Handle daily activity sync
+ */
+async function handleDailyActivitySync(
+    userId: string,
+    entry: SyncQueueEntry,
+    action: 'create' | 'update'
+): Promise<{ id: string; cloudId?: string } | { id: string; error: string }> {
+    try {
+        const data = entry.data;
+
+        if (action === 'create' || action === 'update') {
+            // Upsert daily activity
+            await db
+                .insert(dailyActivities)
+                .values({
+                    userId,
+                    date: data.date,
+                    quranAyat: data.quranAyat,
+                    tasbihCount: data.tasbihCount,
+                    prayersLogged: data.prayersLogged,
+                })
+                .onConflictDoUpdate({
+                    target: [dailyActivities.userId, dailyActivities.date],
+                    set: {
+                        quranAyat: data.quranAyat,
+                        tasbihCount: data.tasbihCount,
+                        prayersLogged: data.prayersLogged,
+                        lastUpdatedAt: new Date(),
+                    },
+                });
+
+            return { id: entry.id };
+        }
+        return { id: entry.id };
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         return { id: entry.id, error: errorMessage };
@@ -164,6 +251,52 @@ async function handleSettingSync(
     }
 }
 
+/**
+ * Handle reading state sync
+ */
+async function handleReadingStateSync(
+    userId: string,
+    entry: SyncQueueEntry,
+    action: 'create' | 'update'
+): Promise<{ id: string; cloudId?: string } | { id: string; error: string }> {
+    try {
+        const data = entry.data;
+
+        let qlr = data.quranLastRead || data;
+
+        // Robustness: If the data came as a string (double-stringified in local storage), parse it
+        if (typeof qlr === 'string' && qlr.startsWith('{')) {
+            try { qlr = JSON.parse(qlr); } catch (e) { }
+        }
+
+        await db
+            .insert(userReadingState)
+            .values({
+                userId,
+                surahId: qlr.surahId,
+                surahName: qlr.surahName,
+                verseId: qlr.verseId,
+                lastReadAt: new Date(qlr.timestamp || Date.now()),
+                updatedAt: new Date(),
+            })
+            .onConflictDoUpdate({
+                target: [userReadingState.userId],
+                set: {
+                    surahId: qlr.surahId,
+                    surahName: qlr.surahName,
+                    verseId: qlr.verseId,
+                    lastReadAt: new Date(qlr.timestamp || Date.now()),
+                    updatedAt: new Date(),
+                },
+            });
+
+        return { id: entry.id };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        return { id: entry.id, error: errorMessage };
+    }
+}
+
 export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse | { error: string }>> {
     try {
         const session = await getServerSession(authOptions);
@@ -195,12 +328,24 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                         break;
 
                     case 'journal':
-                    case 'mission_progress':
                         result = await handleIntentionSync(userId, entry, entry.action as 'create' | 'update' | 'delete');
+                        break;
+
+                    case 'mission_progress':
+                        // FIXED: Use specific handler for missions
+                        result = await handleMissionSync(userId, entry, entry.action as 'create' | 'update');
+                        break;
+
+                    case 'daily_activity':
+                        result = await handleDailyActivitySync(userId, entry, entry.action as 'create' | 'update');
                         break;
 
                     case 'setting':
                         result = await handleSettingSync(userId, entry, entry.action as 'create' | 'update');
+                        break;
+
+                    case 'reading_state':
+                        result = await handleReadingStateSync(userId, entry, entry.action as 'create' | 'update');
                         break;
 
                     default:
@@ -229,7 +374,14 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         /**
          * LEGACY FORMAT: Handle bulk arrays (for backwards compatibility)
          */
-        const { bookmarks: localBookmarks, intentions: localIntentions, settings: localSettings } = body;
+        const {
+            bookmarks: localBookmarks,
+            intentions: localIntentions,
+            settings: localSettings,
+            completedMissions: localMissions,
+            dailyActivity: localActivity,
+            readingState: localReadingState
+        } = body;
 
         if (Array.isArray(localBookmarks) && localBookmarks.length > 0) {
             for (const b of localBookmarks) {
@@ -249,7 +401,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                         key,
                         note: b.note,
                         tags: b.tags,
-                        createdAt: new Date(b.createdAt) || new Date(),
+                        createdAt: new Date(b.createdAt || Date.now()),
                     });
                 }
             }
@@ -257,17 +409,91 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
 
         if (Array.isArray(localIntentions) && localIntentions.length > 0) {
             for (const i of localIntentions) {
+                // Determine niatDate - ensure it's a string YYYY-MM-DD
+                let dateStr = i.niatDate;
+                if (!dateStr && i.createdAt) {
+                    dateStr = new Date(i.createdAt).toISOString().split('T')[0];
+                }
+
+                // Check for duplicates based on userId + niatDate + niatText (rudimentary check)
+                // Better to just insert and let DB handle or skip if we don't have a unique constraint
+                // For now, we just insert.
                 await db.insert(intentions).values({
                     userId,
                     niatText: i.niatText,
                     niatType: i.niatType,
-                    niatDate: i.niatDate,
+                    niatDate: dateStr,
                     reflectionText: i.reflectionText,
                     reflectionRating: i.reflectionRating,
                     isPrivate: i.isPrivate ?? true,
-                    createdAt: new Date(i.createdAt) || new Date(),
+                    createdAt: new Date(i.createdAt || Date.now()),
                 });
             }
+        }
+
+        // Sync Missions (Legacy)
+        if (Array.isArray(localMissions) && localMissions.length > 0) {
+            for (const m of localMissions) {
+                await db.insert(userCompletedMissions)
+                    .values({
+                        userId,
+                        missionId: m.id,
+                        xpEarned: m.xpEarned,
+                        completedAt: new Date(m.completedAt),
+                    })
+                    .onConflictDoNothing();
+            }
+        }
+
+        // Sync Daily Activity (Legacy)
+        if (localActivity && localActivity.date) {
+            await db
+                .insert(dailyActivities)
+                .values({
+                    userId,
+                    date: localActivity.date,
+                    quranAyat: localActivity.quranAyat || 0,
+                    tasbihCount: localActivity.tasbihCount || 0,
+                    prayersLogged: localActivity.prayersLogged || [],
+                })
+                .onConflictDoUpdate({
+                    target: [dailyActivities.userId, dailyActivities.date],
+                    set: {
+                        quranAyat: localActivity.quranAyat,
+                        tasbihCount: localActivity.tasbihCount,
+                        prayersLogged: localActivity.prayersLogged,
+                        lastUpdatedAt: new Date(),
+                    }
+                });
+        }
+
+        if (localReadingState && localReadingState.quranLastRead) {
+            let qlr = localReadingState.quranLastRead;
+
+            // Robustness: If the data came as a string (double-stringified in local storage), parse it
+            if (typeof qlr === 'string' && qlr.startsWith('{')) {
+                try { qlr = JSON.parse(qlr); } catch (e) { }
+            }
+            await db
+                .insert(userReadingState)
+                .values({
+                    userId,
+                    surahId: qlr.surahId,
+                    surahName: qlr.surahName,
+                    verseId: qlr.verseId,
+                    lastReadAt: new Date(qlr.timestamp || Date.now()),
+                    updatedAt: new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [userReadingState.userId],
+                    set: {
+                        surahId: qlr.surahId,
+                        surahName: qlr.surahName,
+                        verseId: qlr.verseId,
+                        lastReadAt: new Date(qlr.timestamp || Date.now()),
+                        updatedAt: new Date(),
+                    },
+                });
         }
 
         if (localSettings && typeof localSettings === 'object') {
@@ -278,20 +504,50 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
 
             const currentSettings = (user?.settings || {}) as Record<string, any>;
 
+            // Extract lastReadQuran if present in legacy format
+            const lastReadQuran = localSettings.lastReadQuran || currentSettings.lastReadQuran;
+
+            const { lastReadQuran: _, ...restSettings } = localSettings;
+
             const newSettings = {
                 ...currentSettings,
-                theme: localSettings.theme || currentSettings.theme,
-                muadzin: localSettings.muadzin || currentSettings.muadzin,
-                calculationMethod: localSettings.calculationMethod || currentSettings.calculationMethod,
-                locale: localSettings.locale || currentSettings.locale,
-                notificationPreferences: localSettings.notificationPreferences || currentSettings.notificationPreferences,
-                lastReadQuran: localSettings.lastReadQuran || currentSettings.lastReadQuran,
+                theme: restSettings.theme || currentSettings.theme,
+                muadzin: restSettings.muadzin || currentSettings.muadzin,
+                calculationMethod: restSettings.calculationMethod || currentSettings.calculationMethod,
+                locale: restSettings.locale || currentSettings.locale,
+                notificationPreferences: restSettings.notificationPreferences || currentSettings.notificationPreferences,
             };
 
+            // Update settings (without lastReadQuran)
             await db
                 .update(users)
                 .set({ settings: newSettings })
                 .where(eq(users.id, userId));
+
+            // Move lastReadQuran to its own table
+            if (lastReadQuran) {
+                const qlr = lastReadQuran;
+                await db
+                    .insert(userReadingState)
+                    .values({
+                        userId,
+                        surahId: qlr.surahId,
+                        surahName: qlr.surahName,
+                        verseId: qlr.verseId,
+                        lastReadAt: new Date(qlr.timestamp || Date.now()),
+                        updatedAt: new Date(),
+                    })
+                    .onConflictDoUpdate({
+                        target: [userReadingState.userId],
+                        set: {
+                            surahId: qlr.surahId,
+                            surahName: qlr.surahName,
+                            verseId: qlr.verseId,
+                            lastReadAt: new Date(qlr.timestamp || Date.now()),
+                            updatedAt: new Date(),
+                        },
+                    });
+            }
         }
 
         return NextResponse.json({
@@ -302,6 +558,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         });
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : 'Internal Server Error';
+        console.error("Sync Error:", e);
         return NextResponse.json(
             {
                 success: false,

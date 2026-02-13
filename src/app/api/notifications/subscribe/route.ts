@@ -23,7 +23,10 @@ export async function POST(req: NextRequest) {
             active: 1,
             deviceType: deviceType || "web",
             timezone: timezone || "Asia/Jakarta",
-            userLocation: userLocation || null,
+            userLocation: userLocation || null, // Legacy
+            latitude: userLocation?.lat || null,
+            longitude: userLocation?.lng || null,
+            city: userLocation?.city || null,
             // If provided, update preferences; otherwise keep existing or null
             prayerPreferences: prayerPreferences || undefined,
         };

@@ -50,7 +50,7 @@ export default function BookmarksPage() {
             verseId: bookmark.verseId,
             timestamp: Date.now()
         };
-        storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, JSON.stringify(lastReadData));
+        storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, lastReadData);
         setLastRead(lastReadData);
 
         // Show feedback (could be better with toast)

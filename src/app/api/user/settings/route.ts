@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
-import { users, bookmarks, intentions, pushSubscriptions } from "@/db/schema";
+import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
@@ -12,13 +12,24 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // 1. Fetch user settings
         const user = await db.query.users.findFirst({
             where: eq(users.id, session.user.id),
             columns: { settings: true }
         });
 
-        const settings = (user?.settings || {}) as Record<string, any>;
+        const readingState = await db.query.userReadingState.findFirst({
+            where: eq(userReadingState.userId, session.user.id)
+        });
+
+        const settings = {
+            ...((user?.settings || {}) as Record<string, any>),
+            lastReadQuran: readingState ? {
+                surahId: readingState.surahId,
+                surahName: readingState.surahName,
+                verseId: readingState.verseId,
+                timestamp: readingState.lastReadAt?.getTime()
+            } : null
+        };
 
         // 2. Fetch user bookmarks
         const userBookmarks = await db.query.bookmarks.findMany({
@@ -74,14 +85,48 @@ export async function PATCH(req: NextRequest) {
 
         const currentSettings = (user?.settings || {}) as Record<string, any>;
 
+        // Extract lastReadQuran if present
+        const lastReadQuran = settings.lastReadQuran;
+        const { lastReadQuran: _, ...restSettings } = settings;
+
         const newSettings = {
             ...currentSettings,
-            ...settings
+            ...restSettings
         };
 
-        await db.update(users)
-            .set({ settings: newSettings })
-            .where(eq(users.id, session.user.id));
+        await db.transaction(async (tx) => {
+            await tx.update(users)
+                .set({ settings: newSettings })
+                .where(eq(users.id, session.user.id));
+
+            if (lastReadQuran) {
+                let qlr = lastReadQuran;
+
+                // Robustness: If the data came as a string, parse it
+                if (typeof qlr === 'string' && qlr.startsWith('{')) {
+                    try { qlr = JSON.parse(qlr); } catch (e) { }
+                }
+                await tx.insert(userReadingState)
+                    .values({
+                        userId: session.user.id,
+                        surahId: qlr.surahId,
+                        surahName: qlr.surahName,
+                        verseId: qlr.verseId,
+                        lastReadAt: new Date(qlr.timestamp || Date.now()),
+                        updatedAt: new Date(),
+                    })
+                    .onConflictDoUpdate({
+                        target: [userReadingState.userId],
+                        set: {
+                            surahId: qlr.surahId,
+                            surahName: qlr.surahName,
+                            verseId: qlr.verseId,
+                            lastReadAt: new Date(qlr.timestamp || Date.now()),
+                            updatedAt: new Date(),
+                        }
+                    });
+            }
+        });
 
         return NextResponse.json({
             status: "success",

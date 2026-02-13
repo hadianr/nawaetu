@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 /**
  * Supported entity types for syncing
  */
-export type SyncEntityType = 'bookmark' | 'setting' | 'journal' | 'mission' | 'mission_progress';
+export type SyncEntityType = 'bookmark' | 'setting' | 'journal' | 'mission' | 'mission_progress' | 'daily_activity' | 'reading_state';
 
 /**
  * Supported operation types
@@ -33,28 +33,28 @@ export type SyncStatus = 'pending' | 'synced' | 'failed';
 export interface SyncQueueEntry {
   /** Unique identifier for this entry */
   id: string;
-  
+
   /** Type of entity being synced */
   type: SyncEntityType;
-  
+
   /** Operation being performed */
   action: SyncActionType;
-  
+
   /** Actual data to sync */
   data: Record<string, any>;
-  
+
   /** Current status of this entry */
   status: SyncStatus;
-  
+
   /** Number of sync attempts */
   retryCount: number;
-  
+
   /** When this entry was created (Unix timestamp) */
   createdAt: number;
-  
+
   /** Last sync attempt timestamp (optional) */
   lastAttemptAt?: number;
-  
+
   /** Error message if status is 'failed' (optional) */
   error?: string;
 }
@@ -90,7 +90,7 @@ class SyncQueueManager {
   private loadFromStorage(): void {
     try {
       if (typeof window === 'undefined') return;
-      
+
       const stored = window.localStorage?.getItem(this.STORAGE_KEY);
       if (stored) {
         this.queue = JSON.parse(stored);
@@ -106,7 +106,7 @@ class SyncQueueManager {
   private saveToStorage(): void {
     try {
       if (typeof window === 'undefined') return;
-      
+
       window.localStorage?.setItem(this.STORAGE_KEY, JSON.stringify(this.queue));
     } catch (error) {
     }
@@ -222,12 +222,12 @@ class SyncQueueManager {
     if (entry) {
       entry.retryCount++;
       entry.lastAttemptAt = Date.now();
-      
+
       if (entry.retryCount > this.MAX_RETRY_COUNT) {
         entry.status = 'failed';
         entry.error = `Max retry count (${this.MAX_RETRY_COUNT}) exceeded`;
       }
-      
+
       this.saveToStorage();
       return entry.status === 'pending';
     }
@@ -252,11 +252,11 @@ class SyncQueueManager {
     const before = this.queue.length;
     this.queue = this.queue.filter(e => e.status !== 'synced');
     const removed = before - this.queue.length;
-    
+
     if (removed > 0) {
       this.saveToStorage();
     }
-    
+
     return removed;
   }
 
@@ -269,11 +269,11 @@ class SyncQueueManager {
       e => !(e.status === 'synced' && e.type === type)
     );
     const removed = before - this.queue.length;
-    
+
     if (removed > 0) {
       this.saveToStorage();
     }
-    
+
     return removed;
   }
 
@@ -317,11 +317,8 @@ class SyncQueueManager {
  */
 export const syncQueue = SyncQueueManager.getInstance();
 
-/**
- * Type guard for SyncEntityType
- */
 export function isSyncEntityType(value: unknown): value is SyncEntityType {
-  return ['bookmark', 'setting', 'journal', 'mission', 'mission_progress'].includes(String(value));
+  return ['bookmark', 'setting', 'journal', 'mission', 'mission_progress', 'daily_activity', 'reading_state'].includes(String(value));
 }
 
 /**

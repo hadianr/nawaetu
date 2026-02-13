@@ -110,6 +110,29 @@ export const SETTINGS_EN = {
     profileLogoutConfirmNo: "Cancel",
     profileGuestMode: "Guest Mode",
     profileFooter: "Thank you for using Nawaetu",
+
+    // Sync System (v1.7.3)
+    syncTitle: "Data Synchronization",
+    syncGuestTitle: "Sync Your Progress?",
+    syncGuestDesc: "Found progress on this device. Sync to your new account?",
+    syncGuestConfirm: "Yes, Sync Now",
+    syncGuestCancel: "Start Fresh",
+    syncConflictTitle: "Account Data Found",
+    syncConflictDesc: "This account already has data. Your current session will be replaced.",
+    syncConflictConfirm: "Load Account Data",
+    syncConflictCancel: "Cancel (Logout)",
+    syncSuccess: "Data synced successfully! ✨",
+    syncError: "Failed to sync data.",
+    syncLoading: "Syncing...",
+    syncHydrating: "Loading...",
+
+    // New Active Feedback (GuestSyncManager)
+    syncUploadLoading: "🚀 Moving your guest data to the new account...",
+    syncUploadSuccess: "✨ Success! Your guest progress is safe in this account.",
+    syncHydrateLoading: "📂 Retrieving your old data from the server...",
+    syncHydrateSuccess: "✅ Great! Your old account data is back. Let's continue worship!",
+    syncHydrateInfo: "⚠️ Guest data on this device has been replaced with your main account data.",
+
     profileAuthTitle: "Save Your Worship Progress",
     profileAuthDesc: "Login to save your streak data, bookmarks, and donor status permanently in the cloud.",
     profileAuthButton: "Login with Google",

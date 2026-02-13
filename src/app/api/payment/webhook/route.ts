@@ -93,10 +93,27 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
         }
 
+        // Normalize Status for Enum compatibility
+        let normalizedStatus = status.toLowerCase();
+        if (normalizedStatus === "paid") normalizedStatus = "settlement";
+
+        // Ensure valid enum value (fallback to failed if unknown, or keep existing? safer to fail or set to failed)
+        // For safe typing, we cast to any or check validity
+        const validStatuses = ["pending", "settlement", "expired", "failed"];
+        if (!validStatuses.includes(normalizedStatus)) {
+            console.warn(`Unknown payment status received: ${status}`);
+            // If unknown, maybe we shouldn't fail the webhook but perhaps we shouldn't update status to invalid value.
+            // Let's assume we map unknown to 'failed' or keep pending?
+            // Safest is to not update status if invalid, but we want to store the MayarID.
+            // We'll proceed but rely on Drizzle/DB to error if we don't handle it. 
+            // Let's map to 'failed' if truly unknown to be safe on DB side.
+            normalizedStatus = 'failed';
+        }
+
         // Update Transaction (Status and ensure real Transaction ID is stored)
         await db.update(transactions)
             .set({
-                status: status.toLowerCase(),
+                status: normalizedStatus as any,
                 mayarId: mayarId // Always ensure the actual Transaction ID is stored
             })
             .where(eq(transactions.id, transaction.id));

@@ -1,5 +1,12 @@
-import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex, jsonb, pgEnum, real } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import type { AdapterAccount } from "next-auth/adapters";
+
+// --- Enums ---
+export const genderEnum = pgEnum("gender", ["male", "female"]);
+export const archetypeEnum = pgEnum("archetype", ["beginner", "striver", "dedicated"]);
+export const transactionStatusEnum = pgEnum("transaction_status", ["pending", "settlement", "expired", "failed"]);
+export const niatTypeEnum = pgEnum("niat_type", ["daily", "prayer", "custom"]);
 
 // --- Users & Auth (Compatible with NextAuth.js) ---
 
@@ -23,8 +30,8 @@ export const users = pgTable("user", {
     totalInfaq: integer("total_infaq").default(0), // Track total donation amount
 
     // User Preferences (v1.7.0)
-    gender: text("gender").$type<"male" | "female">(), // 'male' | 'female'
-    archetype: text("archetype").$type<"beginner" | "striver" | "dedicated">(), // 'beginner' | 'striver' | 'dedicated'
+    gender: genderEnum("gender"),
+    archetype: archetypeEnum("archetype"),
     settings: jsonb("settings"), // JSON: { theme, muadzin, calculationMethod, locale }
 
     createdAt: timestamp("created_at").defaultNow(),
@@ -89,7 +96,7 @@ export const transactions = pgTable("transaction", {
 
     // Payment Details
     amount: integer("amount").notNull(),
-    status: text("status").notNull(), // 'pending', 'settlement', 'expired', 'failed'
+    status: transactionStatusEnum("status").notNull(), // 'pending', 'settlement', 'expired', 'failed'
 
     // Mayar Specifics
     mayarId: text("mayar_id").unique(), // Transaction ID from Mayar (Set by webhook)
@@ -103,7 +110,8 @@ export const transactions = pgTable("transaction", {
 }, (table) => {
     return {
         userIdIdx: index("transaction_user_id_idx").on(table.userId),
-        statusIdx: index("transaction_status_idx").on(table.status),
+        // Compound index for filtering by status and sorting by date
+        statusCreatedAtIdx: index("transaction_status_created_at_idx").on(table.status, table.createdAt),
     };
 });
 
@@ -145,7 +153,7 @@ export const intentions = pgTable("intention", {
 
     // Intention data
     niatText: text("niat_text").notNull(),
-    niatType: text("niat_type").default("daily"), // 'daily', 'prayer', 'custom'
+    niatType: niatTypeEnum("niat_type").default("daily"), // 'daily', 'prayer', 'custom'
     niatDate: date("niat_date").notNull(),
 
     // Reflection data (optional)
@@ -166,6 +174,52 @@ export const intentions = pgTable("intention", {
     };
 });
 
+// --- Mission History (v1.7.3) ---
+
+export const userCompletedMissions = pgTable("user_completed_missions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("userId")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+
+    missionId: text("mission_id").notNull(),
+    xpEarned: integer("xp_earned").default(0),
+    completedAt: timestamp("completed_at").defaultNow(),
+
+    // Metadata for sync validity
+    createdAt: timestamp("created_at").defaultNow(),
+}, (table) => {
+    return {
+        userIdIdx: index("ucm_user_id_idx").on(table.userId),
+        missionIdIdx: index("ucm_mission_id_idx").on(table.missionId),
+        uniqueUserMission: uniqueIndex("ucm_user_mission_unique").on(table.userId, table.missionId),
+    };
+});
+
+// --- Daily Activity Tracking (v1.7.3) ---
+
+export const dailyActivities = pgTable("daily_activities", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("userId")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+
+    date: date("date").notNull(), // YYYY-MM-DD
+
+    quranAyat: integer("quran_ayat").default(0),
+    tasbihCount: integer("tasbih_count").default(0),
+
+    // Stored as JSON array of strings e.g. ["Fajr", "Dhuhr"]
+    prayersLogged: jsonb("prayers_logged").$type<string[]>().default([]),
+
+    lastUpdatedAt: timestamp("last_updated_at").defaultNow(),
+}, (table) => {
+    return {
+        userIdIdx: index("da_user_id_idx").on(table.userId),
+        userIdDateIdx: uniqueIndex("da_user_id_date_unique").on(table.userId, table.date),
+    };
+});
+
 export const pushSubscriptions = pgTable("push_subscription", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
@@ -177,7 +231,10 @@ export const pushSubscriptions = pgTable("push_subscription", {
     prayerPreferences: jsonb("prayer_preferences"),
 
     // User location for prayer time calculation (JSON: { lat: number, lng: number, city: string })
-    userLocation: jsonb("user_location"),
+    userLocation: jsonb("user_location"), // Deprecated in favor of columns below, keeping for migration
+    latitude: real("latitude"),
+    longitude: real("longitude"),
+    city: text("city"),
 
     // Timezone for accurate prayer time scheduling (e.g., "Asia/Jakarta")
     timezone: text("timezone"),
@@ -191,6 +248,8 @@ export const pushSubscriptions = pgTable("push_subscription", {
 }, (table) => {
     return {
         userIdIdx: index("push_subscription_user_id_idx").on(table.userId),
+        // Index for location-based broadcasting
+        cityIdx: index("ps_city_idx").on(table.city),
     };
 });
 
@@ -205,3 +264,30 @@ export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
 export type Transaction = typeof transactions.$inferSelect;
 export type NewTransaction = typeof transactions.$inferInsert;
+export type UserCompletedMission = typeof userCompletedMissions.$inferSelect;
+export type NewUserCompletedMission = typeof userCompletedMissions.$inferInsert;
+export type DailyActivity = typeof dailyActivities.$inferSelect;
+export type NewDailyActivity = typeof dailyActivities.$inferInsert;
+export const userReadingState = pgTable("user_reading_state", {
+    userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }).primaryKey(),
+
+    // Normalized Data
+    surahId: integer("surah_id"),
+    surahName: text("surah_name"),
+    verseId: integer("verse_id"),
+    lastReadAt: timestamp("last_read_at", { mode: 'date' }).defaultNow(),
+
+    updatedAt: timestamp("updatedAt", { mode: 'date' }).defaultNow(),
+}, (table) => {
+    return {
+        // Index for analytics on most read surahs
+        surahIdIdx: index("urs_surah_id_idx").on(table.surahId),
+    };
+});
+
+export const userReadingStateRelations = relations(userReadingState, ({ one }) => ({
+    user: one(users, {
+        fields: [userReadingState.userId],
+        references: [users.id],
+    }),
+}));

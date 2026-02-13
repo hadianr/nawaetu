@@ -1,6 +1,6 @@
-import { 
-  StorageAdapter, 
-  StorageError, 
+import {
+  StorageAdapter,
+  StorageError,
   StorageQuotaExceededError,
   StorageNotAvailableError
 } from './adapter';
@@ -12,7 +12,7 @@ import {
 export class LocalStorageAdapter implements StorageAdapter {
   private isAvailable(): boolean {
     if (typeof window === 'undefined') return false;
-    
+
     try {
       const test = '__storage_test__';
       localStorage.setItem(test, test);
@@ -25,11 +25,11 @@ export class LocalStorageAdapter implements StorageAdapter {
 
   getItem<T>(key: string): T | null {
     if (!this.isAvailable()) return null;
-    
+
     try {
       const item = localStorage.getItem(key);
       if (!item) return null;
-      
+
       // Try to parse as JSON first
       try {
         return JSON.parse(item) as T;
@@ -46,10 +46,14 @@ export class LocalStorageAdapter implements StorageAdapter {
     if (!this.isAvailable()) {
       throw new StorageNotAvailableError('localStorage is not available');
     }
-    
+
     try {
       const serialized = JSON.stringify(value);
       localStorage.setItem(key, serialized);
+      // Dispatch custom event for same-tab synchronization
+      window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
+        detail: { key, action: 'set' }
+      }));
     } catch (error) {
       // Handle quota exceeded error
       if (error instanceof DOMException && error.code === 22) {
@@ -63,16 +67,20 @@ export class LocalStorageAdapter implements StorageAdapter {
 
   removeItem(key: string): void {
     if (!this.isAvailable()) return;
-    
+
     try {
       localStorage.removeItem(key);
+      // Dispatch custom event for same-tab synchronization
+      window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
+        detail: { key, action: 'remove' }
+      }));
     } catch (error) {
     }
   }
 
   clear(): void {
     if (!this.isAvailable()) return;
-    
+
     try {
       localStorage.clear();
     } catch (error) {

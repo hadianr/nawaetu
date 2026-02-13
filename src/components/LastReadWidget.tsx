@@ -101,7 +101,7 @@ export default function LastReadWidget() {
             const storage = getStorageService();
             const cacheKey = `verse_${surahId}_${verseId}`;
             const entry: VerseCacheEntry = { data: content, ts: Date.now(), v: VERSE_CACHE_VERSION };
-            storage.set(cacheKey as any, JSON.stringify(entry));
+            storage.set(cacheKey as any, entry);
         } catch (error) {
             if (typeof navigator !== "undefined" && !navigator.onLine) {
                 return;

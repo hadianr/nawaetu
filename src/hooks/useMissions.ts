@@ -21,7 +21,7 @@ export function useMissions() {
     const handleUpdate = () => refresh();
     window.addEventListener('mission_updated', handleUpdate);
     window.addEventListener('missions_reset', handleUpdate);
-    
+
     return () => {
       window.removeEventListener('mission_updated', handleUpdate);
       window.removeEventListener('missions_reset', handleUpdate);
@@ -50,6 +50,14 @@ export function useMissions() {
     [repository]
   );
 
+  const undoCompleteMission = useCallback(
+    (missionId: string): void => {
+      repository.undoCompleteMission(missionId);
+      setCompletedMissions(repository.getCompletedMissions());
+    },
+    [repository]
+  );
+
   const resetMissions = useCallback(() => {
     repository.resetCompletedMissions();
     setCompletedMissions([]);
@@ -59,6 +67,7 @@ export function useMissions() {
     completedMissions,
     getProgress,
     completeMission,
+    undoCompleteMission,
     isCompleted,
     resetMissions
   };
