@@ -216,6 +216,8 @@ import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { GuestSyncManager } from "@/components/auth/GuestSyncManager";
+import ClientEntryGate from "@/components/ClientEntryGate";
+import AppOverlays from "@/components/AppOverlays";
 
 
 
@@ -270,15 +272,18 @@ export default function RootLayout({
           <ThemeProvider>
             <AuthSessionProvider>
               <GuestSyncManager />
-              <InfaqProvider>
-                <PatternOverlay />
-                <DeferredLayoutComponents />
-                {children}
+              <AppOverlays />
+              <ClientEntryGate>
+                <InfaqProvider>
+                  <PatternOverlay />
+                  <DeferredLayoutComponents />
+                  {children}
 
-                <Suspense fallback={null}>
-                  <BottomNav />
-                </Suspense>
-              </InfaqProvider>
+                  <Suspense fallback={null}>
+                    <BottomNav />
+                  </Suspense>
+                </InfaqProvider>
+              </ClientEntryGate>
             </AuthSessionProvider>
           </ThemeProvider>
         </LocaleProvider>

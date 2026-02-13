@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { initializeQuranOptimizations } from "@/lib/optimize-quran";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -111,7 +110,7 @@ export default function AppOverlays() {
         // Global flag to ensure this logic runs ONLY ONCE per browser session
         const GLOBAL_SESSION_KEY = 'nawaetu_app_initialized';
         const wasInitialized = sessionStorage.getItem(GLOBAL_SESSION_KEY) === 'true';
-        
+
         if (wasInitialized) {
             return;
         }
@@ -119,7 +118,7 @@ export default function AppOverlays() {
         const storage = getStorageService();
         const storedVersion = storage.getOptional(STORAGE_KEYS.APP_VERSION) as string | null;
         const currentVersion = APP_CONFIG.version;
-        
+
         // Mark as initialized IMMEDIATELY to prevent redirect loop
         sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
 
@@ -133,7 +132,6 @@ export default function AppOverlays() {
 
     return (
         <>
-            <OnboardingOverlay />
             <PWAInstallPrompt shouldShow={showPwaPrompt} />
             <SWUpdatePrompt />
             {isDev && <MobileDebugConsole />}
