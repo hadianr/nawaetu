@@ -5,11 +5,11 @@ export const metadata: Metadata = {
     description: "Selesaikan misi ibadah harian, kumpulkan XP, naik level, dan jaga streak. Gamifikasi ibadah yang membuat konsistensi lebih mudah dan menyenangkan.",
     keywords: ["Daily Missions", "Misi Harian", "Habit Tracker Ibadah", "Gamifikasi Islam", "Streak Ibadah", "XP Leveling"],
     alternates: {
-        canonical: "https://nawaetu.com/misi",
+        canonical: "https://nawaetu.com/missions",
     },
 };
 
-export default function MisiLayout({
+export default function MissionsLayout({
     children,
 }: {
     children: React.ReactNode;

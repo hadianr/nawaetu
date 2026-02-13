@@ -19,9 +19,9 @@ const BottomNav = memo(function BottomNav() {
     const navItems = [
         { href: "/", label: t.navHome, icon: Home },
         { href: "/quran", label: t.navQuran, icon: BookOpen },
-        { href: "/tasbih", label: t.navTasbih, icon: Fingerprint },
-        { href: "/kiblat", label: t.navQibla, icon: Compass },
-        { href: "/atur", label: t.navSettings, icon: Settings },
+        { href: "/dhikr", label: t.navTasbih, icon: Fingerprint },
+        { href: "/qibla", label: t.navQibla, icon: Compass },
+        { href: "/settings", label: t.navSettings, icon: Settings },
     ];
 
     if (!mounted || pathname === "/mentor-ai") return null;

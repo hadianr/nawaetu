@@ -36,8 +36,8 @@ export async function POST(req: NextRequest) {
             name: session.user.name || "Hamba Allah",
             email: session.user.email,
             mobile: "081234567890",
-            redirectUrl: `${process.env.NEXTAUTH_URL}/atur?payment=success`,
-            failureRedirectUrl: `${process.env.NEXTAUTH_URL}/atur?payment=failed`
+            redirectUrl: `${process.env.NEXTAUTH_URL}/settings?payment=success`,
+            failureRedirectUrl: `${process.env.NEXTAUTH_URL}/settings?payment=failed`
         };
 
         const mayarRes = await fetch(mayarUrl, {

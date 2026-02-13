@@ -77,7 +77,7 @@ export default function MissionDetailDialog({
                                 <DialogTitle className="text-xl font-bold">{mission.title}</DialogTitle>
                                 <span className={cn(
                                     "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
-                                    mission.hukum === 'wajib'
+                                    mission.hukum === 'obligatory'
                                         ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                         : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                 )}>
@@ -130,7 +130,7 @@ export default function MissionDetailDialog({
                                             <div className="space-y-3">
                                                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
-                                                    {mission.category === 'sholat' ? 'Niat Sholat' : mission.category === 'puasa' ? 'Niat Puasa' : 'Lafadz Niat'}
+                                                    {mission.category === 'prayer' ? 'Niat Sholat' : mission.category === 'fasting' ? 'Niat Puasa' : 'Lafadz Niat'}
                                                 </h3>
 
                                                 {/* CONDITIONAL RENDERING: Tabs only if Munfarid AND Makmum exist */}
@@ -312,7 +312,7 @@ export default function MissionDetailDialog({
                 {(!customContent || isCompleted) && (
                     <div className="p-4 border-t border-white/10 bg-[#0F0F0F]">
                         {/* LATE WARNING (Lalai) - Only for Fardhu Sholat (Punya afterPrayer config) */}
-                        {isLate && !isCompleted && !isLocked && mission.category === 'sholat' && mission.validationConfig?.afterPrayer && (
+                        {isLate && !isCompleted && !isLocked && mission.category === 'prayer' && mission.validationConfig?.afterPrayer && (
                             <div className="mb-3 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
                                 <div className="flex items-center gap-2 mb-1">
                                     <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
@@ -327,8 +327,8 @@ export default function MissionDetailDialog({
                             </div>
                         )}
 
-                        {/* LATE NOTICE (Generic) - For non-Sholat (e.g. Dzikir) OR Sunnah Sholat (e.g. Dhuha) */}
-                        {isLate && !isCompleted && !isLocked && (mission.category !== 'sholat' || !mission.validationConfig?.afterPrayer) && (
+                        {/* LATE NOTICE (Generic) - For non-Prayer (e.g. Dhikr) OR Sunnah Prayer (e.g. Dhuha) */}
+                        {isLate && !isCompleted && !isLocked && (mission.category !== 'prayer' || !mission.validationConfig?.afterPrayer) && (
                             <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-lg flex items-center gap-2">
                                 <AlertCircle className="w-4 h-4 text-[rgb(var(--color-accent))] shrink-0" />
                                 <p className="text-[10px] text-[rgb(var(--color-accent))]/80 leading-tight">
@@ -337,8 +337,8 @@ export default function MissionDetailDialog({
                             </div>
                         )}
 
-                        {/* EARLY PRAISE (Awal Waktu) - Only for Sholat */}
-                        {isEarly && !isCompleted && !isLocked && mission.category === 'sholat' && (
+                        {/* EARLY PRAISE (Awal Waktu) - Only for Prayer */}
+                        {isEarly && !isCompleted && !isLocked && mission.category === 'prayer' && (
                             <div className="mb-3 px-3 py-2 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-lg">
                                 <div className="flex items-center gap-2 mb-1">
                                     <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))] shrink-0" />
