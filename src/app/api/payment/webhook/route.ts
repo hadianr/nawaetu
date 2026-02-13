@@ -6,10 +6,10 @@ import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
     try {
-        const secret = process.env.MAYAR_WEBHOOK_SECRET;
+        const webhookSecret = process.env.MAYAR_WEBHOOK_SECRET;
         const signature = req.headers.get("X-Mayar-Signature");
 
-        if (!secret) {
+        if (!webhookSecret) {
             console.error("MAYAR_WEBHOOK_SECRET is not set");
             return NextResponse.json({ error: "Configuration Error" }, { status: 500 });
         }
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
         // Verify HMAC-SHA256 Signature
         // Ensuring integrity and authenticity of the webhook payload
-        const hmac = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+        const hmac = crypto.createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
 
         // Use timing-safe comparison to prevent timing attacks
         const signatureBuffer = Buffer.from(signature);
@@ -92,6 +92,11 @@ export async function POST(req: NextRequest) {
         // Safety check again
         if (!transaction) {
             return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
+        }
+
+        // Check if already processed to prevent replay attacks / double counting
+        if (transaction.status === 'settlement') {
+            return NextResponse.json({ status: "ok", message: "Transaction already processed" });
         }
 
         // Normalize Status for Enum compatibility
