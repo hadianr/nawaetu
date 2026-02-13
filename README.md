@@ -6,11 +6,19 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.5.0-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.7.2-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
 
-**Current Version: v1.5.0** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+**Current Version: v1.7.2** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+
+### 🚀 What's New in v1.7.2
+- **Refactored Codebase**: Transitioned internal logic to English for better maintainability.
+- **Personalized Profile**: Added gender and archetype selection to tailor missions.
+- **Online Presence**: Real-time online/offline status detection.
+- **Security Hardening**: Hardened Tajweed HTML sanitization (XSS fix).
+- **Enhanced UI**: Improved HomeHeader and optimized layout loading.
+
 
 **Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.
 
@@ -37,9 +45,9 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ---
 
-## 🌟 Key Features (v1.5.0)
+## 🌟 Key Features (v1.7.2)
 
-### 1. 🔔 High-Precision Notifications (New v1.5.0)
+### 1. 🔔 High-Precision Notifications
 *   **1-Minute Accuracy**: External Cron optimization ensures Adhan alerts are timely (< 60s delay).
 *   **Smart Deduplication**: DB-level tracking prevents duplicate notifications.
 *   **iOS Killed State**: Notifications arrive even when the app is force-quit (Direct Hit verified).

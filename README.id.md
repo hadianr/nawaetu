@@ -6,11 +6,19 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.5.0-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.7.2-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.5.0** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+**Versi Saat Ini: v1.7.2** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+
+### 🚀 Apa yang Baru di v1.7.2
+- **Refactoring Codebase**: Standarisasi penamaan internal ke Bahasa Inggris.
+- **Profil Personalisasi**: Penambahan gender dan tipe pejuang (archetype) pada profil.
+- **Status Online**: Deteksi status koneksi real-time dengan indikator visual.
+- **Peningkatan Keamanan**: Sanitasi HTML Tajweed untuk mencegah celah XSS.
+- **Optimasi UI**: Penyempurnaan HomeHeader dan pemuatan layout lebih cepat.
+
 
 **Nawaetu** (dari kata "niat") adalah **satu-satunya aplikasi Islam** yang membantu kamu membangun kebiasaan ibadah yang lasting dengan memulai dari niat yang murni—menggabungkan AI mentorship, gamifikasi, dan intention tracking untuk membuat istiqomah terasa natural, bukan dipaksakan.
 
@@ -37,9 +45,9 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ---
 
-## 🌟 Fitur Unggulan (v1.5.0)
+## 🌟 Fitur Unggulan (v1.7.2)
 
-### 1. 🔔 Sistem Notifikasi Presisi Tinggi (New v1.5.0)
+### 1. 🔔 Sistem Notifikasi Presisi Tinggi
 *   **Akurasi 1 Menit**: Menggunakan External Cron untuk ketepatan waktu adzan (maksimal delay < 60 detik).
 *   **Smart Deduplication**: Mencegah notifikasi ganda dengan tracking database, aman meski cron berjalan tiap menit.
 *   **iOS Killed State Fix**: Notifikasi tembus meskipun aplikasi di-kill/force quit di iOS (Direct Hit Verified).
@@ -52,9 +60,9 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 *   **AI Feedback**: Dapatkan masukan personal dari Nawaetu AI tentang kualitas niatmu.
 
 ### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor (Updated)
-*   **Smart Rate Limiting**: Limit pintar (5x/hari Free, 25x/hari Muhsinin) dengan auto-reset saat upgrade [NEW v1.3.0]
-*   **Chat History**: Percakapan tersimpan antar sesi, lanjut ngobrol kapan aja [NEW v1.3.0]
-*   **Direct & Concise**: Jawaban AI lebih ringkas, to-the-point, dan tanpa basa-basi berlebih [NEW v1.3.0]
+*   **Smart Rate Limiting**: Limit pintar (5x/hari Free, 25x/hari Muhsinin) dengan auto-reset saat upgrade
+*   **Chat History**: Percakapan tersimpan antar sesi, lanjut ngobrol kapan aja
+*   **Direct & Concise**: Jawaban AI lebih ringkas, to-the-point, dan tanpa basa-basi berlebih
 *   **Dalil-Based**: Semua jawaban AI disertai **Dalil Al-Qur'an & Hadits Shahih**
 *   **No Judgment Zone**: Curhat masalah ibadah atau tanya hukum Islam dengan privasi penuh
 *   **Multi-Model**: Powered by Google Gemini 2.5 Flash-Lite & Groq Llama 3.3 70B
@@ -84,7 +92,7 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 *   **Premium Perks**: Unlimited AI chat, premium themes, priority support
 *   **Infaq Transparan**: Donasi digunakan untuk operasional server & pengembangan
 
-### 6. 🌍 Multi-Language & Theme System (v1.1.0)
+### 6. 🌍 Multi-Language & Theme System
 *   **Dual Language**: Indonesian & English interface
 *   **Dynamic Theme System**: CSS variables untuk consistent theming
 *   **Dark Mode**: Auto-switch berdasarkan sistem preference
@@ -580,4 +588,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: February 8, 2026*
+*Last updated: February 13, 2026*
