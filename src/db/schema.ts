@@ -220,6 +220,26 @@ export const dailyActivities = pgTable("daily_activities", {
     };
 });
 
+// --- Chat History (v1.8.0) ---
+
+export const chatSessions = pgTable("chat_sessions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("userId")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+
+    title: text("title"),
+    messages: jsonb("messages").$type<{ role: 'user' | 'assistant', content: string, timestamp: number, id: string }[]>().default([]),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+    return {
+        userIdIdx: index("chat_sessions_user_id_idx").on(table.userId),
+        updatedAtIdx: index("chat_sessions_updated_at_idx").on(table.updatedAt),
+    };
+});
+
 export const pushSubscriptions = pgTable("push_subscription", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
@@ -268,6 +288,8 @@ export type UserCompletedMission = typeof userCompletedMissions.$inferSelect;
 export type NewUserCompletedMission = typeof userCompletedMissions.$inferInsert;
 export type DailyActivity = typeof dailyActivities.$inferSelect;
 export type NewDailyActivity = typeof dailyActivities.$inferInsert;
+export type ChatSession = typeof chatSessions.$inferSelect;
+export type NewChatSession = typeof chatSessions.$inferInsert;
 export const userReadingState = pgTable("user_reading_state", {
     userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }).primaryKey(),
 

@@ -89,7 +89,11 @@ export function GuestSyncManager() {
             }
         };
 
-        checkSyncStatus();
+        const syncTask = setTimeout(() => {
+            checkSyncStatus();
+        }, 800); // 800ms delay to give priority to page-specific loads
+
+        return () => clearTimeout(syncTask);
     }, [status, session]);
 
     const checkForLocalGuestData = () => {
@@ -121,6 +125,7 @@ export function GuestSyncManager() {
             STORAGE_KEYS.DHIKR_COUNT,
             STORAGE_KEYS.USER_STREAK,
             STORAGE_KEYS.ACTIVITY_TRACKER,
+            STORAGE_KEYS.AI_CHAT_SESSIONS,
         ];
 
         return activityKeys.some(key => {
@@ -215,6 +220,9 @@ export function GuestSyncManager() {
                 if (data.profile.name) storage.set(STORAGE_KEYS.USER_NAME as any, data.profile.name);
                 if (data.profile.gender) storage.set(STORAGE_KEYS.USER_GENDER as any, data.profile.gender);
                 if (data.profile.archetype) storage.set(STORAGE_KEYS.USER_ARCHETYPE as any, data.profile.archetype);
+                if (data.profile.totalInfaq !== undefined) {
+                    storage.set(STORAGE_KEYS.USER_TOTAL_DONATION as any, data.profile.totalInfaq.toString());
+                }
 
                 if (data.profile.settings) {
                     const s = data.profile.settings;

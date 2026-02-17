@@ -92,7 +92,33 @@ export class GeminiProvider implements LLMProvider {
 
             const result = await chat.sendMessage(contextualMessage);
             const response = await result.response;
-            return response.text();
+
+            try {
+                return response.text();
+            } catch (textError) {
+                // Check if blocked due to safety
+                if (response.promptFeedback?.blockReason) {
+                    throw new ProviderError(
+                        `Response blocked: ${response.promptFeedback.blockReason}`,
+                        400,
+                        'SAFETY_BLOCK',
+                        false
+                    );
+                }
+                // Check for safety ratings if available in candidates
+                if (response.candidates && response.candidates[0]?.finishReason) {
+                    const reason = response.candidates[0].finishReason;
+                    if (reason === 'SAFETY' || reason === 'RECITATION' || reason === 'OTHER') {
+                        throw new ProviderError(
+                            `Response filtered: ${reason}`,
+                            400,
+                            'CONTENT_FILTER',
+                            false
+                        );
+                    }
+                }
+                throw textError;
+            }
 
         } catch (error: any) {
 

@@ -35,19 +35,22 @@ export default function MobileDebugConsole() {
                 hour12: false,
             });
 
-            setLogs((prev) => {
-                const newLogs = [
-                    ...prev,
-                    {
-                        id: `${Date.now()}-${Math.random()}`,
-                        time,
-                        message: String(message),
-                        type,
-                    },
-                ];
-                // Keep only last 50 logs to avoid memory issues
-                return newLogs.slice(-50);
-            });
+            // Defer state update to avoid "Cannot update a component while rendering" error
+            setTimeout(() => {
+                setLogs((prev) => {
+                    const newLogs = [
+                        ...prev,
+                        {
+                            id: `${Date.now()}-${Math.random()}`,
+                            time,
+                            message: String(message),
+                            type,
+                        },
+                    ];
+                    // Keep only last 50 logs to avoid memory issues
+                    return newLogs.slice(-50);
+                });
+            }, 0);
 
             // Also call original console method
             if (type === "log") originalLog(message);
@@ -112,19 +115,17 @@ export default function MobileDebugConsole() {
 
     return (
         <div
-            className={`fixed z-50 transition-all duration-300 ${
-                isOpen
+            className={`fixed z-50 transition-all duration-300 ${isOpen
                     ? "inset-0 bg-black/40"
                     : "bottom-20 right-4 w-12 h-12"
-            }`}
+                }`}
             onClick={() => isOpen && setIsOpen(false)}
         >
             <div
-                className={`absolute transition-all duration-300 ${
-                    isOpen
+                className={`absolute transition-all duration-300 ${isOpen
                         ? "inset-4 md:right-1/4 md:left-auto md:w-1/2 lg:w-1/3"
                         : "bottom-4 right-4 w-12 h-12"
-                }`}
+                    }`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {isOpen ? (
@@ -152,15 +153,14 @@ export default function MobileDebugConsole() {
                                 logs.map((log) => (
                                     <div
                                         key={log.id}
-                                        className={`text-xs ${
-                                            log.type === "error"
+                                        className={`text-xs ${log.type === "error"
                                                 ? "text-red-400"
                                                 : log.type === "warn"
-                                                ? "text-yellow-400"
-                                                : log.type === "info"
-                                                ? "text-blue-400"
-                                                : "text-green-400"
-                                        }`}
+                                                    ? "text-yellow-400"
+                                                    : log.type === "info"
+                                                        ? "text-blue-400"
+                                                        : "text-green-400"
+                                            }`}
                                     >
                                         <span className="text-gray-600">[{log.time}]</span> {log.message}
                                     </div>

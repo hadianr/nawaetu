@@ -10,8 +10,7 @@ import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export default function NotificationSettings() {
-    const { locale } = useLocale();
-    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS];
+    const { locale, t } = useLocale();
 
     // State Management
     const [isEnabled, setIsEnabled] = useState(false);
@@ -174,11 +173,11 @@ export default function NotificationSettings() {
     }
 
     const prayerNames = {
-        fajr: t.fajr,
-        dhuhr: t.dhuhr,
-        asr: t.asr,
-        maghrib: t.maghrib,
-        isha: t.isha,
+        fajr: t.fajr || "Subuh",
+        dhuhr: t.dhuhr || "Dzuhur",
+        asr: t.asr || "Ashar",
+        maghrib: t.maghrib || "Maghrib",
+        isha: t.isha || "Isya",
     };
 
     // RENDER: PRE-PERMISSION STATE
