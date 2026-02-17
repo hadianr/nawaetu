@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, RefreshCcw } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, RefreshCcw, Calendar } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"; // Import useSession
@@ -107,6 +107,7 @@ function SettingsPageContent() {
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
+    const [hijriAdjustment, setHijriAdjustment] = useState("0");
 
     // Audio Preview State
     const [isPlaying, setIsPlaying] = useState(false);
@@ -290,15 +291,17 @@ function SettingsPageContent() {
     };
 
     useEffect(() => {
-        const [savedMuadzin, savedMethod] = storage.getMany([
+        const [savedMuadzin, savedMethod, savedAdjustment] = storage.getMany([
             STORAGE_KEYS.SETTINGS_MUADZIN,
-            STORAGE_KEYS.SETTINGS_CALCULATION_METHOD
+            STORAGE_KEYS.SETTINGS_CALCULATION_METHOD,
+            STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT
         ]).values();
 
         refreshProfile();
 
         if (savedMuadzin) setMuadzin(savedMuadzin as string);
         if (savedMethod) setCalculationMethod(savedMethod as string);
+        if (savedAdjustment) setHijriAdjustment(savedAdjustment as string);
     }, []);
 
     // Real-time avatar sync listener
@@ -358,6 +361,13 @@ function SettingsPageContent() {
         saveSettingsToCloud('calculationMethod', value);
         // Trigger refresh of prayer times with new method
         window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: value } }));
+    };
+
+    const handleHijriAdjustmentChange = (value: string) => {
+        setHijriAdjustment(value);
+        storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, value);
+        saveSettingsToCloud('hijriAdjustment', value);
+        window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: value } }));
     };
 
     const handleLocaleChange = (value: string) => {
@@ -485,6 +495,58 @@ function SettingsPageContent() {
 
                 {/* Prayer Notifications Card - Using NotificationSettings Component */}
                 <NotificationSettings />
+
+                {/* Hijri Date Settings Card */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                        <span className="text-sm font-semibold text-white">{t.hijriDateTitle}</span>
+                    </div>
+
+                    <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors h-[84px]">
+                        {/* Visual Layer */}
+                        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
+                            <div className="flex items-center justify-between w-full">
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.hijriAdjustmentLabel}</span>
+                                <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
+                            </div>
+                            <div>
+                                <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-1">
+                                    {hijriAdjustment === "0" ? t.adjustmentStandard :
+                                        hijriAdjustment === "-1" ? t.adjustmentMuhammadiyah :
+                                            `${t.adjustmentManual} (${hijriAdjustment})`}
+                                </p>
+                                <p className="text-[10px] text-white/40 line-clamp-1">
+                                    {t.hijriDateDesc}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Functional Layer */}
+                        <Select value={hijriAdjustment} onValueChange={handleHijriAdjustmentChange}>
+                            <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-slate-900 border-slate-800">
+                                <SelectItem value="0" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentStandard}
+                                </SelectItem>
+                                <SelectItem value="-1" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentMuhammadiyah}
+                                </SelectItem>
+                                <SelectItem value="-2" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentManual} (-2)
+                                </SelectItem>
+                                <SelectItem value="1" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentManual} (+1)
+                                </SelectItem>
+                                <SelectItem value="2" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentManual} (+2)
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
 
                 {/* Theme Configuration Card */}
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">

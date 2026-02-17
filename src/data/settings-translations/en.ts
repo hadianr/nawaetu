@@ -45,6 +45,14 @@ export const SETTINGS_EN = {
     audioTitle: "Audio Settings",
     muadzinLabel: "Adhan Voice",
 
+    // Hijri Date Adjustment
+    hijriDateTitle: "Hijri Date",
+    hijriDateDesc: "Adjust Hijri date if there is a difference (e.g. Moon sighting variations)",
+    hijriAdjustmentLabel: "Adjustment",
+    adjustmentStandard: "Standard (0 Days)",
+    adjustmentMuhammadiyah: "-1 Day",
+    adjustmentManual: "Manual Adjustment",
+
     // Language Settings
     languageTitle: "Language",
     languageDescription: "The app language will change according to your selection.",
@@ -317,12 +325,18 @@ export const SETTINGS_EN = {
     homeMissionEarlyPraiseQuote: "\"The most beloved deed to Allah is prayer at its appointed time.\" (HR. Bukhari & Muslim)",
     ramadhanHeading: "Towards Ramadhan",
     ramadhanDaysLeft: "Days Left",
-    ramadhanReady: "Ramadhan Ready! 🌙",
-    ramadhanLevel75: "Consistent Warrior",
-    ramadhanLevel50: "Ready to Step",
-    ramadhanLevel25: "Intention Set",
-    ramadhanLevel0: "Ramadhan Newbie",
     ramadhanPreparationLabel: "Preparation",
+    ramadhanLevel0: "Ramadhan Newbie",
+    ramadhanLevel25: "Getting Ready",
+    ramadhanLevel50: "Steady Pace",
+    ramadhanLevel75: "Almost There",
+    ramadhanReady: "Ramadhan Ready!",
+
+    // Active Ramadhan Mode
+    ramadhanDay: "Ramadhan Day",
+    ramadhanGreeting: "Ramadhan Kareem",
+    ramadhanEidGreeting: "Eid Mubarak",
+    ramadhanFinished: "May Allah accept our deeds",
     ramadhanInfoTitle: "Ramadhan Preparation",
     ramadhanInfoDesc: "The \"Preparation\" percentage is calculated from completing special missions in Sya'ban (like Sunnah fasting, reading Quran, etc).",
     ramadhanImproveTitle: "🎯 How to Improve:",
@@ -726,5 +740,6 @@ export const SETTINGS_EN = {
         "Give charity even a little",
         "Avoid gossiping",
         "Connect with relatives"
-    ]
+    ],
+    debugConsoleTitle: "Debug Console"
 };

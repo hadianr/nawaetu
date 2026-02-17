@@ -39,6 +39,7 @@ export const STORAGE_KEYS = {
 
   // Settings - Prayer
   SETTINGS_CALCULATION_METHOD: 'settings_calculation_method',
+  SETTINGS_HIJRI_ADJUSTMENT: 'settings_hijri_adjustment',
 
   // Prayer Times
   PRAYER_DATA: 'prayer_data',

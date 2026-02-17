@@ -1,204 +1,187 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, ChevronUp, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+
+import { useLocale } from "@/context/LocaleContext";
 
 interface LogEntry {
-    id: string;
-    time: string;
     message: string;
     type: "log" | "error" | "warn" | "info";
+    timestamp: number;
 }
 
-export default function MobileDebugConsole() {
-    const [isOpen, setIsOpen] = useState(false);
+const MobileDebugConsole = () => {
+    const { t } = useLocale();
     const [logs, setLogs] = useState<LogEntry[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-    const logsEndRef = useRef<HTMLDivElement>(null);
+    const logEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Check if debug mode is enabled
-        const debugEnabled = localStorage.getItem('nawaetu_debug') === 'true';
-        setIsVisible(debugEnabled);
+        // Toggle visibility with secret shortcut: 3 rapid clicks on a specific area 
+        // Or just check if development
+        if (process.env.NODE_ENV === "development") {
+            setIsVisible(true);
+        }
 
-        // Capture console logs
+        // Hidden override: check localStorage
+        const forceDev = typeof window !== "undefined" && localStorage.getItem("nawaetu_debug") === "true";
+        if (forceDev) setIsVisible(true);
+
         const originalLog = console.log;
         const originalError = console.error;
         const originalWarn = console.warn;
+        const originalInfo = console.info;
 
-        const addLog = (message: string, type: "log" | "error" | "warn" | "info" = "log") => {
-            const now = new Date();
-            const time = now.toLocaleTimeString("id-ID", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false,
-            });
+        const addLog = (message: any, type: "log" | "error" | "warn" | "info" = "log") => {
+            let logMsg = "";
+            try {
+                logMsg = typeof message === 'string' ? message : JSON.stringify(message, null, 2);
+            } catch (e) {
+                logMsg = String(message);
+            }
 
-            // Defer state update to avoid "Cannot update a component while rendering" error
-            setTimeout(() => {
-                setLogs((prev) => {
-                    const newLogs = [
-                        ...prev,
-                        {
-                            id: `${Date.now()}-${Math.random()}`,
-                            time,
-                            message: String(message),
-                            type,
-                        },
-                    ];
-                    // Keep only last 50 logs to avoid memory issues
-                    return newLogs.slice(-50);
-                });
-            }, 0);
+            setLogs((prev) => [...prev.slice(-100), {
+                message: logMsg,
+                type,
+                timestamp: Date.now()
+            }]);
 
             // Also call original console method
             if (type === "log") originalLog(message);
             else if (type === "error") originalError(message);
             else if (type === "warn") originalWarn(message);
+            else if (type === "info") originalInfo(message);
         };
 
-        console.log = (...args) => {
-            addLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), "log");
+        console.log = (msg) => addLog(msg, "log");
+        console.error = (msg) => addLog(msg, "error");
+        console.warn = (msg) => addLog(msg, "warn");
+        console.info = (msg) => addLog(msg, "info");
+
+        // Catch unhandled errors
+        const handleError = (event: ErrorEvent) => {
+            addLog(event.message, "error");
         };
 
-        console.error = (...args) => {
-            addLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), "error");
+        const handleRejection = (event: PromiseRejectionEvent) => {
+            addLog(`Promise Rejected: ${event.reason}`, "error");
         };
 
-        console.warn = (...args) => {
-            addLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), "warn");
-        };
+        window.addEventListener("error", handleError);
+        window.addEventListener("unhandledrejection", handleRejection);
 
         return () => {
             console.log = originalLog;
             console.error = originalError;
             console.warn = originalWarn;
+            console.info = originalInfo;
+            window.removeEventListener("error", handleError);
+            window.removeEventListener("unhandledrejection", handleRejection);
         };
     }, []);
 
-    // Auto-scroll to bottom
     useEffect(() => {
-        logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [logs]);
+        if (isOpen && logEndRef.current) {
+            logEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [logs, isOpen]);
 
-    // Listen for toggle (triple tap on status bar area or via localStorage)
-    useEffect(() => {
-        const handleKeyPress = (e: KeyboardEvent) => {
-            // Alt+D to toggle debug console
-            if (e.altKey && e.key === "d") {
-                setIsOpen((prev) => !prev);
-                setIsVisible(true);
-                localStorage.setItem('nawaetu_debug', 'true');
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyPress);
-        return () => window.removeEventListener("keydown", handleKeyPress);
-    }, []);
-
-    if (!isVisible) {
-        return (
-            <button
-                onClick={() => {
-                    localStorage.setItem('nawaetu_debug', 'true');
-                    setIsVisible(true);
-                    setIsOpen(true);
-                }}
-                className="fixed bottom-20 right-4 z-50 w-12 h-12 bg-blue-600/80 rounded-full flex items-center justify-center text-white text-lg font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg"
-                title="Enable Debug Console (Alt+D to toggle, long press to open)"
-            >
-                🐛
-            </button>
-        );
-    }
+    if (!isVisible) return null;
 
     return (
-        <div
-            className={`fixed z-50 transition-all duration-300 ${isOpen
-                    ? "inset-0 bg-black/40"
-                    : "bottom-20 right-4 w-12 h-12"
-                }`}
-            onClick={() => isOpen && setIsOpen(false)}
-        >
-            <div
-                className={`absolute transition-all duration-300 ${isOpen
-                        ? "inset-4 md:right-1/4 md:left-auto md:w-1/2 lg:w-1/3"
-                        : "bottom-4 right-4 w-12 h-12"
-                    }`}
-                onClick={(e) => e.stopPropagation()}
-            >
-                {isOpen ? (
-                    <div className="flex flex-col h-full bg-black/95 border border-blue-500/50 rounded-lg overflow-hidden">
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-3 bg-blue-900/50 border-b border-blue-500/30">
-                            <span className="text-xs font-bold text-blue-300">
-                                🐛 Debug Console ({logs.length})
+        <>
+            {/* Floating Toggle Button */}
+            {!isOpen && (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="fixed bottom-20 right-4 z-[100] w-10 h-10 bg-blue-600/80 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer"
+                    aria-label="Open Debug Console"
+                >
+                    <span className="text-xl">🐛</span>
+                    {logs.filter(l => l.type === 'error').length > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[8px] items-center justify-center font-bold">
+                                {logs.filter(l => l.type === 'error').length}
                             </span>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="p-1 hover:bg-blue-600/50 rounded"
-                            >
-                                <X className="w-4 h-4 text-blue-300" />
-                            </button>
-                        </div>
+                        </span>
+                    )}
+                </button>
+            )}
 
-                        {/* Logs */}
-                        <div className="flex-1 overflow-y-auto font-mono text-[10px] p-2 space-y-0.5">
-                            {logs.length === 0 ? (
-                                <div className="text-gray-500 text-center py-4">
-                                    No logs yet...
-                                </div>
-                            ) : (
-                                logs.map((log) => (
-                                    <div
-                                        key={log.id}
-                                        className={`text-xs ${log.type === "error"
-                                                ? "text-red-400"
-                                                : log.type === "warn"
-                                                    ? "text-yellow-400"
-                                                    : log.type === "info"
-                                                        ? "text-blue-400"
-                                                        : "text-green-400"
-                                            }`}
-                                    >
-                                        <span className="text-gray-600">[{log.time}]</span> {log.message}
-                                    </div>
-                                ))
-                            )}
-                            <div ref={logsEndRef} />
-                        </div>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogContent
+                    className="max-w-[95vw] w-full h-[80vh] bg-black/95 border-blue-500/50 p-0 flex flex-col overflow-hidden gap-0 rounded-2xl"
+                    showCloseButton={false}
+                >
+                    <DialogTitle className="sr-only">
+                        {(t as any).debugConsoleTitle || "Debug Console"}
+                    </DialogTitle>
 
-                        {/* Footer */}
-                        <div className="flex gap-2 p-2 bg-blue-900/50 border-t border-blue-500/30">
+                    {/* Custom Header */}
+                    <div className="flex items-center justify-between p-3 border-b border-blue-500/30 bg-blue-500/10">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-blue-400">
+                                {((t as any).debugConsoleTitle || "Debug Console").toUpperCase()}
+                            </span>
+                            <span className="text-[10px] bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300">
+                                {logs.length} entries
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setLogs([])}
-                                className="flex-1 text-xs px-2 py-1 bg-red-600/50 hover:bg-red-600 text-red-100 rounded"
+                                className="text-[10px] px-2 py-1 bg-white/5 hover:bg-white/10 rounded text-gray-300 transition-colors cursor-pointer"
                             >
                                 Clear
                             </button>
                             <button
-                                onClick={() => {
-                                    localStorage.setItem('nawaetu_debug', 'false');
-                                    setIsVisible(false);
-                                    setIsOpen(false);
-                                }}
-                                className="flex-1 text-xs px-2 py-1 bg-gray-600/50 hover:bg-gray-600 text-gray-100 rounded"
+                                onClick={() => setIsOpen(false)}
+                                className="text-[10px] px-2 py-1 bg-white/10 hover:bg-white/20 rounded text-white transition-colors cursor-pointer"
                             >
                                 Close
                             </button>
                         </div>
                     </div>
-                ) : (
-                    <button
-                        onClick={() => setIsOpen(true)}
-                        className="w-full h-full bg-blue-600/80 hover:bg-blue-700 rounded-full flex items-center justify-center text-white text-lg font-bold active:scale-95 transition-all"
-                        title="Open Debug Console"
-                    >
-                        🐛
-                    </button>
-                )}
-            </div>
-        </div>
+
+                    {/* Logs List */}
+                    <div className="flex-1 overflow-auto p-4 font-mono text-[10px] space-y-2 scrollbar-hide">
+                        {logs.length === 0 ? (
+                            <div className="flex items-center justify-center h-full text-white/20 italic">
+                                No logs captured yet...
+                            </div>
+                        ) : (
+                            logs.map((log, i) => (
+                                <div key={i} className="flex flex-col gap-0.5 border-b border-white/5 pb-2 last:border-0">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[9px] text-white/40">
+                                            {new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                        </span>
+                                        <span className={cn(
+                                            "text-[9px] font-black px-1 rounded",
+                                            log.type === "error" ? "bg-red-500/20 text-red-500" :
+                                                log.type === "warn" ? "bg-yellow-500/20 text-yellow-500" :
+                                                    log.type === "info" ? "bg-blue-500/20 text-blue-500" :
+                                                        "bg-gray-500/20 text-gray-400"
+                                        )}>
+                                            {log.type.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <pre className="text-white whitespace-pre-wrap break-all pl-2 border-l border-white/5 mt-1 leading-relaxed">
+                                        {log.message}
+                                    </pre>
+                                </div>
+                            ))
+                        )}
+                        <div ref={logEndRef} />
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
     );
-}
+};
+
+export default MobileDebugConsole;

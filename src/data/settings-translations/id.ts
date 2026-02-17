@@ -45,6 +45,14 @@ export const SETTINGS_ID = {
     audioTitle: "Pengaturan Audio",
     muadzinLabel: "Suara Adzan",
 
+    // Hijri Date Adjustment
+    hijriDateTitle: "Tanggal Hijriah",
+    hijriDateDesc: "Sesuaikan tanggal jika ada perbedaan (misal: Muhammadiyah vs Pemerintah)",
+    hijriAdjustmentLabel: "Penyesuaian",
+    adjustmentStandard: "Standar (Pemerintah/Kemenag)",
+    adjustmentMuhammadiyah: "Muhammadiyah (-1 Hari)",
+    adjustmentManual: "Manual",
+
     // Language Settings
     languageTitle: "Bahasa",
     languageDescription: "Bahasa aplikasi akan berubah sesuai pilihan.",
@@ -317,12 +325,18 @@ export const SETTINGS_ID = {
     homeMissionEarlyPraiseQuote: "\"Amalan yang paling dicintai Allah adalah sholat pada waktunya.\" (HR. Bukhari & Muslim)",
     ramadhanHeading: "Menuju Ramadhan",
     ramadhanDaysLeft: "Hari Lagi",
-    ramadhanReady: "Ramadhan Ready! 🌙",
-    ramadhanLevel75: "Pejuang Istiqomah",
-    ramadhanLevel50: "Siap Melangkah",
-    ramadhanLevel25: "Niat Terpasang",
-    ramadhanLevel0: "Newbie Ramadhan",
     ramadhanPreparationLabel: "Persiapan",
+    ramadhanLevel0: "Ramadhan Newbie",
+    ramadhanLevel25: "Mulai Hangat",
+    ramadhanLevel50: "Makin Siap",
+    ramadhanLevel75: "Gaspol Ibadah",
+    ramadhanReady: "Siap Ramadhan!",
+
+    // Active Ramadhan Mode
+    ramadhanDay: "Ramadhan Hari ke-",
+    ramadhanGreeting: "Ramadhan Kareem",
+    ramadhanEidGreeting: "Selamat Idul Fitri",
+    ramadhanFinished: "Taqabbalallahu Minna Wa Minkum",
     ramadhanInfoTitle: "Persiapan Ramadhan",
     ramadhanInfoDesc: "Persentase \"Persiapan\" dihitung dari penyelesaian misi-misi khusus di bulan Sya'ban (seperti Puasa Sunnah, Baca Quran, dll).",
     ramadhanImproveTitle: "🎯 Cara Meningkatkan:",
@@ -726,5 +740,6 @@ export const SETTINGS_ID = {
         "Bersedekah walau sedikit",
         "Menghindari ghibah",
         "Menyambung silaturahmi"
-    ]
+    ],
+    debugConsoleTitle: "Konsol Debug"
 };

@@ -30,6 +30,8 @@ interface PrayerData {
     nextPrayerTime: string;
     locationName: string;
     isDefaultLocation?: boolean;
+    hijriMonth?: string;
+    hijriDay?: number;
 }
 
 interface UsePrayerTimesResult {
@@ -92,7 +94,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             nextPrayer: next,
             nextPrayerTime: nextTime,
             locationName,
-            isDefaultLocation // Add flag to state
+            isDefaultLocation,
+            hijriMonth: hijri?.month?.en,
+            hijriDay: parseInt(hijri?.day || "0", 10)
         });
 
         if (isCached) setLoading(false);
@@ -160,8 +164,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
             const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
 
+            // Get Hijri adjustment from settings (default: 0)
+            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+            const adjustment = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "0";
+
             const response = await fetchWithTimeout(
-                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}`,
+                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${adjustment}`,
                 {},
                 { timeoutMs: 8000 }
             );
@@ -290,12 +298,26 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
         };
 
+        // Listen for Hijri adjustment changes
+        const handleAdjustmentChange = () => {
+            const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
+            if (isFreshLocation(cachedLocation)) {
+                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+                return;
+            }
+            if (cachedLocation) {
+                storage.remove(STORAGE_KEYS.USER_LOCATION as any);
+            }
+        };
+
         window.addEventListener('prayer_data_updated', handleUpdate);
         window.addEventListener('calculation_method_changed', handleMethodChange);
+        window.addEventListener('hijri_adjustment_changed', handleAdjustmentChange);
 
         return () => {
             window.removeEventListener('prayer_data_updated', handleUpdate);
             window.removeEventListener('calculation_method_changed', handleMethodChange);
+            window.removeEventListener('hijri_adjustment_changed', handleAdjustmentChange);
         };
     }, [fetchPrayerTimes, syncFromCache]);
 

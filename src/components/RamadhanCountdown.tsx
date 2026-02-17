@@ -20,6 +20,7 @@ const InfoIcon = ({ className }: { className?: string }) => (
 );
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
+import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -35,52 +36,79 @@ interface Props {
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     const { t, locale } = useLocale();
+    const { data: prayerData } = usePrayerTimes();
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
-    const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number }>({
+    const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; totalMs: number }>({
         days: initialDays,
         hours: 0,
-        minutes: 0
+        minutes: 0,
+        totalMs: initialDays * 24 * 60 * 60 * 1000 // Approximate for init
     });
     const [progress, setProgress] = useState(0);
     const [showInfo, setShowInfo] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
+    const [adjustment, setAdjustment] = useState(0);
+
     // Target: Estimated 1 Ramadhan 1447H (Feb 18, 2026)
-    const TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
+    const BASE_TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
 
     useEffect(() => {
         setIsMounted(true);
 
+        const storage = getStorageService();
+
+        // Load initial adjustment
+        const loadAdjustment = () => {
+            const savedAdj = storage.getOptional(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT);
+            if (savedAdj) {
+                setAdjustment(parseInt(savedAdj as string, 10) || 0);
+            }
+        };
+        loadAdjustment();
+
         // Countdown Logic - optimized to not block render
         const calculateTimeLeft = () => {
             const now = new Date();
-            const difference = TARGET_DATE.getTime() - now.getTime();
-            if (difference > 0) {
-                return {
-                    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-                    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-                    minutes: Math.floor((difference / 1000 / 60) % 60),
-                };
-            }
-            return { days: 0, hours: 0, minutes: 0 };
+            // Adjust the target date based on user preference
+            // If adjustment is +1 (My Hijri date is ahead), Ramadhan comes SOONER.
+            // So we SUBTRACT days from the Target Date.
+            // Example: Adj +1. Original Target Feb 18. New Target Feb 17.
+            // Example: Adj -1. Original Target Feb 18. New Target Feb 19.
+            // Formula: Base - (Adjustment * Days)
+            const adjustedTarget = new Date(BASE_TARGET_DATE.getTime() - (adjustment * 24 * 60 * 60 * 1000));
+
+            const difference = adjustedTarget.getTime() - now.getTime();
+
+            // Allow negative values to track days passed
+            return {
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((Math.abs(difference) / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((Math.abs(difference) / 1000 / 60) % 60),
+                totalMs: difference
+            };
         };
 
-        // Immediately update on mount to catch up seconds/hours
+        // Immediately update on mount
         setTimeLeft(calculateTimeLeft());
 
-        // Update every 60 seconds instead of 1s to reduce re-renders
-        // This significantly reduces main-thread work during render
+        // Update every 60 seconds
         const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
+
+        // Listen for adjustment changes
+        const handleAdjustmentChange = (e: any) => {
+            const newAdj = parseInt(e.detail?.adjustment || "0", 10);
+            setAdjustment(newAdj);
+        };
+        window.addEventListener('hijri_adjustment_changed', handleAdjustmentChange);
 
         // Defer progress loading to not block initial render (LCP optimization)
         const loadProgress = () => {
-            const storage = getStorageService();
+            // ... (Progress loading logic unchanged) ...
             const savedCompleted = storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS);
             if (savedCompleted) {
                 try {
                     const completedData = typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted;
-
-                    // Support both formats: array (new) and object (old)
                     const completedMap: Record<string, any> = Array.isArray(completedData)
                         ? completedData.reduce((acc, m) => {
                             acc[m.id] = m;
@@ -107,22 +135,20 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             }
         };
 
-        // Use requestIdleCallback to defer progress load (don't block LCP)
+        // ... (rest of listeners) ...
         if (typeof window !== "undefined" && "requestIdleCallback" in window) {
             (window as Window).requestIdleCallback(() => loadProgress(), { timeout: 3000 });
         } else {
             setTimeout(loadProgress, 100);
         }
 
-        // Listen for internal mission updates (same tab)
         window.addEventListener("mission_storage_updated", loadProgress);
 
-        // Backup listener: wait a bit to ensure storage is written if sync failed
         const handleBackupUpdate = () => setTimeout(loadProgress, 50);
         window.addEventListener("xp_updated", handleBackupUpdate);
 
-        // Listen for storage updates (cross tab)
         const handleStorageUpdate = () => {
+            loadAdjustment(); // Reload adjustment on storage event
             if (typeof window !== "undefined" && "requestIdleCallback" in window) {
                 (window as Window).requestIdleCallback(() => loadProgress(), { timeout: 3000 });
             } else {
@@ -136,8 +162,9 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             window.removeEventListener("mission_storage_updated", loadProgress);
             window.removeEventListener("xp_updated", handleBackupUpdate);
             window.removeEventListener("storage", handleStorageUpdate);
+            window.removeEventListener("hijri_adjustment_changed", handleAdjustmentChange);
         };
-    }, []);
+    }, [adjustment]); // Re-run effect when adjustment changes to recalculate immediately
 
     const getLevelTitle = (p: number) => {
         if (p === 100) return t.ramadhanReady;
@@ -152,8 +179,47 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         window.dispatchEvent(new CustomEvent("open_mission_modal", { detail: { tab: 'seasonal' } }));
     };
 
+    // Determine Phase based on Hijri Date if available, fallback to Gregorian
+    const hijriMonth = prayerData?.hijriMonth;
+    const hijriDay = prayerData?.hijriDay || 0;
+
+    const isRamadhan = hijriMonth === "Ramadan" || (timeLeft.totalMs <= 0 && timeLeft.days > -30);
+    const isEid = hijriMonth === "Shawwal" || timeLeft.days <= -30;
+
+    // Calculate effective days left/passed
+    const displayDays = isRamadhan
+        ? (hijriMonth === "Ramadan" ? hijriDay : Math.abs(timeLeft.days) + 1)
+        : (hijriMonth === "Sha'ban" ? Math.max(0, 30 - hijriDay) : timeLeft.days);
+
+    // Note: If it's 29 Sha'ban, and we assume 30 days, it's 1 day left. 
+    // If Sha'ban is only 29 days, the hook will switch to Ramadan tomorrow anyway.
+
     // Dynamic Intensity Logic
     const getIntensityStyles = (days: number) => {
+        if (isEid) {
+            return {
+                bg: "from-yellow-600/40 via-amber-500/20 to-yellow-900/60", // Gold/Festive
+                border: "border-yellow-500/50 shadow-[0_0_30px_-5px_rgba(234,179,8,0.3)]",
+                text: "text-yellow-400",
+                icon: "fill-yellow-400 text-yellow-200",
+                glow: "bg-yellow-500/30",
+                animate: "animate-pulse"
+            };
+        }
+
+        if (isRamadhan) {
+            // Use CSS Variables for Dynamic Theme Integration
+            return {
+                bg: "from-[rgb(var(--color-primary-dark))]/60 via-[rgb(var(--color-primary))]/20 to-black/60",
+                border: "border-[rgb(var(--color-primary))]/50 shadow-[0_0_30px_-5px_rgba(var(--color-primary),0.3)]",
+                text: "text-[rgb(var(--color-primary-light))]",
+                icon: "fill-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary))]",
+                glow: "bg-[rgb(var(--color-primary))]/40",
+                animate: ""
+            };
+        }
+
+        // Prep Phase
         if (days <= 10) {
             return {
                 bg: "from-amber-600/40 via-yellow-500/20 to-emerald-900/60",
@@ -184,8 +250,8 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         };
     };
 
-    // Use timeLeft.days directly (Server init or Client update)
-    const styles = getIntensityStyles(timeLeft.days);
+    // Use displayDays for consistency
+    const styles = getIntensityStyles(isRamadhan ? 0 : displayDays);
 
     return (
         <>
@@ -205,13 +271,31 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     <div className="flex flex-col gap-1.5 z-10">
                         <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                             <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{t.ramadhanHeading}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                {isEid ? t.ramadhanEidGreeting : isRamadhan ? t.ramadhanGreeting : t.ramadhanHeading}
+                            </span>
                         </div>
                         <div className="flex items-baseline gap-2.5">
-                            <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
-                                {timeLeft.days}
-                            </span>
-                            <span className="text-sm font-medium text-white/80">{t.ramadhanDaysLeft}</span>
+                            {isEid ? (
+                                <span className="text-xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md pb-1">
+                                    {t.ramadhanFinished}
+                                </span>
+                            ) : isRamadhan ? (
+                                <>
+                                    <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
+                                        {displayDays}
+                                    </span>
+                                    <span className="text-sm font-medium text-white/80">{t.ramadhanDay}</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
+                                        {displayDays}
+                                    </span>
+                                    <span className="text-sm font-medium text-white/80">{t.ramadhanDaysLeft}</span>
+                                </>
+                            )}
+
                         </div>
                     </div>
 
@@ -224,7 +308,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                         <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
                             <div
                                 className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
-                                style={{ width: `${progress}%` }}
+                                style={{ width: `${isRamadhan ? Math.min(100, (displayDays / 30) * 100) : progress}%` }}
                             />
                         </div>
                         <div className="flex items-center gap-1.5" onClick={(e) => {
@@ -232,7 +316,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             setShowInfo(true);
                         }}>
                             <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
-                                {progress}% {t.ramadhanPreparationLabel}
+                                {isRamadhan ? `${displayDays} / 30 Days` : `${progress}% ${t.ramadhanPreparationLabel}`}
                             </div>
                             <InfoIcon className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
                         </div>
