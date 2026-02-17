@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 interface IntentionPromptProps {
     onSubmit: (niatText: string) => Promise<void>;
@@ -17,13 +16,12 @@ export default function IntentionPrompt({
     onClose,
     initialValue = "",
 }: IntentionPromptProps) {
-    const { locale } = useLocale();
-    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+    const { locale, t } = useLocale();
 
     const [niatText, setNiatText] = useState(initialValue);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mounted, setMounted] = useState(false);
-    const [greeting, setGreeting] = useState({ text: t.morning_title, emoji: "🌅" });
+    const [greeting, setGreeting] = useState({ text: t.niat_morning_title, emoji: "🌅" });
 
     useEffect(() => {
         setMounted(true);
@@ -31,13 +29,13 @@ export default function IntentionPrompt({
         // Determine greeting based on time of day
         const hour = new Date().getHours();
         if (hour >= 5 && hour < 11) {
-            setGreeting({ text: t.morning_title, emoji: "🌅" });
+            setGreeting({ text: t.niat_morning_title, emoji: "🌅" });
         } else if (hour >= 11 && hour < 15) {
-            setGreeting({ text: t.afternoon_title, emoji: "☀️" });
+            setGreeting({ text: t.niat_afternoon_title, emoji: "☀️" });
         } else if (hour >= 15 && hour < 19) {
-            setGreeting({ text: t.evening_title, emoji: "🌇" });
+            setGreeting({ text: t.niat_evening_title, emoji: "🌇" });
         } else {
-            setGreeting({ text: t.night_title, emoji: "🌙" });
+            setGreeting({ text: t.niat_night_title, emoji: "🌙" });
         }
 
         return () => setMounted(false);
@@ -89,7 +87,7 @@ export default function IntentionPrompt({
                     <div className="text-center relative z-10">
                         <div className="text-5xl mb-4 drop-shadow-lg">{greeting.emoji}</div>
                         <h2 className="text-2xl font-bold text-white mb-1">{greeting.text}</h2>
-                        <p className="text-white/60 text-sm">{t.prompt_question}</p>
+                        <p className="text-white/60 text-sm">{t.niat_prompt_question}</p>
                     </div>
 
                     {/* Streak Display */}
@@ -97,7 +95,7 @@ export default function IntentionPrompt({
                         <div className="mt-4 flex items-center justify-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 w-fit mx-auto">
                             <span className="text-xl">🔥</span>
                             <span className="text-sm font-semibold text-white">
-                                {currentStreak} {t.streak_label}
+                                {currentStreak} {t.niat_streak_label}
                             </span>
                         </div>
                     )}
@@ -122,7 +120,7 @@ export default function IntentionPrompt({
                         <textarea
                             value={niatText}
                             onChange={(e) => setNiatText(e.target.value)}
-                            placeholder={t.placeholder}
+                            placeholder={t.niat_placeholder}
                             maxLength={500}
                             rows={4}
                             className="w-full bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-[rgb(var(--color-primary))]/50 focus:ring-1 focus:ring-[rgb(var(--color-primary))]/50 resize-none transition-all text-base leading-relaxed"
@@ -136,22 +134,23 @@ export default function IntentionPrompt({
                     {/* Inspiration Suggestions */}
                     <div>
                         <div className="flex items-center justify-between mb-3">
-                            <label className="text-xs font-medium text-white/50 uppercase tracking-wider">{t.need_inspiration}</label>
+                            <label className="text-xs font-medium text-white/50 uppercase tracking-wider">{t.niat_need_inspiration}</label>
                             <button
                                 onClick={() => {
-                                    const randomSuggestion = t.suggestions[
-                                        Math.floor(Math.random() * t.suggestions.length)
+                                    const suggestions = t.niat_suggestions as string[];
+                                    const randomSuggestion = suggestions[
+                                        Math.floor(Math.random() * suggestions.length)
                                     ];
                                     handleSuggestionClick(randomSuggestion);
                                 }}
                                 className="text-xs text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-light))] flex items-center gap-1 transition-colors"
                             >
                                 <span>🎲</span>
-                                {t.random_btn}
+                                {t.niat_random_btn}
                             </button>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {t.suggestions.slice(0, 3).map((suggestion, index) => (
+                            {(t.niat_suggestions as string[]).slice(0, 3).map((suggestion: string, index: number) => (
                                 <button
                                     key={index}
                                     onClick={() => handleSuggestionClick(suggestion)}
@@ -172,10 +171,10 @@ export default function IntentionPrompt({
                         {isSubmitting ? (
                             <div className="flex items-center justify-center gap-2">
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                <span>{t.setting_intention}</span>
+                                <span>{t.niat_setting_intention}</span>
                             </div>
                         ) : (
-                            t.set_intention_btn
+                            t.niat_set_intention_btn
                         )}
                     </button>
                 </div>
