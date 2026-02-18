@@ -35,6 +35,7 @@ export function useDataSync() {
                     theme: localStorage.getItem(STORAGE_KEYS.SETTINGS_THEME),
                     muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
                     calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
+                    hijriAdjustment: localStorage.getItem(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
                     locale: localStorage.getItem(STORAGE_KEYS.SETTINGS_LOCALE),
                     notificationPreferences: Object.keys(notificationPrefs).length > 0 ? notificationPrefs : null,
                 },

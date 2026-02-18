@@ -515,6 +515,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 muadzin: restSettings.muadzin || currentSettings.muadzin,
                 calculationMethod: restSettings.calculationMethod || currentSettings.calculationMethod,
                 locale: restSettings.locale || currentSettings.locale,
+                hijriAdjustment: restSettings.hijriAdjustment || currentSettings.hijriAdjustment,
                 notificationPreferences: restSettings.notificationPreferences || currentSettings.notificationPreferences,
             };
 
