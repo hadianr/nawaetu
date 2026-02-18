@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.7.3] - 2026-02-18
+
+### Added
+- **Feature: Hijri Date Adjustment**: Users can now adjust Hijri dates (Standard/Muhammadiyah alignment) to ensure accurate Ramadhan start dates.
+- **System: Persistent Settings Sync**: Hijri adjustment settings are now stored in the database and synchronized across authenticated devices.
+- **System: Smart Cache Validation**: Prayer times cache now automatically invalidates when calculation methods or Hijri adjustments are changed.
+
+### Improved
+- **UI: Ramadhan Countdown**: Optimized countdown logic for early/late moon sighting scenarios, ensuring "Days Left" and "Ramadhan Mode" are perfectly synchronized.
+- **System: Data Synchronization**: Enhanced the `GuestSyncManager` and manual sync hooks to handle new Hijri preferences.
+
+### Fixed
+- **Hijri Logic**: Corrected an edge case where the API returned "1 Ramadhan" prematurely on February 18, 2026.
+- **Character Encoding**: Fixed an issue with Arabic macrons (e.g., "Ramaḍān") that caused logic discrepancies in countdown calculations.
+
 ## [1.7.2] - 2026-02-13
 
 ### Changed

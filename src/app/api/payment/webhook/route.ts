@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
-import { eq, and, desc, or } from "drizzle-orm";
+import { eq, and, desc, or, ne } from "drizzle-orm";
 import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
@@ -116,16 +116,28 @@ export async function POST(req: NextRequest) {
             normalizedStatus = 'failed';
         }
 
-        // Update Transaction (Status and ensure real Transaction ID is stored)
-        await db.update(transactions)
+        // Atomic Update: Ensure we only update if status is NOT 'settlement'
+        const updatedTransactions = await db.update(transactions)
             .set({
                 status: normalizedStatus as any,
                 mayarId: mayarId // Always ensure the actual Transaction ID is stored
             })
-            .where(eq(transactions.id, transaction.id));
+            .where(and(
+                eq(transactions.id, transaction.id),
+                ne(transactions.status, 'settlement') // Prevent race condition
+            ))
+            .returning();
+
+        if (updatedTransactions.length === 0) {
+            // Already processed by another request (or failed to match condition)
+            return NextResponse.json({ status: "ok", message: "Transaction already processed (concurrent)" });
+        }
+
+        const updatedTx = updatedTransactions[0];
 
         // If Paid (SETTLEMENT), Update User to Muhsinin
-        if (status === "SETTLEMENT" || status === "PAID") {
+        // Use updated transaction status to be sure
+        if (updatedTx.status === "settlement") {
             if (transaction.userId) {
                 const { sql } = await import("drizzle-orm");
                 await db.update(users)

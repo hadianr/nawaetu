@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 interface IntentionStreakProps {
     currentStreak: number;
@@ -8,30 +7,29 @@ interface IntentionStreakProps {
     className?: string;
 }
 
-const MILESTONES = [
-    { days: 7, label: "1 Week", emoji: "🌟" },
-    { days: 30, label: "1 Month", emoji: "🏆" },
-    { days: 100, label: "100 Days", emoji: "💎" },
-];
-
 export default function IntentionStreak({
     currentStreak,
     longestStreak,
     className = "",
 }: IntentionStreakProps) {
-    const { locale } = useLocale();
-    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+    const { locale, t } = useLocale();
+
+    const MILESTONES = [
+        { days: 7, label: t.niat_milestone_week, emoji: "🌟" },
+        { days: 30, label: t.niat_milestone_month, emoji: "🏆" },
+        { days: 100, label: t.niat_milestone_100days, emoji: "💎" },
+    ];
 
     const nextMilestone = MILESTONES.find((m) => m.days > currentStreak) || MILESTONES[MILESTONES.length - 1];
     const progress = Math.min((currentStreak / nextMilestone.days) * 100, 100);
 
     const getEncouragementMessage = () => {
-        if (currentStreak === 0) return t.start_journey;
-        if (currentStreak < 3) return t.great_start;
-        if (currentStreak < 7) return t.building_momentum;
-        if (currentStreak < 30) return t.on_fire;
-        if (currentStreak < 100) return t.incredible;
-        return t.legendary;
+        if (currentStreak === 0) return t.niat_start_journey;
+        if (currentStreak < 3) return t.niat_great_start;
+        if (currentStreak < 7) return t.niat_building_momentum;
+        if (currentStreak < 30) return t.niat_on_fire;
+        if (currentStreak < 100) return t.niat_incredible;
+        return t.niat_legendary;
     };
 
     return (
@@ -55,7 +53,7 @@ export default function IntentionStreak({
                     </div>
                     <div className="text-right">
                         <div className="text-3xl font-bold text-white">{currentStreak}</div>
-                        <div className="text-xs text-white/50">{t.days}</div>
+                        <div className="text-xs text-white/50">{t.niat_days}</div>
                     </div>
                 </div>
 
@@ -63,7 +61,7 @@ export default function IntentionStreak({
                 {currentStreak < nextMilestone.days && (
                     <div>
                         <div className="flex items-center justify-between text-xs text-white/60 mb-2">
-                            <span>{t.next_milestone}: {nextMilestone.label}</span>
+                            <span>{t.niat_next_milestone}: {nextMilestone.label}</span>
                             <span>
                                 {currentStreak}/{nextMilestone.days}
                             </span>
@@ -83,7 +81,7 @@ export default function IntentionStreak({
                 {longestStreak > currentStreak && (
                     <div className="flex items-center gap-2 text-xs text-white/50 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 w-fit">
                         <span>🏅</span>
-                        <span>{t.best_streak}: {longestStreak} {t.days}</span>
+                        <span>{t.niat_best_streak}: {longestStreak} {t.niat_days}</span>
                     </div>
                 )}
 
@@ -95,8 +93,8 @@ export default function IntentionStreak({
                             <div
                                 key={milestone.days}
                                 className={`flex-1 text-center py-2 rounded-xl border transition-all ${achieved
-                                        ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/30 text-white"
-                                        : "bg-white/5 border-white/10 text-white/40"
+                                    ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/30 text-white"
+                                    : "bg-white/5 border-white/10 text-white/40"
                                     }`}
                             >
                                 <div className="text-lg">{milestone.emoji}</div>

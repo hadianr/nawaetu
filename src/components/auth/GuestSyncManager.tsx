@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription
-} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
@@ -89,7 +83,11 @@ export function GuestSyncManager() {
             }
         };
 
-        checkSyncStatus();
+        const syncTask = setTimeout(() => {
+            checkSyncStatus();
+        }, 800); // 800ms delay to give priority to page-specific loads
+
+        return () => clearTimeout(syncTask);
     }, [status, session]);
 
     const checkForLocalGuestData = () => {
@@ -121,6 +119,7 @@ export function GuestSyncManager() {
             STORAGE_KEYS.DHIKR_COUNT,
             STORAGE_KEYS.USER_STREAK,
             STORAGE_KEYS.ACTIVITY_TRACKER,
+            STORAGE_KEYS.AI_CHAT_SESSIONS,
         ];
 
         return activityKeys.some(key => {
@@ -157,6 +156,7 @@ export function GuestSyncManager() {
                     reciter: localStorage.getItem(STORAGE_KEYS.SETTINGS_RECITER),
                     muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
                     calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
+                    hijriAdjustment: localStorage.getItem(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
                     adhanPreferences: localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES),
                 },
                 readingState: {
@@ -215,6 +215,9 @@ export function GuestSyncManager() {
                 if (data.profile.name) storage.set(STORAGE_KEYS.USER_NAME as any, data.profile.name);
                 if (data.profile.gender) storage.set(STORAGE_KEYS.USER_GENDER as any, data.profile.gender);
                 if (data.profile.archetype) storage.set(STORAGE_KEYS.USER_ARCHETYPE as any, data.profile.archetype);
+                if (data.profile.totalInfaq !== undefined) {
+                    storage.set(STORAGE_KEYS.USER_TOTAL_DONATION as any, data.profile.totalInfaq.toString());
+                }
 
                 if (data.profile.settings) {
                     const s = data.profile.settings;
@@ -223,6 +226,7 @@ export function GuestSyncManager() {
                     if (s.reciter) storage.set(STORAGE_KEYS.SETTINGS_RECITER as any, s.reciter);
                     if (s.muadzin) storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, s.muadzin);
                     if (s.calculationMethod) storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, s.calculationMethod);
+                    if (s.hijriAdjustment) storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, s.hijriAdjustment);
                     if (s.adhanPreferences) storage.set(STORAGE_KEYS.ADHAN_PREFERENCES as any, s.adhanPreferences);
                 }
             }

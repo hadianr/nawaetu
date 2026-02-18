@@ -10,9 +10,9 @@ interface SyncResult {
 export function useDataSync() {
     const [isSyncing, setIsSyncing] = useState(false);
 
-    const syncData = useCallback(async (): Promise<SyncResult> => {
+    const syncData = useCallback(async (options?: { silent?: boolean }): Promise<SyncResult> => {
         setIsSyncing(true);
-        const toastId = toast.loading("Sinkronisasi data...");
+        const toastId = options?.silent ? undefined : toast.loading("Sinkronisasi data...");
 
         try {
             // 1. Gather Local Data
@@ -35,6 +35,7 @@ export function useDataSync() {
                     theme: localStorage.getItem(STORAGE_KEYS.SETTINGS_THEME),
                     muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
                     calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
+                    hijriAdjustment: localStorage.getItem(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
                     locale: localStorage.getItem(STORAGE_KEYS.SETTINGS_LOCALE),
                     notificationPreferences: Object.keys(notificationPrefs).length > 0 ? notificationPrefs : null,
                 },
@@ -59,7 +60,7 @@ export function useDataSync() {
 
             if (!hasBookmarks && !hasIntentions && !hasMissions && !hasActivity && !hasStreak && !hasSettings && !hasReadingState) {
                 localStorage.setItem("nawaetu_synced_v1", "true");
-                toast.dismiss(toastId);
+                if (toastId) toast.dismiss(toastId);
                 return { success: true, message: "Tidak ada data lokal untuk disinkronkan" };
             }
 
@@ -75,11 +76,11 @@ export function useDataSync() {
             // 3. Mark as Synced
             localStorage.setItem("nawaetu_synced_v1", "true");
 
-            toast.success("Data berhasil disinkronkan!", { id: toastId });
+            if (toastId) toast.success("Data berhasil disinkronkan!", { id: toastId });
             return { success: true };
 
         } catch (e) {
-            toast.error("Gagal sinkronisasi data", { id: toastId });
+            if (toastId) toast.error("Gagal sinkronisasi data", { id: toastId });
             return { success: false, message: "Terjadi kesalahan saat sinkronisasi" };
         } finally {
             setIsSyncing(false);

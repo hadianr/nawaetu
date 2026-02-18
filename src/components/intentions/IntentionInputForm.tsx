@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
@@ -14,8 +13,7 @@ interface IntentionInputFormProps {
 }
 
 export default function IntentionInputForm({ onComplete, userToken }: IntentionInputFormProps) {
-    const { locale } = useLocale();
-    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+    const { locale, t } = useLocale();
 
     const [intention, setIntention] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,7 +23,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
     const handleSubmit = async () => {
         if (!intention.trim()) return;
         if (!userToken) {
-            setError(t.error_generic || "User token not found");
+            setError(t.niat_error_no_token);
             return;
         }
 
@@ -50,10 +48,10 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                     onComplete();
                 }, 1500); // Wait for animation
             } else {
-                setError(data.error || "Failed to save intention");
+                setError(data.error || t.niat_error_fail_save_niat);
             }
         } catch (err) {
-            setError("Network error. Please try again.");
+            setError(t.niat_error_network);
         } finally {
             setIsSubmitting(false);
         }
@@ -65,8 +63,8 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-2">
                     <Sparkles className="w-8 h-8 text-emerald-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Niat Tercatat!</h3>
-                <p className="text-white/60 text-sm">Semoga Allah mudahkan urusanmu hari ini.</p>
+                <h3 className="text-xl font-bold text-white">{t.niat_success_niat_title}</h3>
+                <p className="text-white/60 text-sm">{t.niat_success_niat_desc}</p>
             </div>
         );
     }
@@ -75,12 +73,12 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
         <div className="p-6 space-y-4">
             <div className="space-y-2">
                 <label className="text-sm font-medium text-white/80 block">
-                    {t.prompt_question}
+                    {t.niat_prompt_question}
                 </label>
                 <Textarea
                     value={intention}
                     onChange={(e) => setIntention(e.target.value)}
-                    placeholder={t.placeholder_niat || "Contoh: Saya berniat bekerja dengan jujur..."}
+                    placeholder={t.niat_placeholder_niat || "Contoh: Saya berniat bekerja dengan jujur..."}
                     className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/30 resize-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
                 />
                 {error && <p className="text-red-400 text-xs">{error}</p>}
@@ -94,10 +92,10 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 {isSubmitting ? (
                     <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Menyimpan...
+                        {t.niat_saving_wait}
                     </>
                 ) : (
-                    "Simpan Niat (+50 XP)"
+                    t.niat_save_niat_btn
                 )}
             </Button>
 

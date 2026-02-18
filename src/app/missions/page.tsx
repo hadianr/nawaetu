@@ -211,7 +211,7 @@ export default function MisiPage() {
                     ) : validation.isEarly ? (
                         <div className="flex items-center gap-1 mt-1 text-emerald-400/80">
                             <Sparkles className="w-3 h-3" />
-                            <p className="text-[10px] font-medium">Awal Waktu (+XP Bonus)</p>
+                            <p className="text-[10px] font-medium">{(t as any).homeMissionEarlyBonus}</p>
                         </div>
                     ) : (
                         <p className="text-[10px] text-white/40">{mission.description}</p>
@@ -255,8 +255,8 @@ export default function MisiPage() {
                         <ArrowLeft className="w-6 h-6 text-white" />
                     </Link>
                     <div className="flex-1">
-                        <h1 className="text-2xl font-bold text-white">Misi Harian</h1>
-                        <p className="text-xs text-white/50">Raih XP dengan menyelesaikan misi</p>
+                        <h1 className="text-2xl font-bold text-white">{t.homeMissionListTitle}</h1>
+                        <p className="text-xs text-white/50">{t.homeMissionListSubtitle || "Raih XP dengan menyelesaikan misi"}</p>
                     </div>
                     <div className="flex items-center gap-1 px-3 py-1.5 rounded-full"
                         style={{
@@ -288,7 +288,7 @@ export default function MisiPage() {
                 {/* Daily Missions */}
                 {dailyMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📅 Misi Harian</h2>
+                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📅 {t.missionTabDaily}</h2>
                         <div className="space-y-2">
                             {dailyMissions.map(renderMission)}
                         </div>
@@ -298,7 +298,7 @@ export default function MisiPage() {
                 {/* Weekly Missions */}
                 {weeklyMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📆 Misi Mingguan</h2>
+                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📆 {t.missionTabWeekly}</h2>
                         <div className="space-y-2">
                             {weeklyMissions.map(renderMission)}
                         </div>
@@ -308,7 +308,7 @@ export default function MisiPage() {
                 {/* Tracker Missions */}
                 {trackerMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📊 Tracker</h2>
+                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📊 {t.missionTabTracker || "Tracker"}</h2>
                         <div className="space-y-2">
                             {trackerMissions.map(renderMission)}
                         </div>
@@ -319,7 +319,7 @@ export default function MisiPage() {
                 {!gender && (
                     <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
                         <p className="text-sm text-amber-400">
-                            💡 Pilih jenis kelamin di <Link href="/settings" className="underline">Pengaturan</Link> untuk misi yang lebih personal
+                            {(t as any).homeMissionSelectGenderHint}
                         </p>
                     </div>
                 )}

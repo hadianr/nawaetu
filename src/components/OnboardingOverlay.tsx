@@ -13,11 +13,15 @@ import { useLocale } from "@/context/LocaleContext";
 
 const ONBOARDING_KEY = STORAGE_KEYS.ONBOARDING_COMPLETED;
 
-export default function OnboardingOverlay() {
+interface OnboardingOverlayProps {
+    onComplete?: () => void;
+}
+
+export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
     const { status } = useSession();
     const { updateProfile } = useProfile();
     const { t } = useLocale();
-    const [isVisible, setIsVisible] = useState(false);
+    // Removed internal visibility state - controlled by parent
     const [currentSlide, setCurrentSlide] = useState(0);
     const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-archetype'>('intro');
 
@@ -76,13 +80,6 @@ export default function OnboardingOverlay() {
     const [archetype, setArchetype] = useState<'beginner' | 'striver' | 'dedicated' | null>(null);
     const storage = getStorageService();
 
-    useEffect(() => {
-        const hasSeen = storage.getOptional<boolean>(ONBOARDING_KEY);
-        if (!hasSeen) {
-            setIsVisible(true);
-        }
-    }, [storage]);
-
     const handleNext = () => {
         if (step === 'intro') {
             if (currentSlide < SLIDES.length - 1) {
@@ -120,15 +117,16 @@ export default function OnboardingOverlay() {
             }
         }
 
-        // Mark Onboarding Done
-        setIsVisible(false);
-
         // Trigger generic update event
         window.dispatchEvent(new Event('storage'));
         window.dispatchEvent(new Event('profile_updated')); // Custom event if needed
+
+        // Callback to parent
+        if (onComplete) {
+            onComplete();
+        }
     };
 
-    if (!isVisible) return null;
 
     const renderContent = () => {
         if (step === 'intro') {

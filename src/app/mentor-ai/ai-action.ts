@@ -74,9 +74,15 @@ export async function askMentor(
             if (error.status === 401 || error.status === 403) {
                 return `Maaf, lagi ada kendala sistem. Tim kami akan segera perbaiki 🙏`;
             }
+
+            // Handle Safety/Content Blocks (Gibberish or unsafe input)
+            if (error.code === 'SAFETY_BLOCK' || error.code === 'CONTENT_FILTER') {
+                return `Maaf, saya kurang paham maksudnya. Bisa gunakan kalimat yang lebih jelas? 😊`;
+            }
         }
 
         // Generic error for everything else
+        console.error("AI Error:", error);
         return `Maaf, lagi ada kendala teknis. Coba lagi ya 🙏`;
     }
 }
