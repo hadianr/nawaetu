@@ -6,11 +6,17 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.7.2-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.7.3-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
 
-**Current Version: v1.7.2** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+**Current Version: v1.7.3** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+
+### 🚀 What's New in v1.7.3
+- **Hijri Date Adjustment**: Flexible moon sighting alignment (Standard/Muhammadiyah) for accurate Ramadhan dates.
+- **Smart Cache Validation**: Optimized prayer times caching that respects settings changes.
+- **Settings Cloud Sync**: Securely sync your Hijri preferences across all authenticated devices.
+- **Ramadhan Countdown Optimization**: Perfectly synchronized header and card display for the month of Sha'ban/Ramadhan.
 
 ### 🚀 What's New in v1.7.2
 - **Refactored Codebase**: Transitioned internal logic to English for better maintainability.
@@ -45,7 +51,7 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ---
 
-## 🌟 Key Features (v1.7.2)
+## 🌟 Key Features (v1.7.3)
 
 ### 1. 🔔 High-Precision Notifications
 *   **1-Minute Accuracy**: External Cron optimization ensures Adhan alerts are timely (< 60s delay).
@@ -72,6 +78,7 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ### 4. 🕌 Prayer Times & Qibla
 *   **Accurate Schedule**: GPS-based prayer times for any location worldwide.
+*   **Hijri Date Adjustment**: Manually adjust Hijri dates to align with local moon sighting or organization (-1, 0, +1 days).
 *   **Adhan Notifications**: Customizable alerts for every prayer time.
 *   **Qibla Compass**: Precise direction finder using device sensors.
 
