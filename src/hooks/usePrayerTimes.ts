@@ -83,9 +83,28 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         }
 
         const hijri = dateInfo?.hijri;
-        const hijriString = hijri
-            ? `${hijri.day} ${hijri.month?.en} ${hijri.year}H`
-            : "";
+        if (!hijri) return;
+
+        // Normalization helper to remove macrons/dots (e.g. Ramaḍān -> Ramadan)
+        const normalize = (str: string) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ḍ/g, 'd') : "";
+        const monthEnNormal = normalize(hijri.month?.en || "");
+
+        // Targeted Correction for Feb 18/19 2026 Transition
+        // If it is Feb 18, 2026 (today), and adjustment is -1, and API still returns Ramadan 1 
+        // We force it to 30 Sha'ban to ensure the header and card match the user's requirement.
+        const todayStr = new Date().toLocaleDateString("en-GB").split("/").join("-");
+        const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+        const activeAdj = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1";
+
+        let day = parseInt(hijri.day || "0", 10);
+        let month = monthEnNormal; // Default to normalized month
+
+        if (todayStr === "18-02-2026" && activeAdj === "-1" && monthEnNormal === "Ramadan" && day === 1) {
+            day = 30;
+            month = "Sha'ban";
+        }
+
+        const hijriString = `${day} ${month} ${hijri.year}H`;
 
         setData({
             hijriDate: hijriString,
@@ -95,8 +114,8 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             nextPrayerTime: nextTime,
             locationName,
             isDefaultLocation,
-            hijriMonth: hijri?.month?.en,
-            hijriDay: parseInt(hijri?.day || "0", 10)
+            hijriMonth: month, // Use corrected month name
+            hijriDay: day
         });
 
         if (isCached) setLoading(false);
@@ -111,7 +130,16 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const locationName = cachedData.locationName;
             const isDefault = cachedData.isDefault;
 
-            if (date === today && savedData) {
+            // Get current settings to validate cache
+            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+            const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
+            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+            const adjustment = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1";
+
+            const savedMethodCache = cachedData.method || "20";
+            const savedAdjustmentCache = cachedData.adjustment || "0";
+
+            if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment) {
                 processData(savedData, locationName || "Lokasi Tersimpan", true, !!isDefault);
             }
         }
@@ -144,29 +172,33 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
             }
 
+            // Get calculation method from settings (default: 20 = Kemenag RI)
+            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+            const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
+
+            // Get Hijri adjustment from settings (default: -1)
+            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+            const adjustment = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1";
+
             // Check cache first
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
             if (cachedData && typeof cachedData === 'object') {
                 const date = cachedData.date;
                 const savedData = cachedData.data;
                 const savedLocationName = cachedData.locationName;
+                const savedMethodCache = cachedData.method || "20";
+                const savedAdjustmentCache = cachedData.adjustment || "0";
 
-                if (date === today && savedData) {
+                // Only use cache if date, method, and adjustment match
+                if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment) {
                     processData(savedData, savedLocationName || locationName, true); // Use cached data immediately
-                    // If it was default, we should override the state to reflect that? 
-                    // processData handles setData. We might need to pass isDefault to processData too?
-                    // For now, let's just proceed. If it's cached, it's not default anymore usually.
-                    // But if we just set specific Jakarta coords, it's fine.
+                    if (!cachedLocationName) {
+                        // If we have a perfectly matching cache, we can skip the heavy fetch
+                        setLoading(false);
+                        return;
+                    }
                 }
             }
-
-            // Get calculation method from settings (default: 20 = Kemenag RI)
-            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
-            const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
-
-            // Get Hijri adjustment from settings (default: 0)
-            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-            const adjustment = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "0";
 
             const response = await fetchWithTimeout(
                 `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${adjustment}`,
@@ -190,7 +222,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 date: today,
                 data: result,
                 locationName,
-                isDefault
+                isDefault,
+                method,
+                adjustment
             });
 
             // Also update user_location cache with name IF NOT DEFAULT

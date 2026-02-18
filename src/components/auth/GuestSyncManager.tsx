@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription
-} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
@@ -162,6 +156,7 @@ export function GuestSyncManager() {
                     reciter: localStorage.getItem(STORAGE_KEYS.SETTINGS_RECITER),
                     muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
                     calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
+                    hijriAdjustment: localStorage.getItem(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
                     adhanPreferences: localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES),
                 },
                 readingState: {
@@ -231,6 +226,7 @@ export function GuestSyncManager() {
                     if (s.reciter) storage.set(STORAGE_KEYS.SETTINGS_RECITER as any, s.reciter);
                     if (s.muadzin) storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, s.muadzin);
                     if (s.calculationMethod) storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, s.calculationMethod);
+                    if (s.hijriAdjustment) storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, s.hijriAdjustment);
                     if (s.adhanPreferences) storage.set(STORAGE_KEYS.ADHAN_PREFERENCES as any, s.adhanPreferences);
                 }
             }

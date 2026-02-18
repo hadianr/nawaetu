@@ -47,10 +47,10 @@ export const SETTINGS_ID = {
 
     // Hijri Date Adjustment
     hijriDateTitle: "Tanggal Hijriah",
-    hijriDateDesc: "Sesuaikan tanggal jika ada perbedaan (misal: Muhammadiyah vs Pemerintah)",
+    hijriDateDesc: "Sesuaikan tanggal jika ada perbedaan penetapan awal bulan.",
     hijriAdjustmentLabel: "Penyesuaian",
-    adjustmentStandard: "Standar (Pemerintah/Kemenag)",
-    adjustmentMuhammadiyah: "Muhammadiyah (-1 Hari)",
+    adjustmentStandard: "Standar (0 Hari)",
+    adjustmentMuhammadiyah: "-1 Hari",
     adjustmentManual: "Manual",
 
     // Language Settings

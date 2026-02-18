@@ -25,10 +25,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 // Lazy load dialog for better initial load
-const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
-const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
-const DialogHeader = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogHeader), { ssr: false });
-const DialogTitle = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogTitle), { ssr: false });
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Props {
     initialDays?: number;
@@ -48,7 +45,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     const [showInfo, setShowInfo] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
-    const [adjustment, setAdjustment] = useState(0);
+    const [adjustment, setAdjustment] = useState(-1);
 
     // Target: Estimated 1 Ramadhan 1447H (Feb 18, 2026)
     const BASE_TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
@@ -61,8 +58,11 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         // Load initial adjustment
         const loadAdjustment = () => {
             const savedAdj = storage.getOptional(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT);
-            if (savedAdj) {
-                setAdjustment(parseInt(savedAdj as string, 10) || 0);
+            if (savedAdj !== null && savedAdj !== undefined && savedAdj !== "") {
+                const parsed = parseInt(savedAdj as string, 10);
+                setAdjustment(!isNaN(parsed) ? parsed : -1);
+            } else {
+                setAdjustment(-1); // Default to -1 (Muhammadiyah/Government alignment)
             }
         };
         loadAdjustment();
@@ -82,7 +82,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
             // Allow negative values to track days passed
             return {
-                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)) + 1,
                 hours: Math.floor((Math.abs(difference) / (1000 * 60 * 60)) % 24),
                 minutes: Math.floor((Math.abs(difference) / 1000 / 60) % 60),
                 totalMs: difference
@@ -183,13 +183,12 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     const hijriMonth = prayerData?.hijriMonth;
     const hijriDay = prayerData?.hijriDay || 0;
 
-    const isRamadhan = hijriMonth === "Ramadan" || (timeLeft.totalMs <= 0 && timeLeft.days > -30);
-    const isEid = hijriMonth === "Shawwal" || timeLeft.days <= -30;
+    const isRamadhan = hijriMonth === "Ramadan";
+    const isEid = hijriMonth === "Shawwal";
 
     // Calculate effective days left/passed
-    const displayDays = isRamadhan
-        ? (hijriMonth === "Ramadan" ? hijriDay : Math.abs(timeLeft.days) + 1)
-        : (hijriMonth === "Sha'ban" ? Math.max(0, 30 - hijriDay) : timeLeft.days);
+    // On Feb 18 with -1 adj, we want "1 Hari Lagi" (Sha'ban 30)
+    const displayDays = isRamadhan ? hijriDay : timeLeft.days;
 
     // Note: If it's 29 Sha'ban, and we assume 30 days, it's 1 day left. 
     // If Sha'ban is only 29 days, the hook will switch to Ramadan tomorrow anyway.

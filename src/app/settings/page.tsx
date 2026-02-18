@@ -107,7 +107,7 @@ function SettingsPageContent() {
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
-    const [hijriAdjustment, setHijriAdjustment] = useState("0");
+    const [hijriAdjustment, setHijriAdjustment] = useState("-1");
 
     // Audio Preview State
     const [isPlaying, setIsPlaying] = useState(false);
