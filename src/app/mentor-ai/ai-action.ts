@@ -4,6 +4,9 @@ import { chatRateLimiter } from '@/lib/rate-limit';
 import { getCurrentTimeContext, type TimeContext } from '@/lib/time-context';
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { headers } from "next/headers";
 
 interface ChatMessage {
     role: 'user' | 'assistant';
@@ -33,8 +36,39 @@ export async function askMentor(
     const messageHash = message.toLowerCase().trim();
 
     // ===== SECURITY LAYER 2: Rate Limiting =====
-    // Use user name as identifier (in production, use user ID or session ID)
-    const identifier = `chat:${context.name}`;
+    // Determine rate limit identifier (User ID > IP > Fallback)
+    let identifier = `ip:unknown`;
+
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.id) {
+            identifier = `user:${session.user.id}`;
+        } else {
+            const headersList = await headers();
+            const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip");
+            if (ip) {
+                // Take the first IP if multiple are present (x-forwarded-for: client, proxy1, proxy2)
+                const clientIp = ip.split(',')[0].trim();
+                identifier = `ip:${clientIp}`;
+            }
+        }
+    } catch (e) {
+        // Fallback to IP if session check fails
+        console.error("Error getting session for rate limit:", e);
+        try {
+             const headersList = await headers();
+             const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip");
+             if (ip) {
+                 const clientIp = ip.split(',')[0].trim();
+                 identifier = `ip:${clientIp}`;
+             }
+        } catch (headerError) {
+            // Ultimate fallback (e.g. during build or weird context)
+            identifier = `ip:unknown`;
+        }
+    }
+
+    // Check rate limit
     const rateLimit = await chatRateLimiter.check(10, identifier); // Max 10 requests per minute
 
     if (!rateLimit.success) {
