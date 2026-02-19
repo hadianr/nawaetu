@@ -35,23 +35,29 @@ export async function POST(req: NextRequest) {
 
         const body = JSON.parse(rawBody);
 
+        // Handle Mayar "Testing URL" event
+        if (body.event === "testing") {
+            return NextResponse.json({ status: "ok", message: "Webhook connection verified" });
+        }
 
-        // Validate Event Type
-        // Usually event is "payment.received" or similar
-        // Adjust based on real Mayar webhook payload structure
-        const status = body.status; // e.g. "SETTLEMENT"
-        const mayarId = body.id;
+        // Validate Event Type & Payload Structure
+        // Payload might be wrapped in 'data' object based on screenshots
+        const data = body.data || body;
+        const status = data.status; // e.g. "SETTLEMENT" or "SUCCESS"
+        const mayarId = data.id;
+        const linkId = data.link_id || data.paymentLinkId; // Adjust based on possible field names
 
         if (!mayarId) {
+            console.error("Webhook Error: Invalid Payload (Missing ID)", body);
             return NextResponse.json({ error: "Invalid Payload" }, { status: 400 });
         }
 
         // Find Transaction by ID (Transaction ID or Payment Link ID)
         const conditions = [eq(transactions.mayarId, mayarId)];
-        if (body.link_id) {
-            conditions.push(eq(transactions.paymentLinkId, body.link_id));
+        if (linkId) {
+            conditions.push(eq(transactions.paymentLinkId, linkId));
         }
-        // Also check if stored paymentLinkId matches incoming Transaction ID (e.g. sometimes same?)
+        // Also check if stored paymentLinkId matches incoming Transaction ID
         conditions.push(eq(transactions.paymentLinkId, mayarId));
 
         let transaction = await db.query.transactions.findFirst({
@@ -60,8 +66,8 @@ export async function POST(req: NextRequest) {
 
         if (!transaction) {
             // Fallback: Find pending transaction by email and amount
-            const email = body.customer?.email || body.customer_email;
-            const amount = body.amount;
+            const email = data.customer?.email || data.customer_email || data.merchantEmail; // fallback to merchantEmail if testing locally? No.
+            const amount = data.amount;
 
             if (email && amount) {
                 const potentialTx = await db.query.transactions.findFirst({
@@ -82,6 +88,7 @@ export async function POST(req: NextRequest) {
                     // Assign to transaction variable
                     transaction = potentialTx;
                 } else {
+                    console.warn(`Webhook: Transaction not found for email ${email} amount ${amount}`);
                     return NextResponse.json({ message: "Transaction not found (fallback failed)" }, { status: 404 });
                 }
             } else {
@@ -94,26 +101,27 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
         }
 
-        // Check if already processed to prevent replay attacks / double counting
+        // Check if already processed
         if (transaction.status === 'settlement') {
             return NextResponse.json({ status: "ok", message: "Transaction already processed" });
         }
 
         // Normalize Status for Enum compatibility
-        let normalizedStatus = status.toLowerCase();
-        if (normalizedStatus === "paid") normalizedStatus = "settlement";
+        let normalizedStatus = status ? status.toLowerCase() : 'failed';
+        if (normalizedStatus === "paid" || normalizedStatus === "success") normalizedStatus = "settlement";
 
-        // Ensure valid enum value (fallback to failed if unknown, or keep existing? safer to fail or set to failed)
-        // For safe typing, we cast to any or check validity
+        // Ensure valid enum value (fallback to failed if unknown)
         const validStatuses = ["pending", "settlement", "expired", "failed"];
         if (!validStatuses.includes(normalizedStatus)) {
-            console.warn(`Unknown payment status received: ${status}`);
-            // If unknown, maybe we shouldn't fail the webhook but perhaps we shouldn't update status to invalid value.
-            // Let's assume we map unknown to 'failed' or keep pending?
-            // Safest is to not update status if invalid, but we want to store the MayarID.
-            // We'll proceed but rely on Drizzle/DB to error if we don't handle it. 
-            // Let's map to 'failed' if truly unknown to be safe on DB side.
-            normalizedStatus = 'failed';
+            console.warn(`Unknown payment status received: ${status}, mapped to: ${normalizedStatus}`);
+            // If unknown status but strictly 'pending' or similar, we might want to be careful.
+            // But if it is 'created' (from transactionStatus), we generally ignore or keep pending.
+            // If the MAIN status is SUCCESS/SETTLEMENT, we proceed.
+            // If status is undefined, we default to failed above.
+
+            // Should we map 'created' to pending?
+            if (normalizedStatus === 'created') normalizedStatus = 'pending';
+            else normalizedStatus = 'failed';
         }
 
         // Atomic Update: Ensure we only update if status is NOT 'settlement'
