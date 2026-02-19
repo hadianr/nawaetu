@@ -418,7 +418,16 @@ function SettingsPageContent() {
                 </div>
 
                 {/* Profile Card - Compact */}
-                {isAuthenticated ? (
+                {/* Profile Card - Compact */}
+                {(status === "loading" && !hasCachedProfile) ? (
+                    <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
+                        <div className="h-12 w-12 rounded-full bg-white/10" />
+                        <div className="flex-1 space-y-2">
+                            <div className="h-4 w-32 bg-white/10 rounded" />
+                            <div className="h-3 w-20 bg-white/10 rounded" />
+                        </div>
+                    </div>
+                ) : (
                     <UserProfileDialog onProfileUpdate={refreshProfile}>
                         <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
                             <div className="relative">
@@ -438,34 +447,19 @@ function SettingsPageContent() {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
-                                <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
+                                    {!isAuthenticated && (
+                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 border border-white/5 text-white/50">
+                                            Guest
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                             <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
                         </div>
                     </UserProfileDialog>
-                ) : (status === "loading" ? (
-                    <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
-                        <div className="h-12 w-12 rounded-full bg-white/10" />
-                        <div className="flex-1 space-y-2">
-                            <div className="h-4 w-32 bg-white/10 rounded" />
-                            <div className="h-3 w-20 bg-white/10 rounded" />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-                        <div className="space-y-1">
-                            <h2 className="text-lg font-bold">{t.profileAuthTitle}</h2>
-                            <p className="text-sm text-muted-foreground max-w-xs">{t.profileAuthDesc}</p>
-                        </div>
-                        <div className="flex w-full sm:w-auto gap-2">
-                            <Link href="/auth/signin" className="w-full sm:w-auto">
-                                <Button className="w-full sm:w-auto font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-lg shadow-indigo-500/20 transition-all active:scale-95">
-                                    {t.profileAuthButton}
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                ))}
+                )}
 
 
 
