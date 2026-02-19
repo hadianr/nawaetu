@@ -2,13 +2,12 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Send, Sparkles, User, UserCheck, Menu, Plus, Trash2, X, MessageSquare, History } from "lucide-react";
+import { ArrowLeft, Send, Sparkles, User, X, MessageSquare, History, Lock, Plus, Trash2, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserActivity, useUserProfile } from "@/lib/activity-tracker";
 import { askMentor } from "./ai-action";
-import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession, getSession } from "@/lib/chat-storage";
+import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
 import { retryWithBackoff } from "@/lib/retry-helper";
-import { getCurrentTimeContext } from "@/lib/time-context";
 import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
 import { trackAIQuery } from "@/lib/analytics";
 import { useInfaq } from "@/context/InfaqContext";
@@ -16,10 +15,12 @@ import { useLocale } from "@/context/LocaleContext";
 import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { useSession, signIn } from "next-auth/react";
 
 const storage = getStorageService();
 
 export default function MentorAIPage() {
+    const { data: session, status } = useSession();
     const { stats } = useUserActivity();
     const { profile } = useUserProfile();
     const { t } = useLocale();
@@ -42,33 +43,91 @@ export default function MentorAIPage() {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const { isMuhsinin } = useInfaq(); // From Context - Moved UP
+    const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq(); // From Context - Moved UP
 
-    // Rate Limiting Logic (5/Day Free, 25/Day Muhsinin)
-    const FREE_LIMIT = 5;
-    const MUHSININ_LIMIT = 25;
+    // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)
+    const FREE_LIMIT = 3;
+    const MUHSININ_LIMIT = 15;
     const DAILY_LIMIT = isMuhsinin ? MUHSININ_LIMIT : FREE_LIMIT;
     const [dailyCount, setDailyCount] = useState(0);
     const [lastResetDate, setLastResetDate] = useState("");
     const [showLimitBlocking, setShowLimitBlocking] = useState(false);
 
-    // Initialize: Load Sessions (Run Once)
-    useEffect(() => {
-        const loadedSessions = getAllSessions();
-        setSessions(loadedSessions);
+    const [hasAttemptedAutoRefresh, setHasAttemptedAutoRefresh] = useState(false);
 
-        if (loadedSessions.length > 0) {
-            // Load most recent session
-            setActiveSessionId(loadedSessions[0].id);
-            setMessages(loadedSessions[0].messages);
-        } else {
-            // No sessions? Initialize first one
-            handleNewChat();
+    // Sync status if reached limit (Check for payment update)
+    useEffect(() => {
+        if (isInfaqLoading) return; // Don't check limits while loading tier status
+
+        let timer: any;
+        if (dailyCount >= DAILY_LIMIT && status === "authenticated" && !isMuhsinin) {
+            // Auto-refresh immediately and then again in 5 seconds if still blocked
+            refreshStatus();
+
+            timer = setTimeout(() => {
+                if (!isMuhsinin) refreshStatus();
+            }, 5000);
         }
-    }, []);
+        return () => clearTimeout(timer);
+    }, [dailyCount, DAILY_LIMIT, status, isMuhsinin]);
+
+    // Initialize: Load Sessions (Optimistic & Background Sync)
+    useEffect(() => {
+        const initSessions = async () => {
+            // 1. Load from local first (Instant UI)
+            const localSessions = getAllSessions();
+            if (localSessions.length > 0) {
+                setSessions(localSessions);
+            }
+
+            // 2. ALWAYS start with a New Chat (Blank State) as requested
+            handleNewChat();
+
+            // 3. Background Sync with Server
+            if (status === "authenticated") {
+                try {
+                    const res = await fetch("/api/mentor-ai/history");
+                    if (res.ok) {
+                        const serverSessions = await res.json();
+                        if (Array.isArray(serverSessions)) {
+                            setSessions(prev => {
+                                // Merge logic: Server is Source of Truth for existing sessions
+                                // Local is for current unsaved session
+                                const idMap = new Map();
+
+                                // Start with server sessions
+                                serverSessions.forEach((s: ChatSession) => idMap.set(s.id, s));
+
+                                // Add local sessions if they don't exist on server yet (merge)
+                                prev.forEach((s: ChatSession) => {
+                                    if (!idMap.has(s.id)) {
+                                        idMap.set(s.id, s);
+                                    }
+                                });
+
+                                return Array.from(idMap.values()).sort((a, b) => {
+                                    const dateA = new Date(a.updatedAt).getTime();
+                                    const dateB = new Date(b.updatedAt).getTime();
+                                    return dateB - dateA;
+                                });
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error("Background history sync failed", e);
+                }
+            }
+        };
+
+        if (status !== "loading") {
+            initSessions();
+        }
+    }, [status]);
 
     // Initialize & Watch: Rate Limit Logic (Run on mount & when isMuhsinin changes)
     useEffect(() => {
+        if (isInfaqLoading) return; // Wait for tier to settle
+
         const savedUsage = storage.getOptional<any>(STORAGE_KEYS.AI_USAGE as any);
         const today = new Date().toDateString();
         const currentTier = isMuhsinin ? 'muhsinin' : 'free';
@@ -81,7 +140,7 @@ export default function MentorAIPage() {
             if (date === today) {
                 // Check if user just upgraded (Stored as Free, now is Muhsinin)
                 if ((!tier || tier === 'free') && isMuhsinin) {
-                    // RESET QUOTA to give full 25 fresh credits
+                    // RESET QUOTA to give full 15 fresh credits
                     setDailyCount(0);
                     setLastResetDate(today);
                     storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
@@ -93,9 +152,6 @@ export default function MentorAIPage() {
                     // Normal Load
                     setDailyCount(count);
                     setLastResetDate(date);
-
-                    // If tier is missing or outdated but no upgrade event, just update logic context
-                    // (We don't force save here to avoid unnecessary writes unless needed)
                 }
             } else {
                 // New Day Reset
@@ -109,7 +165,7 @@ export default function MentorAIPage() {
             setDailyCount(0);
             storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0, tier: currentTier }));
         }
-    }, [isMuhsinin]);
+    }, [isMuhsinin, status]);
 
     // Auto-scroll
     useEffect(() => {
@@ -119,15 +175,10 @@ export default function MentorAIPage() {
     // Handle New Chat
     const handleNewChat = () => {
         const newSession = createNewSession();
-        // Check if we already have an empty new session to avoid duplicates?
-        // Actually createNewSession just returns an object, doesn't save yet.
-        // We will treat this as "staging" a new session.
         setActiveSessionId(newSession.id);
         setMessages([]); // Empty messages for new chat
         setShowHistory(false);
         setIsTyping(false);
-
-        // If previous session was empty, maybe remove it? Nah, keep it simple.
     };
 
     // Handle Switch Session
@@ -141,11 +192,24 @@ export default function MentorAIPage() {
     };
 
     // Handle Delete Session
-    const handleDeleteSession = (e: React.MouseEvent, sessionId: string) => {
+    const handleDeleteSession = async (e: React.MouseEvent, sessionId: string) => {
         e.stopPropagation();
-        deleteSession(sessionId);
+
+        // Optimistic UI
         const updatedSessions = sessions.filter(s => s.id !== sessionId);
         setSessions(updatedSessions);
+
+        // Local Delete
+        deleteSession(sessionId);
+
+        // Server Delete
+        if (status === "authenticated") {
+            try {
+                await fetch(`/api/mentor-ai/history/${sessionId}`, { method: "DELETE" });
+            } catch (e) {
+                console.error("Failed to delete session on server", e);
+            }
+        }
 
         if (activeSessionId === sessionId) {
             if (updatedSessions.length > 0) {
@@ -156,10 +220,24 @@ export default function MentorAIPage() {
         }
     };
 
+    // Helper to Save to Server (Debounced ideally, but simple for now: save on every AI response)
+    const saveSessionToServer = async (session: ChatSession) => {
+        if (status !== "authenticated") return;
+        try {
+            await fetch("/api/mentor-ai/history", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(session)
+            });
+        } catch (e) {
+            console.error("Failed to save session to server", e);
+        }
+    };
+
     const handleSend = async (text: string = input) => {
         if (!text.trim()) return;
 
-        // CHECK RATE LIMIT (Both Free and Muhsinin have limits now)
+        // CHECK RATE LIMIT
         if (dailyCount >= DAILY_LIMIT) {
             setShowLimitBlocking(true);
             return;
@@ -194,7 +272,6 @@ export default function MentorAIPage() {
         currentSession.messages = newMessages;
         currentSession.updatedAt = Date.now();
         if (isNewSession) {
-            // Update title if it was "Percakapan Baru" or similar
             currentSession.title = text.substring(0, 30) + (text.length > 30 ? "..." : "");
         }
 
@@ -254,6 +331,7 @@ export default function MentorAIPage() {
             currentSession.messages = finalMessages;
             currentSession.updatedAt = Date.now();
             saveSession(currentSession);
+            saveSessionToServer(currentSession); // SYNC TO SERVER
 
             // Update session list order
             setSessions(prev => {
@@ -273,6 +351,59 @@ export default function MentorAIPage() {
             setIsTyping(false);
         }
     };
+
+    // --- RENDER ---
+
+    // 1. Access Control Check
+    if (status === "unauthenticated") {
+        return (
+            <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />
+                <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-[rgb(var(--color-primary))]/30 rotate-3">
+                        <Lock className="w-10 h-10 text-white" />
+                    </div>
+
+                    <div className="space-y-3">
+                        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+                            {(t as any).tanyaLoginTitle || "Login Diperlukan"}
+                        </h1>
+                        <p className="text-white/60 leading-relaxed text-sm">
+                            {(t as any).tanyaLoginDesc || "Fitur Tanya Nawaitu hanya tersedia untuk pengguna yang sudah login."}
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <button
+                            onClick={() => signIn('google')}
+                            className="w-full h-12 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3"
+                        >
+                            <svg className="w-5 h-5" viewBox="0 0 24 24">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                            </svg>
+                            {(t as any).profileAuthButton || "Login dengan Google"}
+                        </button>
+
+                        <Link
+                            href="/"
+                            className="block text-sm text-white/40 hover:text-white transition-colors"
+                        >
+                            {(t as any).onboardingBack || "Kembali"}
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Loading State (Reduced priority - we allow the page to show cached data even while session is loading)
+    // Removed full-page blocking spinner to improve perceived performance
 
     return (
         <div className="min-h-screen bg-black text-white flex flex-col font-sans relative overflow-hidden">
@@ -296,12 +427,21 @@ export default function MentorAIPage() {
                                     <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
                                     Online
                                 </p>
-                                <span className={cn(
-                                    "text-[10px] px-1.5 py-0.5 rounded-full border",
-                                    dailyCount >= DAILY_LIMIT ? "bg-red-500/20 text-red-400 border-red-500/30" : "bg-white/5 text-white/50 border-white/10"
-                                )}>
-                                    {Math.max(0, DAILY_LIMIT - dailyCount)} Sisa
-                                </span>
+                                {isInfaqLoading ? (
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-white/30 animate-pulse">
+                                        Loading...
+                                    </span>
+                                ) : (
+                                    <span className={cn(
+                                        "text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1",
+                                        dailyCount >= DAILY_LIMIT
+                                            ? "bg-red-500/20 text-red-400 border-red-500/30"
+                                            : "bg-white/5 text-white/50 border-white/10"
+                                    )}>
+                                        <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-red-500" : "bg-emerald-500")} />
+                                        {Math.max(0, DAILY_LIMIT - dailyCount)} Credit
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -506,38 +646,34 @@ export default function MentorAIPage() {
             </div>
 
             {/* Input Area */}
-            <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 pb-16 md:pb-12 pt-4 z-30">
+            <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 pb-6 md:pb-8 pt-4 z-30">
                 <div className="max-w-md mx-auto px-4 space-y-3">
                     {/* Limit Reached Card */}
                     {(dailyCount >= DAILY_LIMIT) ? (
-                        <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-4 shadow-2xl relative overflow-hidden animate-in slide-in-from-bottom-5">
-                            {/* Decorative Background */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-[rgb(var(--color-primary))]/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
-
-                            <div className="flex items-center gap-4 relative z-10">
-                                <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center border border-white/5 shadow-inner shrink-0">
-                                    <span className="text-2xl">🛑</span>
+                        <div className="bg-slate-800/90 backdrop-blur-md rounded-2xl p-4 border border-red-500/10 flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2">
+                            {/* Icon & Text */}
+                            <div className="flex items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
+                                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/20">
+                                    <Lock size={16} className="text-red-400" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-sm font-bold text-white mb-0.5">
-                                        {isMuhsinin ? "Batas Harian Tercapai" : "Kuota Harian Habis"}
-                                    </h3>
-                                    <p className="text-[10px] text-slate-400 leading-tight">
-                                        {isMuhsinin
-                                            ? "Batas penggunaan wajar 25x per hari tercapai. Lanjut besok ya!"
-                                            : "Tunggu besok atau jadi Muhsinin untuk kuota 5x lebih banyak (25/hari)."}
+                                    <p className="text-sm font-semibold text-white truncate">
+                                        {(t as any).tanyaLimitReached || "Kuota Habis"}
+                                    </p>
+                                    <p className="text-xs text-slate-400 leading-tight">
+                                        {(t as any).tanyaUpgradeHint || "Tunggu besok atau Infaq untuk 5x kuota."}
                                     </p>
                                 </div>
-                                {!isMuhsinin && (
-                                    <button
-                                        onClick={() => setShowLimitBlocking(true)}
-                                        className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all flex items-center gap-1.5 whitespace-nowrap"
-                                    >
-                                        <Sparkles className="w-3.5 h-3.5" />
-                                        Upgrade
-                                    </button>
-                                )}
                             </div>
+
+                            {/* Action Button */}
+                            <button
+                                onClick={() => setShowLimitBlocking(true)}
+                                className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                            >
+                                <Sparkles size={14} className="text-yellow-200" />
+                                {(t as any).tanyaInfaqButton || "Berinfaq"}
+                            </button>
                         </div>
                     ) : (
                         <form
@@ -567,10 +703,10 @@ export default function MentorAIPage() {
             <DonationModal
                 isOpen={showLimitBlocking}
                 onClose={() => setShowLimitBlocking(false)}
-                headerTitle={isMuhsinin ? "Batas Harian Tercapai" : t.tanyaDailyLimit}
+                headerTitle={isMuhsinin ? (t as any).tanyaDailyLimit : (t as any).tanyaUnlockPremium}
                 headerDescription={isMuhsinin
-                    ? "Anda telah mencapai batas penggunaan wajar (25 pertanyaan/hari). Silakan kembali lagi besok."
-                    : t.tanyaLimitReached + ". Upgrade jadi Muhsinin untuk 25 kuota per hari."}
+                    ? (t as any).tanyaLimitReached + " " + (t as any).tanyaLimitReset
+                    : (t as any).tanyaLimitReached + " " + (t as any).tanyaUpgradeHint}
             />
         </div>
     );

@@ -6,11 +6,17 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.7.2-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.7.3-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.7.2** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+**Versi Saat Ini: v1.7.3** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+
+### 🚀 Apa yang Baru di v1.7.3
+- **Penyesuaian Tanggal Hijriah**: Pilihan penyesuaian kalender Hijriah (Standar/Muhammadiyah) untuk penentuan awal Ramadhan yang akurat.
+- **Validasi Cache Cerdas**: Optimasi sistem caching jadwal sholat yang otomatis menyesuaikan saat pengaturan diubah.
+- **Sinkronisasi Cloud**: Semua pengaturan termasuk koreksi Hijriah kini tersimpan di database dan sinkron di semua perangkat.
+- **sinkronisasi Hero Card**: Penyelarasan antara Header dan Card Countdown Ramadhan untuk transisi Sya'ban-Ramadhan yang lebih mulus.
 
 ### 🚀 Apa yang Baru di v1.7.2
 - **Refactoring Codebase**: Standarisasi penamaan internal ke Bahasa Inggris.
@@ -45,7 +51,7 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ---
 
-## 🌟 Fitur Unggulan (v1.7.2)
+## 🌟 Fitur Unggulan (v1.7.3)
 
 ### 1. 🔔 Sistem Notifikasi Presisi Tinggi
 *   **Akurasi 1 Menit**: Menggunakan External Cron untuk ketepatan waktu adzan (maksimal delay < 60 detik).
@@ -77,9 +83,10 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ### 3. 🕌 Prayer Times - Gak Bakal Kelewat Lagi
 *   **Akurat & Real-time**: Jadwal sholat otomatis sesuai lokasi GPS
+*   **Penyesuaian Hijriah**: Atur manual tanggal Hijriah (-1, 0, +1 hari) sesuai ketetapan lokal atau organisasi.
 *   **Countdown Timer**: Hitung mundur ke waktu sholat berikutnya
 *   **Adhan Notification**: Notifikasi adzan (web push notification)
-*   **Qibla Compass**: Kompas kiblat dengan sensor gyroscope
+*   **Qibla Compass**: Kompas kiblat dengan sensor gyroscope (Ka'bah focus)
 
 ### 4. 🎮 Gamification - Make Ibadah Fun Again
 *   **Daily Missions**: 19 misi harian (Ramadhan & Sya'ban season)
@@ -588,4 +595,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: February 13, 2026*
+*Last updated: February 18, 2026*

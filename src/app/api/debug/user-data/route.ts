@@ -5,6 +5,11 @@ import { users, bookmarks, userCompletedMissions, dailyActivities, intentions } 
 import { eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
+    // SECURITY: Disable debug endpoint in production to prevent PII leakage
+    if (process.env.NODE_ENV === "production") {
+        return new NextResponse(null, { status: 404 });
+    }
+
     try {
         const { searchParams } = new URL(req.url);
         const email = searchParams.get("email");

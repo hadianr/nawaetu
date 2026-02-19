@@ -9,7 +9,6 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { APP_CONFIG } from "@/config/app-config";
 const PWAInstallPrompt = dynamic(() => import("@/components/PWAInstallPrompt"), { ssr: false });
 const SWUpdatePrompt = dynamic(() => import("@/components/SWUpdatePrompt"), { ssr: false });
-const MobileDebugConsole = dynamic(() => import("@/components/MobileDebugConsole"), { ssr: false });
 
 
 const CACHE_CLEANUP_RULES = [
@@ -134,7 +133,6 @@ export default function AppOverlays() {
         <>
             <PWAInstallPrompt shouldShow={showPwaPrompt} />
             <SWUpdatePrompt />
-            {isDev && <MobileDebugConsole />}
 
             <Toaster
                 position="top-center"

@@ -1,7 +1,7 @@
 // Missions data with gender-specific tasks based on Al-Quran and Sunnah
 // Includes validation types for hybrid tracking system
 
-import { getMissionTranslation } from './missions-translations';
+import { SETTINGS_TRANSLATIONS } from './settings-translations';
 
 export type Gender = 'male' | 'female' | null;
 export type ValidationType = 'auto' | 'time' | 'day' | 'manual';
@@ -729,8 +729,24 @@ export function getSeasonalMissions(hijriDateStr?: string): Mission[] {
     return [];
 }
 
+// Helper function to get translation
+function getMissionTranslation(missionId: string, locale: string) {
+    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
+    const titleKey = `mission_${missionId}_title` as keyof typeof t;
+    const descKey = `mission_${missionId}_desc` as keyof typeof t;
+
+    if (t[titleKey]) {
+        return {
+            title: t[titleKey] as string,
+            description: t[descKey] as string
+        };
+    }
+    return null;
+}
+
 // Helper function to get localized mission
 export function getLocalizedMission(mission: Mission, locale: string): Mission {
+    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
     const translation = getMissionTranslation(mission.id, locale);
 
     if (translation) {
@@ -745,8 +761,8 @@ export function getLocalizedMission(mission: Mission, locale: string): Mission {
             localizedMission.completionOptions = mission.completionOptions.map(option => ({
                 ...option,
                 label: option.label === 'Sholat Sendiri'
-                    ? (locale === 'en' ? 'Pray Alone' : 'Sholat Sendiri')
-                    : (locale === 'en' ? 'Congregational at Mosque' : 'Berjamaah di Masjid')
+                    ? t.missionCompletionAlone
+                    : t.missionCompletionCongregation
             }));
         }
 

@@ -39,6 +39,7 @@ export const STORAGE_KEYS = {
 
   // Settings - Prayer
   SETTINGS_CALCULATION_METHOD: 'settings_calculation_method',
+  SETTINGS_HIJRI_ADJUSTMENT: 'settings_hijri_adjustment',
 
   // Prayer Times
   PRAYER_DATA: 'prayer_data',
@@ -46,7 +47,9 @@ export const STORAGE_KEYS = {
   ADHAN_PREFERENCES: 'adhan_preferences',
 
   // AI Chat
-  AI_CHAT_HISTORY: 'ai_chat_history_v2',
+  AI_CHAT_SESSIONS: 'nawaetu_chat_sessions',
+  AI_CHAT_HISTORY_OLD: 'nawaetu_chat_history',
+  AI_CHAT_HISTORY: 'ai_chat_history_v2', // Keep for backward compatibility if needed by other parts
   AI_USAGE: 'ai_usage_v1',
 
   // Dhikr (Tasbih)
@@ -69,6 +72,7 @@ export const STORAGE_KEYS = {
   ONBOARDING_COMPLETED: 'onboarding_completed',
   APP_VERSION: 'app_version',
   LAST_SYNC_USER_ID: 'last_sync_user_id',
+  IS_MUHSININ: 'is_muhsinin',
 } as const;
 
 // Type for storage keys

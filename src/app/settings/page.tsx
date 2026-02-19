@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, RefreshCcw } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sparkles, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, RefreshCcw, Calendar } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"; // Import useSession
@@ -107,6 +107,7 @@ function SettingsPageContent() {
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
+    const [hijriAdjustment, setHijriAdjustment] = useState("-1");
 
     // Audio Preview State
     const [isPlaying, setIsPlaying] = useState(false);
@@ -290,15 +291,17 @@ function SettingsPageContent() {
     };
 
     useEffect(() => {
-        const [savedMuadzin, savedMethod] = storage.getMany([
+        const [savedMuadzin, savedMethod, savedAdjustment] = storage.getMany([
             STORAGE_KEYS.SETTINGS_MUADZIN,
-            STORAGE_KEYS.SETTINGS_CALCULATION_METHOD
+            STORAGE_KEYS.SETTINGS_CALCULATION_METHOD,
+            STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT
         ]).values();
 
         refreshProfile();
 
         if (savedMuadzin) setMuadzin(savedMuadzin as string);
         if (savedMethod) setCalculationMethod(savedMethod as string);
+        if (savedAdjustment) setHijriAdjustment(savedAdjustment as string);
     }, []);
 
     // Real-time avatar sync listener
@@ -310,6 +313,11 @@ function SettingsPageContent() {
 
     const saveSettingsToCloud = async (key: string, value: any) => {
         if (!isAuthenticated) return;
+
+        // Record timestamp to prevent race condition with restoreSettings
+        const storageKey = `nawaetu_settings_${key}`;
+        localStorage.setItem(`${storageKey}_last_changed`, Date.now().toString());
+
         try {
             await fetch("/api/user/settings", {
                 method: "PATCH",
@@ -322,7 +330,7 @@ function SettingsPageContent() {
 
     const handleThemeSelect = (themeId: ThemeId) => {
         const theme = THEMES[themeId];
-        
+
         // Safety check - ensure theme exists
         if (!theme) {
             return;
@@ -355,8 +363,16 @@ function SettingsPageContent() {
         window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: value } }));
     };
 
+    const handleHijriAdjustmentChange = (value: string) => {
+        setHijriAdjustment(value);
+        storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, value);
+        saveSettingsToCloud('hijriAdjustment', value);
+        window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: value } }));
+    };
+
     const handleLocaleChange = (value: string) => {
         setLocale(value);
+        saveSettingsToCloud('locale', value);
     };
 
     const prayerNames = [
@@ -387,7 +403,7 @@ function SettingsPageContent() {
                     <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
                         <ArrowLeft className="w-6 h-6 text-white" />
                     </Link>
-                    <h1 className="text-2xl font-bold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].title}</h1>
+                    <h1 className="text-2xl font-bold text-white">{t.title}</h1>
                 </div>
 
                 {/* Profile Card - Compact */}
@@ -429,7 +445,7 @@ function SettingsPageContent() {
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationLabel}</span>
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.locationLabel}</span>
                             </div>
                             <svg
                                 className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
@@ -442,7 +458,7 @@ function SettingsPageContent() {
                             </svg>
                         </div>
                         <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-0.5">
-                            {(isRefreshing || locationLoading) ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationUpdating : (data?.locationName?.split(',')[0] || SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].locationDetecting)}
+                            {(isRefreshing || locationLoading) ? t.locationUpdating : (data?.locationName?.split(',')[0] || t.locationDetecting)}
                         </p>
                     </button>
 
@@ -452,7 +468,7 @@ function SettingsPageContent() {
                             <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].methodLabel}</span>
+                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.methodLabel}</span>
                                 </div>
                                 <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
                             </div>
@@ -480,11 +496,63 @@ function SettingsPageContent() {
                 {/* Prayer Notifications Card - Using NotificationSettings Component */}
                 <NotificationSettings />
 
+                {/* Hijri Date Settings Card */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                        <span className="text-sm font-semibold text-white">{t.hijriDateTitle}</span>
+                    </div>
+
+                    <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors h-[84px]">
+                        {/* Visual Layer */}
+                        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
+                            <div className="flex items-center justify-between w-full">
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.hijriAdjustmentLabel}</span>
+                                <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
+                            </div>
+                            <div>
+                                <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-1">
+                                    {hijriAdjustment === "0" ? t.adjustmentStandard :
+                                        hijriAdjustment === "-1" ? t.adjustmentMuhammadiyah :
+                                            `${t.adjustmentManual} (${hijriAdjustment})`}
+                                </p>
+                                <p className="text-[10px] text-white/40 line-clamp-1">
+                                    {t.hijriDateDesc}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Functional Layer */}
+                        <Select value={hijriAdjustment} onValueChange={handleHijriAdjustmentChange}>
+                            <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-slate-900 border-slate-800">
+                                <SelectItem value="0" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentStandard}
+                                </SelectItem>
+                                <SelectItem value="-1" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentMuhammadiyah}
+                                </SelectItem>
+                                <SelectItem value="-2" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentManual} (-2)
+                                </SelectItem>
+                                <SelectItem value="1" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentManual} (+1)
+                                </SelectItem>
+                                <SelectItem value="2" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                    {t.adjustmentManual} (+2)
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
                 {/* Theme Configuration Card */}
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2 text-[rgb(var(--color-primary))]">
                         <Palette className="w-4 h-4" />
-                        <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].themeTitle}</span>
+                        <span className="text-sm font-semibold text-white">{t.themeTitle}</span>
                     </div>
 
                     <div className="relative">
@@ -573,7 +641,7 @@ function SettingsPageContent() {
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
                     <div className="flex items-center gap-2 text-[rgb(var(--color-primary-light))]">
                         <Headphones className="w-4 h-4" />
-                        <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].audioTitle}</span>
+                        <span className="text-sm font-semibold text-white">{t.audioTitle}</span>
                     </div>
 
                     <div className="space-y-3">
@@ -585,7 +653,7 @@ function SettingsPageContent() {
                                     <Volume2 className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].muadzinLabel}</p>
+                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">{t.muadzinLabel}</p>
                                     <p className="text-sm text-white font-medium truncate">{currentMuadzin?.label || "Makkah"}</p>
                                 </div>
                             </div>
@@ -643,18 +711,31 @@ function SettingsPageContent() {
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2">
                         <Globe className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                        <span className="text-sm font-semibold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].languageTitle}</span>
+                        <span className="text-sm font-semibold text-white">{t.languageTitle}</span>
                     </div>
 
                     <Select value={locale} onValueChange={handleLocaleChange}>
-                        <SelectTrigger className="w-full bg-white/5 border-white/10 text-white">
-                            <SelectValue />
+                        <SelectTrigger className="w-full bg-white/5 border-white/10 text-white h-11">
+                            <SelectValue placeholder="Bahasa Indonesia">
+                                {locale && LANGUAGE_OPTIONS.find(l => l.id === locale) ? (
+                                    <span className="flex items-center gap-2">
+                                        <span>{LANGUAGE_OPTIONS.find(l => l.id === locale)?.flag}</span>
+                                        <span>{LANGUAGE_OPTIONS.find(l => l.id === locale)?.label}</span>
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-2">
+                                        <span>🇮🇩</span>
+                                        <span>Bahasa Indonesia</span>
+                                    </span>
+                                )}
+                            </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="bg-slate-900 border-white/10">
                             {LANGUAGE_OPTIONS.map((lang) => (
                                 <SelectItem
                                     key={lang.id}
                                     value={lang.id}
+                                    textValue={lang.label}
                                     className="text-white text-sm hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors"
                                 >
                                     <span className="flex items-center gap-2">
@@ -672,12 +753,12 @@ function SettingsPageContent() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Heart className="w-4 h-4 text-[rgb(var(--color-primary-light))] fill-[rgb(var(--color-primary))]/20" />
-                            <span className="text-sm font-bold text-white">{SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportTitle}</span>
+                            <span className="text-sm font-bold text-white">{t.supportTitle}</span>
                         </div>
                         <p className="text-[10px] text-[rgb(var(--color-primary-light))]/70 max-w-[200px] leading-relaxed">
                             {isMuhsinin
-                                ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportPremiumText
-                                : SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].supportText}
+                                ? t.supportPremiumText
+                                : t.supportText}
                         </p>
                     </div>
                     <Button
@@ -685,7 +766,7 @@ function SettingsPageContent() {
                         size="sm"
                         className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20"
                     >
-                        {isMuhsinin ? SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].infaqButtonPremium : SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].infaqButton}
+                        {isMuhsinin ? t.infaqButtonPremium : t.infaqButton}
                     </Button>
                 </div>
 
@@ -699,7 +780,7 @@ function SettingsPageContent() {
                             <span className="text-[10px] font-bold text-white">N</span>
                         </div>
                         <span className="text-[10px] font-bold text-white/60 group-hover:text-white transition-colors">
-                            {SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS].aboutAppName} {APP_CONFIG.version}
+                            {t.aboutAppName} {APP_CONFIG.version}
                         </span>
                         <ChevronRight className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors" />
                     </button>
@@ -801,13 +882,13 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
             // Check if we just completed an update (reload from update process)
             const params = new URLSearchParams(window.location.search);
             const justUpdated = params.has('updated');
-            
+
             if (justUpdated) {
                 addLog('[UpdateChecker] 🎉 Just completed update, skipping check for 5s...');
                 // Skip check for 5 seconds after update reload
                 await new Promise(resolve => setTimeout(resolve, 5000));
             }
-            
+
             addLog('[UpdateChecker] Mounted, checking server version...');
             try {
                 const res = await fetch(`/api/system/version?t=${Date.now()}`);
@@ -830,7 +911,7 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
             addLog('[UpdateChecker] 🎉 New Service Worker took control!');
         };
         navigator.serviceWorker?.addEventListener('controllerchange', handleControllerChange);
-        
+
         return () => {
             navigator.serviceWorker?.removeEventListener('controllerchange', handleControllerChange);
         };
@@ -933,10 +1014,10 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
             // STEP 7: Hard reload
             addLog('[Update] STEP 7: Hard reload page...');
             addLog(`[Update] Redirecting to: /?v=${serverVersion}`);
-            
+
             // Use hard reload (Ctrl+Shift+R equivalent)
             window.location.href = `/?v=${serverVersion}&updated=${Date.now()}`;
-            
+
         } catch (e) {
             addLog(`[Update] ❌ ERROR: ${e}`);
             toast.error(`Update gagal: ${e}`);
@@ -966,7 +1047,7 @@ function UpdateChecker({ currentVersion }: { currentVersion: string }) {
                     {checking ? "Memproses..." : "Update Sekarang"}
                 </Button>
             </div>
-            
+
             {/* DEBUG LOGS */}
             {debugLog.length > 0 && (
                 <div className="mt-2 bg-black/80 border border-white/10 rounded-lg p-2 text-[10px] font-mono text-white/70 max-h-32 overflow-y-auto">

@@ -12,8 +12,7 @@ interface MosqueFinderModalProps {
 }
 
 export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModalProps) {
-    const { locale } = useLocale();
-    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS];
+    const { t } = useLocale();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {

@@ -13,7 +13,6 @@ const ReflectionPrompt = dynamic(() => import("./ReflectionPrompt"), {
     ssr: false,
 });
 import { useLocale } from "@/context/LocaleContext";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 import { cn } from "@/lib/utils";
 
 interface IntentionJournalWidgetProps {
@@ -31,8 +30,7 @@ function getOrCreateAnonymousId(): string {
 }
 
 export default function IntentionJournalWidget({ className = "" }: IntentionJournalWidgetProps) {
-    const { locale } = useLocale();
-    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+    const { locale, t } = useLocale();
 
     const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
     const [showReflectionPrompt, setShowReflectionPrompt] = useState(false);
@@ -142,16 +140,16 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 opacity-40 grayscale hover:opacity-60 transition-opacity">
                             <Compass className="w-3 h-3 text-white" />
-                            <span className="text-[10px] font-bold text-white uppercase tracking-[0.2em] whitespace-nowrap">Jurnal Niat Harian</span>
+                            <span className="text-[10px] font-bold text-white uppercase tracking-[0.2em] whitespace-nowrap">{t.niat_widget_title}</span>
                         </div>
                     </div>
 
                     {!todayData?.has_intention ? (
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-bold text-white tracking-tight leading-tight mb-0.5">Luruskan Niat Hari Ini</h3>
+                                <h3 className="text-sm font-bold text-white tracking-tight leading-tight mb-0.5">{t.niat_widget_subtitle}</h3>
                                 <p className="text-[10px] text-white/40 line-clamp-1 italic font-medium leading-none">
-                                    "Amalan itu tergantung niatnya..."
+                                    {t.niat_widget_quote}
                                 </p>
                             </div>
 
@@ -160,13 +158,13 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     onClick={() => setShowIntentionPrompt(true)}
                                     className="px-4 py-2 rounded-xl bg-[rgb(var(--color-primary))] text-white text-[10px] font-bold shadow-lg active:scale-95 transition-all flex items-center gap-1"
                                 >
-                                    <span>Niat</span>
+                                    <span>{t.niat_niat_btn}</span>
                                     <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                                 </button>
                                 <button
                                     onClick={() => window.location.href = '/journal'}
                                     className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/5"
-                                    title="Riwayat"
+                                    title={t.niat_history_btn_title}
                                 >
                                     <Book className="w-4 h-4 text-white/30" />
                                 </button>
@@ -188,7 +186,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex items-center gap-1.5 active:scale-95"
                                     >
                                         <Moon className="w-3 h-3 text-blue-400" />
-                                        <span className="text-[10px] font-bold text-white/70 uppercase tracking-tight">Refleksi</span>
+                                        <span className="text-[10px] font-bold text-white/70 uppercase tracking-tight">{t.niat_refleksi_btn}</span>
                                     </button>
                                 ) : (
                                     <div
@@ -196,7 +194,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         className="px-3 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/10 flex items-center gap-1.5 opacity-60 hover:opacity-100 cursor-pointer transition-all"
                                     >
                                         <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                                        <span className="text-[9px] font-bold text-emerald-500/80 uppercase">Selesai</span>
+                                        <span className="text-[9px] font-bold text-emerald-500/80 uppercase">{t.niat_selesai_label}</span>
                                         <Edit2 className="w-2.5 h-2.5 text-white/30 ml-0.5" />
                                     </div>
                                 )}
