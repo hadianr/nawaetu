@@ -17,7 +17,7 @@ const MERGED_TRANSLATIONS = {
 interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;
-  t: typeof MERGED_TRANSLATIONS.id;
+  t: typeof MERGED_TRANSLATIONS[keyof typeof MERGED_TRANSLATIONS];
   isLoading: boolean;
 }
 

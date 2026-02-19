@@ -53,7 +53,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const { data: session, status } = useSession();
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const router = useRouter();
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
 
     // Derived State
@@ -178,16 +178,16 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         try {
             if (navigator.share) {
                 await navigator.share(shareData);
-                toast.success(t.locale === 'id' ? 'Terima kasih telah membagikan Nawaetu!' : 'Thanks for sharing Nawaetu!');
+                toast.success(locale === 'id' ? 'Terima kasih telah membagikan Nawaetu!' : 'Thanks for sharing Nawaetu!');
             } else {
                 // Fallback: Copy link to clipboard
                 await navigator.clipboard.writeText(shareData.url);
-                toast.success(t.locale === 'id' ? 'Link berhasil disalin!' : 'Link copied to clipboard!');
+                toast.success(locale === 'id' ? 'Link berhasil disalin!' : 'Link copied to clipboard!');
             }
         } catch (error) {
             // User cancelled or error occurred
             if (error instanceof Error && error.name !== 'AbortError') {
-                toast.error(t.locale === 'id' ? 'Gagal membagikan' : 'Failed to share');
+                toast.error(locale === 'id' ? 'Gagal membagikan' : 'Failed to share');
             }
         }
     };
