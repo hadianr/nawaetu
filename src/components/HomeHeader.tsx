@@ -45,7 +45,7 @@ export default function HomeHeader() {
             if (session.user.image) setUserAvatar(session.user.image);
 
             // Gender isn't in default session user usually, check custom type or storage
-            const savedGender = storage.get(STORAGE_KEYS.USER_GENDER);
+            const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER as any);
             if (savedGender) setGender(savedGender as 'male' | 'female' | null);
             return;
         }

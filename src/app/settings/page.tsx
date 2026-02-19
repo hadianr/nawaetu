@@ -72,38 +72,48 @@ function SettingsPageContent() {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Profile State
-    const isAuthenticated = status === "authenticated";
+    const [userName, setUserName] = useState("Sobat Nawaetu");
+    const [userTitle, setUserTitle] = useState("Hamba Allah");
+    const [userAvatar, setUserAvatar] = useState<string | null>(null);
+
+    // Initial Cache Load for Optimistic UI
+    useEffect(() => {
+        const [savedName, savedTitle, savedAvatar] = storage.getMany([
+            STORAGE_KEYS.USER_NAME,
+            STORAGE_KEYS.USER_TITLE,
+            STORAGE_KEYS.USER_AVATAR
+        ]).values();
+
+        if (savedName) setUserName(savedName as string);
+        if (savedTitle) setUserTitle(savedTitle as string);
+        if (savedAvatar) setUserAvatar(savedAvatar as string | null);
+    }, []);
+
+    // Determining "Authenticated" for UI purposes:
+    const hasCachedProfile = userName !== "Sobat Nawaetu";
+    const isAuthenticated = status === "authenticated" || (status === "loading" && hasCachedProfile);
+
     // FIXED: Only logged in users can be Muhsinin
-    const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin);
-
-
+    const isMuhsinin = (status === "authenticated" && session?.user?.isMuhsinin) || contextIsMuhsinin;
 
     // Payment Feedback & Sync Status
     useEffect(() => {
         const paymentStatus = searchParams.get("payment");
         if (paymentStatus === "success") {
-            // Updated: Show Modal instead of just Toast
             setShowPaymentSuccessModal(true);
-
-            // Trigger manual sync for localhost or webhook delays
             fetch("/api/payment/sync")
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "verified") {
-                        update(); // Refresh session data
+                        update();
                     }
                 })
-                .catch(err => {
-                    // Even if sync fail, we can suggest user to reload
-                });
+                .catch(err => { });
         } else if (paymentStatus === "failed") {
             toast.error("Maaf, pembayaran Anda tidak berhasil. Silakan coba lagi.");
         }
     }, [searchParams, update]);
 
-    const [userName, setUserName] = useState("Sobat Nawaetu");
-    const [userTitle, setUserTitle] = useState("Hamba Allah");
-    const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     // New Settings State
     const [muadzin, setMuadzin] = useState(DEFAULT_SETTINGS.muadzin);
@@ -408,23 +418,15 @@ function SettingsPageContent() {
                 </div>
 
                 {/* Profile Card - Compact */}
-                {status === "loading" ? (
-                    <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
-                        <div className="h-12 w-12 rounded-full bg-white/10" />
-                        <div className="flex-1 space-y-2">
-                            <div className="h-4 w-32 bg-white/10 rounded" />
-                            <div className="h-3 w-20 bg-white/10 rounded" />
-                        </div>
-                    </div>
-                ) : (
+                {isAuthenticated ? (
                     <UserProfileDialog onProfileUpdate={refreshProfile}>
                         <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
                             <div className="relative">
                                 <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden p-0.5">
                                     <Avatar className="w-full h-full rounded-full">
-                                        <AvatarImage src={userAvatar || ""} className="object-cover" />
+                                        <AvatarImage src={userAvatar || session?.user?.image || ""} className="object-cover" />
                                         <AvatarFallback className="bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-lg font-bold">
-                                            {userName.charAt(0).toUpperCase()}
+                                            {(userName || "U").charAt(0).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
                                 </div>
@@ -441,7 +443,29 @@ function SettingsPageContent() {
                             <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
                         </div>
                     </UserProfileDialog>
-                )}
+                ) : (status === "loading" ? (
+                    <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
+                        <div className="h-12 w-12 rounded-full bg-white/10" />
+                        <div className="flex-1 space-y-2">
+                            <div className="h-4 w-32 bg-white/10 rounded" />
+                            <div className="h-3 w-20 bg-white/10 rounded" />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+                        <div className="space-y-1">
+                            <h2 className="text-lg font-bold">{t.profileAuthTitle}</h2>
+                            <p className="text-sm text-muted-foreground max-w-xs">{t.profileAuthDesc}</p>
+                        </div>
+                        <div className="flex w-full sm:w-auto gap-2">
+                            <Link href="/auth/signin" className="w-full sm:w-auto">
+                                <Button className="w-full sm:w-auto font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-lg shadow-indigo-500/20 transition-all active:scale-95">
+                                    {t.profileAuthButton}
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                ))}
 
 
 

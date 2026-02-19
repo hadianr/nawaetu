@@ -56,35 +56,68 @@ export class LocalStorageAdapter implements StorageAdapter {
       }));
     } catch (error) {
       // Handle quota exceeded error
-      if (error instanceof DOMException && (error.code === 22 || error.name === 'QuotaExceededError')) {
-        // Attempt Cleanup: Remove heavy non-essential items
+      if (error instanceof DOMException && (
+        error.code === 22 ||
+        error.name === 'QuotaExceededError' ||
+        error.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+        error.code === 1014
+      )) {
+        // Attempt Cleanup: Remove non-essential items
         try {
-          const keysToRemove = [
-            'prayer_data', // Can be refetched
-            'nawaetu_chat_history', // Old chat history
-            'daily_activity_history' // Old history?
+          // Whitelist of essential data we should try NOT to delete
+          const whitelist = [
+            'user_name',
+            'user_gender',
+            'user_avatar',
+            'app_theme',
+            'settings_locale',
+            'nawaetu_bookmarks',
+            'user_total_infaq',
+            'app_version',
+            'onboarding_completed',
+            'user_location'
+          ];
+
+          // Priority 1: Heavy but refetchable data
+          const heavyKeys = [
+            'prayer_data',
+            'ai_chat_history_v2',
+            'nawaetu_chat_history',
+            'nawaetu_chat_sessions',
+            'daily_activity_history'
           ];
 
           let freed = false;
-          for (const k of keysToRemove) {
+
+          // Try removing heavy keys first
+          for (const k of heavyKeys) {
             if (localStorage.getItem(k)) {
               localStorage.removeItem(k);
-              freed = true;
             }
           }
 
-          // Retry setting item if we freed space
-          if (freed) {
-            try {
-              localStorage.setItem(key, JSON.stringify(value));
-              return;
-            } catch (retryError) {
-              // Still failed
+          // Try setting again after heavy keys removal
+          try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return;
+          } catch (e) {
+            // Still failing, be more aggressive: remove EVERYTHING not in whitelist
+            for (let i = 0; i < localStorage.length; i++) {
+              const k = localStorage.key(i);
+              if (k && !whitelist.includes(k) && k !== key) {
+                localStorage.removeItem(k);
+                i--; // Adjustment for length change
+              }
             }
           }
 
-          // If still failed, try to clear EVERYTHING except essential user profile?
-          // Maybe risky. Just throw error for now but with better message.
+          // Final attempt setting item
+          try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return;
+          } catch (retryError) {
+            // Last resort: we failed even with minimal whitelist.
+          }
         } catch (cleanupError) {
           // Ignore cleanup errors
         }
