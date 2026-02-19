@@ -19,13 +19,12 @@ export function middleware(request: NextRequest) {
     'Cache-Control': 'public, max-age=31536000, immutable',
 
     // Security headers
-    'Content-Security-Policy': csp,
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     'Permissions-Policy': 'geolocation=(self), magnetometer=(self), gyroscope=(self), accelerometer=(self)',
     'X-Frame-Options': 'SAMEORIGIN',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'origin-when-cross-origin',
-    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+    'X-XSS-Protection': '1; mode=block',
 
     // Content Security Policy
     'Content-Security-Policy': `
@@ -42,9 +41,6 @@ export function middleware(request: NextRequest) {
       form-action 'self';
       upgrade-insecure-requests;
     `.replace(/\s{2,}/g, ' ').trim(),
-
-    // Performance headers
-    'X-XSS-Protection': '1; mode=block',
   };
 
   // Apply headers
