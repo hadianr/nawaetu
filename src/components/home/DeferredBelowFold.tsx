@@ -47,29 +47,8 @@ export default function DeferredBelowFold() {
 
   return (
     <>
-      {/* Quick Shortcuts — Qibla always accessible from Home */}
-      <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-700 delay-100">
-        <Link
-          href="/qibla"
-          className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/10 transition-all active:scale-95"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-xl">
-            🧭
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-white">Kiblat</p>
-            <p className="text-xs text-white/40">Arah Ka&apos;bah</p>
-          </div>
-          <div className="ml-auto text-white/20">
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </div>
-        </Link>
-      </section>
-
-      {/* 3. Quick Status Grid */}
-      <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200">
+      {/* 3. Quick Status Grid - Prayer Times + Last Read */}
+      <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-100">
         <div className="w-full h-32">
           {ready ? (
             <NextPrayerWidget />
