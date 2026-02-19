@@ -17,16 +17,18 @@ interface DonationModalProps {
 }
 
 const DONATION_OPTIONS = [
-    { value: 10000, label: "Rp 10.000", emoji: "🍬" },
-    { value: 25000, label: "Rp 25.000", emoji: "☕" },
-    { value: 50000, label: "Rp 50.000", emoji: "🍛" },
-    { value: 100000, label: "Rp 100.000", emoji: "🎁" },
+    { value: 5000, label: "Rp 5.000", emoji: "🍬" },
+    { value: 10000, label: "Rp 10.000", emoji: "☕" },
+    { value: 25000, label: "Rp 25.000", emoji: "🍛" },
+    { value: 50000, label: "Rp 50.000", emoji: "🎁" },
+    { value: 75000, label: "Rp 75.000", emoji: "🌟" },
+    { value: 100000, label: "Rp 100.000", emoji: "💎" },
 ];
 
 export default function DonationModal({ isOpen, onClose, headerTitle, headerDescription }: DonationModalProps) {
     const { isMuhsinin } = useInfaq();
     const { data: session } = useSession();
-    const [selectedAmount, setSelectedAmount] = useState<number>(25000);
+    const [selectedAmount, setSelectedAmount] = useState<number>(10000);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [customValue, setCustomValue] = useState("");
     const [loading, setLoading] = useState(false);
@@ -34,8 +36,8 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
     const handlePayment = async () => {
         const finalAmount = isCustomMode ? parseInt(customValue) || 0 : selectedAmount;
 
-        if (finalAmount < 10000) {
-            toast.error("Minimal infaq Rp 10.000 ya kak (batas payment gateway).");
+        if (finalAmount < 5000) {
+            toast.error("Minimal infaq Rp 5.000 ya kak (batas payment gateway).");
             return;
         }
 
@@ -178,7 +180,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                             autoFocus
                                         />
                                     </div>
-                                    <p className="text-[10px] text-slate-500 px-1 italic">Minimal Rp 10.000 (Ketentuan Payment Gateway)</p>
+                                    <p className="text-[10px] text-slate-500 px-1 italic">Minimal Rp 5.000 (Ketentuan Payment Gateway)</p>
                                 </div>
                             )}
 

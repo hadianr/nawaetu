@@ -36,6 +36,7 @@ import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import NotificationSettings from "@/components/NotificationSettings";
+import PaymentSuccessModal from "@/components/PaymentSuccessModal";
 import { APP_CONFIG } from "@/config/app-config";
 
 const storage = getStorageService();
@@ -66,6 +67,7 @@ function SettingsPageContent() {
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
     const [showDonationModal, setShowDonationModal] = useState(false);
+    const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
     const [showAboutModal, setShowAboutModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -74,21 +76,20 @@ function SettingsPageContent() {
     // FIXED: Only logged in users can be Muhsinin
     const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin);
 
+
+
     // Payment Feedback & Sync Status
     useEffect(() => {
         const paymentStatus = searchParams.get("payment");
         if (paymentStatus === "success") {
-            toast.success("Terima kasih! Infaq Anda berhasil diterima.", {
-                description: "Status Muhsinin sedang diaktifkan...",
-                duration: 5000
-            });
+            // Updated: Show Modal instead of just Toast
+            setShowPaymentSuccessModal(true);
 
             // Trigger manual sync for localhost or webhook delays
             fetch("/api/payment/sync")
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "verified") {
-                        toast.success("Alhamdulillah, status Muhsinin Anda telah aktif!");
                         update(); // Refresh session data
                     }
                 })
@@ -821,6 +822,16 @@ function SettingsPageContent() {
                 )}
             </div>
 
+            <PaymentSuccessModal
+                isOpen={showPaymentSuccessModal}
+                onClose={() => {
+                    setShowPaymentSuccessModal(false);
+                    // Clean URL parameter without refresh
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.delete('payment');
+                    window.history.replaceState({}, '', newUrl);
+                }}
+            />
             <DonationModal isOpen={showDonationModal} onClose={() => setShowDonationModal(false)} />
             <AboutAppModal open={showAboutModal} onOpenChange={setShowAboutModal} />
         </div >

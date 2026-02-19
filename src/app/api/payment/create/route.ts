@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
 
         const { amount } = await req.json();
 
-        if (!amount || amount < 10000) {
-            return NextResponse.json({ error: "Minimum donation is Rp 10.000" }, { status: 400 });
+        if (!amount || amount < 5000) {
+            return NextResponse.json({ error: "Minimum donation is Rp 5.000" }, { status: 400 });
         }
 
         // 1. Call Mayar API to create Single Payment Link (SPL)
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         const body = {
             amount: amount,
             type: "ONETIME",
-            description: `Infaq Nawaetu - ${session.user.name || session.user.email} (${Date.now()})`,
+            description: `Infaq Pengembangan Nawaetu - Amal Jariyah atas nama ${session.user.name || "Hamba Allah"}`,
             name: session.user.name || "Hamba Allah",
             email: session.user.email,
             mobile: "081234567890",
