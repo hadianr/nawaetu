@@ -1,6 +1,7 @@
 import 'server-only';
 import Groq from "groq-sdk";
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
+import { sanitizeUserContext } from './utils';
 
 const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Kamu adalah mentor spiritual yang membantu pengguna memahami dan menjalankan ibadah dengan lebih baik. Bisakan menjawab dengan singkat dan padat serta informatif.
 
@@ -37,6 +38,7 @@ export class GroqProvider implements LLMProvider {
     async chat(message: string, context: UserContext, history: ChatMessage[]): Promise<string> {
         try {
             // Convert history to Groq format (OpenAI compatible)
+            const safeName = sanitizeUserContext(context.name);
             const groqMessages: any[] = [
                 { role: "system", content: SYSTEM_INSTRUCTION },
                 ...history.map(msg => ({
@@ -45,7 +47,7 @@ export class GroqProvider implements LLMProvider {
                 })),
                 {
                     role: "user",
-                    content: `${message}\n\n[Context: User=${context.name}, Streak=${context.prayerStreak}]`
+                    content: `${message}\n\n[Context: User=${safeName}, Streak=${context.prayerStreak}]`
                 }
             ];
 
