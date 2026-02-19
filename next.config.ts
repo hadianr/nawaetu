@@ -16,9 +16,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  // Only transpile what's absolutely necessary - let bundler handle tree-shaking
-  // Modern browsers support ES6 modules natively
-  transpilePackages: [],
+  // Transpile packages that use @babel/runtime to prevent chunk loading issues
+  transpilePackages: ['framer-motion'],
   serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
   productionBrowserSourceMaps: true,
 
@@ -80,22 +79,30 @@ const nextConfig: NextConfig = {
         minimizer: config.optimization.minimizer || [],
         splitChunks: {
           chunks: 'all',
-          maxInitialRequests: 3,  // Limit initial chunks - reduce render-blocking
-          maxAsyncRequests: 5,
-          minSize: 20000,         // Increase min size to merge small chunks
+          maxInitialRequests: 5,  // Increased from 3 to allow critical chunks
+          maxAsyncRequests: 8,    // Increased from 5 for better async loading
+          minSize: 30000,         // Increased from 20000 to reduce chunk fragmentation
           minRemainingSize: 0,
           cacheGroups: {
             default: false,
             vendors: false,
-            // Vendor chunk for react/next
+            // Vendor chunk for react/next + babel runtime (critical dependencies)
             framework: {
               name: 'framework',
-              test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription|next)[\\/]/,
-              priority: 40,
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription|next|@babel[\\/]runtime)[\\/]/,
+              priority: 50,  // Increased priority
               enforce: true,
               reuseExistingChunk: true,
             },
-            // Common libraries - be selective
+            // Framer Motion separate chunk (large library with babel runtime)
+            framerMotion: {
+              name: 'framer-motion',
+              test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+              priority: 45,
+              enforce: true,
+              reuseExistingChunk: true,
+            },
+            // Common libraries - less aggressive splitting
             lib: {
               test: /[\\/]node_modules[\\/]/,
               name(module: any) {
@@ -105,18 +112,19 @@ const nextConfig: NextConfig = {
                 return `npm.${packageName?.replace('@', '')}`;
               },
               priority: 30,
-              minChunks: 2,  // Revert to 2, but with minSize increase
+              minChunks: 3,  // Increased from 2 to reduce chunks
               reuseExistingChunk: true,
               enforce: true,
+              minSize: 40000,  // Increased to merge smaller libs
             },
             // Shared components (reduce unused code)
             commons: {
               name: 'commons',
-              minChunks: 3,
+              minChunks: 4,  // Increased from 3
               priority: 20,
               reuseExistingChunk: true,
               enforce: true,
-              minSize: 30000,  // Only create commons if it saves space
+              minSize: 40000,  // Increased from 30000
             },
           },
         },
