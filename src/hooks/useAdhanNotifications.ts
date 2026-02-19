@@ -120,20 +120,30 @@ export function useAdhanNotifications() {
             if (!prefs[prayerKey]) return; // Notification disabled for this prayer
         }
 
+        const isRamadhan = data?.hijriMonth?.toLowerCase().includes("ramadan") || false;
+
         const labels: Record<string, string> = {
             Fajr: "Subuh",
             Dhuhr: "Dzuhur",
             Asr: "Ashar",
-            Maghrib: "Maghrib",
+            Maghrib: isRamadhan ? "Buka Puasa" : "Maghrib",
             Isha: "Isya",
         };
 
-        new Notification(`Waktu ${labels[prayerKey]}`, {
-            body: `Saatnya menunaikan sholat ${labels[prayerKey]}`,
+        const title = isRamadhan && prayerKey === "Maghrib"
+            ? "Selamat Berbuka Puasa 🤲"
+            : `Waktu ${labels[prayerKey]}`;
+
+        const body = isRamadhan && prayerKey === "Maghrib"
+            ? "Telah masuk waktu Maghrib untuk wilayah Anda."
+            : `Saatnya menunaikan sholat ${labels[prayerKey]}`;
+
+        new Notification(title, {
+            body: body,
             icon: "/icon-192x192.png",
             badge: "/icon-192x192.png",
             tag: `prayer-${prayerKey}`,
-            requireInteraction: false,
+            requireInteraction: prayerKey === "Maghrib" && isRamadhan, // Persistent for Maghrib in Ramadhan
         });
     };
 }

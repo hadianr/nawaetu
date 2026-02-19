@@ -45,6 +45,10 @@ export function useDataSync() {
                 streaks: {
                     current: streakData.streak || 0,
                     longest: streakData.longestStreak || 0,
+                },
+                ramadhan: {
+                    tarawehLog: JSON.parse(localStorage.getItem(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG) || "{}"),
+                    khatamanLog: JSON.parse(localStorage.getItem(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG) || "{\"currentJuz\":0,\"completedJuz\":[],\"history\":[]}")
                 }
             };
 

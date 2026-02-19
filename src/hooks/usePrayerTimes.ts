@@ -4,6 +4,12 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { API_CONFIG } from "@/config/apis";
 
+const HIJRI_MONTHS = [
+    "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
+    "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
+    "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
+];
+
 const storage = getStorageService();
 
 const LOCATION_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -89,20 +95,36 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const normalize = (str: string) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ḍ/g, 'd') : "";
         const monthEnNormal = normalize(hijri.month?.en || "");
 
-        // Targeted Correction for Feb 18/19 2026 Transition
-        // If it is Feb 18, 2026 (today), and adjustment is -1, and API still returns Ramadan 1 
-        // We force it to 30 Sha'ban to ensure the header and card match the user's requirement.
-        const todayStr = new Date().toLocaleDateString("en-GB").split("/").join("-");
+        // Manual Client-Side Hijri Adjustment
+        // Aladhan API adjustment param is unreliable, so we calculate it here.
         const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-        const activeAdj = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1";
+        const activeAdj = parseInt((typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1", 10);
 
         let day = parseInt(hijri.day || "0", 10);
-        let month = monthEnNormal; // Default to normalized month
+        let monthIndex = (hijri.month?.number || 1) - 1; // 0-based index
+        let year = parseInt(hijri.year, 10);
 
-        if (todayStr === "18-02-2026" && activeAdj === "-1" && monthEnNormal === "Ramadan" && day === 1) {
-            day = 30;
-            month = "Sha'ban";
+        // Apply Adjustment
+        day += activeAdj;
+
+        // Handle Rollover (Simple logic assuming 30 days for prev/curr month to be safe for visual adjustment)
+        if (day < 1) {
+            monthIndex--;
+            if (monthIndex < 0) {
+                monthIndex = 11;
+                year--;
+            }
+            day += 30;
+        } else if (day > 30) {
+            day -= 30;
+            monthIndex++;
+            if (monthIndex > 11) {
+                monthIndex = 0;
+                year++;
+            }
         }
+
+        const month = HIJRI_MONTHS[monthIndex] || monthEnNormal;
 
         const hijriString = `${day} ${month} ${hijri.year}H`;
 

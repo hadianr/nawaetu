@@ -73,6 +73,11 @@ export const STORAGE_KEYS = {
   APP_VERSION: 'app_version',
   LAST_SYNC_USER_ID: 'last_sync_user_id',
   IS_MUHSININ: 'is_muhsinin',
+
+  // Ramadhan Hub (Seasonal)
+  RAMADHAN_TARAWEH_LOG: 'nawaetu_ramadhan_taraweh_log',   // { "1447-09-01": 8, ... }
+  RAMADHAN_KHATAMAN_LOG: 'nawaetu_ramadhan_khataman_log', // { currentJuz: 3, log: [...] }
+  RAMADHAN_YEAR: 'nawaetu_ramadhan_year',                 // "1447" — for yearly reset
 } as const;
 
 // Type for storage keys

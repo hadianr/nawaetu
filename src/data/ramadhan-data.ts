@@ -1,0 +1,423 @@
+/**
+ * Ramadhan Hub Data
+ * Niat, dalil, and amalan content for the Ramadhan Hub feature
+ * All content based on Al-Quran and authenticated Hadits
+ */
+
+export interface NiatData {
+    id: string;
+    title: string;
+    title_en?: string;      // English title (optional for bilingual support)
+    arabic: string;
+    latin: string;
+    translation: string;
+    translation_en?: string; // English translation (optional for bilingual support)
+    source?: string;
+    source_en?: string;      // English source description (optional)
+}
+
+export interface DalilData {
+    id: string;
+    shortRef: string;        // e.g. "QS. Al-Baqarah: 187"
+    shortRef_en?: string;    // English short reference (optional)
+    arabic?: string;
+    latin?: string;
+    translation: string;
+    translation_en?: string;  // English translation (optional for bilingual support)
+    source: string;          // Full source description
+    source_en?: string;      // English source description (optional)
+}
+
+export interface RamadhanAmalanData {
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+    niat?: NiatData;
+    dalil: DalilData;
+    tips?: string[];
+}
+
+// ─────────────────────────────────────────────────────────────
+// NIAT DATA
+// ─────────────────────────────────────────────────────────────
+
+export const NIAT_PUASA_RAMADHAN: NiatData = {
+    id: 'niat_puasa_ramadhan',
+    title: 'Niat Puasa Ramadhan',
+    title_en: 'Intention for Ramadhan Fasting',
+    arabic: 'نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ فَرْضِ شَهْرِ رَمَضَانَ هَذِهِ السَّنَةِ لِلَّهِ تَعَالَى',
+    latin: 'Nawaitu shauma ghadin \'an adā\'i fardhi syahri Ramadhāna hādzihis sanati lillāhi ta\'ālā.',
+    translation: 'Aku berniat puasa esok hari untuk menunaikan kewajiban puasa bulan Ramadhan tahun ini karena Allah Ta\'ala.',
+    translation_en: 'I intend to fast tomorrow to fulfill the obligatory fast of the month of Ramadhan this year for Allah the Most High.',
+    source: 'Niat puasa Ramadhan wajib dilakukan pada malam hari sebelum fajar (HR. Abu Dawud No. 2454)',
+    source_en: 'Ramadhan fasting intention must be made at night before fajr (HR. Abu Dawud No. 2454)',
+};
+
+export const NIAT_TARAWEH: NiatData = {
+    id: 'niat_taraweh',
+    title: 'Niat Sholat Taraweh',
+    title_en: 'Intention for Tarawih Prayer',
+    arabic: 'أُصَلِّي سُنَّةَ التَّرَاوِيحِ رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ مَأْمُومًا / إِمَامًا لِلَّهِ تَعَالَى',
+    latin: 'Ushalli sunnatan tarāwīhi rak\'ataini mustaqbilal qiblati ma\'mūman / imāman lillāhi ta\'ālā.',
+    translation: 'Aku niat sholat sunnah taraweh dua rakaat menghadap kiblat sebagai makmum / imam karena Allah Ta\'ala.',
+    translation_en: 'I intend to perform the sunnah tarawih prayer of two rak\'ahs facing the Qiblah as a follower / imam for Allah the Most High.',
+    source: 'Sholat Taraweh adalah sunnah muakkadah di bulan Ramadhan',
+    source_en: 'Tarawih prayer is a confirmed sunnah during Ramadhan',
+};
+
+export const NIAT_TADARUS: NiatData = {
+    id: 'niat_tadarus',
+    title: 'Niat Tadarus Al-Quran',
+    title_en: 'Intention for Quran Recitation',
+    arabic: 'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ، نَوَيْتُ قِرَاءَةَ الْقُرْآنِ الْكَرِيمِ تَقَرُّبًا إِلَى اللَّهِ تَعَالَى',
+    latin: 'Bismillāhir rahmānir rahīm. Nawaitu qirā\'atal qur\'ānil karīmi taqarruban ilallāhi ta\'ālā.',
+    translation: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang. Aku niat membaca Al-Quran Al-Karim untuk mendekatkan diri kepada Allah Ta\'ala.',
+    translation_en: 'In the name of Allah, the Most Gracious, the Most Merciful. I intend to recite the Noble Quran to draw closer to Allah the Most High.',
+    source: 'Membaca Al-Quran adalah ibadah yang sangat dianjurkan, terutama di bulan Ramadhan',
+    source_en: 'Reciting the Quran is a highly recommended act of worship, especially during Ramadhan',
+};
+
+export const NIAT_ITIKAF: NiatData = {
+    id: 'niat_itikaf',
+    title: "Niat I'tikaf",
+    title_en: "Intention for I'tikaf",
+    arabic: 'نَوَيْتُ الاِعْتِكَافَ فِي هَذَا الْمَسْجِدِ لِلَّهِ تَعَالَى',
+    latin: 'Nawaitul i\'tikāfa fī hādzal masjidi lillāhi ta\'ālā.',
+    translation: "Aku niat beri'tikaf di masjid ini karena Allah Ta'ala.",
+    translation_en: "I intend to perform i'tikaf in this mosque for Allah the Most High.",
+    source: "I'tikaf di 10 malam terakhir Ramadhan adalah sunnah Nabi SAW (HR. Bukhari No. 2026)",
+    source_en: "I'tikaf in the last 10 nights of Ramadhan is the sunnah of Prophet Muhammad SAW (HR. Bukhari No. 2026)",
+};
+
+// ─────────────────────────────────────────────────────────────
+// DALIL DATA
+// ─────────────────────────────────────────────────────────────
+
+export const DALIL_PUASA: DalilData = {
+    id: 'dalil_puasa',
+    shortRef: 'QS. Al-Baqarah: 183',
+    shortRef_en: 'Quran 2:183',
+    arabic: 'يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ كُتِبَ عَلَيْكُمُ ٱلصِّيَامُ كَمَا كُتِبَ عَلَى ٱلَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ',
+    latin: 'Yā ayyuhal ladzīna āmanū kutiba \'alaikumush shiyāmu kamā kutiba \'alal ladzīna min qablikum la\'allakum tattaqūn.',
+    translation: 'Wahai orang-orang yang beriman! Diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang sebelum kamu agar kamu bertakwa.',
+    translation_en: 'O you who have believed, fasting is prescribed for you as it was prescribed for those before you that you may become righteous.',
+    source: 'Al-Quran Surat Al-Baqarah Ayat 183',
+    source_en: 'Quran, Surah Al-Baqarah, Verse 183',
+};
+
+export const DALIL_FASTING_SCHEDULE: DalilData = {
+    id: 'dalil_fasting_schedule',
+    shortRef: 'QS. Al-Baqarah: 187',
+    shortRef_en: 'Quran 2:187',
+    arabic: 'وَكُلُوا۟ وَٱشْرَبُوا۟ حَتَّىٰ يَتَبَيَّنَ لَكُمُ ٱلْخَيْطُ ٱلْأَبْيَضُ مِنَ ٱلْخَيْطِ ٱلْأَسْوَدِ مِنَ ٱلْفَجْرِ',
+    latin: 'Wa kulū wasyrabū hattā yatabayyana lakumul khaithul abyadhu minal khaithil aswadi minal fajr.',
+    translation: 'Dan makan minumlah hingga terang bagimu benang putih dari benang hitam, yaitu fajar.',
+    translation_en: 'And eat and drink until the white thread of dawn appears to you distinct from the black thread.',
+    source: 'Al-Quran Surat Al-Baqarah Ayat 187 — dasar waktu imsak dan buka puasa',
+    source_en: 'Quran, Surah Al-Baqarah, Verse 187 — the basis for imsak and breaking fast times',
+};
+
+export const DALIL_TARAWEH: DalilData = {
+    id: 'dalil_taraweh',
+    shortRef: 'HR. Bukhari 2008',
+    arabic: 'مَنْ قَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ',
+    latin: 'Man qāma Ramadhāna īmānan wahtisāban ghufira lahū mā taqaddama min dzanbih.',
+    translation: 'Barangsiapa yang mendirikan sholat malam di bulan Ramadhan dengan penuh keimanan dan mengharap pahala, maka diampuni dosa-dosanya yang telah lalu.',
+    source: 'HR. Bukhari No. 2008, Muslim No. 759 — dari Abu Hurairah radhiyallahu \'anhu',
+};
+
+export const DALIL_TADARUS: DalilData = {
+    id: 'dalil_tadarus',
+    shortRef: 'HR. Tirmidzi 2910',
+    arabic: 'اقْرَؤُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ',
+    latin: 'Iqra\'ul qur\'āna fa\'innahū ya\'tī yaumal qiyāmati syafī\'an li\'ashhābih.',
+    translation: 'Bacalah Al-Quran, karena sesungguhnya ia akan datang pada hari kiamat sebagai pemberi syafaat bagi para pembacanya.',
+    source: 'HR. Muslim No. 804 — dari Abu Umamah Al-Bahili radhiyallahu \'anhu',
+};
+
+export const DALIL_LAILATUL_QADR: DalilData = {
+    id: 'dalil_lailatul_qadr',
+    shortRef: 'QS. Al-Qadr: 1-3',
+    shortRef_en: 'Quran 97:1-3',
+    arabic: 'إِنَّآ أَنزَلْنَٰهُ فِى لَيْلَةِ ٱلْقَدْرِ ۝ وَمَآ أَدْرَىٰكَ مَا لَيْلَةُ ٱلْقَدْرِ ۝ لَيْلَةُ ٱلْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ',
+    latin: 'Innā anzalnāhu fī lailatil qadr. Wa mā adrāka mā lailatul qadr. Lailatul qadri khairum min alfi syahr.',
+    translation: 'Sesungguhnya Kami telah menurunkannya (Al-Quran) pada malam qadar. Dan tahukah kamu apakah malam kemuliaan itu? Malam kemuliaan itu lebih baik dari seribu bulan.',
+    translation_en: 'Indeed, We sent it down during the Night of Decree. And what can make you know what is the Night of Decree? The Night of Decree is better than a thousand months.',
+    source: 'Al-Quran Surat Al-Qadr Ayat 1-3',
+    source_en: 'Quran, Surah Al-Qadr, Verses 1-3',
+};
+
+export const DALIL_SEDEKAH_RAMADHAN: DalilData = {
+    id: 'dalil_sedekah_ramadhan',
+    shortRef: 'HR. Tirmidzi 663',
+    arabic: 'أَفْضَلُ الصَّدَقَةِ صَدَقَةٌ فِي رَمَضَانَ',
+    latin: 'Afdhalush shadaqati shadaqatun fī Ramadhān.',
+    translation: 'Sedekah yang paling utama adalah sedekah di bulan Ramadhan.',
+    source: 'HR. Tirmidzi No. 663 — dari Anas bin Malik radhiyallahu \'anhu',
+};
+
+export const DALIL_SAHUR: DalilData = {
+    id: 'dalil_sahur',
+    shortRef: 'HR. Bukhari 1923',
+    arabic: 'تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً',
+    latin: 'Tasahharū fa\'inna fis sahūri barakah.',
+    translation: 'Bersahurlah kalian, karena sesungguhnya pada sahur itu terdapat keberkahan.',
+    source: 'HR. Bukhari No. 1923, Muslim No. 1095 — dari Anas bin Malik radhiyallahu \'anhu',
+};
+
+export const DALIL_IFTAR: DalilData = {
+    id: 'dalil_iftar',
+    shortRef: 'HR. Abu Dawud 2357',
+    arabic: 'لِلصَّائِمِ فَرْحَتَانِ يَفْرَحُهُمَا: إِذَا أَفْطَرَ فَرِحَ بِفِطْرِهِ، وَإِذَا لَقِيَ رَبَّهُ فَرِحَ بِصَوْمِهِ',
+    latin: 'Lish shā\'imi farhatāni yafrahhumā: idzā aftara fariha bifithrih, wa idzā laqiya rabbahū fariha bishaumih.',
+    translation: 'Orang yang berpuasa memiliki dua kegembiraan: ketika berbuka ia gembira dengan bukanya, dan ketika bertemu Tuhannya ia gembira dengan puasanya.',
+    source: 'HR. Bukhari No. 1904, Muslim No. 1151 — dari Abu Hurairah radhiyallahu \'anhu',
+};
+
+// ─────────────────────────────────────────────────────────────
+// DOA BUKA PUASA — Multiple authentic options
+// ─────────────────────────────────────────────────────────────
+
+export const DOA_IFTAR: NiatData = {
+    id: 'doa_iftar',
+    title: 'Doa Berbuka Puasa (Pilihan 1)',
+    title_en: 'Breaking Fast Prayer (Option 1)',
+    arabic: 'اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ',
+    latin: 'Allāhumma laka shumtu wa bika āmantu wa \'alā rizqika afthartu.',
+    translation: 'Ya Allah, karena-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka.',
+    translation_en: 'O Allah, for You I have fasted, in You I have believed, and with Your provision I break my fast.',
+    source: 'HR. Abu Dawud No. 2357',
+    source_en: 'HR. Abu Dawud No. 2357',
+};
+
+export const DOA_IFTAR_2: NiatData = {
+    id: 'doa_iftar_2',
+    title: 'Doa Berbuka Puasa (Pilihan 2)',
+    title_en: 'Breaking Fast Prayer (Option 2 - Recommended)',
+    arabic: 'ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ',
+    latin: 'Dzahabazh zhamā\', wabtallatil \'urūq, wa tsabatal ajru insyā Allāh.',
+    translation: 'Telah hilang dahaga, telah basah kerongkongan, dan telah ditetapkan pahala, insya Allah.',
+    translation_en: 'Thirst has gone, the veins are moist, and the reward is confirmed, God willing.',
+    source: 'HR. Abu Dawud No. 2357, Ad-Daruquthni 2/185 — doa yang dibaca Nabi SAW (Sahih — Paling Dianjurkan)',
+    source_en: 'HR. Abu Dawud No. 2357, Ad-Daruquthni 2/185 — prayer recited by Prophet Muhammad SAW (Sahih — Most Recommended)',
+};
+
+export const DOA_IFTAR_3: NiatData = {
+    id: 'doa_iftar_3',
+    title: 'Doa Berbuka Puasa (Pilihan 3)',
+    title_en: 'Breaking Fast Prayer (Option 3)',
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ أَنْ تَغْفِرَ لِي',
+    latin: 'Allāhumma innī as\'aluka birahmatikallati wasi\'at kulla syai\'in an taghfira lī.',
+    translation: 'Ya Allah, sesungguhnya aku memohon kepada-Mu dengan rahmat-Mu yang meliputi segala sesuatu, agar Engkau mengampuni aku.',
+    translation_en: 'O Allah, I ask You by Your mercy which encompasses all things, to forgive me.',
+    source: 'HR. Ibnu Majah No. 1753 — doa berbuka yang makbul',
+    source_en: 'HR. Ibnu Majah No. 1753 — accepted breaking fast prayer',
+};
+
+export const DOA_SAHUR: NiatData = {
+    id: 'doa_sahur',
+    title: 'Doa Makan Sahur',
+    title_en: 'Suhoor Meal Prayer',
+    arabic: 'اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ',
+    latin: 'Allāhumma bārik lanā fīmā razaqtanā wa qinā \'adzāban nār.',
+    translation: 'Ya Allah, berkahilah kami dalam rezeki yang Engkau berikan kepada kami, dan jauhkan kami dari azab neraka.',
+    translation_en: 'O Allah, bless us in the provision You have given us and protect us from the punishment of the Fire.',
+    source: 'Doa makan yang dianjurkan',
+    source_en: 'Recommended meal prayer',
+};
+
+// ─────────────────────────────────────────────────────────────
+// TIGA PERIODE RAMADHAN (10 hari pertama, kedua, ketiga)
+// ─────────────────────────────────────────────────────────────
+
+// Tentang rahmat di bulan Ramadhan
+export const DALIL_10_DAYS_MERCY: DalilData = {
+    id: 'dalil_10_days_mercy',
+    shortRef: 'HR. Thabrani',
+    arabic: 'شَهْرُ رَمَضَانَ أَوَّلُهُ رَحْمَةٌ وَأَوْسَطُهُ مَغْفِرَةٌ وَآخِرُهُ عِتْقٌ مِنَ النَّارِ',
+    latin: 'Syahru Ramadhāna awwaluhū rahmatun wa ausathuhū maghfiratun wa ākhiruhū \'itqun minan nār.',
+    translation: 'Bulan Ramadhan, awalnya adalah rahmat, pertengahannya adalah ampunan, dan akhirnya adalah pembebasan dari api neraka.',
+    source: 'HR. Thabrani, Syu\'abul Iman — hadits ini dha\'if (lemah) menurut mayoritas ulama, namun dapat dijadikan motivasi untuk meningkatkan ibadah di setiap periode Ramadhan',
+};
+
+// Tentang ampunan di pertengahan Ramadhan
+export const DALIL_10_DAYS_FORGIVENESS: DalilData = {
+    id: 'dalil_10_days_forgiveness',
+    shortRef: 'HR. Ibnu Majah 1644',
+    arabic: 'مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ',
+    latin: 'Man shāma Ramadhāna īmānan wahtisāban ghufira lahū mā taqaddama min dzanbih.',
+    translation: 'Barangsiapa yang berpuasa di bulan Ramadhan dengan penuh keimanan dan mengharap pahala, maka diampuni dosa-dosanya yang telah lalu.',
+    source: 'HR. Bukhari No. 38, Muslim No. 760, Ibnu Majah No. 1644 — dari Abu Hurairah RA tentang keutamaan puasa Ramadhan',
+};
+
+// Tentang pembebasan dari neraka di akhir Ramadhan
+export const DALIL_10_DAYS_FREEDOM: DalilData = {
+    id: 'dalil_10_days_freedom',
+    shortRef: 'HR. Tirmidzi 682',
+    arabic: 'إِنَّ لِلَّهِ عُتَقَاءَ فِي كُلِّ يَوْمٍ وَلَيْلَةٍ لِكُلِّ عَبْدٍ مِنْهُمْ دَعْوَةٌ مُسْتَجَابَةٌ',
+    latin: 'Inna lillāhi \'utuqā\'a fī kulli yaumin wa lailatin likulli \'abdin minhum da\'watun mustajābah.',
+    translation: 'Sesungguhnya Allah membebaskan beberapa hamba dari api neraka pada setiap siang dan malam (di bulan Ramadhan), dan setiap hamba dari mereka memiliki doa yang dikabulkan.',
+    source: 'HR. Tirmidzi No. 682, Ibnu Majah No. 1643 — dari Abu Hurairah RA tentang pembebasan dari neraka di Ramadhan',
+};
+
+// ─────────────────────────────────────────────────────────────
+// LAILATUL QADR — 10 malam terakhir dengan penekanan pada malam ganjil
+// ─────────────────────────────────────────────────────────────
+
+// Semua 10 malam terakhir Ramadhan
+export const LAST_TEN_NIGHTS = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30] as const;
+
+// Malam-malam ganjil (lebih kuat peluangnya untuk Lailatul Qadr)
+export const ODD_NIGHTS = [21, 23, 25, 27, 29] as const;
+
+// Backward compatibility
+export const LAILATUL_QADR_NIGHTS = ODD_NIGHTS;
+
+// Dalil tentang 10 malam terakhir
+export const DALIL_LAST_10_NIGHTS: DalilData = {
+    id: 'dalil_last_10_nights',
+    shortRef: 'HR. Bukhari No. 2020',
+    shortRef_en: 'HR. Bukhari No. 2020',
+    arabic: 'تَحَرَّوْا لَيْلَةَ الْقَدْرِ فِي الْعَشْرِ الأَوَاخِرِ مِنْ رَمَضَانَ',
+    latin: 'Taharrau lailatal qadri fil \'asyril awākhiri min Ramadhān.',
+    translation: 'Carilah Lailatul Qadr pada sepuluh malam terakhir bulan Ramadhan.',
+    translation_en: 'Seek Lailatul Qadr in the last ten nights of Ramadhan.',
+    source: 'HR. Bukhari No. 2020, Muslim No. 1169 — sabda Rasulullah SAW',
+    source_en: 'HR. Bukhari No. 2020, Muslim No. 1169 — words of Prophet Muhammad SAW',
+};
+
+// Dalil tentang keutamaan malam ganjil
+export const DALIL_ODD_NIGHTS: DalilData = {
+    id: 'dalil_odd_nights',
+    shortRef: 'HR. Bukhari No. 2017',
+    shortRef_en: 'HR. Bukhari No. 2017',
+    arabic: 'فَمَنْ كَانَ مُتَحَرِّيهَا فَلْيَتَحَرَّهَا فِي الْوِتْرِ مِنَ الْعَشْرِ الأَوَاخِرَ',
+    latin: 'Fa man kāna mutaharrīhā falyataharraha fil witri minal \'asyril awākhir.',
+    translation: 'Barangsiapa yang sedang mencarinya, maka hendaklah ia mencarinya pada malam-malam ganjil dari sepuluh malam terakhir.',
+    translation_en: 'Whoever is seeking it, let him seek it in the odd nights of the last ten nights.',
+    source: 'HR. Bukhari No. 2017 — dari Aisyah RA tentang pencarian Lailatul Qadr',
+    source_en: 'HR. Bukhari No. 2017 — from Aisha RA about seeking Lailatul Qadr',
+};
+
+// Dalil tentang I\'tikaf di 10 malam terakhir
+export const DALIL_ITIKAF_10_NIGHTS: DalilData = {
+    id: 'dalil_itikaf_10_nights',
+    shortRef: 'HR. Bukhari 2026',
+    arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَعْتَكِفُ الْعَشْرَ الأَوَاخِرَ مِنْ رَمَضَانَ حَتَّى تَوَفَّاهُ اللَّهُ',
+    latin: 'Kāna Rasūlullāh shallallāhu \'alaihi wasallam ya\'takiful \'asyral awākhira min Ramadhāna hattā tawaffāhullāh.',
+    translation: 'Rasulullah SAW beri\'tikaf di sepuluh malam terakhir bulan Ramadhan hingga Allah mewafatkan beliau.',
+    source: 'HR. Bukhari No. 2026, Muslim No. 1172 — dari Aisyah RA tentang kebiasaan Nabi',
+};
+
+export const DOA_LAILATUL_QADR: NiatData = {
+    id: 'doa_lailatul_qadr',
+    title: "Doa Malam Lailatul Qadr",
+    title_en: "Lailatul Qadr Night Prayer",
+    arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
+    latin: 'Allāhumma innaka \'afuwwun tuhibbul \'afwa fa\'\'fu \'annī.',
+    translation: 'Ya Allah, sesungguhnya Engkau Maha Pemaaf dan menyukai pemaafan, maka maafkanlah aku.',
+    translation_en: 'O Allah, You are the Most Forgiving and You love forgiveness, so forgive me.',
+    source: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — doa yang diajarkan Nabi SAW kepada Aisyah RA',
+    source_en: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — prayer taught by Prophet Muhammad SAW to Aisha RA',
+};
+
+// ─────────────────────────────────────────────────────────────
+// AMALAN RAMADHAN (enriched with niat & dalil)
+// ─────────────────────────────────────────────────────────────
+
+export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
+    {
+        id: 'puasa_wajib',
+        title: 'Puasa Ramadhan',
+        description: 'Menahan makan, minum, dan hal yang membatalkan dari fajar hingga maghrib',
+        icon: '🌙',
+        niat: NIAT_PUASA_RAMADHAN,
+        dalil: DALIL_PUASA,
+        tips: [
+            'Niatkan setiap malam sebelum tidur',
+            'Sahur sebelum imsak untuk keberkahan',
+            'Jaga lisan dan perbuatan agar puasa sempurna',
+        ],
+    },
+    {
+        id: 'taraweh',
+        title: 'Sholat Taraweh',
+        description: 'Sholat sunnah malam Ramadhan, 8 atau 20 rakaat',
+        icon: '🕌',
+        niat: NIAT_TARAWEH,
+        dalil: DALIL_TARAWEH,
+        tips: [
+            'Bisa 8 rakaat (sunnah Nabi) atau 20 rakaat (sunnah Umar RA)',
+            'Lebih utama berjamaah di masjid',
+            'Tutup dengan witir 1 atau 3 rakaat',
+        ],
+    },
+    {
+        id: 'tadarus',
+        title: 'Tadarus Al-Quran',
+        description: 'Membaca dan mempelajari Al-Quran, target khatam 30 juz',
+        icon: '📖',
+        niat: NIAT_TADARUS,
+        dalil: DALIL_TADARUS,
+        tips: [
+            'Target 1 juz per hari = khatam dalam 30 hari',
+            'Baca dengan tartil dan pahami maknanya',
+            'Jibril AS mengkhatamkan Quran bersama Nabi SAW setiap Ramadhan',
+        ],
+    },
+    {
+        id: 'sedekah',
+        title: 'Perbanyak Sedekah',
+        description: 'Sedekah di bulan Ramadhan pahalanya berlipat ganda',
+        icon: '💝',
+        dalil: DALIL_SEDEKAH_RAMADHAN,
+        tips: [
+            'Nabi SAW adalah orang paling dermawan, terutama di Ramadhan',
+            'Bisa berupa makanan buka puasa untuk orang lain',
+            'Sedekah subuh sangat dianjurkan',
+        ],
+    },
+];
+
+// ─────────────────────────────────────────────────────────────
+// HELPER FUNCTIONS
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Get the current Ramadhan day (1-30) from a Hijri date string
+ */
+export function getRamadhanDay(hijriDay: number): number {
+    return Math.max(1, Math.min(30, hijriDay));
+}
+
+/**
+ * Check if tonight is a potential Lailatul Qadr night (odd nights in last 10)
+ */
+export function isLailatulQadrNight(hijriDay: number): boolean {
+    return hijriDay >= 21 && hijriDay % 2 === 1;
+}
+
+/**
+ * Get the next odd night (Lailatul Qadr candidate) from current Hijri day
+ */
+export function getNextLailatulQadrNight(hijriDay: number): number | null {
+    for (const night of ODD_NIGHTS) {
+        if (night > hijriDay) return night;
+    }
+    return null; // All odd nights have passed
+}
+
+/**
+ * Get Ramadhan progress percentage (0-100)
+ */
+export function getRamadhanProgress(hijriDay: number): number {
+    return Math.round((hijriDay / 30) * 100);
+}
+
+/**
+ * Format Hijri date key for storage (e.g. "1447-09-01")
+ */
+export function formatHijriKey(year: number, day: number): string {
+    return `${year}-09-${String(day).padStart(2, '0')}`;
+}
