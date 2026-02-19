@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import { useLocale } from "@/context/LocaleContext";
+import QuoteOfDay from "@/components/QuoteOfDay";
 
 const NextPrayerWidget = dynamic(() => import("@/components/NextPrayerWidget"), {
   ssr: false,
@@ -47,37 +48,42 @@ export default function DeferredBelowFold() {
 
   return (
     <>
-      {/* 3. Quick Status Grid - Prayer Times + Last Read */}
-      <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-100">
-        <div className="w-full h-32">
-          {ready ? (
-            <NextPrayerWidget />
-          ) : (
-            <div className="h-full w-full rounded-3xl bg-white/5 border border-white/10 animate-pulse min-h-[100px]" />
-          )}
-        </div>
-        <div className="w-full h-32">
-          {ready ? (
-            <HomeLastRead />
-          ) : (
-            <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />
-          )}
-        </div>
-      </section>
+      <div className="w-full flex flex-col gap-3">
+        {/* 3. Quick Status Grid - Prayer Times + Last Read */}
+        <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-100">
+          <div className="w-full h-32">
+            {ready ? (
+              <NextPrayerWidget />
+            ) : (
+              <div className="h-full w-full rounded-3xl bg-white/5 border border-white/10 animate-pulse min-h-[100px]" />
+            )}
+          </div>
+          <div className="w-full h-32">
+            {ready ? (
+              <HomeLastRead />
+            ) : (
+              <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />
+            )}
+          </div>
+        </section>
 
-      {/* 4. Prayer Times List */}
-      <section className="w-full">
-        {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
-      </section>
+        {/* 4. Prayer Times List */}
+        <section className="w-full">
+          {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
+        </section>
 
-      {/* 5. Daily Missions */}
-      <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-        {ready ? (
-          <HomeMissions />
-        ) : (
-          <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />
-        )}
-      </section>
+        {/* 5. Daily Missions */}
+        <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
+          {ready ? (
+            <HomeMissions />
+          ) : (
+            <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />
+          )}
+        </section>
+
+        {/* 6. Quote of The Day - Always at bottom */}
+        <QuoteOfDay />
+      </div>
 
       {/* AI Mentor Access Point - Lazy loaded */}
       <div className="fixed bottom-[90px] left-0 right-0 z-40 pointer-events-none">

@@ -6,7 +6,7 @@ import { RefreshCw, Edit2, MapPin, Navigation } from "lucide-react";
 import PrayerTimeCard from "@/components/PrayerTimeCard";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import PrayerCountdown from "@/components/PrayerCountdown";
-import QuoteOfDay from "@/components/QuoteOfDay";
+
 import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
 import MosqueFinderModal from "@/components/MosqueFinderModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
@@ -134,9 +134,6 @@ export default function PrayerTimesDisplay() {
                     </div>
                 )}
             </div>
-
-            {/* Quote of The Day */}
-            <QuoteOfDay />
 
             {/* Bottom spacer to Ensure scrolling fits everything above bottom nav */}
             <div className="h-4" />
