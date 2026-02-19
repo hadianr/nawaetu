@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
         const status = data.status; // e.g. "SETTLEMENT" or "SUCCESS"
         const mayarId = data.id;
         const linkId = data.link_id || data.paymentLinkId; // Adjust based on possible field names
+        const productId = data.productId; // Matches paymentLinkId often
 
         if (!mayarId) {
             console.error("Webhook Error: Invalid Payload (Missing ID)", body);
@@ -56,6 +57,9 @@ export async function POST(req: NextRequest) {
         const conditions = [eq(transactions.mayarId, mayarId)];
         if (linkId) {
             conditions.push(eq(transactions.paymentLinkId, linkId));
+        }
+        if (productId) {
+            conditions.push(eq(transactions.paymentLinkId, productId));
         }
         // Also check if stored paymentLinkId matches incoming Transaction ID
         conditions.push(eq(transactions.paymentLinkId, mayarId));
