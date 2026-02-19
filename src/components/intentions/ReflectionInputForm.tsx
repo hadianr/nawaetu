@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
@@ -16,15 +15,14 @@ interface ReflectionInputFormProps {
 }
 
 export default function ReflectionInputForm({ onComplete, userToken, intentionId, intentionText }: ReflectionInputFormProps) {
-    const { locale } = useLocale();
-    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+    const { locale, t } = useLocale();
 
     const RATING_LABELS = [
-        { emoji: "😔", label: t.rating_struggled, color: "text-red-400" },
-        { emoji: "😕", label: t.rating_difficult, color: "text-orange-400" },
-        { emoji: "😐", label: t.rating_okay, color: "text-yellow-400" },
-        { emoji: "😊", label: t.rating_good, color: "text-green-400" },
-        { emoji: "🤩", label: t.rating_excellent, color: "text-emerald-400" },
+        { emoji: "😔", label: t.niat_rating_struggled, color: "text-red-400" },
+        { emoji: "😕", label: t.niat_rating_difficult, color: "text-orange-400" },
+        { emoji: "😐", label: t.niat_rating_okay, color: "text-yellow-400" },
+        { emoji: "😊", label: t.niat_rating_good, color: "text-green-400" },
+        { emoji: "🤩", label: t.niat_rating_excellent, color: "text-emerald-400" },
     ];
 
     const [rating, setRating] = useState(0);
@@ -35,11 +33,11 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
 
     const handleSubmit = async () => {
         if (rating === 0) {
-            setError("Mohon beri rating harimu.");
+            setError(t.niat_rating_harimu_prompt);
             return;
         }
         if (!userToken || !intentionId) {
-            setError("Data intention tidak ditemukan.");
+            setError(t.niat_error_no_intention_id);
             return;
         }
 
@@ -66,10 +64,10 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                     onComplete();
                 }, 1500);
             } else {
-                setError(data.error || "Gagal menyimpan refleksi");
+                setError(data.error || t.niat_error_fail_save_reflection);
             }
         } catch (err) {
-            setError("Gagal terhubung.");
+            setError(t.niat_error_network);
         } finally {
             setIsSubmitting(false);
         }
@@ -81,8 +79,8 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                 <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-2">
                     <CheckCircle2 className="w-8 h-8 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Alhamdulillah!</h3>
-                <p className="text-white/60 text-sm">Refleksi tercatat. Istirahatlah yang cukup.</p>
+                <h3 className="text-xl font-bold text-white">{t.niat_success_reflection_title}</h3>
+                <p className="text-white/60 text-sm">{t.niat_success_reflection_desc}</p>
             </div>
         );
     }
@@ -90,8 +88,8 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
     if (!intentionId) {
         return (
             <div className="p-6 text-center text-white/60">
-                <p>Kamu belum menetapkan niat hari ini.</p>
-                <p className="text-xs mt-2">Dahulukan misi "Luruskan Niat" besok pagi ya!</p>
+                <p>{t.niat_no_niat_today_title}</p>
+                <p className="text-xs mt-2">{t.niat_no_niat_today_desc}</p>
             </div>
         )
     }
@@ -99,13 +97,13 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
     return (
         <div className="p-6 space-y-6">
             <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <p className="text-xs text-white/40 uppercase tracking-widest font-bold mb-2">Niat Hari Ini</p>
+                <p className="text-xs text-white/40 uppercase tracking-widest font-bold mb-2">{t.niat_todays_niat}</p>
                 <p className="text-white/90 italic">"{intentionText}"</p>
             </div>
 
             <div className="space-y-3">
                 <label className="text-sm font-medium text-white/80 block text-center">
-                    {t.prompt_reflection_rating || "Bagaimana harimu?"}
+                    {t.niat_rating_harimu}
                 </label>
                 <div className="flex justify-between gap-1 px-2">
                     {RATING_LABELS.map((item, index) => {
@@ -140,12 +138,12 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
 
             <div className="space-y-2">
                 <label className="text-sm font-medium text-white/80 block">
-                    {t.prompt_reflection_text || "Catatan evaluasi diri (Muhasabah):"}
+                    {t.niat_prompt_reflection_text}
                 </label>
                 <Textarea
                     value={reflection}
                     onChange={(e) => setReflection(e.target.value)}
-                    placeholder="Apa yang sudah baik? Apa yang perlu diperbaiki?"
+                    placeholder={t.niat_placeholder_reflect}
                     className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/30 resize-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50"
                 />
                 {error && <p className="text-red-400 text-xs">{error}</p>}
@@ -159,10 +157,10 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                 {isSubmitting ? (
                     <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Menyimpan...
+                        {t.niat_saving_wait}
                     </>
                 ) : (
-                    "Selesai Muhasabah (+50 XP)"
+                    t.niat_complete_muhasabah_btn
                 )}
             </Button>
         </div>

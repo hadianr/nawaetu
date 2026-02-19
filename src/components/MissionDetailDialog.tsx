@@ -81,7 +81,7 @@ export default function MissionDetailDialog({
                                         ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                         : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                 )}>
-                                        {getHukumLabel(mission.hukum, t)}
+                                    {getHukumLabel(mission.hukum, t)}
                                 </span>
                             </div>
                             <p className="text-xs text-white/50 mt-1">{mission.description}</p>
@@ -105,13 +105,13 @@ export default function MissionDetailDialog({
                                         value="guide"
                                         className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
-                                        Panduan
+                                        {t.mission_dialog_guide}
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="info"
                                         className="bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100 focus-visible:ring-0 focus-visible:outline-none"
                                     >
-                                        Info & Dalil
+                                        {t.mission_dialog_info}
                                     </TabsTrigger>
                                 </TabsList>
                             </div>
@@ -130,15 +130,15 @@ export default function MissionDetailDialog({
                                             <div className="space-y-3">
                                                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
-                                                    {mission.category === 'prayer' ? 'Niat Sholat' : mission.category === 'fasting' ? 'Niat Puasa' : 'Lafadz Niat'}
+                                                    {mission.category === 'prayer' ? t.mission_dialog_niat_sholat : mission.category === 'fasting' ? t.mission_dialog_niat_puasa : t.mission_dialog_niat_general}
                                                 </h3>
 
                                                 {/* CONDITIONAL RENDERING: Tabs only if Munfarid AND Makmum exist */}
                                                 {content.niat.makmum ? (
                                                     <Tabs defaultValue="sendiri" className="w-full">
                                                         <TabsList className="bg-white/5 border border-white/10 w-full justify-start h-8 p-1 mb-2">
-                                                            <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50">Sendiri</TabsTrigger>
-                                                            <TabsTrigger value="makmum" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50">Makmum</TabsTrigger>
+                                                            <TabsTrigger value="sendiri" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50">{t.mission_dialog_sholat_sendiri}</TabsTrigger>
+                                                            <TabsTrigger value="makmum" className="text-xs h-6 px-3 data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50">{t.mission_dialog_sholat_makmum}</TabsTrigger>
                                                         </TabsList>
                                                         <TabsContent value="sendiri" className="mt-0">
                                                             <div className="bg-[rgb(var(--color-primary-dark))]/10 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
@@ -188,7 +188,7 @@ export default function MissionDetailDialog({
                                         {content.readings && content.readings.length > 0 && (
                                             <div className="space-y-4">
                                                 <div className="flex items-center justify-between text-xs text-white/40 uppercase tracking-widest font-bold">
-                                                    <span>Bacaan {readingIndex + 1} dari {content.readings.length}</span>
+                                                    <span>{(t as any).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
                                                     {currentReading?.note && (
                                                         <span className="text-emerald-400">{currentReading.note}</span>
                                                     )}
@@ -221,7 +221,7 @@ export default function MissionDetailDialog({
                                                         disabled={readingIndex === 0}
                                                         className="text-white/60 hover:text-white hover:bg-white/10"
                                                     >
-                                                        <ChevronLeft className="w-4 h-4 mr-1" /> Sebelumnya
+                                                        <ChevronLeft className="w-4 h-4 mr-1" /> {t.mission_dialog_prev}
                                                     </Button>
                                                     <Button
                                                         variant="secondary"
@@ -230,7 +230,7 @@ export default function MissionDetailDialog({
                                                         disabled={readingIndex === (content.readings.length - 1)}
                                                         className="bg-white/10 hover:bg-white/20 text-white border border-white/10"
                                                     >
-                                                        Selanjutnya <ChevronRight className="w-4 h-4 ml-1" />
+                                                        {t.mission_dialog_next} <ChevronRight className="w-4 h-4 ml-1" />
                                                     </Button>
                                                 </div>
                                             </div>
@@ -239,7 +239,7 @@ export default function MissionDetailDialog({
                                         {/* If Steps/Guides Exist (Sholat) */}
                                         {content.guides && (
                                             <div className="space-y-3">
-                                                <h3 className="text-sm font-bold text-white mb-2">Langkah-langkah:</h3>
+                                                <h3 className="text-sm font-bold text-white mb-2">{t.mission_dialog_steps}</h3>
                                                 <div className="space-y-3">
                                                     {content.guides.map((step, idx) => (
                                                         <div key={idx} className="flex gap-3 text-sm">
@@ -262,7 +262,7 @@ export default function MissionDetailDialog({
                                         {content.fadhilah && (
                                             <div className="space-y-3">
                                                 <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-accent))]">
-                                                    <SparklesIcon className="w-4 h-4" /> Keutamaan (Fadhilah)
+                                                    <SparklesIcon className="w-4 h-4" /> {t.mission_dialog_fadhilah}
                                                 </h3>
                                                 <ul className="space-y-2">
                                                     {content.fadhilah.map((item, idx) => (
@@ -278,7 +278,7 @@ export default function MissionDetailDialog({
                                         {mission.dalil && (
                                             <div className="space-y-2">
                                                 <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-primary-light))]">
-                                                    <BookOpen className="w-4 h-4" /> Sumber Dalil
+                                                    <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
                                                 </h3>
                                                 <div className="bg-[rgb(var(--color-primary-dark))]/30 p-4 rounded-xl border border-[rgb(var(--color-primary))]/20">
                                                     <p className="text-sm text-white/90 italic">"{mission.dalil}"</p>
@@ -297,11 +297,11 @@ export default function MissionDetailDialog({
                         <div className="p-6 flex flex-col items-center justify-center flex-1 text-center space-y-4">
                             <Info className="w-12 h-12 text-white/20" />
                             <p className="text-white/60 text-sm max-w-[200px]">
-                                Belum ada detail konten untuk misi ini. Lakukan sesuai instruksi singkat di atas.
+                                {t.mission_dialog_no_content}
                             </p>
                             {mission.dalil && (
                                 <div className="mt-4 bg-white/5 p-4 rounded-xl border border-white/10 w-full">
-                                    <p className="text-xs text-emerald-400 font-bold mb-1">Dalil:</p>
+                                    <p className="text-xs text-emerald-400 font-bold mb-1">{t.mission_dialog_dalil_label}</p>
                                     <p className="text-sm italic text-white/80">{mission.dalil}</p>
                                 </div>
                             )}

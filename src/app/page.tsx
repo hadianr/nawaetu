@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const daysLeft = Math.max(0, Math.floor((new Date("2026-02-18T00:00:00+07:00").getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+  const daysLeft = Math.max(0, Math.floor((new Date("2026-02-19T00:00:00+07:00").getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
 
   return (
     <>

@@ -7,3 +7,7 @@
 **Vulnerability:** The `/api/debug/user-data` endpoint allowed unauthenticated access to full user profiles via an email query parameter, exposing sensitive PII.
 **Learning:** Debug tools created during development often lack security controls and can be accidentally deployed to production if not explicitly guarded.
 **Prevention:** Enforce strict environment checks (`process.env.NODE_ENV === 'production'`) on all debug routes or use feature flags. Ideally, remove debug routes before merging to main.
+## 2026-02-05 - AI Response XSS Vulnerability
+**Vulnerability:** The `formatMarkdown` utility function used simple regex replacement to convert markdown to HTML without sanitizing the input first, allowing XSS if the AI output contained malicious HTML.
+**Learning:** Custom markdown parsers using regex are prone to XSS if input sanitization (escaping or stripping) is skipped.
+**Prevention:** Always escape HTML special characters before applying custom formatting rules, or use a robust sanitizer library.

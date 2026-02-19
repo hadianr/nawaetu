@@ -160,6 +160,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
         // AI Chat
         storage.remove(STORAGE_KEYS.AI_CHAT_HISTORY);
+        storage.remove(STORAGE_KEYS.AI_CHAT_SESSIONS);
+        storage.remove(STORAGE_KEYS.AI_CHAT_HISTORY_OLD);
         storage.remove(STORAGE_KEYS.AI_USAGE);
 
         // Sync Flags

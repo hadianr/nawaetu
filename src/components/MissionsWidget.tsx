@@ -21,7 +21,6 @@ import { useSession } from "next-auth/react";
 import IntentionInputForm from "./intentions/IntentionInputForm";
 import ReflectionInputForm from "./intentions/ReflectionInputForm";
 import IntentionPrompt from "./intentions/IntentionPrompt";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 export default function MissionsWidget() {
     const { data: session } = useSession();
@@ -210,8 +209,8 @@ export default function MissionsWidget() {
         undoCompleteMission(mission.id);
 
         // UX Feedback: Toast
-        toast.info((t as any).toastMissionReset || "Misi dibatalkan", {
-            description: `${mission.title} telah di-reset. (-${mission.xpReward} XP)`,
+        toast.info((t as any).mission_dialog_undo_title, {
+            description: `${mission.title} ${(t as any).mission_dialog_undo_desc} (-${mission.xpReward} XP)`,
             duration: 3000,
             icon: "🔄"
         });
@@ -259,17 +258,17 @@ export default function MissionsWidget() {
                     });
 
                     toast.success(t.toastMissionComplete, {
-                        description: `Niat Terpasang! (+${mission.xpReward} XP)`,
+                        description: `${t.niat_success_niat_title} (+${mission.xpReward} XP)`,
                         duration: 3000,
                         icon: "🎉"
                     });
                 }
                 setShowIntentionPrompt(false);
             } else {
-                toast.error("Gagal menyimpan niat");
+                toast.error(t.niat_error_fail_save_niat);
             }
         } catch (error) {
-            toast.error("Terjadi kesalahan");
+            toast.error(t.niat_error_generic);
         }
     };
 

@@ -41,6 +41,8 @@ export async function GET(req: NextRequest) {
                     settings: true,
                     niatStreakCurrent: true,
                     niatStreakLongest: true,
+                    isMuhsinin: true,
+                    totalInfaq: true,
                 }
             }),
 
@@ -88,7 +90,9 @@ export async function GET(req: NextRequest) {
                 streaks: {
                     current: userProfile.niatStreakCurrent,
                     longest: userProfile.niatStreakLongest,
-                }
+                },
+                isMuhsinin: userProfile.isMuhsinin,
+                totalInfaq: userProfile.totalInfaq,
             },
             bookmarks: userBookmarks,
             completedMissions: userMissions,

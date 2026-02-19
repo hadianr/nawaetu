@@ -19,6 +19,14 @@ export default function DataSyncer() {
     const { setLocale } = useLocale();
     const storage = getStorageService();
 
+    // Helper to check if a setting was recently changed manually
+    const RECENT_CHANGE_THRESHOLD_MS = 5000; // 5 seconds
+    const isRecentlyChanged = (settingKey: string): boolean => {
+        const timestamp = localStorage.getItem(`${settingKey}_last_changed`);
+        if (!timestamp) return false;
+        return Date.now() - parseInt(timestamp) < RECENT_CHANGE_THRESHOLD_MS;
+    };
+
     const restoreSettings = useCallback(async () => {
         try {
             const res = await fetch("/api/user/settings");
@@ -27,19 +35,21 @@ export default function DataSyncer() {
                 if (data.data) {
                     const d = data.data;
 
-                    // 1. Restore Settings
+                    // 1. Restore Settings (with race condition protection)
                     if (d.settings) {
                         const s = d.settings;
-                        if (s.theme) {
+
+                        // Only restore if not recently changed by user
+                        if (s.theme && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_THEME)) {
                             setTheme(s.theme);
                         }
-                        if (s.locale) {
+                        if (s.locale && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_LOCALE)) {
                             setLocale(s.locale);
                         }
-                        if (s.muadzin) {
+                        if (s.muadzin && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_MUADZIN)) {
                             storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
                         }
-                        if (s.calculationMethod) {
+                        if (s.calculationMethod && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD)) {
                             storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
                             // Trigger refresh of prayer times
                             window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
@@ -145,7 +155,6 @@ export default function DataSyncer() {
                 STORAGE_KEYS.COMPLETED_MISSIONS,
                 STORAGE_KEYS.ACTIVITY_TRACKER,
                 STORAGE_KEYS.ADHAN_PREFERENCES,
-                // Settings might be synced too but often less critical for immediate sync
             ];
 
             if (syncableKeys.includes(key)) {
@@ -155,7 +164,7 @@ export default function DataSyncer() {
                 }
 
                 syncTimeoutRef.current = setTimeout(() => {
-                    syncData();
+                    syncData({ silent: true });
                 }, 2000); // 2s debounce to avoid spamming if multiple updates occur
             }
         };

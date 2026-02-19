@@ -1,8 +1,9 @@
 // Utility for chat history management using StorageService
 import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "./constants/storage-keys";
 
-const CHAT_SESSIONS_KEY = 'nawaetu_chat_sessions';
-const OLD_CHAT_HISTORY_KEY = 'nawaetu_chat_history'; // For migration
+const CHAT_SESSIONS_KEY = STORAGE_KEYS.AI_CHAT_SESSIONS;
+const OLD_CHAT_HISTORY_KEY = STORAGE_KEYS.AI_CHAT_HISTORY_OLD;
 const MAX_SESSIONS = 50;
 const MAX_MESSAGES_PER_SESSION = 50;
 

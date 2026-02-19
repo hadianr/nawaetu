@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
-import { INTENTION_TRANSLATIONS } from "@/data/intention-translations";
 
 interface ReflectionPromptProps {
     intentionText: string;
@@ -21,15 +20,14 @@ export default function ReflectionPrompt({
     initialValue = "",
     initialRating = 0,
 }: ReflectionPromptProps) {
-    const { locale } = useLocale();
-    const t = INTENTION_TRANSLATIONS[locale as keyof typeof INTENTION_TRANSLATIONS] || INTENTION_TRANSLATIONS.id;
+    const { locale, t } = useLocale();
 
     const RATING_LABELS = [
-        { emoji: "😔", label: t.rating_struggled, color: "text-red-400" },
-        { emoji: "😕", label: t.rating_difficult, color: "text-orange-400" },
-        { emoji: "😐", label: t.rating_okay, color: "text-yellow-400" },
-        { emoji: "😊", label: t.rating_good, color: "text-green-400" },
-        { emoji: "🤩", label: t.rating_excellent, color: "text-emerald-400" },
+        { emoji: "😔", label: t.niat_rating_struggled, color: "text-red-400" },
+        { emoji: "😕", label: t.niat_rating_difficult, color: "text-orange-400" },
+        { emoji: "😐", label: t.niat_rating_okay, color: "text-yellow-400" },
+        { emoji: "😊", label: t.niat_rating_good, color: "text-green-400" },
+        { emoji: "🤩", label: t.niat_rating_excellent, color: "text-emerald-400" },
     ];
 
     const [rating, setRating] = useState<number>(initialRating);
@@ -83,8 +81,8 @@ export default function ReflectionPrompt({
                 <div className="relative p-6 pb-4 border-b border-white/5">
                     <div className="text-center relative z-10">
                         <div className="text-5xl mb-4 drop-shadow-lg">🌙</div>
-                        <h2 className="text-2xl font-bold text-white mb-1">{t.reflection_title}</h2>
-                        <p className="text-white/60 text-sm">{t.reflection_question}</p>
+                        <h2 className="text-2xl font-bold text-white mb-1">{t.niat_reflection_title}</h2>
+                        <p className="text-white/60 text-sm">{t.niat_reflection_question}</p>
                     </div>
 
                     {/* Close Button */}
@@ -105,13 +103,13 @@ export default function ReflectionPrompt({
                     {/* Today's Intention */}
                     <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-5 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-1 h-full bg-[rgb(var(--color-primary))]" />
-                        <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-2">{t.todays_niat}</p>
+                        <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-2">{t.niat_todays_niat}</p>
                         <p className="text-white text-lg font-medium italic leading-relaxed">"{intentionText}"</p>
                     </div>
 
                     {/* Rating */}
                     <div>
-                        <p className="text-sm font-medium text-white/80 mb-4 text-center">{t.rate_satisfaction}</p>
+                        <p className="text-sm font-medium text-white/80 mb-4 text-center">{t.niat_rate_satisfaction}</p>
                         <div className="flex justify-between gap-1 px-2">
                             {RATING_LABELS.map((item, index) => {
                                 const ratingValue = index + 1;
@@ -139,12 +137,12 @@ export default function ReflectionPrompt({
                     {/* Optional Notes */}
                     <div>
                         <label className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2 block">
-                            {t.notes_label}
+                            {t.niat_notes_label}
                         </label>
                         <textarea
                             value={reflectionText}
                             onChange={(e) => setReflectionText(e.target.value)}
-                            placeholder={t.notes_placeholder}
+                            placeholder={t.niat_notes_placeholder}
                             maxLength={1000}
                             rows={3}
                             className="w-full bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[rgb(var(--color-primary))]/50 focus:ring-1 focus:ring-[rgb(var(--color-primary))]/30 resize-none transition-all text-sm"
@@ -161,7 +159,7 @@ export default function ReflectionPrompt({
                                 onClick={onSkip}
                                 className="flex-1 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 hover:text-white font-medium transition-all"
                             >
-                                {t.skip_btn}
+                                {t.niat_skip_btn}
                             </button>
                         )}
                         <button
@@ -169,7 +167,7 @@ export default function ReflectionPrompt({
                             disabled={rating === 0 || isSubmitting}
                             className="flex-[1.5] py-3.5 rounded-xl bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] hover:shadow-[0_0_20px_rgba(var(--color-primary),0.3)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold shadow-lg transition-all transform active:scale-[0.98]"
                         >
-                            {isSubmitting ? t.saving_reflection : t.complete_journal_btn}
+                            {isSubmitting ? t.niat_saving_reflection : t.niat_complete_journal_btn}
                         </button>
                     </div>
                 </div>
