@@ -1,20 +1,26 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { POST } from './route';
 import { NextRequest } from 'next/server';
 
-// Mock the dependencies
-// The db mock needs to return objects that allow chaining as used in the route
+// Mock dependencies BEFORE importing the route
+const mockChain = {
+    from: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    limit: vi.fn(),
+    orderBy: vi.fn(),
+    values: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
+    returning: vi.fn(),
+};
+
+// Make chain thenable for await db.update()...
+(mockChain as any).then = (resolve: any) => resolve([]);
+
 vi.mock('@/db', () => ({
   db: {
-    select: vi.fn(),
-    from: vi.fn(),
-    where: vi.fn(),
-    limit: vi.fn(),
-    insert: vi.fn(),
-    values: vi.fn(),
-    returning: vi.fn(),
-    update: vi.fn(),
-    set: vi.fn(),
+    select: vi.fn(() => mockChain),
+    insert: vi.fn(() => mockChain),
+    update: vi.fn(() => mockChain),
+    from: vi.fn(() => mockChain),
   },
 }));
 
@@ -24,29 +30,78 @@ vi.mock('drizzle-orm', () => ({
   sql: vi.fn(),
 }));
 
-// We rely on the global mock for next/server from setup.ts
-// But if we need to inspect the response, we need to know its shape.
-// Based on src/__tests__/setup.ts, NextResponse.json returns { body, status }
+// Override the global schema mock from setup.ts to include needed tables
+vi.mock('@/db/schema', () => ({
+    pushSubscriptions: {},
+    users: {},
+    intentions: {},
+}));
+
+// Import AFTER mocks
+import { POST } from './route';
 
 describe('POST /api/intentions/daily', () => {
   const originalEnv = process.env.NODE_ENV;
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
+    mockChain.from.mockClear();
+    mockChain.where.mockClear();
+    mockChain.limit.mockClear();
+    mockChain.orderBy.mockClear();
+    mockChain.values.mockClear();
+    mockChain.set.mockClear();
+    mockChain.returning.mockClear();
+
+    // Default chain behavior
+    mockChain.from.mockReturnThis();
+    mockChain.where.mockReturnThis();
+    mockChain.values.mockReturnThis();
+    mockChain.set.mockReturnThis();
+  });
+
+  afterEach(() => {
     process.env.NODE_ENV = originalEnv;
   });
 
-  it('should NOT expose error details in development environment', async () => {
-    // Setup
-    process.env.NODE_ENV = 'development';
-    const { db } = await import('@/db');
+  it('should correctly calculate streak with optimized Set logic', async () => {
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    const dayBeforeYesterday = new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0];
+    const userId = 'user-1';
 
-    // Mock db failure
-    (db.select as any).mockImplementation(() => {
-        throw new Error('Database connection failed: confidential info');
-    });
+    // Mock sequence of DB calls
 
-    // using the mocked NextRequest from setup.ts
+    // 1. Subscription check (limit) -> [] (No subscription)
+    mockChain.limit.mockResolvedValueOnce([]);
+
+    // 2. User check (limit) -> [{ id: userId }] (Existing anonymous user)
+    mockChain.limit.mockResolvedValueOnce([{ id: userId }]);
+
+    // 3. Intention check (limit) -> [] (No intention for today yet)
+    mockChain.limit.mockResolvedValueOnce([]);
+
+    // 4. Insert intention (returning)
+    mockChain.returning.mockResolvedValueOnce([{
+        id: 'int-1',
+        niatDate: today,
+        niatText: 'Test intention'
+    }]);
+
+    // 5. Streak calculation: Fetch intentions (orderBy)
+    // Return 3 consecutive days including today
+    mockChain.orderBy.mockResolvedValueOnce([
+        { niatDate: today },
+        { niatDate: yesterday },
+        { niatDate: dayBeforeYesterday }
+    ]);
+
+    // 6. Get user for longest streak check (limit)
+    mockChain.limit.mockResolvedValueOnce([{
+        id: userId,
+        niatStreakLongest: 5
+    }]);
+
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
       body: JSON.stringify({
@@ -55,29 +110,38 @@ describe('POST /api/intentions/daily', () => {
       }),
     });
 
-    // Execute
     const response = await POST(req);
-    // The mocked NextResponse.json returns { body, status }
+    const data = (response as any).body;
+
+    expect(data.success).toBe(true);
+    expect(data.data.current_streak).toBe(3);
+  });
+
+  it('should NOT expose error details in development environment', async () => {
+    process.env.NODE_ENV = 'development';
+    mockChain.limit.mockRejectedValueOnce(new Error('Database connection failed: confidential info'));
+
+    const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_token: 'test-token',
+        niat_text: 'Test intention',
+      }),
+    });
+
+    const response = await POST(req);
     const data = (response as any).body;
     const status = (response as any).status;
 
-    // Verify
     expect(status).toBe(500);
     expect(data.success).toBe(false);
     expect(data.error).toBe('Internal server error');
-    // details should NOT be present even in dev
     expect(data.details).toBeUndefined();
   });
 
   it('should NOT expose error details in production environment', async () => {
-    // Setup
     process.env.NODE_ENV = 'production';
-    const { db } = await import('@/db');
-
-    // Mock db failure
-    (db.select as any).mockImplementation(() => {
-        throw new Error('Database connection failed: confidential info');
-    });
+    mockChain.limit.mockRejectedValueOnce(new Error('Database connection failed: confidential info'));
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
@@ -87,17 +151,13 @@ describe('POST /api/intentions/daily', () => {
       }),
     });
 
-    // Execute
     const response = await POST(req);
-    // The mocked NextResponse.json returns { body, status }
     const data = (response as any).body;
     const status = (response as any).status;
 
-    // Verify
     expect(status).toBe(500);
     expect(data.success).toBe(false);
     expect(data.error).toBe('Internal server error');
-    // In prod, details should be undefined.
     expect(data.details).toBeUndefined();
   });
 });
