@@ -19,7 +19,9 @@ export function middleware(request: NextRequest) {
     'Cache-Control': 'public, max-age=31536000, immutable',
 
     // Security headers
-    'X-DNS-Prefetch-Control': 'on',
+    'Content-Security-Policy': csp,
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'Permissions-Policy': 'geolocation=(self), magnetometer=(self), gyroscope=(self), accelerometer=(self)',
     'X-Frame-Options': 'SAMEORIGIN',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'origin-when-cross-origin',
