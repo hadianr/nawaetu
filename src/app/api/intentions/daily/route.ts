@@ -211,14 +211,14 @@ export async function POST(req: NextRequest) {
             },
         });
     } catch (error: any) {
-        // Return detailed error message for debugging
-        const isDev = process.env.NODE_ENV === 'development';
+        // Log error for debugging
+        console.error("Error in POST /api/intentions/daily:", error);
+
+        // Return generic error message to prevent information leakage
         return NextResponse.json(
             {
                 success: false,
                 error: "Internal server error",
-                details: isDev ? error.message : undefined,
-                stack: isDev ? error.stack : undefined
             },
             { status: 500 }
         );
