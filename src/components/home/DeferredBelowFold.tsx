@@ -65,19 +65,18 @@ export default function DeferredBelowFold() {
         </div>
       </section>
 
-      {/* 4. Daily Missions */}
+      {/* 4. Prayer Times List */}
+      <section className="w-full">
+        {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
+      </section>
+
+      {/* 5. Daily Missions */}
       <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
         {ready ? (
           <HomeMissions />
         ) : (
           <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />
         )}
-      </section>
-
-
-      {/* 5. Prayer Times List */}
-      <section className="w-full">
-        {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
       </section>
 
       {/* AI Mentor Access Point - Lazy loaded */}
