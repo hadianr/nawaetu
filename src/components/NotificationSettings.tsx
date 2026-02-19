@@ -224,33 +224,33 @@ export default function NotificationSettings() {
 
     // RENDER: SETTINGS STATE (GRANTED)
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Main Toggle Card - Glassmorphism Style */}
-            <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-2xl">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+            <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 shadow-2xl min-h-[68px]">
+                <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 flex-1">
                         {isEnabled ? (
-                            <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-xl bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 flex items-center justify-center shrink-0">
                                 {isLoading ? (
-                                    <Loader2 className="w-5 h-5 text-[rgb(var(--color-primary))] animate-spin" />
+                                    <Loader2 className="w-[18px] h-[18px] text-[rgb(var(--color-primary))] animate-spin" />
                                 ) : (
-                                    <Bell className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                                    <Bell className="w-[18px] h-[18px] text-[rgb(var(--color-primary))]" />
                                 )}
                             </div>
                         ) : (
-                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                                 {isLoading ? (
-                                    <Loader2 className="w-5 h-5 text-white/60 animate-spin" />
+                                    <Loader2 className="w-[18px] h-[18px] text-white/60 animate-spin" />
                                 ) : (
-                                    <BellOff className="w-5 h-5 text-white/40" />
+                                    <BellOff className="w-[18px] h-[18px] text-white/40" />
                                 )}
                             </div>
                         )}
-                        <div>
-                            <h3 className="font-semibold text-white">
+                        <div className="min-w-0">
+                            <h3 className="font-semibold text-white text-sm sm:text-base">
                                 {t.prayerNotifications}
                             </h3>
-                            <p className="text-sm text-white/50">
+                            <p className="text-xs sm:text-sm text-white/50">
                                 {isLoading
                                     ? (locale === 'id' ? 'Mengaktifkan...' : 'Enabling...')
                                     : isEnabled
@@ -263,28 +263,29 @@ export default function NotificationSettings() {
                         checked={isEnabled}
                         onCheckedChange={toggleNotifications}
                         disabled={isLoading}
+                        className="shrink-0"
                     />
                 </div>
             </div>
 
             {/* Prayer Selection Card - Glassmorphism Style */}
             {isEnabled && (
-                <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-2xl space-y-4">
-                    <h4 className="font-semibold text-white text-sm">
+                <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 shadow-2xl space-y-2">
+                    <h4 className="font-semibold text-white text-xs sm:text-sm">
                         {t.selectPrayerTimes}
                     </h4>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                         {isInitializing ? (
                             // Skeleton loading state
                             <>
                                 {[1, 2, 3, 4, 5].map((i) => (
                                     <div
                                         key={i}
-                                        className="flex items-center justify-between py-3 px-3 bg-white/5 rounded-xl border border-white/5 animate-pulse"
+                                        className="flex items-center justify-between py-2.5 px-3.5 bg-white/5 rounded-xl border border-white/5 animate-pulse min-h-[52px]"
                                     >
                                         <div className="h-4 bg-white/10 rounded w-20"></div>
-                                        <div className="h-6 bg-white/10 rounded-full w-11"></div>
+                                        <div className="h-8 bg-white/10 rounded-full w-14"></div>
                                     </div>
                                 ))}
                             </>
@@ -296,9 +297,9 @@ export default function NotificationSettings() {
                                     return (
                                         <div
                                             key={prayer}
-                                            className="flex items-center justify-between py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200"
+                                            className="flex items-center justify-between py-2.5 px-3.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200 min-h-[52px]"
                                         >
-                                            <span className="text-white/80 capitalize font-medium">
+                                            <span className="text-white/80 capitalize font-medium text-sm sm:text-base">
                                                 {label}
                                             </span>
                                             <Switch

@@ -183,14 +183,37 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             if (!cachedLocationName && !isDefault) {
                 try {
+                    // Try Nominatim first (more reliable and accurate)
                     const locResponse = await fetchWithTimeout(
-                        `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
-                        {},
-                        { timeoutMs: 8000 }
+                        `${API_CONFIG.LOCATION.NOMINATIM}?format=json&lat=${lat}&lon=${lng}&accept-language=id`,
+                        {
+                            headers: {
+                                'User-Agent': 'Nawaetu/1.7.3 (Islamic Prayer Times App)'
+                            }
+                        },
+                        { timeoutMs: 10000 }
                     );
                     const locData = await locResponse.json();
-                    locationName = locData.locality || locData.city || locData.principalSubdivision || "Lokasi Terdeteksi";
+                    
+                    // Parse address with priority: subdistrict > village > city > state
+                    const addr = locData.address || {};
+                    locationName = addr.subdistrict || addr.village || addr.municipality || 
+                                   addr.city || addr.town || addr.state || 
+                                   locData.display_name?.split(',')[0] || "Lokasi Terdeteksi";
                 } catch (e) {
+                    // Fallback to BigDataCloud if Nominatim fails
+                    try {
+                        const fallbackResponse = await fetchWithTimeout(
+                            `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
+                            {},
+                            { timeoutMs: 8000 }
+                        );
+                        const fallbackData = await fallbackResponse.json();
+                        locationName = fallbackData.locality || fallbackData.city || fallbackData.principalSubdivision || "Lokasi Terdeteksi";
+                    } catch (fallbackErr) {
+                        // Both APIs failed, use coordinates-based name
+                        locationName = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    }
                 }
             }
 
@@ -251,19 +274,15 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             // Also update user_location cache with name IF NOT DEFAULT
             if (!isDefault) {
-                storage.set(STORAGE_KEYS.USER_LOCATION as any, {
+                const userLocationData = {
                     lat,
                     lng,
                     name: locationName,
                     timestamp: Date.now()
-                });
+                };
+                storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
             }
 
-            // Pass isDefault to processData or handle it here. 
-            // processData handles raw API response, we need to inject the flag.
-
-            // Wait, processData uses `setData`. We should update processData signature OR just update state here.
-            // processData is reused. Let's update processData signature.
             processData(result, locationName, false, isDefault);
 
             setError(null);
@@ -291,25 +310,41 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             return;
         }
 
+        setLoading(true);
+        setError(null);
+
+        // FORCE REFRESH: Clear ALL location caches to prevent stale data
+        const existingUserLoc = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
+        const existingPrayerData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+        
+        if (existingUserLoc) {
+            storage.remove(STORAGE_KEYS.USER_LOCATION as any);
+        }
+        
+        if (existingPrayerData?.isDefault) {
+            storage.remove(STORAGE_KEYS.PRAYER_DATA as any);
+        }
+
+        // Request fresh geolocation (no cache check when explicitly refreshing)
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                fetchPrayerTimes(latitude, longitude);
+                
+                // Force fetch with fresh coordinates (not from cache)
+                fetchPrayerTimes(latitude, longitude, undefined, false);
             },
             (err) => {
+                // Check if we have any cached location to fall back to
                 const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
                 if (isFreshLocation(cachedLocation)) {
-                    fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+                    fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name, false);
                     return;
                 }
 
-                if (cachedLocation) {
-                    storage.remove(STORAGE_KEYS.USER_LOCATION as any);
-                }
-                setError("Please enable location services to see prayer times.");
-                setLoading(false);
+                // LAST RESORT: Fallback to Jakarta (Monas)
+                fetchPrayerTimes(-6.175392, 106.827153, "Jakarta (Default)", true);
             },
-            { timeout: 10000, maximumAge: 60000 }
+            { timeout: 15000, maximumAge: 0, enableHighAccuracy: true }
         );
     }, [fetchPrayerTimes]);
 
@@ -333,8 +368,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 storage.remove(STORAGE_KEYS.USER_LOCATION as any);
             }
 
-            // FIX: Do not auto-request location on load (PageSpeed Best Practice)
-            // Default to Jakarta (Monas)
+            // Default to Jakarta (Monas) on initial load
             fetchPrayerTimes(-6.175392, 106.827153, "Jakarta (Default)", true);
         }
 

@@ -79,6 +79,26 @@ export const RAMADHAN_ID = {
     amalanTapHint: "Tap untuk lihat niat & dalil",
     amalanTipsLabel: "💡 Tips Amalan",
 
+    // Guide Card
+    guideTitle: "Panduan Puasa Ramadhan",
+    guideSubtitle: "Hukum fiqih dan pertanyaan umum seputar puasa",
+    guideButtonFiqh: "Hukum Puasa",
+    guideButtonFiqhDesc: "Wajib, Sunnah, Mubah, Makruh, Haram",
+    guideButtonFAQ: "FAQ Puasa",
+    guideButtonFAQDesc: "Pertanyaan yang sering ditanyakan",
+
+    // Fiqh Modal
+    fiqhModalTitle: "Hukum Puasa",
+    fiqhModalSubtitle: "Lima kategori hukum dalam puasa Ramadhan",
+    fiqhModalEmpty: "Tidak ada data untuk kategori ini",
+
+    // FAQ Modal
+    faqModalTitle: "FAQ Puasa",
+    faqModalSubtitle: "Pertanyaan yang sering ditanyakan seputar puasa",
+    faqDalilLabel: "Dalil",
+    faqDisclaimerTitle: "⚠️ Catatan Penting",
+    faqDisclaimer: "Untuk masalah fiqih yang kompleks atau kondisi khusus, silakan konsultasi dengan ustadz atau ulama terpercaya di daerah Anda.",
+
     // Calendar Modal
     calendarViewMonth: "Lihat Jadwal Sebulan",
     calendarTitle: "Jadwal Imsakiyah Ramadhan 1447H",

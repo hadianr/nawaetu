@@ -79,6 +79,26 @@ export const RAMADHAN_EN = {
     amalanTapHint: "Tap to view intention & evidence",
     amalanTipsLabel: "💡 Deed Tips",
 
+    // Guide Card
+    guideTitle: "Ramadhan Fasting Guide",
+    guideSubtitle: "Islamic jurisprudence and common questions about fasting",
+    guideButtonFiqh: "Fasting Rules",
+    guideButtonFiqhDesc: "Obligatory, Recommended, Permissible, Disliked, Forbidden",
+    guideButtonFAQ: "Fasting FAQ",
+    guideButtonFAQDesc: "Frequently asked questions",
+
+    // Fiqh Modal
+    fiqhModalTitle: "Fasting Rules",
+    fiqhModalSubtitle: "Five categories of Islamic jurisprudence in Ramadhan fasting",
+    fiqhModalEmpty: "No data for this category",
+
+    // FAQ Modal
+    faqModalTitle: "Fasting FAQ",
+    faqModalSubtitle: "Frequently asked questions about fasting",
+    faqDalilLabel: "Evidence",
+    faqDisclaimerTitle: "⚠️ Important Note",
+    faqDisclaimer: "For complex fiqh issues or special conditions, please consult with a trusted scholar or imam in your area.",
+
     // Calendar Modal
     calendarViewMonth: "View Monthly Schedule",
     calendarTitle: "Ramadhan Imsakiyah Schedule 1447H",

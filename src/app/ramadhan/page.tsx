@@ -24,6 +24,10 @@ const LailatulQadrCard = dynamic(() => import("@/components/ramadhan/LailatulQad
     ssr: false,
     loading: () => <div className="h-40 rounded-2xl bg-white/5 animate-pulse" />,
 });
+const RamadhanGuideCard = dynamic(() => import("@/components/ramadhan/RamadhanGuideCard"), {
+    ssr: false,
+    loading: () => <div className="h-32 rounded-2xl bg-white/5 animate-pulse" />,
+});
 
 export default function RamadhanPage() {
     return (
@@ -62,6 +66,13 @@ export default function RamadhanPage() {
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "400ms" }}>
                     <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
                         <LailatulQadrCard />
+                    </Suspense>
+                </section>
+
+                {/* Panduan Puasa (Fiqh & FAQ) */}
+                <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "500ms" }}>
+                    <Suspense fallback={<div className="h-32 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                        <RamadhanGuideCard />
                     </Suspense>
                 </section>
 
