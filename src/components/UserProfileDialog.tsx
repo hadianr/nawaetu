@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-    Settings, Edit2, Camera, LogOut, Crown, Flame, Share2, ChevronRight, Sparkles, AlertCircle, Calendar, Check, Lock, Heart, Trophy, Zap, Mountain, BookOpen, Sun, Sprout, Target, Shield, X
+    Settings, Edit2, LogOut, Crown, Flame, Share2, ChevronRight, Sparkles, Calendar, Check, Sprout, Target, Shield, X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -15,11 +15,9 @@ import { useLocale } from "@/context/LocaleContext";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDataSync } from "@/hooks/useDataSync";
 import { useProfile } from "@/hooks/useProfile";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { Loader2, RefreshCw } from "lucide-react";
 
 // --- CONSTANTS & DATA ---
 
@@ -27,32 +25,15 @@ const ARCHETYPES = [
     {
         id: "beginner",
         icon: Sprout,
-        color: "text-emerald-400",
-        bg: "bg-emerald-500/10",
-        border: "border-emerald-500/20",
     },
     {
         id: "striver",
         icon: Target,
-        color: "text-blue-400",
-        bg: "bg-blue-500/10",
-        border: "border-blue-500/20",
     },
     {
         id: "dedicated",
         icon: Shield,
-        color: "text-amber-400",
-        bg: "bg-amber-500/10",
-        border: "border-amber-500/20",
     }
-];
-
-const AVAILABLE_TITLES = [
-    { id: "hamba", label: "Hamba Allah", icon: Heart, minLevel: 1, color: "text-slate-400" },
-    { id: "pencari", label: "Pencari Ilmu", icon: BookOpen, minLevel: 5, color: "text-blue-400" },
-    { id: "pejuang", label: "Pejuang Subuh", icon: Sun, minLevel: 10, color: "text-orange-400" },
-    { id: "ahli", label: "Ahli Dzikir", icon: Zap, minLevel: 20, color: "text-purple-400" },
-    { id: "muhsinin", label: "Sahabat Nawaetu", icon: Crown, minLevel: 0, color: "text-amber-400", locked: true } // Special
 ];
 
 const AVATAR_LIST = [
@@ -73,7 +54,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const router = useRouter();
     const { t } = useLocale();
-    const { syncData, isSyncing } = useDataSync();
     const { updateProfile, isUpdating } = useProfile();
 
     // Derived State
@@ -188,8 +168,28 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         }
     };
 
-    const handleManualSync = async () => {
-        await syncData();
+    const handleShareApp = async () => {
+        const shareData = {
+            title: 'Nawaetu - Teman Ibadah Digital',
+            text: 'Yuk, luruskan niat ibadah bersama Nawaetu! Al-Quran, Jadwal Sholat, Tasbih Digital, Jurnal Niat, dan AI Mentor Islami. ✨',
+            url: 'https://nawaetu.com'
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                toast.success(t.locale === 'id' ? 'Terima kasih telah membagikan Nawaetu!' : 'Thanks for sharing Nawaetu!');
+            } else {
+                // Fallback: Copy link to clipboard
+                await navigator.clipboard.writeText(shareData.url);
+                toast.success(t.locale === 'id' ? 'Link berhasil disalin!' : 'Link copied to clipboard!');
+            }
+        } catch (error) {
+            // User cancelled or error occurred
+            if (error instanceof Error && error.name !== 'AbortError') {
+                toast.error(t.locale === 'id' ? 'Gagal membagikan' : 'Failed to share');
+            }
+        }
     };
 
     return (
@@ -204,12 +204,10 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                 <div className="relative">
                     <div className={cn(
                         "h-32 w-full absolute top-0 left-0",
-                        isMuhsinin
-                            ? "bg-gradient-to-r from-emerald-600 to-teal-800"
-                            : "bg-gradient-to-r from-slate-700 to-slate-900"
+                        "bg-gradient-to-r from-[rgb(var(--color-primary))]/80 to-[rgb(var(--color-secondary))]/80"
                     )}>
                         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-                        {isMuhsinin && <div className="absolute inset-0 bg-emerald-500/20 mix-blend-overlay"></div>}
+                        <div className="absolute inset-0 bg-[rgb(var(--color-primary))]/10 mix-blend-overlay"></div>
                     </div>
 
                     {/* Top Actions */}
@@ -236,7 +234,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                         <div className="relative">
                             <div className={cn(
                                 "w-24 h-24 rounded-full p-1 bg-[#0F172A]",
-                                isMuhsinin ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]" : "ring-2 ring-slate-700 ring-offset-2 ring-offset-[#0F172A]"
+                                isMuhsinin ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]" : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[#0F172A]"
                             )}>
                                 <Avatar className="w-full h-full rounded-full border border-white/10">
                                     <AvatarImage src={userImage} className="object-cover" />
@@ -266,7 +264,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             type="text"
                                             value={editName}
                                             onChange={(e) => setEditName(e.target.value)}
-                                            className="h-10 bg-white/5 border-white/10 focus:border-blue-500/50"
+                                            className="h-10 bg-white/5 border-white/10 focus:border-[rgb(var(--color-primary))]/50"
                                         />
                                     </div>
 
@@ -277,7 +275,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                 onClick={() => setEditGender('male')}
                                                 className={cn(
                                                     "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
-                                                    editGender === 'male' ? "bg-blue-500/20 border-blue-500 text-blue-100" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                    editGender === 'male' ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))] text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                                                 )}
                                             >
                                                 <span>👨</span> {(t as any).onboardingMaleLabel}
@@ -286,7 +284,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                 onClick={() => setEditGender('female')}
                                                 className={cn(
                                                     "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
-                                                    editGender === 'female' ? "bg-pink-500/20 border-pink-500 text-pink-100" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                    editGender === 'female' ? "bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                                                 )}
                                             >
                                                 <span>👩</span> {(t as any).onboardingFemaleLabel}
@@ -298,9 +296,9 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileArchetypeLabel}</Label>
                                         <div className="grid grid-cols-1 gap-2">
                                             {[
-                                                { id: 'beginner', label: (t as any).onboardingArchetypeBeginnerLabel, icon: '🌱', color: 'text-emerald-400' },
-                                                { id: 'striver', label: (t as any).onboardingArchetypeStriverLabel, icon: '⚡', color: 'text-blue-400' },
-                                                { id: 'dedicated', label: (t as any).onboardingArchetypeDedicatedLabel, icon: '🔥', color: 'text-amber-400' },
+                                                { id: 'beginner', label: (t as any).onboardingArchetypeBeginnerLabel, icon: '🌱', color: 'text-[rgb(var(--color-primary-light))]' },
+                                                { id: 'striver', label: (t as any).onboardingArchetypeStriverLabel, icon: '⚡', color: 'text-[rgb(var(--color-primary-light))]' },
+                                                { id: 'dedicated', label: (t as any).onboardingArchetypeDedicatedLabel, icon: '🔥', color: 'text-[rgb(var(--color-primary-light))]' },
                                             ].map((type) => (
                                                 <button
                                                     key={type.id}
@@ -322,7 +320,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         <Button
                                             onClick={handleSaveProfile}
                                             disabled={isUpdating}
-                                            className="flex-1 h-9 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"
+                                            className="flex-1 h-9 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-white text-xs font-bold"
                                         >
                                             {isUpdating ? (t as any).locationUpdating : (t as any).bookmarksSave}
                                         </Button>
@@ -343,7 +341,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                         <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-1.5 text-slate-400">
                                                 {isMuhsinin ? (
-                                                    <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                                                    <div className="flex items-center gap-1 text-[rgb(var(--color-primary-light))] text-xs font-medium px-2 py-0.5 bg-[rgb(var(--color-primary))]/10 rounded-full border border-[rgb(var(--color-primary))]/20">
                                                         <Sparkles className="w-3 h-3" />
                                                         {userRole}
                                                     </div>
@@ -351,7 +349,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                     <span className="text-xs text-slate-400">{userRole}</span>
                                                 )}
                                             </div>
-                                            <div className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1", currentArchetype.bg, currentArchetype.border, currentArchetype.color)}>
+                                            <div className="text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-[rgb(var(--color-primary-light))]">
                                                 <currentArchetype.icon className="w-2.5 h-2.5" />
                                                 {currentArchetypeLabel}
                                             </div>
@@ -372,15 +370,15 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* 3. Auth Call to Action (If Guest) */}
                     {!isAuthenticated && (
-                        <div className="mb-6 bg-slate-800/50 border border-white/5 rounded-xl p-4 text-center">
-                            <div className="w-10 h-10 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <Settings className="w-5 h-5 text-slate-300" />
+                        <div className="mb-6 bg-[rgb(var(--color-secondary))]/30 border border-white/5 rounded-xl p-4 text-center">
+                            <div className="w-10 h-10 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <Settings className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
                             </div>
                             <h3 className="text-sm font-bold text-white mb-1">{(t as any).profileAuthTitle}</h3>
                             <p className="text-xs text-slate-400 mb-4 leading-relaxed">{(t as any).profileAuthDesc}</p>
                             <Button
                                 onClick={handleLogin}
-                                className="w-full bg-white text-slate-900 hover:bg-slate-200 font-bold h-10 flex items-center gap-2"
+                                className="w-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary))]/90 font-bold h-10 flex items-center gap-2"
                             >
                                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -397,15 +395,15 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     {isAuthenticated && (
                         <div className="grid grid-cols-2 gap-3 mb-6">
                             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                                <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center mb-2">
-                                    <Flame className="w-4 h-4 text-orange-400" />
+                                <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center mb-2">
+                                    <Flame className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                 </div>
                                 <span className="text-2xl font-black text-white">0</span>
                                 <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">{(t as any).profileStreakLabel}</span>
                             </div>
                             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
-                                    <Calendar className="w-4 h-4 text-blue-400" />
+                                <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-secondary))]/30 flex items-center justify-center mb-2">
+                                    <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                 </div>
                                 <span className="text-2xl font-black text-white">0</span>
                                 <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">{(t as any).profileTotalDays}</span>
@@ -415,42 +413,10 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* 5. Menu Items */}
                     <div className="space-y-1">
-                        <button onClick={() => { setIsOpen(false); router.push('/settings'); }} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                        <button onClick={handleShareApp} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                                    <Settings className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
-                                </div>
-                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">{(t as any).profileAppSettings}</span>
-                            </div>
-                            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
-                        </button>
-
-                        {isAuthenticated && (
-                            <button
-                                onClick={handleManualSync}
-                                disabled={isSyncing}
-                                className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                                        {isSyncing ? (
-                                            <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
-                                        ) : (
-                                            <RefreshCw className="w-4 h-4 text-slate-400 group-hover:text-blue-400 transition-colors" />
-                                        )}
-                                    </div>
-                                    <span className="text-sm font-medium text-slate-300 group-hover:text-white">
-                                        {isSyncing ? (t as any).profileSyncing : (t as any).profileSyncData}
-                                    </span>
-                                </div>
-                                {!isSyncing && <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />}
-                            </button>
-                        )}
-
-                        <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                                    <Share2 className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                                <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
+                                    <Share2 className="w-4 h-4 text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
                                 </div>
                                 <span className="text-sm font-medium text-slate-300 group-hover:text-white">{(t as any).profileShareApp}</span>
                             </div>
