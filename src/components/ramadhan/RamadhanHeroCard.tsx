@@ -1,0 +1,200 @@
+"use client";
+
+import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan-data";
+import { NIAT_PUASA_RAMADHAN, DALIL_PUASA, DALIL_10_DAYS_MERCY, DALIL_10_DAYS_FORGIVENESS, DALIL_10_DAYS_FREEDOM } from "@/data/ramadhan-data";
+import NiatCard from "./NiatCard";
+import DalilBadge from "./DalilBadge";
+import { useLocale } from "@/context/LocaleContext";
+
+export default function RamadhanHeroCard() {
+    const { data } = usePrayerTimes();
+    const { t, locale } = useLocale();
+
+    const hijriDay = data?.hijriDay ?? 1;
+    const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10);
+    const ramadhanDay = getRamadhanDay(hijriDay);
+    const progress = getRamadhanProgress(ramadhanDay);
+
+    const today = new Date();
+    const dayName = today.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { weekday: "long" });
+    const dateStr = today.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" });
+
+    // Progressive opacity: semakin mendekati hari ke-30, semakin solid (0.5 to 1.0)
+    const progressiveOpacity = 0.5 + (ramadhanDay / 30) * 0.5;
+    const borderOpacity = 0.4 + (ramadhanDay / 30) * 0.3; // 0.4 to 0.7
+    
+    // Determine which period and its dalil
+    const periodData = ramadhanDay <= 10
+        ? { text: t.ramadhanPeriod1, dalil: DALIL_10_DAYS_MERCY }
+        : ramadhanDay <= 20
+            ? { text: t.ramadhanPeriod2, dalil: DALIL_10_DAYS_FORGIVENESS }
+            : { text: t.ramadhanPeriod3, dalil: DALIL_10_DAYS_FREEDOM };
+
+    return (
+        <div 
+            className="relative w-full rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl"
+            style={{
+                contain: "layout style paint",
+                border: `2px solid rgba(var(--color-primary), ${borderOpacity})`,
+                background: `
+                    linear-gradient(135deg, 
+                        rgba(var(--color-primary), ${0.25 * progressiveOpacity}) 0%,
+                        rgba(var(--color-primary), ${0.18 * progressiveOpacity}) 20%,
+                        rgba(var(--color-primary-dark), ${0.22 * progressiveOpacity}) 40%,
+                        rgba(0, 0, 0, ${0.4 + progressiveOpacity * 0.1}) 60%,
+                        rgba(var(--color-primary-dark), ${0.18 * progressiveOpacity}) 80%,
+                        rgba(var(--color-primary), ${0.22 * progressiveOpacity}) 100%
+                    ),
+                    radial-gradient(circle at 20% 30%, rgba(var(--color-primary-light), ${0.18 * progressiveOpacity}) 0%, transparent 60%),
+                    radial-gradient(circle at 80% 70%, rgba(var(--color-primary), ${0.15 * progressiveOpacity}) 0%, transparent 60%)
+                `,
+                boxShadow: `
+                    0 0 40px rgba(var(--color-primary), ${0.3 * progressiveOpacity}),
+                    0 10px 50px rgba(var(--color-primary), ${0.25 * progressiveOpacity}),
+                    0 0 0 1px rgba(var(--color-primary-light), ${0.3 * progressiveOpacity}) inset,
+                    0 25px 80px rgba(var(--color-primary), ${0.15 * progressiveOpacity})
+                `
+            }}
+        >
+            {/* Strong glow overlay for prominence - optimized */}
+            <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    opacity: 0.3 * progressiveOpacity,
+                    willChange: "opacity",
+                    background: `
+                        radial-gradient(ellipse at top left, rgba(var(--color-primary-light), 0.4) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(var(--color-primary), 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at center, rgba(var(--color-primary), 0.15) 0%, transparent 70%)
+                    `
+                }} 
+            />
+            
+            {/* Enhanced animated border glow - GPU accelerated */}
+            <div 
+                className="absolute inset-0 rounded-2xl pointer-events-none animate-gradient-shift"
+                style={{
+                    willChange: "background-position",
+                    transform: "translate3d(0, 0, 0)",
+                    background: "linear-gradient(135deg, rgba(var(--color-primary-light), 0.3), rgba(var(--color-primary), 0.2), rgba(var(--color-primary-light), 0.3))",
+                    backgroundSize: "300% 300%",
+                    mixBlendMode: "overlay"
+                }} 
+            />
+            
+            {/* Decorative moon glow — optimized with transform3d */}
+            <div 
+                className="absolute -top-12 -right-12 h-48 w-48 rounded-full blur-3xl pointer-events-none animate-pulse-glow"
+                style={{ 
+                    willChange: "transform, opacity",
+                    transform: "translate3d(0, 0, 0)",
+                    backgroundColor: `rgba(var(--color-primary-light), ${0.25 * progressiveOpacity})`
+                }} 
+            />
+            <div 
+                className="absolute -bottom-8 -left-8 h-40 w-40 rounded-full blur-3xl pointer-events-none animate-pulse-glow-delayed"
+                style={{ 
+                    willChange: "transform, opacity",
+                    transform: "translate3d(0, 0, 0)",
+                    backgroundColor: `rgba(var(--color-primary), ${0.22 * progressiveOpacity})`,
+                    animation: "pulse-glow 3s ease-in-out infinite 1.5s"
+                }} 
+            />
+            
+            {/* Top border accent - progressive and GPU accelerated */}
+            <div 
+                className="absolute top-0 left-0 right-0 h-0.5 pointer-events-none" 
+                style={{ 
+                    willChange: "opacity",
+                    background: `linear-gradient(90deg, 
+                        transparent 0%, 
+                        rgba(var(--color-primary-light), ${0.7 * progressiveOpacity}) 20%, 
+                        rgba(var(--color-primary), ${0.7 * progressiveOpacity}) 50%, 
+                        rgba(var(--color-primary-light), ${0.7 * progressiveOpacity}) 80%, 
+                        transparent 100%
+                    )`,
+                    boxShadow: `0 0 20px rgba(var(--color-primary), ${0.5 * progressiveOpacity}), 0 0 40px rgba(var(--color-primary-light), ${0.3 * progressiveOpacity})`
+                }} 
+            />
+            
+            {/* Shimmer effect - desktop only for mobile performance */}
+            <div 
+                className="absolute inset-0 pointer-events-none hidden md:block animate-shimmer"
+                style={{
+                    willChange: "background-position",
+                    transform: "translate3d(0, 0, 0)",
+                    opacity: 0.2 * progressiveOpacity,
+                    background: "linear-gradient(110deg, transparent 25%, rgba(var(--color-primary-light), 0.5) 50%, transparent 75%)",
+                    backgroundSize: "200% 100%"
+                }} 
+            />
+
+            <div className="relative px-3 pt-3 pb-3 sm:px-5 sm:pt-5 sm:pb-4">
+                {/* Top row */}
+                <div className="flex items-start justify-between mb-2 sm:mb-3">
+                    <div>
+                        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+                            <span className="text-xl sm:text-2xl">🌙</span>
+                            <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider sm:tracking-widest text-white/40">
+                                {t.ramadhanLabel} {hijriYear}H
+                            </span>
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl font-black text-white leading-none">
+                            {t.ramadhanDay}<span style={{ color: "rgb(var(--color-primary-light))" }}>{ramadhanDay}</span>
+                        </h1>
+                        <p 
+                            className="text-xs sm:text-sm mt-0.5 sm:mt-1 font-medium"
+                            style={{ 
+                                color: `rgba(255, 255, 255, ${0.4 + (progressiveOpacity * 0.3)})`,
+                                textShadow: `0 0 ${10 + ramadhanDay}px rgba(var(--color-primary-light), ${0.3 * progressiveOpacity})`,
+                                transition: "color 0.3s ease, text-shadow 0.3s ease"
+                            }}
+                        >
+                            {dayName}, {dateStr}
+                        </p>
+                    </div>
+                    <DalilBadge dalil={DALIL_PUASA} variant="pill" />
+                </div>
+
+                {/* Progress bar */}
+                <div className="mb-3 sm:mb-4">
+                    <div className="flex justify-between text-[10px] sm:text-xs text-white/40 mb-1">
+                        <span>{t.ramadhanDay1}</span>
+                        <span className="font-medium" style={{ color: "rgba(var(--color-primary-light), 0.8)" }}>{progress}% {t.ramadhanCompleted}</span>
+                        <span>{t.ramadhanDay30}</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
+                        <div
+                            className="h-full rounded-full transition-all duration-700"
+                            style={{ width: `${progress}%`, background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary)), rgb(var(--color-primary-light)))` }}
+                        />
+                    </div>
+                    {/* Day markers */}
+                    <div className="flex mt-1.5 gap-0.5">
+                        {Array.from({ length: 30 }, (_, i) => (
+                            <div
+                                key={i}
+                                className="flex-1 h-1 rounded-full transition-all bg-white/10"
+                                style={i < ramadhanDay ? { backgroundColor: "rgba(var(--color-primary-light), 0.6)" } : undefined}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Motivational text */}
+                <div className="rounded-2xl bg-gradient-to-r from-white/10 to-white/5 border border-white/20 px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3 backdrop-blur-md shadow-lg">
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs sm:text-sm text-white leading-relaxed font-semibold drop-shadow-lg">
+                            {periodData.text}
+                        </p>
+                        <DalilBadge dalil={periodData.dalil} variant="pill" />
+                    </div>
+                </div>
+
+                {/* Niat Puasa Button */}
+                <NiatCard niat={NIAT_PUASA_RAMADHAN} variant="pill" />
+            </div>
+        </div>
+    );
+}

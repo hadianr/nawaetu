@@ -36,7 +36,7 @@ describe('POST /api/intentions/daily', () => {
     process.env.NODE_ENV = originalEnv;
   });
 
-  it('should expose error details in development environment', async () => {
+  it('should NOT expose error details in development environment', async () => {
     // Setup
     process.env.NODE_ENV = 'development';
     const { db } = await import('@/db');
@@ -65,8 +65,8 @@ describe('POST /api/intentions/daily', () => {
     expect(status).toBe(500);
     expect(data.success).toBe(false);
     expect(data.error).toBe('Internal server error');
-    // In dev, details should be present
-    expect(data.details).toBe('Database connection failed: confidential info');
+    // details should NOT be present even in dev
+    expect(data.details).toBeUndefined();
   });
 
   it('should NOT expose error details in production environment', async () => {
@@ -98,7 +98,6 @@ describe('POST /api/intentions/daily', () => {
     expect(data.success).toBe(false);
     expect(data.error).toBe('Internal server error');
     // In prod, details should be undefined.
-    // This expectation will fail currently, confirming the vulnerability.
     expect(data.details).toBeUndefined();
   });
 });

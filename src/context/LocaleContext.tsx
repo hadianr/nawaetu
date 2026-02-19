@@ -2,15 +2,22 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { RAMADHAN_TRANSLATIONS } from "@/data/ramadhan-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 const DEFAULT_LOCALE = "id";
 
+// Merge all translation objects
+const MERGED_TRANSLATIONS = {
+  id: { ...SETTINGS_TRANSLATIONS.id, ...RAMADHAN_TRANSLATIONS.id },
+  en: { ...SETTINGS_TRANSLATIONS.en, ...RAMADHAN_TRANSLATIONS.en },
+} as const;
+
 interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;
-  t: typeof SETTINGS_TRANSLATIONS.id;
+  t: typeof MERGED_TRANSLATIONS[keyof typeof MERGED_TRANSLATIONS];
   isLoading: boolean;
 }
 
@@ -21,7 +28,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Get translations for current locale with fallback
-  const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS[DEFAULT_LOCALE];
+  const t = MERGED_TRANSLATIONS[locale as keyof typeof MERGED_TRANSLATIONS] || MERGED_TRANSLATIONS[DEFAULT_LOCALE];
 
   // Initialize from localStorage on client mount
   useEffect(() => {

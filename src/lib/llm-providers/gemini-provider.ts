@@ -1,6 +1,7 @@
 import 'server-only';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
+import { sanitizeUserContext } from './utils';
 
 const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Kamu adalah mentor spiritual yang membantu pengguna memahami dan menjalankan ibadah dengan lebih baik. Jawablah dengan SINGKAT, PADAT, dan INFORMATIF.
 
@@ -86,8 +87,9 @@ export class GeminiProvider implements LLMProvider {
             const chat = this.model.startChat({ history: geminiHistory });
 
             // Send message with context (only on first message)
+            const safeName = sanitizeUserContext(context.name);
             const contextualMessage = history.length === 0
-                ? `${message}\n\n[User: ${context.name}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`
+                ? `${message}\n\n[User: ${safeName}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`
                 : message;
 
             const result = await chat.sendMessage(contextualMessage);

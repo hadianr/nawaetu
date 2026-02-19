@@ -272,6 +272,8 @@ export const SETTINGS_EN = {
     homeTowards: "Towards {prayer}",
     homeAdzanNow: "Adhan {prayer}",
     homeAdzanMessage: "May your prayer be accepted",
+    homeQiblaLabel: "Qibla",
+    homeQiblaSubtitle: "Direction of Ka'bah",
     homePrayerTimesToday: "Today's Prayer Times",
     homeFindMosque: "Find Mosque",
     homeFindMosqueAria: "Find Nearby Mosque via Google Maps",

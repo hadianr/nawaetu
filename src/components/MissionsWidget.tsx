@@ -310,8 +310,13 @@ export default function MissionsWidget() {
 
             // Helper to get score
             const getPriorityScore = (m: Mission, val: any) => {
+                const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
+
                 if (val.locked) return -20;
                 if (val.isLate) return -10;
+
+                // 1. RAMADHAN PRIORITY (Highest)
+                if (isRamadhan && m.phase === 'ramadhan_during') return 200;
 
                 // Obligatory Priorities
                 if (m.category === 'prayer' && m.hukum === 'obligatory') return 100;

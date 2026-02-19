@@ -255,10 +255,17 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     return (
         <>
             <button
-                onClick={handleCardClick}
+                onClick={() => {
+                    if (isRamadhan) {
+                        // Portal to Ramadhan Hub
+                        window.location.href = "/ramadhan";
+                    } else {
+                        handleCardClick();
+                    }
+                }}
                 className="w-full relative mb-4 group transition-transform duration-300 hover:scale-[1.01] text-left appearance-none will-change-transform"
             >
-                {/* Optimized Background: Solid colors/simple gradients only, no heavy blur/radial calculations */}
+                {/* Optimized Background */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl -z-10 opacity-80`} />
 
                 <div className={`relative w-full bg-black/40 border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
@@ -266,60 +273,108 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     {/* Simple decorative glow */}
                     <div className={`absolute -right-10 -top-10 w-32 h-32 bg-${styles.glow.split('-')[1]}-500/20 rounded-full blur-2xl pointer-events-none`} />
 
-                    {/* Left: Text & Title */}
-                    <div className="flex flex-col gap-1.5 z-10">
-                        <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
-                            <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
-                                {isEid ? t.ramadhanEidGreeting : isRamadhan ? t.ramadhanGreeting : t.ramadhanHeading}
-                            </span>
-                        </div>
-                        <div className="flex items-baseline gap-2.5">
-                            {isEid ? (
-                                <span className="text-xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md pb-1">
-                                    {t.ramadhanFinished}
-                                </span>
-                            ) : isRamadhan ? (
-                                <>
-                                    <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
-                                        {displayDays}
+                    {isRamadhan ? (
+                        /* RAMADHAN MODE: Portal to Hub */
+                        <div className="flex items-center justify-between w-full">
+                            <div className="flex flex-col gap-1 z-10">
+                                <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
+                                    <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                        Ramadhan Hub
                                     </span>
-                                    <span className="text-sm font-medium text-white/80">{t.ramadhanDay}</span>
-                                </>
-                            ) : (
-                                <>
-                                    <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
-                                        {displayDays}
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-3xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md pb-1">
+                                        Hari ke-{displayDays}
                                     </span>
-                                    <span className="text-sm font-medium text-white/80">{t.ramadhanDaysLeft}</span>
-                                </>
-                            )}
+                                    {/* Next Prayer Time (Imsak / Maghrib) */}
+                                    <span className="text-sm font-medium text-white/70 mt-1 flex items-center gap-1.5">
+                                        ⏱️ {
+                                            (() => {
+                                                const now = new Date();
+                                                const imsak = prayerData?.prayerTimes?.["Imsak"];
+                                                const maghrib = prayerData?.prayerTimes?.["Maghrib"];
 
-                        </div>
-                    </div>
+                                                const parseTime = (t: string) => {
+                                                    const [h, m] = t.split(":").map(Number);
+                                                    const d = new Date();
+                                                    d.setHours(h, m, 0);
+                                                    return d;
+                                                };
 
-                    {/* Right: Progress Ring (Visual Only) or Minimal Bar */}
-                    <div className="z-10 flex flex-col items-end gap-2">
-                        <div className={`text-[10px] font-bold uppercase tracking-wider ${styles.text} text-right flex items-center gap-1`}>
-                            {getLevelTitle(progress)}
-                        </div>
-                        {/* Minimalist Bar */}
-                        <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
-                                style={{ width: `${isRamadhan ? Math.min(100, (displayDays / 30) * 100) : progress}%` }}
-                            />
-                        </div>
-                        <div className="flex items-center gap-1.5" onClick={(e) => {
-                            e.stopPropagation();
-                            setShowInfo(true);
-                        }}>
-                            <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
-                                {isRamadhan ? `${displayDays} / 30 Days` : `${progress}% ${t.ramadhanPreparationLabel}`}
+                                                if (imsak && maghrib) {
+                                                    const iDate = parseTime(imsak);
+                                                    const mDate = parseTime(maghrib);
+
+                                                    if (now < iDate) return `Imsak ${imsak}`;
+                                                    if (now < mDate) return `Buka ${maghrib}`;
+                                                    return "Istirahat";
+                                                }
+                                                return "Lihat Jadwal";
+                                            })()
+                                        }
+                                        <span className="opacity-50">•</span>
+                                        <span className="underline decoration-dotted underline-offset-2">Buka Dashboard →</span>
+                                    </span>
+                                </div>
                             </div>
-                            <InfoIcon className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
+
+                            {/* Visual Icon */}
+                            <div className="text-5xl opacity-80 grayscale-[30%] group-hover:grayscale-0 transition-all duration-500 scale-110">
+                                🌙
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        /* COUNTDOWN MODE (Normal) */
+                        <>
+                            {/* Left: Text & Title */}
+                            <div className="flex flex-col gap-1.5 z-10">
+                                <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
+                                    <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                        {isEid ? t.ramadhanEidGreeting : t.ramadhanHeading}
+                                    </span>
+                                </div>
+                                <div className="flex items-baseline gap-2.5">
+                                    {isEid ? (
+                                        <span className="text-xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md pb-1">
+                                            {t.ramadhanFinished}
+                                        </span>
+                                    ) : (
+                                        <>
+                                            <span className="text-4xl font-bold font-serif text-white leading-none tracking-tight filter drop-shadow-md" suppressHydrationWarning>
+                                                {displayDays}
+                                            </span>
+                                            <span className="text-sm font-medium text-white/80">{t.ramadhanDaysLeft}</span>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right: Progress Ring (Visual Only) or Minimal Bar */}
+                            <div className="z-10 flex flex-col items-end gap-2">
+                                <div className={`text-[10px] font-bold uppercase tracking-wider ${styles.text} text-right flex items-center gap-1`}>
+                                    {getLevelTitle(progress)}
+                                </div>
+                                {/* Minimalist Bar */}
+                                <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
+                                        style={{ width: `${progress}%` }}
+                                    />
+                                </div>
+                                <div className="flex items-center gap-1.5" onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowInfo(true);
+                                }}>
+                                    <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
+                                        {`${progress}% ${t.ramadhanPreparationLabel}`}
+                                    </div>
+                                    <InfoIcon className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </button>
 

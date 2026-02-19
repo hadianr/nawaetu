@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { RefreshCw, Edit2, MapPin, Navigation } from "lucide-react";
 import PrayerTimeCard from "@/components/PrayerTimeCard";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import PrayerCountdown from "@/components/PrayerCountdown";
-import QuoteOfDay from "@/components/QuoteOfDay";
+
 import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
 import MosqueFinderModal from "@/components/MosqueFinderModal";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
@@ -96,14 +97,25 @@ export default function PrayerTimesDisplay() {
             <div className="relative space-y-4">
                 <div className="flex items-center justify-between px-1">
                     <h2 className="text-lg font-semibold text-white/80">{t.homePrayerTimesToday}</h2>
-                    <button
-                        onClick={() => setShowMosqueFinder(true)}
-                        aria-label={t.homeFindMosqueAria}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
-                    >
-                        <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeFindMosque}</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {/* Qibla Button */}
+                        <Link
+                            href="/qibla"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
+                        >
+                            <span className="text-lg">🧭</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeQiblaLabel}</span>
+                        </Link>
+                        {/* Mosque Finder Button */}
+                        <button
+                            onClick={() => setShowMosqueFinder(true)}
+                            aria-label={t.homeFindMosqueAria}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
+                        >
+                            <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeFindMosque}</span>
+                        </button>
+                    </div>
                 </div>
 
                 <PrayerTimeCard {...data} />
@@ -122,9 +134,6 @@ export default function PrayerTimesDisplay() {
                     </div>
                 )}
             </div>
-
-            {/* Quote of The Day */}
-            <QuoteOfDay />
 
             {/* Bottom spacer to Ensure scrolling fits everything above bottom nav */}
             <div className="h-4" />

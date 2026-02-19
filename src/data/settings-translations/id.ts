@@ -272,6 +272,8 @@ export const SETTINGS_ID = {
     homeTowards: "Menuju {prayer}",
     homeAdzanNow: "Adzan {prayer}",
     homeAdzanMessage: "Selamat menunaikan sholat",
+    homeQiblaLabel: "Kiblat",
+    homeQiblaSubtitle: "Arah Ka'bah",
     homePrayerTimesToday: "Jadwal Sholat Hari Ini",
     homeFindMosque: "Cari Masjid",
     homeFindMosqueAria: "Cari Masjid Terdekat via Google Maps",

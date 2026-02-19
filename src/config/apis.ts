@@ -19,6 +19,7 @@ export const API_CONFIG = {
     },
     LOCATION: {
         BIGDATA_CLOUD: "https://api.bigdatacloud.net/data/reverse-geocode-client",
+        NOMINATIM: "https://nominatim.openstreetmap.org/reverse",
     },
 
     // LLM Providers
