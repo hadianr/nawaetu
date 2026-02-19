@@ -47,11 +47,26 @@ export function parseAIResponse(response: string): ParsedResponse {
 }
 
 /**
+ * Escape HTML special characters to prevent XSS
+ */
+function escapeHtml(unsafe: string): string {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+/**
  * Format text with simple markdown-like formatting
  * Converts **bold** and *italic* to HTML
  */
 export function formatMarkdown(text: string): string {
-    let formatted = text;
+    // Escape HTML first to prevent XSS
+    const sanitizedText = escapeHtml(text);
+
+    let formatted = sanitizedText;
 
     // Convert **bold** to <strong>
     formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');

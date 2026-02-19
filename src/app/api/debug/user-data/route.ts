@@ -5,9 +5,9 @@ import { users, bookmarks, userCompletedMissions, dailyActivities, intentions } 
 import { eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
-    // Prevent access in production
-    if (process.env.NODE_ENV === 'production') {
-        return NextResponse.json({}, { status: 404 });
+    // SECURITY: Disable debug endpoint in production to prevent PII leakage
+    if (process.env.NODE_ENV === "production") {
+        return new NextResponse(null, { status: 404 });
     }
 
     try {
