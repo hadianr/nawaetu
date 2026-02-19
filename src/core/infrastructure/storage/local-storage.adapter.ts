@@ -56,7 +56,39 @@ export class LocalStorageAdapter implements StorageAdapter {
       }));
     } catch (error) {
       // Handle quota exceeded error
-      if (error instanceof DOMException && error.code === 22) {
+      if (error instanceof DOMException && (error.code === 22 || error.name === 'QuotaExceededError')) {
+        // Attempt Cleanup: Remove heavy non-essential items
+        try {
+          const keysToRemove = [
+            'prayer_data', // Can be refetched
+            'nawaetu_chat_history', // Old chat history
+            'daily_activity_history' // Old history?
+          ];
+
+          let freed = false;
+          for (const k of keysToRemove) {
+            if (localStorage.getItem(k)) {
+              localStorage.removeItem(k);
+              freed = true;
+            }
+          }
+
+          // Retry setting item if we freed space
+          if (freed) {
+            try {
+              localStorage.setItem(key, JSON.stringify(value));
+              return;
+            } catch (retryError) {
+              // Still failed
+            }
+          }
+
+          // If still failed, try to clear EVERYTHING except essential user profile?
+          // Maybe risky. Just throw error for now but with better message.
+        } catch (cleanupError) {
+          // Ignore cleanup errors
+        }
+
         throw new StorageQuotaExceededError(
           `Failed to store ${key}: Storage quota exceeded. Please clear some data.`
         );
