@@ -66,8 +66,10 @@ export async function POST(req: NextRequest) {
 
         if (!transaction) {
             // Fallback: Find pending transaction by email and amount
-            const email = data.customer?.email || data.customer_email || data.merchantEmail; // fallback to merchantEmail if testing locally? No.
+            const email = data.customer?.email || data.customer_email || data.customerEmail || data.merchantEmail; // Added proper field check
             const amount = data.amount;
+
+            console.log(`[Webhook] Fallback lookup for email: ${email}, amount: ${amount}`);
 
             if (email && amount) {
                 const potentialTx = await db.query.transactions.findFirst({
