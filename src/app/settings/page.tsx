@@ -408,30 +408,40 @@ function SettingsPageContent() {
                 </div>
 
                 {/* Profile Card - Compact */}
-                <UserProfileDialog onProfileUpdate={refreshProfile}>
-                    <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
-                        <div className="relative">
-                            <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden p-0.5">
-                                <Avatar className="w-full h-full rounded-full">
-                                    <AvatarImage src={userAvatar || ""} className="object-cover" />
-                                    <AvatarFallback className="bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-lg font-bold">
-                                        {userName.charAt(0).toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
-                            </div>
-                            {(isMuhsinin || session?.user?.isMuhsinin) && (
-                                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
-                                    <Crown className="w-2.5 h-2.5 text-white fill-white" />
-                                </div>
-                            )}
+                {status === "loading" ? (
+                    <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
+                        <div className="h-12 w-12 rounded-full bg-white/10" />
+                        <div className="flex-1 space-y-2">
+                            <div className="h-4 w-32 bg-white/10 rounded" />
+                            <div className="h-3 w-20 bg-white/10 rounded" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
-                            <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
                     </div>
-                </UserProfileDialog>
+                ) : (
+                    <UserProfileDialog onProfileUpdate={refreshProfile}>
+                        <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
+                            <div className="relative">
+                                <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden p-0.5">
+                                    <Avatar className="w-full h-full rounded-full">
+                                        <AvatarImage src={userAvatar || ""} className="object-cover" />
+                                        <AvatarFallback className="bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-lg font-bold">
+                                            {userName.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </div>
+                                {(isMuhsinin || session?.user?.isMuhsinin) && (
+                                    <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
+                                        <Crown className="w-2.5 h-2.5 text-white fill-white" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
+                                <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
+                            </div>
+                            <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
+                        </div>
+                    </UserProfileDialog>
+                )}
 
 
 

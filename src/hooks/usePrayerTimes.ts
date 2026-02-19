@@ -194,12 +194,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                         { timeoutMs: 10000 }
                     );
                     const locData = await locResponse.json();
-                    
+
                     // Parse address with priority: subdistrict > village > city > state
                     const addr = locData.address || {};
-                    locationName = addr.subdistrict || addr.village || addr.municipality || 
-                                   addr.city || addr.town || addr.state || 
-                                   locData.display_name?.split(',')[0] || "Lokasi Terdeteksi";
+                    locationName = addr.subdistrict || addr.village || addr.municipality ||
+                        addr.city || addr.town || addr.state ||
+                        locData.display_name?.split(',')[0] || "Lokasi Terdeteksi";
                 } catch (e) {
                     // Fallback to BigDataCloud if Nominatim fails
                     try {
@@ -273,14 +273,22 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             });
 
             // Also update user_location cache with name IF NOT DEFAULT
+            // Also update user_location cache with name IF NOT DEFAULT
+            // AND ensure we don't overwrite a good name with coordinates if API failed earlier but recovered?
+            // Actually, fetchPrayerTimes defines name.
             if (!isDefault) {
-                const userLocationData = {
-                    lat,
-                    lng,
-                    name: locationName,
-                    timestamp: Date.now()
-                };
-                storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
+                // Prevent caching coordinates as name
+                const isCoordinates = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(locationName);
+
+                if (!isCoordinates) {
+                    const userLocationData = {
+                        lat,
+                        lng,
+                        name: locationName,
+                        timestamp: Date.now()
+                    };
+                    storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
+                }
             }
 
             processData(result, locationName, false, isDefault);
@@ -316,11 +324,11 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         // FORCE REFRESH: Clear ALL location caches to prevent stale data
         const existingUserLoc = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
         const existingPrayerData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
-        
+
         if (existingUserLoc) {
             storage.remove(STORAGE_KEYS.USER_LOCATION as any);
         }
-        
+
         if (existingPrayerData?.isDefault) {
             storage.remove(STORAGE_KEYS.PRAYER_DATA as any);
         }
@@ -329,7 +337,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                
+
                 // Force fetch with fresh coordinates (not from cache)
                 fetchPrayerTimes(latitude, longitude, undefined, false);
             },
@@ -354,14 +362,23 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
         // 2. Check if we have a saved location
         const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
-        if (isFreshLocation(cachedLocation)) {
-            const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
-            const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+        const isCoordinates = (name: string) => /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(name);
 
-            if (!cachedData || cachedData.date !== today) {
-                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+        if (isFreshLocation(cachedLocation)) {
+            // Check if cached name is actually just coordinates (legacy bug)
+            if (cachedLocation.name && isCoordinates(cachedLocation.name)) {
+                // Invalid cache, force refresh
+                storage.remove(STORAGE_KEYS.USER_LOCATION as any);
+                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, undefined, false);
             } else {
-                setLoading(false); // Data is fresh, no need to fetch
+                const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
+                const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+
+                if (!cachedData || cachedData.date !== today) {
+                    fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+                } else {
+                    setLoading(false); // Data is fresh, no need to fetch
+                }
             }
         } else {
             if (cachedLocation) {

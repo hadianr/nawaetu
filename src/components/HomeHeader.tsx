@@ -19,33 +19,53 @@ const NavigationIcon = ({ className }: { className?: string }) => (
 export default function HomeHeader() {
     const { data, refreshLocation } = usePrayerTimes();
     const { t } = useLocale();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession(); // Get status
     const storage = getStorageService();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
+    // Sync Session to Local Storage
+    useEffect(() => {
+        if (status === "authenticated" && session?.user) {
+            // Update local state immediately
+            if (session.user.name) setUserName(session.user.name);
+            if (session.user.image) setUserAvatar(session.user.image);
+
+            // Persist to storage to prevent future flicker
+            if (session.user.name) storage.set(STORAGE_KEYS.USER_NAME as any, session.user.name);
+            if (session.user.image) storage.set(STORAGE_KEYS.USER_AVATAR as any, session.user.image);
+        }
+    }, [session, status, storage]);
+
     const refreshProfile = () => {
-        // Use batch get for performance
+        // 1. If Authenticated & Session User exists -> Use it (Source of Truth)
+        if (status === "authenticated" && session?.user?.name) {
+            setUserName(session.user.name);
+            if (session.user.image) setUserAvatar(session.user.image);
+
+            // Gender isn't in default session user usually, check custom type or storage
+            const savedGender = storage.get(STORAGE_KEYS.USER_GENDER);
+            if (savedGender) setGender(savedGender as 'male' | 'female' | null);
+            return;
+        }
+
+        // 2. If Loading or Unauthenticated -> Use Storage (Cache)
+        // This prevents the "glitch" where it shows default name while waiting for session
         const [savedName, savedGender, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
             STORAGE_KEYS.USER_GENDER,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
-        // 1. Prefer Session Name/Avatar if logged in
-        if (session?.user?.name) setUserName(session.user.name);
-        else if (savedName) setUserName(savedName as string);
-
-        if (session?.user?.image) setUserAvatar(session.user.image);
-        else setUserAvatar(savedAvatar as string | null);
-
-        setGender(savedGender as 'male' | 'female' | null);
+        if (savedName) setUserName(savedName as string);
+        if (savedAvatar) setUserAvatar(savedAvatar as string | null);
+        if (savedGender) setGender(savedGender as 'male' | 'female' | null);
     };
 
     useEffect(() => {
         refreshProfile();
-    }, [storage, session]); // Add session dependency
+    }, [storage, status]); // Add status dependency
 
     useEffect(() => {
         // Listen for storage events (in case changed in Settings) and custom XP events
