@@ -408,17 +408,14 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         }
 
         if (Array.isArray(localIntentions) && localIntentions.length > 0) {
-            for (const i of localIntentions) {
+            const intentionValues = localIntentions.map((i: any) => {
                 // Determine niatDate - ensure it's a string YYYY-MM-DD
                 let dateStr = i.niatDate;
                 if (!dateStr && i.createdAt) {
                     dateStr = new Date(i.createdAt).toISOString().split('T')[0];
                 }
 
-                // Check for duplicates based on userId + niatDate + niatText (rudimentary check)
-                // Better to just insert and let DB handle or skip if we don't have a unique constraint
-                // For now, we just insert.
-                await db.insert(intentions).values({
+                return {
                     userId,
                     niatText: i.niatText,
                     niatType: i.niatType,
@@ -427,8 +424,10 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                     reflectionRating: i.reflectionRating,
                     isPrivate: i.isPrivate ?? true,
                     createdAt: new Date(i.createdAt || Date.now()),
-                });
-            }
+                };
+            });
+
+            await db.insert(intentions).values(intentionValues);
         }
 
         // Sync Missions (Legacy)
