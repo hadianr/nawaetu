@@ -4,8 +4,16 @@ import { GET } from './route';
 // Mock NextRequest and NextResponse locally
 vi.mock('next/server', () => {
   return {
-    NextResponse: {
-      json: vi.fn((body, init) => ({ body, status: init?.status || 200 })),
+    NextResponse: class MockNextResponse {
+      body: any;
+      status: number;
+      constructor(body: any, init?: any) {
+        this.body = body || {};
+        this.status = init?.status || 200;
+      }
+      static json(body: any, init?: any) {
+        return new MockNextResponse(body, init);
+      }
     },
     NextRequest: class MockNextRequest {
       url: string;
