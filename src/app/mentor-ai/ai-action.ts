@@ -2,6 +2,8 @@
 
 import { chatRateLimiter } from '@/lib/rate-limit';
 import { getCurrentTimeContext, type TimeContext } from '@/lib/time-context';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
 
@@ -32,9 +34,14 @@ export async function askMentor(
     // Check for spam (same message repeated quickly)
     const messageHash = message.toLowerCase().trim();
 
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.id) {
+        return "Maaf, kamu harus login dulu ya untuk menggunakan fitur ini 😊";
+    }
+
     // ===== SECURITY LAYER 2: Rate Limiting =====
-    // Use user name as identifier (in production, use user ID or session ID)
-    const identifier = `chat:${context.name}`;
+    // Use user ID as identifier for secure rate limiting
+    const identifier = `chat:${session.user.id}`;
     const rateLimit = await chatRateLimiter.check(10, identifier); // Max 10 requests per minute
 
     if (!rateLimit.success) {
