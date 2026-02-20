@@ -1,39 +1,15 @@
-/* TAJWEED COLOR RULES (Quran.com API v4 Compatible) */
-.tajweed-hn {
-  color: #7cc78f !important;
-}
-
-/* Ghunnah (Green) */
-.tajweed-lk {
-  color: #8ecae6 !important;
-}
-
-/* Idgham w/o Ghunnah (Blue) */
-.tajweed-ql {
-  color: #8ecae6 !important;
-}
-
-/* Qalqalah (Blue) */
-.tajweed-id {
-  color: #a8a8a8 !important;
-}
-
-/* Idgham w/ Ghunnah (Gray) */
-.tajweed-m {
-  color: #f28482 !important;
-}
-
-/* Iqlab/Mad Wajib (Redish) */
-.tajweed-sl {
-  color: #ffb703 !important;
-}
-
-/* Silah (Gold) */
-.tajweed-pm {
-  color: #1d3557 !important;
-}
-
-/* Necessary Prolongation */
-.tajweed-n {
-  color: #7cc78f !important;
-}
+/* Robust Tajweed CSS - Moved from VerseList.tsx */
+/* Distinct High-Contrast Pastel Palette */
+tajweed[class*="ghunnah"], .tajweed-text.hn, .tajweed-text.tajweed-hn { color: #4ade80!important; font-weight: bold!important; }
+tajweed[class*="qalqalah"], tajweed[class*="qalaqah"], .tajweed-text.ql, .tajweed-text.tajweed-ql { color: #38bdf8!important; font-weight: bold!important; }
+tajweed[class*="idgham"], tajweed[class*="laam_shamsiyah"], .tajweed-text.id, .tajweed-text.tajweed-id { color: #c084fc!important; font-weight: bold!important; }
+tajweed[class*="ikhfa"], tajweed[class*="ikhafa"], .tajweed-text.ik, .tajweed-text.tajweed-ik { color: #fb923c!important; font-weight: bold!important; }
+tajweed[class*="iqlab"], .tajweed-text.iqlab { color: #22d3ee!important; font-weight: bold!important; }
+tajweed[class*="madda"], .tajweed-text.m, .tajweed-text.tajweed-m { color: #fb7185!important; font-weight: bold!important; }
+tajweed[class*="ham_wasl"], tajweed[class*="slnt"], .tajweed-text.slient { color: #facc15!important; font-weight: bold!important; }
+.tajweed-text.sl, .tajweed-text.tajweed-sl { color: #facc15!important; font-weight: bold!important; }
+.tajweed-text.pp, .tajweed-text.tajweed-pp { color: #fb923c!important; font-weight: bold!important; }
+/* Waqof marks styling - Pause indicators */
+[data-waqf], waqf, .waqf { color: #a78bfa!important; font-weight: bold!important; }
+/* Arabic End of Ayah and pause marks */
+[class*="waqf"], [class*="pause"], [class*="stop"] { display: inline!important; margin: 0 2px!important; }

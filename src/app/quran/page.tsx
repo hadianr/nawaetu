@@ -1,4 +1,3 @@
-import "./tajweed.css";
 import { Suspense } from "react";
 import QuranBrowser from "@/components/quran/QuranBrowser";
 import SurahListSkeleton from "@/components/skeleton/SurahListSkeleton";
