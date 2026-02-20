@@ -12,14 +12,35 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const user = await db.query.users.findFirst({
-            where: eq(users.id, session.user.id),
-            columns: { settings: true }
-        });
-
-        const readingState = await db.query.userReadingState.findFirst({
-            where: eq(userReadingState.userId, session.user.id)
-        });
+        const [
+            user,
+            readingState,
+            userBookmarks,
+            userIntentions,
+            subscriptions
+        ] = await Promise.all([
+            // 1. Fetch user settings
+            db.query.users.findFirst({
+                where: eq(users.id, session.user.id),
+                columns: { settings: true }
+            }),
+            // 2. Fetch reading state
+            db.query.userReadingState.findFirst({
+                where: eq(userReadingState.userId, session.user.id)
+            }),
+            // 3. Fetch user bookmarks
+            db.query.bookmarks.findMany({
+                where: eq(bookmarks.userId, session.user.id)
+            }),
+            // 4. Fetch user intentions (journal)
+            db.query.intentions.findMany({
+                where: eq(intentions.userId, session.user.id)
+            }),
+            // 5. Fetch push subscriptions (for notification preferences check)
+            db.query.pushSubscriptions.findMany({
+                where: eq(pushSubscriptions.userId, session.user.id)
+            })
+        ]);
 
         const settings = {
             ...((user?.settings || {}) as Record<string, any>),
@@ -30,21 +51,6 @@ export async function GET(req: NextRequest) {
                 timestamp: readingState.lastReadAt?.getTime()
             } : null
         };
-
-        // 2. Fetch user bookmarks
-        const userBookmarks = await db.query.bookmarks.findMany({
-            where: eq(bookmarks.userId, session.user.id)
-        });
-
-        // 3. Fetch user intentions (journal)
-        const userIntentions = await db.query.intentions.findMany({
-            where: eq(intentions.userId, session.user.id)
-        });
-
-        // 4. Fetch push subscriptions (for notification preferences check)
-        const subscriptions = await db.query.pushSubscriptions.findMany({
-            where: eq(pushSubscriptions.userId, session.user.id)
-        });
 
         return NextResponse.json({
             status: "success",
