@@ -343,6 +343,15 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
         description: 'Sumber penyembuh dan energi instan. Baik dicampur dengan air hangat saat sahur.',
         description_en: 'A source of healing and instant energy. Great when mixed with warm water for suhoor.',
         dalil: DALIL_MILK_HONEY
+    },
+    {
+        id: 'sahur_milk',
+        name: 'Susu',
+        name_en: 'Milk',
+        icon: '🥛',
+        description: 'Memberikan rasa kenyang lebih lama dan kalsium yang baik untuk energi saat berpuasa.',
+        description_en: 'Provides long-lasting satiety and calcium for energy during fasting.',
+        dalil: DALIL_MILK_HONEY
     }
 ];
 

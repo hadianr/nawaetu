@@ -83,25 +83,29 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
                         className="relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-black/90 backdrop-blur-2xl border-t border-x sm:border border-white/10 overflow-y-auto max-h-[88vh] sm:max-h-[85vh] animate-in slide-in-from-bottom-4 duration-300 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Handle bar for mobile swipe */}
-                        <div className="sticky top-0 pt-3 pb-1 flex justify-center sm:hidden">
-                            <div className="h-1 w-10 rounded-full bg-white/20" />
-                        </div>
+                        {/* Combined Header & Handle */}
+                        <div className="sticky top-0 z-30 bg-black/95 backdrop-blur-md border-b border-white/5 shadow-lg">
+                            {/* Handle bar for mobile swipe */}
+                            <div className="pt-3 pb-1 flex justify-center sm:hidden">
+                                <div className="h-1.5 w-12 rounded-full bg-white/10" />
+                            </div>
 
-                        {/* Header */}
-                        <div className="sticky top-0 bg-gradient-to-b from-black/95 to-black/80 backdrop-blur-md pt-5 px-6 pb-4 border-b border-white/5 z-20 shadow-lg">
-                            <div className="flex items-start justify-between gap-3">
-                                <div>
-                                    <h3 className="font-bold text-white text-base tracking-tight leading-tight">
-                                        {localizedTitle}
-                                    </h3>
-                                </div>
+                            {/* Title & Close */}
+                            <div className="flex items-center justify-between gap-3 px-6 py-4">
+                                <h3 className="font-bold text-white text-base tracking-tight leading-tight">
+                                    {localizedTitle}
+                                </h3>
                                 <button
                                     type="button"
-                                    onClick={() => setShowDetail(false)}
-                                    className="shrink-0 rounded-full bg-white/10 p-1.5 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setShowDetail(false);
+                                    }}
+                                    className="shrink-0 rounded-full bg-white/10 p-2.5 text-white/60 hover:text-white hover:bg-white/20 transition-all active:scale-95 touch-manipulation"
+                                    aria-label="Close"
                                 >
-                                    <X className="h-4 w-4" />
+                                    <X className="h-5 w-5" />
                                 </button>
                             </div>
                         </div>
