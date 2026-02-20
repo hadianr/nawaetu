@@ -46,6 +46,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ status: "ok", message: "Webhook connection verified" });
         }
 
+        // 3.5 Check Event Type
+        if (body.event && body.event !== "payment.received" && body.event !== "payment.reminder") {
+            console.log(`[Mayar Webhook] Ignoring unhandled event: ${body.event}`);
+            return NextResponse.json({ status: "ok", message: `Event ${body.event} ignored` });
+        }
+
         // 4. Data Extraction
         const data = body.data || body;
         const status = data.status;
@@ -116,13 +122,18 @@ export async function POST(req: NextRequest) {
         }
 
         // 9. Status Normalization
-        let normalizedStatus = status ? status.toLowerCase() : 'failed';
-        if (normalizedStatus === "paid" || normalizedStatus === "success") normalizedStatus = "settlement";
-
-        // Map unknown statuses
-        const validStatuses = ["pending", "settlement", "expired", "failed"];
-        if (!validStatuses.includes(normalizedStatus)) {
-            normalizedStatus = normalizedStatus === 'created' ? 'pending' : 'failed';
+        let normalizedStatus = 'failed';
+        if (typeof status === 'boolean') {
+            normalizedStatus = status ? 'settlement' : 'failed';
+        } else if (typeof status === 'string') {
+            const lowerStatus = status.toLowerCase();
+            if (lowerStatus === 'paid' || lowerStatus === 'success' || lowerStatus === 'settlement') {
+                normalizedStatus = 'settlement';
+            } else if (lowerStatus === 'pending' || lowerStatus === 'created') {
+                normalizedStatus = 'pending';
+            } else if (lowerStatus === 'expired') {
+                normalizedStatus = 'expired';
+            }
         }
 
         // 10. Update Transaction
