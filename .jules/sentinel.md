@@ -17,3 +17,8 @@
 **Vulnerability:** The AI chat endpoint used `context.name` (user-controlled input) as the rate limit identifier, allowing trivial bypass by changing the name in the request payload.
 **Learning:** Security controls like rate limiting must never rely on client-provided identifiers.
 **Prevention:** Always use trusted identifiers such as `session.user.id` (for authenticated users) or IP address (from headers) for rate limiting.
+
+## 2026-03-01 - Defense-in-Depth for Debug Routes
+**Vulnerability:** Relying solely on `process.env.NODE_ENV` checks within route handlers is fragile; misconfiguration can expose sensitive endpoints like `/api/debug/user-data`.
+**Learning:** Centralized security controls at the middleware level provide a critical second layer of defense against accidental exposure of internal routes.
+**Prevention:** Explicitly block sensitive path patterns (e.g., `/api/debug*`) in `middleware.ts` for production environments, ensuring protection even if individual route checks fail or are omitted.
