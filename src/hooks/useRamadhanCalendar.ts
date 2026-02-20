@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { API_CONFIG } from "@/config/apis";
@@ -142,7 +143,7 @@ export function useRamadhanCalendar() {
             setCalendarData(ramadhanDays);
 
         } catch (err) {
-            console.error(err);
+            Sentry.captureException(err);
             setError(err instanceof Error ? err.message : "Gagal memuat jadwal");
         } finally {
             setLoading(false);
