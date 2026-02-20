@@ -322,7 +322,7 @@ function SettingsPageContent() {
         return () => window.removeEventListener('avatar_updated', handleAvatarUpdate);
     }, []);
 
-    const saveSettingsToCloud = async (key: string, value: any) => {
+    const saveSettingsToCloud = async (key: string, value: string | number | boolean) => {
         if (!isAuthenticated) return;
 
         // Record timestamp to prevent race condition with restoreSettings
@@ -362,13 +362,13 @@ function SettingsPageContent() {
     const handleMuadzinChange = (value: string) => {
         stopCurrentAudio();
         setMuadzin(value);
-        storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, value);
+        storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, value);
         saveSettingsToCloud('muadzin', value);
     };
 
     const handleCalculationMethodChange = (value: string) => {
         setCalculationMethod(value);
-        storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, value);
+        storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, value);
         saveSettingsToCloud('calculationMethod', value);
         // Trigger refresh of prayer times with new method
         window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: value } }));
@@ -376,7 +376,7 @@ function SettingsPageContent() {
 
     const handleHijriAdjustmentChange = (value: string) => {
         setHijriAdjustment(value);
-        storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, value);
+        storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT, value);
         saveSettingsToCloud('hijriAdjustment', value);
         window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: value } }));
     };
