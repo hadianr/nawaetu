@@ -43,43 +43,38 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // Check if session exists
-        const existing = await db.query.chatSessions.findFirst({
-            where: eq(chatSessions.id, id)
-        });
+        // Optimize: Slice messages to last 50 if too long
+        const trimmedMessages = messages.slice(-50);
 
-        if (existing) {
-            // Update
-            if (existing.userId !== session.user.id) {
-                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-            }
+        // Prepare update set: only update title if provided
+        const updateSet: Partial<typeof chatSessions.$inferInsert> = {
+            messages: trimmedMessages,
+            updatedAt: new Date(),
+        };
+        if (title) {
+            updateSet.title = title;
+        }
 
-            // Optimize: Slice messages to last 50 if too long
-            const trimmedMessages = messages.slice(-50);
-
-            await db.update(chatSessions)
-                .set({
-                    title: title || existing.title,
-                    messages: trimmedMessages,
-                    updatedAt: new Date()
-                })
-                .where(eq(chatSessions.id, id));
-        } else {
-            // Create New
-            // Note: If ID is provided from client (UUID), use it.
-            // If ID collides (rare), it might error, but `uuid` primary key handles default.
-            // We trust client generated UUID for optimistic UI.
-
-            const trimmedMessages = messages.slice(-50);
-
-            await db.insert(chatSessions).values({
+        // Perform UPSERT: Insert or Update if exists (and owned by user)
+        const result = await db.insert(chatSessions)
+            .values({
                 id: id,
                 userId: session.user.id,
                 title: title || "New Chat",
                 messages: trimmedMessages,
                 createdAt: new Date(),
                 updatedAt: new Date()
-            });
+            })
+            .onConflictDoUpdate({
+                target: chatSessions.id,
+                set: updateSet,
+                where: eq(chatSessions.userId, session.user.id)
+            })
+            .returning();
+
+        // If no row returned, it means conflict occurred but update was skipped (ownership mismatch)
+        if (result.length === 0) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
         return NextResponse.json({ success: true });
