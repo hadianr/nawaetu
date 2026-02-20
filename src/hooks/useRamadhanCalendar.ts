@@ -4,6 +4,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { API_CONFIG } from "@/config/apis";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { AladhanCalendarResponse, AladhanDayData } from "@/types/aladhan";
 
 const storage = getStorageService();
 
@@ -47,7 +48,7 @@ export function useRamadhanCalendar() {
 
         try {
             // Get Location
-            const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
+            const cachedLocation = storage.getOptional<{ lat: number; lng: number }>(STORAGE_KEYS.USER_LOCATION);
             if (!cachedLocation || !cachedLocation.lat || !cachedLocation.lng) {
                 // If no location, we can't fetch reliable calendar.
                 // Fallback to Jakarta for now or throw error.
@@ -58,10 +59,10 @@ export function useRamadhanCalendar() {
             const lng = cachedLocation?.lng || 106.827153;
 
             // Get Settings
-            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD);
             const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
 
-            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT);
             const activeAdj = parseInt((typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1", 10);
 
             // Fetch Feb & March 2026 (Ramadhan 1447 spans Feb 18 - Mar 19)
@@ -76,12 +77,12 @@ export function useRamadhanCalendar() {
                     `${API_CONFIG.ALADHAN.BASE_URL}/calendar/${year}/${m}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${activeAdj}`,
                     {},
                     { timeoutMs: 10000 }
-                ).then(res => res.json())
+                ).then(res => res.json() as Promise<AladhanCalendarResponse>)
             );
 
             const updates = await Promise.all(requests);
 
-            const allDays: any[] = [];
+            const allDays: AladhanDayData[] = [];
             updates.forEach(update => {
                 if (update.data && Array.isArray(update.data)) {
                     allDays.push(...update.data);

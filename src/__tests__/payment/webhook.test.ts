@@ -195,7 +195,7 @@ describe('Payment Webhook', () => {
 
         expect(res.status).toBe(200);
         const json = (res as any).body;
-        expect(json.message).toBe("Transaction already processed");
+        expect(json.message).toBe("Already processed");
 
         expect(db.update).not.toHaveBeenCalled();
     });
