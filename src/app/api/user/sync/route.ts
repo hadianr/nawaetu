@@ -433,16 +433,16 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
 
         // Sync Missions (Legacy)
         if (Array.isArray(localMissions) && localMissions.length > 0) {
-            for (const m of localMissions) {
-                await db.insert(userCompletedMissions)
-                    .values({
-                        userId,
-                        missionId: m.id,
-                        xpEarned: m.xpEarned,
-                        completedAt: new Date(m.completedAt),
-                    })
-                    .onConflictDoNothing();
-            }
+            const missionValues = localMissions.map((m: any) => ({
+                userId,
+                missionId: m.id,
+                xpEarned: m.xpEarned,
+                completedAt: new Date(m.completedAt),
+            }));
+
+            await db.insert(userCompletedMissions)
+                .values(missionValues)
+                .onConflictDoNothing();
         }
 
         // Sync Daily Activity (Legacy)

@@ -248,18 +248,19 @@ async function calculateStreak(userId: string, currentDate: string): Promise<{
     targetDate.setHours(0, 0, 0, 0);
 
     // Convert all intention dates to YYYY-MM-DD timestamps
-    const intentionDates = userIntentions.map(i => {
+    // Optimization: Use Set for O(1) lookup
+    const intentionDates = new Set(userIntentions.map(i => {
         const d = new Date(i.niatDate);
         d.setHours(0, 0, 0, 0);
         return d.getTime();
-    });
+    }));
 
     // We start checking from the current intention backwards
     let checkDate = new Date(targetDate);
 
     // Safety loop limit
     while (streak < 3650) {
-        if (intentionDates.includes(checkDate.getTime())) {
+        if (intentionDates.has(checkDate.getTime())) {
             streak++;
             // Go to previous day
             checkDate.setDate(checkDate.getDate() - 1);
