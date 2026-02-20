@@ -353,7 +353,7 @@ export default function MissionsWidget() {
 
     return (
         <div className={cn(
-            "relative overflow-hidden rounded-3xl p-5 sm:p-6 transition-all group",
+            "relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all group",
             // Glassmorphism Base
             "bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30 hover:border-white/20"
         )}>
@@ -474,7 +474,7 @@ export default function MissionsWidget() {
                             key={mission.id}
                             onClick={() => handleMissionClick(mission)}
                             className={cn(
-                                "w-full flex flex-col gap-2 p-3.5 rounded-2xl transition-all text-left group relative overflow-hidden",
+                                "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden",
                                 // Base Style
                                 "border backdrop-blur-sm",
                                 isCompleted

@@ -48,9 +48,9 @@ export default function DeferredBelowFold() {
 
   return (
     <>
-      <div className="w-full flex flex-col gap-3">
+      <div className="w-full flex flex-col gap-2">
         {/* 3. Quick Status Grid - Prayer Times + Last Read */}
-        <section className="w-full grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-100">
+        <section className="w-full grid grid-cols-2 gap-2 animate-in slide-in-from-bottom-2 fade-in duration-700 delay-100">
           <div className="w-full h-32">
             {ready ? (
               <NextPrayerWidget />

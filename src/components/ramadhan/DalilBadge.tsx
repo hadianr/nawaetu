@@ -33,27 +33,27 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                 type="button"
                 onClick={handleClick}
                 className={`
-          flex items-center gap-1 sm:gap-1.5 transition-all duration-300 active:scale-95 group/dalil
+          flex items-center gap-0.5 sm:gap-1 transition-all duration-300 active:scale-95 group/dalil
           ${variant === "pill"
-                        ? "rounded-full border-[0.5px] border-white/10 bg-white/5 px-2 py-1 sm:px-3 sm:py-1.5 backdrop-blur-sm hover:bg-white/10 active:opacity-80"
+                        ? "rounded-sm px-1 py-[0.5px] sm:px-2 sm:py-0.5 backdrop-blur-sm hover:brightness-110 active:opacity-80 shadow-sm"
                         : "text-left hover:opacity-80"
                     }
         `}
                 style={variant === "pill" ? {
-                    borderColor: "rgba(var(--color-primary), 0.2)",
-                    background: "rgba(var(--color-primary), 0.1)"
+                    background: "color-mix(in srgb, var(--color-primary-light) 70%, transparent)",
+                    border: "none"
                 } : undefined}
                 title={t.dalilViewFull}
             >
-                <span className="text-[10px] sm:text-xs group-hover/dalil:scale-110 transition-transform">📜</span>
+                <span className="text-[6.5px] sm:text-[8px] leading-none group-hover/dalil:scale-110 transition-transform">📜</span>
                 <span
-                    className={`text-[10px] sm:text-xs font-bold tracking-tight transition-colors ${variant === "pill" ? "text-white/70 group-hover/dalil:text-white" : "underline decoration-dotted underline-offset-2"}`}
+                    className={`text-[7px] sm:text-[8px] leading-none font-bold tracking-tight transition-colors ${variant === "pill" ? "text-white group-hover/dalil:text-white" : "underline decoration-dotted underline-offset-2"}`}
                     style={variant !== "pill" ? { color: "rgb(var(--color-primary-light))" } : undefined}
                 >
                     {localizedShortRef}
                 </span>
                 {variant === "pill" && (
-                    <span className="text-[10px] sm:text-xs text-white/30 group-hover/dalil:text-white/60 group-hover/dalil:translate-x-0.5 transition-all">→</span>
+                    <span className="text-[6px] sm:text-[8px] leading-none text-white/30 group-hover/dalil:text-white/60 group-hover/dalil:translate-x-0.5 transition-all">→</span>
                 )}
             </button>
 
@@ -107,8 +107,8 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                                     >
                                         <p
                                             className="text-right font-arabic leading-loose text-white drop-shadow-lg"
-                                            style={{ 
-                                                fontFamily: "var(--font-amiri)", 
+                                            style={{
+                                                fontFamily: "var(--font-amiri)",
                                                 fontSize: "1.5rem",
                                                 fontWeight: "600",
                                                 textShadow: "0 2px 12px rgba(0,0,0,0.6)",

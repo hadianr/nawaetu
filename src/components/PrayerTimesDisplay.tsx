@@ -92,28 +92,28 @@ export default function PrayerTimesDisplay() {
     }
 
     return (
-        <div className="relative w-full max-w-md flex flex-col gap-6">
+        <div className="relative w-full max-w-md flex flex-col gap-4">
 
-            <div className="relative space-y-4">
+            <div className="relative space-y-3">
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="text-lg font-semibold text-white/80">{t.homePrayerTimesToday}</h2>
-                    <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-bold text-white/80 shrink-0">{t.homePrayerTimesToday}</h2>
+                    <div className="flex items-center gap-1.5 shrink-0">
                         {/* Qibla Button */}
                         <Link
                             href="/qibla"
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
+                            className="flex items-center justify-center gap-1 min-w-[72px] h-[22px] px-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
                         >
-                            <span className="text-lg">🧭</span>
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeQiblaLabel}</span>
+                            <span className="text-[9px] shrink-0">🧭</span>
+                            <span className="text-[7.5px] font-bold uppercase tracking-widest whitespace-nowrap">{t.homeQiblaLabel}</span>
                         </Link>
                         {/* Mosque Finder Button */}
                         <button
                             onClick={() => setShowMosqueFinder(true)}
                             aria-label={t.homeFindMosqueAria}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
+                            className="flex items-center justify-center gap-1 min-w-[72px] h-[22px] px-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-slate-300 hover:text-white group"
                         >
-                            <MapPin className="w-3.5 h-3.5 text-[rgb(var(--color-primary))] group-hover:scale-110 transition-transform" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{t.homeFindMosque}</span>
+                            <MapPin className="w-2.5 h-2.5 text-[rgb(var(--color-primary))] shrink-0 group-hover:scale-110 transition-transform" />
+                            <span className="text-[7.5px] font-bold uppercase tracking-widest whitespace-nowrap">{t.homeFindMosque}</span>
                         </button>
                     </div>
                 </div>

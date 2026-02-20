@@ -31,8 +31,8 @@ const RamadhanGuideCard = dynamic(() => import("@/components/ramadhan/RamadhanGu
 
 export default function RamadhanPage() {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.12),rgba(255,255,255,0))] px-2 sm:px-3 md:px-4 py-3 sm:py-4 md:py-6 font-sans">
-            <main className="flex w-full max-w-md flex-col items-center gap-2.5 sm:gap-3 md:gap-4 pb-nav">
+        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.12),rgba(255,255,255,0))] px-2 sm:px-3 md:px-4 py-2 sm:py-4 md:py-6 font-sans">
+            <main className="flex w-full max-w-md flex-col items-center gap-2 sm:gap-3 md:gap-4 pb-nav">
 
                 {/* Hero */}
                 <section className="w-full">

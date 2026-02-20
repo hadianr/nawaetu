@@ -49,7 +49,7 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
     return (
         <div
             className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all",
+                "flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 h-6 sm:h-7 rounded-full transition-all",
                 isActiveToday
                     ? gender === 'female' ? "bg-pink-500/20 border border-pink-500/30" :
                         gender === 'male' ? "bg-blue-500/20 border border-blue-500/30" :
@@ -62,7 +62,7 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
         >
             <Flame
                 className={cn(
-                    "w-4 h-4",
+                    "w-4 h-4 sm:w-5 sm:h-5",
                     isActiveToday
                         ? gender === 'female' ? "text-pink-400" :
                             gender === 'male' ? "text-blue-400" :
@@ -75,7 +75,7 @@ export default function StreakBadge({ gender, showLabel = false }: StreakBadgePr
             />
             <span
                 className={cn(
-                    "text-xs font-bold",
+                    "text-xs sm:text-sm font-bold",
                     isActiveToday
                         ? gender === 'female' ? "text-pink-400" :
                             gender === 'male' ? "text-blue-400" :

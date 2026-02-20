@@ -30,14 +30,14 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
 
     return (
         <>
-                {/* Niat Puasa Button */}
-                <button
+            {/* Niat Puasa Button */}
+            <button
                 type="button"
                 onClick={handleClick}
                 className={`
           flex items-center gap-1.5 sm:gap-2 transition-all duration-300 active:scale-95 group/niat w-full
           ${variant === "pill"
-                        ? "rounded-2xl border backdrop-blur-md p-3 sm:p-4 hover:bg-white/10 active:opacity-80"
+                        ? "rounded-2xl border backdrop-blur-md p-2.5 sm:p-4 hover:bg-white/10 active:opacity-80"
                         : "text-left hover:opacity-80"
                     }
         `}
@@ -118,8 +118,8 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
                                 >
                                     <p
                                         className="text-right font-arabic leading-loose text-white drop-shadow-lg"
-                                        style={{ 
-                                            fontFamily: "var(--font-amiri)", 
+                                        style={{
+                                            fontFamily: "var(--font-amiri)",
                                             fontSize: "1.5rem",
                                             fontWeight: "600",
                                             textShadow: "0 2px 12px rgba(0,0,0,0.6)",

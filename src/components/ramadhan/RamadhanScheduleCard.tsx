@@ -86,7 +86,7 @@ export default function RamadhanScheduleCard() {
 
             {/* Countdown */}
             {countdownMs > 0 ? (
-                <div className="mx-3 mb-2 rounded-2xl bg-black/30 border border-white/10 px-3 py-2.5 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center backdrop-blur-md shadow-lg">
+                <div className="mx-3 mb-2 rounded-2xl bg-black/30 border border-white/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center backdrop-blur-md shadow-lg">
                     <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white/30 mb-1.5 sm:mb-2">{countdownLabel}</p>
                     <p className="text-2xl sm:text-3xl font-mono font-black tracking-widest" style={countdownStyle}>
                         {formatCountdown(countdownMs)}
@@ -103,7 +103,7 @@ export default function RamadhanScheduleCard() {
                 {scheduleItems.map((item) => (
                     <div
                         key={item.label}
-                        className="rounded-xl bg-black/20 border border-white/5 px-2 py-2 sm:px-3 sm:py-2.5 flex items-center gap-1.5 sm:gap-2 backdrop-blur-sm shadow-md hover:bg-black/30 hover:border-white/10 transition-all"
+                        className="rounded-xl bg-black/20 border border-white/5 px-2 py-1.5 sm:px-3 sm:py-2.5 flex items-center gap-1.5 sm:gap-2 backdrop-blur-sm shadow-md hover:bg-black/30 hover:border-white/10 transition-all"
                     >
                         <span className="text-sm sm:text-base">{item.icon}</span>
                         <div>

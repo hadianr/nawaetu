@@ -12,8 +12,8 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: boolean }) => (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor">
         {/* Crescent Moon */}
-        <path 
-            d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" 
+        <path
+            d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
             fill={isActive ? "currentColor" : "none"}
             stroke="currentColor"
             strokeWidth="2"
@@ -22,8 +22,8 @@ const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: 
             className="transition-all duration-300"
         />
         {/* Star */}
-        <path 
-            d="M16 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" 
+        <path
+            d="M16 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"
             fill="currentColor"
             className={isActive ? "animate-pulse" : ""}
         />
@@ -78,6 +78,7 @@ const BottomNav = memo(function BottomNav() {
                                 <Link
                                     key={href}
                                     href={href}
+                                    prefetch={true}
                                     className="relative flex flex-col items-center justify-center gap-1 min-w-[64px]"
                                 >
                                     {/* Elevated Button Container */}
@@ -86,18 +87,18 @@ const BottomNav = memo(function BottomNav() {
                                         <span
                                             className={cn(
                                                 "absolute inset-0 rounded-full transition-all duration-500",
-                                                isActive 
-                                                    ? "blur-lg opacity-70 animate-pulse-glow" 
+                                                isActive
+                                                    ? "blur-lg opacity-70 animate-pulse-glow"
                                                     : "blur-md opacity-40"
                                             )}
-                                            style={{ 
-                                                transform: "scale(1.4)", 
-                                                backgroundColor: isActive 
-                                                    ? "rgb(var(--color-primary-light))" 
-                                                    : "rgba(var(--color-primary), 0.8)" 
+                                            style={{
+                                                transform: "scale(1.4)",
+                                                backgroundColor: isActive
+                                                    ? "rgb(var(--color-primary-light))"
+                                                    : "rgba(var(--color-primary), 0.8)"
                                             }}
                                         />
-                                        
+
                                         {/* Small decorative stars around the circle */}
                                         {isActive && (
                                             <>
@@ -106,7 +107,7 @@ const BottomNav = memo(function BottomNav() {
                                                 <span className="absolute top-0 -left-2 text-[6px] animate-pulse" style={{ animationDelay: "1s" }}>⭐</span>
                                             </>
                                         )}
-                                        
+
                                         {/* Button pill */}
                                         <span
                                             className={cn(
@@ -132,19 +133,19 @@ const BottomNav = memo(function BottomNav() {
                                             }}
                                         >
                                             {/* Inner highlight for depth */}
-                                            <span 
+                                            <span
                                                 className="absolute inset-0 rounded-full opacity-30"
                                                 style={{
                                                     background: "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 60%)"
                                                 }}
                                             />
-                                            
+
                                             <Icon
                                                 isActive={isActive}
                                                 className={cn(
                                                     "relative h-6 w-6 transition-all duration-300",
-                                                    isActive 
-                                                        ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]" 
+                                                    isActive
+                                                        ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]"
                                                         : "text-white/90"
                                                 )}
                                             />
@@ -155,10 +156,10 @@ const BottomNav = memo(function BottomNav() {
                                             "text-[10px] font-bold tracking-tight transition-all duration-300",
                                             isActive && "drop-shadow-[0_0_4px_rgba(var(--color-primary-light),0.8)]"
                                         )}
-                                        style={{ 
-                                            color: isActive 
-                                                ? `rgb(var(--color-primary-light))` 
-                                                : `rgba(var(--color-primary-light), 0.7)` 
+                                        style={{
+                                            color: isActive
+                                                ? `rgb(var(--color-primary-light))`
+                                                : `rgba(var(--color-primary-light), 0.7)`
                                         }}
                                     >
                                         {label}

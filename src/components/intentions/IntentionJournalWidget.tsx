@@ -134,8 +134,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
     return (
         <div className={cn("relative w-full group", className)}>
-            <div className="relative bg-black/20 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden transition-all duration-300 hover:bg-black/25 active:scale-[0.995] p-5 sm:p-6">
-                <div className="flex flex-col gap-2.5">
+            <div className="relative bg-black/20 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden transition-all duration-300 hover:bg-black/25 active:scale-[0.995] p-4 sm:p-5">
+                <div className="flex flex-col gap-2">
                     {/* Compact Label */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 opacity-40 grayscale hover:opacity-60 transition-opacity">
@@ -145,10 +145,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     </div>
 
                     {!todayData?.has_intention ? (
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center justify-between gap-3">
                             <div className="flex-1 min-w-0">
                                 <h3 className="text-sm font-bold text-white tracking-tight leading-tight mb-0.5">{t.niat_widget_subtitle}</h3>
-                                <p className="text-[10px] text-white/40 line-clamp-1 italic font-medium leading-none">
+                                <p className="text-[10px] text-white/50 line-clamp-1 italic font-medium leading-none">
                                     {t.niat_widget_quote}
                                 </p>
                             </div>
@@ -171,7 +171,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                             </div>
                         </div>
                     ) : (
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center justify-between gap-3">
                             <div className="flex-1 min-w-0 flex items-center gap-2 group/text cursor-pointer" onClick={() => setShowIntentionPrompt(true)}>
                                 <p className="text-sm font-medium text-white/90 italic line-clamp-1 py-1">
                                     "{todayData.intention.niat_text}"

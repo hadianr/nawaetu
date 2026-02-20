@@ -100,60 +100,53 @@ export default function HomeHeader() {
 
     return (
         <div className="w-full flex items-start justify-between">
-            <div className="flex flex-1 min-w-0 flex-col gap-1">
-                <div className="flex items-center gap-2 mb-1">
-                    <div className="text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">
+            <div className="flex flex-1 min-w-0 flex-col">
+                <div className="flex items-center gap-2 mb-0.5">
+                    <div className="text-[11px] sm:text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">
                         {greeting}
                     </div>
                 </div>
-                <h1 className="text-2xl font-bold text-white tracking-tight leading-none min-h-[2rem]">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-none min-h-[1.75rem] sm:min-h-[2rem]">
                     {isMounted ? (
-                        <span className="block truncate max-w-[12rem] xs:max-w-[16rem]">
+                        <span className="block truncate max-w-[10rem] xs:max-w-[14rem] sm:max-w-[16rem]">
                             {userName}
                         </span>
                     ) : (
-                        <span className="inline-block w-32 xs:w-40 h-7 rounded bg-white/10 animate-pulse align-middle" />
+                        <span className="inline-block w-24 xs:w-32 sm:w-40 h-6 sm:h-7 rounded bg-white/10 animate-pulse align-middle" />
                     )}
                 </h1>
             </div>
 
             {/* Location, Streak & Date Badge */}
-            <div className="flex shrink-0 flex-col items-end gap-1.5 text-right min-w-[120px]">
+            <div className="flex shrink-0 flex-col items-end gap-1 text-right min-w-[110px] sm:min-w-[120px]">
                 <div className="flex items-center gap-2">
                     <StreakBadge gender={gender} />
                     <button
                         onClick={refreshLocation}
                         className={cn(
-                            "flex items-center gap-1.5 px-2 py-1 rounded-full border transition-all active:scale-95",
+                            "flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 h-6 sm:h-7 rounded-full border transition-all active:scale-95 max-w-[140px] sm:max-w-[200px]",
                             data?.isDefaultLocation
                                 ? "bg-amber-500/20 border-amber-500/40 hover:bg-amber-500/30"
                                 : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 hover:bg-[rgb(var(--color-primary))]/20"
                         )}
                     >
                         {data?.isDefaultLocation ? (
-                            <NavigationIcon className="w-3 h-3 text-amber-400 animate-pulse" />
+                            <NavigationIcon className="w-2 h-2 sm:w-3 sm:h-3 text-amber-400 animate-pulse shrink-0" />
                         ) : (
-                            <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse"></span>
+                            <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[rgb(var(--color-primary))] animate-pulse shrink-0"></span>
                         )}
                         <span className={cn(
-                            "text-[10px] font-bold uppercase tracking-widest min-w-[60px] xs:min-w-[70px] text-center inline-block whitespace-nowrap overflow-hidden text-ellipsis",
+                            "text-[7.5px] sm:text-[10px] font-bold uppercase tracking-wider text-center line-clamp-1",
                             data?.isDefaultLocation ? "text-amber-200" : "text-[rgb(var(--color-primary-light))]"
                         )}>
                             {locationLabel ? (
                                 data?.isDefaultLocation ? t.homeSetLocationNow || "Set Lokasi" : locationLabel
                             ) : (
-                                <span className="inline-block w-16 h-3 rounded bg-white/10 animate-pulse align-middle" />
+                                <span className="inline-block w-12 h-3 rounded bg-white/10 animate-pulse align-middle" />
                             )}
                         </span>
                     </button>
                 </div>
-                <span className="text-[10px] text-white/80 font-medium px-1 min-h-[0.875rem]">
-                    {hijriLabel ? (
-                        hijriLabel
-                    ) : (
-                        <span className="inline-block w-20 h-3 rounded bg-white/10 animate-pulse" />
-                    )}
-                </span>
             </div>
         </div >
     );

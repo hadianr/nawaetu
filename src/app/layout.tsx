@@ -218,6 +218,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { GuestSyncManager } from "@/components/auth/GuestSyncManager";
 import ClientEntryGate from "@/components/ClientEntryGate";
 import AppOverlays from "@/components/AppOverlays";
+import Toploader from "@/components/ui/Toploader";
 
 
 
@@ -259,6 +260,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} antialiased`}
         suppressHydrationWarning
       >
+        <Toploader />
         <WebVitals />
         {/* Structured Data - Multiple Schemas */}
         {jsonLdSchemas.map((schema, index) => (

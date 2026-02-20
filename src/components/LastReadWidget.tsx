@@ -118,8 +118,8 @@ export default function LastReadWidget() {
         return (
             <div className="w-full h-full animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
                 <Link href="/quran" className="block group h-full">
-                    <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-4 h-full flex items-center justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/10">
-                        <div className="flex items-center gap-3">
+                    <div className="relative overflow-hidden rounded-3xl bg-black/20 border border-white/5 p-3 h-full flex items-center justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/10">
+                        <div className="flex items-center gap-2">
                             <div className="h-9 w-9 rounded-full bg-[rgb(var(--color-primary))]/10 flex items-center justify-center text-[rgb(var(--color-primary-light))]">
                                 <BookOpen className="h-4 w-4" />
                             </div>
@@ -139,7 +139,7 @@ export default function LastReadWidget() {
     return (
         <div className="w-full h-full animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
             <Link href={`/quran/${lastRead.surahId}#${lastRead.surahId}:${lastRead.verseId}`} className="block group h-full">
-                <div className="relative overflow-hidden rounded-3xl bg-black/20 backdrop-blur-md border border-white/10 p-5 sm:p-6 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/20">
+                <div className="relative overflow-hidden rounded-3xl bg-black/20 backdrop-blur-md border border-white/10 p-4 sm:p-5 h-full flex flex-col justify-between transition-all duration-300 hover:bg-black/30 hover:border-white/20">
 
                     {/* Header: Label */}
                     <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-70 transition-opacity">
