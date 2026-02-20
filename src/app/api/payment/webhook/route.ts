@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
 
         const rawBody = await req.text();
         const signature = req.headers.get("x-mayar-signature") || req.headers.get("X-Mayar-Signature");
+        const callbackToken = req.headers.get("x-callback-token") || req.headers.get("X-Callback-Token");
         const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
         const mayarToken = req.headers.get("x-webhook-token") || req.headers.get("X-Webhook-Token");
 
@@ -27,19 +28,26 @@ export async function POST(req: NextRequest) {
 
         // Try exact token match first (if Mayar sends the token plainly as shown in dashboard)
         if (signature === webhookSecret ||
+            callbackToken === webhookSecret ||
             authHeader === `Bearer ${webhookSecret}` ||
             authHeader === webhookSecret ||
             mayarToken === webhookSecret) {
             isValid = true;
             console.log("[Mayar Webhook] Signature verified via direct token match");
-        } else if (signature) {
-            // Try HMAC SHA256 hash (standard webhook pattern)
-            const expectedSignature = crypto.createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
-            if (signature === expectedSignature) {
+        } else if (signature || callbackToken) {
+            const tokenToHashWith = signature || callbackToken;
+            // Try HMAC SHA256/512 hashes
+            const expectedSha256 = crypto.createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
+            const expectedSha512 = crypto.createHmac("sha512", webhookSecret).update(rawBody).digest("hex");
+
+            if (tokenToHashWith === expectedSha256) {
                 isValid = true;
                 console.log("[Mayar Webhook] Signature verified via HMAC SHA256");
+            } else if (tokenToHashWith === expectedSha512) {
+                isValid = true;
+                console.log("[Mayar Webhook] Signature verified via HMAC SHA512");
             } else {
-                console.error(`[Mayar Webhook] HMAC mismatch. Received: ${signature}, Expected: ${expectedSignature}`);
+                console.error(`[Mayar Webhook] Hash mismatch. Received: ${tokenToHashWith}`);
             }
         }
 
