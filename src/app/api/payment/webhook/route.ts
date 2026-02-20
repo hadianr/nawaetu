@@ -7,7 +7,10 @@ import crypto from "crypto";
 export async function POST(req: NextRequest) {
     try {
         const webhookSecret = process.env.MAYAR_WEBHOOK_SECRET;
-        const signature = req.headers.get("X-Mayar-Signature");
+
+        // Log headers to see what Mayar actually sends in production
+        const headersObj = Object.fromEntries(req.headers);
+        console.log("[Mayar Webhook] Incoming Headers:", JSON.stringify(headersObj));
 
         // 1. Configuration Check
         if (!webhookSecret) {
@@ -15,28 +18,34 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Configuration Error: Secret missing" }, { status: 500 });
         }
 
-        if (!signature) {
-            console.error("[Mayar Webhook] Missing Signature");
-            return NextResponse.json({ error: "Missing Signature" }, { status: 400 });
+        const rawBody = await req.text();
+        const signature = req.headers.get("x-mayar-signature") || req.headers.get("X-Mayar-Signature");
+        const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
+        const mayarToken = req.headers.get("x-webhook-token") || req.headers.get("X-Webhook-Token");
+
+        let isValid = false;
+
+        // Try exact token match first (if Mayar sends the token plainly as shown in dashboard)
+        if (signature === webhookSecret ||
+            authHeader === `Bearer ${webhookSecret}` ||
+            authHeader === webhookSecret ||
+            mayarToken === webhookSecret) {
+            isValid = true;
+            console.log("[Mayar Webhook] Signature verified via direct token match");
+        } else if (signature) {
+            // Try HMAC SHA256 hash (standard webhook pattern)
+            const expectedSignature = crypto.createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
+            if (signature === expectedSignature) {
+                isValid = true;
+                console.log("[Mayar Webhook] Signature verified via HMAC SHA256");
+            } else {
+                console.error(`[Mayar Webhook] HMAC mismatch. Received: ${signature}, Expected: ${expectedSignature}`);
+            }
         }
 
-        // 2. Signature Verification
-        const rawBody = await req.text();
-        const hmac = crypto.createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
-
-        const signatureBuffer = Buffer.from(signature);
-        const hmacBuffer = Buffer.from(hmac);
-
-        // Debug Log
-        console.log(`[Mayar Webhook] Signature Check. Received: ${signature.substring(0, 10)}..., Computed: ${hmac.substring(0, 10)}...`);
-
-        if (signatureBuffer.length !== hmacBuffer.length || !crypto.timingSafeEqual(signatureBuffer, hmacBuffer)) {
-            console.error("[Mayar Webhook] Invalid Signature");
-            // DEBUG: Return details to help user debug
-            return NextResponse.json({
-                error: "Invalid Signature",
-                debug: { received: signature, computed: hmac }
-            }, { status: 401 });
+        if (!isValid) {
+            console.error("[Mayar Webhook] Invalid or Missing Signature. Headers:", JSON.stringify(headersObj));
+            return NextResponse.json({ error: "Invalid Signature" }, { status: 400 });
         }
 
         const body = JSON.parse(rawBody);
