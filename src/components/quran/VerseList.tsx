@@ -86,24 +86,6 @@ const cleanTranslation = (text: string) => {
     return formatFootnotes(cleaned.trim());
 };
 
-// --- Robust Tajweed CSS ---
-const tajweedStyles = `
-/* Distinct High-Contrast Pastel Palette */
-tajweed[class*="ghunnah"], .tajweed-text.hn, .tajweed-text.tajweed-hn { color: #4ade80!important; font-weight: bold!important; }
-tajweed[class*="qalqalah"], tajweed[class*="qalaqah"], .tajweed-text.ql, .tajweed-text.tajweed-ql { color: #38bdf8!important; font-weight: bold!important; }
-tajweed[class*="idgham"], tajweed[class*="laam_shamsiyah"], .tajweed-text.id, .tajweed-text.tajweed-id { color: #c084fc!important; font-weight: bold!important; }
-tajweed[class*="ikhfa"], tajweed[class*="ikhafa"], .tajweed-text.ik, .tajweed-text.tajweed-ik { color: #fb923c!important; font-weight: bold!important; }
-tajweed[class*="iqlab"], .tajweed-text.iqlab { color: #22d3ee!important; font-weight: bold!important; }
-tajweed[class*="madda"], .tajweed-text.m, .tajweed-text.tajweed-m { color: #fb7185!important; font-weight: bold!important; }
-tajweed[class*="ham_wasl"], tajweed[class*="slnt"], .tajweed-text.slient { color: #facc15!important; font-weight: bold!important; }
-.tajweed-text.sl, .tajweed-text.tajweed-sl { color: #facc15!important; font-weight: bold!important; }
-.tajweed-text.pp, .tajweed-text.tajweed-pp { color: #fb923c!important; font-weight: bold!important; }
-/* Waqof marks styling - Pause indicators */
-[data-waqf], waqf, .waqf { color: #a78bfa!important; font-weight: bold!important; }
-/* Arabic End of Ayah and pause marks */
-[class*="waqf"], [class*="pause"], [class*="stop"] { display: inline!important; margin: 0 2px!important; }
-`;
-
 const cleanIndopakText = (text: string) => {
     if (!text) return '';
     return text
@@ -554,7 +536,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
     return (
         <div className="relative min-h-screen pb-16 w-full max-w-4xl mx-auto">
-            <style>{tajweedStyles}</style>
 
             {/* --- Sticky Header --- */}
             <div className="sticky top-0 z-30 -mx-4 md:mx-0">
