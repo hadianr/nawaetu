@@ -228,6 +228,125 @@ export const DOA_SAHUR: NiatData = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// SUNNAH FOODS (SAHUR & BUKA)
+// ─────────────────────────────────────────────────────────────
+
+export interface SunnahFood {
+    id: string;
+    name: string;
+    name_en?: string;
+    icon: string;
+    description: string;
+    description_en?: string;
+    dalil: DalilData;
+}
+
+export const DALIL_DATES_IFTAR: DalilData = {
+    id: 'dalil_dates_iftar',
+    shortRef: 'HR. Abu Dawud 2356',
+    arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يُفْطِرُ عَلَى رُطَبَاتٍ قَبْلَ أَنْ يُصَلِّيَ',
+    latin: 'Kāna Rasūlullāh shallallāhu \'alaihi wasallam yufthiru \'alā ruthabātin qabla an yushalliya.',
+    translation: 'Rasulullah SAW biasanya berbuka puasa dengan kurma basah (ruthab) sebelum menunaikan shalat.',
+    source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, dari Anas bin Malik RA'
+};
+
+export const DALIL_WATER_IFTAR: DalilData = {
+    id: 'dalil_water_iftar',
+    shortRef: 'HR. Abu Dawud 2356',
+    arabic: 'فَإِنْ لَمْ تَكُنْ رُطَبَاتٌ فَعَلَى تَمَرَاتٍ فَإِنْ لَمْ تَكُنْ حَسَا حَسَوَاتٍ مِنْ مَاءٍ',
+    latin: 'Fa in lam takun ruthabātun fa\'alā tamāratin, fa in lam takun hasā hasawātin min mā\'.',
+    translation: 'Jika tidak ada kurma basah, beliau berbuka dengan kurma kering. Jika tidak ada kurma kering, beliau berbuka dengan beberapa teguk air.',
+    source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, pelengkap hadits kurma'
+};
+
+export const DALIL_DATES_SAHUR: DalilData = {
+    id: 'dalil_dates_sahur',
+    shortRef: 'HR. Abu Dawud 2345',
+    arabic: 'نِعْمَ سَحُورُ الْمُؤْمِنِ التَّمْرُ',
+    latin: 'Ni\'ma sahūrul mu\'minit tamru.',
+    translation: 'Sebaik-baik hidangan sahur seorang mukmin adalah kurma.',
+    source: 'HR. Abu Dawud No. 2345 — Hadits Shahih, dari Abu Hurairah RA'
+};
+
+export const DALIL_MILK_HONEY: DalilData = {
+    id: 'dalil_milk_honey',
+    shortRef: 'HR. Tirmidzi 3455',
+    arabic: 'الشِّفَاءُ فِي ثَلَاثَةٍ: شَرْبَةِ عَسَلٍ...',
+    latin: 'Asy-syifā\'u fī tsalātsatin: syarbati \'asalin...',
+    translation: 'Kesembuhan itu ada pada tiga hal: meminum madu...',
+    source: 'HR. Bukhari No. 5680. Susu & madu sangat dianjurkan Nabi SAW untuk memulihkan tenaga (Sunnah ammah).'
+};
+
+export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
+    {
+        id: 'iftar_ruthab',
+        name: 'Kurma Basah (Ruthab)',
+        name_en: 'Fresh Dates (Ruthab)',
+        icon: '🌴',
+        description: 'Sunnah utama Nabi SAW. Sangat cepat mengembalikan kadar gula darah yang turun setelah berpuasa.',
+        description_en: 'The primary Sunnah. Rapidly restores blood sugar levels after fasting.',
+        dalil: DALIL_DATES_IFTAR
+    },
+    {
+        id: 'iftar_tamr',
+        name: 'Kurma Kering (Tamr)',
+        name_en: 'Dried Dates (Tamr)',
+        icon: '🟤',
+        description: 'Alternatif utama jika tidak ada Ruthab. Disunnahkan memakannya dalam jumlah ganjil (1, 3, atau 5).',
+        description_en: 'Primary alternative to fresh dates. Recommended to eat an odd number (1, 3, or 5).',
+        dalil: DALIL_DATES_IFTAR
+    },
+    {
+        id: 'iftar_water',
+        name: 'Air Putih',
+        name_en: 'Plain Water',
+        icon: '💧',
+        description: 'Pelepas dahaga yang paling murni dan sehat jika tidak menemukan kurma sama sekali.',
+        description_en: 'The purest thirst quencher if dates are completely unavailable.',
+        dalil: DALIL_WATER_IFTAR
+    },
+    {
+        id: 'iftar_milk',
+        name: 'Susu',
+        name_en: 'Milk',
+        icon: '🥛',
+        description: 'Minuman yang mengenyangkan sekaligus menghilangkan dahaga, sering dikonsumsi Nabi SAW.',
+        description_en: 'A filling drink that quenches thirst, often consumed by the Prophet SAW.',
+        dalil: DALIL_MILK_HONEY
+    }
+];
+
+export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
+    {
+        id: 'sahur_tamr',
+        name: 'Kurma (Tamr)',
+        name_en: 'Dates',
+        icon: '🟤',
+        description: 'Sebaik-baik makanan sahur. Memberikan serat dan energi lambat (slow-release) agar kenyang lebih lama.',
+        description_en: 'The best suhoor food. Provides fiber and slow-release energy to stay full longer.',
+        dalil: DALIL_DATES_SAHUR
+    },
+    {
+        id: 'sahur_water',
+        name: 'Air Putih',
+        name_en: 'Water',
+        icon: '💧',
+        description: 'Wajib untuk menjaga hidrasi tubuh sepanjang hari. Jangan sahur tanpa minum air.',
+        description_en: 'Essential to maintain hydration throughout the day. Do not skip water during suhoor.',
+        dalil: DALIL_SAHUR
+    },
+    {
+        id: 'sahur_honey',
+        name: 'Madu murni',
+        name_en: 'Pure Honey',
+        icon: '🍯',
+        description: 'Sumber penyembuh dan energi instan. Baik dicampur dengan air hangat saat sahur.',
+        description_en: 'A source of healing and instant energy. Great when mixed with warm water for suhoor.',
+        dalil: DALIL_MILK_HONEY
+    }
+];
+
+// ─────────────────────────────────────────────────────────────
 // TIGA PERIODE RAMADHAN (10 hari pertama, kedua, ketiga)
 // ─────────────────────────────────────────────────────────────
 

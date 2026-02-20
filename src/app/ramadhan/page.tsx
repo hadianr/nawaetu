@@ -12,6 +12,10 @@ const RamadhanScheduleCard = dynamic(() => import("@/components/ramadhan/Ramadha
     ssr: false,
     loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
 });
+const SunnahFoodsWidget = dynamic(() => import("@/components/ramadhan/SunnahFoodsWidget"), {
+    ssr: false,
+    loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
+});
 const TarawehTracker = dynamic(() => import("@/components/ramadhan/TarawehTracker"), {
     ssr: false,
     loading: () => <div className="h-40 rounded-2xl bg-white/5 animate-pulse" />,
@@ -45,6 +49,13 @@ export default function RamadhanPage() {
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "100ms" }}>
                     <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
                         <RamadhanScheduleCard />
+                    </Suspense>
+                </section>
+
+                {/* Sunnah Foods */}
+                <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "150ms" }}>
+                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                        <SunnahFoodsWidget />
                     </Suspense>
                 </section>
 
