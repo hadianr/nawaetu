@@ -10,7 +10,7 @@ import {
     users,
     userReadingState
 } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 // Schema validation for request body
@@ -107,29 +107,28 @@ export async function POST(req: NextRequest) {
             if (data.bookmarks && data.bookmarks.length > 0) {
                 // We'll upsert based on (userId, key)
                 // key is generated as surahId:verseId
-                for (const b of data.bookmarks) {
-                    const key = `${b.surahId}:${b.verseId}`;
-                    await tx.insert(bookmarks)
-                        .values({
-                            userId,
-                            surahId: b.surahId,
-                            verseId: b.verseId,
-                            surahName: b.surahName,
-                            verseText: b.verseText,
-                            key,
-                            note: b.note,
-                            tags: b.tags,
-                            createdAt: b.createdAt ? new Date(b.createdAt) : new Date(),
-                        })
-                        .onConflictDoUpdate({
-                            target: [bookmarks.userId, bookmarks.key], // compound unique index
-                            set: {
-                                note: b.note,
-                                tags: b.tags,
-                                updatedAt: new Date(),
-                            }
-                        });
-                }
+                const values = data.bookmarks.map((b) => ({
+                    userId,
+                    surahId: b.surahId,
+                    verseId: b.verseId,
+                    surahName: b.surahName,
+                    verseText: b.verseText,
+                    key: `${b.surahId}:${b.verseId}`,
+                    note: b.note,
+                    tags: b.tags,
+                    createdAt: b.createdAt ? new Date(b.createdAt) : new Date(),
+                }));
+
+                await tx.insert(bookmarks)
+                    .values(values)
+                    .onConflictDoUpdate({
+                        target: [bookmarks.userId, bookmarks.key], // compound unique index
+                        set: {
+                            note: sql`excluded.note`,
+                            tags: sql`excluded.tags`,
+                            updatedAt: new Date(),
+                        }
+                    });
             }
 
             // 4. Sync Completed Missions
