@@ -147,24 +147,17 @@ export async function POST(req: NextRequest) {
 
             // 5. Sync Intentions (Journal)
             if (data.intentions && data.intentions.length > 0) {
-                for (const i of data.intentions) {
-                    await tx.insert(intentions)
-                        .values({
-                            userId,
-                            niatText: i.niatText,
-                            niatType: (i.niatType as any) || "daily",
-                            niatDate: i.niatDate,
-                            reflectionText: i.reflectionText,
-                            reflectionRating: i.reflectionRating,
-                            reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
-                        })
-                        .onConflictDoNothing(); // Avoid duplicates for same date
-                    // Note: unique index on (userId, niatDate) might interfere if we allow multiple per day?
-                    // Schema currently only has index on date, not unique. 
-                    // Let's assume we just append for now unless we enforce 1 per day.
-                    // Actually schema doesn't enforce unique entry per day, so this might duplicate.
-                    // Ideally we check if exists for that date and type.
-                }
+                await tx.insert(intentions)
+                    .values(data.intentions.map((i) => ({
+                        userId,
+                        niatText: i.niatText,
+                        niatType: (i.niatType as any) || "daily",
+                        niatDate: i.niatDate,
+                        reflectionText: i.reflectionText,
+                        reflectionRating: i.reflectionRating,
+                        reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
+                    })))
+                    .onConflictDoNothing();
             }
 
             // 6. Sync Daily Activity
