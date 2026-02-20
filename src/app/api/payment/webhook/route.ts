@@ -9,164 +9,157 @@ export async function POST(req: NextRequest) {
         const webhookSecret = process.env.MAYAR_WEBHOOK_SECRET;
         const signature = req.headers.get("X-Mayar-Signature");
 
+        // 1. Configuration Check
         if (!webhookSecret) {
-            console.error("MAYAR_WEBHOOK_SECRET is not set");
-            return NextResponse.json({ error: "Configuration Error" }, { status: 500 });
+            console.error("[Mayar Webhook] MAYAR_WEBHOOK_SECRET is not set");
+            return NextResponse.json({ error: "Configuration Error: Secret missing" }, { status: 500 });
         }
 
         if (!signature) {
+            console.error("[Mayar Webhook] Missing Signature");
             return NextResponse.json({ error: "Missing Signature" }, { status: 400 });
         }
 
-        // Get raw body for signature verification
+        // 2. Signature Verification
         const rawBody = await req.text();
-
-        // Verify HMAC-SHA256 Signature
-        // Ensuring integrity and authenticity of the webhook payload
         const hmac = crypto.createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
 
-        // Use timing-safe comparison to prevent timing attacks
         const signatureBuffer = Buffer.from(signature);
         const hmacBuffer = Buffer.from(hmac);
 
+        // Debug Log
+        console.log(`[Mayar Webhook] Signature Check. Received: ${signature.substring(0, 10)}..., Computed: ${hmac.substring(0, 10)}...`);
+
         if (signatureBuffer.length !== hmacBuffer.length || !crypto.timingSafeEqual(signatureBuffer, hmacBuffer)) {
-            return NextResponse.json({ error: "Invalid Signature" }, { status: 401 });
+            console.error("[Mayar Webhook] Invalid Signature");
+            // DEBUG: Return details to help user debug
+            return NextResponse.json({
+                error: "Invalid Signature",
+                debug: { received: signature, computed: hmac }
+            }, { status: 401 });
         }
 
         const body = JSON.parse(rawBody);
 
-        // Handle Mayar "Testing URL" event
+        // 3. Handle Testing Event
         if (body.event === "testing") {
             return NextResponse.json({ status: "ok", message: "Webhook connection verified" });
         }
 
-        // Validate Event Type & Payload Structure
-        // Payload might be wrapped in 'data' object based on screenshots
+        // 4. Data Extraction
         const data = body.data || body;
-        const status = data.status; // e.g. "SETTLEMENT" or "SUCCESS"
-        const mayarId = data.id;
-        const linkId = data.link_id || data.paymentLinkId; // Adjust based on possible field names
-        const productId = data.productId; // Matches paymentLinkId often
+        const status = data.status;
+        const mayarId = data.id; // Mayar Transaction ID
+        const linkId = data.link_id || data.paymentLinkId;
+        const productId = data.productId; // Should match our paymentLinkId
 
         if (!mayarId) {
-            console.error("Webhook Error: Invalid Payload (Missing ID)", body);
-            return NextResponse.json({ error: "Invalid Payload" }, { status: 400 });
+            return NextResponse.json({ error: "Invalid Payload: Missing ID" }, { status: 400 });
         }
 
-        // Find Transaction by ID (Transaction ID or Payment Link ID)
+        console.log(`[Mayar Webhook] Processing: MayarID=${mayarId}, ProductID=${productId}, Status=${status}`);
+
+        // 5. Transaction Lookup Strategy
         const conditions = [eq(transactions.mayarId, mayarId)];
-        if (linkId) {
-            conditions.push(eq(transactions.paymentLinkId, linkId));
-        }
-        if (productId) {
-            conditions.push(eq(transactions.paymentLinkId, productId));
-        }
-        // Also check if stored paymentLinkId matches incoming Transaction ID
-        conditions.push(eq(transactions.paymentLinkId, mayarId));
+        if (linkId) conditions.push(eq(transactions.paymentLinkId, linkId));
+        if (productId) conditions.push(eq(transactions.paymentLinkId, productId));
+        conditions.push(eq(transactions.paymentLinkId, mayarId)); // Just in case
 
         let transaction = await db.query.transactions.findFirst({
             where: or(...conditions)
         });
 
+        // 6. Fallback Lookup (Email & Amount)
         if (!transaction) {
-            // Fallback: Find pending transaction by email and amount
-            const email = data.customer?.email || data.customer_email || data.customerEmail || data.merchantEmail; // Added proper field check
+            const email = data.customer?.email || data.customer_email || data.customerEmail || data.merchantEmail;
             const amount = data.amount;
 
-            console.log(`[Webhook] Fallback lookup for email: ${email}, amount: ${amount}`);
+            console.log(`[Mayar Webhook] Transaction not found by ID. Trying fallback for Email: ${email}, Amount: ${amount}`);
 
             if (email && amount) {
+                // Find latest transaction with same email/amount, allowing pending or failed (retry scenario)
                 const potentialTx = await db.query.transactions.findFirst({
                     where: and(
                         eq(transactions.customerEmail, email),
-                        eq(transactions.amount, amount),
-                        eq(transactions.status, "pending")
+                        eq(transactions.amount, amount)
+                        // Removed strict 'pending' check to allow recovering 'failed' attempts if Mayar says Success later
+                        // But we should exclude already settled ones ideally?
                     ),
                     orderBy: [desc(transactions.createdAt)]
                 });
 
-                if (potentialTx) {
-                    // Update the transaction with the real Transaction ID from webhook
+                if (potentialTx && potentialTx.status !== 'settlement') {
+                    // Link correct Mayar ID
                     await db.update(transactions)
                         .set({ mayarId: mayarId })
                         .where(eq(transactions.id, potentialTx.id));
 
-                    // Assign to transaction variable
                     transaction = potentialTx;
-                } else {
-                    console.warn(`Webhook: Transaction not found for email ${email} amount ${amount}`);
-                    return NextResponse.json({ message: "Transaction not found (fallback failed)" }, { status: 404 });
+                    console.log(`[Mayar Webhook] Fallback Sucess. Linked to Transaction ID: ${transaction.id}`);
                 }
-            } else {
-                return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
             }
         }
 
-        // Safety check again
+        // 7. Final Transaction Check
         if (!transaction) {
-            return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
+            console.error("[Mayar Webhook] Transaction Not Found");
+            return NextResponse.json({
+                error: "Transaction not found",
+                debug: { mayarId, productId, linkId, email: data.customerEmail, amount: data.amount }
+            }, { status: 404 });
         }
 
-        // Check if already processed
+        // 8. Idempotency Check
         if (transaction.status === 'settlement') {
-            return NextResponse.json({ status: "ok", message: "Transaction already processed" });
+            console.log("[Mayar Webhook] Transaction already settled. Ignoring.");
+            return NextResponse.json({ status: "ok", message: "Already processed" });
         }
 
-        // Normalize Status for Enum compatibility
+        // 9. Status Normalization
         let normalizedStatus = status ? status.toLowerCase() : 'failed';
         if (normalizedStatus === "paid" || normalizedStatus === "success") normalizedStatus = "settlement";
 
-        // Ensure valid enum value (fallback to failed if unknown)
+        // Map unknown statuses
         const validStatuses = ["pending", "settlement", "expired", "failed"];
         if (!validStatuses.includes(normalizedStatus)) {
-            console.warn(`Unknown payment status received: ${status}, mapped to: ${normalizedStatus}`);
-            // If unknown status but strictly 'pending' or similar, we might want to be careful.
-            // But if it is 'created' (from transactionStatus), we generally ignore or keep pending.
-            // If the MAIN status is SUCCESS/SETTLEMENT, we proceed.
-            // If status is undefined, we default to failed above.
-
-            // Should we map 'created' to pending?
-            if (normalizedStatus === 'created') normalizedStatus = 'pending';
-            else normalizedStatus = 'failed';
+            normalizedStatus = normalizedStatus === 'created' ? 'pending' : 'failed';
         }
 
-        // Atomic Update: Ensure we only update if status is NOT 'settlement'
+        // 10. Update Transaction
         const updatedTransactions = await db.update(transactions)
             .set({
                 status: normalizedStatus as any,
-                mayarId: mayarId // Always ensure the actual Transaction ID is stored
+                mayarId: mayarId
             })
             .where(and(
                 eq(transactions.id, transaction.id),
-                ne(transactions.status, 'settlement') // Prevent race condition
+                ne(transactions.status, 'settlement')
             ))
             .returning();
 
         if (updatedTransactions.length === 0) {
-            // Already processed by another request (or failed to match condition)
-            return NextResponse.json({ status: "ok", message: "Transaction already processed (concurrent)" });
+            return NextResponse.json({ status: "ok", message: "Transaction update skipped (race condition)" });
         }
 
         const updatedTx = updatedTransactions[0];
 
-        // If Paid (SETTLEMENT), Update User to Muhsinin
-        // Use updated transaction status to be sure
-        if (updatedTx.status === "settlement") {
-            if (transaction.userId) {
-                const { sql } = await import("drizzle-orm");
-                await db.update(users)
-                    .set({
-                        isMuhsinin: true,
-                        muhsininSince: new Date(),
-                        totalInfaq: sql`${users.totalInfaq} + ${transaction.amount}`
-                    })
-                    .where(eq(users.id, transaction.userId));
-            }
+        // 11. Grant Muhsinin Status
+        if (updatedTx.status === "settlement" && transaction.userId) {
+            const { sql } = await import("drizzle-orm");
+            await db.update(users)
+                .set({
+                    isMuhsinin: true,
+                    muhsininSince: new Date(),
+                    totalInfaq: sql`${users.totalInfaq} + ${transaction.amount}`
+                })
+                .where(eq(users.id, transaction.userId));
+            console.log(`[Mayar Webhook] Granted Muhsinin to User ${transaction.userId}`);
         }
 
-        return NextResponse.json({ status: "ok" });
+        return NextResponse.json({ status: "ok", data: updatedTx });
 
-    } catch (e) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    } catch (e: any) {
+        console.error("[Mayar Webhook] Internal Error:", e);
+        return NextResponse.json({ error: "Internal Server Error", details: e.message }, { status: 500 });
     }
 }
