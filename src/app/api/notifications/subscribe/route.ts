@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
-import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,13 +9,6 @@ export async function POST(req: NextRequest) {
         if (!token) {
             return NextResponse.json({ error: "Token is required" }, { status: 400 });
         }
-
-        // Upsert logic: if token exists, update it, otherwise insert
-        const existing = await db
-            .select()
-            .from(pushSubscriptions)
-            .where(eq(pushSubscriptions.token, token))
-            .limit(1);
 
         const data = {
             updatedAt: new Date(),
@@ -27,25 +19,24 @@ export async function POST(req: NextRequest) {
             latitude: userLocation?.lat || null,
             longitude: userLocation?.lng || null,
             city: userLocation?.city || null,
-            // If provided, update preferences; otherwise keep existing or null
+            // If provided, update preferences; otherwise keep existing (undefined means Drizzle ignores it in 'set')
             prayerPreferences: prayerPreferences || undefined,
         };
 
-        if (existing.length > 0) {
-            await db
-                .update(pushSubscriptions)
-                .set(data)
-                .where(eq(pushSubscriptions.token, token));
-        } else {
-            await db.insert(pushSubscriptions).values({
+        // Optimized: Single upsert operation
+        await db.insert(pushSubscriptions)
+            .values({
                 token,
                 ...data,
-                // For new insert, use provided prefs or null
+                // For new insert, ensure prayerPreferences is null if not provided
                 prayerPreferences: prayerPreferences || null,
                 userId: null,
                 lastUsedAt: null,
+            })
+            .onConflictDoUpdate({
+                target: pushSubscriptions.token,
+                set: data,
             });
-        }
 
         return NextResponse.json({ success: true });
     } catch (error) {
