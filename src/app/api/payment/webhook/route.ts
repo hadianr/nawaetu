@@ -78,16 +78,16 @@ export async function POST(req: NextRequest) {
         // 6. Fallback Lookup (Email & Amount)
         if (!transaction) {
             const email = data.customerEmail || data.customer?.email || data.merchantEmail;
-            const amount = data.amount || data.paymentLinkAmount;
+            const amount = data.amount;
 
             console.log(`[Mayar Webhook] Transaction not found by ID. Trying fallback for Email: ${email}, Amount: ${amount}`);
 
-            if (email && amount) {
+            if (email && amount !== undefined && amount !== null) {
                 // Find latest transaction with same email/amount, allowing pending or failed (retry scenario)
                 const potentialTx = await db.query.transactions.findFirst({
                     where: and(
-                        eq(transactions.customerEmail, email),
-                        eq(transactions.amount, amount)
+                        eq(transactions.customerEmail, String(email)),
+                        eq(transactions.amount, Number(amount))
                         // Removed strict 'pending' check to allow recovering 'failed' attempts if Mayar says Success later
                         // But we should exclude already settled ones ideally?
                     ),

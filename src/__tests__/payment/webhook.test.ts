@@ -143,7 +143,7 @@ describe('Payment Webhook', () => {
 
         const payload = {
             id: 'mayar-tx-789',
-            customer_email: 'test@user.com',
+            customerEmail: 'test@user.com',
             amount: 10000,
             status: 'PAID'
         };
