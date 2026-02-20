@@ -31,11 +31,14 @@ export interface DalilData {
 export interface RamadhanAmalanData {
     id: string;
     title: string;
+    title_en?: string;
     description: string;
+    description_en?: string;
     icon: string;
     niat?: NiatData;
     dalil: DalilData;
     tips?: string[];
+    tips_en?: string[];
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -163,7 +166,9 @@ export const DALIL_SAHUR: DalilData = {
     arabic: 'تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً',
     latin: 'Tasahharū fa\'inna fis sahūri barakah.',
     translation: 'Bersahurlah kalian, karena sesungguhnya pada sahur itu terdapat keberkahan.',
+    translation_en: 'Eat suhoor, for in suhoor there is blessing.',
     source: 'HR. Bukhari No. 1923, Muslim No. 1095 — dari Anas bin Malik radhiyallahu \'anhu',
+    source_en: 'Reported by Bukhari No. 1923, Muslim No. 1095 — narrated by Anas bin Malik RA'
 };
 
 export const DALIL_IFTAR: DalilData = {
@@ -172,7 +177,9 @@ export const DALIL_IFTAR: DalilData = {
     arabic: 'لِلصَّائِمِ فَرْحَتَانِ يَفْرَحُهُمَا: إِذَا أَفْطَرَ فَرِحَ بِفِطْرِهِ، وَإِذَا لَقِيَ رَبَّهُ فَرِحَ بِصَوْمِهِ',
     latin: 'Lish shā\'imi farhatāni yafrahhumā: idzā aftara fariha bifithrih, wa idzā laqiya rabbahū fariha bishaumih.',
     translation: 'Orang yang berpuasa memiliki dua kegembiraan: ketika berbuka ia gembira dengan bukanya, dan ketika bertemu Tuhannya ia gembira dengan puasanya.',
+    translation_en: 'The fasting person has two joys: when he breaks his fast he is joyful with his breaking of the fast, and when he meets his Lord he is joyful with his fasting.',
     source: 'HR. Bukhari No. 1904, Muslim No. 1151 — dari Abu Hurairah radhiyallahu \'anhu',
+    source_en: 'Reported by Bukhari No. 1904, Muslim No. 1151 — narrated by Abu Hurairah RA'
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -244,37 +251,61 @@ export interface SunnahFood {
 export const DALIL_DATES_IFTAR: DalilData = {
     id: 'dalil_dates_iftar',
     shortRef: 'HR. Abu Dawud 2356',
+    shortRef_en: 'Abu Dawud 2356',
     arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يُفْطِرُ عَلَى رُطَبَاتٍ قَبْلَ أَنْ يُصَلِّيَ',
     latin: 'Kāna Rasūlullāh shallallāhu \'alaihi wasallam yufthiru \'alā ruthabātin qabla an yushalliya.',
     translation: 'Rasulullah SAW biasanya berbuka puasa dengan kurma basah (ruthab) sebelum menunaikan shalat.',
-    source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, dari Anas bin Malik RA'
+    translation_en: 'The Messenger of Allah (ﷺ) used to break his fast with fresh dates before praying.',
+    source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, dari Anas bin Malik RA',
+    source_en: 'Reported by Abu Dawud No. 2356 — Hasan Hadith, narrated by Anas bin Malik RA'
 };
 
 export const DALIL_WATER_IFTAR: DalilData = {
     id: 'dalil_water_iftar',
     shortRef: 'HR. Abu Dawud 2356',
+    shortRef_en: 'Abu Dawud 2356',
     arabic: 'فَإِنْ لَمْ تَكُنْ رُطَبَاتٌ فَعَلَى تَمَرَاتٍ فَإِنْ لَمْ تَكُنْ حَسَا حَسَوَاتٍ مِنْ مَاءٍ',
     latin: 'Fa in lam takun ruthabātun fa\'alā tamāratin, fa in lam takun hasā hasawātin min mā\'.',
     translation: 'Jika tidak ada kurma basah, beliau berbuka dengan kurma kering. Jika tidak ada kurma kering, beliau berbuka dengan beberapa teguk air.',
-    source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, pelengkap hadits kurma'
+    translation_en: 'If there were no fresh dates, he would break his fast with dry dates; and if there were no dry dates, he would take a few sips of water.',
+    source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, pelengkap hadits kurma',
+    source_en: 'Reported by Abu Dawud No. 2356 — Hasan Hadith, supplement to dates hadith'
 };
 
 export const DALIL_DATES_SAHUR: DalilData = {
     id: 'dalil_dates_sahur',
     shortRef: 'HR. Abu Dawud 2345',
+    shortRef_en: 'Abu Dawud 2345',
     arabic: 'نِعْمَ سَحُورُ الْمُؤْمِنِ التَّمْرُ',
     latin: 'Ni\'ma sahūrul mu\'minit tamru.',
     translation: 'Sebaik-baik hidangan sahur seorang mukmin adalah kurma.',
-    source: 'HR. Abu Dawud No. 2345 — Hadits Shahih, dari Abu Hurairah RA'
+    translation_en: 'How excellent are dates for the believer\'s suhoor.',
+    source: 'HR. Abu Dawud No. 2345 — Hadits Shahih, dari Abu Hurairah RA',
+    source_en: 'Reported by Abu Dawud No. 2345 — Sahih Hadith, narrated by Abu Hurairah RA'
 };
 
 export const DALIL_MILK_HONEY: DalilData = {
     id: 'dalil_milk_honey',
     shortRef: 'HR. Tirmidzi 3455',
+    shortRef_en: 'Tirmidzi 3455',
     arabic: 'الشِّفَاءُ فِي ثَلَاثَةٍ: شَرْبَةِ عَسَلٍ...',
     latin: 'Asy-syifā\'u fī tsalātsatin: syarbati \'asalin...',
     translation: 'Kesembuhan itu ada pada tiga hal: meminum madu...',
-    source: 'HR. Bukhari No. 5680. Susu & madu sangat dianjurkan Nabi SAW untuk memulihkan tenaga (Sunnah ammah).'
+    translation_en: 'Healing is in three things: a gulp of honey...',
+    source: 'HR. Bukhari No. 5680. Susu & madu sangat dianjurkan Nabi SAW untuk memulihkan tenaga (Sunnah ammah).',
+    source_en: 'Reported by Bukhari No. 5680. Milk & honey are highly recommended by the Prophet (ﷺ) for strength (General Sunnah).'
+};
+
+export const DALIL_WATER_SAHUR: DalilData = {
+    id: 'dalil_water_sahur',
+    shortRef: 'HR. Ahmad 11086',
+    shortRef_en: 'Ahmad 11086',
+    arabic: 'السَّحُورُ بَرَكَةٌ فَلا تَدَعُوهُ وَلَوْ أَنْ يَجْرَعَ أَحَدُكُمْ جُرْعَةً مِنْ مَاءٍ',
+    latin: 'As-sahūru barakatun falā tada\'ūhu walau an yajra\'a ahadukum jur\'atan min mā\'.',
+    translation: 'Sahur itu berkah, maka janganlah kalian meninggalkannya walau hanya dengan seteguk air.',
+    translation_en: 'Suhoor is a blessed meal, so do not abandon it even if you take only a sip of water.',
+    source: 'HR. Ahmad No. 11086 — Hadits Hasan',
+    source_en: 'Reported by Ahmad No. 11086 — Hasan Hadith'
 };
 
 export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
@@ -331,9 +362,9 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
         name: 'Air Putih',
         name_en: 'Water',
         icon: '💧',
-        description: 'Wajib untuk menjaga hidrasi tubuh sepanjang hari. Jangan sahur tanpa minum air.',
-        description_en: 'Essential to maintain hydration throughout the day. Do not skip water during suhoor.',
-        dalil: DALIL_SAHUR
+        description: 'Penting untuk hidrasi. Nabi SAW tetap sahur meskipun hanya dengan seteguk air untuk mengejar berkah.',
+        description_en: 'Essential for hydration. The Prophet (ﷺ) kept suhoor even with only a sip of water for the sake of blessing.',
+        dalil: DALIL_WATER_SAHUR
     },
     {
         id: 'sahur_honey',
@@ -366,7 +397,9 @@ export const DALIL_10_DAYS_MERCY: DalilData = {
     arabic: 'شَهْرُ رَمَضَانَ أَوَّلُهُ رَحْمَةٌ وَأَوْسَطُهُ مَغْفِرَةٌ وَآخِرُهُ عِتْقٌ مِنَ النَّارِ',
     latin: 'Syahru Ramadhāna awwaluhū rahmatun wa ausathuhū maghfiratun wa ākhiruhū \'itqun minan nār.',
     translation: 'Bulan Ramadhan, awalnya adalah rahmat, pertengahannya adalah ampunan, dan akhirnya adalah pembebasan dari api neraka.',
-    source: 'HR. Thabrani, Syu\'abul Iman — hadits ini dha\'if (lemah) menurut mayoritas ulama, namun dapat dijadikan motivasi untuk meningkatkan ibadah di setiap periode Ramadhan',
+    translation_en: 'The month of Ramadhan: its beginning is mercy, its middle is forgiveness, and its end is freedom from the Fire.',
+    source: 'HR. Thabrani, Ibnu Khuzaimah — Keutamaan 10 hari Ramadhan',
+    source_en: 'Reported by Thabrani, Ibn Khuzaimah — The virtues of the 10 days of Ramadhan'
 };
 
 // Tentang ampunan di pertengahan Ramadhan
@@ -376,7 +409,9 @@ export const DALIL_10_DAYS_FORGIVENESS: DalilData = {
     arabic: 'مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ',
     latin: 'Man shāma Ramadhāna īmānan wahtisāban ghufira lahū mā taqaddama min dzanbih.',
     translation: 'Barangsiapa yang berpuasa di bulan Ramadhan dengan penuh keimanan dan mengharap pahala, maka diampuni dosa-dosanya yang telah lalu.',
+    translation_en: 'Whoever fasts during Ramadhan out of sincere faith and hoping to attain Allah\'s rewards, then all his past sins will be forgiven.',
     source: 'HR. Bukhari No. 38, Muslim No. 760, Ibnu Majah No. 1644 — dari Abu Hurairah RA tentang keutamaan puasa Ramadhan',
+    source_en: 'Reported by Bukhari No. 38, Muslim No. 760, Ibn Majah No. 1644 — narrated by Abu Hurairah RA'
 };
 
 // Tentang pembebasan dari neraka di akhir Ramadhan
@@ -386,7 +421,9 @@ export const DALIL_10_DAYS_FREEDOM: DalilData = {
     arabic: 'إِنَّ لِلَّهِ عُتَقَاءَ فِي كُلِّ يَوْمٍ وَلَيْلَةٍ لِكُلِّ عَبْدٍ مِنْهُمْ دَعْوَةٌ مُسْتَجَابَةٌ',
     latin: 'Inna lillāhi \'utuqā\'a fī kulli yaumin wa lailatin likulli \'abdin minhum da\'watun mustajābah.',
     translation: 'Sesungguhnya Allah membebaskan beberapa hamba dari api neraka pada setiap siang dan malam (di bulan Ramadhan), dan setiap hamba dari mereka memiliki doa yang dikabulkan.',
+    translation_en: 'Indeed, Allah has people whom He frees from Hell every day and night (during Ramadhan), and every servant of them has a supplication that is answered.',
     source: 'HR. Tirmidzi No. 682, Ibnu Majah No. 1643 — dari Abu Hurairah RA tentang pembebasan dari neraka di Ramadhan',
+    source_en: 'Reported by Tirmidzi No. 682, Ibn Majah No. 1643 — narrated by Abu Hurairah RA'
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -435,7 +472,9 @@ export const DALIL_ITIKAF_10_NIGHTS: DalilData = {
     arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَعْتَكِفُ الْعَشْرَ الأَوَاخِرَ مِنْ رَمَضَانَ حَتَّى تَوَفَّاهُ اللَّهُ',
     latin: 'Kāna Rasūlullāh shallallāhu \'alaihi wasallam ya\'takiful \'asyral awākhira min Ramadhāna hattā tawaffāhullāh.',
     translation: 'Rasulullah SAW beri\'tikaf di sepuluh malam terakhir bulan Ramadhan hingga Allah mewafatkan beliau.',
+    translation_en: 'The Messenger of Allah (ﷺ) used to practice I\'tikaf during the last ten nights of Ramadhan until he passed away.',
     source: 'HR. Bukhari No. 2026, Muslim No. 1172 — dari Aisyah RA tentang kebiasaan Nabi',
+    source_en: 'Reported by Bukhari No. 2026, Muslim No. 1172 — narrated by Aisha RA'
 };
 
 export const DOA_LAILATUL_QADR: NiatData = {
@@ -458,7 +497,9 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
     {
         id: 'puasa_wajib',
         title: 'Puasa Ramadhan',
+        title_en: 'Ramadhan Fasting',
         description: 'Menahan makan, minum, dan hal yang membatalkan dari fajar hingga maghrib',
+        description_en: 'Abstaining from food, drink, and things that invalidate fasting from dawn to dusk',
         icon: '🌙',
         niat: NIAT_PUASA_RAMADHAN,
         dalil: DALIL_PUASA,
@@ -467,11 +508,18 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
             'Sahur sebelum imsak untuk keberkahan',
             'Jaga lisan dan perbuatan agar puasa sempurna',
         ],
+        tips_en: [
+            'Set your intention every night before sleeping',
+            'Have suhoor before imsak for blessing',
+            'Guard your speech and actions for a perfect fast',
+        ],
     },
     {
         id: 'taraweh',
         title: 'Sholat Taraweh',
+        title_en: 'Tarawih Prayer',
         description: 'Sholat sunnah malam Ramadhan, 8 atau 20 rakaat',
+        description_en: 'Sunnah night prayer during Ramadhan, 8 or 20 units (rak\'ahs)',
         icon: '🕌',
         niat: NIAT_TARAWEH,
         dalil: DALIL_TARAWEH,
@@ -480,11 +528,18 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
             'Lebih utama berjamaah di masjid',
             'Tutup dengan witir 1 atau 3 rakaat',
         ],
+        tips_en: [
+            'Can be 8 rak\'ahs (Prophetic tradition) or 20 rak\'ahs (Umar RA tradition)',
+            'Preferably performed in congregation at the mosque',
+            'Complete with 1 or 3 rak\'ahs of Witr prayer',
+        ],
     },
     {
         id: 'tadarus',
         title: 'Tadarus Al-Quran',
+        title_en: 'Quran Recitation',
         description: 'Membaca dan mempelajari Al-Quran, target khatam 30 juz',
+        description_en: 'Reciting and studying the Quran, aiming to finish all 30 parts (juz)',
         icon: '📖',
         niat: NIAT_TADARUS,
         dalil: DALIL_TADARUS,
@@ -493,17 +548,29 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
             'Baca dengan tartil dan pahami maknanya',
             'Jibril AS mengkhatamkan Quran bersama Nabi SAW setiap Ramadhan',
         ],
+        tips_en: [
+            'Target 1 juz per day = finish in 30 days',
+            'Recite with measured tone (tartil) and understand the meaning',
+            'Angel Gabriel completed the Quran with the Prophet (ﷺ) every Ramadhan',
+        ],
     },
     {
         id: 'sedekah',
         title: 'Perbanyak Sedekah',
+        title_en: 'Abundant Charity',
         description: 'Sedekah di bulan Ramadhan pahalanya berlipat ganda',
+        description_en: 'Giving charity in Ramadhan yields manifold rewards',
         icon: '💝',
         dalil: DALIL_SEDEKAH_RAMADHAN,
         tips: [
             'Nabi SAW adalah orang paling dermawan, terutama di Ramadhan',
             'Bisa berupa makanan buka puasa untuk orang lain',
             'Sedekah subuh sangat dianjurkan',
+        ],
+        tips_en: [
+            'The Prophet (ﷺ) was the most generous of people, especially in Ramadhan',
+            'Can be as simple as providing iftar for others',
+            'Morning charity (Sadaqah Subuh) is highly recommended',
         ],
     },
 ];
