@@ -1,10 +1,17 @@
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function checkAvailableModels() {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return "Unauthorized";
+    }
+
     if (!process.env.GEMINI_API_KEY) {
         return "No Key";
     }
@@ -16,9 +23,10 @@ export async function checkAvailableModels() {
 
         // Actually, let's just try to generate with 'gemini-3-flash-preview' as a test.
         const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-        const result = await model.generateContent("test");
+        await model.generateContent("test");
         return "gemini-3-flash-preview is working!";
-    } catch (error: any) {
-        return `Error listing/checking models: ${error.message}`;
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return `Error listing/checking models: ${errorMessage}`;
     }
 }

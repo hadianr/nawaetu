@@ -4,8 +4,16 @@ import { GET } from './route';
 // Mock NextRequest and NextResponse locally
 vi.mock('next/server', () => {
   return {
-    NextResponse: {
-      json: vi.fn((body, init) => ({ body, status: init?.status || 200 })),
+    NextResponse: class MockNextResponse {
+      body: any;
+      status: number;
+      constructor(body: any, init?: any) {
+        this.body = body;
+        this.status = init?.status || 200;
+      }
+      static json(body: any, init?: any) {
+        return { body, status: init?.status || 200 };
+      }
     },
     NextRequest: class MockNextRequest {
       url: string;
@@ -49,8 +57,9 @@ describe('Debug User Data API', () => {
     const response = await GET(req);
 
     expect(response.status).toBe(404);
-    // Verify it is the "blocked" response (empty object) and not "User not found"
-    expect(response.body).toEqual({});
+    // In production we return new NextResponse(null, { status: 404 })
+    // With our mock, body is null.
+    expect(response.body).toBeNull();
   });
 
   it('should attempt to fetch data in development environment', async () => {
@@ -64,7 +73,8 @@ describe('Debug User Data API', () => {
 
     // In dev, it should proceed. With empty db mock, it returns 404 "User not found"
     // We check that it is NOT the empty object blocked response
-    expect(response.body).not.toEqual({});
+    expect(response.body).not.toBeNull();
+    // It returns json error
     expect(response.body).toHaveProperty('error');
   });
 });
