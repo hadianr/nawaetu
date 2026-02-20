@@ -55,12 +55,12 @@ export async function POST(req: NextRequest) {
         // 4. Data Extraction
         const data = body.data || body;
         const status = data.status;
-        const mayarId = data.id; // Mayar Transaction ID
+        const mayarId = data.transactionId || data.id; // Corrected: Transaction ID is in data.transactionId
         const linkId = data.link_id || data.paymentLinkId;
         const productId = data.productId; // Should match our paymentLinkId
 
         if (!mayarId) {
-            return NextResponse.json({ error: "Invalid Payload: Missing ID" }, { status: 400 });
+            return NextResponse.json({ error: "Invalid Payload: Missing Transaction ID" }, { status: 400 });
         }
 
         console.log(`[Mayar Webhook] Processing: MayarID=${mayarId}, ProductID=${productId}, Status=${status}`);
@@ -69,16 +69,16 @@ export async function POST(req: NextRequest) {
         const conditions = [eq(transactions.mayarId, mayarId)];
         if (linkId) conditions.push(eq(transactions.paymentLinkId, linkId));
         if (productId) conditions.push(eq(transactions.paymentLinkId, productId));
-        conditions.push(eq(transactions.paymentLinkId, mayarId)); // Just in case
 
+        // Use OR to find any match, prioritizing mayarId, then paymentLinkId/productId
         let transaction = await db.query.transactions.findFirst({
             where: or(...conditions)
         });
 
         // 6. Fallback Lookup (Email & Amount)
         if (!transaction) {
-            const email = data.customer?.email || data.customer_email || data.customerEmail || data.merchantEmail;
-            const amount = data.amount;
+            const email = data.customerEmail || data.customer?.email || data.merchantEmail;
+            const amount = data.amount || data.paymentLinkAmount;
 
             console.log(`[Mayar Webhook] Transaction not found by ID. Trying fallback for Email: ${email}, Amount: ${amount}`);
 
