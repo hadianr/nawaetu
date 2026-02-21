@@ -184,13 +184,11 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             if (!cachedLocationName && !isDefault) {
                 try {
                     // Try Nominatim first (more reliable and accurate)
+                    // Note: Browser Fetch API blocks custom User-Agent headers on mobile. 
+                    // Using email parameter instead to comply with Nominatim usage policy.
                     const locResponse = await fetchWithTimeout(
-                        `${API_CONFIG.LOCATION.NOMINATIM}?format=json&lat=${lat}&lon=${lng}&accept-language=id`,
-                        {
-                            headers: {
-                                'User-Agent': 'Nawaetu/1.7.3 (Islamic Prayer Times App)'
-                            }
-                        },
+                        `${API_CONFIG.LOCATION.NOMINATIM}?format=json&lat=${lat}&lon=${lng}&accept-language=id&email=nawaetu.app@gmail.com`,
+                        {},
                         { timeoutMs: 10000 }
                     );
                     const locData = await locResponse.json();
@@ -209,7 +207,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                             { timeoutMs: 8000 }
                         );
                         const fallbackData = await fallbackResponse.json();
-                        locationName = fallbackData.locality || fallbackData.city || fallbackData.principalSubdivision || "Lokasi Terdeteksi";
+                        locationName = fallbackData.locality || fallbackData.city || fallbackData.principalSubdivision || fallbackData.countryName || "Lokasi Terdeteksi";
                     } catch (fallbackErr) {
                         // Both APIs failed, use coordinates-based name
                         locationName = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
