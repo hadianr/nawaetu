@@ -42,6 +42,14 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // Validate user_token format and length to prevent DOS/Storage exhaustion
+        if (typeof user_token !== 'string' || user_token.length > 255) {
+            return NextResponse.json(
+                { success: false, error: "User token must be a string of 255 characters or less" },
+                { status: 400 }
+            );
+        }
+
         // Ensure date is in YYYY-MM-DD format
         let intentionDate: string;
         if (niat_date) {
