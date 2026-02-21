@@ -182,41 +182,25 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
 
             if (!cachedLocationName && !isDefault) {
-                // Try BigDataCloud first for mobile (has very permissive CORS and no strict User-Agent requirements)
-                let resolvedName = null;
-
+                // Fetch from our internal server proxy to bypass Safari ITP and CORS blocks
                 try {
-                    const fallbackResponse = await fetchWithTimeout(
-                        `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
-                        {},
-                        { timeoutMs: 8000 }
-                    );
-                    const fallbackData = await fallbackResponse.json();
-                    resolvedName = fallbackData.locality || fallbackData.city || fallbackData.principalSubdivision || fallbackData.countryName;
-                } catch (fallbackErr) {
-                    console.warn("BigDataCloud reverse geocoding failed", fallbackErr);
-                }
+                    const proxyUrl = `/api/location/reverse?lat=${lat}&lng=${lng}`;
+                    const proxyResponse = await fetchWithTimeout(proxyUrl, {}, { timeoutMs: 10000 });
 
-                // If BigDataCloud failed or returned undefined, try Nominatim
-                if (!resolvedName) {
-                    try {
-                        const locResponse = await fetchWithTimeout(
-                            `${API_CONFIG.LOCATION.NOMINATIM}?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=id&email=nawaetu.app@gmail.com`,
-                            {},
-                            { timeoutMs: 8000 }
-                        );
-                        const locData = await locResponse.json();
-                        const addr = locData.address || {};
-                        resolvedName = addr.subdistrict || addr.village || addr.municipality ||
-                            addr.city || addr.town || addr.state ||
-                            locData.display_name?.split(',')[0];
-                    } catch (e) {
-                        console.warn("Nominatim reverse geocoding failed", e);
+                    if (proxyResponse.ok) {
+                        const proxyData = await proxyResponse.json();
+                        if (proxyData.success && proxyData.name) {
+                            locationName = proxyData.name;
+                        }
                     }
+                } catch (e) {
+                    console.warn(`[usePrayerTimes] Internal proxy fetch failed:`, e);
                 }
 
-                // Final fallback
-                locationName = resolvedName || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                // If proxy completely fails (network offline or 502), fallback to raw coordinates
+                if (locationName === "Lokasi Anda" || !locationName) {
+                    locationName = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                }
             }
 
             // Get calculation method from settings (default: 20 = Kemenag RI)
