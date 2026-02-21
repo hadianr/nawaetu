@@ -632,14 +632,11 @@ export default function MissionsWidget() {
                                 );
                             }
                         } else if (selectedMission.id === 'muhasabah' && userToken) {
-                            // For now we pass a dummy ID or handle it inside. 
-                            // Ideally we fetch the daily intention ID here.
-                            // Assuming the API might handle 'latest' or we need to fetch it.
-                            // TODO: Fetch real intention ID
                             customContent = (
                                 <ReflectionInputForm
                                     userToken={userToken}
-                                    intentionId="latest" // Placeholder, backend needs to support or we fetch
+                                    intentionId={todayIntention?.id}
+                                    intentionText={todayIntention?.text}
                                     onComplete={() => handleCompleteMission(selectedMission.xpReward)}
                                 />
                             );
