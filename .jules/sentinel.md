@@ -22,3 +22,13 @@
 **Vulnerability:** Relying solely on `process.env.NODE_ENV` checks within route handlers is fragile; misconfiguration can expose sensitive endpoints like `/api/debug/user-data`.
 **Learning:** Centralized security controls at the middleware level provide a critical second layer of defense against accidental exposure of internal routes.
 **Prevention:** Explicitly block sensitive path patterns (e.g., `/api/debug*`) in `middleware.ts` for production environments, ensuring protection even if individual route checks fail or are omitted.
+
+## 2025-05-21 - Unbounded Anonymous Token Input
+**Vulnerability:** Anonymous user tokens were accepted without length validation, allowing generation of massive email strings and potential DOS/Storage exhaustion.
+**Learning:** Endpoints supporting anonymous users via client-generated tokens must strictly validate token format and length before using them in database queries or identifiers.
+**Prevention:** Always sanitize and limit length of identifiers (like tokens) coming from the client, especially when used to construct other unique keys (like emails).
+
+## 2025-05-21 - Type Validation for Input
+**Vulnerability:** Potential 500 errors or unhandled exceptions when API inputs are not of expected primitive type (e.g. number instead of string).
+**Learning:** `req.json()` returns `any`, so explicit type checking (e.g. `typeof variable === 'string'`) is crucial before performing string operations or length checks.
+**Prevention:** Always validate `typeof` for all user inputs before processing.
