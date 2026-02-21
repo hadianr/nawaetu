@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
 
   // Block debug/testing routes in production
   if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production') {
-    const debugRoutes = ['/notification-debug'];
+    const debugRoutes = ['/notification-debug', '/api/debug', '/api/notifications/debug'];
 
     if (debugRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
       response = NextResponse.rewrite(new URL('/404', request.url));
