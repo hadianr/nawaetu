@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-    Settings, Edit2, LogOut, Crown, Flame, Share2, ChevronRight, Sparkles, Calendar, Check, Sprout, Target, Shield, X
+    Settings, Edit2, LogOut, Crown, Flame, Share2, ChevronRight, Sparkles, Calendar, Check, Sprout, Target, Shield, X, Info
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -18,23 +18,10 @@ import { Label } from "@/components/ui/label";
 import { useProfile } from "@/hooks/useProfile";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { getDisplayStreak } from "@/lib/streak-utils";
+import { getPlayerStats } from "@/lib/leveling";
 
 // --- CONSTANTS & DATA ---
-
-const ARCHETYPES = [
-    {
-        id: "beginner",
-        icon: Sprout,
-    },
-    {
-        id: "striver",
-        icon: Target,
-    },
-    {
-        id: "dedicated",
-        icon: Shield,
-    }
-];
 
 const AVATAR_LIST = [
     { id: 'boy-1', src: 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg' },
@@ -55,23 +42,49 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const router = useRouter();
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
-
     // Derived State
     const isAuthenticated = status === "authenticated";
     // FIXED: Only logged in users can be Muhsinin
     const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
-    const userName = session?.user?.name || "Hamba Allah";
+
+    // Initialize from storage or session
+    const [userName, setUserName] = useState<string>(() => {
+        if (typeof window === 'undefined') return "Sobat Nawaetu";
+        const saved = getStorageService().getOptional<string>(STORAGE_KEYS.USER_NAME);
+        return saved || "Sobat Nawaetu";
+    });
+    const [userImage, setUserImage] = useState<string>(() => {
+        if (typeof window === 'undefined') return AVATAR_LIST[0].src;
+        return getStorageService().getOptional<string>(STORAGE_KEYS.USER_AVATAR) || AVATAR_LIST[0].src;
+    });
+
     const userRole = isMuhsinin ? (t as any).profileRolePremium : (t as any).profileRoleGuest;
-    const userImage = session?.user?.image || AVATAR_LIST[0].src;
+
+    const translatedArchetypes = [
+        {
+            id: "beginner",
+            icon: Sprout,
+            labelTitle: (t as any).onboardingArchetypeBeginnerLabel,
+            labelDesc: (t as any).onboardingArchetypeBeginnerDesc
+        },
+        {
+            id: "striver",
+            icon: Target,
+            labelTitle: (t as any).onboardingArchetypeStriverLabel,
+            labelDesc: (t as any).onboardingArchetypeStriverDesc
+        },
+        {
+            id: "dedicated",
+            icon: Shield,
+            labelTitle: (t as any).onboardingArchetypeDedicatedLabel,
+            labelDesc: (t as any).onboardingArchetypeDedicatedDesc
+        }
+    ];
 
     // Current Archetype Details
     const currentArchetypeId = session?.user?.archetype || 'beginner';
-    const currentArchetype = ARCHETYPES.find(a => a.id === currentArchetypeId) || ARCHETYPES[0];
-    const currentArchetypeLabel = currentArchetypeId === 'beginner'
-        ? (t as any).onboardingArchetypeBeginnerLabel
-        : currentArchetypeId === 'striver'
-            ? (t as any).onboardingArchetypeStriverLabel
-            : (t as any).onboardingArchetypeDedicatedLabel;
+    const currentArchetype = translatedArchetypes.find(a => a.id === currentArchetypeId) || translatedArchetypes[0];
+    const currentArchetypeLabel = currentArchetype.labelTitle;
 
     // State for Editing
     const [isEditing, setIsEditing] = useState(false);
@@ -79,19 +92,88 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [editGender, setEditGender] = useState<"male" | "female" | null>(null);
     const [editArchetype, setEditArchetype] = useState<"beginner" | "striver" | "dedicated" | null>(null);
     const [isOpen, setIsOpen] = useState(false);
+
+    // UI States
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [showLevelInfo, setShowLevelInfo] = useState(false);
+    const [stats, setStats] = useState({ streak: 0, level: 1, xp: 0, nextLevelXp: 100, progress: 0 });
 
     useEffect(() => {
+        const loadStats = () => {
+            const currentStreak = getDisplayStreak().streak;
+            const playerStats = getPlayerStats();
+            setStats({
+                streak: currentStreak,
+                level: playerStats.level,
+                xp: playerStats.xp,
+                nextLevelXp: playerStats.nextLevelXp,
+                progress: playerStats.progress
+            });
+        };
+
+        loadStats();
+
+        window.addEventListener("xp_updated", loadStats);
+        window.addEventListener("streak_updated", loadStats);
+
+        return () => {
+            window.removeEventListener("xp_updated", loadStats);
+            window.removeEventListener("streak_updated", loadStats);
+        };
+    }, []);
+
+    useEffect(() => {
+        const storage = getStorageService();
+        const savedName = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
+        const savedAvatar = storage.getOptional<string>(STORAGE_KEYS.USER_AVATAR);
+        const savedGender = storage.getOptional<string>(STORAGE_KEYS.USER_GENDER);
+        const savedArchetype = storage.getOptional<string>(STORAGE_KEYS.USER_ARCHETYPE);
+
         if (session?.user?.name) {
+            setUserName(session.user.name);
             setEditName(session.user.name);
+        } else if (savedName) {
+            setUserName(savedName);
+            setEditName(savedName);
+        } else {
+            const defaultName = (t as any).onboardingDefaultName || "Sobat Nawaetu";
+            setUserName(defaultName);
+            setEditName(defaultName);
         }
+
+        if (session?.user?.image) {
+            setUserImage(session.user.image);
+        } else if (savedAvatar) {
+            setUserImage(savedAvatar);
+        } else {
+            setUserImage(AVATAR_LIST[0].src);
+        }
+
         if (session?.user?.gender) {
             setEditGender(session.user.gender as any);
+        } else if (savedGender) {
+            setEditGender(savedGender as any);
         }
+
         if (session?.user?.archetype) {
             setEditArchetype(session.user.archetype as any);
+        } else if (savedArchetype) {
+            setEditArchetype(savedArchetype as any);
         }
     }, [session]);
+
+    // Listener for manual profile updates
+    useEffect(() => {
+        const handleRefresh = () => {
+            const storage = getStorageService();
+            const savedName = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
+            const savedAvatar = storage.getOptional<string>(STORAGE_KEYS.USER_AVATAR);
+            if (savedName) setUserName(savedName);
+            if (savedAvatar) setUserImage(savedAvatar);
+        };
+        window.addEventListener('profile_updated', handleRefresh);
+        return () => window.removeEventListener('profile_updated', handleRefresh);
+    }, []);
 
     const handleLogin = () => signIn("google");
 
@@ -163,7 +245,9 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             archetype: editArchetype as "beginner" | "striver" | "dedicated"
         });
         if (success) {
+            setUserName(editName); // Immediate UI update
             setIsEditing(false);
+            window.dispatchEvent(new CustomEvent('profile_updated'));
             if (onProfileUpdate) onProfileUpdate();
         }
     };
@@ -197,16 +281,24 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="max-w-[90vw] w-[380px] bg-[#0F172A] border-white/10 text-white p-0 rounded-3xl overflow-hidden">
+            <DialogContent className="w-[calc(100vw-32px)] sm:w-[380px] max-w-sm max-h-[85vh] bg-[#0F172A] border-white/10 text-white p-0 rounded-3xl overflow-hidden flex flex-col">
                 <DialogTitle className="sr-only">Profil Pengguna</DialogTitle>
 
                 {/* 1. Header & Cover */}
-                <div className="relative">
+                <div className="relative flex-none">
                     <div className={cn(
-                        "h-32 w-full absolute top-0 left-0",
+                        "h-24 w-full absolute top-0 left-0",
                         "bg-gradient-to-r from-[rgb(var(--color-primary))]/80 to-[rgb(var(--color-secondary))]/80"
                     )}>
+                        {/* Base Gradient & Noise */}
                         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+
+                        {/* Subtle Islamic Geometric Pattern via SVG background */}
+                        <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{
+                            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                            backgroundSize: '30px'
+                        }}></div>
+
                         <div className="absolute inset-0 bg-[rgb(var(--color-primary))]/10 mix-blend-overlay"></div>
                     </div>
 
@@ -230,10 +322,10 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     </div>
 
                     {/* Profile Picture Area */}
-                    <div className="relative z-10 px-6 pt-8 flex items-end justify-between">
+                    <div className="relative z-10 px-6 pt-0 flex items-end justify-between -mt-10">
                         <div className="relative">
                             <div className={cn(
-                                "w-24 h-24 rounded-full p-1 bg-[#0F172A]",
+                                "w-20 h-20 rounded-full p-1 bg-[#0F172A]",
                                 isMuhsinin ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]" : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[#0F172A]"
                             )}>
                                 <Avatar className="w-full h-full rounded-full border border-white/10">
@@ -253,11 +345,11 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                 </div>
 
                 {/* 2. User Info */}
-                <div className="px-6 pb-6 pt-3 relative z-10">
+                <div className="px-6 pb-6 pt-3 relative z-10 flex-1 overflow-y-auto scrollbar-hide">
                     <div className="flex justify-between items-start mb-6">
                         <div className="flex-1">
                             {isEditing ? (
-                                <div className="space-y-4 mb-2 max-h-[60vh] overflow-y-auto pr-2 scrollbar-hide">
+                                <div className="space-y-4 mb-2 pr-2">
                                     <div className="space-y-1.5">
                                         <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileNameLabel}</Label>
                                         <Input
@@ -295,22 +387,23 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     <div className="space-y-1.5">
                                         <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileArchetypeLabel}</Label>
                                         <div className="grid grid-cols-1 gap-2">
-                                            {[
-                                                { id: 'beginner', label: (t as any).onboardingArchetypeBeginnerLabel, icon: '🌱', color: 'text-[rgb(var(--color-primary-light))]' },
-                                                { id: 'striver', label: (t as any).onboardingArchetypeStriverLabel, icon: '⚡', color: 'text-[rgb(var(--color-primary-light))]' },
-                                                { id: 'dedicated', label: (t as any).onboardingArchetypeDedicatedLabel, icon: '🔥', color: 'text-[rgb(var(--color-primary-light))]' },
-                                            ].map((type) => (
+                                            {translatedArchetypes.map((type) => (
                                                 <button
                                                     key={type.id}
                                                     onClick={() => setEditArchetype(type.id as any)}
                                                     className={cn(
-                                                        "flex items-center gap-3 px-3 h-10 rounded-xl border transition-all text-xs font-medium",
+                                                        "flex items-center gap-3 px-3 py-2 rounded-xl border transition-all text-left",
                                                         editArchetype === type.id ? "bg-white/10 border-white/30 text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                                                     )}
                                                 >
-                                                    <span className="text-lg">{type.icon}</span>
-                                                    <span className="flex-1 text-left">{type.label}</span>
-                                                    {editArchetype === type.id && <Check className={cn("w-4 h-4", type.color)} />}
+                                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
+                                                        <type.icon className={cn("w-4 h-4", editArchetype === type.id ? "text-[rgb(var(--color-primary-light))]" : "text-slate-400")} />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="text-xs font-bold leading-none mb-1">{type.labelTitle}</div>
+                                                        <div className="text-[9px] text-slate-500 leading-tight">{type.labelDesc}</div>
+                                                    </div>
+                                                    {editArchetype === type.id && <Check className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />}
                                                 </button>
                                             ))}
                                         </div>
@@ -328,34 +421,18 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     </div>
                                 </div>
                             ) : (
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <h2 className="text-xl font-bold text-white leading-tight">{userName}</h2>
-                                        {isAuthenticated && (
-                                            <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
-                                                <Edit2 className="w-3.5 h-3.5" />
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div className="flex flex-col gap-1 mt-1">
+                                <>
+                                    <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
-                                            <div className="flex items-center gap-1.5 text-slate-400">
-                                                {isMuhsinin ? (
-                                                    <div className="flex items-center gap-1 text-[rgb(var(--color-primary-light))] text-xs font-medium px-2 py-0.5 bg-[rgb(var(--color-primary))]/10 rounded-full border border-[rgb(var(--color-primary))]/20">
-                                                        <Sparkles className="w-3 h-3" />
-                                                        {userRole}
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-xs text-slate-400">{userRole}</span>
-                                                )}
-                                            </div>
-                                            <div className="text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-[rgb(var(--color-primary-light))]">
-                                                <currentArchetype.icon className="w-2.5 h-2.5" />
-                                                {currentArchetypeLabel}
-                                            </div>
+                                            <h2 className="text-xl font-bold text-white leading-tight">{userName}</h2>
+                                            {isAuthenticated && (
+                                                <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
+                                                    <Edit2 className="w-3.5 h-3.5" />
+                                                </button>
+                                            )}
                                         </div>
                                         {isAuthenticated && session?.user?.email && (
-                                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-0.5">
                                                 <div className="w-3 h-3 rounded-full bg-white/10 flex items-center justify-center">
                                                     <span className="text-[6px] font-bold text-white">G</span>
                                                 </div>
@@ -363,12 +440,122 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             </div>
                                         )}
                                     </div>
-                                </div>
+                                    <div className="flex flex-col gap-1.5 mt-2.5">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            {/* Archetype Badge */}
+                                            <div className="text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-[rgb(var(--color-primary-light))]">
+                                                <currentArchetype.icon className="w-2.5 h-2.5" />
+                                                {currentArchetypeLabel}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
                             )}
                         </div>
                     </div>
 
-                    {/* 3. Auth Call to Action (If Guest) */}
+                    {/* 3. Gamification Stats (Visible to All) */}
+                    <div className="flex flex-col gap-3 mb-6">
+                        {/* Level Progress */}
+                        <div className="bg-white/5 border border-white/5 rounded-2xl p-4">
+                            <div className="flex justify-between items-end mb-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center">
+                                        <Crown className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
+                                            onClick={() => setShowLevelInfo(!showLevelInfo)}
+                                        >
+                                            <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
+                                                {(t as any).gamificationLevelName} {stats.level} • {
+                                                    stats.level <= 10 ? (t as any).gamificationLevelTitle_0_10 :
+                                                        stats.level <= 25 ? (t as any).gamificationLevelTitle_11_25 :
+                                                            stats.level <= 50 ? (t as any).gamificationLevelTitle_26_50 :
+                                                                stats.level <= 99 ? (t as any).gamificationLevelTitle_51_99 : (t as any).gamificationLevelTitle_100
+                                                }
+                                            </p>
+                                            <Info className="w-3 h-3 text-slate-500" />
+                                        </div>
+                                        <p className="text-sm font-bold text-white">{stats.xp} {(t as any).gamificationXpName}</p>
+                                    </div>
+                                </div>
+                                <span className="text-[10px] text-slate-400">{stats.xp} / {stats.nextLevelXp} {(t as any).gamificationXpName}</span>
+                            </div>
+                            <div className="h-2.5 w-full rounded-full bg-black/20 overflow-hidden border border-white/5 shadow-inner mb-2.5">
+                                <div
+                                    className="h-full rounded-full transition-all duration-500 shadow-lg"
+                                    style={{
+                                        width: `${stats.progress}%`,
+                                        background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary-light)))`,
+                                        boxShadow: "0 0 10px rgba(var(--color-primary), 0.5)"
+                                    }}
+                                />
+                            </div>
+
+                            {showLevelInfo ? (
+                                <div className="mt-3 p-4 rounded-xl bg-black/40 border border-white/5 text-[10px] text-slate-400 space-y-3 animate-in fade-in slide-in-from-top-1">
+                                    <div className="font-bold text-white mb-1 text-[11px] uppercase tracking-wider">{(t as any).gamificationLevelName} Tingkatan:</div>
+
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-baseline">
+                                            <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_0_10} (Lvl 1-10)</span>
+                                        </div>
+                                        <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_0_10}</p>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-baseline">
+                                            <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_11_25} (Lvl 11-25)</span>
+                                        </div>
+                                        <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_11_25}</p>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-baseline">
+                                            <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_26_50} (Lvl 26-50)</span>
+                                        </div>
+                                        <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_26_50}</p>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-baseline">
+                                            <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_51_99} (Lvl 51-99)</span>
+                                        </div>
+                                        <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_51_99}</p>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-baseline">
+                                            <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_100} (Lvl 100+)</span>
+                                        </div>
+                                        <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_100}</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-[10px] text-slate-500 leading-snug">
+                                    {(t as any).profileXpDesc}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Streak Row (Full Width) */}
+                        <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-[rgb(var(--color-primary))]/20 flex flex-shrink-0 items-center justify-center">
+                                <Flame className="w-6 h-6 text-[rgb(var(--color-primary-light))]" />
+                            </div>
+                            <div>
+                                <div className="flex items-end gap-2">
+                                    <span className="text-2xl font-black text-white leading-none">{stats.streak}</span>
+                                    <span className="text-[11px] text-slate-400 uppercase tracking-wider font-medium mb-[2px]">{(t as any).profileDays}</span>
+                                </div>
+                                <div className="text-[11px] text-slate-400 mt-1 leading-snug">{(t as any).profileStreakDesc}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 4. Auth Call to Action (If Guest) */}
                     {!isAuthenticated && (
                         <div className="mb-6 bg-[rgb(var(--color-secondary))]/30 border border-white/5 rounded-xl p-4 text-center">
                             <div className="w-10 h-10 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -388,26 +575,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 </svg>
                                 {(t as any).profileAuthButton}
                             </Button>
-                        </div>
-                    )}
-
-                    {/* 4. Stats Placeholder */}
-                    {isAuthenticated && (
-                        <div className="grid grid-cols-2 gap-3 mb-6">
-                            <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                                <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center mb-2">
-                                    <Flame className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                </div>
-                                <span className="text-2xl font-black text-white">0</span>
-                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">{(t as any).profileStreakLabel}</span>
-                            </div>
-                            <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                                <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-secondary))]/30 flex items-center justify-center mb-2">
-                                    <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                </div>
-                                <span className="text-2xl font-black text-white">0</span>
-                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium mt-1">{(t as any).profileTotalDays}</span>
-                            </div>
                         </div>
                     )}
 

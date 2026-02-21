@@ -74,19 +74,17 @@ function SettingsPageContent() {
 
     // Profile State
     const [userName, setUserName] = useState("Sobat Nawaetu");
-    const [userTitle, setUserTitle] = useState("Hamba Allah");
+    const [userTitle, setUserTitle] = useState("Salik"); // Default to base stage
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     // Initial Cache Load for Optimistic UI
     useEffect(() => {
-        const [savedName, savedTitle, savedAvatar] = storage.getMany([
+        const [savedName, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
         if (savedName) setUserName(savedName as string);
-        if (savedTitle) setUserTitle(savedTitle as string);
         if (savedAvatar) setUserAvatar(savedAvatar as string | null);
     }, []);
 
@@ -130,20 +128,20 @@ function SettingsPageContent() {
     const isMountedRef = useRef(true);
 
     const refreshProfile = () => {
-        const [savedName, savedTitle, savedAvatar] = storage.getMany([
+        const [savedName, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
-            STORAGE_KEYS.USER_TITLE,
             STORAGE_KEYS.USER_AVATAR
         ]).values();
+
+        const defaultName = (t as any).onboardingDefaultName || "Sobat Nawaetu";
 
         // 1. Prefer Session Name/Avatar if logged in
         if (session?.user?.name) setUserName(session.user.name);
         else if (savedName) setUserName(savedName as string);
+        else setUserName(defaultName);
 
         if (session?.user?.image) setUserAvatar(session.user.image);
         else setUserAvatar(savedAvatar as string | null);
-
-        if (savedTitle) setUserTitle(savedTitle as string);
     };
 
     // Update profile when session changes
@@ -449,12 +447,9 @@ function SettingsPageContent() {
                             <div className="flex-1 min-w-0">
                                 <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
-                                    {!isAuthenticated && (
-                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 border border-white/5 text-white/50">
-                                            Guest
-                                        </span>
-                                    )}
+                                    <span className="text-xs text-[rgb(var(--color-primary-light))]/70">
+                                        {isMuhsinin ? (t as any).profileRolePremium || "Muhsinin Nawaetu" : (t as any).profileRoleGuest || "Sahabat Nawaetu"}
+                                    </span>
                                 </div>
                             </div>
                             <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />

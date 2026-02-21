@@ -9,6 +9,8 @@ import DalilBadge from "./DalilBadge";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "@/context/LocaleContext";
+import { addXP } from "@/lib/leveling";
+import { toast } from "sonner";
 
 interface KhatamanLog {
     currentJuz: number;
@@ -47,6 +49,17 @@ export default function KhatamanProgress() {
 
     const adjustJuz = (delta: number) => {
         const newJuz = Math.max(0, Math.min(30, khatamanData.currentJuz + delta));
+
+        if (delta > 0 && newJuz > khatamanData.currentJuz) {
+            const xpEarned = 20 * (newJuz - khatamanData.currentJuz);
+            addXP(xpEarned);
+            toast.success((t as any).khatamanTitle || "Tadarus", {
+                description: `Masya Allah! +${xpEarned} ${(t as any).gamificationXpName || "Hasanah"}`,
+                duration: 3000,
+                icon: "📖"
+            });
+        }
+
         const today = new Date().toISOString().split("T")[0];
         const existingLogIndex = khatamanData.log.findIndex((e) => e.date === today);
         const newLog = [...khatamanData.log];
@@ -98,8 +111,8 @@ export default function KhatamanProgress() {
                 <div className="h-3 w-full rounded-full bg-white/10 overflow-hidden shadow-inner backdrop-blur-sm">
                     <div
                         className="h-full rounded-full transition-all duration-500 shadow-lg"
-                        style={{ 
-                            width: `${progressPct}%`, 
+                        style={{
+                            width: `${progressPct}%`,
                             background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary-light)))`,
                             boxShadow: "0 0 20px rgba(var(--color-primary), 0.5)"
                         }}
@@ -142,7 +155,7 @@ export default function KhatamanProgress() {
 
             {/* Estimate */}
             {estimatedFinishDay && estimatedFinishDay <= 30 && (
-                <div className="mx-3 mb-2 rounded-xl border px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-md" style={{ 
+                <div className="mx-3 mb-2 rounded-xl border px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-md" style={{
                     background: "rgba(var(--color-primary), 0.1)",
                     borderColor: "rgba(var(--color-primary), 0.2)"
                 }}>
@@ -152,7 +165,7 @@ export default function KhatamanProgress() {
                 </div>
             )}
             {currentJuz >= 30 && (
-                <div className="mx-3 mb-2 rounded-xl border px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-lg" style={{ 
+                <div className="mx-3 mb-2 rounded-xl border px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-lg" style={{
                     background: "rgba(var(--color-primary), 0.15)",
                     borderColor: "rgba(var(--color-primary), 0.3)"
                 }}>

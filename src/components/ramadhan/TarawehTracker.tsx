@@ -8,6 +8,8 @@ import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useTranslations } from "@/context/LocaleContext";
+import { addXP } from "@/lib/leveling";
+import { toast } from "sonner";
 
 type TarawehChoice = 8 | 20 | null;
 type TarawehLog = Record<string, TarawehChoice>;
@@ -60,12 +62,23 @@ export default function TarawehTracker() {
 
     const handleSelect = useCallback((choice: TarawehChoice) => {
         const storage = getStorageService();
+
+        const currentChoice = log[todayKey];
+        if (choice !== null && !currentChoice) {
+            addXP(15);
+            toast.success((t as any).tarawehTitle || "Taraweh", {
+                description: (t as any).toastRamadhanTarawehReward || "Alhamdulillah! +15 Hasanah",
+                duration: 3000,
+                icon: "🕌"
+            });
+        }
+
         setLog((prev) => {
             const next = { ...prev, [todayKey]: choice };
             storage.set(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG as any, JSON.stringify(next));
             return next;
         });
-    }, [todayKey]);
+    }, [todayKey, log, t]);
 
     const todayChoice = log[todayKey] ?? null;
     const streak = getStreak(log, todayKey);
