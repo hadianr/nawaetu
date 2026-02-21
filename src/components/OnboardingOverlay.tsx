@@ -6,7 +6,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
 
 import { useLocale } from "@/context/LocaleContext";
@@ -24,6 +24,16 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     // Removed internal visibility state - controlled by parent
     const [currentSlide, setCurrentSlide] = useState(0);
     const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-archetype'>('intro');
+
+    // Force logout on mount if an orphaned session is detected
+    // This happens primarily on iOS PWAs where Safari retains the login cookie
+    // even after the user uninstalls the app (wiping localStorage and triggering onboarding)
+    useEffect(() => {
+        if (status === "authenticated") {
+            console.log("Orphaned session detected during onboarding. Forcing logout...");
+            signOut({ redirect: false });
+        }
+    }, [status]);
 
     const SLIDES = [
         {
