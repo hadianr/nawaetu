@@ -1,4 +1,5 @@
-import SurahList, { Chapter } from "@/components/quran/SurahList";
+import SurahList from "@/components/quran/SurahList";
+import { Chapter } from "@/types/quran";
 import { getKemenagChapters } from "@/lib/kemenag-api";
 import QuranErrorMessage from "./QuranErrorMessage";
 

@@ -6,7 +6,7 @@
 
 import { cache } from "react";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
-import type { Chapter } from "@/components/quran/SurahList";
+import type { Chapter } from "@/types/quran";
 import { API_CONFIG } from "@/config/apis";
 
 interface GadingQuranResponse {

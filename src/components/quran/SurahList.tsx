@@ -50,22 +50,7 @@ export interface DateType {
     timestamp: string;
 }
 
-export interface Chapter {
-    id: number;
-    revelation_place: string;
-    revelation_order: number;
-    bismillah_pre: boolean;
-    name_simple: string;
-    name_complex: string;
-    name_arabic: string;
-    verses_count: number;
-    pages: number[];
-    translated_name: {
-        language_name: string;
-        name: string;
-    };
-    translated_name_en?: string;
-}
+import { Chapter } from "@/types/quran";
 
 interface SurahListProps {
     chapters: Chapter[];
