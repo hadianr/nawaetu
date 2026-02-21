@@ -182,37 +182,41 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
 
             if (!cachedLocationName && !isDefault) {
-                try {
-                    // Try Nominatim first (more reliable and accurate)
-                    // Note: Browser Fetch API blocks custom User-Agent headers on mobile. 
-                    // Using email parameter instead to comply with Nominatim usage policy.
-                    const locResponse = await fetchWithTimeout(
-                        `${API_CONFIG.LOCATION.NOMINATIM}?format=json&lat=${lat}&lon=${lng}&accept-language=id&email=nawaetu.app@gmail.com`,
-                        {},
-                        { timeoutMs: 10000 }
-                    );
-                    const locData = await locResponse.json();
+                // Try BigDataCloud first for mobile (has very permissive CORS and no strict User-Agent requirements)
+                let resolvedName = null;
 
-                    // Parse address with priority: subdistrict > village > city > state
-                    const addr = locData.address || {};
-                    locationName = addr.subdistrict || addr.village || addr.municipality ||
-                        addr.city || addr.town || addr.state ||
-                        locData.display_name?.split(',')[0] || "Lokasi Terdeteksi";
-                } catch (e) {
-                    // Fallback to BigDataCloud if Nominatim fails
+                try {
+                    const fallbackResponse = await fetchWithTimeout(
+                        `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
+                        {},
+                        { timeoutMs: 8000 }
+                    );
+                    const fallbackData = await fallbackResponse.json();
+                    resolvedName = fallbackData.locality || fallbackData.city || fallbackData.principalSubdivision || fallbackData.countryName;
+                } catch (fallbackErr) {
+                    console.warn("BigDataCloud reverse geocoding failed", fallbackErr);
+                }
+
+                // If BigDataCloud failed or returned undefined, try Nominatim
+                if (!resolvedName) {
                     try {
-                        const fallbackResponse = await fetchWithTimeout(
-                            `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`,
+                        const locResponse = await fetchWithTimeout(
+                            `${API_CONFIG.LOCATION.NOMINATIM}?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=id&email=nawaetu.app@gmail.com`,
                             {},
                             { timeoutMs: 8000 }
                         );
-                        const fallbackData = await fallbackResponse.json();
-                        locationName = fallbackData.locality || fallbackData.city || fallbackData.principalSubdivision || fallbackData.countryName || "Lokasi Terdeteksi";
-                    } catch (fallbackErr) {
-                        // Both APIs failed, use coordinates-based name
-                        locationName = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                        const locData = await locResponse.json();
+                        const addr = locData.address || {};
+                        resolvedName = addr.subdistrict || addr.village || addr.municipality ||
+                            addr.city || addr.town || addr.state ||
+                            locData.display_name?.split(',')[0];
+                    } catch (e) {
+                        console.warn("Nominatim reverse geocoding failed", e);
                     }
                 }
+
+                // Final fallback
+                locationName = resolvedName || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
             }
 
             // Get calculation method from settings (default: 20 = Kemenag RI)
@@ -270,23 +274,17 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 adjustment
             });
 
-            // Also update user_location cache with name IF NOT DEFAULT
-            // Also update user_location cache with name IF NOT DEFAULT
-            // AND ensure we don't overwrite a good name with coordinates if API failed earlier but recovered?
-            // Actually, fetchPrayerTimes defines name.
             if (!isDefault) {
-                // Prevent caching coordinates as name
-                const isCoordinates = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(locationName);
-
-                if (!isCoordinates) {
-                    const userLocationData = {
-                        lat,
-                        lng,
-                        name: locationName,
-                        timestamp: Date.now()
-                    };
-                    storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
-                }
+                // IMPORTANT FIX: We MUST cache the location even if it's just coordinates.
+                // If Nominatim/BigDataCloud fail on mobile, falling back to coordinates is fine,
+                // but if we refuse to cache them, the app will reset to Jakarta on every refresh!
+                const userLocationData = {
+                    lat,
+                    lng,
+                    name: locationName,
+                    timestamp: Date.now()
+                };
+                storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
             }
 
             processData(result, locationName, false, isDefault);
@@ -363,20 +361,13 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const isCoordinates = (name: string) => /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(name);
 
         if (isFreshLocation(cachedLocation)) {
-            // Check if cached name is actually just coordinates (legacy bug)
-            if (cachedLocation.name && isCoordinates(cachedLocation.name)) {
-                // Invalid cache, force refresh
-                storage.remove(STORAGE_KEYS.USER_LOCATION as any);
-                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, undefined, false);
-            } else {
-                const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
-                const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+            const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
+            const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
 
-                if (!cachedData || cachedData.date !== today) {
-                    fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
-                } else {
-                    setLoading(false); // Data is fresh, no need to fetch
-                }
+            if (!cachedData || cachedData.date !== today) {
+                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+            } else {
+                setLoading(false); // Data is fresh, no need to fetch
             }
         } else {
             if (cachedLocation) {
