@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
     Select,
     SelectContent,
@@ -193,7 +194,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [tafsirCache, setTafsirCache] = useState<Map<string, TafsirCacheEntry>>(new Map());
     const [activeTafsirVerse, setActiveTafsirVerse] = useState<string | null>(null);
     const [tafsirModalOpen, setTafsirModalOpen] = useState(false);
-    const [tafsirModalContent, setTafsirModalContent] = useState<{verseKey: string, tafsir: TafsirContent} | null>(null);
+    const [tafsirModalContent, setTafsirModalContent] = useState<{ verseKey: string, tafsir: TafsirContent } | null>(null);
 
     // Load settings from Cookies on Mount
     useEffect(() => {
@@ -542,8 +543,8 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 <div className="absolute inset-0 bg-[#0f172a]/80 backdrop-blur-xl border-b border-white/5" />
                 <div className="relative px-4 h-16 flex items-center justify-between gap-4">
                     {/* Left: Back & Title */}
-                    <div className="flex items-center gap-3 overflow-hidden">
-                        <Link href="/quran" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors text-slate-300 hover:text-white">
+                    <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
+                        <Link href="/quran" className="flex items-center justify-center h-9 w-9 -ml-2 rounded-full hover:bg-white/10 transition-colors text-slate-300 hover:text-white shrink-0 p-0">
                             <ChevronLeft className="h-6 w-6" />
                         </Link>
                         <div className="flex flex-col min-w-0">
@@ -557,22 +558,22 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     </div>
 
                     {/* Right: Actions */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                         {/* Play Surah Button */}
                         {!playingVerseKey && (
                             <button
                                 onClick={handleSurahPlay}
-                                className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] text-[10px] md:text-xs font-bold transition-colors border border-[rgb(var(--color-primary))]/20"
+                                className="flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary))] transition-colors border border-[rgb(var(--color-primary))]/20 shrink-0 p-0"
                             >
-                                <Play className="h-3 w-3 fill-current" />
-                                <span className="hidden md:inline">{t.quranPlaySurah}</span>
+                                <Play className="h-3.5 w-3.5 fill-current flex-shrink-0" />
+                                <span className="hidden md:inline text-xs font-bold leading-none">{t.quranPlaySurah}</span>
                             </button>
                         )}
 
                         {/* Jump to Verse Button */}
                         <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
                             <DialogTrigger asChild>
-                                <button className="p-2 rounded-full hover:bg-white/10 text-slate-300 transition-colors" aria-label={t.quranJumpToVerse}>
+                                <button className="h-9 w-9 p-0 flex items-center justify-center rounded-full hover:bg-white/10 text-slate-300 transition-colors shrink-0" aria-label={t.quranJumpToVerse}>
                                     <CornerDownRight className="h-5 w-5" />
                                 </button>
                             </DialogTrigger>
@@ -608,102 +609,104 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         {!isSearchOpen && (
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <button className="h-9 w-9 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all hover:border-[rgb(var(--color-primary))]/50">
+                                    <button className="h-9 w-9 p-0 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all hover:border-[rgb(var(--color-primary))]/50 shrink-0">
                                         <Settings className="h-5 w-5" />
                                     </button>
                                 </DialogTrigger>
-                                <DialogContent className="border-none bg-[#0f172a]/95 backdrop-blur-xl text-white max-w-sm">
-                                    <DialogHeader>
+                                <DialogContent className="border-none bg-[#0f172a]/95 backdrop-blur-xl text-white max-w-sm max-h-[90vh] p-0 overflow-hidden flex flex-col">
+                                    <DialogHeader className="p-6 pb-2 shrink-0">
                                         <DialogTitle>{t.quranSettingsTitle}</DialogTitle>
                                     </DialogHeader>
-                                    <div className="space-y-6 py-4">
-                                        {/* View Mode */}
-                                        <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranModeRead}</Label>
-                                            <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
-                                                <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
-                                                    <AlignJustify className="h-4 w-4" /> {t.quranModeList}
-                                                </button>
-                                                <button onClick={() => setViewMode('mushaf')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
-                                                    <BookOpen className="h-4 w-4" /> {t.quranModeMushaf}
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {/* Script Type Toggle */}
-                                        <div className="space-y-4">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranScriptType}</Label>
-                                            <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
-                                                <button
-                                                    onClick={() => setScriptType('indopak')}
-                                                    className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                                                >
-                                                    <span className="font-bold text-lg mb-1 font-amiri">بِسْمِ</span>
-                                                    <span className="text-[10px] md:text-xs">{t.quranScriptStandard}</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => setScriptType('tajweed')}
-                                                    className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                                                >
-                                                    <span className="font-bold text-lg mb-1 font-amiri"><span style={{ color: '#fb923c' }}>بِسْ</span><span style={{ color: '#4ade80' }}>مِ</span></span>
-                                                    <span className="text-[10px] md:text-xs">{t.quranScriptTajweed}</span>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Toggles */}
-                                        <div className="space-y-4">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranOtherDisplay}</Label>
-                                            <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
-                                                <div className="flex items-center gap-3"><Type className="h-5 w-5 text-indigo-400" /><span className="font-medium">{t.quranTransliteration}</span></div>
-                                                <button onClick={() => setShowTransliteration(!showTransliteration)} className={`w-11 h-6 rounded-full transition-colors relative ${showTransliteration ? 'bg-[rgb(var(--color-primary))]' : 'bg-slate-700'}`}><span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${showTransliteration ? 'translate-x-5' : 'translate-x-0'}`} /></button>
-                                            </div>
-                                        </div>
-                                        {/* Font Size */}
-                                        <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranFontSize}</Label>
-                                            <div className="flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
-                                                <button onClick={() => setFontSize('small')} className={`flex-1 h-8 rounded-lg text-sm font-bold ${fontSize === 'small' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A-</button>
-                                                <button onClick={() => setFontSize('medium')} className={`flex-1 h-8 rounded-lg text-base font-bold ${fontSize === 'medium' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A</button>
-                                                <button onClick={() => setFontSize('large')} className={`flex-1 h-8 rounded-lg text-lg font-bold ${fontSize === 'large' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A+</button>
-                                            </div>
-                                        </div>
-
-                                        {/* Verses Per Page */}
-                                        <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranVersesPerPage}</Label>
-                                            <div className="grid grid-cols-4 gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
-                                                {[10, 20, 30, 50].map((num) => (
-                                                    <button
-                                                        key={num}
-                                                        onClick={() => handlePerPageChange(num)}
-                                                        disabled={isPending}
-                                                        className={`h-8 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1 ${perPage === num ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-500 hover:text-slate-300'} ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                    >
-                                                        {isPending && perPage === num ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
-                                                        {num}
+                                    <div className="flex-1 overflow-y-auto px-6 pb-8 custom-scrollbar">
+                                        <div className="space-y-5 py-2">
+                                            {/* View Mode */}
+                                            <div className="space-y-3">
+                                                <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranModeRead}</Label>
+                                                <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
+                                                    <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
+                                                        <AlignJustify className="h-4 w-4" /> {t.quranModeList}
                                                     </button>
-                                                ))}
+                                                    <button onClick={() => setViewMode('mushaf')} className={`flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === 'mushaf' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>
+                                                        <BookOpen className="h-4 w-4" /> {t.quranModeMushaf}
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                            {/* Script Type Toggle */}
+                                            <div className="space-y-4">
+                                                <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranScriptType}</Label>
+                                                <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
+                                                    <button
+                                                        onClick={() => setScriptType('indopak')}
+                                                        className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'indopak' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                                    >
+                                                        <span className="font-bold text-lg mb-1 font-amiri">بِسْمِ</span>
+                                                        <span className="text-[10px] md:text-xs">{t.quranScriptStandard}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setScriptType('tajweed')}
+                                                        className={`flex flex-col items-center justify-center h-14 rounded-lg text-sm font-medium transition-all ${scriptType === 'tajweed' ? 'bg-[rgb(var(--color-primary))] text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                                    >
+                                                        <span className="font-bold text-lg mb-1 font-amiri"><span style={{ color: '#fb923c' }}>بِسْ</span><span style={{ color: '#4ade80' }}>مِ</span></span>
+                                                        <span className="text-[10px] md:text-xs">{t.quranScriptTajweed}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
 
-                                        {/* Qari Selection */}
-                                        <div className="space-y-3">
-                                            <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranSelectQari}</Label>
-                                            <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
-                                                <SelectTrigger className={`w-full bg-white/5 border-white/10 text-white rounded-xl h-12 ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                                                    <div className="flex items-center gap-3">
-                                                        {isPending ? <Loader2 className="h-4 w-4 animate-spin text-sky-400" /> : <Headphones className="h-4 w-4 text-sky-400" />}
-                                                        <SelectValue placeholder={t.quranSelectQari} />
-                                                    </div>
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                                    {QURAN_RECITER_OPTIONS.map((qari) => (
-                                                        <SelectItem key={qari.id} value={qari.id.toString()} className="hover:bg-white/10 focus:bg-white/10 focus:text-white text-white cursor-pointer transition-colors">
-                                                            {qari.label}
-                                                        </SelectItem>
+                                            {/* Toggles */}
+                                            <div className="space-y-4">
+                                                <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranOtherDisplay}</Label>
+                                                <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/5">
+                                                    <div className="flex items-center gap-3"><Type className="h-5 w-5 text-indigo-400" /><span className="font-medium">{t.quranTransliteration}</span></div>
+                                                    <Switch checked={showTransliteration} onCheckedChange={setShowTransliteration} />
+                                                </div>
+                                            </div>
+                                            {/* Font Size */}
+                                            <div className="space-y-3">
+                                                <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranFontSize}</Label>
+                                                <div className="flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
+                                                    <button onClick={() => setFontSize('small')} className={`flex-1 h-8 rounded-lg text-sm font-bold ${fontSize === 'small' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A-</button>
+                                                    <button onClick={() => setFontSize('medium')} className={`flex-1 h-8 rounded-lg text-base font-bold ${fontSize === 'medium' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A</button>
+                                                    <button onClick={() => setFontSize('large')} className={`flex-1 h-8 rounded-lg text-lg font-bold ${fontSize === 'large' ? 'bg-white/20 text-white' : 'text-slate-500'}`}>A+</button>
+                                                </div>
+                                            </div>
+
+                                            {/* Verses Per Page */}
+                                            <div className="space-y-3">
+                                                <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranVersesPerPage}</Label>
+                                                <div className="grid grid-cols-4 gap-2 bg-white/5 p-2 rounded-xl border border-white/5">
+                                                    {[10, 20, 30, 50].map((num) => (
+                                                        <button
+                                                            key={num}
+                                                            onClick={() => handlePerPageChange(num)}
+                                                            disabled={isPending}
+                                                            className={`h-8 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1 ${perPage === num ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-500 hover:text-slate-300'} ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                        >
+                                                            {isPending && perPage === num ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+                                                            {num}
+                                                        </button>
                                                     ))}
-                                                </SelectContent>
-                                            </Select>
+                                                </div>
+                                            </div>
+
+                                            {/* Qari Selection */}
+                                            <div className="space-y-3">
+                                                <Label className="text-slate-400 text-xs uppercase tracking-wider">{t.quranSelectQari}</Label>
+                                                <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
+                                                    <SelectTrigger className={`w-full bg-white/5 border-white/10 text-white rounded-xl h-12 ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                                        <div className="flex items-center gap-3">
+                                                            {isPending ? <Loader2 className="h-4 w-4 animate-spin text-sky-400" /> : <Headphones className="h-4 w-4 text-sky-400" />}
+                                                            <SelectValue placeholder={t.quranSelectQari} />
+                                                        </div>
+                                                    </SelectTrigger>
+                                                    <SelectContent className="bg-slate-900 border-white/10 text-white">
+                                                        {QURAN_RECITER_OPTIONS.map((qari) => (
+                                                            <SelectItem key={qari.id} value={qari.id.toString()} className="hover:bg-white/10 focus:bg-white/10 focus:text-white text-white cursor-pointer transition-colors">
+                                                                {qari.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
                                         </div>
                                     </div>
                                 </DialogContent>
@@ -819,81 +822,81 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                             const isPlayingVerse = playingVerseKey === verse.verse_key;
                             const isBookmarked = checkIsBookmarked(verse.verse_key);
 
-                        return (
-                            <div
-                                key={`verse-${verse.verse_key}`}
-                                id={`verse-${verseNum}`}
-                                className={`group relative py-8 px-4 md:px-6 border-b border-white/5 transition-colors duration-500 ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))]/5' : 'hover:bg-white/[0.02]'}`}
-                            >
-                                {/* Action Bar */}
-                                <div className="flex items-center justify-between mb-6">
-                                    <AyahMarker number={toArabicNumber(verseNum)} size={fontSize} />
-                                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon" 
-                                            onClick={() => handleVersePlay(verse, false)} 
-                                            className={`h-8 w-8 rounded-full ${isPlayingVerse && isPlaying ? 'opacity-0 pointer-events-none' : ''} ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10'}`}
-                                        >
-                                            <Play className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => handleBookmarkClick(verse)} className={`h-8 w-8 rounded-full ${isBookmarked ? 'text-[rgb(var(--color-primary))]' : 'text-slate-400 hover:text-[rgb(var(--color-primary))]'}`}>
-                                            <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onMouseEnter={prefetchShareDialog}
-                                            onFocus={prefetchShareDialog}
-                                            onClick={() => setActiveVerseForShare(verse)}
-                                            className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"
-                                        >
-                                            <Share2 className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => toggleTafsir(verse.verse_key)} className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}><Lightbulb className="h-4 w-4" /></Button>
-                                    </div>
-                                </div>
-
-                                {/* Content */}
-                                <div dir="rtl" className={`w-full ${getVerseFontClass(scriptType, fontSize)} text-right mb-6 text-slate-200`}>
-                                    {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
-                                        <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
-                                    ) : (
-                                        <span>{verse.text_indopak ? cleanIndopakText(verse.text_indopak) : verse.text_uthmani}</span>
-                                    )}
-                                </div>
-                                <div className="space-y-3">
-                                    {showTransliteration && verse.transliteration && (
-                                        <p className="text-[rgb(var(--color-primary-light))] text-sm md:text-base font-medium leading-relaxed">{verse.transliteration}</p>
-                                    )}
-                                    <p className="text-slate-400 text-sm md:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: cleanTranslation(verse.translations[0]?.text || "") }} />
-                                    <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-slate-900 border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
-                                        <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary))]" /><h3 className="text-sm font-bold text-white">{locale === "en" ? "Brief Explanation" : "Tafsir Ringkas"}</h3></div>
-                                        <div className={`flex items-center gap-2 text-slate-500 py-4 ${loadingTafsir.has(verse.verse_key) ? '' : 'hidden'}`}>
-                                            <Loader2 className="h-4 w-4 animate-spin" /><span className="text-xs">{locale === "en" ? "Loading..." : "Memuat..."}</span>
-                                        </div>
-                                        <div className={loadingTafsir.has(verse.verse_key) ? 'hidden' : 'space-y-3'}>
-                                            <div
-                                                className="prose prose-invert prose-sm text-slate-300"
-                                                dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirCache.get(verse.verse_key)?.data.short || (locale === "en" ? "Tafsir not available." : "Tafsir tidak tersedia.")) }}
-                                            />
-                                            <button
-                                                onClick={() => {
-                                                    const tafsir = tafsirCache.get(verse.verse_key)?.data;
-                                                    if (tafsir) {
-                                                        setTafsirModalContent({verseKey: verse.verse_key, tafsir});
-                                                        setTafsirModalOpen(true);
-                                                    }
-                                                }}
-                                                className={`text-xs font-semibold mt-2 transition-colors ${tafsirCache.get(verse.verse_key)?.data.long && tafsirCache.get(verse.verse_key)?.data.long !== tafsirCache.get(verse.verse_key)?.data.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
+                            return (
+                                <div
+                                    key={`verse-${verse.verse_key}`}
+                                    id={`verse-${verseNum}`}
+                                    className={`group relative py-8 px-4 md:px-6 border-b border-white/5 transition-colors duration-500 ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))]/5' : 'hover:bg-white/[0.02]'}`}
+                                >
+                                    {/* Action Bar */}
+                                    <div className="flex items-center justify-between mb-6">
+                                        <AyahMarker number={toArabicNumber(verseNum)} size={fontSize} />
+                                        <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleVersePlay(verse, false)}
+                                                className={`h-8 w-8 rounded-full ${isPlayingVerse && isPlaying ? 'opacity-0 pointer-events-none' : ''} ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))] text-white' : 'text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10'}`}
                                             >
-                                                {locale === "en" ? "Read Full Explanation →" : "Baca Penjelasan Lengkap →"}
-                                            </button>
+                                                <Play className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleBookmarkClick(verse)} className={`h-8 w-8 rounded-full ${isBookmarked ? 'text-[rgb(var(--color-primary))]' : 'text-slate-400 hover:text-[rgb(var(--color-primary))]'}`}>
+                                                <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onMouseEnter={prefetchShareDialog}
+                                                onFocus={prefetchShareDialog}
+                                                onClick={() => setActiveVerseForShare(verse)}
+                                                className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                                            >
+                                                <Share2 className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => toggleTafsir(verse.verse_key)} className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}><Lightbulb className="h-4 w-4" /></Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Content */}
+                                    <div dir="rtl" className={`w-full ${getVerseFontClass(scriptType, fontSize)} text-right mb-6 text-slate-200`}>
+                                        {scriptType === 'tajweed' && verse.text_uthmani_tajweed ? (
+                                            <span dangerouslySetInnerHTML={{ __html: cleanTajweedText(verse.text_uthmani_tajweed) }} />
+                                        ) : (
+                                            <span>{verse.text_indopak ? cleanIndopakText(verse.text_indopak) : verse.text_uthmani}</span>
+                                        )}
+                                    </div>
+                                    <div className="space-y-3">
+                                        {showTransliteration && verse.transliteration && (
+                                            <p className="text-[rgb(var(--color-primary-light))] text-sm md:text-base font-medium leading-relaxed">{verse.transliteration}</p>
+                                        )}
+                                        <p className="text-slate-400 text-sm md:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: cleanTranslation(verse.translations[0]?.text || "") }} />
+                                        <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-slate-900 border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
+                                            <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary))]" /><h3 className="text-sm font-bold text-white">{locale === "en" ? "Brief Explanation" : "Tafsir Ringkas"}</h3></div>
+                                            <div className={`flex items-center gap-2 text-slate-500 py-4 ${loadingTafsir.has(verse.verse_key) ? '' : 'hidden'}`}>
+                                                <Loader2 className="h-4 w-4 animate-spin" /><span className="text-xs">{locale === "en" ? "Loading..." : "Memuat..."}</span>
+                                            </div>
+                                            <div className={loadingTafsir.has(verse.verse_key) ? 'hidden' : 'space-y-3'}>
+                                                <div
+                                                    className="prose prose-invert prose-sm text-slate-300"
+                                                    dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirCache.get(verse.verse_key)?.data.short || (locale === "en" ? "Tafsir not available." : "Tafsir tidak tersedia.")) }}
+                                                />
+                                                <button
+                                                    onClick={() => {
+                                                        const tafsir = tafsirCache.get(verse.verse_key)?.data;
+                                                        if (tafsir) {
+                                                            setTafsirModalContent({ verseKey: verse.verse_key, tafsir });
+                                                            setTafsirModalOpen(true);
+                                                        }
+                                                    }}
+                                                    className={`text-xs font-semibold mt-2 transition-colors ${tafsirCache.get(verse.verse_key)?.data.long && tafsirCache.get(verse.verse_key)?.data.long !== tafsirCache.get(verse.verse_key)?.data.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
+                                                >
+                                                    {locale === "en" ? "Read Full Explanation →" : "Baca Penjelasan Lengkap →"}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        );
+                            );
                         } catch (error) {
                             return (
                                 <div key={`verse-error-${verse.verse_key}`} className="px-4 md:px-6 py-6 border-b border-white/5 bg-red-900/10 rounded-lg border border-red-500/30">
@@ -1085,7 +1088,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     <DialogTitle className="sr-only">
                         {locale === "en" ? "Tafsir Full Explanation" : "Penjelasan Lengkap Tafsir"}
                     </DialogTitle>
-                    
+
                     {/* Header */}
                     <div className="bg-gradient-to-r from-slate-900 to-slate-800/50 border-b border-[rgb(var(--color-primary))]/20 px-4 sm:px-6 py-4 sm:py-6">
                         <div className="flex items-center gap-3 sm:gap-4">
