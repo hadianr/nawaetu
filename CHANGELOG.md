@@ -6,6 +6,65 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.1] - 2026-02-22
+
+### Added
+- **Feat: Revamp user profile dialog with leveling system, stats display, and improved local data persistence.**
+- **Feat: Block /api/debug and /api/notifications/debug in production middleware**
+- **Feat: Introduce a server-side reverse geocoding proxy to enhance location resolution reliability and bypass client-side API restrictions.**
+- **Feat: Force logout orphaned authenticated sessions during onboarding by importing and using `signOut`.**
+- **Feat: Update Nominatim API call to use email for compliance and enhance fallback location naming with country name.**
+- **Feat: Introduce `Switch` component and refine header button and dialog styling in `VerseList`.**
+- **Feat: Implement basic localization for Ramadhan practices titles, descriptions, and tips in the list component.**
+- **Feat: Add Sunnah Foods widget to the Ramadhan page, displaying Iftar and Sahur food options.**
+- **Feat: Implement page transitions and a top loading bar, alongside general UI layout and styling refinements across various components.**
+- **Feat: enhance payment webhook verification to support `x-callback-token` header and SHA512 hashing**
+- **Feat: Add event type filtering and enhance status normalization in the payment webhook.**
+- **Feat: Add dalil (religious references) to several existing Ramadhan Fiqh FAQs and introduce a new FAQ on eating during imsak.**
+- **Feat: Extract `productId` from webhook data and add it as a transaction lookup condition.**
+- **Feat: Enhance profile state management with local storage caching for optimistic UI, refine authentication checks, and improve local storage quota exceeded error handling with a multi-stage cleanup strategy.**
+- **Feat: improve user profile data sourcing from session and local storage, add loading states, and fix location name caching issues.**
+- **Feat: add Quote of the Day component to DeferredBelowFold and remove from PrayerTimesDisplay**
+- **Feat: add Qibla navigation and update translations for Qibla label and subtitle**
+- **Feat: add strict Content Security Policy and security headers in middleware**
+
+### Performance
+- **Perf: optimize sync-guest intentions insert**
+- **Perf: parallelize user settings queries for ~80% latency reduction**
+- **Perf: Optimize legacy intentions sync with bulk insert**
+- **Perf: Optimize legacy missions sync with bulk insert**
+- **Perf: Optimize guest bookmark sync with bulk insert**
+
+### Improved
+- **Refactor: Update FCM initialization and setup functions to throw specific errors instead of returning null or undefined on failure.**
+- **Refactor: Unify modal header structure and enhance the Sunnah Foods widget's visual design and tab interaction.**
+- **Refactor: overhaul Mayar webhook signature verification to support multiple header types and direct token matching, and add incoming header logging.**
+- **Refactor: Strengthen payment webhook transaction fallback lookup by refining amount processing and type casting, and updating test payload.**
+- **Refactor: Improve Mayar webhook transaction ID extraction, refine transaction lookup logic, and enhance fallback email and amount parsing.**
+- **Chore: Update dependency lock file.**
+- **Refactor useRamadhanCalendar to use Sentry instead of console.error**
+- **Refactor UpdateChecker to separate component**
+- **Refactor: types for useRamadhanCalendar hook**
+- **Refactor: improve type safety in settings save logic**
+- **Refactor VerseList to use global Tajweed CSS**
+- **Refactor: Improve Mayar webhook robustness with enhanced error handling, detailed logging, and refined transaction lookup and status normalization logic.**
+- **Refactor: Update profile card rendering to prioritize loading state, display a guest tag for unauthenticated users, and remove the explicit unauthenticated prompt.**
+- **Refactor: Reordered Prayer Times List to appear before Daily Missions in DeferredBelowFold.**
+
+### Fixed
+- **Fix(missions): replace hardcoded intention ID with real data**
+- **Fix: Prioritize BigDataCloud for reverse geocoding and ensure coordinate-based location names are properly cached to prevent location resets.**
+- **Fix: Secure `checkAvailableModels` server action**
+- **Fix: Enhance webhook email fallback to include `data.customerEmail` and add a debug log for the lookup process.**
+- **Fix: Implement local storage cleanup and retry mechanism when a quota exceeded error occurs.**
+- **Fix: Improve Mayar webhook robustness by handling 'testing' events, flexible payload structures, and refining payment status normalization.**
+- **Fix: Update Next.js configuration for improved chunk management and add @babel/runtime dependency**
+- **Fix(security): sanitize user context in LLM prompts to prevent injection**
+- **Fix(security): prevent internal error details leakage in API response**
+- **Fix: update locale handling in UserProfileDialog and improve type definition in LocaleContext**
+- **Fix XSS vulnerability in AI message parser by escaping HTML input.**
+
+
 ## [1.8.0] - 2026-02-19
 
 ### Added
