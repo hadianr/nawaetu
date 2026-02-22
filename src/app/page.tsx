@@ -25,7 +25,14 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const daysLeft = Math.max(0, Math.floor((new Date("2026-02-19T00:00:00+07:00").getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+  const now = new Date();
+  // Server-side Ramadhan season check (Gregorian approximation 1447H)
+  // Ramadhan 1447H: ~Feb 18 2026 to ~Mar 20 2026
+  const RAMADHAN_START = new Date("2026-02-18T00:00:00+07:00");
+  const RAMADHAN_END = new Date("2026-03-20T23:59:59+07:00");
+  const isRamadhanSeason = now >= RAMADHAN_START && now <= RAMADHAN_END;
 
-  return <HomeClient initialDaysLeft={daysLeft} />;
+  const daysLeft = isRamadhanSeason ? 0 : Math.max(0, Math.floor((RAMADHAN_START.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+
+  return <HomeClient initialDaysLeft={daysLeft} isRamadhanSeason={isRamadhanSeason} />;
 }

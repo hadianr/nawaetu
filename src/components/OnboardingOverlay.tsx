@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X } from "lucide-react";
+import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession, signOut } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
@@ -75,6 +75,16 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             title: (t as any).onboardingSlide4Title,
             description: (t as any).onboardingSlide4Desc,
             highlight: (t as any).onboardingSlide4Hint
+        },
+        {
+            id: "ramadhan",
+            icon: Moon,
+            color: "text-yellow-400",
+            bg: "bg-yellow-500/10",
+            border: "border-yellow-500/20",
+            title: (t as any).onboardingSlide5Title,
+            description: (t as any).onboardingSlide5Desc,
+            highlight: (t as any).onboardingSlide5Hint
         }
     ];
 

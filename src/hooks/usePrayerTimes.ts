@@ -13,6 +13,10 @@ const HIJRI_MONTHS = [
 const storage = getStorageService();
 
 const LOCATION_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+// Bump this version when the `tune` parameter changes to invalidate stale cached prayer data
+// v2: Corrected Maghrib +8→+3 (cross-validated: Jakarta, Surabaya, Medan, Bandung vs Kemenag API)
+// v2: Tune is now conditional on method==20 only (global methods get no tune)
+const TUNE_VERSION = "v2025-kemenag-2"; // Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Maghrib+3, Isha+2 (method 20 only)
 
 const isValidCoords = (lat: unknown, lng: unknown) =>
     typeof lat === 'number' && typeof lng === 'number' &&
@@ -160,8 +164,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             const savedMethodCache = cachedData.method || "20";
             const savedAdjustmentCache = cachedData.adjustment || "0";
+            const savedTuneVersion = cachedData.tuneVersion;
 
-            if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment) {
+            if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment && savedTuneVersion === TUNE_VERSION) {
                 processData(savedData, locationName || "Lokasi Tersimpan", true, !!isDefault);
             }
         }
@@ -219,9 +224,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 const savedLocationName = cachedData.locationName;
                 const savedMethodCache = cachedData.method || "20";
                 const savedAdjustmentCache = cachedData.adjustment || "0";
+                const savedTuneVersion = cachedData.tuneVersion;
 
-                // Only use cache if date, method, and adjustment match
-                if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment) {
+                // Only use cache if date, method, adjustment, and tune version match
+                if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment && savedTuneVersion === TUNE_VERSION) {
                     processData(savedData, savedLocationName || locationName, true); // Use cached data immediately
                     if (!cachedLocationName) {
                         // If we have a perfectly matching cache, we can skip the heavy fetch
@@ -231,8 +237,16 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
             }
 
+            // For Kemenag RI (method 20), apply ikhtiyath offsets calibrated against
+            // official Kemenag API (myquran.com) across 4 Indonesian cities:
+            // Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Maghrib+3, Isha+2
+            // For all other global methods (ISNA, MWL, Cairo, etc.), use raw aladhan output.
+            const tuneParam = method === "20"
+                ? "&tune=2,2,0,4,4,3,0,2,0"
+                : "";
+
             const response = await fetchWithTimeout(
-                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${adjustment}`,
+                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${adjustment}${tuneParam}`,
                 {},
                 { timeoutMs: 8000 }
             );
@@ -255,7 +269,8 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 locationName,
                 isDefault,
                 method,
-                adjustment
+                adjustment,
+                tuneVersion: TUNE_VERSION, // Track tune version for cache invalidation
             });
 
             if (!isDefault) {

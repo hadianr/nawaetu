@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
+import WidgetSkeleton from "@/components/skeleton/WidgetSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 import QuoteOfDay from "@/components/QuoteOfDay";
 
@@ -12,26 +13,19 @@ const NextPrayerWidget = dynamic(() => import("@/components/NextPrayerWidget"), 
   loading: () => <div className="h-full w-full rounded-3xl bg-white/5 border border-white/10 animate-pulse min-h-[100px]" />,
 });
 
-const HomeLastRead = dynamic(
-  () => import("@/components/HomeWidgets").then((mod) => ({ default: mod.HomeLastRead })),
-  {
-    ssr: false,
-    loading: () => <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />,
-  }
-);
-
-const HomeMissions = dynamic(
-  () => import("@/components/HomeWidgets").then((mod) => ({ default: mod.HomeMissions })),
-  {
-    ssr: false,
-    loading: () => <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />,
-  }
-);
-
+const LastReadWidget = dynamic(() => import("@/components/LastReadWidget"), {
+  ssr: false,
+  loading: () => <WidgetSkeleton />,
+});
 
 const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay"), {
   ssr: false,
   loading: () => <PrayerCardSkeleton />,
+});
+
+const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
+  ssr: false,
+  loading: () => <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />,
 });
 
 export default function DeferredBelowFold() {
@@ -49,7 +43,7 @@ export default function DeferredBelowFold() {
   return (
     <>
       <div className="w-full flex flex-col gap-2">
-        {/* 3. Quick Status Grid - Prayer Times + Last Read */}
+        {/* 3. Quick Status Grid: Countdown + Last Read (side by side) */}
         <section className="w-full grid grid-cols-2 gap-2 animate-in slide-in-from-bottom-2 fade-in duration-700 delay-100">
           <div className="w-full h-32">
             {ready ? (
@@ -60,14 +54,14 @@ export default function DeferredBelowFold() {
           </div>
           <div className="w-full h-32">
             {ready ? (
-              <HomeLastRead />
+              <LastReadWidget />
             ) : (
-              <div className="w-full h-32 bg-slate-800/30 animate-pulse rounded-2xl" />
+              <div className="w-full h-32 bg-white/5 border border-white/10 animate-pulse rounded-3xl" />
             )}
           </div>
         </section>
 
-        {/* 4. Prayer Times List */}
+        {/* 4. Prayer Times List - compact */}
         <section className="w-full">
           {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
         </section>
@@ -75,15 +69,16 @@ export default function DeferredBelowFold() {
         {/* 5. Daily Missions */}
         <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
           {ready ? (
-            <HomeMissions />
+            <MissionsWidget />
           ) : (
-            <div className="w-full h-48 bg-slate-800/30 animate-pulse rounded-2xl" />
+            <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
           )}
         </section>
 
-        {/* 6. Quote of The Day - Always at bottom */}
+        {/* Quote of The Day - Always at bottom */}
         <QuoteOfDay />
       </div>
+
 
       {/* AI Mentor Access Point - Lazy loaded */}
       <div className="fixed bottom-[90px] left-0 right-0 z-40 pointer-events-none">

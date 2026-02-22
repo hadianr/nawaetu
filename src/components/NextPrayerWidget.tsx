@@ -59,16 +59,22 @@ export default function NextPrayerWidget() {
         );
     }
 
-    // Indonesian prayer name mapping
+    // Skip Imsak in the countdown — always count down to an actual salah
+    const effectiveNextPrayer = data.nextPrayer === "Imsak" ? "Fajr" : data.nextPrayer;
+    const effectiveNextTime = data.nextPrayer === "Imsak"
+        ? (data.prayerTimes?.["Fajr"] ?? data.nextPrayerTime)
+        : data.nextPrayerTime;
+
+    // Indonesian prayer name mapping (no Imsak/Sunrise)
     const prayerNameMap: Record<string, string> = {
-        Imsak: "Imsak",
         Fajr: "Subuh",
         Dhuhr: "Dzuhur",
         Asr: "Ashar",
         Maghrib: "Maghrib",
         Isha: "Isya",
     };
-    const displayPrayerName = prayerNameMap[data.nextPrayer] || data.nextPrayer;
+    const displayPrayerName = prayerNameMap[effectiveNextPrayer] || effectiveNextPrayer;
+
 
     const isAdzanNow = minutesLeft <= 0 && minutesLeft > -20; // 0 to -20 mins
     const isPreparationTime = minutesLeft > 0 && minutesLeft <= 15;
@@ -113,8 +119,8 @@ export default function NextPrayerWidget() {
                 {/* Main: Countdown */}
                 <div className="flex-1 flex items-center justify-center">
                     <PrayerCountdown
-                        targetTime={data.nextPrayerTime}
-                        prayerName={data.nextPrayer}
+                        targetTime={effectiveNextTime}
+                        prayerName={effectiveNextPrayer}
                         compact={true}
                     />
                 </div>
@@ -143,8 +149,8 @@ export default function NextPrayerWidget() {
             {/* Main: Countdown */}
             <div className="flex-1 flex items-center justify-center scale-110" role="timer" aria-live="off" aria-label={`${t.homeNextLabel} ${displayPrayerName}`}>
                 <PrayerCountdown
-                    targetTime={data.nextPrayerTime}
-                    prayerName={data.nextPrayer}
+                    targetTime={effectiveNextTime}
+                    prayerName={effectiveNextPrayer}
                     compact={true}
                 />
             </div>
@@ -152,7 +158,7 @@ export default function NextPrayerWidget() {
             {/* Footer: Target */}
             <div className="text-center">
                 <span className="text-[10px] font-medium text-white/80">
-                    {displayPrayerName} {data.nextPrayerTime}
+                    {displayPrayerName} {effectiveNextTime}
                 </span>
             </div>
         </div>
