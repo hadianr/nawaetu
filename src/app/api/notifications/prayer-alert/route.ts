@@ -15,16 +15,23 @@ import { messagingAdmin } from "@/lib/notifications/firebase-admin";
 // In-memory cache for prayer times to avoid repeated API calls in the same request
 const prayerTimesCache = new Map<string, any>();
 
-// In-memory deduplication cache
+// In-memory deduplication cache (backup layer — DB-based dedup is the primary)
 const recentNotifications = new Map<string, number>();
 const DEDUP_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const PRAYER_WINDOW_MS = 15 * 60 * 1000; // +15 minutes tolerance only (No early notifications)
+
+// === Precision Notification Window ===
+// cron-job.org fires this endpoint every 1 minute.
+// For fasting (puasa), notifications must be very close to the actual adzan time:
+//   - Subuh: marks the end of suhoor — must NOT be late or misleading
+//   - Maghrib: the iftar signal — people are waiting for this moment
+// Window = 3 minutes: absorbs any cron-job.org jitter while staying tight for fasting accuracy.
+const PRAYER_NOTIFICATION_WINDOW_MINUTES = 3;
 
 // Default Coordinates: Jakarta (Monas)
 const DEFAULT_LAT = -6.175392;
 const DEFAULT_LNG = 106.827153;
 
-// Helper: Check if current time is AFTER prayer time but within window
+// Helper: Check if current time is AT or just AFTER prayer time (within precision window)
 function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
     const [cHour, cMin] = currentTime.split(":").map(Number);
     const [pHour, pMin] = prayerTime.split(":").map(Number);
@@ -34,24 +41,28 @@ function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
 
     const diff = currentTotalMin - prayerTotalMin;
 
-    // STRICT LOGIC:
-    // 1. Must be AFTER or EQUAL to prayer time (diff >= 0) -> No early Adhan!
-    // 2. Must be within 15 minutes (diff <= 15) -> Catches 10-min cron delays
-    return diff >= 0 && diff <= 15;
+    // Fire ONLY when:
+    // 1. Current time is AT or AFTER prayer time (diff >= 0) — no early adhan
+    // 2. Within the 3-minute precision window — avoids late/stale notifications
+    return diff >= 0 && diff <= PRAYER_NOTIFICATION_WINDOW_MINUTES;
 }
 
-// Helper: Fetch prayer times from Aladhan API
-async function fetchPrayerTimes(lat: number, lng: number, dateStr: string): Promise<any> {
-    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}`;
+// Helper: Fetch prayer times from Aladhan API, with Kemenag RI tune for method 20
+// tune=2,2,0,4,4,3,0,2,0 = Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Maghrib+3, Isha+2
+// Calibrated against official Kemenag RI API across 4 Indonesian cities.
+async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<any> {
+    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}`;
 
     if (prayerTimesCache.has(cacheKey)) {
         return prayerTimesCache.get(cacheKey);
     }
 
     try {
-        const response = await fetch(
-            `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=20` // Method 20 = Kemenag RI
-        );
+        // Apply ikhtiyath tune ONLY for Kemenag RI (method 20), same as the client-side hook
+        const tuneParam = method === "20" ? "&tune=2,2,0,4,4,3,0,2,0" : "";
+        const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
+
+        const response = await fetch(url);
 
         if (!response.ok) return null;
 
@@ -172,7 +183,10 @@ export async function POST(req: NextRequest) {
                         year: "numeric"
                     }).split("/").join("-"); // DD-MM-YYYY
 
-                    const timings = await fetchPrayerTimes(lat, lng, localDateStr);
+                    // Use method 20 (Kemenag RI) — the app default for Indonesian users.
+                    // User-specific methods are stored in users.settings JSONB (not on this subscription row).
+                    const userMethod = "20";
+                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
                     if (!timings) {
                         results.skipped++;
                         continue;
