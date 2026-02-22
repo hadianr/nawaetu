@@ -47,35 +47,39 @@ function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
     return diff >= 0 && diff <= PRAYER_NOTIFICATION_WINDOW_MINUTES;
 }
 
-// City-aware Maghrib correction (mirrors client-side logic in usePrayerTimes.ts)
-// Kemenag RI adds different ikhtiyath for different cities.
-// Bandung: +8 (Kemenag's larger ikhtiyath for this highland city)
-// Other Indonesian cities: +3
-function getMaghribCorrection(city: string): number {
-    const c = (city || "").toLowerCase();
-    if (c.includes("bandung")) return 8;
-    return 3;
+// City-aware Maghrib correction — coordinate-based (mirrors usePrayerTimes.ts logic)
+// Uses haversine distance from Bandung city center:
+//   Within 25km → Kemenag Bandung ikhtiyath (+8)
+//   Otherwise → standard Indonesian ikhtiyath (+3)
+// This handles any kecamatan/kelurahan address within Bandung Raya correctly.
+function getMaghribCorrection(lat: number, lng: number): number {
+    const R = 6371;
+    const dLat = (lat - (-6.9175)) * Math.PI / 180;
+    const dLng = (lng - 107.6191) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2
+        + Math.cos(-6.9175 * Math.PI / 180) * Math.cos(lat * Math.PI / 180)
+        * Math.sin(dLng / 2) ** 2;
+    const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    if (distKm <= 25) return 8; // Bandung Raya
+    return 3; // Other Indonesian cities
 }
 
 // Helper: Fetch prayer times from Aladhan API, with Kemenag RI tune for method 20
 // tune format: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
-// Calibrated against official Kemenag RI API (myquran.com) across 4 Indonesian cities.
-async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20", city: string = ""): Promise<any> {
-    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}_${city}`;
+async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<any> {
+    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}`;
 
     if (prayerTimesCache.has(cacheKey)) {
         return prayerTimesCache.get(cacheKey);
     }
 
     try {
-        // Apply ikhtiyath tune ONLY for Kemenag RI (method 20), same as the client-side hook
         const tuneParam = method === "20"
-            ? `&tune=2,2,0,4,4,${getMaghribCorrection(city)},0,2,0`
+            ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
             : "";
         const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
 
         const response = await fetch(url);
-
         if (!response.ok) return null;
 
         const result = await response.json();
@@ -87,6 +91,7 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
     }
     return null;
 }
+
 
 // Helper: Check if notification was recently sent
 function wasRecentlyNotified(key: string): boolean {
@@ -196,10 +201,8 @@ export async function POST(req: NextRequest) {
                     }).split("/").join("-"); // DD-MM-YYYY
 
                     // Use method 20 (Kemenag RI) — the app default for Indonesian users.
-                    // User-specific methods are stored in users.settings JSONB (not on this subscription row).
                     const userMethod = "20";
-                    const userCity = sub.city || "";
-                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod, userCity);
+                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
                     if (!timings) {
                         results.skipped++;
                         continue;

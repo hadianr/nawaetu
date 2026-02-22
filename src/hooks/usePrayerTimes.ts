@@ -14,8 +14,8 @@ const storage = getStorageService();
 
 const LOCATION_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 // Bump this version when the `tune` parameter changes to invalidate stale cached prayer data
-// v3: City-aware Maghrib correction — Bandung +8, others +3 (matched against Kemenag RI API)
-const TUNE_VERSION = "v2025-kemenag-3";
+// v4: Coordinate-based Maghrib correction (haversine distance, not text matching)
+const TUNE_VERSION = "v2025-kemenag-4";
 
 const isValidCoords = (lat: unknown, lng: unknown) =>
     typeof lat === 'number' && typeof lng === 'number' &&
@@ -237,20 +237,30 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
 
             // For Kemenag RI (method 20), apply ikhtiyath offsets calibrated against
-            // official Kemenag API (myquran.com). Maghrib correction is CITY-SPECIFIC:
-            //   Bandung: +8 (Kemenag adds larger ikhtiyath for Bandung geography)
+            // official Kemenag API (myquran.com). Maghrib is CITY-SPECIFIC (coordinate-based):
+            //   Bandung Raya (within 25km of city center): +8
             //   Other Indonesian cities: +3
+            // Text-based city matching is unreliable (locationName may be a kecamatan/kelurahan).
             // All other prayers: Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Isha+2
             // Global methods (ISNA, MWL, etc.): no tune applied
-            const getMaghribCorrection = (city: string): number => {
-                const c = city.toLowerCase();
-                if (c.includes("bandung")) return 8;
+            const getMaghribCorrection = (userLat: number, userLng: number): number => {
+                // Haversine distance in km
+                const R = 6371;
+                const dLat = (userLat - (-6.9175)) * Math.PI / 180;
+                const dLng = (userLng - 107.6191) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) ** 2
+                    + Math.cos(-6.9175 * Math.PI / 180) * Math.cos(userLat * Math.PI / 180)
+                    * Math.sin(dLng / 2) ** 2;
+                const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                // Bandung Raya: ~25km radius covers Kota Bandung, Cimahi, Kab. Bandung as well
+                if (distKm <= 25) return 8;
                 return 3; // Default for other Indonesian cities
             };
 
             const tuneParam = method === "20"
-                ? `&tune=2,2,0,4,4,${getMaghribCorrection(locationName)},0,2,0`
+                ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
                 : "";
+
 
             const response = await fetchWithTimeout(
                 `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${adjustment}${tuneParam}`,
