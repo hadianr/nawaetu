@@ -32,3 +32,8 @@
 **Vulnerability:** Potential 500 errors or unhandled exceptions when API inputs are not of expected primitive type (e.g. number instead of string).
 **Learning:** `req.json()` returns `any`, so explicit type checking (e.g. `typeof variable === 'string'`) is crucial before performing string operations or length checks.
 **Prevention:** Always validate `typeof` for all user inputs before processing.
+
+## 2025-05-22 - IDOR on Registered User Data via FCM Token
+**Vulnerability:** Registered users' private intention data was accessible by providing their FCM token (`user_token`) without an active session, allowing bypass of authentication.
+**Learning:** Features designed for both anonymous (token-based) and registered (session-based) users can accidentally downgrade security for registered users if the authorization logic doesn't distinguish between the two states.
+**Prevention:** When an identifier (like a token) resolves to a registered user, always enforce stricter authentication (e.g., session check) regardless of whether the endpoint supports anonymous access.

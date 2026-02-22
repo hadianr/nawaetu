@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -57,6 +59,27 @@ export async function POST(req: NextRequest) {
 
         if (subscription && subscription.userId) {
             userId = subscription.userId;
+
+            // SECURITY CHECK: If user is registered (not guest), verify session
+            const [userCheck] = await db
+                .select({ email: users.email })
+                .from(users)
+                .where(eq(users.id, userId))
+                .limit(1);
+
+            if (userCheck) {
+                const isGuest = userCheck.email && (userCheck.email.endsWith('@nawaetu.local') || userCheck.email.startsWith('guest_'));
+
+                if (!isGuest) {
+                    const session = await getServerSession(authOptions);
+                    if (!session || session.user.id !== userId) {
+                        return NextResponse.json(
+                            { success: false, error: "Unauthorized access to registered account" },
+                            { status: 401 }
+                        );
+                    }
+                }
+            }
         } else {
             // 2. Try to find anonymous user
             // Allow any token format (UUID or anon_*)

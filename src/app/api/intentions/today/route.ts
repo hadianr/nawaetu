@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -77,6 +79,22 @@ export async function GET(req: NextRequest) {
             .where(eq(users.id, userId))
             .limit(1);
 
+        // SECURITY CHECK: If user is registered (not guest), verify session
+        // This prevents IDOR/Auth Bypass where attacker uses stolen FCM token to access registered user data
+        if (user) {
+            const isGuest = user.email && (user.email.endsWith('@nawaetu.local') || user.email.startsWith('guest_'));
+
+            if (!isGuest) {
+                const session = await getServerSession(authOptions);
+                if (!session || session.user.id !== userId) {
+                    return NextResponse.json(
+                        { success: false, error: "Unauthorized access to registered account" },
+                        { status: 401 }
+                    );
+                }
+            }
+        }
+
         // Get today's date
         const today = new Date().toISOString().split('T')[0];
 
@@ -122,6 +140,7 @@ export async function GET(req: NextRequest) {
             },
         });
     } catch (error) {
+        console.error("Error in GET /api/intentions/today:", error);
         return NextResponse.json(
             { success: false, error: "Internal server error" },
             { status: 500 }

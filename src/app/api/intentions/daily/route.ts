@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
@@ -72,6 +74,27 @@ export async function POST(req: NextRequest) {
             // User has notifications enabled
             if (subscription.userId) {
                 userId = subscription.userId;
+
+                // SECURITY CHECK: If user is registered (not guest), verify session
+                const [userCheck] = await db
+                    .select({ email: users.email })
+                    .from(users)
+                    .where(eq(users.id, userId))
+                    .limit(1);
+
+                if (userCheck) {
+                    const isGuest = userCheck.email && (userCheck.email.endsWith('@nawaetu.local') || userCheck.email.startsWith('guest_'));
+
+                    if (!isGuest) {
+                        const session = await getServerSession(authOptions);
+                        if (!session || session.user.id !== userId) {
+                            return NextResponse.json(
+                                { success: false, error: "Unauthorized access to registered account" },
+                                { status: 401 }
+                            );
+                        }
+                    }
+                }
             } else {
                 // Create user and link to subscription
                 // Try catch for unique constraint
