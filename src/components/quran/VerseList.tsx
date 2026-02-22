@@ -36,6 +36,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { syncQueue } from "@/lib/sync-queue";
 import { cleanTajweedText } from "@/lib/sanitize";
+import { incrementDailyActivity } from "@/lib/analytics-utils";
 
 
 export interface Verse {
@@ -133,6 +134,75 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const autoplay = searchParams.get('autoplay') === 'true';
+
+    // --- Stats Tracking ---
+    const readVersesRef = useRef<Set<string>>(new Set());
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const timersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+
+    useEffect(() => {
+        // Only run on client
+        if (typeof window === "undefined" || !('IntersectionObserver' in window)) return;
+
+        // Clean up previous observer
+        if (observerRef.current) observerRef.current.disconnect();
+
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const verseKey = entry.target.getAttribute("data-verse-key");
+                    if (!verseKey) return;
+
+                    // Improved Logic: Center Focus Tracking
+                    // Only count as read if it's in the middle of the screen (where eyes focus)
+                    const rect = entry.boundingClientRect;
+                    const windowHeight = window.innerHeight || 800;
+                    const hotzoneTop = windowHeight * 0.3; // Top 30%
+                    const hotzoneBottom = windowHeight * 0.7; // Bottom 30%
+
+                    // Check if element is overlapping with the central 40% "hotzone"
+                    const isInHotzone = rect.top < hotzoneBottom && rect.bottom > hotzoneTop;
+
+                    if (entry.isIntersecting && isInHotzone) {
+                        // If already read this session, skip
+                        if (readVersesRef.current.has(verseKey)) return;
+
+                        // Start timer: if stays in hotzone for 2 seconds, mark as read
+                        if (!timersRef.current.has(verseKey)) {
+                            const timer = setTimeout(() => {
+                                if (!readVersesRef.current.has(verseKey)) {
+                                    readVersesRef.current.add(verseKey);
+                                    incrementDailyActivity("quranAyatRead", 1);
+                                }
+                            }, 2000);
+                            timersRef.current.set(verseKey, timer);
+                        }
+                    } else {
+                        // If scrolled away from hotzone before 2s, cancel timer
+                        const timer = timersRef.current.get(verseKey);
+                        if (timer) {
+                            clearTimeout(timer);
+                            timersRef.current.delete(verseKey);
+                        }
+                    }
+                });
+            },
+            {
+                threshold: [0, 0.25, 0.5, 0.75, 1], // More granular threshold for better hotzone detection
+                rootMargin: '0px'
+            }
+        );
+
+        // Observe all verses on the current page
+        const elements = document.querySelectorAll("[data-verse-key]");
+        elements.forEach((el) => observerRef.current?.observe(el));
+
+        return () => {
+            if (observerRef.current) observerRef.current.disconnect();
+            timersRef.current.forEach(clearTimeout);
+            timersRef.current.clear();
+        };
+    }, [verses]); // Re-run when page changes or verses load
 
     useEffect(() => {
         if (!chapter?.id) return;
@@ -826,6 +896,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 <div
                                     key={`verse-${verse.verse_key}`}
                                     id={`verse-${verseNum}`}
+                                    data-verse-key={verse.verse_key}
                                     className={`group relative py-8 px-4 md:px-6 border-b border-white/5 transition-colors duration-500 ${isPlayingVerse ? 'bg-[rgb(var(--color-primary))]/5' : 'hover:bg-white/[0.02]'}`}
                                 >
                                     {/* Action Bar */}

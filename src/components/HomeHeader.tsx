@@ -5,6 +5,10 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BarChart3, TrendingUp } from "lucide-react";
+import { getPlayerStats } from "@/lib/leveling";
 import StreakBadge from "@/components/StreakBadge";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -105,6 +109,17 @@ export default function HomeHeader() {
                     <div className="text-[11px] sm:text-sm font-medium text-[rgb(var(--color-primary-light))] uppercase tracking-widest opacity-90">
                         {greeting}
                     </div>
+                    {isMounted && (
+                        <Link
+                            href="/stats"
+                            className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors active:scale-95 group"
+                        >
+                            <TrendingUp className="w-2.5 h-2.5 text-[rgb(var(--color-primary-light))]" />
+                            <span className="text-[10px] font-bold text-white/50 group-hover:text-white/80">
+                                Lv {getPlayerStats().level}
+                            </span>
+                        </Link>
+                    )}
                 </div>
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-none min-h-[1.75rem] sm:min-h-[2rem]">
                     {isMounted ? (

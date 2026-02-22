@@ -3,7 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, Compass, Settings, Fingerprint } from "lucide-react";
+import { Home, BookOpen, Compass, Settings, Fingerprint, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";

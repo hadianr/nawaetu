@@ -24,6 +24,16 @@ export default function MentorAIPage() {
     const { stats } = useUserActivity();
     const { profile } = useUserProfile();
     const { t } = useLocale();
+    const HADITH_THEMES = [
+        { label: "Sabar", prompt: "Berikan hadits tentang keutamaan sabar" },
+        { label: "Syukur", prompt: "Apa hadits tentang cara bersyukur?" },
+        { label: "Adab", prompt: "Jelaskan adab berbicara dalam Islam" },
+        { label: "Ilmu", prompt: "Apa pentingnya menuntut ilmu?" },
+        { label: "Sholat", prompt: "Tips khusyuk dalam sholat" },
+        { label: "Sedekah", prompt: "Keutamaan sedekah subuh" },
+        { label: "Puasa", prompt: "Manfaat puasa bagi jiwa" },
+        { label: "Memaafkan", prompt: "Hadits tentang saling memaafkan" },
+    ];
 
     const QUICK_PROMPTS = [
         t.tanyaPrompt1,
@@ -648,6 +658,21 @@ export default function MentorAIPage() {
             {/* Input Area */}
             <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 pb-6 md:pb-8 pt-4 z-30">
                 <div className="max-w-md mx-auto px-4 space-y-3">
+                    {/* Thematic Category Tags - Scrollable */}
+                    {!showLimitBlocking && dailyCount < DAILY_LIMIT && (
+                        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar animate-in slide-in-from-bottom-2 duration-500">
+                            {HADITH_THEMES.map((theme, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleSend(theme.prompt)}
+                                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-[rgb(var(--color-primary))]/20 hover:border-[rgb(var(--color-primary))]/30 text-[11px] font-medium text-white/70 hover:text-[rgb(var(--color-primary-light))] transition-all active:scale-95"
+                                >
+                                    #{theme.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
                     {/* Limit Reached Card */}
                     {(dailyCount >= DAILY_LIMIT) ? (
                         <div className="bg-slate-800/90 backdrop-blur-md rounded-2xl p-4 border border-red-500/10 flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2">

@@ -33,6 +33,11 @@ const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
   loading: () => <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />,
 });
 
+const DailySpiritWidget = dynamic(() => import("@/components/home/DailySpiritWidget"), {
+  ssr: false,
+  loading: () => <div className="w-full h-40 bg-white/5 border border-white/10 animate-pulse rounded-[2rem]" />,
+});
+
 export default function DeferredBelowFold() {
   const [ready, setReady] = useState(false);
   const { t } = useLocale();
@@ -87,6 +92,11 @@ export default function DeferredBelowFold() {
           ) : (
             <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
           )}
+        </section>
+
+        {/* 6. Daily Spiritual Content (Dua/Hadith) */}
+        <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-400">
+          {ready ? <DailySpiritWidget /> : <div className="w-full h-40 bg-white/5 border border-white/10 animate-pulse rounded-[2rem]" />}
         </section>
 
         {/* Quote of The Day - Always at bottom */}

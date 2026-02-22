@@ -9,6 +9,7 @@ export interface UserContext {
     name: string;
     prayerStreak: number;
     lastPrayer: string;
+    dailySpiritualItem?: import('@/data/spiritual-content').SpiritualItem;
 }
 
 export interface LLMProvider {

@@ -261,16 +261,11 @@ export default function PrayerCheckInWidget() {
                                 </span>
 
                                 {/* Status hint below label */}
-                                {!done && isActive && !isLocked && (
+                                {!done && !isLocked && (isActive || isLate) && (
                                     <span className={cn(
                                         "text-[7px] font-bold leading-none",
                                         isLate ? "text-amber-400/70" : "text-[rgb(var(--color-primary-light))]/60"
                                     )}>
-                                        +{gender !== "female" ? "75" : "25"} XP
-                                    </span>
-                                )}
-                                {!done && isLate && (
-                                    <span className="text-[7px] font-bold leading-none text-amber-400/70">
                                         +{gender !== "female" ? "75" : "25"} XP
                                     </span>
                                 )}
@@ -355,9 +350,16 @@ export default function PrayerCheckInWidget() {
                             </button>
                         </div>
 
-                        <p className="text-[9px] text-white/30 text-center mt-4 italic">
+                        <p className="text-[9px] text-white/30 text-center mt-4 mb-6 italic">
                             "Sholat berjamaah lebih utama 27 derajat" — HR. Bukhari & Muslim
                         </p>
+
+                        <button
+                            onClick={() => setSheet(null)}
+                            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                        >
+                            Batal
+                        </button>
                     </div>
                 </div>
             )}

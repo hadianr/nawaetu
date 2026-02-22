@@ -68,9 +68,11 @@ export default function StatsPage() {
         };
         window.addEventListener("xp_updated", refresh);
         window.addEventListener("mission_storage_updated", refresh);
+        window.addEventListener("activity_updated", refresh);
         return () => {
             window.removeEventListener("xp_updated", refresh);
             window.removeEventListener("mission_storage_updated", refresh);
+            window.removeEventListener("activity_updated", refresh);
         };
     }, []);
 

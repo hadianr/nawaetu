@@ -72,6 +72,39 @@ export function recordDailyActivity(activity: Partial<DailyActivity>) {
         .sort((a, b) => a.date.localeCompare(b.date));
 
     storage.set(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any, JSON.stringify(filtered));
+    if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("activity_updated", { detail: filtered }));
+    }
+}
+
+/**
+ * Increment a specific activity metric for today
+ */
+export function incrementDailyActivity(key: keyof Omit<DailyActivity, 'date' | 'xpGained'>, amount: number = 1) {
+    if (typeof window === "undefined") return;
+
+    const history = getDailyActivityHistory();
+    const today = new Date().toISOString().split("T")[0];
+    const existing = history.find(a => a.date === today);
+
+    const currentVal = existing ? (existing[key] as number || 0) : 0;
+    recordDailyActivity({ [key]: currentVal + amount });
+}
+
+/**
+ * Get today's activity entry
+ */
+export function getTodayActivity(): DailyActivity {
+    const today = new Date().toISOString().split("T")[0];
+    const history = getDailyActivityHistory();
+    return history.find(a => a.date === today) || {
+        date: today,
+        xpGained: 0,
+        missionsCompleted: 0,
+        prayersCompleted: 0,
+        quranAyatRead: 0,
+        tasbihCount: 0
+    };
 }
 
 /**

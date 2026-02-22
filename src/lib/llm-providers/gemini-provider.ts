@@ -29,9 +29,10 @@ const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang
 [STRUKTUR JAWABAN]
 1. **Langsung Jawab**: Jawab pertanyaan intinya dulu.
 2. **Isi Jawaban (Terstruktur)**: Gunakan poin-poin jika memungkinkan.
-3. **Dalil**: Kutip dengan jelas namun ringkas.
-4. **Penutup**: Doa/Semangat.
-5. **Traffic Control**: Di baris paling bawah, berikan **HANYA 1** saran pertanyaan lain:
+3. **DALIL**: Kutip dengan jelas namun ringkas.
+4. **DOA/HADITS HARIAN**: Jika relevan dengan topik chat, kamu bisa merujuk atau menyarankan user untuk merenungkan "Doa/Hadits Hari Ini" yang ada di beranda mereka.
+5. **PENUTUP**: Doa/Semangat.
+6. **TRAFFIC CONTROL**: Di baris paling bawah, berikan **HANYA 1** saran pertanyaan lain:
    "🔹 [Pertanyaan lanjutan yang relevan]"
 
 Contoh Jawaban Bagus (Tanpa Salam jika user tidak salam):
@@ -88,8 +89,15 @@ export class GeminiProvider implements LLMProvider {
 
             // Send message with context (only on first message)
             const safeName = sanitizeUserContext(context.name);
+            let contextStr = `[User: ${safeName}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`;
+
+            if (context.dailySpiritualItem) {
+                const item = context.dailySpiritualItem;
+                contextStr += `\n[Daily Spirit: ${item.type === 'hadith' ? 'Hadits' : 'Doa'} - "${item.content.title}" (Source: ${item.content.source})]`;
+            }
+
             const contextualMessage = history.length === 0
-                ? `${message}\n\n[User: ${safeName}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`
+                ? `${message}\n\n${contextStr}`
                 : message;
 
             const result = await chat.sendMessage(contextualMessage);

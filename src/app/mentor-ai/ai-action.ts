@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
+import { getSpiritualItemOfDay } from '@/data/spiritual-content';
 
 interface ChatMessage {
     role: 'user' | 'assistant';
@@ -52,10 +53,13 @@ export async function askMentor(
         // Get current time context if not provided
         const timeCtx = timeContext || getCurrentTimeContext();
 
+        // Get current spiritual item of the day
+        const spiritualItem = getSpiritualItemOfDay();
+
         // Use model router with fallback
         const { response, provider } = await modelRouter.chat(
             message,
-            context,
+            { ...context, dailySpiritualItem: spiritualItem },
             chatHistory
         );
 
