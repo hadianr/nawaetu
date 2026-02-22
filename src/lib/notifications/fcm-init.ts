@@ -35,7 +35,8 @@ function getMessagingInstance(): Messaging | undefined {
         messaging = getMessaging(app);
         return messaging;
     } catch (err) {
-        return undefined;
+        console.error("[FCM] Failed to initialize messaging:", err);
+        throw err;
     }
 }
 
@@ -59,13 +60,13 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
     try {
         // Check if notifications are supported
         if (!("Notification" in window)) {
-            return null;
+            throw new Error("Peramban Anda tidak mendukung notifikasi.");
         }
 
         // Request notification permission
         const permission = await window.Notification.requestPermission();
         if (permission !== "granted") {
-            return null;
+            throw new Error(`Izin notifikasi ditolak (${permission}).`);
         }
 
         // 1. Try to reuse the existing service worker registration (Best Practice for PWAs)
@@ -113,7 +114,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         // Get FCM token with RETRY logic
         const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
         if (!vapidKey) {
-            return null;
+            throw new Error("VAPID key is missing from environment variables.");
         }
 
         const getTokenWithRetry = async (retries = 3, delay = 1000): Promise<string | null> => {
@@ -141,15 +142,9 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             return null;
         }
     } catch (error: any) {
-        // Throw or alert more detail if possible
-        if (error.code === 'messaging/permission-blocked') {
-            alert(error.message); // Show actual firebase error message which is usually clean
-        } else if (error.message.includes("Registration failed")) {
-            alert("Gagal registrasi Service Worker: " + error.message);
-        } else {
-            // Generic error
-        }
-        return null;
+        console.error("[FCM Setup Error]", error);
+        // Throw the actual error so the UI can display it
+        throw error;
     }
 }
 
