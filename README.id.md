@@ -6,13 +6,13 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.7.3-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.8.1-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.7.3** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+**Versi Saat Ini: v1.8.1** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
 
-### 🚀 Apa yang Baru di v1.7.3
+### 🚀 Apa yang Baru di v1.8.1
 - **Penyesuaian Tanggal Hijriah**: Pilihan penyesuaian kalender Hijriah (Standar/Muhammadiyah) untuk penentuan awal Ramadhan yang akurat.
 - **Validasi Cache Cerdas**: Optimasi sistem caching jadwal sholat yang otomatis menyesuaikan saat pengaturan diubah.
 - **Sinkronisasi Cloud**: Semua pengaturan termasuk koreksi Hijriah kini tersimpan di database dan sinkron di semua perangkat.
@@ -51,7 +51,7 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ---
 
-## 🌟 Fitur Unggulan (v1.7.3)
+## 🌟 Fitur Unggulan (v1.8.1)
 
 ### 1. 🔔 Sistem Notifikasi Presisi Tinggi
 *   **Akurasi 1 Menit**: Menggunakan External Cron untuk ketepatan waktu adzan (maksimal delay < 60 detik).
@@ -412,19 +412,17 @@ git pull origin main
 
 # 2. Use release script (fully automated)
 npm run release -- v1.2.0
+# Atau jalankan langsung: ./scripts/release.sh v1.2.0
 ```
 
 **Apa yang terjadi otomatis:**
-1. ✅ Validate version format (vX.Y.Z)
-2. ✅ Check working directory clean
-3. ✅ Verify all commits pushed
-4. ✅ Create annotated git tag
-5. ✅ Push tag to origin
-6. ✅ Trigger GitHub Actions workflows:
-   - Create GitHub Release
-   - Extract changelog
-   - Update package.json
-7. ✅ Vercel auto-deploys to production
+1. ✅ Validasi format version (`vX.Y.Z`)
+2. ✅ Update version files (`package.json`, `app-config.ts`)
+3. ✅ Auto-generate changelog dari git commits
+4. ✅ Commit otomatis ke branch main
+5. ✅ Membuat annotated git tag
+6. ✅ Push commits & tag baru ke origin (GitHub)
+7. ✅ Trigger GitHub Actions & Vercel deployment otomatis
 
 ### Detailed Release Guide
 

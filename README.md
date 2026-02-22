@@ -6,13 +6,13 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.7.3-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.8.1-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
 
-**Current Version: v1.7.3** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+**Current Version: v1.8.1** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
 
-### 🚀 What's New in v1.7.3
+### 🚀 What's New in v1.8.1
 - **Hijri Date Adjustment**: Flexible moon sighting alignment (Standard/Muhammadiyah) for accurate Ramadhan dates.
 - **Smart Cache Validation**: Optimized prayer times caching that respects settings changes.
 - **Settings Cloud Sync**: Securely sync your Hijri preferences across all authenticated devices.
@@ -51,7 +51,7 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ---
 
-## 🌟 Key Features (v1.7.3)
+## 🌟 Key Features (v1.8.1)
 
 ### 1. 🔔 High-Precision Notifications
 *   **1-Minute Accuracy**: External Cron optimization ensures Adhan alerts are timely (< 60s delay).
@@ -146,6 +146,35 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+## 📦 Release Management
+
+### Quick Release
+
+**The fastest way to safely release a new version:**
+
+```bash
+# 1. Ensure you are on the main branch & have the latest code
+git checkout main
+git pull origin main
+
+# 2. Use the release script (fully automated)
+npm run release -- v1.2.0
+# Or run directly: ./scripts/release.sh v1.2.0
+```
+
+**What happens automatically:**
+1. ✅ Validates version format (`vX.Y.Z`)
+2. ✅ Updates version files (`package.json`, `app-config.ts`)
+3. ✅ Auto-generates changelog from git commits
+4. ✅ Commits release changes automatically
+5. ✅ Creates an annotated git tag
+6. ✅ Pushes commits and new tag to origin
+7. ✅ Triggers GitHub Actions workflows & Vercel deployment
+
+### Detailed Release Guide
+
+For a complete guide and troubleshooting, see [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md).
 
 ---
 
