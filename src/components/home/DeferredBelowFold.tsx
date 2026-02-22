@@ -23,6 +23,11 @@ const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay
   loading: () => <PrayerCardSkeleton />,
 });
 
+const PrayerCheckInWidget = dynamic(() => import("@/components/PrayerCheckInWidget"), {
+  ssr: false,
+  loading: () => <div className="w-full h-[88px] bg-white/5 border border-white/10 animate-pulse rounded-2xl" />,
+});
+
 const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
   ssr: false,
   loading: () => <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />,
@@ -64,6 +69,15 @@ export default function DeferredBelowFold() {
         {/* 4. Prayer Times List - compact */}
         <section className="w-full">
           {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
+        </section>
+
+        {/* 4b. Prayer Check-in Strip */}
+        <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200">
+          {ready ? (
+            <PrayerCheckInWidget />
+          ) : (
+            <div className="w-full h-[88px] bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
+          )}
         </section>
 
         {/* 5. Daily Missions */}
