@@ -81,43 +81,52 @@ export default function PrayerCheckInWidget() {
 
     // Determine current/next active prayer window
     const getTimeStatus = (prayerKey: string, endKey: string | null) => {
-        if (!prayerData?.prayerTimes) return { isActive: false, isUpcoming: false, isLate: false };
+        // When prayer data not loaded yet, don't lock anything
+        if (!prayerData?.prayerTimes) return { isActive: false, isUpcoming: false, isLate: false, isFuture: true };
 
         const now = new Date();
         const parseTime = (k: string) => {
-            const str = prayerData.prayerTimes[k];
-            if (!str) return null;
+            const rawStr = prayerData.prayerTimes[k];
+            if (!rawStr) return null;
+            // Aladhan API sometimes returns "18:11 (WIB)" — we only need "18:11"
+            const str = rawStr.split(" ")[0];
             const [h, m] = str.split(":").map(Number);
+            if (isNaN(h) || isNaN(m)) return null;
+
             const d = new Date();
             d.setHours(h, m, 0, 0);
-            return d;
+            return isNaN(d.getTime()) ? null : d;
         };
 
         const start = parseTime(prayerKey);
         const end = endKey ? parseTime(endKey) : null;
 
-        if (!start) return { isActive: false, isUpcoming: false, isLate: false };
+        if (!start || isNaN(start.getTime())) return { isActive: false, isUpcoming: false, isLate: false, isFuture: false };
 
         const diffFromStart = now.getTime() - start.getTime();
         const minsFromStart = diffFromStart / 60000;
 
         if (minsFromStart < 0) {
-            // Before this prayer time — upcoming if < 30 mins away
-            return { isActive: false, isUpcoming: minsFromStart > -30, isLate: false };
+            // Before this prayer time starts — it's a future prayer, lock it strictly
+            const isUpcoming = minsFromStart > -30;
+            const res = { isActive: false, isUpcoming, isLate: false, isFuture: true };
+            // console.log(`[getTimeStatus] ${prayerKey}: minsFromStart=${minsFromStart.toFixed(1)}, res=`, res);
+            return res;
         }
 
-        if (end) {
+        if (end && !isNaN(end.getTime())) {
             const diffToEnd = end.getTime() - now.getTime();
             const minsToEnd = diffToEnd / 60000;
             if (minsToEnd <= 0) {
-                return { isActive: false, isUpcoming: false, isLate: true }; // Window passed
+                // Window passed — still tappable (user may have forgotten to log)
+                return { isActive: false, isUpcoming: false, isLate: true, isFuture: false };
             }
-            return { isActive: true, isUpcoming: false, isLate: minsToEnd < 30 };
+            return { isActive: true, isUpcoming: false, isLate: minsToEnd < 30, isFuture: false };
         }
 
         // Isha: active if started, we cap at 4h
         const isActive = minsFromStart >= 0 && minsFromStart < 240;
-        return { isActive, isUpcoming: false, isLate: minsFromStart > 180 && isActive };
+        return { isActive, isUpcoming: false, isLate: minsFromStart > 180 && isActive, isFuture: false };
     };
 
     const doComplete = (missionId: string, xpReward: number) => {
@@ -143,6 +152,17 @@ export default function PrayerCheckInWidget() {
         const missionId = getMissionId(prayer.suffix);
         if (isPrayerDone(prayer.suffix)) return; // Already done
 
+        const status = getTimeStatus(prayer.prayerKey, prayer.endKey);
+        // console.log(`[handlePrayerTap] ${prayer.label} tap:`, { status, time: new Date().toLocaleTimeString() });
+
+        if (status.isFuture) {
+            toast.error(`Belum waktunya sholat ${prayer.label}`, {
+                description: "Silakan check-in setelah waktu sholat tiba.",
+                icon: "🔒",
+            });
+            return; // Time hasn't arrived yet
+        }
+
         if (gender !== "female") {
             // Show jamaah option sheet for male / unknown gender
             setSheet({ prayer, missionId });
@@ -152,7 +172,7 @@ export default function PrayerCheckInWidget() {
         }
     };
 
-    if (!mounted) {
+    if (!mounted || !prayerData?.prayerTimes) {
         return (
             <div className="w-full h-[88px] bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
         );
@@ -187,24 +207,27 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center gap-2 relative z-10">
                     {PRAYERS.map((prayer) => {
                         const done = isPrayerDone(prayer.suffix);
-                        const { isActive, isUpcoming, isLate } = getTimeStatus(prayer.prayerKey, prayer.endKey);
+                        const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
+                        const isLocked = isFuture && !done;
 
                         return (
                             <button
                                 key={prayer.suffix}
                                 onClick={() => handlePrayerTap(prayer)}
-                                disabled={done}
+                                disabled={done || isLocked}
                                 className={cn(
                                     "flex-1 flex flex-col items-center gap-1 py-2 rounded-xl border transition-all duration-200 relative overflow-hidden",
                                     done
                                         ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 cursor-default"
-                                        : isLate && isActive
-                                            ? "bg-amber-500/10 border-amber-500/30 active:scale-95"
-                                            : isActive
-                                                ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[0_0_10px_rgba(var(--color-primary),0.15)] active:scale-95"
-                                                : isUpcoming
-                                                    ? "bg-white/[0.04] border-white/10 active:scale-95"
-                                                    : "bg-white/[0.02] border-white/5 active:scale-95"
+                                        : isLocked
+                                            ? "bg-white/[0.01] border-white/[0.05] cursor-not-allowed opacity-40 pointer-events-none"
+                                            : isLate
+                                                ? "bg-amber-500/10 border-amber-500/30 active:scale-95"
+                                                : isActive
+                                                    ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[0_0_10px_rgba(var(--color-primary),0.15)] active:scale-95"
+                                                    : isUpcoming
+                                                        ? "bg-white/[0.04] border-white/10 active:scale-95"
+                                                        : "bg-white/[0.02] border-white/5 active:scale-95"
                                 )}
                             >
                                 {/* Active pulse for current prayer */}
@@ -216,7 +239,7 @@ export default function PrayerCheckInWidget() {
                                     <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-primary))] flex items-center justify-center">
                                         <Check className="w-3 h-3 text-white" />
                                     </div>
-                                ) : isLate && isActive ? (
+                                ) : isLate ? (
                                     <AlertCircle className="w-4 h-4 text-amber-400" />
                                 ) : (
                                     <span className="text-sm leading-none">{prayer.icon}</span>
@@ -226,20 +249,39 @@ export default function PrayerCheckInWidget() {
                                     "text-[9px] font-semibold leading-none",
                                     done
                                         ? "text-[rgb(var(--color-primary-light))]"
-                                        : isActive
-                                            ? isLate ? "text-amber-300" : "text-white"
-                                            : "text-white/50"
+                                        : isLocked
+                                            ? "text-white/25"
+                                            : isActive
+                                                ? isLate ? "text-amber-300" : "text-white"
+                                                : isUpcoming
+                                                    ? "text-white/70"
+                                                    : "text-white/50"
                                 )}>
                                     {prayer.label}
                                 </span>
 
-                                {/* XP hint on active undone prayer */}
-                                {!done && isActive && (
+                                {/* Status hint below label */}
+                                {!done && isActive && !isLocked && (
                                     <span className={cn(
                                         "text-[7px] font-bold leading-none",
                                         isLate ? "text-amber-400/70" : "text-[rgb(var(--color-primary-light))]/60"
                                     )}>
                                         +{gender !== "female" ? "75" : "25"} XP
+                                    </span>
+                                )}
+                                {!done && isLate && (
+                                    <span className="text-[7px] font-bold leading-none text-amber-400/70">
+                                        +{gender !== "female" ? "75" : "25"} XP
+                                    </span>
+                                )}
+                                {!done && isUpcoming && !isLocked && (
+                                    <span className="text-[7px] font-medium leading-none text-white/30">
+                                        sebentar lagi
+                                    </span>
+                                )}
+                                {isLocked && (
+                                    <span className="text-[7px] font-medium leading-none text-white/20">
+                                        🔒
                                     </span>
                                 )}
                             </button>
