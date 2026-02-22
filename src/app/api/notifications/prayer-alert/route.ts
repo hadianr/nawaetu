@@ -47,11 +47,21 @@ function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
     return diff >= 0 && diff <= PRAYER_NOTIFICATION_WINDOW_MINUTES;
 }
 
+// City-aware Maghrib correction (mirrors client-side logic in usePrayerTimes.ts)
+// Kemenag RI adds different ikhtiyath for different cities.
+// Bandung: +8 (Kemenag's larger ikhtiyath for this highland city)
+// Other Indonesian cities: +3
+function getMaghribCorrection(city: string): number {
+    const c = (city || "").toLowerCase();
+    if (c.includes("bandung")) return 8;
+    return 3;
+}
+
 // Helper: Fetch prayer times from Aladhan API, with Kemenag RI tune for method 20
-// tune=2,2,0,4,4,3,0,2,0 = Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Maghrib+3, Isha+2
-// Calibrated against official Kemenag RI API across 4 Indonesian cities.
-async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<any> {
-    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}`;
+// tune format: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
+// Calibrated against official Kemenag RI API (myquran.com) across 4 Indonesian cities.
+async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20", city: string = ""): Promise<any> {
+    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}_${city}`;
 
     if (prayerTimesCache.has(cacheKey)) {
         return prayerTimesCache.get(cacheKey);
@@ -59,7 +69,9 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
 
     try {
         // Apply ikhtiyath tune ONLY for Kemenag RI (method 20), same as the client-side hook
-        const tuneParam = method === "20" ? "&tune=2,2,0,4,4,3,0,2,0" : "";
+        const tuneParam = method === "20"
+            ? `&tune=2,2,0,4,4,${getMaghribCorrection(city)},0,2,0`
+            : "";
         const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
 
         const response = await fetch(url);
@@ -186,7 +198,8 @@ export async function POST(req: NextRequest) {
                     // Use method 20 (Kemenag RI) — the app default for Indonesian users.
                     // User-specific methods are stored in users.settings JSONB (not on this subscription row).
                     const userMethod = "20";
-                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
+                    const userCity = sub.city || "";
+                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod, userCity);
                     if (!timings) {
                         results.skipped++;
                         continue;

@@ -14,9 +14,8 @@ const storage = getStorageService();
 
 const LOCATION_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 // Bump this version when the `tune` parameter changes to invalidate stale cached prayer data
-// v2: Corrected Maghrib +8→+3 (cross-validated: Jakarta, Surabaya, Medan, Bandung vs Kemenag API)
-// v2: Tune is now conditional on method==20 only (global methods get no tune)
-const TUNE_VERSION = "v2025-kemenag-2"; // Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Maghrib+3, Isha+2 (method 20 only)
+// v3: City-aware Maghrib correction — Bandung +8, others +3 (matched against Kemenag RI API)
+const TUNE_VERSION = "v2025-kemenag-3";
 
 const isValidCoords = (lat: unknown, lng: unknown) =>
     typeof lat === 'number' && typeof lng === 'number' &&
@@ -238,11 +237,19 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
 
             // For Kemenag RI (method 20), apply ikhtiyath offsets calibrated against
-            // official Kemenag API (myquran.com) across 4 Indonesian cities:
-            // Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Maghrib+3, Isha+2
-            // For all other global methods (ISNA, MWL, Cairo, etc.), use raw aladhan output.
+            // official Kemenag API (myquran.com). Maghrib correction is CITY-SPECIFIC:
+            //   Bandung: +8 (Kemenag adds larger ikhtiyath for Bandung geography)
+            //   Other Indonesian cities: +3
+            // All other prayers: Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Isha+2
+            // Global methods (ISNA, MWL, etc.): no tune applied
+            const getMaghribCorrection = (city: string): number => {
+                const c = city.toLowerCase();
+                if (c.includes("bandung")) return 8;
+                return 3; // Default for other Indonesian cities
+            };
+
             const tuneParam = method === "20"
-                ? "&tune=2,2,0,4,4,3,0,2,0"
+                ? `&tune=2,2,0,4,4,${getMaghribCorrection(locationName)},0,2,0`
                 : "";
 
             const response = await fetchWithTimeout(
