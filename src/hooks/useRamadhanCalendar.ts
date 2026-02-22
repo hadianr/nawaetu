@@ -72,9 +72,30 @@ export function useRamadhanCalendar() {
             const year = 2026;
             const monthsToFetch = [2, 3]; // Feb, March
 
+            // Coordinate-based Maghrib correction (mirrors usePrayerTimes.ts logic)
+            // Kemenag RI ikhtiyath for Maghrib varies by city:
+            //   Bandung Raya (within 25km of center): +8
+            //   Other Indonesian cities: +3
+            const getMaghribCorrection = (userLat: number, userLng: number): number => {
+                const R = 6371;
+                const dLat = (userLat - (-6.9175)) * Math.PI / 180;
+                const dLng = (userLng - 107.6191) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) ** 2
+                    + Math.cos(-6.9175 * Math.PI / 180) * Math.cos(userLat * Math.PI / 180)
+                    * Math.sin(dLng / 2) ** 2;
+                const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return distKm <= 25 ? 8 : 3;
+            };
+
+            // Apply same Kemenag RI tune as usePrayerTimes (method 20 only)
+            // tune format: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
+            const tuneParam = method === "20"
+                ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
+                : "";
+
             const requests = monthsToFetch.map(m =>
                 fetchWithTimeout(
-                    `${API_CONFIG.ALADHAN.BASE_URL}/calendar/${year}/${m}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${activeAdj}`,
+                    `${API_CONFIG.ALADHAN.BASE_URL}/calendar/${year}/${m}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${activeAdj}${tuneParam}`,
                     {},
                     { timeoutMs: 10000 }
                 ).then(res => res.json() as Promise<AladhanCalendarResponse>)

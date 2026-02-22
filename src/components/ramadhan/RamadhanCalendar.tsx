@@ -43,7 +43,7 @@ export default function RamadhanCalendar() {
                 </button>
             </DialogTrigger>
             <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg bg-black/60 backdrop-blur-xl border-white/10 text-white p-0 overflow-hidden gap-0 shadow-2xl">
-                <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 bg-white/5 z-10 relative">
+                <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 bg-white/5 relative">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-left">
                             <span>{t.calendarTitle}</span>
@@ -85,7 +85,7 @@ export default function RamadhanCalendar() {
                                         const progressiveOpacity = 0.5 + (ramadhanDay / 30) * 0.5;
                                         const bgOpacity = day.isToday ? (0.1 + (progressiveOpacity * 0.15)) : 0;
                                         const hoverBgOpacity = day.isToday ? (0.2 + (progressiveOpacity * 0.15)) : 0.05;
-                                        
+
                                         return (
                                             <div
                                                 key={idx}
@@ -115,14 +115,14 @@ export default function RamadhanCalendar() {
                                             >
                                                 <div
                                                     className={cn("text-center font-medium", day.isToday ? "font-bold" : "text-white/80")}
-                                                    style={day.isToday ? { 
+                                                    style={day.isToday ? {
                                                         color: "rgb(var(--color-primary-light))",
                                                         textShadow: `0 0 ${8 + ramadhanDay * 0.5}px rgba(var(--color-primary-light), ${0.5 * progressiveOpacity})`
                                                     } : undefined}
                                                 >
                                                     {day.hijriDay}
                                                 </div>
-                                                <div 
+                                                <div
                                                     className="text-center text-white/50"
                                                     style={day.isToday ? {
                                                         color: `rgba(255, 255, 255, ${0.6 + progressiveOpacity * 0.2})`
