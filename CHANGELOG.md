@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.3] - 2026-02-23
+
+### Added
+- **Feat: Implement a Hadith and Dua content page with category filtering and add prayer check-in translations.**
+- **Feat: Implement PrayerTimesContext for centralized prayer times data management and optimize deferred component loading.**
+- **Feat: enhance Daily Spirit and Quote of the Day widgets with UI/UX improvements and localization support**
+- **Feat: Introduce a daily spiritual content widget, add a new stats page with Quran reading activity tracking, and enhance AI context with daily spiritual items.**
+- **Feat(stats): replace Coming Soon overlay with full ibadah dashboard**
+- **Feat: add Prayer Check-in Widget to home screen**
+
+### Fixed
+- **Fix: Improve prayer times error handling and implement robust data sanitization for user settings on both client and server.**
+- **Fix: implement strict time-locking for Prayer Check-in Widget**
+
+
 ## [1.8.2] - 2026-02-22
 
 ### Added
