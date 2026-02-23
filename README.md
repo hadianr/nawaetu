@@ -6,11 +6,17 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.8.1-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.8.3-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
 
-**Current Version: v1.8.1** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+**Current Version: v1.8.3** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+
+### 🚀 What's New in v1.8.3
+- **Comprehensive Bilingual Support**: Full English-Indonesian localization for Hadith, Duas, and interactive Prayer Cards.
+- **Enhanced Spiritual Feed**: Daily Spirit widget localized with English translations for all 37 spiritual entries.
+- **Interactive i18n Widgets**: Prayer Check-in and Next Prayer widgets now follow the active language settings seamlessly.
+- **Performance Optimizations**: Faster initial load with deferred rendering for below-fold dashboard widgets.
 
 ### 🚀 What's New in v1.8.1
 - **Hijri Date Adjustment**: Flexible moon sighting alignment (Standard/Muhammadiyah) for accurate Ramadhan dates.
@@ -51,7 +57,7 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ---
 
-## 🌟 Key Features (v1.8.1)
+## 🌟 Key Features (v1.8.3)
 
 ### 1. 🔔 High-Precision Notifications
 *   **1-Minute Accuracy**: External Cron optimization ensures Adhan alerts are timely (< 60s delay).

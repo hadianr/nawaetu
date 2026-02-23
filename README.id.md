@@ -6,11 +6,17 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.8.1-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.8.3-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.8.1** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+**Versi Saat Ini: v1.8.3** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+
+### 🚀 Apa yang Baru di v1.8.3
+- **Dukungan Bilingual Lengkap**: Internasionalisasi penuh (ID/EN) untuk konten Hadist, Doa, dan Kartu Jadwal Sholat interaktif.
+- **Feed Spiritual Terjemahan**: Widget Daily Spirit kini mendukung Bahasa Inggris untuk seluruh 37 entri spiritual.
+- **Widget Interaktif i18n**: Fitur Check-in Sholat dan Next Prayer otomatis menyesuaikan bahasa aktif pengguna secara real-time.
+- **Optimasi Performa**: Pemuatan awal lebih cepat dengan deferred rendering untuk widget di bawah layar utama dashboard.
 
 ### 🚀 Apa yang Baru di v1.8.1
 - **Penyesuaian Tanggal Hijriah**: Pilihan penyesuaian kalender Hijriah (Standar/Muhammadiyah) untuk penentuan awal Ramadhan yang akurat.
@@ -51,7 +57,7 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ---
 
-## 🌟 Fitur Unggulan (v1.8.1)
+## 🌟 Fitur Unggulan (v1.8.3)
 
 ### 1. 🔔 Sistem Notifikasi Presisi Tinggi
 *   **Akurasi 1 Menit**: Menggunakan External Cron untuk ketepatan waktu adzan (maksimal delay < 60 detik).
@@ -593,4 +599,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: February 18, 2026*
+*Last updated: February 23, 2026*
