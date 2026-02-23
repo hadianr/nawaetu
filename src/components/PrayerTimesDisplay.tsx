@@ -122,9 +122,9 @@ export default function PrayerTimesDisplay() {
                             <Navigation className="w-5 h-5 text-amber-500" />
                         </div>
                         <div className="flex-1">
-                            <p className="text-xs font-bold text-amber-200">{t.homeLocationDefaultTitle || "Lokasi Default (Jakarta)"}</p>
+                            <p className="text-xs font-bold text-amber-200">{t.homeLocationDefaultTitle}</p>
                             <p className="text-[10px] text-amber-200/60 leading-tight mt-0.5">
-                                {t.homeLocationDefaultDesc || "Jadwal sholat saat ini berdasarkan Jakarta. Ketuk ikon lokasi di atas untuk memperbarui ke lokasi Anda."}
+                                {t.homeLocationDefaultDesc}
                             </p>
                         </div>
                     </div>

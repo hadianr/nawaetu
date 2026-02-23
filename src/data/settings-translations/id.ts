@@ -296,6 +296,22 @@ export const SETTINGS_ID = {
     homeFindMosque: "Cari Masjid",
     homeFindMosqueAria: "Cari Masjid Terdekat via Google Maps",
 
+    // Prayer Check-In
+    homePrayerCheckInTitle: "Sholat Hari Ini",
+    homePrayerCheckInStatus: "{count}/5 Terlaksana",
+    homePrayerCheckInDone: "Semua sholat hari ini terlaksana! Masya Allah 🎉",
+    homePrayerCheckInUpcoming: "sebentar lagi",
+    homePrayerCheckInLate: "Terlewat waktu awal",
+    homePrayerCheckInNotYet: "Belum waktunya {prayer}",
+    homePrayerCheckInWait: "Silakan check-in setelah waktu sholat tiba.",
+    homePrayerCheckInToastTitle: "Alhamdulillah! ✅",
+    homePrayerCheckInToastDesc: "Sholat tercatat (+{xp} XP)",
+    homePrayerCheckInSheetTitle: "Sholat {prayer}",
+    homePrayerCheckInSheetSubtitle: "Bagaimana kamu sholat?",
+    homePrayerCheckInOptionSolo: "Sholat Sendiri",
+    homePrayerCheckInOptionJamaah: "Berjamaah di Masjid",
+    homePrayerCheckInQuote: "\"Sholat berjamaah lebih utama 27 derajat\" — HR. Bukhari & Muslim",
+
     // Mosque Finder Modal
     mosqueFinderTitle: "Mau Sholat di Mana?",
     mosqueFinderDesc: "Pilih jenis tempat sholat yang kamu butuhkan:",
@@ -466,6 +482,7 @@ export const SETTINGS_ID = {
     prayerAsr: "Ashar",
     prayerMaghrib: "Maghrib",
     prayerIsha: "Isya",
+    prayerImsakRef: "imsak",
 
     // Quote of the Day
     quoteSource5: "QS. At-Talaq: 3",
@@ -497,6 +514,18 @@ export const SETTINGS_ID = {
     spiritualCategoryGayaHidup: "Gaya Hidup",
     spiritualCategorySyukur: "Syukur",
     spiritualCategoryIlmu: "Ilmu",
+    spiritualCategoryIbadah: "Ibadah",
+    spiritualCategoryRamadhan: "Ramadhan",
+
+    // Hadith Browser Page
+    hadithPageTitle: "Hadits & Doa",
+    hadithPageSubtitle: "hadits · {dua} doa pilihan",
+    hadithFilterAll: "Semua",
+    hadithFoundCount: "konten ditemukan",
+    hadithEmptyState: "Belum ada konten untuk kategori ini.",
+    hadithExploreLink: "Jelajahi hadits lainnya",
+    hadithExploreLinkDua: "Jelajahi doa & hadits lainnya",
+    hadithCopied: "Tersalin!",
 
     // Stats Page
     statsPageTitle: "Statistik Ibadah",

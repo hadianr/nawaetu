@@ -14,13 +14,13 @@ import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import type { Gender } from "@/data/missions-data";
 
-// Prayer config: id, label, icon, and the prayerTimes key for time-awareness
+// Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
 const PRAYERS = [
-    { suffix: "subuh", label: "Subuh", icon: "🌙", prayerKey: "Fajr", endKey: "Sunrise" },
-    { suffix: "dzuhur", label: "Dzuhur", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr" },
-    { suffix: "ashar", label: "Ashar", icon: "🌤️", prayerKey: "Asr", endKey: "Maghrib" },
-    { suffix: "maghrib", label: "Maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha" },
-    { suffix: "isya", label: "Isya", icon: "🌃", prayerKey: "Isha", endKey: null },
+    { suffix: "subuh", icon: "🌙", prayerKey: "Fajr", endKey: "Sunrise", i18n: "prayerFajr" },
+    { suffix: "dzuhur", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "prayerDhuhr" },
+    { suffix: "ashar", icon: "🌤️", prayerKey: "Asr", endKey: "Maghrib", i18n: "prayerAsr" },
+    { suffix: "maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "prayerMaghrib" },
+    { suffix: "isya", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "prayerIsha" },
 ] as const;
 
 // Bottom-sheet state for male jamaah option
@@ -141,8 +141,8 @@ export default function PrayerCheckInWidget() {
         completeMission(missionId, xpReward);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
-        toast.success("Alhamdulillah! ✅", {
-            description: `Sholat tercatat (+${xpReward} XP)`,
+        toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
+            description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{xp} XP)").replace("{xp}", String(xpReward)),
             duration: 2500,
             icon: "🎉",
         });
@@ -156,8 +156,9 @@ export default function PrayerCheckInWidget() {
         // console.log(`[handlePrayerTap] ${prayer.label} tap:`, { status, time: new Date().toLocaleTimeString() });
 
         if (status.isFuture) {
-            toast.error(`Belum waktunya sholat ${prayer.label}`, {
-                description: "Silakan check-in setelah waktu sholat tiba.",
+            const label = (t as any)[prayer.i18n] || prayer.i18n;
+            toast.error(t.homePrayerCheckInNotYet.replace("{prayer}", label), {
+                description: t.homePrayerCheckInWait,
                 icon: "🔒",
             });
             return; // Time hasn't arrived yet
@@ -191,7 +192,7 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center justify-between mb-3 relative z-10">
                     <div className="flex items-center gap-2">
                         <span className="text-sm">🕌</span>
-                        <p className="text-xs font-bold text-white">Sholat Hari Ini</p>
+                        <p className="text-xs font-bold text-white">{t.homePrayerCheckInTitle}</p>
                     </div>
                     <div className={cn(
                         "text-[10px] px-2 py-0.5 rounded-full font-semibold border",
@@ -199,7 +200,7 @@ export default function PrayerCheckInWidget() {
                             ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
                             : "bg-white/5 border-white/10 text-white/60"
                     )}>
-                        {completedCount}/5 Terlaksana
+                        {t.homePrayerCheckInStatus.replace("{count}", String(completedCount))}
                     </div>
                 </div>
 
@@ -257,7 +258,7 @@ export default function PrayerCheckInWidget() {
                                                     ? "text-white/70"
                                                     : "text-white/50"
                                 )}>
-                                    {prayer.label}
+                                    {(t as any)[prayer.i18n] || prayer.i18n}
                                 </span>
 
                                 {/* Status hint below label */}
@@ -271,7 +272,7 @@ export default function PrayerCheckInWidget() {
                                 )}
                                 {!done && isUpcoming && !isLocked && (
                                     <span className="text-[7px] font-medium leading-none text-white/30">
-                                        sebentar lagi
+                                        {t.homePrayerCheckInUpcoming}
                                     </span>
                                 )}
                                 {isLocked && (
@@ -288,8 +289,8 @@ export default function PrayerCheckInWidget() {
                 {completedCount === 5 && (
                     <div className="mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 relative z-10">
                         <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
-                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))]">
-                            Semua sholat hari ini terlaksana! Masya Allah 🎉
+                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] text-center">
+                            {t.homePrayerCheckInDone}
                         </p>
                     </div>
                 )}
@@ -316,8 +317,10 @@ export default function PrayerCheckInWidget() {
                                 {sheet.prayer.icon}
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-white">Sholat {sheet.prayer.label}</p>
-                                <p className="text-[10px] text-white/50">Bagaimana kamu sholat?</p>
+                                <p className="text-sm font-bold text-white">
+                                    {t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any)[sheet.prayer.i18n] || sheet.prayer.i18n)}
+                                </p>
+                                <p className="text-[10px] text-white/50">{t.homePrayerCheckInSheetSubtitle}</p>
                             </div>
                         </div>
 
@@ -331,7 +334,7 @@ export default function PrayerCheckInWidget() {
                                 className="flex-1 flex flex-col items-center gap-2 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all"
                             >
                                 <span className="text-2xl">🏠</span>
-                                <span className="text-xs font-semibold text-white">Sholat Sendiri</span>
+                                <span className="text-xs font-semibold text-white">{t.homePrayerCheckInOptionSolo}</span>
                                 <span className="text-[10px] text-white/50 font-semibold">+25 XP</span>
                             </button>
 
@@ -345,20 +348,20 @@ export default function PrayerCheckInWidget() {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
                                 <span className="text-2xl relative">🕌</span>
-                                <span className="text-xs font-semibold text-white relative">Berjamaah di Masjid</span>
+                                <span className="text-xs font-semibold text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
                                 <span className="text-[10px] text-white/80 font-bold relative">+75 XP</span>
                             </button>
                         </div>
 
                         <p className="text-[9px] text-white/30 text-center mt-4 mb-6 italic">
-                            "Sholat berjamaah lebih utama 27 derajat" — HR. Bukhari & Muslim
+                            {t.homePrayerCheckInQuote}
                         </p>
 
                         <button
                             onClick={() => setSheet(null)}
                             className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all"
                         >
-                            Batal
+                            {(t as any).buttonCancel || "Batal"}
                         </button>
                     </div>
                 </div>

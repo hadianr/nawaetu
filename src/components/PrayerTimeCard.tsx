@@ -43,7 +43,7 @@ export default function PrayerTimeCard({
                                 <span className="text-xs font-medium text-white/35 flex items-center gap-1.5">
                                     <span className="text-[9px] opacity-60">🌙</span>
                                     {label}
-                                    <span className="text-[9px] text-white/20 font-normal">(imsak)</span>
+                                    <span className="text-[9px] text-white/20 font-normal">({t.prayerImsakRef})</span>
                                 </span>
                                 <span className="text-xs font-semibold tabular-nums text-white/35">
                                     {time}

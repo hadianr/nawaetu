@@ -296,6 +296,22 @@ export const SETTINGS_EN = {
     homeFindMosque: "Find Mosque",
     homeFindMosqueAria: "Find Nearby Mosque via Google Maps",
 
+    // Prayer Check-In
+    homePrayerCheckInTitle: "Today's Prayer",
+    homePrayerCheckInStatus: "{count}/5 Completed",
+    homePrayerCheckInDone: "All prayers for today completed! Masya Allah 🎉",
+    homePrayerCheckInUpcoming: "soon",
+    homePrayerCheckInLate: "Late check-in",
+    homePrayerCheckInNotYet: "Not time for {prayer} yet",
+    homePrayerCheckInWait: "Please check-in after the prayer time arrives.",
+    homePrayerCheckInToastTitle: "Alhamdulillah! ✅",
+    homePrayerCheckInToastDesc: "Prayer recorded (+{xp} XP)",
+    homePrayerCheckInSheetTitle: "{prayer} Prayer",
+    homePrayerCheckInSheetSubtitle: "How did you perform your prayer?",
+    homePrayerCheckInOptionSolo: "Pray Alone",
+    homePrayerCheckInOptionJamaah: "Congregation (Mosque)",
+    homePrayerCheckInQuote: "\"Congregational prayer is 27 times more rewarding\" — HR. Bukhari & Muslim",
+
     // Mosque Finder Modal
     mosqueFinderTitle: "Where to Pray?",
     mosqueFinderDesc: "Choose the type of prayer place you need:",
@@ -466,6 +482,7 @@ export const SETTINGS_EN = {
     prayerAsr: "Asr",
     prayerMaghrib: "Maghrib",
     prayerIsha: "Isha",
+    prayerImsakRef: "imsak",
 
     // Quote of the Day
     quoteSource5: "QS. At-Talaq: 3",
@@ -497,6 +514,18 @@ export const SETTINGS_EN = {
     spiritualCategoryGayaHidup: "Lifestyle",
     spiritualCategorySyukur: "Gratitude",
     spiritualCategoryIlmu: "Knowledge",
+    spiritualCategoryIbadah: "Worship",
+    spiritualCategoryRamadhan: "Ramadhan",
+
+    // Hadith Browser Page
+    hadithPageTitle: "Hadith & Duas",
+    hadithPageSubtitle: "hadith · {dua} duas collection",
+    hadithFilterAll: "All",
+    hadithFoundCount: "items found",
+    hadithEmptyState: "No content found for this category.",
+    hadithExploreLink: "Explore more hadith",
+    hadithExploreLinkDua: "Explore duas & hadith",
+    hadithCopied: "Copied!",
 
     // Stats Page
     statsPageTitle: "Worship Statistics",

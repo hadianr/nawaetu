@@ -65,15 +65,8 @@ export default function NextPrayerWidget() {
         ? (data.prayerTimes?.["Fajr"] ?? data.nextPrayerTime)
         : data.nextPrayerTime;
 
-    // Indonesian prayer name mapping (no Imsak/Sunrise)
-    const prayerNameMap: Record<string, string> = {
-        Fajr: "Subuh",
-        Dhuhr: "Dzuhur",
-        Asr: "Ashar",
-        Maghrib: "Maghrib",
-        Isha: "Isya",
-    };
-    const displayPrayerName = prayerNameMap[effectiveNextPrayer] || effectiveNextPrayer;
+    // Localized prayer name
+    const displayPrayerName = (t as any)[`prayer${effectiveNextPrayer}`] || effectiveNextPrayer;
 
 
     const isAdzanNow = minutesLeft <= 0 && minutesLeft > -20; // 0 to -20 mins
