@@ -32,3 +32,8 @@
 **Vulnerability:** Potential 500 errors or unhandled exceptions when API inputs are not of expected primitive type (e.g. number instead of string).
 **Learning:** `req.json()` returns `any`, so explicit type checking (e.g. `typeof variable === 'string'`) is crucial before performing string operations or length checks.
 **Prevention:** Always validate `typeof` for all user inputs before processing.
+
+## 2025-05-24 - Unsafe Profile Update Validation
+**Vulnerability:** The `/api/user/profile` endpoint blindly accepted and persisted user input without validating types, lengths, or enumerated values, risking data integrity and potential DoS.
+**Learning:** Naive use of `req.json()` combined with ORM updates can lead to "mass assignment" or invalid data storage if explicit validation is missing.
+**Prevention:** Implement strict input validation for all API endpoints, verifying data types, lengths, and constraints (like enums) before database interaction. Use schema definitions (e.g., `genderEnum.enumValues`) for Single Source of Truth validation.
