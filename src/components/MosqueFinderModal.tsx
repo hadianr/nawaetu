@@ -64,7 +64,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-xs sm:max-w-sm bg-[#0a0f1c] border-white/10 text-white p-0 overflow-hidden gap-0">
+            <DialogContent showCloseButton={false} className="max-w-xs sm:max-w-sm bg-[#0a0f1c] border-white/10 text-white p-0 overflow-hidden gap-0">
 
                 {/* Header with decorative background */}
                 <div className="relative p-6 pb-2 text-center bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent">
