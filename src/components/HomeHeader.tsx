@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -21,7 +21,7 @@ const NavigationIcon = ({ className }: { className?: string }) => (
 );
 
 export default function HomeHeader() {
-    const { data, refreshLocation } = usePrayerTimes();
+    const { data, refreshLocation } = usePrayerTimesContext();
     const { t } = useLocale();
     const { data: session, status } = useSession(); // Get status
     const storage = getStorageService();

@@ -210,6 +210,7 @@ import PatternOverlay from "@/components/PatternOverlay";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { LocaleProvider } from "@/context/LocaleContext";
+import { PrayerTimesProvider } from "@/context/PrayerTimesContext";
 import { WebVitals } from "@/components/WebVitals";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
@@ -273,19 +274,21 @@ export default function RootLayout({
         <LocaleProvider>
           <ThemeProvider>
             <AuthSessionProvider>
-              <GuestSyncManager />
-              <AppOverlays />
-              <ClientEntryGate>
-                <InfaqProvider>
-                  <PatternOverlay />
-                  <DeferredLayoutComponents />
-                  {children}
+              <PrayerTimesProvider>
+                <GuestSyncManager />
+                <AppOverlays />
+                <ClientEntryGate>
+                  <InfaqProvider>
+                    <PatternOverlay />
+                    <DeferredLayoutComponents />
+                    {children}
 
-                  <Suspense fallback={null}>
-                    <BottomNav />
-                  </Suspense>
-                </InfaqProvider>
-              </ClientEntryGate>
+                    <Suspense fallback={null}>
+                      <BottomNav />
+                    </Suspense>
+                  </InfaqProvider>
+                </ClientEntryGate>
+              </PrayerTimesProvider>
             </AuthSessionProvider>
           </ThemeProvider>
         </LocaleProvider>

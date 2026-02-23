@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Check, Sparkles, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMissions } from "@/hooks/useMissions";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -33,7 +33,7 @@ export default function PrayerCheckInWidget() {
     const { data: session } = useSession();
     const { t } = useLocale();
     const { completedMissions, completeMission, isCompleted } = useMissions();
-    const { data: prayerData } = usePrayerTimes();
+    const { data: prayerData } = usePrayerTimesContext();
 
     const [gender, setGender] = useState<Gender>(null);
     const [mounted, setMounted] = useState(false);

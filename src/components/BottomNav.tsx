@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Home, BookOpen, Compass, Settings, Fingerprint, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 
 // Enhanced Moon icon for Ramadhan with crescent and star
 const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: boolean }) => (
@@ -34,7 +34,7 @@ const BottomNav = memo(function BottomNav() {
     const pathname = usePathname();
     const { t } = useLocale();
     const [mounted, setMounted] = useState(false);
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
 
     useEffect(() => {
         setMounted(true);

@@ -7,7 +7,7 @@ import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gend
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useMissions } from "@/hooks/useMissions";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
@@ -43,7 +43,7 @@ export default function MissionsWidget() {
     // Intention Prompt State
     const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
 
-    const { data: prayerData } = usePrayerTimes();
+    const { data: prayerData } = usePrayerTimesContext();
 
     // Convert completedMissions array to object for MissionListModal compatibility
     const completedMissionsMap = Array.isArray(completedMissions)

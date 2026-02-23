@@ -9,7 +9,7 @@ import PrayerCountdown from "@/components/PrayerCountdown";
 
 import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
 import MosqueFinderModal from "@/components/MosqueFinderModal";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -17,7 +17,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 
 export default function PrayerTimesDisplay() {
-    const { data, loading, error, refreshLocation } = usePrayerTimes();
+    const { data, loading, error, refreshLocation } = usePrayerTimesContext();
     const { t } = useLocale();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [showMosqueFinder, setShowMosqueFinder] = useState(false);

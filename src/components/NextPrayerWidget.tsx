@@ -1,6 +1,6 @@
 "use client";
 
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import PrayerCountdown from "@/components/PrayerCountdown";
 import { Clock, Sparkles, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 
 export default function NextPrayerWidget() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const { t } = useLocale();
     const [minutesLeft, setMinutesLeft] = useState<number>(Infinity);
     const [quoteIndex, setQuoteIndex] = useState(0);
