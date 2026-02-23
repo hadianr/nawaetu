@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles } from "lucide-react";
+import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles, X } from "lucide-react";
 import { Mission, ValidationType } from "@/data/missions-data";
 import { MISSION_CONTENTS, MissionContent } from "@/data/mission-content";
 import { cn } from "@/lib/utils";
@@ -66,8 +66,15 @@ export default function MissionDetailDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-[rgb(var(--color-background))]/90 backdrop-blur-3xl border-white/10 text-white max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl">
-                <DialogHeader className="p-6 pb-2">
+            <DialogContent showCloseButton={false} className="bg-[rgb(var(--color-background))]/90 backdrop-blur-3xl border-white/10 text-white max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl">
+                <DialogHeader className="p-6 pb-2 relative">
+                    {/* Custom Close Button */}
+                    <button
+                        onClick={onClose}
+                        className="absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors z-20"
+                    >
+                        <X className="w-4 h-4 text-white/70" />
+                    </button>
                     <div className="flex items-center gap-3">
                         <div className="text-3xl bg-white/5 w-12 h-12 rounded-xl flex items-center justify-center border border-white/10">
                             {mission.icon}

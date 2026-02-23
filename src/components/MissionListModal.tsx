@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mission, Gender, getLocalizedMission } from "@/data/missions-data";
 import { cn } from "@/lib/utils";
-import { Check, CheckCircle2, Sparkles, AlertCircle } from "lucide-react";
+import { Check, CheckCircle2, Sparkles, AlertCircle, X } from "lucide-react";
 import MissionDetailDialog from "./MissionDetailDialog";
 import { useLocale } from "@/context/LocaleContext";
 import { getHukumLabel } from "@/lib/mission-utils";
@@ -195,13 +195,21 @@ export default function MissionListModal({
                 </DialogTrigger>
             )}
             <DialogContent
+                showCloseButton={false}
                 className="w-[95%] max-w-md h-auto max-h-[85vh] bg-black/40 backdrop-blur-xl border border-white/10 text-white p-0 overflow-hidden rounded-[32px] shadow-2xl flex flex-col"
                 onOpenAutoFocus={(e) => {
                     // Update tab when opened if initialTab is set
                     if (initialTab) setActiveTab(initialTab);
                 }}
             >
-                <DialogHeader className="p-5 pb-3 border-b border-white/5 bg-white/[0.02]">
+                <DialogHeader className="p-5 pb-3 border-b border-white/5 bg-white/[0.02] relative">
+                    {/* Custom Close Button */}
+                    <button
+                        onClick={() => finalOnOpenChange?.(false)}
+                        className="absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors z-20"
+                    >
+                        <X className="w-4 h-4 text-white/70" />
+                    </button>
                     <DialogTitle className="text-lg font-bold flex items-center gap-2">
                         {t.homeMissionListTitle}
                     </DialogTitle>

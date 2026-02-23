@@ -135,7 +135,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-sm sm:max-w-md bg-transparent border-none p-0 shadow-none overflow-visible flex flex-col items-center justify-center">
+            <DialogContent showCloseButton={false} className="max-w-sm sm:max-w-md bg-transparent border-none p-0 shadow-none overflow-visible flex flex-col items-center justify-center">
                 <DialogTitle className="sr-only">Bagikan Ayat</DialogTitle>
 
                 {/* --- 1. PREVIEW CARD (Central Focus) --- */}
