@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Quote } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 
@@ -13,41 +13,48 @@ export default function QuoteOfDay() {
     const { t } = useLocale();
     const [quoteIndex, setQuoteIndex] = useState<number>(0);
 
-    const QUOTES: QuoteData[] = [
-        { text: t.quoteText1, source: t.quoteSource1 },
-        { text: t.quoteText2, source: t.quoteSource2 },
-        { text: t.quoteText3, source: t.quoteSource3 },
-        { text: t.quoteText4, source: t.quoteSource4 },
-        { text: t.quoteText5, source: t.quoteSource5 },
-        { text: t.quoteText6, source: t.quoteSource6 },
-        { text: t.quoteText7, source: t.quoteSource7 },
-        { text: t.quoteText8, source: t.quoteSource8 },
-        { text: t.quoteText9, source: t.quoteSource9 },
-        { text: t.quoteText10, source: t.quoteSource10 },
-    ];
+    const QUOTES: QuoteData[] = useMemo(() => [
+        { text: (t as any).quoteText1, source: (t as any).quoteSource1 },
+        { text: (t as any).quoteText2, source: (t as any).quoteSource2 },
+        { text: (t as any).quoteText3, source: (t as any).quoteSource3 },
+        { text: (t as any).quoteText4, source: (t as any).quoteSource4 },
+        { text: (t as any).quoteText5, source: (t as any).quoteSource5 },
+        { text: (t as any).quoteText6, source: (t as any).quoteSource6 },
+        { text: (t as any).quoteText7, source: (t as any).quoteSource7 },
+        { text: (t as any).quoteText8, source: (t as any).quoteSource8 },
+        { text: (t as any).quoteText9, source: (t as any).quoteSource9 },
+        { text: (t as any).quoteText10, source: (t as any).quoteSource10 },
+    ], [t]);
 
     useEffect(() => {
-        // Simple daily rotation based on day of year
         const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
         const index = dayOfYear % QUOTES.length;
         setQuoteIndex(index);
-    }, []);
+    }, [QUOTES.length]);
 
     const quote = QUOTES[quoteIndex];
 
-    return (
-        <div className="w-full max-w-md mt-2 mb-2 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
-            <div className="relative rounded-3xl bg-black/20 border border-white/5 p-6 backdrop-blur-md">
-                <Quote className="absolute top-4 left-4 h-6 w-6 text-[rgb(var(--color-primary))]/20 rotate-180" />
+    if (!quote?.text) return null;
 
-                <div className="relative z-10 flex flex-col items-center text-center space-y-3 px-2">
-                    <p className="text-white/90 font-medium italic text-sm md:text-base leading-relaxed">
+    return (
+        <div className="w-full max-w-md mx-auto mt-2 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-1000">
+            <div className="group relative rounded-[2rem] bg-white/[0.02] border border-white/5 p-6 backdrop-blur-sm transition-colors hover:bg-white/[0.04]">
+                <Quote className="absolute top-6 left-6 h-5 w-5 text-[rgb(var(--color-primary))]/10 rotate-180 group-hover:text-[rgb(var(--color-primary))]/20 transition-colors" />
+                <div className="absolute top-6 right-6 text-[8px] font-black uppercase tracking-[0.2em] text-white/20 group-hover:text-white/30 transition-colors">
+                    {t.spiritualQuoteTitle}
+                </div>
+
+                <div className="relative z-10 flex flex-col items-center text-center space-y-4 px-4 pt-4">
+                    <p className="text-white/70 font-medium italic text-sm leading-relaxed max-w-[280px]">
                         "{quote.text}"
                     </p>
-                    <div className="h-px w-10 bg-[rgb(var(--color-primary))]/30"></div>
-                    <p className="text-[rgb(var(--color-primary-light))]/80 text-xs tracking-wider uppercase font-semibold">
-                        {quote.source}
-                    </p>
+                    <div className="flex items-center gap-3 w-full max-w-[120px]">
+                        <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
+                        <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))]/40 tracking-wider uppercase">
+                            {quote.source}
+                        </span>
+                        <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
+                    </div>
                 </div>
             </div>
         </div>

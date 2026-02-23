@@ -94,13 +94,24 @@ export default function DeferredBelowFold() {
           )}
         </section>
 
-        {/* 6. Daily Spiritual Content (Dua/Hadith) */}
-        <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-400">
-          {ready ? <DailySpiritWidget /> : <div className="w-full h-40 bg-white/5 border border-white/10 animate-pulse rounded-[2rem]" />}
-        </section>
+        {/* 6. Unified Spiritual Feed */}
+        <section className="w-full mt-4 space-y-2 animate-in slide-in-from-bottom-6 fade-in duration-1000 delay-400">
+          <div className="px-6 flex flex-col">
+            <h2 className="text-sm font-black text-white/90 tracking-tight">{t.spiritualDailyTitle}</h2>
+            <p className="text-[10px] text-white/40 font-medium">{t.spiritualDailySubtitle}</p>
+          </div>
 
-        {/* Quote of The Day - Always at bottom */}
-        <QuoteOfDay />
+          <div className="flex flex-col gap-3">
+            {ready ? (
+              <DailySpiritWidget />
+            ) : (
+              <div className="w-full h-40 bg-white/5 border border-white/10 animate-pulse rounded-[2.5rem]" />
+            )}
+
+            {/* Quote of The Day - Blended into the feed */}
+            {ready && <QuoteOfDay />}
+          </div>
+        </section>
       </div>
 
 

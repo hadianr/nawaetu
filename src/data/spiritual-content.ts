@@ -17,7 +17,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_ilmu",
         type: "dua",
-        category: "Ilmu",
+        category: "spiritualCategoryIlmu",
         content: {
             title: "Doa Memohon Ilmu yang Bermanfaat",
             arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
@@ -29,7 +29,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_sabar",
         type: "hadith",
-        category: "Akhlak",
+        category: "spiritualCategoryAkhlak",
         content: {
             title: "Keutamaan Sabar",
             arabic: "الصَّبْرُ ضِيَاءٌ",
@@ -41,7 +41,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_ketetapan_hati",
         type: "dua",
-        category: "Iman",
+        category: "spiritualCategoryIman",
         content: {
             title: "Doa Ketetapan Hati",
             arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
@@ -53,7 +53,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_senyum",
         type: "hadith",
-        category: "Sosial",
+        category: "spiritualCategorySosial",
         content: {
             title: "Sedekah Paling Ringan",
             arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
@@ -65,7 +65,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_perlindungan",
         type: "dua",
-        category: "Perlindungan",
+        category: "spiritualCategoryPerlindungan",
         content: {
             title: "Doa Perlindungan dari Bahaya",
             arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
@@ -77,7 +77,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_kebersihan",
         type: "hadith",
-        category: "Gaya Hidup",
+        category: "spiritualCategoryGayaHidup",
         content: {
             title: "Kebersihan Sebagian Iman",
             arabic: "الطُّهُورُ شَطْرُ الإِيمَانِ",
@@ -89,7 +89,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_syukur",
         type: "dua",
-        category: "Syukur",
+        category: "spiritualCategorySyukur",
         content: {
             title: "Doa Mensyukuri Nikmat",
             arabic: "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ",
