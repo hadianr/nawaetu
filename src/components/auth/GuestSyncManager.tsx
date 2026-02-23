@@ -221,13 +221,25 @@ export function GuestSyncManager() {
 
                 if (data.profile.settings) {
                     const s = data.profile.settings;
-                    if (s.theme) storage.set(STORAGE_KEYS.SETTINGS_THEME as any, s.theme);
-                    if (s.locale) storage.set(STORAGE_KEYS.SETTINGS_LOCALE as any, s.locale);
-                    if (s.reciter) storage.set(STORAGE_KEYS.SETTINGS_RECITER as any, s.reciter);
-                    if (s.muadzin) storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, s.muadzin);
-                    if (s.calculationMethod) storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, s.calculationMethod);
-                    if (s.hijriAdjustment) storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, s.hijriAdjustment);
-                    if (s.adhanPreferences) storage.set(STORAGE_KEYS.ADHAN_PREFERENCES as any, s.adhanPreferences);
+
+                    // Sanity checks for settings (prevent 16MB corruption bugs)
+                    const isValid = (val: any) => (val !== undefined && val !== null) &&
+                        (typeof val === 'string' || typeof val === 'number') &&
+                        val.toString().length < 500;
+
+                    if (isValid(s.theme)) storage.set(STORAGE_KEYS.SETTINGS_THEME as any, s.theme);
+                    if (isValid(s.locale)) storage.set(STORAGE_KEYS.SETTINGS_LOCALE as any, s.locale);
+                    if (isValid(s.reciter)) storage.set(STORAGE_KEYS.SETTINGS_RECITER as any, s.reciter);
+                    if (isValid(s.muadzin)) storage.set(STORAGE_KEYS.SETTINGS_MUADZIN as any, s.muadzin);
+                    if (isValid(s.calculationMethod)) {
+                        storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, s.calculationMethod);
+                    }
+                    if (isValid(s.hijriAdjustment)) {
+                        storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any, s.hijriAdjustment);
+                    }
+                    if (s.adhanPreferences && typeof s.adhanPreferences === 'object') {
+                        storage.set(STORAGE_KEYS.ADHAN_PREFERENCES as any, s.adhanPreferences);
+                    }
                 }
             }
 

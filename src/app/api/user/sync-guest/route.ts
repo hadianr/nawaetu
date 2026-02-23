@@ -92,12 +92,29 @@ export async function POST(req: NextRequest) {
 
             // 2. Sync Settings
             if (data.settings) {
-                // Fetch current user to merge settings if needed, or just overwrite
-                // For now, we overwrite or merge key-by-key if we query first.
-                // Simpler approach: update the jsonb column
+                // --- Server-Side Sanitization ---
+                const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
+                const sanitizedSettings: Record<string, any> = {};
+
+                for (const key of allowedSettings) {
+                    if (key in data.settings) {
+                        const val = data.settings[key];
+                        // Primitive validation
+                        if (typeof val === 'string' || typeof val === 'number') {
+                            if (val.toString().length < 500) {
+                                sanitizedSettings[key] = val;
+                            }
+                        } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null) {
+                            if (Object.keys(val).length < 20) {
+                                sanitizedSettings[key] = val;
+                            }
+                        }
+                    }
+                }
+
                 await tx.update(users)
                     .set({
-                        settings: data.settings,
+                        settings: sanitizedSettings,
                         updatedAt: new Date(),
                     })
                     .where(eq(users.id, userId));

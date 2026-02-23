@@ -583,6 +583,7 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
  * Get the current Ramadhan day (1-30) from a Hijri date string
  */
 export function getRamadhanDay(hijriDay: number): number {
+    if (isNaN(hijriDay)) return 1;
     return Math.max(1, Math.min(30, hijriDay));
 }
 
@@ -590,6 +591,7 @@ export function getRamadhanDay(hijriDay: number): number {
  * Check if tonight is a potential Lailatul Qadr night (odd nights in last 10)
  */
 export function isLailatulQadrNight(hijriDay: number): boolean {
+    if (isNaN(hijriDay)) return false;
     return hijriDay >= 21 && hijriDay % 2 === 1;
 }
 
@@ -597,6 +599,7 @@ export function isLailatulQadrNight(hijriDay: number): boolean {
  * Get the next odd night (Lailatul Qadr candidate) from current Hijri day
  */
 export function getNextLailatulQadrNight(hijriDay: number): number | null {
+    if (isNaN(hijriDay)) return 21;
     for (const night of ODD_NIGHTS) {
         if (night > hijriDay) return night;
     }
@@ -607,6 +610,7 @@ export function getNextLailatulQadrNight(hijriDay: number): number | null {
  * Get Ramadhan progress percentage (0-100)
  */
 export function getRamadhanProgress(hijriDay: number): number {
+    if (isNaN(hijriDay)) return 0;
     return Math.round((hijriDay / 30) * 100);
 }
 

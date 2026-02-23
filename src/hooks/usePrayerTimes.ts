@@ -101,11 +101,13 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         // Manual Client-Side Hijri Adjustment
         // Aladhan API adjustment param is unreliable, so we calculate it here.
         const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-        const activeAdj = parseInt((typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1", 10);
+        const parsedAdj = parseInt(String(savedAdjustment || "-1"), 10);
+        const activeAdj = isNaN(parsedAdj) ? -1 : parsedAdj;
 
-        let day = parseInt(hijri.day || "0", 10);
-        let monthIndex = (hijri.month?.number || 1) - 1; // 0-based index
-        let year = parseInt(hijri.year, 10);
+        let parsedDay = parseInt(hijri.day || "1", 10);
+        let day = isNaN(parsedDay) ? 1 : parsedDay;
+        let monthIndex = (hijri.month?.number || 9) - 1; // Default to Ramadhan index if missing
+        let year = parseInt(hijri.year, 10) || 1447;
 
         // Apply Adjustment
         day += activeAdj;
@@ -311,12 +313,17 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             window.dispatchEvent(new CustomEvent('prayer_data_updated'));
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Failed to load prayer data";
-            setError(errorMessage);
 
             // Try to use cached data if available
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
             if (cachedData && typeof cachedData === 'object' && cachedData.data) {
+                // Silently recover from cache — don't surface the error to the user
+                // since they already have functional prayer data displayed.
                 processData(cachedData.data, cachedData.locationName || locationName, true);
+                setError(null);
+            } else {
+                // No fallback data: show the error so the user can take action
+                setError(errorMessage);
             }
         } finally {
             setLoading(false);

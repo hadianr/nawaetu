@@ -42,8 +42,23 @@ export async function GET(req: NextRequest) {
             })
         ]);
 
+        const currentSettings = (user?.settings || {}) as Record<string, any>;
+        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
+        const sanitized: Record<string, any> = {};
+
+        for (const key of allowedSettings) {
+            if (key in currentSettings) {
+                const val = currentSettings[key];
+                if ((typeof val === 'string' || typeof val === 'number') && val.toString().length < 500) {
+                    sanitized[key] = val;
+                } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null && Object.keys(val).length < 20) {
+                    sanitized[key] = val;
+                }
+            }
+        }
+
         const settings = {
-            ...((user?.settings || {}) as Record<string, any>),
+            ...sanitized,
             lastReadQuran: readingState ? {
                 surahId: readingState.surahId,
                 surahName: readingState.surahName,
@@ -75,10 +90,31 @@ export async function PATCH(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { settings } = body;
+        const { settings: incomingSettings } = body;
 
-        if (!settings || typeof settings !== 'object') {
+        if (!incomingSettings || typeof incomingSettings !== 'object') {
             return NextResponse.json({ error: "Invalid settings data" }, { status: 400 });
+        }
+
+        // --- Server-Side Sanitization (Final Defense) ---
+        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
+        const sanitizedIncoming: Record<string, any> = {};
+
+        for (const key of allowedSettings) {
+            if (key in incomingSettings) {
+                const val = incomingSettings[key];
+                // Primitive validation
+                if (typeof val === 'string' || typeof val === 'number') {
+                    if (val.toString().length < 500) {
+                        sanitizedIncoming[key] = val;
+                    }
+                } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null) {
+                    // Small object validation (count keys)
+                    if (Object.keys(val).length < 20) {
+                        sanitizedIncoming[key] = val;
+                    }
+                }
+            }
         }
 
         // Ideally we fetch existing settings and merge, 
@@ -91,13 +127,25 @@ export async function PATCH(req: NextRequest) {
 
         const currentSettings = (user?.settings || {}) as Record<string, any>;
 
-        // Extract lastReadQuran if present
-        const lastReadQuran = settings.lastReadQuran;
-        const { lastReadQuran: _, ...restSettings } = settings;
+        // Clean current settings too (if they are already corrupted)
+        const sanitizedCurrent: Record<string, any> = {};
+        for (const key of allowedSettings) {
+            if (key in currentSettings) {
+                const val = currentSettings[key];
+                if ((typeof val === 'string' || typeof val === 'number') && val.toString().length < 500) {
+                    sanitizedCurrent[key] = val;
+                } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null && Object.keys(val).length < 20) {
+                    sanitizedCurrent[key] = val;
+                }
+            }
+        }
+
+        // Extract lastReadQuran if present (outside core settings)
+        const lastReadQuran = incomingSettings.lastReadQuran;
 
         const newSettings = {
-            ...currentSettings,
-            ...restSettings
+            ...sanitizedCurrent,
+            ...sanitizedIncoming
         };
 
         await db.transaction(async (tx) => {

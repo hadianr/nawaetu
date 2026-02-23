@@ -12,17 +12,20 @@ export default function RamadhanHeroCard() {
     const { t, locale } = useLocale();
 
     const hijriDay = data?.hijriDay ?? 1;
-    const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10);
-    const ramadhanDay = getRamadhanDay(hijriDay);
-    const progress = getRamadhanProgress(ramadhanDay);
+    const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10) || 1447;
+    const ramadhanDay = getRamadhanDay(hijriDay) || 1;
+    const progress = getRamadhanProgress(ramadhanDay) || 0;
 
     const today = new Date();
     const dayName = today.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { weekday: "long" });
     const dateStr = today.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" });
 
     // Progressive opacity: semakin mendekati hari ke-30, semakin solid (0.5 to 1.0)
-    const progressiveOpacity = 0.5 + (ramadhanDay / 30) * 0.5;
-    const borderOpacity = 0.4 + (ramadhanDay / 30) * 0.3; // 0.4 to 0.7
+    let progressiveOpacity = 0.5 + (ramadhanDay / 30) * 0.5;
+    if (isNaN(progressiveOpacity)) progressiveOpacity = 0.5;
+
+    let borderOpacity = 0.4 + (ramadhanDay / 30) * 0.3; // 0.4 to 0.7
+    if (isNaN(borderOpacity)) borderOpacity = 0.4;
 
     // Determine which period and its dalil
     const periodData = ramadhanDay <= 10

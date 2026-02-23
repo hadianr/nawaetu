@@ -63,7 +63,8 @@ export function useRamadhanCalendar() {
             const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
 
             const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT);
-            const activeAdj = parseInt((typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1", 10);
+            const parsedAdj = parseInt(String(savedAdjustment || "-1"), 10);
+            const activeAdj = isNaN(parsedAdj) ? -1 : parsedAdj;
 
             // Fetch Feb & March 2026 (Ramadhan 1447 spans Feb 18 - Mar 19)
             // Ideally we should calculate which Gregorian months correspond to current Hijri year's Ramadhan

@@ -41,12 +41,14 @@ export default function PrayerTimesDisplay() {
         return t.homeGreetingEvening;
     };
 
-    if (loading) {
+    if (loading && !data) {
         return <PrayerCardSkeleton />;
     }
 
-    // Combined Error or Empty State (Needs Location)
-    if (error || !data) {
+    // Only show the full "Needs Location" screen if there is truly no data at all.
+    // If `data` exists but there's a stale/transient error, we still show prayer times
+    // normally — avoids the jarring "Izin Lokasi" flash when data is already cached.
+    if (!data) {
         return (
             <div className="relative w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
                 {/* Decorative Background */}
@@ -72,12 +74,6 @@ export default function PrayerTimesDisplay() {
                             <Navigation className="w-4 h-4 fill-current" />
                             {t.homeEnableLocation}
                         </Button>
-
-                        {!error && (
-                            <p className="text-[10px] text-slate-500">
-                                {t.homeLocationHint}
-                            </p>
-                        )}
 
                         {error && (
                             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-xs text-red-300 flex items-center gap-2 text-left">

@@ -49,6 +49,15 @@ export class LocalStorageAdapter implements StorageAdapter {
 
     try {
       const serialized = JSON.stringify(value);
+
+      // Safety Gate: Don't even try if the value is unreasonably large (> 1MB)
+      // localStorage usually has a 5MB limit. 16MB (like in some bug reports) will always fail.
+      const sizeBytes = serialized.length * 2; // approximation for UTF-16
+      if (sizeBytes > 1024 * 1024) {
+        console.error(`[Storage] Refused to save ${key}: Value is too large (${(sizeBytes / 1024 / 1024).toFixed(2)}MB). Limit is 1MB.`);
+        return;
+      }
+
       localStorage.setItem(key, serialized);
       // Dispatch custom event for same-tab synchronization
       window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
@@ -62,64 +71,99 @@ export class LocalStorageAdapter implements StorageAdapter {
         error.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
         error.code === 1014
       )) {
-        // Attempt Cleanup: Remove non-essential items
         try {
-          // Whitelist of essential data we should try NOT to delete
+          console.warn(`[Storage] Quota exceeded while saving ${key}. Starting emergency cleanup...`);
+
+          // Whitelist: absolute minimum needed for app to function
+          const absoluteEssentials = ['settings_locale', 'onboarding_completed', 'user_name'];
+
           const whitelist = [
-            'user_name',
+            ...absoluteEssentials,
             'user_gender',
             'user_avatar',
             'app_theme',
-            'settings_locale',
             'nawaetu_bookmarks',
             'user_total_infaq',
+            'user_infaq_history',
+            'user_streak',
+            'user_xp',
+            'user_level',
+            'is_muhsinin',
             'app_version',
-            'onboarding_completed',
             'user_location'
           ];
 
-          // Priority 1: Heavy but refetchable data
-          const heavyKeys = [
-            'prayer_data',
+          const purgeablePrefixes = ['quran_tafsir_', 'verse_', 'tafsir_'];
+          const heavyCacheKeys = ['prayer_data'];
+          const historyKeys = [
             'ai_chat_history_v2',
             'nawaetu_chat_history',
             'nawaetu_chat_sessions',
             'daily_activity_history'
           ];
 
-          let freed = false;
+          const serializedValue = JSON.stringify(value);
 
-          // Try removing heavy keys first
-          for (const k of heavyKeys) {
-            if (localStorage.getItem(k)) {
+          // Helper to get total size
+          const getStorageInfo = () => {
+            const items = [];
+            let total = 0;
+            for (let i = 0; i < localStorage.length; i++) {
+              const k = localStorage.key(i);
+              if (k) {
+                const val = localStorage.getItem(k) || '';
+                const size = val.length * 2; // approximation for UTF-16
+                items.push({ key: k, size });
+                total += size;
+              }
+            }
+            return { total, items: items.sort((a, b) => b.size - a.size) };
+          };
+
+          // 1. First Pass: Delete only pure cache
+          for (const k of Object.keys(localStorage)) {
+            if (heavyCacheKeys.includes(k) || purgeablePrefixes.some(p => k.startsWith(p))) {
               localStorage.removeItem(k);
             }
           }
 
-          // Try setting again after heavy keys removal
+          // Try setting again
           try {
-            localStorage.setItem(key, JSON.stringify(value));
+            localStorage.setItem(key, serializedValue);
             return;
-          } catch (e) {
-            // Still failing, be more aggressive: remove EVERYTHING not in whitelist
-            for (let i = 0; i < localStorage.length; i++) {
-              const k = localStorage.key(i);
-              if (k && !whitelist.includes(k) && k !== key) {
-                localStorage.removeItem(k);
-                i--; // Adjustment for length change
+          } catch (e1) {
+            // 2. Second Pass: Delete history keys
+            for (const k of historyKeys) {
+              localStorage.removeItem(k);
+            }
+
+            try {
+              localStorage.setItem(key, serializedValue);
+              return;
+            } catch (e2) {
+              // 3. Third Pass: Final desperation - remove EVERYTHING not in absolute essentials
+              const { items } = getStorageInfo();
+              console.table(items.slice(0, 10)); // Log the top 10 offenders
+
+              for (const item of items) {
+                if (!absoluteEssentials.includes(item.key) && item.key !== key) {
+                  localStorage.removeItem(item.key);
+                }
               }
             }
           }
 
           // Final attempt setting item
           try {
-            localStorage.setItem(key, JSON.stringify(value));
+            localStorage.setItem(key, serializedValue);
             return;
           } catch (retryError) {
-            // Last resort: we failed even with minimal whitelist.
+            // Even clearing almost everything failed. 
+            // Maybe the 'value' itself is too large? 
+            console.error(`[Storage] CRITICAL: Even after clearing, failed to save ${key}. Value size: ${serializedValue.length * 2} bytes.`);
           }
         } catch (cleanupError) {
-          // Ignore cleanup errors
+          console.error('[Storage] Cleanup process failed:', cleanupError);
         }
 
         throw new StorageQuotaExceededError(

@@ -39,25 +39,34 @@ export default function DataSyncer() {
                     if (d.settings) {
                         const s = d.settings;
 
+                        // Sanity check helper for primitive settings (allow string/number, handle 0)
+                        const isValid = (val: any) => (val !== undefined && val !== null) &&
+                            (typeof val === 'string' || typeof val === 'number') &&
+                            val.toString().length < 500;
+
                         // Only restore if not recently changed by user
-                        if (s.theme && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_THEME)) {
+                        if (s.theme && isValid(s.theme) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_THEME)) {
                             setTheme(s.theme);
                         }
-                        if (s.locale && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_LOCALE)) {
+                        if (s.locale && isValid(s.locale) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_LOCALE)) {
                             setLocale(s.locale);
                         }
-                        if (s.muadzin && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_MUADZIN)) {
+                        if (s.muadzin && isValid(s.muadzin) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_MUADZIN)) {
                             storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
                         }
-                        if (s.calculationMethod && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD)) {
+                        if (s.calculationMethod && isValid(s.calculationMethod) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD)) {
                             storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
                             // Trigger refresh of prayer times
                             window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
                         }
-                        if (s.notificationPreferences) {
+                        if (isValid(s.hijriAdjustment) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT)) {
+                            storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT, s.hijriAdjustment);
+                            window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: s.hijriAdjustment } }));
+                        }
+                        if (s.notificationPreferences && typeof s.notificationPreferences === 'object') {
                             storage.set(STORAGE_KEYS.ADHAN_PREFERENCES, s.notificationPreferences);
                         }
-                        if (s.lastReadQuran) {
+                        if (s.lastReadQuran && typeof s.lastReadQuran === 'object') {
                             storage.set(STORAGE_KEYS.QURAN_LAST_READ, s.lastReadQuran);
                         }
                     }
