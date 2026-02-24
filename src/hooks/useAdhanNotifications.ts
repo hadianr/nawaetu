@@ -152,13 +152,32 @@ export function useAdhanNotifications() {
                     : `Saatnya menunaikan sholat ${labels[prayerKey]}`;
 
         if (typeof window !== "undefined" && "Notification" in window) {
-            new window.Notification(title, {
+            const options = {
                 body: body,
                 icon: "/icon-192x192.png",
                 badge: "/icon-192x192.png",
                 tag: `prayer-${prayerKey}`,
                 requireInteraction: prayerKey === "Maghrib" && isRamadhan, // Persistent for Maghrib in Ramadhan
-            });
+            };
+
+            if (navigator.serviceWorker) {
+                navigator.serviceWorker.ready.then((registration) => {
+                    registration.showNotification(title, options);
+                }).catch(() => {
+                    // Fallback if service worker fails
+                    try {
+                        new window.Notification(title, options);
+                    } catch (e) {
+                        console.error("Notification fallback failed", e);
+                    }
+                });
+            } else {
+                try {
+                    new window.Notification(title, options);
+                } catch (e) {
+                    console.error("Standard notification failed", e);
+                }
+            }
         }
     };
 }

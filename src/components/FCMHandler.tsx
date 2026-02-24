@@ -17,21 +17,36 @@ export default function FCMHandler() {
                     const { title, body } = payload.notification;
 
 
-                    // Check if we have permission
                     if (typeof window !== "undefined" && "Notification" in window && window.Notification.permission === "granted") {
-                        try {
-                            const notification = new window.Notification(title || "Nawaetu", {
-                                body: body || "",
-                                icon: "/icon.png",
-                                badge: "/icon.png",
-                                tag: "nawaetu-notification",
-                                requireInteraction: false,
+                        const notifTitle = title || "Nawaetu";
+                        const options = {
+                            body: body || "",
+                            icon: "/icon.png",
+                            badge: "/icon.png",
+                            tag: "nawaetu-notification",
+                            requireInteraction: false,
+                        };
+
+                        if (navigator.serviceWorker) {
+                            navigator.serviceWorker.ready.then((registration) => {
+                                registration.showNotification(notifTitle, options);
+                                // Note: Auto-close is harder with service worker notifications
+                                // It usually relies on the user or the notification action to close
+                            }).catch(() => {
+                                try {
+                                    const notification = new window.Notification(notifTitle, options);
+                                    setTimeout(() => notification.close(), 5000);
+                                } catch (e) {
+                                    console.error("Notification fallback failed", e);
+                                }
                             });
-
-
-                            // Auto-close after 5 seconds
-                            setTimeout(() => notification.close(), 5000);
-                        } catch (error) {
+                        } else {
+                            try {
+                                const notification = new window.Notification(notifTitle, options);
+                                setTimeout(() => notification.close(), 5000);
+                            } catch (error) {
+                                console.error("Standard notification failed", error);
+                            }
                         }
                     } else {
                     }

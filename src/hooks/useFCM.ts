@@ -59,7 +59,26 @@ export function useFCM() {
             const unsubscribe = onMessage(messaging, (payload) => {
                 if (payload.notification && typeof window !== "undefined" && "Notification" in window) {
                     const { title, body } = payload.notification;
-                    new window.Notification(title || "Nawaetu", { body });
+                    const options = { body };
+                    const notifTitle = title || "Nawaetu";
+
+                    if (navigator.serviceWorker) {
+                        navigator.serviceWorker.ready.then((registration) => {
+                            registration.showNotification(notifTitle, options);
+                        }).catch(() => {
+                            try {
+                                new window.Notification(notifTitle, options);
+                            } catch (e) {
+                                console.error("Notification fallback failed", e);
+                            }
+                        });
+                    } else {
+                        try {
+                            new window.Notification(notifTitle, options);
+                        } catch (e) {
+                            console.error("Standard notification failed", e);
+                        }
+                    }
                 }
             });
             return () => unsubscribe();

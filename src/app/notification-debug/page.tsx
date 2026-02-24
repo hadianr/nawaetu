@@ -40,9 +40,18 @@ export default function NotificationDebugPage() {
                         setLastMessage(payload);
                         // Trigger a local toast/notification for visual confirmation
                         if (payload.notification) {
-                            new Notification(payload.notification.title || "Foreground Msg", {
-                                body: payload.notification.body
-                            });
+                            const title = payload.notification.title || "Foreground Msg";
+                            const options = { body: payload.notification.body };
+
+                            if (navigator.serviceWorker) {
+                                navigator.serviceWorker.ready.then(reg => {
+                                    reg.showNotification(title, options);
+                                }).catch(() => {
+                                    try { new Notification(title, options); } catch (e) { }
+                                });
+                            } else {
+                                try { new Notification(title, options); } catch (e) { }
+                            }
                         }
                     });
                 }
@@ -257,12 +266,26 @@ export default function NotificationDebugPage() {
                                 return;
                             }
                             try {
-                                const notif = new Notification("Test Lokal OS", {
+                                const title = "Test Lokal OS";
+                                const options = {
                                     body: "Jika Anda melihat tab ini, berarti Izin OS OK! 📲",
                                     icon: "/icon.png"
-                                });
-                                notif.onclick = () => window.focus();
-                                alert("Notification triggered! Check notif center if not visible.");
+                                };
+
+                                if (navigator.serviceWorker) {
+                                    navigator.serviceWorker.ready.then(reg => {
+                                        reg.showNotification(title, options);
+                                        alert("Service Worker Notification triggered! Check notif center if not visible.");
+                                    }).catch((e) => {
+                                        const notif = new Notification(title, options);
+                                        notif.onclick = () => window.focus();
+                                        alert("Fallback Notification triggered! Check notif center if not visible.");
+                                    });
+                                } else {
+                                    const notif = new Notification(title, options);
+                                    notif.onclick = () => window.focus();
+                                    alert("Standard Notification triggered! Check notif center if not visible.");
+                                }
                             } catch (e: any) {
                                 alert("Error triggering native notif: " + e.message);
                             }
