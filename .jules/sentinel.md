@@ -32,3 +32,7 @@
 **Vulnerability:** Potential 500 errors or unhandled exceptions when API inputs are not of expected primitive type (e.g. number instead of string).
 **Learning:** `req.json()` returns `any`, so explicit type checking (e.g. `typeof variable === 'string'`) is crucial before performing string operations or length checks.
 **Prevention:** Always validate `typeof` for all user inputs before processing.
+## 2026-02-05 - [Mentor AI Input Validation]
+**Vulnerability:** Unbounded chat history array input allowed sending massive payloads to LLM provider (DoS/Cost risk).
+**Learning:** Server Actions accepting arrays must validate length and deep properties. Trusting client-side history allows spoofing roles and content.
+**Prevention:** Always truncate arrays (e.g., .slice(-20)) and sanitize string properties (e.g., .slice(0, 1000)) before API calls.

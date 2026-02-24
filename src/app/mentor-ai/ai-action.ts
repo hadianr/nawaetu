@@ -35,6 +35,15 @@ export async function askMentor(
     // Check for spam (same message repeated quickly)
     const messageHash = message.toLowerCase().trim();
 
+    // Validate chat history (prevent massive payload attacks)
+    // 1. Truncate to last 20 messages (Gemini context window limits)
+    // 2. Limit content length per message (1000 chars)
+    // 3. Enforce valid roles
+    const safeHistory = Array.isArray(chatHistory) ? chatHistory.slice(-20).map(msg => ({
+        role: msg.role === 'user' ? 'user' : 'assistant' as const,
+        content: (msg.content || '').slice(0, 1000)
+    })) : [];
+
     // ===== SECURITY LAYER 2: Rate Limiting =====
     // Determine rate limit identifier (User ID > IP > Fallback)
     let identifier = `ip:unknown`;
@@ -83,7 +92,7 @@ export async function askMentor(
         const { response, provider } = await modelRouter.chat(
             message,
             context,
-            chatHistory
+            safeHistory
         );
 
         // Log which provider was used (server-side only)
