@@ -12,6 +12,7 @@ import { parseAIResponse, formatMarkdown } from "@/lib/message-parser";
 import { trackAIQuery } from "@/lib/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
 import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -53,11 +54,13 @@ export default function MentorAIPage() {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq(); // From Context - Moved UP
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
+    const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq();
 
     // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)
-    const FREE_LIMIT = 3;
-    const MUHSININ_LIMIT = 15;
+    const FREE_LIMIT = 5;
+    const MUHSININ_LIMIT = 25;
     const DAILY_LIMIT = isMuhsinin ? MUHSININ_LIMIT : FREE_LIMIT;
     const [dailyCount, setDailyCount] = useState(0);
     const [lastResetDate, setLastResetDate] = useState("");
@@ -367,10 +370,16 @@ export default function MentorAIPage() {
     // 1. Access Control Check
     if (status === "unauthenticated") {
         return (
-            <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans">
+            <div className={cn(
+                "min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans",
+                isDaylight ? "bg-[#f8fafc]" : "bg-black text-white"
+            )}>
                 {/* Background Pattern */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />
-                <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent blur-3xl pointer-events-none" />
+                {!isDaylight && <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />}
+                <div className={cn(
+                    "absolute top-0 left-0 right-0 h-64 blur-3xl pointer-events-none",
+                    isDaylight ? "bg-emerald-500/10" : "bg-[rgb(var(--color-primary))]/20"
+                )} />
 
                 <div className="relative z-10 max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-[rgb(var(--color-primary))]/30 rotate-3">
@@ -378,10 +387,16 @@ export default function MentorAIPage() {
                     </div>
 
                     <div className="space-y-3">
-                        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+                        <h1 className={cn(
+                            "text-2xl font-bold",
+                            isDaylight ? "text-slate-900" : "bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
+                        )}>
                             {(t as any).tanyaLoginTitle || "Login Diperlukan"}
                         </h1>
-                        <p className="text-white/60 leading-relaxed text-sm">
+                        <p className={cn(
+                            "leading-relaxed text-sm",
+                            isDaylight ? "text-slate-500" : "text-white/60"
+                        )}>
                             {(t as any).tanyaLoginDesc || "Fitur Tanya Nawaitu hanya tersedia untuk pengguna yang sudah login."}
                         </p>
                     </div>
@@ -389,7 +404,12 @@ export default function MentorAIPage() {
                     <div className="space-y-4">
                         <button
                             onClick={() => signIn('google')}
-                            className="w-full h-12 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3"
+                            className={cn(
+                                "w-full h-12 font-bold rounded-xl transition-all flex items-center justify-center gap-3",
+                                isDaylight
+                                    ? "bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50"
+                                    : "bg-white text-slate-900 hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                            )}
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -402,7 +422,10 @@ export default function MentorAIPage() {
 
                         <Link
                             href="/"
-                            className="block text-sm text-white/40 hover:text-white transition-colors"
+                            className={cn(
+                                "block text-sm transition-colors",
+                                isDaylight ? "text-slate-400 hover:text-slate-600" : "text-white/40 hover:text-white"
+                            )}
                         >
                             {(t as any).onboardingBack || "Kembali"}
                         </Link>
@@ -416,19 +439,31 @@ export default function MentorAIPage() {
     // Removed full-page blocking spinner to improve perceived performance
 
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col font-sans relative overflow-hidden">
+        <div className={cn(
+            "h-screen h-[100dvh] flex flex-col font-sans relative overflow-hidden",
+            isDaylight ? "bg-[#f0f4f8] text-slate-900" : "bg-black text-white"
+        )}>
             {/* Header */}
-            <div className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/10">
+            <div className={cn(
+                "fixed top-0 left-0 right-0 z-40 backdrop-blur-md border-b",
+                isDaylight ? "bg-white/80 border-slate-200/60" : "bg-black/80 border-white/10"
+            )}>
                 <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {/* Back Button */}
-                        <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
-                            <ArrowLeft className="w-5 h-5 text-white" />
+                        <Link href="/" className={cn(
+                            "p-2 -ml-2 rounded-full transition-colors",
+                            isDaylight ? "hover:bg-slate-100 text-slate-900" : "hover:bg-white/10 text-white"
+                        )}>
+                            <ArrowLeft className="w-5 h-5" />
                         </Link>
 
                         {/* Title & Status */}
                         <div>
-                            <h1 className="text-sm font-bold text-white flex items-center gap-1.5">
+                            <h1 className={cn(
+                                "text-sm font-bold flex items-center gap-1.5",
+                                isDaylight ? "text-slate-900" : "text-white"
+                            )}>
                                 Tanya Nawaetu
                                 {isMuhsinin && <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary))]" />}
                             </h1>
@@ -446,7 +481,9 @@ export default function MentorAIPage() {
                                         "text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1",
                                         dailyCount >= DAILY_LIMIT
                                             ? "bg-red-500/20 text-red-400 border-red-500/30"
-                                            : "bg-white/5 text-white/50 border-white/10"
+                                            : isDaylight
+                                                ? "bg-slate-100 text-slate-500 border-slate-200"
+                                                : "bg-white/5 text-white/50 border-white/10"
                                     )}>
                                         <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-red-500" : "bg-emerald-500")} />
                                         {Math.max(0, DAILY_LIMIT - dailyCount)} Credit
@@ -460,7 +497,10 @@ export default function MentorAIPage() {
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => setShowHistory(true)}
-                            className="p-2 rounded-full hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+                            className={cn(
+                                "p-2 rounded-full transition-colors",
+                                isDaylight ? "hover:bg-slate-100 text-slate-600" : "hover:bg-white/10 text-white/70"
+                            )}
                         >
                             <History className="w-5 h-5" />
                         </button>
@@ -484,20 +524,32 @@ export default function MentorAIPage() {
                     />
 
                     {/* Drawer Content */}
-                    <div className="relative w-[300px] h-full bg-slate-950 border-l border-white/10 shadow-2xl p-4 flex flex-col animate-in slide-in-from-right duration-300">
+                    <div className={cn(
+                        "relative w-[300px] h-full border-l shadow-2xl p-4 flex flex-col animate-in slide-in-from-right duration-300",
+                        isDaylight ? "bg-white border-slate-200" : "bg-slate-950 border-white/10"
+                    )}>
                         <div className="flex items-center justify-between mb-6 pt-2">
-                            <h2 className="text-lg font-bold text-white">Riwayat Chat</h2>
+                            <h2 className={cn(
+                                "text-lg font-bold",
+                                isDaylight ? "text-slate-900" : "text-white"
+                            )}>Riwayat Chat</h2>
                             <button
                                 onClick={() => setShowHistory(false)}
-                                className="p-1.5 rounded-full hover:bg-white/10"
+                                className={cn(
+                                    "p-1.5 rounded-full",
+                                    isDaylight ? "hover:bg-slate-100" : "hover:bg-white/10"
+                                )}
                             >
-                                <X className="w-5 h-5 text-white/50" />
+                                <X className={cn("w-5 h-5", isDaylight ? "text-slate-400" : "text-white/50")} />
                             </button>
                         </div>
 
                         <div className="flex-1 overflow-y-auto space-y-2 pr-1">
                             {sessions.length === 0 ? (
-                                <div className="text-center py-10 text-white/30 text-sm">
+                                <div className={cn(
+                                    "text-center py-10 text-sm",
+                                    isDaylight ? "text-slate-400" : "text-white/30"
+                                )}>
                                     Belum ada riwayat percakapan.
                                 </div>
                             ) : (
@@ -508,23 +560,34 @@ export default function MentorAIPage() {
                                         className={cn(
                                             "group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer",
                                             activeSessionId === session.id
-                                                ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30"
-                                                : "bg-white/5 border-white/5 hover:bg-white/10"
+                                                ? isDaylight
+                                                    ? "bg-emerald-50 border-emerald-200/60 shadow-sm"
+                                                    : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30"
+                                                : isDaylight
+                                                    ? "bg-slate-50 border-slate-100 hover:bg-white hover:border-slate-200"
+                                                    : "bg-white/5 border-white/5 hover:bg-white/10"
                                         )}
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
                                             <MessageSquare className={cn(
                                                 "w-4 h-4 shrink-0",
-                                                activeSessionId === session.id ? "text-[rgb(var(--color-primary))]" : "text-white/30"
+                                                activeSessionId === session.id
+                                                    ? isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary))]"
+                                                    : isDaylight ? "text-slate-300" : "text-white/30"
                                             )} />
                                             <div className="min-w-0">
                                                 <p className={cn(
                                                     "text-sm font-medium truncate",
-                                                    activeSessionId === session.id ? "text-white" : "text-white/70"
+                                                    activeSessionId === session.id
+                                                        ? isDaylight ? "text-slate-900" : "text-white"
+                                                        : isDaylight ? "text-slate-600" : "text-white/70"
                                                 )}>
                                                     {session.title || "Percakapan Baru"}
                                                 </p>
-                                                <p className="text-[10px] text-white/30">
+                                                <p className={cn(
+                                                    "text-[10px]",
+                                                    isDaylight ? "text-slate-400" : "text-white/30"
+                                                )}>
                                                     {new Date(session.updatedAt).toLocaleDateString()}
                                                 </p>
                                             </div>
@@ -532,7 +595,12 @@ export default function MentorAIPage() {
                                         {/* Delete Button (Visible on hover or active) */}
                                         <button
                                             onClick={(e) => handleDeleteSession(e, session.id)}
-                                            className="p-1.5 rounded-full hover:bg-red-500/20 text-white/0 group-hover:text-white/30 hover:text-red-400 transition-colors"
+                                            className={cn(
+                                                "p-1.5 rounded-full transition-colors",
+                                                isDaylight
+                                                    ? "text-slate-0 group-hover:text-slate-300 hover:text-red-500 hover:bg-red-50"
+                                                    : "hover:bg-red-500/20 text-white/0 group-hover:text-white/30 hover:text-red-400"
+                                            )}
                                         >
                                             <Trash2 className="w-3.5 h-3.5" />
                                         </button>
@@ -541,10 +609,13 @@ export default function MentorAIPage() {
                             )}
                         </div>
 
-                        <div className="pt-4 mt-4 border-t border-white/10">
+                        <div className={cn(
+                            "pt-4 mt-4 border-t",
+                            isDaylight ? "border-slate-100" : "border-white/10"
+                        )}>
                             <button
                                 onClick={handleNewChat}
-                                className="w-full py-3 rounded-xl bg-[rgb(var(--color-primary))] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[rgb(var(--color-primary-dark))] transition-colors"
+                                className="w-full py-3 rounded-xl bg-[rgb(var(--color-primary))] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[rgb(var(--color-primary-dark))] transition-colors shadow-lg shadow-[rgb(var(--color-primary))]/20"
                             >
                                 <Plus className="w-4 h-4" />
                                 Chat Baru
@@ -558,14 +629,20 @@ export default function MentorAIPage() {
             <div className="flex-1 pt-20 pb-24 px-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
                 {messages.length === 0 ? (
                     // Empty State / Greeting
-                    <div className="h-full flex flex-col items-center justify-center text-center pt-20 animate-in fade-in duration-700">
+                    <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in duration-700 min-h-[calc(100vh-250px)]">
                         <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-xl shadow-[rgb(var(--color-primary))]/20">
                             <Sparkles className="w-8 h-8 text-white" />
                         </div>
-                        <h2 className="text-xl font-bold text-white mb-2">
+                        <h2 className={cn(
+                            "text-xl font-bold mb-2",
+                            isDaylight ? "text-slate-900" : "text-white"
+                        )}>
                             Assalamu'alaikum, {profile.name?.split(' ')[0] || "Teman"}!
                         </h2>
-                        <p className="text-white/60 text-sm max-w-[260px] leading-relaxed mb-8">
+                        <p className={cn(
+                            "text-sm max-w-[260px] leading-relaxed mb-8",
+                            isDaylight ? "text-slate-500" : "text-white/60"
+                        )}>
                             Saya asisten AI Nawaetu. Ada yang bisa saya bantu terkait ibadah atau agama hari ini?
                         </p>
 
@@ -575,10 +652,18 @@ export default function MentorAIPage() {
                                 <button
                                     key={idx}
                                     onClick={() => handleSend(prompt)}
-                                    className="p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 text-left text-sm text-white/80 transition-all flex items-center justify-between group"
+                                    className={cn(
+                                        "p-3 rounded-xl border text-left text-sm transition-all flex items-center justify-between group",
+                                        isDaylight
+                                            ? "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-emerald-200"
+                                            : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20 text-white/80"
+                                    )}
                                 >
                                     {prompt}
-                                    <Send className="w-3 h-3 text-white/0 group-hover:text-[rgb(var(--color-primary))] transition-all -translate-x-2 group-hover:translate-x-0" />
+                                    <Send className={cn(
+                                        "w-3 h-3 transition-all -translate-x-2 group-hover:translate-x-0",
+                                        isDaylight ? "text-emerald-500 opacity-0 group-hover:opacity-100" : "text-white/0 group-hover:text-[rgb(var(--color-primary))]"
+                                    )} />
                                 </button>
                             ))}
                         </div>
@@ -603,17 +688,23 @@ export default function MentorAIPage() {
                                         {/* Avatar */}
                                         <div className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1",
-                                            isUser ? "bg-white/10" : "bg-[rgb(var(--color-primary))]/20"
+                                            isUser
+                                                ? isDaylight ? "bg-slate-200" : "bg-white/10"
+                                                : "bg-[rgb(var(--color-primary))]/20"
                                         )}>
-                                            {isUser ? <User className="w-4 h-4 text-white/50" /> : <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />}
+                                            {isUser ? <User className={cn("w-4 h-4", isDaylight ? "text-slate-500" : "text-white/50")} /> : <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />}
                                         </div>
 
                                         {/* Bubble */}
                                         <div className={cn(
                                             "p-3 rounded-2xl text-sm leading-relaxed shadow-sm",
                                             isUser
-                                                ? "bg-[rgb(var(--color-primary))] text-white rounded-tr-none px-4"
-                                                : "bg-[#1e293b] text-white/90 rounded-tl-none border border-white/5"
+                                                ? isDaylight
+                                                    ? "bg-emerald-500 text-white rounded-tr-none px-4"
+                                                    : "bg-[rgb(var(--color-primary))] text-white rounded-tr-none px-4"
+                                                : isDaylight
+                                                    ? "bg-white text-slate-800 rounded-tl-none border border-slate-200 shadow-sm"
+                                                    : "bg-[#1e293b] text-white/90 rounded-tl-none border border-white/5"
                                         )}>
                                             {isUser ? (
                                                 <p>{msg.content}</p>
@@ -621,12 +712,22 @@ export default function MentorAIPage() {
                                                 const parsed = parseAIResponse(msg.content);
                                                 return (
                                                     <div
-                                                        className="prose prose-invert prose-sm max-w-none [&_strong]:text-[rgb(var(--color-primary-light))] [&_strong]:font-bold [&_em]:italic"
+                                                        className={cn(
+                                                            "prose prose-sm max-w-none",
+                                                            isDaylight
+                                                                ? "prose-slate [&_strong]:text-emerald-600 [&_strong]:font-bold"
+                                                                : "prose-invert [&_strong]:text-[rgb(var(--color-primary-light))] [&_strong]:font-bold"
+                                                        )}
                                                         dangerouslySetInnerHTML={{ __html: formatMarkdown(parsed.mainMessage) }}
                                                     />
                                                 );
                                             })()}
-                                            <span className="text-[9px] opacity-40 mt-1 block text-right">
+                                            <span className={cn(
+                                                "text-[9px] mt-1 block text-right font-medium",
+                                                isUser
+                                                    ? "text-white/80"
+                                                    : isDaylight ? "text-slate-400" : "text-white/40"
+                                            )}>
                                                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
@@ -656,36 +757,38 @@ export default function MentorAIPage() {
             </div>
 
             {/* Input Area */}
-            <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-white/10 pb-6 md:pb-8 pt-4 z-30">
+            <div className={cn(
+                "fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t pb-6 md:pb-8 pt-4 z-30",
+                isDaylight ? "bg-white/95 border-slate-200" : "bg-black/95 border-white/10"
+            )}>
                 <div className="max-w-md mx-auto px-4 space-y-3">
-                    {/* Thematic Category Tags - Scrollable */}
-                    {!showLimitBlocking && dailyCount < DAILY_LIMIT && (
-                        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar animate-in slide-in-from-bottom-2 duration-500">
-                            {HADITH_THEMES.map((theme, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => handleSend(theme.prompt)}
-                                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-[rgb(var(--color-primary))]/20 hover:border-[rgb(var(--color-primary))]/30 text-[11px] font-medium text-white/70 hover:text-[rgb(var(--color-primary-light))] transition-all active:scale-95"
-                                >
-                                    #{theme.label}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+
 
                     {/* Limit Reached Card */}
                     {(dailyCount >= DAILY_LIMIT) ? (
-                        <div className="bg-slate-800/90 backdrop-blur-md rounded-2xl p-4 border border-red-500/10 flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2">
+                        <div className={cn(
+                            "backdrop-blur-md rounded-2xl p-4 border flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2",
+                            isDaylight ? "bg-white border-slate-200 shadow-sm" : "bg-slate-800/90 border-red-500/10"
+                        )}>
                             {/* Icon & Text */}
                             <div className="flex items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
-                                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/20">
-                                    <Lock size={16} className="text-red-400" />
+                                <div className={cn(
+                                    "w-10 h-10 rounded-full flex items-center justify-center shrink-0 border",
+                                    isDaylight ? "bg-red-50 border-red-100" : "bg-red-500/10 border-red-500/20"
+                                )}>
+                                    <Lock size={16} className="text-red-500" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-white truncate">
+                                    <p className={cn(
+                                        "text-sm font-semibold truncate",
+                                        isDaylight ? "text-slate-900" : "text-white"
+                                    )}>
                                         {(t as any).tanyaLimitReached || "Kuota Habis"}
                                     </p>
-                                    <p className="text-xs text-slate-400 leading-tight">
+                                    <p className={cn(
+                                        "text-xs leading-tight",
+                                        isDaylight ? "text-slate-500" : "text-slate-400"
+                                    )}>
                                         {(t as any).tanyaUpgradeHint || "Tunggu besok atau Infaq untuk 5x kuota."}
                                     </p>
                                 </div>
@@ -694,7 +797,12 @@ export default function MentorAIPage() {
                             {/* Action Button */}
                             <button
                                 onClick={() => setShowLimitBlocking(true)}
-                                className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg shadow-[rgb(var(--color-primary))]/20 transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                                className={cn(
+                                    "text-white text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0",
+                                    isDaylight
+                                        ? "bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20"
+                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                                )}
                             >
                                 <Sparkles size={14} className="text-yellow-200" />
                                 {(t as any).tanyaInfaqButton || "Berinfaq"}
@@ -703,20 +811,33 @@ export default function MentorAIPage() {
                     ) : (
                         <form
                             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-                            className="flex items-end gap-2 bg-white/5 border border-white/10 rounded-3xl p-1.5 pl-4 focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/50 transition-all"
+                            className={cn(
+                                "flex items-end gap-2 border rounded-3xl p-1.5 pl-4 transition-all",
+                                isDaylight
+                                    ? "bg-slate-50 border-slate-200 focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/50"
+                                    : "bg-white/5 border-white/10 focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/50"
+                            )}
                         >
                             <input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder={t.tanyaPlaceholder}
-                                className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-white/30 py-2.5 min-h-[44px]"
+                                className={cn(
+                                    "flex-1 bg-transparent border-none outline-none text-sm py-2.5 min-h-[44px]",
+                                    isDaylight ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-white/30"
+                                )}
                                 disabled={isTyping}
                             />
                             <button
                                 type="submit"
                                 disabled={!input.trim() || isTyping}
-                                className="w-10 h-10 rounded-full bg-[rgb(var(--color-primary))] text-white flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-[0_0_15px_rgba(var(--color-primary),0.3)]"
+                                className={cn(
+                                    "w-10 h-10 rounded-full text-white flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all",
+                                    isDaylight
+                                        ? "bg-emerald-500 shadow-md shadow-emerald-500/20"
+                                        : "bg-[rgb(var(--color-primary))] shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                                )}
                             >
                                 <Send className="w-4 h-4 ml-0.5" />
                             </button>
