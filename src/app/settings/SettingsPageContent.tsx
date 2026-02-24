@@ -690,15 +690,32 @@ export default function SettingsPageContent() {
 
                     <div className="space-y-3">
                         {/* Muadzin Select */}
-                        <div className="relative group bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-white/10 transition-all">
+                        <div className={cn(
+                            "relative group border rounded-xl p-3 flex items-center justify-between transition-all",
+                            isDaylight
+                                ? "bg-white/40 border-slate-200/50 hover:bg-white/60 shadow-sm"
+                                : "bg-white/5 border border-white/10 hover:bg-white/10"
+                        )}>
                             {/* Visual Layer */}
                             <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
-                                <div className="p-2 rounded-full bg-[rgb(var(--color-primary))]/10 shrink-0">
-                                    <Volume2 className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                                <div className={cn(
+                                    "p-2 rounded-full shrink-0",
+                                    isDaylight ? "bg-emerald-50" : "bg-[rgb(var(--color-primary))]/10"
+                                )}>
+                                    <Volume2 className={cn(
+                                        "w-4 h-4",
+                                        isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
+                                    )} />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-0.5">{t.muadzinLabel}</p>
-                                    <p className="text-sm text-white font-medium truncate">{currentMuadzin?.label || "Makkah"}</p>
+                                    <p className={cn(
+                                        "text-[10px] uppercase tracking-wider font-bold mb-0.5",
+                                        isDaylight ? "text-slate-400" : "text-white/40"
+                                    )}>{t.muadzinLabel}</p>
+                                    <p className={cn(
+                                        "text-sm font-medium truncate",
+                                        isDaylight ? "text-slate-900" : "text-white"
+                                    )}>{currentMuadzin?.label || "Makkah"}</p>
                                 </div>
                             </div>
 
@@ -711,8 +728,12 @@ export default function SettingsPageContent() {
                                     className={cn(
                                         "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
                                         isPlaying && playingId === muadzin
-                                            ? "bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))] shadow-[0_0_15px_rgba(var(--color-primary),0.4)] scale-110"
-                                            : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
+                                            ? isDaylight
+                                                ? "bg-emerald-100 border-emerald-200 text-emerald-600 scale-110 shadow-sm"
+                                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30 scale-110"
+                                            : isDaylight
+                                                ? "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100 hover:text-slate-600 hover:border-slate-300"
+                                                : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
                                     )}
                                     onPointerDown={(e) => e.stopPropagation()}
                                     onClick={(e) => {
