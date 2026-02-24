@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { getStorageService } from "@/core/infrastructure/storage";
 
 interface SyncResult {
     success: boolean;
@@ -9,22 +10,23 @@ interface SyncResult {
 
 export function useDataSync() {
     const [isSyncing, setIsSyncing] = useState(false);
+    const storage = getStorageService();
 
     const syncData = useCallback(async (options?: { silent?: boolean }): Promise<SyncResult> => {
         setIsSyncing(true);
         const toastId = options?.silent ? undefined : toast.loading("Sinkronisasi data...");
 
         try {
-            // 1. Gather Local Data
-            const streakData = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_STREAK) || "{\"streak\":0,\"longestStreak\":0}");
-            const notificationPrefs = JSON.parse(localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES) || "{}");
-            const lastReadQuran = localStorage.getItem(STORAGE_KEYS.QURAN_LAST_READ);
-            const activityTracker = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVITY_TRACKER) || "{}");
+            // 1. Gather Local Data (using safety-focused storage service)
+            const streakData = storage.getOptional<any>(STORAGE_KEYS.USER_STREAK) || { streak: 0, longestStreak: 0 };
+            const notificationPrefs = storage.getOptional<any>(STORAGE_KEYS.ADHAN_PREFERENCES) || {};
+            const lastReadQuran = storage.getOptional<any>(STORAGE_KEYS.QURAN_LAST_READ);
+            const activityTracker = storage.getOptional<any>(STORAGE_KEYS.ACTIVITY_TRACKER) || {};
 
             const localData = {
-                bookmarks: JSON.parse(localStorage.getItem(STORAGE_KEYS.QURAN_BOOKMARKS) || "[]"),
-                intentions: JSON.parse(localStorage.getItem(STORAGE_KEYS.INTENTION_JOURNAL) || "[]"),
-                completedMissions: JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPLETED_MISSIONS) || "[]"),
+                bookmarks: storage.getOptional<any>(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
+                intentions: storage.getOptional<any>(STORAGE_KEYS.INTENTION_JOURNAL) || [],
+                completedMissions: storage.getOptional<any>(STORAGE_KEYS.COMPLETED_MISSIONS) || [],
                 dailyActivity: {
                     date: activityTracker.date || new Date().toISOString().split('T')[0],
                     quranAyat: activityTracker.quranAyat || 0,
@@ -32,28 +34,27 @@ export function useDataSync() {
                     prayersLogged: activityTracker.prayersLogged || [],
                 },
                 settings: {
-                    theme: localStorage.getItem(STORAGE_KEYS.SETTINGS_THEME),
-                    muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
-                    calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
-                    hijriAdjustment: localStorage.getItem(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
-                    locale: localStorage.getItem(STORAGE_KEYS.SETTINGS_LOCALE),
+                    theme: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_THEME),
+                    muadzin: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_MUADZIN),
+                    calculationMethod: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
+                    hijriAdjustment: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
+                    locale: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_LOCALE),
                     notificationPreferences: Object.keys(notificationPrefs).length > 0 ? notificationPrefs : null,
                 },
                 readingState: {
-                    quranLastRead: lastReadQuran ? (lastReadQuran.startsWith('{') ? JSON.parse(lastReadQuran) : lastReadQuran) : null
+                    quranLastRead: lastReadQuran
                 },
                 streaks: {
                     current: streakData.streak || 0,
                     longest: streakData.longestStreak || 0,
                 },
                 ramadhan: {
-                    tarawehLog: JSON.parse(localStorage.getItem(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG) || "{}"),
-                    khatamanLog: JSON.parse(localStorage.getItem(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG) || "{\"currentJuz\":0,\"completedJuz\":[],\"history\":[]}")
+                    tarawehLog: storage.getOptional<any>(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG) || {},
+                    khatamanLog: storage.getOptional<any>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG) || { currentJuz: 0, completedJuz: [], history: [] }
                 }
             };
 
             // If no data to sync, skip but mark as synced
-            // We check if arrays are empty and if objects have meaningful data
             const hasBookmarks = localData.bookmarks.length > 0;
             const hasIntentions = localData.intentions.length > 0;
             const hasMissions = localData.completedMissions.length > 0;
@@ -63,7 +64,7 @@ export function useDataSync() {
             const hasReadingState = !!lastReadQuran;
 
             if (!hasBookmarks && !hasIntentions && !hasMissions && !hasActivity && !hasStreak && !hasSettings && !hasReadingState) {
-                localStorage.setItem("nawaetu_synced_v1", "true");
+                storage.set("nawaetu_synced_v1" as any, "true");
                 if (toastId) toast.dismiss(toastId);
                 return { success: true, message: "Tidak ada data lokal untuk disinkronkan" };
             }
@@ -78,7 +79,7 @@ export function useDataSync() {
             if (!res.ok) throw new Error("Gagal menyimpan ke server");
 
             // 3. Mark as Synced
-            localStorage.setItem("nawaetu_synced_v1", "true");
+            storage.set("nawaetu_synced_v1" as any, "true");
 
             if (toastId) toast.success("Data berhasil disinkronkan!", { id: toastId });
             return { success: true };

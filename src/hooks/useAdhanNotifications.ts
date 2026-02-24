@@ -138,12 +138,14 @@ export function useAdhanNotifications() {
             ? "Telah masuk waktu Maghrib untuk wilayah Anda."
             : `Saatnya menunaikan sholat ${labels[prayerKey]}`;
 
-        new Notification(title, {
-            body: body,
-            icon: "/icon-192x192.png",
-            badge: "/icon-192x192.png",
-            tag: `prayer-${prayerKey}`,
-            requireInteraction: prayerKey === "Maghrib" && isRamadhan, // Persistent for Maghrib in Ramadhan
-        });
+        if (typeof window !== "undefined" && "Notification" in window) {
+            new window.Notification(title, {
+                body: body,
+                icon: "/icon-192x192.png",
+                badge: "/icon-192x192.png",
+                tag: `prayer-${prayerKey}`,
+                requireInteraction: prayerKey === "Maghrib" && isRamadhan, // Persistent for Maghrib in Ramadhan
+            });
+        }
     };
 }

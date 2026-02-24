@@ -18,9 +18,9 @@ export default function FCMHandler() {
 
 
                     // Check if we have permission
-                    if (Notification.permission === "granted") {
+                    if (typeof window !== "undefined" && "Notification" in window && window.Notification.permission === "granted") {
                         try {
-                            const notification = new Notification(title || "Nawaetu", {
+                            const notification = new window.Notification(title || "Nawaetu", {
                                 body: body || "",
                                 icon: "/icon.png",
                                 badge: "/icon.png",

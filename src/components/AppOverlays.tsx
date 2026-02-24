@@ -25,34 +25,38 @@ const cleanupDynamicCaches = () => {
     if (typeof window === "undefined") return;
     const now = Date.now();
 
-    for (let i = localStorage.length - 1; i >= 0; i -= 1) {
-        const key = localStorage.key(i);
-        if (!key) continue;
+    try {
+        for (let i = localStorage.length - 1; i >= 0; i -= 1) {
+            const key = localStorage.key(i);
+            if (!key) continue;
 
-        const rule = CACHE_CLEANUP_RULES.find((entry) => key.startsWith(entry.prefix));
-        if (!rule) continue;
+            const rule = CACHE_CLEANUP_RULES.find((entry) => key.startsWith(entry.prefix));
+            if (!rule) continue;
 
-        const raw = localStorage.getItem(key);
-        if (!raw) continue;
+            const raw = localStorage.getItem(key);
+            if (!raw) continue;
 
-        try {
-            const parsed = JSON.parse(raw) as { ts?: number; v?: number };
-            const expectedVersion = CACHE_VERSIONS[rule.prefix];
-            if (expectedVersion !== undefined && parsed?.v !== expectedVersion) {
-                localStorage.removeItem(key);
-                continue;
-            }
+            try {
+                const parsed = JSON.parse(raw) as { ts?: number; v?: number };
+                const expectedVersion = CACHE_VERSIONS[rule.prefix];
+                if (expectedVersion !== undefined && parsed?.v !== expectedVersion) {
+                    localStorage.removeItem(key);
+                    continue;
+                }
 
-            if (typeof parsed?.ts === "number") {
-                if (now - parsed.ts > rule.ttlMs) {
+                if (typeof parsed?.ts === "number") {
+                    if (now - parsed.ts > rule.ttlMs) {
+                        localStorage.removeItem(key);
+                    }
+                } else {
                     localStorage.removeItem(key);
                 }
-            } else {
+            } catch {
                 localStorage.removeItem(key);
             }
-        } catch {
-            localStorage.removeItem(key);
         }
+    } catch (e) {
+        // Silently fail if storage is restricted
     }
 };
 

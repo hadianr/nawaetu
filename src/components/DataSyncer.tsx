@@ -22,9 +22,9 @@ export default function DataSyncer() {
     // Helper to check if a setting was recently changed manually
     const RECENT_CHANGE_THRESHOLD_MS = 5000; // 5 seconds
     const isRecentlyChanged = (settingKey: string): boolean => {
-        const timestamp = localStorage.getItem(`${settingKey}_last_changed`);
+        const timestamp = storage.getOptional(`${settingKey}_last_changed` as any);
         if (!timestamp) return false;
-        return Date.now() - parseInt(timestamp) < RECENT_CHANGE_THRESHOLD_MS;
+        return Date.now() - parseInt(timestamp as string) < RECENT_CHANGE_THRESHOLD_MS;
     };
 
     const restoreSettings = useCallback(async () => {
@@ -114,13 +114,13 @@ export default function DataSyncer() {
 
                 // Logic for Welcome Toast - show only once per login session
                 const welcomeKey = `nawaetu_login_welcome_${session.user.id || session.user.email}`;
-                if (!localStorage.getItem(welcomeKey)) {
+                if (!storage.getOptional(welcomeKey as any)) {
                     toast.success(`Ahlan wa Sahlan, ${session.user.name?.split(' ')[0] || 'Sobat'}!`, {
                         icon: "👋",
                         description: "Login berhasil. Selamat datang kembali.",
                         duration: 4000
                     });
-                    localStorage.setItem(welcomeKey, "true");
+                    storage.set(welcomeKey as any, "true");
                 }
 
                 // 1. Always restore settings first to get cloud preferences
@@ -128,7 +128,7 @@ export default function DataSyncer() {
                 await restoreSettings();
 
                 // 2. Check if we need to push local guest data (bookmarks, etc) to cloud
-                const hasSyncedFlag = localStorage.getItem("nawaetu_synced_v1");
+                const hasSyncedFlag = storage.getOptional("nawaetu_synced_v1" as any);
                 if (!hasSyncedFlag) {
                     await syncData();
                 }

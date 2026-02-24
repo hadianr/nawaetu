@@ -123,10 +123,11 @@ export function GuestSyncManager() {
         ];
 
         return activityKeys.some(key => {
-            const val = localStorage.getItem(key);
+            const val = storage.getOptional(key as any);
             if (!val) return false;
+            const strVal = typeof val === 'string' ? val : JSON.stringify(val);
             // Filter out empty arrays/objects or zero counts
-            if (val === "[]" || val === "{}" || val === "0" || val === "0||0") return false;
+            if (strVal === "[]" || strVal === "{}" || strVal === "0" || strVal === "0||0") return false;
             return true;
         });
     };
@@ -146,30 +147,30 @@ export function GuestSyncManager() {
         try {
             const payload = {
                 profile: {
-                    name: localStorage.getItem(STORAGE_KEYS.USER_NAME),
-                    gender: localStorage.getItem(STORAGE_KEYS.USER_GENDER),
-                    archetype: localStorage.getItem(STORAGE_KEYS.USER_ARCHETYPE),
+                    name: storage.getOptional<string>(STORAGE_KEYS.USER_NAME as any),
+                    gender: storage.getOptional<string>(STORAGE_KEYS.USER_GENDER as any),
+                    archetype: storage.getOptional<string>(STORAGE_KEYS.USER_ARCHETYPE as any),
                 },
                 settings: {
-                    theme: localStorage.getItem(STORAGE_KEYS.SETTINGS_THEME),
-                    locale: localStorage.getItem(STORAGE_KEYS.SETTINGS_LOCALE),
-                    reciter: localStorage.getItem(STORAGE_KEYS.SETTINGS_RECITER),
-                    muadzin: localStorage.getItem(STORAGE_KEYS.SETTINGS_MUADZIN),
-                    calculationMethod: localStorage.getItem(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
-                    hijriAdjustment: localStorage.getItem(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
-                    adhanPreferences: localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES),
+                    theme: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_THEME as any),
+                    locale: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_LOCALE as any),
+                    reciter: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_RECITER as any),
+                    muadzin: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_MUADZIN as any),
+                    calculationMethod: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any),
+                    hijriAdjustment: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any),
+                    adhanPreferences: storage.getOptional<any>(STORAGE_KEYS.ADHAN_PREFERENCES as any),
                 },
                 readingState: {
-                    quranLastRead: localStorage.getItem(STORAGE_KEYS.QURAN_LAST_READ) ? JSON.parse(localStorage.getItem(STORAGE_KEYS.QURAN_LAST_READ)!) : null,
+                    quranLastRead: storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ) ? storage.getOptional<any>(STORAGE_KEYS.QURAN_LAST_READ) : null,
                 },
-                bookmarks: JSON.parse(localStorage.getItem(STORAGE_KEYS.QURAN_BOOKMARKS) || "[]"),
-                completedMissions: JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPLETED_MISSIONS) || "[]"),
-                intentions: JSON.parse(localStorage.getItem(STORAGE_KEYS.INTENTION_JOURNAL) || "[]"),
+                bookmarks: storage.getOptional(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
+                completedMissions: storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS) || [],
+                intentions: storage.getOptional(STORAGE_KEYS.INTENTION_JOURNAL) || [],
                 activity: {
                     date: new Date().toISOString().split('T')[0],
-                    quranAyat: JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVITY_TRACKER) || "{}")?.quranAyat || 0,
-                    tasbihCount: JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVITY_TRACKER) || "{}")?.tasbihCount || 0,
-                    prayersLogged: JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVITY_TRACKER) || "{}")?.prayersLogged || [],
+                    quranAyat: (storage.getOptional<any>(STORAGE_KEYS.ACTIVITY_TRACKER) || {})?.quranAyat || 0,
+                    tasbihCount: (storage.getOptional<any>(STORAGE_KEYS.ACTIVITY_TRACKER) || {})?.tasbihCount || 0,
+                    prayersLogged: (storage.getOptional<any>(STORAGE_KEYS.ACTIVITY_TRACKER) || {})?.prayersLogged || [],
                 },
             };
 
