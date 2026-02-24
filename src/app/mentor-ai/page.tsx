@@ -59,15 +59,21 @@ export default function MentorAIPage() {
     const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq();
 
     // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)
-    const FREE_LIMIT = 5;
-    const MUHSININ_LIMIT = 25;
+    const FREE_LIMIT = 3;
+    const MUHSININ_LIMIT = 15;
     const DAILY_LIMIT = isMuhsinin ? MUHSININ_LIMIT : FREE_LIMIT;
     const [dailyCount, setDailyCount] = useState(0);
     const [lastResetDate, setLastResetDate] = useState("");
     const [showLimitBlocking, setShowLimitBlocking] = useState(false);
 
-    const [hasAttemptedAutoRefresh, setHasAttemptedAutoRefresh] = useState(false);
-
+    // Eagerly sync infaq status for authenticated users on mount to ensure
+    // new devices or cleared caches don't get stuck on the free tier until limit is reached
+    useEffect(() => {
+        if (status === "authenticated") {
+            refreshStatus();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status]);
     // Sync status if reached limit (Check for payment update)
     useEffect(() => {
         if (isInfaqLoading) return; // Don't check limits while loading tier status
@@ -124,6 +130,36 @@ export default function MentorAIPage() {
                                     return dateB - dateA;
                                 });
                             });
+
+                            // Reconstruct today's AI usage count from server sessions
+                            const todayStart = new Date();
+                            todayStart.setHours(0, 0, 0, 0);
+                            const todayTime = todayStart.getTime();
+
+                            let serverDailyCount = 0;
+                            serverSessions.forEach((s: ChatSession) => {
+                                if (s.messages && Array.isArray(s.messages)) {
+                                    s.messages.forEach(m => {
+                                        if (m.role === 'user' && m.timestamp >= todayTime) {
+                                            serverDailyCount++;
+                                        }
+                                    });
+                                }
+                            });
+
+                            // Update local daily count if server has higher usage
+                            setDailyCount(prev => {
+                                if (serverDailyCount > prev) {
+                                    const todayStr = new Date().toDateString();
+                                    storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                                        date: todayStr,
+                                        count: serverDailyCount,
+                                        tier: isMuhsinin ? 'muhsinin' : 'free'
+                                    }));
+                                    return serverDailyCount;
+                                }
+                                return prev;
+                            });
                         }
                     }
                 } catch (e) {
@@ -153,12 +189,12 @@ export default function MentorAIPage() {
             if (date === today) {
                 // Check if user just upgraded (Stored as Free, now is Muhsinin)
                 if ((!tier || tier === 'free') && isMuhsinin) {
-                    // RESET QUOTA to give full 15 fresh credits
-                    setDailyCount(0);
+                    // Update tier to muhsinin but keep current usage count
+                    setDailyCount(count);
                     setLastResetDate(today);
                     storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
                         date: today,
-                        count: 0,
+                        count: count,
                         tier: 'muhsinin'
                     }));
                 } else {
@@ -316,7 +352,8 @@ export default function MentorAIPage() {
             };
 
             // Only send last 10 messages context to save tokens/complexity
-            const chatHistoryContext = newMessages
+            // Use 'messages' (previous) instead of 'newMessages' (current) to avoid redundancy
+            const chatHistoryContext = messages
                 .slice(-10)
                 .map(msg => ({
                     role: msg.role as 'user' | 'assistant',
