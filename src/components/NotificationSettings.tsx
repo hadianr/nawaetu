@@ -109,8 +109,15 @@ export default function NotificationSettings() {
             setIsInitializing(true);
 
             try {
-                // Determine if we need to wait a bit for permission propagation?
-                // Typically not needed if permissionStatus is already 'granted'
+                // IMPORTANT: iOS Safari requires a direct user gesture for requestPermission().
+                // If we do too many async tasks (like state updates) before this, the gesture might be lost.
+                if ("Notification" in window && window.Notification.permission === "default") {
+                    const permission = await window.Notification.requestPermission();
+                    setPermissionStatus(permission);
+                    if (permission !== "granted") {
+                        throw new Error(locale === 'id' ? "Izin notifikasi tidak diberikan." : "Notification permission not granted.");
+                    }
+                }
 
                 const token = await registerServiceWorkerAndGetToken();
 
@@ -131,10 +138,21 @@ export default function NotificationSettings() {
                         }),
                     });
                 } else {
-                    throw new Error("Gagal mendapatkan token notifikasi. Pastikan internet lancar.");
+                    throw new Error(locale === 'id' ? "Gagal mendapatkan token. Hubungkan ke internet." : "Failed to get token. Check your connection.");
                 }
             } catch (error: any) {
-                alert("Gagal mengaktifkan notifikasi: " + (error.message || "Unknown error"));
+                console.error("[NotificationSettings] Toggle Error:", error);
+
+                let errorMessage = error.message || "Unknown error";
+
+                // Specific handling for common errors
+                if (errorMessage.includes("NetworkError")) {
+                    errorMessage = locale === 'id'
+                        ? "Gangguan koneksi/layanan (NetworkError). Coba tutup dan buka kembali aplikasinya."
+                        : "Network/service error occurred. Try restarting the app.";
+                }
+
+                alert((locale === 'id' ? "Gagal: " : "Failed: ") + errorMessage);
                 setIsEnabled(false);
                 setFcmToken(null);
             } finally {

@@ -10,7 +10,7 @@ export function buildManifest(): NawaetuManifest {
     name: "Nawaetu - #StartWithIntention | Muslim Habit Tracker",
     short_name: "Nawaetu",
     description: APP_CONFIG.description,
-    gcm_sender_id: "103953800507",
+    gcm_sender_id: "567398306395",
     start_url: `/?v=${APP_CONFIG.version}`,
     scope: "/",
     display: "standalone",
