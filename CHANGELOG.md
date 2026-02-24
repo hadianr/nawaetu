@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.4] - 2026-02-24
+
+### Added
+- **Feat: Implement daylight theme, add health check API, and update database schema for user archetype and bookmark translations.**
+- **Feat: hide the close button in UserProfileDialog**
+
+### Improved
+- **Refactor: Replace default dialog close buttons with custom X icons across various components.**
+
+
 ## [1.8.3] - 2026-02-23
 
 ### Added
