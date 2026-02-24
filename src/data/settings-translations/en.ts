@@ -32,6 +32,7 @@ export const SETTINGS_EN = {
     notificationLocationNote: "Notifications will be sent based on your saved location in the app.",
 
     // Prayer Names
+    imsak: "Imsak",
     fajr: "Fajr",
     dhuhr: "Dhuhr",
     asr: "Asr",

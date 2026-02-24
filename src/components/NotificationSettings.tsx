@@ -191,6 +191,7 @@ export default function NotificationSettings() {
     }
 
     const prayerNames = {
+        imsak: t.imsak || "Imsak",
         fajr: t.fajr || "Subuh",
         dhuhr: t.dhuhr || "Dzuhur",
         asr: t.asr || "Ashar",

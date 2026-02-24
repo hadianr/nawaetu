@@ -49,6 +49,7 @@ export function useAdhanNotifications() {
 
             // Map keys correctly from data.prayerTimes
             const prayerTimes: Record<string, string> = {
+                Imsak: data.prayerTimes.Imsak,
                 Fajr: data.prayerTimes.Fajr,
                 Dhuhr: data.prayerTimes.Dhuhr,
                 Asr: data.prayerTimes.Asr,
@@ -83,6 +84,9 @@ export function useAdhanNotifications() {
     }, [data, isPageVisible]);
 
     const playAdhanAudio = (prayerKey: string) => {
+        // Do not play adhan audio for Imsak
+        if (prayerKey === "Imsak") return;
+
         // Check preferences first (if disabled, don't play)
         const savedPrefs = storage.getOptional<any>(STORAGE_KEYS.ADHAN_PREFERENCES as any);
         if (savedPrefs) {
@@ -123,6 +127,7 @@ export function useAdhanNotifications() {
         const isRamadhan = data?.hijriMonth?.toLowerCase().includes("ramadan") || false;
 
         const labels: Record<string, string> = {
+            Imsak: "Imsak",
             Fajr: "Subuh",
             Dhuhr: "Dzuhur",
             Asr: "Ashar",
@@ -132,11 +137,19 @@ export function useAdhanNotifications() {
 
         const title = isRamadhan && prayerKey === "Maghrib"
             ? "Selamat Berbuka Puasa 🤲"
-            : `Waktu ${labels[prayerKey]}`;
+            : isRamadhan && prayerKey === "Imsak"
+                ? "Waktu Imsak Telah Tiba ⏳"
+                : isRamadhan && prayerKey === "Fajr"
+                    ? "Waktu Subuh Telah Tiba 🕌"
+                    : `Waktu ${labels[prayerKey]}`;
 
         const body = isRamadhan && prayerKey === "Maghrib"
-            ? "Telah masuk waktu Maghrib untuk wilayah Anda."
-            : `Saatnya menunaikan sholat ${labels[prayerKey]}`;
+            ? "Telah masuk waktu Maghrib untuk wilayah Anda. Selamat berbuka!"
+            : isRamadhan && prayerKey === "Imsak"
+                ? "Mari bersiap menahan diri dari hal-hal yang membatalkan puasa."
+                : isRamadhan && prayerKey === "Fajr"
+                    ? "Telah masuk waktu sholat Subuh. Selamat menunaikan ibadah puasa hari ini."
+                    : `Saatnya menunaikan sholat ${labels[prayerKey]}`;
 
         if (typeof window !== "undefined" && "Notification" in window) {
             new window.Notification(title, {

@@ -1,6 +1,7 @@
 // src/types/notifications.ts
 
 export interface PrayerPreferences {
+    imsak: boolean;
     fajr: boolean;
     dhuhr: boolean;
     asr: boolean;
@@ -22,9 +23,11 @@ export interface NotificationSettings {
 }
 
 export const DEFAULT_PRAYER_PREFERENCES: PrayerPreferences = {
+    imsak: true,
     fajr: true,
     dhuhr: true,
     asr: true,
     maghrib: true,
     isha: true,
 };
+

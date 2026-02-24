@@ -32,6 +32,7 @@ export const SETTINGS_ID = {
     notificationLocationNote: "Notifikasi akan dikirim berdasarkan lokasi yang tersimpan di aplikasi.",
 
     // Prayer Names
+    imsak: "Imsak",
     fajr: "Subuh",
     dhuhr: "Dzuhur",
     asr: "Ashar",
