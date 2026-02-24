@@ -32,7 +32,7 @@ export class GroqProvider implements LLMProvider {
         }
 
         this.groq = new Groq({ apiKey });
-        this.modelName = "llama3-8b-8192"; // Default minimal latency model
+        this.modelName = "llama-3.1-8b-instant"; // Fast and supported replacement
     }
 
     async chat(message: string, context: UserContext, history: ChatMessage[]): Promise<string> {

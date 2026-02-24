@@ -365,7 +365,23 @@ export default function MentorAIPage() {
                 { maxRetries: 2, initialDelay: 1000 }
             );
 
-            trackAIQuery();
+            // Revert quota if the response is a known error message
+            const isErrorMsg = response.startsWith("Maaf,") || response.startsWith("Wah,") || response.startsWith("Pesan ");
+
+            if (isErrorMsg) {
+                setDailyCount(prev => {
+                    const reverted = Math.max(0, prev - 1);
+                    const todayStr = new Date().toDateString();
+                    storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                        date: todayStr,
+                        count: reverted,
+                        tier: isMuhsinin ? 'muhsinin' : 'free'
+                    }));
+                    return reverted;
+                });
+            } else {
+                trackAIQuery();
+            }
 
             const aiMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
@@ -390,6 +406,18 @@ export default function MentorAIPage() {
             });
 
         } catch (error: any) {
+            // Revert quota on actual exception
+            setDailyCount(prev => {
+                const reverted = Math.max(0, prev - 1);
+                const todayStr = new Date().toDateString();
+                storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                    date: todayStr,
+                    count: reverted,
+                    tier: isMuhsinin ? 'muhsinin' : 'free'
+                }));
+                return reverted;
+            });
+
             const errorMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
