@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { db } from "@/db";
+import { db, checkConnection } from "@/db";
 import {
     bookmarks,
     intentions,
@@ -54,6 +54,7 @@ async function handleBookmarkSync(
                     .set({
                         note: data.note,
                         tags: data.tags,
+                        translationText: data.translationText, // v1.8.5
                         updatedAt: new Date(),
                     })
                     .where(eq(bookmarks.id, existing.id));
@@ -69,6 +70,7 @@ async function handleBookmarkSync(
                         surahName: data.surahName,
                         verseId: data.verseId,
                         verseText: data.verseText,
+                        translationText: data.translationText, // v1.8.5
                         key,
                         note: data.note,
                         tags: data.tags,
@@ -299,6 +301,15 @@ async function handleReadingStateSync(
 
 export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse | { error: string }>> {
     try {
+        // 1. Health check - prevent cascading failures if DB is dead
+        const dbStatus = await checkConnection();
+        if (!dbStatus.success) {
+            return NextResponse.json(
+                { success: false, error: "Database offline", message: "Database is currently unavailable" },
+                { status: 503 }
+            ) as any;
+        }
+
         const session = await getServerSession(authOptions);
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -398,6 +409,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                         surahName: b.surahName,
                         verseId: b.verseId,
                         verseText: b.verseText,
+                        translationText: b.translationText, // v1.8.5
                         key,
                         note: b.note,
                         tags: b.tags,

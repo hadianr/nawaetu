@@ -10,12 +10,11 @@ import { eq, and } from "drizzle-orm";
  * Supports both guest and authenticated users
  */
 export async function GET(req: NextRequest) {
-    try {
-        // Get query params
-        const { searchParams } = new URL(req.url);
-        const user_token = searchParams.get("user_token");
+    const startTime = Date.now();
+    const { searchParams } = req.nextUrl;
+    const user_token = searchParams.get("user_token");
 
-        // Token-based auth
+    try {
         if (!user_token) {
             return NextResponse.json(
                 { success: false, error: "User token is required" },
@@ -24,7 +23,7 @@ export async function GET(req: NextRequest) {
         }
 
         let userId: string | null = null;
-        let streak = 0;
+        let userData: any = null;
 
         // 1. Try to find in pushSubscriptions (FCM Token)
         const [subscription] = await db
@@ -37,29 +36,20 @@ export async function GET(req: NextRequest) {
             userId = subscription.userId;
         } else {
             // 2. Try to find anonymous user
-            // Anonymous format: email = token + "@nawaetu.local"
             const anonymousEmail = `${user_token}@nawaetu.local`;
+            const [user] = await db
+                .select()
+                .from(users)
+                .where(eq(users.email, anonymousEmail))
+                .limit(1);
 
-            if (anonymousEmail) {
-                const [user] = await db
-                    .select()
-                    .from(users)
-                    .where(eq(users.email, anonymousEmail))
-                    .limit(1);
-
-                if (user) {
-                    userId = user.id;
-                    streak = user.niatStreakCurrent || 0;
-                }
-            } else if (subscription) {
-                // Subscription exists but no userId linked yet (very rare edge case)
-                // Treat as guest who hasn't set intention
+            if (user) {
+                userId = user.id;
+                userData = user;
             }
         }
 
         if (!userId) {
-            // User not found or hasn't created any data yet
-            // Return empty state instead of 404, so frontend can handle it gracefully (First Time User)
             return NextResponse.json({
                 success: true,
                 data: {
@@ -70,14 +60,17 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // Get user stats if we have userId (refresh streak)
-        const [user] = await db
-            .select()
-            .from(users)
-            .where(eq(users.id, userId))
-            .limit(1);
+        // Fetch user object if we don't have it yet (was from subscription)
+        if (!userData) {
+            const [user] = await db
+                .select()
+                .from(users)
+                .where(eq(users.id, userId))
+                .limit(1);
+            userData = user;
+        }
 
-        // Get today's date
+        // Get today's date in UTC (matched with DB date type)
         const today = new Date().toISOString().split('T')[0];
 
         // Check if intention exists for today
@@ -92,13 +85,18 @@ export async function GET(req: NextRequest) {
             )
             .limit(1);
 
+        const duration = Date.now() - startTime;
+        if (duration > 500) {
+            console.warn(`[GET /api/intentions/today] Slow request: ${duration}ms for token ${user_token}`);
+        }
+
         if (!todayIntention) {
             return NextResponse.json({
                 success: true,
                 data: {
                     has_intention: false,
                     has_reflection: false,
-                    streak: user?.niatStreakCurrent || 0,
+                    streak: userData?.niatStreakCurrent || 0,
                 },
             });
         }
@@ -118,10 +116,16 @@ export async function GET(req: NextRequest) {
                     text: todayIntention.reflectionText,
                     reflected_at: todayIntention.reflectedAt,
                 } : null,
-                streak: user?.niatStreakCurrent || 0,
+                streak: userData?.niatStreakCurrent || 0,
             },
         });
     } catch (error) {
+        console.error("[GET /api/intentions/today] Failed:", {
+            error: error instanceof Error ? error.message : "Non-error object",
+            stack: error instanceof Error ? error.stack : undefined,
+            user_token
+        });
+
         return NextResponse.json(
             { success: false, error: "Internal server error" },
             { status: 500 }

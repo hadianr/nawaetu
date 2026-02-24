@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
-export type ThemeId = "default" | "midnight" | "sunset" | "lavender" | "ocean" | "royal";
+export type ThemeId = "default" | "daylight" | "midnight" | "sunset" | "lavender" | "ocean" | "royal";
 
 export interface ThemePattern {
     type: 'geometric' | 'organic' | 'stars' | 'waves' | 'damask' | 'none';
@@ -40,6 +40,20 @@ export const THEMES: Record<ThemeId, Theme> = {
             accent: "251 191 36", // amber-400
             background: "10 10 10", // near black
             surface: "15 23 42", // slate-900
+        },
+    },
+    daylight: {
+        id: "daylight",
+        name: "Daylight ☀️",
+        description: "Cerah, ringan, dan nyaman untuk siang hari",
+        isPremium: false,
+        colors: {
+            primary: "16 185 129",     // emerald-500
+            primaryLight: "52 211 153",// emerald-400
+            primaryDark: "5 150 105",  // emerald-600
+            accent: "245 158 11",      // amber-500
+            background: "248 250 252", // slate-50 (light)
+            surface: "255 255 255",    // white
         },
     },
     midnight: {
@@ -157,7 +171,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Apply theme to document
     useEffect(() => {
         const theme = THEMES[currentTheme];
-        
+
         // Fallback to default theme if current theme is invalid
         const validTheme = theme || THEMES['default'];
         const root = document.documentElement;
@@ -183,7 +197,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         if (!THEMES[themeId]) {
             return;
         }
-        
+
         const storage = getStorageService();
         setCurrentTheme(themeId);
         storage.set(STORAGE_KEYS.SETTINGS_THEME, themeId);

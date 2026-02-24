@@ -64,6 +64,7 @@ export default function SettingsPageContent() {
     const { data: session, status, update } = useSession(); // Add update
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimes();
     const { currentTheme, setTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
@@ -432,16 +433,29 @@ export default function SettingsPageContent() {
                     <UserProfileDialog onProfileUpdate={refreshProfile}>
                         <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
                             <div className="relative">
-                                <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-primary))]/20 border-2 border-[rgb(var(--color-primary))]/40 flex items-center justify-center text-[rgb(var(--color-primary-light))] text-lg font-bold overflow-hidden p-0.5">
+                                <div className={cn(
+                                    "h-12 w-12 rounded-full border-2 flex items-center justify-center text-lg font-bold overflow-hidden p-0.5 transition-all",
+                                    isDaylight
+                                        ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                                        : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
+                                )}>
                                     <Avatar className="w-full h-full rounded-full">
                                         <AvatarImage src={userAvatar || session?.user?.image || ""} className="object-cover" />
-                                        <AvatarFallback className="bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-lg font-bold">
+                                        <AvatarFallback className={cn(
+                                            "text-lg font-bold",
+                                            isDaylight ? "bg-emerald-100 text-emerald-600" : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
+                                        )}>
                                             {(userName || "U").charAt(0).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
                                 </div>
                                 {(isMuhsinin || session?.user?.isMuhsinin) && (
-                                    <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-full p-0.5 border-2 border-black z-10 shadow-lg">
+                                    <div className={cn(
+                                        "absolute -top-1 -right-1 rounded-full p-0.5 border-2 z-10 shadow-lg transition-all",
+                                        isDaylight
+                                            ? "bg-gradient-to-br from-emerald-400 to-emerald-600 border-white"
+                                            : "bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] border-black"
+                                    )}>
                                         <Crown className="w-2.5 h-2.5 text-white fill-white" />
                                     </div>
                                 )}
@@ -779,13 +793,27 @@ export default function SettingsPageContent() {
                 </div>
 
                 {/* Support Card (Persistent) - Swapped Back Up */}
-                <div className="bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/40 to-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/20 rounded-2xl p-4 flex items-center justify-between">
+                <div className={cn(
+                    "border rounded-2xl p-4 flex items-center justify-between transition-all",
+                    isDaylight
+                        ? "bg-emerald-50 border-emerald-100 shadow-sm shadow-emerald-500/5"
+                        : "bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/40 to-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/20"
+                )}>
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <Heart className="w-4 h-4 text-[rgb(var(--color-primary-light))] fill-[rgb(var(--color-primary))]/20" />
-                            <span className="text-sm font-bold text-white">{t.supportTitle}</span>
+                            <Heart className={cn(
+                                "w-4 h-4",
+                                isDaylight ? "text-emerald-600 fill-emerald-200" : "text-[rgb(var(--color-primary-light))] fill-[rgb(var(--color-primary))]/20"
+                            )} />
+                            <span className={cn(
+                                "text-sm font-bold",
+                                isDaylight ? "text-slate-900" : "text-white"
+                            )}>{t.supportTitle}</span>
                         </div>
-                        <p className="text-[10px] text-[rgb(var(--color-primary-light))]/70 max-w-[200px] leading-relaxed">
+                        <p className={cn(
+                            "text-[10px] max-w-[200px] leading-relaxed",
+                            isDaylight ? "text-slate-500" : "text-[rgb(var(--color-primary-light))]/70"
+                        )}>
                             {isMuhsinin
                                 ? t.supportPremiumText
                                 : t.supportText}
@@ -794,7 +822,12 @@ export default function SettingsPageContent() {
                     <Button
                         onClick={() => setShowDonationModal(true)}
                         size="sm"
-                        className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 px-4 rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                        className={cn(
+                            "font-bold h-9 px-4 rounded-xl shadow-lg transition-all active:scale-[0.98]",
+                            isDaylight
+                                ? "bg-[#10b981] hover:bg-[#059669] text-white shadow-emerald-200/50"
+                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white shadow-[rgb(var(--color-primary))]/20"
+                        )}
                     >
                         {isMuhsinin ? t.infaqButtonPremium : t.infaqButton}
                     </Button>
@@ -804,15 +837,31 @@ export default function SettingsPageContent() {
                 <div className="flex justify-center pt-2">
                     <button
                         onClick={() => setShowAboutModal(true)}
-                        className="flex items-center gap-2 group transition-all active:scale-[0.98] py-2 px-4 rounded-full bg-white/5 border border-white/5 hover:bg-white/10"
+                        className={cn(
+                            "flex items-center gap-2 group transition-all active:scale-[0.98] py-2 px-4 rounded-full border",
+                            isDaylight
+                                ? "bg-slate-100 border-slate-200 hover:bg-slate-200/50"
+                                : "bg-[rgb(var(--color-primary))]/5 border border-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/10"
+                        )}
                     >
-                        <div className="w-5 h-5 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-md flex items-center justify-center">
+                        <div className={cn(
+                            "w-5 h-5 rounded-md flex items-center justify-center transition-all",
+                            isDaylight
+                                ? "bg-gradient-to-br from-emerald-400 to-teal-400 shadow-sm"
+                                : "bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))]"
+                        )}>
                             <span className="text-[10px] font-bold text-white">N</span>
                         </div>
-                        <span className="text-[10px] font-bold text-white/60 group-hover:text-white transition-colors">
+                        <span className={cn(
+                            "text-[10px] font-bold transition-colors",
+                            isDaylight ? "text-slate-600" : "text-white/60"
+                        )}>
                             {t.aboutAppName} {APP_CONFIG.version}
                         </span>
-                        <ChevronRight className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors" />
+                        <ChevronRight className={cn(
+                            "w-3 h-3 transition-colors",
+                            isDaylight ? "text-slate-400 group-hover:text-emerald-500" : "text-[rgb(var(--color-primary))]/40 group-hover:text-[rgb(var(--color-primary))]"
+                        )} />
                     </button>
                 </div>
 

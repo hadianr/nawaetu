@@ -562,7 +562,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         description: 'Buka puasa tidak berlebihan',
         category: 'worship',
         xpReward: 20,
-        icon: 'dates',
+        icon: '🥣',
         hukum: 'sunnah',
         type: 'daily',
         validationType: 'manual',

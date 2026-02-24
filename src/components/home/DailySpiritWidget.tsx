@@ -31,7 +31,7 @@ export default function DailySpiritWidget() {
 
     return (
         <div className="w-full max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 backdrop-blur-2xl shadow-xl">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 backdrop-blur-2xl shadow-xl spiritual-card">
                 {/* Decorative blur blobs */}
                 <div className="absolute -top-8 -right-8 w-28 h-28 bg-[rgb(var(--color-primary))]/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-[rgb(var(--color-primary-dark))]/5 rounded-full blur-2xl pointer-events-none" />

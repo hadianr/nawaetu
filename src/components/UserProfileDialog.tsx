@@ -12,6 +12,7 @@ import { useInfaq } from "@/context/InfaqContext";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +43,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const router = useRouter();
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
     // Derived State
     const isAuthenticated = status === "authenticated";
     // FIXED: Only logged in users can be Muhsinin
@@ -281,7 +284,15 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent showCloseButton={false} className="w-[calc(100vw-32px)] sm:w-[380px] max-w-sm max-h-[85vh] bg-[#0F172A] border-white/10 text-white p-0 rounded-3xl overflow-hidden flex flex-col">
+            <DialogContent
+                showCloseButton={false}
+                className={cn(
+                    "w-[calc(100vw-32px)] sm:w-[380px] max-w-sm max-h-[85vh] p-0 rounded-3xl overflow-hidden flex flex-col transition-all",
+                    isDaylight
+                        ? "bg-white border-slate-200 text-slate-900"
+                        : "bg-[#0F172A] border-white/10 text-white"
+                )}
+            >
                 <DialogTitle className="sr-only">Profil Pengguna</DialogTitle>
 
                 {/* 1. Header & Cover */}
@@ -325,8 +336,11 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     <div className="relative z-10 px-6 pt-0 flex items-end justify-between -mt-10">
                         <div className="relative">
                             <div className={cn(
-                                "w-20 h-20 rounded-full p-1 bg-[#0F172A]",
-                                isMuhsinin ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]" : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[#0F172A]"
+                                "w-20 h-20 rounded-full p-1 transition-all",
+                                isDaylight ? "bg-white shadow-sm" : "bg-[#0F172A]",
+                                isMuhsinin
+                                    ? isDaylight ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-white" : "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]"
+                                    : isDaylight ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-white" : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[#0F172A]"
                             )}>
                                 <Avatar className="w-full h-full rounded-full border border-white/10">
                                     <AvatarImage src={userImage} className="object-cover" />
@@ -335,7 +349,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                             </div>
                             {isMuhsinin && (
                                 <div className="absolute -top-3 -right-3">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-orange-500 shadow-lg text-white">
+                                    <span className={cn(
+                                        "flex h-8 w-8 items-center justify-center rounded-full shadow-lg text-white transition-all",
+                                        isDaylight
+                                            ? "bg-gradient-to-br from-emerald-400 to-emerald-600"
+                                            : "bg-gradient-to-br from-amber-300 to-orange-500"
+                                    )}>
                                         <Crown className="w-4 h-4 fill-white" />
                                     </span>
                                 </div>
@@ -356,7 +375,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             type="text"
                                             value={editName}
                                             onChange={(e) => setEditName(e.target.value)}
-                                            className="h-10 bg-white/5 border-white/10 focus:border-[rgb(var(--color-primary))]/50"
+                                            className={cn(
+                                                "h-10 transition-all",
+                                                isDaylight
+                                                    ? "bg-slate-50 border-slate-200 text-slate-900 focus:border-emerald-500/50 focus:ring-emerald-500/20"
+                                                    : "bg-white/5 border-white/10 text-white focus:border-[rgb(var(--color-primary))]/50"
+                                            )}
                                         />
                                     </div>
 
@@ -367,7 +391,13 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                 onClick={() => setEditGender('male')}
                                                 className={cn(
                                                     "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
-                                                    editGender === 'male' ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))] text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                    editGender === 'male'
+                                                        ? isDaylight
+                                                            ? "bg-emerald-500 text-white border-emerald-500"
+                                                            : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))] text-white"
+                                                        : isDaylight
+                                                            ? "bg-slate-50 border-slate-100 hover:bg-slate-100 text-slate-600"
+                                                            : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                                                 )}
                                             >
                                                 <span>👨</span> {(t as any).onboardingMaleLabel}
@@ -376,7 +406,13 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                 onClick={() => setEditGender('female')}
                                                 className={cn(
                                                     "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
-                                                    editGender === 'female' ? "bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                    editGender === 'female'
+                                                        ? isDaylight
+                                                            ? "bg-emerald-500 text-white border-emerald-500"
+                                                            : "bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-white"
+                                                        : isDaylight
+                                                            ? "bg-slate-50 border-slate-100 hover:bg-slate-100 text-slate-600"
+                                                            : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                                                 )}
                                             >
                                                 <span>👩</span> {(t as any).onboardingFemaleLabel}
@@ -393,38 +429,69 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                     onClick={() => setEditArchetype(type.id as any)}
                                                     className={cn(
                                                         "flex items-center gap-3 px-3 py-2 rounded-xl border transition-all text-left",
-                                                        editArchetype === type.id ? "bg-white/10 border-white/30 text-white" : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                                        editArchetype === type.id
+                                                            ? isDaylight
+                                                                ? "bg-emerald-50 border-emerald-500 text-slate-900"
+                                                                : "bg-white/10 border-white/30 text-white"
+                                                            : isDaylight
+                                                                ? "bg-slate-50 border-slate-100 hover:bg-slate-100 text-slate-500"
+                                                                : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                                                     )}
                                                 >
-                                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
-                                                        <type.icon className={cn("w-4 h-4", editArchetype === type.id ? "text-[rgb(var(--color-primary-light))]" : "text-slate-400")} />
+                                                    <div className={cn(
+                                                        "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
+                                                        isDaylight ? "bg-emerald-100" : "bg-white/5"
+                                                    )}>
+                                                        <type.icon className={cn(
+                                                            "w-4 h-4",
+                                                            editArchetype === type.id
+                                                                ? isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
+                                                                : "text-slate-400"
+                                                        )} />
                                                     </div>
                                                     <div className="flex-1">
-                                                        <div className="text-xs font-bold leading-none mb-1">{type.labelTitle}</div>
+                                                        <div className={cn("text-xs font-bold leading-none mb-1", isDaylight ? "text-slate-900" : "text-white")}>{type.labelTitle}</div>
                                                         <div className="text-[9px] text-slate-500 leading-tight">{type.labelDesc}</div>
                                                     </div>
-                                                    {editArchetype === type.id && <Check className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />}
+                                                    {editArchetype === type.id && <Check className={cn("w-4 h-4", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-2 pt-2 sticky bottom-0 bg-[#0F172A] pb-2">
+                                    <div className={cn(
+                                        "flex gap-2 pt-2 sticky bottom-0 pb-2 transition-all",
+                                        isDaylight ? "bg-white" : "bg-[#0F172A]"
+                                    )}>
                                         <Button
                                             onClick={handleSaveProfile}
                                             disabled={isUpdating}
-                                            className="flex-1 h-9 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-white text-xs font-bold"
+                                            className={cn(
+                                                "flex-1 h-9 font-bold transition-all shadow-lg active:scale-[0.98]",
+                                                isDaylight
+                                                    ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/10"
+                                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-white"
+                                            )}
                                         >
                                             {isUpdating ? (t as any).locationUpdating : (t as any).bookmarksSave}
                                         </Button>
-                                        <Button variant="ghost" onClick={() => setIsEditing(false)} className="h-9 text-xs text-slate-400 hover:text-white">{(t as any).tasbihBack}</Button>
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => setIsEditing(false)}
+                                            className={cn(
+                                                "h-9 text-xs transition-colors",
+                                                isDaylight ? "text-slate-400 hover:text-slate-600 hover:bg-slate-50" : "text-slate-400 hover:text-white"
+                                            )}
+                                        >
+                                            {(t as any).tasbihBack}
+                                        </Button>
                                     </div>
                                 </div>
                             ) : (
                                 <>
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
-                                            <h2 className="text-xl font-bold text-white leading-tight">{userName}</h2>
+                                            <h2 className={cn("text-xl font-bold leading-tight", isDaylight ? "text-slate-900" : "text-white")}>{userName}</h2>
                                             {isAuthenticated && (
                                                 <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
                                                     <Edit2 className="w-3.5 h-3.5" />
@@ -432,9 +499,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             )}
                                         </div>
                                         {isAuthenticated && session?.user?.email && (
-                                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-0.5">
-                                                <div className="w-3 h-3 rounded-full bg-white/10 flex items-center justify-center">
-                                                    <span className="text-[6px] font-bold text-white">G</span>
+                                            <div className={cn("flex items-center gap-1.5 text-[10px] mt-0.5", isDaylight ? "text-slate-500" : "text-slate-400")}>
+                                                <div className={cn(
+                                                    "w-3 h-3 rounded-full flex items-center justify-center",
+                                                    isDaylight ? "bg-slate-100" : "bg-white/10"
+                                                )}>
+                                                    <span className={cn("text-[6px] font-bold", isDaylight ? "text-slate-600" : "text-white")}>G</span>
                                                 </div>
                                                 {session.user.email}
                                             </div>
@@ -443,7 +513,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     <div className="flex flex-col gap-1.5 mt-2.5">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             {/* Archetype Badge */}
-                                            <div className="text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-[rgb(var(--color-primary-light))]">
+                                            <div className={cn(
+                                                "text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 transition-all",
+                                                isDaylight
+                                                    ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                                                    : "bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-[rgb(var(--color-primary-light))]"
+                                            )}>
                                                 <currentArchetype.icon className="w-2.5 h-2.5" />
                                                 {currentArchetypeLabel}
                                             </div>
@@ -457,11 +532,17 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     {/* 3. Gamification Stats (Visible to All) */}
                     <div className="flex flex-col gap-3 mb-6">
                         {/* Level Progress */}
-                        <div className="bg-white/5 border border-white/5 rounded-2xl p-4">
+                        <div className={cn(
+                            "rounded-2xl p-4 transition-all border",
+                            isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5"
+                        )}>
                             <div className="flex justify-between items-end mb-2">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center">
-                                        <Crown className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                                        isDaylight ? "bg-emerald-100" : "bg-[rgb(var(--color-primary))]/20"
+                                    )}>
+                                        <Crown className={cn("w-4 h-4", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
                                     </div>
                                     <div>
                                         <div
@@ -478,25 +559,33 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                             </p>
                                             <Info className="w-3 h-3 text-slate-500" />
                                         </div>
-                                        <p className="text-sm font-bold text-white">{stats.xp} {(t as any).gamificationXpName}</p>
+                                        <p className={cn("text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>{stats.xp} {(t as any).gamificationXpName}</p>
                                     </div>
                                 </div>
                                 <span className="text-[10px] text-slate-400">{stats.xp} / {stats.nextLevelXp} {(t as any).gamificationXpName}</span>
                             </div>
-                            <div className="h-2.5 w-full rounded-full bg-black/20 overflow-hidden border border-white/5 shadow-inner mb-2.5">
+                            <div className={cn(
+                                "h-2.5 w-full rounded-full overflow-hidden border shadow-inner mb-2.5 transition-all",
+                                isDaylight ? "bg-slate-100 border-slate-200" : "bg-black/20 border-white/5"
+                            )}>
                                 <div
                                     className="h-full rounded-full transition-all duration-500 shadow-lg"
                                     style={{
                                         width: `${stats.progress}%`,
-                                        background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary-light)))`,
-                                        boxShadow: "0 0 10px rgba(var(--color-primary), 0.5)"
+                                        background: isDaylight
+                                            ? `linear-gradient(to right, #10b981, #34d399)`
+                                            : `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary-light)))`,
+                                        boxShadow: isDaylight ? "none" : "0 0 10px rgba(var(--color-primary), 0.5)"
                                     }}
                                 />
                             </div>
 
                             {showLevelInfo ? (
-                                <div className="mt-3 p-4 rounded-xl bg-black/40 border border-white/5 text-[10px] text-slate-400 space-y-3 animate-in fade-in slide-in-from-top-1">
-                                    <div className="font-bold text-white mb-1 text-[11px] uppercase tracking-wider">{(t as any).gamificationLevelName} Tingkatan:</div>
+                                <div className={cn(
+                                    "mt-3 p-4 rounded-xl border space-y-3 animate-in fade-in slide-in-from-top-1",
+                                    isDaylight ? "bg-emerald-50/50 border-emerald-100 text-slate-500" : "bg-black/40 border-white/5 text-slate-400"
+                                )}>
+                                    <div className={cn("font-bold mb-1 text-[11px] uppercase tracking-wider", isDaylight ? "text-emerald-700" : "text-white")}>{(t as any).gamificationLevelName} Tingkatan:</div>
 
                                     <div className="space-y-1">
                                         <div className="flex justify-between items-baseline">
@@ -541,13 +630,19 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                         </div>
 
                         {/* Streak Row (Full Width) */}
-                        <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-[rgb(var(--color-primary))]/20 flex flex-shrink-0 items-center justify-center">
-                                <Flame className="w-6 h-6 text-[rgb(var(--color-primary-light))]" />
+                        <div className={cn(
+                            "rounded-2xl p-4 flex items-center gap-4 border transition-all",
+                            isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5"
+                        )}>
+                            <div className={cn(
+                                "w-12 h-12 rounded-full flex flex-shrink-0 items-center justify-center transition-all",
+                                isDaylight ? "bg-emerald-100" : "bg-[rgb(var(--color-primary))]/20"
+                            )}>
+                                <Flame className={cn("w-6 h-6", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
                             </div>
                             <div>
                                 <div className="flex items-end gap-2">
-                                    <span className="text-2xl font-black text-white leading-none">{stats.streak}</span>
+                                    <span className={cn("text-2xl font-black leading-none", isDaylight ? "text-slate-900" : "text-white")}>{stats.streak}</span>
                                     <span className="text-[11px] text-slate-400 uppercase tracking-wider font-medium mb-[2px]">{(t as any).profileDays}</span>
                                 </div>
                                 <div className="text-[11px] text-slate-400 mt-1 leading-snug">{(t as any).profileStreakDesc}</div>
@@ -557,15 +652,26 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* 4. Auth Call to Action (If Guest) */}
                     {!isAuthenticated && (
-                        <div className="mb-6 bg-[rgb(var(--color-secondary))]/30 border border-white/5 rounded-xl p-4 text-center">
-                            <div className="w-10 h-10 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <Settings className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
+                        <div className={cn(
+                            "mb-6 border rounded-xl p-4 text-center transition-all",
+                            isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-secondary))]/30 border-white/5"
+                        )}>
+                            <div className={cn(
+                                "w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 transition-all",
+                                isDaylight ? "bg-emerald-100" : "bg-[rgb(var(--color-primary))]/20"
+                            )}>
+                                <Settings className={cn("w-5 h-5", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light)) ]")} />
                             </div>
-                            <h3 className="text-sm font-bold text-white mb-1">{(t as any).profileAuthTitle}</h3>
-                            <p className="text-xs text-slate-400 mb-4 leading-relaxed">{(t as any).profileAuthDesc}</p>
+                            <h3 className={cn("text-sm font-bold mb-1", isDaylight ? "text-slate-900" : "text-white")}>{(t as any).profileAuthTitle}</h3>
+                            <p className={cn("text-xs mb-4 leading-relaxed", isDaylight ? "text-slate-500" : "text-slate-400")}>{(t as any).profileAuthDesc}</p>
                             <Button
                                 onClick={handleLogin}
-                                className="w-full bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary))]/90 font-bold h-10 flex items-center gap-2"
+                                className={cn(
+                                    "w-full font-bold h-10 flex items-center gap-2 shadow-lg transition-all",
+                                    isDaylight
+                                        ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-200"
+                                        : "bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary))]/90"
+                                )}
                             >
                                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -580,24 +686,33 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* 5. Menu Items */}
                     <div className="space-y-1">
-                        <button onClick={handleShareApp} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                        <button onClick={handleShareApp} className={cn(
+                            "w-full flex items-center justify-between p-3 rounded-xl transition-colors group",
+                            isDaylight ? "hover:bg-slate-50" : "hover:bg-white/5"
+                        )}>
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
-                                    <Share2 className="w-4 h-4 text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
+                                <div className={cn(
+                                    "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                                    isDaylight ? "bg-emerald-50" : "bg-[rgb(var(--color-primary))]/10"
+                                )}>
+                                    <Share2 className={cn("w-4 h-4 transition-colors", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ] group-hover:text-[rgb(var(--color-primary))]")} />
                                 </div>
-                                <span className="text-sm font-medium text-slate-300 group-hover:text-white">{(t as any).profileShareApp}</span>
+                                <span className={cn("text-sm font-medium transition-colors", isDaylight ? "text-slate-600 group-hover:text-slate-900" : "text-slate-300 group-hover:text-white")}>{(t as any).profileShareApp}</span>
                             </div>
                             <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
                         </button>
 
                         {isAuthenticated && (
                             !showLogoutConfirm ? (
-                                <button onClick={() => setShowLogoutConfirm(true)} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-red-500/10 transition-colors group mt-2 border border-transparent hover:border-red-500/20">
+                                <button onClick={() => setShowLogoutConfirm(true)} className={cn(
+                                    "w-full flex items-center justify-between p-3 rounded-xl transition-colors group mt-2 border border-transparent",
+                                    isDaylight ? "hover:bg-red-50 hover:border-red-100" : "hover:bg-red-500/10 hover:border-red-500/20"
+                                )}>
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
-                                            <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
+                                            <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors" />
                                         </div>
-                                        <span className="text-sm font-medium text-red-400 group-hover:text-red-300">{(t as any).profileLogout}</span>
+                                        <span className={cn("text-sm font-medium transition-colors", isDaylight ? "text-red-600 group-hover:text-red-700" : "text-red-400 group-hover:text-red-300")}>{(t as any).profileLogout}</span>
                                     </div>
                                 </button>
                             ) : (

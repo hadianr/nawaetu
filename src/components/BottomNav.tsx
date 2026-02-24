@@ -7,6 +7,7 @@ import { Home, BookOpen, Compass, Settings, Fingerprint, BarChart3 } from "lucid
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
+import { useTheme } from "@/context/ThemeContext";
 
 // Enhanced Moon icon for Ramadhan with crescent and star
 const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: boolean }) => (
@@ -33,6 +34,8 @@ const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: 
 const BottomNav = memo(function BottomNav() {
     const pathname = usePathname();
     const { t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
     const [mounted, setMounted] = useState(false);
     const { data } = usePrayerTimesContext();
 
@@ -65,7 +68,10 @@ const BottomNav = memo(function BottomNav() {
 
     return (
         <nav
-            className="fixed bottom-0 left-0 z-50 w-full border-t border-white/10 bg-black/80 backdrop-blur-xl pb-safe"
+            className={cn(
+                "fixed bottom-0 left-0 z-50 w-full border-t backdrop-blur-xl pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.05)]",
+                isDaylight ? "bg-white/90 border-slate-200/60" : "bg-black/80 border-white/10"
+            )}
         >
             <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2 relative">
                 {mounted &&
@@ -89,13 +95,17 @@ const BottomNav = memo(function BottomNav() {
                                                 "absolute inset-0 rounded-full transition-all duration-500",
                                                 isActive
                                                     ? "blur-lg opacity-70 animate-pulse-glow"
-                                                    : "blur-md opacity-40"
+                                                    : "blur-md opacity-40",
+                                                isDaylight && isActive ? "bg-emerald-300" : ""
                                             )}
-                                            style={{
+                                            style={!isDaylight ? {
                                                 transform: "scale(1.4)",
                                                 backgroundColor: isActive
                                                     ? "rgb(var(--color-primary-light))"
                                                     : "rgba(var(--color-primary), 0.8)"
+                                            } : {
+                                                transform: "scale(1.4)",
+                                                backgroundColor: isActive ? "" : "rgba(16, 185, 129, 0.2)"
                                             }}
                                         />
 
@@ -111,10 +121,18 @@ const BottomNav = memo(function BottomNav() {
                                         {/* Button pill */}
                                         <span
                                             className={cn(
-                                                "relative flex h-12 w-12 items-center justify-center rounded-full border-2 shadow-2xl transition-all duration-300",
-                                                isActive && "scale-105"
+                                                "relative flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all duration-300",
+                                                isActive && "scale-105 shadow-xl shadow-emerald-500/20"
                                             )}
-                                            style={isActive ? {
+                                            style={isActive ? (isDaylight ? {
+                                                borderColor: "#34d399",
+                                                background: `radial-gradient(circle at 30% 30%, #a7f3d0, #34d399)`,
+                                                boxShadow: `
+                                                    0 0 0 1px rgba(16, 185, 129, 0.3),
+                                                    0 4px 15px rgba(16, 185, 129, 0.2),
+                                                    inset 0 1px 2px rgba(255, 255, 255, 0.4)
+                                                `
+                                            } : {
                                                 borderColor: "rgb(var(--color-primary-light))",
                                                 background: `radial-gradient(circle at 30% 30%, rgb(var(--color-primary-light)), rgb(var(--color-primary)), rgb(var(--color-primary-dark)))`,
                                                 boxShadow: `
@@ -123,6 +141,12 @@ const BottomNav = memo(function BottomNav() {
                                                     0 8px 40px rgba(var(--color-primary-light), 0.3),
                                                     inset 0 1px 2px rgba(255, 255, 255, 0.3)
                                                 `
+                                            }) : (isDaylight ? {
+                                                borderColor: "rgba(16, 185, 129, 0.2)",
+                                                background: `radial-gradient(circle at 30% 30%, #f0fdf4, #d1fae5)`,
+                                                boxShadow: `
+                                                    0 2px 8px rgba(16, 185, 129, 0.05)
+                                                `
                                             } : {
                                                 borderColor: "rgba(var(--color-primary), 0.5)",
                                                 background: `radial-gradient(circle at 30% 30%, rgba(var(--color-primary), 0.9), rgba(var(--color-primary-dark), 0.8))`,
@@ -130,7 +154,7 @@ const BottomNav = memo(function BottomNav() {
                                                     0 0 0 1px rgba(var(--color-primary), 0.3),
                                                     0 4px 16px rgba(var(--color-primary), 0.3)
                                                 `
-                                            }}
+                                            })}
                                         >
                                             {/* Inner highlight for depth */}
                                             <span
@@ -145,21 +169,23 @@ const BottomNav = memo(function BottomNav() {
                                                 className={cn(
                                                     "relative h-6 w-6 transition-all duration-300",
                                                     isActive
-                                                        ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]"
-                                                        : "text-white/90"
+                                                        ? isDaylight
+                                                            ? "text-emerald-950"
+                                                            : "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]"
+                                                        : isDaylight ? "text-emerald-600" : "text-white/90"
                                                 )}
                                             />
                                         </span>
                                     </div>
                                     <span
                                         className={cn(
-                                            "text-[10px] font-bold tracking-tight transition-all duration-300",
-                                            isActive && "drop-shadow-[0_0_4px_rgba(var(--color-primary-light),0.8)]"
+                                            "text-[10px] font-extrabold tracking-tight transition-all duration-300",
+                                            isActive && (isDaylight ? "text-emerald-700" : "drop-shadow-[0_0_4px_rgba(var(--color-primary-light),0.8)]")
                                         )}
                                         style={{
                                             color: isActive
-                                                ? `rgb(var(--color-primary-light))`
-                                                : `rgba(var(--color-primary-light), 0.7)`
+                                                ? isDaylight ? "" : `rgb(var(--color-primary-light))`
+                                                : isDaylight ? "rgba(5, 150, 105, 0.7)" : `rgba(var(--color-primary-light), 0.7)`
                                         }}
                                     >
                                         {label}
@@ -175,13 +201,23 @@ const BottomNav = memo(function BottomNav() {
                                 className={cn(
                                     "flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
                                     isActive
-                                        ? "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"
-                                        : "text-slate-400 hover:text-white/90"
+                                        ? isDaylight
+                                            ? "text-emerald-600"
+                                            : "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"
+                                        : isDaylight
+                                            ? "text-slate-400 hover:text-slate-600"
+                                            : "text-slate-400 hover:text-white/90"
                                 )}
                                 prefetch={true}
                             >
-                                <Icon className={cn("h-6 w-6", isActive && "fill-[rgb(var(--color-primary-light))]/20")} />
-                                <span className="text-[10px] font-medium">{label}</span>
+                                <Icon className={cn(
+                                    "h-6 w-6 transition-transform duration-300",
+                                    isActive && (isDaylight ? "fill-emerald-500/10 scale-110" : "fill-[rgb(var(--color-primary-light))]/20 scale-110")
+                                )} />
+                                <span className={cn(
+                                    "text-[10px] transition-all",
+                                    isActive ? "font-bold" : "font-medium"
+                                )}>{label}</span>
                             </Link>
                         );
                     })}

@@ -104,7 +104,20 @@ export default function MissionsWidget() {
         const weekly = getWeeklyMissions(savedGender);
         const seasonal = getSeasonalMissions(prayerData?.hijriDate);
 
-        const allMissions = [...seasonal, ...weekly, ...daily];
+        const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
+
+        let allMissions = [...seasonal, ...weekly, ...daily];
+
+        // Filter out non-relevant fasting missions during Ramadhan
+        if (isRamadhan) {
+            allMissions = allMissions.filter(m =>
+                m.id !== 'puasa_sunnah' &&
+                m.id !== 'qadha_puasa' &&
+                m.id !== 'qadha_puasa_tracker' &&
+                m.id !== 'puasa_sunnah_ramadhan_prep'
+            );
+        }
+
         const filteredMissions = filterMissionsByArchetype(allMissions, savedArchetype);
 
         // Localize missions
@@ -295,10 +308,21 @@ export default function MissionsWidget() {
     // Sorting for WIDGET (Top Priority)
     // Priority Score System:
     // ... (Scores as defined) ...
-    // NOTE: We MUST hide 'ramadhan_during' missions from the Widget if it's not Ramadhan.
-    // Assuming we are in 'Prep' phase, 'ramadhan_during' should be hidden.
+    const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
+
     const widgetMissions = [...missions]
-        .filter(m => m.phase !== 'ramadhan_during' && m.id !== 'niat_harian' && m.id !== 'muhasabah') // Hide intentional missions
+        .filter(m => {
+            // Hide intentional missions from the list
+            if (m.id === 'niat_harian' || m.id === 'muhasabah') return false;
+
+            // When in Ramadhan, show 'ramadhan_during' missions
+            if (isRamadhan) {
+                return m.phase !== 'ramadhan_prep'; // Show 'all_year' and 'ramadhan_during'
+            }
+
+            // When NOT in Ramadhan, hide 'ramadhan_during'
+            return m.phase !== 'ramadhan_during';
+        })
         .sort((a, b) => {
             const aCompleted = isMissionCompleted(a.id, a.type);
             const bCompleted = isMissionCompleted(b.id, b.type);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
+import { db, checkConnection } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 
@@ -16,6 +16,15 @@ import { eq, and, sql } from "drizzle-orm";
  */
 export async function POST(req: NextRequest) {
     try {
+        // Health check
+        const dbStatus = await checkConnection();
+        if (!dbStatus.success) {
+            return NextResponse.json(
+                { success: false, error: "Database offline" },
+                { status: 503 }
+            );
+        }
+
         const body = await req.json();
         const { niat_text, niat_date, is_private = true, user_token } = body;
 

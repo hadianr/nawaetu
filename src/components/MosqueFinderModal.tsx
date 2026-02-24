@@ -5,6 +5,8 @@ import { X, MapPin, Tent, Building2, Car } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { useTheme } from "@/context/ThemeContext";
+import { cn } from "@/lib/utils";
 
 interface MosqueFinderModalProps {
     isOpen: boolean;
@@ -13,6 +15,8 @@ interface MosqueFinderModalProps {
 
 export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModalProps) {
     const { t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -64,23 +68,41 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent showCloseButton={false} className="max-w-xs sm:max-w-sm bg-[#0a0f1c] border-white/10 text-white p-0 overflow-hidden gap-0">
+            <DialogContent
+                showCloseButton={false}
+                className={cn(
+                    "max-w-xs sm:max-w-sm border-white/10 p-0 overflow-hidden gap-0 mosque-finder-modal",
+                    isDaylight ? "bg-white text-slate-900" : "bg-[#0a0f1c] text-white"
+                )}
+            >
 
                 {/* Header with decorative background */}
-                <div className="relative p-6 pb-2 text-center bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent">
-                    <DialogTitle className="text-xl font-bold relative z-10">
+                <div className={cn(
+                    "relative p-6 pb-2 text-center bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent",
+                    isDaylight ? "border-b border-slate-100" : ""
+                )}>
+                    <DialogTitle className={cn(
+                        "text-xl font-bold relative z-10",
+                        isDaylight ? "text-slate-900" : "text-white"
+                    )}>
                         {t.mosqueFinderTitle}
                     </DialogTitle>
-                    <p className="text-sm text-white/60 mt-1 relative z-10">
+                    <p className={cn(
+                        "text-sm mt-1 relative z-10",
+                        isDaylight ? "text-slate-500" : "text-white/60"
+                    )}>
                         {t.mosqueFinderDesc}
                     </p>
 
                     {/* Close Button */}
                     <button
                         onClick={onClose}
-                        className="absolute right-4 top-4 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors z-20"
+                        className={cn(
+                            "absolute right-4 top-4 p-2 rounded-full transition-colors z-20",
+                            isDaylight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/5 hover:bg-white/10"
+                        )}
                     >
-                        <X className="w-4 h-4 text-white/70" />
+                        <X className={cn("w-4 h-4", isDaylight ? "text-slate-500" : "text-white/70")} />
                     </button>
                 </div>
 
@@ -90,12 +112,23 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                         <button
                             key={option.id}
                             onClick={() => handleSearch(option.query)}
-                            className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-br ${option.color} border border-white/5 hover:border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all group`}
+                            className={cn(
+                                `flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-br ${option.color} transition-all group`,
+                                isDaylight
+                                    ? "border-slate-100/50 hover:border-emerald-200 hover:bg-white shadow-sm"
+                                    : "border-white/5 hover:border-white/20 hover:scale-[1.02] active:scale-[0.98]"
+                            )}
                         >
-                            <div className={`p-3 rounded-full bg-black/20 ${option.iconColor} group-hover:scale-110 transition-transform`}>
+                            <div className={cn(
+                                `p-3 rounded-full group-hover:scale-110 transition-transform ${option.iconColor}`,
+                                isDaylight ? "bg-white" : "bg-black/20"
+                            )}>
                                 <option.icon className="w-6 h-6" strokeWidth={2} />
                             </div>
-                            <span className="text-xs font-bold text-center text-white/90">
+                            <span className={cn(
+                                "text-xs font-bold text-center",
+                                isDaylight ? "text-slate-700" : "text-white/90"
+                            )}>
                                 {option.label}
                             </span>
                         </button>
@@ -103,8 +136,14 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                 </div>
 
                 {/* Footer Tip */}
-                <div className="bg-white/5 p-3 text-center border-t border-white/5">
-                    <p className="text-[10px] text-white/40">
+                <div className={cn(
+                    "p-3 text-center border-t",
+                    isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5"
+                )}>
+                    <p className={cn(
+                        "text-[10px]",
+                        isDaylight ? "text-slate-400" : "text-white/40"
+                    )}>
                         {t.mosqueFinderButton}
                     </p>
                 </div>

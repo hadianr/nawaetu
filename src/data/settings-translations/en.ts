@@ -443,6 +443,8 @@ export const SETTINGS_EN = {
     bookmarksMarkAsLastRead: "Mark as Last Read",
     bookmarksUpdateProgress: "Update reading progress on home page",
     bookmarksSave: "Save Changes",
+    bookmarksSaved: "Bookmark saved successfully ✨",
+    bookmarksDeleted: "Bookmark deleted successfully",
     quranSearchPlaceholder: "Search Surah (e.g. Al-Kahf) or Meaning...",
     quranSurahList: "Surahs",
     quranSurahCount: "SURAHS",

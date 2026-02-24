@@ -443,6 +443,8 @@ export const SETTINGS_ID = {
     bookmarksMarkAsLastRead: "Tandai Terakhir Dibaca",
     bookmarksUpdateProgress: "Update progress membaca di halaman beranda",
     bookmarksSave: "Simpan Perubahan",
+    bookmarksSaved: "Tanda baca berhasil disimpan ✨",
+    bookmarksDeleted: "Tanda baca berhasil dihapus",
     quranSearchPlaceholder: "Cari Surat (e.g. Al-Kahf) atau Arti...",
     quranSurahList: "Surat-Surat",
     quranSurahCount: "SURAT",

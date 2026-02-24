@@ -9,6 +9,7 @@ import { Check, CheckCircle2, Sparkles, AlertCircle, X } from "lucide-react";
 import MissionDetailDialog from "./MissionDetailDialog";
 import { useLocale } from "@/context/LocaleContext";
 import { getHukumLabel } from "@/lib/mission-utils";
+import { useTheme } from "@/context/ThemeContext";
 
 interface MissionListModalProps {
     missions: Mission[];
@@ -37,6 +38,8 @@ export default function MissionListModal({
 }: MissionListModalProps) {
     const [activeTab, setActiveTab] = useState(initialTab || "all");
     const { t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
 
     // Sync active tab if initialTab changes (re-opening logic)
     // Note: In a real app we might want a useEffect on open.
@@ -216,24 +219,42 @@ export default function MissionListModal({
                 </DialogHeader>
 
                 <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col overflow-hidden">
-                    <div className="px-5 py-4 bg-black/20 border-b border-white/5 overflow-x-auto scrollbar-hide">
-                        <TabsList className="bg-transparent h-auto p-0 gap-3 flex flex-nowrap w-max justify-start items-center border-none shadow-none ring-0">
+                    <div className={cn(
+                        "px-5 py-4 border-b overflow-x-auto scrollbar-hide mission-tabs-container",
+                        isDaylight ? "bg-slate-100/80 border-slate-200" : "bg-black/20 border-white/5"
+                    )}>
+                        <TabsList className="bg-transparent h-auto p-0 gap-3 flex flex-nowrap w-max justify-start items-center border-none shadow-none ring-0 mission-tabs-list">
                             <TabsTrigger
                                 value="all"
-                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-white data-[state=active]:text-black text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
+                                className={cn(
+                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
+                                    isDaylight
+                                        ? "shadow-sm"
+                                        : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10 data-[state=active]:bg-white data-[state=active]:text-black"
+                                )}
                             >
                                 {t.missionTabAll}
                             </TabsTrigger>
                             <TabsTrigger
                                 value="daily"
-                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:border-blue-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
+                                className={cn(
+                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
+                                    isDaylight
+                                        ? "shadow-sm"
+                                        : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
+                                )}
                             >
                                 {t.missionTabDaily}
                             </TabsTrigger>
 
                             <TabsTrigger
                                 value="weekly"
-                                className="rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white data-[state=active]:bg-purple-500 data-[state=active]:text-white data-[state=active]:border-purple-500/50 text-xs px-4 py-2 h-auto text-white/60 transition-all flex-none"
+                                className={cn(
+                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
+                                    isDaylight
+                                        ? "shadow-sm"
+                                        : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10 data-[state=active]:bg-purple-500 data-[state=active]:text-white"
+                                )}
                             >
                                 {t.missionTabWeekly}
                             </TabsTrigger>
@@ -241,10 +262,12 @@ export default function MissionListModal({
                             <TabsTrigger
                                 value="seasonal"
                                 className={cn(
-                                    "rounded-full border border-white/5 bg-white/5 hover:bg-white/10 hover:text-white text-xs px-4 py-2 h-auto text-white/60 transition-all flex items-center gap-1 flex-none",
-                                    isRamadhan
-                                        ? "data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
-                                        : "data-[state=active]:bg-amber-500 data-[state=active]:text-black"
+                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex items-center gap-1 flex-none mission-tab-trigger",
+                                    isDaylight
+                                        ? "shadow-sm"
+                                        : isRamadhan
+                                            ? "border-white/10 bg-white/5 text-white/60 data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
+                                            : "border-white/10 bg-white/5 text-white/60 data-[state=active]:bg-amber-500 data-[state=active]:text-black"
                                 )}
                             >
                                 {isRamadhan ? t.missionTabRamadhan : isSyaban ? t.missionTabSyaban : t.missionTabSeasonal}

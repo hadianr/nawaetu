@@ -7,6 +7,7 @@ export interface Bookmark {
   surahName: string;
   verseId: number;
   verseText: string; // Preview text (Arabic)
+  translationText?: string; // Preview text (Translation)
   note?: string;
   tags?: string[];
   createdAt: number;

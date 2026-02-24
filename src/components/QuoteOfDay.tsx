@@ -38,7 +38,7 @@ export default function QuoteOfDay() {
 
     return (
         <div className="w-full max-w-md mx-auto mt-2 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-1000">
-            <div className="group relative rounded-[2rem] bg-white/[0.02] border border-white/5 p-6 backdrop-blur-sm transition-colors hover:bg-white/[0.04]">
+            <div className="group relative rounded-[2rem] bg-white/[0.02] border border-white/5 p-6 backdrop-blur-sm transition-colors hover:bg-white/[0.04] quote-card">
                 <Quote className="absolute top-6 left-6 h-5 w-5 text-[rgb(var(--color-primary))]/10 rotate-180 group-hover:text-[rgb(var(--color-primary))]/20 transition-colors" />
                 <div className="absolute top-6 right-6 text-[8px] font-black uppercase tracking-[0.2em] text-white/20 group-hover:text-white/30 transition-colors">
                     {t.spiritualQuoteTitle}

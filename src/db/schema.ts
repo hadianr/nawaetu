@@ -128,6 +128,7 @@ export const bookmarks = pgTable("bookmark", {
     surahName: text("surah_name").notNull(),
     verseId: integer("verse_id").notNull(),
     verseText: text("verse_text").notNull(), // Arabic logic
+    translationText: text("translation_text"), // v1.8.5 - added translation
 
     key: text("key").notNull(), // Compound key logic "2:255" for easy querying
 

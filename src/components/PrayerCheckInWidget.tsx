@@ -12,6 +12,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
+import { useTheme } from "@/context/ThemeContext";
 import type { Gender } from "@/data/missions-data";
 
 // Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
@@ -32,6 +33,8 @@ type SheetState = {
 export default function PrayerCheckInWidget() {
     const { data: session } = useSession();
     const { t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
     const { completedMissions, completeMission, isCompleted } = useMissions();
     const { data: prayerData } = usePrayerTimesContext();
 
@@ -175,7 +178,10 @@ export default function PrayerCheckInWidget() {
 
     if (!mounted || !prayerData?.prayerTimes) {
         return (
-            <div className="w-full h-[88px] bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
+            <div className={cn(
+                "w-full h-[88px] animate-pulse rounded-2xl border",
+                isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+            )} />
         );
     }
 
@@ -183,22 +189,31 @@ export default function PrayerCheckInWidget() {
         <>
             <div className={cn(
                 "relative overflow-hidden rounded-2xl border backdrop-blur-md px-4 py-3.5 transition-all",
-                "bg-black/20 border-white/10"
+                isDaylight
+                    ? "bg-white border-slate-200 shadow-sm shadow-slate-200/50"
+                    : "bg-black/20 border-white/10"
             )}>
                 {/* Soft Glow */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[rgb(var(--color-primary))]/10 rounded-full blur-[50px] pointer-events-none" />
+                <div className={cn(
+                    "absolute top-0 right-0 w-24 h-24 rounded-full blur-[50px] pointer-events-none opacity-40",
+                    isDaylight ? "bg-emerald-200" : "bg-[rgb(var(--color-primary))]/10"
+                )} />
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-3 relative z-10">
                     <div className="flex items-center gap-2">
                         <span className="text-sm">🕌</span>
-                        <p className="text-xs font-bold text-white">{t.homePrayerCheckInTitle}</p>
+                        <p className={cn("text-xs font-black uppercase tracking-wider", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInTitle}</p>
                     </div>
                     <div className={cn(
-                        "text-[10px] px-2 py-0.5 rounded-full font-semibold border",
+                        "text-[10px] px-2 py-0.5 rounded-full font-bold border transition-colors",
                         completedCount === 5
-                            ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
-                            : "bg-white/5 border-white/10 text-white/60"
+                            ? isDaylight
+                                ? "bg-emerald-100 border-emerald-200 text-emerald-700"
+                                : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
+                            : isDaylight
+                                ? "bg-slate-50 border-slate-100 text-slate-500"
+                                : "bg-white/5 border-white/10 text-white/60"
                     )}>
                         {t.homePrayerCheckInStatus.replace("{count}", String(completedCount))}
                     </div>
@@ -217,18 +232,30 @@ export default function PrayerCheckInWidget() {
                                 onClick={() => handlePrayerTap(prayer)}
                                 disabled={done || isLocked}
                                 className={cn(
-                                    "flex-1 flex flex-col items-center gap-1 py-2 rounded-xl border transition-all duration-200 relative overflow-hidden",
+                                    "flex-1 flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
                                     done
-                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 cursor-default"
+                                        ? isDaylight
+                                            ? "bg-emerald-50 border-emerald-100 cursor-default"
+                                            : "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 cursor-default"
                                         : isLocked
-                                            ? "bg-white/[0.01] border-white/[0.05] cursor-not-allowed opacity-40 pointer-events-none"
+                                            ? isDaylight
+                                                ? "bg-slate-50 border-slate-100 cursor-not-allowed opacity-40"
+                                                : "bg-white/[0.01] border-white/[0.05] cursor-not-allowed opacity-40 pointer-events-none"
                                             : isLate
-                                                ? "bg-amber-500/10 border-amber-500/30 active:scale-95"
+                                                ? isDaylight
+                                                    ? "bg-orange-50 border-orange-200 active:scale-95"
+                                                    : "bg-amber-500/10 border-amber-500/30 active:scale-95"
                                                 : isActive
-                                                    ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[0_0_10px_rgba(var(--color-primary),0.15)] active:scale-95"
+                                                    ? isDaylight
+                                                        ? "bg-emerald-50 border-emerald-200 shadow-sm active:scale-95"
+                                                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[0_0_10px_rgba(var(--color-primary),0.15)] active:scale-95"
                                                     : isUpcoming
-                                                        ? "bg-white/[0.04] border-white/10 active:scale-95"
-                                                        : "bg-white/[0.02] border-white/5 active:scale-95"
+                                                        ? isDaylight
+                                                            ? "bg-slate-50/50 border-slate-100 active:scale-95"
+                                                            : "bg-white/[0.04] border-white/10 active:scale-95"
+                                                        : isDaylight
+                                                            ? "bg-white border-slate-50 active:scale-95"
+                                                            : "bg-white/[0.02] border-white/5 active:scale-95"
                                 )}
                             >
                                 {/* Active pulse for current prayer */}
@@ -237,26 +264,29 @@ export default function PrayerCheckInWidget() {
                                 )}
 
                                 {done ? (
-                                    <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-primary))] flex items-center justify-center">
+                                    <div className={cn(
+                                        "w-5 h-5 rounded-full flex items-center justify-center",
+                                        isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]"
+                                    )}>
                                         <Check className="w-3 h-3 text-white" />
                                     </div>
                                 ) : isLate ? (
-                                    <AlertCircle className="w-4 h-4 text-amber-400" />
+                                    <AlertCircle className={cn("w-4 h-4", isDaylight ? "text-orange-500" : "text-amber-400")} />
                                 ) : (
-                                    <span className="text-sm leading-none">{prayer.icon}</span>
+                                    <span className="text-[13px] leading-none">{prayer.icon}</span>
                                 )}
 
                                 <span className={cn(
-                                    "text-[9px] font-semibold leading-none",
+                                    "text-[9px] font-bold leading-none transition-colors",
                                     done
-                                        ? "text-[rgb(var(--color-primary-light))]"
+                                        ? isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
                                         : isLocked
-                                            ? "text-white/25"
+                                            ? isDaylight ? "text-slate-300" : "text-white/25"
                                             : isActive
-                                                ? isLate ? "text-amber-300" : "text-white"
+                                                ? isDaylight ? "text-slate-900" : "text-white"
                                                 : isUpcoming
-                                                    ? "text-white/70"
-                                                    : "text-white/50"
+                                                    ? isDaylight ? "text-slate-500" : "text-white/70"
+                                                    : isDaylight ? "text-slate-400" : "text-white/50"
                                 )}>
                                     {(t as any)[prayer.i18n] || prayer.i18n}
                                 </span>
@@ -264,8 +294,10 @@ export default function PrayerCheckInWidget() {
                                 {/* Status hint below label */}
                                 {!done && !isLocked && (isActive || isLate) && (
                                     <span className={cn(
-                                        "text-[7px] font-bold leading-none",
-                                        isLate ? "text-amber-400/70" : "text-[rgb(var(--color-primary-light))]/60"
+                                        "text-[7px] font-black leading-none",
+                                        isLate
+                                            ? isDaylight ? "text-orange-600" : "text-amber-400/70"
+                                            : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
                                     )}>
                                         +{gender !== "female" ? "75" : "25"} XP
                                     </span>
@@ -287,9 +319,14 @@ export default function PrayerCheckInWidget() {
 
                 {/* Completeness Banner */}
                 {completedCount === 5 && (
-                    <div className="mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 relative z-10">
-                        <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
-                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] text-center">
+                    <div className={cn(
+                        "mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border relative z-10 transition-colors",
+                        isDaylight
+                            ? "bg-emerald-50 border-emerald-100"
+                            : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                    )}>
+                        <Sparkles className={cn("w-3 h-3", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
+                        <p className={cn("text-[10px] font-black", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light)) ] text-center")}>
                             {t.homePrayerCheckInDone}
                         </p>
                     </div>
@@ -306,21 +343,27 @@ export default function PrayerCheckInWidget() {
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
                     <div
-                        className="relative w-full max-w-md bg-[rgb(var(--color-background))] border border-white/10 rounded-t-3xl p-6 pb-8 shadow-2xl animate-in slide-in-from-bottom-4 duration-300 z-10"
+                        className={cn(
+                            "relative w-full max-w-md border rounded-t-3xl p-6 pb-8 shadow-2xl animate-in slide-in-from-bottom-4 duration-300 z-10",
+                            isDaylight ? "bg-white border-slate-200" : "bg-[rgb(var(--color-background))] border-white/10"
+                        )}
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Handle */}
-                        <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5" />
+                        <div className={cn("w-10 h-1 rounded-full mx-auto mb-5", isDaylight ? "bg-slate-200" : "bg-white/20")} />
 
                         <div className="flex items-center gap-3 mb-5">
-                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xl">
+                            <div className={cn(
+                                "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors",
+                                isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+                            )}>
                                 {sheet.prayer.icon}
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-white">
+                                <p className={cn("text-sm font-black", isDaylight ? "text-slate-900" : "text-white")}>
                                     {t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any)[sheet.prayer.i18n] || sheet.prayer.i18n)}
                                 </p>
-                                <p className="text-[10px] text-white/50">{t.homePrayerCheckInSheetSubtitle}</p>
+                                <p className={cn("text-[10px] font-medium", isDaylight ? "text-slate-400" : "text-white/50")}>{t.homePrayerCheckInSheetSubtitle}</p>
                             </div>
                         </div>
 
@@ -331,11 +374,16 @@ export default function PrayerCheckInWidget() {
                                     doComplete(sheet.missionId, 25);
                                     setSheet(null);
                                 }}
-                                className="flex-1 flex flex-col items-center gap-2 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all"
+                                className={cn(
+                                    "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border group",
+                                    isDaylight
+                                        ? "bg-slate-50 border-slate-100 hover:bg-slate-100"
+                                        : "bg-white/5 border-white/10 hover:bg-white/10"
+                                )}
                             >
-                                <span className="text-2xl">🏠</span>
-                                <span className="text-xs font-semibold text-white">{t.homePrayerCheckInOptionSolo}</span>
-                                <span className="text-[10px] text-white/50 font-semibold">+25 XP</span>
+                                <span className="text-2xl group-active:scale-110 transition-transform">🏠</span>
+                                <span className={cn("text-xs font-black uppercase tracking-wide", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInOptionSolo}</span>
+                                <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+25 XP</span>
                             </button>
 
                             {/* Berjamaah */}
@@ -344,22 +392,40 @@ export default function PrayerCheckInWidget() {
                                     doComplete(sheet.missionId, 75);
                                     setSheet(null);
                                 }}
-                                className="flex-1 flex flex-col items-center gap-2 py-4 rounded-2xl bg-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary-light))]/20 hover:brightness-110 active:scale-95 transition-all relative overflow-hidden"
+                                className={cn(
+                                    "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
+                                    isDaylight
+                                        ? "bg-emerald-600 border-emerald-500 shadow-emerald-200/50 hover:bg-emerald-500"
+                                        : "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/20 shadow-[rgb(var(--color-primary))]/20 hover:brightness-110"
+                                )}
                             >
-                                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-                                <span className="text-2xl relative">🕌</span>
-                                <span className="text-xs font-semibold text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
-                                <span className="text-[10px] text-white/80 font-bold relative">+75 XP</span>
+                                <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+                                <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
+                                <span className="text-xs font-black uppercase tracking-wide text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
+                                <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+75 XP</span>
                             </button>
                         </div>
 
-                        <p className="text-[9px] text-white/30 text-center mt-4 mb-6 italic">
-                            {t.homePrayerCheckInQuote}
-                        </p>
+                        <div className={cn(
+                            "mt-4 mb-6 p-4 rounded-xl border relative",
+                            isDaylight ? "bg-emerald-50/50 border-emerald-100/50" : "bg-white/[0.03] border-white/5"
+                        )}>
+                            <p className={cn(
+                                "text-[10px] text-center italic leading-relaxed font-bold",
+                                isDaylight ? "text-emerald-800" : "text-white/60"
+                            )}>
+                                {t.homePrayerCheckInQuote}
+                            </p>
+                        </div>
 
                         <button
                             onClick={() => setSheet(null)}
-                            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                            className={cn(
+                                "w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all border",
+                                isDaylight
+                                    ? "bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                                    : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                            )}
                         >
                             {(t as any).buttonCancel || "Batal"}
                         </button>

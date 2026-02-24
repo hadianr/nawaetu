@@ -128,14 +128,317 @@
     @apply bg-[#0a0a0a] text-white;
     min-height: 100%;
   }
-  
+
+  /* =====================================================================
+     DAYLIGHT THEME — Light Glassmorphism Design System
+     Background: #f0f4f8 (biru-abu muda)
+     Surface: white/65 frosted glass
+     Text: multi-level hierarchy (dark → muted → placeholder)
+     Primary accent: Emerald (tetap sama seperti dark mode)
+     ===================================================================== */
+
+  /* [1] Base: Body & HTML */
+  [data-theme="daylight"] body,
+  [data-theme="daylight"] html {
+    background-color: #f0f4f8 !important;
+    color: #0f172a !important;
+  }
+
+  /* [2] Surface / Card Backgrounds — Light Glassmorphism */
+  /* Dark bg overrides: slate-8xx/9xx, gray-9xx, pure blacks, and project-specific hex */
+  [data-theme="daylight"] [class*="bg-slate-8"],
+  [data-theme="daylight"] [class*="bg-slate-9"],
+  [data-theme="daylight"] [class*="bg-gray-8"],
+  [data-theme="daylight"] [class*="bg-gray-9"],
+  [data-theme="daylight"] [class*="bg-black"],
+  [data-theme="daylight"] [class*="bg-[#0a0a0a]"],
+  [data-theme="daylight"] [class*="bg-[#0b0b0b]"],
+  [data-theme="daylight"] [class*="bg-[#0F172A]"],
+  [data-theme="daylight"] [class*="bg-[#0f172a]"] {
+    background-color: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  /* White-opacity utility backgrounds → frost cards */
+  [data-theme="daylight"] [class*="bg-white/"] {
+    background-color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  /* Standalone surface cards */
+  [data-theme="daylight"] .bg-white\/\[0\.02\],
+  [data-theme="daylight"] .bg-white\/\[0\.03\],
+  [data-theme="daylight"] .bg-white\/\[0\.04\],
+  [data-theme="daylight"] .bg-white\/\[0\.05\],
+  [data-theme="daylight"] .bg-white\/5 {
+    background-color: rgba(255, 255, 255, 0.55) !important;
+  }
+
+  [data-theme="daylight"] .bg-white\/10,
+  [data-theme="daylight"] .bg-white\/\[0\.06\],
+  [data-theme="daylight"] .bg-white\/\[0\.07\],
+  [data-theme="daylight"] .bg-white\/\[0\.08\] {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  /* bg-black/20, bg-black/40 etc. for overlay elements */
+  [data-theme="daylight"] [class*="bg-black/2"],
+  [data-theme="daylight"] [class*="bg-black/4"],
+  [data-theme="daylight"] [class*="bg-black/6"],
+  [data-theme="daylight"] [class*="bg-black/8"] {
+    background-color: rgba(255, 255, 255, 0.55) !important;
+  }
+
+  /* [3] Glassmorphism: Backdrop Blur elements */
+  [data-theme="daylight"] [class*="backdrop-blur"] {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(16px) saturate(1.5) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(1.5) !important;
+  }
+
+  /* Modal Backdrop (Overlay) */
+  [data-theme="daylight"] [data-radix-popper-content-wrapper],
+  [data-theme="daylight"] [class*="fixed inset-0 bg-black/"] {
+    background-color: rgba(15, 23, 42, 0.3) !important;
+    /* Slightly darker overlay for focus */
+    backdrop-filter: blur(4px) !important;
+  }
+
+  /* Bottom Nav specifically */
+  [data-theme="daylight"] nav[class*="backdrop-blur"],
+  [data-theme="daylight"] nav[class*="bg-black"] {
+    background-color: rgba(240, 244, 248, 0.92) !important;
+    border-top-color: rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* [4] Borders */
+  [data-theme="daylight"] [class*="border-white/"] {
+    border-color: rgba(15, 23, 42, 0.1) !important;
+  }
+
+  [data-theme="daylight"] [class*="border-slate-"] {
+    border-color: rgba(15, 23, 42, 0.12) !important;
+  }
+
+  /* Project specific border hex */
+  [data-theme="daylight"] [class*="border-[#0F172A]"],
+  [data-theme="daylight"] [class*="border-[#0f172a]"] {
+    border-color: rgba(15, 23, 42, 0.1) !important;
+  }
+
+  /* Keep primary-colored borders (emerald) visible but slightly muted */
+  [data-theme="daylight"] [class*="border-[rgb(var(--color-primary))"] {
+    border-color: rgba(16, 185, 129, 0.3) !important;
+  }
+
+  /* [5] TEXT HIERARCHY */
+
+  /* L1: Bold headings & primary labels */
+  [data-theme="daylight"] h1,
+  [data-theme="daylight"] h2,
+  [data-theme="daylight"] h3,
+  [data-theme="daylight"] h4,
+  [data-theme="daylight"] .font-bold,
+  [data-theme="daylight"] .font-semibold,
+  [data-theme="daylight"] .text-white:not([class*="bg-emerald"], [class*="bg-primary"], [class*="bg-secondary"], .bg-emerald-600, .bg-teal-600) {
+    color: #0f172a !important;
+  }
+
+  /* Specific override for SelectTriggers and similar buttons that are surfaces, not primary actions */
+  [data-theme="daylight"] button[class*="bg-white/"],
+  [data-theme="daylight"] button[class*="bg-black/"],
+  [data-theme="daylight"] .SelectTrigger,
+  [data-theme="daylight"] [role="combobox"] {
+    color: #0f172a !important;
+  }
+
+  [data-theme="daylight"] [class*="text-slate-1"],
+  [data-theme="daylight"] [class*="text-gray-1"] {
+    color: #0f172a !important;
+  }
+
+  /* Force white text back for buttons and primary surfaces */
+  [data-theme="daylight"] button .text-white,
+  [data-theme="daylight"] button.text-white,
+  [data-theme="daylight"] [class*="bg-emerald"] .text-white,
+  [data-theme="daylight"] [class*="bg-primary"] .text-white,
+  [data-theme="daylight"] [class*="bg-secondary"] .text-white {
+    color: #ffffff !important;
+  }
+
+  /* L2: Body / Regular text */
+  [data-theme="daylight"] [class*="text-white/8"],
+  [data-theme="daylight"] [class*="text-white/9"],
+  [data-theme="daylight"] [class*="text-white/7"],
+  [data-theme="daylight"] [class*="text-slate-2"],
+  [data-theme="daylight"] [class*="text-slate-3"] {
+    color: #1e293b !important;
+  }
+
+  /* L3: Secondary / Muted text */
+  [data-theme="daylight"] [class*="text-white/5"],
+  [data-theme="daylight"] [class*="text-white/6"],
+  [data-theme="daylight"] [class*="text-slate-4"],
+  [data-theme="daylight"] [class*="text-gray-4"] {
+    color: #475569 !important;
+  }
+
+  /* L4: Placeholder / Hint */
+  [data-theme="daylight"] [class*="text-white/4"],
+  [data-theme="daylight"] [class*="text-white/3"],
+  [data-theme="daylight"] [class*="text-white/2"] {
+    color: #94a3b8 !important;
+  }
+
+  /* Primary accent text (Emerald) → keep but darker */
+  [data-theme="daylight"] [class*="text-[rgb(var(--color-primary)"] {
+    color: #059669 !important;
+  }
+
+  /* [6] ICONS — SVG and Lucide React */
+  [data-theme="daylight"] svg {
+    color: inherit;
+  }
+
+  [data-theme="daylight"] svg.text-white,
+  [data-theme="daylight"] svg.text-slate-400,
+  [data-theme="daylight"] svg[class*="text-white/"] {
+    color: #334155 !important;
+  }
+
+  /* Project specific color ring-offsets */
+  [data-theme="daylight"] [class*="ring-offset-[#0F172A]"],
+  [data-theme="daylight"] [class*="ring-offset-[#0f172a]"] {
+    --tw-ring-offset-color: #f0f4f8 !important;
+  }
+
+  /* Primary-colored icons keep brightness, just slightly darker */
+  [data-theme="daylight"] svg[class*="text-[rgb(var(--color-primary"] {
+    color: #059669 !important;
+  }
+
+  /* [7] GRADIENT SURFACES */
+  [data-theme="daylight"] [class*="from-slate-"],
+  [data-theme="daylight"] [class*="from-black"],
+  [data-theme="daylight"] [class*="from-gray-"] {
+    --tw-gradient-from: #f0f4f8 !important;
+  }
+
+  [data-theme="daylight"] [class*="to-slate-"],
+  [data-theme="daylight"] [class*="to-black"],
+  [data-theme="daylight"] [class*="to-gray-"] {
+    --tw-gradient-to: #e2e8f0 !important;
+  }
+
+  [data-theme="daylight"] [class*="via-slate-"],
+  [data-theme="daylight"] [class*="via-black"] {
+    --tw-gradient-via: #eef2f7 !important;
+  }
+
+  /* Profile card gradient (bg-gradient-to-r from-primary/20) */
+  /* We exclude small badges/icons (w-5, h-5, etc) so they stay solid and readable */
+  [data-theme="daylight"] [class*="from-[rgb(var(--color-primary))"]:not([class*="w-5"], [class*="h-5"], [class*="w-6"], [class*="h-6"], [class*="w-14"], [class*="h-14"]),
+  [data-theme="daylight"] [class*="from-[rgb(var(--color-primary-dark))"]:not([class*="w-5"], [class*="h-5"], [class*="w-6"], [class*="h-6"], [class*="w-14"], [class*="h-14"]) {
+    --tw-gradient-from: rgba(16, 185, 129, 0.12) !important;
+    --tw-gradient-to: rgba(5, 150, 105, 0.05) !important;
+    background: linear-gradient(to bottom right, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.05)) !important;
+  }
+
+  /* Specific fix for text with primary-light colors which often lack contrast in light mode */
+  [data-theme="daylight"] [class*="text-[rgb(var(--color-primary-light))"] {
+    color: #059669 !important;
+    /* Deep emerald for readability */
+    opacity: 0.8 !important;
+  }
+
+  /* [8] SWITCH / TOGGLE COMPONENTS */
+  /* OFF state track */
+  [data-theme="daylight"] [role="switch"][data-state="unchecked"],
+  [data-theme="daylight"] [data-state="unchecked"][class*="rounded-full"][class*="border-2"] {
+    background-color: #cbd5e1 !important;
+    border-color: #a0aec0 !important;
+  }
+
+  /* ON state track */
+  [data-theme="daylight"] [role="switch"][data-state="checked"],
+  [data-theme="daylight"] [data-state="checked"][class*="rounded-full"][class*="border-2"] {
+    background-color: #059669 !important;
+    border-color: #047857 !important;
+  }
+
+  /* Thumb (the white dot) */
+  [data-theme="daylight"] [role="switch"] span {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* [9] DROPDOWN / SELECT (Radix UI) */
+  [data-theme="daylight"] [data-radix-popper-content-wrapper]>div,
+  [data-theme="daylight"] [role="listbox"] {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(15, 23, 42, 0.1) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  [data-theme="daylight"] [role="option"] {
+    color: #1e293b !important;
+  }
+
+  [data-theme="daylight"] [role="option"]:hover,
+  [data-theme="daylight"] [role="option"][data-highlighted=""] {
+    background-color: rgba(16, 185, 129, 0.08) !important;
+    color: #059669 !important;
+  }
+
+  /* Inner cards or progress tracks that use dark colors explicitly */
+  [data-theme="daylight"] [class*="bg-black/20"],
+  [data-theme="daylight"] [class*="bg-black/40"] {
+    background-color: rgba(15, 23, 42, 0.05) !important;
+  }
+
+  /* [10] CARDS with Box Shadows — Give them depth */
+  [data-theme="daylight"] [class*="shadow-2xl"],
+  [data-theme="daylight"] [class*="shadow-xl"] {
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  /* [11] HOVER states for interactive elements */
+  [data-theme="daylight"] [class*="hover:bg-white/0"],
+  [data-theme="daylight"] [class*="hover:bg-white/1"],
+  [data-theme="daylight"] [class*="hover:bg-white/5"],
+  [data-theme="daylight"] [class*="hover:bg-white/10"] {
+    transition: background-color 0.15s ease;
+  }
+
+  [data-theme="daylight"] [class*="hover:bg-white/0"]:hover,
+  [data-theme="daylight"] [class*="hover:bg-white/1"]:hover,
+  [data-theme="daylight"] [class*="hover:bg-white/5"]:hover,
+  [data-theme="daylight"] [class*="hover:bg-white/10"]:hover {
+    background-color: rgba(15, 23, 42, 0.06) !important;
+  }
+
+  [data-theme="daylight"] [class*="hover:bg-white/2"]:hover {
+    background-color: rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* Specific fix for Profile dialog list items */
+  [data-theme="daylight"] .hover\:bg-white\/5:hover {
+    background-color: rgba(15, 23, 42, 0.05) !important;
+  }
+
+  /* ===== END DAYLIGHT THEME ===== */
+
+  /* ================================================= */
+
   /* Improve rendering performance */
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
-  
+
   /* GPU acceleration for animations */
   .animate-in,
   [class*="animate-"] {
@@ -143,6 +446,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -157,9 +461,11 @@
       animation: none !important;
     }
   }
-  
+
   /* Reduce layout shifts */
-  img, video, iframe {
+  img,
+  video,
+  iframe {
     height: auto;
     max-width: 100%;
   }
@@ -170,6 +476,7 @@
     background-position: -200% 0;
     transform: translate3d(0, 0, 0);
   }
+
   100% {
     background-position: 200% 0;
     transform: translate3d(0, 0, 0);
@@ -177,10 +484,13 @@
 }
 
 @keyframes gradient-shift {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
     transform: translate3d(0, 0, 0);
   }
+
   50% {
     background-position: 100% 50%;
     transform: translate3d(0, 0, 0);
@@ -188,10 +498,13 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.8;
     transform: scale(1) translate3d(0, 0, 0);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.05) translate3d(0, 0, 0);
@@ -199,90 +512,96 @@
 }
 
 @layer utilities {
+
   /* Animation classes with GPU acceleration */
   .animate-shimmer {
     animation: shimmer 3s linear infinite;
     will-change: background-position;
     transform: translate3d(0, 0, 0);
   }
-  
+
   .animate-gradient-shift {
     animation: gradient-shift 4s ease infinite;
     will-change: background-position;
     transform: translate3d(0, 0, 0);
   }
-  
+
   .animate-pulse-glow {
     animation: pulse-glow 3s ease-in-out infinite;
     will-change: transform, opacity;
     transform: translate3d(0, 0, 0);
   }
-  
+
   .animate-pulse-glow-delayed {
     animation: pulse-glow 3s ease-in-out infinite 1.5s;
     will-change: transform, opacity;
     transform: translate3d(0, 0, 0);
   }
-  
+
   /* Mobile performance: reduce blur on small screens */
   @media (max-width: 768px) {
     .blur-3xl {
       @apply blur-2xl;
     }
-    
+
     .backdrop-blur-3xl {
       @apply backdrop-blur-2xl;
     }
   }
-  
+
   /* Disable animations on mobile for better performance */
   @media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
     .animate-shimmer {
       animation: none;
     }
   }
-  
+
   /* Mobile-specific optimizations for small devices */
   @media (max-width: 390px) {
+
     /* Reduce padding on very small screens */
     .px-3 {
       @apply px-2;
     }
-    
+
     .py-3 {
       @apply py-2;
     }
-    
+
     /* Reduce gap spacing */
     .gap-3 {
       @apply gap-2;
     }
-    
+
     /* Optimize font sizes for readability */
     .text-xs {
       font-size: 0.7rem;
     }
-    
+
     .text-sm {
       font-size: 0.8rem;
     }
   }
-  
+
   /* Improve touch targets for mobile */
   @media (max-width: 768px) {
-    button, a, [role="button"] {
+
+    button,
+    a,
+    [role="button"] {
       min-height: 44px;
       min-width: 44px;
     }
-    
+
     /* Prevent double-tap zoom on buttons */
     button {
       touch-action: manipulation;
     }
   }
-  
+
   /* Optimize scrolling performance */
-  .overflow-y-auto, .overflow-auto {
+  .overflow-y-auto,
+  .overflow-auto {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
@@ -299,4 +618,161 @@
   .pb-nav {
     padding-bottom: calc(6rem + env(safe-area-inset-bottom));
   }
+}
+
+/* Quran Settings — Daylight Theme Refinements (Soft Glassmorphism) */
+[data-theme="daylight"] .quran-settings-modal {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px) saturate(1.8) !important;
+}
+
+[data-theme="daylight"] :is(.quran-tab-active, .quran-tajweed-active) {
+  color: #059669 !important;
+}
+
+[data-theme="daylight"] .quran-tab-active {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.15) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.08) !important;
+}
+
+/* Toggle Switch Overrides */
+[data-theme="daylight"] .quran-settings-modal .quran-toggle[data-state="checked"] {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+
+[data-theme="daylight"] .quran-settings-modal .quran-toggle[data-state="unchecked"] {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+  border: 1px solid rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-theme="daylight"] .quran-settings-modal .quran-toggle span[data-state] {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Home — Intention Journal Widget (Daylight Theme) */
+[data-theme="daylight"] .intention-widget {
+  background-color: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 8px 32px -4px rgba(15, 23, 42, 0.04) !important;
+}
+
+[data-theme="daylight"] .intention-widget h3 {
+  color: #1e293b !important;
+}
+
+[data-theme="daylight"] .intention-widget p {
+  color: #64748b !important;
+}
+
+[data-theme="daylight"] .intention-widget .intention-label {
+  opacity: 0.6 !important;
+  filter: grayscale(0) !important;
+}
+
+[data-theme="daylight"] .intention-widget .intention-label svg,
+[data-theme="daylight"] .intention-widget .intention-label span {
+  color: #059669 !important;
+}
+
+/* Soft Green Action Button */
+[data-theme="daylight"] .intention-widget .btn-set-niat {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #059669 !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="daylight"] .intention-widget .btn-history {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+  border-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-theme="daylight"] .intention-widget .btn-history svg {
+  color: #64748b !important;
+}
+
+/* Home — Spiritual Feed Widgets (Daylight Theme) */
+[data-theme="daylight"] .spiritual-card {
+  background-color: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme="daylight"] .spiritual-card .font-arabic {
+  color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+[data-theme="daylight"] .spiritual-card .text-slate-400\/70 {
+  color: #475569 !important;
+  opacity: 0.8 !important;
+}
+
+[data-theme="daylight"] .spiritual-card .text-slate-100\/90 {
+  color: #1e293b !important;
+}
+
+[data-theme="daylight"] .quote-card {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme="daylight"] .quote-card p {
+  color: #334155 !important;
+}
+
+/* Mission Items in Modal */
+[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm {
+  background-color: rgba(255, 255, 255, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm[class*="opacity-60"] {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  opacity: 0.7 !important;
+}
+
+[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm p[class*="text-white"] {
+  color: #1e293b !important;
+}
+
+[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm p[class*="text-white/50"] {
+  color: #64748b !important;
+}
+
+/* Missions Modal — Daylight Theme (Soft Theme) */
+html[data-theme="daylight"] .mission-tabs-container {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+html[data-theme="daylight"] .mission-tab-trigger {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+  color: #64748b !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* ACTIVE STATE - High Contrast Soft Emerald Glassmorphism */
+html[data-theme="daylight"] .mission-tab-trigger[data-state="active"] {
+  background-color: rgba(16, 185, 129, 0.28) !important;
+  /* Made even more visible */
+  color: #064e3b !important;
+  /* emerald-900 for max contrast */
+  border: 1.5px solid rgba(16, 185, 129, 0.6) !important;
+  font-weight: 800 !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2) !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="daylight"] .mission-tab-trigger[data-state="active"][value="weekly"] {
+  background-color: rgba(168, 85, 247, 0.28) !important;
+  color: #4c1d95 !important;
+  border-color: rgba(168, 85, 247, 0.6) !important;
 }

@@ -18,3 +18,18 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export const db = drizzle(conn, { schema });
+
+/**
+ * Health check function to verify database connectivity.
+ * Useful for monitoring and graceful error handling.
+ */
+export async function checkConnection() {
+    try {
+        // Simple query to verify connection
+        await conn`SELECT 1`;
+        return { success: true };
+    } catch (error) {
+        console.error("Database connection failed:", error);
+        return { success: false, error };
+    }
+}

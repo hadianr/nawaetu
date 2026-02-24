@@ -1,1 +1,1 @@
-ALTER TABLE "user" ADD COLUMN "archetype" text;
+ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "archetype" text;

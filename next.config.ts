@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
       "sentry",
       "@sentry/nextjs"
     ],
-    optimizeCss: true, // Inline critical CSS, defer non-critical
+    optimizeCss: false, // Disabled to avoid critters dependency and parse errors
     webpackBuildWorker: true,
     scrollRestoration: false,
   },

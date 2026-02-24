@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { addXP } from "@/lib/leveling";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
+import { useTheme } from "@/context/ThemeContext";
 
 const playTick = (ctx: AudioContext) => {
     const osc = ctx.createOscillator();
@@ -33,6 +34,9 @@ type DhikrPreset = {
 
 export default function DhikrCounter() {
     const { t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
+
     const dhikrPresets = useMemo<DhikrPreset[]>(
         () => [
             {
@@ -150,17 +154,17 @@ export default function DhikrCounter() {
         });
     };
 
-    const handleReset = () => { 
+    const handleReset = () => {
         if (confirm(t.tasbihResetConfirm)) {
             updateState({ count: 0 });
         }
     };
-    
+
     const toggleFeedback = () => {
         const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = ['vibrate', 'sound', 'both', 'none'];
         setFeedbackMode(modes[(modes.indexOf(feedbackMode) + 1) % modes.length]);
     };
-    
+
     const handlePresetSelect = (preset: DhikrPreset) => {
         // Save preset and reset count immediately
         updateState({
@@ -183,28 +187,46 @@ export default function DhikrCounter() {
             {/* Top: Branding + Zikir Text */}
             <div className="w-full text-center z-10 pointer-events-none mt-1 xs:mt-6 shrink-0">
                 <div className="mb-0.5 xs:mb-2">
-                    <h1 className="text-lg xs:text-xl font-bold tracking-tight text-white/90 leading-tight">{t.tasbihTitle}</h1>
-                    <p className="text-[9px] xs:text-[10px] text-white/40 uppercase tracking-[0.2em]">{t.tasbihSubtitle}</p>
+                    <h1 className={cn(
+                        "text-lg xs:text-xl font-bold tracking-tight leading-tight",
+                        isDaylight ? "text-slate-900" : "text-white/90"
+                    )}>{t.tasbihTitle}</h1>
+                    <p className={cn(
+                        "text-[9px] xs:text-[10px] uppercase tracking-[0.2em]",
+                        isDaylight ? "text-slate-400" : "text-white/40"
+                    )}>{t.tasbihSubtitle}</p>
                 </div>
 
                 {activeDhikr ? (
                     <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2">
-                        <div className="px-4 pt-4 xs:pt-20 pb-0.5 xs:pb-1"> {/* Fills taller screens (390px+ width often = 800px+ height) */}
-                            <h2 className="text-2xl xs:text-5xl font-bold text-white drop-shadow-2xl font-serif leading-none">
+                        <div className="px-4 pt-4 xs:pt-20 pb-0.5 xs:pb-1 bg-transparent">
+                            <h2 className={cn(
+                                "text-2xl xs:text-5xl font-bold font-serif leading-none transition-colors",
+                                isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
+                            )}>
                                 {activeDhikr.arab}
                             </h2>
                         </div>
                         <div className="mt-1 xs:mt-3 flex flex-col items-center">
-                            <p className="text-[rgb(var(--color-primary-light))] font-extrabold text-[10px] xs:text-base tracking-tight uppercase">
+                            <p className={cn(
+                                "font-extrabold text-[10px] xs:text-base tracking-tight uppercase",
+                                isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
+                            )}>
                                 {activeDhikr.latin}
                             </p>
-                            <p className="text-white/40 text-[8px] xs:text-xs italic line-clamp-2 max-w-[90%] mt-0.5 xs:mt-1.5">
+                            <p className={cn(
+                                "text-[8px] xs:text-xs italic line-clamp-2 max-w-[90%] mt-0.5 xs:mt-1.5",
+                                isDaylight ? "text-slate-500" : "text-white/40"
+                            )}>
                                 {activeDhikr.tadabbur}
                             </p>
                         </div>
                     </div>
                 ) : (
-                    <p className="text-white/20 text-[10px] italic">{t.tasbihFreeMode}</p>
+                    <p className={cn(
+                        "text-[10px] italic",
+                        isDaylight ? "text-slate-400" : "text-white/20"
+                    )}>{t.tasbihFreeMode}</p>
                 )}
             </div>
 
@@ -233,19 +255,36 @@ export default function DhikrCounter() {
 
                     <button
                         onClick={(e) => { e.stopPropagation(); handleIncrement(); }}
-                        className="absolute inset-1.5 md:inset-4 rounded-full bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border border-[rgb(var(--color-primary)/0.15)] active:scale-95 transition-transform duration-75 flex flex-col items-center justify-center group z-20 shadow-xl"
+                        className={cn(
+                            "absolute inset-1.5 md:inset-4 rounded-full active:scale-95 transition-all duration-75 flex flex-col items-center justify-center group z-20 shadow-xl border",
+                            isDaylight
+                                ? "bg-gradient-to-br from-emerald-100 to-emerald-50 border-emerald-200/50 shadow-emerald-500/10"
+                                : "bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border-[rgb(var(--color-primary)/0.15)] shadow-black/60"
+                        )}
                     >
-                        <span className="text-white/30 text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5">
+                        <span className={cn(
+                            "text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5",
+                            isDaylight ? "text-emerald-700/40" : "text-white/30"
+                        )}>
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                         </span>
-                        <span className="text-7xl xs:text-8xl md:text-9xl font-mono font-bold text-white tracking-tighter drop-shadow-2xl">
+                        <span className={cn(
+                            "text-7xl xs:text-8xl md:text-9xl font-mono font-bold tracking-tighter transition-colors",
+                            isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
+                        )}>
                             {hasHydrated ? (
                                 count
                             ) : (
-                                <span className="inline-block w-12 xs:w-16 md:w-20 h-10 xs:h-12 md:h-14 rounded bg-white/10 animate-pulse align-middle" />
+                                <span className={cn(
+                                    "inline-block w-12 xs:w-16 md:w-20 h-10 xs:h-12 md:h-14 rounded animate-pulse align-middle",
+                                    isDaylight ? "bg-slate-200" : "bg-white/10"
+                                )} />
                             )}
                         </span>
-                        <div className="mt-1 text-[rgb(var(--color-primary))]/40 text-[8px] md:text-sm animate-pulse">
+                        <div className={cn(
+                            "mt-1 text-[8px] md:text-sm animate-pulse font-medium",
+                            isDaylight ? "text-emerald-600/60" : "text-[rgb(var(--color-primary))]/40"
+                        )}>
                             {t.tasbihTap}
                         </div>
                     </button>
@@ -256,21 +295,33 @@ export default function DhikrCounter() {
             <div className="w-full shrink-0 flex flex-col items-center z-10 pt-2 pb-2">
 
                 {/* Stats Bar */}
-                <div className="flex justify-center gap-3 text-white/30 text-[9px] font-bold uppercase tracking-widest mb-4">
-                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
-                        <CalendarDays className="h-3.5 w-3.5 text-[rgb(var(--color-primary-light)/0.4)]" />
+                <div className={cn(
+                    "flex justify-center gap-3 text-[9px] font-bold uppercase tracking-widest mb-4",
+                    isDaylight ? "text-slate-400" : "text-white/30"
+                )}>
+                    <div className={cn(
+                        "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
+                        isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
+                    )}>
+                        <CalendarDays className={cn(
+                            "h-3.5 w-3.5",
+                            isDaylight ? "text-emerald-600/50" : "text-[rgb(var(--color-primary-light)/0.4)]"
+                        )} />
                         <span>
                             {t.tasbihDaily}:{" "}
-                            <span className="text-white">
+                            <span className={isDaylight ? "text-slate-900" : "text-white"}>
                                 {hasHydrated ? (isNaN(dailyCount) ? 0 : dailyCount) : "--"}
                             </span>
                         </span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5">
-                        <Flame className="h-3.5 w-3.5 text-[rgb(var(--color-accent))]/70" />
+                    <div className={cn(
+                        "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
+                        isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
+                    )}>
+                        <Flame className="h-3.5 w-3.5 text-orange-500/70" />
                         <span>
                             {t.tasbihStreak}:{" "}
-                            <span className="text-white">
+                            <span className={isDaylight ? "text-slate-900" : "text-white"}>
                                 {hasHydrated ? (isNaN(streak) ? 0 : streak) : "--"}
                             </span>{" "}
                             {t.tasbihDays}
@@ -283,10 +334,13 @@ export default function DhikrCounter() {
                     <Button
                         variant="ghost"
                         onClick={(e) => { e.stopPropagation(); handleReset(); }}
-                        className="flex flex-col h-auto py-3 gap-1 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5"
+                        className={cn(
+                            "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
+                            isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
+                        )}
                     >
-                        <RotateCcw className="h-4 w-4 text-white/60" />
-                        <span className="text-[10px] text-white/40 font-medium">{t.tasbihReset}</span>
+                        <RotateCcw className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
+                        <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>{t.tasbihReset}</span>
                     </Button>
 
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -294,10 +348,13 @@ export default function DhikrCounter() {
                             <Button
                                 variant="ghost"
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex flex-col h-auto py-3 gap-1 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5"
+                                className={cn(
+                                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
+                                    isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
+                                )}
                             >
-                                <Settings2 className="h-4 w-4 text-white/60" />
-                                <span className="text-[10px] text-white/40 font-medium">{t.tasbihSelectZikir}</span>
+                                <Settings2 className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
+                                <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>{t.tasbihSelectZikir}</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="w-[90%] max-w-sm rounded-[32px] border-white/10 bg-neutral-950/98 backdrop-blur-3xl text-white">
@@ -331,7 +388,13 @@ export default function DhikrCounter() {
                         onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
                         className={cn(
                             "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-all",
-                            feedbackMode !== 'none' ? "bg-[rgb(var(--color-primary)/0.15)] text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary)/0.25)]" : "bg-white/5 text-white/40 border-white/5"
+                            feedbackMode !== 'none'
+                                ? isDaylight
+                                    ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                    : "bg-[rgb(var(--color-primary)/0.15)] text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary)/0.25)]"
+                                : isDaylight
+                                    ? "bg-white border-slate-200 text-slate-300"
+                                    : "bg-white/5 text-white/40 border-white/5"
                         )}
                     >
                         <FeedbackIcon className="h-4 w-4" />
