@@ -202,7 +202,7 @@ export default function NotificationSettings() {
     // RENDER: PRE-PERMISSION STATE
     if (permissionStatus === "default") {
         return (
-            <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl text-center space-y-4">
+            <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 text-center space-y-4">
                 <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
                     <Bell className="w-8 h-8 text-[rgb(var(--color-primary))]" />
                 </div>
@@ -243,97 +243,98 @@ export default function NotificationSettings() {
 
     // RENDER: SETTINGS STATE (GRANTED)
     return (
-        <div className="space-y-3">
-            {/* Main Toggle Card - Glassmorphism Style */}
-            <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 shadow-2xl min-h-[68px]">
-                <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 flex-1">
-                        {isEnabled ? (
-                            <div className="w-9 h-9 rounded-xl bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 flex items-center justify-center shrink-0">
-                                {isLoading ? (
-                                    <Loader2 className="w-[18px] h-[18px] text-[rgb(var(--color-primary))] animate-spin" />
-                                ) : (
-                                    <Bell className="w-[18px] h-[18px] text-[rgb(var(--color-primary))]" />
-                                )}
-                            </div>
-                        ) : (
-                            <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                                {isLoading ? (
-                                    <Loader2 className="w-[18px] h-[18px] text-white/60 animate-spin" />
-                                ) : (
-                                    <BellOff className="w-[18px] h-[18px] text-white/40" />
-                                )}
-                            </div>
-                        )}
-                        <div className="min-w-0">
-                            <h3 className="font-semibold text-white text-sm sm:text-base">
-                                {t.prayerNotifications}
-                            </h3>
-                            <p className="text-xs sm:text-sm text-white/50">
-                                {isLoading
-                                    ? (locale === 'id' ? 'Mengaktifkan...' : 'Enabling...')
-                                    : isEnabled
-                                        ? t.notificationsEnabled
-                                        : t.notificationsDisabled}
-                            </p>
+        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+            {/* Main Toggle Area */}
+            <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1">
+                    {isEnabled ? (
+                        <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0">
+                            {isLoading ? (
+                                <Loader2 className="w-5 h-5 text-[rgb(var(--color-primary))] animate-spin" />
+                            ) : (
+                                <Bell className="w-5 h-5 text-[rgb(var(--color-primary))]" />
+                            )}
                         </div>
+                    ) : (
+                        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                            {isLoading ? (
+                                <Loader2 className="w-5 h-5 text-white/50 animate-spin" />
+                            ) : (
+                                <BellOff className="w-5 h-5 text-white/40" />
+                            )}
+                        </div>
+                    )}
+                    <div className="min-w-0">
+                        <h3 className="font-semibold text-white text-sm sm:text-base">
+                            {t.prayerNotifications}
+                        </h3>
+                        <p className="text-xs text-white/50">
+                            {isLoading
+                                ? (locale === 'id' ? 'Mengaktifkan...' : 'Enabling...')
+                                : isEnabled
+                                    ? t.notificationsEnabled
+                                    : t.notificationsDisabled}
+                        </p>
                     </div>
-                    <Switch
-                        checked={isEnabled}
-                        onCheckedChange={toggleNotifications}
-                        disabled={isLoading}
-                        className="shrink-0"
-                    />
                 </div>
+                <Switch
+                    checked={isEnabled}
+                    onCheckedChange={toggleNotifications}
+                    disabled={isLoading}
+                    className="shrink-0"
+                />
             </div>
 
-            {/* Prayer Selection Card - Glassmorphism Style */}
+            {/* Prayer Selection Area */}
             {isEnabled && (
-                <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-3 shadow-2xl space-y-2">
-                    <h4 className="font-semibold text-white text-xs sm:text-sm">
-                        {t.selectPrayerTimes}
-                    </h4>
+                <>
+                    <div className="h-px bg-white/10 w-full" />
 
-                    <div className="space-y-1.5">
-                        {isInitializing ? (
-                            // Skeleton loading state
-                            <>
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                    <div
-                                        key={i}
-                                        className="flex items-center justify-between py-2.5 px-3.5 bg-white/5 rounded-xl border border-white/5 animate-pulse min-h-[52px]"
-                                    >
-                                        <div className="h-4 bg-white/10 rounded w-20"></div>
-                                        <div className="h-8 bg-white/10 rounded-full w-14"></div>
-                                    </div>
-                                ))}
-                            </>
-                        ) : (
-                            // Actual prayer toggles
-                            (Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
-                                (prayer) => {
-                                    const label = prayerNames[prayer.toLowerCase() as keyof typeof prayerNames] || prayer;
-                                    return (
+                    <div className="space-y-3">
+                        <h4 className="font-semibold text-white/90 text-xs sm:text-sm">
+                            {t.selectPrayerTimes}
+                        </h4>
+
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                            {isInitializing ? (
+                                // Skeleton loading state
+                                <>
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
                                         <div
-                                            key={prayer}
-                                            className="flex items-center justify-between py-2.5 px-3.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all duration-200 min-h-[52px]"
+                                            key={i}
+                                            className="flex items-center justify-between py-2 px-3 bg-white/5 rounded-xl border border-white/5 animate-pulse h-11"
                                         >
-                                            <span className="text-white/80 capitalize font-medium text-sm sm:text-base">
-                                                {label}
-                                            </span>
-                                            <Switch
-                                                checked={preferences[prayer]}
-                                                onCheckedChange={() => togglePrayer(prayer)}
-                                            />
+                                            <div className="h-3 bg-white/10 rounded w-16"></div>
+                                            <div className="h-5 bg-white/10 rounded-full w-9"></div>
                                         </div>
-                                    );
-                                }
-                            )
-                        )}
+                                    ))}
+                                </>
+                            ) : (
+                                // Actual prayer toggles
+                                (Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
+                                    (prayer) => {
+                                        const label = prayerNames[prayer.toLowerCase() as keyof typeof prayerNames] || prayer;
+                                        return (
+                                            <div
+                                                key={prayer}
+                                                className="flex items-center justify-between py-2 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors h-11 group"
+                                            >
+                                                <span className="text-white/80 group-hover:text-white capitalize font-medium text-xs sm:text-sm">
+                                                    {label}
+                                                </span>
+                                                <Switch
+                                                    checked={preferences[prayer]}
+                                                    onCheckedChange={() => togglePrayer(prayer)}
+                                                    className="scale-75 origin-right"
+                                                />
+                                            </div>
+                                        );
+                                    }
+                                )
+                            )}
+                        </div>
                     </div>
-
-
-                </div>
+                </>
             )}
         </div>
     );
