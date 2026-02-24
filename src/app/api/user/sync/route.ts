@@ -10,7 +10,7 @@ import {
     dailyActivities,
     userReadingState
 } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, gte, lt, sql, inArray } from "drizzle-orm";
 import { type SyncQueueEntry } from "@/lib/sync-queue";
 
 /**
@@ -108,21 +108,47 @@ async function handleIntentionSync(
         const data = entry.data;
 
         if (action === 'create' || action === 'update') {
-            const result = await db
-                .insert(intentions)
-                .values({
-                    userId,
-                    niatText: data.niatText,
-                    niatType: data.niatType,
-                    niatDate: data.niatDate,
-                    reflectionText: data.reflectionText,
-                    reflectionRating: data.reflectionRating,
-                    isPrivate: data.isPrivate ?? true,
-                    createdAt: new Date(data.createdAt || Date.now()),
-                })
-                .returning({ id: intentions.id });
+            const intentionDateValue = new Date(data.niatDate);
+            const startOfToday = new Date(intentionDateValue);
+            startOfToday.setUTCHours(0, 0, 0, 0);
+            const startOfTomorrow = new Date(startOfToday);
+            startOfTomorrow.setUTCDate(startOfToday.getUTCDate() + 1);
 
-            return { id: entry.id, cloudId: result[0]?.id };
+            const existingIntention = await db.query.intentions.findFirst({
+                where: (intentions, { eq, and, gte, lt }) =>
+                    and(
+                        eq(intentions.userId, userId),
+                        gte(intentions.niatDate, startOfToday),
+                        lt(intentions.niatDate, startOfTomorrow)
+                    ),
+            });
+
+            if (!existingIntention) {
+                const result = await db
+                    .insert(intentions)
+                    .values({
+                        userId,
+                        niatText: data.niatText,
+                        niatType: data.niatType,
+                        niatDate: intentionDateValue,
+                        reflectionText: data.reflectionText,
+                        reflectionRating: data.reflectionRating,
+                        isPrivate: data.isPrivate ?? true,
+                        createdAt: new Date(data.createdAt || Date.now()),
+                    })
+                    .returning({ id: intentions.id });
+
+                return { id: entry.id, cloudId: result[0]?.id };
+            } else {
+                // Update existing
+                await db.update(intentions).set({
+                    niatText: data.niatText,
+                    reflectionText: data.reflectionText || existingIntention.reflectionText,
+                    reflectionRating: data.reflectionRating || existingIntention.reflectionRating,
+                    updatedAt: new Date()
+                }).where(eq(intentions.id, existingIntention.id));
+                return { id: entry.id, cloudId: existingIntention.id };
+            }
         } else if (action === 'delete') {
             // Delete by matching criteria (if cloudId provided)
             if (data.cloudId) {
@@ -395,14 +421,23 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         } = body;
 
         if (Array.isArray(localBookmarks) && localBookmarks.length > 0) {
+            const keys = localBookmarks.map(b => `${b.surahId}:${b.verseId}`);
+
+            // Batch fetch existing bookmarks
+            const existingBookmarks = await db.query.bookmarks.findMany({
+                where: (bookmarks, { eq, and, inArray }) =>
+                    and(
+                        eq(bookmarks.userId, userId),
+                        inArray(bookmarks.key, keys)
+                    ),
+                columns: { key: true }
+            });
+
+            const existingKeys = new Set(existingBookmarks.map(b => b.key));
+
             for (const b of localBookmarks) {
                 const key = `${b.surahId}:${b.verseId}`;
-                const existing = await db.query.bookmarks.findFirst({
-                    where: (bookmarks, { eq, and }) =>
-                        and(eq(bookmarks.userId, userId), eq(bookmarks.key, key)),
-                });
-
-                if (!existing) {
+                if (!existingKeys.has(key)) {
                     await db.insert(bookmarks).values({
                         userId,
                         surahId: b.surahId,
@@ -415,31 +450,56 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                         tags: b.tags,
                         createdAt: new Date(b.createdAt || Date.now()),
                     });
+                    existingKeys.add(key); // Prevent duplicates in same batch
                 }
             }
         }
 
         if (Array.isArray(localIntentions) && localIntentions.length > 0) {
-            const intentionValues = localIntentions.map((i: any) => {
-                // Determine niatDate - ensure it's a string YYYY-MM-DD
+            // Fetch all intentions for user to deduplicate once $O(1)$ in-memory
+            const cloudIntentions = await db.query.intentions.findMany({
+                where: eq(intentions.userId, userId),
+                columns: { id: true, niatDate: true, reflectionText: true }
+            });
+
+            // Map by DATE string YYYY-MM-DD for fast lookup
+            const cloudDateMap = new Map(cloudIntentions.map(i => [
+                new Date(i.niatDate).toISOString().split('T')[0],
+                i
+            ]));
+
+            for (const i of localIntentions) {
                 let dateStr = i.niatDate;
                 if (!dateStr && i.createdAt) {
                     dateStr = new Date(i.createdAt).toISOString().split('T')[0];
                 }
 
-                return {
-                    userId,
-                    niatText: i.niatText,
-                    niatType: i.niatType,
-                    niatDate: dateStr,
-                    reflectionText: i.reflectionText,
-                    reflectionRating: i.reflectionRating,
-                    isPrivate: i.isPrivate ?? true,
-                    createdAt: new Date(i.createdAt || Date.now()),
-                };
-            });
+                const intentionDateValue = new Date(dateStr);
+                const localDayStr = intentionDateValue.toISOString().split('T')[0];
 
-            await db.insert(intentions).values(intentionValues);
+                const existingIntention = cloudDateMap.get(localDayStr);
+
+                if (!existingIntention) {
+                    await db.insert(intentions).values({
+                        userId,
+                        niatText: i.niatText,
+                        niatType: i.niatType,
+                        niatDate: intentionDateValue,
+                        reflectionText: i.reflectionText,
+                        reflectionRating: i.reflectionRating,
+                        isPrivate: i.isPrivate ?? true,
+                        createdAt: new Date(i.createdAt || Date.now()),
+                    });
+                    // Update map to prevent duplicates in current session
+                    cloudDateMap.set(localDayStr, { id: 'new', niatDate: intentionDateValue, reflectionText: i.reflectionText });
+                } else if (!existingIntention.reflectionText && i.reflectionText && existingIntention.id !== 'new') {
+                    await db.update(intentions).set({
+                        reflectionText: i.reflectionText,
+                        reflectionRating: i.reflectionRating,
+                        updatedAt: new Date()
+                    }).where(eq(intentions.id, existingIntention.id));
+                }
+            }
         }
 
         // Sync Missions (Legacy)

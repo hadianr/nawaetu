@@ -1,0 +1,1 @@
+ALTER TABLE "intention" ALTER COLUMN "niat_date" SET DATA TYPE timestamp;

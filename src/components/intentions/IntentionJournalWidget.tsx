@@ -14,6 +14,7 @@ const ReflectionPrompt = dynamic(() => import("./ReflectionPrompt"), {
 });
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface IntentionJournalWidgetProps {
     className?: string;
@@ -79,8 +80,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     streak: data.data.current_streak,
                 });
                 setShowIntentionPrompt(false);
+                toast.success(locale === 'id' ? 'Niat berhasil disimpan' : 'Intention saved successfully');
+            } else {
+                toast.error(data.error || (locale === 'id' ? 'Gagal menyimpan niat' : 'Failed to save intention'));
             }
         } catch (error) {
+            toast.error(locale === 'id' ? 'Terjadi kesalahan' : 'An error occurred');
         }
     };
 
@@ -105,8 +110,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     reflection: { rating: data.data.reflection_rating, text: data.data.reflection_text, reflected_at: data.data.reflected_at },
                 });
                 setShowReflectionPrompt(false);
+                toast.success(locale === 'id' ? 'Refleksi berhasil disimpan' : 'Reflection saved successfully');
+            } else {
+                toast.error(data.error || (locale === 'id' ? 'Gagal menyimpan refleksi' : 'Failed to save reflection'));
             }
         } catch (error) {
+            toast.error(locale === 'id' ? 'Terjadi kesalahan' : 'An error occurred');
         }
     };
 

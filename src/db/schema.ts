@@ -155,7 +155,7 @@ export const intentions = pgTable("intention", {
     // Intention data
     niatText: text("niat_text").notNull(),
     niatType: niatTypeEnum("niat_type").default("daily"), // 'daily', 'prayer', 'custom'
-    niatDate: date("niat_date").notNull(),
+    niatDate: timestamp("niat_date", { mode: "date" }).notNull(),
 
     // Reflection data (optional)
     reflectionText: text("reflection_text"),

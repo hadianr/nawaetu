@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, checkConnection } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, gte, lt } from "drizzle-orm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 /**
  * POST /api/intentions/daily
@@ -26,12 +28,16 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { niat_text, niat_date, is_private = true, user_token } = body;
+        const { niat_text, niat_date, is_private = true, user_token: providedToken } = body;
+
+        // Try both session and token
+        const session = await getServerSession(authOptions);
+        const user_token = session?.user?.id || providedToken;
 
         // Token-based auth (FCM token or anonymous ID)
         if (!user_token) {
             return NextResponse.json(
-                { success: false, error: "User token is required" },
+                { success: false, error: "User token or session is required" },
                 { status: 401 }
             );
         }
@@ -51,62 +57,40 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Ensure date is in YYYY-MM-DD format
-        let intentionDate: string;
+        // Ensure date is handled as a Date object for timestamp column
+        let intentionDateValue: Date;
+        let todayStr: string;
+
         if (niat_date) {
-            // Take the date part only if user sends ISO string
-            intentionDate = niat_date.split('T')[0];
+            intentionDateValue = new Date(niat_date);
+            todayStr = intentionDateValue.toISOString().split('T')[0];
         } else {
-            intentionDate = new Date().toISOString().split('T')[0];
+            intentionDateValue = new Date();
+            todayStr = intentionDateValue.toISOString().split('T')[0];
         }
 
         let userId: string;
 
-        // Check if this is an FCM token (from push subscription)
-        const [subscription] = await db
-            .select()
-            .from(pushSubscriptions)
-            .where(eq(pushSubscriptions.token, user_token))
-            .limit(1);
-
-        if (subscription) {
-            // User has notifications enabled
-            if (subscription.userId) {
-                userId = subscription.userId;
-            } else {
-                // Create user and link to subscription
-                // Try catch for unique constraint
-                try {
-                    const [newUser] = await db
-                        .insert(users)
-                        .values({
-                            email: `guest_${user_token.substring(0, 16)}@nawaetu.local`,
-                            name: "Guest User",
-                            niatStreakCurrent: 0,
-                            niatStreakLongest: 0,
-                        })
-                        .returning();
-                    userId = newUser.id;
-                } catch (e: any) {
-                    // Possible race condition or duplicate email, try to fetch existing
-                    const [existing] = await db.select().from(users).where(eq(users.email, `guest_${user_token.substring(0, 16)}@nawaetu.local`)).limit(1);
-                    if (existing) {
-                        userId = existing.id;
-                    } else {
-                        throw e; // Real error
-                    }
-                }
-
-                await db
-                    .update(pushSubscriptions)
-                    .set({ userId: userId })
-                    .where(eq(pushSubscriptions.token, user_token));
-            }
+        if (session && session.user && session.user.id) {
+            userId = session.user.id;
         } else {
-            // Anonymous user (no notifications) - use token as identifier
-            const anonymousEmail = `${user_token}@nawaetu.local`;
+            userId = await getUserIdFromToken(user_token);
+        }
 
-            // Check if user already exists
+        async function getUserIdFromToken(token: string): Promise<string> {
+            // Check if this is an FCM token (from push subscription)
+            const [subscription] = await db
+                .select()
+                .from(pushSubscriptions)
+                .where(eq(pushSubscriptions.token, token))
+                .limit(1);
+
+            if (subscription && subscription.userId) {
+                return subscription.userId;
+            }
+
+            // Anonymous user
+            const anonymousEmail = `${token}@nawaetu.local`;
             const [existingUser] = await db
                 .select()
                 .from(users)
@@ -114,40 +98,36 @@ export async function POST(req: NextRequest) {
                 .limit(1);
 
             if (existingUser) {
-                userId = existingUser.id;
-            } else {
-                // Create new anonymous user
-                try {
-                    const [newUser] = await db
-                        .insert(users)
-                        .values({
-                            email: anonymousEmail,
-                            name: "Anonymous User",
-                            niatStreakCurrent: 0,
-                            niatStreakLongest: 0,
-                        })
-                        .returning();
-                    userId = newUser.id;
-                } catch (e: any) {
-                    // Possible race condition, try to fetch existing
-                    const [existing] = await db.select().from(users).where(eq(users.email, anonymousEmail)).limit(1);
-                    if (existing) {
-                        userId = existing.id;
-                    } else {
-                        throw e;
-                    }
-                }
+                return existingUser.id;
             }
+
+            // Create new anonymous user
+            const [newUser] = await db
+                .insert(users)
+                .values({
+                    email: anonymousEmail,
+                    name: "User",
+                    niatStreakCurrent: 0,
+                    niatStreakLongest: 0,
+                })
+                .returning();
+
+            return newUser.id;
         }
 
-        // Check if intention already exists for this date (upsert)
+        const startOfToday = new Date(todayStr);
+        startOfToday.setUTCHours(0, 0, 0, 0);
+        const startOfTomorrow = new Date(startOfToday);
+        startOfTomorrow.setUTCDate(startOfToday.getUTCDate() + 1);
+
         const [existingIntention] = await db
             .select()
             .from(intentions)
             .where(
                 and(
                     eq(intentions.userId, userId),
-                    eq(intentions.niatDate, intentionDate)
+                    gte(intentions.niatDate, startOfToday),
+                    lt(intentions.niatDate, startOfTomorrow)
                 )
             )
             .limit(1);
@@ -160,6 +140,7 @@ export async function POST(req: NextRequest) {
                 .update(intentions)
                 .set({
                     niatText: niat_text.trim(),
+                    niatDate: intentionDateValue,
                     isPrivate: is_private,
                     updatedAt: new Date(),
                 })
@@ -174,14 +155,14 @@ export async function POST(req: NextRequest) {
                     niatText: niat_text.trim(),
                     // niatType default handled by DB or explicit here
                     niatType: "daily",
-                    niatDate: intentionDate,
+                    niatDate: intentionDateValue,
                     isPrivate: is_private,
                 })
                 .returning();
         }
 
         // Calculate and update streak
-        const streakData = await calculateStreak(userId, intentionDate);
+        const streakData = await calculateStreak(userId, todayStr);
 
         // Get current user to check longest streak
         const [currentUser] = await db
@@ -200,7 +181,7 @@ export async function POST(req: NextRequest) {
             .set({
                 niatStreakCurrent: streakData.currentStreak,
                 niatStreakLongest: newLongestStreak,
-                lastNiatDate: intentionDate,
+                lastNiatDate: todayStr,
                 updatedAt: new Date(),
             })
             .where(eq(users.id, userId));
@@ -216,19 +197,15 @@ export async function POST(req: NextRequest) {
                 current_streak: streakData.currentStreak,
                 longest_streak: newLongestStreak,
                 niat_points_earned: existingIntention ? 0 : 10, // +10 NP for new niat
-                user_type: subscription ? 'guest_with_notifications' : 'anonymous',
+                auth_type: session ? 'session' : (providedToken ? 'token' : 'unknown'),
             },
         });
     } catch (error: any) {
         // Log error for debugging
         console.error("Error in POST /api/intentions/daily:", error);
 
-        // Return generic error message to prevent information leakage
         return NextResponse.json(
-            {
-                success: false,
-                error: "Internal server error",
-            },
+            { success: false, error: "Internal server error" },
             { status: 500 }
         );
     }

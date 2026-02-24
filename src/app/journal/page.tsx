@@ -75,10 +75,13 @@ export default function JournalPage() {
             weekday: 'long',
             day: 'numeric',
             month: 'long',
-            year: 'numeric'
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
         };
         // Use current locale for date formatting
-        return new Date(dateString).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', options);
+        return new Date(dateString).toLocaleString(locale === 'id' ? 'id-ID' : 'en-US', options);
     };
 
     // Helper to get rating emoji

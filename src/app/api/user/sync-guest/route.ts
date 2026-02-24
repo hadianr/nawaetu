@@ -10,7 +10,7 @@ import {
     users,
     userReadingState
 } from "@/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, gte, lt } from "drizzle-orm";
 import { z } from "zod";
 
 // Schema validation for request body
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session || !session.user || !session.user.email) {
+        if (!session || !session.user || !session.user.id) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -76,9 +76,6 @@ export async function POST(req: NextRequest) {
 
         await db.transaction(async (tx) => {
             // 1. Sync Profile (Priority: Guest > Google Default)
-            // We only update if the user wants to sync (implied by calling this endpoint)
-            // and we typically only do this for "new" accounts or if explictly requested.
-            // For this implementation, we simply update if provided.
             if (data.profile) {
                 await tx.update(users)
                     .set({
@@ -162,19 +159,46 @@ export async function POST(req: NextRequest) {
                 }
             }
 
-            // 5. Sync Intentions (Journal)
+            // 5. Sync Intentions (Journal) - Optimized with Batch lookup
             if (data.intentions && data.intentions.length > 0) {
-                await tx.insert(intentions)
-                    .values(data.intentions.map((i) => ({
-                        userId,
-                        niatText: i.niatText,
-                        niatType: (i.niatType as any) || "daily",
-                        niatDate: i.niatDate,
-                        reflectionText: i.reflectionText,
-                        reflectionRating: i.reflectionRating,
-                        reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
-                    })))
-                    .onConflictDoNothing();
+                // Fetch existing intentions for this user to deduplicate once $O(1)$ in-memory
+                const cloudIntentions = await tx.query.intentions.findMany({
+                    where: eq(intentions.userId, userId),
+                    columns: { id: true, niatDate: true, reflectionText: true }
+                });
+
+                const cloudDateMap = new Map(cloudIntentions.map(i => [
+                    new Date(i.niatDate).toISOString().split('T')[0],
+                    i
+                ]));
+
+                for (const i of data.intentions) {
+                    const intentionDateValue = new Date(i.niatDate);
+                    const localDayStr = intentionDateValue.toISOString().split('T')[0];
+
+                    const existingIntention = cloudDateMap.get(localDayStr);
+
+                    if (!existingIntention) {
+                        await tx.insert(intentions).values({
+                            userId,
+                            niatText: i.niatText,
+                            niatType: (i.niatType as any) || "daily",
+                            niatDate: intentionDateValue,
+                            reflectionText: i.reflectionText || null,
+                            reflectionRating: i.reflectionRating || null,
+                            reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
+                        });
+                        // Prevent duplicates in same batch
+                        cloudDateMap.set(localDayStr, { id: 'new', niatDate: intentionDateValue, reflectionText: i.reflectionText || null });
+                    } else if (existingIntention && !existingIntention.reflectionText && i.reflectionText && existingIntention.id !== 'new') {
+                        await tx.update(intentions).set({
+                            reflectionText: i.reflectionText,
+                            reflectionRating: i.reflectionRating,
+                            reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
+                            updatedAt: new Date()
+                        }).where(eq(intentions.id, existingIntention.id));
+                    }
+                }
             }
 
             // 6. Sync Daily Activity
@@ -191,7 +215,7 @@ export async function POST(req: NextRequest) {
                     .onConflictDoUpdate({
                         target: [dailyActivities.userId, dailyActivities.date],
                         set: {
-                            quranAyat: data.activity.quranAyat, // We could sum, but "sync" usually implies taking the guest state
+                            quranAyat: data.activity.quranAyat,
                             tasbihCount: data.activity.tasbihCount,
                             prayersLogged: data.activity.prayersLogged,
                             lastUpdatedAt: new Date(),
@@ -203,7 +227,6 @@ export async function POST(req: NextRequest) {
             if (data.readingState && data.readingState.quranLastRead) {
                 let qlr = data.readingState.quranLastRead;
 
-                // Robustness: If the data came as a string, parse it
                 if (typeof qlr === 'string' && qlr.startsWith('{')) {
                     try { qlr = JSON.parse(qlr); } catch (e) { }
                 }
