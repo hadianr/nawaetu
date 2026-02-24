@@ -716,18 +716,34 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     </div>
                                 </button>
                             ) : (
-                                <div className="mt-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 animate-in fade-in slide-in-from-top-2 duration-200">
-                                    <p className="text-xs text-red-200 mb-3 text-center">{(t as any).profileLogoutConfirm}</p>
+                                <div className={cn(
+                                    "mt-2 p-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-200 border",
+                                    isDaylight ? "bg-red-50 border-red-100" : "bg-red-500/10 border-red-500/20"
+                                )}>
+                                    <p className={cn(
+                                        "text-xs mb-3 text-center font-medium",
+                                        isDaylight ? "text-red-600" : "text-red-200"
+                                    )}>{(t as any).profileLogoutConfirm}</p>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={handleLogout}
-                                            className="flex-1 h-8 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-colors"
+                                            className={cn(
+                                                "flex-1 h-8 rounded-lg text-xs font-bold transition-all active:scale-[0.98] shadow-sm",
+                                                isDaylight
+                                                    ? "bg-red-500/30 hover:bg-red-500/40 text-red-600 shadow-none"
+                                                    : "bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/20 shadow-none"
+                                            )}
                                         >
                                             {(t as any).profileLogoutConfirmYes}
                                         </button>
                                         <button
                                             onClick={() => setShowLogoutConfirm(false)}
-                                            className="flex-1 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium transition-colors"
+                                            className={cn(
+                                                "flex-1 h-8 rounded-lg text-xs font-medium transition-all active:scale-[0.98]",
+                                                isDaylight
+                                                    ? "bg-slate-50 hover:bg-slate-100 text-slate-500 border border-slate-100"
+                                                    : "bg-white/5 hover:bg-white/10 text-slate-400"
+                                            )}
                                         >
                                             {(t as any).profileLogoutConfirmNo}
                                         </button>
