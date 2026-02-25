@@ -30,6 +30,8 @@ export async function GET(req: NextRequest) {
         let userId: string | null = null;
         let userData: any = null;
 
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
+
         // Resolve userId
         if (session && session.user && session.user.id) {
             userId = session.user.id;
@@ -37,17 +39,23 @@ export async function GET(req: NextRequest) {
             const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
             if (user) userData = user;
         } else {
-            // 1. Try to find in pushSubscriptions (FCM Token)
-            const [subscription] = await db
-                .select()
-                .from(pushSubscriptions)
-                .where(eq(pushSubscriptions.token, user_token))
-                .limit(1);
+            // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
+            if (!isUuid) {
+                const [subscription] = await db
+                    .select()
+                    .from(pushSubscriptions)
+                    .where(eq(pushSubscriptions.token, user_token))
+                    .limit(1);
 
-            if (subscription && subscription.userId) {
-                userId = subscription.userId;
-            } else {
-                // 2. Try to find anonymous user
+                if (subscription && subscription.userId) {
+                    userId = subscription.userId;
+                    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+                    if (user) userData = user;
+                }
+            }
+
+            // 2. Try to find anonymous user (or if FCM didn't resolve an ID)
+            if (!userId) {
                 const anonymousEmail = `${user_token}@nawaetu.local`;
                 const [user] = await db
                     .select()
@@ -73,15 +81,7 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // Fetch user object if we don't have it yet (was from subscription)
-        if (!userData) {
-            const [user] = await db
-                .select()
-                .from(users)
-                .where(eq(users.id, userId))
-                .limit(1);
-            userData = user;
-        }
+        // (userData is safely resolved above, we no longer need a redundant query block here)
 
         // Get today's date in UTC (matched with DB date type)
         const today = new Date().toISOString().split('T')[0];

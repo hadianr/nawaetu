@@ -78,15 +78,19 @@ export async function POST(req: NextRequest) {
         }
 
         async function getUserIdFromToken(token: string): Promise<string> {
-            // Check if this is an FCM token (from push subscription)
-            const [subscription] = await db
-                .select()
-                .from(pushSubscriptions)
-                .where(eq(pushSubscriptions.token, token))
-                .limit(1);
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token);
 
-            if (subscription && subscription.userId) {
-                return subscription.userId;
+            // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
+            if (!isUuid) {
+                const [subscription] = await db
+                    .select()
+                    .from(pushSubscriptions)
+                    .where(eq(pushSubscriptions.token, token))
+                    .limit(1);
+
+                if (subscription && subscription.userId) {
+                    return subscription.userId;
+                }
             }
 
             // Anonymous user

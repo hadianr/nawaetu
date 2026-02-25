@@ -11,7 +11,7 @@
   ],
   "description": "Gamified Islamic habit tracker app featuring Al-Quran, Prayer Times, Qibla Compass, and AI Spiritual Assistant. Built with Next.js and TypeScript.",
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
     "build": "next build",
     "start": "node .next/standalone/server.js",
     "start:next": "next start",

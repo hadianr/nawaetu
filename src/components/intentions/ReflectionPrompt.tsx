@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
 
 interface ReflectionPromptProps {
     intentionText: string;
@@ -21,6 +22,8 @@ export default function ReflectionPrompt({
     initialRating = 0,
 }: ReflectionPromptProps) {
     const { locale, t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
 
     const RATING_LABELS = [
         { emoji: "😔", label: t.niat_rating_struggled, color: "text-red-400" },
@@ -60,9 +63,9 @@ export default function ReflectionPrompt({
             className="fixed inset-0 z-[100] flex items-center justify-center p-4"
             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
         >
-            {/* Backdrop with high blur */}
+            {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                className={isDaylight ? "absolute inset-0 bg-slate-900/40 backdrop-blur-sm" : "absolute inset-0 bg-black/80 backdrop-blur-md"}
                 onClick={onSkip}
             />
 
@@ -71,25 +74,25 @@ export default function ReflectionPrompt({
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                className="relative w-full max-w-md bg-[#0f172a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden z-[101]"
+                className={`relative w-full max-w-md ${isDaylight ? "bg-white border-slate-200 shadow-xl" : "bg-[rgb(var(--color-surface))] border-white/10 shadow-2xl"} border rounded-3xl overflow-hidden z-[101]`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Glow Effect */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-[rgb(var(--color-primary))]/20 blur-3xl rounded-full pointer-events-none" />
 
                 {/* Header */}
-                <div className="relative p-6 pb-4 border-b border-white/5">
+                <div className={`relative p-6 pb-4 border-b ${isDaylight ? "border-slate-100" : "border-white/5"}`}>
                     <div className="text-center relative z-10">
                         <div className="text-5xl mb-4 drop-shadow-lg">🌙</div>
-                        <h2 className="text-2xl font-bold text-white mb-1">{t.niat_reflection_title}</h2>
-                        <p className="text-white/60 text-sm">{t.niat_reflection_question}</p>
+                        <h2 className={`text-2xl font-bold mb-1 ${isDaylight ? "text-slate-900" : "text-white"}`}>{t.niat_reflection_title}</h2>
+                        <p className={`text-sm ${isDaylight ? "text-slate-500" : "text-white/60"}`}>{t.niat_reflection_question}</p>
                     </div>
 
                     {/* Close Button */}
                     {onSkip && (
                         <button
                             onClick={onSkip}
-                            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all z-20"
+                            className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all z-20 border ${isDaylight ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-500 hover:text-slate-700" : "bg-white/5 hover:bg-white/10 border-white/10 text-white/50 hover:text-white"}`}
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -101,15 +104,15 @@ export default function ReflectionPrompt({
                 {/* Content */}
                 <div className="p-6 space-y-6 relative z-10">
                     {/* Today's Intention */}
-                    <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-5 relative overflow-hidden">
+                    <div className={`backdrop-blur-md border rounded-2xl p-5 relative overflow-hidden ${isDaylight ? "bg-slate-50 border-slate-200" : "bg-white/5 border-white/5"}`}>
                         <div className="absolute top-0 left-0 w-1 h-full bg-[rgb(var(--color-primary))]" />
-                        <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-2">{t.niat_todays_niat}</p>
-                        <p className="text-white text-lg font-medium italic leading-relaxed">"{intentionText}"</p>
+                        <p className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDaylight ? "text-slate-400" : "text-white/50"}`}>{t.niat_todays_niat}</p>
+                        <p className={`text-lg font-medium italic leading-relaxed ${isDaylight ? "text-slate-800" : "text-white"}`}>"{intentionText}"</p>
                     </div>
 
                     {/* Rating */}
                     <div>
-                        <p className="text-sm font-medium text-white/80 mb-4 text-center">{t.niat_rate_satisfaction}</p>
+                        <p className={`text-sm font-medium mb-4 text-center ${isDaylight ? "text-slate-600" : "text-white/80"}`}>{t.niat_rate_satisfaction}</p>
                         <div className="flex justify-between gap-1 px-2">
                             {RATING_LABELS.map((item, index) => {
                                 const ratingValue = index + 1;
@@ -120,12 +123,12 @@ export default function ReflectionPrompt({
                                         key={index}
                                         onClick={() => setRating(ratingValue)}
                                         className={`flex flex-col items-center gap-2 p-2 rounded-2xl transition-all duration-300 w-16 ${isSelected
-                                            ? "bg-white/10 border-white/20 scale-110 shadow-lg"
-                                            : "hover:bg-white/5 opacity-60 hover:opacity-100 scale-100"
+                                            ? `${isDaylight ? "bg-slate-100 border-slate-300 shadow-sm" : "bg-white/10 border-white/20"} scale-110 shadow-lg`
+                                            : `hover:bg-slate-100 dark:hover:bg-white/5 ${isDaylight ? "opacity-60" : "opacity-60"} hover:opacity-100 scale-100`
                                             }`}
                                     >
                                         <span className={`text-3xl transition-transform ${isSelected ? 'scale-125' : ''}`}>{item.emoji}</span>
-                                        <span className={`text-[9px] font-bold tracking-wide transition-colors ${isSelected ? item.color : "text-white/40"}`}>
+                                        <span className={`text-[9px] font-bold tracking-wide transition-colors ${isSelected ? item.color : (isDaylight ? "text-slate-400" : "text-white/40")}`}>
                                             {item.label}
                                         </span>
                                     </button>
@@ -136,7 +139,7 @@ export default function ReflectionPrompt({
 
                     {/* Optional Notes */}
                     <div>
-                        <label className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2 block">
+                        <label className={`text-xs font-medium uppercase tracking-wider mb-2 block ${isDaylight ? "text-slate-400" : "text-white/50"}`}>
                             {t.niat_notes_label}
                         </label>
                         <textarea
@@ -145,9 +148,9 @@ export default function ReflectionPrompt({
                             placeholder={t.niat_notes_placeholder}
                             maxLength={1000}
                             rows={3}
-                            className="w-full bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[rgb(var(--color-primary))]/50 focus:ring-1 focus:ring-[rgb(var(--color-primary))]/30 resize-none transition-all text-sm"
+                            className={`w-full backdrop-blur-sm border rounded-2xl px-4 py-3 resize-none transition-all text-sm focus:outline-none focus:ring-1 ${isDaylight ? "bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/30" : "bg-black/40 border-white/10 text-white placeholder:text-white/30 focus:border-[rgb(var(--color-primary))]/50 focus:ring-[rgb(var(--color-primary))]/30"}`}
                         />
-                        <div className="text-xs text-white/40 mt-1 text-right">
+                        <div className={`text-xs mt-1 text-right ${isDaylight ? "text-slate-400" : "text-white/40"}`}>
                             {reflectionText.length}/1000
                         </div>
                     </div>
@@ -157,7 +160,7 @@ export default function ReflectionPrompt({
                         {onSkip && (
                             <button
                                 onClick={onSkip}
-                                className="flex-1 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 hover:text-white font-medium transition-all"
+                                className={`flex-1 py-3.5 rounded-xl border font-medium transition-all ${isDaylight ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-600" : "bg-white/5 hover:bg-white/10 border-white/10 text-white/60 hover:text-white"}`}
                             >
                                 {t.niat_skip_btn}
                             </button>
@@ -165,7 +168,7 @@ export default function ReflectionPrompt({
                         <button
                             onClick={handleSubmit}
                             disabled={rating === 0 || isSubmitting}
-                            className="flex-[1.5] py-3.5 rounded-xl bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] hover:shadow-[0_0_20px_rgba(var(--color-primary),0.3)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold shadow-lg transition-all transform active:scale-[0.98]"
+                            className={`flex-[1.5] py-3.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold shadow-lg transition-all transform active:scale-[0.98] ${isDaylight ? "bg-slate-900 hover:bg-slate-800" : "bg-[rgb(var(--color-primary))] hover:opacity-90"}`}
                         >
                             {isSubmitting ? t.niat_saving_reflection : t.niat_complete_journal_btn}
                         </button>

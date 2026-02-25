@@ -8,16 +8,20 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 const DEFAULT_LOCALE = "id";
 
-// Merge all translation objects
-const MERGED_TRANSLATIONS = {
-  id: { ...SETTINGS_TRANSLATIONS.id, ...RAMADHAN_TRANSLATIONS.id },
-  en: { ...SETTINGS_TRANSLATIONS.en, ...RAMADHAN_TRANSLATIONS.en },
-} as const;
+// Helper to merge all translation objects
+function getMergedTranslations() {
+  return {
+    id: { ...SETTINGS_TRANSLATIONS.id, ...RAMADHAN_TRANSLATIONS.id },
+    en: { ...SETTINGS_TRANSLATIONS.en, ...RAMADHAN_TRANSLATIONS.en },
+  };
+}
+
+const ALL_TRANSLATIONS = getMergedTranslations();
 
 interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;
-  t: typeof MERGED_TRANSLATIONS[keyof typeof MERGED_TRANSLATIONS];
+  t: any; // Type it correctly if possible, or use any for flexibility
   isLoading: boolean;
 }
 
@@ -28,7 +32,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Get translations for current locale with fallback
-  const t = MERGED_TRANSLATIONS[locale as keyof typeof MERGED_TRANSLATIONS] || MERGED_TRANSLATIONS[DEFAULT_LOCALE];
+  // Also resolving activeLocale prevents UI locale mismatches
+  const activeLocale = (ALL_TRANSLATIONS as any)[locale] ? locale : DEFAULT_LOCALE;
+  const t = (ALL_TRANSLATIONS as any)[activeLocale];
 
   // Initialize from localStorage on client mount
   useEffect(() => {
@@ -61,10 +67,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       const storage = getStorageService();
       setLocaleState(newLocale);
       storage.set(STORAGE_KEYS.SETTINGS_LOCALE, newLocale);
-      
+
       // Also update cookie for server-side rendering
       document.cookie = `settings_locale=${newLocale}; path=/; max-age=31536000`;
-      
+
       // Dispatch custom event for any component that needs to react
       window.dispatchEvent(
         new CustomEvent("locale-changed", { detail: { locale: newLocale } })
@@ -74,7 +80,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, t, isLoading }}>
+    <LocaleContext.Provider value={{ locale: activeLocale, setLocale, t, isLoading }}>
       {children}
     </LocaleContext.Provider>
   );

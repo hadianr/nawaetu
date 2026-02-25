@@ -7,9 +7,9 @@ import * as Sentry from "@sentry/nextjs";
 // Defer Sentry initialization to idle callback to avoid blocking FCP
 const initSentry = () => {
   // Only initialize Sentry in production environment (nawaetu.com)
-  const isProduction = typeof window !== "undefined" && 
+  const isProduction = typeof window !== "undefined" &&
     (window.location.hostname === "nawaetu.com" || window.location.hostname === "www.nawaetu.com");
-  
+
   if (!isProduction) {
     return;
   }
@@ -34,6 +34,13 @@ const initSentry = () => {
 
     // Disable sending user PII to reduce processing
     sendDefaultPii: false,
+
+    // Ignore known React 19 and browser noise errors.
+    // The Circular JSON TypeError occurs when Sentry Replay or Breadcrumbs tries to deeply serialize a clicked DOM element containing React's internal `__reactFiber` property which holds circular references.
+    ignoreErrors: [
+      /TypeError: Converting circular structure to JSON.*HTMLButtonElement/i,
+      /Converting circular structure to JSON/i,
+    ],
   });
 };
 

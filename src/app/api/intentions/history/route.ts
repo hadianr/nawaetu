@@ -23,6 +23,8 @@ export async function GET(req: NextRequest) {
         let streak = 0;
         let longestStreak = 0;
 
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
+
         if (session && session.user && session.user.id) {
             userId = session.user.id;
             const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -31,22 +33,26 @@ export async function GET(req: NextRequest) {
                 longestStreak = user.niatStreakLongest || 0;
             }
         } else {
-            // 1. Try to find in pushSubscriptions (FCM Token)
-            const [subscription] = await db
-                .select()
-                .from(pushSubscriptions)
-                .where(eq(pushSubscriptions.token, user_token))
-                .limit(1);
+            // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
+            if (!isUuid) {
+                const [subscription] = await db
+                    .select()
+                    .from(pushSubscriptions)
+                    .where(eq(pushSubscriptions.token, user_token))
+                    .limit(1);
 
-            if (subscription && subscription.userId) {
-                userId = subscription.userId;
-                const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-                if (user) {
-                    streak = user.niatStreakCurrent || 0;
-                    longestStreak = user.niatStreakLongest || 0;
+                if (subscription && subscription.userId) {
+                    userId = subscription.userId;
+                    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+                    if (user) {
+                        streak = user.niatStreakCurrent || 0;
+                        longestStreak = user.niatStreakLongest || 0;
+                    }
                 }
-            } else {
-                // 2. Try to find anonymous user
+            }
+
+            // 2. Try to find anonymous user
+            if (!userId) {
                 const anonymousEmail = `${user_token}@nawaetu.local`;
                 const [user] = await db
                     .select()
