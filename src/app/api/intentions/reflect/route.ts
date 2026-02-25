@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 /**
  * POST /api/intentions/reflect
@@ -14,12 +16,15 @@ import { eq } from "drizzle-orm";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { intention_id, reflection_text, reflection_rating, user_token } = body;
+        const { intention_id, reflection_text, reflection_rating, user_token: providedToken } = body;
+
+        const session = await getServerSession(authOptions);
+        const user_token = session?.user?.id || providedToken;
 
         // Token-based auth
         if (!user_token) {
             return NextResponse.json(
-                { success: false, error: "User token is required" },
+                { success: false, error: "User token or session is required" },
                 { status: 401 }
             );
         }
@@ -48,21 +53,27 @@ export async function POST(req: NextRequest) {
 
         let userId: string | null = null;
 
-        // 1. Try to find in pushSubscriptions (FCM Token)
-        const [subscription] = await db
-            .select()
-            .from(pushSubscriptions)
-            .where(eq(pushSubscriptions.token, user_token))
-            .limit(1);
-
-        if (subscription && subscription.userId) {
-            userId = subscription.userId;
+        if (session && session.user && session.user.id) {
+            userId = session.user.id;
         } else {
-            // 2. Try to find anonymous user
-            // Allow any token format (UUID or anon_*)
-            const anonymousEmail = `${user_token}@nawaetu.local`;
+            // 1. Try to find in pushSubscriptions (FCM Token)
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
 
-            if (anonymousEmail) {
+            if (!isUuid) {
+                const [subscription] = await db
+                    .select()
+                    .from(pushSubscriptions)
+                    .where(eq(pushSubscriptions.token, user_token))
+                    .limit(1);
+
+                if (subscription && subscription.userId) {
+                    userId = subscription.userId;
+                }
+            }
+
+            if (!userId) {
+                // 2. Try to find anonymous user
+                const anonymousEmail = `${user_token}@nawaetu.local`;
                 const [user] = await db
                     .select()
                     .from(users)

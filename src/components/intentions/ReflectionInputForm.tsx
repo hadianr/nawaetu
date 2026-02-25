@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
@@ -16,6 +17,8 @@ interface ReflectionInputFormProps {
 
 export default function ReflectionInputForm({ onComplete, userToken, intentionId, intentionText }: ReflectionInputFormProps) {
     const { locale, t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
 
     const RATING_LABELS = [
         { emoji: "😔", label: t.niat_rating_struggled, color: "text-red-400" },
@@ -115,18 +118,18 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                                 key={index}
                                 onClick={() => setRating(ratingValue)}
                                 className={cn(
-                                    "flex flex-col items-center gap-2 p-2 rounded-2xl transition-all duration-300 w-14 sm:w-16",
+                                    "flex flex-col items-center gap-2 p-2.5 rounded-2xl transition-all duration-300 w-14 sm:w-16 group border",
                                     isSelected
-                                        ? "bg-white/10 border border-white/20 scale-110 shadow-lg"
-                                        : "hover:bg-white/5 opacity-60 hover:opacity-100 scale-100"
+                                        ? (isDaylight ? "bg-slate-100 border-slate-300 shadow-sm" : "bg-white/10 border-white/20 shadow-lg") + " scale-110"
+                                        : (isDaylight ? "hover:bg-slate-100 hover:border-slate-200" : "hover:bg-white/5 hover:border-white/10") + " border-transparent opacity-60 hover:opacity-100 scale-100"
                                 )}
                             >
-                                <span className={cn("text-2xl sm:text-3xl transition-transform", isSelected && "scale-125")}>
+                                <span className={cn("text-2xl sm:text-3xl transition-transform", isSelected ? "scale-125" : "group-hover:scale-110")}>
                                     {item.emoji}
                                 </span>
                                 <span className={cn(
                                     "text-[9px] font-bold tracking-wide transition-colors",
-                                    isSelected ? item.color : "text-white/40"
+                                    isSelected ? item.color : (isDaylight ? "text-slate-400 group-hover:text-slate-600" : "text-white/40 group-hover:text-white/80")
                                 )}>
                                     {item.label}
                                 </span>

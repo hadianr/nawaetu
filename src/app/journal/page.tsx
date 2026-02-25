@@ -71,17 +71,25 @@ export default function JournalPage() {
 
     // Helper to format date
     const formatDate = (dateString: string) => {
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        };
-        // Use current locale for date formatting
-        return new Date(dateString).toLocaleString(locale === 'id' ? 'id-ID' : 'en-US', options);
+        const d = new Date(dateString);
+        const day = d.getDate();
+        const monthNamesId = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+        const monthNamesEn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = locale === 'id' ? monthNamesId[d.getMonth()] : monthNamesEn[d.getMonth()];
+        const year = d.getFullYear();
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+
+        return `${day} ${month} ${year} • ${hours}.${minutes}`;
+    };
+
+    // Helper to format time only for reflections
+    const formatTime = (dateString?: string) => {
+        if (!dateString) return "";
+        const d = new Date(dateString);
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        return `${hours}.${minutes}`;
     };
 
     // Helper to get rating emoji
@@ -129,16 +137,16 @@ export default function JournalPage() {
                         />
 
                         {/* 2. Secondary Stats Grid */}
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                                <ScrollText className="w-5 h-5 text-blue-500/60 mb-2" />
-                                <span className="text-xl font-bold text-white mb-0.5">{stats.total_intentions}</span>
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.niat_stat_total}</span>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-white/5 rounded-2xl p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                                <ScrollText className="w-4 h-4 text-blue-500/60 mb-1" />
+                                <span className="text-lg font-bold text-white mb-0.5">{stats.total_intentions}</span>
+                                <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">{t.niat_stat_total}</span>
                             </div>
-                            <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                                <Star className="w-5 h-5 text-emerald-500/60 mb-2" />
-                                <span className="text-xl font-bold text-white mb-0.5">{stats.reflection_rate}%</span>
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.niat_refleksi_btn}</span>
+                            <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-white/5 rounded-2xl p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                                <Star className="w-4 h-4 text-emerald-500/60 mb-1" />
+                                <span className="text-lg font-bold text-white mb-0.5">{stats.reflection_rate}%</span>
+                                <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">{t.niat_refleksi_btn}</span>
                             </div>
                         </div>
                     </div>
@@ -163,7 +171,7 @@ export default function JournalPage() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="relative border-l border-white/10 ml-4 space-y-8 pl-8 py-2">
+                        <div className="relative border-l border-white/10 ml-4 space-y-4 pl-8 py-2">
                             {intentions.map((intention, idx) => (
                                 <motion.div
                                     key={intention.id}
@@ -174,16 +182,16 @@ export default function JournalPage() {
                                 >
                                     {/* Timeline Dot */}
                                     <div className={cn(
-                                        "absolute -left-[41px] top-0 w-5 h-5 rounded-full border-4 border-[#0f172a]",
-                                        intention.reflected_at ? "bg-emerald-500" : "bg-blue-500"
+                                        "absolute -left-[41px] top-4 w-5 h-5 rounded-full border-4 border-[#0f172a]",
+                                        intention.reflected_at ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" : "bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
                                     )} />
 
-                                    <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 hover:bg-white/[0.05] transition-colors group">
+                                    <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.05] transition-colors group">
                                         {/* Date Header */}
                                         <div className="flex items-center justify-between mb-3">
-                                            <div className="flex items-center gap-2 text-white/60 text-xs">
-                                                <Calendar className="w-3.5 h-3.5" />
-                                                <span className="font-medium">{formatDate(intention.niat_date)}</span>
+                                            <div className="flex items-center gap-1.5 text-white/40 text-[10px]">
+                                                <Calendar className="w-3 h-3" />
+                                                <span className="font-bold uppercase tracking-wider">{formatDate(intention.niat_date)}</span>
                                             </div>
                                             {intention.reflection_rating && (
                                                 <div className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-lg">
@@ -200,21 +208,26 @@ export default function JournalPage() {
                                         </div>
 
                                         {/* Intention Content */}
-                                        <div className="mb-4">
-                                            <div className="flex gap-3">
-                                                <div className="w-1 bg-blue-500/30 rounded-full shrink-0" />
-                                                <p className="text-white text-base italic leading-relaxed opacity-90">"{intention.niat_text}"</p>
+                                        <div className="mb-3">
+                                            <div className="flex gap-2.5">
+                                                <div className="w-0.5 bg-blue-500/40 rounded-full shrink-0" />
+                                                <p className="text-white text-[15px] italic leading-relaxed opacity-90">"{intention.niat_text}"</p>
                                             </div>
                                         </div>
 
                                         {/* Reflection Content */}
                                         {intention.reflection_text && (
-                                            <div className="bg-black/20 rounded-xl p-3 border border-white/5">
+                                            <div className="bg-white/[0.02] rounded-xl p-3 border border-white/5">
                                                 <div className="flex items-start gap-2.5">
-                                                    <span className="text-lg leading-none mt-0.5">💭</span>
-                                                    <div>
-                                                        <p className="text-xs font-bold text-white/40 uppercase mb-1">{t.niat_reflection_note}</p>
-                                                        <p className="text-sm text-white/80 leading-relaxed">{intention.reflection_text}</p>
+                                                    <div className="w-7 h-7 bg-white/5 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                                        <span className="text-xs leading-none">💭</span>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between mb-1">
+                                                            <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{t.niat_reflection_note}</p>
+                                                            <p className="text-[9px] font-medium text-white/20 italic">{formatTime(intention.reflected_at)}</p>
+                                                        </div>
+                                                        <p className="text-sm text-white/70 leading-relaxed font-serif">{intention.reflection_text}</p>
                                                     </div>
                                                 </div>
                                             </div>
