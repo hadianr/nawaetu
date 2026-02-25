@@ -129,25 +129,47 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             return null;
         }
 
-        // CRITICAL FIX: Force wait for navigator.serviceWorker.ready before interacting
-        // because Firebase absolutely requires an 'active' service worker to get a push subscription.
-        if (!serviceWorkerRegistration.active) {
-            console.log("[FCM] Worker not active, waiting for .ready promise...");
-            try {
-                const finalReadyReg = await Promise.race([
-                    navigator.serviceWorker.ready,
-                    new Promise<ServiceWorkerRegistration | null>(resolve => setTimeout(() => resolve(null), 8000))
-                ]);
-                if (finalReadyReg) {
-                    serviceWorkerRegistration = finalReadyReg;
-                }
-            } catch (err) {
-                console.error("[FCM] Error waiting for ready:", err);
+        // Wait for installing or waiting workers to become activated
+        let worker = serviceWorkerRegistration.waiting || serviceWorkerRegistration.installing;
+        if (worker && worker.state !== 'activated') {
+            console.log(`[FCM] Worker is in ${worker.state} state, waiting for 'activated'...`);
+            await new Promise<void>((resolve) => {
+                const listener = (e: Event) => {
+                    const target = e.target as ServiceWorker;
+                    if (target.state === 'activated') {
+                        worker?.removeEventListener('statechange', listener);
+                        resolve();
+                    }
+                };
+                worker!.addEventListener('statechange', listener);
+                setTimeout(() => {
+                    worker?.removeEventListener('statechange', listener);
+                    resolve();
+                }, 5000); // 5s timeout max
+            });
+        }
+
+        // CRITICAL FIX: Refresh the registration object
+        // iOS Safari doesn't automatically update the .active property on old ServiceWorkerRegistration objects
+        try {
+            serviceWorkerRegistration = await Promise.race([
+                navigator.serviceWorker.ready,
+                new Promise<ServiceWorkerRegistration | null>(res => setTimeout(() => res(null), 3000))
+            ]) || serviceWorkerRegistration;
+
+            if (!serviceWorkerRegistration.active) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                serviceWorkerRegistration = regs.find(r => r.active) || serviceWorkerRegistration;
             }
+        } catch (e) {
+            console.error("[FCM] Error refreshing registration:", e);
         }
 
         if (!serviceWorkerRegistration.active) {
-            throw new Error("Pendaftaran Service Worker belum aktif (active=null). Notifikasi (FCM) membutuhkan Service Worker yang berjalan.");
+            if (confirm("Sistem notifikasi sedang bersiap di latar belakang. Karena Anda menggunakan mode Aplikasi Web, apakah Anda ingin memuat ulang (reload) aplikasi sekarang agar notifikasi bisa aktif?")) {
+                window.location.reload();
+            }
+            throw new Error("Menunggu Service Worker aktif. Aplikasi perlu dimuat ulang (reload).");
         }
 
         // 4. Send Firebase config to service worker
