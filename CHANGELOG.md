@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.10] - 2026-02-25
+
+### Improved
+- **Refactor: Improve FCM service worker initialization logic to ensure an active worker and update app version to 1.8.10.**
+
+
 ## [1.8.9] - 2026-02-25
 
 ### Fixed
