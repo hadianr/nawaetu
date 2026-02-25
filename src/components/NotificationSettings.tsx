@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bell, BellOff, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
@@ -9,6 +9,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import * as Sentry from "@sentry/nextjs";
+import { toast } from "sonner";
 
 export default function NotificationSettings() {
     const { locale, t } = useLocale();
@@ -20,6 +21,7 @@ export default function NotificationSettings() {
     const [fcmToken, setFcmToken] = useState<string | null>(null);
     const [preferences, setPreferences] = useState<PrayerPreferences>(DEFAULT_PRAYER_PREFERENCES);
     const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>("default");
+    const isProcessingRef = useRef<boolean>(false);
 
     useEffect(() => {
         if (typeof window !== "undefined" && "Notification" in window) {
@@ -97,6 +99,9 @@ export default function NotificationSettings() {
 
     // Step 2: Toggle Notifications (Only when Permission is GRANTED)
     async function toggleNotifications() {
+        // Anti-spam guard: Ignore clicks if we are already processing a toggle
+        if (isProcessingRef.current) return;
+
         if (isEnabled) {
             // Disable
             setIsEnabled(false);
@@ -106,69 +111,75 @@ export default function NotificationSettings() {
         } else {
             // Enable (Optimistic UI)
             setIsEnabled(true);
-            setIsLoading(true);
             setIsInitializing(true);
+            isProcessingRef.current = true;
 
-            try {
-                // IMPORTANT: iOS Safari requires a direct user gesture for requestPermission().
-                // If we do too many async tasks (like state updates) before this, the gesture might be lost.
-                if ("Notification" in window && window.Notification.permission === "default") {
-                    const permission = await window.Notification.requestPermission();
-                    setPermissionStatus(permission);
-                    if (permission !== "granted") {
-                        throw new Error(locale === 'id' ? "Izin notifikasi tidak diberikan." : "Notification permission not granted.");
+            const bgTask = async () => {
+                try {
+                    if ("Notification" in window && window.Notification.permission === "default") {
+                        const permission = await window.Notification.requestPermission();
+                        setPermissionStatus(permission);
+                        if (permission !== "granted") {
+                            throw new Error(locale === 'id' ? "Izin notifikasi tidak diberikan." : "Notification permission not granted.");
+                        }
                     }
-                }
 
-                const token = await registerServiceWorkerAndGetToken();
+                    const token = await registerServiceWorkerAndGetToken();
 
-                if (token) {
-                    setFcmToken(token);
-                    const userLocation = getCurrentLocation();
-                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    if (token) {
+                        setFcmToken(token);
+                        const userLocation = getCurrentLocation();
+                        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-                    // Single API Call (Upsert + Preferences + Location)
-                    await fetch("/api/notifications/subscribe", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            token,
-                            prayerPreferences: preferences,
-                            userLocation,
-                            timezone
-                        }),
+                        await fetch("/api/notifications/subscribe", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                token,
+                                prayerPreferences: preferences,
+                                userLocation,
+                                timezone
+                            }),
+                        });
+                        return locale === 'id' ? "Notifikasi berhasil diaktifkan" : "Notifications enabled successfully";
+                    } else {
+                        throw new Error(locale === 'id' ? "Gagal mendapatkan token. Hubungkan ke internet." : "Failed to get token. Check your connection.");
+                    }
+                } catch (error: any) {
+                    console.error("[NotificationSettings] Toggle Error:", error);
+
+                    Sentry.captureException(error, {
+                        extra: {
+                            context: "NotificationSettings.toggleNotifications",
+                            fcmTokenExists: !!fcmToken,
+                            permissionStatus,
+                            userAgent: navigator.userAgent
+                        }
                     });
-                } else {
-                    throw new Error(locale === 'id' ? "Gagal mendapatkan token. Hubungkan ke internet." : "Failed to get token. Check your connection.");
-                }
-            } catch (error: any) {
-                console.error("[NotificationSettings] Toggle Error:", error);
 
-                Sentry.captureException(error, {
-                    extra: {
-                        context: "NotificationSettings.toggleNotifications",
-                        fcmTokenExists: !!fcmToken,
-                        permissionStatus,
-                        userAgent: navigator.userAgent
+                    let errorMessage = error.message || "Unknown error";
+                    if (errorMessage.includes("NetworkError")) {
+                        errorMessage = locale === 'id'
+                            ? "Gangguan koneksi/layanan. Coba tutup dan buka kembali aplikasinya."
+                            : "Network/service error occurred. Try restarting the app.";
                     }
-                });
 
-                let errorMessage = error.message || "Unknown error";
-
-                // Specific handling for common errors
-                if (errorMessage.includes("NetworkError")) {
-                    errorMessage = locale === 'id'
-                        ? "Gangguan koneksi/layanan (NetworkError). Coba tutup dan buka kembali aplikasinya."
-                        : "Network/service error occurred. Try restarting the app.";
+                    // Revert Optimistic UI on failure
+                    setIsEnabled(false);
+                    setFcmToken(null);
+                    throw new Error(errorMessage);
+                } finally {
+                    setIsInitializing(false);
+                    isProcessingRef.current = false;
                 }
+            };
 
-                alert((locale === 'id' ? "Gagal: " : "Failed: ") + errorMessage);
-                setIsEnabled(false);
-                setFcmToken(null);
-            } finally {
-                setIsLoading(false);
-                setIsInitializing(false);
-            }
+            // Non-blocking background toast
+            toast.promise(bgTask(), {
+                loading: locale === 'id' ? 'Aktivasi sistem di latar belakang...' : 'Activating background system...',
+                success: (msg) => msg,
+                error: (err) => (locale === 'id' ? 'Gagal: ' : 'Failed: ') + err.message
+            });
         }
     }
 
@@ -290,7 +301,6 @@ export default function NotificationSettings() {
                 <Switch
                     checked={isEnabled}
                     onCheckedChange={toggleNotifications}
-                    disabled={isLoading}
                     className="shrink-0"
                 />
             </div>

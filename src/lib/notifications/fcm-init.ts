@@ -71,22 +71,38 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         }
 
         // ============================================================
-        // SERVICE WORKER RESOLUTION
-        //
-        // The simplest and most reliable approach:
-        // Just await navigator.serviceWorker.ready.
-        //
-        // - If there's an already-active SW (old version) → resolves IMMEDIATELY
-        // - If SW is installing for the first time → waits for it to activate
-        //
-        // We do NOT send SKIP_WAITING here. Sending SKIP_WAITING causes the 
-        // new SW to take over and run Workbox pre-caching, which can take >15s 
-        // on mobile. Timing out on this and reloading creates an infinite loop.
-        //
-        // The old active SW is perfectly capable of serving FCM tokens.
+        // SERVICE WORKER RESOLUTION (Robust for Fresh Installs)
         // ============================================================
-        const activeRegistration = await navigator.serviceWorker.ready;
-        console.log('[FCM] Active SW ready (Scope: ' + activeRegistration.scope + ')');
+        let activeRegistration: ServiceWorkerRegistration | null = null;
+
+        // 1. Check if any SW is already registered
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        if (registrations.length > 0) {
+            activeRegistration = registrations.find(r => r.scope === window.location.origin + '/') || registrations[0];
+        }
+
+        // 2. Manual fallback registration if none exists
+        if (!activeRegistration) {
+            console.log('[FCM] No SW found. Forcing manual registration...');
+            const swUrl = process.env.NODE_ENV === "development" ? "/firebase-messaging-sw.js" : "/sw.js";
+            activeRegistration = await navigator.serviceWorker.register(swUrl);
+        }
+
+        // 3. Wait for ready state with a strict 10-second timeout
+        try {
+            activeRegistration = await Promise.race([
+                navigator.serviceWorker.ready,
+                new Promise<ServiceWorkerRegistration>((_, reject) =>
+                    setTimeout(() => reject(new Error('READY_TIMEOUT')), 10000)
+                )
+            ]);
+            console.log('[FCM] Active SW ready (Scope: ' + activeRegistration.scope + ')');
+        } catch (e: any) {
+            if (e.message === 'READY_TIMEOUT') {
+                throw new Error("Aplikasi sedang menyiapkan data di latar belakang. Mohon tunggu beberapa detik, lalu coba aktifkan kembali.");
+            }
+            throw e;
+        }
 
         // Send Firebase config to service worker
         if (activeRegistration.active) {
@@ -118,7 +134,16 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             }
         };
 
-        const token = await getTokenWithRetry();
+        const tokenPromise = getTokenWithRetry();
+        const token = await Promise.race([
+            tokenPromise,
+            new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 15000))
+        ]).catch((e: any) => {
+            if (e.message === 'TOKEN_TIMEOUT') {
+                throw new Error("Sistem notifikasi sedang mengunduh data persiapan (hanya terjadi sekali). Mohon tunggu sekitar 15 detik, lalu coba aktifkan kembali.");
+            }
+            throw e;
+        });
 
         if (token) {
             localStorage.setItem("fcm_token", token);
