@@ -570,7 +570,11 @@ const CompassDisplay = memo(({
                     >
                         <div className="absolute top-8 left-1/2 -translate-x-1/2">
                             {/* 2. FIX: Radar Ping Animation */}
-                            <div className={`relative transition-all duration-700 flex items-center justify-center transform ${aligned ? 'scale-125' : 'scale-100'}`}>
+                            <div className={cn(
+                                "relative transition-all duration-700 flex items-center justify-center transform",
+                                aligned ? "scale-125" : "scale-100",
+                                !isDaylight && !aligned && "bg-white/[0.04] rounded-full p-2 border border-white/5"
+                            )}>
 
                                 {/* Ping Rings */}
                                 {aligned && (
@@ -592,7 +596,7 @@ const CompassDisplay = memo(({
                                         ? isDaylight
                                             ? "opacity-100 brightness-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] text-emerald-600"
                                             : "opacity-100 brightness-110 drop-shadow-[0_0_15px_rgba(var(--color-primary),0.8)] text-[rgb(var(--color-primary-light))]"
-                                        : isDaylight ? "opacity-60 text-slate-400" : "opacity-80 text-zinc-900"
+                                        : isDaylight ? "opacity-60 text-slate-400" : "opacity-100 text-zinc-700 drop-shadow-[0_0_1px_rgba(255,255,255,0.5)] drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
                                 )} />
                             </div>
                         </div>

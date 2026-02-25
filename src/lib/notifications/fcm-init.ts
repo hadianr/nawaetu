@@ -75,26 +75,54 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
 
         try {
-            // navigator.serviceWorker.ready is the most reliable way to get the active registration
-            // We use a timeout as a fallback for development mode where PWA might be disabled
+            // STEP A: Wait for service worker to be ready
+            // Increase timeout to 10s for slow mobile networks (iOS)
             const readyPromise = navigator.serviceWorker.ready;
-            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000));
+            const timeoutWait = 10000;
+            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutWait));
 
             serviceWorkerRegistration = await Promise.race([readyPromise, timeoutPromise]);
 
             if (serviceWorkerRegistration) {
+                console.log("[FCM] Using existing service worker registration (Scope: " + serviceWorkerRegistration.scope + ")");
+            } else {
+                console.log("[FCM] navigator.serviceWorker.ready timed out after " + timeoutWait + "ms");
             }
         } catch (err) {
+            console.warn("[FCM] Ready check failed:", err);
+            Sentry.addBreadcrumb({ category: 'fcm', message: 'Ready check failed', level: 'warning' });
         }
 
-        // 2. Fallback: Register manually if no ready worker found (e.g., first visit or Dev mode)
+        // 2. Fallback: Register manually ONLY if no ready worker found AND we are in development
+        // or if explicitly needed. In Production, next-pwa handles registration for us.
         if (!serviceWorkerRegistration) {
-            serviceWorkerRegistration = await navigator.serviceWorker.register(
-                "/firebase-messaging-sw.js"
-            );
+            const isDev = process.env.NODE_ENV === "development";
+            console.log(`[FCM] Fallback registration check (isDev: ${isDev})`);
+
+            if (isDev) {
+                try {
+                    console.log("[FCM] Registering /firebase-messaging-sw.js manually (Dev Mode)...");
+                    serviceWorkerRegistration = await navigator.serviceWorker.register(
+                        "/firebase-messaging-sw.js"
+                    );
+                } catch (regErr: any) {
+                    console.error("[FCM] Manual registration failed:", regErr);
+                    Sentry.captureException(regErr, { extra: { context: 'fcm-init.manual-register-dev' } });
+                    throw regErr;
+                }
+            } else {
+                // In Production, if .ready timed out, we might want to try one last register for the main sw.js
+                // or just wait. Trying to register /firebase-messaging-sw.js specifically can conflict with sw.js.
+                console.warn("[FCM] No service worker ready in Production. FCM might not work until PWA is fully loaded.");
+            }
         }
 
         // 3. Ensure the worker is active before sending messages
+        if (!serviceWorkerRegistration) {
+            console.warn("[FCM] Aborting initialization: No service worker registration found.");
+            return null;
+        }
+
         if (serviceWorkerRegistration.installing) {
             await new Promise<void>((resolve) => {
                 serviceWorkerRegistration!.installing?.addEventListener('statechange', (e: any) => {
@@ -140,16 +168,24 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             localStorage.setItem("fcm_token", token);
             return token;
         } else {
+            console.warn("[FCM] getToken returned null");
             return null;
         }
     } catch (error: any) {
-        console.error("[FCM Setup Error]", error);
+        console.error("[FCM Setup Error Detail]", {
+            message: error.message,
+            code: error.code,
+            stack: error.stack
+        });
 
-        if (error.message.includes("Registration failed")) {
-            alert("Gagal registrasi Service Worker: " + error.message);
-        } else {
-            // Generic error
-            console.error("FCM Initialization Error: " + error.message);
+        if (error.message.includes("Registration failed") || error.message.includes("NetworkError")) {
+            // Add breadcrumb for this specific failure
+            Sentry.addBreadcrumb({
+                category: 'fcm',
+                message: `Initialization failed: ${error.message}`,
+                level: 'error',
+                data: { code: error.code }
+            });
         }
 
         Sentry.captureException(error, {
