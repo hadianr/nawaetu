@@ -71,38 +71,42 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         }
 
         // ============================================================
-        // SERVICE WORKER RESOLUTION (Robust for Fresh Installs)
+        // SERVICE WORKER RESOLUTION (Decoupled from PWA Cache)
         // ============================================================
-        let activeRegistration: ServiceWorkerRegistration | null = null;
+        // We DO NOT use the default navigator.serviceWorker.ready because that points
+        // to the next-pwa worker, which can hang for 15+ seconds while downloading 
+        // the offline cache on a fresh install.
+        // Instead, we register the tiny FCM worker on its own dedicated scope.
 
-        // 1. Check if any SW is already registered
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        if (registrations.length > 0) {
-            activeRegistration = registrations.find(r => r.scope === window.location.origin + '/') || registrations[0];
+        const FCM_SCOPE = '/firebase-cloud-messaging-push-scope';
+        const swUrl = process.env.NODE_ENV === "development" ? "/firebase-messaging-sw.js" : "/firebase-messaging-sw.js";
+
+        console.log('[FCM] Registering dedicated FCM Service Worker...');
+        let activeRegistration = await navigator.serviceWorker.register(swUrl, { scope: FCM_SCOPE });
+
+        // Wait for it to become active (usually instant since it's only 2KB and doesn't cache)
+        if (activeRegistration.installing || activeRegistration.waiting) {
+            console.log('[FCM] Waiting for dedicated SW to activate...');
+            await new Promise<void>((resolve, reject) => {
+                const timeout = setTimeout(() => reject(new Error('READY_TIMEOUT')), 10000);
+
+                const worker = activeRegistration!.installing || activeRegistration!.waiting;
+                if (!worker) {
+                    clearTimeout(timeout);
+                    resolve();
+                    return;
+                }
+
+                worker.addEventListener('statechange', () => {
+                    if (worker.state === 'activated') {
+                        clearTimeout(timeout);
+                        resolve();
+                    }
+                });
+            });
         }
 
-        // 2. Manual fallback registration if none exists
-        if (!activeRegistration) {
-            console.log('[FCM] No SW found. Forcing manual registration...');
-            const swUrl = process.env.NODE_ENV === "development" ? "/firebase-messaging-sw.js" : "/sw.js";
-            activeRegistration = await navigator.serviceWorker.register(swUrl);
-        }
-
-        // 3. Wait for ready state with a strict 10-second timeout
-        try {
-            activeRegistration = await Promise.race([
-                navigator.serviceWorker.ready,
-                new Promise<ServiceWorkerRegistration>((_, reject) =>
-                    setTimeout(() => reject(new Error('READY_TIMEOUT')), 10000)
-                )
-            ]);
-            console.log('[FCM] Active SW ready (Scope: ' + activeRegistration.scope + ')');
-        } catch (e: any) {
-            if (e.message === 'READY_TIMEOUT') {
-                throw new Error("Aplikasi sedang menyiapkan data di latar belakang. Mohon tunggu beberapa detik, lalu coba aktifkan kembali.");
-            }
-            throw e;
-        }
+        console.log('[FCM] Dedicated SW ready (Scope: ' + activeRegistration.scope + ')');
 
         // Send Firebase config to service worker
         if (activeRegistration.active) {
