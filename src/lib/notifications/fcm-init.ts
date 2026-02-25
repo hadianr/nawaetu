@@ -70,111 +70,58 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             throw new Error(`Izin notifikasi ditolak (${permission}).`);
         }
 
-        // 1. Try to reuse the existing service worker registration (Best Practice for PWAs)
-        // This avoids overlapping registrations that trigger page reloads.
-        let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
+        // ============================================================
+        // 1. SERVICE WORKER RESOLUTION STRATEGY
+        //
+        // iOS PWA Standalone Issue: When a new SW is deployed, it enters
+        // 'waiting' state because the PWA window is always open, blocking
+        // the old SW from releasing control. The SW never becomes 'active'
+        // unless we explicitly send it SKIP_WAITING first.
+        //
+        // Strategy:
+        //   Step A: Get the current registration (any state)
+        //   Step B: Send SKIP_WAITING to unblock any 'waiting' SW
+        //   Step C: Use navigator.serviceWorker.ready to get the truly
+        //           active registration. This promise will only resolve
+        //           when there's a confirmed active SW.
+        // ============================================================
 
+        // Step A: Get current registration to check for waiting SW
+        let activeRegistration: ServiceWorkerRegistration;
         try {
-            // STEP A: Immediate check using getRegistrations() (very fast, no timeout needed)
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            if (registrations && registrations.length > 0) {
-                // Prefer the root scope worker (usually next-pwa sw.js)
-                serviceWorkerRegistration = registrations.find(r => r.scope === window.location.origin + '/') || registrations[0];
-                console.log("[FCM] Found immediate service worker registration (Scope: " + serviceWorkerRegistration.scope + ")");
-            }
-
-            // STEP B: If not found immediately, wait for .ready (up to 5s)
-            if (!serviceWorkerRegistration) {
-                const readyPromise = navigator.serviceWorker.ready;
-                const timeoutWait = 5000;
-                const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutWait));
-
-                serviceWorkerRegistration = await Promise.race([readyPromise, timeoutPromise]);
-
-                if (serviceWorkerRegistration) {
-                    console.log("[FCM] Using delayed service worker registration (Scope: " + serviceWorkerRegistration.scope + ")");
-                } else {
-                    console.log("[FCM] navigator.serviceWorker.ready timed out after " + timeoutWait + "ms");
-                }
-            }
-        } catch (err) {
-            console.warn("[FCM] Ready check failed:", err);
-            Sentry.addBreadcrumb({ category: 'fcm', message: 'Ready check failed', level: 'warning' });
-        }
-
-        // 2. Fallback: Register manually if no ready worker found
-        if (!serviceWorkerRegistration) {
-            const isDev = process.env.NODE_ENV === "development";
-            console.log(`[FCM] Fallback registration check (isDev: ${isDev})`);
-
-            try {
-                // CRITICAL FIX: In Production, we MUST register the main next-pwa service worker (/sw.js)
-                // If we register /firebase-messaging-sw.js directly in production, it will cause a scope 
-                // conflict with next-pwa resulting in a NetworkError on iOS.
-                const swUrl = isDev ? "/firebase-messaging-sw.js" : "/sw.js";
-                console.log(`[FCM] Registering ${swUrl} manually...`);
-
-                serviceWorkerRegistration = await navigator.serviceWorker.register(swUrl);
-                console.log(`[FCM] Successfully registered fallback worker: ${swUrl}`);
-            } catch (regErr: any) {
-                console.error("[FCM] Manual registration failed:", regErr);
-                Sentry.captureException(regErr, { extra: { context: `fcm-init.manual-register-fallback` } });
-                throw regErr;
-            }
-        }
-
-        // 3. Ensure the worker is active before sending messages
-        if (!serviceWorkerRegistration) {
-            console.warn("[FCM] Aborting initialization: No service worker registration found.");
-            return null;
-        }
-
-        // Wait for installing or waiting workers to become activated
-        let worker = serviceWorkerRegistration.waiting || serviceWorkerRegistration.installing;
-        if (worker && worker.state !== 'activated') {
-            console.log(`[FCM] Worker is in ${worker.state} state, waiting for 'activated'...`);
-            await new Promise<void>((resolve) => {
-                const listener = (e: Event) => {
-                    const target = e.target as ServiceWorker;
-                    if (target.state === 'activated') {
-                        worker?.removeEventListener('statechange', listener);
-                        resolve();
-                    }
-                };
-                worker!.addEventListener('statechange', listener);
-                setTimeout(() => {
-                    worker?.removeEventListener('statechange', listener);
-                    resolve();
-                }, 5000); // 5s timeout max
-            });
-        }
-
-        // CRITICAL FIX: Refresh the registration object
-        // iOS Safari doesn't automatically update the .active property on old ServiceWorkerRegistration objects
-        try {
-            serviceWorkerRegistration = await Promise.race([
-                navigator.serviceWorker.ready,
-                new Promise<ServiceWorkerRegistration | null>(res => setTimeout(() => res(null), 3000))
-            ]) || serviceWorkerRegistration;
-
-            if (!serviceWorkerRegistration.active) {
-                const regs = await navigator.serviceWorker.getRegistrations();
-                serviceWorkerRegistration = regs.find(r => r.active) || serviceWorkerRegistration;
+            // Pre-emptive: unlock any waiting SW so .ready can resolve
+            const existingReg = await navigator.serviceWorker.getRegistration('/');
+            if (existingReg?.waiting) {
+                console.log('[FCM] Sending SKIP_WAITING to unlock new SW...');
+                existingReg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                existingReg.waiting.postMessage({ type: 'WINDOW_SKIP_WAITING' });
             }
         } catch (e) {
-            console.error("[FCM] Error refreshing registration:", e);
+            // Non-fatal: just log and proceed
+            console.warn('[FCM] Pre-SKIP_WAITING check failed (non-fatal):', e);
         }
 
-        if (!serviceWorkerRegistration.active) {
-            if (confirm("Sistem notifikasi sedang bersiap di latar belakang. Karena Anda menggunakan mode Aplikasi Web, apakah Anda ingin memuat ulang (reload) aplikasi sekarang agar notifikasi bisa aktif?")) {
-                window.location.reload();
-            }
-            throw new Error("Menunggu Service Worker aktif. Aplikasi perlu dimuat ulang (reload).");
+        // Step C: Wait for an active registration via .ready (up to 15s)
+        const READY_TIMEOUT_MS = 15000;
+        const readyOrTimeout = await Promise.race([
+            navigator.serviceWorker.ready,
+            new Promise<null>((resolve) => setTimeout(() => resolve(null), READY_TIMEOUT_MS))
+        ]);
+
+        if (!readyOrTimeout) {
+            // Still no active SW after 15s — trigger automatic reload
+            console.error('[FCM] No active SW after timeout. Triggering reload...');
+            window.location.reload();
+            // Throw to prevent further execution (reload is async)
+            throw new Error('Sistem notifikasi membutuhkan memuat ulang aplikasi. Sedang dilakukan...');
         }
 
-        // 4. Send Firebase config to service worker
-        if (serviceWorkerRegistration.active) {
-            serviceWorkerRegistration.active.postMessage({
+        activeRegistration = readyOrTimeout;
+        console.log('[FCM] Active SW ready (Scope: ' + activeRegistration.scope + ')');
+
+        // 2. Send Firebase config to service worker (optional postMessage)
+        if (activeRegistration.active) {
+            activeRegistration.active.postMessage({
                 type: 'FIREBASE_CONFIG',
                 config: firebaseConfig
             });
@@ -191,7 +138,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
                 // Note: We use the registration we found/created
                 return await getToken(messagingInstance, {
                     vapidKey,
-                    serviceWorkerRegistration: serviceWorkerRegistration!,
+                    serviceWorkerRegistration: activeRegistration,
                 });
             } catch (err: any) {
                 if (retries > 0) {
