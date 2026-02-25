@@ -165,17 +165,8 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
                 }
             );
 
-            // STEP 4: Clear caches
-            addLog('[Update] STEP 4: Clear browser caches...');
-            if ('caches' in window) {
-                const keys = await caches.keys();
-                addLog(`[Update] Found ${keys.length} caches: ${keys.join(', ')}`);
-                await Promise.all(keys.map(key => {
-                    addLog(`[Update] Deleting cache: ${key}`);
-                    return caches.delete(key);
-                }));
-                addLog('[Update] ✓ All caches cleared');
-            }
+            // STEP 4: No longer clearing caches manually. Workbox handles precache cleanup automatically.
+            addLog('[Update] STEP 4: Let Workbox handle cache cleanup automatically.');
 
             // STEP 5: Send SKIP_WAITING message to the WAITING Service Worker (the new version)
             addLog('[Update] STEP 5: Send SKIP_WAITING to Service Worker...');
