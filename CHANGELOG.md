@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.8.5] - 2026-02-25
+
+### Added
+- **Feat: Implement reflection functionality with new dalils, API, and UI components, and enhance modal responsiveness.**
+- **Feat: Enhance intention input form with dynamic Islamic dalils and improve user token resolution in intention API endpoints.**
+- **Feat: Migrate intention dates to timestamps, update API queries, and integrate NextAuth sessions for user identification.**
+- **Feat: Implement Service Worker notifications with a fallback to standard browser notifications across all notification triggers.**
+- **Feat: Reduce AI daily usage limits, improve AI usage tracking and Muhsinin upgrade logic, and refine Gemini chat history handling.**
+- **Feat: Add theme-based styling and update query rate limits on the Mentor AI page.**
+- **Feat: Implement day/night mode styling for the muadzin selection UI.**
+- **Feat: enhance NotificationSettings UI with updated styling and grid layout for prayer times**
+- **Feat: Add Imsak prayer time support to notifications, preferences, and translations, including specific notification logic for Ramadhan.**
+- **Feat: Improve notification permission request and error handling in `NotificationSettings.tsx` and update the GCM sender ID in `_manifest.ts`.**
+
+### Improved
+- **Style: Apply conditional styling to login prompt and logout confirmation based on daylight mode, and update the Google login button icon.**
+- **Refactor: Migrate local storage operations to a new storage service and enhance notification permission checks for SSR safety.**
+
+### Fixed
+- **Fix: Revert AI usage quota when LLM returns an error or an exception occurs, and update Groq model to `llama-3.1-8b-instant`.**
+
+
 ## [1.8.4] - 2026-02-24
 
 ### Added
