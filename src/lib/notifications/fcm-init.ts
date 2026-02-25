@@ -94,25 +94,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             throw new Error("Gagal menginisiasi Service Worker.");
         }
 
-        // Wait for it to become active if it's installing
-        if (activeRegistration.installing || activeRegistration.waiting) {
-            await new Promise<void>((resolve) => {
-                const timeout = setTimeout(resolve, 10000); // 10s max wait for activation
-                const worker = activeRegistration!.installing || activeRegistration!.waiting;
-                if (!worker) {
-                    clearTimeout(timeout);
-                    return resolve();
-                }
-                worker.addEventListener('statechange', () => {
-                    if (worker.state === 'activated') {
-                        clearTimeout(timeout);
-                        resolve();
-                    }
-                });
-            });
-        }
-
-        console.log('[FCM] SW ready (Scope: ' + activeRegistration.scope + ')');
+        console.log('[FCM] SW registered (Scope: ' + activeRegistration.scope + ')');
 
         // Send Firebase config to service worker
         if (activeRegistration.active) {
@@ -147,10 +129,13 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         const tokenPromise = getTokenWithRetry();
         const token = await Promise.race([
             tokenPromise,
-            new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 15000))
+            new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 20000))
         ]).catch((e: any) => {
             if (e.message === 'TOKEN_TIMEOUT') {
-                throw new Error("Sistem notifikasi sedang mengunduh data persiapan (hanya terjadi sekali). Mohon tunggu sekitar 15 detik, lalu coba aktifkan kembali.");
+                throw new Error("Sistem sedang mensinkronisasi data latar belakang. Mohon tunggu sekitar 20 detik, lalu coba aktifkan kembali.");
+            }
+            if (e.message.includes('getting push subscription required') || e.message.includes('A call to PushManager.subscribe() failed')) {
+                throw new Error("Browser sedang menyiapkan koneksi notifikasi. Coba Refresh halaman dan aktifkan kembali.");
             }
             throw e;
         });

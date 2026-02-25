@@ -157,12 +157,7 @@ export default function NotificationSettings() {
                         }
                     });
 
-                    let errorMessage = error.message || "Unknown error";
-                    if (errorMessage.includes("NetworkError")) {
-                        errorMessage = locale === 'id'
-                            ? "Aplikasi belum siap atau gangguan koneksi. Harap tunggu sebentar lalu coba lagi."
-                            : "App is still preparing or network error. Please wait a moment and try again.";
-                    }
+                    const errorMessage = error.message || (locale === 'id' ? "Terjadi kesalahan tidak dikenal." : "An unknown error occurred.");
 
                     // Revert Optimistic UI on failure
                     setIsEnabled(false);
