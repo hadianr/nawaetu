@@ -129,13 +129,25 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             return null;
         }
 
-        if (serviceWorkerRegistration.installing) {
-            await new Promise<void>((resolve) => {
-                serviceWorkerRegistration!.installing?.addEventListener('statechange', (e: any) => {
-                    if (e.target.state === 'activated') resolve();
-                });
-                setTimeout(resolve, 2000); // Safety fallback
-            });
+        // CRITICAL FIX: Force wait for navigator.serviceWorker.ready before interacting
+        // because Firebase absolutely requires an 'active' service worker to get a push subscription.
+        if (!serviceWorkerRegistration.active) {
+            console.log("[FCM] Worker not active, waiting for .ready promise...");
+            try {
+                const finalReadyReg = await Promise.race([
+                    navigator.serviceWorker.ready,
+                    new Promise<ServiceWorkerRegistration | null>(resolve => setTimeout(() => resolve(null), 8000))
+                ]);
+                if (finalReadyReg) {
+                    serviceWorkerRegistration = finalReadyReg;
+                }
+            } catch (err) {
+                console.error("[FCM] Error waiting for ready:", err);
+            }
+        }
+
+        if (!serviceWorkerRegistration.active) {
+            throw new Error("Pendaftaran Service Worker belum aktif (active=null). Notifikasi (FCM) membutuhkan Service Worker yang berjalan.");
         }
 
         // 4. Send Firebase config to service worker
