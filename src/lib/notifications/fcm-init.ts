@@ -75,45 +75,51 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
 
         try {
-            // STEP A: Wait for service worker to be ready
-            // Increase timeout to 10s for slow mobile networks (iOS)
-            const readyPromise = navigator.serviceWorker.ready;
-            const timeoutWait = 10000;
-            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutWait));
+            // STEP A: Immediate check using getRegistrations() (very fast, no timeout needed)
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            if (registrations && registrations.length > 0) {
+                // Prefer the root scope worker (usually next-pwa sw.js)
+                serviceWorkerRegistration = registrations.find(r => r.scope === window.location.origin + '/') || registrations[0];
+                console.log("[FCM] Found immediate service worker registration (Scope: " + serviceWorkerRegistration.scope + ")");
+            }
 
-            serviceWorkerRegistration = await Promise.race([readyPromise, timeoutPromise]);
+            // STEP B: If not found immediately, wait for .ready (up to 5s)
+            if (!serviceWorkerRegistration) {
+                const readyPromise = navigator.serviceWorker.ready;
+                const timeoutWait = 5000;
+                const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutWait));
 
-            if (serviceWorkerRegistration) {
-                console.log("[FCM] Using existing service worker registration (Scope: " + serviceWorkerRegistration.scope + ")");
-            } else {
-                console.log("[FCM] navigator.serviceWorker.ready timed out after " + timeoutWait + "ms");
+                serviceWorkerRegistration = await Promise.race([readyPromise, timeoutPromise]);
+
+                if (serviceWorkerRegistration) {
+                    console.log("[FCM] Using delayed service worker registration (Scope: " + serviceWorkerRegistration.scope + ")");
+                } else {
+                    console.log("[FCM] navigator.serviceWorker.ready timed out after " + timeoutWait + "ms");
+                }
             }
         } catch (err) {
             console.warn("[FCM] Ready check failed:", err);
             Sentry.addBreadcrumb({ category: 'fcm', message: 'Ready check failed', level: 'warning' });
         }
 
-        // 2. Fallback: Register manually ONLY if no ready worker found AND we are in development
-        // or if explicitly needed. In Production, next-pwa handles registration for us.
+        // 2. Fallback: Register manually if no ready worker found
         if (!serviceWorkerRegistration) {
             const isDev = process.env.NODE_ENV === "development";
             console.log(`[FCM] Fallback registration check (isDev: ${isDev})`);
 
-            if (isDev) {
-                try {
-                    console.log("[FCM] Registering /firebase-messaging-sw.js manually (Dev Mode)...");
-                    serviceWorkerRegistration = await navigator.serviceWorker.register(
-                        "/firebase-messaging-sw.js"
-                    );
-                } catch (regErr: any) {
-                    console.error("[FCM] Manual registration failed:", regErr);
-                    Sentry.captureException(regErr, { extra: { context: 'fcm-init.manual-register-dev' } });
-                    throw regErr;
-                }
-            } else {
-                // In Production, if .ready timed out, we might want to try one last register for the main sw.js
-                // or just wait. Trying to register /firebase-messaging-sw.js specifically can conflict with sw.js.
-                console.warn("[FCM] No service worker ready in Production. FCM might not work until PWA is fully loaded.");
+            try {
+                // CRITICAL FIX: In Production, we MUST register the main next-pwa service worker (/sw.js)
+                // If we register /firebase-messaging-sw.js directly in production, it will cause a scope 
+                // conflict with next-pwa resulting in a NetworkError on iOS.
+                const swUrl = isDev ? "/firebase-messaging-sw.js" : "/sw.js";
+                console.log(`[FCM] Registering ${swUrl} manually...`);
+
+                serviceWorkerRegistration = await navigator.serviceWorker.register(swUrl);
+                console.log(`[FCM] Successfully registered fallback worker: ${swUrl}`);
+            } catch (regErr: any) {
+                console.error("[FCM] Manual registration failed:", regErr);
+                Sentry.captureException(regErr, { extra: { context: `fcm-init.manual-register-fallback` } });
+                throw regErr;
             }
         }
 
