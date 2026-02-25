@@ -160,8 +160,8 @@ export default function NotificationSettings() {
                     let errorMessage = error.message || "Unknown error";
                     if (errorMessage.includes("NetworkError")) {
                         errorMessage = locale === 'id'
-                            ? "Gangguan koneksi/layanan. Coba tutup dan buka kembali aplikasinya."
-                            : "Network/service error occurred. Try restarting the app.";
+                            ? "Aplikasi belum siap atau gangguan koneksi. Harap tunggu sebentar lalu coba lagi."
+                            : "App is still preparing or network error. Please wait a moment and try again.";
                     }
 
                     // Revert Optimistic UI on failure
