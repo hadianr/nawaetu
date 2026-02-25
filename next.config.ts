@@ -11,6 +11,8 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   workboxOptions: {
     disableDevLogs: true,
+    skipWaiting: true,   // Activate new SW immediately without waiting for tabs to close
+    clientsClaim: true,  // New SW takes control of all open clients immediately after activation
     importScripts: ["/firebase-messaging-sw.js"], // Import Firebase logic into the main PWA SW
   },
 });

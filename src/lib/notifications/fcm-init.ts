@@ -71,55 +71,24 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         }
 
         // ============================================================
-        // 1. SERVICE WORKER RESOLUTION STRATEGY
+        // SERVICE WORKER RESOLUTION
         //
-        // iOS PWA Standalone Issue: When a new SW is deployed, it enters
-        // 'waiting' state because the PWA window is always open, blocking
-        // the old SW from releasing control. The SW never becomes 'active'
-        // unless we explicitly send it SKIP_WAITING first.
+        // The simplest and most reliable approach:
+        // Just await navigator.serviceWorker.ready.
         //
-        // Strategy:
-        //   Step A: Get the current registration (any state)
-        //   Step B: Send SKIP_WAITING to unblock any 'waiting' SW
-        //   Step C: Use navigator.serviceWorker.ready to get the truly
-        //           active registration. This promise will only resolve
-        //           when there's a confirmed active SW.
+        // - If there's an already-active SW (old version) → resolves IMMEDIATELY
+        // - If SW is installing for the first time → waits for it to activate
+        //
+        // We do NOT send SKIP_WAITING here. Sending SKIP_WAITING causes the 
+        // new SW to take over and run Workbox pre-caching, which can take >15s 
+        // on mobile. Timing out on this and reloading creates an infinite loop.
+        //
+        // The old active SW is perfectly capable of serving FCM tokens.
         // ============================================================
-
-        // Step A: Get current registration to check for waiting SW
-        let activeRegistration: ServiceWorkerRegistration;
-        try {
-            // Pre-emptive: unlock any waiting SW so .ready can resolve
-            const existingReg = await navigator.serviceWorker.getRegistration('/');
-            if (existingReg?.waiting) {
-                console.log('[FCM] Sending SKIP_WAITING to unlock new SW...');
-                existingReg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                existingReg.waiting.postMessage({ type: 'WINDOW_SKIP_WAITING' });
-            }
-        } catch (e) {
-            // Non-fatal: just log and proceed
-            console.warn('[FCM] Pre-SKIP_WAITING check failed (non-fatal):', e);
-        }
-
-        // Step C: Wait for an active registration via .ready (up to 15s)
-        const READY_TIMEOUT_MS = 15000;
-        const readyOrTimeout = await Promise.race([
-            navigator.serviceWorker.ready,
-            new Promise<null>((resolve) => setTimeout(() => resolve(null), READY_TIMEOUT_MS))
-        ]);
-
-        if (!readyOrTimeout) {
-            // Still no active SW after 15s — trigger automatic reload
-            console.error('[FCM] No active SW after timeout. Triggering reload...');
-            window.location.reload();
-            // Throw to prevent further execution (reload is async)
-            throw new Error('Sistem notifikasi membutuhkan memuat ulang aplikasi. Sedang dilakukan...');
-        }
-
-        activeRegistration = readyOrTimeout;
+        const activeRegistration = await navigator.serviceWorker.ready;
         console.log('[FCM] Active SW ready (Scope: ' + activeRegistration.scope + ')');
 
-        // 2. Send Firebase config to service worker (optional postMessage)
+        // Send Firebase config to service worker
         if (activeRegistration.active) {
             activeRegistration.active.postMessage({
                 type: 'FIREBASE_CONFIG',
