@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getMessaging, getToken, onMessage, Messaging } from "firebase/messaging";
+import * as Sentry from "@sentry/nextjs";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -143,6 +144,22 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         }
     } catch (error: any) {
         console.error("[FCM Setup Error]", error);
+
+        if (error.message.includes("Registration failed")) {
+            alert("Gagal registrasi Service Worker: " + error.message);
+        } else {
+            // Generic error
+            console.error("FCM Initialization Error: " + error.message);
+        }
+
+        Sentry.captureException(error, {
+            extra: {
+                context: "fcm-init.registerServiceWorkerAndGetToken",
+                hasServiceWorker: 'serviceWorker' in navigator,
+                userAgent: navigator.userAgent
+            }
+        });
+
         // Throw the actual error so the UI can display it
         throw error;
     }

@@ -8,6 +8,7 @@ import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/noti
 import { useLocale } from "@/context/LocaleContext";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import * as Sentry from "@sentry/nextjs";
 
 export default function NotificationSettings() {
     const { locale, t } = useLocale();
@@ -142,6 +143,15 @@ export default function NotificationSettings() {
                 }
             } catch (error: any) {
                 console.error("[NotificationSettings] Toggle Error:", error);
+
+                Sentry.captureException(error, {
+                    extra: {
+                        context: "NotificationSettings.toggleNotifications",
+                        fcmTokenExists: !!fcmToken,
+                        permissionStatus,
+                        userAgent: navigator.userAgent
+                    }
+                });
 
                 let errorMessage = error.message || "Unknown error";
 
