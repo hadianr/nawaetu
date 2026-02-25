@@ -177,16 +177,24 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
                 addLog('[Update] ✓ All caches cleared');
             }
 
-            // STEP 5: Send SKIP_WAITING message to active Service Worker
+            // STEP 5: Send SKIP_WAITING message to the WAITING Service Worker (the new version)
             addLog('[Update] STEP 5: Send SKIP_WAITING to Service Worker...');
-            if (navigator.serviceWorker?.controller) {
-                addLog('[Update] Active SW found, sending SKIP_WAITING...');
-                navigator.serviceWorker.controller.postMessage({
-                    type: 'SKIP_WAITING'
-                });
-                addLog('[Update] ✓ SKIP_WAITING message sent');
-            } else {
-                addLog('[Update] ⚠️  No active SW, but continuing...');
+            try {
+                const reg = await navigator.serviceWorker?.getRegistration();
+                if (reg?.waiting) {
+                    addLog('[Update] Waiting SW found, sending SKIP_WAITING...');
+                    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    // Workbox standard message
+                    reg.waiting.postMessage({ type: 'WINDOW_SKIP_WAITING' });
+                    addLog('[Update] ✓ SKIP_WAITING message sent to new SW');
+                } else if (reg?.active) {
+                    addLog('[Update] Only active SW found, sending fallback SKIP_WAITING...');
+                    reg.active.postMessage({ type: 'SKIP_WAITING' });
+                } else {
+                    addLog('[Update] ⚠️  No SW registration found...');
+                }
+            } catch (swErr) {
+                addLog(`[Update] SW error: ${swErr}`);
             }
 
             // STEP 6: Wait briefly for SW activation
