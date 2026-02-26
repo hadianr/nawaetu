@@ -79,19 +79,45 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         let activeRegistration: ServiceWorkerRegistration | null = null;
 
         try {
-            // Wait for next-pwa to register its worker
-            activeRegistration = await Promise.race([
-                navigator.serviceWorker.ready,
-                new Promise<ServiceWorkerRegistration>((_, reject) => setTimeout(() => reject(new Error('READY_TIMEOUT')), 15000))
-            ]);
-        } catch (e: any) {
-            // Fallback manual registration if next-pwa completely failed (e.g. dev mode)
-            console.warn('[FCM] Timeout waiting for PWA SW. Forcing fallback registration...');
-            activeRegistration = await navigator.serviceWorker.register('/sw.js');
+            // navigator.serviceWorker.ready is the most reliable way to get the active registration
+            // We use a short 2s timeout to bypass New Install/Update PWA caching bottlenecks
+            const readyPromise = navigator.serviceWorker.ready;
+            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000));
+
+            activeRegistration = await Promise.race([readyPromise, timeoutPromise]) as ServiceWorkerRegistration | null;
+
+            if (activeRegistration) {
+                console.log("[FCM] Reusing ready service worker:", activeRegistration.scope);
+            }
+        } catch (err) {
+            console.warn("[FCM] Error waiting for service worker ready:", err);
+        }
+
+        // Fallback: Register lightweight FCM worker manually if PWA is choking or dev mode
+        if (!activeRegistration) {
+            console.log("[FCM] No ready SW found (or precaching takes too long). Registering lightweight /firebase-messaging-sw.js...");
+            activeRegistration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+            console.log("[FCM] Firebase Service Worker registered manually:", activeRegistration.scope);
         }
 
         if (!activeRegistration) {
             throw new Error("Gagal menginisiasi Service Worker.");
+        }
+
+        // Ensure the worker is active before getting token (required by iOS Safari)
+        if (activeRegistration.installing || activeRegistration.waiting) {
+            console.log("[FCM] Worker is installing/waiting, waiting for activation...");
+            await new Promise<void>((resolve) => {
+                const worker = activeRegistration!.installing || activeRegistration!.waiting;
+                if (!worker) return resolve();
+
+                worker.addEventListener('statechange', (e: any) => {
+                    if (e.target.state === 'activated') resolve();
+                });
+
+                // Fallback timeout since it's only 2KB, it should activate instantly
+                setTimeout(resolve, 5000);
+            });
         }
 
         console.log('[FCM] SW registered (Scope: ' + activeRegistration.scope + ')');
@@ -115,11 +141,24 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
                 // Note: We use the registration we found/created
                 return await getToken(messagingInstance, {
                     vapidKey,
-                    serviceWorkerRegistration: activeRegistration,
+                    serviceWorkerRegistration: activeRegistration as ServiceWorkerRegistration,
                 });
             } catch (err: any) {
                 if (retries > 0) {
-                    await new Promise(res => setTimeout(res, delay));
+                    const isSafariPushError = err.message?.includes('getting push subscription required') ||
+                        err.message?.includes('A call to PushManager.subscribe() failed');
+                    // Give Safari extra time to spin up PushManager after SW activation
+                    const waitTime = isSafariPushError ? 2500 : delay;
+
+                    console.warn(`[FCM] getToken failed. Retrying in ${waitTime}ms. Retries left: ${retries}. Error:`, err.message);
+                    await new Promise(res => setTimeout(res, waitTime));
+
+                    // Double check if the registration mysteriously died
+                    if (!activeRegistration || !activeRegistration.active) {
+                        const regs = await navigator.serviceWorker.getRegistrations();
+                        if (regs.length > 0) activeRegistration = regs.find(r => r.scope === window.location.origin + '/') || regs[0];
+                    }
+
                     return getTokenWithRetry(retries - 1, delay * 2);
                 }
                 throw err;
@@ -129,13 +168,13 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         const tokenPromise = getTokenWithRetry();
         const token = await Promise.race([
             tokenPromise,
-            new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 20000))
+            new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 35000))
         ]).catch((e: any) => {
             if (e.message === 'TOKEN_TIMEOUT') {
-                throw new Error("Sistem sedang mensinkronisasi data latar belakang. Mohon tunggu sekitar 20 detik, lalu coba aktifkan kembali.");
+                throw new Error("Sistem sedang mensinkronisasi pengunduhan awal. Mohon tunggu sekitar 30 detik, lalu coba aktifkan kembali.");
             }
             if (e.message.includes('getting push subscription required') || e.message.includes('A call to PushManager.subscribe() failed')) {
-                throw new Error("Browser sedang menyiapkan koneksi notifikasi. Coba Refresh halaman dan aktifkan kembali.");
+                throw new Error("Browser belum siap menghubungkan profil Anda ke server. Coba Refresh halaman dan aktifkan kembali.");
             }
             throw e;
         });
