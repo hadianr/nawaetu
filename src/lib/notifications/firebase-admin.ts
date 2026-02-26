@@ -16,12 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import admin from "firebase-admin";
+import type { default as AdminType } from "firebase-admin";
 import * as path from "path";
-import * as fs from "fs";
+import * as fs from "fs/promises";
 
-if (!admin.apps.length) {
+let admin: typeof AdminType;
+let initPromise: Promise<void> | null = null;
+
+async function getAdmin() {
+    if (!admin) {
+        admin = (await import("firebase-admin")).default;
+    }
+    return admin;
+}
+
+async function initializeFirebase() {
+    const admin = await getAdmin();
+    if (admin.apps.length) return;
+
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let serviceAccount: any;
 
         // Production: Use base64-encoded service account from environment variable
@@ -32,25 +46,41 @@ if (!admin.apps.length) {
             ).toString('utf-8');
             serviceAccount = JSON.parse(decoded);
         }
+        // Use JSON string from environment variable
+        else if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+            serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+        }
         // Development: Use local file
         else {
             const serviceAccountPath = path.join(process.cwd(), "firebase-service-account.json");
-
-            if (fs.existsSync(serviceAccountPath)) {
-                serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
-            } else {
+            try {
+                const content = await fs.readFile(serviceAccountPath, "utf8");
+                serviceAccount = JSON.parse(content);
+            } catch {
+                // File doesn't exist or is not readable, ignore
             }
         }
 
         // Initialize Firebase Admin if service account is available
-        if (serviceAccount) {
+        if (serviceAccount && !admin.apps.length) {
             admin.initializeApp({
                 credential: admin.credential.cert(serviceAccount),
             });
         }
     } catch (error) {
+        console.error("Failed to initialize Firebase Admin:", error);
     }
 }
 
-export const messagingAdmin = admin.apps.length ? admin.messaging() : null;
-export default admin;
+export async function getMessaging() {
+    const admin = await getAdmin();
+
+    if (!admin.apps.length) {
+        if (!initPromise) {
+            initPromise = initializeFirebase();
+        }
+        await initPromise;
+    }
+    // Double check after init
+    return admin.apps.length ? admin.messaging() : null;
+}

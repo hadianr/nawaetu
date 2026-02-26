@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { messagingAdmin } from "@/lib/notifications/firebase-admin";
+import { getMessaging } from "@/lib/notifications/firebase-admin";
 
 /**
  * Enhanced Hybrid Prayer Notification API
@@ -140,6 +140,8 @@ export async function POST(req: NextRequest) {
             .select()
             .from(pushSubscriptions)
             .where(eq(pushSubscriptions.active, 1));
+
+        const messagingAdmin = await getMessaging();
 
         if (!messagingAdmin) {
             return NextResponse.json({ error: "Firebase Admin not initialized" }, { status: 500 });
