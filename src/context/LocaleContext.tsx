@@ -19,6 +19,7 @@
  */
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { RAMADHAN_TRANSLATIONS } from "@/data/ramadhan-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -61,6 +62,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       const savedLocale = (storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string) || DEFAULT_LOCALE;
       setLocaleState(savedLocale);
     } catch (error) {
+      Sentry.captureException(error);
       setLocaleState(DEFAULT_LOCALE);
     } finally {
       setIsLoading(false);
@@ -94,6 +96,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         new CustomEvent("locale-changed", { detail: { locale: newLocale } })
       );
     } catch (error) {
+      Sentry.captureException(error);
     }
   };
 
