@@ -181,8 +181,8 @@ export async function POST(req: NextRequest) {
             for (let i = 0; i < subscriptions.length; i += BATCH_SIZE) {
                 const batch = subscriptions.slice(i, i + BATCH_SIZE);
                 const tokens = batch.map(s => s.token);
-                const successIds: number[] = [];
-                const invalidIds: number[] = [];
+                const successIds: string[] = [];
+                const invalidIds: string[] = [];
 
                 if (tokens.length === 0) continue;
 
