@@ -62,9 +62,7 @@
 
 | Intention Journal | Tanya Nawaetu | Digital Quran (Mushaf) |
 | :---: | :---: | :---: |
-| ![Intention Journal Placeholder](https://via.placeholder.com/250x500.png?text=Intention+Journal) | ![Tanya Nawaetu Placeholder](https://via.placeholder.com/250x500.png?text=Tanya+Nawaetu) | ![Mushaf Mode Placeholder](https://via.placeholder.com/250x500.png?text=Digital+Quran) |
-
-*Note to Maintainer: Replace these placeholders with high-quality screenshots from your production environment.*
+| ![Intention Journal](./public/images/readme/intention_journal.png) | ![Tanya Nawaetu](./public/images/readme/tanya_nawaetu.png) | ![Digital Quran](./public/images/readme/digital_quran.png) |
 
 ---
 
@@ -196,13 +194,23 @@ We welcome contributions from the global community! Whether it's bug fixes, new 
 
 Nawaetu is an open-source project built for the Ummah. Your support helps cover server costs (database, hosting) and fuels further development.
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
-> **Commercial Licensing via GitHub Sponsors:**
-> - **$500/year**: Standard Commercial License for 1 Product.
-> - **$1,500 one-time**: Perpetual Commercial License + Whitelabel Support.
-[![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr)
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr)
+### 💖 Donation Platforms
+| Platform | Link |
+| :--- | :--- |
+| **GitHub Sponsors** | [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat-square&logo=github)](https://github.com/sponsors/hadianr) |
+| **Trakteer** | [![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=flat-square&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr) |
+| **Ko-fi** | [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr) |
+| **Buy Me a Coffee** | [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr) |
+
+### 🏢 Commercial Licensing
+*For businesses, white-labeling, or proprietary use cases.*
+
+| Tier | Pricing | Benefits |
+| :--- | :--- | :--- |
+| **Standard** | **$500** / year | 1 Product, Private Source, Regular Updates |
+| **Perpetual** | **$1,500** once | Lifetime License, Whitelabel, Priority Support |
+
+👉 [**Get Started via GitHub Sponsors**](https://github.com/sponsors/hadianr)
 
 May Allah reward your generosity with goodness. Jazakumullah Khairan Katsiran! 🤲
 

@@ -55,9 +55,7 @@
 
 | Jurnal Niat | Tanya Nawaetu | Al-Qur'an (Mushaf) |
 | :---: | :---: | :---: |
-| ![Intention Journal Placeholder](https://via.placeholder.com/250x500.png?text=Jurnal+Niat) | ![Tanya Nawaetu Placeholder](https://via.placeholder.com/250x500.png?text=Tanya+Nawaetu) | ![Mushaf Mode Placeholder](https://via.placeholder.com/250x500.png?text=Al-Qur'an+Mushaf) |
-
-*Catatan untuk Maintainer: Ganti placeholder ini dengan screenshot aplikasi asli dari environment produksi Anda.*
+| ![Jurnal Niat](./public/images/readme/intention_journal.png) | ![Tanya Nawaetu](./public/images/readme/tanya_nawaetu.png) | ![Al-Qur'an Mushaf](./public/images/readme/digital_quran.png) |
 
 ---
 
@@ -513,19 +511,29 @@ Punya pertanyaan atau feedback? Reach out:
 ---
 
 
-## ☕ Dukung Pengembangan
+## ☕ Dukung Misi Nawaetu
 
 Nawaetu adalah proyek open-source untuk umat. Dukungan Anda membantu menutupi biaya server (database, hosting) dan mempercepat pengembangan fitur baru.
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
-> **Lisensi Komersial via GitHub Sponsors:**
-> - **$500/tahun**: Lisensi Komersial Standar untuk 1 Produk.
-> - **$1,500 sekali bayar**: Lisensi Komersial Selamanya + Whitelabel Support.
-[![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr)
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr)
+### 💖 Platform Donasi
+| Platform | Link |
+| :--- | :--- |
+| **GitHub Sponsors** | [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat-square&logo=github)](https://github.com/sponsors/hadianr) |
+| **Trakteer** | [![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=flat-square&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr) |
+| **Ko-fi** | [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr) |
+| **Buy Me a Coffee** | [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr) |
 
-Semoga Allah membalas kebaikan Anda dengan pahala yang berlipat ganda. Jazakumullah Khairan Katsiran! 🤲
+### 🏢 Lisensi Komersial
+*Untuk kebutuhan bisnis, white-label, atau penggunaan closed-source.*
+
+| Tingkat | Harga | Keuntungan |
+| :--- | :--- | :--- |
+| **Standar** | **$500** / tahun | 1 Produk, Source Code Privat, Update Reguler |
+| **Perpetual** | **$1,500** sekali bayar | Lisensi Selamanya, Whitelabel, Priority Support |
+
+👉 [**Mulai via GitHub Sponsors**](https://github.com/sponsors/hadianr)
+
+Semoga Allah membalas kebaikan Anda dengan keberkahan. Jazakumullah Khairan Katsiran! 🤲
 
 ---
 
