@@ -18,11 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function checkAvailableModels() {
     const session = await getServerSession(authOptions);
@@ -35,14 +32,17 @@ export async function checkAvailableModels() {
     }
 
     try {
-        // This is a bit of a hack since the SDK might not expose listModels easily in the simplified client,
-        // but let's try a standard model that usually works: 'gemini-2.5-flash'
-        // If that fails, we really need to check the key permissions.
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
 
-        // Actually, let's just try to generate with 'gemini-3-flash-preview' as a test.
-        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-        await model.generateContent("test");
-        return "gemini-3-flash-preview is working!";
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to list models: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        // The API returns models in the format "models/gemini-pro", so we strip the prefix for cleaner output
+        const models = (data.models || []).map((m: any) => m.name.replace("models/", ""));
+        return `Available models: ${models.join(", ")}`;
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         return `Error listing/checking models: ${errorMessage}`;
