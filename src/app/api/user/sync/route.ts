@@ -452,11 +452,12 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             });
 
             const existingKeys = new Set(existingBookmarks.map(b => b.key));
+            const newBookmarks = [];
 
             for (const b of localBookmarks) {
                 const key = `${b.surahId}:${b.verseId}`;
                 if (!existingKeys.has(key)) {
-                    await db.insert(bookmarks).values({
+                    newBookmarks.push({
                         userId,
                         surahId: b.surahId,
                         surahName: b.surahName,
@@ -470,6 +471,10 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                     });
                     existingKeys.add(key); // Prevent duplicates in same batch
                 }
+            }
+
+            if (newBookmarks.length > 0) {
+                await db.insert(bookmarks).values(newBookmarks);
             }
         }
 
@@ -485,6 +490,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 new Date(i.niatDate).toISOString().split('T')[0],
                 i
             ]));
+            const newIntentions = [];
 
             for (const i of localIntentions) {
                 let dateStr = i.niatDate;
@@ -498,7 +504,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 const existingIntention = cloudDateMap.get(localDayStr);
 
                 if (!existingIntention) {
-                    await db.insert(intentions).values({
+                    newIntentions.push({
                         userId,
                         niatText: i.niatText,
                         niatType: i.niatType,
@@ -517,6 +523,10 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                         updatedAt: new Date()
                     }).where(eq(intentions.id, existingIntention.id));
                 }
+            }
+
+            if (newIntentions.length > 0) {
+                await db.insert(intentions).values(newIntentions);
             }
         }
 
