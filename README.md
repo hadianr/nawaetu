@@ -6,30 +6,21 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.8.3-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.8.17-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
 
-**Current Version: v1.8.3** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+**Current Version: v1.8.17** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
 
-### 🚀 What's New in v1.8.3
-- **Comprehensive Bilingual Support**: Full English-Indonesian localization for Hadith, Duas, and interactive Prayer Cards.
-- **Enhanced Spiritual Feed**: Daily Spirit widget localized with English translations for all 37 spiritual entries.
-- **Interactive i18n Widgets**: Prayer Check-in and Next Prayer widgets now follow the active language settings seamlessly.
-- **Performance Optimizations**: Faster initial load with deferred rendering for below-fold dashboard widgets.
+> [!IMPORTANT]
+> **Nawaetu 100% gratis untuk proyek Open Source (Lisensi AGPLv3).** Namun, jika perusahaan Anda ingin membuat aplikasi menggunakan source code Nawaetu secara tertutup (SaaS berbayar, Whitelabel tanpa mempublikasikan kode Anda), Anda **wajib** membeli **Lisensi Komersial**.
 
-### 🚀 What's New in v1.8.1
-- **Hijri Date Adjustment**: Flexible moon sighting alignment (Standard/Muhammadiyah) for accurate Ramadhan dates.
-- **Smart Cache Validation**: Optimized prayer times caching that respects settings changes.
-- **Settings Cloud Sync**: Securely sync your Hijri preferences across all authenticated devices.
-- **Ramadhan Countdown Optimization**: Perfectly synchronized header and card display for the month of Sha'ban/Ramadhan.
-
-### 🚀 What's New in v1.7.2
-- **Refactored Codebase**: Transitioned internal logic to English for better maintainability.
-- **Personalized Profile**: Added gender and archetype selection to tailor missions.
-- **Online Presence**: Real-time online/offline status detection.
-- **Security Hardening**: Hardened Tajweed HTML sanitization (XSS fix).
-- **Enhanced UI**: Improved HomeHeader and optimized layout loading.
+### 🚀 Recent Highlights (v1.8.x)
+- **Intention & Reflection Journal**: Align your heart every morning and muhasabah every evening.
+- **Improved FCM Notifications**: High-precision Adhan alerts (< 60s delay) with iOS "Killed State" reliability.
+- **Enhanced Spiritual Feed**: Daily Spirit, Quote of the Day, and interactive Prayer Check-in widgets.
+- **Modern Bilingual Support**: Full English-Indonesian localization for all content, including Hadith and Duas.
+- **Ramadhan 2026 Ready**: Smart Hijri adjustment, countdowns, and specialized Fiqh guides.
 
 
 **Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.
@@ -57,46 +48,27 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ---
 
-## 🌟 Key Features (v1.8.3)
+## 🌟 Core Pillars & Features
 
-### 1. 🔔 High-Precision Notifications
-*   **1-Minute Accuracy**: External Cron optimization ensures Adhan alerts are timely (< 60s delay).
-*   **Smart Deduplication**: DB-level tracking prevents duplicate notifications.
-*   **iOS Killed State**: Notifications arrive even when the app is force-quit (Direct Hit verified).
-*   **Standardized Icons**: Premium opaque icons for iOS/Android/Web.
+### 1. 🎯 Intention-First Cultivation
+*   **Intention Journal**: Set your "Niat" every morning and reflect in the evening (Soul-Muhasabah).
+*   **AI Niat Coach**: Your 24/7 Spiritual Mentor powered by Google Gemini 2.5 & Llama 3 for personalized Islamic guidance.
+*   **Gamified Growth**: Earn Niat Points through intention-based missions.
 
-### 2. 📔 Daily Intention Journal (New)
-*   **Morning Niat**: Set your intention at the start of the day to align your heart.
-*   **Evening Reflection**: Review your day—did you fulfill your intention? (Self-Muhasabah).
-*   **History Tracking**: Look back at your spiritual journey over time.
-*   **AI Insights**: Get personalized feedback on your intentions from Nawaetu AI.
+### 2. 📖 Spiritual Content Engine
+*   **Digital Quran**: Mushaf & List mode with verse-by-verse audio, Tajweed colors, and authentic Kemenag standards.
+*   **Hadith & Dua Hub**: Curated daily content with English and Indonesian translations.
+*   **Spiritual Feed**: Daily Spirit, Quote of the Day, and Hadith-of-the-day widgets.
 
-### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor
-*   **Smart Assistant**: Powered by Google Gemini 2.5 Flash-Lite & Groq Llama 3 for fast, accurate Islamic guidance.
-*   **Dalil-Backed**: All answers include references from the Quran & Sahih Hadith.
-*   **Chat History**: Continue your spiritual conversations across sessions.
+### 3. 🕌 Ritual Precision
+*   **High-Precision Adhan**: GPS-based prayer times with < 60s notification accuracy.
+*   **Qibla Compass**: Sensor-based high-accuracy direction finder.
+*   **Hijri Calibration**: Flexible date adjustments to align with local moon sightings.
 
-### 3. 📖 Digital Quran
-*   **Verse-by-Verse Audio**: Listen to individual verses by Mishary Rashid and others.
-*   **Tajweed Support**: Color-coded Tajweed guidance.
-*   **Mushaf Mode**: Authentic reading experience with Uthmani script.
-*   **Smart Bookmarks**: Save verses with personal notes.
-
-### 4. 🕌 Prayer Times & Qibla
-*   **Accurate Schedule**: GPS-based prayer times for any location worldwide.
-*   **Hijri Date Adjustment**: Manually adjust Hijri dates to align with local moon sighting or organization (-1, 0, +1 days).
-*   **Adhan Notifications**: Customizable alerts for every prayer time.
-*   **Qibla Compass**: Precise direction finder using device sensors.
-
-### 5. 🎮 Gamification - Make Worship Fun
-*   **Intention-First Missions**: Setting your intention ("Niat") is the primary daily mission.
-*   **Daily Missions**: Curated missions (e.g., Sunnah fasting, Dhuha prayer).
-*   **Streak System**: Visual progress tracker to maintain consistency.
-*   **XP & Leveling**: Level up from "Newbie" to "Spiritual Warrior".
-
-### 6. 🌍 Internalization (i18n)
-*   **Multi-Language**: Fully supports **English** and **Indonesian**.
-*   **Dynamic Theming**: Dark mode and customizable accent colors.
+### 4. 📈 Consistency (Istiqamah) Tools
+*   **Tasbih Counter**: Digital counters with customizable presets.
+*   **Prayer Check-in**: Track your daily ritual performance in real-time.
+*   **Activity Stats**: Visualized progress of your spiritual journey over time.
 
 ---
 
@@ -200,6 +172,9 @@ We welcome contributions from the global community! Whether it's bug fixes, new 
 Nawaetu is an open-source project built for the Ummah. Your support helps cover server costs (database, hosting) and fuels further development.
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
+> **Commercial Licensing via GitHub Sponsors:**
+> - **$500/year**: Standard Commercial License for 1 Product.
+> - **$1,500 one-time**: Perpetual Commercial License + Whitelabel Support.
 [![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr)
@@ -225,8 +200,8 @@ For companies or individuals who wish to use Nawaetu for **commercial purposes**
 - ✅ Private source code (no open-source requirement).
 - ✅ White labeling allowed.
 - ✅ Priority support & enterprise features.
-- 📩 Contact: **license@nawaetu.com** for pricing and details.
-- 📖 For complete guide and troubleshooting: [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md)
+- 📩 Contact: **hadian.rahmat@gmail.com** for pricing and details.
+- 📖 Read the full terms: [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md)
 
 See the [LICENSE](LICENSE) file for the full AGPLv3 text.
 
@@ -234,7 +209,8 @@ See the [LICENSE](LICENSE) file for the full AGPLv3 text.
 
 ## 👤 Author
 
-**Hadianr**
+**Hadian Rahmat**
+- Email: [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com)
 - GitHub: [@hadianr](https://github.com/hadianr)
 
 ---

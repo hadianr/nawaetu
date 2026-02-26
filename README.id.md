@@ -6,30 +6,21 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.8.3-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.8.17-blue)](https://github.com/hadianr/nawaetu/releases)
 
 > *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
 
-**Versi Saat Ini: v1.8.3** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+**Versi Saat Ini: v1.8.17** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
 
-### 🚀 Apa yang Baru di v1.8.3
-- **Dukungan Bilingual Lengkap**: Internasionalisasi penuh (ID/EN) untuk konten Hadist, Doa, dan Kartu Jadwal Sholat interaktif.
-- **Feed Spiritual Terjemahan**: Widget Daily Spirit kini mendukung Bahasa Inggris untuk seluruh 37 entri spiritual.
-- **Widget Interaktif i18n**: Fitur Check-in Sholat dan Next Prayer otomatis menyesuaikan bahasa aktif pengguna secara real-time.
-- **Optimasi Performa**: Pemuatan awal lebih cepat dengan deferred rendering untuk widget di bawah layar utama dashboard.
+> [!IMPORTANT]
+> **Nawaetu 100% gratis untuk proyek Open Source (Lisensi AGPLv3).** Namun, jika perusahaan Anda ingin membuat aplikasi menggunakan source code Nawaetu secara tertutup (SaaS berbayar, Whitelabel tanpa mempublikasikan kode Anda), Anda **wajib** membeli **Lisensi Komersial**.
 
-### 🚀 Apa yang Baru di v1.8.1
-- **Penyesuaian Tanggal Hijriah**: Pilihan penyesuaian kalender Hijriah (Standar/Muhammadiyah) untuk penentuan awal Ramadhan yang akurat.
-- **Validasi Cache Cerdas**: Optimasi sistem caching jadwal sholat yang otomatis menyesuaikan saat pengaturan diubah.
-- **Sinkronisasi Cloud**: Semua pengaturan termasuk koreksi Hijriah kini tersimpan di database dan sinkron di semua perangkat.
-- **sinkronisasi Hero Card**: Penyelarasan antara Header dan Card Countdown Ramadhan untuk transisi Sya'ban-Ramadhan yang lebih mulus.
-
-### 🚀 Apa yang Baru di v1.7.2
-- **Refactoring Codebase**: Standarisasi penamaan internal ke Bahasa Inggris.
-- **Profil Personalisasi**: Penambahan gender dan tipe pejuang (archetype) pada profil.
-- **Status Online**: Deteksi status koneksi real-time dengan indikator visual.
-- **Peningkatan Keamanan**: Sanitasi HTML Tajweed untuk mencegah celah XSS.
-- **Optimasi UI**: Penyempurnaan HomeHeader dan pemuatan layout lebih cepat.
+### 🚀 Highlight Terbaru (v1.8.x)
+- **Jurnal Niat & Refleksi**: Luruskan niat setiap pagi dan lakukan muhasabah setiap malam.
+- **Notifikasi FCM Lebih Presisi**: Adzan tepat waktu (< 60 detik delay) dengan reliabilitas tinggi di iOS (Killed State).
+- **Feed Spiritual Lengkap**: Widget Daily Spirit, Quote of the Day, dan Check-in Sholat yang interaktif.
+- **Dukungan Bilingual Modern**: Internasionalisasi penuh (ID/EN) untuk seluruh konten, termasuk Hadits dan Doa.
+- **Siap Ramadhan 2026**: Kalibrasi Hijriah yang fleksibel, fitur countdown, dan panduan Fiqh khusus.
 
 
 **Nawaetu** (dari kata "niat") adalah **satu-satunya aplikasi Islam** yang membantu kamu membangun kebiasaan ibadah yang lasting dengan memulai dari niat yang murni—menggabungkan AI mentorship, gamifikasi, dan intention tracking untuk membuat istiqomah terasa natural, bukan dipaksakan.
@@ -57,60 +48,27 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ---
 
-## 🌟 Fitur Unggulan (v1.8.3)
+## 🌟 Pilar Utama & Fitur
 
-### 1. 🔔 Sistem Notifikasi Presisi Tinggi
-*   **Akurasi 1 Menit**: Menggunakan External Cron untuk ketepatan waktu adzan (maksimal delay < 60 detik).
-*   **Smart Deduplication**: Mencegah notifikasi ganda dengan tracking database, aman meski cron berjalan tiap menit.
-*   **iOS Killed State Fix**: Notifikasi tembus meskipun aplikasi di-kill/force quit di iOS (Direct Hit Verified).
-*   **Icon Baru**: Tampilan premium dengan icon opaque (penuh) yang seragam di semua platform.
+### 1. 🎯 Pembinaan Berbasis Niat
+*   **Jurnal Niat**: Tetapkan "Niat" setiap pagi dan refleksi di malam hari (Muhasabah Jiwa).
+*   **AI Niat Coach**: Mentor Spiritual 24/7 bertenaga Google Gemini 2.5 & Llama 3 untuk bimbingan Islami personal.
+*   **Gamifikasi Ibadah**: Kumpulkan Niat Points melalui misi harian yang bermakna.
 
-### 2. 📔 Jurnal Niat Harian (New)
-*   **Morning Niat**: Mulai harimu dengan menetapkan niat yang lurus.
-*   **Evening Reflection**: Muhasabah di malam hari—apakah niatmu tercapai?
-*   **Riwayat Spiritual**: Pantau perjalanan niatmu dari waktu ke waktu.
-*   **AI Feedback**: Dapatkan masukan personal dari Nawaetu AI tentang kualitas niatmu.
+### 2. 📖 Konten Spiritual Terpadu
+*   **Al-Qur'an Digital**: Mode Mushaf & List dengan audio per ayat, pewarnaan Tajwid, dan standar Mushaf Kemenag RI.
+*   **Hub Hadits & Doa**: Konten pilihan harian dengan terjemahan Bahasa Indonesia dan Inggris.
+*   **Feed Spiritual**: Widget Daily Spirit, Quote of the Day, dan Hadits harian.
 
-### 2. 🤖 Nawaetu AI - Your 24/7 Spiritual Mentor (Updated)
-*   **Smart Rate Limiting**: Limit pintar (5x/hari Free, 25x/hari Muhsinin) dengan auto-reset saat upgrade
-*   **Chat History**: Percakapan tersimpan antar sesi, lanjut ngobrol kapan aja
-*   **Direct & Concise**: Jawaban AI lebih ringkas, to-the-point, dan tanpa basa-basi berlebih
-*   **Dalil-Based**: Semua jawaban AI disertai **Dalil Al-Qur'an & Hadits Shahih**
-*   **No Judgment Zone**: Curhat masalah ibadah atau tanya hukum Islam dengan privasi penuh
-*   **Multi-Model**: Powered by Google Gemini 2.5 Flash-Lite & Groq Llama 3.3 70B
+### 3. 🕌 Presisi Ritual
+*   **Adzan Presisi Tinggi**: Jadwal sholat berbasis GPS dengan akurasi notifikasi < 60 detik.
+*   **Kompas Kiblat**: Penunjuk arah presisi berbasis sensor perangkat.
+*   **Kalibrasi Hijriah**: Penyesuaian tanggal yang fleksibel sesuai dengan pengamatan hilal lokal.
 
-### 2. 📖 Al-Qur'an Digital - Mushaf di Genggaman
-*   **Verse-by-Verse Audio**: Tap ayat buat denger murattal (Mishary Rashid, dll)
-*   **Tajwid Color-Coded**: Panduan warna tajwid interaktif (Ghunnah, Qalqalah, Mad)
-*   **Mushaf & List View**: Pilih tampilan senyaman mushaf cetak atau scroll modern
-*   **Bookmark & Last Read**: Otomatis nyimpen posisi bacaan terakhir
-*   **Translation**: Terjemahan Indonesia (Kemenag) langsung di bawah ayat
-*   **Sumber Mushaf**: Arabic text menggunakan Kemenag + Uthmani (harakat lengkap) untuk tampilan yang akurat
-
-### 3. 🕌 Prayer Times - Gak Bakal Kelewat Lagi
-*   **Akurat & Real-time**: Jadwal sholat otomatis sesuai lokasi GPS
-*   **Penyesuaian Hijriah**: Atur manual tanggal Hijriah (-1, 0, +1 hari) sesuai ketetapan lokal atau organisasi.
-*   **Countdown Timer**: Hitung mundur ke waktu sholat berikutnya
-*   **Adhan Notification**: Notifikasi adzan (web push notification)
-*   **Qibla Compass**: Kompas kiblat dengan sensor gyroscope (Ka'bah focus)
-
-### 4. 🎮 Gamification - Make Ibadah Fun Again
-*   **Daily Missions**: 19 misi harian (Ramadhan & Sya'ban season)
-*   **Streak System**: Jaga konsistensi ibadah, jangan sampai putus!
-*   **XP & Leveling**: Naik level spiritual dari "Newbie" ke "Ramadhan Ready"
-*   **Progress Tracking**: Lihat perkembangan ibadah kamu secara visual
-
-### 5. 🎁 Muhsinin Program - Support the Mission
-*   **100% Gratis & Bebas Iklan**: Core features tetap gratis untuk semua
-*   **Premium Perks**: Unlimited AI chat, premium themes, priority support
-*   **Infaq Transparan**: Donasi digunakan untuk operasional server & pengembangan
-
-### 6. 🌍 Multi-Language & Theme System
-*   **Dual Language**: Indonesian & English interface
-*   **Dynamic Theme System**: CSS variables untuk consistent theming
-*   **Dark Mode**: Auto-switch berdasarkan sistem preference
-*   **Localized Content**: Missions, presets, dan UI text support ID/EN
-*   **Persistent Settings**: Theme dan language preferences tersimpan
+### 4. 📈 Alat Konsistensi (Istiqamah)
+*   **Penghitung Tasbih**: Tasbih digital dengan preset yang bisa dikustomisasi.
+*   **Check-in Sholat**: Pantau performa ibadah harian secara real-time.
+*   **Statistik Aktivitas**: Visualisasi perkembangan spiritual kamu dari waktu ke waktu.
 
 ---
 
@@ -542,6 +500,9 @@ Punya pertanyaan atau feedback? Reach out:
 Nawaetu adalah proyek open-source untuk umat. Dukungan Anda membantu menutupi biaya server (database, hosting) dan mempercepat pengembangan fitur baru.
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
+> **Lisensi Komersial via GitHub Sponsors:**
+> - **$500/tahun**: Lisensi Komersial Standar untuk 1 Produk.
+> - **$1,500 sekali bayar**: Lisensi Komersial Selamanya + Whitelabel Support.
 [![Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge&logo=ko-fi&logoColor=white)](https://trakteer.id/hadianr)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr)
@@ -566,7 +527,8 @@ Untuk perusahaan atau individu yang ingin menggunakan Nawaetu untuk **tujuan kom
 - ✅ Source code tetap privat (tidak perlu open source).
 - ✅ Boleh rebranding (White Label).
 - ✅ Priority support & fitur enterprise.
-- 📩 Kontak: **license@nawaetu.com** untuk harga dan detail.
+- 📩 Kontak: **hadian.rahmat@gmail.com** untuk harga dan detail.
+- 📖 Baca ketentuan lengkap: [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md)
 
 Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
@@ -574,9 +536,9 @@ Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
 ## 👤 Author
 
-**Hadianr**
+**Hadian Rahmat**
 - GitHub: [@hadianr](https://github.com/hadianr)
-- Email: hadianr@example.com
+- Email: [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com)
 
 ---
 
