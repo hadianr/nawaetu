@@ -165,16 +165,14 @@ export async function POST(req: NextRequest) {
 
             // 4. Sync Completed Missions
             if (data.completedMissions && data.completedMissions.length > 0) {
-                for (const m of data.completedMissions) {
-                    await tx.insert(userCompletedMissions)
-                        .values({
-                            userId,
-                            missionId: m.id,
-                            xpEarned: m.xpEarned,
-                            completedAt: new Date(m.completedAt),
-                        })
-                        .onConflictDoNothing(); // If already completed, skip
-                }
+                await tx.insert(userCompletedMissions)
+                    .values(data.completedMissions.map(m => ({
+                        userId,
+                        missionId: m.id,
+                        xpEarned: m.xpEarned,
+                        completedAt: new Date(m.completedAt),
+                    })))
+                    .onConflictDoNothing(); // If already completed, skip
             }
 
             // 5. Sync Intentions (Journal) - Optimized with Batch lookup
