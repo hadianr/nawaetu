@@ -34,24 +34,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
-import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useIsOnline } from '@/hooks/useNetworkStatus';
-import { syncQueue, type SyncQueueEntry } from '@/lib/sync-queue';
-
-/**
- * Exponential backoff configuration
- */
-interface RetryConfig {
-  initialDelayMs: number; // 1000ms = 1s
-  maxDelayMs: number; // 30000ms = 30s
-  maxRetries: number; // 5 attempts
-}
-
-const DEFAULT_RETRY_CONFIG: RetryConfig = {
-  initialDelayMs: 1000,
-  maxDelayMs: 30000,
-  maxRetries: 5,
-};
+import { syncQueue } from '@/lib/sync-queue';
 
 /**
  * Sync response from API
@@ -85,84 +69,11 @@ export function AdvancedDataSyncer() {
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const periodicSyncRef = useRef<NodeJS.Timeout | null>(null);
 
-
-  /**
-   * Calculate backoff delay (exponential)
-   */
-  const calculateBackoffDelay = useCallback(
-    (retryCount: number, config: RetryConfig): number => {
-      // Formula: min(initialDelay * 2^attemptNumber, maxDelay)
-      const exponentialDelay = config.initialDelayMs * Math.pow(2, retryCount);
-      return Math.min(exponentialDelay, config.maxDelayMs);
-    },
-    []
-  );
-
-  /**
-   * Sync single entry to cloud
-   */
-  const syncEntry = useCallback(
-    async (entry: SyncQueueEntry, config: RetryConfig): Promise<boolean> => {
-      try {
-        if (!session?.user?.id) {
-          return false;
-        }
-
-
-        const response = await fetch('/api/user/sync', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            entries: [entry],
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData.error || `HTTP ${response.status}: ${response.statusText}`
-          );
-        }
-
-        const result: SyncResponse = await response.json();
-
-        if (result.success && result.synced.length > 0) {
-          syncQueue.markAsSynced(entry.id);
-          return true;
-        } else if (result.failed.length > 0) {
-          const failureError = result.failed[0]?.error || 'Unknown error';
-          syncQueue.markAsFailed(entry.id, failureError);
-          return false;
-        }
-
-        return false;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-        // Increment retry count
-        const shouldRetry = syncQueue.incrementRetry(entry.id);
-
-        if (shouldRetry) {
-          const delay = calculateBackoffDelay(
-            syncQueue.getEntryById(entry.id)?.retryCount || 0,
-            config
-          );
-        } else {
-        }
-
-        return false;
-      }
-    },
-    [session?.user?.id]
-  );
-
   /**
    * Sync all pending queue entries
    */
   const syncAllPending = useCallback(
-    async (trigger: string = 'manual'): Promise<void> => {
+    async (): Promise<void> => {
       if (syncInProgressRef.current) {
         return;
       }
@@ -184,34 +95,72 @@ export function AdvancedDataSyncer() {
         }
 
         let successCount = 0;
-        let failureCount = 0;
 
-        // Sync entries sequentially to avoid race conditions
-        for (const entry of pending) {
-          const success = await syncEntry(entry, DEFAULT_RETRY_CONFIG);
-          if (success) {
-            successCount++;
-          } else {
-            failureCount++;
+        // Batch processing to optimize performance
+        // Split into chunks of 50 to avoid payload size issues
+        const BATCH_SIZE = 50;
+        const batches = [];
+
+        for (let i = 0; i < pending.length; i += BATCH_SIZE) {
+          batches.push(pending.slice(i, i + BATCH_SIZE));
+        }
+
+        for (const batch of batches) {
+          try {
+            const response = await fetch('/api/user/sync', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                entries: batch,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+
+            const result: SyncResponse = await response.json();
+
+            // Process successful syncs
+            if (result.synced && result.synced.length > 0) {
+              result.synced.forEach((s) => {
+                syncQueue.markAsSynced(s.id);
+                successCount++;
+              });
+            }
+
+            // Process failed syncs (logic errors)
+            if (result.failed && result.failed.length > 0) {
+              result.failed.forEach((f) => {
+                syncQueue.markAsFailed(f.id, f.error);
+              });
+            }
+          } catch {
+            // Network or Server error for the whole batch
+            // Increment retry for all items in batch
+            batch.forEach((entry) => {
+              syncQueue.incrementRetry(entry.id);
+            });
           }
-
-          // Small delay between requests
-          await new Promise(resolve => setTimeout(resolve, 50));
         }
 
         syncQueue.getStats();
 
         // Show toast notification
         if (successCount > 0) {
-          toast.success(`✓ Synced ${successCount} item${successCount > 1 ? 's' : ''}`);
+          toast.success(
+            `✓ Synced ${successCount} item${successCount > 1 ? 's' : ''}`
+          );
         }
-      } catch (error) {
+      } catch {
         toast.error('Sync failed - will retry later');
       } finally {
         syncInProgressRef.current = false;
       }
     },
-    [session?.user?.id, isOnline, syncEntry]
+    [session?.user?.id, isOnline]
   );
 
   /**
@@ -225,7 +174,7 @@ export function AdvancedDataSyncer() {
 
 
       syncTimeoutRef.current = setTimeout(() => {
-        syncAllPending(trigger);
+        syncAllPending();
       }, delayMs);
     },
     [syncAllPending]
@@ -276,7 +225,7 @@ export function AdvancedDataSyncer() {
 
     // Initial sync after 10 seconds
     const initialTimer = setTimeout(() => {
-      syncAllPending('initial');
+      syncAllPending();
     }, 10000);
 
     // Recurring sync every 5 minutes
