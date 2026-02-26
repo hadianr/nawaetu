@@ -195,169 +195,194 @@ export async function POST(req: NextRequest) {
         if (mode === "alert") {
             const todayStr = now.toISOString().split('T')[0];
 
-            for (const sub of subscriptions) {
-                try {
-                    // 1. Get location (parse from JSON string in DB)
-                    let lat = DEFAULT_LAT;
-                    let lng = DEFAULT_LNG;
-                    let timezone = sub.timezone || "Asia/Jakarta";
+            // Group subscriptions by location (rounded) to minimize API calls
+            const groups = new Map<string, { lat: number, lng: number, timezone: string, subs: typeof subscriptions }>();
 
-                    if (sub.userLocation) {
-                        try {
-                            const loc = sub.userLocation as { lat?: number; lng?: number };
-                            if (loc.lat && loc.lng) {
-                                lat = loc.lat;
-                                lng = loc.lng;
-                            }
-                        } catch (e) { }
-                    }
+            for (const sub of subscriptions) {
+                let lat = DEFAULT_LAT;
+                let lng = DEFAULT_LNG;
+                let timezone = sub.timezone || "Asia/Jakarta";
+
+                if (sub.userLocation) {
+                    try {
+                        const loc = sub.userLocation as { lat?: number; lng?: number };
+                        if (loc.lat && loc.lng) {
+                            lat = loc.lat;
+                            lng = loc.lng;
+                        }
+                    } catch (e) { }
+                }
+
+                // Key based on rounded location and timezone
+                const key = `${lat.toFixed(2)}_${lng.toFixed(2)}_${timezone}`;
+
+                if (!groups.has(key)) {
+                    groups.set(key, { lat, lng, timezone, subs: [] });
+                }
+                groups.get(key)!.subs.push(sub);
+            }
+
+            // Process groups in parallel
+            await Promise.all(Array.from(groups.values()).map(async (group) => {
+                try {
+                    const { lat, lng, timezone, subs } = group;
 
                     // 2. Fetch prayer times for this location (timezone-aware date)
-                    const localDateStr = now.toLocaleDateString("en-GB", {
-                        timeZone: timezone,
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric"
-                    }).split("/").join("-"); // DD-MM-YYYY
+                const localDateStr = now.toLocaleDateString("en-GB", {
+                    timeZone: timezone,
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }).split("/").join("-"); // DD-MM-YYYY
 
-                    // Use method 20 (Kemenag RI) — the app default for Indonesian users.
-                    const userMethod = "20";
-                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
-                    if (!timings) {
-                        results.skipped++;
-                        continue;
-                    }
+                // Use method 20 (Kemenag RI) — the app default for Indonesian users.
+                const userMethod = "20";
+                const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
+                if (!timings) {
+                    results.skipped += subs.length;
+                    return;
+                }
 
-                    // 3. Get current time in that timezone
-                    const localTimeStr = now.toLocaleTimeString("en-US", {
-                        timeZone: timezone,
-                        hour12: false,
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    });
+                // 3. Get current time in that timezone
+                const localTimeStr = now.toLocaleTimeString("en-US", {
+                    timeZone: timezone,
+                    hour12: false,
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
 
-                    // 4. Check each prayer
-                    const relevantPrayers = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
-                    let activePrayer: string | null = null;
+                // 4. Check each prayer
+                const relevantPrayers = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+                let activePrayer: string | null = null;
 
-                    for (const prayer of relevantPrayers) {
-                        if (isTimeInWindow(localTimeStr, timings[prayer])) {
-                            activePrayer = prayer;
-                            break;
-                        }
-                    }
-
-                    if (!activePrayer) {
-                        results.skipped++;
-                        continue;
-                    }
-
-                    // 5. Deduplication (DB-based for precision)
-                    let lastSentMap: Record<string, string> = {};
-                    if (sub.lastNotificationSent) {
-                        try {
-                            lastSentMap = sub.lastNotificationSent as Record<string, string>;
-                        } catch (e) { }
-                    }
-
-                    if (lastSentMap[activePrayer] === todayStr) {
-                        // Already sent for today
-                        results.skipped++;
-                        continue;
-                    }
-
-                    // 6. Check preferences
-                    if (sub.prayerPreferences) {
-                        try {
-                            const prefs = sub.prayerPreferences as Record<string, boolean>;
-                            const key = activePrayer.toLowerCase();
-                            if (prefs[key] === false) {
-                                results.skipped++;
-                                continue;
-                            }
-                        } catch (e) { }
-                    }
-
-                    // 7. Send Notification
-                    const prayerLabels: Record<string, string> = {
-                        Fajr: "Subuh", Dhuhr: "Dzuhur", Asr: "Ashar", Maghrib: "Maghrib", Isha: "Isya"
-                    };
-                    const label = prayerLabels[activePrayer];
-
-                    // Mindfulness Wording
-                    const titles = [
-                        `Waktunya Sholat ${label}`,
-                        `Panggilan ${label} Telah Tiba`,
-                        `${label} Telah Masuk`
-                    ];
-
-                    const bodies = [
-                        `Mari sejenak menghadap Sang Pencipta.`,
-                        `Segarkan jiwa dengan air wudhu dan sholat.`,
-                        `"Hayya 'alas shalah" - Mari meraih kemenangan.`,
-                        `Rehat sejenak dari dunia, tunaikan kewajiban.`
-                    ];
-
-                    // Randomize for variety
-                    const title = titles[Math.floor(Math.random() * titles.length)];
-                    const body = bodies[Math.floor(Math.random() * bodies.length)];
-
-                    await messagingAdmin.send({
-                        token: sub.token,
-                        notification: {
-                            title: title,
-                            body: body
-                        },
-                        data: {
-                            type: "prayer_alert",
-                            prayer: activePrayer,
-                            url: "/jadwal-sholat" // Open specific page
-                        },
-                        // CRITICAL for iOS Safari PWA
-                        webpush: {
-                            headers: {
-                                "Urgency": "high",
-                                "TTL": "86400"
-                            },
-                            notification: {
-                                title: title,
-                                body: body,
-                                icon: "/icon-192x192.png?v=1.5.7",
-                                badge: "/icon-192x192.png?v=1.5.7",
-                                tag: `prayer-${activePrayer.toLowerCase()}`,
-                                requireInteraction: true,
-                                data: {
-                                    url: "/jadwal-sholat"
-                                }
-                            }
-                        },
-                        android: {
-                            priority: "high",
-                            notification: {
-                                channelId: "prayer-alerts",
-                                priority: "max",
-                                visibility: "public"
-                            }
-                        },
-                    });
-
-                    results.sent++;
-
-                    // Update DB with new "last sent" map
-                    lastSentMap[activePrayer] = todayStr;
-
-                    await db.update(pushSubscriptions).set({
-                        lastUsedAt: new Date(),
-                        lastNotificationSent: lastSentMap
-                    }).where(eq(pushSubscriptions.id, sub.id));
-
-                } catch (e: any) {
-                    results.failed++;
-                    if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
-                        await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
+                for (const prayer of relevantPrayers) {
+                    if (isTimeInWindow(localTimeStr, timings[prayer])) {
+                        activePrayer = prayer;
+                        break;
                     }
                 }
-            }
+
+                if (!activePrayer) {
+                    results.skipped += subs.length;
+                    return;
+                }
+
+                // Process subscriptions in this group
+                for (const sub of subs) {
+                    try {
+                        // 5. Deduplication (DB-based for precision)
+                        let lastSentMap: Record<string, string> = {};
+                        if (sub.lastNotificationSent) {
+                            try {
+                                lastSentMap = sub.lastNotificationSent as Record<string, string>;
+                            } catch (e) { }
+                        }
+
+                        if (lastSentMap[activePrayer] === todayStr) {
+                            // Already sent for today
+                            results.skipped++;
+                            continue;
+                        }
+
+                        // 6. Check preferences
+                        if (sub.prayerPreferences) {
+                            try {
+                                const prefs = sub.prayerPreferences as Record<string, boolean>;
+                                const key = activePrayer.toLowerCase();
+                                if (prefs[key] === false) {
+                                    results.skipped++;
+                                    continue;
+                                }
+                            } catch (e) { }
+                        }
+
+                        // 7. Send Notification
+                        const prayerLabels: Record<string, string> = {
+                            Fajr: "Subuh", Dhuhr: "Dzuhur", Asr: "Ashar", Maghrib: "Maghrib", Isha: "Isya"
+                        };
+                        const label = prayerLabels[activePrayer];
+
+                        // Mindfulness Wording
+                        const titles = [
+                            `Waktunya Sholat ${label}`,
+                            `Panggilan ${label} Telah Tiba`,
+                            `${label} Telah Masuk`
+                        ];
+
+                        const bodies = [
+                            `Mari sejenak menghadap Sang Pencipta.`,
+                            `Segarkan jiwa dengan air wudhu dan sholat.`,
+                            `"Hayya 'alas shalah" - Mari meraih kemenangan.`,
+                            `Rehat sejenak dari dunia, tunaikan kewajiban.`
+                        ];
+
+                        // Randomize for variety
+                        const title = titles[Math.floor(Math.random() * titles.length)];
+                        const body = bodies[Math.floor(Math.random() * bodies.length)];
+
+                        await messagingAdmin!.send({
+                            token: sub.token,
+                            notification: {
+                                title: title,
+                                body: body
+                            },
+                            data: {
+                                type: "prayer_alert",
+                                prayer: activePrayer,
+                                url: "/jadwal-sholat" // Open specific page
+                            },
+                            // CRITICAL for iOS Safari PWA
+                            webpush: {
+                                headers: {
+                                    "Urgency": "high",
+                                    "TTL": "86400"
+                                },
+                                notification: {
+                                    title: title,
+                                    body: body,
+                                    icon: "/icon-192x192.png?v=1.5.7",
+                                    badge: "/icon-192x192.png?v=1.5.7",
+                                    tag: `prayer-${activePrayer.toLowerCase()}`,
+                                    requireInteraction: true,
+                                    data: {
+                                        url: "/jadwal-sholat"
+                                    }
+                                }
+                            },
+                            android: {
+                                priority: "high",
+                                notification: {
+                                    channelId: "prayer-alerts",
+                                    priority: "max",
+                                    visibility: "public"
+                                }
+                            },
+                        });
+
+                        results.sent++;
+
+                        // Update DB with new "last sent" map
+                        lastSentMap[activePrayer] = todayStr;
+
+                        await db.update(pushSubscriptions).set({
+                            lastUsedAt: new Date(),
+                            lastNotificationSent: lastSentMap
+                        }).where(eq(pushSubscriptions.id, sub.id));
+
+                    } catch (e: any) {
+                        results.failed++;
+                        if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                            await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
+                        }
+                    }
+                }
+                } catch (e: any) {
+                    console.error(`Group processing error for ${group.lat},${group.lng}:`, e);
+                    results.errors.push(`Group ${group.lat},${group.lng} error: ${e.message}`);
+                    results.skipped += group.subs.length;
+                }
+            }));
+
             return NextResponse.json({ success: true, mode: "alert", results });
         }
 
