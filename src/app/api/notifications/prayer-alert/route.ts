@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { messagingAdmin } from "@/lib/notifications/firebase-admin";
 
 /**
@@ -175,18 +175,66 @@ export async function POST(req: NextRequest) {
                 android: { priority: "normal" as const },
             };
 
-            for (const sub of subscriptions) {
+            const BATCH_SIZE = 500;
+
+            // Process in chunks of 500 (Firebase limit per batch)
+            for (let i = 0; i < subscriptions.length; i += BATCH_SIZE) {
+                const batch = subscriptions.slice(i, i + BATCH_SIZE);
+                const tokens = batch.map(s => s.token);
+                const successIds: number[] = [];
+                const invalidIds: number[] = [];
+
+                if (tokens.length === 0) continue;
+
                 try {
-                    await messagingAdmin.send({ ...syncMessage, token: sub.token });
-                    results.sent++;
-                    await db.update(pushSubscriptions).set({ lastUsedAt: new Date() }).where(eq(pushSubscriptions.id, sub.id));
-                } catch (e: any) {
-                    results.failed++;
-                    if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
-                        await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
+                    const response = await messagingAdmin.sendEachForMulticast({
+                        tokens,
+                        ...syncMessage
+                    });
+
+                    response.responses.forEach((resp, idx) => {
+                        const subId = batch[idx].id;
+                        if (resp.success) {
+                            results.sent++;
+                            successIds.push(subId);
+                        } else {
+                            results.failed++;
+                            if (resp.error?.code === "messaging/invalid-registration-token" ||
+                                resp.error?.code === "messaging/registration-token-not-registered") {
+                                invalidIds.push(subId);
+                            } else {
+                                results.errors.push(`Token ${tokens[idx]} failed: ${resp.error?.code}`);
+                            }
+                        }
+                    });
+
+                    // Update DB for this batch immediately to avoid query limits
+                    const updatePromises = [];
+
+                    if (successIds.length > 0) {
+                        updatePromises.push(
+                            db.update(pushSubscriptions)
+                                .set({ lastUsedAt: new Date() })
+                                .where(inArray(pushSubscriptions.id, successIds))
+                        );
                     }
+
+                    if (invalidIds.length > 0) {
+                        updatePromises.push(
+                            db.update(pushSubscriptions)
+                                .set({ active: 0 })
+                                .where(inArray(pushSubscriptions.id, invalidIds))
+                        );
+                    }
+
+                    await Promise.all(updatePromises);
+
+                } catch (batchError: any) {
+                    results.failed += batch.length;
+                    results.errors.push(`Batch ${i} failed: ${batchError.message}`);
                 }
             }
+
             return NextResponse.json({ success: true, mode: "sync", results });
         }
 
