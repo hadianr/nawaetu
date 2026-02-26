@@ -32,6 +32,13 @@ import { eq, sql, gte, lt } from "drizzle-orm";
 import { z } from "zod";
 
 // Schema validation for request body
+const quranLastReadSchema = z.object({
+    surahId: z.number(),
+    surahName: z.string(),
+    verseId: z.number(),
+    timestamp: z.union([z.number(), z.string()]).optional(),
+});
+
 const syncSchema = z.object({
     profile: z.object({
         name: z.string().optional(),
@@ -68,7 +75,12 @@ const syncSchema = z.object({
         prayersLogged: z.array(z.string()),
     }).optional(),
     readingState: z.object({
-        quranLastRead: z.any()
+        quranLastRead: z.preprocess((val) => {
+            if (typeof val === 'string' && val.startsWith('{')) {
+                try { return JSON.parse(val); } catch (e) { return val; }
+            }
+            return val;
+        }, quranLastReadSchema)
     }).optional(),
 });
 
@@ -243,11 +255,8 @@ export async function POST(req: NextRequest) {
 
             // 7. Sync Reading State
             if (data.readingState && data.readingState.quranLastRead) {
-                let qlr = data.readingState.quranLastRead;
+                const qlr = data.readingState.quranLastRead;
 
-                if (typeof qlr === 'string' && qlr.startsWith('{')) {
-                    try { qlr = JSON.parse(qlr); } catch (e) { }
-                }
                 await tx.insert(userReadingState)
                     .values({
                         userId,
