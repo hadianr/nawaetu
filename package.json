@@ -21,7 +21,8 @@
     "test:run": "VITE_CJS_IGNORE_WARNING=1 vitest run",
     "release": "bash scripts/release.sh",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "build:extension": "cd extension && zip -r ../nawaetu-extension.zip *"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",

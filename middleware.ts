@@ -21,7 +21,6 @@ export function middleware(request: NextRequest) {
     // Security headers
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     'Permissions-Policy': 'geolocation=(self), magnetometer=(self), gyroscope=(self), accelerometer=(self)',
-    'X-Frame-Options': 'SAMEORIGIN',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'origin-when-cross-origin',
     'X-XSS-Protection': '1; mode=block',
@@ -36,6 +35,7 @@ export function middleware(request: NextRequest) {
       connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://api.aladhan.com https://*.sentry.io https://*.google-analytics.com https://quran-api-id.vercel.app https://api.quran.gading.dev https://api.quran.com https://api.bigdatacloud.net https://openrouter.ai https://cdn.islamic.network;
       media-src 'self' https://raw.githubusercontent.com https://www.ayouby.com https://cdn.islamic.network;
       frame-src 'self' https://*.google.com https://vercel.live;
+      frame-ancestors 'self' chrome-extension: edge-extension: moz-extension:;
       object-src 'none';
       base-uri 'self';
       form-action 'self';

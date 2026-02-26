@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nawaetu</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 400px;
+      height: 600px;
+      overflow: hidden;
+      background-color: #f8fafc; /* Support for light/dark mode iframe */
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #0f172a;
+      }
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    /* Loader while iframe is loading */
+    .loader-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: -1;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(16, 185, 129, 0.2);
+      border-left-color: #10b981;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader-container">
+    <div class="spinner"></div>
+  </div>
+  <iframe id="nawaetu-frame" src="https://nawaetu.com" allow="geolocation; microphone; camera; clipboard-write; clipboard-read"></iframe>
+</body>
+</html>
