@@ -85,6 +85,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             Asr: timings.Asr,
             Maghrib: timings.Maghrib,
             Isha: timings.Isha,
+            Midnight: timings.Midnight,
         };
 
         const now = new Date();

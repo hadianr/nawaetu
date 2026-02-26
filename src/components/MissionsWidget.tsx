@@ -468,7 +468,7 @@ export default function MissionsWidget() {
                             else if (prayerKey === 'Dhuhr') endTimeStr = prayerData.prayerTimes['Asr'];
                             else if (prayerKey === 'Asr') endTimeStr = prayerData.prayerTimes['Maghrib'];
                             else if (prayerKey === 'Maghrib') endTimeStr = prayerData.prayerTimes['Isha'];
-                            // Isha end is tricky, let's ignore or use fixed offset.
+                            else if (prayerKey === 'Isha') endTimeStr = prayerData.prayerTimes['Midnight'];
 
                             if (pTime && endTimeStr) {
                                 const now = new Date();
@@ -477,6 +477,11 @@ export default function MissionsWidget() {
 
                                 const startDate = new Date(); startDate.setHours(sH, sM, 0, 0);
                                 const endDate = new Date(); endDate.setHours(eH, eM, 0, 0);
+
+                                // Handle day rollover (e.g. Isha 19:00 -> Midnight 00:15)
+                                if (endDate < startDate) {
+                                    endDate.setDate(endDate.getDate() + 1);
+                                }
 
                                 const diffMs = now.getTime() - startDate.getTime();
                                 const remainingMs = endDate.getTime() - now.getTime();
