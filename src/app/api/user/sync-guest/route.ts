@@ -26,7 +26,8 @@ import {
     userCompletedMissions,
     dailyActivities,
     users,
-    userReadingState
+    userReadingState,
+    NewIntention
 } from "@/db/schema";
 import { eq, sql, gte, lt } from "drizzle-orm";
 import { z } from "zod";
@@ -202,6 +203,9 @@ export async function POST(req: NextRequest) {
                     i
                 ]));
 
+                const intentionsToInsert: NewIntention[] = [];
+                const intentionsToUpdate: { id: string, data: Partial<NewIntention> }[] = [];
+
                 for (const i of data.intentions) {
                     const intentionDateValue = new Date(i.niatDate);
                     const localDayStr = intentionDateValue.toISOString().split('T')[0];
@@ -209,7 +213,7 @@ export async function POST(req: NextRequest) {
                     const existingIntention = cloudDateMap.get(localDayStr);
 
                     if (!existingIntention) {
-                        await tx.insert(intentions).values({
+                        intentionsToInsert.push({
                             userId,
                             niatText: i.niatText,
                             niatType: (i.niatType as any) || "daily",
@@ -221,13 +225,26 @@ export async function POST(req: NextRequest) {
                         // Prevent duplicates in same batch
                         cloudDateMap.set(localDayStr, { id: 'new', niatDate: intentionDateValue, reflectionText: i.reflectionText || null });
                     } else if (existingIntention && !existingIntention.reflectionText && i.reflectionText && existingIntention.id !== 'new') {
-                        await tx.update(intentions).set({
-                            reflectionText: i.reflectionText,
-                            reflectionRating: i.reflectionRating,
-                            reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
-                            updatedAt: new Date()
-                        }).where(eq(intentions.id, existingIntention.id));
+                        intentionsToUpdate.push({
+                            id: existingIntention.id,
+                            data: {
+                                reflectionText: i.reflectionText,
+                                reflectionRating: i.reflectionRating,
+                                reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
+                                updatedAt: new Date()
+                            }
+                        });
                     }
+                }
+
+                if (intentionsToInsert.length > 0) {
+                    await tx.insert(intentions).values(intentionsToInsert);
+                }
+
+                for (const u of intentionsToUpdate) {
+                    await tx.update(intentions)
+                        .set(u.data)
+                        .where(eq(intentions.id, u.id));
                 }
             }
 
