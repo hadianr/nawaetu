@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { checkAvailableModels } from '../app/mentor-ai/model-check';
 
 // Mock next-auth
@@ -29,21 +29,17 @@ vi.mock('@/lib/auth', () => ({
     authOptions: {},
 }));
 
-// Mock GoogleGenerativeAI
-vi.mock('@google/generative-ai', () => {
-    return {
-        GoogleGenerativeAI: vi.fn(() => ({
-            getGenerativeModel: vi.fn(() => ({
-                generateContent: vi.fn(() => Promise.resolve({ response: { text: () => "mock response" } })),
-            })),
-        })),
-    };
-});
-
 describe('model-check security', () => {
     beforeEach(() => {
         process.env.GEMINI_API_KEY = "test-key";
         vi.clearAllMocks();
+
+        // Mock global fetch
+        global.fetch = vi.fn();
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it('should deny access if not authenticated', async () => {
@@ -55,14 +51,55 @@ describe('model-check security', () => {
         expect(result).toBe("Unauthorized");
     });
 
-    it('should allow access if authenticated', async () => {
+    it('should handle missing API key', async () => {
+        const { getServerSession } = await import('next-auth');
+        // @ts-ignore
+        vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Test User' } });
+        delete process.env.GEMINI_API_KEY;
+
+        const result = await checkAvailableModels();
+        expect(result).toBe("No Key");
+    });
+
+    it('should list models if authenticated and API works', async () => {
         const { getServerSession } = await import('next-auth');
         // @ts-ignore
         vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Test User' } });
 
+        const mockModelsResponse = {
+            models: [
+                { name: "models/gemini-pro" },
+                { name: "models/gemini-ultra" }
+            ]
+        };
+
+        // Mock successful fetch response
+        (global.fetch as any).mockResolvedValue({
+            ok: true,
+            json: async () => mockModelsResponse,
+        });
+
         const result = await checkAvailableModels();
-        // It returns "gemini-3-flash-preview is working!" on success or "No Key" or error
-        // But specifically NOT "Unauthorized"
-        expect(result).not.toBe("Unauthorized");
+        expect(result).toBe("Available models: gemini-pro, gemini-ultra");
+        expect(global.fetch).toHaveBeenCalledWith(
+            expect.stringContaining("https://generativelanguage.googleapis.com/v1beta/models?key=test-key")
+        );
+    });
+
+    it('should return error message if fetch fails', async () => {
+        const { getServerSession } = await import('next-auth');
+        // @ts-ignore
+        vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Test User' } });
+
+        // Mock failed fetch response
+        (global.fetch as any).mockResolvedValue({
+            ok: false,
+            status: 403,
+            statusText: "Forbidden",
+            text: async () => "API key not valid",
+        });
+
+        const result = await checkAvailableModels();
+        expect(result).toContain("Error listing/checking models: Failed to list models: 403 Forbidden - API key not valid");
     });
 });

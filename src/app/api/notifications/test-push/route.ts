@@ -17,12 +17,13 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { messagingAdmin } from "@/lib/notifications/firebase-admin";
+import { getMessaging } from "@/lib/notifications/firebase-admin";
 
 export async function POST(req: NextRequest) {
     try {
         const { token, title, body } = await req.json();
 
+        const messagingAdmin = await getMessaging();
 
         if (!messagingAdmin) {
             return NextResponse.json({ error: "Firebase Admin not initialized" }, { status: 500 });
