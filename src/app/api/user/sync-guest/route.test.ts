@@ -73,6 +73,11 @@ describe('POST /api/user/sync-guest', () => {
 
         // Setup transaction mock
         txMock = {
+            query: {
+                intentions: {
+                    findMany: vi.fn().mockResolvedValue([]),
+                }
+            },
             insert: vi.fn().mockReturnThis(),
             values: vi.fn().mockReturnThis(),
             onConflictDoNothing: vi.fn().mockReturnThis(),
