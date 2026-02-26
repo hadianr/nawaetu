@@ -8,12 +8,26 @@
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
 [![Version](https://img.shields.io/badge/Version-v1.8.17-blue)](https://github.com/hadianr/nawaetu/releases)
 
-> *"Innama al-a'malu bin-niyyat" - Sesungguhnya amal itu tergantung niatnya*
+---
 
-**Versi Saat Ini: v1.8.17** | [Read in English 🇬🇧](README.md) | [Lihat Changelog](CHANGELOG.md) | [Lihat Roadmap](ROADMAP.md)
+### 🎯 Luruskan Niat, Bangun Kontribusi Nyata
+**Nawaetu** (diambil dari kata "Niat") adalah **aplikasi tracker habit Islami pertama di dunia yang berbasis Intention-First**. Jika aplikasi lain fokus pada mekanik ritual (hitung jadwal, jumlah tasbih), Nawaetu fokus pada **inti spiritual** ibadah: **Niat.**
+
+[**🚀 Coba Live Demo**](https://nawaetu.com) | [**📖 Read in English 🇬🇧**](README.md)
+
+---
+
+## 📑 Daftar Isi
+- [🎯 Apa yang Membuat Nawaetu Berbeda?](#-apa-yang-membuat-nawaetu-berbeda)
+- [✨ Galeri Visual](#-galeri-visual)
+- [🌟 Pilar Utama & Fitur](#-pilar-utama--fitur)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🚀 Memulai (Getting Started)](#-memulai-getting-started)
+- [📄 Lisensi](#-lisensi)
+- [🤝 Kontribusi](#-kontribusi)
 
 > [!IMPORTANT]
-> **Nawaetu 100% gratis untuk proyek Open Source (Lisensi AGPLv3).** Namun, jika perusahaan Anda ingin membuat aplikasi menggunakan source code Nawaetu secara tertutup (SaaS berbayar, Whitelabel tanpa mempublikasikan kode Anda), Anda **wajib** membeli **Lisensi Komersial**.
+> **Nawaetu menggunakan Dual Licensing.** Gratis untuk Open Source (AGPLv3), namun memerlukan **Lisensi Komersial** untuk penggunaan komersial/proprietary.
 
 ### 🚀 Highlight Terbaru (v1.8.x)
 - **Jurnal Niat & Refleksi**: Luruskan niat setiap pagi dan lakukan muhasabah setiap malam.
@@ -22,29 +36,28 @@
 - **Dukungan Bilingual Modern**: Internasionalisasi penuh (ID/EN) untuk seluruh konten, termasuk Hadits dan Doa.
 - **Siap Ramadhan 2026**: Kalibrasi Hijriah yang fleksibel, fitur countdown, dan panduan Fiqh khusus.
 
+---
 
-**Nawaetu** (dari kata "niat") adalah **satu-satunya aplikasi Islam** yang membantu kamu membangun kebiasaan ibadah yang lasting dengan memulai dari niat yang murni—menggabungkan AI mentorship, gamifikasi, dan intention tracking untuk membuat istiqomah terasa natural, bukan dipaksakan.
+## 🎯 Apa yang Membuat Nawaetu Berbeda?
 
-### 🎯 "Track Your Niat, Build Your Legacy"
+**Hampir setiap aplikasi Islam memiliki jadwal sholat, Qur'an, dan Kiblat. Tapi hampir tidak ada yang fokus pada *alasan* (why) di balik ibadahmu.**
 
-> ⚠️ **Catatan Penting:** Proyek ini menggunakan **Dual Licensing**. Gratis untuk open-source di bawah **AGPLv3**, tetapi memerlukan **Lisensi Komersial** untuk penggunaan tertutup/komersial. Lihat [Bagian Lisensi](#lisensi) untuk detailnya.
+### Keunikan Nawaetu:
+1.  🎯 **Pionir Intention-First**: Kami menjadikan "Niat" sebagai habit yang bisa dilacak, memindahkan fokus pertumbuhan spiritual dari jari (tasbih) ke hati.
+2.  🤖 **Tanya Nawaetu**: Tanya jawab Islami yang merujuk pada Al-Qur'an, Sunnah, dan Hadits shahih—bukan sekadar opini AI.
+3.  📔 **Loop Muhasabah**: Menghubungkan niat di pagi hari dengan refleksi di malam hari secara mulus.
+4.  🎮 **XP Spiritual**: Menggantikan gamifikasi generik dengan pencapaian Islami yang bermakna dan "Istiqamah Streak."
+5.  🛡️ **Siap Enterprise**: Dibangun dengan arsitektur Next.js yang skalabel, dukungan whitelabel, dan skema lisensi ganda.
 
 ---
 
-## 🎯 Apa yang Bikin Nawaetu Beda?
+## ✨ Galeri Visual
 
-**Semua aplikasi Islam punya jadwal sholat, Quran, dan kiblat. Tapi tidak ada yang fokus ke *kenapa* kamu beribadah.**
+| Jurnal Niat | Tanya Nawaetu | Al-Qur'an (Mushaf) |
+| :---: | :---: | :---: |
+| ![Intention Journal Placeholder](https://via.placeholder.com/250x500.png?text=Jurnal+Niat) | ![Tanya Nawaetu Placeholder](https://via.placeholder.com/250x500.png?text=Tanya+Nawaetu) | ![Mushaf Mode Placeholder](https://via.placeholder.com/250x500.png?text=Al-Qur'an+Mushaf) |
 
-Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal itu tergantung niatnya.**
-
-### Keunggulan Nawaetu:
-
-- 🎯 **Pendekatan Niat-First** - Track bukan cuma *apa* yang kamu lakukan, tapi *kenapa* kamu melakukannya
-- 🤖 **AI Niat Coach** - Mentor spiritual personal, bukan sekadar bot tanya-jawab
-- 🎮 **Gamifikasi Bermakna** - Niat Points & milestone Islami, bukan XP generik
-- 📔 **Reflection Loop** - Set niat harian + refleksi malam (segera hadir)
-- 🚀 **Dibangun untuk Istiqomah** - Dirancang agar kamu konsisten, bukan cuma semangat di awal
-- 💯 **100% Bebas Iklan** - Perjalanan spiritual kamu, tanpa gangguan
+*Catatan untuk Maintainer: Ganti placeholder ini dengan screenshot aplikasi asli dari environment produksi Anda.*
 
 ---
 
@@ -52,7 +65,7 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 
 ### 1. 🎯 Pembinaan Berbasis Niat
 *   **Jurnal Niat**: Tetapkan "Niat" setiap pagi dan refleksi di malam hari (Muhasabah Jiwa).
-*   **AI Niat Coach**: Mentor Spiritual 24/7 bertenaga Google Gemini 2.5 & Llama 3 untuk bimbingan Islami personal.
+*   **Tanya Nawaetu**: Asisten Islami 24/7 yang memberikan jawaban berdasarkan Al-Qur'an, Sunnah, dan Hadits yang dapat dipertanggungjawabkan.
 *   **Gamifikasi Ibadah**: Kumpulkan Niat Points melalui misi harian yang bermakna.
 
 ### 2. 📖 Konten Spiritual Terpadu
@@ -69,6 +82,11 @@ Nawaetu dibangun berdasarkan Hadits: *"Innama al-a'malu bin-niyyat"* - **Amal it
 *   **Penghitung Tasbih**: Tasbih digital dengan preset yang bisa dikustomisasi.
 *   **Check-in Sholat**: Pantau performa ibadah harian secara real-time.
 *   **Statistik Aktivitas**: Visualisasi perkembangan spiritual kamu dari waktu ke waktu.
+
+### 5. 🌙 Pusat Ramadhan (Musiman)
+*   **Panduan Ramadhan**: Fiqh khusus, FAQ, dan panduan amalan selama bulan suci.
+*   **Nutrisi Sunnah & Tips**: Rekomendasi makanan Sahur dan Iftar berdasarkan Sunnah.
+*   **Countdown Ramadhan**: Pelacakan presisi untuk hilal dan hitung mundur harian.
 
 ---
 

@@ -8,12 +8,26 @@
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
 [![Version](https://img.shields.io/badge/Version-v1.8.17-blue)](https://github.com/hadianr/nawaetu/releases)
 
-> *"Innama al-a'malu bin-niyyat" - Indeed, actions are judged by intentions.*
+---
 
-**Current Version: v1.8.17** | [Read in Indonesian 🇮🇩](README.id.md) | [See Changelog](CHANGELOG.md) | [View Roadmap](ROADMAP.md)
+### 🎯 Track Your Niat, Build Your Legacy
+**Nawaetu** (derived from "Niat" or Intention) is the **world's first Intention-First Islamic habit tracker**. While most apps focus on the ritual mechanics (calculating times, counter digits), Nawaetu focuses on the **spiritual heart** of worship: **The Intention.**
+
+[**🚀 Explore Live Demo**](https://nawaetu.com) | [**📖 Baca dalam Bahasa Indonesia 🇮🇩**](README.id.md)
+
+---
+
+## 📑 Table of Contents
+- [🎯 What Makes Nawaetu Different?](#-what-makes-nawaetu-different)
+- [✨ Visual Showcase](#-visual-showcase)
+- [🌟 Core Pillars & Features](#-core-pillars--features)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🚀 Getting Started](#-getting-started)
+- [📄 License](#-license)
+- [🤝 Contributing](#-contributing)
 
 > [!IMPORTANT]
-> **Nawaetu 100% gratis untuk proyek Open Source (Lisensi AGPLv3).** Namun, jika perusahaan Anda ingin membuat aplikasi menggunakan source code Nawaetu secara tertutup (SaaS berbayar, Whitelabel tanpa mempublikasikan kode Anda), Anda **wajib** membeli **Lisensi Komersial**.
+> **Nawaetu is Dual Licensed.** Free for Open Source (AGPLv3), but requires a **Commercial License** for proprietary/closed-source use.
 
 ### 🚀 Recent Highlights (v1.8.x)
 - **Intention & Reflection Journal**: Align your heart every morning and muhasabah every evening.
@@ -33,18 +47,24 @@
 
 ## 🎯 What Makes Nawaetu Different?
 
-**Every Islamic app has prayer times, Quran, and qibla. But none focus on the *why* behind your worship.**
+**Every Islamic app has prayer times, Quran, and Qibla. But almost none focus on the *why* behind your worship.**
 
-Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are judged by intentions.**
+### The Nawaetu Uniqueness:
+1.  🎯 **The Intention-First Pioneer**: We treat "Niat" as a trackable habit, moving spiritual growth from the fingers (counters) to the heart.
+2.  🤖 **Tanya Nawaetu**: Specialized Islamic Q&A backed by Quran, Sunnah, and authenticated Hadith.
+3.  📔 **The Muhasabah Loop**: Seamlessly bridges the gap between morning intentions and evening reflections.
+4.  🎮 **Spiritual XP**: Replaces generic gamification with meaningful Islamic milestones and "Istiqamah Streaks."
+5.  ️ **Enterprise Ready**: Built from day one with dual-licensing, whitelabel support, and a scalable Next.js architecture.
 
-### The Nawaetu Difference:
+---
 
-- 🎯 **Intention-First Approach** - Track not just *what* you do, but *why* you do it
-- 🤖 **AI Niat Coach** - Personal spiritual mentor, not just a Q&A bot
-- 🎮 **Meaningful Gamification** - Niat Points & Islamic milestones, not generic XP
-- 📔 **Reflection Loop** - Daily intention setting + evening reflection (coming soon)
-- 🚀 **Built for Istiqamah** - Designed to help you stay consistent, not just start strong
-- 💯 **100% Ad-Free** - Your spiritual journey, uninterrupted
+## ✨ Visual Showcase
+
+| Intention Journal | Tanya Nawaetu | Digital Quran (Mushaf) |
+| :---: | :---: | :---: |
+| ![Intention Journal Placeholder](https://via.placeholder.com/250x500.png?text=Intention+Journal) | ![Tanya Nawaetu Placeholder](https://via.placeholder.com/250x500.png?text=Tanya+Nawaetu) | ![Mushaf Mode Placeholder](https://via.placeholder.com/250x500.png?text=Digital+Quran) |
+
+*Note to Maintainer: Replace these placeholders with high-quality screenshots from your production environment.*
 
 ---
 
@@ -52,7 +72,7 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 
 ### 1. 🎯 Intention-First Cultivation
 *   **Intention Journal**: Set your "Niat" every morning and reflect in the evening (Soul-Muhasabah).
-*   **AI Niat Coach**: Your 24/7 Spiritual Mentor powered by Google Gemini 2.5 & Llama 3 for personalized Islamic guidance.
+*   **Tanya Nawaetu**: Your 24/7 Islamic assistant providing answers based on the Quran, Sunnah, and Hadith—not just AI opinions.
 *   **Gamified Growth**: Earn Niat Points through intention-based missions.
 
 ### 2. 📖 Spiritual Content Engine
@@ -69,6 +89,11 @@ Nawaetu is built on the Hadith: *"Innama al-a'malu bin-niyyat"* - **Actions are 
 *   **Tasbih Counter**: Digital counters with customizable presets.
 *   **Prayer Check-in**: Track your daily ritual performance in real-time.
 *   **Activity Stats**: Visualized progress of your spiritual journey over time.
+
+### 5. 🌙 Ramadhan Central (Seasonal)
+*   **Ramadhan Guide**: Specialized Fiqh, FAQ, and practice guides for the holy month.
+*   **Sunnah Foods & Tips**: Curated Sahur and Iftar recommendations based on the Sunnah.
+*   **Ramadhan Countdown**: Precision tracking for moon sighting and daily countdown.
 
 ---
 
