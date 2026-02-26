@@ -15,8 +15,6 @@ export function middleware(request: NextRequest) {
 
   // Add performance and security headers
   const headers = {
-    // Cache control for static assets
-    'Cache-Control': 'public, max-age=31536000, immutable',
 
     // Security headers
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
@@ -35,7 +33,7 @@ export function middleware(request: NextRequest) {
       connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://api.aladhan.com https://*.sentry.io https://*.google-analytics.com https://quran-api-id.vercel.app https://api.quran.gading.dev https://api.quran.com https://api.bigdatacloud.net https://openrouter.ai https://cdn.islamic.network;
       media-src 'self' https://raw.githubusercontent.com https://www.ayouby.com https://cdn.islamic.network;
       frame-src 'self' https://*.google.com https://vercel.live;
-      frame-ancestors 'self' chrome-extension: edge-extension: moz-extension:;
+      frame-ancestors 'self' chrome-extension://* edge-extension://* moz-extension://* chrome-extension: edge-extension: moz-extension:;
       object-src 'none';
       base-uri 'self';
       form-action 'self';
