@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { eq, inArray } from "drizzle-orm";
-import { messagingAdmin } from "@/lib/notifications/firebase-admin";
+import { getMessaging } from "@/lib/notifications/firebase-admin";
 
 /**
  * Enhanced Hybrid Prayer Notification API
@@ -141,9 +141,7 @@ export async function POST(req: NextRequest) {
             .from(pushSubscriptions)
             .where(eq(pushSubscriptions.active, 1));
 
-        if (!messagingAdmin) {
-            return NextResponse.json({ error: "Firebase Admin not initialized" }, { status: 500 });
-        }
+        const messaging = await getMessaging();
 
         const results = {
             total: subscriptions.length,
@@ -187,7 +185,7 @@ export async function POST(req: NextRequest) {
                 if (tokens.length === 0) continue;
 
                 try {
-                    const response = await messagingAdmin.sendEachForMulticast({
+                    const response = await messaging.sendEachForMulticast({
                         tokens,
                         ...syncMessage
                     });
@@ -348,7 +346,7 @@ export async function POST(req: NextRequest) {
                     const title = titles[Math.floor(Math.random() * titles.length)];
                     const body = bodies[Math.floor(Math.random() * bodies.length)];
 
-                    await messagingAdmin.send({
+                    await messaging.send({
                         token: sub.token,
                         notification: {
                             title: title,

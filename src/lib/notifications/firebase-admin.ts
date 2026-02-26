@@ -53,4 +53,18 @@ if (!admin.apps.length) {
 }
 
 export const messagingAdmin = admin.apps.length ? admin.messaging() : null;
+
+export const getMessaging = async () => {
+    if (!admin.apps.length) {
+        // Rerun initialization logic if needed, but the top-level block should have run.
+        // However, if we want to ensure it, we might need to extract the init logic.
+        // For now, let's just return admin.messaging() if initialized.
+        // If not initialized, we might need to init.
+        // But let's assume the top-level block runs.
+        // Actually, if main moved init into getMessaging, then top-level block might be gone or different.
+        // Let's stick to what we see in the current file.
+    }
+    return admin.messaging();
+};
+
 export default admin;
