@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan-data";
 import { NIAT_PUASA_RAMADHAN, DALIL_PUASA, DALIL_10_DAYS_MERCY, DALIL_10_DAYS_FORGIVENESS, DALIL_10_DAYS_FREEDOM } from "@/data/ramadhan-data";
 import NiatCard from "./NiatCard";
@@ -26,7 +26,7 @@ import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
 
 export default function RamadhanHeroCard() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const { t, locale } = useLocale();
 
     const hijriDay = data?.hijriDay ?? 1;

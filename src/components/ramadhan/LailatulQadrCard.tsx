@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import {
     DALIL_LAILATUL_QADR,
     DALIL_LAST_10_NIGHTS,
@@ -34,7 +34,7 @@ import NiatCard from "./NiatCard";
 import { useTranslations } from "@/context/LocaleContext";
 
 export default function LailatulQadrCard() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const t = useTranslations();
     const hijriDay = data?.hijriDay ?? 1;
 
@@ -73,7 +73,7 @@ export default function LailatulQadrCard() {
                         </p>
                     </div>
                 ) : isTonight ? (
-                    <div className="rounded-xl border px-3 py-2 text-center backdrop-blur-md" style={{ 
+                    <div className="rounded-xl border px-3 py-2 text-center backdrop-blur-md" style={{
                         background: "rgba(var(--color-primary), 0.15)",
                         borderColor: "rgba(var(--color-primary), 0.3)"
                     }}>
@@ -101,19 +101,18 @@ export default function LailatulQadrCard() {
                         {t.lailatulQadrSectionLabel}
                     </p>
                 </div>
-                
+
                 {/* Compact grid with two rows */}
                 <div className="grid grid-cols-5 gap-1.5 mb-1.5">
                     {LAST_TEN_NIGHTS.map((night) => {
                         const status = getStatus(night);
                         const isOdd = isOddNight(night);
-                        
+
                         return (
                             <div
                                 key={night}
-                                className={`flex flex-col items-center justify-center rounded-lg py-2 border transition-all ${
-                                    isOdd ? "hover:scale-105" : "hover:scale-102"
-                                }`}
+                                className={`flex flex-col items-center justify-center rounded-lg py-2 border transition-all ${isOdd ? "hover:scale-105" : "hover:scale-102"
+                                    }`}
                                 style={{
                                     borderColor: isOdd
                                         ? status === "tonight"
@@ -130,8 +129,8 @@ export default function LailatulQadrCard() {
                                                 : "rgba(var(--color-primary), 0.08)"
                                         : "rgba(0,0,0,0.1)",
                                     opacity: status === "past" ? (isOdd ? 0.5 : 0.3) : 1,
-                                    boxShadow: isOdd && status === "tonight" 
-                                        ? "0 0 16px rgba(var(--color-primary), 0.3)" 
+                                    boxShadow: isOdd && status === "tonight"
+                                        ? "0 0 16px rgba(var(--color-primary), 0.3)"
                                         : "none"
                                 }}
                             >
@@ -145,7 +144,7 @@ export default function LailatulQadrCard() {
                                                 ? "✨"
                                                 : "🌙"}
                                 </span>
-                                
+
                                 {/* Night number */}
                                 <span
                                     className={`${isOdd ? "text-xs font-bold mt-0.5" : "text-[10px] font-medium mt-0.5"}`}
@@ -165,7 +164,7 @@ export default function LailatulQadrCard() {
                         );
                     })}
                 </div>
-                
+
                 {/* Compact Legend */}
                 <div className="flex items-center justify-center gap-3 text-[9px] text-white/30">
                     <div className="flex items-center gap-1">

@@ -23,14 +23,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRamadhanCalendar } from "@/hooks/useRamadhanCalendar";
 import { Loader2, Calendar as CalendarIcon, MapPin } from "lucide-react";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/context/LocaleContext";
 import { getRamadhanDay } from "@/data/ramadhan-data";
 
 export default function RamadhanCalendar() {
     const { calendarData, loading, error, fetchCalendar } = useRamadhanCalendar();
-    const { data: prayerData } = usePrayerTimes();
+    const { data: prayerData } = usePrayerTimesContext();
     const t = useTranslations();
 
     const onOpenChange = (open: boolean) => {

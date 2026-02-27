@@ -24,7 +24,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { DALIL_TADARUS, NIAT_TADARUS } from "@/data/ramadhan-data";
 import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "@/context/LocaleContext";
 import { addXP } from "@/lib/leveling";
@@ -43,7 +43,7 @@ const DEFAULT_LOG: KhatamanLog = {
 };
 
 export default function KhatamanProgress() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const t = useTranslations();
     const [khatamanData, setKhatamanData] = useState<KhatamanLog>(DEFAULT_LOG);
 

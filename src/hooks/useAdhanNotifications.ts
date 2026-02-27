@@ -19,7 +19,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { MUADZIN_OPTIONS } from "@/data/settings-data";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -31,7 +31,7 @@ const storage = getStorageService();
 const CHECK_INTERVAL_MS = 30 * 1000; // 30 seconds
 
 export function useAdhanNotifications() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const lastNotifiedTime = useRef<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPageVisible, setIsPageVisible] = useState(true);

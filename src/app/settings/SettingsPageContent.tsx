@@ -39,7 +39,7 @@ import UserProfileDialog from "@/components/UserProfileDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar
 import DonationModal from "@/components/DonationModal";
 import AboutAppModal from "@/components/AboutAppModal";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
@@ -80,7 +80,7 @@ const DEFAULT_PREFS: AdhanPreferences = {
 export default function SettingsPageContent() {
     const searchParams = useSearchParams();
     const { data: session, status, update } = useSession(); // Add update
-    const { data, refreshLocation, loading: locationLoading } = usePrayerTimes();
+    const { data, refreshLocation, loading: locationLoading } = usePrayerTimesContext();
     const { currentTheme, setTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();

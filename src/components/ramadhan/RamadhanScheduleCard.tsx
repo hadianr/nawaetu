@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import DalilBadge from "./DalilBadge";
 import NiatCard from "./NiatCard";
 import { DALIL_FASTING_SCHEDULE, DOA_IFTAR, DOA_IFTAR_2, DOA_IFTAR_3, DOA_SAHUR } from "@/data/ramadhan-data";
@@ -47,7 +47,7 @@ function formatCountdown(ms: number): string {
 }
 
 export default function RamadhanScheduleCard() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const t = useTranslations();
     const [now, setNow] = useState(new Date());
 

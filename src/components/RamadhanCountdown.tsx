@@ -38,7 +38,7 @@ const InfoIcon = ({ className }: { className?: string }) => (
 );
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -51,7 +51,7 @@ interface Props {
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     const { t, locale } = useLocale();
-    const { data: prayerData } = usePrayerTimes();
+    const { data: prayerData } = usePrayerTimesContext();
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; totalMs: number }>({
         days: initialDays,

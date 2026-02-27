@@ -24,7 +24,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { DALIL_TARAWEH, NIAT_TARAWEH, formatHijriKey } from "@/data/ramadhan-data";
 import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTranslations } from "@/context/LocaleContext";
 import { addXP } from "@/lib/leveling";
 import { toast } from "sonner";
@@ -56,7 +56,7 @@ function getStreak(log: TarawehLog, currentKey: string): number {
 }
 
 export default function TarawehTracker() {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
     const t = useTranslations();
     const [log, setLog] = useState<TarawehLog>({});
     const [todayKey, setTodayKey] = useState("");

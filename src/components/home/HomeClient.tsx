@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
 import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
 import DeferredBelowFold from "@/components/home/DeferredBelowFold";
@@ -31,7 +31,7 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ initialDaysLeft, isRamadhanSeason }: HomeClientProps) {
-    const { data } = usePrayerTimes();
+    const { data } = usePrayerTimesContext();
 
     // Use the server-computed flag as the ground truth on initial render.
     // Once the API loads, refine with the hijri month for accuracy.

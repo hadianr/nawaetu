@@ -25,7 +25,7 @@ import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
+import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
 import { checkMissionValidation, getHukumLabel } from "@/lib/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
@@ -58,7 +58,7 @@ export default function MisiPage() {
     const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const { data: prayerData } = usePrayerTimes();
+    const { data: prayerData } = usePrayerTimesContext();
 
     const loadData = () => {
         const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
