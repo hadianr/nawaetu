@@ -149,6 +149,25 @@ export const RAMADHAN_ID = {
     buttonSave: "Simpan",
     buttonCancel: "Batal",
 
+    // Zakat Fitrah
+    zakatCardTitle: "Zakat Fitrah",
+    zakatCardSubtitle: "Tunaikan kewajiban sebelum shalat Idul Fitri",
+    zakatObligationTitle: "Kewajiban Zakat",
+    zakatObligationDesc: "Zakat fitrah wajib bagi setiap muslim yang merdeka dan memiliki kelebihan makanan untuk dirinya dan keluarganya pada hari raya Idul Fitri. Besarannya adalah 1 sha' (kurang lebih 2,5 kg atau 3,5 liter) makanan pokok.",
+    zakatFoodTitle: "Bentuk Makanan",
+    zakatFoodDesc: "Zakat dibayarkan berupa makanan pokok yang mengenyangkan menurut kebiasaan masyarakat setempat (seperti beras, gandum, kurma, dll).",
+    zakatMoneyTitle: "Membayar dengan Uang",
+    zakatMoneyDesc: "Menurut mazhab Hanafi, diperbolehkan membayar zakat fitrah dengan uang yang senilai dengan harga makanan pokok pembagian zakat, untuk memudahkan penerima membelikan kebutuhan hidupnya.",
+    zakatDalilTitle: "Dalil Zakat Fitrah",
+    zakatDalilText: "\"Rasulullah shallallahu 'alaihi wa sallam mewajibkan zakat fitrah, yaitu sedekah (makanan) sebagai penyuci bagi orang yang berpuasa dari perbuatan sia-sia dan kotor, serta sebagai makanan bagi orang-orang miskin.\"",
+    zakatDalilSource: "HR. Abu Dawud No. 1609, Ibnu Majah No. 1827",
+    zakatCalcButton: "Kalkulator Zakat",
+    zakatCalcModalTitle: "Kalkulator Zakat Fitrah",
+    zakatCalcFamilyLabel: "Jumlah Anggota Keluarga",
+    zakatCalcPriceLabel: "Harga Beras/Makanan Pokok per 2.5 kg (Rp)",
+    zakatCalcTotalLabel: "Total Zakat Fitrah Anda",
+    zakatCalcNote: "Catatan: Harga tiap makanan pokok bisa berbeda tergantung kualitas yang biasa Anda konsumsi.",
+
     // Prayer Status
     prayerCompleted: "Selesai",
     prayerPending: "Belum",

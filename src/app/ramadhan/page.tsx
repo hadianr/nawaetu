@@ -51,6 +51,11 @@ const RamadhanGuideCard = dynamic(() => import("@/components/ramadhan/RamadhanGu
     loading: () => <div className="h-32 rounded-2xl bg-white/5 animate-pulse" />,
 });
 
+const ZakatFitrahCard = dynamic(() => import("@/components/ramadhan/ZakatFitrahCard"), {
+    ssr: false,
+    loading: () => <div className="h-40 rounded-2xl bg-white/5 animate-pulse" />,
+});
+
 export default function RamadhanPage() {
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.12),rgba(255,255,255,0))] px-2 sm:px-3 md:px-4 py-2 sm:py-4 md:py-6 font-sans">
@@ -95,6 +100,13 @@ export default function RamadhanPage() {
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "400ms" }}>
                     <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
                         <LailatulQadrCard />
+                    </Suspense>
+                </section>
+
+                {/* Zakat Fitrah */}
+                <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "450ms" }}>
+                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                        <ZakatFitrahCard />
                     </Suspense>
                 </section>
 
