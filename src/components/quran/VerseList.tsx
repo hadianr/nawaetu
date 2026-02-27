@@ -134,7 +134,7 @@ const getVerseFontClass = (script: string, size: string) => {
 };
 
 export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
-    const { t } = useLocale();
+    const { t, locale: contextLocale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
 
@@ -150,9 +150,19 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [scriptType, setScriptType] = useState<'tajweed' | 'indopak'>('indopak'); // Default to Indopak for clarity
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
-    const [locale, setLocale] = useState<string>(currentLocale);
+    const locale = contextLocale;
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+
+    // Ensure translation language matches active locale
+    useEffect(() => {
+        if (locale && currentLocale && locale !== currentLocale) {
+            startTransition(() => {
+                router.refresh();
+            });
+        }
+    }, [locale, currentLocale, router]);
+
     const { data: session } = useSession();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -262,16 +272,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         startTransition(() => router.refresh());
     }, [router]);
 
-    const handleLocaleChange = useCallback((value: string) => {
-        setLocale(value);
-        // Update cookie for server-side
-        document.cookie = `settings_locale=${value}; path=/; max-age=31536000`;
-        // Update localStorage for client-side persistence
-        const storage = getStorageService();
-        storage.set(STORAGE_KEYS.SETTINGS_LOCALE as any, value);
-        // Refresh to get new translation
-        startTransition(() => router.refresh());
-    }, [router]);
+
 
     // Bookmarking
     const { isBookmarked: checkIsBookmarked, getBookmark } = useBookmarks();

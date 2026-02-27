@@ -67,6 +67,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         const browserLang = navigator.language.toLowerCase();
         // If not ID, default to EN for global judges
         savedLocale = browserLang.startsWith("id") ? "id" : "en";
+        // Also save it so it persists and server components can use it
+        storage.set(STORAGE_KEYS.SETTINGS_LOCALE, savedLocale);
+        document.cookie = `settings_locale=${savedLocale}; path=/; max-age=31536000`;
       }
 
       setLocaleState(savedLocale);
