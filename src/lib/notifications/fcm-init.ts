@@ -205,29 +205,40 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             return null;
         }
     } catch (error: any) {
-        console.error("[FCM Setup Error Detail]", {
-            message: error.message,
-            code: error.code,
-            stack: error.stack
-        });
+        console.error("[FCM Setup Error Detail]: " + (error.message || "Unknown error"), error);
 
-        if (error.message.includes("Registration failed") || error.message.includes("NetworkError")) {
-            // Add breadcrumb for this specific failure
+        const isKnownEnvironmentIssue = error.message?.includes("Sistem sedang mensinkronisasi") ||
+            error.message?.includes("Browser belum siap") ||
+            error.message?.includes("Izin notifikasi ditolak") ||
+            error.message?.includes("Peramban Anda tidak mendukung");
+
+        if (!isKnownEnvironmentIssue) {
+            if (error.message?.includes("Registration failed") || error.message?.includes("NetworkError")) {
+                // Add breadcrumb for this specific failure
+                Sentry.addBreadcrumb({
+                    category: 'fcm',
+                    message: `Initialization failed: ${error.message}`,
+                    level: 'error',
+                    data: { code: error.code }
+                });
+            }
+
+            Sentry.captureException(error, {
+                extra: {
+                    context: "fcm-init.registerServiceWorkerAndGetToken",
+                    hasServiceWorker: 'serviceWorker' in navigator,
+                    userAgent: navigator.userAgent
+                }
+            });
+        } else {
+            // Just add as a breadcrumb so it's in the trail if something else fails, 
+            // but don't create an exception in Sentry dashboard.
             Sentry.addBreadcrumb({
                 category: 'fcm',
-                message: `Initialization failed: ${error.message}`,
-                level: 'error',
-                data: { code: error.code }
+                message: error.message,
+                level: 'warning',
             });
         }
-
-        Sentry.captureException(error, {
-            extra: {
-                context: "fcm-init.registerServiceWorkerAndGetToken",
-                hasServiceWorker: 'serviceWorker' in navigator,
-                userAgent: navigator.userAgent
-            }
-        });
 
         // Throw the actual error so the UI can display it
         throw error;
