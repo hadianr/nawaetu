@@ -55,12 +55,12 @@ const syncSchema = z.object({
         note: z.string().optional(),
         tags: z.array(z.string()).optional(),
         createdAt: z.number().optional(),
-    })).optional(),
+    })).max(1000).optional(),
     completedMissions: z.array(z.object({
         id: z.string(),
         xpEarned: z.number(),
         completedAt: z.string(),
-    })).optional(),
+    })).max(1000).optional(),
     intentions: z.array(z.object({
         niatText: z.string(),
         niatType: z.string().optional(),
@@ -68,12 +68,12 @@ const syncSchema = z.object({
         reflectionText: z.string().optional(),
         reflectionRating: z.number().optional(),
         reflectedAt: z.string().optional(),
-    })).optional(),
+    })).max(100).optional(),
     activity: z.object({
         date: z.string(),
         quranAyat: z.number(),
         tasbihCount: z.number(),
-        prayersLogged: z.array(z.string()),
+        prayersLogged: z.array(z.string()).max(50),
     }).optional(),
     readingState: z.object({
         quranLastRead: z.preprocess((val) => {
