@@ -22,6 +22,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import * as Sentry from "@sentry/nextjs";
 import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
 import { RAMADHAN_TRANSLATIONS } from "@/data/ramadhan-translations";
+import { STATS_TRANSLATIONS } from "@/data/stats-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -30,8 +31,8 @@ const DEFAULT_LOCALE = "id";
 // Helper to merge all translation objects
 function getMergedTranslations() {
   return {
-    id: { ...SETTINGS_TRANSLATIONS.id, ...RAMADHAN_TRANSLATIONS.id },
-    en: { ...SETTINGS_TRANSLATIONS.en, ...RAMADHAN_TRANSLATIONS.en },
+    id: { ...SETTINGS_TRANSLATIONS.id, ...RAMADHAN_TRANSLATIONS.id, ...STATS_TRANSLATIONS.id },
+    en: { ...SETTINGS_TRANSLATIONS.en, ...RAMADHAN_TRANSLATIONS.en, ...STATS_TRANSLATIONS.en },
   };
 }
 
@@ -59,7 +60,15 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const storage = getStorageService();
-      const savedLocale = (storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string) || DEFAULT_LOCALE;
+      let savedLocale = storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string;
+
+      if (!savedLocale) {
+        // Smart Default: If no locale saved, detect browser language
+        const browserLang = navigator.language.toLowerCase();
+        // If not ID, default to EN for global judges
+        savedLocale = browserLang.startsWith("id") ? "id" : "en";
+      }
+
       setLocaleState(savedLocale);
     } catch (error) {
       Sentry.captureException(error);

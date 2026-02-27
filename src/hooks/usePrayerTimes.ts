@@ -228,9 +228,28 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
             }
 
-            // Get calculation method from settings (default: 20 = Kemenag RI)
-            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
-            const method = (typeof savedMethod === 'string' ? savedMethod : savedMethod) || "20";
+            // Get calculation method from settings
+            let savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+
+            // Smart Default Calculation Method based on coordinate regions
+            if (!savedMethod) {
+                if (lat > 30 && lng < -50) {
+                    savedMethod = "2"; // ISNA (North America)
+                } else if (lat > 35 && lng > -20 && lng < 40) {
+                    savedMethod = "3"; // MWL (Europe/UK)
+                } else if (lat > 15 && lng > 35 && lng < 60) {
+                    savedMethod = "4"; // Umm al-Qura (Middle East)
+                } else if (lat > -11 && lat < 6 && lng > 95 && lng < 141) {
+                    savedMethod = "20"; // Kemenag RI (Indonesia)
+                } else {
+                    savedMethod = "3"; // MWL (Global Fallback)
+                }
+
+                // Save it so the user's settings page reflects this smart choice
+                storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, savedMethod);
+            }
+
+            const method = typeof savedMethod === 'string' ? savedMethod : "3";
 
             // Get Hijri adjustment from settings (default: -1)
             const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);

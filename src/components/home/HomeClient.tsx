@@ -55,7 +55,7 @@ export default function HomeClient({ initialDaysLeft, isRamadhanSeason }: HomeCl
                     </section>
                 )}
 
-                {/* 3. Nawaetu Journal - The core uniqueness */}
+                {/* 4. Nawaetu Journal - The core uniqueness */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-700">
                     <IntentionJournalWidget />
                 </section>

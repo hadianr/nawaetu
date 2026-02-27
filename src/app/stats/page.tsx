@@ -29,6 +29,8 @@ import { getPlayerStats } from "@/lib/leveling";
 import { getStreak } from "@/lib/streak-utils";
 import { getDailyActivityHistory } from "@/lib/analytics-utils";
 import { useMissions } from "@/hooks/useMissions";
+import { useTranslations } from "@/context/LocaleContext";
+import GlobalStatsWidget from "@/components/home/GlobalStatsWidget";
 import { cn } from "@/lib/utils";
 
 // Prayer config for the heatmap
@@ -67,6 +69,7 @@ const LEVEL_NAMES: Record<number, string> = {
 };
 
 export default function StatsPage() {
+    const t = useTranslations();
     const { completedMissions } = useMissions();
     const [mounted, setMounted] = useState(false);
     const [playerStats, setPlayerStats] = useState({ xp: 0, level: 1, nextLevelXp: 100, progress: 0 });
@@ -135,11 +138,11 @@ export default function StatsPage() {
 
     // Mission breakdown by category
     const categoryStats: Record<string, { count: number; label: string; icon: string; color: string }> = {
-        prayer: { count: 0, label: "Sholat", icon: "🕌", color: "rgb(var(--color-primary))" },
-        worship: { count: 0, label: "Ibadah", icon: "🤲", color: "#f59e0b" },
-        quran: { count: 0, label: "Al-Quran", icon: "📖", color: "#3b82f6" },
-        dhikr: { count: 0, label: "Dzikir", icon: "📿", color: "#8b5cf6" },
-        fasting: { count: 0, label: "Puasa", icon: "🌙", color: "#06b6d4" },
+        prayer: { count: 0, label: t.stats.missions.categories.prayer, icon: "🕌", color: "rgb(var(--color-primary))" },
+        worship: { count: 0, label: t.stats.missions.categories.worship, icon: "🤲", color: "#f59e0b" },
+        quran: { count: 0, label: t.stats.missions.categories.quran, icon: "📖", color: "#3b82f6" },
+        dhikr: { count: 0, label: t.stats.missions.categories.dhikr, icon: "📿", color: "#8b5cf6" },
+        fasting: { count: 0, label: t.stats.missions.categories.fasting, icon: "🌙", color: "#06b6d4" },
     };
     completedMissions.forEach((m) => {
         // Only count today's completions for each category (avoid inflating historics)
@@ -168,8 +171,8 @@ export default function StatsPage() {
                         <Link href="/"><ChevronLeft className="h-6 w-6" /></Link>
                     </Button>
                     <div className="flex-1">
-                        <h1 className="text-xl font-bold">Statistik Ibadah</h1>
-                        <p className="text-xs text-white/60">Perjalanan spiritualmu</p>
+                        <h1 className="text-xl font-bold">{t.stats.header.title}</h1>
+                        <p className="text-xs text-white/60">{t.stats.header.subtitle}</p>
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 rounded-full">
                         <Star className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
@@ -180,25 +183,28 @@ export default function StatsPage() {
 
             <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
 
+                {/* ── Global Impact Stats ─────────────────────────────────── */}
+                <GlobalStatsWidget />
+
                 {/* ── Level & XP Card ─────────────────────────────────────── */}
                 <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[rgb(var(--color-primary))]/15 via-black/20 to-transparent p-5">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[rgb(var(--color-primary))]/10 rounded-full blur-[60px] pointer-events-none" />
                     <div className="relative z-10">
                         <div className="flex items-start justify-between mb-4">
                             <div>
-                                <p className="text-xs text-white/50 mb-0.5">Peringkat Spiritual</p>
+                                <p className="text-xs text-white/50 mb-0.5">{t.stats.level.rankLabel}</p>
                                 <p className="text-xl font-black text-white">{levelName}</p>
                             </div>
                             <div className="text-right">
                                 <p className="text-2xl font-black text-[rgb(var(--color-primary-light))]">{playerStats.xp.toLocaleString()}</p>
-                                <p className="text-[10px] text-white/40">Total XP</p>
+                                <p className="text-[10px] text-white/40">{t.stats.level.totalXp}</p>
                             </div>
                         </div>
                         {/* Progress bar */}
                         <div className="space-y-1.5">
                             <div className="flex justify-between text-[10px] text-white/50">
                                 <span>Level {playerStats.level}</span>
-                                <span>{Math.round(playerStats.progress)}% menuju Level {playerStats.level + 1}</span>
+                                <span>{Math.round(playerStats.progress)}% {t.stats.level.toNextLevel} {playerStats.level + 1}</span>
                             </div>
                             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                                 <div
@@ -206,7 +212,7 @@ export default function StatsPage() {
                                     style={{ width: `${playerStats.progress}%` }}
                                 />
                             </div>
-                            <p className="text-[10px] text-white/40 text-right">{playerStats.nextLevelXp.toLocaleString()} XP dibutuhkan</p>
+                            <p className="text-[10px] text-white/40 text-right">{playerStats.nextLevelXp.toLocaleString()} {t.stats.level.xpNeeded}</p>
                         </div>
                     </div>
                 </div>
@@ -216,30 +222,30 @@ export default function StatsPage() {
                     {[
                         {
                             icon: <Flame className="w-4 h-4 text-orange-400" />,
-                            label: "Streak Saat Ini",
+                            label: t.stats.quick.currentStreak,
                             value: `${streakData.currentStreak}`,
-                            sub: `Terpanjang: ${streakData.longestStreak} hari`,
+                            sub: t.stats.quick.longestStreak.replace('{{days}}', streakData.longestStreak.toString()),
                             gradient: "from-orange-500/10",
                         },
                         {
                             icon: <span className="text-base">🕌</span>,
-                            label: "Sholat Minggu Ini",
+                            label: t.stats.quick.weeklyPrayers,
                             value: `${weeklyPrayerCount}`,
-                            sub: `dari 35 waktu sholat`,
+                            sub: t.stats.quick.outOf35,
                             gradient: "from-[rgb(var(--color-primary))]/10",
                         },
                         {
                             icon: <Zap className="w-4 h-4 text-yellow-400" />,
-                            label: "XP Minggu Ini",
+                            label: t.stats.quick.weeklyXp,
                             value: weeklyXP.toLocaleString(),
-                            sub: "7 hari terakhir",
+                            sub: t.stats.quick.last7Days,
                             gradient: "from-yellow-500/10",
                         },
                         {
                             icon: <Target className="w-4 h-4 text-violet-400" />,
-                            label: "Konsistensi",
+                            label: t.stats.quick.consistency,
                             value: `${consistency}%`,
-                            sub: "30 hari terakhir",
+                            sub: t.stats.quick.last30Days,
                             gradient: "from-violet-500/10",
                         },
                     ].map((stat, i) => (
@@ -261,9 +267,9 @@ export default function StatsPage() {
                 <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <span className="text-base">🕌</span>
-                        <h2 className="font-bold text-sm">Konsistensi Sholat (7 Hari)</h2>
+                        <h2 className="font-bold text-sm">{t.stats.heatmap.title}</h2>
                         <span className="ml-auto text-xs text-[rgb(var(--color-primary-light))] font-semibold">
-                            {todayPrayerCount}/5 hari ini
+                            {todayPrayerCount}/5 {t.stats.heatmap.today}
                         </span>
                     </div>
 
@@ -295,7 +301,7 @@ export default function StatsPage() {
                                         return (
                                             <div
                                                 key={d}
-                                                title={`${formatDate(d)}: ${done ? "✅" : "—"}`}
+                                                title={`${formatDate(d)}: ${done ? "✅ " + t.stats.heatmap.completed : "— " + t.stats.heatmap.missed}`}
                                                 className={cn(
                                                     "h-7 rounded-lg transition-all",
                                                     done
@@ -314,11 +320,11 @@ export default function StatsPage() {
                             <div className="flex items-center gap-3 mt-3 justify-end">
                                 <div className="flex items-center gap-1">
                                     <div className="w-3 h-3 rounded bg-white/5" />
-                                    <span className="text-[9px] text-white/30">Terlewat</span>
+                                    <span className="text-[9px] text-white/30">{t.stats.heatmap.missed}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <div className="w-3 h-3 rounded bg-[rgb(var(--color-primary))]" />
-                                    <span className="text-[9px] text-white/30">Terlaksana</span>
+                                    <span className="text-[9px] text-white/30">{t.stats.heatmap.completed}</span>
                                 </div>
                             </div>
                         </div>
@@ -329,7 +335,7 @@ export default function StatsPage() {
                 <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <BarChart3 className="w-4 h-4 text-[rgb(var(--color-primary))]" />
-                        <h2 className="font-bold text-sm">XP Harian (14 Hari)</h2>
+                        <h2 className="font-bold text-sm">{t.stats.xpChart.title}</h2>
                     </div>
 
                     <div className="space-y-1.5">
@@ -379,8 +385,8 @@ export default function StatsPage() {
                 <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <Trophy className="w-4 h-4 text-amber-400" />
-                        <h2 className="font-bold text-sm">Ibadah Terlaksana</h2>
-                        <span className="ml-auto text-xs text-white/40">{completedMissions.length} total</span>
+                        <h2 className="font-bold text-sm">{t.stats.missions.title}</h2>
+                        <span className="ml-auto text-xs text-white/40">{completedMissions.length} {t.stats.missions.total}</span>
                     </div>
 
                     <div className="space-y-3">
@@ -414,9 +420,9 @@ export default function StatsPage() {
                 <div className="rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-transparent p-5 text-center">
                     <Moon className="w-6 h-6 text-[rgb(var(--color-primary-light))]/60 mx-auto mb-2" />
                     <p className="text-xs text-white/50 italic leading-relaxed">
-                        "Sesungguhnya Allah tidak menyia-nyiakan pahala orang yang berbuat kebaikan."
+                        {t.stats.quote.text}
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">— QS. At-Taubah: 120</p>
+                    <p className="text-[10px] text-white/30 mt-1">{t.stats.quote.source}</p>
                 </div>
 
                 {/* Quran & Dhikr extra info */}
@@ -424,21 +430,21 @@ export default function StatsPage() {
                     <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4 flex items-center gap-3">
                         <BookOpen className="w-8 h-8 text-blue-400/60 shrink-0" />
                         <div>
-                            <p className="text-xs text-white/50">Al-Quran</p>
+                            <p className="text-xs text-white/50">{t.stats.extra.quran}</p>
                             <p className="text-base font-black text-white">
                                 {history.reduce((s, d) => s + (d.quranAyatRead || 0), 0)}
                             </p>
-                            <p className="text-[9px] text-white/30">Ayat dibaca</p>
+                            <p className="text-[9px] text-white/30">{t.stats.extra.ayatRead}</p>
                         </div>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4 flex items-center gap-3">
                         <span className="text-2xl shrink-0">📿</span>
                         <div>
-                            <p className="text-xs text-white/50">Dzikir</p>
+                            <p className="text-xs text-white/50">{t.stats.extra.dhikr}</p>
                             <p className="text-base font-black text-white">
                                 {history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()}
                             </p>
-                            <p className="text-[9px] text-white/30">Total tasbih</p>
+                            <p className="text-[9px] text-white/30">{t.stats.extra.totalTasbih}</p>
                         </div>
                     </div>
                 </div>
