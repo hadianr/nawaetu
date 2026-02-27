@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.0] - 2026-02-27
+
+### Added
+- **Feat: Enhance health check API to include application version, environment, uptime, memory usage, and response time.**
+- **Feat: implement Zakat Fitrah feature with calculator and dedicated UI card**
+- **Feat: Implement dynamic page titles based on the current route and localization.**
+- **Feat: Add global statistics widget, i18n for statistics, and smart defaults for locale and prayer calculation method.**
+- **Feat: Add package overrides and update `drizzle-kit` and `vitest` dependencies.**
+- **Feat: introduce browser extension with web app iframe and update CSP to permit framing.**
+- **Feat: implement proper Isha end time logic in MissionsWidget**
+- **Feat(perf): Optimize prayer alert notifications by grouping location fetches**
+
+### Performance
+- **Perf: make firebase-admin initialization asynchronous and lazy**
+
+### Improved
+- **Refactor: refine FCM error handling to selectively report known environment issues as Sentry warnings instead of exceptions.**
+- **Refactor checkAvailableModels to use REST API for listing models**
+- **Refactor guest sync to use batch inserts for intentions**
+- **Chore: Update various components, API routes, utilities, and pages across the application.**
+- **Chore:  add error handling to Firebase Messaging Service Worker initialization.**
+
+### Fixed
+- **Fix: Correctly pass all arguments to the gtag dataLayer push.**
+- **Fix(security): update CSP and cache headers to support browser extension iframe**
+
+
 ## [1.8.17] - 2026-02-26
 
 ### Fixed
