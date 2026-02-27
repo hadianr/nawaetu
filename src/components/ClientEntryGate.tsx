@@ -51,18 +51,23 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
         // State change is smoother
     };
 
-    if (isChecking) {
-        // Return a splash screen that matches the app background to be invisible
-        return (
-            <div className="fixed inset-0 bg-[#0a0a0a] flex items-center justify-center z-[9999]">
-                <div className="w-12 h-12 bg-white/10 rounded-full animate-pulse" />
+    return (
+        <>
+            {/* Always render children for SSR and SEO. Use opacity to prevent FOUC elegantly. */}
+            <div
+                style={{
+                    opacity: isChecking ? 0 : 1,
+                    transition: 'opacity 0.4s ease-in-out',
+                    visibility: isChecking ? 'hidden' : 'visible'
+                }}
+            >
+                {children}
             </div>
-        );
-    }
 
-    if (showOnboarding) {
-        return <OnboardingOverlay onComplete={handleOnboardingComplete} />;
-    }
-
-    return <>{children}</>;
+            {/* Mount the onboarding overlay above the application if needed */}
+            {!isChecking && showOnboarding && (
+                <OnboardingOverlay onComplete={handleOnboardingComplete} />
+            )}
+        </>
+    );
 }
