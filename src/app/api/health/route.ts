@@ -18,30 +18,34 @@
 
 import { NextResponse } from "next/server";
 import { checkConnection } from "@/db";
+import pkg from "../../../../package.json";
 
 /**
- * API Health Check
- * Verifies both app server and database connectivity
+ * Enhanced API Health Check
+ * Verifies both app server, database connectivity, and system resources
  */
 export async function GET() {
+    const startTime = Date.now();
     const dbStatus = await checkConnection();
+    const responseTime = Date.now() - startTime;
 
-    if (!dbStatus.success) {
-        return NextResponse.json(
-            {
-                status: "error",
-                message: "Database connection failed",
-                database: "offline",
-                timestamp: new Date().toISOString()
-            },
-            { status: 503 } // Service Unavailable
-        );
-    }
-
-    return NextResponse.json({
-        status: "ok",
-        message: "All systems operational",
-        database: "online",
+    const healthData = {
+        status: dbStatus.success ? "ok" : "error",
+        message: dbStatus.success ? "All systems operational" : "Database connection failed",
+        environment: process.env.NODE_ENV,
+        version: pkg.version,
+        uptime: `${Math.floor(process.uptime())}s`,
+        memory: {
+            usage: `${Math.round(process.memoryUsage().rss / 1024 / 1024)}MB`,
+            status: process.memoryUsage().rss < 500 * 1024 * 1024 ? "healthy" : "heavy"
+        },
+        database: dbStatus.success ? "online" : "offline",
+        responseTime: `${responseTime}ms`,
         timestamp: new Date().toISOString()
+    };
+
+    return NextResponse.json(healthData, {
+        status: dbStatus.success ? 200 : 503
     });
 }
+
