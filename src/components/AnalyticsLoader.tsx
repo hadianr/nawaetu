@@ -42,7 +42,8 @@ export default function AnalyticsLoader() {
       (window as any).dataLayer = (window as any).dataLayer || [];
       function gtag(..._args: any[]) {
         // eslint-disable-next-line prefer-rest-params
-        (window as any).dataLayer.push(arguments);
+        (window as any).dataLayer.push(Array.from(arguments));
+
       }
       (window as any).gtag = gtag;
       gtag("js", new Date());

@@ -222,7 +222,7 @@ export const getKemenagVerses = cache(
       });
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      
+
       // Re-throw with context
       throw new Error(`Surah ${chapterId} failed: ${errorMsg.slice(0, 50)}`);
     }
@@ -299,12 +299,21 @@ export function prefetchPopularSurahs(locale: string = "id"): void {
   // Use requestIdleCallback to prefetch without blocking user interaction
   if ("requestIdleCallback" in window) {
     requestIdleCallback(() => {
-      popularSurahs.forEach((surah) => {
-        // Trigger fetch via cache() - this will cache the result
-        getKemenagVerses(surah, 1, 20, locale).catch(() => {
+      // Stagger prefetches to avoid N+1 API call warnings in Sentry/Performance tools
+      let i = 0;
+      const prefetchNext = () => {
+        if (i >= popularSurahs.length) return;
+
+        getKemenagVerses(popularSurahs[i], 1, 20, locale).catch(() => {
           // Silently ignore prefetch errors
         });
-      });
+
+        i++;
+        // Delay next fetch by 500ms
+        setTimeout(prefetchNext, 500);
+      };
+
+      prefetchNext();
     });
   }
 }

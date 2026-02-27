@@ -25,10 +25,20 @@ export function WebVitals() {
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
     }
-    
+
     // Send to analytics in production
     if (process.env.NODE_ENV === 'production') {
-      const body = JSON.stringify(metric);
+      // Create a clean copy of the metric to avoid circular structures (like DOM elements in attribution)
+      const cleanMetric = {
+        id: metric.id,
+        name: metric.name,
+        value: metric.value,
+        delta: metric.delta,
+        rating: metric.rating,
+        navigationType: metric.navigationType,
+      };
+
+      const body = JSON.stringify(cleanMetric);
       const url = '/api/analytics';
 
       // Use `navigator.sendBeacon()` if available, falling back to `fetch()`
