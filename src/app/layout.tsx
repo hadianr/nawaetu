@@ -238,8 +238,7 @@ import { GuestSyncManager } from "@/components/auth/GuestSyncManager";
 import ClientEntryGate from "@/components/ClientEntryGate";
 import AppOverlays from "@/components/AppOverlays";
 import Toploader from "@/components/ui/Toploader";
-
-
+import DynamicTitle from "@/components/DynamicTitle";
 
 export default function RootLayout({
   children,
@@ -290,6 +289,7 @@ export default function RootLayout({
           />
         ))}
         <LocaleProvider>
+          <DynamicTitle />
           <ThemeProvider>
             <AuthSessionProvider>
               <PrayerTimesProvider>
