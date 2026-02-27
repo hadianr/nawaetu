@@ -530,7 +530,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             key={idx}
                                             className={cn(
-                                                "flex-1 font-black py-7 text-sm relative overflow-hidden group shadow-md transition-all",
+                                                "flex-1 font-black py-5 md:py-6 text-xs md:text-sm relative overflow-hidden group shadow-md transition-all",
                                                 isHighReward
                                                     ? isDaylight
                                                         ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-200"
@@ -560,7 +560,7 @@ export default function MissionDetailDialog({
                         ) : (
                             <Button
                                 className={cn(
-                                    "w-full font-black py-7 text-lg transition-all shadow-lg",
+                                    "w-full font-black py-5 md:py-6 text-sm md:text-base transition-all shadow-lg",
                                     isLate
                                         ? isDaylight
                                             ? "bg-orange-600 hover:bg-orange-500 text-white shadow-orange-200"
