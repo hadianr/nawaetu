@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { X, MapPin, Tent, Building2, Car } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 

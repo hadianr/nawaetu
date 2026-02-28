@@ -17,7 +17,7 @@
  */
 
 import { Mission } from "@/data/missions-data";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 
 export interface ValidationResult {
     locked: boolean;

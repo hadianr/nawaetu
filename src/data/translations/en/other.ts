@@ -1,24 +1,7 @@
-/**
- * Nawaetu - Islamic Habit Tracker
- * Copyright (C) 2026 Hadian Rahmat
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 import { APP_CONFIG } from "@/config/app-config";
 
-export const SETTINGS_EN = {
+export const otherEN = {
+
     // Header
     title: "Settings",
 
@@ -60,10 +43,6 @@ export const SETTINGS_EN = {
     // Theme
     themeTitle: "App Appearance",
 
-    // Audio Settings
-    audioTitle: "Audio Settings",
-    muadzinLabel: "Adhan Voice",
-
     // Hijri Date Adjustment
     hijriDateTitle: "Hijri Date",
     hijriDateDesc: "Adjust Hijri date if there is a difference (e.g. Moon sighting variations)",
@@ -71,10 +50,6 @@ export const SETTINGS_EN = {
     adjustmentStandard: "Standard (0 Days)",
     adjustmentMuhammadiyah: "-1 Day",
     adjustmentManual: "Manual Adjustment",
-
-    // Language Settings
-    languageTitle: "Language",
-    languageDescription: "The app language will change according to your selection.",
 
     // Support Card
     supportTitle: "Support Nawaetu",
@@ -104,39 +79,6 @@ export const SETTINGS_EN = {
     aboutApproachTitle: "Our Approach",
     aboutApproachDesc: "We blend worship guidance with gamification (Missions & Streak) and AI to help you build steadfast habits.",
     aboutLastUpdate: `Updated: ${APP_CONFIG.lastUpdated}`,
-
-    // Profile Dialog
-    profileGenderLabel: "Gender",
-    profileMale: "Male",
-    profileFemale: "Female",
-    profileGenderHint: "Select to customize missions and features",
-    profileArchetypeLabel: "Worship Focus (Warrior Type)",
-    profileArchetypeBeginner: "Beginner",
-    profileArchetypeMobilizer: "Mobilizer",
-    profileArchetypeWarrior: "Warrior",
-    profileProgressLabel: "Level Progress",
-    profileSupport: "Support",
-    profileAddDonation: "Add Donation",
-    profileTitleUnlock: "Title Unlocked",
-    profileTitleLocked: "Locked (Need Lv.{level})",
-    profilePhilosophy: "Title Philosophy",
-    profileRewards: "Privilege & Rewards",
-    profileUseTitle: "Equip This Title",
-    profileCurrentTitle: "Currently Using",
-    profileMinimalLevel: "Minimal Level {level}",
-    profileSave: "Save Profile",
-    profileTitleLabel: "Worship Title",
-    profileNameLabel: "Full Name",
-    profileAppSettings: "App Settings",
-    profileSyncData: "Sync Data",
-    profileSyncing: "Syncing...",
-    profileShareApp: "Share App",
-    profileLogout: "Logout",
-    profileLogoutConfirm: "Are you sure you want to logout?",
-    profileLogoutConfirmYes: "Yes, Logout",
-    profileLogoutConfirmNo: "Cancel",
-    profileGuestMode: "Guest Mode",
-    profileFooter: "Thank you for using Nawaetu",
 
     // Sync System (v1.7.3)
     syncTitle: "Data Synchronization",
@@ -205,13 +147,6 @@ export const SETTINGS_EN = {
     xpDailyMissionReward: "+25-100 XP/mission",
     xpMethodStatistics: "Statistics",
     xpStatisticsHint: "View Progress",
-
-    // Navigation Menu
-    navHome: "Home",
-    navQuran: "Quran",
-    navTasbih: "Tasbih",
-    navQibla: "Qibla",
-    navSettings: "Settings",
 
     // Qibla Page
     qiblaFinding: "BREATHE, FIND QIBLA",
@@ -414,29 +349,6 @@ export const SETTINGS_EN = {
     pwaUpdateAction: "Update Now",
 
 
-    // Mission List Modal Tabs
-    missionTabAll: "All",
-    missionTabDaily: "📋 Daily",
-    missionTabWeekly: "📅 Weekly",
-    missionTabRamadhan: "🌙 Ramadhan",
-    missionTabSyaban: "🌙 Sha'ban",
-    missionTabTracker: "📊 Tracker",
-    missionTabSeasonal: "🌙 Seasonal",
-    missionEmptyCategory: "No missions in this category yet.",
-    missionEmptySeasonalTitle: "No special missions this month.",
-    missionEmptySeasonalDesc: "Stay tuned for special Ramadhan missions soon!",
-
-    // Mission Completion Options
-    missionCompletionAlone: "Pray Alone",
-    missionCompletionCongregation: "Congregational at Mosque",
-
-    // Mission Hukum Labels
-    hukumWajib: "Obligatory",
-    hukumSunnah: "Recommended",
-    hukumMubah: "Permissible",
-    hukumMakruh: "Disliked",
-    hukumHaram: "Forbidden",
-
     // Quran Browser
     quranLastRead: "Last Read",
     quranVerse: "Verse",
@@ -472,28 +384,6 @@ export const SETTINGS_EN = {
     quranMadinah: "Madinah",
     quranLoadError: "Failed to load Quran data",
     quranLoadErrorDesc: "Please check your internet connection and try again.",
-
-    // Quran Reader Settings
-    quranPlaySurah: "Play Surah",
-    quranJumpToVerse: "Jump to Verse",
-    quranJumpToVerseTitle: "Jump to Verse",
-    quranGoToVerse: "Go to Verse",
-    quranSettingsTitle: "Display Settings",
-    quranModeRead: "Reading Mode",
-    quranModeList: "List",
-    quranModeMushaf: "Mushaf",
-    quranScriptType: "Arabic Script Type",
-    quranScriptStandard: "Standard Indonesian",
-    quranScriptTajweed: "Colored Tajweed",
-    quranOtherDisplay: "Other Display",
-    quranTransliteration: "Latin / Transliteration",
-    quranFontSize: "Arabic Font Size",
-    quranVersesPerPage: "Verses per Page",
-    quranSelectQari: "Select Qari",
-    quranPrevious: "Previous",
-    quranNext: "Next",
-    quranPage: "Page",
-    quranOf: "of",
 
     // Prayer Names
     prayerImsak: "Imsak",
@@ -718,110 +608,4 @@ export const SETTINGS_EN = {
     niat_milestone_month: "1 Month",
     niat_milestone_100days: "100 Days",
 
-    // Mission Dialog
-    mission_dialog_guide: "Guide",
-    mission_dialog_info: "Info & Evidences",
-    mission_dialog_niat_sholat: "Prayer Intention",
-    mission_dialog_niat_puasa: "Fasting Intention",
-    mission_dialog_niat_general: "Intention Recitation",
-    mission_dialog_sholat_sendiri: "Alone",
-    mission_dialog_sholat_makmum: "Follower (Makmum)",
-    mission_dialog_prev: "Previous",
-    mission_dialog_next: "Next",
-    mission_dialog_reading_of: "Reading {current} of {total}",
-    mission_dialog_steps: "Steps:",
-    mission_dialog_fadhilah: "Virtues (Fadhilah)",
-    mission_dialog_dalil_source: "Evidence Source",
-    mission_dialog_no_content: "No detailed content for this mission yet. Follow the short instructions above.",
-    mission_dialog_dalil_label: "Evidence:",
-    mission_dialog_undo_title: "Mission Reset",
-    mission_dialog_undo_desc: "has been reset.",
-    mission_dialog_select_option: "Select Option:",
-    mission_dialog_coming_soon: "Coming Soon",
-    mission_dialog_coming_soon_desc: "This feature is being developed.",
-
-    // Mission Translations
-    mission_niat_harian_title: "Align Intention",
-    mission_niat_harian_desc: "Set your good intention for today",
-    mission_muhasabah_title: "Daily Reflection",
-    mission_muhasabah_desc: "Reflect on your worship at the end of the day",
-    mission_quran_10_ayat_title: "Read 10 Quran Verses",
-    mission_quran_10_ayat_desc: "Read at least 10 verses of the Quran",
-    mission_tasbih_99_title: "Tasbih 99x",
-    mission_tasbih_99_desc: "Complete tasbih dhikr 99 times",
-    mission_doa_pagi_title: "Morning Dhikr",
-    mission_doa_pagi_desc: "Recite morning dhikr (04:00-10:00)",
-    mission_doa_sore_title: "Evening Dhikr",
-    mission_doa_sore_desc: "Recite evening dhikr (15:00-18:00)",
-    mission_puasa_sunnah_title: "Sunnah Fasting",
-    mission_puasa_sunnah_desc: "Monday/Thursday or Ayyamul Bidh fasting",
-    mission_qadha_puasa_tracker_title: "Makeup Fasting",
-    mission_qadha_puasa_tracker_desc: "Make up missed Ramadan fasts",
-    mission_dzikir_haid_title: "Dhikr During Period",
-    mission_dzikir_haid_desc: "Increase dhikr during menstruation",
-    mission_shalawat_100_title: "Salawat 100x",
-    mission_shalawat_100_desc: "Send blessings upon the Prophet 100x",
-    mission_sholat_subuh_female_title: "Fajr Prayer",
-    mission_sholat_subuh_female_desc: "Perform Fajr prayer on time",
-    mission_sholat_dzuhur_female_title: "Dhuhr Prayer",
-    mission_sholat_dzuhur_female_desc: "Perform Dhuhr prayer on time",
-    mission_sholat_ashar_female_title: "Asr Prayer",
-    mission_sholat_ashar_female_desc: "Perform Asr prayer on time",
-    mission_sholat_maghrib_female_title: "Maghrib Prayer",
-    mission_sholat_maghrib_female_desc: "Perform Maghrib prayer on time",
-    mission_sholat_isya_female_title: "Isha Prayer",
-    mission_sholat_isya_female_desc: "Perform Isha prayer on time",
-    mission_sholat_jumat_title: "Friday Prayer",
-    mission_sholat_jumat_desc: "Perform Friday prayer (Friday only)",
-    mission_sholat_dhuha_title: "Dhuha Prayer",
-    mission_sholat_dhuha_desc: "Perform Dhuha prayer (06:00-11:00)",
-    mission_sholat_subuh_male_title: "Fajr Prayer",
-    mission_sholat_subuh_male_desc: "Perform Fajr prayer (Preferably: Congregation)",
-    mission_sholat_dzuhur_male_title: "Dhuhr Prayer",
-    mission_sholat_dzuhur_male_desc: "Perform Dhuhr prayer (Preferably: Congregation)",
-    mission_sholat_ashar_male_title: "Asr Prayer",
-    mission_sholat_ashar_male_desc: "Perform Asr prayer (Preferably: Congregation)",
-    mission_sholat_maghrib_male_title: "Maghrib Prayer",
-    mission_sholat_maghrib_male_desc: "Perform Maghrib prayer (Preferably: Congregation)",
-    mission_sholat_isya_male_title: "Isha Prayer",
-    mission_sholat_isya_male_desc: "Perform Isha prayer (Preferably: Congregation)",
-    mission_sholat_tarawih_title: "Tarawih Prayer",
-    mission_sholat_tarawih_desc: "Perform tarawih prayer tonight (8-20 rakaat)",
-    mission_target_khatam_title: "Quran Recitation",
-    mission_target_khatam_desc: "Read at least 1 page of the Quran",
-    mission_bukber_hemat_title: "Breaking Fast Supplication",
-    mission_bukber_hemat_desc: "Recite breaking fast dua at Maghrib",
-    mission_sedekah_ramadhan_title: "Daily Charity",
-    mission_sedekah_ramadhan_desc: "Set aside for today's charity",
-    mission_sahur_berkah_title: "Pre-Dawn Meal",
-    mission_sahur_berkah_desc: "Eat pre-dawn meal before Imsak",
-    mission_qadha_puasa_title: "Complete Makeup Fasts",
-    mission_qadha_puasa_desc: "Finish makeup fasts before Ramadan",
-    mission_puasa_syaban_title: "Sha'ban Voluntary Fasting",
-    mission_puasa_syaban_desc: "Increase voluntary fasting in Sha'ban",
-    mission_baca_quran_syaban_title: "Month of Quran Reciters",
-    mission_baca_quran_syaban_desc: "Increase Quran recitation (Shahrul Qurra)",
-    mission_persiapan_ilmu_title: "Learn Ramadan Fiqh",
-    mission_persiapan_ilmu_desc: "Equip yourself with fasting & zakat knowledge",
-    mission_cek_kesehatan_title: "Health Checkup",
-    mission_cek_kesehatan_desc: "Ensure body is fit before Ramadan",
-    mission_sedekah_subuh_title: "Regular Fajr Charity",
-    mission_sedekah_subuh_desc: "Give charity at Fajr time daily",
-    mission_maaf_maafan_title: "Seek Forgiveness",
-    mission_maaf_maafan_desc: "Apologize to parents & friends",
-    mission_malam_nisfu_syaban_title: "Mid-Sha'ban Night",
-    mission_malam_nisfu_syaban_desc: "Increase prayers & worship in mid-Sha'ban",
-    niat_suggestions: [
-        "Focus on assignments without complaining",
-        "Stay positive even when I'm tired",
-        "Less doomscrolling on social media",
-        "Help my parents at home today",
-        "Guard my tongue, no gossiping today",
-        "Fajr charity, even just a little",
-        "Make time to read Quran after prayer",
-        "Be patient with friends and family",
-        "Pray on time, try to join congregation",
-        "Be grateful for the little things today"
-    ],
-    debugConsoleTitle: "Debug Console"
 };

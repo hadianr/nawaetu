@@ -20,7 +20,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import * as Sentry from "@sentry/nextjs";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { RAMADHAN_TRANSLATIONS } from "@/data/ramadhan-translations";
 import { STATS_TRANSLATIONS } from "@/data/stats-translations";
 import { getStorageService } from "@/core/infrastructure/storage";

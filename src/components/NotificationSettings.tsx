@@ -24,7 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
 import { useLocale } from "@/context/LocaleContext";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import * as Sentry from "@sentry/nextjs";
 import { toast } from "sonner";

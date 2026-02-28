@@ -1,24 +1,7 @@
-/**
- * Nawaetu - Islamic Habit Tracker
- * Copyright (C) 2026 Hadian Rahmat
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 import { APP_CONFIG } from "@/config/app-config";
 
-export const SETTINGS_ID = {
+export const otherID = {
+
     // Header
     title: "Pengaturan",
 
@@ -60,10 +43,6 @@ export const SETTINGS_ID = {
     // Theme
     themeTitle: "Tampilan Aplikasi",
 
-    // Audio Settings
-    audioTitle: "Pengaturan Audio",
-    muadzinLabel: "Suara Adzan",
-
     // Hijri Date Adjustment
     hijriDateTitle: "Tanggal Hijriah",
     hijriDateDesc: "Sesuaikan tanggal jika ada perbedaan penetapan awal bulan.",
@@ -71,10 +50,6 @@ export const SETTINGS_ID = {
     adjustmentStandard: "Standar (0 Hari)",
     adjustmentMuhammadiyah: "-1 Hari",
     adjustmentManual: "Manual",
-
-    // Language Settings
-    languageTitle: "Bahasa",
-    languageDescription: "Bahasa aplikasi akan berubah sesuai pilihan.",
 
     // Support Card
     supportTitle: "Dukung Nawaetu",
@@ -104,39 +79,6 @@ export const SETTINGS_ID = {
     aboutApproachTitle: "Pendekatan Kami",
     aboutApproachDesc: "Kami menggabungkan panduan ibadah dengan gamifikasi (Misi & Streak) serta asisten AI untuk membangun kebiasaan yang istiqomah.",
     aboutLastUpdate: `Diperbarui: ${APP_CONFIG.lastUpdated}`,
-
-    // Profile Dialog
-    profileGenderLabel: "Jenis Kelamin",
-    profileMale: "Laki-laki",
-    profileFemale: "Perempuan",
-    profileGenderHint: "Pilih untuk menyesuaikan misi dan fitur",
-    profileArchetypeLabel: "Fokus Ibadah (Tipe Pejuang)",
-    profileArchetypeBeginner: "Pemula",
-    profileArchetypeMobilizer: "Penggerak",
-    profileArchetypeWarrior: "Mujahid",
-    profileProgressLabel: "Progress Level",
-    profileSupport: "Dukung",
-    profileAddDonation: "Tambah Infaq",
-    profileTitleUnlock: "Gelar Terbuka",
-    profileTitleLocked: "Terkunci (Butuh Lv.{level})",
-    profilePhilosophy: "Filosofi Gelar",
-    profileRewards: "Privilege & Rewards",
-    profileUseTitle: "Pasang Gelar Ini",
-    profileCurrentTitle: "Sedang Digunakan",
-    profileMinimalLevel: "Minimal Level {level}",
-    profileSave: "Simpan Profil",
-    profileTitleLabel: "Gelar Ibadah",
-    profileNameLabel: "Nama Lengkap",
-    profileAppSettings: "Pengaturan Aplikasi",
-    profileSyncData: "Sinkronisasi Data",
-    profileSyncing: "Menyinkronkan...",
-    profileShareApp: "Bagikan Aplikasi",
-    profileLogout: "Keluar",
-    profileLogoutConfirm: "Yakin ingin keluar akun?",
-    profileLogoutConfirmYes: "Ya, Keluar",
-    profileLogoutConfirmNo: "Batal",
-    profileGuestMode: "Mode Guest",
-    profileFooter: "Terima kasih telah menggunakan Nawaetu",
 
     // Sync System (v1.7.3)
     syncTitle: "Sinkronisasi Data",
@@ -205,13 +147,6 @@ export const SETTINGS_ID = {
     xpDailyMissionReward: "+25-100 XP/misi",
     xpMethodStatistics: "Statistik",
     xpStatisticsHint: "Lihat Progress",
-
-    // Navigation Menu
-    navHome: "Beranda",
-    navQuran: "Al-Qur'an",
-    navTasbih: "Tasbih",
-    navQibla: "Kiblat",
-    navSettings: "Atur",
 
     // Qibla Page
     qiblaFinding: "TENANG, CARI KIBLAT",
@@ -414,29 +349,6 @@ export const SETTINGS_ID = {
     pwaUpdateAction: "Update Sekarang",
 
 
-    // Mission List Modal Tabs
-    missionTabAll: "Semua",
-    missionTabDaily: "📋 Harian",
-    missionTabWeekly: "📅 Mingguan",
-    missionTabRamadhan: "🌙 Ramadhan",
-    missionTabSyaban: "🌙 Sya'ban",
-    missionTabTracker: "📊 Tracker",
-    missionTabSeasonal: "🌙 Musiman",
-    missionEmptyCategory: "Belum ada misi di kategori ini.",
-    missionEmptySeasonalTitle: "Belum ada misi khusus bulan ini.",
-    missionEmptySeasonalDesc: "Nantikan misi spesial Ramadhan segera!",
-
-    // Mission Completion Options
-    missionCompletionAlone: "Sholat Sendiri",
-    missionCompletionCongregation: "Berjamaah di Masjid",
-
-    // Mission Hukum Labels
-    hukumWajib: "Wajib",
-    hukumSunnah: "Sunnah",
-    hukumMubah: "Mubah",
-    hukumMakruh: "Makruh",
-    hukumHaram: "Haram",
-
     // Quran Browser
     quranLastRead: "Terakhir Dibaca",
     quranVerse: "Ayat",
@@ -472,28 +384,6 @@ export const SETTINGS_ID = {
     quranMadinah: "Madinah",
     quranLoadError: "Gagal memuat data Al-Quran",
     quranLoadErrorDesc: "Mohon periksa koneksi internet Anda dan coba lagi.",
-
-    // Quran Reader Settings
-    quranPlaySurah: "Putar Surat",
-    quranJumpToVerse: "Loncat ke Ayat",
-    quranJumpToVerseTitle: "Loncat ke Ayat",
-    quranGoToVerse: "Pergi ke Ayat",
-    quranSettingsTitle: "Pengaturan Tampilan",
-    quranModeRead: "Mode Baca",
-    quranModeList: "List",
-    quranModeMushaf: "Mushaf",
-    quranScriptType: "Jenis Teks Arab",
-    quranScriptStandard: "Standar Indonesia",
-    quranScriptTajweed: "Tajweed Berwarna",
-    quranOtherDisplay: "Tampilan Lainnya",
-    quranTransliteration: "Latin / Transliterasi",
-    quranFontSize: "Ukuran Huruf Arab",
-    quranVersesPerPage: "Ayat per Halaman",
-    quranSelectQari: "Pilih Qari",
-    quranPrevious: "Sebelumnya",
-    quranNext: "Selanjutnya",
-    quranPage: "Halaman",
-    quranOf: "/",
 
     // Prayer Names
     prayerImsak: "Imsak",
@@ -718,110 +608,4 @@ export const SETTINGS_ID = {
     niat_milestone_month: "1 Bulan",
     niat_milestone_100days: "100 Hari",
 
-    // Mission Dialog
-    mission_dialog_guide: "Panduan",
-    mission_dialog_info: "Info & Dalil",
-    mission_dialog_niat_sholat: "Niat Sholat",
-    mission_dialog_niat_puasa: "Niat Puasa",
-    mission_dialog_niat_general: "Lafadz Niat",
-    mission_dialog_sholat_sendiri: "Sendiri",
-    mission_dialog_sholat_makmum: "Makmum",
-    mission_dialog_prev: "Sebelumnya",
-    mission_dialog_next: "Selanjutnya",
-    mission_dialog_reading_of: "Bacaan {current} dari {total}",
-    mission_dialog_steps: "Langkah-langkah:",
-    mission_dialog_fadhilah: "Keutamaan (Fadhilah)",
-    mission_dialog_dalil_source: "Sumber Dalil",
-    mission_dialog_no_content: "Belum ada detail konten untuk misi ini. Lakukan sesuai instruksi singkat di atas.",
-    mission_dialog_dalil_label: "Dalil:",
-    mission_dialog_undo_title: "Misi Direset",
-    mission_dialog_undo_desc: "telah di-reset.",
-    mission_dialog_select_option: "Pilih Opsi:",
-    mission_dialog_coming_soon: "Fitur Menyusul",
-    mission_dialog_coming_soon_desc: "Sedang dikembangkan",
-
-    // Mission Translations
-    mission_niat_harian_title: "Luruskan Niat",
-    mission_niat_harian_desc: "Tetapkan niat kebaikan hari ini",
-    mission_muhasabah_title: "Muhasabah Harian",
-    mission_muhasabah_desc: "Refleksi ibadah di penghujung hari",
-    mission_quran_10_ayat_title: "Baca 10 Ayat Quran",
-    mission_quran_10_ayat_desc: "Membaca minimal 10 ayat Al-Quran",
-    mission_tasbih_99_title: "Tasbih 99x",
-    mission_tasbih_99_desc: "Selesaikan dzikir tasbih 99 kali",
-    mission_doa_pagi_title: "Dzikir Pagi",
-    mission_doa_pagi_desc: "Baca dzikir pagi (jam 04:00-10:00)",
-    mission_doa_sore_title: "Dzikir Sore",
-    mission_doa_sore_desc: "Baca dzikir sore (jam 15:00-18:00)",
-    mission_puasa_sunnah_title: "Puasa Sunnah",
-    mission_puasa_sunnah_desc: "Puasa Senin/Kamis atau Ayyamul Bidh",
-    mission_qadha_puasa_tracker_title: "Qadha Puasa",
-    mission_qadha_puasa_tracker_desc: "Lunasi hutang puasa Ramadhan",
-    mission_dzikir_haid_title: "Dzikir Ketika Haid",
-    mission_dzikir_haid_desc: "Perbanyak dzikir selama menstruasi",
-    mission_shalawat_100_title: "Shalawat 100x",
-    mission_shalawat_100_desc: "Kirim shalawat kepada Nabi 100x",
-    mission_sholat_subuh_female_title: "Sholat Subuh",
-    mission_sholat_subuh_female_desc: "Tunaikan sholat Subuh tepat waktu",
-    mission_sholat_dzuhur_female_title: "Sholat Dzuhur",
-    mission_sholat_dzuhur_female_desc: "Tunaikan sholat Dzuhur tepat waktu",
-    mission_sholat_ashar_female_title: "Sholat Ashar",
-    mission_sholat_ashar_female_desc: "Tunaikan sholat Ashar tepat waktu",
-    mission_sholat_maghrib_female_title: "Sholat Maghrib",
-    mission_sholat_maghrib_female_desc: "Tunaikan sholat Maghrib tepat waktu",
-    mission_sholat_isya_female_title: "Sholat Isya",
-    mission_sholat_isya_female_desc: "Tunaikan sholat Isya tepat waktu",
-    mission_sholat_jumat_title: "Sholat Jumat",
-    mission_sholat_jumat_desc: "Tunaikan sholat Jumat (hanya Jumat)",
-    mission_sholat_dhuha_title: "Sholat Dhuha",
-    mission_sholat_dhuha_desc: "Tunaikan sholat Dhuha (jam 06:00-11:00)",
-    mission_sholat_subuh_male_title: "Sholat Subuh",
-    mission_sholat_subuh_male_desc: "Tunaikan sholat Subuh (Utama: Berjamaah)",
-    mission_sholat_dzuhur_male_title: "Sholat Dzuhur",
-    mission_sholat_dzuhur_male_desc: "Tunaikan sholat Dzuhur (Utama: Berjamaah)",
-    mission_sholat_ashar_male_title: "Sholat Ashar",
-    mission_sholat_ashar_male_desc: "Tunaikan sholat Ashar (Utama: Berjamaah)",
-    mission_sholat_maghrib_male_title: "Sholat Maghrib",
-    mission_sholat_maghrib_male_desc: "Tunaikan sholat Maghrib (Utama: Berjamaah)",
-    mission_sholat_isya_male_title: "Sholat Isya",
-    mission_sholat_isya_male_desc: "Tunaikan sholat Isya (Utama: Berjamaah)",
-    mission_sholat_tarawih_title: "Sholat Tarawih",
-    mission_sholat_tarawih_desc: "Sholat tarawih malam ini (8-20 rakaat)",
-    mission_target_khatam_title: "Tadarus Al-Quran",
-    mission_target_khatam_desc: "Baca Al-Quran minimal 1 halaman",
-    mission_bukber_hemat_title: "Doa Berbuka Puasa",
-    mission_bukber_hemat_desc: "Baca doa berbuka saat Maghrib",
-    mission_sedekah_ramadhan_title: "Sedekah Harian",
-    mission_sedekah_ramadhan_desc: "Sisihkan untuk sedekah hari ini",
-    mission_sahur_berkah_title: "Sahur",
-    mission_sahur_berkah_desc: "Makan sahur sebelum Imsak",
-    mission_qadha_puasa_title: "Lunasi Qadha Puasa",
-    mission_qadha_puasa_desc: "Segera lunasi hutang puasa sebelum Ramadhan",
-    mission_puasa_syaban_title: "Puasa Sunnah Sya'ban",
-    mission_puasa_syaban_desc: "Perbanyak puasa sunnah di bulan Sya'ban",
-    mission_baca_quran_syaban_title: "Bulan Para Qurra'",
-    mission_baca_quran_syaban_desc: "Perbanyak tilawah Al-Quran (Syahrul Qurra)",
-    mission_persiapan_ilmu_title: "Pelajari Fiqih Ramadhan",
-    mission_persiapan_ilmu_desc: "Bekali diri dengan ilmu puasa & zakat",
-    mission_cek_kesehatan_title: "Cek Kesehatan (Checkup)",
-    mission_cek_kesehatan_desc: "Pastikan tubuh fit sebelum Ramadhan",
-    mission_sedekah_subuh_title: "Rutin Sedekah Subuh",
-    mission_sedekah_subuh_desc: "Sedekah di waktu subuh setiap hari",
-    mission_maaf_maafan_title: "Saling Memaafkan",
-    mission_maaf_maafan_desc: "Minta maaf kepada orang tua & teman",
-    mission_malam_nisfu_syaban_title: "Malam Nisfu Sya'ban",
-    mission_malam_nisfu_syaban_desc: "Perbanyak doa & amalan di pertengahan Sya'ban",
-    niat_suggestions: [
-        "Fokus ngerjain tugas tanpa ngeluh",
-        "Stay positive walau lagi capek",
-        "Kurangin scrolling sosmed gak jelas",
-        "Bantu ortu di rumah hari ini",
-        "Jaga lisan, gak mau ghibah dulu",
-        "Sedekah subuh walau cuma nyicil",
-        "Nyempetin baca Quran abis sholat",
-        "Sabar ngadepin temen atau keluarga",
-        "Sholat tepat waktu, usahain jamaah",
-        "Bersyukur buat hal-hal kecil hari ini"
-    ],
-    debugConsoleTitle: "Konsol Debug"
 };

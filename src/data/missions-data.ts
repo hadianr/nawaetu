@@ -19,7 +19,7 @@
 // Missions data with gender-specific tasks based on Al-Quran and Sunnah
 // Includes validation types for hybrid tracking system
 
-import { SETTINGS_TRANSLATIONS } from './settings-translations';
+import { SETTINGS_TRANSLATIONS } from './translations';
 
 export type Gender = 'male' | 'female' | null;
 export type ValidationType = 'auto' | 'time' | 'day' | 'manual';

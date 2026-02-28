@@ -50,7 +50,7 @@ import {
     DEFAULT_SETTINGS,
     LANGUAGE_OPTIONS,
 } from "@/data/settings-data";
-import { SETTINGS_TRANSLATIONS } from "@/data/settings-translations";
+import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import NotificationSettings from "@/components/NotificationSettings";
