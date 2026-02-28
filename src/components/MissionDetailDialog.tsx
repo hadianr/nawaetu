@@ -135,7 +135,7 @@ export default function MissionDetailDialog({
                     </div>
                 </DialogHeader>
 
-                <div className="flex-1 overflow-hidden flex flex-col">
+                <div className="flex-1 overflow-hidden flex flex-col pt-0">
                     {customContent ? (
                         <ScrollArea className="flex-1">
                             {customContent}
@@ -214,32 +214,32 @@ export default function MissionDetailDialog({
                                                         </TabsList>
                                                         <TabsContent value="sendiri" className="mt-0">
                                                             <div className={cn(
-                                                                "p-4 rounded-xl border transition-colors",
+                                                                "p-3 rounded-lg border transition-colors",
                                                                 isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-primary-dark))]/10 border border-[rgb(var(--color-primary))]/10"
                                                             )}>
-                                                                <p className={cn("text-lg md:text-xl font-serif text-right mb-2 leading-relaxed transition-colors", isDaylight ? "text-slate-900" : "text-white")}>
+                                                                <p className={cn("text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed transition-colors", isDaylight ? "text-slate-900" : "text-white")}>
                                                                     {content.niat.munfarid.arabic}
                                                                 </p>
-                                                                <p className={cn("text-xs italic mb-1 transition-colors", isDaylight ? "text-emerald-700/80 font-medium" : "text-[rgb(var(--color-primary-light))]/70")}>
+                                                                <p className={cn("text-[11px] md:text-xs italic mb-1 transition-colors", isDaylight ? "text-emerald-700/80 font-medium" : "text-[rgb(var(--color-primary-light))]/70")}>
                                                                     {content.niat.munfarid.latin}
                                                                 </p>
-                                                                <p className={cn("text-[10px] transition-colors", isDaylight ? "text-slate-500" : "text-white/50")}>
+                                                                <p className={cn("text-[9px] md:text-[10px] transition-colors leading-tight", isDaylight ? "text-slate-500" : "text-white/50")}>
                                                                     {content.niat.munfarid.translation}
                                                                 </p>
                                                             </div>
                                                         </TabsContent>
                                                         <TabsContent value="makmum" className="mt-0">
                                                             <div className={cn(
-                                                                "p-4 rounded-xl border transition-colors",
+                                                                "p-3 rounded-lg border transition-colors",
                                                                 isDaylight ? "bg-blue-50 border-blue-100" : "bg-emerald-900/10 border border-emerald-500/10"
                                                             )}>
-                                                                <p className={cn("text-lg md:text-xl font-serif text-right mb-2 leading-relaxed", isDaylight ? "text-slate-900" : "text-white")}>
+                                                                <p className={cn("text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed", isDaylight ? "text-slate-900" : "text-white")}>
                                                                     {content.niat.makmum.arabic}
                                                                 </p>
-                                                                <p className={cn("text-xs italic mb-1", isDaylight ? "text-blue-700/80 font-medium" : "text-emerald-100/70")}>
+                                                                <p className={cn("text-[11px] md:text-xs italic mb-1", isDaylight ? "text-blue-700/80 font-medium" : "text-emerald-100/70")}>
                                                                     {content.niat.makmum.latin}
                                                                 </p>
-                                                                <p className={cn("text-[10px]", isDaylight ? "text-slate-500" : "text-white/50")}>
+                                                                <p className={cn("text-[9px] md:text-[10px] leading-tight", isDaylight ? "text-slate-500" : "text-white/50")}>
                                                                     {content.niat.makmum.translation}
                                                                 </p>
                                                             </div>
@@ -530,7 +530,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             key={idx}
                                             className={cn(
-                                                "flex-1 font-black py-5 md:py-6 text-xs md:text-sm relative overflow-hidden group shadow-md transition-all",
+                                                "flex-1 font-black py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-md transition-all",
                                                 isHighReward
                                                     ? isDaylight
                                                         ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-200"
@@ -560,7 +560,7 @@ export default function MissionDetailDialog({
                         ) : (
                             <Button
                                 className={cn(
-                                    "w-full font-black py-5 md:py-6 text-sm md:text-base transition-all shadow-lg",
+                                    "w-full font-black py-4 md:py-5 text-xs md:text-sm transition-all shadow-lg",
                                     isLate
                                         ? isDaylight
                                             ? "bg-orange-600 hover:bg-orange-500 text-white shadow-orange-200"
