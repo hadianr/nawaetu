@@ -109,8 +109,8 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
     if (!intentionId) {
         return (
             <div className="p-6 text-center text-white/60">
-                <p>{t.niat_no_niat_today_title}</p>
-                <p className="text-xs mt-2">{t.niat_no_niat_today_desc}</p>
+                <p>{t.intention_no_today_title}</p>
+                <p className="text-xs mt-2">{t.intention_no_today_desc}</p>
             </div>
         )
     }
@@ -118,7 +118,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
     return (
         <div className="p-6 space-y-6">
             <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <p className="text-xs text-white/40 uppercase tracking-widest font-bold mb-2">{t.niat_todays_niat}</p>
+                <p className="text-xs text-white/40 uppercase tracking-widest font-bold mb-2">{t.intention_todays_label}</p>
                 <p className="text-white/90 italic">"{intentionText}"</p>
             </div>
 

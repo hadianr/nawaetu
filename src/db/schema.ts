@@ -24,7 +24,7 @@ import type { AdapterAccount } from "next-auth/adapters";
 export const genderEnum = pgEnum("gender", ["male", "female"]);
 export const archetypeEnum = pgEnum("archetype", ["beginner", "striver", "dedicated"]);
 export const transactionStatusEnum = pgEnum("transaction_status", ["pending", "settlement", "expired", "failed"]);
-export const niatTypeEnum = pgEnum("niat_type", ["daily", "prayer", "custom"]);
+export const intentionTypeEnum = pgEnum("intention_type", ["daily", "prayer", "custom"]);
 
 // --- Users & Auth (Compatible with NextAuth.js) ---
 
@@ -37,10 +37,10 @@ export const users = pgTable("user", {
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
 
-    // Niat Streak Tracking
-    niatStreakCurrent: integer("niat_streak_current").default(0),
-    niatStreakLongest: integer("niat_streak_longest").default(0),
-    lastNiatDate: date("last_niat_date"),
+    // Intention Streak Tracking
+    intentionStreakCurrent: integer("intention_streak_current").default(0),
+    intentionStreakLongest: integer("intention_streak_longest").default(0),
+    lastIntentionDate: date("last_intention_date"),
 
     // Muhsinin & Donation Tracking (v1.6.0)
     isMuhsinin: boolean("is_muhsinin").default(false),
@@ -171,9 +171,9 @@ export const intentions = pgTable("intention", {
         .references(() => users.id, { onDelete: "cascade" }),
 
     // Intention data
-    niatText: text("niat_text").notNull(),
-    niatType: niatTypeEnum("niat_type").default("daily"), // 'daily', 'prayer', 'custom'
-    niatDate: timestamp("niat_date", { mode: "date" }).notNull(),
+    intentionText: text("intention_text").notNull(),
+    intentionType: intentionTypeEnum("intention_type").default("daily"), // 'daily', 'prayer', 'custom'
+    intentionDate: timestamp("intention_date", { mode: "date" }).notNull(),
 
     // Reflection data (optional)
     reflectionText: text("reflection_text"),
@@ -189,7 +189,7 @@ export const intentions = pgTable("intention", {
 }, (table) => {
     return {
         userIdIdx: index("intention_user_id_idx").on(table.userId),
-        userIdDateIdx: index("intention_user_id_date_idx").on(table.userId, table.niatDate),
+        userIdDateIdx: index("intention_user_id_date_idx").on(table.userId, table.intentionDate),
     };
 });
 

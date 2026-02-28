@@ -21,13 +21,13 @@ import { NextRequest } from 'next/server';
 
 // Mock dependencies BEFORE importing the route
 const mockChain = {
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    limit: vi.fn(),
-    orderBy: vi.fn(),
-    values: vi.fn().mockReturnThis(),
-    set: vi.fn().mockReturnThis(),
-    returning: vi.fn(),
+  from: vi.fn().mockReturnThis(),
+  where: vi.fn().mockReturnThis(),
+  limit: vi.fn(),
+  orderBy: vi.fn(),
+  values: vi.fn().mockReturnThis(),
+  set: vi.fn().mockReturnThis(),
+  returning: vi.fn(),
 };
 
 // Make chain thenable for await db.update()...
@@ -50,9 +50,9 @@ vi.mock('drizzle-orm', () => ({
 
 // Override the global schema mock from setup.ts to include needed tables
 vi.mock('@/db/schema', () => ({
-    pushSubscriptions: {},
-    users: {},
-    intentions: {},
+  pushSubscriptions: {},
+  users: {},
+  intentions: {},
 }));
 
 // Import AFTER mocks
@@ -101,30 +101,30 @@ describe('POST /api/intentions/daily', () => {
 
     // 4. Insert intention (returning)
     mockChain.returning.mockResolvedValueOnce([{
-        id: 'int-1',
-        niatDate: today,
-        niatText: 'Test intention'
+      id: 'int-1',
+      intentionDate: today,
+      intentionText: 'Test intention'
     }]);
 
     // 5. Streak calculation: Fetch intentions (orderBy)
     // Return 3 consecutive days including today
     mockChain.orderBy.mockResolvedValueOnce([
-        { niatDate: today },
-        { niatDate: yesterday },
-        { niatDate: dayBeforeYesterday }
+      { intentionDate: today },
+      { intentionDate: yesterday },
+      { intentionDate: dayBeforeYesterday }
     ]);
 
     // 6. Get user for longest streak check (limit)
     mockChain.limit.mockResolvedValueOnce([{
-        id: userId,
-        niatStreakLongest: 5
+      id: userId,
+      intentionStreakLongest: 5
     }]);
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
       body: JSON.stringify({
         user_token: 'test-token',
-        niat_text: 'Test intention',
+        intention_text: 'Test intention',
       }),
     });
 
@@ -143,7 +143,7 @@ describe('POST /api/intentions/daily', () => {
       method: 'POST',
       body: JSON.stringify({
         user_token: 'test-token',
-        niat_text: 'Test intention',
+        intention_text: 'Test intention',
       }),
     });
 

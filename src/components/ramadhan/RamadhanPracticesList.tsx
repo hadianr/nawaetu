@@ -20,11 +20,11 @@
 
 import { RAMADHAN_PRACTICES } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
-import NiatCard from "./NiatCard";
+import IntentionCard from "./IntentionCard";
 import { useLocale } from "@/context/LocaleContext";
 import { useState } from "react";
 
-export default function RamadhanAmalanList() {
+export default function RamadhanPracticesList() {
     const { t, locale } = useLocale();
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -35,44 +35,44 @@ export default function RamadhanAmalanList() {
                 <div className="flex items-center gap-2">
                     <span className="text-lg">📿</span>
                     <h3 className="font-bold text-white text-base">
-                        {locale === "en" ? "Ramadhan Practices" : "Amalan Ramadhan"}
+                        {t.practicesTitle}
                     </h3>
                 </div>
                 <p className="text-xs text-white/40 mt-0.5">
-                    {locale === "en" ? "Tap to see intention & evidence" : "Tap untuk lihat niat & dalil"}
+                    {t.practicesTapHint}
                 </p>
             </div>
 
             {/* Amalan list */}
             <div className="divide-y divide-white/5">
-                {RAMADHAN_PRACTICES.map((amalan) => {
-                    const isExpanded = expandedId === amalan.id;
-                    const localizedTitle = locale === "en" && amalan.title_en ? amalan.title_en : amalan.title;
-                    const localizedDesc = locale === "en" && amalan.description_en ? amalan.description_en : amalan.description;
-                    const localizedTips = locale === "en" && amalan.tips_en ? amalan.tips_en : amalan.tips;
+                {RAMADHAN_PRACTICES.map((practice) => {
+                    const isExpanded = expandedId === practice.id;
+                    const localizedTitle = locale === "en" && practice.title_en ? practice.title_en : practice.title;
+                    const localizedDesc = locale === "en" && practice.description_en ? practice.description_en : practice.description;
+                    const localizedTips = locale === "en" && practice.tips_en ? practice.tips_en : practice.tips;
 
                     return (
-                        <div key={amalan.id} className="transition-all duration-300">
-                            {/* Amalan row */}
+                        <div key={practice.id} className="transition-all duration-300">
+                            {/* Practice row */}
                             <div
-                                onClick={() => setExpandedId(isExpanded ? null : amalan.id)}
+                                onClick={() => setExpandedId(isExpanded ? null : practice.id)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
-                                        setExpandedId(isExpanded ? null : amalan.id);
+                                        setExpandedId(isExpanded ? null : practice.id);
                                     }
                                 }}
                                 role="button"
                                 tabIndex={0}
                                 className="w-full flex items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3 text-left hover:bg-white/5 transition-all cursor-pointer outline-none focus-visible:bg-white/5"
                             >
-                                <span className="text-xl sm:text-2xl shrink-0">{amalan.icon}</span>
+                                <span className="text-xl sm:text-2xl shrink-0">{practice.icon}</span>
                                 <div className="flex-1 min-w-0">
                                     <p className="font-semibold text-white text-xs sm:text-sm">{localizedTitle}</p>
                                     <p className="text-[10px] sm:text-xs text-white/50 truncate">{localizedDesc}</p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
-                                    <DalilBadge dalil={amalan.dalil} variant="pill" />
+                                    <DalilBadge dalil={practice.dalil} variant="pill" />
                                     <span className={`text-white/20 transition-transform duration-300 group-hover:text-white/50 ${isExpanded ? "rotate-180" : ""}`}>
                                         <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                                             <path d="M6 9l6 6 6-6" />
@@ -88,7 +88,7 @@ export default function RamadhanAmalanList() {
                                     {localizedTips && localizedTips.length > 0 && (
                                         <div className="rounded-xl bg-black/20 border border-white/10 p-4 shadow-md backdrop-blur-sm">
                                             <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-4">
-                                                💡 {locale === "en" ? "Practice Tips" : "Tips Amalan"}
+                                                {t.practicesTipsLabel}
                                             </p>
                                             <ul className="space-y-1.5">
                                                 {localizedTips.map((tip, i) => (
@@ -101,9 +101,9 @@ export default function RamadhanAmalanList() {
                                         </div>
                                     )}
 
-                                    {/* Niat */}
-                                    {amalan.niat && (
-                                        <NiatCard niat={amalan.niat} compact />
+                                    {/* Intention */}
+                                    {practice.intention && (
+                                        <IntentionCard intention={practice.intention} compact />
                                     )}
                                 </div>
                             )}

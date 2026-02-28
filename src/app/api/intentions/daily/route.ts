@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { niat_text, niat_date, is_private = true, user_token: providedToken } = body;
+        const { intention_text, intention_date, is_private = true, user_token: providedToken } = body;
 
         // Try both session and token
         const session = await getServerSession(authOptions);
@@ -61,16 +61,16 @@ export async function POST(req: NextRequest) {
         }
 
         // Validation
-        if (!niat_text || niat_text.trim().length === 0) {
+        if (!intention_text || intention_text.trim().length === 0) {
             return NextResponse.json(
-                { success: false, error: "Niat text is required" },
+                { success: false, error: "Intention text is required" },
                 { status: 400 }
             );
         }
 
-        if (niat_text.length > 500) {
+        if (intention_text.length > 500) {
             return NextResponse.json(
-                { success: false, error: "Niat text must be 500 characters or less" },
+                { success: false, error: "Intention text must be 500 characters or less" },
                 { status: 400 }
             );
         }
@@ -79,8 +79,8 @@ export async function POST(req: NextRequest) {
         let intentionDateValue: Date;
         let todayStr: string;
 
-        if (niat_date) {
-            intentionDateValue = new Date(niat_date);
+        if (intention_date) {
+            intentionDateValue = new Date(intention_date);
             todayStr = intentionDateValue.toISOString().split('T')[0];
         } else {
             intentionDateValue = new Date();
@@ -129,8 +129,8 @@ export async function POST(req: NextRequest) {
                 .values({
                     email: anonymousEmail,
                     name: "User",
-                    niatStreakCurrent: 0,
-                    niatStreakLongest: 0,
+                    intentionStreakCurrent: 0,
+                    intentionStreakLongest: 0,
                 })
                 .returning();
 
@@ -148,8 +148,8 @@ export async function POST(req: NextRequest) {
             .where(
                 and(
                     eq(intentions.userId, userId),
-                    gte(intentions.niatDate, startOfToday),
-                    lt(intentions.niatDate, startOfTomorrow)
+                    gte(intentions.intentionDate, startOfToday),
+                    lt(intentions.intentionDate, startOfTomorrow)
                 )
             )
             .limit(1);
@@ -161,8 +161,8 @@ export async function POST(req: NextRequest) {
             [intention] = await db
                 .update(intentions)
                 .set({
-                    niatText: niat_text.trim(),
-                    niatDate: intentionDateValue,
+                    intentionText: intention_text.trim(),
+                    intentionDate: intentionDateValue,
                     isPrivate: is_private,
                     updatedAt: new Date(),
                 })
@@ -174,10 +174,9 @@ export async function POST(req: NextRequest) {
                 .insert(intentions)
                 .values({
                     userId: userId,
-                    niatText: niat_text.trim(),
-                    // niatType default handled by DB or explicit here
-                    niatType: "daily",
-                    niatDate: intentionDateValue,
+                    intentionText: intention_text.trim(),
+                    intentionType: "daily",
+                    intentionDate: intentionDateValue,
                     isPrivate: is_private,
                 })
                 .returning();
@@ -195,15 +194,15 @@ export async function POST(req: NextRequest) {
 
         const newLongestStreak = Math.max(
             streakData.currentStreak,
-            currentUser?.niatStreakLongest || 0
+            currentUser?.intentionStreakLongest || 0
         );
 
         await db
             .update(users)
             .set({
-                niatStreakCurrent: streakData.currentStreak,
-                niatStreakLongest: newLongestStreak,
-                lastNiatDate: todayStr,
+                intentionStreakCurrent: streakData.currentStreak,
+                intentionStreakLongest: newLongestStreak,
+                lastIntentionDate: todayStr,
                 updatedAt: new Date(),
             })
             .where(eq(users.id, userId));
@@ -212,13 +211,13 @@ export async function POST(req: NextRequest) {
             success: true,
             data: {
                 id: intention.id,
-                niat_text: intention.niatText,
-                niat_date: intention.niatDate,
+                intention_text: intention.intentionText,
+                intention_date: intention.intentionDate,
                 is_new: !existingIntention,
                 streak_updated: !existingIntention,
                 current_streak: streakData.currentStreak,
                 longest_streak: newLongestStreak,
-                niat_points_earned: existingIntention ? 0 : 10, // +10 NP for new niat
+                intention_points_earned: existingIntention ? 0 : 10,
                 auth_type: session ? 'session' : (providedToken ? 'token' : 'unknown'),
             },
         });
@@ -234,17 +233,17 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Calculate niat streak based on consecutive days
+ * Calculate intention streak based on consecutive days
  */
 async function calculateStreak(userId: string, currentDate: string): Promise<{
     currentStreak: number;
 }> {
     // Get all intentions for this user, ordered by date descending
     const userIntentions = await db
-        .select({ niatDate: intentions.niatDate })
+        .select({ intentionDate: intentions.intentionDate })
         .from(intentions)
         .where(eq(intentions.userId, userId))
-        .orderBy(sql`${intentions.niatDate} DESC`);
+        .orderBy(sql`${intentions.intentionDate} DESC`);
 
     if (userIntentions.length === 0) {
         return { currentStreak: 1 }; // First intention
@@ -258,7 +257,7 @@ async function calculateStreak(userId: string, currentDate: string): Promise<{
     // Convert all intention dates to YYYY-MM-DD timestamps
     // Optimization: Use Set for O(1) lookup
     const intentionDates = new Set(userIntentions.map(i => {
-        const d = new Date(i.niatDate);
+        const d = new Date(i.intentionDate);
         d.setHours(0, 0, 0, 0);
         return d.getTime();
     }));

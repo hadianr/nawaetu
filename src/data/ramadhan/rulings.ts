@@ -1,9 +1,9 @@
-import { FiqhItem, FiqhCategory } from './types';
+import { RulingItem, RulingCategory } from './types';
 
 // FIQH DATA - WAJIB (OBLIGATORY)
 // ─────────────────────────────────────────────────────────────
 
-export const OBLIGATORY_FIQH: FiqhItem[] = [
+export const OBLIGATORY_RULINGS: RulingItem[] = [
     {
         id: 'wajib_niat',
         title: 'Niat Berpuasa',
@@ -76,7 +76,7 @@ export const OBLIGATORY_FIQH: FiqhItem[] = [
 // FIQH DATA - SUNNAH (RECOMMENDED)
 // ─────────────────────────────────────────────────────────────
 
-export const RECOMMENDED_FIQH: FiqhItem[] = [
+export const RECOMMENDED_RULINGS: RulingItem[] = [
     {
         id: 'sunnah_sahur',
         title: 'Makan Sahur',
@@ -184,7 +184,7 @@ export const RECOMMENDED_FIQH: FiqhItem[] = [
 // FIQH DATA - MUBAH (PERMISSIBLE)
 // ─────────────────────────────────────────────────────────────
 
-export const PERMISSIBLE_FIQH: FiqhItem[] = [
+export const PERMISSIBLE_RULINGS: RulingItem[] = [
     {
         id: 'mubah_berkumur',
         title: 'Berkumur-kumur',
@@ -239,7 +239,7 @@ export const PERMISSIBLE_FIQH: FiqhItem[] = [
 // FIQH DATA - MAKRUH (DISLIKED)
 // ─────────────────────────────────────────────────────────────
 
-export const DISLIKED_FIQH: FiqhItem[] = [
+export const DISLIKED_RULINGS: RulingItem[] = [
     {
         id: 'makruh_berlebihan_kumur',
         title: 'Berlebihan dalam Berkumur',
@@ -278,7 +278,7 @@ export const DISLIKED_FIQH: FiqhItem[] = [
 // FIQH DATA - HARAM (FORBIDDEN / INVALIDATES FASTING)
 // ─────────────────────────────────────────────────────────────
 
-export const FORBIDDEN_FIQH: FiqhItem[] = [
+export const FORBIDDEN_RULINGS: RulingItem[] = [
     {
         id: 'haram_makan_minum_sengaja',
         title: 'Makan atau Minum dengan Sengaja',
@@ -325,24 +325,24 @@ export const FORBIDDEN_FIQH: FiqhItem[] = [
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────────────────────
 
-export function getAllFiqhByCategory(category: FiqhCategory): FiqhItem[] {
+export function getAllRulingsByCategory(category: RulingCategory): RulingItem[] {
     switch (category) {
-        case 'wajib': return OBLIGATORY_FIQH;
-        case 'sunnah': return RECOMMENDED_FIQH;
-        case 'mubah': return PERMISSIBLE_FIQH;
-        case 'makruh': return DISLIKED_FIQH;
-        case 'haram': return FORBIDDEN_FIQH;
+        case 'wajib': return OBLIGATORY_RULINGS;
+        case 'sunnah': return RECOMMENDED_RULINGS;
+        case 'mubah': return PERMISSIBLE_RULINGS;
+        case 'makruh': return DISLIKED_RULINGS;
+        case 'haram': return FORBIDDEN_RULINGS;
         default: return [];
     }
 }
 
-export function getAllFiqhItems(): FiqhItem[] {
+export function getAllRulingItems(): RulingItem[] {
     return [
-        ...OBLIGATORY_FIQH,
-        ...RECOMMENDED_FIQH,
-        ...PERMISSIBLE_FIQH,
-        ...DISLIKED_FIQH,
-        ...FORBIDDEN_FIQH,
+        ...OBLIGATORY_RULINGS,
+        ...RECOMMENDED_RULINGS,
+        ...PERMISSIBLE_RULINGS,
+        ...DISLIKED_RULINGS,
+        ...FORBIDDEN_RULINGS,
     ];
 }
 

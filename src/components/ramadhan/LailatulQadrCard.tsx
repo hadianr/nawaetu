@@ -30,7 +30,7 @@ import {
     isLailatulQadrNight,
 } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
-import NiatCard from "./NiatCard";
+import IntentionCard from "./IntentionCard";
 import { useTranslations } from "@/context/LocaleContext";
 
 export default function LailatulQadrCard() {
@@ -190,7 +190,7 @@ export default function LailatulQadrCard() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-[8px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.lailatulQadrDoa}</p>
-                        <NiatCard niat={LAILATUL_QADR_PRAYER} variant="pill" />
+                        <IntentionCard intention={LAILATUL_QADR_PRAYER} variant="pill" />
                     </div>
                 </div>
             </div>

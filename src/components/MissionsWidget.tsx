@@ -16,7 +16,7 @@ import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useMissions } from "@/hooks/useMissions";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
-import { getHukumLabel } from "@/lib/mission-utils";
+import { getRulingLabel } from "@/lib/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 import { toast } from "sonner";
@@ -87,7 +87,7 @@ export default function MissionsWidget() {
                 if (data.success && data.data.has_intention) {
                     setTodayIntention({
                         id: data.data.intention.id,
-                        text: data.data.intention.niat_text,
+                        text: data.data.intention.intention_text,
                         reflection: data.data.has_reflection ? data.data.reflection : null
                     });
                 }
@@ -156,11 +156,11 @@ export default function MissionsWidget() {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_token: userToken, niat_text: text }),
+                body: JSON.stringify({ user_token: userToken, intention_text: text }),
             });
             const data = await response.json();
             if (data.success) {
-                const mission = missions.find(m => m.id === 'niat_harian');
+                const mission = missions.find(m => m.id === 'daily_intention');
                 if (mission) {
                     addXP(mission.xpReward);
                     window.dispatchEvent(new CustomEvent("xp_updated"));
@@ -174,15 +174,15 @@ export default function MissionsWidget() {
                     window.dispatchEvent(new CustomEvent("mission_storage_updated"));
                     setTodayIntention({ id: data.data.id, text: text, reflection: null });
                     toast.success(t.toastMissionComplete, {
-                        description: `${t.niat_success_niat_title} (+${mission.xpReward} XP)`,
+                        description: `${t.intention_success_title} (+${mission.xpReward} XP)`,
                         duration: 3000,
                         icon: "🎉"
                     });
                 }
                 setShowIntentionPrompt(false);
-            } else toast.error(t.niat_error_fail_save_niat);
+            } else toast.error(t.intention_error_fail_save_niat);
         } catch {
-            toast.error(t.niat_error_generic);
+            toast.error(t.intention_error_generic);
         }
     };
 
@@ -225,8 +225,8 @@ export default function MissionsWidget() {
                         {gender === 'female' ? '🌸' : gender === 'male' ? '💠' : '✨'}
                     </div>
                     <div>
-                        <h2 className="text-sm font-bold text-white leading-none">{t.homeMissionFocusTitle}</h2>
-                        <p className="text-[10px] text-white/90 mt-0.5">{t.homeMissionDailyTarget}</p>
+                        <h2 className="text-sm font-bold text-white leading-none">{t.home_mission_focus_title}</h2>
+                        <p className="text-[10px] text-white/90 mt-0.5">{t.home_mission_daily_target}</p>
                     </div>
                 </div>
 
@@ -236,7 +236,7 @@ export default function MissionsWidget() {
                         ? "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]"
                         : "bg-white/5 border-white/10 text-white/80"
                 )}>
-                    {completedCount}/{missions.length} {t.homeMissionCompleted}
+                    {completedCount}/{missions.length} {t.home_mission_completed}
                 </div>
             </div>
 
@@ -254,7 +254,7 @@ export default function MissionsWidget() {
                             prayerData={prayerData}
                             gender={gender}
                             t={t}
-                            getHukumLabel={getHukumLabel}
+                            getRulingLabel={getRulingLabel}
                             onClick={handleMissionClick}
                         />
                     );
@@ -280,7 +280,7 @@ export default function MissionsWidget() {
                         )}
                         onClick={() => setShowMissionModal(true)}
                     >
-                        <span>{t.homeMissionViewAll} ({missions.length})</span>
+                        <span>{t.home_mission_view_all} ({missions.length})</span>
                         <ChevronRight className="w-3 h-3" />
                     </button>
                 </MissionListModal>
@@ -289,7 +289,7 @@ export default function MissionsWidget() {
             {!gender && (
                 <div className="mt-3 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
                     <p className="text-[10px] text-amber-400 text-center">
-                        {t.homeMissionSelectGenderHint}
+                        {t.home_mission_select_gender_hint}
                     </p>
                 </div>
             )}
@@ -298,7 +298,7 @@ export default function MissionsWidget() {
                 (() => {
                     const validation = checkValidation(selectedMission);
                     let customContent = null;
-                    if (selectedMission.id === 'niat_harian' && userToken) {
+                    if (selectedMission.id === 'daily_intention' && userToken) {
                         if (todayIntention) {
                             customContent = (
                                 <ReflectionInputForm

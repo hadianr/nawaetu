@@ -48,7 +48,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
     const handleSubmit = async () => {
         if (!intention.trim()) return;
         if (!userToken) {
-            setError(t.niat_error_no_token);
+            setError(t.intention_error_no_token);
             return;
         }
 
@@ -61,7 +61,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     user_token: userToken,
-                    niat_text: intention,
+                    intention_text: intention,
                 }),
             });
 
@@ -73,10 +73,10 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                     onComplete();
                 }, 2000); // Wait bit longer for success animation
             } else {
-                setError(data.error || t.niat_error_fail_save_niat);
+                setError(data.error || t.intention_error_fail_save_niat);
             }
         } catch (err) {
-            setError(t.niat_error_network);
+            setError(t.intention_error_network);
         } finally {
             setIsSubmitting(false);
         }
@@ -92,8 +92,8 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4">
                     <Sparkles className="w-10 h-10 text-emerald-400" />
                 </div>
-                <h3 className="text-2xl font-serif text-white tracking-wide">{t.niat_success_niat_title}</h3>
-                <p className="text-white/60 text-base font-serif italic max-w-xs">{t.niat_success_niat_desc}</p>
+                <h3 className="text-2xl font-serif text-white tracking-wide">{t.intention_success_title}</h3>
+                <p className="text-white/60 text-base font-serif italic max-w-xs">{t.intention_success_desc}</p>
             </motion.div>
         );
     }
@@ -140,12 +140,12 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 <div className="space-y-4">
                     <div className="relative group">
                         <label className="text-sm md:text-base font-serif font-medium text-slate-700 dark:text-slate-300 mb-2 block text-center">
-                            {t.niat_prompt_question}
+                            {t.intention_prompt_question}
                         </label>
                         <Textarea
                             value={intention}
                             onChange={(e) => setIntention(e.target.value)}
-                            placeholder={t.niat_placeholder_niat || "Bismillah, niat saya hari ini adalah..."}
+                            placeholder={t.intention_placeholder_niat || "Bismillah, niat saya hari ini adalah..."}
                             className="min-h-[160px] md:min-h-[200px] bg-transparent border-0 border-b-2 border-slate-200 dark:border-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 resize-none rounded-none focus-visible:ring-0 focus-visible:border-amber-500 font-serif text-lg leading-relaxed shadow-none transition-colors px-2 py-4"
                             style={{
                                 backgroundImage: "linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px)",
@@ -168,10 +168,10 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-                                <span className="text-base tracking-wide">{t.niat_saving_wait}</span>
+                                <span className="text-base tracking-wide">{t.intention_saving_wait}</span>
                             </>
                         ) : (
-                            <span className="text-base tracking-wide">{t.niat_save_niat_btn}</span>
+                            <span className="text-base tracking-wide">{t.intention_save_btn}</span>
                         )}
                     </Button>
                 </div>

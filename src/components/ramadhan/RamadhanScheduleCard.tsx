@@ -20,7 +20,7 @@
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import DalilBadge from "./DalilBadge";
-import NiatCard from "./NiatCard";
+import IntentionCard from "./IntentionCard";
 import { FASTING_SCHEDULE_EVIDENCE, IFTAR_PRAYER, IFTAR_PRAYER_2, IFTAR_PRAYER_3, SUHOOR_PRAYER } from "@/data/ramadhan";
 import { useState, useEffect } from "react";
 import RamadhanCalendar from "./RamadhanCalendar";
@@ -137,14 +137,14 @@ export default function RamadhanScheduleCard() {
                 <div className="space-y-2">
                     <div>
                         <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.scheduleSuhoorDua}</p>
-                        <NiatCard niat={SUHOOR_PRAYER} variant="pill" />
+                        <IntentionCard intention={SUHOOR_PRAYER} variant="pill" />
                     </div>
                     <div>
                         <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.scheduleIftarDua}</p>
                         <div className="space-y-1">
-                            <NiatCard niat={IFTAR_PRAYER} variant="pill" />
-                            <NiatCard niat={IFTAR_PRAYER_2} variant="pill" />
-                            <NiatCard niat={IFTAR_PRAYER_3} variant="pill" />
+                            <IntentionCard intention={IFTAR_PRAYER} variant="pill" />
+                            <IntentionCard intention={IFTAR_PRAYER_2} variant="pill" />
+                            <IntentionCard intention={IFTAR_PRAYER_3} variant="pill" />
                         </div>
                     </div>
                 </div>

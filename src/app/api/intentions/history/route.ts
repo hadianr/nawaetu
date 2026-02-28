@@ -47,8 +47,8 @@ export async function GET(req: NextRequest) {
             userId = session.user.id;
             const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
             if (user) {
-                streak = user.niatStreakCurrent || 0;
-                longestStreak = user.niatStreakLongest || 0;
+                streak = user.intentionStreakCurrent || 0;
+                longestStreak = user.intentionStreakLongest || 0;
             }
         } else {
             // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
@@ -63,8 +63,8 @@ export async function GET(req: NextRequest) {
                     userId = subscription.userId;
                     const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
                     if (user) {
-                        streak = user.niatStreakCurrent || 0;
-                        longestStreak = user.niatStreakLongest || 0;
+                        streak = user.intentionStreakCurrent || 0;
+                        longestStreak = user.intentionStreakLongest || 0;
                     }
                 }
             }
@@ -80,8 +80,8 @@ export async function GET(req: NextRequest) {
 
                 if (user) {
                     userId = user.id;
-                    streak = user.niatStreakCurrent || 0;
-                    longestStreak = user.niatStreakLongest || 0;
+                    streak = user.intentionStreakCurrent || 0;
+                    longestStreak = user.intentionStreakLongest || 0;
                 }
             }
         }
@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
             .select()
             .from(intentions)
             .where(eq(intentions.userId, userId))
-            .orderBy(desc(intentions.niatDate))
+            .orderBy(desc(intentions.intentionDate))
             .limit(limit)
             .offset(offset);
 
@@ -136,8 +136,8 @@ export async function GET(req: NextRequest) {
             data: {
                 intentions: userIntentions.map(i => ({
                     id: i.id,
-                    niat_text: i.niatText,
-                    niat_date: i.niatDate,
+                    intention_text: i.intentionText,
+                    intention_date: i.intentionDate,
                     reflection_text: i.reflectionText,
                     reflection_rating: i.reflectionRating,
                     reflected_at: i.reflectedAt,

@@ -108,9 +108,9 @@ export default function DataSyncer() {
                     if (Array.isArray(d.intentions) && d.intentions.length > 0) {
                         const intentionsData = d.intentions.map((i: any) => ({
                             id: i.id,
-                            niatText: i.niatText,
-                            niatType: i.niatType,
-                            niatDate: i.niatDate,
+                            intentionText: i.intentionText || i.niatText,
+                            intentionType: i.intentionType || i.niatType,
+                            intentionDate: i.intentionDate || i.niatDate,
                             reflectionText: i.reflectionText,
                             reflectionRating: i.reflectionRating,
                             isPrivate: i.isPrivate ?? true,

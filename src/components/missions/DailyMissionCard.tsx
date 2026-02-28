@@ -1,6 +1,7 @@
 import { Sparkles, AlertCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
+import { getRulingLabel } from "@/lib/mission-utils";
 
 interface DailyMissionCardProps {
     mission: Mission;
@@ -11,7 +12,7 @@ interface DailyMissionCardProps {
     prayerData: any;
     gender: 'male' | 'female' | null;
     t: any;
-    getHukumLabel: (hukum: string, t: any) => string | string[];
+    getRulingLabel: (ruling: string, t: any) => string | string[];
     onClick: (mission: Mission) => void;
 }
 
@@ -24,7 +25,7 @@ export default function DailyMissionCard({
     prayerData,
     gender,
     t,
-    getHukumLabel,
+    getRulingLabel,
     onClick
 }: DailyMissionCardProps) {
     let urgencyNode = null;
@@ -71,8 +72,8 @@ export default function DailyMissionCard({
                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
                             <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))] mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">{t.homeMissionEarlyTitle}</p>
-                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">{t.homeMissionEarlyQuote}</p>
+                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">{t.home_mission_early_title}</p>
+                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">{t.home_mission_early_quote}</p>
                             </div>
                         </div>
                     );
@@ -81,8 +82,8 @@ export default function DailyMissionCard({
                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-amber-500/10 border border-amber-500/20">
                             <AlertCircle className="w-3 h-3 text-amber-500 mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-[10px] font-bold text-amber-500 leading-tight">{t.homeMissionLateTitle.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
-                                <p className="text-[9px] text-amber-500/70 leading-tight italic">{t.homeMissionLateQuote}</p>
+                                <p className="text-[10px] font-bold text-amber-500 leading-tight">{t.home_mission_late_title.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
+                                <p className="text-[9px] text-amber-500/70 leading-tight italic">{t.home_mission_late_quote}</p>
                             </div>
                         </div>
                     );
@@ -105,7 +106,7 @@ export default function DailyMissionCard({
             {!isCompleted && !isLocked && (
                 <div className={cn(
                     "absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                    mission.hukum === 'obligatory' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
+                    mission.ruling === 'obligatory' ? "bg-blue-500" : "bg-emerald-500/50"
                 )} />
             )}
             <div className="flex items-center gap-3 w-full">
@@ -130,18 +131,18 @@ export default function DailyMissionCard({
                         </p>
                         {isSpecial && !isCompleted && !isLocked && (
                             <span className="text-[8px] px-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                                {t.homeMissionSpecial}
+                                {t.home_mission_special}
                             </span>
                         )}
                     </div>
                     <div className="flex items-center gap-2">
                         <span className={cn(
                             "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
-                            mission.hukum === 'obligatory'
-                                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/20"
+                            mission.ruling === 'obligatory'
+                                ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
+                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                         )}>
-                            {getHukumLabel(mission.hukum, t)}
+                            {getRulingLabel(mission.ruling, t)}
                         </span>
                         <p className="text-[10px] text-white/90 truncate">
                             +{mission.xpReward} XP
@@ -149,15 +150,15 @@ export default function DailyMissionCard({
 
                         {isLocked ? (
                             <span className="text-[9px] text-white/60 flex items-center gap-0.5 ml-auto">
-                                {t.homeMissionLocked}
+                                {t.home_mission_locked}
                             </span>
                         ) : validation.isLate ? (
                             <span className="text-[9px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
-                                <AlertCircle className="w-2.5 h-2.5" /> {t.homeMissionLate}
+                                <AlertCircle className="w-2.5 h-2.5" /> {t.home_mission_late}
                             </span>
                         ) : validation.isEarly ? (
                             <span className="text-[9px] text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
-                                <Sparkles className="w-2.5 h-2.5" /> {t.homeMissionEarly}
+                                <Sparkles className="w-2.5 h-2.5" /> {t.home_mission_early}
                             </span>
                         ) : null}
                     </div>

@@ -89,9 +89,9 @@ export function getLocalizedMission(mission: Mission, locale: string): Mission {
         if (mission.completionOptions) {
             localizedMission.completionOptions = mission.completionOptions.map(option => ({
                 ...option,
-                label: option.label === 'Sholat Sendiri'
-                    ? (t as any).missionCompletionAlone || t.mission_dialog_sholat_sendiri
-                    : (t as any).missionCompletionCongregation || t.mission_dialog_sholat_makmum
+                label: option.label === 'Pray Alone'
+                    ? t.mission_dialog_sholat_sendiri
+                    : t.mission_dialog_sholat_makmum
             }));
         }
 

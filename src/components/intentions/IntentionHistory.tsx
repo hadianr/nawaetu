@@ -23,8 +23,8 @@ import { useLocale } from "@/context/LocaleContext";
 
 interface Intention {
     id: string;
-    niat_text: string;
-    niat_date: string;
+    intention_text: string;
+    intention_date: string;
     reflection_text?: string;
     reflection_rating?: number;
     reflected_at?: string;
@@ -135,8 +135,8 @@ export default function IntentionHistory({ onClose }: IntentionHistoryProps) {
                 {/* Header */}
                 <div className="relative px-6 py-4 border-b border-white/5 shrink-0 flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-white">{t.niat_history_title}</h2>
-                        <p className="text-xs text-white/50">{t.niat_history_subtitle}</p>
+                        <h2 className="text-2xl font-bold text-white">{t.intention_history_title}</h2>
+                        <p className="text-xs text-white/50">{t.intention_history_subtitle}</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -152,17 +152,17 @@ export default function IntentionHistory({ onClose }: IntentionHistoryProps) {
                         <div className="bg-white/5 rounded-2xl p-3 border border-white/5 text-center">
                             <div className="text-xl mb-1">🔥</div>
                             <div className="text-lg font-bold text-white">{stats.current_streak}</div>
-                            <div className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{t.niat_stat_streak}</div>
+                            <div className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{t.intention_stat_streak}</div>
                         </div>
                         <div className="bg-white/5 rounded-2xl p-3 border border-white/5 text-center">
                             <div className="text-xl mb-1">📝</div>
                             <div className="text-lg font-bold text-white">{stats.total_intentions}</div>
-                            <div className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{t.niat_stat_total}</div>
+                            <div className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{t.intention_stat_total}</div>
                         </div>
                         <div className="bg-white/5 rounded-2xl p-3 border border-white/5 text-center">
                             <div className="text-xl mb-1">✨</div>
                             <div className="text-lg font-bold text-white">{stats.reflection_rate}%</div>
-                            <div className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{t.niat_stat_reflected}</div>
+                            <div className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{t.intention_stat_reflected}</div>
                         </div>
                     </div>
                 )}
@@ -177,8 +177,8 @@ export default function IntentionHistory({ onClose }: IntentionHistoryProps) {
                     ) : intentions.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center p-6 text-white/40">
                             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-4xl mb-4">📭</div>
-                            <p className="font-medium text-white/70">{t.niat_no_history_title}</p>
-                            <p className="text-sm">{t.niat_no_history_desc}</p>
+                            <p className="font-medium text-white/70">{t.intention_no_history_title}</p>
+                            <p className="text-sm">{t.intention_no_history_desc}</p>
                         </div>
                     ) : (
                         <>
@@ -193,11 +193,11 @@ export default function IntentionHistory({ onClose }: IntentionHistoryProps) {
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <span className="text-[10px] font-bold uppercase tracking-wider bg-white/10 px-2 py-1 rounded-lg text-white/70">
-                                                {formatDate(intention.niat_date)}
+                                                {formatDate(intention.intention_date)}
                                             </span>
                                             {intention.reflected_at && (
                                                 <span className="text-[10px] font-bold uppercase tracking-wider bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] px-2 py-1 rounded-lg border border-[rgb(var(--color-primary))]/20">
-                                                    {t.niat_reflection_done}
+                                                    {t.intention_reflection_done}
                                                 </span>
                                             )}
                                         </div>
@@ -211,7 +211,7 @@ export default function IntentionHistory({ onClose }: IntentionHistoryProps) {
                                     <div className="flex gap-3">
                                         <div className="w-1 bg-white/10 rounded-full shrink-0 group-hover:bg-[rgb(var(--color-primary))]/50 transition-colors" />
                                         <div className="flex-1">
-                                            <p className="text-white text-sm italic mb-3 leading-relaxed opacity-90">"{intention.niat_text}"</p>
+                                            <p className="text-white text-sm italic mb-3 leading-relaxed opacity-90">"{intention.intention_text}"</p>
 
                                             {intention.reflection_text && (
                                                 <div className="pt-3 border-t border-white/5 text-xs text-white/50 flex gap-2">
@@ -229,7 +229,7 @@ export default function IntentionHistory({ onClose }: IntentionHistoryProps) {
                                     onClick={loadMore}
                                     className="w-full py-3 mt-2 text-xs font-medium uppercase tracking-wider text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
                                 >
-                                    {t.niat_load_more}
+                                    {t.intention_load_more}
                                 </button>
                             )}
 

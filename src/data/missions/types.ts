@@ -8,7 +8,7 @@ export interface ValidationConfig {
     timeWindow?: { start: number; end: number };
 }
 
-export type IslamicLaw = 'obligatory' | 'sunnah' | 'permissible' | 'disliked' | 'forbidden';
+export type IslamicRuling = 'obligatory' | 'sunnah' | 'permissible' | 'disliked' | 'forbidden';
 
 export interface Mission {
     id: string;
@@ -20,7 +20,7 @@ export interface Mission {
     dalil?: string;
     type: 'daily' | 'weekly' | 'tracker';
     category: 'worship' | 'quran' | 'dhikr' | 'fasting' | 'prayer';
-    hukum: IslamicLaw;
+    ruling: IslamicRuling;
     validationType: ValidationType;
     validationConfig?: ValidationConfig;
     phase?: 'all_year' | 'ramadhan_prep' | 'ramadhan_during';

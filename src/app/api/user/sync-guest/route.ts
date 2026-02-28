@@ -62,9 +62,12 @@ const syncSchema = z.object({
         completedAt: z.string(),
     })).max(1000).optional(),
     intentions: z.array(z.object({
-        niatText: z.string(),
-        niatType: z.string().optional(),
-        niatDate: z.string(), // YYYY-MM-DD
+        intentionText: z.string().optional(),
+        niatText: z.string().optional(), // backward compatibility
+        intentionType: z.string().optional(),
+        niatType: z.string().optional(), // backward compatibility
+        intentionDate: z.string().optional(),
+        niatDate: z.string().optional(), // backward compatibility
         reflectionText: z.string().optional(),
         reflectionRating: z.number().optional(),
         reflectedAt: z.string().optional(),
@@ -193,11 +196,11 @@ export async function POST(req: NextRequest) {
                 // Fetch existing intentions for this user to deduplicate once $O(1)$ in-memory
                 const cloudIntentions = await tx.query.intentions.findMany({
                     where: eq(intentions.userId, userId),
-                    columns: { id: true, niatDate: true, reflectionText: true }
+                    columns: { id: true, intentionDate: true, reflectionText: true }
                 });
 
                 const cloudDateMap = new Map(cloudIntentions.map(i => [
-                    new Date(i.niatDate).toISOString().split('T')[0],
+                    new Date(i.intentionDate).toISOString().split('T')[0],
                     i
                 ]));
 
@@ -205,7 +208,10 @@ export async function POST(req: NextRequest) {
                 const intentionsToUpdate: { id: string, data: Partial<NewIntention> }[] = [];
 
                 for (const i of data.intentions) {
-                    const intentionDateValue = new Date(i.niatDate);
+                    const dateStr = i.intentionDate || i.niatDate;
+                    if (!dateStr) continue;
+
+                    const intentionDateValue = new Date(dateStr);
                     const localDayStr = intentionDateValue.toISOString().split('T')[0];
 
                     const existingIntention = cloudDateMap.get(localDayStr);
@@ -213,15 +219,15 @@ export async function POST(req: NextRequest) {
                     if (!existingIntention) {
                         intentionsToInsert.push({
                             userId,
-                            niatText: i.niatText,
-                            niatType: (i.niatType as any) || "daily",
-                            niatDate: intentionDateValue,
+                            intentionText: i.intentionText || i.niatText || "",
+                            intentionType: (i.intentionType as any) || (i.niatType as any) || "daily",
+                            intentionDate: intentionDateValue,
                             reflectionText: i.reflectionText || null,
                             reflectionRating: i.reflectionRating || null,
                             reflectedAt: i.reflectedAt ? new Date(i.reflectedAt) : null,
                         });
                         // Prevent duplicates in same batch
-                        cloudDateMap.set(localDayStr, { id: 'new', niatDate: intentionDateValue, reflectionText: i.reflectionText || null });
+                        cloudDateMap.set(localDayStr, { id: 'new', intentionDate: intentionDateValue, reflectionText: i.reflectionText || null });
                     } else if (existingIntention && !existingIntention.reflectionText && i.reflectionText && existingIntention.id !== 'new') {
                         intentionsToUpdate.push({
                             id: existingIntention.id,

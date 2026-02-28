@@ -11,7 +11,7 @@ export const PRAYER_NAMES: Record<string, string> = {
 
 export const UNIVERSAL_MISSIONS: Mission[] = [
     {
-        id: 'niat_harian',
+        id: 'daily_intention',
         title: 'Luruskan Niat',
         description: 'Tetapkan niat kebaikan hari ini',
         xpReward: 50,
@@ -20,7 +20,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'HR. Bukhari no. 1: "Segala amal itu tergantung niatnya..."',
         type: 'daily',
         category: 'worship',
-        hukum: 'obligatory', // Foundation of all worship
+        ruling: 'obligatory', // Foundation of all worship
         phase: 'all_year',
         validationType: 'manual', // Will be handled by custom form
     },
@@ -34,7 +34,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Muzzammil:20',
         type: 'daily',
         category: 'quran',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'auto',
         validationConfig: { requiredCount: 10 }
@@ -49,7 +49,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'HR Bukhari 6329',
         type: 'daily',
         category: 'dhikr',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'auto',
         validationConfig: { requiredCount: 99 }
@@ -64,7 +64,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'Al-Ma\'thurat',
         type: 'daily',
         category: 'dhikr',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 4, end: 10 } }
@@ -79,13 +79,13 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'Al-Ma\'thurat',
         type: 'daily',
         category: 'dhikr',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 15, end: 18 } }
     },
     {
-        id: 'muhasabah',
+        id: 'daily_reflection',
         title: 'Muhasabah Harian',
         description: 'Refleksi ibadah di penghujung hari',
         xpReward: 50,
@@ -94,14 +94,14 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Hashr: 18: "Dan hendaklah setiap diri memperhatikan apa yang telah diperbuatnya..."',
         type: 'daily',
         category: 'worship',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'manual', // Will be handled by custom form
     },
 
     // Individual prayer missions (MOVED TO GENDER SPECIFIC)
     {
-        id: 'puasa_sunnah',
+        id: 'sunnah_fasting',
         title: 'Puasa Senin/Kamis',
         description: 'Puasa sunnah (hanya Senin/Kamis)',
         xpReward: 150,
@@ -110,7 +110,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         dalil: 'HR Muslim 1162',
         type: 'weekly',
         category: 'fasting',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'day',
         validationConfig: { allowedDays: [1, 4] } // Monday = 1, Thursday = 4
@@ -119,7 +119,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
 
 export const FEMALE_MISSIONS: Mission[] = [
     {
-        id: 'qadha_puasa_tracker',
+        id: 'makeup_fasting_tracker',
         title: 'Tracker Qadha Puasa',
         description: 'Catat dan bayar utang puasa Ramadhan',
         xpReward: 100,
@@ -128,12 +128,12 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'HR Muslim 335 - Aisyah r.a.',
         type: 'tracker',
         category: 'fasting',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'ramadhan_prep',
         validationType: 'manual'
     },
     {
-        id: 'dzikir_haid',
+        id: 'menstruation_dhikr',
         title: 'Dzikir Saat Udzur',
         description: 'Perbanyak dzikir dan istighfar',
         xpReward: 30,
@@ -142,12 +142,12 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Amalan saat haid',
         type: 'daily',
         category: 'dhikr',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'manual'
     },
     {
-        id: 'shalawat_100',
+        id: 'salawat_100x',
         title: 'Shalawat 100x',
         description: 'Membaca shalawat 100 kali',
         xpReward: 40,
@@ -156,12 +156,12 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Ahzab:56',
         type: 'daily',
         category: 'dhikr',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'manual'
     },
     {
-        id: 'sholat_subuh_female',
+        id: 'fajr_prayer_female',
         title: 'Sholat Subuh',
         description: 'Tunaikan sholat Subuh tepat waktu',
         xpReward: 25,
@@ -170,13 +170,13 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'fajr' }
     },
     {
-        id: 'sholat_dzuhur_female',
+        id: 'dhuhr_prayer_female',
         title: 'Sholat Dzuhur',
         description: 'Tunaikan sholat Dzuhur tepat waktu',
         xpReward: 25,
@@ -185,13 +185,13 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'dhuhr' }
     },
     {
-        id: 'sholat_ashar_female',
+        id: 'asr_prayer_female',
         title: 'Sholat Ashar',
         description: 'Tunaikan sholat Ashar tepat waktu',
         xpReward: 25,
@@ -200,13 +200,13 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'asr' }
     },
     {
-        id: 'sholat_maghrib_female',
+        id: 'maghrib_prayer_female',
         title: 'Sholat Maghrib',
         description: 'Tunaikan sholat Maghrib tepat waktu',
         xpReward: 25,
@@ -215,13 +215,13 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'maghrib' }
     },
     {
-        id: 'sholat_isya_female',
+        id: 'isha_prayer_female',
         title: 'Sholat Isya',
         description: 'Tunaikan sholat Isya tepat waktu',
         xpReward: 25,
@@ -230,7 +230,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'isha' }
@@ -239,7 +239,7 @@ export const FEMALE_MISSIONS: Mission[] = [
 
 export const MALE_MISSIONS: Mission[] = [
     {
-        id: 'sholat_jumat',
+        id: 'friday_prayer',
         title: 'Sholat Jumat',
         description: 'Tunaikan sholat Jumat (hanya Jumat)',
         xpReward: 200,
@@ -248,13 +248,13 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'QS. Al-Jumu\'ah:9',
         type: 'weekly',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'day',
         validationConfig: { allowedDays: [5] } // Friday = 5
     },
     {
-        id: 'sholat_dhuha',
+        id: 'dhuha_prayer',
         title: 'Sholat Dhuha',
         description: 'Tunaikan sholat Dhuha (08:00-11:00)',
         xpReward: 50,
@@ -263,14 +263,14 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'HR Muslim 748',
         type: 'daily',
         category: 'prayer',
-        hukum: 'sunnah',
+        ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 8, end: 11 } }
     },
     // MALE PRAYER MISSIONS
     {
-        id: 'sholat_subuh_male',
+        id: 'fajr_prayer_male',
         title: 'Sholat Subuh',
         description: 'Tunaikan sholat Subuh (Utama: Berjamaah)',
         xpReward: 25,
@@ -279,17 +279,17 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'fajr' },
         completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', xpReward: 25 },
+            { label: 'Congregation', xpReward: 75, icon: '🕌' }
         ]
     },
     {
-        id: 'sholat_dzuhur_male',
+        id: 'dhuhr_prayer_male',
         title: 'Sholat Dzuhur',
         description: 'Tunaikan sholat Dzuhur (Utama: Berjamaah)',
         xpReward: 25,
@@ -298,17 +298,17 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'dhuhr' },
         completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', xpReward: 25 },
+            { label: 'Congregation', xpReward: 75, icon: '🕌' }
         ]
     },
     {
-        id: 'sholat_ashar_male',
+        id: 'asr_prayer_male',
         title: 'Sholat Ashar',
         description: 'Tunaikan sholat Ashar (Utama: Berjamaah)',
         xpReward: 25,
@@ -317,17 +317,17 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'asr' },
         completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', xpReward: 25 },
+            { label: 'Congregation', xpReward: 75, icon: '🕌' }
         ]
     },
     {
-        id: 'sholat_maghrib_male',
+        id: 'maghrib_prayer_male',
         title: 'Sholat Maghrib',
         description: 'Tunaikan sholat Maghrib (Utama: Berjamaah)',
         xpReward: 25,
@@ -336,17 +336,17 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'maghrib' },
         completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', xpReward: 25 },
+            { label: 'Congregation', xpReward: 75, icon: '🕌' }
         ]
     },
     {
-        id: 'sholat_isya_male',
+        id: 'isha_prayer_male',
         title: 'Sholat Isya',
         description: 'Tunaikan sholat Isya (Utama: Berjamaah)',
         xpReward: 25,
@@ -355,13 +355,13 @@ export const MALE_MISSIONS: Mission[] = [
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
         type: 'daily',
         category: 'prayer',
-        hukum: 'obligatory',
+        ruling: 'obligatory',
         phase: 'all_year',
         validationType: 'time',
         validationConfig: { afterPrayer: 'isha' },
         completionOptions: [
-            { label: 'Sholat Sendiri', xpReward: 25 },
-            { label: 'Berjamaah di Masjid', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', xpReward: 25 },
+            { label: 'Congregation', xpReward: 75, icon: '🕌' }
         ]
     }
 ];

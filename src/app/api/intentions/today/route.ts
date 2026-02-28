@@ -116,8 +116,8 @@ export async function GET(req: NextRequest) {
             .where(
                 and(
                     eq(intentions.userId, userId),
-                    gte(intentions.niatDate, startOfToday),
-                    lt(intentions.niatDate, startOfTomorrow)
+                    gte(intentions.intentionDate, startOfToday),
+                    lt(intentions.intentionDate, startOfTomorrow)
                 )
             )
             .limit(1);
@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
                 data: {
                     has_intention: false,
                     has_reflection: false,
-                    streak: userData?.niatStreakCurrent || 0,
+                    streak: userData?.intentionStreakCurrent || 0,
                 },
             });
         }
@@ -144,8 +144,8 @@ export async function GET(req: NextRequest) {
                 has_intention: true,
                 intention: {
                     id: todayIntention.id,
-                    niat_text: todayIntention.niatText,
-                    niat_date: todayIntention.niatDate,
+                    intention_text: todayIntention.intentionText,
+                    intention_date: todayIntention.intentionDate,
                 },
                 has_reflection: todayIntention.reflectedAt !== null,
                 reflection: todayIntention.reflectedAt ? {
@@ -153,7 +153,7 @@ export async function GET(req: NextRequest) {
                     text: todayIntention.reflectionText,
                     reflected_at: todayIntention.reflectedAt,
                 } : null,
-                streak: userData?.niatStreakCurrent || 0,
+                streak: userData?.intentionStreakCurrent || 0,
             },
         });
     } catch (error) {

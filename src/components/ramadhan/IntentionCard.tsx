@@ -24,21 +24,21 @@ import { X } from "lucide-react";
 import type { IntentionData } from "@/data/ramadhan";
 import { useLocale } from "@/context/LocaleContext";
 
-interface NiatCardProps {
-    niat: IntentionData;
+interface IntentionCardProps {
+    intention: IntentionData;
     defaultExpanded?: boolean;
     compact?: boolean;
     variant?: "inline" | "pill";
 }
 
-export default function NiatCard({ niat, defaultExpanded = false, compact = false, variant = "pill" }: NiatCardProps) {
+export default function IntentionCard({ intention, defaultExpanded = false, compact = false, variant = "pill" }: IntentionCardProps) {
     const [showDetail, setShowDetail] = useState(false);
     const { t, locale } = useLocale();
 
     // Localized fields with fallback
-    const localizedTitle = locale === 'en' && niat.title_en ? niat.title_en : niat.title;
-    const localizedTranslation = locale === 'en' && niat.translation_en ? niat.translation_en : niat.translation;
-    const localizedSource = locale === 'en' && niat.source_en ? niat.source_en : niat.source;
+    const localizedTitle = locale === 'en' && intention.title_en ? intention.title_en : intention.title;
+    const localizedTranslation = locale === 'en' && intention.translation_en ? intention.translation_en : intention.translation;
+    const localizedSource = locale === 'en' && intention.source_en ? intention.source_en : intention.source;
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -64,7 +64,7 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
                     background: "rgba(0, 0, 0, 0.2)",
                     backdropFilter: "blur(8px)"
                 } : undefined}
-                title={t.niatViewFull}
+                title={t.intention_view_full}
             >
                 <span className="text-base sm:text-lg group-hover/niat:scale-110 transition-transform">🤲</span>
                 <div className="flex-1 text-left">
@@ -150,7 +150,7 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
                                         dir="rtl"
                                         lang="ar"
                                     >
-                                        {niat.arabic}
+                                        {intention.arabic}
                                     </p>
                                 </div>
 
@@ -160,7 +160,7 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
                                     <p className="text-sm italic text-white/80 leading-relaxed font-normal" style={{
                                         textShadow: "0 1px 8px rgba(0,0,0,0.4)"
                                     }}>
-                                        &ldquo;{niat.latin}&rdquo;
+                                        &ldquo;{intention.latin}&rdquo;
                                     </p>
                                 </div>
 
@@ -170,7 +170,7 @@ export default function NiatCard({ niat, defaultExpanded = false, compact = fals
                                     borderColor: "rgba(255, 255, 255, 0.1)"
                                 }}>
                                     <p className="text-[10px] font-bold uppercase tracking-wider mb-2.5 text-white/50">
-                                        {t.niatTranslation}
+                                        {t.intention_translation}
                                     </p>
                                     <p className="text-sm text-white leading-relaxed font-normal" style={{
                                         textShadow: "0 1px 8px rgba(0,0,0,0.4)",

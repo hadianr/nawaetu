@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
                 reflection_rating: updatedIntention.reflectionRating,
                 reflection_text: updatedIntention.reflectionText,
                 reflected_at: updatedIntention.reflectedAt,
-                niat_points_earned: 5, // +5 NP for reflection
+                intention_points_earned: 5, // +5 NP for reflection
             },
         });
     } catch (error) {

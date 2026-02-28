@@ -35,7 +35,7 @@ import { MISSION_CONTENTS, MissionContent } from "@/data/missions/content";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
-import { getHukumLabel } from "@/lib/mission-utils";
+import { getRulingLabel } from "@/lib/mission-utils";
 
 interface MissionDetailDialogProps {
     mission: Mission;
@@ -121,7 +121,7 @@ export default function MissionDetailDialog({
                                         ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                         : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30"
                                 )}>
-                                    {getHukumLabel(mission.hukum, t)}
+                                    {getRulingLabel(mission.ruling, t)}
                                 </span>
                             </div>
                             <p className={cn("text-xs mt-1", isDaylight ? "text-slate-500 font-medium" : "text-white/50")}>{mission.description}</p>
@@ -189,7 +189,7 @@ export default function MissionDetailDialog({
                                             <div className="space-y-3">
                                                 <h3 className={cn("text-sm font-bold flex items-center gap-2", isDaylight ? "text-slate-800" : "text-white")}>
                                                     <span className={cn("w-1.5 h-1.5 rounded-full transition-colors", isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]")} />
-                                                    {mission.category === 'prayer' ? t.mission_dialog_niat_sholat : mission.category === 'fasting' ? t.mission_dialog_niat_puasa : t.mission_dialog_niat_general}
+                                                    {mission.category === 'prayer' ? t.mission_dialog_intention_sholat : mission.category === 'fasting' ? t.mission_dialog_intention_puasa : t.mission_dialog_intention_general}
                                                 </h3>
 
                                                 {/* CONDITIONAL RENDERING: Tabs only if Munfarid AND Makmum exist */}
@@ -425,13 +425,13 @@ export default function MissionDetailDialog({
                             )}>
                                 <div className="flex items-center gap-2 mb-1">
                                     <AlertCircle className={cn("w-4 h-4 shrink-0", isDaylight ? "text-red-500" : "text-red-500")} />
-                                    <p className={cn("text-xs font-bold", isDaylight ? "text-red-700" : "text-red-400")}>{t.homeMissionLatePrayerTitle}</p>
+                                    <p className={cn("text-xs font-bold", isDaylight ? "text-red-700" : "text-red-400")}>{t.home_mission_late_prayer_title}</p>
                                 </div>
                                 <p className={cn("text-[10px] leading-tight italic", isDaylight ? "text-red-600/80" : "text-red-200/80")}>
-                                    {t.homeMissionLateWarningQuote}
+                                    {t.home_mission_late_warning_quote}
                                 </p>
                                 <p className={cn("text-[10px] mt-1 font-medium", isDaylight ? "text-red-400" : "text-zinc-400")}>
-                                    {t.homeMissionLateWarningDesc}
+                                    {t.home_mission_late_warning_desc}
                                 </p>
                             </div>
                         )}
@@ -444,7 +444,7 @@ export default function MissionDetailDialog({
                             )}>
                                 <AlertCircle className={cn("w-4 h-4 shrink-0", isDaylight ? "text-orange-500" : "text-[rgb(var(--color-accent))]")} />
                                 <p className={cn("text-[10px] leading-tight font-medium", isDaylight ? "text-orange-700" : "text-[rgb(var(--color-accent))]/80")}>
-                                    {t.homeMissionLateNotice}
+                                    {t.home_mission_late_notice}
                                 </p>
                             </div>
                         )}
@@ -457,10 +457,10 @@ export default function MissionDetailDialog({
                             )}>
                                 <div className="flex items-center gap-2 mb-1">
                                     <Sparkles className={cn("w-4 h-4 shrink-0", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
-                                    <p className={cn("text-xs font-bold", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>{t.homeMissionEarlyPrayerTitle}</p>
+                                    <p className={cn("text-xs font-bold", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>{t.home_mission_early_prayer_title}</p>
                                 </div>
                                 <p className={cn("text-[10px] leading-tight italic font-medium", isDaylight ? "text-emerald-600/80" : "text-[rgb(var(--color-primary-light))]/80")}>
-                                    {t.homeMissionEarlyPraiseQuote}
+                                    {t.home_mission_early_praise_quote}
                                 </p>
                             </div>
                         )}
@@ -473,7 +473,7 @@ export default function MissionDetailDialog({
                                         ? "bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-50"
                                         : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20"
                                 )} disabled>
-                                    <Check className="w-4 h-4 mr-2" /> {t.homeMissionCompletedLabel}
+                                    <Check className="w-4 h-4 mr-2" /> {t.home_mission_completed_label}
                                 </Button>
 
                                 {isConfirmingReset ? (
@@ -489,7 +489,7 @@ export default function MissionDetailDialog({
                                                 setIsConfirmingReset(false);
                                             }}
                                         >
-                                            {t.homeMissionUndoConfirm} (-{mission.xpReward} XP)
+                                            {t.home_mission_undo_confirm} (-{mission.xpReward} XP)
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -499,7 +499,7 @@ export default function MissionDetailDialog({
                                             )}
                                             onClick={() => setIsConfirmingReset(false)}
                                         >
-                                            {t.homeMissionUndoCancel}
+                                            {t.home_mission_undo_cancel}
                                         </Button>
                                     </div>
                                 ) : (
@@ -511,7 +511,7 @@ export default function MissionDetailDialog({
                                         )}
                                         onClick={() => setIsConfirmingReset(true)}
                                     >
-                                        {t.homeMissionUndoPrompt}
+                                        {t.home_mission_undo_prompt}
                                     </Button>
                                 )}
                             </div>
@@ -520,7 +520,7 @@ export default function MissionDetailDialog({
                                 "w-full border transition-colors",
                                 isDaylight ? "bg-slate-50 border-slate-100 text-slate-400 hover:bg-slate-50" : "bg-white/5 text-white/40 hover:bg-white/5 border border-white/10"
                             )} disabled>
-                                <Lock className="w-4 h-4 mr-2" /> {lockReason || t.homeMissionLockedFallback}
+                                <Lock className="w-4 h-4 mr-2" /> {lockReason || t.home_mission_locked_fallback}
                             </Button>
                         ) : mission.completionOptions ? (
                             <div className="flex gap-2">
@@ -573,7 +573,7 @@ export default function MissionDetailDialog({
                             >
                                 {isLate ? <Check className="w-5 h-5 mr-2" /> : <Check className="w-5 h-5 mr-2" />}
                                 <span className="uppercase tracking-widest">
-                                    {isLate ? t.homeMissionCompleteLate : t.homeMissionComplete} (+{mission.xpReward} XP)
+                                    {isLate ? t.home_mission_complete_late : t.home_mission_complete} (+{mission.xpReward} XP)
                                 </span>
                             </Button>
                         )}

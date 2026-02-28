@@ -21,7 +21,7 @@
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan";
 import { RAMADHAN_FASTING_INTENTION, FASTING_EVIDENCE, FIRST_10_DAYS_MERCY_EVIDENCE, MIDDLE_10_DAYS_FORGIVENESS_EVIDENCE, LAST_10_DAYS_FREEDOM_EVIDENCE } from "@/data/ramadhan";
-import NiatCard from "./NiatCard";
+import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
 
@@ -207,8 +207,8 @@ export default function RamadhanHeroCard() {
                     </div>
                 </div>
 
-                {/* Niat Puasa Button */}
-                <NiatCard niat={RAMADHAN_FASTING_INTENTION} variant="pill" />
+                {/* Fasting Intention Card */}
+                <IntentionCard intention={RAMADHAN_FASTING_INTENTION} variant="pill" />
             </div>
         </div>
     );

@@ -22,7 +22,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { TARAWEH_EVIDENCE, TARAWEH_INTENTION, formatHijriKey } from "@/data/ramadhan";
-import NiatCard from "./NiatCard";
+import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTranslations } from "@/context/LocaleContext";
@@ -160,7 +160,7 @@ export default function TarawehTracker() {
 
             {/* Niat button */}
             <div className="px-3 pb-3 sm:px-4 sm:pb-4">
-                <NiatCard niat={TARAWEH_INTENTION} variant="pill" />
+                <IntentionCard intention={TARAWEH_INTENTION} variant="pill" />
             </div>
         </div>
     );

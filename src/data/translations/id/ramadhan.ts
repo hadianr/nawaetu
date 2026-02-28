@@ -92,28 +92,28 @@ export const ramadhanID = {
     lailatulQadrDalil: "Dalil",
     lailatulQadrDoa: "Doa",
 
-    // Amalan List
-    amalanTitle: "Amalan Ramadhan",
-    amalanTapHint: "Tap untuk lihat niat & dalil",
-    amalanTipsLabel: "💡 Tips Amalan",
+    // Practices List
+    practicesTitle: "Amalan Ramadhan",
+    practicesTapHint: "Tap untuk lihat niat & dalil",
+    practicesTipsLabel: "💡 Tips Amalan",
 
     // Guide Card
     guideTitle: "Panduan Puasa Ramadhan",
     guideSubtitle: "Hukum fiqih dan pertanyaan umum seputar puasa",
-    guideButtonFiqh: "Hukum Puasa",
-    guideButtonFiqhDesc: "Wajib, Sunnah, Mubah, Makruh, Haram",
+    guideButtonRuling: "Hukum Puasa",
+    guideButtonRulingDesc: "Wajib, Sunnah, Mubah, Makruh, Haram",
     guideButtonFAQ: "FAQ Puasa",
     guideButtonFAQDesc: "Pertanyaan yang sering ditanyakan",
 
-    // Fiqh Modal
-    fiqhModalTitle: "Hukum Puasa",
-    fiqhModalSubtitle: "Lima kategori hukum dalam puasa Ramadhan",
-    fiqhModalEmpty: "Tidak ada data untuk kategori ini",
+    // Rulings Modal
+    rulingsModalTitle: "Hukum Puasa",
+    rulingsModalSubtitle: "Lima kategori hukum dalam puasa Ramadhan",
+    rulingsModalEmpty: "Tidak ada data untuk kategori ini",
 
     // FAQ Modal
     faqModalTitle: "FAQ Puasa",
     faqModalSubtitle: "Pertanyaan yang sering ditanyakan seputar puasa",
-    faqDalilLabel: "Dalil",
+    faqEvidenceLabel: "Dalil",
     faqDisclaimerTitle: "⚠️ Catatan Penting",
     faqDisclaimer: "Untuk masalah fiqih yang kompleks atau kondisi khusus, silakan konsultasi dengan ustadz atau ulama terpercaya di daerah Anda.",
 
@@ -130,18 +130,18 @@ export const ramadhanID = {
     calendarHeaderIftar: "Buka",
     calendarNoData: "Data tidak tersedia untuk periode ini.",
 
-    // Niat Card
-    niatModalTitle: "Niat",
-    niatViewFull: "Lihat niat lengkap",
-    niatArabic: "نَوَيْتُ",
-    niatLatin: "Latin",
-    niatTranslation: "Artinya",
-    niatSource: "Sumber",
+    // Intention Card
+    intentionModalTitle: "Niat",
+    intentionViewFull: "Lihat niat lengkap",
+    intentionArabic: "نَوَيْتُ",
+    intentionLatin: "Latin",
+    intentionTranslation: "Artinya",
+    intentionSource: "Sumber",
 
-    // Dalil Badge
-    dalilModalTitle: "Dalil",
-    dalilViewFull: "Lihat dalil lengkap",
-    dalilTranslation: "Terjemahan",
+    // Evidence Badge
+    evidenceModalTitle: "Dalil",
+    evidenceViewFull: "Lihat dalil lengkap",
+    evidenceTranslation: "Terjemahan",
 
     // Common Button
     buttonOk: "OK",

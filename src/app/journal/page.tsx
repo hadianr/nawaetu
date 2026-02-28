@@ -28,8 +28,8 @@ import { cn } from "@/lib/utils";
 
 interface Intention {
     id: string;
-    niat_text: string;
-    niat_date: string;
+    intention_text: string;
+    intention_date: string;
     reflection_text?: string;
     reflection_rating?: number;
     reflected_at?: string;
@@ -121,11 +121,11 @@ export default function JournalPage() {
     const getRatingLabel = (rating?: number) => {
         if (!rating) return "";
         const labels = [
-            t.niat_rating_struggled,
-            t.niat_rating_difficult,
-            t.niat_rating_okay,
-            t.niat_rating_good,
-            t.niat_rating_excellent
+            t.intention_rating_struggled,
+            t.intention_rating_difficult,
+            t.intention_rating_okay,
+            t.intention_rating_good,
+            t.intention_rating_excellent
         ];
         return labels[rating - 1] || "";
     };
@@ -138,7 +138,7 @@ export default function JournalPage() {
                     <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/5 transition-colors">
                         <ChevronLeft className="w-6 h-6 text-white/80" />
                     </Link>
-                    <h1 className="text-lg font-bold">{t.niat_journal_title}</h1>
+                    <h1 className="text-lg font-bold">{t.intention_journal_title}</h1>
                     <div className="w-10" /> {/* Spacer for balance */}
                 </div>
             </div>
@@ -159,12 +159,12 @@ export default function JournalPage() {
                             <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-white/5 rounded-2xl p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group">
                                 <ScrollText className="w-4 h-4 text-blue-500/60 mb-1" />
                                 <span className="text-lg font-bold text-white mb-0.5">{stats.total_intentions}</span>
-                                <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">{t.niat_stat_total}</span>
+                                <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">{t.intention_stat_total}</span>
                             </div>
                             <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-white/5 rounded-2xl p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group">
                                 <Star className="w-4 h-4 text-emerald-500/60 mb-1" />
                                 <span className="text-lg font-bold text-white mb-0.5">{stats.reflection_rate}%</span>
-                                <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">{t.niat_refleksi_btn}</span>
+                                <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">{t.intention_refleksi_btn}</span>
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@ export default function JournalPage() {
 
                 {/* Timeline */}
                 <div className="space-y-4">
-                    <h2 className="text-sm font-bold text-white/50 uppercase tracking-wider pl-1">{t.niat_history_journey}</h2>
+                    <h2 className="text-sm font-bold text-white/50 uppercase tracking-wider pl-1">{t.intention_history_journey}</h2>
 
                     {isLoading && intentions.length === 0 ? (
                         // Loading Skeletons
@@ -182,10 +182,10 @@ export default function JournalPage() {
                     ) : intentions.length === 0 ? (
                         <div className="py-20 flex flex-col items-center justify-center text-center text-white/40">
                             <Book className="w-16 h-16 mb-4 opacity-50" />
-                            <p className="font-medium text-lg text-white/70">{t.niat_no_history_title}</p>
-                            <p className="text-sm max-w-[250px]">{t.niat_no_history_desc}</p>
+                            <p className="font-medium text-lg text-white/70">{t.intention_no_history_title}</p>
+                            <p className="text-sm max-w-[250px]">{t.intention_no_history_desc}</p>
                             <Link href="/" className="mt-6 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full text-sm font-medium transition-colors">
-                                {t.niat_start_now}
+                                {t.intention_start_now}
                             </Link>
                         </div>
                     ) : (
@@ -209,7 +209,7 @@ export default function JournalPage() {
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-1.5 text-white/40 text-[10px]">
                                                 <Calendar className="w-3 h-3" />
-                                                <span className="font-bold uppercase tracking-wider">{formatDate(intention.niat_date)}</span>
+                                                <span className="font-bold uppercase tracking-wider">{formatDate(intention.intention_date)}</span>
                                             </div>
                                             {intention.reflection_rating && (
                                                 <div className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-lg">
@@ -229,7 +229,7 @@ export default function JournalPage() {
                                         <div className="mb-3">
                                             <div className="flex gap-2.5">
                                                 <div className="w-0.5 bg-blue-500/40 rounded-full shrink-0" />
-                                                <p className="text-white text-[15px] italic leading-relaxed opacity-90">"{intention.niat_text}"</p>
+                                                <p className="text-white text-[15px] italic leading-relaxed opacity-90">"{intention.intention_text}"</p>
                                             </div>
                                         </div>
 
@@ -242,7 +242,7 @@ export default function JournalPage() {
                                                     </div>
                                                     <div className="flex-1">
                                                         <div className="flex items-center justify-between mb-1">
-                                                            <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{t.niat_reflection_note}</p>
+                                                            <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{t.intention_reflection_note}</p>
                                                             <p className="text-[9px] font-medium text-white/20 italic">{formatTime(intention.reflected_at)}</p>
                                                         </div>
                                                         <p className="text-sm text-white/70 leading-relaxed font-serif">{intention.reflection_text}</p>
@@ -253,7 +253,7 @@ export default function JournalPage() {
 
                                         {!intention.reflected_at && (
                                             <div className="mt-3 flex justify-end">
-                                                <span className="text-[10px] text-white/30 italic">{t.niat_no_reflection}</span>
+                                                <span className="text-[10px] text-white/30 italic">{t.intention_no_reflection}</span>
                                             </div>
                                         )}
                                     </div>
@@ -265,7 +265,7 @@ export default function JournalPage() {
                                     onClick={loadMore}
                                     className="w-full py-4 text-xs font-medium uppercase tracking-wider text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
                                 >
-                                    {t.niat_load_more} {t.niat_history_btn_title}
+                                    {t.intention_load_more} {t.intention_history_btn_title}
                                 </button>
                             )}
                         </div>

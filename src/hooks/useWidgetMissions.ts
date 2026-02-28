@@ -34,10 +34,10 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
         if (isRamadhan) {
             allMissions = allMissions.filter(m =>
-                m.id !== 'puasa_sunnah' &&
-                m.id !== 'qadha_puasa' &&
-                m.id !== 'qadha_puasa_tracker' &&
-                m.id !== 'puasa_sunnah_ramadhan_prep'
+                m.id !== 'sunnah_fasting' &&
+                m.id !== 'makeup_fasting' &&
+                m.id !== 'makeup_fasting_tracker' &&
+                m.id !== 'sunnah_fasting_ramadan_prep'
             );
         }
 
@@ -80,7 +80,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
     const widgetMissions = [...missions]
         .filter(m => {
-            if (m.id === 'niat_harian' || m.id === 'muhasabah') return false;
+            if (m.id === 'daily_intention' || m.id === 'daily_reflection') return false;
             if (isRamadhan) return m.phase !== 'ramadhan_prep';
             return m.phase !== 'ramadhan_during';
         })
@@ -99,8 +99,8 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
                 if (isRamadhan && m.phase === 'ramadhan_during') return 200;
 
-                if (m.category === 'prayer' && m.hukum === 'obligatory') return 100;
-                if (m.id === 'qadha_puasa' || (m.phase === 'ramadhan_prep' && m.hukum === 'obligatory')) return 90;
+                if (m.category === 'prayer' && m.ruling === 'obligatory') return 100;
+                if (m.id === 'makeup_fasting' || (m.phase === 'ramadhan_prep' && m.ruling === 'obligatory')) return 90;
                 if (m.category === 'prayer') return 80;
                 if (m.category === 'dhikr') return 70;
                 if (m.phase === 'ramadhan_prep') return 60;
@@ -113,8 +113,8 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
             if (scoreA !== scoreB) return scoreB - scoreA;
 
-            if (a.hukum === 'obligatory' && b.hukum !== 'obligatory') return -1;
-            if (b.hukum === 'obligatory' && a.hukum !== 'obligatory') return 1;
+            if (a.ruling === 'obligatory' && b.ruling !== 'obligatory') return -1;
+            if (b.ruling === 'obligatory' && a.ruling !== 'obligatory') return 1;
 
             return 0;
         });

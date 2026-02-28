@@ -71,11 +71,11 @@ export default function FAQModal({ open, onOpenChange }: FAQModalProps) {
                                                     {locale === 'en' ? faq.question_en : faq.question}
                                                 </span>
                                             </div>
-                                            <ChevronDown 
+                                            <ChevronDown
                                                 className={cn(
                                                     "w-4 h-4 text-white/40 transition-transform flex-shrink-0",
                                                     expandedItem === faq.id && "rotate-180"
-                                                )} 
+                                                )}
                                             />
                                         </div>
                                     </button>
@@ -88,12 +88,12 @@ export default function FAQModal({ open, onOpenChange }: FAQModalProps) {
                                                         {locale === 'en' ? faq.answer_en : faq.answer}
                                                     </p>
                                                 </div>
-                                                
+
                                                 {/* Dalil if exists */}
                                                 {faq.dalil && (
                                                     <div className="pt-2">
                                                         <div className="text-xs font-semibold text-white/50 mb-2 uppercase tracking-wide">
-                                                            {t.faqDalilLabel || "Dalil"}
+                                                            {t.faqEvidenceLabel || "Dalil"}
                                                         </div>
                                                         <DalilBadge dalil={faq.dalil} variant="inline" />
                                                     </div>

@@ -34,7 +34,7 @@ vi.mock('next-auth', () => ({
 vi.mock('@/db/schema', () => ({
     users: { id: 'id', settings: 'settings' },
     bookmarks: { id: 'id', userId: 'userId', key: 'key' },
-    intentions: { id: 'id', userId: 'userId', niatDate: 'niatDate' },
+    intentions: { id: 'id', userId: 'userId', intentionDate: 'intentionDate' },
     userCompletedMissions: { id: 'id', userId: 'userId', missionId: 'missionId' },
     dailyActivities: { id: 'id', userId: 'userId', date: 'date' },
     userReadingState: { userId: 'userId' },
@@ -144,9 +144,9 @@ describe('User Sync API', () => {
 
         const count = 50;
         const localIntentions = Array.from({ length: count }, (_, i) => ({
-            niatText: `Intention ${i}`,
-            niatType: 'daily',
-            niatDate: `2024-01-0${i % 9 + 1}`,
+            intentionText: `Intention ${i}`,
+            intentionType: 'daily',
+            intentionDate: `2024-01-0${i % 9 + 1}`,
             reflectionText: 'Good',
             reflectionRating: 5,
             isPrivate: true,
@@ -172,6 +172,6 @@ describe('User Sync API', () => {
         expect(insertChain.values).toHaveBeenCalledTimes(1);
         const args = insertChain.values.mock.calls[0][0];
         expect(args).toHaveLength(count);
-        expect(args[0]).toHaveProperty('niatText', 'Intention 0');
+        expect(args[0]).toHaveProperty('intentionText', 'Intention 0');
     });
 });

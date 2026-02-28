@@ -131,13 +131,13 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         checkTodayStatus();
     }, [userToken]);
 
-    const handleSetIntention = async (niatText: string) => {
+    const handleSetIntention = async (intentionText: string) => {
         if (!userToken) return;
 
         // Optimistic update for snappy UX
         const optimisticData = {
             has_intention: true,
-            intention: { id: Date.now().toString(), niat_text: niatText, niat_date: new Date().toISOString() },
+            intention: { id: Date.now().toString(), intention_text: intentionText, intention_date: new Date().toISOString() },
             has_reflection: false,
             streak: (todayData?.streak || 0) + (todayData?.has_intention ? 0 : 1),
         };
@@ -150,14 +150,14 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_token: userToken, niat_text: niatText }),
+                body: JSON.stringify({ user_token: userToken, intention_text: intentionText }),
             });
             const data = await response.json();
 
             if (data.success) {
                 const finalData = {
                     has_intention: true,
-                    intention: { id: data.data.id, niat_text: data.data.niat_text, niat_date: data.data.niat_date },
+                    intention: { id: data.data.id, intention_text: data.data.intention_text, intention_date: data.data.intention_date },
                     has_reflection: false,
                     streak: data.data.current_streak,
                 };
@@ -264,7 +264,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity">
                             <Compass className={cn("w-3 h-3", isDaylight ? "text-slate-900" : "text-white")} />
                             <span className={cn("text-[10px] font-bold uppercase tracking-[0.2em] whitespace-nowrap", isDaylight ? "text-slate-900" : "text-white")}>
-                                {t.niat_widget_title}
+                                {t.intention_widget_title}
                             </span>
                         </div>
                     </div>
@@ -273,10 +273,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex items-center justify-between gap-3 mt-0.5">
                             <div className="flex-1 min-w-0">
                                 <h3 className={cn("text-sm md:text-base font-bold tracking-tight leading-tight mb-0.5", isDaylight ? "text-slate-800" : "text-white")}>
-                                    {t.niat_widget_subtitle}
+                                    {t.intention_widget_subtitle}
                                 </h3>
                                 <p className={cn("text-[10px] line-clamp-1 italic font-serif leading-relaxed pr-2", isDaylight ? "text-slate-500" : "text-white/40")}>
-                                    {t.niat_widget_quote}
+                                    {t.intention_widget_quote}
                                 </p>
                             </div>
 
@@ -290,7 +290,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                             : "bg-[rgb(var(--color-primary))] text-white font-bold hover:opacity-90 shadow-[rgb(var(--color-primary))]/20"
                                     )}
                                 >
-                                    <span>{t.niat_niat_btn}</span>
+                                    <span>{t.intention_set_btn}</span>
                                     <ChevronRight className="w-3 h-3 opacity-80 group-hover/btn:translate-x-0.5 transition-transform" />
                                 </button>
                                 <button
@@ -301,7 +301,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                             ? "bg-slate-100 border-slate-200 hover:bg-slate-200"
                                             : "bg-white/5 border-white/10 hover:bg-white/10"
                                     )}
-                                    title={t.niat_history_btn_title}
+                                    title={t.intention_history_btn_title}
                                 >
                                     <Book className={cn("w-3.5 h-3.5", isDaylight ? "text-slate-400" : "text-white/30")} />
                                 </button>
@@ -311,7 +311,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex items-center justify-between gap-3 mt-0.5">
                             <div className="flex-1 min-w-0 flex items-center gap-2 group/text cursor-pointer" onClick={() => setShowIntentionPrompt(true)}>
                                 <p className={cn("text-xs md:text-sm font-medium italic line-clamp-1 py-0.5", isDaylight ? "text-slate-700" : "text-white/90")}>
-                                    "{todayData.intention.niat_text}"
+                                    "{todayData.intention.intention_text}"
                                 </p>
                                 <Edit2 className={cn("w-2.5 h-2.5 transition-colors shrink-0", isDaylight ? "text-slate-300 group-hover/text:text-slate-500" : "text-white/20 group-hover/text:text-white/60")} />
                             </div>
@@ -329,7 +329,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     >
                                         <Moon className={cn("w-3 h-3", isDaylight ? "text-blue-500" : "text-blue-400")} />
                                         <span className={cn("text-[9px] font-bold uppercase tracking-tight", isDaylight ? "text-slate-600" : "text-white/70")}>
-                                            {t.niat_refleksi_btn}
+                                            {t.intention_refleksi_btn}
                                         </span>
                                     </button>
                                 ) : (
@@ -344,7 +344,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     >
                                         <CheckCircle2 className={cn("w-3 h-3", isDaylight ? "text-emerald-600" : "text-emerald-500")} />
                                         <span className={cn("text-[9px] font-bold uppercase", isDaylight ? "text-emerald-600" : "text-emerald-500/80")}>
-                                            {t.niat_selesai_label}
+                                            {t.intention_selesai_label}
                                         </span>
                                     </div>
                                 )}
@@ -371,12 +371,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         onSubmit={handleSetIntention}
                         currentStreak={todayData?.streak || 0}
                         onClose={() => setShowIntentionPrompt(false)}
-                        initialValue={todayData?.intention?.niat_text}
+                        initialValue={todayData?.intention?.intention_text}
                     />
                 )}
                 {showReflectionPrompt && todayData?.intention && (
                     <ReflectionPrompt
-                        intentionText={todayData.intention.niat_text}
+                        intentionText={todayData.intention.intention_text}
                         intentionId={todayData.intention.id}
                         onSubmit={handleReflect}
                         onSkip={() => setShowReflectionPrompt(false)}

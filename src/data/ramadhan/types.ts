@@ -63,21 +63,21 @@ export interface RamadhanPracticeData {
     description: string;
     description_en?: string;
     icon: string;
-    niat?: IntentionData;
+    intention?: IntentionData;
     dalil: EvidenceData;
     tips?: string[];
     tips_en?: string[];
 }
 
-export type FiqhCategory = 'wajib' | 'sunnah' | 'mubah' | 'makruh' | 'haram';
+export type RulingCategory = 'wajib' | 'sunnah' | 'mubah' | 'makruh' | 'haram';
 
-export interface FiqhItem {
+export interface RulingItem {
     id: string;
     title: string;
     title_en: string;
     description: string;
     description_en: string;
-    category: FiqhCategory;
+    category: RulingCategory;
     dalil?: EvidenceData;
 }
 

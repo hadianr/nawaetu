@@ -92,28 +92,28 @@ export const ramadhanEN = {
     lailatulQadrDalil: "Evidence",
     lailatulQadrDoa: "Dua",
 
-    // Amalan List
-    amalanTitle: "Ramadhan Deeds",
-    amalanTapHint: "Tap to view intention & evidence",
-    amalanTipsLabel: "💡 Deed Tips",
+    // Practices List
+    practicesTitle: "Ramadhan Deeds",
+    practicesTapHint: "Tap to view intention & evidence",
+    practicesTipsLabel: "💡 Deed Tips",
 
     // Guide Card
     guideTitle: "Ramadhan Fasting Guide",
     guideSubtitle: "Islamic jurisprudence and common questions about fasting",
-    guideButtonFiqh: "Fasting Rules",
-    guideButtonFiqhDesc: "Obligatory, Recommended, Permissible, Disliked, Forbidden",
+    guideButtonRuling: "Fasting Rules",
+    guideButtonRulingDesc: "Obligatory, Recommended, Permissible, Disliked, Forbidden",
     guideButtonFAQ: "Fasting FAQ",
     guideButtonFAQDesc: "Frequently asked questions",
 
-    // Fiqh Modal
-    fiqhModalTitle: "Fasting Rules",
-    fiqhModalSubtitle: "Five categories of Islamic jurisprudence in Ramadhan fasting",
-    fiqhModalEmpty: "No data for this category",
+    // Rulings Modal
+    rulingsModalTitle: "Fasting Rules",
+    rulingsModalSubtitle: "Five categories of Islamic jurisprudence in Ramadhan fasting",
+    rulingsModalEmpty: "No data for this category",
 
     // FAQ Modal
     faqModalTitle: "Fasting FAQ",
     faqModalSubtitle: "Frequently asked questions about fasting",
-    faqDalilLabel: "Evidence",
+    faqEvidenceLabel: "Evidence",
     faqDisclaimerTitle: "⚠️ Important Note",
     faqDisclaimer: "For complex fiqh issues or special conditions, please consult with a trusted scholar or imam in your area.",
 
@@ -130,18 +130,18 @@ export const ramadhanEN = {
     calendarHeaderIftar: "Iftar",
     calendarNoData: "No data available for this period.",
 
-    // Niat Card
-    niatModalTitle: "Intention",
-    niatViewFull: "View full intention",
-    niatArabic: "نَوَيْتُ",
-    niatLatin: "Transliteration",
-    niatTranslation: "Meaning",
-    niatSource: "Source",
+    // Intention Card
+    intentionModalTitle: "Intention",
+    intentionViewFull: "View full intention",
+    intentionArabic: "نَوَيْتُ",
+    intentionLatin: "Transliteration",
+    intentionTranslation: "Meaning",
+    intentionSource: "Source",
 
-    // Dalil Badge
-    dalilModalTitle: "Evidence",
-    dalilViewFull: "View full evidence",
-    dalilTranslation: "Translation",
+    // Evidence Badge
+    evidenceModalTitle: "Evidence",
+    evidenceViewFull: "View full evidence",
+    evidenceTranslation: "Translation",
 
     // Common Buttons
     buttonOk: "OK",

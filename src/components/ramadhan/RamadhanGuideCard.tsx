@@ -20,12 +20,12 @@
 
 import { useState } from "react";
 import { BookOpen, HelpCircle } from "lucide-react";
-import FiqhModal from "./FiqhModal";
+import RulingsModal from "./RulingsModal";
 import FAQModal from "./FAQModal";
 import { useLocale } from "@/context/LocaleContext";
 
 export default function RamadhanGuideCard() {
-    const [fiqhModalOpen, setFiqhModalOpen] = useState(false);
+    const [rulingsModalOpen, setRulingsModalOpen] = useState(false);
     const [faqModalOpen, setFaqModalOpen] = useState(false);
     const { t } = useLocale();
 
@@ -49,7 +49,7 @@ export default function RamadhanGuideCard() {
                 <div className="grid grid-cols-2 gap-2 px-3 pb-3 sm:px-4 sm:pb-4">
                     {/* Hukum Puasa Button */}
                     <button
-                        onClick={() => setFiqhModalOpen(true)}
+                        onClick={() => setRulingsModalOpen(true)}
                         className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400/30 hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98]"
                     >
                         <div className="relative z-10">
@@ -57,10 +57,10 @@ export default function RamadhanGuideCard() {
                                 <BookOpen className="h-5 w-5 text-emerald-300" />
                             </div>
                             <h4 className="mb-1 font-semibold text-white text-sm">
-                                {t.guideButtonFiqh || "Hukum Puasa"}
+                                {t.guideButtonRuling || "Hukum Puasa"}
                             </h4>
                             <p className="text-xs text-white/60 leading-relaxed">
-                                {t.guideButtonFiqhDesc || "Wajib, Sunnah, Mubah, Makruh, Haram"}
+                                {t.guideButtonRulingDesc || "Wajib, Sunnah, Mubah, Makruh, Haram"}
                             </p>
                         </div>
                         {/* Hover glow */}
@@ -94,7 +94,7 @@ export default function RamadhanGuideCard() {
             </div>
 
             {/* Modals */}
-            <FiqhModal open={fiqhModalOpen} onOpenChange={setFiqhModalOpen} />
+            <RulingsModal open={rulingsModalOpen} onOpenChange={setRulingsModalOpen} />
             <FAQModal open={faqModalOpen} onOpenChange={setFaqModalOpen} />
         </>
     );

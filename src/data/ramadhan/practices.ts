@@ -1,19 +1,19 @@
 import { EvidenceData, RamadhanPracticeData, IntentionData, SunnahFood } from './types';
 import {
     RAMADHAN_FASTING_INTENTION, TARAWEH_INTENTION, QURAN_RECITATION_INTENTION
-} from './niat';
+} from './intentions';
 
 // DALIL DATA
 // ─────────────────────────────────────────────────────────────
 
 export const FASTING_EVIDENCE: EvidenceData = {
-    id: 'dalil_puasa',
+    id: 'dalil_fasting',
     shortRef: 'QS. Al-Baqarah: 183',
     shortRef_en: 'Quran 2:183',
     arabic: 'يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ كُتِبَ عَلَيْكُمُ ٱلصِّيَامُ كَمَا كُتِبَ عَلَى ٱلَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ',
     latin: 'Yā ayyuhal ladzīna āmanū kutiba \'alaikumush shiyāmu kamā kutiba \'alal ladzīna min qablikum la\'allakum tattaqūn.',
     translation: 'Wahai orang-orang yang beriman! Diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang sebelum kamu agar kamu bertakwa.',
-    translation_en: 'O you who have believed, fasting is prescribed for you as it was prescribed for those before you that you may become righteous.',
+    translation_en: 'O you who have believed, fasting is prescribed for you as a it was prescribed for those before you that you may become righteous.',
     source: 'Al-Quran Surat Al-Baqarah Ayat 183',
     source_en: 'Quran, Surah Al-Baqarah, Verse 183',
 };
@@ -31,7 +31,7 @@ export const FASTING_SCHEDULE_EVIDENCE: EvidenceData = {
 };
 
 export const TARAWEH_EVIDENCE: EvidenceData = {
-    id: 'dalil_taraweh',
+    id: 'dalil_tarawih',
     shortRef: 'HR. Bukhari 2008',
     arabic: 'مَنْ قَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ',
     latin: 'Man qāma Ramadhāna īmānan wahtisāban ghufira lahū mā taqaddama min dzanbih.',
@@ -40,7 +40,7 @@ export const TARAWEH_EVIDENCE: EvidenceData = {
 };
 
 export const QURAN_RECITATION_EVIDENCE: EvidenceData = {
-    id: 'dalil_tadarus',
+    id: 'dalil_quran_recitation',
     shortRef: 'HR. Tirmidzi 2910',
     arabic: 'اقْرَؤُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ',
     latin: 'Iqra\'ul qur\'āna fa\'innahū ya\'tī yaumal qiyāmati syafī\'an li\'ashhābih.',
@@ -61,7 +61,7 @@ export const LAILATUL_QADR_EVIDENCE: EvidenceData = {
 };
 
 export const RAMADHAN_CHARITY_EVIDENCE: EvidenceData = {
-    id: 'dalil_sedekah_ramadhan',
+    id: 'dalil_ramadan_charity',
     shortRef: 'HR. Tirmidzi 663',
     arabic: 'أَفْضَلُ الصَّدَقَةِ صَدَقَةٌ فِي رَمَضَانَ',
     latin: 'Afdhalush shadaqati shadaqatun fī Ramadhān.',
@@ -70,7 +70,7 @@ export const RAMADHAN_CHARITY_EVIDENCE: EvidenceData = {
 };
 
 export const SUHOOR_EVIDENCE: EvidenceData = {
-    id: 'dalil_sahur',
+    id: 'dalil_suhoor',
     shortRef: 'HR. Bukhari 1923',
     arabic: 'تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً',
     latin: 'Tasahharū fa\'inna fis sahūri barakah.',
@@ -326,7 +326,7 @@ export const ITIKAF_10_NIGHTS_EVIDENCE: EvidenceData = {
 };
 
 export const LAILATUL_QADR_PRAYER: IntentionData = {
-    id: 'doa_lailatul_qadr',
+    id: 'dua_lailatul_qadr',
     title: "Doa Malam Lailatul Qadr",
     title_en: "Lailatul Qadr Night Prayer",
     arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
@@ -343,13 +343,13 @@ export const LAILATUL_QADR_PRAYER: IntentionData = {
 
 export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
     {
-        id: 'puasa_wajib',
+        id: 'ramadan_fasting',
         title: 'Puasa Ramadhan',
         title_en: 'Ramadhan Fasting',
         description: 'Menahan makan, minum, dan hal yang membatalkan dari fajar hingga maghrib',
         description_en: 'Abstaining from food, drink, and things that invalidate fasting from dawn to dusk',
         icon: '🌙',
-        niat: RAMADHAN_FASTING_INTENTION,
+        intention: RAMADHAN_FASTING_INTENTION,
         dalil: FASTING_EVIDENCE,
         tips: [
             'Niatkan setiap malam sebelum tidur',
@@ -363,13 +363,13 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         ],
     },
     {
-        id: 'taraweh',
+        id: 'tarawih_prayer',
         title: 'Sholat Taraweh',
         title_en: 'Tarawih Prayer',
         description: 'Sholat sunnah malam Ramadhan, 8 atau 20 rakaat',
         description_en: 'Sunnah night prayer during Ramadhan, 8 or 20 units (rak\'ahs)',
         icon: '🕌',
-        niat: TARAWEH_INTENTION,
+        intention: TARAWEH_INTENTION,
         dalil: TARAWEH_EVIDENCE,
         tips: [
             'Bisa 8 rakaat (sunnah Nabi) atau 20 rakaat (sunnah Umar RA)',
@@ -383,13 +383,13 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         ],
     },
     {
-        id: 'tadarus',
+        id: 'quran_recitation',
         title: 'Tadarus Al-Quran',
         title_en: 'Quran Recitation',
         description: 'Membaca dan mempelajari Al-Quran, target khatam 30 juz',
         description_en: 'Reciting and studying the Quran, aiming to finish all 30 parts (juz)',
         icon: '📖',
-        niat: QURAN_RECITATION_INTENTION,
+        intention: QURAN_RECITATION_INTENTION,
         dalil: QURAN_RECITATION_EVIDENCE,
         tips: [
             'Target 1 juz per hari = khatam dalam 30 hari',
@@ -403,7 +403,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         ],
     },
     {
-        id: 'sedekah',
+        id: 'ramadan_charity',
         title: 'Perbanyak Sedekah',
         title_en: 'Abundant Charity',
         description: 'Sedekah di bulan Ramadhan pahalanya berlipat ganda',
@@ -411,9 +411,9 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         icon: '💝',
         dalil: RAMADHAN_CHARITY_EVIDENCE,
         tips: [
-            'Nabi SAW adalah orang paling dermawan, terutama di Ramadhan',
-            'Bisa berupa makanan buka puasa untuk orang lain',
-            'Sedekah subuh sangat dianjurkan',
+            'Niatkan setiap malam sebelum tidur',
+            'Dapatkan ampunan dengan sedekah',
+            'Dapatkan pahala melimpah',
         ],
         tips_en: [
             'The Prophet (ﷺ) was the most generous of people, especially in Ramadhan',

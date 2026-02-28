@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
-import { checkMissionValidation, getHukumLabel } from "@/lib/mission-utils";
+import { checkMissionValidation, getRulingLabel } from "@/lib/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -203,11 +203,11 @@ export default function MisiPage() {
                             </p>
                             <span className={cn(
                                 "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
-                                mission.hukum === 'obligatory'
+                                mission.ruling === 'obligatory'
                                     ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                                     : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                             )}>
-                                {getHukumLabel(mission.hukum, t)}
+                                {getRulingLabel(mission.ruling, t)}
                             </span>
                         </div>
                         {isGenderSpecific && (
@@ -229,7 +229,7 @@ export default function MisiPage() {
                     ) : validation.isEarly ? (
                         <div className="flex items-center gap-1 mt-1 text-emerald-400/80">
                             <Sparkles className="w-3 h-3" />
-                            <p className="text-[10px] font-medium">{(t as any).homeMissionEarlyBonus}</p>
+                            <p className="text-[10px] font-medium">{(t as any).home_mission_early_bonus}</p>
                         </div>
                     ) : (
                         <p className="text-[10px] text-white/40">{mission.description}</p>
@@ -273,8 +273,8 @@ export default function MisiPage() {
                         <ArrowLeft className="w-6 h-6 text-white" />
                     </Link>
                     <div className="flex-1">
-                        <h1 className="text-2xl font-bold text-white">{t.homeMissionListTitle}</h1>
-                        <p className="text-xs text-white/50">{t.homeMissionListSubtitle || "Raih XP dengan menyelesaikan misi"}</p>
+                        <h1 className="text-2xl font-bold text-white">{t.home_mission_list_title}</h1>
+                        <p className="text-xs text-white/50">{t.home_mission_list_subtitle || "Raih XP dengan menyelesaikan misi"}</p>
                     </div>
                     <div className="flex items-center gap-1 px-3 py-1.5 rounded-full"
                         style={{
@@ -337,7 +337,7 @@ export default function MisiPage() {
                 {!gender && (
                     <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
                         <p className="text-sm text-amber-400">
-                            {(t as any).homeMissionSelectGenderHint}
+                            {(t as any).home_mission_select_gender_hint}
                         </p>
                     </div>
                 )}

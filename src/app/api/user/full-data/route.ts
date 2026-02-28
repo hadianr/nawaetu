@@ -57,8 +57,8 @@ export async function GET(req: NextRequest) {
                     gender: true,
                     archetype: true,
                     settings: true,
-                    niatStreakCurrent: true,
-                    niatStreakLongest: true,
+                    intentionStreakCurrent: true,
+                    intentionStreakLongest: true,
                     isMuhsinin: true,
                     totalInfaq: true,
                 }
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
             // 4. Intentions (Journal)
             db.query.intentions.findMany({
                 where: eq(intentions.userId, userId),
-                orderBy: [desc(intentions.niatDate)]
+                orderBy: [desc(intentions.intentionDate)]
             }),
 
             // 5. Daily Activities (Last 30 days maybe? Or just all for now)
@@ -106,8 +106,8 @@ export async function GET(req: NextRequest) {
                 archetype: userProfile.archetype,
                 settings: userProfile.settings,
                 streaks: {
-                    current: userProfile.niatStreakCurrent,
-                    longest: userProfile.niatStreakLongest,
+                    current: userProfile.intentionStreakCurrent,
+                    longest: userProfile.intentionStreakLongest,
                 },
                 isMuhsinin: userProfile.isMuhsinin,
                 totalInfaq: userProfile.totalInfaq,

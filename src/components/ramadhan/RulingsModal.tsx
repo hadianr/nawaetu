@@ -1,67 +1,31 @@
-"use client";
-
-/**
- * Nawaetu - Islamic Habit Tracker
- * Copyright (C) 2026 Hadian Rahmat
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
-import { getAllFiqhByCategory, FiqhCategory } from "@/data/ramadhan";
+import { RulingItem, RulingCategory, getAllRulingsByCategory } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 
-interface FiqhModalProps {
+interface RulingsModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
 
-export default function FiqhModal({ open, onOpenChange }: FiqhModalProps) {
-    const [activeCategory, setActiveCategory] = useState<FiqhCategory>('wajib');
-    const [expandedItem, setExpandedItem] = useState<string | null>(null);
+export default function RulingsModal({ open, onOpenChange }: RulingsModalProps) {
     const { t, locale } = useLocale();
+    const [activeCategory, setActiveCategory] = useState<RulingCategory>("wajib");
+    const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
-    const fiqhItems = getAllFiqhByCategory(activeCategory);
+    const currentRulings = getAllRulingsByCategory(activeCategory);
 
-    const categories: { id: FiqhCategory; label: string; label_en: string; color: string; emoji: string }[] = [
-        { id: 'wajib', label: 'Wajib', label_en: 'Obligatory', color: 'emerald', emoji: '✅' },
-        { id: 'sunnah', label: 'Sunnah', label_en: 'Recommended', color: 'blue', emoji: '⭐' },
-        { id: 'mubah', label: 'Mubah', label_en: 'Permissible', color: 'gray', emoji: '✔️' },
-        { id: 'makruh', label: 'Makruh', label_en: 'Disliked', color: 'yellow', emoji: '⚠️' },
-        { id: 'haram', label: 'Haram', label_en: 'Forbidden', color: 'red', emoji: '🚫' },
+    const categories: { id: RulingCategory; label: string; icon: string }[] = [
+        { id: "wajib", label: locale === "en" ? "Obligatory" : "Wajib", icon: "💎" },
+        { id: "sunnah", label: locale === "en" ? "Recommended" : "Sunnah", icon: "✨" },
+        { id: "mubah", label: locale === "en" ? "Permissible" : "Mubah", icon: "🟢" },
+        { id: "makruh", label: locale === "en" ? "Disliked" : "Makruh", icon: "⚠️" },
+        { id: "haram", label: locale === "en" ? "Forbidden" : "Haram", icon: "🚫" },
     ];
-
-    const getColorClasses = (color: string, active: boolean) => {
-        if (!active) {
-            return "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white/80";
-        }
-        
-        const colorMap: Record<string, string> = {
-            emerald: "bg-emerald-500/20 text-emerald-200 border-emerald-400/30 shadow-emerald-500/20",
-            blue: "bg-blue-500/20 text-blue-200 border-blue-400/30 shadow-blue-500/20",
-            gray: "bg-gray-500/20 text-gray-200 border-gray-400/30 shadow-gray-500/20",
-            yellow: "bg-yellow-500/20 text-yellow-200 border-yellow-400/30 shadow-yellow-500/20",
-            red: "bg-red-500/20 text-red-200 border-red-400/30 shadow-red-500/20",
-        };
-        
-        return colorMap[color] || colorMap.emerald;
-    };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -69,10 +33,10 @@ export default function FiqhModal({ open, onOpenChange }: FiqhModalProps) {
                 <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 bg-white/5 relative">
                     <DialogTitle className="text-left flex items-center gap-2">
                         <span className="text-lg">📋</span>
-                        <span>{t.fiqhModalTitle || "Hukum Puasa"}</span>
+                        <span>{t.rulingsModalTitle || "Hukum Puasa"}</span>
                     </DialogTitle>
                     <p className="text-xs text-white/50 mt-1">
-                        {t.fiqhModalSubtitle || "Lima kategori hukum dalam puasa Ramadhan"}
+                        {t.rulingsModalSubtitle || "Lima kategori hukum dalam puasa Ramadhan"}
                     </p>
                 </DialogHeader>
 
@@ -85,13 +49,14 @@ export default function FiqhModal({ open, onOpenChange }: FiqhModalProps) {
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={cn(
                                     "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap touch-manipulation",
-                                    getColorClasses(cat.color, activeCategory === cat.id),
-                                    activeCategory === cat.id && "shadow-lg"
+                                    activeCategory === cat.id
+                                        ? "bg-white/10 text-white border-white/20 shadow-lg"
+                                        : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white/80"
                                 )}
                             >
-                                <span>{cat.emoji}</span>
-                                <span>{locale === 'en' ? cat.label_en : cat.label}</span>
-                                <span className="text-[10px] opacity-60">({fiqhItems.length > 0 && activeCategory === cat.id ? fiqhItems.length : getAllFiqhByCategory(cat.id).length})</span>
+                                <span>{cat.icon}</span>
+                                <span>{cat.label}</span>
+                                <span className="text-[10px] opacity-60">({getAllRulingsByCategory(cat.id).length})</span>
                             </button>
                         ))}
                     </div>
@@ -100,13 +65,13 @@ export default function FiqhModal({ open, onOpenChange }: FiqhModalProps) {
                 {/* Content */}
                 <ScrollArea className="h-[60vh] max-h-[500px]">
                     <div className="px-4 sm:px-6 py-4">
-                        {fiqhItems.length === 0 ? (
+                        {currentRulings.length === 0 ? (
                             <div className="text-center py-12 text-white/40">
-                                <p>{t.fiqhModalEmpty || "Tidak ada data untuk kategori ini"}</p>
+                                <p>{t.rulingsModalEmpty || "Tidak ada data untuk kategori ini"}</p>
                             </div>
                         ) : (
                             <div className="space-y-2">
-                                {fiqhItems.map((item, index) => (
+                                {currentRulings.map((item, index) => (
                                     <div
                                         key={item.id}
                                         className="border border-white/10 rounded-xl bg-white/5 overflow-hidden"
@@ -121,14 +86,14 @@ export default function FiqhModal({ open, onOpenChange }: FiqhModalProps) {
                                                         {String(index + 1).padStart(2, '0')}
                                                     </span>
                                                     <span className="font-medium text-sm text-white leading-snug">
-                                                        {locale === 'en' ? item.title_en : item.title}
+                                                        {locale === "en" ? item.title_en : item.title}
                                                     </span>
                                                 </div>
-                                                <ChevronDown 
+                                                <ChevronDown
                                                     className={cn(
                                                         "w-4 h-4 text-white/40 transition-transform flex-shrink-0",
                                                         expandedItem === item.id && "rotate-180"
-                                                    )} 
+                                                    )}
                                                 />
                                             </div>
                                         </button>
@@ -136,7 +101,7 @@ export default function FiqhModal({ open, onOpenChange }: FiqhModalProps) {
                                             <div className="px-4 pb-4 pt-2 animate-in slide-in-from-top-2 duration-200">
                                                 <div className="space-y-3 border-t border-white/5 pt-3">
                                                     <p className="text-sm text-white/70 leading-relaxed">
-                                                        {locale === 'en' ? item.description_en : item.description}
+                                                        {locale === "en" ? item.description_en : item.description}
                                                     </p>
                                                     {item.dalil && (
                                                         <div className="pt-2">

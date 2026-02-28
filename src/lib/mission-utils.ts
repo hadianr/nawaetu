@@ -149,7 +149,7 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
 
     return missions.filter(mission => {
         // 1. Mandatory missions (Obligatory) are ALWAYS shown for everyone
-        if (mission.hukum === 'obligatory') return true;
+        if (mission.ruling === 'obligatory') return true;
 
         switch (archetype) {
             case 'beginner': // "Fokus Wajib"
@@ -176,16 +176,16 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
 }
 
 /**
- * Gets the localized label for a mission's hukum (obligatory, sunnah, etc.)
+ * Gets the localized label for a mission's ruling (obligatory, sunnah, etc.)
  */
-export function getHukumLabel(hukum: string, t: any): string {
+export function getRulingLabel(ruling: string, t: any): string {
     const labels: Record<string, string> = {
-        'obligatory': 'hukumWajib',
-        'sunnah': 'hukumSunnah',
-        'permissible': 'hukumMubah',
-        'disliked': 'hukumMakruh',
-        'forbidden': 'hukumHaram'
+        'obligatory': 'rulingWajib',
+        'sunnah': 'rulingSunnah',
+        'permissible': 'rulingMubah',
+        'disliked': 'rulingMakruh',
+        'forbidden': 'rulingHaram'
     };
-    const key = labels[hukum];
-    return (t[key] as string) || hukum;
+    const key = labels[ruling];
+    return (t[key] as string) || ruling;
 }

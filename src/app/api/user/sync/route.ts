@@ -126,7 +126,7 @@ async function handleIntentionSync(
         const data = entry.data;
 
         if (action === 'create' || action === 'update') {
-            const intentionDateValue = new Date(data.niatDate);
+            const intentionDateValue = new Date(data.intentionDate || data.niatDate);
             const startOfToday = new Date(intentionDateValue);
             startOfToday.setUTCHours(0, 0, 0, 0);
             const startOfTomorrow = new Date(startOfToday);
@@ -136,8 +136,8 @@ async function handleIntentionSync(
                 where: (intentions, { eq, and, gte, lt }) =>
                     and(
                         eq(intentions.userId, userId),
-                        gte(intentions.niatDate, startOfToday),
-                        lt(intentions.niatDate, startOfTomorrow)
+                        gte(intentions.intentionDate, startOfToday),
+                        lt(intentions.intentionDate, startOfTomorrow)
                     ),
             });
 
@@ -146,9 +146,9 @@ async function handleIntentionSync(
                     .insert(intentions)
                     .values({
                         userId,
-                        niatText: data.niatText,
-                        niatType: data.niatType,
-                        niatDate: intentionDateValue,
+                        intentionText: data.intentionText || data.niatText,
+                        intentionType: data.intentionType || data.niatType,
+                        intentionDate: intentionDateValue,
                         reflectionText: data.reflectionText,
                         reflectionRating: data.reflectionRating,
                         isPrivate: data.isPrivate ?? true,
@@ -160,7 +160,7 @@ async function handleIntentionSync(
             } else {
                 // Update existing
                 await db.update(intentions).set({
-                    niatText: data.niatText,
+                    intentionText: data.intentionText || data.niatText,
                     reflectionText: data.reflectionText || existingIntention.reflectionText,
                     reflectionRating: data.reflectionRating || existingIntention.reflectionRating,
                     updatedAt: new Date()
@@ -482,18 +482,18 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             // Fetch all intentions for user to deduplicate once $O(1)$ in-memory
             const cloudIntentions = await db.query.intentions.findMany({
                 where: eq(intentions.userId, userId),
-                columns: { id: true, niatDate: true, reflectionText: true }
+                columns: { id: true, intentionDate: true, reflectionText: true }
             });
 
             // Map by DATE string YYYY-MM-DD for fast lookup
             const cloudDateMap = new Map(cloudIntentions.map(i => [
-                new Date(i.niatDate).toISOString().split('T')[0],
+                new Date(i.intentionDate).toISOString().split('T')[0],
                 i
             ]));
             const newIntentions = [];
 
             for (const i of localIntentions) {
-                let dateStr = i.niatDate;
+                let dateStr = i.intentionDate || i.niatDate;
                 if (!dateStr && i.createdAt) {
                     dateStr = new Date(i.createdAt).toISOString().split('T')[0];
                 }
@@ -506,16 +506,16 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 if (!existingIntention) {
                     newIntentions.push({
                         userId,
-                        niatText: i.niatText,
-                        niatType: i.niatType,
-                        niatDate: intentionDateValue,
+                        intentionText: i.intentionText || i.niatText,
+                        intentionType: i.intentionType || i.niatType,
+                        intentionDate: intentionDateValue,
                         reflectionText: i.reflectionText,
                         reflectionRating: i.reflectionRating,
                         isPrivate: i.isPrivate ?? true,
                         createdAt: new Date(i.createdAt || Date.now()),
                     });
                     // Update map to prevent duplicates in current session
-                    cloudDateMap.set(localDayStr, { id: 'new', niatDate: intentionDateValue, reflectionText: i.reflectionText });
+                    cloudDateMap.set(localDayStr, { id: 'new', intentionDate: intentionDateValue, reflectionText: i.reflectionText });
                 } else if (!existingIntention.reflectionText && i.reflectionText && existingIntention.id !== 'new') {
                     await db.update(intentions).set({
                         reflectionText: i.reflectionText,

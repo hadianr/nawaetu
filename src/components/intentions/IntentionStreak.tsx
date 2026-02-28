@@ -33,21 +33,21 @@ export default function IntentionStreak({
     const { locale, t } = useLocale();
 
     const MILESTONES = [
-        { days: 7, label: t.niat_milestone_week, emoji: "🌟" },
-        { days: 30, label: t.niat_milestone_month, emoji: "🏆" },
-        { days: 100, label: t.niat_milestone_100days, emoji: "💎" },
+        { days: 7, label: t.intention_milestone_week, emoji: "🌟" },
+        { days: 30, label: t.intention_milestone_month, emoji: "🏆" },
+        { days: 100, label: t.intention_milestone_100days, emoji: "💎" },
     ];
 
     const nextMilestone = MILESTONES.find((m) => m.days > currentStreak) || MILESTONES[MILESTONES.length - 1];
     const progress = Math.min((currentStreak / nextMilestone.days) * 100, 100);
 
     const getEncouragementMessage = () => {
-        if (currentStreak === 0) return t.niat_start_journey;
-        if (currentStreak < 3) return t.niat_great_start;
-        if (currentStreak < 7) return t.niat_building_momentum;
-        if (currentStreak < 30) return t.niat_on_fire;
-        if (currentStreak < 100) return t.niat_incredible;
-        return t.niat_legendary;
+        if (currentStreak === 0) return t.intention_start_journey;
+        if (currentStreak < 3) return t.intention_great_start;
+        if (currentStreak < 7) return t.intention_building_momentum;
+        if (currentStreak < 30) return t.intention_on_fire;
+        if (currentStreak < 100) return t.intention_incredible;
+        return t.intention_legendary;
     };
 
     return (
@@ -65,13 +65,13 @@ export default function IntentionStreak({
                     <div className="flex items-center gap-2">
                         <span className="text-3xl">🔥</span>
                         <div>
-                            <h3 className="text-white font-bold text-lg">{t.niat_streak}</h3>
+                            <h3 className="text-white font-bold text-lg">{t.intention_streak}</h3>
                             <p className="text-white/50 text-xs">{getEncouragementMessage()}</p>
                         </div>
                     </div>
                     <div className="text-right">
                         <div className="text-3xl font-bold text-white">{currentStreak}</div>
-                        <div className="text-xs text-white/50">{t.niat_days}</div>
+                        <div className="text-xs text-white/50">{t.intention_days}</div>
                     </div>
                 </div>
 
@@ -79,7 +79,7 @@ export default function IntentionStreak({
                 {currentStreak < nextMilestone.days && (
                     <div>
                         <div className="flex items-center justify-between text-xs text-white/60 mb-2">
-                            <span>{t.niat_next_milestone}: {nextMilestone.label}</span>
+                            <span>{t.intention_next_milestone}: {nextMilestone.label}</span>
                             <span>
                                 {currentStreak}/{nextMilestone.days}
                             </span>
@@ -99,7 +99,7 @@ export default function IntentionStreak({
                 {longestStreak > currentStreak && (
                     <div className="flex items-center gap-2 text-xs text-white/50 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 w-fit">
                         <span>🏅</span>
-                        <span>{t.niat_best_streak}: {longestStreak} {t.niat_days}</span>
+                        <span>{t.intention_best_streak}: {longestStreak} {t.intention_days}</span>
                     </div>
                 )}
 

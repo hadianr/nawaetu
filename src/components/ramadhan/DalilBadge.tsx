@@ -61,7 +61,7 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                     background: "color-mix(in srgb, var(--color-primary-light) 70%, transparent)",
                     border: "none"
                 } : undefined}
-                title={t.dalilViewFull}
+                title={t.evidenceViewFull}
             >
                 <span className="text-[6.5px] sm:text-[8px] leading-none group-hover/dalil:scale-110 transition-transform">📜</span>
                 <span
@@ -162,7 +162,7 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                                     borderColor: "rgba(255, 255, 255, 0.1)"
                                 }}>
                                     <p className="text-[10px] font-bold uppercase tracking-wider mb-2.5 text-white/50">
-                                        {t.dalilTranslation}
+                                        {t.evidenceTranslation}
                                     </p>
                                     <p className="text-sm text-white leading-relaxed font-normal" style={{
                                         textShadow: "0 1px 8px rgba(0,0,0,0.4)",

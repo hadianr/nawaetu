@@ -45,9 +45,9 @@ export function getLocalizedContent(content: Reading, locale: string) {
 export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     // ─── AKHLAK ──────────────────────────────────────────────────────
     {
-        id: "hadith_sabar",
+        id: "hadith_patience",
         type: "hadith",
-        category: "spiritualCategoryAkhlak",
+        category: "spiritualCategoryCharacter",
         content: {
             title: "Keutamaan Sabar",
             titleEn: "The Virtue of Patience",
@@ -59,9 +59,9 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
         }
     },
     {
-        id: "hadith_jujur",
+        id: "hadith_honesty",
         type: "hadith",
-        category: "spiritualCategoryAkhlak",
+        category: "spiritualCategoryCharacter",
         content: {
             title: "Perintah Berlaku Jujur",
             titleEn: "The Command to Be Truthful",
@@ -75,7 +75,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_marah",
         type: "hadith",
-        category: "spiritualCategoryAkhlak",
+        category: "spiritualCategoryCharacter",
         content: {
             title: "Jangan Marah",
             titleEn: "Do Not Get Angry",
@@ -89,7 +89,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_malu",
         type: "hadith",
-        category: "spiritualCategoryAkhlak",
+        category: "spiritualCategoryCharacter",
         content: {
             title: "Rasa Malu Bagian dari Iman",
             titleEn: "Shyness Is Part of Faith",
@@ -103,7 +103,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_tawadhu",
         type: "hadith",
-        category: "spiritualCategoryAkhlak",
+        category: "spiritualCategoryCharacter",
         content: {
             title: "Perintah Tawadhu",
             titleEn: "Command to Be Humble",
@@ -119,7 +119,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_sholat_awal_waktu",
         type: "hadith",
-        category: "spiritualCategoryIbadah",
+        category: "spiritualCategoryWorship",
         content: {
             title: "Amalan Paling Dicintai Allah",
             titleEn: "The Most Beloved Deed to Allah",
@@ -133,7 +133,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_dzikir",
         type: "hadith",
-        category: "spiritualCategoryIbadah",
+        category: "spiritualCategoryWorship",
         content: {
             title: "Dzikir Paling Ringan",
             titleEn: "The Lightest Remembrance",
@@ -147,7 +147,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_dua_dikabulkan",
         type: "hadith",
-        category: "spiritualCategoryIbadah",
+        category: "spiritualCategoryWorship",
         content: {
             title: "Doa adalah Ibadah",
             titleEn: "Supplication Is Worship",
@@ -161,7 +161,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_sholat_jamaah",
         type: "hadith",
-        category: "spiritualCategoryIbadah",
+        category: "spiritualCategoryWorship",
         content: {
             title: "Keutamaan Sholat Berjamaah",
             titleEn: "Excellence of Congregational Prayer",
@@ -177,7 +177,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_senyum",
         type: "hadith",
-        category: "spiritualCategorySosial",
+        category: "spiritualCategorySocial",
         content: {
             title: "Sedekah Paling Ringan",
             titleEn: "The Lightest Charity",
@@ -191,7 +191,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_tetangga",
         type: "hadith",
-        category: "spiritualCategorySosial",
+        category: "spiritualCategorySocial",
         content: {
             title: "Hak Tetangga",
             titleEn: "Rights of Neighbors",
@@ -205,7 +205,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_silaturrahim",
         type: "hadith",
-        category: "spiritualCategorySosial",
+        category: "spiritualCategorySocial",
         content: {
             title: "Keutamaan Silaturrahim",
             titleEn: "Excellence of Keeping Family Ties",
@@ -219,7 +219,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_tolong_menolong",
         type: "hadith",
-        category: "spiritualCategorySosial",
+        category: "spiritualCategorySocial",
         content: {
             title: "Muslim itu Bersaudara",
             titleEn: "Muslims Are Brothers",
@@ -233,9 +233,9 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
 
     // ─── GAYA HIDUP ───────────────────────────────────────────────────
     {
-        id: "hadith_kebersihan",
+        id: "hadith_cleanliness",
         type: "hadith",
-        category: "spiritualCategoryGayaHidup",
+        category: "spiritualCategoryLifestyle",
         content: {
             title: "Kebersihan Sebagian Iman",
             titleEn: "Cleanliness Is Half of Faith",
@@ -249,7 +249,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_makan",
         type: "hadith",
-        category: "spiritualCategoryGayaHidup",
+        category: "spiritualCategoryLifestyle",
         content: {
             title: "Kiat Sehat Nabi",
             titleEn: "The Prophet's Healthy Living Tip",
@@ -263,7 +263,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_tidur",
         type: "hadith",
-        category: "spiritualCategoryGayaHidup",
+        category: "spiritualCategoryLifestyle",
         content: {
             title: "Bersihkan Tempat Tidur",
             titleEn: "Clean Your Bed",
@@ -279,7 +279,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_iman_manis",
         type: "hadith",
-        category: "spiritualCategoryIman",
+        category: "spiritualCategoryFaith",
         content: {
             title: "Manisnya Iman",
             titleEn: "The Sweetness of Faith",
@@ -293,7 +293,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_tawakkal",
         type: "hadith",
-        category: "spiritualCategoryIman",
+        category: "spiritualCategoryFaith",
         content: {
             title: "Keutamaan Tawakkal",
             titleEn: "The Excellence of Reliance on Allah",
@@ -307,7 +307,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_husnuzhan",
         type: "hadith",
-        category: "spiritualCategoryIman",
+        category: "spiritualCategoryFaith",
         content: {
             title: "Berbaik Sangka kepada Allah",
             titleEn: "Having Good Expectations of Allah",
@@ -323,7 +323,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_ilmu",
         type: "hadith",
-        category: "spiritualCategoryIlmu",
+        category: "spiritualCategoryKnowledge",
         content: {
             title: "Kewajiban Menuntut Ilmu",
             titleEn: "The Obligation of Seeking Knowledge",
@@ -337,7 +337,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_amal_ilmu",
         type: "hadith",
-        category: "spiritualCategoryIlmu",
+        category: "spiritualCategoryKnowledge",
         content: {
             title: "Ilmu yang Bermanfaat",
             titleEn: "Beneficial Knowledge",
@@ -353,7 +353,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_syukur",
         type: "hadith",
-        category: "spiritualCategorySyukur",
+        category: "spiritualCategoryGratitude",
         content: {
             title: "Syukur kepada Manusia",
             titleEn: "Gratitude to People",
@@ -367,7 +367,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "hadith_rezeki",
         type: "hadith",
-        category: "spiritualCategorySyukur",
+        category: "spiritualCategoryGratitude",
         content: {
             title: "Rezeki yang Berkah",
             titleEn: "Blessings in Your Meal",
@@ -553,7 +553,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_ilmu",
         type: "dua",
-        category: "spiritualCategoryIlmu",
+        category: "spiritualCategoryKnowledge",
         content: {
             title: "Doa Memohon Ilmu yang Bermanfaat",
             titleEn: "Du'a for Beneficial Knowledge",
@@ -567,7 +567,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_ketetapan_hati",
         type: "dua",
-        category: "spiritualCategoryIman",
+        category: "spiritualCategoryFaith",
         content: {
             title: "Doa Ketetapan Hati",
             titleEn: "Du'a for Steadfastness of Heart",
@@ -581,7 +581,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_perlindungan",
         type: "dua",
-        category: "spiritualCategoryPerlindungan",
+        category: "spiritualCategoryProtection",
         content: {
             title: "Doa Perlindungan Pagi & Sore",
             titleEn: "Morning & Evening Protection Du'a",
@@ -595,7 +595,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_syukur",
         type: "dua",
-        category: "spiritualCategorySyukur",
+        category: "spiritualCategoryGratitude",
         content: {
             title: "Doa Mensyukuri Nikmat",
             titleEn: "Du'a of Gratitude",
@@ -609,7 +609,7 @@ export const SPIRITUAL_CONTENT: SpiritualItem[] = [
     {
         id: "dua_ketenangan",
         type: "dua",
-        category: "spiritualCategoryIman",
+        category: "spiritualCategoryFaith",
         content: {
             title: "Doa Ketenangan Hati",
             titleEn: "Du'a for Peace of Heart",
@@ -647,12 +647,12 @@ export function getByCategory(category: string) {
 export const SPIRITUAL_CATEGORIES = [
     { key: "all", labelId: "Semua", labelEn: "All" },
     { key: "spiritualCategoryRamadhan", labelId: "Ramadhan", labelEn: "Ramadhan" },
-    { key: "spiritualCategoryAkhlak", labelId: "Akhlak", labelEn: "Character" },
-    { key: "spiritualCategoryIbadah", labelId: "Ibadah", labelEn: "Worship" },
-    { key: "spiritualCategorySosial", labelId: "Sosial", labelEn: "Social" },
-    { key: "spiritualCategoryIman", labelId: "Iman", labelEn: "Faith" },
-    { key: "spiritualCategoryIlmu", labelId: "Ilmu", labelEn: "Knowledge" },
-    { key: "spiritualCategoryGayaHidup", labelId: "Gaya Hidup", labelEn: "Lifestyle" },
-    { key: "spiritualCategorySyukur", labelId: "Syukur", labelEn: "Gratitude" },
-    { key: "spiritualCategoryPerlindungan", labelId: "Doa", labelEn: "Duas" },
+    { key: "spiritualCategoryCharacter", labelId: "Akhlak", labelEn: "Character" },
+    { key: "spiritualCategoryWorship", labelId: "Ibadah", labelEn: "Worship" },
+    { key: "spiritualCategorySocial", labelId: "Sosial", labelEn: "Social" },
+    { key: "spiritualCategoryFaith", labelId: "Iman", labelEn: "Faith" },
+    { key: "spiritualCategoryKnowledge", labelId: "Ilmu", labelEn: "Knowledge" },
+    { key: "spiritualCategoryLifestyle", labelId: "Gaya Hidup", labelEn: "Lifestyle" },
+    { key: "spiritualCategoryGratitude", labelId: "Syukur", labelEn: "Gratitude" },
+    { key: "spiritualCategoryProtection", labelId: "Doa", labelEn: "Duas" },
 ];
