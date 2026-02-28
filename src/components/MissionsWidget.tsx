@@ -94,7 +94,9 @@ export default function MissionsWidget() {
 
         const fetchIntention = async () => {
             try {
-                const res = await fetch(`/api/intentions/today?user_token=${userToken}`);
+                const res = await fetch(`/api/intentions/today`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
                 const data = await res.json();
                 if (data.success && data.data.has_intention) {
                     setTodayIntention({
