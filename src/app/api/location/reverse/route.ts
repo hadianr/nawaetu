@@ -36,10 +36,27 @@ export async function GET(req: NextRequest) {
             );
         }
 
+        const parsedLat = parseFloat(lat);
+        const parsedLng = parseFloat(lng);
+
+        if (
+            Number.isNaN(parsedLat) ||
+            Number.isNaN(parsedLng) ||
+            parsedLat < -90 ||
+            parsedLat > 90 ||
+            parsedLng < -180 ||
+            parsedLng > 180
+        ) {
+            return NextResponse.json(
+                { success: false, error: "Invalid latitude or longitude" },
+                { status: 400 }
+            );
+        }
+
         // 1. Try BigDataCloud first (usually faster, good global coverage)
         let resolvedName = null;
         try {
-            const bdcUrl = `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${lat}&longitude=${lng}&localityLanguage=id`;
+            const bdcUrl = `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${parsedLat}&longitude=${parsedLng}&localityLanguage=id`;
             const bdcRes = await fetch(bdcUrl, {
                 next: { revalidate: 86400 }, // Cache on Vercel Edge for 24h
             });
@@ -59,7 +76,7 @@ export async function GET(req: NextRequest) {
         // 2. Try Nominatim (OpenStreetMap) if BigDataCloud fails or returns nothing
         if (!resolvedName) {
             try {
-                const nomUrl = `${API_CONFIG.LOCATION.NOMINATIM}?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=id&email=nawaetu.app@gmail.com`;
+                const nomUrl = `${API_CONFIG.LOCATION.NOMINATIM}?format=jsonv2&lat=${parsedLat}&lon=${parsedLng}&accept-language=id&email=nawaetu.app@gmail.com`;
 
                 // IMPORTANT: We MUST set a User-Agent server-side, otherwise Nominatim blocks it.
                 // We couldn't do this client-side due to browser Fetch API security restrictions.
