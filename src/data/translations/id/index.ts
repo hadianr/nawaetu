@@ -3,6 +3,7 @@ import { uiID } from './ui';
 import { settingsID } from './settings';
 import { otherID } from './other';
 import { quranID } from './quran';
+import { profileID } from './profile';
 
 export const SETTINGS_ID = {
   ...missionsID,
@@ -10,4 +11,5 @@ export const SETTINGS_ID = {
   ...settingsID,
   ...otherID,
   ...quranID,
+  ...profileID,
 };
