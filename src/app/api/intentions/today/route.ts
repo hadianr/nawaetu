@@ -31,8 +31,8 @@ import { authOptions } from "@/lib/auth";
  */
 export async function GET(req: NextRequest) {
     const startTime = Date.now();
-    const { searchParams } = req.nextUrl;
-    const providedToken = searchParams.get("user_token");
+    const authHeader = req.headers.get("authorization");
+    const providedToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null;
 
     try {
         const session = await getServerSession(authOptions);
