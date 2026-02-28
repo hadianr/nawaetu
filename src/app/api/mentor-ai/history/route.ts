@@ -30,10 +30,10 @@ const chatHistorySchema = z.object({
     title: z.string().optional(),
     messages: z.array(
         z.object({
-            id: z.string().optional(),
-            role: z.string(),
+            id: z.string().default(() => crypto.randomUUID()),
+            role: z.enum(['user', 'assistant']),
             content: z.string(),
-            timestamp: z.number().optional(),
+            timestamp: z.number().default(() => Date.now()),
         })
     ),
 });
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
         const result = chatHistorySchema.safeParse(body);
 
         if (!result.success) {
-            return NextResponse.json({ error: "Invalid data format", details: result.error.errors }, { status: 400 });
+            return NextResponse.json({ error: "Invalid data format", details: result.error.format() }, { status: 400 });
         }
 
         const { id, title, messages } = result.data;
