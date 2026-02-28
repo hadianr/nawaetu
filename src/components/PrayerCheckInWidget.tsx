@@ -50,7 +50,7 @@ type SheetState = {
 
 export default function PrayerCheckInWidget() {
     const { data: session } = useSession();
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
     const { completedMissions, completeMission, isCompleted } = useMissions();
@@ -231,7 +231,11 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
                     <div className="flex items-center gap-1.5 min-w-0">
                         <span className="text-sm shrink-0">🕌</span>
-                        <p className={cn("text-[10px] font-black uppercase tracking-tight truncate", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInTitle}</p>
+                        <p className={cn("text-[10px] font-black uppercase tracking-tight truncate", isDaylight ? "text-slate-800" : "text-white")}>
+                            {selectedDate === new Date().toISOString().split("T")[0]
+                                ? t.homePrayerCheckInTitle
+                                : t.homePrayerCheckInHistoryTitle}
+                        </p>
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">

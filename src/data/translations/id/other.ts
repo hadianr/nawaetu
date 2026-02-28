@@ -270,6 +270,7 @@ export const otherID = {
 
     // Prayer Check-In
     homePrayerCheckInTitle: "Sholat Hari Ini",
+    homePrayerCheckInHistoryTitle: "Catatan Sholat",
     homePrayerCheckInStatus: "{count}/5 Terlaksana",
     homePrayerCheckInDone: "Semua sholat hari ini terlaksana! Masya Allah 🎉",
     homePrayerCheckInUpcoming: "sebentar lagi",
@@ -582,6 +583,7 @@ export const otherID = {
     intention_best_streak: "Terbaik",
     intention_days: "hari",
     intention_widget_title: "Jurnal Niat Harian",
+    intention_widget_history_title: "Catatan Niat",
     intention_widget_subtitle: "Luruskan Niat Hari Ini",
     intention_widget_quote: '"Amalan itu tergantung niatnya..."',
     intention_todays_label: "Niat Hari Ini",

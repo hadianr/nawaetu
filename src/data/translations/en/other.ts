@@ -270,6 +270,7 @@ export const otherEN = {
 
     // Prayer Check-In
     homePrayerCheckInTitle: "Today's Prayer",
+    homePrayerCheckInHistoryTitle: "Prayer Records",
     homePrayerCheckInStatus: "{count}/5 Completed",
     homePrayerCheckInDone: "All prayers for today completed! Masya Allah 🎉",
     homePrayerCheckInUpcoming: "soon",
@@ -582,6 +583,7 @@ export const otherEN = {
     intention_best_streak: "Best",
     intention_days: "days",
     intention_widget_title: "Daily Intention Journal",
+    intention_widget_history_title: "Intention Records",
     intention_widget_subtitle: "Straighten Your Intention",
     intention_widget_quote: '"Actions are by intentions..."',
     intention_todays_label: "Today's Intention",

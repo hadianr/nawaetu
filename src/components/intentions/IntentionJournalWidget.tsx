@@ -266,7 +266,9 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity min-w-0">
                             <Compass className={cn("w-3 h-3 shrink-0", isDaylight ? "text-slate-900" : "text-white")} />
                             <span className={cn("text-[9px] font-bold uppercase tracking-tight truncate", isDaylight ? "text-slate-900" : "text-white")}>
-                                {t.intention_widget_title}
+                                {selectedDate === getTodayDateString()
+                                    ? t.intention_widget_title
+                                    : t.intention_widget_history_title}
                             </span>
                         </div>
 
