@@ -3,25 +3,12 @@
 /**
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, Sparkles, AlertCircle } from "lucide-react";
-import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
+import { ChevronRight } from "lucide-react";
+import { Mission } from "@/data/missions";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
@@ -29,23 +16,25 @@ import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useMissions } from "@/hooks/useMissions";
 import MissionDetailDialog from "./MissionDetailDialog";
 import MissionListModal from "./MissionListModal";
-import { checkMissionValidation, filterMissionsByArchetype, getHukumLabel } from "@/lib/mission-utils";
+import { getHukumLabel } from "@/lib/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
-import { getStorageService } from "@/core/infrastructure/storage";
-import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import IntentionInputForm from "./intentions/IntentionInputForm";
 import ReflectionInputForm from "./intentions/ReflectionInputForm";
 import IntentionPrompt from "./intentions/IntentionPrompt";
+import DailyMissionCard from "./missions/DailyMissionCard";
+import { useWidgetMissions } from "@/hooks/useWidgetMissions";
 
 export default function MissionsWidget() {
     const { data: session } = useSession();
-    const { t, locale } = useLocale();
-    const { completedMissions, completeMission, undoCompleteMission, isCompleted } = useMissions();
-    const [gender, setGender] = useState<Gender>(null);
-    const [missions, setMissions] = useState<Mission[]>([]);
+    const { t } = useLocale();
+    const { completedMissions, completeMission, undoCompleteMission } = useMissions();
+
+    // Extracted Custom Hook for Missions Logic
+    const { missions, widgetMissions, gender, isMissionCompleted, checkValidation } = useWidgetMissions(completedMissions as any);
+
     const [mounted, setMounted] = useState(false);
     const [userToken, setUserToken] = useState<string | null>(null);
     const [todayIntention, setTodayIntention] = useState<{
@@ -74,8 +63,6 @@ export default function MissionsWidget() {
 
     useEffect(() => {
         setMounted(true);
-
-        // Load or Generate User Token for Intentions
         let token = localStorage.getItem("user_token");
         if (!token) {
             try {
@@ -91,7 +78,6 @@ export default function MissionsWidget() {
     // Fetch Today's Intention
     useEffect(() => {
         if (!userToken) return;
-
         const fetchIntention = async () => {
             try {
                 const res = await fetch(`/api/intentions/today`, {
@@ -108,97 +94,20 @@ export default function MissionsWidget() {
             } catch (error) {
             }
         };
-
         fetchIntention();
     }, [userToken]);
 
-    const loadData = () => {
-        const storage = getStorageService();
-        // Priority: session > local storage
-        const savedGender = (session?.user?.gender || storage.getOptional(STORAGE_KEYS.USER_GENDER)) as Gender;
-        const savedArchetype = (session?.user?.archetype || storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE)) as string | null;
-
-        setGender(savedGender);
-
-        const daily = getDailyMissions(savedGender);
-        const weekly = getWeeklyMissions(savedGender);
-        const seasonal = getSeasonalMissions(prayerData?.hijriDate);
-
-        const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
-
-        let allMissions = [...seasonal, ...weekly, ...daily];
-
-        // Filter out non-relevant fasting missions during Ramadhan
-        if (isRamadhan) {
-            allMissions = allMissions.filter(m =>
-                m.id !== 'puasa_sunnah' &&
-                m.id !== 'qadha_puasa' &&
-                m.id !== 'qadha_puasa_tracker' &&
-                m.id !== 'puasa_sunnah_ramadhan_prep'
-            );
-        }
-
-        const filteredMissions = filterMissionsByArchetype(allMissions, savedArchetype);
-
-        // Localize missions
-        const localizedMissions = filteredMissions.map(mission => getLocalizedMission(mission, locale));
-        setMissions(localizedMissions);
-    };
-
-    useEffect(() => {
-        // 2. Missions Data Load (Depends on Gender & Prayer Data/Seasonal)
-        loadData();
-
-        const handleUpdate = () => loadData();
-        window.addEventListener('profile_updated', handleUpdate);
-        window.addEventListener('storage', handleUpdate);
-
-        return () => {
-            window.removeEventListener('profile_updated', handleUpdate);
-            window.removeEventListener('storage', handleUpdate);
-        };
-    }, [prayerData?.hijriDate, locale, session]); // Refresh when locale, hijri date, or session changes
-
-    const isMissionCompleted = (missionId: string, type: Mission['type']) => {
-        const todayStr = new Date().toISOString().split('T')[0];
-
-        // For recurring missions (daily/weekly), check if completed TODAY
-        if (type === 'daily' || type === 'weekly' || !type) {
-            return completedMissions.some(m => {
-                if (m.id !== missionId) return false;
-                const completedDate = m.completedAt.split('T')[0];
-                return completedDate === todayStr;
-            });
-        }
-
-        // For one-time missions (tracker), any completion is enough
-        if (type === 'tracker') {
-            return completedMissions.some(m => m.id === missionId);
-        }
-
-        return false;
-    };
-
-    // --- Validation Logic ---
-    const checkValidation = (mission: Mission) => {
-        return checkMissionValidation(mission, prayerData);
-    };
-
     const handleMissionClick = (mission: Mission) => {
-        // Always open dialog for details/guide/validation check
         setSelectedMission(mission);
         setIsDialogOpen(true);
     };
 
     const handleCompleteMission = (xpAmount?: number) => {
         if (!selectedMission) return;
-
-        const mission = selectedMission;
-        const reward = xpAmount || mission.xpReward; // Use passed amount or default
+        const reward = xpAmount || selectedMission.xpReward;
         addXP(reward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
 
-        // Update streak (only on first mission of the day)
         const todayStr = new Date().toISOString().split('T')[0];
         const completedCountToday = completedMissions.filter(m => {
             const completedDate = m.completedAt.split('T')[0];
@@ -208,11 +117,9 @@ export default function MissionsWidget() {
             updateStreak();
         }
 
-        // Use repository to save mission
-        completeMission(mission.id, reward);
+        completeMission(selectedMission.id, reward);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
-        // UX Feedback: Toast
         const messages = [
             t.toastMissionMsg1,
             t.toastMissionMsg2,
@@ -226,70 +133,46 @@ export default function MissionsWidget() {
             duration: 3000,
             icon: "🎉"
         });
-
         setIsDialogOpen(false);
     };
 
     const handleResetMission = () => {
         if (!selectedMission) return;
-        const mission = selectedMission;
-
-        // Subtract XP
-        addXP(-mission.xpReward);
+        addXP(-selectedMission.xpReward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
+        undoCompleteMission(selectedMission.id);
 
-        // Use repository to undo
-        undoCompleteMission(mission.id);
-
-        // UX Feedback: Toast
         toast.info((t as any).mission_dialog_undo_title, {
-            description: `${mission.title} ${(t as any).mission_dialog_undo_desc} (-${mission.xpReward} XP)`,
+            description: `${selectedMission.title} ${(t as any).mission_dialog_undo_desc} (-${selectedMission.xpReward} XP)`,
             duration: 3000,
             icon: "🔄"
         });
-
         setIsDialogOpen(false);
     };
 
-    // Handle Intention Submit from Modal
     const handleIntentionSubmit = async (text: string) => {
         if (!userToken) return;
-
         try {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_token: userToken,
-                    niat_text: text,
-                }),
+                body: JSON.stringify({ user_token: userToken, niat_text: text }),
             });
-
             const data = await response.json();
-
             if (data.success) {
                 const mission = missions.find(m => m.id === 'niat_harian');
                 if (mission) {
                     addXP(mission.xpReward);
                     window.dispatchEvent(new CustomEvent("xp_updated"));
-
                     const todayStr = new Date().toISOString().split('T')[0];
                     const completedCountToday = completedMissions.filter(m => {
                         const completedDate = m.completedAt.split('T')[0];
                         return completedDate === todayStr;
                     }).length;
                     if (completedCountToday === 0) updateStreak();
-
                     completeMission(mission.id, mission.xpReward);
                     window.dispatchEvent(new CustomEvent("mission_storage_updated"));
-
-                    // Update Local State for Widget Display
-                    setTodayIntention({
-                        id: data.data.id,
-                        text: text,
-                        reflection: null
-                    });
-
+                    setTodayIntention({ id: data.data.id, text: text, reflection: null });
                     toast.success(t.toastMissionComplete, {
                         description: `${t.niat_success_niat_title} (+${mission.xpReward} XP)`,
                         duration: 3000,
@@ -297,10 +180,8 @@ export default function MissionsWidget() {
                     });
                 }
                 setShowIntentionPrompt(false);
-            } else {
-                toast.error(t.niat_error_fail_save_niat);
-            }
-        } catch (error) {
+            } else toast.error(t.niat_error_fail_save_niat);
+        } catch {
             toast.error(t.niat_error_generic);
         }
     };
@@ -310,87 +191,15 @@ export default function MissionsWidget() {
     const [initialModalTab, setInitialModalTab] = useState("all");
 
     useEffect(() => {
-        // Listener for external trigger (e.g. from RamadhanCountdown)
         const handleOpenModal = (e: any) => {
-            if (e.detail?.tab) {
-                setInitialModalTab(e.detail.tab);
-            }
+            if (e.detail?.tab) setInitialModalTab(e.detail.tab);
             setShowMissionModal(true);
         };
-
         window.addEventListener("open_mission_modal", handleOpenModal);
         return () => window.removeEventListener("open_mission_modal", handleOpenModal);
     }, []);
 
-    // Count completed today (for progress bar) - Widget Header
     const completedCount = missions.filter(m => isMissionCompleted(m.id, m.type)).length;
-
-    // Sorting for WIDGET (Top Priority)
-    // Priority Score System:
-    // ... (Scores as defined) ...
-    const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
-
-    const widgetMissions = [...missions]
-        .filter(m => {
-            // Hide intentional missions from the list
-            if (m.id === 'niat_harian' || m.id === 'muhasabah') return false;
-
-            // When in Ramadhan, show 'ramadhan_during' missions
-            if (isRamadhan) {
-                return m.phase !== 'ramadhan_prep'; // Show 'all_year' and 'ramadhan_during'
-            }
-
-            // When NOT in Ramadhan, hide 'ramadhan_during'
-            return m.phase !== 'ramadhan_during';
-        })
-        .sort((a, b) => {
-            const aCompleted = isMissionCompleted(a.id, a.type);
-            const bCompleted = isMissionCompleted(b.id, b.type);
-
-            if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
-
-            const aVal = checkValidation(a);
-            const bVal = checkValidation(b);
-
-            // Helper to get score
-            const getPriorityScore = (m: Mission, val: any) => {
-                const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
-
-                if (val.locked) return -20;
-                if (val.isLate) return -10;
-
-                // 1. RAMADHAN PRIORITY (Highest)
-                if (isRamadhan && m.phase === 'ramadhan_during') return 200;
-
-                // Obligatory Priorities
-                if (m.category === 'prayer' && m.hukum === 'obligatory') return 100;
-
-                // Qadha Puasa is Special Obligatory
-                if (m.id === 'qadha_puasa' || (m.phase === 'ramadhan_prep' && m.hukum === 'obligatory')) return 90;
-
-                // Active Sunnah Priorities
-                if (m.category === 'prayer') return 80; // Sunnah Prayer
-                if (m.category === 'dhikr') return 70;
-
-                // Special Context (Ramadhan Prep - Sunnah)
-                if (m.phase === 'ramadhan_prep') return 60;
-
-                return 0;
-            };
-
-            const scoreA = getPriorityScore(a, aVal);
-            const scoreB = getPriorityScore(b, bVal);
-
-            if (scoreA !== scoreB) return scoreB - scoreA; // Descending (Higher first)
-
-            // Tie-breaker: Obligatory > Sunnah
-            if (a.hukum === 'obligatory' && b.hukum !== 'obligatory') return -1;
-            if (b.hukum === 'obligatory' && a.hukum !== 'obligatory') return 1;
-
-            return 0;
-        });
-
-    // Show top 2 only
     const displayMissions = widgetMissions.slice(0, 2);
 
     if (!mounted) return <MissionSkeleton />;
@@ -398,19 +207,15 @@ export default function MissionsWidget() {
     return (
         <div className={cn(
             "relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all group",
-            // Glassmorphism Base
             "bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30 hover:border-white/20"
         )}>
-            {/* Soft Glow based on gender/theme */}
             <div className={cn(
                 "absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] pointer-events-none opacity-20 transition-colors",
                 gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
             )} />
 
-            {/* Header */}
             <div className="flex items-center justify-between mb-4 relative z-10 w-full">
                 <div className="flex items-center gap-2.5">
-                    {/* Icon Container */}
                     <div className={cn(
                         "w-8 h-8 rounded-full flex items-center justify-center text-sm ring-1 ring-inset",
                         gender === 'female' ? "bg-pink-500/10 text-pink-400 ring-pink-500/20" :
@@ -425,7 +230,6 @@ export default function MissionsWidget() {
                     </div>
                 </div>
 
-                {/* Sleek Badge */}
                 <div className={cn(
                     "text-[10px] px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
                     completedCount === missions.length
@@ -436,186 +240,27 @@ export default function MissionsWidget() {
                 </div>
             </div>
 
-            {/* Mission List */}
             <div className="space-y-2 relative z-10">
                 {displayMissions.map((mission) => {
-                    const isCompleted = isMissionCompleted(mission.id, mission.type);
                     const validation = checkValidation(mission);
-                    const isLocked = !isCompleted && validation.locked;
-                    const isSpecial = mission.phase === 'ramadhan_prep';
-
-                    // ... (URGENCY LOGIC REMOVED FROM SNIPPET FOR BREVITY - KEEPING EXISTING LOGIC)
-                    let urgencyNode = null;
-                    if (mission.category === 'prayer' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
-                        // Determine current prayer key based on ID (e.g. sholat_ashar -> Asr)
-                        // Helper map
-                        const idToKey: { [key: string]: string } = {
-                            'sholat_subuh_male': 'Fajr', 'sholat_subuh_female': 'Fajr',
-                            'sholat_dzuhur_male': 'Dhuhr', 'sholat_dzuhur_female': 'Dhuhr',
-                            'sholat_ashar_male': 'Asr', 'sholat_ashar_female': 'Asr',
-                            'sholat_maghrib_male': 'Maghrib', 'sholat_maghrib_female': 'Maghrib',
-                            'sholat_isya_male': 'Isha', 'sholat_isya_female': 'Isha'
-                        };
-                        const prayerKey = idToKey[mission.id];
-
-                        if (prayerKey) {
-                            // Get time window
-                            const pTime = prayerData.prayerTimes[prayerKey]; // Start
-                            // Next prayer is simple approximation for now (Window End)
-                            // Order: Fajr -> Sunrise(Special) -> Dhuhr -> Asr -> Maghrib -> Isha -> Midnight
-
-                            // We need "End Time" to calculate "Last 30 mins"
-                            let endTimeStr = null;
-                            if (prayerKey === 'Fajr') endTimeStr = prayerData.prayerTimes['Sunrise']; // Assuming Sunrise is in data
-                            else if (prayerKey === 'Dhuhr') endTimeStr = prayerData.prayerTimes['Asr'];
-                            else if (prayerKey === 'Asr') endTimeStr = prayerData.prayerTimes['Maghrib'];
-                            else if (prayerKey === 'Maghrib') endTimeStr = prayerData.prayerTimes['Isha'];
-                            else if (prayerKey === 'Isha') endTimeStr = prayerData.prayerTimes['Midnight'];
-
-                            if (pTime && endTimeStr) {
-                                const now = new Date();
-                                const [sH, sM] = pTime.split(':').map(Number);
-                                const [eH, eM] = endTimeStr.split(':').map(Number);
-
-                                const startDate = new Date(); startDate.setHours(sH, sM, 0, 0);
-                                const endDate = new Date(); endDate.setHours(eH, eM, 0, 0);
-
-                                // Handle day rollover (e.g. Isha 19:00 -> Midnight 00:15)
-                                if (endDate < startDate) {
-                                    endDate.setDate(endDate.getDate() + 1);
-                                }
-
-                                const diffMs = now.getTime() - startDate.getTime();
-                                const remainingMs = endDate.getTime() - now.getTime();
-
-                                const minsSinceStart = diffMs / (1000 * 60);
-                                const minsRemaining = remainingMs / (1000 * 60);
-
-                                if (minsSinceStart <= 60 && minsSinceStart >= 0) {
-                                    // Early: < 60 mins passed
-                                    urgencyNode = (
-                                        <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
-                                            <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))] mt-0.5 shrink-0" />
-                                            <div>
-                                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">{t.homeMissionEarlyTitle}</p>
-                                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">{t.homeMissionEarlyQuote}</p>
-                                            </div>
-                                        </div>
-                                    );
-                                } else if (minsRemaining <= 30 && minsRemaining > 0) {
-                                    // Critical: < 30 mins left
-                                    urgencyNode = (
-                                        <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-amber-500/10 border border-amber-500/20">
-                                            <AlertCircle className="w-3 h-3 text-amber-500 mt-0.5 shrink-0" />
-                                            <div>
-                                                <p className="text-[10px] font-bold text-amber-500 leading-tight">{t.homeMissionLateTitle.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
-                                                <p className="text-[9px] text-amber-500/70 leading-tight italic">{t.homeMissionLateQuote}</p>
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                            }
-                        }
-                    }
-
                     return (
-                        <button
+                        <DailyMissionCard
                             key={mission.id}
-                            onClick={() => handleMissionClick(mission)}
-                            className={cn(
-                                "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden",
-                                // Base Style
-                                "border backdrop-blur-sm",
-                                isCompleted
-                                    ? "bg-black/20 border-white/5 opacity-60" // Completed: Dimmed, subtle
-                                    : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10" // Active: Clean glass
-                            )}
-                        >
-                            {/* Active Indicator Line for Non-Completed */}
-                            {!isCompleted && !isLocked && (
-                                <div className={cn(
-                                    "absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                                    mission.hukum === 'obligatory' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
-                                )} />
-                            )}
-                            <div className="flex items-center gap-3 w-full">
-                                <span className={cn(
-                                    "text-xl transition-all",
-                                    isCompleted && "grayscale",
-                                    isLocked && "opacity-50 grayscale"
-                                )}>
-                                    {mission.icon}
-                                </span>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between mb-0.5">
-                                        <p className={cn(
-                                            "text-xs font-semibold truncate pr-2",
-                                            isCompleted
-                                                ? gender === 'female' ? "text-pink-400 line-through" :
-                                                    gender === 'male' ? "text-blue-400 line-through" :
-                                                        "text-[rgb(var(--color-primary-light))] line-through"
-                                                : isSpecial ? "text-amber-200" : "text-white"
-                                        )}>
-                                            {mission.title}
-                                        </p>
-                                        {isSpecial && !isCompleted && !isLocked && (
-                                            <span className="text-[8px] px-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                                                {t.homeMissionSpecial}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className={cn(
-                                            "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
-                                            mission.hukum === 'obligatory'
-                                                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/20"
-                                        )}>
-                                            {getHukumLabel(mission.hukum, t)}
-                                        </span>
-                                        <p className="text-[10px] text-white/90 truncate">
-                                            +{mission.xpReward} XP
-                                        </p>
-
-                                        {/* Validation Status Badges */}
-                                        {isLocked ? (
-                                            <span className="text-[9px] text-white/60 flex items-center gap-0.5 ml-auto">
-                                                {t.homeMissionLocked}
-                                            </span>
-                                        ) : validation.isLate ? (
-                                            <span className="text-[9px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
-                                                <AlertCircle className="w-2.5 h-2.5" /> {t.homeMissionLate}
-                                            </span>
-                                        ) : validation.isEarly ? (
-                                            <span className="text-[9px] text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
-                                                <Sparkles className="w-2.5 h-2.5" /> {t.homeMissionEarly}
-                                            </span>
-                                        ) : null}
-                                    </div>
-                                </div>
-                                {isCompleted ? (
-                                    <div className={cn(
-                                        "w-5 h-5 rounded-full flex items-center justify-center",
-                                        gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
-                                    )}>
-                                        <Check className="w-3 h-3 text-white" />
-                                    </div>
-                                ) : (
-                                    <div className={cn(
-                                        "w-5 h-5 rounded-full border transition-colors",
-                                        isSpecial ? "border-amber-500/40 group-hover:border-amber-400/60" : "border-white/20 group-hover:border-white/40"
-                                    )} />
-                                )}
-                            </div>
-
-                            {/* Urgency Badge */}
-                            {!isCompleted && !isLocked && urgencyNode}
-                        </button>
+                            mission={mission}
+                            isCompleted={isMissionCompleted(mission.id, mission.type)}
+                            isLocked={!isMissionCompleted(mission.id, mission.type) && validation.locked}
+                            isSpecial={mission.phase === 'ramadhan_prep'}
+                            validation={validation}
+                            prayerData={prayerData}
+                            gender={gender}
+                            t={t}
+                            getHukumLabel={getHukumLabel}
+                            onClick={handleMissionClick}
+                        />
                     );
                 })}
             </div>
 
-            {/* "Lihat Semua" Modal Trigger */}
             <div className="mt-3">
                 <MissionListModal
                     missions={missions}
@@ -641,81 +286,74 @@ export default function MissionsWidget() {
                 </MissionListModal>
             </div>
 
-            {/* No gender selected prompt */}
-            {
-                !gender && (
-                    <div className="mt-3 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                        <p className="text-[10px] text-amber-400 text-center">
-                            {t.homeMissionSelectGenderHint}
-                        </p>
-                    </div>
-                )
-            }
+            {!gender && (
+                <div className="mt-3 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                    <p className="text-[10px] text-amber-400 text-center">
+                        {t.homeMissionSelectGenderHint}
+                    </p>
+                </div>
+            )}
 
-            {
-                selectedMission && (
-                    (() => {
-                        const validation = checkValidation(selectedMission);
-
-                        let customContent = null;
-                        if (selectedMission.id === 'niat_harian' && userToken) {
-                            if (todayIntention) {
-                                customContent = (
-                                    <ReflectionInputForm
-                                        userToken={userToken}
-                                        intentionId={todayIntention.id}
-                                        intentionText={todayIntention.text}
-                                        onComplete={() => {
-                                            setTodayIntention(prev => prev ? { ...prev, reflection: { rating: 5, text: "Done" } } : null);
-                                            const muhasabah = missions.find(m => m.id === 'muhasabah');
-                                            if (muhasabah) handleCompleteMission(muhasabah.xpReward);
-                                        }}
-                                    />
-                                );
-                            } else {
-                                customContent = (
-                                    <IntentionInputForm
-                                        userToken={userToken}
-                                        onComplete={() => handleCompleteMission(selectedMission.xpReward)}
-                                    />
-                                );
-                            }
-                        } else if (selectedMission.id === 'muhasabah' && userToken) {
+            {selectedMission && (
+                (() => {
+                    const validation = checkValidation(selectedMission);
+                    let customContent = null;
+                    if (selectedMission.id === 'niat_harian' && userToken) {
+                        if (todayIntention) {
                             customContent = (
                                 <ReflectionInputForm
                                     userToken={userToken}
-                                    intentionId={todayIntention?.id}
-                                    intentionText={todayIntention?.text}
+                                    intentionId={todayIntention.id}
+                                    intentionText={todayIntention.text}
+                                    onComplete={() => {
+                                        setTodayIntention(prev => prev ? { ...prev, reflection: { rating: 5, text: "Done" } } : null);
+                                        const muhasabah = missions.find(m => m.id === 'muhasabah');
+                                        if (muhasabah) handleCompleteMission(muhasabah.xpReward);
+                                    }}
+                                />
+                            );
+                        } else {
+                            customContent = (
+                                <IntentionInputForm
+                                    userToken={userToken}
                                     onComplete={() => handleCompleteMission(selectedMission.xpReward)}
                                 />
                             );
                         }
-
-                        return (
-                            <MissionDetailDialog
-                                mission={selectedMission}
-                                isOpen={isDialogOpen}
-                                onClose={() => setIsDialogOpen(false)}
-                                isCompleted={isMissionCompleted(selectedMission.id, selectedMission.type)}
-                                isLocked={validation.locked}
-                                lockReason={validation.reason}
-                                isLate={validation.isLate}
-                                isEarly={validation.isEarly}
-                                onComplete={handleCompleteMission}
-                                onReset={handleResetMission}
-                                customContent={customContent}
+                    } else if (selectedMission.id === 'muhasabah' && userToken) {
+                        customContent = (
+                            <ReflectionInputForm
+                                userToken={userToken}
+                                intentionId={todayIntention?.id}
+                                intentionText={todayIntention?.text}
+                                onComplete={() => handleCompleteMission(selectedMission.xpReward)}
                             />
                         );
-                    })()
-                )
-            }
+                    }
 
-            {/* Legacy Intention Prompt Modal */}
+                    return (
+                        <MissionDetailDialog
+                            mission={selectedMission}
+                            isOpen={isDialogOpen}
+                            onClose={() => setIsDialogOpen(false)}
+                            isCompleted={isMissionCompleted(selectedMission.id, selectedMission.type)}
+                            isLocked={validation.locked}
+                            lockReason={validation.reason}
+                            isLate={validation.isLate}
+                            isEarly={validation.isEarly}
+                            onComplete={handleCompleteMission}
+                            onReset={handleResetMission}
+                            customContent={customContent}
+                        />
+                    );
+                })()
+            )}
+
             <AnimatePresence>
                 {showIntentionPrompt && (
                     <IntentionPrompt
                         onSubmit={handleIntentionSubmit}
-                        currentStreak={0} // Logic to fetch streak is in another widget, 0 is fine/hidden for now or we fetch it
+                        currentStreak={0}
                         onClose={() => setShowIntentionPrompt(false)}
                     />
                 )}
