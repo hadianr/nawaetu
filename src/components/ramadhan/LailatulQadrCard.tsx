@@ -20,10 +20,10 @@
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import {
-    DALIL_LAILATUL_QADR,
-    DALIL_LAST_10_NIGHTS,
-    DALIL_ODD_NIGHTS,
-    DOA_LAILATUL_QADR,
+    LAILATUL_QADR_EVIDENCE,
+    LAST_10_NIGHTS_EVIDENCE,
+    ODD_NIGHTS_EVIDENCE,
+    LAILATUL_QADR_PRAYER,
     LAST_TEN_NIGHTS,
     ODD_NIGHTS,
     getNextLailatulQadrNight,
@@ -61,7 +61,7 @@ export default function LailatulQadrCard() {
                         <h3 className="font-bold text-white text-sm sm:text-base">{t.lailatulQadrTitle}</h3>
                     </div>
                 </div>
-                <DalilBadge dalil={DALIL_LAILATUL_QADR} variant="pill" />
+                <DalilBadge dalil={LAILATUL_QADR_EVIDENCE} variant="pill" />
             </div>
 
             {/* Status message - More compact */}
@@ -184,13 +184,13 @@ export default function LailatulQadrCard() {
                     <div className="flex-1 min-w-0">
                         <p className="text-[8px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.lailatulQadrDalil}</p>
                         <div className="flex flex-col gap-0.5">
-                            <DalilBadge dalil={DALIL_LAST_10_NIGHTS} variant="pill" />
-                            <DalilBadge dalil={DALIL_ODD_NIGHTS} variant="pill" />
+                            <DalilBadge dalil={LAST_10_NIGHTS_EVIDENCE} variant="pill" />
+                            <DalilBadge dalil={ODD_NIGHTS_EVIDENCE} variant="pill" />
                         </div>
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-[8px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.lailatulQadrDoa}</p>
-                        <NiatCard niat={DOA_LAILATUL_QADR} variant="pill" />
+                        <NiatCard niat={LAILATUL_QADR_PRAYER} variant="pill" />
                     </div>
                 </div>
             </div>

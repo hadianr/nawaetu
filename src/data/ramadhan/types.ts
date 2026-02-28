@@ -22,7 +22,7 @@
  * All content based on Al-Quran and authenticated Hadits
  */
 
-export interface NiatData {
+export interface IntentionData {
     id: string;
     title: string;
     title_en?: string;      // English title (optional for bilingual support)
@@ -34,7 +34,7 @@ export interface NiatData {
     source_en?: string;      // English source description (optional)
 }
 
-export interface DalilData {
+export interface EvidenceData {
     id: string;
     shortRef: string;        // e.g. "QS. Al-Baqarah: 187"
     shortRef_en?: string;    // English short reference (optional)
@@ -53,18 +53,18 @@ export interface SunnahFood {
     icon: string;
     description: string;
     description_en?: string;
-    dalil: DalilData;
+    dalil: EvidenceData;
 }
 
-export interface RamadhanAmalanData {
+export interface RamadhanPracticeData {
     id: string;
     title: string;
     title_en?: string;
     description: string;
     description_en?: string;
     icon: string;
-    niat?: NiatData;
-    dalil: DalilData;
+    niat?: IntentionData;
+    dalil: EvidenceData;
     tips?: string[];
     tips_en?: string[];
 }
@@ -78,7 +78,7 @@ export interface FiqhItem {
     description: string;
     description_en: string;
     category: FiqhCategory;
-    dalil?: DalilData;
+    dalil?: EvidenceData;
 }
 
 export interface FAQItem {
@@ -87,6 +87,6 @@ export interface FAQItem {
     question_en: string;
     answer: string;
     answer_en: string;
-    dalil?: DalilData;
+    dalil?: EvidenceData;
     tags?: string[]; // for future search functionality
 }

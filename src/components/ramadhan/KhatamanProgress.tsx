@@ -21,7 +21,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { DALIL_TADARUS, NIAT_TADARUS } from "@/data/ramadhan";
+import { QURAN_RECITATION_EVIDENCE, QURAN_RECITATION_INTENTION } from "@/data/ramadhan";
 import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
@@ -107,7 +107,7 @@ export default function KhatamanProgress() {
                     <span className="text-lg">📖</span>
                     <h3 className="font-bold text-white text-base">{t.khatamanTitle}</h3>
                 </div>
-                <DalilBadge dalil={DALIL_TADARUS} variant="pill" />
+                <DalilBadge dalil={QURAN_RECITATION_EVIDENCE} variant="pill" />
             </div>
 
             {/* Progress bar */}
@@ -193,7 +193,7 @@ export default function KhatamanProgress() {
 
             {/* Niat button */}
             <div className="px-3 pb-3 sm:px-4 sm:pb-4">
-                <NiatCard niat={NIAT_TADARUS} variant="pill" />
+                <NiatCard niat={QURAN_RECITATION_INTENTION} variant="pill" />
             </div>
         </div>
     );

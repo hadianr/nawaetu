@@ -1,12 +1,12 @@
-import { DalilData, RamadhanAmalanData, NiatData, SunnahFood } from './types';
+import { EvidenceData, RamadhanPracticeData, IntentionData, SunnahFood } from './types';
 import {
-    NIAT_PUASA_RAMADHAN, NIAT_TARAWEH, NIAT_TADARUS
+    RAMADHAN_FASTING_INTENTION, TARAWEH_INTENTION, QURAN_RECITATION_INTENTION
 } from './niat';
 
 // DALIL DATA
 // ─────────────────────────────────────────────────────────────
 
-export const DALIL_PUASA: DalilData = {
+export const FASTING_EVIDENCE: EvidenceData = {
     id: 'dalil_puasa',
     shortRef: 'QS. Al-Baqarah: 183',
     shortRef_en: 'Quran 2:183',
@@ -18,7 +18,7 @@ export const DALIL_PUASA: DalilData = {
     source_en: 'Quran, Surah Al-Baqarah, Verse 183',
 };
 
-export const DALIL_FASTING_SCHEDULE: DalilData = {
+export const FASTING_SCHEDULE_EVIDENCE: EvidenceData = {
     id: 'dalil_fasting_schedule',
     shortRef: 'QS. Al-Baqarah: 187',
     shortRef_en: 'Quran 2:187',
@@ -30,7 +30,7 @@ export const DALIL_FASTING_SCHEDULE: DalilData = {
     source_en: 'Quran, Surah Al-Baqarah, Verse 187 — the basis for imsak and breaking fast times',
 };
 
-export const DALIL_TARAWEH: DalilData = {
+export const TARAWEH_EVIDENCE: EvidenceData = {
     id: 'dalil_taraweh',
     shortRef: 'HR. Bukhari 2008',
     arabic: 'مَنْ قَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ',
@@ -39,7 +39,7 @@ export const DALIL_TARAWEH: DalilData = {
     source: 'HR. Bukhari No. 2008, Muslim No. 759 — dari Abu Hurairah radhiyallahu \'anhu',
 };
 
-export const DALIL_TADARUS: DalilData = {
+export const QURAN_RECITATION_EVIDENCE: EvidenceData = {
     id: 'dalil_tadarus',
     shortRef: 'HR. Tirmidzi 2910',
     arabic: 'اقْرَؤُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ',
@@ -48,7 +48,7 @@ export const DALIL_TADARUS: DalilData = {
     source: 'HR. Muslim No. 804 — dari Abu Umamah Al-Bahili radhiyallahu \'anhu',
 };
 
-export const DALIL_LAILATUL_QADR: DalilData = {
+export const LAILATUL_QADR_EVIDENCE: EvidenceData = {
     id: 'dalil_lailatul_qadr',
     shortRef: 'QS. Al-Qadr: 1-3',
     shortRef_en: 'Quran 97:1-3',
@@ -60,7 +60,7 @@ export const DALIL_LAILATUL_QADR: DalilData = {
     source_en: 'Quran, Surah Al-Qadr, Verses 1-3',
 };
 
-export const DALIL_SEDEKAH_RAMADHAN: DalilData = {
+export const RAMADHAN_CHARITY_EVIDENCE: EvidenceData = {
     id: 'dalil_sedekah_ramadhan',
     shortRef: 'HR. Tirmidzi 663',
     arabic: 'أَفْضَلُ الصَّدَقَةِ صَدَقَةٌ فِي رَمَضَانَ',
@@ -69,7 +69,7 @@ export const DALIL_SEDEKAH_RAMADHAN: DalilData = {
     source: 'HR. Tirmidzi No. 663 — dari Anas bin Malik radhiyallahu \'anhu',
 };
 
-export const DALIL_SAHUR: DalilData = {
+export const SUHOOR_EVIDENCE: EvidenceData = {
     id: 'dalil_sahur',
     shortRef: 'HR. Bukhari 1923',
     arabic: 'تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً',
@@ -80,7 +80,7 @@ export const DALIL_SAHUR: DalilData = {
     source_en: 'Reported by Bukhari No. 1923, Muslim No. 1095 — narrated by Anas bin Malik RA'
 };
 
-export const DALIL_IFTAR: DalilData = {
+export const IFTAR_EVIDENCE: EvidenceData = {
     id: 'dalil_iftar',
     shortRef: 'HR. Abu Dawud 2357',
     arabic: 'لِلصَّائِمِ فَرْحَتَانِ يَفْرَحُهُمَا: إِذَا أَفْطَرَ فَرِحَ بِفِطْرِهِ، وَإِذَا لَقِيَ رَبَّهُ فَرِحَ بِصَوْمِهِ',
@@ -96,7 +96,7 @@ export const DALIL_IFTAR: DalilData = {
 // ─────────────────────────────────────────────────────────────
 
 
-export const DALIL_DATES_IFTAR: DalilData = {
+export const DATES_IFTAR_EVIDENCE: EvidenceData = {
     id: 'dalil_dates_iftar',
     shortRef: 'HR. Abu Dawud 2356',
     shortRef_en: 'Abu Dawud 2356',
@@ -108,7 +108,7 @@ export const DALIL_DATES_IFTAR: DalilData = {
     source_en: 'Reported by Abu Dawud No. 2356 — Hasan Hadith, narrated by Anas bin Malik RA'
 };
 
-export const DALIL_WATER_IFTAR: DalilData = {
+export const WATER_IFTAR_EVIDENCE: EvidenceData = {
     id: 'dalil_water_iftar',
     shortRef: 'HR. Abu Dawud 2356',
     shortRef_en: 'Abu Dawud 2356',
@@ -120,7 +120,7 @@ export const DALIL_WATER_IFTAR: DalilData = {
     source_en: 'Reported by Abu Dawud No. 2356 — Hasan Hadith, supplement to dates hadith'
 };
 
-export const DALIL_DATES_SAHUR: DalilData = {
+export const DATES_SUHOOR_EVIDENCE: EvidenceData = {
     id: 'dalil_dates_sahur',
     shortRef: 'HR. Abu Dawud 2345',
     shortRef_en: 'Abu Dawud 2345',
@@ -132,7 +132,7 @@ export const DALIL_DATES_SAHUR: DalilData = {
     source_en: 'Reported by Abu Dawud No. 2345 — Sahih Hadith, narrated by Abu Hurairah RA'
 };
 
-export const DALIL_MILK_HONEY: DalilData = {
+export const MILK_HONEY_EVIDENCE: EvidenceData = {
     id: 'dalil_milk_honey',
     shortRef: 'HR. Tirmidzi 3455',
     shortRef_en: 'Tirmidzi 3455',
@@ -144,7 +144,7 @@ export const DALIL_MILK_HONEY: DalilData = {
     source_en: 'Reported by Bukhari No. 5680. Milk & honey are highly recommended by the Prophet (ﷺ) for strength (General Sunnah).'
 };
 
-export const DALIL_WATER_SAHUR: DalilData = {
+export const WATER_SUHOOR_EVIDENCE: EvidenceData = {
     id: 'dalil_water_sahur',
     shortRef: 'HR. Ahmad 11086',
     shortRef_en: 'Ahmad 11086',
@@ -164,7 +164,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         icon: '🌴',
         description: 'Sunnah utama Nabi SAW. Sangat cepat mengembalikan kadar gula darah yang turun setelah berpuasa.',
         description_en: 'The primary Sunnah. Rapidly restores blood sugar levels after fasting.',
-        dalil: DALIL_DATES_IFTAR
+        dalil: DATES_IFTAR_EVIDENCE
     },
     {
         id: 'iftar_tamr',
@@ -173,7 +173,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         icon: '🟤',
         description: 'Alternatif utama jika tidak ada Ruthab. Disunnahkan memakannya dalam jumlah ganjil (1, 3, atau 5).',
         description_en: 'Primary alternative to fresh dates. Recommended to eat an odd number (1, 3, or 5).',
-        dalil: DALIL_DATES_IFTAR
+        dalil: DATES_IFTAR_EVIDENCE
     },
     {
         id: 'iftar_water',
@@ -182,7 +182,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         icon: '💧',
         description: 'Pelepas dahaga yang paling murni dan sehat jika tidak menemukan kurma sama sekali.',
         description_en: 'The purest thirst quencher if dates are completely unavailable.',
-        dalil: DALIL_WATER_IFTAR
+        dalil: WATER_IFTAR_EVIDENCE
     },
     {
         id: 'iftar_milk',
@@ -191,11 +191,11 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         icon: '🥛',
         description: 'Minuman yang mengenyangkan sekaligus menghilangkan dahaga, sering dikonsumsi Nabi SAW.',
         description_en: 'A filling drink that quenches thirst, often consumed by the Prophet SAW.',
-        dalil: DALIL_MILK_HONEY
+        dalil: MILK_HONEY_EVIDENCE
     }
 ];
 
-export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
+export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
     {
         id: 'sahur_tamr',
         name: 'Kurma (Tamr)',
@@ -203,7 +203,7 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
         icon: '🟤',
         description: 'Sebaik-baik makanan sahur. Memberikan serat dan energi lambat (slow-release) agar kenyang lebih lama.',
         description_en: 'The best suhoor food. Provides fiber and slow-release energy to stay full longer.',
-        dalil: DALIL_DATES_SAHUR
+        dalil: DATES_SUHOOR_EVIDENCE
     },
     {
         id: 'sahur_water',
@@ -212,7 +212,7 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
         icon: '💧',
         description: 'Penting untuk hidrasi. Nabi SAW tetap sahur meskipun hanya dengan seteguk air untuk mengejar berkah.',
         description_en: 'Essential for hydration. The Prophet (ﷺ) kept suhoor even with only a sip of water for the sake of blessing.',
-        dalil: DALIL_WATER_SAHUR
+        dalil: WATER_SUHOOR_EVIDENCE
     },
     {
         id: 'sahur_honey',
@@ -221,7 +221,7 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
         icon: '🍯',
         description: 'Sumber penyembuh dan energi instan. Baik dicampur dengan air hangat saat sahur.',
         description_en: 'A source of healing and instant energy. Great when mixed with warm water for suhoor.',
-        dalil: DALIL_MILK_HONEY
+        dalil: MILK_HONEY_EVIDENCE
     },
     {
         id: 'sahur_milk',
@@ -230,7 +230,7 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
         icon: '🥛',
         description: 'Memberikan rasa kenyang lebih lama dan kalsium yang baik untuk energi saat berpuasa.',
         description_en: 'Provides long-lasting satiety and calcium for energy during fasting.',
-        dalil: DALIL_MILK_HONEY
+        dalil: MILK_HONEY_EVIDENCE
     }
 ];
 
@@ -239,7 +239,7 @@ export const SUNNAH_FOODS_SAHUR: SunnahFood[] = [
 // ─────────────────────────────────────────────────────────────
 
 // Tentang rahmat di bulan Ramadhan
-export const DALIL_10_DAYS_MERCY: DalilData = {
+export const FIRST_10_DAYS_MERCY_EVIDENCE: EvidenceData = {
     id: 'dalil_10_days_mercy',
     shortRef: 'HR. Thabrani',
     arabic: 'شَهْرُ رَمَضَانَ أَوَّلُهُ رَحْمَةٌ وَأَوْسَطُهُ مَغْفِرَةٌ وَآخِرُهُ عِتْقٌ مِنَ النَّارِ',
@@ -251,7 +251,7 @@ export const DALIL_10_DAYS_MERCY: DalilData = {
 };
 
 // Tentang ampunan di pertengahan Ramadhan
-export const DALIL_10_DAYS_FORGIVENESS: DalilData = {
+export const MIDDLE_10_DAYS_FORGIVENESS_EVIDENCE: EvidenceData = {
     id: 'dalil_10_days_forgiveness',
     shortRef: 'HR. Ibnu Majah 1644',
     arabic: 'مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ',
@@ -263,7 +263,7 @@ export const DALIL_10_DAYS_FORGIVENESS: DalilData = {
 };
 
 // Tentang pembebasan dari neraka di akhir Ramadhan
-export const DALIL_10_DAYS_FREEDOM: DalilData = {
+export const LAST_10_DAYS_FREEDOM_EVIDENCE: EvidenceData = {
     id: 'dalil_10_days_freedom',
     shortRef: 'HR. Tirmidzi 682',
     arabic: 'إِنَّ لِلَّهِ عُتَقَاءَ فِي كُلِّ يَوْمٍ وَلَيْلَةٍ لِكُلِّ عَبْدٍ مِنْهُمْ دَعْوَةٌ مُسْتَجَابَةٌ',
@@ -288,7 +288,7 @@ export const ODD_NIGHTS = [21, 23, 25, 27, 29] as const;
 export const LAILATUL_QADR_NIGHTS = ODD_NIGHTS;
 
 // Dalil tentang 10 malam terakhir
-export const DALIL_LAST_10_NIGHTS: DalilData = {
+export const LAST_10_NIGHTS_EVIDENCE: EvidenceData = {
     id: 'dalil_last_10_nights',
     shortRef: 'HR. Bukhari No. 2020',
     shortRef_en: 'HR. Bukhari No. 2020',
@@ -301,7 +301,7 @@ export const DALIL_LAST_10_NIGHTS: DalilData = {
 };
 
 // Dalil tentang keutamaan malam ganjil
-export const DALIL_ODD_NIGHTS: DalilData = {
+export const ODD_NIGHTS_EVIDENCE: EvidenceData = {
     id: 'dalil_odd_nights',
     shortRef: 'HR. Bukhari No. 2017',
     shortRef_en: 'HR. Bukhari No. 2017',
@@ -314,7 +314,7 @@ export const DALIL_ODD_NIGHTS: DalilData = {
 };
 
 // Dalil tentang I\'tikaf di 10 malam terakhir
-export const DALIL_ITIKAF_10_NIGHTS: DalilData = {
+export const ITIKAF_10_NIGHTS_EVIDENCE: EvidenceData = {
     id: 'dalil_itikaf_10_nights',
     shortRef: 'HR. Bukhari 2026',
     arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَعْتَكِفُ الْعَشْرَ الأَوَاخِرَ مِنْ رَمَضَانَ حَتَّى تَوَفَّاهُ اللَّهُ',
@@ -325,7 +325,7 @@ export const DALIL_ITIKAF_10_NIGHTS: DalilData = {
     source_en: 'Reported by Bukhari No. 2026, Muslim No. 1172 — narrated by Aisha RA'
 };
 
-export const DOA_LAILATUL_QADR: NiatData = {
+export const LAILATUL_QADR_PRAYER: IntentionData = {
     id: 'doa_lailatul_qadr',
     title: "Doa Malam Lailatul Qadr",
     title_en: "Lailatul Qadr Night Prayer",
@@ -341,7 +341,7 @@ export const DOA_LAILATUL_QADR: NiatData = {
 // AMALAN RAMADHAN (enriched with niat & dalil)
 // ─────────────────────────────────────────────────────────────
 
-export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
+export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
     {
         id: 'puasa_wajib',
         title: 'Puasa Ramadhan',
@@ -349,8 +349,8 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
         description: 'Menahan makan, minum, dan hal yang membatalkan dari fajar hingga maghrib',
         description_en: 'Abstaining from food, drink, and things that invalidate fasting from dawn to dusk',
         icon: '🌙',
-        niat: NIAT_PUASA_RAMADHAN,
-        dalil: DALIL_PUASA,
+        niat: RAMADHAN_FASTING_INTENTION,
+        dalil: FASTING_EVIDENCE,
         tips: [
             'Niatkan setiap malam sebelum tidur',
             'Sahur sebelum imsak untuk keberkahan',
@@ -369,8 +369,8 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
         description: 'Sholat sunnah malam Ramadhan, 8 atau 20 rakaat',
         description_en: 'Sunnah night prayer during Ramadhan, 8 or 20 units (rak\'ahs)',
         icon: '🕌',
-        niat: NIAT_TARAWEH,
-        dalil: DALIL_TARAWEH,
+        niat: TARAWEH_INTENTION,
+        dalil: TARAWEH_EVIDENCE,
         tips: [
             'Bisa 8 rakaat (sunnah Nabi) atau 20 rakaat (sunnah Umar RA)',
             'Lebih utama berjamaah di masjid',
@@ -389,8 +389,8 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
         description: 'Membaca dan mempelajari Al-Quran, target khatam 30 juz',
         description_en: 'Reciting and studying the Quran, aiming to finish all 30 parts (juz)',
         icon: '📖',
-        niat: NIAT_TADARUS,
-        dalil: DALIL_TADARUS,
+        niat: QURAN_RECITATION_INTENTION,
+        dalil: QURAN_RECITATION_EVIDENCE,
         tips: [
             'Target 1 juz per hari = khatam dalam 30 hari',
             'Baca dengan tartil dan pahami maknanya',
@@ -409,7 +409,7 @@ export const RAMADHAN_PRACTICES: RamadhanAmalanData[] = [
         description: 'Sedekah di bulan Ramadhan pahalanya berlipat ganda',
         description_en: 'Giving charity in Ramadhan yields manifold rewards',
         icon: '💝',
-        dalil: DALIL_SEDEKAH_RAMADHAN,
+        dalil: RAMADHAN_CHARITY_EVIDENCE,
         tips: [
             'Nabi SAW adalah orang paling dermawan, terutama di Ramadhan',
             'Bisa berupa makanan buka puasa untuk orang lain',

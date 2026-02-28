@@ -21,7 +21,7 @@
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import DalilBadge from "./DalilBadge";
 import NiatCard from "./NiatCard";
-import { DALIL_FASTING_SCHEDULE, DOA_IFTAR, DOA_IFTAR_2, DOA_IFTAR_3, DOA_SAHUR } from "@/data/ramadhan";
+import { FASTING_SCHEDULE_EVIDENCE, IFTAR_PRAYER, IFTAR_PRAYER_2, IFTAR_PRAYER_3, SUHOOR_PRAYER } from "@/data/ramadhan";
 import { useState, useEffect } from "react";
 import RamadhanCalendar from "./RamadhanCalendar";
 import { useTranslations } from "@/context/LocaleContext";
@@ -99,7 +99,7 @@ export default function RamadhanScheduleCard() {
                     <span className="text-lg">⏰</span>
                     <h3 className="font-bold text-white text-base">{t.scheduleTodayTitle}</h3>
                 </div>
-                <DalilBadge dalil={DALIL_FASTING_SCHEDULE} variant="pill" />
+                <DalilBadge dalil={FASTING_SCHEDULE_EVIDENCE} variant="pill" />
             </div>
 
             {/* Countdown */}
@@ -137,14 +137,14 @@ export default function RamadhanScheduleCard() {
                 <div className="space-y-2">
                     <div>
                         <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.scheduleSuhoorDua}</p>
-                        <NiatCard niat={DOA_SAHUR} variant="pill" />
+                        <NiatCard niat={SUHOOR_PRAYER} variant="pill" />
                     </div>
                     <div>
                         <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.scheduleIftarDua}</p>
                         <div className="space-y-1">
-                            <NiatCard niat={DOA_IFTAR} variant="pill" />
-                            <NiatCard niat={DOA_IFTAR_2} variant="pill" />
-                            <NiatCard niat={DOA_IFTAR_3} variant="pill" />
+                            <NiatCard niat={IFTAR_PRAYER} variant="pill" />
+                            <NiatCard niat={IFTAR_PRAYER_2} variant="pill" />
+                            <NiatCard niat={IFTAR_PRAYER_3} variant="pill" />
                         </div>
                     </div>
                 </div>

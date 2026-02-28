@@ -21,11 +21,11 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import type { DalilData } from "@/data/ramadhan";
+import type { EvidenceData } from "@/data/ramadhan";
 import { useLocale } from "@/context/LocaleContext";
 
 interface DalilBadgeProps {
-    dalil: DalilData;
+    dalil: EvidenceData;
     variant?: "inline" | "pill";
 }
 

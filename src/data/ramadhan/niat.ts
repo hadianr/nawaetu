@@ -1,10 +1,10 @@
-import { NiatData } from './types';
+import { IntentionData } from './types';
 
 // ─────────────────────────────────────────────────────────────
 // NIAT DATA
 // ─────────────────────────────────────────────────────────────
 
-export const NIAT_PUASA_RAMADHAN: NiatData = {
+export const RAMADHAN_FASTING_INTENTION: IntentionData = {
     id: 'niat_puasa_ramadhan',
     title: 'Niat Puasa Ramadhan',
     title_en: 'Intention for Ramadhan Fasting',
@@ -16,7 +16,7 @@ export const NIAT_PUASA_RAMADHAN: NiatData = {
     source_en: 'Ramadhan fasting intention must be made at night before fajr (HR. Abu Dawud No. 2454)',
 };
 
-export const NIAT_TARAWEH: NiatData = {
+export const TARAWEH_INTENTION: IntentionData = {
     id: 'niat_taraweh',
     title: 'Niat Sholat Taraweh',
     title_en: 'Intention for Tarawih Prayer',
@@ -28,7 +28,7 @@ export const NIAT_TARAWEH: NiatData = {
     source_en: 'Tarawih prayer is a confirmed sunnah during Ramadhan',
 };
 
-export const NIAT_TADARUS: NiatData = {
+export const QURAN_RECITATION_INTENTION: IntentionData = {
     id: 'niat_tadarus',
     title: 'Niat Tadarus Al-Quran',
     title_en: 'Intention for Quran Recitation',
@@ -40,7 +40,7 @@ export const NIAT_TADARUS: NiatData = {
     source_en: 'Reciting the Quran is a highly recommended act of worship, especially during Ramadhan',
 };
 
-export const NIAT_ITIKAF: NiatData = {
+export const ITIKAF_INTENTION: IntentionData = {
     id: 'niat_itikaf',
     title: "Niat I'tikaf",
     title_en: "Intention for I'tikaf",
@@ -56,7 +56,7 @@ export const NIAT_ITIKAF: NiatData = {
 // DOA BUKA PUASA — Multiple authentic options
 // ─────────────────────────────────────────────────────────────
 
-export const DOA_IFTAR: NiatData = {
+export const IFTAR_PRAYER: IntentionData = {
     id: 'doa_iftar',
     title: 'Doa Berbuka Puasa (Pilihan 1)',
     title_en: 'Breaking Fast Prayer (Option 1)',
@@ -68,7 +68,7 @@ export const DOA_IFTAR: NiatData = {
     source_en: 'HR. Abu Dawud No. 2357',
 };
 
-export const DOA_IFTAR_2: NiatData = {
+export const IFTAR_PRAYER_2: IntentionData = {
     id: 'doa_iftar_2',
     title: 'Doa Berbuka Puasa (Pilihan 2)',
     title_en: 'Breaking Fast Prayer (Option 2 - Recommended)',
@@ -80,7 +80,7 @@ export const DOA_IFTAR_2: NiatData = {
     source_en: 'HR. Abu Dawud No. 2357, Ad-Daruquthni 2/185 — prayer recited by Prophet Muhammad SAW (Sahih — Most Recommended)',
 };
 
-export const DOA_IFTAR_3: NiatData = {
+export const IFTAR_PRAYER_3: IntentionData = {
     id: 'doa_iftar_3',
     title: 'Doa Berbuka Puasa (Pilihan 3)',
     title_en: 'Breaking Fast Prayer (Option 3)',
@@ -92,7 +92,7 @@ export const DOA_IFTAR_3: NiatData = {
     source_en: 'HR. Ibnu Majah No. 1753 — accepted breaking fast prayer',
 };
 
-export const DOA_SAHUR: NiatData = {
+export const SUHOOR_PRAYER: IntentionData = {
     id: 'doa_sahur',
     title: 'Doa Makan Sahur',
     title_en: 'Suhoor Meal Prayer',

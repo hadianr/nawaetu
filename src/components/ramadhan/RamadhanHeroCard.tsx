@@ -20,7 +20,7 @@
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan";
-import { NIAT_PUASA_RAMADHAN, DALIL_PUASA, DALIL_10_DAYS_MERCY, DALIL_10_DAYS_FORGIVENESS, DALIL_10_DAYS_FREEDOM } from "@/data/ramadhan";
+import { RAMADHAN_FASTING_INTENTION, FASTING_EVIDENCE, FIRST_10_DAYS_MERCY_EVIDENCE, MIDDLE_10_DAYS_FORGIVENESS_EVIDENCE, LAST_10_DAYS_FREEDOM_EVIDENCE } from "@/data/ramadhan";
 import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
@@ -47,10 +47,10 @@ export default function RamadhanHeroCard() {
 
     // Determine which period and its dalil
     const periodData = ramadhanDay <= 10
-        ? { text: t.ramadhanPeriod1, dalil: DALIL_10_DAYS_MERCY }
+        ? { text: t.ramadhanPeriod1, dalil: FIRST_10_DAYS_MERCY_EVIDENCE }
         : ramadhanDay <= 20
-            ? { text: t.ramadhanPeriod2, dalil: DALIL_10_DAYS_FORGIVENESS }
-            : { text: t.ramadhanPeriod3, dalil: DALIL_10_DAYS_FREEDOM };
+            ? { text: t.ramadhanPeriod2, dalil: MIDDLE_10_DAYS_FORGIVENESS_EVIDENCE }
+            : { text: t.ramadhanPeriod3, dalil: LAST_10_DAYS_FREEDOM_EVIDENCE };
 
     return (
         <div
@@ -169,7 +169,7 @@ export default function RamadhanHeroCard() {
                             {dayName}, {dateStr}
                         </p>
                     </div>
-                    <DalilBadge dalil={DALIL_PUASA} variant="pill" />
+                    <DalilBadge dalil={FASTING_EVIDENCE} variant="pill" />
                 </div>
 
                 {/* Progress bar */}
@@ -208,7 +208,7 @@ export default function RamadhanHeroCard() {
                 </div>
 
                 {/* Niat Puasa Button */}
-                <NiatCard niat={NIAT_PUASA_RAMADHAN} variant="pill" />
+                <NiatCard niat={RAMADHAN_FASTING_INTENTION} variant="pill" />
             </div>
         </div>
     );
