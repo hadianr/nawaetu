@@ -20,8 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, checkConnection } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getServerSession } from "@/lib/auth";
 
 /**
  * POST /api/intentions/daily
@@ -49,7 +48,7 @@ export async function POST(req: NextRequest) {
         const { intention_text, intention_date, is_private = true, user_token: providedToken } = body;
 
         // Try both session and token
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         const user_token = session?.user?.id || providedToken;
 
         // Token-based auth (FCM token or anonymous ID)

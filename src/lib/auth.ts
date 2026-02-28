@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, getServerSession as nextAuthGetServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db"; // Assuming this is where db is exported
@@ -63,3 +63,8 @@ export const authOptions: NextAuthOptions = {
     },
     secret: process.env.NEXTAUTH_SECRET,
 };
+
+/**
+ * Helper to get user session in Server Components and API Routes
+ */
+export const getServerSession = () => nextAuthGetServerSession(authOptions);

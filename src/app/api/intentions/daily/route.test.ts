@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
-// Mock dependencies BEFORE importing the route
+// Define mockChain and attach it to global so hoisted mocks can access it
 const mockChain = {
   from: vi.fn().mockReturnThis(),
   where: vi.fn().mockReturnThis(),
@@ -29,37 +29,48 @@ const mockChain = {
   set: vi.fn().mockReturnThis(),
   returning: vi.fn(),
 };
+(global as any).mockChain = mockChain;
 
 // Make chain thenable for await db.update()...
 (mockChain as any).then = (resolve: any) => resolve([]);
 
 vi.mock('@/db', () => ({
   db: {
-    select: vi.fn(() => mockChain),
-    insert: vi.fn(() => mockChain),
-    update: vi.fn(() => mockChain),
-    from: vi.fn(() => mockChain),
+    select: vi.fn(() => (global as any).mockChain),
+    insert: vi.fn(() => (global as any).mockChain),
+    update: vi.fn(() => (global as any).mockChain),
+    from: vi.fn(() => (global as any).mockChain),
   },
+  checkConnection: vi.fn().mockResolvedValue({ success: true }),
 }));
 
 vi.mock('drizzle-orm', () => ({
   eq: vi.fn(),
   and: vi.fn(),
   sql: vi.fn(),
+  gte: vi.fn(),
+  lt: vi.fn(),
 }));
 
-// Override the global schema mock from setup.ts to include needed tables
+vi.mock('@/lib/auth', () => ({
+  authOptions: {},
+  getServerSession: vi.fn().mockResolvedValue(null),
+}));
+
 vi.mock('@/db/schema', () => ({
   pushSubscriptions: {},
   users: {},
   intentions: {},
+  accounts: {},
+  sessions: {},
+  verificationTokens: {},
 }));
 
-// Import AFTER mocks
+
 import { POST } from './route';
 
 describe('POST /api/intentions/daily', () => {
-  const originalEnv = process.env.NODE_ENV;
+  // Mock environment variables using vi.stubEnv
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -79,7 +90,7 @@ describe('POST /api/intentions/daily', () => {
   });
 
   afterEach(() => {
-    process.env.NODE_ENV = originalEnv;
+    vi.unstubAllEnvs();
   });
 
   it('should correctly calculate streak with optimized Set logic', async () => {
@@ -136,7 +147,7 @@ describe('POST /api/intentions/daily', () => {
   });
 
   it('should NOT expose error details in development environment', async () => {
-    process.env.NODE_ENV = 'development';
+    vi.stubEnv('NODE_ENV', 'development');
     mockChain.limit.mockRejectedValueOnce(new Error('Database connection failed: confidential info'));
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
@@ -158,14 +169,14 @@ describe('POST /api/intentions/daily', () => {
   });
 
   it('should NOT expose error details in production environment', async () => {
-    process.env.NODE_ENV = 'production';
+    vi.stubEnv('NODE_ENV', 'production');
     mockChain.limit.mockRejectedValueOnce(new Error('Database connection failed: confidential info'));
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
       body: JSON.stringify({
         user_token: 'test-token',
-        niat_text: 'Test intention',
+        intention_text: 'Test intention',
       }),
     });
 
