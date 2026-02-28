@@ -222,7 +222,7 @@ export async function POST(req: NextRequest) {
                 streak_updated: !existingIntention,
                 current_streak: streakData.currentStreak,
                 longest_streak: newLongestStreak,
-                intention_points_earned: existingIntention ? 0 : 10,
+                intention_points_earned: existingIntention ? 0 : (todayStr === actualTodayStr ? 10 : 5),
                 auth_type: session ? 'session' : (providedToken ? 'token' : 'unknown'),
             },
         });

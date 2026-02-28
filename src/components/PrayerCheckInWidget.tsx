@@ -61,6 +61,10 @@ export default function PrayerCheckInWidget() {
     const [sheet, setSheet] = useState<SheetState>(null);
     const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
 
+    const todayStr = new Date().toISOString().split("T")[0];
+    const isBackdated = selectedDate !== todayStr;
+    const getXPReward = (baseXP: number) => isBackdated ? Math.floor(baseXP * 0.5) : baseXP;
+
     useEffect(() => {
         setMounted(true);
         const storage = getStorageService();
@@ -157,23 +161,24 @@ export default function PrayerCheckInWidget() {
     };
 
     const doComplete = (missionId: string, xpReward: number) => {
+        const finalXp = getXPReward(xpReward);
+
         const completedTodayCount = completedMissions.filter(
             (m) => m.completedAt.split("T")[0] === selectedDate
         ).length;
 
-        const todayStr = new Date().toISOString().split("T")[0];
         // Only trigger generic streak logic if it's really today's first activity
-        if (completedTodayCount === 0 && selectedDate === todayStr) {
+        if (completedTodayCount === 0 && !isBackdated) {
             updateStreak();
         }
 
-        addXP(xpReward);
+        addXP(finalXp);
         window.dispatchEvent(new CustomEvent("xp_updated"));
-        completeMission(missionId, xpReward, selectedDate);
+        completeMission(missionId, finalXp, selectedDate);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
-            description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{xp} XP)").replace("{xp}", String(xpReward)),
+            description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{xp} XP)").replace("{xp}", String(finalXp)),
             duration: 2500,
             icon: "🎉",
         });
@@ -356,7 +361,7 @@ export default function PrayerCheckInWidget() {
                                             ? isDaylight ? "text-orange-600" : "text-amber-400/70"
                                             : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
                                     )}>
-                                        +{gender !== "female" ? "75" : "25"} XP
+                                        +{getXPReward(gender !== "female" ? 75 : 25)} XP
                                     </span>
                                 )}
                                 {!done && isUpcoming && !isLocked && (
@@ -440,7 +445,7 @@ export default function PrayerCheckInWidget() {
                             >
                                 <span className="text-2xl group-active:scale-110 transition-transform">🏠</span>
                                 <span className={cn("text-xs font-black uppercase tracking-wide", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInOptionSolo}</span>
-                                <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+25 XP</span>
+                                <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+{getXPReward(25)} XP</span>
                             </button>
 
                             {/* Berjamaah */}
@@ -459,7 +464,7 @@ export default function PrayerCheckInWidget() {
                                 <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                 <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
                                 <span className="text-xs font-black uppercase tracking-wide text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
-                                <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+75 XP</span>
+                                <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+{getXPReward(75)} XP</span>
                             </button>
                         </div>
 

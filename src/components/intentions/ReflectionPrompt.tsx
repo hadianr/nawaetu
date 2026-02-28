@@ -30,6 +30,7 @@ interface ReflectionPromptProps {
     onSkip?: () => void;
     initialValue?: string;
     initialRating?: number;
+    isBackdated?: boolean;
 }
 
 export default function ReflectionPrompt({
@@ -39,6 +40,7 @@ export default function ReflectionPrompt({
     onSkip,
     initialValue = "",
     initialRating = 0,
+    isBackdated = false,
 }: ReflectionPromptProps) {
     const { locale, t } = useLocale();
     const { currentTheme } = useTheme();
@@ -229,7 +231,9 @@ export default function ReflectionPrompt({
                                 disabled={rating === 0 || isSubmitting}
                                 className={`flex-[1.5] py-3.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold shadow-lg transition-all transform active:scale-[0.98] ${isDaylight ? "bg-slate-900 hover:bg-slate-800" : "bg-[rgb(var(--color-primary))] hover:opacity-90"}`}
                             >
-                                {isSubmitting ? t.intention_saving_reflection : t.intention_complete_journal_btn}
+                                {isSubmitting
+                                    ? t.intention_saving_reflection
+                                    : t.intention_complete_muhasabah_btn.replace('{xp}', isBackdated ? '25' : '50')}
                             </button>
                         </div>
                     </div>

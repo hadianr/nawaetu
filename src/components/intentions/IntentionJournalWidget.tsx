@@ -35,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 import { useTheme } from "@/context/ThemeContext";
+import { addXP } from "@/lib/leveling";
 
 interface IntentionJournalWidgetProps {
     className?: string;
@@ -68,6 +69,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
     // Add selectedDate state
     const [selectedDate, setSelectedDate] = useState<string>(getTodayDateString());
+
+    const isBackdated = selectedDate !== getTodayDateString();
 
     // Default structure to avoid layout/hydration shifts when caching kicks in
     const [todayData, setTodayData] = useState<any>(null);
@@ -159,6 +162,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             const data = await response.json();
 
             if (data.success) {
+                const todayStr = getTodayDateString();
+                const actualTodayStr = selectedDate; // This is the date the user selected
+                const existingIntention = todayData?.has_intention; // Check if an intention already existed for this date
+
                 const finalData = {
                     has_intention: true,
                     intention: { id: data.data.id, intention_text: data.data.intention_text, intention_date: data.data.intention_date },
@@ -199,6 +206,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         toast.success(locale === 'id' ? 'Refleksi berhasil disimpan' : 'Reflection saved successfully');
 
         try {
+            const todayStr = getTodayDateString();
+            const isBackdated = selectedDate !== todayStr;
+            const xpAmount = isBackdated ? 25 : 50;
+
             const response = await fetch("/api/intentions/reflect", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -219,6 +230,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 };
 
                 setTodayData(finalData);
+
+                // Add XP locally
+                addXP(xpAmount);
+                window.dispatchEvent(new CustomEvent("xp_updated"));
 
                 // Update Cache
                 const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
@@ -398,6 +413,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         currentStreak={todayData?.streak || 0}
                         onClose={() => setShowIntentionPrompt(false)}
                         initialValue={todayData?.intention?.intention_text}
+                        isBackdated={isBackdated}
                     />
                 )}
                 {showReflectionPrompt && todayData?.intention && (
@@ -408,6 +424,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         onSkip={() => setShowReflectionPrompt(false)}
                         initialValue={todayData?.reflection?.text}
                         initialRating={todayData?.reflection?.rating}
+                        isBackdated={isBackdated}
                     />
                 )}
             </AnimatePresence>
