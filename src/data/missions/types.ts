@@ -24,6 +24,10 @@ export interface ValidationConfig {
     allowedDays?: number[];
     afterPrayer?: string;
     timeWindow?: { start: number; end: number };
+    visibility?: {
+        hijriMonth?: string;
+        hijriDay?: number;
+    };
 }
 
 export type IslamicRuling = 'obligatory' | 'sunnah' | 'permissible' | 'disliked' | 'forbidden';

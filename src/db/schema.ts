@@ -204,6 +204,7 @@ export const userCompletedMissions = pgTable("user_completed_missions", {
     missionId: text("mission_id").notNull(),
     xpEarned: integer("xp_earned").default(0),
     completedAt: timestamp("completed_at").defaultNow(),
+    completedDate: date("completed_date"), // YYYY-MM-DD
 
     // Metadata for sync validity
     createdAt: timestamp("created_at").defaultNow(),
@@ -211,7 +212,7 @@ export const userCompletedMissions = pgTable("user_completed_missions", {
     return {
         userIdIdx: index("ucm_user_id_idx").on(table.userId),
         missionIdIdx: index("ucm_mission_id_idx").on(table.missionId),
-        uniqueUserMission: uniqueIndex("ucm_user_mission_unique").on(table.userId, table.missionId),
+        uniqueUserMission: uniqueIndex("ucm_user_mission_unique").on(table.userId, table.missionId, table.completedDate),
     };
 });
 

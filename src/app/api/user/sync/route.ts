@@ -194,10 +194,13 @@ async function handleMissionSync(
         const data = entry.data;
 
         if (action === 'create' || action === 'update') {
-            // Check if mission already completed
+            const completedAt = new Date(data.completedAt);
+            const completedDate = completedAt.toISOString().split('T')[0];
+
+            // Check if mission already completed on that date
             const existing = await db.query.userCompletedMissions.findFirst({
                 where: (ucm, { eq, and }) =>
-                    and(eq(ucm.userId, userId), eq(ucm.missionId, data.id)),
+                    and(eq(ucm.userId, userId), eq(ucm.missionId, data.id), eq(ucm.completedDate, completedDate)),
             });
 
             if (!existing) {
@@ -207,7 +210,8 @@ async function handleMissionSync(
                         userId,
                         missionId: data.id,
                         xpEarned: data.xpEarned,
-                        completedAt: new Date(data.completedAt),
+                        completedAt: completedAt,
+                        completedDate: completedDate,
                     })
                     .returning({ id: userCompletedMissions.id });
                 return { id: entry.id, cloudId: result[0]?.id };
@@ -532,12 +536,16 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
 
         // Sync Missions (Legacy)
         if (Array.isArray(localMissions) && localMissions.length > 0) {
-            const missionValues = localMissions.map((m: any) => ({
-                userId,
-                missionId: m.id,
-                xpEarned: m.xpEarned,
-                completedAt: new Date(m.completedAt),
-            }));
+            const missionValues = localMissions.map((m: any) => {
+                const completedAt = new Date(m.completedAt);
+                return {
+                    userId,
+                    missionId: m.id,
+                    xpEarned: m.xpEarned,
+                    completedAt: completedAt,
+                    completedDate: completedAt.toISOString().split('T')[0],
+                };
+            });
 
             await db.insert(userCompletedMissions)
                 .values(missionValues)

@@ -43,13 +43,23 @@ const PRAYERS = [
 ] as const;
 
 const SUNNAH_PRAYERS = [
-    { id: "sunnah_qobliyah_fajr", icon: "✨", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title" },
-    { id: "sunnah_dhuha", icon: "☀️", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title" },
-    { id: "sunnah_qobliyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title" },
-    { id: "sunnah_ba_diyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title" },
-    { id: "sunnah_ba_diyah_maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title" },
-    { id: "sunnah_ba_diyah_isha", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title" },
-    { id: "sunnah_witir", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title" },
+    { id: "sunnah_qobliyah_fajr", icon: "✨", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", xp: 30 },
+    { id: "sunnah_dhuha", icon: "☀️", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", xp: 50 },
+    { id: "sunnah_qobliyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", xp: 25 },
+    { id: "sunnah_ba_diyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", xp: 25 },
+    { id: "sunnah_ba_diyah_maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", xp: 25 },
+    { id: "sunnah_ba_diyah_isha", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", xp: 25 },
+    { id: "sunnah_witir", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", xp: 40 },
+    { id: "sunnah_tahajjud", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", xp: 50 },
+    { id: "sunnah_istikharah", icon: "❓", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", xp: 30 },
+    { id: "sunnah_hajat", icon: "🤲", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", xp: 30 },
+    { id: "sunnah_taubat", icon: "📿", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", xp: 30 },
+    // Seasonal
+    { id: "sunnah_tarawih", icon: "🕌", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", xp: 50, visibility: { hijriMonth: 'Ramadan' } },
+    { id: "sunnah_eid_fitri", icon: "🌙", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", xp: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
+    { id: "sunnah_eid_adha", icon: "🕋", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", xp: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
+    { id: "sunnah_gerhana", icon: "🌑", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", xp: 50 },
+    { id: "sunnah_istisqa", icon: "🌧️", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", xp: 50 },
 ] as const;
 
 // Bottom-sheet state for male jamaah option
@@ -116,7 +126,12 @@ export default function PrayerCheckInWidget() {
     const completedCount = PRAYERS.filter((p) => isPrayerDone(p.suffix)).length;
 
     // Determine current/next active prayer window
-    const getTimeStatus = (prayerKey: string, endKey: string | null) => {
+    const getTimeStatus = (prayerKey: string | null, endKey: string | null) => {
+        // Flexible/Special Prayers (Istikharah, Hajat, Taubat)
+        if (!prayerKey) {
+            return { isActive: true, isUpcoming: false, isLate: false, isFuture: false };
+        }
+
         // If the user selected a past date, all prayers are open (late) but not "future" anymore
         const todayStr = new Date().toISOString().split("T")[0];
         if (selectedDate < todayStr) {
@@ -460,70 +475,83 @@ export default function PrayerCheckInWidget() {
 
                     {showSunnah && (
                         <div className="grid grid-cols-3 xs:grid-cols-3 sm:grid-cols-7 gap-2 mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                            {SUNNAH_PRAYERS.map((prayer) => {
-                                const done = completedMissions.some(m => m.id === prayer.id && m.completedAt.split("T")[0] === selectedDate);
-                                const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
-                                const isLocked = isFuture && !done;
+                            {/* Sunnah Prayers Section */}
+                            {(() => {
+                                const activeSunnah = SUNNAH_PRAYERS.filter(p => {
+                                    if (!(p as any).visibility) return true;
+                                    const vis = (p as any).visibility;
+                                    const hMonth = prayerData?.hijriMonth;
+                                    const hDay = prayerData?.hijriDay;
+                                    if (vis.hijriMonth && vis.hijriMonth !== hMonth) return false;
+                                    if (vis.hijriDay && vis.hijriDay !== hDay) return false;
+                                    return true;
+                                });
 
-                                return (
-                                    <button
-                                        key={prayer.id}
-                                        onClick={() => handlePrayerTap(prayer)}
-                                        disabled={isLocked}
-                                        className={cn(
-                                            "flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
-                                            done
-                                                ? isDaylight
-                                                    ? "bg-emerald-50/50 border-emerald-100 opacity-80"
-                                                    : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 opacity-80"
-                                                : isLocked
+                                return activeSunnah.map((prayer) => {
+                                    const done = completedMissions.some(m => m.id === prayer.id && m.completedAt.split("T")[0] === selectedDate);
+                                    const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
+                                    const isLocked = isFuture && !done;
+
+                                    return (
+                                        <button
+                                            key={prayer.id}
+                                            onClick={() => handlePrayerTap(prayer)}
+                                            disabled={isLocked}
+                                            className={cn(
+                                                "flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
+                                                done
                                                     ? isDaylight
-                                                        ? "bg-slate-50/50 border-slate-50 opacity-30 grayscale"
-                                                        : "bg-white/[0.01] border-white/[0.05] opacity-30 grayscale pointer-events-none"
-                                                    : isActive
+                                                        ? "bg-emerald-50/50 border-emerald-100 opacity-80"
+                                                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 opacity-80"
+                                                    : isLocked
                                                         ? isDaylight
-                                                            ? "bg-orange-50 border-orange-200 shadow-sm active:scale-95"
-                                                            : "bg-amber-500/10 border-amber-500/20 shadow-sm active:scale-95"
-                                                        : isDaylight
-                                                            ? "bg-white border-slate-100 active:scale-95"
-                                                            : "bg-white/[0.02] border-white/5 active:scale-95"
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            "w-6 h-6 rounded-full flex items-center justify-center text-[10px]",
-                                            done
-                                                ? isDaylight ? "bg-emerald-500 text-white" : "bg-[rgb(var(--color-primary))] text-white"
-                                                : isLate
-                                                    ? isDaylight ? "bg-orange-100 text-orange-600" : "bg-amber-500/20 text-amber-400"
-                                                    : isDaylight ? "bg-slate-100 text-slate-400" : "bg-white/5 text-white/40"
-                                        )}>
-                                            {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : prayer.icon)}
-                                        </div>
-                                        <span className={cn(
-                                            "text-[6.5px] font-black uppercase text-center px-1 leading-[1.1] min-h-[16px] flex items-center justify-center",
-                                            done
-                                                ? isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
-                                                : isLate
-                                                    ? isDaylight ? "text-orange-700" : "text-amber-400/80"
-                                                    : isDaylight ? "text-slate-400" : "text-white/40"
-                                        )}>
-                                            {(t as any)[prayer.i18n] || prayer.i18n.split("_").pop()}
-                                        </span>
-
-                                        {/* Sunnah XP Preview */}
-                                        {!done && !isLocked && (isActive || isLate) && (
-                                            <span className={cn(
-                                                "text-[6px] font-black leading-none mt-0.5",
-                                                isLate
-                                                    ? isDaylight ? "text-orange-600" : "text-amber-400/60"
-                                                    : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
+                                                            ? "bg-slate-50/50 border-slate-50 opacity-30 grayscale"
+                                                            : "bg-white/[0.01] border-white/[0.05] opacity-30 grayscale pointer-events-none"
+                                                        : isActive
+                                                            ? isDaylight
+                                                                ? "bg-orange-50 border-orange-200 shadow-sm active:scale-95"
+                                                                : "bg-amber-500/10 border-amber-500/20 shadow-sm active:scale-95"
+                                                            : isDaylight
+                                                                ? "bg-white border-slate-100 active:scale-95"
+                                                                : "bg-white/[0.02] border-white/5 active:scale-95"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-6 h-6 rounded-full flex items-center justify-center text-xl",
+                                                done
+                                                    ? isDaylight ? "bg-emerald-500 text-white" : "bg-[rgb(var(--color-primary))] text-white"
+                                                    : isLate
+                                                        ? isDaylight ? "bg-orange-100 text-orange-600" : "bg-amber-500/20 text-amber-400"
+                                                        : isDaylight ? "bg-slate-100 text-slate-400" : "bg-white/5 text-white/40"
                                             )}>
-                                                +{getXPReward(prayer.id === 'sunnah_dhuha' ? 50 : 25)} XP
+                                                {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : prayer.icon)}
+                                            </div>
+                                            <span className={cn(
+                                                "text-[6.5px] font-black uppercase text-center px-1 leading-[1.1] min-h-[16px] flex items-center justify-center",
+                                                done
+                                                    ? isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                                                    : isLate
+                                                        ? isDaylight ? "text-orange-700" : "text-amber-400/80"
+                                                        : isDaylight ? "text-slate-400" : "text-white/40"
+                                            )}>
+                                                {(t as any)[prayer.i18n] || prayer.i18n.split("_").pop()}
                                             </span>
-                                        )}
-                                    </button>
-                                );
-                            })}
+
+                                            {/* Sunnah XP Preview */}
+                                            {!done && !isLocked && (isActive || isLate) && (
+                                                <span className={cn(
+                                                    "text-[6px] font-black leading-none mt-0.5",
+                                                    isLate
+                                                        ? isDaylight ? "text-orange-600" : "text-amber-400/60"
+                                                        : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
+                                                )}>
+                                                    +{getXPReward((prayer as any).xp || 25)} XP
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                });
+                            })()}
                         </div>
                     )}
                 </div>
