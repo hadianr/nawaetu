@@ -48,11 +48,10 @@ export function getCurrentTimeContext(): TimeContext {
         currentPeriod = "malam";
     }
 
-    // Approximate prayer times (these would ideally come from actual prayer API)
-    // Using Jakarta times as example
+    // Default prayer times (used as fallback or base for calculation)
     const prayerTimes = {
         Subuh: { hour: 4, minute: 30 },
-        Dhuha: { hour: 6, minute: 30 }, // After sunrise
+        Dhuha: { hour: 6, minute: 30 },
         Dzuhur: { hour: 12, minute: 0 },
         Ashar: { hour: 15, minute: 15 },
         Maghrib: { hour: 18, minute: 0 },

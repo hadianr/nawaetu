@@ -69,12 +69,11 @@ export function useRamadhanCalendar() {
             const cachedLocation = storage.getOptional<{ lat: number; lng: number }>(STORAGE_KEYS.USER_LOCATION);
             if (!cachedLocation || !cachedLocation.lat || !cachedLocation.lng) {
                 // If no location, we can't fetch reliable calendar.
-                // Fallback to Jakarta for now or throw error.
-                // Let's fallback to Jakarta (Monas) to show something.
-                // lat: -6.175392, lng: 106.827153
+                // Onboarding ensures location existence.
+                return;
             }
-            const lat = cachedLocation?.lat || -6.175392;
-            const lng = cachedLocation?.lng || 106.827153;
+            const lat = cachedLocation.lat;
+            const lng = cachedLocation.lng;
 
             // Get Settings
             const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD);

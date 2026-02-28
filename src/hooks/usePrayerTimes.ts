@@ -333,7 +333,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             if (!isDefault) {
                 // IMPORTANT FIX: We MUST cache the location even if it's just coordinates.
                 // If Nominatim/BigDataCloud fail on mobile, falling back to coordinates is fine,
-                // but if we refuse to cache them, the app will reset to Jakarta on every refresh!
+                // but if we refuse to cache them, the app will reset to a raw coordinate state.
                 const userLocationData = {
                     lat,
                     lng,
@@ -406,8 +406,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                     return;
                 }
 
-                // LAST RESORT: Fallback to Jakarta (Monas)
-                fetchPrayerTimes(-6.175392, 106.827153, "Jakarta (Default)", true);
+                // NO FALLBACK: Location is mandatory.
+                // If it fails, we show an error instead of using a default.
+                setError("Location mandatory. Please enable GPS.");
             },
             { timeout: 15000, maximumAge: 0, enableHighAccuracy: true }
         );
@@ -430,30 +431,28 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             } else {
                 setLoading(false); // Data is fresh, no need to fetch
             }
-        } else {
-            if (cachedLocation) {
-                storage.remove(STORAGE_KEYS.USER_LOCATION as any);
-            }
-
-            // Default to Jakarta (Monas) on initial load
-            fetchPrayerTimes(-6.175392, 106.827153, "Jakarta (Default)", true);
         }
 
         // 3. Listen for global updates
-        const handleUpdate = () => syncFromCache();
+        const handleUpdate = () => {
+            syncFromCache();
 
-        // Listen for calculation method changes
-        const handleMethodChange = () => {
+            // Additional logic: If after sync we STILL don't have data,
+            // check if there's a fresh location in storage and fetch it.
+            // This handles the transition from Onboarding to Home.
             const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
             if (isFreshLocation(cachedLocation)) {
-                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
-                return;
-            }
+                const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
+                const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
 
-            if (cachedLocation) {
-                storage.remove(STORAGE_KEYS.USER_LOCATION as any);
+                if (!cachedData || cachedData.date !== today) {
+                    fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+                }
             }
         };
+
+        const handleLocationUpdate = () => handleUpdate();
+        const handleMethodChange = () => handleUpdate();
 
         // Listen for Hijri adjustment changes
         const handleAdjustmentChange = () => {
@@ -467,11 +466,13 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
         };
 
+        window.addEventListener('location_updated', handleLocationUpdate);
         window.addEventListener('prayer_data_updated', handleUpdate);
         window.addEventListener('calculation_method_changed', handleMethodChange);
         window.addEventListener('hijri_adjustment_changed', handleAdjustmentChange);
 
         return () => {
+            window.removeEventListener('location_updated', handleLocationUpdate);
             window.removeEventListener('prayer_data_updated', handleUpdate);
             window.removeEventListener('calculation_method_changed', handleMethodChange);
             window.removeEventListener('hijri_adjustment_changed', handleAdjustmentChange);

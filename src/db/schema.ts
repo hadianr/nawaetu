@@ -275,7 +275,7 @@ export const pushSubscriptions = pgTable("push_subscription", {
     longitude: real("longitude"),
     city: text("city"),
 
-    // Timezone for accurate prayer time scheduling (e.g., "Asia/Jakarta")
+    // Timezone for accurate prayer time scheduling (e.g., "Asia/Makassar", "UTC")
     timezone: text("timezone"),
 
     // Track last sent notification for each prayer to prevent duplicates (JSON: { fajr: "2024-02-11", dhuhr: "2024-02-11" })

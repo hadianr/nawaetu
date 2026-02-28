@@ -22,10 +22,11 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, X, Moon } from "lucide-react";
+import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, Moon, MapPin, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession, signOut } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
+import { toast } from "sonner";
 
 import { useLocale } from "@/context/LocaleContext";
 
@@ -41,7 +42,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const { t } = useLocale();
     // Removed internal visibility state - controlled by parent
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-archetype'>('intro');
+    const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-location' | 'setup-archetype'>('intro');
 
     // Force logout on mount if an orphaned session is detected
     // This happens primarily on iOS PWAs where Safari retains the login cookie
@@ -115,6 +116,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     // Profile State
     const [name, setName] = useState("");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
+    const [isLocationLoading, setIsLocationLoading] = useState(false);
+    const [isLocationSet, setIsLocationSet] = useState(false);
     const [archetype, setArchetype] = useState<'beginner' | 'striver' | 'dedicated' | null>(null);
     const storage = getStorageService();
 
@@ -128,7 +131,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         } else if (step === 'setup-name') {
             if (name.trim()) setStep('setup-gender');
         } else if (step === 'setup-gender') {
-            if (gender) setStep('setup-archetype');
+            if (gender) setStep('setup-location');
+        } else if (step === 'setup-location') {
+            if (isLocationSet) setStep('setup-archetype');
         } else if (step === 'setup-archetype') {
             if (archetype) handleFinish();
         }
@@ -165,6 +170,60 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         }
     };
 
+    const handleDetectLocation = () => {
+        setIsLocationLoading(true);
+        if (!navigator.geolocation) {
+            toast.error((t as any).onboardingLocationError);
+            setIsLocationLoading(false);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    let locationName = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                    try {
+                        const proxyResponse = await fetch(`/api/location/reverse?lat=${latitude}&lng=${longitude}`);
+                        if (proxyResponse.ok) {
+                            const proxyData = await proxyResponse.json();
+                            if (proxyData.success && proxyData.name) {
+                                locationName = proxyData.name;
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Reverse geocoding failed', e);
+                    }
+
+                    storage.set(STORAGE_KEYS.USER_LOCATION as any, {
+                        lat: latitude,
+                        lng: longitude,
+                        name: locationName,
+                        timestamp: Date.now()
+                    });
+
+                    storage.remove(STORAGE_KEYS.PRAYER_DATA as any);
+
+                    // Notify the app about the new location
+                    window.dispatchEvent(new CustomEvent('location_updated'));
+                    window.dispatchEvent(new CustomEvent('prayer_data_updated'));
+
+                    setIsLocationSet(true);
+                    toast.success((t as any).onboardingLocationSuccess);
+                    setTimeout(() => setStep('setup-archetype'), 1000);
+                } catch (error) {
+                    toast.error((t as any).onboardingLocationError);
+                } finally {
+                    setIsLocationLoading(false);
+                }
+            },
+            (error) => {
+                toast.error((t as any).onboardingLocationError);
+                setIsLocationLoading(false);
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    };
 
     const renderContent = () => {
         if (step === 'intro') {
@@ -284,6 +343,55 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             );
         }
 
+        if (step === 'setup-location') {
+            return (
+                <div
+                    key="setup-location"
+                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
+                    <div className="relative z-10 w-full space-y-6 flex flex-col items-center">
+                        <div className={cn(
+                            "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-lg transition-colors p-4",
+                            isLocationSet ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] text-white shadow-[rgb(var(--color-primary))]/20"
+                        )}>
+                            {isLocationSet ? <Check className="w-8 h-8" /> : <MapPin className="w-8 h-8" />}
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingLocationTitle}</h2>
+                            <p className="text-sm text-white/70 mt-2 leading-relaxed">{(t as any).onboardingLocationDesc}</p>
+                        </div>
+                        <Button
+                            onClick={handleDetectLocation}
+                            disabled={isLocationLoading || isLocationSet}
+                            variant="secondary"
+                            className={cn(
+                                "w-full py-6 text-base font-bold rounded-xl transition-all flex border border-transparent items-center gap-2",
+                                isLocationSet ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 opacity-100" : "bg-white/10 text-white hover:bg-white/20 border-white/10"
+                            )}
+                        >
+                            {isLocationLoading ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    {(t as any).onboardingLocationDetecting}
+                                </>
+                            ) : isLocationSet ? (
+                                <>
+                                    <Check className="w-5 h-5" />
+                                    {(t as any).onboardingLocationSuccess}
+                                </>
+                            ) : (
+                                <>
+                                    <MapPin className="w-5 h-5" />
+                                    {(t as any).onboardingLocationDetect}
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                </div>
+            );
+        }
+
         if (step === 'setup-archetype') {
             return (
                 <div
@@ -346,6 +454,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     <div className="absolute top-0 left-0 right-0 flex justify-center gap-2 p-1">
                         <div className={cn("w-2 h-2 rounded-full", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
                         <div className={cn("w-2 h-2 rounded-full", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-location' ? "bg-white w-6" : "bg-white/20")} />
                         <div className={cn("w-2 h-2 rounded-full", step === 'setup-archetype' ? "bg-white w-6" : "bg-white/20")} />
                     </div>
                 )}
@@ -370,7 +479,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             onClick={() => {
                                 if (step === 'setup-name') setStep('intro');
                                 if (step === 'setup-gender') setStep('setup-name');
-                                if (step === 'setup-archetype') setStep('setup-gender');
+                                if (step === 'setup-location') setStep('setup-gender');
+                                if (step === 'setup-archetype') setStep('setup-location');
                             }}
                             className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
                         >
@@ -383,6 +493,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         disabled={
                             (step === 'setup-name' && !name.trim()) ||
                             (step === 'setup-gender' && !gender) ||
+                            (step === 'setup-location' && !isLocationSet) ||
                             (step === 'setup-archetype' && !archetype)
                         }
                         className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"

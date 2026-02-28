@@ -295,8 +295,6 @@ export const otherEN = {
     mosqueFinderButton: "Open Google Maps",
     homeLocationRequiredTitle: "Location Permission Required",
     homeSetLocationNow: "Set Location",
-    homeLocationDefaultTitle: "Default Location (Jakarta)",
-    homeLocationDefaultDesc: "Current prayer times are based on Jakarta. Tap the location icon above to update to your location.",
     homeLocationRequiredDesc: "Nawaetu needs your location to calculate accurate prayer times and Qibla direction.",
     homeEnableLocation: "Enable Location",
     homeLocationHint: "Your browser will ask for permission after clicking.",
@@ -524,6 +522,12 @@ export const otherEN = {
     onboardingArchetypeStriverDesc: "Striving to consistently maintain daily worship routines.",
     onboardingArchetypeDedicatedLabel: "Dedicated",
     onboardingArchetypeDedicatedDesc: "Firmly making worship the top priority in life.",
+    onboardingLocationTitle: "Detect Location (Required)",
+    onboardingLocationDesc: "Nawaetu needs your location to provide accurate prayer times and Qibla direction.",
+    onboardingLocationDetect: "Detect My Location",
+    onboardingLocationDetecting: "Detecting location...",
+    onboardingLocationSuccess: "Location set successfully!",
+    onboardingLocationError: "Failed to detect location. Please ensure GPS is on.",
 
     // Onboarding Slides
     onboardingSlide1Title: "No Install, Saves Memory",

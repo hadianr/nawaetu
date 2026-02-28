@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
             updatedAt: new Date(),
             active: 1,
             deviceType: deviceType || "web",
-            timezone: timezone || "Asia/Jakarta",
+            timezone: timezone || "UTC",
             userLocation: userLocation || null, // Legacy
             latitude: userLocation?.lat || null,
             longitude: userLocation?.lng || null,

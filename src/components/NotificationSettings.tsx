@@ -107,12 +107,8 @@ export default function NotificationSettings() {
             } catch (e) {
             }
         }
-        // Default Fallback to Jakarta
-        return {
-            lat: -6.2088,
-            lng: 106.8456,
-            city: "Jakarta (Default)",
-        };
+        // No fallback: User must have location set from onboarding.
+        return null;
     }
 
     // Step 2: Toggle Notifications (Only when Permission is GRANTED)
