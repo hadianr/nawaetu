@@ -2,6 +2,7 @@ import { toArabicNumber } from "@/lib/quran-utils";
 import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/context/LocaleContext";
 
 type LoopMode = 'off' | '1' | '3' | 'infinity';
 
@@ -12,6 +13,7 @@ interface AudioPlayerBarProps {
     currentPlayingIndex: number;
     totalVerses: number;
     isDaylight: boolean;
+    locale: string;
     onLoopModeChange: (mode: LoopMode) => void;
     onPrev: () => void;
     onNext: () => void;
@@ -25,19 +27,26 @@ export default function AudioPlayerBar({
     currentPlayingIndex,
     totalVerses,
     isDaylight,
+    locale,
     onLoopModeChange,
     onPrev,
     onNext,
     onPlayPause
 }: AudioPlayerBarProps) {
+    const { t } = useLocale();
+
     if (!playingVerseKey) return null;
 
     return (
         <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none flex flex-col items-center gap-3 px-4">
             <div className="pointer-events-auto bg-[#0f172a]/95 backdrop-blur-xl border border-white/10 rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-2xl animate-in slide-in-from-bottom-5">
                 <div className="flex flex-col">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sedang Memutar</span>
-                    <span className="text-xs font-bold text-white">Ayat {toArabicNumber(parseInt((playingVerseKey || '1:1').split(':')[1]))}</span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                        {t.quranNowPlaying || 'Now Playing'}
+                    </span>
+                    <span className="text-xs font-bold text-white">
+                        {t.quranVerse || 'Verse'} {toArabicNumber(parseInt((playingVerseKey || '1:1').split(':')[1]))}
+                    </span>
                 </div>
                 <div className="h-8 w-px bg-white/10" />
                 <div className="flex items-center gap-1">

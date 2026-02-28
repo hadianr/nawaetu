@@ -40,26 +40,5 @@ export const settingsEN = {
     profileGuestMode: "Guest Mode",
     profileFooter: "Thank you for using Nawaetu",
 
-    // Quran Reader Settings
-    quranPlaySurah: "Play Surah",
-    quranJumpToVerse: "Jump to Verse",
-    quranJumpToVerseTitle: "Jump to Verse",
-    quranGoToVerse: "Go to Verse",
-    quranSettingsTitle: "Display Settings",
-    quranModeRead: "Reading Mode",
-    quranModeList: "List",
-    quranModeMushaf: "Mushaf",
-    quranScriptType: "Arabic Script Type",
-    quranScriptStandard: "Standard Indonesian",
-    quranScriptTajweed: "Colored Tajweed",
-    quranOtherDisplay: "Other Display",
-    quranTransliteration: "Latin / Transliteration",
-    quranFontSize: "Arabic Font Size",
-    quranVersesPerPage: "Verses per Page",
-    quranSelectQari: "Select Qari",
-    quranPrevious: "Previous",
-    quranNext: "Next",
-    quranPage: "Page",
-    quranOf: "of",
 
 };

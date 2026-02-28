@@ -902,6 +902,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 currentPlayingIndex={currentPlayingIndex}
                 totalVerses={verses.length}
                 isDaylight={isDaylight}
+                locale={locale}
                 onLoopModeChange={setLoopMode}
                 onPrev={handlePrevVerse}
                 onNext={handleNextVerse}

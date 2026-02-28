@@ -4,6 +4,7 @@ import { Play, Bookmark, Share2, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type TafsirContent } from "@/lib/tafsir-api";
+import { useLocale } from "@/context/LocaleContext";
 import {
     toArabicNumber,
     cleanTranslation,
@@ -60,6 +61,8 @@ export default function VerseCard({
     onReadFullTafsir,
     prefetchShareDialog
 }: VerseCardProps) {
+    const { t } = useLocale();
+
     return (
         <div
             id={`verse-${verseNum}`}
@@ -146,18 +149,18 @@ export default function VerseCard({
                 <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-slate-900 border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
                     <div className="flex items-center gap-2 mb-3">
                         <Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary))]" />
-                        <h3 className="text-sm font-bold text-white">{locale === "en" ? "Brief Explanation" : "Tafsir Ringkas"}</h3>
+                        <h3 className="text-sm font-bold text-white">{t.quranBriefTafsir || "Brief Explanation"}</h3>
                     </div>
 
                     <div className={`flex items-center gap-2 text-slate-500 py-4 ${isLoadingTafsir ? '' : 'hidden'}`}>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-xs">{locale === "en" ? "Loading..." : "Memuat..."}</span>
+                        <span className="text-xs">{t.quranLoading || "Loading..."}</span>
                     </div>
 
                     <div className={isLoadingTafsir ? 'hidden' : 'space-y-3'}>
                         <div
                             className="prose prose-invert prose-sm text-slate-300"
-                            dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirData?.short || (locale === "en" ? "Tafsir not available." : "Tafsir tidak tersedia.")) }}
+                            dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirData?.short || (t.quranTafsirNotAvailable || "Tafsir not available.")) }}
                         />
                         <button
                             onClick={() => {
@@ -167,7 +170,7 @@ export default function VerseCard({
                             }}
                             className={`text-xs font-semibold mt-2 transition-colors ${tafsirData?.long && tafsirData?.long !== tafsirData?.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
                         >
-                            {locale === "en" ? "Read Full Explanation →" : "Baca Penjelasan Lengkap →"}
+                            {t.quranReadFullTafsir || "Read Full Explanation →"}
                         </button>
                     </div>
                 </div>

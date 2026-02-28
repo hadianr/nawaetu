@@ -40,26 +40,5 @@ export const settingsID = {
     profileGuestMode: "Mode Guest",
     profileFooter: "Terima kasih telah menggunakan Nawaetu",
 
-    // Quran Reader Settings
-    quranPlaySurah: "Putar Surat",
-    quranJumpToVerse: "Loncat ke Ayat",
-    quranJumpToVerseTitle: "Loncat ke Ayat",
-    quranGoToVerse: "Pergi ke Ayat",
-    quranSettingsTitle: "Pengaturan Tampilan",
-    quranModeRead: "Mode Baca",
-    quranModeList: "List",
-    quranModeMushaf: "Mushaf",
-    quranScriptType: "Jenis Teks Arab",
-    quranScriptStandard: "Standar Indonesia",
-    quranScriptTajweed: "Tajweed Berwarna",
-    quranOtherDisplay: "Tampilan Lainnya",
-    quranTransliteration: "Latin / Transliterasi",
-    quranFontSize: "Ukuran Huruf Arab",
-    quranVersesPerPage: "Ayat per Halaman",
-    quranSelectQari: "Pilih Qari",
-    quranPrevious: "Sebelumnya",
-    quranNext: "Selanjutnya",
-    quranPage: "Halaman",
-    quranOf: "/",
 
 };

@@ -1,0 +1,33 @@
+export const quranID = {
+    // Quran Reader Settings
+    quranPlaySurah: "Putar Surat",
+    quranJumpToVerse: "Loncat ke Ayat",
+    quranJumpToVerseTitle: "Loncat ke Ayat",
+    quranGoToVerse: "Pergi ke Ayat",
+    quranSettingsTitle: "Pengaturan Tampilan",
+    quranModeRead: "Mode Baca",
+    quranModeList: "List",
+    quranModeMushaf: "Mushaf",
+    quranScriptType: "Jenis Teks Arab",
+    quranScriptStandard: "Standar Indonesia",
+    quranScriptTajweed: "Tajweed Berwarna",
+    quranOtherDisplay: "Tampilan Lainnya",
+    quranTransliteration: "Latin / Transliterasi",
+    quranFontSize: "Ukuran Huruf Arab",
+    quranVersesPerPage: "Ayat per Halaman",
+    quranSelectQari: "Pilih Qari",
+    quranPrevious: "Sebelumnya",
+    quranNext: "Selanjutnya",
+    quranPage: "Halaman",
+    quranOf: "/",
+
+    // Quran Player & Tafsir
+    quranNowPlaying: "Sedang Memutar",
+    quranVerse: "Ayat",
+    quranBriefTafsir: "Tafsir Ringkas",
+    quranLoading: "Memuat...",
+    quranTafsirNotAvailable: "Tafsir tidak tersedia.",
+    quranReadFullTafsir: "Baca Penjelasan Lengkap →",
+    quranTafsir: "Tafsir",
+    quranFullExplanation: "Penjelasan Lengkap",
+};

@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lightbulb, X } from "lucide-react";
 import { type TafsirContent } from "@/lib/tafsir-api";
 import { formatFootnotes } from "@/lib/quran-utils";
+import { useLocale } from "@/context/LocaleContext";
 
 interface TafsirModalProps {
     open: boolean;
@@ -12,12 +13,14 @@ interface TafsirModalProps {
 }
 
 export default function TafsirModal({ open, onOpenChange, locale, content }: TafsirModalProps) {
+    const { t } = useLocale();
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent showCloseButton={false} className="w-[98vw] max-w-lg sm:max-w-xl max-h-[80vh] sm:max-h-[85vh] rounded-2xl sm:rounded-3xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-slate-900/50 to-slate-950/40 backdrop-blur-3xl shadow-2xl shadow-black/60 p-0 overflow-hidden">
                 {/* Hidden DialogTitle for accessibility */}
                 <DialogTitle className="sr-only">
-                    {locale === "en" ? "Tafsir Full Explanation" : "Penjelasan Lengkap Tafsir"}
+                    {t.quranFullExplanation || 'Full Explanation'}
                 </DialogTitle>
 
                 {/* Header */}
@@ -29,10 +32,10 @@ export default function TafsirModal({ open, onOpenChange, locale, content }: Taf
                             </div>
                             <div className="flex-1">
                                 <h2 className="text-lg sm:text-xl font-bold text-white tracking-wide">
-                                    {locale === "en" ? "Tafsir" : "Tafsir"}
+                                    {t.quranTafsir || 'Tafsir'}
                                 </h2>
                                 <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-                                    {locale === "en" ? "Full Explanation" : "Penjelasan Lengkap"}
+                                    {t.quranFullExplanation || 'Full Explanation'}
                                 </p>
                             </div>
                         </div>
