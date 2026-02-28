@@ -36,9 +36,9 @@ export interface CompletedMission {
 export interface MissionRepository {
   getProgress(missionId: string): MissionProgress;
   getCompletedMissions(): CompletedMission[];
-  completeMission(missionId: string, xpEarned: number): void;
-  undoCompleteMission(missionId: string): void;
-  isCompleted(missionId: string): boolean;
+  completeMission(missionId: string, xpEarned: number, dateStr?: string): void;
+  undoCompleteMission(missionId: string, dateStr?: string): void;
+  isCompleted(missionId: string, dateStr?: string): boolean;
   resetCompletedMissions(): void;
 }
 
@@ -111,19 +111,27 @@ export class LocalMissionRepository implements MissionRepository {
     return data as CompletedMission[];
   }
 
-  completeMission(missionId: string, xpEarned: number): void {
+  completeMission(missionId: string, xpEarned: number, dateStr?: string): void {
     const completed = this.getCompletedMissions();
-    const today = new Date().toISOString().split('T')[0];
+    const today = dateStr || new Date().toISOString().split('T')[0];
 
-    // Check if already completed today. This allows recurring missions (daily/weekly) 
-    // to be completed again on different days.
+    // Check if already completed on that date. 
     if (completed.some(m => m.id === missionId && m.completedAt.startsWith(today))) {
       return;
     }
 
+    // Include the actual time if it's today, otherwise use midnight of the selected date to avoid timezone issues.
+    let completedTimestamp = new Date().toISOString();
+    if (dateStr) {
+      const isToday = new Date().toISOString().split('T')[0] === dateStr;
+      if (!isToday) {
+        completedTimestamp = `${dateStr}T12:00:00.000Z`; // Give it a synthetic time for past days
+      }
+    }
+
     completed.push({
       id: missionId,
-      completedAt: new Date().toISOString(),
+      completedAt: completedTimestamp,
       xpEarned
     });
 
@@ -136,9 +144,9 @@ export class LocalMissionRepository implements MissionRepository {
     }
   }
 
-  isCompleted(missionId: string): boolean {
+  isCompleted(missionId: string, dateStr?: string): boolean {
     const completed = this.getCompletedMissions();
-    const today = new Date().toISOString().split('T')[0];
+    const today = dateStr || new Date().toISOString().split('T')[0];
 
     // For simplicity, if it's in the list and was done today, it's definitely completed.
     // If we want to support 'tracker' (one-time) missions correctly here, 
@@ -147,12 +155,11 @@ export class LocalMissionRepository implements MissionRepository {
     return completed.some(m => m.id === missionId && m.completedAt.startsWith(today));
   }
 
-  undoCompleteMission(missionId: string): void {
+  undoCompleteMission(missionId: string, dateStr?: string): void {
     const completed = this.getCompletedMissions();
-    const today = new Date().toISOString().split('T')[0];
+    const today = dateStr || new Date().toISOString().split('T')[0];
 
-    // Remove the completion for today. For tracker types, we might want to remove all,
-    // but the current repository implementation is skewed towards today's completion.
+    // Remove the completion for the specified date.
     const filtered = completed.filter(m => !(m.id === missionId && m.completedAt.startsWith(today)));
 
     this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, filtered);

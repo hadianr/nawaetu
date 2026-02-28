@@ -54,23 +54,23 @@ export function useMissions() {
   );
 
   const completeMission = useCallback(
-    (missionId: string, xpEarned: number): void => {
-      repository.completeMission(missionId, xpEarned);
+    (missionId: string, xpEarned: number, dateStr?: string): void => {
+      repository.completeMission(missionId, xpEarned, dateStr);
       setCompletedMissions(repository.getCompletedMissions());
     },
     [repository]
   );
 
   const isCompleted = useCallback(
-    (missionId: string): boolean => {
-      return repository.isCompleted(missionId);
+    (missionId: string, dateStr?: string): boolean => {
+      return repository.isCompleted(missionId, dateStr);
     },
     [repository]
   );
 
   const undoCompleteMission = useCallback(
-    (missionId: string): void => {
-      repository.undoCompleteMission(missionId);
+    (missionId: string, dateStr?: string): void => {
+      repository.undoCompleteMission(missionId, dateStr);
       setCompletedMissions(repository.getCompletedMissions());
     },
     [repository]

@@ -66,6 +66,9 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
     const [showReflectionPrompt, setShowReflectionPrompt] = useState(false);
 
+    // Add selectedDate state
+    const [selectedDate, setSelectedDate] = useState<string>(getTodayDateString());
+
     // Default structure to avoid layout/hydration shifts when caching kicks in
     const [todayData, setTodayData] = useState<any>(null);
 
@@ -79,8 +82,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         setUserToken(token);
 
         // Check cache immediately when token is known
-        const todayStr = getTodayDateString();
-        const cacheKey = `${CACHE_PREFIX}${token}_${todayStr}`;
+        const cacheKey = `${CACHE_PREFIX}${token}_${selectedDate}`;
         const cachedStr = localStorage.getItem(cacheKey);
 
         if (cachedStr) {
@@ -91,8 +93,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             } catch (e) {
                 // Ignore parsing errors
             }
+        } else {
+            // Need to show loading if cache misses when date changes
+            setIsLoading(true);
         }
-    }, []);
+    }, [selectedDate]);
 
     // 2. Background Fetch (Stale-While-Revalidate)
     useEffect(() => {
@@ -101,7 +106,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         const checkTodayStatus = async () => {
             try {
                 // Background fetch
-                const response = await fetch(`/api/intentions/today`, {
+                const response = await fetch(`/api/intentions/today?date=${selectedDate}`, {
                     // Cache busting or ensure next.js doesn't hard cache this for real-time widgets
                     headers: {
                         'Cache-Control': 'no-cache',
@@ -115,8 +120,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         setTodayData(data.data);
 
                         // Update cache
-                        const todayStr = getTodayDateString();
-                        const cacheKey = `${CACHE_PREFIX}${userToken}_${todayStr}`;
+                        const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                         localStorage.setItem(cacheKey, JSON.stringify(data.data));
                     }
                 }
@@ -129,7 +133,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         };
 
         checkTodayStatus();
-    }, [userToken]);
+    }, [userToken, selectedDate]);
 
     const handleSetIntention = async (intentionText: string) => {
         if (!userToken) return;
@@ -137,7 +141,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         // Optimistic update for snappy UX
         const optimisticData = {
             has_intention: true,
-            intention: { id: Date.now().toString(), intention_text: intentionText, intention_date: new Date().toISOString() },
+            intention: { id: Date.now().toString(), intention_text: intentionText, intention_date: new Date(selectedDate).toISOString() },
             has_reflection: false,
             streak: (todayData?.streak || 0) + (todayData?.has_intention ? 0 : 1),
         };
@@ -150,7 +154,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_token: userToken, intention_text: intentionText }),
+                body: JSON.stringify({ user_token: userToken, intention_text: intentionText, intention_date: selectedDate }),
             });
             const data = await response.json();
 
@@ -165,8 +169,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setTodayData(finalData);
 
                 // Update Cache
-                const todayStr = getTodayDateString();
-                const cacheKey = `${CACHE_PREFIX}${userToken}_${todayStr}`;
+                const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                 localStorage.setItem(cacheKey, JSON.stringify(finalData));
 
             } else {
@@ -218,8 +221,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setTodayData(finalData);
 
                 // Update Cache
-                const todayStr = getTodayDateString();
-                const cacheKey = `${CACHE_PREFIX}${userToken}_${todayStr}`;
+                const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                 localStorage.setItem(cacheKey, JSON.stringify(finalData));
             } else {
                 setTodayData(todayData);
@@ -259,13 +261,35 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     : "bg-[rgb(var(--color-surface))]/20 border border-white/5"
             )}>
                 <div className="flex flex-col gap-1.5">
-                    {/* Compact Label */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity">
-                            <Compass className={cn("w-3 h-3", isDaylight ? "text-slate-900" : "text-white")} />
-                            <span className={cn("text-[10px] font-bold uppercase tracking-[0.2em] whitespace-nowrap", isDaylight ? "text-slate-900" : "text-white")}>
+                    {/* Compact Label and Date Selector */}
+                    <div className="flex items-center justify-between gap-1">
+                        <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity min-w-0">
+                            <Compass className={cn("w-3 h-3 shrink-0", isDaylight ? "text-slate-900" : "text-white")} />
+                            <span className={cn("text-[9px] font-bold uppercase tracking-tight truncate", isDaylight ? "text-slate-900" : "text-white")}>
                                 {t.intention_widget_title}
                             </span>
+                        </div>
+
+                        {/* Date Selector */}
+                        <div className="relative shrink-0">
+                            <input
+                                type="date"
+                                value={selectedDate}
+                                max={getTodayDateString()}
+                                onChange={(e) => {
+                                    if (e.target.value) {
+                                        setSelectedDate(e.target.value);
+                                    }
+                                }}
+                                className={cn(
+                                    "text-[9px] font-bold uppercase cursor-pointer outline-none bg-transparent appearance-none text-right px-0 relative z-10 w-[72px] h-5",
+                                    isDaylight
+                                        ? "text-slate-400 hover:text-slate-600"
+                                        : "text-white/40 hover:text-white/70",
+                                    "flex-row-reverse"
+                                )}
+                                style={{ colorScheme: isDaylight ? 'light' : 'dark' }}
+                            />
                         </div>
                     </div>
 

@@ -136,6 +136,9 @@ export async function POST(req: NextRequest) {
             return newUser.id;
         }
 
+        const now = new Date();
+        const actualTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
         const startOfToday = new Date(todayStr);
         startOfToday.setUTCHours(0, 0, 0, 0);
         const startOfTomorrow = new Date(startOfToday);
@@ -181,8 +184,8 @@ export async function POST(req: NextRequest) {
                 .returning();
         }
 
-        // Calculate and update streak
-        const streakData = await calculateStreak(userId, todayStr);
+        // Calculate and update streak based on actual today, not the intention date
+        const streakData = await calculateStreak(userId, actualTodayStr);
 
         // Get current user to check longest streak
         const [currentUser] = await db
@@ -196,12 +199,15 @@ export async function POST(req: NextRequest) {
             currentUser?.intentionStreakLongest || 0
         );
 
+        // Update lastIntentionDate only if the newly added intention is newer or equal to today
+        const shouldUpdateLastDate = !currentUser?.lastIntentionDate || todayStr >= currentUser.lastIntentionDate;
+
         await db
             .update(users)
             .set({
                 intentionStreakCurrent: streakData.currentStreak,
                 intentionStreakLongest: newLongestStreak,
-                lastIntentionDate: todayStr,
+                ...(shouldUpdateLastDate ? { lastIntentionDate: todayStr } : {}),
                 updatedAt: new Date(),
             })
             .where(eq(users.id, userId));
@@ -232,9 +238,9 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Calculate intention streak based on consecutive days
+ * Calculate intention streak based on consecutive days from actual today
  */
-async function calculateStreak(userId: string, currentDate: string): Promise<{
+async function calculateStreak(userId: string, actualTodayStr: string): Promise<{
     currentStreak: number;
 }> {
     // Get all intentions for this user, ordered by date descending
@@ -245,13 +251,8 @@ async function calculateStreak(userId: string, currentDate: string): Promise<{
         .orderBy(sql`${intentions.intentionDate} DESC`);
 
     if (userIntentions.length === 0) {
-        return { currentStreak: 1 }; // First intention
+        return { currentStreak: 0 };
     }
-
-    let streak = 0;
-    // Normalize dates to midnight for comparison
-    const targetDate = new Date(currentDate);
-    targetDate.setHours(0, 0, 0, 0);
 
     // Convert all intention dates to YYYY-MM-DD timestamps
     // Optimization: Use Set for O(1) lookup
@@ -261,9 +262,24 @@ async function calculateStreak(userId: string, currentDate: string): Promise<{
         return d.getTime();
     }));
 
-    // We start checking from the current intention backwards
-    let checkDate = new Date(targetDate);
+    // We start checking from the actual today
+    let actualToday = new Date(actualTodayStr);
+    actualToday.setHours(0, 0, 0, 0);
 
+    let yesterday = new Date(actualToday);
+    yesterday.setDate(actualToday.getDate() - 1);
+
+    let checkDate;
+    if (intentionDates.has(actualToday.getTime())) {
+        checkDate = actualToday;
+    } else if (intentionDates.has(yesterday.getTime())) {
+        checkDate = yesterday;
+    } else {
+        // If neither today nor yesterday has an intention, streak is 0
+        return { currentStreak: 0 };
+    }
+
+    let streak = 0;
     // Safety loop limit
     while (streak < 3650) {
         if (intentionDates.has(checkDate.getTime())) {

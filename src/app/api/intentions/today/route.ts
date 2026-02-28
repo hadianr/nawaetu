@@ -101,10 +101,16 @@ export async function GET(req: NextRequest) {
 
         // (userData is safely resolved above, we no longer need a redundant query block here)
 
-        // Get today's date in UTC (matched with DB date type)
-        const today = new Date().toISOString().split('T')[0];
+        const url = new URL(req.url);
+        const queryDate = url.searchParams.get("date");
 
-        const startOfToday = new Date(today);
+        // Use queryDate if provided, otherwise get today's date
+        let targetDateStr = queryDate;
+        if (!targetDateStr) {
+            targetDateStr = new Date().toISOString().split('T')[0];
+        }
+
+        const startOfToday = new Date(targetDateStr);
         startOfToday.setUTCHours(0, 0, 0, 0);
         const startOfTomorrow = new Date(startOfToday);
         startOfTomorrow.setUTCDate(startOfToday.getUTCDate() + 1);

@@ -59,6 +59,7 @@ export default function PrayerCheckInWidget() {
     const [gender, setGender] = useState<Gender>(null);
     const [mounted, setMounted] = useState(false);
     const [sheet, setSheet] = useState<SheetState>(null);
+    const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
 
     useEffect(() => {
         setMounted(true);
@@ -88,20 +89,25 @@ export default function PrayerCheckInWidget() {
     const isPrayerDone = useCallback(
         (suffix: string) => {
             const id = getMissionId(suffix);
-            const todayStr = new Date().toISOString().split("T")[0];
             return completedMissions.some((m) => {
                 if (m.id !== id) return false;
-                return m.completedAt.split("T")[0] === todayStr;
+                return m.completedAt.split("T")[0] === selectedDate;
             });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [completedMissions, gender]
+        [completedMissions, gender, selectedDate]
     );
 
     const completedCount = PRAYERS.filter((p) => isPrayerDone(p.suffix)).length;
 
     // Determine current/next active prayer window
     const getTimeStatus = (prayerKey: string, endKey: string | null) => {
+        // If the user selected a past date, all prayers are open (late) but not "future" anymore
+        const todayStr = new Date().toISOString().split("T")[0];
+        if (selectedDate < todayStr) {
+            return { isActive: false, isUpcoming: false, isLate: true, isFuture: false };
+        }
+
         // When prayer data not loaded yet, don't lock anything
         if (!prayerData?.prayerTimes) return { isActive: false, isUpcoming: false, isLate: false, isFuture: true };
 
@@ -151,15 +157,19 @@ export default function PrayerCheckInWidget() {
     };
 
     const doComplete = (missionId: string, xpReward: number) => {
-        const todayStr = new Date().toISOString().split("T")[0];
         const completedTodayCount = completedMissions.filter(
-            (m) => m.completedAt.split("T")[0] === todayStr
+            (m) => m.completedAt.split("T")[0] === selectedDate
         ).length;
-        if (completedTodayCount === 0) updateStreak();
+
+        const todayStr = new Date().toISOString().split("T")[0];
+        // Only trigger generic streak logic if it's really today's first activity
+        if (completedTodayCount === 0 && selectedDate === todayStr) {
+            updateStreak();
+        }
 
         addXP(xpReward);
         window.dispatchEvent(new CustomEvent("xp_updated"));
-        completeMission(missionId, xpReward);
+        completeMission(missionId, xpReward, selectedDate);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
@@ -218,22 +228,47 @@ export default function PrayerCheckInWidget() {
                 )} />
 
                 {/* Header */}
-                <div className="flex items-center justify-between mb-3 relative z-10">
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm">🕌</span>
-                        <p className={cn("text-xs font-black uppercase tracking-wider", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInTitle}</p>
+                <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm shrink-0">🕌</span>
+                        <p className={cn("text-[10px] font-black uppercase tracking-tight truncate", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInTitle}</p>
                     </div>
-                    <div className={cn(
-                        "text-[10px] px-2 py-0.5 rounded-full font-bold border transition-colors",
-                        completedCount === 5
-                            ? isDaylight
-                                ? "bg-emerald-100 border-emerald-200 text-emerald-700"
-                                : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
-                            : isDaylight
-                                ? "bg-slate-50 border-slate-100 text-slate-500"
-                                : "bg-white/5 border-white/10 text-white/60"
-                    )}>
-                        {t.homePrayerCheckInStatus.replace("{count}", String(completedCount))}
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                        {/* Date Selector */}
+                        <div className="relative group/date">
+                            <input
+                                type="date"
+                                value={selectedDate}
+                                max={new Date().toISOString().split("T")[0]}
+                                onChange={(e) => {
+                                    if (e.target.value) {
+                                        setSelectedDate(e.target.value);
+                                    }
+                                }}
+                                className={cn(
+                                    "text-[9px] font-bold uppercase cursor-pointer outline-none bg-transparent appearance-none text-right px-0 relative z-10 w-[72px] h-5",
+                                    isDaylight
+                                        ? "text-slate-400 hover:text-slate-600"
+                                        : "text-white/40 hover:text-white/70",
+                                    "flex-row-reverse"
+                                )}
+                                style={{ colorScheme: isDaylight ? 'light' : 'dark' }}
+                            />
+                        </div>
+
+                        <div className={cn(
+                            "text-[9px] px-1.5 py-0.5 rounded-full font-bold border transition-colors whitespace-nowrap",
+                            completedCount === 5
+                                ? isDaylight
+                                    ? "bg-emerald-100 border-emerald-200 text-emerald-700"
+                                    : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
+                                : isDaylight
+                                    ? "bg-slate-50 border-slate-100 text-slate-400"
+                                    : "bg-white/5 border-white/10 text-white/40"
+                        )}>
+                            {completedCount}/5
+                        </div>
                     </div>
                 </div>
 
