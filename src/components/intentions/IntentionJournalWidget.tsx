@@ -162,10 +162,6 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             const data = await response.json();
 
             if (data.success) {
-                const todayStr = getTodayDateString();
-                const actualTodayStr = selectedDate; // This is the date the user selected
-                const existingIntention = todayData?.has_intention; // Check if an intention already existed for this date
-
                 const finalData = {
                     has_intention: true,
                     intention: { id: data.data.id, intention_text: data.data.intention_text, intention_date: data.data.intention_date },
@@ -179,6 +175,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                 localStorage.setItem(cacheKey, JSON.stringify(finalData));
 
+                // Add XP locally
+                if (data.data.intention_points_earned > 0) {
+                    addXP(data.data.intention_points_earned, selectedDate);
+                }
             } else {
                 // Revert if failed
                 setTodayData(todayData);
@@ -232,7 +232,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setTodayData(finalData);
 
                 // Add XP locally
-                addXP(xpAmount);
+                addXP(xpAmount, selectedDate);
                 window.dispatchEvent(new CustomEvent("xp_updated"));
 
                 // Update Cache

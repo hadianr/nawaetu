@@ -25,13 +25,20 @@ import {
     Zap, Target, BookOpen, Moon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getPlayerStats } from "@/lib/leveling";
+import { getPlayerStats, RankKey } from "@/lib/leveling";
 import { getStreak } from "@/lib/streak-utils";
 import { getDailyActivityHistory } from "@/lib/analytics-utils";
 import { useMissions } from "@/hooks/useMissions";
 import { useTranslations } from "@/context/LocaleContext";
 import GlobalStatsWidget from "@/components/home/GlobalStatsWidget";
 import { cn } from "@/lib/utils";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Info } from "lucide-react";
 
 // Prayer config for the heatmap
 const PRAYER_SUFFIXES = ["subuh", "dzuhur", "ashar", "maghrib", "isya"] as const;
@@ -62,19 +69,19 @@ function formatDate(dateStr: string): string {
     return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
 }
 
-// Level archetype names
-const LEVEL_NAMES: Record<number, string> = {
-    1: "Mubtadi", 2: "Thalib", 3: "Salik", 4: "Mujahid", 5: "Pencari Rahmat",
-    6: "Hamba Setia", 7: "Pemuda Masjid", 8: "Ahli Ibadah", 9: "Waliyyul Ummah", 10: "Pejuang Subuh",
-};
+// Level archetypes are now handled via the getRankKey in leveling.ts and translations in stats.ts
 
 export default function StatsPage() {
     const t = useTranslations();
     const { completedMissions } = useMissions();
     const [mounted, setMounted] = useState(false);
-    const [playerStats, setPlayerStats] = useState({ xp: 0, level: 1, nextLevelXp: 100, progress: 0 });
+    const [playerStats, setPlayerStats] = useState({
+        xp: 0, level: 1, nextLevelXp: 100, progress: 0,
+        rankKey: 'mubtadi' as RankKey
+    });
     const [streakData, setStreakData] = useState({ currentStreak: 0, longestStreak: 0 });
     const [history, setHistory] = useState(getDailyActivityHistory());
+    const [isRankModalOpen, setIsRankModalOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -128,8 +135,8 @@ export default function StatsPage() {
     // Today's sholat count
     const todayPrayerCount = prayerMap[todayStr]?.size || 0;
 
-    // Weekly sholat total (max 35 = 5×7)
-    const weeklyPrayerCount = last7Days.reduce((sum, d) => sum + (prayerMap[d]?.size || 0), 0);
+    // 14-day sholat total (max 70 = 5×14)
+    const recentPrayerCount = last14Days.reduce((sum, d) => sum + (prayerMap[d]?.size || 0), 0);
 
     // Consistency: % of last 30 days with any activity or prayer
     const last30Days = getLastNDays(30);
@@ -156,7 +163,8 @@ export default function StatsPage() {
     });
     const maxCatCount = Math.max(...Object.values(categoryStats).map((c) => c.count), 1);
 
-    const levelName = LEVEL_NAMES[playerStats.level] || `Level ${playerStats.level}`;
+    const currentRank = t.stats.ranks[playerStats.rankKey] || t.stats.ranks.mubtadi;
+    const levelName = currentRank.title;
 
     if (!mounted) {
         return <div className="min-h-screen bg-[rgb(var(--color-background))]" />;
@@ -186,14 +194,20 @@ export default function StatsPage() {
                 {/* ── Global Impact Stats ─────────────────────────────────── */}
                 <GlobalStatsWidget />
 
-                {/* ── Level & XP Card ─────────────────────────────────────── */}
-                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[rgb(var(--color-primary))]/15 via-black/20 to-transparent p-5">
+                {/* ── Level & XP Card (Clickable) ─────────────────────────── */}
+                <button
+                    onClick={() => setIsRankModalOpen(true)}
+                    className="w-full text-left relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[rgb(var(--color-primary))]/15 via-black/20 to-transparent p-5 active:scale-[0.98] transition-all group"
+                >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[rgb(var(--color-primary))]/10 rounded-full blur-[60px] pointer-events-none" />
                     <div className="relative z-10">
                         <div className="flex items-start justify-between mb-4">
                             <div>
-                                <p className="text-xs text-white/50 mb-0.5">{t.stats.level.rankLabel}</p>
-                                <p className="text-xl font-black text-white">{levelName}</p>
+                                <div className="flex items-center gap-1.5 mb-0.5">
+                                    <p className="text-[10px] font-bold tracking-wider uppercase text-[rgb(var(--color-primary-light))] opacity-80">{t.stats.level.rankLabel}</p>
+                                    <Info className="w-3 h-3 text-[rgb(var(--color-primary-light))] opacity-40 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <p className="text-2xl font-black text-white group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{levelName}</p>
                             </div>
                             <div className="text-right">
                                 <p className="text-2xl font-black text-[rgb(var(--color-primary-light))]">{playerStats.xp.toLocaleString()}</p>
@@ -203,19 +217,79 @@ export default function StatsPage() {
                         {/* Progress bar */}
                         <div className="space-y-1.5">
                             <div className="flex justify-between text-[10px] text-white/50">
-                                <span>Level {playerStats.level}</span>
-                                <span>{Math.round(playerStats.progress)}% {t.stats.level.toNextLevel} {playerStats.level + 1}</span>
+                                <span className="font-medium">Level {playerStats.level}</span>
+                                <span className="font-medium text-[rgb(var(--color-primary-light))]">
+                                    {Math.round(playerStats.progress)}% {t.stats.level.toNextLevel} {playerStats.level + 1}
+                                </span>
                             </div>
-                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-2.5 bg-white/10 rounded-full overflow-hidden border border-white/5 p-0.5">
                                 <div
-                                    className="h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] rounded-full transition-all duration-700"
+                                    className="h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(var(--color-primary),0.5)]"
                                     style={{ width: `${playerStats.progress}%` }}
                                 />
                             </div>
-                            <p className="text-[10px] text-white/40 text-right">{playerStats.nextLevelXp.toLocaleString()} {t.stats.level.xpNeeded}</p>
+                            <p className="text-[10px] text-white/40 text-right font-medium">
+                                {playerStats.nextLevelXp.toLocaleString()} {t.stats.level.xpNeeded}
+                            </p>
                         </div>
                     </div>
-                </div>
+                </button>
+
+                {/* ── Rank Detail Modal (Compact for SE) ───────────────────── */}
+                <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>
+                    <DialogContent className="max-w-md bg-[rgb(var(--color-surface))] border-white/10 text-white p-5 sm:p-6 gap-4">
+                        <DialogHeader className="text-left gap-1">
+                            <div className="flex items-center gap-1.5 text-[rgb(var(--color-primary-light))]">
+                                <Star className="w-3.5 h-3.5 fill-current" />
+                                <span className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">
+                                    {t.stats.level.rankLabel}
+                                </span>
+                            </div>
+                            <DialogTitle className="text-xl sm:text-2xl font-black leading-tight tracking-tight">
+                                {currentRank.title}
+                            </DialogTitle>
+                        </DialogHeader>
+
+                        <div className="space-y-4">
+                            <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                                <h4 className="text-[9px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Makna Spiritual</h4>
+                                <p className="text-xs text-white/90 leading-relaxed font-medium">
+                                    {currentRank.desc}
+                                </p>
+                            </div>
+
+                            <div className="bg-black/40 rounded-xl p-4 border border-[rgb(var(--color-primary))]/20 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-2 opacity-5">
+                                    <Moon className="w-12 h-12" />
+                                </div>
+                                <span className="absolute top-1 left-2 text-2xl text-[rgb(var(--color-primary-light))] opacity-20 font-serif leading-none">&quot;</span>
+                                <p className="text-[13px] italic text-white/95 mb-2.5 leading-snug relative z-10 px-2">
+                                    {currentRank.quote}
+                                </p>
+                                <p className="text-[9px] text-[rgb(var(--color-primary-light))] font-bold text-right tracking-tight uppercase opacity-80">
+                                    — {currentRank.source}
+                                </p>
+                            </div>
+
+                            <div className="flex items-start gap-3 p-3.5 bg-gradient-to-r from-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-primary))]/5 rounded-xl border border-[rgb(var(--color-primary))]/10">
+                                <div className="p-1.5 bg-[rgb(var(--color-primary))]/20 rounded-lg shrink-0">
+                                    <Trophy className="w-3.5 h-3.5 text-yellow-500" />
+                                </div>
+                                <div>
+                                    <p className="text-[9px] font-bold text-[rgb(var(--color-primary-light))] uppercase mb-0.5 tracking-wider opacity-80">Target Spiritual Berikutnya</p>
+                                    <p className="text-[11px] text-white font-semibold leading-normal">{currentRank.milestone}</p>
+                                </div>
+                            </div>
+
+                            <Button
+                                onClick={() => setIsRankModalOpen(false)}
+                                className="w-full h-11 rounded-xl bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold text-sm transition-all shadow-lg active:scale-95"
+                            >
+                                Mengerti
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
 
                 {/* ── Quick Stats Grid ─────────────────────────────────────── */}
                 <div className="grid grid-cols-2 gap-3">
@@ -230,7 +304,7 @@ export default function StatsPage() {
                         {
                             icon: <span className="text-base">🕌</span>,
                             label: t.stats.quick.weeklyPrayers,
-                            value: `${weeklyPrayerCount}`,
+                            value: `${recentPrayerCount}`,
                             sub: t.stats.quick.outOf35,
                             gradient: "from-[rgb(var(--color-primary))]/10",
                         },
@@ -268,20 +342,20 @@ export default function StatsPage() {
                     <div className="flex items-center gap-2 mb-4">
                         <span className="text-base">🕌</span>
                         <h2 className="font-bold text-sm">{t.stats.heatmap.title}</h2>
-                        <span className="ml-auto text-xs text-[rgb(var(--color-primary-light))] font-semibold">
+                        <span className="ml-auto text-[10px] text-[rgb(var(--color-primary-light))] font-semibold bg-[rgb(var(--color-primary))]/10 px-2 py-0.5 rounded-full">
                             {todayPrayerCount}/5 {t.stats.heatmap.today}
                         </span>
                     </div>
 
                     {/* Grid: rows = prayers, cols = days */}
-                    <div className="overflow-x-auto">
-                        <div className="min-w-[280px]">
+                    <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
+                        <div className="min-w-[480px] pb-2">
                             {/* Day headers */}
-                            <div className="grid gap-1 mb-1" style={{ gridTemplateColumns: `40px repeat(7, 1fr)` }}>
+                            <div className="grid gap-1 mb-1" style={{ gridTemplateColumns: `50px repeat(14, 1fr)` }}>
                                 <div /> {/* spacer */}
-                                {last7Days.map((d) => (
+                                {last14Days.map((d) => (
                                     <div key={d} className={cn(
-                                        "text-center text-[9px] font-semibold",
+                                        "text-center text-[8px] font-semibold",
                                         d === todayStr ? "text-[rgb(var(--color-primary-light))]" : "text-white/30"
                                     )}>
                                         {shortDay(d)}
@@ -291,24 +365,24 @@ export default function StatsPage() {
 
                             {/* Prayer rows */}
                             {PRAYER_SUFFIXES.map((suffix) => (
-                                <div key={suffix} className="grid gap-1 mb-1" style={{ gridTemplateColumns: `40px repeat(7, 1fr)` }}>
-                                    <div className="flex items-center gap-1 pr-1">
-                                        <span className="text-xs">{PRAYER_ICONS[suffix]}</span>
-                                        <span className="text-[9px] text-white/40 capitalize">{suffix.charAt(0).toUpperCase() + suffix.slice(1)}</span>
+                                <div key={suffix} className="grid gap-1 mb-1" style={{ gridTemplateColumns: `50px repeat(14, 1fr)` }}>
+                                    <div className="flex items-center gap-1 pr-1 truncate">
+                                        <span className="text-[10px]">{PRAYER_ICONS[suffix]}</span>
+                                        <span className="text-[8px] text-white/40 capitalize leading-none">{suffix}</span>
                                     </div>
-                                    {last7Days.map((d) => {
+                                    {last14Days.map((d) => {
                                         const done = prayerMap[d]?.has(suffix);
                                         return (
                                             <div
                                                 key={d}
                                                 title={`${formatDate(d)}: ${done ? "✅ " + t.stats.heatmap.completed : "— " + t.stats.heatmap.missed}`}
                                                 className={cn(
-                                                    "h-7 rounded-lg transition-all",
+                                                    "h-8 rounded-lg transition-all border border-transparent",
                                                     done
                                                         ? "bg-[rgb(var(--color-primary))] shadow-[0_0_8px_rgba(var(--color-primary),0.3)]"
                                                         : d === todayStr
-                                                            ? "bg-white/10 border border-white/20 border-dashed"
-                                                            : "bg-white/5"
+                                                            ? "bg-white/10 border-white/20 border-dashed"
+                                                            : "bg-white/5 border-white/5"
                                                 )}
                                             />
                                         );
@@ -449,7 +523,7 @@ export default function StatsPage() {
                     </div>
                 </div>
 
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

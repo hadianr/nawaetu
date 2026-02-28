@@ -20,6 +20,7 @@
 
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { incrementDailyActivity } from "@/lib/analytics-utils";
 
 export const LEVEL_THRESHOLDS = [
     0,      // Level 1 starts at 0 XP
@@ -35,16 +36,19 @@ export const LEVEL_THRESHOLDS = [
     // ... continues scaling
 ];
 
+export type RankKey = 'mubtadi' | 'seeker' | 'warrior' | 'abid' | 'salik' | 'mukhlis' | 'muhsin';
+
 export interface PlayerStats {
     xp: number;
     level: number;
     nextLevelXp: number;
     progress: number; // 0-100 percentage
+    rankKey: RankKey;
 }
 
 export function getPlayerStats(): PlayerStats {
     if (typeof window === "undefined") {
-        return { xp: 0, level: 1, nextLevelXp: 100, progress: 0 };
+        return { xp: 0, level: 1, nextLevelXp: 100, progress: 0, rankKey: 'mubtadi' };
     }
 
     const storage = getStorageService();
@@ -74,11 +78,22 @@ export function getPlayerStats(): PlayerStats {
         xp: currentXP,
         level,
         nextLevelXp: nextLevelBase,
-        progress
+        progress,
+        rankKey: getRankKey(level)
     };
 }
 
-export function addXP(amount: number) {
+export function getRankKey(level: number): RankKey {
+    if (level >= 60) return 'muhsin';
+    if (level >= 40) return 'mukhlis';
+    if (level >= 25) return 'salik';
+    if (level >= 15) return 'abid';
+    if (level >= 10) return 'warrior';
+    if (level >= 5) return 'seeker';
+    return 'mubtadi';
+}
+
+export function addXP(amount: number, dateStr?: string) {
     if (typeof window === "undefined") return;
 
     const storage = getStorageService();
@@ -88,6 +103,9 @@ export function addXP(amount: number) {
     const newXP = currentXP + amount;
 
     storage.set(STORAGE_KEYS.USER_XP, newXP.toString());
+
+    // Record activity for stats
+    incrementDailyActivity('xpGained', amount, dateStr);
 
     // Dispatch events to update UI
     window.dispatchEvent(new Event("xp_updated"));

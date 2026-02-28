@@ -36,15 +36,15 @@ export const statsEN = {
         quick: {
             currentStreak: "Current Streak",
             longestStreak: "Longest: {{days}} days",
-            weeklyPrayers: "Prayers This Week",
-            outOf35: "out of 35 prayers",
+            weeklyPrayers: "Prayers (Last 14 Days)",
+            outOf35: "out of 70 prayers",
             weeklyXp: "Weekly XP",
-            last7Days: "last 7 days",
+            last7Days: "last 14 days",
             consistency: "Consistency",
             last30Days: "last 30 days"
         },
         heatmap: {
-            title: "Prayer Consistency (7 Days)",
+            title: "Prayer Consistency (14 Days)",
             today: "today",
             missed: "Missed",
             completed: "Completed"
@@ -72,6 +72,57 @@ export const statsEN = {
             ayatRead: "Verses read",
             dhikr: "Dhikr",
             totalTasbih: "Total tasbih"
+        },
+        ranks: {
+            mubtadi: {
+                title: "Mubtadi",
+                desc: "A term for a beginner (al-mubtadi) who is just taking the first steps in the journey of self-discipline and spiritual refinement.",
+                milestone: "Focus on purifying your intention in every action.",
+                quote: "Actions are but by intentions.",
+                source: "Hadith Bukhari & Muslim"
+            },
+            seeker: {
+                title: "Seeker of Mercy",
+                desc: "Finding peace in the regularity of obligatory worship.",
+                milestone: "Prioritize performing prayers exactly on time.",
+                quote: "Do not despair of the mercy of Allah.",
+                source: "Quran, Az-Zumar: 53"
+            },
+            warrior: {
+                title: "Fajr Warrior",
+                desc: "Disciplined in the most challenging yet blessed time.",
+                milestone: "Maintain consistency in Fajr prayer on time.",
+                quote: "Indeed, the recitation of Fajr is witnessed.",
+                source: "Quran, Al-Isra: 78"
+            },
+            abid: {
+                title: "Abid",
+                desc: "A servant who begins to taste the sweetness of worship.",
+                milestone: "Gradually incorporate Sunnah Rawatib prayers.",
+                quote: "My servant draws near with voluntary works until I love him.",
+                source: "Hadith Qudsi (Bukhari)"
+            },
+            salik: {
+                title: "Salik",
+                desc: "A spiritual wayfarer mindful of every single step.",
+                milestone: "Practice presence of heart (khusyuk) in prayer.",
+                quote: "If the heart is sound, the whole body is sound.",
+                source: "Hadith Bukhari & Muslim"
+            },
+            mukhlis: {
+                title: "Mukhlis",
+                desc: "Purifying all deeds solely for the sake of Allah.",
+                milestone: "Guard your heart against seeking praise from others.",
+                quote: "Worship Allah, being sincere to Him in religion.",
+                source: "Quran, Al-Bayyinah: 5"
+            },
+            muhsin: {
+                title: "Muhsin",
+                desc: "Worshipping as if you see Him, or knowing He sees you.",
+                milestone: "Make every moment a form of remembrance and gratitude.",
+                quote: "Worship Allah as if you see Him... He sees you.",
+                source: "Hadith Jibril (Muslim)"
+            }
         }
     }
 };

@@ -172,7 +172,7 @@ export default function PrayerCheckInWidget() {
             updateStreak();
         }
 
-        addXP(finalXp);
+        addXP(finalXp, selectedDate);
         window.dispatchEvent(new CustomEvent("xp_updated"));
         completeMission(missionId, finalXp, selectedDate);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));

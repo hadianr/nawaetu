@@ -50,28 +50,28 @@ export interface MonthlyStats {
 }
 
 /**
- * Record today's activity
+ * Record daily activity
  */
-export function recordDailyActivity(activity: Partial<DailyActivity>) {
+export function recordDailyActivity(activity: Partial<DailyActivity>, dateStr?: string) {
     if (typeof window === "undefined") return;
 
-    const today = new Date().toISOString().split("T")[0];
+    const date = dateStr || new Date().toISOString().split("T")[0];
     const history = getDailyActivityHistory();
 
-    // Find or create today's entry
-    const existingIndex = history.findIndex((a) => a.date === today);
+    // Find or create entry for the specified date
+    const existingIndex = history.findIndex((a) => a.date === date);
 
     if (existingIndex >= 0) {
         // Update existing
         history[existingIndex] = {
             ...history[existingIndex],
             ...activity,
-            date: today,
+            date: date,
         };
     } else {
         // Create new
         history.push({
-            date: today,
+            date: date,
             xpGained: activity.xpGained || 0,
             missionsCompleted: activity.missionsCompleted || 0,
             prayersCompleted: activity.prayersCompleted || 0,
@@ -96,17 +96,17 @@ export function recordDailyActivity(activity: Partial<DailyActivity>) {
 }
 
 /**
- * Increment a specific activity metric for today
+ * Increment a specific activity metric
  */
-export function incrementDailyActivity(key: keyof Omit<DailyActivity, 'date' | 'xpGained'>, amount: number = 1) {
+export function incrementDailyActivity(key: keyof Omit<DailyActivity, 'date'>, amount: number = 1, dateStr?: string) {
     if (typeof window === "undefined") return;
 
     const history = getDailyActivityHistory();
-    const today = new Date().toISOString().split("T")[0];
-    const existing = history.find(a => a.date === today);
+    const date = dateStr || new Date().toISOString().split("T")[0];
+    const existing = history.find(a => a.date === date);
 
     const currentVal = existing ? (existing[key] as number || 0) : 0;
-    recordDailyActivity({ [key]: currentVal + amount });
+    recordDailyActivity({ [key]: currentVal + amount }, date);
 }
 
 /**
@@ -172,7 +172,7 @@ export function getWeeklyStats(): WeeklyStats {
     // Calculate streak
     let streak = 0;
     const today = new Date().toISOString().split("T")[0];
-    let checkDate = new Date();
+    const checkDate = new Date();
 
     for (let i = 0; i < 30; i++) {
         const dateStr = checkDate.toISOString().split("T")[0];
