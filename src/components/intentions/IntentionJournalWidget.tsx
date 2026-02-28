@@ -101,9 +101,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         const checkTodayStatus = async () => {
             try {
                 // Background fetch
-                const response = await fetch(`/api/intentions/today?user_token=${userToken}`, {
+                const response = await fetch(`/api/intentions/today`, {
                     // Cache busting or ensure next.js doesn't hard cache this for real-time widgets
-                    headers: { 'Cache-Control': 'no-cache' }
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Authorization': `Bearer ${userToken}`
+                    }
                 });
 
                 if (response.ok) {
