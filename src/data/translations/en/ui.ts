@@ -24,4 +24,11 @@ export const uiEN = {
     navQibla: "Qibla",
     navSettings: "Settings",
 
+    // Global Impact Widget
+    globalImpactTitle: "Global Impact",
+    globalImpactLive: "Live",
+    globalImpactIntentionsToday: "Intentions Today",
+    globalImpactPrayers: "Prayers",
+    globalImpactCountries: "Countries",
+    globalImpactTagline: "Uniting the Ummah, one intention at a time.",
 };

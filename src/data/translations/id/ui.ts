@@ -24,4 +24,11 @@ export const uiID = {
     navQibla: "Kiblat",
     navSettings: "Atur",
 
+    // Global Impact Widget
+    globalImpactTitle: "Dampak Global",
+    globalImpactLive: "Live",
+    globalImpactIntentionsToday: "Niat Hari Ini",
+    globalImpactPrayers: "Sholat",
+    globalImpactCountries: "Negara",
+    globalImpactTagline: "Menyatukan Ummah, satu niat setiap saat.",
 };
