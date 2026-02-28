@@ -56,8 +56,9 @@ export const statsID = {
             title: "Ibadah Terlaksana",
             total: "total",
             categories: {
-                prayer: "Sholat",
-                worship: "Ibadah",
+                prayer: "Sholat Fardhu",
+                sunnah: "Sholat Sunnah",
+                worship: "Adab & Ibadah",
                 quran: "Al-Quran",
                 dhikr: "Dzikir",
                 fasting: "Puasa"
@@ -72,6 +73,56 @@ export const statsID = {
             ayatRead: "Ayat dibaca",
             dhikr: "Dzikir",
             totalTasbih: "Total tasbih"
+        },
+        insights: {
+            close: "Tutup",
+            streak: {
+                title: "Detail Konsistensi",
+                desc: "Istiqomah adalah kunci perubahan. Landmark 40 hari biasanya menjadi titik balik pembentukan habit baru.",
+                current: "Streak Saat Ini",
+                longest: "Rekor Terpanjang",
+                nextMilestone: "Milestone Berikutnya",
+                status: "Pertahankan semangatmu!"
+            },
+            prayers: {
+                title: "Analisis Sholat",
+                desc: "Kualitas sholat mencerminkan kualitas hidup. Usahakan untuk menjaga sholat di awal waktu.",
+                fardu: "Sholat Fardhu",
+                sunnah: "Sholat Sunnah",
+                target: "Target Mingguan",
+                progress: "Progress Ibadah"
+            },
+            xp: {
+                title: "Pertumbuhan XP",
+                desc: "XP (Experience Points) mencerminkan usaha dan dedikasi yang kamu berikan dalam setiap amalan.",
+                weekly: "XP Minggu Ini",
+                avgDaily: "Rata-rata Harian",
+                source: "Sumber XP Terbesar",
+                levelProgress: "Progres Level"
+            },
+            consistency: {
+                title: "Grafik Disiplin",
+                desc: "Disiplin bukan tentang kesempurnaan, tapi tentang kemauan untuk kembali setiap hari.",
+                activeDays: "Hari Aktif (30 Hari)",
+                rate: "Tingkat Kehadiran",
+                trend: "Tren Dibanding Bulan Lalu",
+                tip: "Jadikan Nawaetu bagian dari rutinitas pagimu."
+            },
+            quran: {
+                title: "Interaksi Al-Quran",
+                desc: "Setiap huruf yang dibaca adalah sepuluh kebaikan. Jadikan Al-Quran teman setiamu.",
+                totalRead: "Total Ayat Dibaca",
+                streak: "Streak Membaca",
+                lastSurah: "Surah Terakhir",
+                target: "Target Khataman"
+            },
+            dhikr: {
+                title: "Basahi Lidah dengan Zikir",
+                desc: "Zikir adalah nutrisi bagi hati agar tetap tenang di tengah huru-hara dunia.",
+                total: "Total Hitungan Tasbih",
+                favDhikr: "Zikir Terfavorit",
+                benefit: "Ketenangan hati yang dirasakan."
+            }
         },
         ranks: {
             mubtadi: {

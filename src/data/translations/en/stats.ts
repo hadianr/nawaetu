@@ -56,8 +56,9 @@ export const statsEN = {
             title: "Completed Worships",
             total: "total",
             categories: {
-                prayer: "Prayer",
-                worship: "Worship",
+                prayer: "Fard Prayer",
+                sunnah: "Sunnah Prayer",
+                worship: "Manners & Worship",
                 quran: "Quran",
                 dhikr: "Dhikr",
                 fasting: "Fasting"
@@ -72,6 +73,56 @@ export const statsEN = {
             ayatRead: "Verses read",
             dhikr: "Dhikr",
             totalTasbih: "Total tasbih"
+        },
+        insights: {
+            close: "Close",
+            streak: {
+                title: "Consistency Details",
+                desc: "Steadfastness (Istiqomah) is the key to change. The 40-day landmark is usually the turning point for habit formation.",
+                current: "Current Streak",
+                longest: "Longest Record",
+                nextMilestone: "Next Milestone",
+                status: "Keep up the spirit!"
+            },
+            prayers: {
+                title: "Prayer Analysis",
+                desc: "The quality of prayer reflects the quality of life. Strive to keep prayers at the beginning of their time.",
+                fardu: "Fard Prayer",
+                sunnah: "Sunnah Prayer",
+                target: "Weekly Target",
+                progress: "Worship Progress"
+            },
+            xp: {
+                title: "XP Growth",
+                desc: "XP (Experience Points) reflects the effort and dedication you put into every deed.",
+                weekly: "Weekly XP",
+                avgDaily: "Daily Average",
+                source: "Top XP Source",
+                levelProgress: "Level Progress"
+            },
+            consistency: {
+                title: "Discipline Graph",
+                desc: "Discipline isn't about perfection, it's about the willingness to return every day.",
+                activeDays: "Active Days (30 Days)",
+                rate: "Attendance Rate",
+                trend: "Trend vs Last Month",
+                tip: "Make Nawaetu part of your morning routine."
+            },
+            quran: {
+                title: "Quran Interaction",
+                desc: "Every letter read is ten good deeds. Make the Quran your constant companion.",
+                totalRead: "Total Verses Read",
+                streak: "Reading Streak",
+                lastSurah: "Last Surah",
+                target: "Khatam Target"
+            },
+            dhikr: {
+                title: "Moisten Tongues with Dhikr",
+                desc: "Dhikr is nutrition for the heart to remain calm amidst the chaos of the world.",
+                total: "Total Tasbih Count",
+                favDhikr: "Favorite Dhikr",
+                benefit: "Peace of heart experienced."
+            }
         },
         ranks: {
             mubtadi: {
