@@ -19,15 +19,17 @@
 import { SETTINGS_TRANSLATIONS } from '../translations';
 import { Mission, Gender } from './types';
 import { UNIVERSAL_MISSIONS, MALE_MISSIONS, FEMALE_MISSIONS } from './daily';
+import { SUNNAH_PRAYER_MISSIONS } from './sunnah-prayer';
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from './seasonal';
 
 export * from './types';
 export * from './daily';
 export * from './seasonal';
+export * from './sunnah-prayer';
 
 // Get missions filtered by gender
 export function getMissionsForGender(gender: Gender): Mission[] {
-    const missions = [...UNIVERSAL_MISSIONS];
+    const missions = [...UNIVERSAL_MISSIONS, ...SUNNAH_PRAYER_MISSIONS];
 
     if (gender === 'female') {
         missions.push(...FEMALE_MISSIONS);

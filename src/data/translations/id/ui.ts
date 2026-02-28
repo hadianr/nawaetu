@@ -31,4 +31,8 @@ export const uiID = {
     globalImpactPrayers: "Sholat",
     globalImpactCountries: "Negara",
     globalImpactTagline: "Menyatukan Ummah, satu niat setiap saat.",
+
+    // Undo
+    habitUndoTitle: "Habit dibatalkan",
+    habitUndoDesc: "Point XP telah dikembalikan.",
 };

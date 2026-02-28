@@ -24,6 +24,7 @@ import { quranEN } from './quran';
 import { profileEN } from './profile';
 import { ramadhanEN } from './ramadhan';
 import { statsEN } from './stats';
+import { sunnahPrayerEN } from './sunnah-prayer';
 
 export const SETTINGS_EN = {
   ...missionsEN,
@@ -34,4 +35,5 @@ export const SETTINGS_EN = {
   ...profileEN,
   ...ramadhanEN,
   ...statsEN,
+  ...sunnahPrayerEN,
 };

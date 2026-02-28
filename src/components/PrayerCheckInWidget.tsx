@@ -42,6 +42,16 @@ const PRAYERS = [
     { suffix: "isya", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "prayerIsha" },
 ] as const;
 
+const SUNNAH_PRAYERS = [
+    { id: "sunnah_qobliyah_fajr", icon: "✨", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title" },
+    { id: "sunnah_dhuha", icon: "☀️", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title" },
+    { id: "sunnah_qobliyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title" },
+    { id: "sunnah_ba_diyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title" },
+    { id: "sunnah_ba_diyah_maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title" },
+    { id: "sunnah_ba_diyah_isha", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title" },
+    { id: "sunnah_witir", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title" },
+] as const;
+
 // Bottom-sheet state for male jamaah option
 type SheetState = {
     prayer: typeof PRAYERS[number];
@@ -53,13 +63,14 @@ export default function PrayerCheckInWidget() {
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const { completedMissions, completeMission, isCompleted } = useMissions();
+    const { completedMissions, completeMission, undoCompleteMission, isCompleted } = useMissions();
     const { data: prayerData } = usePrayerTimesContext();
 
     const [gender, setGender] = useState<Gender>(null);
     const [mounted, setMounted] = useState(false);
     const [sheet, setSheet] = useState<SheetState>(null);
     const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
+    const [showSunnah, setShowSunnah] = useState(false);
 
     const todayStr = new Date().toISOString().split("T")[0];
     const isBackdated = selectedDate !== todayStr;
@@ -137,11 +148,17 @@ export default function PrayerCheckInWidget() {
         const diffFromStart = now.getTime() - start.getTime();
         const minsFromStart = diffFromStart / 60000;
 
+        // For Qobliyah: active before fardhu starts (up to 30 mins before) or during fardhu
+        if ((arguments[0] as any).isQobliyah) {
+            if (minsFromStart >= -30 && minsFromStart < 1) {
+                return { isActive: true, isUpcoming: false, isLate: false, isFuture: false };
+            }
+        }
+
         if (minsFromStart < 0) {
             // Before this prayer time starts — it's a future prayer, lock it strictly
             const isUpcoming = minsFromStart > -30;
             const res = { isActive: false, isUpcoming, isLate: false, isFuture: true };
-            // console.log(`[getTimeStatus] ${prayerKey}: minsFromStart=${minsFromStart.toFixed(1)}, res=`, res);
             return res;
         }
 
@@ -155,7 +172,13 @@ export default function PrayerCheckInWidget() {
             return { isActive: true, isUpcoming: false, isLate: minsToEnd < 30, isFuture: false };
         }
 
-        // Isha: active if started, we cap at 4h
+        // Isha: active if started, we cap at 4h (for Fardhu)
+        // Witir: active from Isha until Fajr
+        const isWitir = prayerKey === "Isha" && endKey === "Fajr";
+        if (isWitir) {
+            return { isActive: minsFromStart >= 0, isUpcoming: false, isLate: false, isFuture: false };
+        }
+
         const isActive = minsFromStart >= 0 && minsFromStart < 240;
         return { isActive, isUpcoming: false, isLate: minsFromStart > 180 && isActive, isFuture: false };
     };
@@ -184,12 +207,28 @@ export default function PrayerCheckInWidget() {
         });
     };
 
-    const handlePrayerTap = (prayer: typeof PRAYERS[number]) => {
-        const missionId = getMissionId(prayer.suffix);
-        if (isPrayerDone(prayer.suffix)) return; // Already done
+    const handlePrayerTap = (prayer: typeof PRAYERS[number] | typeof SUNNAH_PRAYERS[number]) => {
+        const isSunnah = 'id' in prayer;
+        const missionId = isSunnah ? prayer.id : getMissionId(prayer.suffix);
+        const doneRecord = completedMissions.find(m => m.id === missionId && m.completedAt.split("T")[0] === selectedDate);
+        const done = !!doneRecord;
+
+        if (done) {
+            // Undo logic
+            const xpToSubtract = doneRecord.xpEarned || 0;
+            undoCompleteMission(missionId, selectedDate);
+            addXP(-xpToSubtract, selectedDate);
+            window.dispatchEvent(new CustomEvent("xp_updated"));
+            window.dispatchEvent(new CustomEvent("mission_storage_updated"));
+
+            toast.info(t.habitUndoTitle || "Habit dibatalkan", {
+                description: t.habitUndoDesc || "Point XP telah dikembalikan.",
+                icon: "↩️",
+            });
+            return;
+        }
 
         const status = getTimeStatus(prayer.prayerKey, prayer.endKey);
-        // console.log(`[handlePrayerTap] ${prayer.label} tap:`, { status, time: new Date().toLocaleTimeString() });
 
         if (status.isFuture) {
             const label = (t as any)[prayer.i18n] || prayer.i18n;
@@ -197,14 +236,16 @@ export default function PrayerCheckInWidget() {
                 description: t.homePrayerCheckInWait,
                 icon: "🔒",
             });
-            return; // Time hasn't arrived yet
+            return;
         }
 
-        if (gender !== "female") {
-            // Show jamaah option sheet for male / unknown gender
-            setSheet({ prayer, missionId });
+        if (isSunnah) {
+            // Sunnah points are smaller or fixed
+            const xp = (prayer as any).id === 'sunnah_dhuha' ? 50 : 25;
+            doComplete(missionId, xp);
+        } else if (gender !== "female") {
+            setSheet({ prayer: prayer as typeof PRAYERS[number], missionId });
         } else {
-            // Female: 1-tap complete
             doComplete(missionId, 25);
         }
     };
@@ -292,7 +333,7 @@ export default function PrayerCheckInWidget() {
                             <button
                                 key={prayer.suffix}
                                 onClick={() => handlePrayerTap(prayer)}
-                                disabled={done || isLocked}
+                                disabled={isLocked}
                                 className={cn(
                                     "flex-1 flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
                                     done
@@ -393,6 +434,99 @@ export default function PrayerCheckInWidget() {
                         </p>
                     </div>
                 )}
+
+                {/* Sunnah Toggle & Section */}
+                <div className="mt-4 pt-3 border-t border-dashed border-white/10 relative z-10">
+                    <button
+                        onClick={() => setShowSunnah(!showSunnah)}
+                        className={cn(
+                            "w-full flex items-center justify-between py-1 transition-colors group",
+                            isDaylight ? "text-slate-500 hover:text-emerald-600" : "text-white/40 hover:text-[rgb(var(--color-primary-light))]"
+                        )}
+                    >
+                        <div className="flex items-center gap-1.5">
+                            <Sparkles className="w-3 h-3" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">
+                                {t.sunnah_prayer_section_title || "Sunnah Prayers"}
+                            </span>
+                        </div>
+                        <div className={cn(
+                            "text-[9px] font-bold px-2 py-0.5 rounded-full transition-colors",
+                            isDaylight ? "bg-slate-100 group-hover:bg-emerald-50" : "bg-white/5 group-hover:bg-white/10"
+                        )}>
+                            {showSunnah ? "↑ Hide" : "↓ Show"}
+                        </div>
+                    </button>
+
+                    {showSunnah && (
+                        <div className="grid grid-cols-3 xs:grid-cols-3 sm:grid-cols-7 gap-2 mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                            {SUNNAH_PRAYERS.map((prayer) => {
+                                const done = completedMissions.some(m => m.id === prayer.id && m.completedAt.split("T")[0] === selectedDate);
+                                const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
+                                const isLocked = isFuture && !done;
+
+                                return (
+                                    <button
+                                        key={prayer.id}
+                                        onClick={() => handlePrayerTap(prayer)}
+                                        disabled={isLocked}
+                                        className={cn(
+                                            "flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
+                                            done
+                                                ? isDaylight
+                                                    ? "bg-emerald-50/50 border-emerald-100 opacity-80"
+                                                    : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 opacity-80"
+                                                : isLocked
+                                                    ? isDaylight
+                                                        ? "bg-slate-50/50 border-slate-50 opacity-30 grayscale"
+                                                        : "bg-white/[0.01] border-white/[0.05] opacity-30 grayscale pointer-events-none"
+                                                    : isActive
+                                                        ? isDaylight
+                                                            ? "bg-orange-50 border-orange-200 shadow-sm active:scale-95"
+                                                            : "bg-amber-500/10 border-amber-500/20 shadow-sm active:scale-95"
+                                                        : isDaylight
+                                                            ? "bg-white border-slate-100 active:scale-95"
+                                                            : "bg-white/[0.02] border-white/5 active:scale-95"
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "w-6 h-6 rounded-full flex items-center justify-center text-[10px]",
+                                            done
+                                                ? isDaylight ? "bg-emerald-500 text-white" : "bg-[rgb(var(--color-primary))] text-white"
+                                                : isLate
+                                                    ? isDaylight ? "bg-orange-100 text-orange-600" : "bg-amber-500/20 text-amber-400"
+                                                    : isDaylight ? "bg-slate-100 text-slate-400" : "bg-white/5 text-white/40"
+                                        )}>
+                                            {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : prayer.icon)}
+                                        </div>
+                                        <span className={cn(
+                                            "text-[6.5px] font-black uppercase text-center px-1 leading-[1.1] min-h-[16px] flex items-center justify-center",
+                                            done
+                                                ? isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                                                : isLate
+                                                    ? isDaylight ? "text-orange-700" : "text-amber-400/80"
+                                                    : isDaylight ? "text-slate-400" : "text-white/40"
+                                        )}>
+                                            {(t as any)[prayer.i18n] || prayer.i18n.split("_").pop()}
+                                        </span>
+
+                                        {/* Sunnah XP Preview */}
+                                        {!done && !isLocked && (isActive || isLate) && (
+                                            <span className={cn(
+                                                "text-[6px] font-black leading-none mt-0.5",
+                                                isLate
+                                                    ? isDaylight ? "text-orange-600" : "text-amber-400/60"
+                                                    : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
+                                            )}>
+                                                +{getXPReward(prayer.id === 'sunnah_dhuha' ? 50 : 25)} XP
+                                            </span>
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Bottom Sheet: Jamaah or Sendiri (for male/unknown) */}

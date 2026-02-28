@@ -271,21 +271,6 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'day',
         validationConfig: { allowedDays: [5] } // Friday = 5
     },
-    {
-        id: 'dhuha_prayer',
-        title: 'Sholat Dhuha',
-        description: 'Tunaikan sholat Dhuha (08:00-11:00)',
-        xpReward: 50,
-        icon: '☀️',
-        gender: 'male',
-        dalil: 'HR Muslim 748',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'sunnah',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { timeWindow: { start: 8, end: 11 } }
-    },
     // MALE PRAYER MISSIONS
     {
         id: 'fajr_prayer_male',

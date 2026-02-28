@@ -24,6 +24,7 @@ import { quranID } from './quran';
 import { profileID } from './profile';
 import { ramadhanID } from './ramadhan';
 import { statsID } from './stats';
+import { sunnahPrayerID } from './sunnah-prayer';
 
 export const SETTINGS_ID = {
   ...missionsID,
@@ -34,4 +35,5 @@ export const SETTINGS_ID = {
   ...profileID,
   ...ramadhanID,
   ...statsID,
+  ...sunnahPrayerID,
 };

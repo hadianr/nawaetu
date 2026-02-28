@@ -31,4 +31,8 @@ export const uiEN = {
     globalImpactPrayers: "Prayers",
     globalImpactCountries: "Countries",
     globalImpactTagline: "Uniting the Ummah, one intention at a time.",
+
+    // Undo
+    habitUndoTitle: "Habit undone",
+    habitUndoDesc: "XP points have been returned.",
 };
