@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Mission } from "@/data/missions-data";
+import { Mission } from "@/data/missions";
 import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 
 export interface ValidationResult {

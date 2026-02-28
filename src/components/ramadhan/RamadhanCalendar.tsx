@@ -26,7 +26,7 @@ import { Loader2, Calendar as CalendarIcon, MapPin } from "lucide-react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/context/LocaleContext";
-import { getRamadhanDay } from "@/data/ramadhan-data";
+import { getRamadhanDay } from "@/data/ramadhan";
 
 export default function RamadhanCalendar() {
     const { calendarData, loading, error, fetchCalendar } = useRamadhanCalendar();

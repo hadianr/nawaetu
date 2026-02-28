@@ -21,7 +21,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { DALIL_TARAWEH, NIAT_TARAWEH, formatHijriKey } from "@/data/ramadhan-data";
+import { DALIL_TARAWEH, NIAT_TARAWEH, formatHijriKey } from "@/data/ramadhan";
 import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";

@@ -24,7 +24,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
-import { FAQ_DATA } from "@/data/ramadhan-fiqh";
+import { FAQ_DATA } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 
 interface FAQModalProps {

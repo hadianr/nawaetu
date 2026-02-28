@@ -21,7 +21,7 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, Sparkles, AlertCircle } from "lucide-react";
-import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions-data";
+import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";

@@ -21,7 +21,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mission, Gender, getLocalizedMission } from "@/data/missions-data";
+import { Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { Check, CheckCircle2, Sparkles, AlertCircle, X } from "lucide-react";
 import MissionDetailDialog from "./MissionDetailDialog";

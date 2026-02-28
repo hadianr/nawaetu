@@ -28,7 +28,7 @@ import {
     ODD_NIGHTS,
     getNextLailatulQadrNight,
     isLailatulQadrNight,
-} from "@/data/ramadhan-data";
+} from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import NiatCard from "./NiatCard";
 import { useTranslations } from "@/context/LocaleContext";

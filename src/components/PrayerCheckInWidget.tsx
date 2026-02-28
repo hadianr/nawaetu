@@ -31,7 +31,7 @@ import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
-import type { Gender } from "@/data/missions-data";
+import type { Gender } from "@/data/missions";
 
 // Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
 const PRAYERS = [

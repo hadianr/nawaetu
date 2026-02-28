@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RAMADHAN_PRACTICES } from "@/data/ramadhan-data";
+import { RAMADHAN_PRACTICES } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import NiatCard from "./NiatCard";
 import { useLocale } from "@/context/LocaleContext";

@@ -21,7 +21,7 @@
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import DalilBadge from "./DalilBadge";
 import NiatCard from "./NiatCard";
-import { DALIL_FASTING_SCHEDULE, DOA_IFTAR, DOA_IFTAR_2, DOA_IFTAR_3, DOA_SAHUR } from "@/data/ramadhan-data";
+import { DALIL_FASTING_SCHEDULE, DOA_IFTAR, DOA_IFTAR_2, DOA_IFTAR_3, DOA_SAHUR } from "@/data/ramadhan";
 import { useState, useEffect } from "react";
 import RamadhanCalendar from "./RamadhanCalendar";
 import { useTranslations } from "@/context/LocaleContext";

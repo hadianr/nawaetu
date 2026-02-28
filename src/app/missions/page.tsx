@@ -20,7 +20,7 @@
 
 import { useState, useEffect } from "react";
 import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
-import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions-data";
+import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { addXP } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";

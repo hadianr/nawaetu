@@ -19,7 +19,7 @@
  */
 
 import { useState } from "react";
-import { SUNNAH_FOODS_SAHUR, SUNNAH_FOODS_IFTAR } from "@/data/ramadhan-data";
+import { SUNNAH_FOODS_SAHUR, SUNNAH_FOODS_IFTAR } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
 import { Utensils, Moon, Sun } from "lucide-react";

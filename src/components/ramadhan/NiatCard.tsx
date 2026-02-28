@@ -21,7 +21,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import type { NiatData } from "@/data/ramadhan-data";
+import type { NiatData } from "@/data/ramadhan";
 import { useLocale } from "@/context/LocaleContext";
 
 interface NiatCardProps {

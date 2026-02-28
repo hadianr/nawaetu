@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { RAMADHAN_MISSIONS, SYABAN_MISSIONS, getLocalizedMission } from "@/data/missions-data";
+import { RAMADHAN_MISSIONS, SYABAN_MISSIONS, getLocalizedMission } from "@/data/missions";
 import dynamic from "next/dynamic";
 
 // Inline critical icons to avoid lucide overhead on LCP

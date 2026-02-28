@@ -19,8 +19,8 @@
  */
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan-data";
-import { NIAT_PUASA_RAMADHAN, DALIL_PUASA, DALIL_10_DAYS_MERCY, DALIL_10_DAYS_FORGIVENESS, DALIL_10_DAYS_FREEDOM } from "@/data/ramadhan-data";
+import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan";
+import { NIAT_PUASA_RAMADHAN, DALIL_PUASA, DALIL_10_DAYS_MERCY, DALIL_10_DAYS_FORGIVENESS, DALIL_10_DAYS_FREEDOM } from "@/data/ramadhan";
 import NiatCard from "./NiatCard";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
