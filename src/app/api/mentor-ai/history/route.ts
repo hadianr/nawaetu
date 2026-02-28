@@ -22,9 +22,24 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { chatSessions } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { z } from "zod";
+
+// Schema validation for chat history POST
+const chatHistorySchema = z.object({
+    id: z.string(),
+    title: z.string().optional(),
+    messages: z.array(
+        z.object({
+            id: z.string().default(() => crypto.randomUUID()),
+            role: z.enum(['user', 'assistant']),
+            content: z.string(),
+            timestamp: z.number().default(() => Date.now()),
+        })
+    ),
+});
 
 // GET: Fetch all chat sessions for the user
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
         if (!session?.user?.id) {
@@ -55,11 +70,15 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { id, title, messages } = body;
 
-        if (!id || !messages) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        // Validate request body
+        const result = chatHistorySchema.safeParse(body);
+
+        if (!result.success) {
+            return NextResponse.json({ error: "Invalid data format", details: result.error.format() }, { status: 400 });
         }
+
+        const { id, title, messages } = result.data;
 
         // Optimize: Slice messages to last 50 if too long
         const trimmedMessages = messages.slice(-50);
@@ -74,7 +93,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Perform UPSERT: Insert or Update if exists (and owned by user)
-        const result = await db.insert(chatSessions)
+        const dbResult = await db.insert(chatSessions)
             .values({
                 id: id,
                 userId: session.user.id,
@@ -91,7 +110,7 @@ export async function POST(req: NextRequest) {
             .returning();
 
         // If no row returned, it means conflict occurred but update was skipped (ownership mismatch)
-        if (result.length === 0) {
+        if (dbResult.length === 0) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
