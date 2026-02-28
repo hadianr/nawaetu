@@ -73,11 +73,6 @@ describe('POST /api/user/sync-guest', () => {
 
         // Setup transaction mock
         txMock = {
-            query: {
-                intentions: {
-                    findMany: vi.fn().mockResolvedValue([]),
-                }
-            },
             insert: vi.fn().mockReturnThis(),
             values: vi.fn().mockReturnThis(),
             onConflictDoNothing: vi.fn().mockReturnThis(),
@@ -118,9 +113,8 @@ describe('POST /api/user/sync-guest', () => {
         // Filter calls for intentions table
         const insertCalls = txMock.insert.mock.calls.filter((call: any) => call[0] === intentions);
 
-        // Assert optimization: 1 call instead of N (Note: Current implementation actually does N calls for intentions, updating test to reflect reality)
-        // Ideally this should be optimized too, but for now we fix the test to pass.
-        expect(insertCalls.length).toBe(3);
+        // Assert optimization: 1 call instead of N
+        expect(insertCalls.length).toBe(1);
     });
 
     it('should use bulk insert (1 call) for multiple completed missions', async () => {
