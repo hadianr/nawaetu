@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const RAMADHAN_EN = {
+export const ramadhanEN = {
     // Common
     ramadhanLabel: "Ramadhan",
     ramadhanDay: "Day ",
@@ -174,4 +174,4 @@ export const RAMADHAN_EN = {
     prayerMissed: "Missed",
 } as const;
 
-export type RamadhanTranslationKeys = keyof typeof RAMADHAN_EN;
+export type RamadhanTranslationKeys = keyof typeof ramadhanEN;

@@ -4,6 +4,8 @@ import { settingsEN } from './settings';
 import { otherEN } from './other';
 import { quranEN } from './quran';
 import { profileEN } from './profile';
+import { ramadhanEN } from './ramadhan';
+import { statsEN } from './stats';
 
 export const SETTINGS_EN = {
   ...missionsEN,
@@ -12,4 +14,6 @@ export const SETTINGS_EN = {
   ...otherEN,
   ...quranEN,
   ...profileEN,
+  ...ramadhanEN,
+  ...statsEN,
 };

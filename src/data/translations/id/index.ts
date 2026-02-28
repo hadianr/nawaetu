@@ -4,6 +4,8 @@ import { settingsID } from './settings';
 import { otherID } from './other';
 import { quranID } from './quran';
 import { profileID } from './profile';
+import { ramadhanID } from './ramadhan';
+import { statsID } from './stats';
 
 export const SETTINGS_ID = {
   ...missionsID,
@@ -12,4 +14,6 @@ export const SETTINGS_ID = {
   ...otherID,
   ...quranID,
   ...profileID,
+  ...ramadhanID,
+  ...statsID,
 };

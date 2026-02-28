@@ -21,8 +21,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import * as Sentry from "@sentry/nextjs";
 import { SETTINGS_TRANSLATIONS } from "@/data/translations";
-import { RAMADHAN_TRANSLATIONS } from "@/data/ramadhan-translations";
-import { STATS_TRANSLATIONS } from "@/data/stats-translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -31,8 +29,8 @@ const DEFAULT_LOCALE = "id";
 // Helper to merge all translation objects
 function getMergedTranslations() {
   return {
-    id: { ...SETTINGS_TRANSLATIONS.id, ...RAMADHAN_TRANSLATIONS.id, ...STATS_TRANSLATIONS.id },
-    en: { ...SETTINGS_TRANSLATIONS.en, ...RAMADHAN_TRANSLATIONS.en, ...STATS_TRANSLATIONS.en },
+    id: { ...SETTINGS_TRANSLATIONS.id },
+    en: { ...SETTINGS_TRANSLATIONS.en },
   };
 }
 

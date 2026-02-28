@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-export const STATS_ID = {
+export const statsID = {
     stats: {
         header: {
             title: "Statistik Ibadah",

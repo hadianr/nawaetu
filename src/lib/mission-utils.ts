@@ -178,8 +178,8 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
 /**
  * Gets the localized label for a mission's hukum (obligatory, sunnah, etc.)
  */
-export function getHukumLabel(hukum: string, t: typeof SETTINGS_TRANSLATIONS.id) {
-    const labels: Record<string, keyof typeof SETTINGS_TRANSLATIONS.id> = {
+export function getHukumLabel(hukum: string, t: any): string {
+    const labels: Record<string, string> = {
         'obligatory': 'hukumWajib',
         'sunnah': 'hukumSunnah',
         'permissible': 'hukumMubah',
@@ -187,5 +187,5 @@ export function getHukumLabel(hukum: string, t: typeof SETTINGS_TRANSLATIONS.id)
         'forbidden': 'hukumHaram'
     };
     const key = labels[hukum];
-    return t[key as keyof typeof SETTINGS_TRANSLATIONS.id] || hukum;
+    return (t[key] as string) || hukum;
 }

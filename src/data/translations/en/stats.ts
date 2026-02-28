@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-export const STATS_EN = {
+export const statsEN = {
     stats: {
         header: {
             title: "Worship Statistics",
