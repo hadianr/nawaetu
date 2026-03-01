@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 /**
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
@@ -110,4 +112,24 @@ export function addXP(amount: number, dateStr?: string) {
     // Dispatch events to update UI
     window.dispatchEvent(new Event("xp_updated"));
     window.dispatchEvent(new Event("storage"));
+}
+
+export function usePlayerStats(): PlayerStats {
+    const [stats, setStats] = useState<PlayerStats>(() => getPlayerStats());
+
+    useEffect(() => {
+        const handleUpdate = () => {
+            setStats(getPlayerStats());
+        };
+
+        window.addEventListener("xp_updated", handleUpdate);
+        window.addEventListener("storage", handleUpdate);
+
+        return () => {
+            window.removeEventListener("xp_updated", handleUpdate);
+            window.removeEventListener("storage", handleUpdate);
+        };
+    }, []);
+
+    return stats;
 }

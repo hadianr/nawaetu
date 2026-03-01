@@ -31,7 +31,11 @@ export const statsEN = {
             rankLabel: "Spiritual Rank",
             totalXp: "Total XP",
             toNextLevel: "to Level",
-            xpNeeded: "XP needed"
+            xpNeeded: "XP needed",
+            nextRankGoal: "Next Goal:",
+            currentXp: "Current XP",
+            nextLevelXp: "Next Level XP",
+            understand: "Understand"
         },
         quick: {
             currentStreak: "Current Streak",
@@ -46,11 +50,20 @@ export const statsEN = {
         heatmap: {
             title: "Prayer Consistency (14 Days)",
             today: "today",
+            total: "total",
             missed: "Missed",
             completed: "Completed"
         },
-        xpChart: {
-            title: "Daily XP (14 Days)"
+        chart: {
+            title: "Daily XP",
+            subtitle: "XP earned from missions and activities",
+            filters: {
+                today: "Today",
+                last7d: "7D",
+                last30d: "30D",
+                last90d: "90D",
+                last1y: "1Y"
+            }
         },
         missions: {
             title: "Completed Worships",
@@ -82,7 +95,9 @@ export const statsEN = {
                 current: "Current Streak",
                 longest: "Longest Record",
                 nextMilestone: "Next Milestone",
-                status: "Keep up the spirit!"
+                status: "Keep up the spirit!",
+                successDesc: "Amazing! You have surpassed the critical 40-day mark. This habit is starting to become second nature.",
+                progressDesc: "Keep it up! You need {{needed}} more days to reach the 40-day habit formation milestone."
             },
             prayers: {
                 title: "Prayer Analysis",
@@ -90,7 +105,19 @@ export const statsEN = {
                 fardu: "Fard Prayer",
                 sunnah: "Sunnah Prayer",
                 target: "Weekly Target",
-                progress: "Worship Progress"
+                progress: "Worship Progress",
+                names: {
+                    subuh: "Fajr",
+                    dzuhur: "Dhuhr",
+                    ashar: "Asr",
+                    maghrib: "Maghrib",
+                    isya: "Isha"
+                },
+                insightTitle: "Prayer Insights",
+                noData: "Perform at least one prayer to see more detailed insights.",
+                mostConsistent: "The most consistent prayer time for you is",
+                sunnahDone: "You have also completed {{count}} sunnah prayers, keep it up!",
+                sunnahNone: "Try adding Sunnah Rawatib prayers to perfect your worship."
             },
             xp: {
                 title: "XP Growth",
@@ -98,7 +125,10 @@ export const statsEN = {
                 weekly: "Weekly XP",
                 avgDaily: "Daily Average",
                 source: "Top XP Source",
-                levelProgress: "Level Progress"
+                insightTitle: "XP Insights",
+                noData: "Keep completing daily missions to see your most productive day.",
+                levelProgress: "Level Progress",
+                powerDayDesc: "Your most productive day is {{day}}. On this day, you tend to be more enthusiastic in completing missions."
             },
             consistency: {
                 title: "Discipline Graph",
@@ -106,7 +136,10 @@ export const statsEN = {
                 activeDays: "Active Days (30 Days)",
                 rate: "Attendance Rate",
                 trend: "Trend vs Last Month",
-                tip: "Make Nawaetu part of your morning routine."
+                tip: "Make Nawaetu part of your morning routine.",
+                highTitle: "Discipline Tips",
+                highDesc: "Your consistency is very high! This is a strong foundation for long-term spiritual growth.",
+                lowDesc: "Don't be too hard on yourself. If you miss a day, promptly return to your routine the next day."
             },
             quran: {
                 title: "Quran Interaction",
@@ -114,18 +147,25 @@ export const statsEN = {
                 totalRead: "Total Verses Read",
                 streak: "Reading Streak",
                 lastSurah: "Last Surah",
-                target: "Khatam Target"
+                target: "Khatam Target",
+                insightTitle: "Recitation Insights",
+                summary: "You have interacted with {{count}} holy verses.",
+                milestoneReach: "Only {{needed}} more verses to reach the {{target}} verses milestone!",
+                startTip: "Start by reading one page every day to gain the blessings of the Quran."
             },
             dhikr: {
                 title: "Moisten Tongues with Dhikr",
                 desc: "Dhikr is nutrition for the heart to remain calm amidst the chaos of the world.",
                 total: "Total Tasbih Count",
                 favDhikr: "Favorite Dhikr",
-                benefit: "Peace of heart experienced."
+                benefit: "Peace of heart experienced.",
+                benefitTitle: "Spiritual Benefits",
+                summary: "Your daily Dhikr helps maintain clarity of mind amidst busy schedules."
             }
         },
         ranks: {
             mubtadi: {
+                icon: "🌱",
                 title: "Mubtadi",
                 desc: "A term for a beginner (al-mubtadi) who is just taking the first steps in the journey of self-discipline and spiritual refinement.",
                 milestone: "Focus on purifying your intention in every action.",
@@ -133,6 +173,7 @@ export const statsEN = {
                 source: "Hadith Bukhari & Muslim"
             },
             seeker: {
+                icon: "🔍",
                 title: "Seeker of Mercy",
                 desc: "Finding peace in the regularity of obligatory worship.",
                 milestone: "Prioritize performing prayers exactly on time.",
@@ -140,6 +181,7 @@ export const statsEN = {
                 source: "Quran, Az-Zumar: 53"
             },
             warrior: {
+                icon: "⚔️",
                 title: "Fajr Warrior",
                 desc: "Disciplined in the most challenging yet blessed time.",
                 milestone: "Maintain consistency in Fajr prayer on time.",
@@ -147,6 +189,7 @@ export const statsEN = {
                 source: "Quran, Al-Isra: 78"
             },
             abid: {
+                icon: "🕌",
                 title: "Abid",
                 desc: "A servant who begins to taste the sweetness of worship.",
                 milestone: "Gradually incorporate Sunnah Rawatib prayers.",
@@ -154,6 +197,7 @@ export const statsEN = {
                 source: "Hadith Qudsi (Bukhari)"
             },
             salik: {
+                icon: "👣",
                 title: "Salik",
                 desc: "A spiritual wayfarer mindful of every single step.",
                 milestone: "Practice presence of heart (khusyuk) in prayer.",
@@ -161,6 +205,7 @@ export const statsEN = {
                 source: "Hadith Bukhari & Muslim"
             },
             mukhlis: {
+                icon: "💎",
                 title: "Mukhlis",
                 desc: "Purifying all deeds solely for the sake of Allah.",
                 milestone: "Guard your heart against seeking praise from others.",
@@ -168,6 +213,7 @@ export const statsEN = {
                 source: "Quran, Al-Bayyinah: 5"
             },
             muhsin: {
+                icon: "✨",
                 title: "Muhsin",
                 desc: "Worshipping as if you see Him, or knowing He sees you.",
                 milestone: "Make every moment a form of remembrance and gratitude.",
