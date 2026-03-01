@@ -239,6 +239,7 @@ import ClientEntryGate from "@/components/ClientEntryGate";
 import AppOverlays from "@/components/AppOverlays";
 import Toploader from "@/components/ui/Toploader";
 import DynamicTitle from "@/components/DynamicTitle";
+import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 
 export default function RootLayout({
   children,
@@ -279,6 +280,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Toploader />
+        <ChunkErrorHandler />
         <WebVitals />
         {/* Structured Data - Multiple Schemas */}
         {jsonLdSchemas.map((schema, index) => (
