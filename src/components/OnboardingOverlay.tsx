@@ -108,9 +108,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     ];
 
     const ARCHETYPES = [
-        { id: 'beginner', label: (t as any).onboardingArchetypeBeginnerLabel, desc: (t as any).onboardingArchetypeBeginnerDesc, icon: '🌱', color: 'text-emerald-400', border: 'border-emerald-400', bg: 'bg-emerald-500/20' },
-        { id: 'striver', label: (t as any).onboardingArchetypeStriverLabel, desc: (t as any).onboardingArchetypeStriverDesc, icon: '⚡', color: 'text-blue-400', border: 'border-blue-400', bg: 'bg-blue-500/20' },
-        { id: 'dedicated', label: (t as any).onboardingArchetypeDedicatedLabel, desc: (t as any).onboardingArchetypeDedicatedDesc, icon: '🔥', color: 'text-amber-400', border: 'border-amber-400', bg: 'bg-amber-500/20' },
+        { id: 'esensial', label: (t as any).onboardingArchetypeEsensialLabel, desc: (t as any).onboardingArchetypeEsensialDesc, icon: '🎯', color: 'text-sky-400', border: 'border-sky-400', bg: 'bg-sky-500/20' },
+        { id: 'seimbang', label: (t as any).onboardingArchetypeSeimbangLabel, desc: (t as any).onboardingArchetypeSeimbangDesc, icon: '🌿', color: 'text-emerald-400', border: 'border-emerald-400', bg: 'bg-emerald-500/20' },
+        { id: 'lengkap', label: (t as any).onboardingArchetypeLengkapLabel, desc: (t as any).onboardingArchetypeLengkapDesc, icon: '🚀', color: 'text-amber-400', border: 'border-amber-400', bg: 'bg-amber-500/20' },
     ];
 
     // Profile State
@@ -118,7 +118,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [isLocationLoading, setIsLocationLoading] = useState(false);
     const [isLocationSet, setIsLocationSet] = useState(false);
-    const [archetype, setArchetype] = useState<'beginner' | 'striver' | 'dedicated' | null>(null);
+    const [archetype, setArchetype] = useState<'esensial' | 'seimbang' | 'lengkap' | null>(null);
     const storage = getStorageService();
 
     const handleNext = () => {
@@ -145,6 +145,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         storage.set(STORAGE_KEYS.USER_NAME, finalName);
         storage.set(STORAGE_KEYS.USER_GENDER, gender);
         storage.set(STORAGE_KEYS.USER_ARCHETYPE, archetype);
+        // Juga simpan sebagai USER_FEATURE_PRESET agar BottomNav & hook langsung responsif
+        storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, archetype);
         storage.set(ONBOARDING_KEY as any, true);
 
         // 2. Database Sync (If authenticated)
@@ -153,7 +155,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 await updateProfile({
                     name: finalName,
                     gender: gender as "male" | "female",
-                    archetype: archetype as "beginner" | "striver" | "dedicated"
+                    archetype: archetype as "esensial" | "seimbang" | "lengkap"
                 });
             } catch (e) {
                 console.error("Failed to sync onboarding to database", e);

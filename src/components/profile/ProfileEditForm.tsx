@@ -29,8 +29,8 @@ interface ProfileEditFormProps {
     setEditName: (name: string) => void;
     editGender: "male" | "female" | null;
     setEditGender: (gender: "male" | "female") => void;
-    editArchetype: "beginner" | "striver" | "dedicated" | null;
-    setEditArchetype: (archetype: "beginner" | "striver" | "dedicated") => void;
+    editArchetype: "esensial" | "seimbang" | "lengkap" | null;
+    setEditArchetype: (archetype: "esensial" | "seimbang" | "lengkap") => void;
     translatedArchetypes: Array<{
         id: string;
         icon: any;

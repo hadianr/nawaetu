@@ -32,13 +32,26 @@ export function useProfile() {
         name?: string;
         image?: string;
         gender?: "male" | "female";
-        archetype?: "beginner" | "striver" | "dedicated";
+        archetype?: "esensial" | "seimbang" | "lengkap";
     }) => {
         setIsUpdating(true);
         const toastId = toast.loading("Menyimpan profil...");
 
         try {
-            // 1. Update Server
+            // Guest path: hanya update localStorage, skip API call
+            if (!session?.user?.id) {
+                if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
+                if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
+                if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
+                if (data.archetype) {
+                    storage.set(STORAGE_KEYS.USER_ARCHETYPE, data.archetype);
+                    storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, data.archetype);
+                }
+                toast.success("Profil berhasil diperbarui!", { id: toastId });
+                return true;
+            }
+
+            // Authenticated path: update server + session + localStorage
             const res = await fetch("/api/user/profile", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
@@ -47,7 +60,7 @@ export function useProfile() {
 
             if (!res.ok) throw new Error("Gagal update profil server");
 
-            // 2. Update Session (Client Side)
+            // Update Session (Client Side)
             await updateSession({
                 ...session,
                 user: {
@@ -56,11 +69,14 @@ export function useProfile() {
                 }
             });
 
-            // 3. Update Local Storage Fallback
+            // Update Local Storage Fallback
             if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
             if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
             if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
-            if (data.archetype) storage.set(STORAGE_KEYS.USER_ARCHETYPE, data.archetype);
+            if (data.archetype) {
+                storage.set(STORAGE_KEYS.USER_ARCHETYPE, data.archetype);
+                storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, data.archetype);
+            }
 
             toast.success("Profil berhasil diperbarui!", { id: toastId });
             return true;

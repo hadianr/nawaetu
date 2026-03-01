@@ -73,26 +73,26 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
     const translatedArchetypes = [
         {
-            id: "beginner",
-            icon: Sprout,
-            labelTitle: (t as any).onboardingArchetypeBeginnerLabel,
-            labelDesc: (t as any).onboardingArchetypeBeginnerDesc
-        },
-        {
-            id: "striver",
+            id: "esensial",
             icon: Target,
-            labelTitle: (t as any).onboardingArchetypeStriverLabel,
-            labelDesc: (t as any).onboardingArchetypeStriverDesc
+            labelTitle: (t as any).onboardingArchetypeEsensialLabel,
+            labelDesc: (t as any).onboardingArchetypeEsensialDesc
         },
         {
-            id: "dedicated",
+            id: "seimbang",
+            icon: Sprout,
+            labelTitle: (t as any).onboardingArchetypeSeimbangLabel,
+            labelDesc: (t as any).onboardingArchetypeSeimbangDesc
+        },
+        {
+            id: "lengkap",
             icon: Shield,
-            labelTitle: (t as any).onboardingArchetypeDedicatedLabel,
-            labelDesc: (t as any).onboardingArchetypeDedicatedDesc
+            labelTitle: (t as any).onboardingArchetypeLengkapLabel,
+            labelDesc: (t as any).onboardingArchetypeLengkapDesc
         }
     ];
 
-    const currentArchetypeId = session?.user?.archetype || 'beginner';
+    const currentArchetypeId = session?.user?.archetype || 'esensial';
     const currentArchetype = translatedArchetypes.find(a => a.id === currentArchetypeId) || translatedArchetypes[0];
     const currentArchetypeLabel = currentArchetype.labelTitle;
 
@@ -100,7 +100,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState("");
     const [editGender, setEditGender] = useState<"male" | "female" | null>(null);
-    const [editArchetype, setEditArchetype] = useState<"beginner" | "striver" | "dedicated" | null>(null);
+    const [editArchetype, setEditArchetype] = useState<"esensial" | "seimbang" | "lengkap" | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
     // UI States
@@ -234,7 +234,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         const success = await updateProfile({
             name: editName,
             gender: editGender as "male" | "female",
-            archetype: editArchetype as "beginner" | "striver" | "dedicated"
+            archetype: editArchetype as "esensial" | "seimbang" | "lengkap"
         });
 
         if (success) {
@@ -313,11 +313,9 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
                                             <h2 className={cn("text-xl font-bold leading-tight", isDaylight ? "text-slate-900" : "text-white")}>{userName}</h2>
-                                            {isAuthenticated && (
-                                                <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
-                                                    <Edit2 className="w-3.5 h-3.5" />
-                                                </button>
-                                            )}
+                                            <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
+                                                <Edit2 className="w-3.5 h-3.5" />
+                                            </button>
                                         </div>
                                         {isAuthenticated && session?.user?.email && (
                                             <div className={cn("flex items-center gap-1.5 text-[10px] mt-0.5", isDaylight ? "text-slate-500" : "text-slate-400")}>

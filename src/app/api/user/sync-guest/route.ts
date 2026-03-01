@@ -44,7 +44,7 @@ const syncSchema = z.object({
     profile: z.object({
         name: z.string().optional(),
         gender: z.enum(["male", "female"]).optional(),
-        archetype: z.enum(["beginner", "striver", "dedicated"]).optional(),
+        archetype: z.enum(["esensial", "seimbang", "lengkap"]).optional(),
     }).optional(),
     settings: z.record(z.string(), z.any()).optional(),
     bookmarks: z.array(z.object({

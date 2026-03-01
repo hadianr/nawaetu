@@ -28,7 +28,7 @@ declare module "next-auth" {
             id: string
             isMuhsinin: boolean
             gender?: "male" | "female"
-            archetype?: "beginner" | "striver" | "dedicated"
+            archetype?: "esensial" | "seimbang" | "lengkap"
         } & DefaultSession["user"]
     }
 }

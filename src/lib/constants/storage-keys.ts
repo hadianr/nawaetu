@@ -30,6 +30,7 @@ export const STORAGE_KEYS = {
   USER_GENDER: 'user_gender',
   USER_AVATAR: 'user_avatar',
   USER_ARCHETYPE: 'user_archetype',
+  USER_FEATURE_PRESET: 'user_feature_preset', // Cache of active feature preset: 'esensial' | 'seimbang' | 'lengkap'
 
   // Activity Tracking
   ACTIVITY_TRACKER: 'activity_tracker',

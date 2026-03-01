@@ -31,6 +31,7 @@ import StreakBadge from "@/components/StreakBadge";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
+import { useFeaturePreset } from "@/hooks/useFeaturePreset";
 
 // Inline critical icons to avoid lucide overhead on LCP
 const NavigationIcon = ({ className }: { className?: string }) => (
@@ -44,7 +45,8 @@ export default function HomeHeader() {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const { data: session, status } = useSession(); // Get status
+    const { data: session, status } = useSession();
+    const { showStats } = useFeaturePreset();
     const storage = getStorageService();
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
@@ -133,7 +135,7 @@ export default function HomeHeader() {
                     )}>
                         {greeting}
                     </div>
-                    {isMounted && (
+                    {isMounted && showStats && (
                         <Link
                             href="/stats"
                             className={cn(

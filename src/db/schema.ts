@@ -22,7 +22,7 @@ import type { AdapterAccount } from "next-auth/adapters";
 
 // --- Enums ---
 export const genderEnum = pgEnum("gender", ["male", "female"]);
-export const archetypeEnum = pgEnum("archetype", ["beginner", "striver", "dedicated"]);
+export const archetypeEnum = pgEnum("archetype", ["esensial", "seimbang", "lengkap"]);
 export const transactionStatusEnum = pgEnum("transaction_status", ["pending", "settlement", "expired", "failed"]);
 export const intentionTypeEnum = pgEnum("intention_type", ["daily", "prayer", "custom"]);
 

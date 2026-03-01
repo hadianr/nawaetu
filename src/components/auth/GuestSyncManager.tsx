@@ -233,7 +233,11 @@ export function GuestSyncManager() {
             if (data.profile) {
                 if (data.profile.name) storage.set(STORAGE_KEYS.USER_NAME as any, data.profile.name);
                 if (data.profile.gender) storage.set(STORAGE_KEYS.USER_GENDER as any, data.profile.gender);
-                if (data.profile.archetype) storage.set(STORAGE_KEYS.USER_ARCHETYPE as any, data.profile.archetype);
+                if (data.profile.archetype) {
+                    storage.set(STORAGE_KEYS.USER_ARCHETYPE as any, data.profile.archetype);
+                    // Sync feature preset cache so UI immediately reflects server preset
+                    storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, data.profile.archetype);
+                }
                 if (data.profile.totalInfaq !== undefined) {
                     storage.set(STORAGE_KEYS.USER_TOTAL_DONATION as any, data.profile.totalInfaq.toString());
                 }

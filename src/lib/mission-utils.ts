@@ -138,11 +138,11 @@ export function checkMissionValidation(
 }
 
 /**
- * Filters missions based on User's Spiritual Archetype (Fokus Ibadah).
- * 
- * - Beginner: Focus on Obligatory + Basic Quran. Hides generic Sunnah/Trackers to prevent overwhelm.
- * - Striver: Focus on Daily Routine (Obligatory + Sunnah). Hides heavy Weekly/Trackers.
- * - Dedicated: Shows EVERYTHING.
+ * Filters missions based on User's Niat Preset.
+ *
+ * - esensial : Focus on Obligatory + Basic Quran. Hides generic Sunnah/Trackers.
+ * - seimbang  : Focus on Daily Routine (Obligatory + Sunnah). Hides heavy Weekly/Trackers.
+ * - lengkap   : Shows EVERYTHING.
  */
 export function filterMissionsByArchetype(missions: Mission[], archetype: string | null): Mission[] {
     if (!archetype) return missions; // Default: Show all if no archetype selected
@@ -152,20 +152,19 @@ export function filterMissionsByArchetype(missions: Mission[], archetype: string
         if (mission.ruling === 'obligatory') return true;
 
         switch (archetype) {
-            case 'beginner': // "Fokus Wajib"
+            case 'esensial': // Fokus Ibadah Inti
                 // Show Obligatory (already covered) OR Simple Quran tasks
                 // Hide other Sunnah (Dhuha, Dhikr, Fasting Sunnah)
                 if (mission.category === 'quran' && mission.validationConfig?.requiredCount && mission.validationConfig.requiredCount <= 10) return true;
                 return false;
 
-            case 'striver': // "Wajib + Sunnah Ringan"
+            case 'seimbang': // Wajib + Sunnah Harian
                 // Show All Daily Missions (Obligatory + Sunnah).
-                // Hide Weekly (Puasa Senin Kamis) or Trackers (Qadha Puasa is Wajib so it shows, but generic trackers maybe hide?)
-                // Actually, let's just show all 'daily' type.
+                // Hide Weekly (Puasa Senin Kamis) heavy missions.
                 if (mission.type === 'daily') return true;
                 return false;
 
-            case 'dedicated': // "Extra Strong"
+            case 'lengkap': // Semua Fitur Aktif
                 // Show EVERYTHING
                 return true;
 
