@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.8.17-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.1-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -29,12 +29,16 @@
 > [!IMPORTANT]
 > **Nawaetu is Dual Licensed.** Free for Open Source (AGPLv3), but requires a **Commercial License** for proprietary/closed-source use.
 
-### 🚀 Recent Highlights (v1.8.x)
-- **Intention & Reflection Journal**: Align your heart every morning and muhasabah every evening.
-- **Improved FCM Notifications**: High-precision Adhan alerts (< 60s delay) with iOS "Killed State" reliability.
-- **Enhanced Spiritual Feed**: Daily Spirit, Quote of the Day, and interactive Prayer Check-in widgets.
-- **Modern Bilingual Support**: Full English-Indonesian localization for all content, including Hadith and Duas.
-- **Ramadhan 2026 Ready**: Smart Hijri adjustment, countdowns, and specialized Fiqh guides.
+### 🚀 Recent Highlights (v1.9.x)
+- **📊 Full Ibadah Statistics Dashboard**: New `/stats` page with XP Trend Chart (7d/30d/90d/1y filters), Prayer Consistency tracker, Spiritual Rank card, and AI-powered Prayer Insights—all bilingual.
+- **🏆 Spiritual Rank System**: Gamified player ranking (Mubtadi → Muhsinin) based on XP with rank progression modal and milestones.
+- **🕌 Prayer Consistency Card**: 7-day/14-day visual tracker with per-prayer dots, initials legend (S/D/A/M/I), and smart date labeling—optimized for mobile.
+- **🌙 Sunnah Prayer Missions**: Daily repeatable missions for Rawatib, Dhuha, Tahajjud, and seasonal prayers with XP rewards.
+- **🕌 Zakat Fitrah Calculator**: Built-in seasonal Zakat calculator with localized guidance.
+- **🌍 Global User Analytics**: Geographic tracking via reverse geocoding—city (Kabupaten/Kota) and country stored for each user, enabling decision-making by region.
+- **📱 Dynamic Browser Titles**: Route-aware, locale-sensitive page titles for better UX and SEO.
+- **📅 Backdated Daily Entries**: Users can fill in past Intentions and Prayer Check-ins for any previous date via a calendar picker—no more missing days if you forgot to log.
+- **🔒 Security Hardening (v1.9.0)**: AI rate-limit bypass fix, LLM injection protection, CSP strengthening, and debug endpoint blocking in production.
 
 
 **Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.
