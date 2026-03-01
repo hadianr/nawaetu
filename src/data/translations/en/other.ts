@@ -536,7 +536,7 @@ export const otherEN = {
     onboardingSlide2Title: "Comprehensive Companion",
     onboardingSlide2Desc: "From Quran, Prayer Times, accurate Qibla, to Mentor AI assistant. All based on authentic sources.",
     onboardingSlide2Hint: "All essential worship features in one app.",
-    onboardingSlide3Title: "Personal Gamification",
+    onboardingSlide3Title: "Choose Your Intention",
     onboardingSlide3Desc: "Choose your intention type during onboarding, and Nawaetu will customize the features shown. Change anytime in your profile.",
     onboardingSlide3Hint: "Different intentions, different features — tailored to your needs.",
     onboardingSlide4Title: "Ad-Free & Cloud Sync",

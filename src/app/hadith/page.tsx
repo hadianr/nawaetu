@@ -24,6 +24,7 @@ import { SPIRITUAL_CONTENT, SPIRITUAL_CATEGORIES, getLocalizedContent } from "@/
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
+import { PresetGuard } from "@/components/PresetGuard";
 
 function HadithCard({ item, t, locale, isDaylight }: { item: typeof SPIRITUAL_CONTENT[0]; t: any; locale: string; isDaylight: boolean }) {
     const [expanded, setExpanded] = useState(false);
@@ -154,81 +155,83 @@ export default function HadithPage() {
     const duaCount = SPIRITUAL_CONTENT.filter(i => i.type === "dua").length;
 
     return (
-        <div className={cn(
-            "flex min-h-screen flex-col items-center px-2 sm:px-3 py-4 font-sans transition-colors duration-500",
-            isDaylight
-                ? "bg-[#f8fafc] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.1),transparent)]"
-                : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.1),transparent)]"
-        )}>
-            <main className="flex w-full max-w-md flex-col pb-nav">
+        <PresetGuard requiredFeature="showHadith" redirectTo="/">
+            <div className={cn(
+                "flex min-h-screen flex-col items-center px-2 sm:px-3 py-4 font-sans transition-colors duration-500",
+                isDaylight
+                    ? "bg-[#f8fafc] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.1),transparent)]"
+                    : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.1),transparent)]"
+            )}>
+                <main className="flex w-full max-w-md flex-col pb-nav">
 
-                {/* Header */}
-                <div className="px-2 mb-4">
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className={cn(
-                            "p-2 rounded-xl border transition-colors",
-                            isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
-                        )}>
-                            <Quote className={cn("w-4 h-4", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light))]")} />
+                    {/* Header */}
+                    <div className="px-2 mb-4">
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className={cn(
+                                "p-2 rounded-xl border transition-colors",
+                                isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                            )}>
+                                <Quote className={cn("w-4 h-4", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light))]")} />
+                            </div>
+                            <h1 className={cn("text-lg font-black tracking-tight", isDaylight ? "text-slate-900" : "text-white")}>
+                                {(t as any).hadithPageTitle}
+                            </h1>
                         </div>
-                        <h1 className={cn("text-lg font-black tracking-tight", isDaylight ? "text-slate-900" : "text-white")}>
-                            {(t as any).hadithPageTitle}
-                        </h1>
+                        <p className={cn("text-xs pl-1", isDaylight ? "text-slate-400" : "text-white/40")}>
+                            {hadithCount} {locale === "en" ? "hadith" : "hadits"} · {duaCount} {locale === "en" ? "duas" : "doa"}
+                        </p>
                     </div>
-                    <p className={cn("text-xs pl-1", isDaylight ? "text-slate-400" : "text-white/40")}>
-                        {hadithCount} {locale === "en" ? "hadith" : "hadits"} · {duaCount} {locale === "en" ? "duas" : "doa"}
-                    </p>
-                </div>
 
-                {/* Category Filter Chips */}
-                <div className="flex gap-2 overflow-x-auto pb-3 px-0.5 no-scrollbar mb-3">
-                    {SPIRITUAL_CATEGORIES.map((cat) => {
-                        const isActive = activeCategory === cat.key;
-                        const label = cat.key === "all"
-                            ? (t as any).hadithFilterAll
-                            : (t as any)[cat.key] || (locale === "en" ? cat.labelEn : cat.labelId);
-                        return (
-                            <button
-                                key={cat.key}
-                                onClick={() => setActiveCategory(cat.key)}
-                                className={cn(
-                                    "flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                    isActive
-                                        ? isDaylight
-                                            ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
-                                            : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
-                                        : isDaylight
-                                            ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-                                            : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
-                                )}
-                            >
-                                {label}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* Content Count */}
-                {activeCategory !== "all" && (
-                    <p className={cn("text-[10px] px-1 mb-2", isDaylight ? "text-slate-400" : "text-white/30")}>
-                        {filtered.length} {(t as any).hadithFoundCount}
-                    </p>
-                )}
-
-                {/* Hadith List */}
-                <div className="flex flex-col gap-2">
-                    {filtered.map((item) => (
-                        <HadithCard key={item.id} item={item} t={t} locale={locale} isDaylight={isDaylight} />
-                    ))}
-                </div>
-
-                {filtered.length === 0 && (
-                    <div className={cn("text-center py-12", isDaylight ? "text-slate-300" : "text-white/30")}>
-                        <Quote className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                        <p className="text-sm">{(t as any).hadithEmptyState}</p>
+                    {/* Category Filter Chips */}
+                    <div className="flex gap-2 overflow-x-auto pb-3 px-0.5 no-scrollbar mb-3">
+                        {SPIRITUAL_CATEGORIES.map((cat) => {
+                            const isActive = activeCategory === cat.key;
+                            const label = cat.key === "all"
+                                ? (t as any).hadithFilterAll
+                                : (t as any)[cat.key] || (locale === "en" ? cat.labelEn : cat.labelId);
+                            return (
+                                <button
+                                    key={cat.key}
+                                    onClick={() => setActiveCategory(cat.key)}
+                                    className={cn(
+                                        "flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all border",
+                                        isActive
+                                            ? isDaylight
+                                                ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
+                                                : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
+                                            : isDaylight
+                                                ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                                                : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
+                                    )}
+                                >
+                                    {label}
+                                </button>
+                            );
+                        })}
                     </div>
-                )}
-            </main>
-        </div>
+
+                    {/* Content Count */}
+                    {activeCategory !== "all" && (
+                        <p className={cn("text-[10px] px-1 mb-2", isDaylight ? "text-slate-400" : "text-white/30")}>
+                            {filtered.length} {(t as any).hadithFoundCount}
+                        </p>
+                    )}
+
+                    {/* Hadith List */}
+                    <div className="flex flex-col gap-2">
+                        {filtered.map((item) => (
+                            <HadithCard key={item.id} item={item} t={t} locale={locale} isDaylight={isDaylight} />
+                        ))}
+                    </div>
+
+                    {filtered.length === 0 && (
+                        <div className={cn("text-center py-12", isDaylight ? "text-slate-300" : "text-white/30")}>
+                            <Quote className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                            <p className="text-sm">{(t as any).hadithEmptyState}</p>
+                        </div>
+                    )}
+                </main>
+            </div>
+        </PresetGuard>
     );
 }

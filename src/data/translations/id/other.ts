@@ -536,7 +536,7 @@ export const otherID = {
     onboardingSlide2Title: "Teman Ibadah Terpadu",
     onboardingSlide2Desc: "Mulai dari Al-Qur'an, Jadwal Sholat, Arah Kiblat akurat, hingga asisten Mentor AI. Semua bersumber dari dalil shahih.",
     onboardingSlide2Hint: "Semua fitur ibadah esensial dalam satu aplikasi.",
-    onboardingSlide3Title: "Gamifikasi Personal",
+    onboardingSlide3Title: "Pilih Niat Penggunaanmu",
     onboardingSlide3Desc: "Pilih tipe niatmu saat onboarding, dan Nawaetu akan menyesuaikan fitur yang tampil. Ganti kapan saja di profil.",
     onboardingSlide3Hint: "Niat berbeda, fitur berbeda — sesuai kebutuhanmu.",
     onboardingSlide4Title: "Tanpa Iklan & Cloud Sync",

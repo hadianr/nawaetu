@@ -22,6 +22,7 @@ import { StatsOverview, StatsHeader } from '@/components/stats/StatsOverview';
 import { PrayerConsistency } from '@/components/stats/PrayerConsistency';
 import { CategoryBreakdown } from '@/components/stats/CategoryBreakdown';
 import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
+import { PresetGuard } from '@/components/PresetGuard';
 
 export default function StatsPage() {
     const t = useTranslations();
@@ -184,118 +185,120 @@ export default function StatsPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
-            <StatsHeader t={t} playerStats={playerStats} />
+        <PresetGuard requiredFeature="showStats">
+            <div className="min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
+                <StatsHeader t={t} playerStats={playerStats} />
 
-            <div className="max-w-2xl mx-auto px-6 pt-5">
-                <GlobalStatsWidget />
-            </div>
+                <div className="max-w-2xl mx-auto px-6 pt-5">
+                    <GlobalStatsWidget />
+                </div>
 
-            <StatsOverview
-                t={t}
-                playerStats={playerStats}
-                playerRank={playerRank}
-                nextRank={nextRank}
-                streakData={streakData}
-                recentPrayerCount={recentPrayerCount}
-                weeklyHasanah={weeklyHasanah}
-                consistency={consistency}
-                timeRange={timeRange}
-                totalHasanah={rangeStats.totalHasanah}
-                setIsRankModalOpen={setIsRankModalOpen}
-                setActiveInsight={setActiveInsight}
-            />
-
-            <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
-                <HasanahTrendChart
+                <StatsOverview
                     t={t}
-                    chartData={chartData}
-                    chartConfig={chartConfig}
+                    playerStats={playerStats}
+                    playerRank={playerRank}
+                    nextRank={nextRank}
+                    streakData={streakData}
+                    recentPrayerCount={recentPrayerCount}
+                    weeklyHasanah={weeklyHasanah}
+                    consistency={consistency}
                     timeRange={timeRange}
-                    setTimeRange={setTimeRange}
-                />
-
-                <PrayerConsistency
-                    t={t}
-                    todayPrayerCount={todayPrayerCount}
-                    last14Days={last14Days}
-                    prayerMap={prayerMap}
-                    PRAYER_SUFFIXES={PRAYER_SUFFIXES}
-                />
-
-                <CategoryBreakdown
-                    t={t}
-                    categoryStats={categoryStats}
-                    maxCatCount={maxCatCount}
+                    totalHasanah={rangeStats.totalHasanah}
+                    setIsRankModalOpen={setIsRankModalOpen}
                     setActiveInsight={setActiveInsight}
                 />
 
-                {/* Rank Details Modal */}
-                <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>
-                    <DialogContent showCloseButton={false} className="bg-[#0A0A0B]/95 border-white/5 backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-[32px]">
-                        <div className="relative p-6">
-                            <DialogHeader className="mb-6">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-12 h-12 rounded-[20px] bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-xl">
-                                        {playerRank.icon}
-                                    </div>
-                                    <div>
-                                        <DialogTitle className="text-xl font-black text-white">{playerRank.title}</DialogTitle>
-                                        <DialogDescription className="text-xs text-white/50">{t.stats.level.rankLabel}</DialogDescription>
-                                    </div>
-                                </div>
-                            </DialogHeader>
+                <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
+                    <HasanahTrendChart
+                        t={t}
+                        chartData={chartData}
+                        chartConfig={chartConfig}
+                        timeRange={timeRange}
+                        setTimeRange={setTimeRange}
+                    />
 
-                            <div className="space-y-4">
-                                <div className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                    <p className="text-xs text-white/70 leading-relaxed italic">
-                                        &quot;{playerRank.desc}&quot;
-                                    </p>
-                                </div>
+                    <PrayerConsistency
+                        t={t}
+                        todayPrayerCount={todayPrayerCount}
+                        last14Days={last14Days}
+                        prayerMap={prayerMap}
+                        PRAYER_SUFFIXES={PRAYER_SUFFIXES}
+                    />
 
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.currentHasanah}</p>
-                                        <p className="text-sm font-black text-white">{playerStats.hasanah.toLocaleString()}</p>
-                                    </div>
-                                    <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
-                                        <p className="text-sm font-black text-white">{playerStats.nextLevelHasanah.toLocaleString()}</p>
-                                    </div>
-                                </div>
+                    <CategoryBreakdown
+                        t={t}
+                        categoryStats={categoryStats}
+                        maxCatCount={maxCatCount}
+                        setActiveInsight={setActiveInsight}
+                    />
 
-                                <Button
-                                    onClick={() => setIsRankModalOpen(false)}
-                                    className="w-full h-12 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm border border-white/10 transition-all"
-                                >
-                                    {t.stats.level.understand}
-                                </Button>
+                    {/* Rank Details Modal */}
+                    <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>
+                        <DialogContent showCloseButton={false} className="bg-[#0A0A0B]/95 border-white/5 backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-[32px]">
+                            <div className="relative p-6">
+                                <DialogHeader className="mb-6">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="w-12 h-12 rounded-[20px] bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-xl">
+                                            {playerRank.icon}
+                                        </div>
+                                        <div>
+                                            <DialogTitle className="text-xl font-black text-white">{playerRank.title}</DialogTitle>
+                                            <DialogDescription className="text-xs text-white/50">{t.stats.level.rankLabel}</DialogDescription>
+                                        </div>
+                                    </div>
+                                </DialogHeader>
+
+                                <div className="space-y-4">
+                                    <div className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl">
+                                        <p className="text-xs text-white/70 leading-relaxed italic">
+                                            &quot;{playerRank.desc}&quot;
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
+                                            <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.currentHasanah}</p>
+                                            <p className="text-sm font-black text-white">{playerStats.hasanah.toLocaleString()}</p>
+                                        </div>
+                                        <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
+                                            <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
+                                            <p className="text-sm font-black text-white">{playerStats.nextLevelHasanah.toLocaleString()}</p>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        onClick={() => setIsRankModalOpen(false)}
+                                        className="w-full h-12 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm border border-white/10 transition-all"
+                                    >
+                                        {t.stats.level.understand}
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                        </DialogContent>
+                    </Dialog>
 
-                {/* Detailed Insight Modal */}
-                <InsightModal
-                    activeInsight={activeInsight}
-                    setActiveInsight={setActiveInsight}
-                    t={t}
-                    data={{
-                        streakData,
-                        recentPrayerCount,
-                        primaryPrayer: primaryPrayer || "",
-                        sunnahTotal,
-                        weeklyHasanah,
-                        avgDailyHasanah,
-                        powerDayName: powerDayName || "",
-                        consistency,
-                        totalQuranAyat,
-                        nextQuranMilestone,
-                        history
-                    }}
-                />
+                    {/* Detailed Insight Modal */}
+                    <InsightModal
+                        activeInsight={activeInsight}
+                        setActiveInsight={setActiveInsight}
+                        t={t}
+                        data={{
+                            streakData,
+                            recentPrayerCount,
+                            primaryPrayer: primaryPrayer || "",
+                            sunnahTotal,
+                            weeklyHasanah,
+                            avgDailyHasanah,
+                            powerDayName: powerDayName || "",
+                            consistency,
+                            totalQuranAyat,
+                            nextQuranMilestone,
+                            history
+                        }}
+                    />
+                </div>
             </div>
-        </div>
+        </PresetGuard>
     );
 }
 
