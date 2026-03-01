@@ -54,6 +54,6 @@ export const DEFAULT_SETTINGS = {
     muadzin: "makkah",
     reciter: 7, // Mishary Rashid
     calculationMethod: 20, // Kemenag RI
-    versesPerPage: 20,
+    versesPerPage: 25,
     locale: "id", // Default Indonesian
 };

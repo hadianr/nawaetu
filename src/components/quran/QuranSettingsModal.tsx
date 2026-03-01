@@ -130,7 +130,7 @@ export default function QuranSettingsModal({
                         <div className="space-y-3">
                             <Label className="text-[rgb(var(--color-primary-light))] text-[10px] font-bold uppercase tracking-[0.15em] opacity-60 ml-1">{t.quranVersesPerPage}</Label>
                             <div className="grid grid-cols-4 gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
-                                {[10, 20, 30, 50].map((num) => (
+                                {[25, 50, 150, 300].map((num) => (
                                     <button
                                         key={num}
                                         onClick={() => handlePerPageChange(num)}
