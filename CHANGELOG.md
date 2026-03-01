@@ -6,6 +6,51 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.1] - 2026-03-01
+
+### Added
+- **Feat: Release version 1.9.1, introducing a new Ibadah Statistics Dashboard, Spiritual Rank System, Prayer Consistency tracker, Sunnah Prayer Missions, Zakat Fitrah Calculator, and security hardening.**
+- **Feat: Enhance location data with city, country, and country code via reverse geocoding and update schema to store these details.**
+- **Feat: implement a comprehensive statistics page featuring various insights, XP trend charts, prayer consistency, and a detailed insight modal.**
+- **Feat: Add a new insights section for detailed user statistics and update worship category labels.**
+- **Feat: Introduce daily repeatable Sunnah prayers with seasonal visibility and expand prayer mission content.**
+- **Feat: Add sunnah prayer missions and related translations, including undo functionality.**
+- **Feat: Remove default location fallbacks and enforce user-specific coordinates for accurate prayer times and notifications.**
+- **Feat: Implement a player ranking system, expand prayer and XP statistics to 14 days, and enhance daily activity tracking with date-specific recording.**
+- **Feat: Implement dynamic XP rewards for intentions, reflections, and prayers, reducing XP for backdated entries.**
+- **Feat: Display historical titles for Prayer Check-In and Intention Journal widgets and add corresponding translations.**
+- **Feat: Implement date selection for intentions and prayer check-ins, and support date-specific mission completion.**
+- **Feat: Add i18n support to GlobalStatsWidget with new English and Indonesian translation keys.**
+- **Feat: add AGPLv3 license header to all source files.**
+- **Feat: Introduce mission management hook and daily mission card, and refactor Ramadhan data structure.**
+- **Feat: Add new components for user profile editing, header, authentication actions, and gamification statistics, alongside utility scripts, and modify the `UserProfileDialog` for integration.**
+- **Feat: add Quran audio player, settings, and verse display components, and refactor Ramadhan data structure with new scripts.**
+- **Feat(security): add Zod schema validation to mentor-ai history POST route**
+
+### Performance
+- **Perf: Stagger popular surah prefetching, sanitize web vital metrics for analytics, and refine gtag argument handling.**
+
+### Improved
+- **Refactor: centralize `getServerSession` logic in `lib/auth` and update API route and tests to use it.**
+- **Refactor: rename 'niat' to 'intention' across the database schema, API, UI, and translations.**
+- **Refactor: Consolidate Ramadhan and Stats translations into main settings and modularize Ramadhan data structure.**
+- **Refactor: modularize Ramadhan data, extract profile translations, and add a variable renaming script.**
+- **Refactor: Centralize Quran-related translations into dedicated files and update components to use them, while also adding scripts for Ramadhan data splitting and variable renaming.**
+- **Refactor: Rename Ramadhan data types and constants for improved clarity and modularity.**
+- **Refactor: split Ramadhan and mission data into structured, typed modules.**
+- **Refactor: unify translation files into a new `src/data/translations` directory and update consumers to use the new structure.**
+- **Refactor: Rename several mission translation keys and adjust UI element sizing and padding in MissionDetailDialog.**
+- **Style: Adjust button padding and text size for improved responsiveness in MissionDetailDialog**
+- **Refactor: Simplify loading state handling in ClientEntryGate component**
+- **Refactor: Replace usePrayerTimes hook with usePrayerTimesContext for improved context management**
+
+### Fixed
+- **Fix: move user_token from query parameter to authorization header in /api/intentions/today**
+- **Fix: resolve typescript error on result.error.errors**
+- **Fix: validate coordinates in reverse geocoding proxy**
+- **Fix: Ensure locale persistence across sessions and refresh on locale change**
+
+
 ## [1.9.0] - 2026-02-27
 
 ### Added
