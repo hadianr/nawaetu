@@ -38,7 +38,7 @@ export const STORAGE_KEYS = {
   // Streak & Gamification
   USER_STREAK: 'user_streak',
   USER_LEVEL: 'user_level',
-  USER_XP: 'user_xp',
+  USER_HASANAH: 'nawaetu_user_hasanah',
 
   // Missions
   COMPLETED_MISSIONS: 'completed_missions',
@@ -96,6 +96,10 @@ export const STORAGE_KEYS = {
   RAMADHAN_TARAWEH_LOG: 'nawaetu_ramadhan_taraweh_log',   // { "1447-09-01": 8, ... }
   RAMADHAN_KHATAMAN_LOG: 'nawaetu_ramadhan_khataman_log', // { currentJuz: 3, log: [...] }
   RAMADHAN_YEAR: 'nawaetu_ramadhan_year',                 // "1447" — for yearly reset
+
+  // Ramadhan Fasting Tracker (v2.0.0)
+  RAMADHAN_FASTING_LOG: 'nawaetu_ramadhan_fasting_log',      // AllFastingLogs: { "1447": { "1447-01": { ... } } }
+  RAMADHAN_FASTING_MADZHAB: 'nawaetu_ramadhan_fasting_madzhab', // "syafii" | "hanafi" | "maliki" | "hanbali"
 } as const;
 
 // Type for storage keys

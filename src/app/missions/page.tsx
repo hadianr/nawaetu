@@ -21,7 +21,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
 import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -113,9 +113,9 @@ export default function MisiPage() {
         if (!selectedMission) return;
 
         const mission = selectedMission;
-        const reward = xpAmount || mission.xpReward;
-        addXP(reward);
-        window.dispatchEvent(new CustomEvent("xp_updated"));
+        const reward = xpAmount || mission.hasanahReward;
+        addHasanah(reward);
+        window.dispatchEvent(new CustomEvent("hasanah_updated"));
 
         // Update streak (only on first mission of the day)
         const todayStr = new Date().toISOString().split('T')[0];
@@ -134,13 +134,13 @@ export default function MisiPage() {
     const handleResetMission = () => {
         if (!selectedMission) return;
         const mission = selectedMission;
-        addXP(-mission.xpReward);
-        window.dispatchEvent(new CustomEvent("xp_updated"));
+        addHasanah(-mission.hasanahReward);
+        window.dispatchEvent(new CustomEvent("hasanah_updated"));
 
         undoCompleteMission(mission.id);
 
         toast.info((t as any).toastMissionReset || "Misi dibatalkan", {
-            description: `${mission.title} telah di-reset. (-${mission.xpReward} XP)`,
+            description: `${mission.title} telah di-reset. (-${mission.hasanahReward} Hasanah)`,
             duration: 3000,
             icon: "🔄"
         });
@@ -245,7 +245,7 @@ export default function MisiPage() {
                             backgroundColor: gender === 'female' ? 'rgba(236,72,153,0.1)' : gender === 'male' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)'
                         }}
                     >
-                        +{mission.xpReward} XP
+                        +{mission.hasanahReward} Hasanah
                     </span>
                     {isCompleted ? (
                         <div className="w-5 h-5 rounded-full flex items-center justify-center"
@@ -274,7 +274,7 @@ export default function MisiPage() {
                     </Link>
                     <div className="flex-1">
                         <h1 className="text-2xl font-bold text-white">{t.home_mission_list_title}</h1>
-                        <p className="text-xs text-white/50">{t.home_mission_list_subtitle || "Raih XP dengan menyelesaikan misi"}</p>
+                        <p className="text-xs text-white/50">{t.home_mission_list_subtitle || "Raih Hasanah dengan menyelesaikan misi"}</p>
                     </div>
                     <div className="flex items-center gap-1 px-3 py-1.5 rounded-full"
                         style={{

@@ -26,7 +26,7 @@ import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTranslations } from "@/context/LocaleContext";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 import { toast } from "sonner";
 
 type TarawehChoice = 8 | 20 | null;
@@ -83,9 +83,9 @@ export default function TarawehTracker() {
 
         const currentChoice = log[todayKey];
         if (choice !== null && !currentChoice) {
-            addXP(15);
+            addHasanah(15);
             toast.success((t as any).tarawehTitle || "Taraweh", {
-                description: (t as any).toastRamadhanTarawehReward || "Alhamdulillah! +15 Hasanah",
+                description: (t as any).toastRamadhanTarawehReward || `Alhamdulillah! +15 ${(t as any).gamificationXpName || "Hasanah"}`,
                 duration: 3000,
                 icon: "🕌"
             });

@@ -26,6 +26,26 @@ export const archetypeEnum = pgEnum("archetype", ["beginner", "striver", "dedica
 export const transactionStatusEnum = pgEnum("transaction_status", ["pending", "settlement", "expired", "failed"]);
 export const intentionTypeEnum = pgEnum("intention_type", ["daily", "prayer", "custom"]);
 
+// --- Fasting Tracker Enums (v2.0.0) ---
+export const fastingStatusEnum = pgEnum("fasting_status", [
+    "fasting",       // ✅ Puasa penuh
+    "not_fasting",   // ❌ Tidak puasa (sengaja/tanpa uzur)
+    "sick",          // 🤒 Sakit
+    "traveling",     // ✈️ Safar
+    "menstruation",  // 🌸 Haid
+    "postpartum",    // 🌺 Nifas
+    "pregnant",      // 🤰 Hamil
+    "breastfeeding", // 🤱 Menyusui
+    "elderly",       // 👴 Lansia/sakit permanen
+]);
+
+export const fastingConsequenceEnum = pgEnum("fasting_consequence", [
+    "none",   // Puasa → tidak ada kewajiban
+    "qadha",  // Wajib mengganti puasa
+    "fidyah", // Wajib bayar fidyah
+    "choice", // Pilihan qadha atau fidyah (ikhtilaf madzhab)
+]);
+
 // --- Users & Auth (Compatible with NextAuth.js) ---
 
 export const users = pgTable("user", {
@@ -202,7 +222,7 @@ export const userCompletedMissions = pgTable("user_completed_missions", {
         .references(() => users.id, { onDelete: "cascade" }),
 
     missionId: text("mission_id").notNull(),
-    xpEarned: integer("xp_earned").default(0),
+    hasanahEarned: integer("hasanah_earned").default(0),
     completedAt: timestamp("completed_at").defaultNow(),
     completedDate: date("completed_date"), // YYYY-MM-DD
 
@@ -227,6 +247,7 @@ export const dailyActivities = pgTable("daily_activities", {
     date: date("date").notNull(), // YYYY-MM-DD
 
     quranAyat: integer("quran_ayat").default(0),
+    hasanahGained: integer("hasanah_gained").default(0),
     tasbihCount: integer("tasbih_count").default(0),
 
     // Stored as JSON array of strings e.g. ["Fajr", "Dhuhr"]
@@ -298,6 +319,28 @@ export const pushSubscriptions = pgTable("push_subscription", {
     };
 });
 
+// --- Ramadhan Fasting Log (v2.0.0) ---
+// One row per user per hijri day per hijri year.
+// Offline-first: localStorage is source of truth, this table is synced from client.
+export const ramadhanFastingLog = pgTable("ramadhan_fasting_log", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    hijriYear: integer("hijri_year").notNull(),  // e.g. 1446, 1447
+    hijriDay: integer("hijri_day").notNull(),    // 1–30
+    status: fastingStatusEnum("status").notNull().default("fasting"),
+    consequence: fastingConsequenceEnum("consequence").notNull().default("none"),
+    madzhab: text("madzhab"),  // "syafii" | "hanafi" | "maliki" | "hanbali" | null
+    note: text("note"),
+    qadhaDone: boolean("qadha_done").default(false), // qadha or fidyah already fulfilled
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+    userYearDayUnique: uniqueIndex("rfl_user_year_day_unique").on(table.userId, table.hijriYear, table.hijriDay),
+    userYearIdx: index("rfl_user_year_idx").on(table.userId, table.hijriYear),
+}));
+
 // Types for application use
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -315,6 +358,8 @@ export type DailyActivity = typeof dailyActivities.$inferSelect;
 export type NewDailyActivity = typeof dailyActivities.$inferInsert;
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type NewChatSession = typeof chatSessions.$inferInsert;
+export type RamadhanFastingLog = typeof ramadhanFastingLog.$inferSelect;
+export type NewRamadhanFastingLog = typeof ramadhanFastingLog.$inferInsert;
 export const userReadingState = pgTable("user_reading_state", {
     userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }).primaryKey(),
 

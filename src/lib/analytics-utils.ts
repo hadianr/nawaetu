@@ -25,7 +25,7 @@ const storage = getStorageService();
 
 export interface DailyActivity {
     date: string; // YYYY-MM-DD format
-    xpGained: number;
+    hasanahGained: number;
     missionsCompleted: number;
     prayersCompleted: number;
     quranAyatRead: number;
@@ -33,7 +33,7 @@ export interface DailyActivity {
 }
 
 export interface WeeklyStats {
-    totalXP: number;
+    totalHasanah: number;
     totalMissions: number;
     totalPrayers: number;
     averageDaily: number;
@@ -41,11 +41,11 @@ export interface WeeklyStats {
 }
 
 export interface MonthlyStats {
-    totalXP: number;
+    totalHasanah: number;
     totalMissions: number;
     totalPrayers: number;
     averageDaily: number;
-    bestDay: { date: string; xp: number };
+    bestDay: { date: string; hasanah: number };
     consistency: number; // percentage of active days
 }
 
@@ -72,7 +72,7 @@ export function recordDailyActivity(activity: Partial<DailyActivity>, dateStr?: 
         // Create new
         history.push({
             date: date,
-            xpGained: activity.xpGained || 0,
+            hasanahGained: activity.hasanahGained || 0,
             missionsCompleted: activity.missionsCompleted || 0,
             prayersCompleted: activity.prayersCompleted || 0,
             quranAyatRead: activity.quranAyatRead || 0,
@@ -117,7 +117,7 @@ export function getTodayActivity(): DailyActivity {
     const history = getDailyActivityHistory();
     return history.find(a => a.date === today) || {
         date: today,
-        xpGained: 0,
+        hasanahGained: 0,
         missionsCompleted: 0,
         prayersCompleted: 0,
         quranAyatRead: 0,
@@ -155,7 +155,7 @@ export function getRecentActivity(days: number = 7): DailyActivity[] {
 export function getWeeklyStats(): WeeklyStats {
     if (typeof window === "undefined") {
         return {
-            totalXP: 0,
+            totalHasanah: 0,
             totalMissions: 0,
             totalPrayers: 0,
             averageDaily: 0,
@@ -165,7 +165,7 @@ export function getWeeklyStats(): WeeklyStats {
 
     const recent = getRecentActivity(7);
 
-    const totalXP = recent.reduce((sum, a) => sum + a.xpGained, 0);
+    const totalHasanah = recent.reduce((sum, a) => sum + a.hasanahGained, 0);
     const totalMissions = recent.reduce((sum, a) => sum + a.missionsCompleted, 0);
     const totalPrayers = recent.reduce((sum, a) => sum + a.prayersCompleted, 0);
 
@@ -178,7 +178,7 @@ export function getWeeklyStats(): WeeklyStats {
         const dateStr = checkDate.toISOString().split("T")[0];
         const activity = recent.find((a) => a.date === dateStr);
 
-        if (activity && activity.xpGained > 0) {
+        if (activity && activity.hasanahGained > 0) {
             streak++;
         } else if (dateStr !== today) {
             break;
@@ -188,10 +188,10 @@ export function getWeeklyStats(): WeeklyStats {
     }
 
     return {
-        totalXP,
+        totalHasanah,
         totalMissions,
         totalPrayers,
-        averageDaily: totalXP / 7,
+        averageDaily: totalHasanah / 7,
         streak,
     };
 }
@@ -202,36 +202,36 @@ export function getWeeklyStats(): WeeklyStats {
 export function getMonthlyStats(): MonthlyStats {
     if (typeof window === "undefined") {
         return {
-            totalXP: 0,
+            totalHasanah: 0,
             totalMissions: 0,
             totalPrayers: 0,
             averageDaily: 0,
-            bestDay: { date: "", xp: 0 },
+            bestDay: { date: "", hasanah: 0 },
             consistency: 0,
         };
     }
 
     const recent = getRecentActivity(30);
 
-    const totalXP = recent.reduce((sum, a) => sum + a.xpGained, 0);
+    const totalHasanah = recent.reduce((sum, a) => sum + a.hasanahGained, 0);
     const totalMissions = recent.reduce((sum, a) => sum + a.missionsCompleted, 0);
     const totalPrayers = recent.reduce((sum, a) => sum + a.prayersCompleted, 0);
 
     // Find best day
     const bestDay = recent.reduce(
-        (best, a) => (a.xpGained > best.xp ? { date: a.date, xp: a.xpGained } : best),
-        { date: "", xp: 0 }
+        (best, a) => (a.hasanahGained > best.hasanah ? { date: a.date, hasanah: a.hasanahGained } : best),
+        { date: "", hasanah: 0 }
     );
 
     // Calculate consistency (% of days with activity)
-    const activeDays = recent.filter((a) => a.xpGained > 0).length;
+    const activeDays = recent.filter((a) => a.hasanahGained > 0).length;
     const consistency = (activeDays / 30) * 100;
 
     return {
-        totalXP,
+        totalHasanah,
         totalMissions,
         totalPrayers,
-        averageDaily: totalXP / 30,
+        averageDaily: totalHasanah / 30,
         bestDay,
         consistency,
     };
@@ -252,7 +252,7 @@ export function generateMockData() {
         const dateStr = date.toISOString().split("T")[0];
 
         // Random but realistic data
-        const xpGained = Math.floor(Math.random() * 300) + 50;
+        const hasanahGained = Math.floor(Math.random() * 300) + 50;
         const missionsCompleted = Math.floor(Math.random() * 8) + 1;
         const prayersCompleted = Math.floor(Math.random() * 5);
         const quranAyatRead = Math.floor(Math.random() * 20);
@@ -260,7 +260,7 @@ export function generateMockData() {
 
         mockData.push({
             date: dateStr,
-            xpGained,
+            hasanahGained,
             missionsCompleted,
             prayersCompleted,
             quranAyatRead,

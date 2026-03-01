@@ -171,7 +171,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                                 <span className="text-base tracking-wide">{t.intention_saving_wait}</span>
                             </>
                         ) : (
-                            <span className="text-base tracking-wide">{t.intention_save_btn}</span>
+                            <span className="text-base tracking-wide">{(t.intention_save_btn as string).replace('{hasanah}', '50')}</span>
                         )}
                     </Button>
                 </div>

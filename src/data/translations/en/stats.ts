@@ -29,12 +29,12 @@ export const statsEN = {
         },
         level: {
             rankLabel: "Spiritual Rank",
-            totalXp: "Total XP",
+            totalHasanah: "Total Hasanah",
             toNextLevel: "to Level",
-            xpNeeded: "XP needed",
+            hasanahNeeded: "Hasanah needed",
             nextRankGoal: "Next Goal:",
-            currentXp: "Current XP",
-            nextLevelXp: "Next Level XP",
+            currentHasanah: "Current Hasanah",
+            nextLevelHasanah: "Next Level Hasanah",
             understand: "Understand"
         },
         quick: {
@@ -42,7 +42,7 @@ export const statsEN = {
             longestStreak: "Longest: {{days}} days",
             weeklyPrayers: "Prayers (Last 14 Days)",
             outOf35: "out of 70 prayers",
-            weeklyXp: "Weekly XP",
+            weeklyHasanah: "Weekly Hasanah",
             last7Days: "last 14 days",
             consistency: "Consistency",
             last30Days: "last 30 days"
@@ -55,8 +55,8 @@ export const statsEN = {
             completed: "Completed"
         },
         chart: {
-            title: "Daily XP",
-            subtitle: "XP earned from missions and activities",
+            title: "Daily Hasanah",
+            subtitle: "Hasanah earned from missions and activities",
             filters: {
                 today: "Today",
                 last7d: "7D",
@@ -119,15 +119,15 @@ export const statsEN = {
                 sunnahDone: "You have also completed {{count}} sunnah prayers, keep it up!",
                 sunnahNone: "Try adding Sunnah Rawatib prayers to perfect your worship."
             },
-            xp: {
-                title: "XP Growth",
-                desc: "XP (Experience Points) reflects the effort and dedication you put into every deed.",
-                weekly: "Weekly XP",
+            hasanah: {
+                title: "Hasanah Growth",
+                desc: "Hasanah reflects the effort and dedication you put into every deed.",
+                weekly: "Weekly Hasanah",
                 avgDaily: "Daily Average",
-                source: "Top XP Source",
-                insightTitle: "XP Insights",
+                source: "Top Hasanah Source",
+                insightTitle: "Hasanah Insights",
                 noData: "Keep completing daily missions to see your most productive day.",
-                levelProgress: "Level Progress",
+                levelProgress: "Fase Progress",
                 powerDayDesc: "Your most productive day is {{day}}. On this day, you tend to be more enthusiastic in completing missions."
             },
             consistency: {

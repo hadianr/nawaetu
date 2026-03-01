@@ -27,5 +27,5 @@ export const APP_CONFIG = {
     status: "Production",
     lastUpdated: "2026-03-01",
     hashtag: "#StartWithIntention",
-    description: "Islamic habit tracker with gamification: Daily Missions, Streak, XP. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
+    description: "Islamic habit tracker with gamification: Daily Missions, Streak, Hasanah. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
 };

@@ -27,7 +27,7 @@ import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "@/context/LocaleContext";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 import { toast } from "sonner";
 
 interface KhatamanLog {
@@ -70,7 +70,7 @@ export default function KhatamanProgress() {
 
         if (delta > 0 && newJuz > khatamanData.currentJuz) {
             const xpEarned = 20 * (newJuz - khatamanData.currentJuz);
-            addXP(xpEarned);
+            addHasanah(xpEarned);
             toast.success((t as any).khatamanTitle || "Tadarus", {
                 description: `Masya Allah! +${xpEarned} ${(t as any).gamificationXpName || "Hasanah"}`,
                 duration: 3000,

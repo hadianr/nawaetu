@@ -139,10 +139,10 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     const currentXP = targetMissions.reduce((acc, m) => {
                         const record = completedMap[m.id];
                         if (!record) return acc;
-                        return acc + m.xpReward;
+                        return acc + m.hasanahReward;
                     }, 0);
 
-                    const totalXP = targetMissions.reduce((acc, m) => acc + m.xpReward, 0);
+                    const totalXP = targetMissions.reduce((acc, m) => acc + m.hasanahReward, 0);
                     const p = totalXP > 0 ? Math.round((currentXP / totalXP) * 100) : 0;
                     setProgress(Math.min(100, p));
                 } catch (e) {
@@ -163,7 +163,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         window.addEventListener("mission_storage_updated", loadProgress);
 
         const handleBackupUpdate = () => setTimeout(loadProgress, 50);
-        window.addEventListener("xp_updated", handleBackupUpdate);
+        window.addEventListener("hasanah_updated", handleBackupUpdate);
 
         const handleStorageUpdate = () => {
             loadAdjustment(); // Reload adjustment on storage event
@@ -178,7 +178,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         return () => {
             clearInterval(timer);
             window.removeEventListener("mission_storage_updated", loadProgress);
-            window.removeEventListener("xp_updated", handleBackupUpdate);
+            window.removeEventListener("hasanah_updated", handleBackupUpdate);
             window.removeEventListener("storage", handleStorageUpdate);
             window.removeEventListener("hijri_adjustment_changed", handleAdjustmentChange);
         };

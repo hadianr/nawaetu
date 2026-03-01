@@ -21,7 +21,7 @@ import { InsightModal } from '@/components/stats/InsightModal';
 import { StatsOverview, StatsHeader } from '@/components/stats/StatsOverview';
 import { PrayerConsistency } from '@/components/stats/PrayerConsistency';
 import { CategoryBreakdown } from '@/components/stats/CategoryBreakdown';
-import { XPTrendChart } from '@/components/stats/XPTrendChart';
+import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
 
 export default function StatsPage() {
     const t = useTranslations();
@@ -61,12 +61,12 @@ export default function StatsPage() {
         }
     });
 
-    const weeklyXP = history.slice(-7).reduce((acc, day) => acc + (day.xpGained || 0), 0);
+    const weeklyHasanah = history.slice(-7).reduce((acc, day) => acc + (day.hasanahGained || 0), 0);
 
     // Streaks are usually managed by a separate service, but we'll use a derived one for now
     // In actual app, we might want to get this from playerStats or a streak service
     const streakData = useMemo(() => ({
-        currentStreak: history.length > 0 ? (history[history.length - 1]?.xpGained > 0 ? history.length : 0) : 0,
+        currentStreak: history.length > 0 ? (history[history.length - 1]?.hasanahGained > 0 ? history.length : 0) : 0,
         longestStreak: history.length
     }), [history]);
 
@@ -78,7 +78,7 @@ export default function StatsPage() {
     const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const todayPrayerCount = prayerMap[todayStr]?.size || 0;
 
-    const activeDaysLast30 = history.slice(-30).filter(d => (d.xpGained || 0) > 0).length;
+    const activeDaysLast30 = history.slice(-30).filter(d => (d.hasanahGained || 0) > 0).length;
     const consistency = Math.round((activeDaysLast30 / Math.min(history.length || 1, 30)) * 100) || 0;
 
     const chartData = useMemo(() => {
@@ -86,13 +86,13 @@ export default function StatsPage() {
             const hours = Array.from({ length: 24 }, (_, i) => i);
             const todayMissions = completedMissions.filter(m => m.completedAt.startsWith(todayStr));
             return hours.map(hour => {
-                const xp = todayMissions
+                const hasanah = todayMissions
                     .filter(m => new Date(m.completedAt).getHours() === hour)
-                    .reduce((sum, m) => sum + m.xpEarned, 0);
+                    .reduce((sum, m) => sum + m.hasanahEarned, 0);
                 return {
                     date: `${hour}:00`,
                     dateLabel: `${hour}:00`,
-                    xp: xp
+                    hasanah: hasanah
                 };
             });
         }
@@ -105,15 +105,15 @@ export default function StatsPage() {
             });
 
             return last12Months.map(monthStr => {
-                const xp = history
+                const hasanah = history
                     .filter(h => h.date.startsWith(monthStr))
-                    .reduce((sum, h) => sum + h.xpGained, 0);
+                    .reduce((sum, h) => sum + h.hasanahGained, 0);
                 const [year, month] = monthStr.split('-');
                 const dateLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString(t.stats.header.title.includes("Statistik") ? "id-ID" : "en-US", { month: 'short' });
                 return {
                     date: monthStr,
                     dateLabel,
-                    xp: xp
+                    hasanah: hasanah
                 };
             });
         }
@@ -135,18 +135,18 @@ export default function StatsPage() {
             return {
                 date: dateStr,
                 dateLabel,
-                xp: h ? h.xpGained : 0
+                hasanah: h ? h.hasanahGained : 0
             };
         });
     }, [history, t, timeRange, todayStr, completedMissions]);
 
     const rangeStats = useMemo(() => {
-        const totalXp = chartData.reduce((sum, d) => sum + d.xp, 0);
-        return { totalXp };
+        const totalHasanah = chartData.reduce((sum, d) => sum + (d as any).hasanah, 0);
+        return { totalHasanah };
     }, [chartData]);
 
     const chartConfig = {
-        xp: { label: "XP", color: "rgb(var(--color-primary))" }
+        hasanah: { label: "Hasanah", color: "rgb(var(--color-primary))" }
     };
 
     // ── Insights Hook ────────────────────────────────────────────────────────
@@ -158,13 +158,13 @@ export default function StatsPage() {
         sunnahTotal,
         totalQuranAyat,
         nextQuranMilestone,
-        avgDailyXp,
+        avgDailyHasanah,
         playerRank,
         nextRank
     } = useStatsInsights({
         history,
         playerStats,
-        weeklyXP,
+        weeklyHasanah,
         last14Days,
         prayerMap,
         completedMissions,
@@ -198,16 +198,16 @@ export default function StatsPage() {
                 nextRank={nextRank}
                 streakData={streakData}
                 recentPrayerCount={recentPrayerCount}
-                weeklyXP={weeklyXP}
+                weeklyHasanah={weeklyHasanah}
                 consistency={consistency}
                 timeRange={timeRange}
-                totalXp={rangeStats.totalXp}
+                totalHasanah={rangeStats.totalHasanah}
                 setIsRankModalOpen={setIsRankModalOpen}
                 setActiveInsight={setActiveInsight}
             />
 
             <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
-                <XPTrendChart
+                <HasanahTrendChart
                     t={t}
                     chartData={chartData}
                     chartConfig={chartConfig}
@@ -255,12 +255,12 @@ export default function StatsPage() {
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.currentXp}</p>
-                                        <p className="text-sm font-black text-white">{playerStats.xp.toLocaleString()}</p>
+                                        <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.currentHasanah}</p>
+                                        <p className="text-sm font-black text-white">{playerStats.hasanah.toLocaleString()}</p>
                                     </div>
                                     <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.nextLevelXp}</p>
-                                        <p className="text-sm font-black text-white">{playerStats.nextLevelXp.toLocaleString()}</p>
+                                        <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
+                                        <p className="text-sm font-black text-white">{playerStats.nextLevelHasanah.toLocaleString()}</p>
                                     </div>
                                 </div>
 
@@ -285,8 +285,8 @@ export default function StatsPage() {
                         recentPrayerCount,
                         primaryPrayer: primaryPrayer || "",
                         sunnahTotal,
-                        weeklyXP,
-                        avgDailyXp,
+                        weeklyHasanah,
+                        avgDailyHasanah,
                         powerDayName: powerDayName || "",
                         consistency,
                         totalQuranAyat,

@@ -5,11 +5,11 @@ import { RankKey } from "@/lib/leveling";
 
 export const PRAYER_SUFFIXES = ["subuh", "dzuhur", "ashar", "maghrib", "isya"] as const;
 
-export type InsightKey = 'streak' | 'prayers' | 'xp' | 'consistency' | 'quran' | 'dhikr';
+export type InsightKey = 'streak' | 'prayers' | 'hasanah' | 'consistency' | 'quran' | 'dhikr';
 
 export interface DailyActivity {
     date: string;
-    xpGained: number;
+    hasanahGained: number;
     missionsCompleted: number;
     prayersCompleted: number;
     quranAyatRead: number;
@@ -19,13 +19,13 @@ export interface DailyActivity {
 export interface CompletedMission {
     id: string;
     completedAt: string;
-    xpEarned: number;
+    hasanahEarned: number;
 }
 
 interface UseStatsInsightsProps {
     history: DailyActivity[];
     playerStats: any;
-    weeklyXP: number;
+    weeklyHasanah: number;
     last14Days: string[];
     prayerMap: Record<string, Set<string>>;
     completedMissions: CompletedMission[];
@@ -35,7 +35,7 @@ interface UseStatsInsightsProps {
 export function useStatsInsights({
     history,
     playerStats,
-    weeklyXP,
+    weeklyHasanah,
     last14Days,
     prayerMap,
     completedMissions,
@@ -80,9 +80,9 @@ export function useStatsInsights({
         const dayXpSum: Record<number, number> = {};
         let hasData = false;
         history.slice(-14).forEach(d => {
-            if (d.xpGained > 0) {
+            if (d.hasanahGained > 0) {
                 const dayNum = new Date(d.date).getDay();
-                dayXpSum[dayNum] = (dayXpSum[dayNum] || 0) + d.xpGained;
+                dayXpSum[dayNum] = (dayXpSum[dayNum] || 0) + d.hasanahGained;
                 hasData = true;
             }
         });
@@ -122,11 +122,11 @@ export function useStatsInsights({
         Math.max(100, Math.ceil((totalQuranAyat + 1) / 100) * 100)
         , [totalQuranAyat]);
 
-    const avgDailyXp = useMemo(() => {
-        const activeDays = history.slice(-7).filter(d => d.xpGained > 0).length;
+    const avgDailyHasanah = useMemo(() => {
+        const activeDays = history.slice(-7).filter(d => d.hasanahGained > 0).length;
         if (activeDays === 0) return 0;
-        return Math.round(weeklyXP / activeDays);
-    }, [weeklyXP, history]);
+        return Math.round(weeklyHasanah / activeDays);
+    }, [weeklyHasanah, history]);
 
     const playerRank = useMemo(() =>
         t.stats.ranks[playerStats.rankKey] || t.stats.ranks.mubtadi
@@ -174,7 +174,7 @@ export function useStatsInsights({
         sunnahTotal,
         totalQuranAyat,
         nextQuranMilestone,
-        avgDailyXp,
+        avgDailyHasanah,
         playerRank,
         nextRank
     };

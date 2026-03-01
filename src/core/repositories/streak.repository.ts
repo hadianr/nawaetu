@@ -19,7 +19,7 @@
 import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { DateUtils } from '@/lib/utils/date';
-import { addXP } from '@/lib/leveling';
+import { addHasanah } from '@/lib/leveling';
 
 export interface StreakData {
   currentStreak: number;
@@ -95,9 +95,9 @@ export class LocalStreakRepository implements StreakRepository {
     for (const milestone of STREAK_MILESTONES) {
       if (newStreak >= milestone.days && !milestones.includes(milestone.days)) {
         milestones.push(milestone.days);
-        addXP(milestone.xp);
+        addHasanah(milestone.xp);
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('xp_updated'));
+          window.dispatchEvent(new CustomEvent('hasanah_updated'));
         }
         newMilestone = milestone;
       }

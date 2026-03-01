@@ -36,7 +36,7 @@ export interface Mission {
     id: string;
     title: string;
     description: string;
-    xpReward: number;
+    hasanahReward: number;
     icon: string;
     gender: Gender;
     dalil?: string;
@@ -48,7 +48,7 @@ export interface Mission {
     phase?: 'all_year' | 'ramadhan_prep' | 'ramadhan_during';
     completionOptions?: {
         label: string;
-        xpReward: number;
+        hasanahReward: number;
         icon?: string;
     }[];
 }

@@ -58,7 +58,7 @@ const syncSchema = z.object({
     })).max(1000).optional(),
     completedMissions: z.array(z.object({
         id: z.string(),
-        xpEarned: z.number(),
+        hasanahEarned: z.number(),
         completedAt: z.string(),
     })).max(1000).optional(),
     intentions: z.array(z.object({
@@ -75,6 +75,7 @@ const syncSchema = z.object({
     activity: z.object({
         date: z.string(),
         quranAyat: z.number(),
+        hasanahGained: z.number(),
         tasbihCount: z.number(),
         prayersLogged: z.array(z.string()).max(50),
     }).optional(),
@@ -185,7 +186,7 @@ export async function POST(req: NextRequest) {
                     .values(data.completedMissions.map(m => ({
                         userId,
                         missionId: m.id,
-                        xpEarned: m.xpEarned,
+                        hasanahEarned: m.hasanahEarned,
                         completedAt: new Date(m.completedAt),
                     })))
                     .onConflictDoNothing(); // If already completed, skip
@@ -260,6 +261,7 @@ export async function POST(req: NextRequest) {
                         userId,
                         date: data.activity.date,
                         quranAyat: data.activity.quranAyat,
+                        hasanahGained: data.activity.hasanahGained,
                         tasbihCount: data.activity.tasbihCount,
                         prayersLogged: data.activity.prayersLogged,
                     })
@@ -267,6 +269,7 @@ export async function POST(req: NextRequest) {
                         target: [dailyActivities.userId, dailyActivities.date],
                         set: {
                             quranAyat: data.activity.quranAyat,
+                            hasanahGained: data.activity.hasanahGained,
                             tasbihCount: data.activity.tasbihCount,
                             prayersLogged: data.activity.prayersLogged,
                             lastUpdatedAt: new Date(),

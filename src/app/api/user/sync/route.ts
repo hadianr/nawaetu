@@ -209,7 +209,7 @@ async function handleMissionSync(
                     .values({
                         userId,
                         missionId: data.id,
-                        xpEarned: data.xpEarned,
+                        hasanahEarned: data.xpEarned,
                         completedAt: completedAt,
                         completedDate: completedDate,
                     })
@@ -244,14 +244,14 @@ async function handleDailyActivitySync(
                     userId,
                     date: data.date,
                     quranAyat: data.quranAyat,
-                    tasbihCount: data.tasbihCount,
+                    hasanahGained: data.tasbihCount,
                     prayersLogged: data.prayersLogged,
                 })
                 .onConflictDoUpdate({
                     target: [dailyActivities.userId, dailyActivities.date],
                     set: {
                         quranAyat: data.quranAyat,
-                        tasbihCount: data.tasbihCount,
+                        hasanahGained: data.tasbihCount,
                         prayersLogged: data.prayersLogged,
                         lastUpdatedAt: new Date(),
                     },
@@ -541,7 +541,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 return {
                     userId,
                     missionId: m.id,
-                    xpEarned: m.xpEarned,
+                    hasanahEarned: m.xpEarned,
                     completedAt: completedAt,
                     completedDate: completedAt.toISOString().split('T')[0],
                 };
@@ -560,14 +560,14 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                     userId,
                     date: localActivity.date,
                     quranAyat: localActivity.quranAyat || 0,
-                    tasbihCount: localActivity.tasbihCount || 0,
+                    hasanahGained: localActivity.tasbihCount || 0,
                     prayersLogged: localActivity.prayersLogged || [],
                 })
                 .onConflictDoUpdate({
                     target: [dailyActivities.userId, dailyActivities.date],
                     set: {
                         quranAyat: localActivity.quranAyat,
-                        tasbihCount: localActivity.tasbihCount,
+                        hasanahGained: localActivity.tasbihCount,
                         prayersLogged: localActivity.prayersLogged,
                         lastUpdatedAt: new Date(),
                     }

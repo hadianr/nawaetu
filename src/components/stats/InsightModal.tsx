@@ -30,8 +30,8 @@ interface InsightModalProps {
         recentPrayerCount: number;
         primaryPrayer: string;
         sunnahTotal: number;
-        weeklyXP: number;
-        avgDailyXp: number;
+        weeklyHasanah: number;
+        avgDailyHasanah: number;
         powerDayName: string;
         consistency: number;
         totalQuranAyat: number;
@@ -57,7 +57,7 @@ export function InsightModal({
                             <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
                                 {activeInsight === 'streak' && <Flame className="w-5 h-5 text-orange-400" />}
                                 {activeInsight === 'prayers' && <span className="text-xl">🕌</span>}
-                                {activeInsight === 'xp' && <ZapIcon className="w-5 h-5 text-yellow-400" />}
+                                {activeInsight === 'hasanah' && <ZapIcon className="w-5 h-5 text-yellow-400" />}
                                 {activeInsight === 'consistency' && <Target className="w-5 h-5 text-violet-400" />}
                                 {activeInsight === 'quran' && <BookOpen className="w-5 h-5 text-blue-400" />}
                                 {activeInsight === 'dhikr' && <span className="text-xl">📿</span>}
@@ -121,19 +121,19 @@ export function InsightModal({
                             </>
                         )}
 
-                        {activeInsight === 'xp' && (
+                        {activeInsight === 'hasanah' && (
                             <>
-                                <InsightRow label={t.stats.insights.xp.weekly} value={data.weeklyXP.toLocaleString()} icon={<ZapIcon className="w-3.5 h-3.5 text-yellow-400" />} />
-                                <InsightRow label={t.stats.insights.xp.avgDaily} value={data.avgDailyXp.toLocaleString()} icon={<Calendar className="w-3.5 h-3.5 text-blue-400" />} />
+                                <InsightRow label={t.stats.insights.hasanah.weekly} value={data.weeklyHasanah.toLocaleString()} icon={<ZapIcon className="w-3.5 h-3.5 text-yellow-400" />} />
+                                <InsightRow label={t.stats.insights.hasanah.avgDaily} value={data.avgDailyHasanah.toLocaleString()} icon={<Calendar className="w-3.5 h-3.5 text-blue-400" />} />
                                 <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <TrendingUp className="w-3.5 h-3.5 text-yellow-400" />
-                                        <p className="text-[10px] font-bold text-yellow-400 uppercase">{t.stats.insights.xp.insightTitle}</p>
+                                        <p className="text-[10px] font-bold text-yellow-400 uppercase">{t.stats.insights.hasanah.insightTitle}</p>
                                     </div>
                                     <p className="text-xs text-white/90">
                                         {data.powerDayName
-                                            ? t.stats.insights.xp.powerDayDesc?.replace('{{day}}', data.powerDayName)
-                                            : t.stats.insights.xp.noData
+                                            ? t.stats.insights.hasanah.powerDayDesc?.replace('{{day}}', data.powerDayName)
+                                            : t.stats.insights.hasanah.noData
                                         }
                                     </p>
                                 </div>

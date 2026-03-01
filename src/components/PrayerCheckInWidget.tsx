@@ -23,7 +23,7 @@ import { Check, Sparkles, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMissions } from "@/hooks/useMissions";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -43,23 +43,23 @@ const PRAYERS = [
 ] as const;
 
 const SUNNAH_PRAYERS = [
-    { id: "sunnah_qobliyah_fajr", icon: "✨", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", xp: 30 },
-    { id: "sunnah_dhuha", icon: "☀️", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", xp: 50 },
-    { id: "sunnah_qobliyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", xp: 25 },
-    { id: "sunnah_ba_diyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", xp: 25 },
-    { id: "sunnah_ba_diyah_maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", xp: 25 },
-    { id: "sunnah_ba_diyah_isha", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", xp: 25 },
-    { id: "sunnah_witir", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", xp: 40 },
-    { id: "sunnah_tahajjud", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", xp: 50 },
-    { id: "sunnah_istikharah", icon: "❓", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", xp: 30 },
-    { id: "sunnah_hajat", icon: "🤲", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", xp: 30 },
-    { id: "sunnah_taubat", icon: "📿", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", xp: 30 },
+    { id: "sunnah_qobliyah_fajr", icon: "✨", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", hasanah: 30 },
+    { id: "sunnah_dhuha", icon: "☀️", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", hasanah: 50 },
+    { id: "sunnah_qobliyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_isha", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", hasanah: 25 },
+    { id: "sunnah_witir", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", hasanah: 40 },
+    { id: "sunnah_tahajjud", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", hasanah: 50 },
+    { id: "sunnah_istikharah", icon: "❓", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", hasanah: 30 },
+    { id: "sunnah_hajat", icon: "🤲", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", hasanah: 30 },
+    { id: "sunnah_taubat", icon: "📿", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", hasanah: 30 },
     // Seasonal
-    { id: "sunnah_tarawih", icon: "🕌", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", xp: 50, visibility: { hijriMonth: 'Ramadan' } },
-    { id: "sunnah_eid_fitri", icon: "🌙", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", xp: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
-    { id: "sunnah_eid_adha", icon: "🕋", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", xp: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
-    { id: "sunnah_gerhana", icon: "🌑", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", xp: 50 },
-    { id: "sunnah_istisqa", icon: "🌧️", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", xp: 50 },
+    { id: "sunnah_tarawih", icon: "🕌", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", hasanah: 50, visibility: { hijriMonth: 'Ramadan' } },
+    { id: "sunnah_eid_fitri", icon: "🌙", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", hasanah: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
+    { id: "sunnah_eid_adha", icon: "🕋", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", hasanah: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
+    { id: "sunnah_gerhana", icon: "🌑", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", hasanah: 50 },
+    { id: "sunnah_istisqa", icon: "🌧️", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", hasanah: 50 },
 ] as const;
 
 // Bottom-sheet state for male jamaah option
@@ -84,7 +84,7 @@ export default function PrayerCheckInWidget() {
 
     const todayStr = new Date().toISOString().split("T")[0];
     const isBackdated = selectedDate !== todayStr;
-    const getXPReward = (baseXP: number) => isBackdated ? Math.floor(baseXP * 0.5) : baseXP;
+    const getHasanahReward = (baseHasanah: number) => isBackdated ? Math.floor(baseHasanah * 0.5) : baseHasanah;
 
     useEffect(() => {
         setMounted(true);
@@ -198,8 +198,8 @@ export default function PrayerCheckInWidget() {
         return { isActive, isUpcoming: false, isLate: minsFromStart > 180 && isActive, isFuture: false };
     };
 
-    const doComplete = (missionId: string, xpReward: number) => {
-        const finalXp = getXPReward(xpReward);
+    const doComplete = (missionId: string, hasanahReward: number) => {
+        const finalHasanah = getHasanahReward(hasanahReward);
 
         const completedTodayCount = completedMissions.filter(
             (m) => m.completedAt.split("T")[0] === selectedDate
@@ -210,13 +210,13 @@ export default function PrayerCheckInWidget() {
             updateStreak();
         }
 
-        addXP(finalXp, selectedDate);
-        window.dispatchEvent(new CustomEvent("xp_updated"));
-        completeMission(missionId, finalXp, selectedDate);
+        addHasanah(finalHasanah, selectedDate);
+        window.dispatchEvent(new CustomEvent("hasanah_updated"));
+        completeMission(missionId, finalHasanah, selectedDate);
         window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
         toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
-            description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{xp} XP)").replace("{xp}", String(finalXp)),
+            description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{hasanah} Hasanah)").replace("{hasanah}", String(finalHasanah)),
             duration: 2500,
             icon: "🎉",
         });
@@ -230,14 +230,14 @@ export default function PrayerCheckInWidget() {
 
         if (done) {
             // Undo logic
-            const xpToSubtract = doneRecord.xpEarned || 0;
+            const hasanahToSubtract = doneRecord.hasanahEarned || 0;
             undoCompleteMission(missionId, selectedDate);
-            addXP(-xpToSubtract, selectedDate);
-            window.dispatchEvent(new CustomEvent("xp_updated"));
+            addHasanah(-hasanahToSubtract, selectedDate);
+            window.dispatchEvent(new CustomEvent("hasanah_updated"));
             window.dispatchEvent(new CustomEvent("mission_storage_updated"));
 
             toast.info(t.habitUndoTitle || "Habit dibatalkan", {
-                description: t.habitUndoDesc || "Point XP telah dikembalikan.",
+                description: t.habitUndoDesc || "Point Hasanah telah dikembalikan.",
                 icon: "↩️",
             });
             return;
@@ -256,8 +256,8 @@ export default function PrayerCheckInWidget() {
 
         if (isSunnah) {
             // Sunnah points are smaller or fixed
-            const xp = (prayer as any).id === 'sunnah_dhuha' ? 50 : 25;
-            doComplete(missionId, xp);
+            const hasanah = (prayer as any).hasanah || 25;
+            doComplete(missionId, hasanah);
         } else if (gender !== "female") {
             setSheet({ prayer: prayer as typeof PRAYERS[number], missionId });
         } else {
@@ -417,7 +417,7 @@ export default function PrayerCheckInWidget() {
                                             ? isDaylight ? "text-orange-600" : "text-amber-400/70"
                                             : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
                                     )}>
-                                        +{getXPReward(gender !== "female" ? 75 : 25)} XP
+                                        +{getHasanahReward(gender !== "female" ? 75 : 25)} Hasanah
                                     </span>
                                 )}
                                 {!done && isUpcoming && !isLocked && (
@@ -545,7 +545,7 @@ export default function PrayerCheckInWidget() {
                                                         ? isDaylight ? "text-orange-600" : "text-amber-400/60"
                                                         : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
                                                 )}>
-                                                    +{getXPReward((prayer as any).xp || 25)} XP
+                                                    +{getHasanahReward((prayer as any).hasanah || 25)} Hasanah
                                                 </span>
                                             )}
                                         </button>
@@ -607,7 +607,7 @@ export default function PrayerCheckInWidget() {
                             >
                                 <span className="text-2xl group-active:scale-110 transition-transform">🏠</span>
                                 <span className={cn("text-xs font-black uppercase tracking-wide", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInOptionSolo}</span>
-                                <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+{getXPReward(25)} XP</span>
+                                <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+{getHasanahReward(25)} Hasanah</span>
                             </button>
 
                             {/* Berjamaah */}
@@ -626,7 +626,7 @@ export default function PrayerCheckInWidget() {
                                 <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                 <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
                                 <span className="text-xs font-black uppercase tracking-wide text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
-                                <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+{getXPReward(75)} XP</span>
+                                <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+{getHasanahReward(75)} Hasanah</span>
                             </button>
                         </div>
 

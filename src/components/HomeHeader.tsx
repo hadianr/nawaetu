@@ -96,13 +96,13 @@ export default function HomeHeader() {
         // Listen for storage events (in case changed in Settings) and custom XP events
         const handleStorage = () => refreshProfile();
         window.addEventListener("storage", handleStorage);
-        window.addEventListener("xp_updated", handleStorage);
+        window.addEventListener("hasanah_updated", handleStorage);
         window.addEventListener("avatar_updated", handleStorage); // Real-time avatar sync
         window.addEventListener("focus", handleStorage);
 
         return () => {
             window.removeEventListener("storage", handleStorage);
-            window.removeEventListener("xp_updated", handleStorage);
+            window.removeEventListener("hasanah_updated", handleStorage);
             window.removeEventListener("avatar_updated", handleStorage);
             window.removeEventListener("focus", handleStorage);
         };

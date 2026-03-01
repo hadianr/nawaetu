@@ -232,11 +232,11 @@ export default function IntentionPrompt({
                             {isSubmitting ? (
                                 <div className="flex items-center justify-center gap-3 text-white">
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    <span>{t.intention_save_btn.replace('{xp}', isBackdated ? '25' : '50')}</span>
+                                    <span>{t.intention_save_btn.replace('{hasanah}', isBackdated ? '25' : '50')}</span>
                                 </div>
                             ) : (
                                 <span className="text-white">
-                                    {t.intention_set_intention_btn || t.intention_save_btn.replace('{xp}', isBackdated ? '25' : '50')}
+                                    {t.intention_set_intention_btn || t.intention_save_btn.replace('{hasanah}', isBackdated ? '25' : '50')}
                                 </span>
                             )}
                         </button>

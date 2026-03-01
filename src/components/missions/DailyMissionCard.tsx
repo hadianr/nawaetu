@@ -163,7 +163,7 @@ export default function DailyMissionCard({
                             {getRulingLabel(mission.ruling, t)}
                         </span>
                         <p className="text-[10px] text-white/90 truncate">
-                            +{mission.xpReward} XP
+                            +{mission.hasanahReward} Hasanah
                         </p>
 
                         {isLocked ? (

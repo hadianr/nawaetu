@@ -29,12 +29,12 @@ export const statsID = {
         },
         level: {
             rankLabel: "Peringkat Spiritual",
-            totalXp: "Total XP",
+            totalHasanah: "Total Hasanah",
             toNextLevel: "menuju Level",
-            xpNeeded: "XP dibutuhkan",
+            hasanahNeeded: "Hasanah dibutuhkan",
             nextRankGoal: "Target Berikutnya:",
-            currentXp: "XP Saat Ini",
-            nextLevelXp: "XP Berikutnya",
+            currentHasanah: "Hasanah Saat Ini",
+            nextLevelHasanah: "Hasanah Berikutnya",
             understand: "Mengerti"
         },
         quick: {
@@ -42,7 +42,7 @@ export const statsID = {
             longestStreak: "Terpanjang: {{days}} hari",
             weeklyPrayers: "Sholat 14 Hari Terakhir",
             outOf35: "dari 70 waktu sholat",
-            weeklyXp: "XP Minggu Ini",
+            weeklyHasanah: "Hasanah Minggu Ini",
             last7Days: "14 hari terakhir",
             consistency: "Konsistensi",
             last30Days: "30 hari terakhir"
@@ -55,8 +55,8 @@ export const statsID = {
             completed: "Terlaksana"
         },
         chart: {
-            title: "XP Harian",
-            subtitle: "XP yang didapat dari misi dan aktivitas",
+            title: "Hasanah Harian",
+            subtitle: "Hasanah yang didapat dari misi dan aktivitas",
             filters: {
                 today: "Hari Ini",
                 last7d: "7H",
@@ -119,15 +119,15 @@ export const statsID = {
                 sunnahDone: "Kamu juga telah melengkapi dengan {{count}} sholat sunnah, pertahankan!",
                 sunnahNone: "Coba mulai tambahkan sholat sunnah Rawatib untuk menyempurnakan ibadahmu."
             },
-            xp: {
-                title: "Pertumbuhan XP",
-                desc: "XP (Experience Points) mencerminkan usaha dan dedikasi yang kamu berikan dalam setiap amalan.",
-                weekly: "XP Minggu Ini",
+            hasanah: {
+                title: "Pertumbuhan Hasanah",
+                desc: "Hasanah mencerminkan usaha dan dedikasi yang kamu berikan dalam setiap amalan.",
+                weekly: "Hasanah Minggu Ini",
                 avgDaily: "Rata-rata Harian",
-                source: "Sumber XP Terbesar",
-                insightTitle: "Wawasan XP",
+                source: "Sumber Hasanah Terbesar",
+                insightTitle: "Wawasan Hasanah",
                 noData: "Terus selesaikan misi harian untuk melihat hari paling produktif bagimu.",
-                levelProgress: "Progres Level",
+                levelProgress: "Progres Fase",
                 powerDayDesc: "Hari paling produktifmu adalah {{day}}. Pada hari ini kamu cenderung lebih semangat dalam menyelesaikan misi."
             },
             consistency: {

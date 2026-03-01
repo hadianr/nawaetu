@@ -34,5 +34,5 @@ export const uiID = {
 
     // Undo
     habitUndoTitle: "Habit dibatalkan",
-    habitUndoDesc: "Point XP telah dikembalikan.",
+    habitUndoDesc: "Point Hasanah telah dikembalikan.",
 };

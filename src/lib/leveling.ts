@@ -25,7 +25,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { incrementDailyActivity } from "@/lib/analytics-utils";
 
 export const LEVEL_THRESHOLDS = [
-    0,      // Level 1 starts at 0 XP
+    0,      // Level 1 starts at 0 Hasanah
     100,    // Level 2
     300,    // Level 3
     600,    // Level 4
@@ -41,26 +41,26 @@ export const LEVEL_THRESHOLDS = [
 export type RankKey = 'mubtadi' | 'seeker' | 'warrior' | 'abid' | 'salik' | 'mukhlis' | 'muhsin';
 
 export interface PlayerStats {
-    xp: number;
+    hasanah: number;
     level: number;
-    nextLevelXp: number;
+    nextLevelHasanah: number;
     progress: number; // 0-100 percentage
     rankKey: RankKey;
 }
 
 export function getPlayerStats(): PlayerStats {
     if (typeof window === "undefined") {
-        return { xp: 0, level: 1, nextLevelXp: 100, progress: 0, rankKey: 'mubtadi' };
+        return { hasanah: 0, level: 1, nextLevelHasanah: 100, progress: 0, rankKey: 'mubtadi' };
     }
 
     const storage = getStorageService();
-    let currentXP = parseInt((storage.getOptional(STORAGE_KEYS.USER_XP) as string) || "0");
-    if (isNaN(currentXP)) currentXP = 0;
+    let currentHasanah = parseInt((storage.getOptional(STORAGE_KEYS.USER_HASANAH) as string) || "0");
+    if (isNaN(currentHasanah)) currentHasanah = 0;
 
     // Calculate Level
     let level = 1;
     for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
-        if (currentXP >= LEVEL_THRESHOLDS[i]) {
+        if (currentHasanah >= LEVEL_THRESHOLDS[i]) {
             level = i + 1;
         } else {
             break;
@@ -70,16 +70,16 @@ export function getPlayerStats(): PlayerStats {
     const currentLevelBase = LEVEL_THRESHOLDS[level - 1] || 0;
     const nextLevelBase = LEVEL_THRESHOLDS[level] || (currentLevelBase + 1000);
 
-    const xpInLevel = currentXP - currentLevelBase;
-    const xpNeeded = nextLevelBase - currentLevelBase;
+    const hasanahInLevel = currentHasanah - currentLevelBase;
+    const hasanahNeeded = nextLevelBase - currentLevelBase;
 
     // Progress %
-    const progress = Math.min(100, Math.max(0, (xpInLevel / xpNeeded) * 100));
+    const progress = Math.min(100, Math.max(0, (hasanahInLevel / hasanahNeeded) * 100));
 
     return {
-        xp: currentXP,
+        hasanah: currentHasanah,
         level,
-        nextLevelXp: nextLevelBase,
+        nextLevelHasanah: nextLevelBase,
         progress,
         rankKey: getRankKey(level)
     };
@@ -95,22 +95,22 @@ export function getRankKey(level: number): RankKey {
     return 'mubtadi';
 }
 
-export function addXP(amount: number, dateStr?: string) {
+export function addHasanah(amount: number, dateStr?: string) {
     if (typeof window === "undefined") return;
 
     const storage = getStorageService();
-    let currentXP = parseInt((storage.getOptional(STORAGE_KEYS.USER_XP) as string) || "0");
-    if (isNaN(currentXP)) currentXP = 0;
+    let currentHasanah = parseInt((storage.getOptional(STORAGE_KEYS.USER_HASANAH) as string) || "0");
+    if (isNaN(currentHasanah)) currentHasanah = 0;
 
-    const newXP = currentXP + amount;
+    const newHasanah = currentHasanah + amount;
 
-    storage.set(STORAGE_KEYS.USER_XP, newXP.toString());
+    storage.set(STORAGE_KEYS.USER_HASANAH, newHasanah.toString());
 
     // Record activity for stats
-    incrementDailyActivity('xpGained', amount, dateStr);
+    incrementDailyActivity('hasanahGained', amount, dateStr);
 
     // Dispatch events to update UI
-    window.dispatchEvent(new Event("xp_updated"));
+    window.dispatchEvent(new Event("hasanah_updated"));
     window.dispatchEvent(new Event("storage"));
 }
 
@@ -122,11 +122,11 @@ export function usePlayerStats(): PlayerStats {
             setStats(getPlayerStats());
         };
 
-        window.addEventListener("xp_updated", handleUpdate);
+        window.addEventListener("hasanah_updated", handleUpdate);
         window.addEventListener("storage", handleUpdate);
 
         return () => {
-            window.removeEventListener("xp_updated", handleUpdate);
+            window.removeEventListener("hasanah_updated", handleUpdate);
             window.removeEventListener("storage", handleUpdate);
         };
     }, []);

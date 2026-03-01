@@ -26,8 +26,8 @@ interface GamificationStatsProps {
     stats: {
         streak: number;
         level: number;
-        xp: number;
-        nextLevelXp: number;
+        hasanah: number;
+        nextLevelHasanah: number;
         progress: number;
     };
 }
@@ -66,10 +66,10 @@ export function GamificationStats({ isDaylight, stats }: GamificationStatsProps)
                                 </p>
                                 <Info className="w-3 h-3 text-slate-500" />
                             </div>
-                            <p className={cn("text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>{stats.xp} {(t as any).gamificationXpName}</p>
+                            <p className={cn("text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>{stats.hasanah} {(t as any).gamificationXpName}</p>
                         </div>
                     </div>
-                    <span className="text-[10px] text-slate-400">{stats.xp} / {stats.nextLevelXp} {(t as any).gamificationXpName}</span>
+                    <span className="text-[10px] text-slate-400">{stats.hasanah} / {stats.nextLevelHasanah} {(t as any).gamificationXpName}</span>
                 </div>
                 <div className={cn(
                     "h-2.5 w-full rounded-full overflow-hidden border shadow-inner mb-2.5 transition-all",

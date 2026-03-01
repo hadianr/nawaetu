@@ -23,13 +23,13 @@ import HomeClient from "@/components/home/HomeClient";
 
 export const metadata: Metadata = {
   title: "Nawaetu - #NiatAjaDulu | Habit Tracker Ibadah dengan Gamifikasi",
-  description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak System, XP & Leveling. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
+  description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak System, Hasanah & Leveling. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
   alternates: {
     canonical: "https://nawaetu.com",
   },
   openGraph: {
     title: "Nawaetu - #NiatAjaDulu",
-    description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak, XP. Luruskan niat, konsisten beramal.",
+    description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak, Hasanah. Luruskan niat, konsisten beramal.",
     url: "https://nawaetu.com",
     siteName: "Nawaetu",
     locale: "id_ID",

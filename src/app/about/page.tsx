@@ -122,7 +122,7 @@ export default function AboutPage() {
                                         Daily Missions
                                     </h3>
                                     <p className="text-white/70 text-sm leading-relaxed">
-                                        Selesaikan misi ibadah harian, kumpulkan XP, naik level, dan jaga streak untuk konsistensi maksimal.
+                                        Selesaikan misi ibadah harian, kumpulkan Hasanah, naik level, dan jaga streak untuk konsistensi maksimal.
                                     </p>
                                 </div>
                             </div>
@@ -167,7 +167,7 @@ export default function AboutPage() {
                         <div className="bg-white/5 rounded-lg p-4">
                             <h3 className="font-bold text-lg mb-2">🎯 Daily Missions</h3>
                             <p className="text-sm text-white/70">
-                                Selesaikan misi ibadah harian untuk mendapat XP dan rewards
+                                Selesaikan misi ibadah harian untuk mendapat Hasanah dan rewards
                             </p>
                         </div>
                         <div className="bg-white/5 rounded-lg p-4">
@@ -177,7 +177,7 @@ export default function AboutPage() {
                             </p>
                         </div>
                         <div className="bg-white/5 rounded-lg p-4">
-                            <h3 className="font-bold text-lg mb-2">⬆️ XP & Leveling</h3>
+                            <h3 className="font-bold text-lg mb-2">⬆️ Hasanah & Leveling</h3>
                             <p className="text-sm text-white/70">
                                 Naik level seiring konsistensi ibadah Anda meningkat
                             </p>

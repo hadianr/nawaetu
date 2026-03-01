@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
-interface XPTrendChartProps {
+interface HasanahTrendChartProps {
     t: any;
     chartData: any[];
     chartConfig: ChartConfig;
@@ -18,13 +18,13 @@ interface XPTrendChartProps {
     setTimeRange: (range: any) => void;
 }
 
-export function XPTrendChart({
+export function HasanahTrendChart({
     t,
     chartData,
     chartConfig,
     timeRange,
     setTimeRange
-}: XPTrendChartProps) {
+}: HasanahTrendChartProps) {
     const filters = [
         { id: 'today', label: t.stats.chart.filters.today },
         { id: '7d', label: t.stats.chart.filters.last7d },
@@ -66,9 +66,9 @@ export function XPTrendChart({
                         margin={{ left: 12, right: 12, top: 10, bottom: 0 }}
                     >
                         <defs>
-                            <linearGradient id="fillXp" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="var(--color-xp)" stopOpacity={0.4} />
-                                <stop offset="95%" stopColor="var(--color-xp)" stopOpacity={0.01} />
+                            <linearGradient id="fillHasanah" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="var(--color-hasanah)" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="var(--color-hasanah)" stopOpacity={0.01} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -92,11 +92,11 @@ export function XPTrendChart({
                             }
                         />
                         <Area
-                            dataKey="xp"
+                            dataKey="hasanah"
                             type="monotone"
-                            fill="url(#fillXp)"
+                            fill="url(#fillHasanah)"
                             fillOpacity={1}
-                            stroke="var(--color-xp)"
+                            stroke="var(--color-hasanah)"
                             strokeWidth={3}
                             stackId="a"
                             animationDuration={1000}

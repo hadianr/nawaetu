@@ -34,5 +34,5 @@ export const uiEN = {
 
     // Undo
     habitUndoTitle: "Habit undone",
-    habitUndoDesc: "XP points have been returned.",
+    habitUndoDesc: "Hasanah points have been returned.",
 };

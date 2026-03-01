@@ -21,10 +21,10 @@ interface StatsOverviewProps {
     nextRank: any;
     streakData: { currentStreak: number; longestStreak: number };
     recentPrayerCount: number;
-    weeklyXP: number;
+    weeklyHasanah: number;
     consistency: number;
     timeRange: string;
-    totalXp: number;
+    totalHasanah: number;
     setIsRankModalOpen: (val: boolean) => void;
     setActiveInsight: (val: InsightKey | null) => void;
 }
@@ -36,10 +36,10 @@ export function StatsOverview({
     nextRank,
     streakData,
     recentPrayerCount,
-    weeklyXP,
+    weeklyHasanah,
     consistency,
     timeRange,
-    totalXp,
+    totalHasanah,
     setIsRankModalOpen,
     setActiveInsight
 }: StatsOverviewProps) {
@@ -68,8 +68,8 @@ export function StatsOverview({
                                 </span>
                             </div>
                             <div className="text-right shrink-0">
-                                <span className="text-[rgb(var(--color-primary-light))] text-[10px] sm:text-xs font-black">{playerStats.xp}</span>
-                                <span className="text-white/20 text-[9px] sm:text-[10px] ml-0.5">/ {playerStats.nextLevelXp}</span>
+                                <span className="text-[rgb(var(--color-primary-light))] text-[10px] sm:text-xs font-black">{playerStats.hasanah}</span>
+                                <span className="text-white/20 text-[9px] sm:text-[10px] ml-0.5">/ {playerStats.nextLevelHasanah}</span>
                             </div>
                         </div>
 
@@ -131,10 +131,10 @@ export function StatsOverview({
                         gradient: "from-[rgb(var(--color-primary))]/10",
                     },
                     {
-                        id: 'xp' as const,
+                        id: 'hasanah' as const,
                         icon: <ZapIcon className="w-4 h-4 text-yellow-400" />,
-                        label: `XP ${t.stats.chart.filters[timeRange === 'today' ? 'today' : timeRange === '7d' ? 'last7d' : timeRange === '30d' ? 'last30d' : timeRange === '90d' ? 'last90d' : 'last1y']}`,
-                        value: totalXp.toLocaleString(),
+                        label: `Hasanah ${t.stats.chart.filters[timeRange === 'today' ? 'today' : timeRange === '7d' ? 'last7d' : timeRange === '30d' ? 'last30d' : timeRange === '90d' ? 'last90d' : 'last1y']}`,
+                        value: totalHasanah.toLocaleString(),
                         sub: timeRange === 'today' ? t.stats.chart.subtitle : `${timeRange.toUpperCase()} ${t.stats.quick.lastDays || "Terakhir"}`,
                         gradient: "from-yellow-500/10",
                     },

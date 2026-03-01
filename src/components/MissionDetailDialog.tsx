@@ -130,7 +130,7 @@ export default function MissionDetailDialog({
                             "ml-auto flex items-center gap-1 px-2 py-1 rounded-full border transition-colors",
                             isDaylight ? "bg-orange-50 border-orange-100" : "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                         )}>
-                            <span className={cn("text-xs font-black", isDaylight ? "text-orange-600" : "text-[rgb(var(--color-accent)) ]")}>+{mission.xpReward} XP</span>
+                            <span className={cn("text-xs font-black", isDaylight ? "text-orange-600" : "text-[rgb(var(--color-accent)) ]")}>+{mission.hasanahReward} Hasanah</span>
                         </div>
                     </div>
                 </DialogHeader>
@@ -489,7 +489,7 @@ export default function MissionDetailDialog({
                                                 setIsConfirmingReset(false);
                                             }}
                                         >
-                                            {t.home_mission_undo_confirm} (-{mission.xpReward} XP)
+                                            {t.home_mission_undo_confirm} (-{mission.hasanahReward} Hasanah)
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -525,7 +525,7 @@ export default function MissionDetailDialog({
                         ) : mission.completionOptions ? (
                             <div className="flex gap-2">
                                 {mission.completionOptions.map((option, idx) => {
-                                    const isHighReward = option.xpReward > 50;
+                                    const isHighReward = option.hasanahReward > 50;
                                     return (
                                         <Button
                                             key={idx}
@@ -539,7 +539,7 @@ export default function MissionDetailDialog({
                                                         ? "bg-slate-100/80 hover:bg-slate-200 text-slate-600 border border-slate-200"
                                                         : "bg-white/10 hover:bg-white/20 text-white/80"
                                             )}
-                                            onClick={() => onComplete(option.xpReward)}
+                                            onClick={() => onComplete(option.hasanahReward)}
                                         >
                                             {/* Highlight effect for high reward */}
                                             {isHighReward && (
@@ -551,7 +551,7 @@ export default function MissionDetailDialog({
                                                     {option.icon && <span>{option.icon}</span>}
                                                     {option.label}
                                                 </span>
-                                                <span className={cn("text-[10px] font-bold opacity-80", isHighReward ? (isDaylight ? "text-emerald-100" : "text-[rgb(var(--color-primary-light))]") : (isDaylight ? "text-slate-400" : "text-white/40"))}>+{option.xpReward} XP</span>
+                                                <span className={cn("text-[10px] font-bold opacity-80", isHighReward ? (isDaylight ? "text-emerald-100" : "text-[rgb(var(--color-primary-light))]") : (isDaylight ? "text-slate-400" : "text-white/40"))}>+{option.hasanahReward} Hasanah</span>
                                             </div>
                                         </Button>
                                     );
@@ -569,11 +569,11 @@ export default function MissionDetailDialog({
                                             ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-200"
                                             : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white"
                                 )}
-                                onClick={() => onComplete(mission.xpReward)}
+                                onClick={() => onComplete(mission.hasanahReward)}
                             >
                                 {isLate ? <Check className="w-5 h-5 mr-2" /> : <Check className="w-5 h-5 mr-2" />}
                                 <span className="uppercase tracking-widest">
-                                    {isLate ? t.home_mission_complete_late : t.home_mission_complete} (+{mission.xpReward} XP)
+                                    {isLate ? t.home_mission_complete_late : t.home_mission_complete} (+{mission.hasanahReward} Hasanah)
                                 </span>
                             </Button>
                         )}

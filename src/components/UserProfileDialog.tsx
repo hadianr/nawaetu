@@ -105,7 +105,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
     // UI States
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-    const [stats, setStats] = useState({ streak: 0, level: 1, xp: 0, nextLevelXp: 100, progress: 0 });
+    const [stats, setStats] = useState({ streak: 0, level: 1, hasanah: 0, nextLevelHasanah: 100, progress: 0 });
 
     useEffect(() => {
         const loadStats = () => {
@@ -114,17 +114,17 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             setStats({
                 streak: currentStreak,
                 level: playerStats.level,
-                xp: playerStats.xp,
-                nextLevelXp: playerStats.nextLevelXp,
+                hasanah: playerStats.hasanah,
+                nextLevelHasanah: playerStats.nextLevelHasanah,
                 progress: playerStats.progress
             });
         };
 
         loadStats();
-        window.addEventListener("xp_updated", loadStats);
+        window.addEventListener("hasanah_updated", loadStats);
         window.addEventListener("streak_updated", loadStats);
         return () => {
-            window.removeEventListener("xp_updated", loadStats);
+            window.removeEventListener("hasanah_updated", loadStats);
             window.removeEventListener("streak_updated", loadStats);
         };
     }, []);
@@ -195,7 +195,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         storage.remove(STORAGE_KEYS.QURAN_LAST_READ);
         storage.remove(STORAGE_KEYS.USER_STREAK);
         storage.remove(STORAGE_KEYS.USER_LEVEL);
-        storage.remove(STORAGE_KEYS.USER_XP);
+        storage.remove(STORAGE_KEYS.USER_HASANAH);
         storage.remove(STORAGE_KEYS.COMPLETED_MISSIONS);
         storage.remove(STORAGE_KEYS.ACTIVITY_TRACKER);
         storage.remove(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY);

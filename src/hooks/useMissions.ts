@@ -54,8 +54,8 @@ export function useMissions() {
   );
 
   const completeMission = useCallback(
-    (missionId: string, xpEarned: number, dateStr?: string): void => {
-      repository.completeMission(missionId, xpEarned, dateStr);
+    (missionId: string, hasanahEarned: number, dateStr?: string): void => {
+      repository.completeMission(missionId, hasanahEarned, dateStr);
       setCompletedMissions(repository.getCompletedMissions());
     },
     [repository]

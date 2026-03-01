@@ -173,7 +173,7 @@ export default function MissionListModal({
                                 <p className="text-xs text-white/50 truncate mb-1">{mission.description}</p>
 
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] text-amber-400 font-mono">+{mission.xpReward} XP</span>
+                                    <span className="text-[10px] text-amber-400 font-mono">+{mission.hasanahReward} Hasanah</span>
 
                                     {isLocked && (
                                         <span className="text-[9px] text-white/30 flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 border border-white/5">

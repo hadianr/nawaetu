@@ -32,7 +32,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'daily_intention',
         title: 'Luruskan Niat',
         description: 'Tetapkan niat kebaikan hari ini',
-        xpReward: 50,
+        hasanahReward: 50,
         icon: '🎯',
         gender: null,
         dalil: 'HR. Bukhari no. 1: "Segala amal itu tergantung niatnya..."',
@@ -46,7 +46,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'quran_10_ayat',
         title: 'Baca 10 Ayat Quran',
         description: 'Membaca minimal 10 ayat Al-Quran',
-        xpReward: 50,
+        hasanahReward: 50,
         icon: '📖',
         gender: null,
         dalil: 'QS. Al-Muzzammil:20',
@@ -61,7 +61,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'tasbih_99',
         title: 'Tasbih 99x',
         description: 'Selesaikan dzikir tasbih 99 kali',
-        xpReward: 50,
+        hasanahReward: 50,
         icon: '📿',
         gender: null,
         dalil: 'HR Bukhari 6329',
@@ -76,7 +76,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'doa_pagi',
         title: 'Dzikir Pagi',
         description: 'Baca dzikir pagi (jam 04:00-10:00)',
-        xpReward: 20,
+        hasanahReward: 20,
         icon: '🌅',
         gender: null,
         dalil: 'Al-Ma\'thurat',
@@ -91,7 +91,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'doa_sore',
         title: 'Dzikir Sore',
         description: 'Baca dzikir sore (jam 15:00-18:00)',
-        xpReward: 20,
+        hasanahReward: 20,
         icon: '🌆',
         gender: null,
         dalil: 'Al-Ma\'thurat',
@@ -106,7 +106,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'daily_reflection',
         title: 'Muhasabah Harian',
         description: 'Refleksi ibadah di penghujung hari',
-        xpReward: 50,
+        hasanahReward: 50,
         icon: '📝',
         gender: null,
         dalil: 'QS. Al-Hashr: 18: "Dan hendaklah setiap diri memperhatikan apa yang telah diperbuatnya..."',
@@ -122,7 +122,7 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         id: 'sunnah_fasting',
         title: 'Puasa Senin/Kamis',
         description: 'Puasa sunnah (hanya Senin/Kamis)',
-        xpReward: 150,
+        hasanahReward: 150,
         icon: '🌙',
         gender: null,
         dalil: 'HR Muslim 1162',
@@ -140,7 +140,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'makeup_fasting_tracker',
         title: 'Tracker Qadha Puasa',
         description: 'Catat dan bayar utang puasa Ramadhan',
-        xpReward: 100,
+        hasanahReward: 100,
         icon: '📅',
         gender: 'female',
         dalil: 'HR Muslim 335 - Aisyah r.a.',
@@ -154,7 +154,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'menstruation_dhikr',
         title: 'Dzikir Saat Udzur',
         description: 'Perbanyak dzikir dan istighfar',
-        xpReward: 30,
+        hasanahReward: 30,
         icon: '💜',
         gender: 'female',
         dalil: 'Amalan saat haid',
@@ -168,7 +168,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'salawat_100x',
         title: 'Shalawat 100x',
         description: 'Membaca shalawat 100 kali',
-        xpReward: 40,
+        hasanahReward: 40,
         icon: '💚',
         gender: 'female',
         dalil: 'QS. Al-Ahzab:56',
@@ -182,7 +182,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'fajr_prayer_female',
         title: 'Sholat Subuh',
         description: 'Tunaikan sholat Subuh tepat waktu',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌙',
         gender: 'female',
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
@@ -197,7 +197,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'dhuhr_prayer_female',
         title: 'Sholat Dzuhur',
         description: 'Tunaikan sholat Dzuhur tepat waktu',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '☀️',
         gender: 'female',
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
@@ -212,7 +212,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'asr_prayer_female',
         title: 'Sholat Ashar',
         description: 'Tunaikan sholat Ashar tepat waktu',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌤️',
         gender: 'female',
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
@@ -227,7 +227,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'maghrib_prayer_female',
         title: 'Sholat Maghrib',
         description: 'Tunaikan sholat Maghrib tepat waktu',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌅',
         gender: 'female',
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
@@ -242,7 +242,7 @@ export const FEMALE_MISSIONS: Mission[] = [
         id: 'isha_prayer_female',
         title: 'Sholat Isya',
         description: 'Tunaikan sholat Isya tepat waktu',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌃',
         gender: 'female',
         dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
@@ -260,7 +260,7 @@ export const MALE_MISSIONS: Mission[] = [
         id: 'friday_prayer',
         title: 'Sholat Jumat',
         description: 'Tunaikan sholat Jumat (hanya Jumat)',
-        xpReward: 200,
+        hasanahReward: 200,
         icon: '🕌',
         gender: 'male',
         dalil: 'QS. Al-Jumu\'ah:9',
@@ -276,7 +276,7 @@ export const MALE_MISSIONS: Mission[] = [
         id: 'fajr_prayer_male',
         title: 'Sholat Subuh',
         description: 'Tunaikan sholat Subuh (Utama: Berjamaah)',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌙',
         gender: 'male',
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
@@ -287,15 +287,15 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { afterPrayer: 'fajr' },
         completionOptions: [
-            { label: 'Pray Alone', xpReward: 25 },
-            { label: 'Congregation', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', hasanahReward: 25 },
+            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
         ]
     },
     {
         id: 'dhuhr_prayer_male',
         title: 'Sholat Dzuhur',
         description: 'Tunaikan sholat Dzuhur (Utama: Berjamaah)',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '☀️',
         gender: 'male',
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
@@ -306,15 +306,15 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { afterPrayer: 'dhuhr' },
         completionOptions: [
-            { label: 'Pray Alone', xpReward: 25 },
-            { label: 'Congregation', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', hasanahReward: 25 },
+            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
         ]
     },
     {
         id: 'asr_prayer_male',
         title: 'Sholat Ashar',
         description: 'Tunaikan sholat Ashar (Utama: Berjamaah)',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌤️',
         gender: 'male',
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
@@ -325,15 +325,15 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { afterPrayer: 'asr' },
         completionOptions: [
-            { label: 'Pray Alone', xpReward: 25 },
-            { label: 'Congregation', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', hasanahReward: 25 },
+            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
         ]
     },
     {
         id: 'maghrib_prayer_male',
         title: 'Sholat Maghrib',
         description: 'Tunaikan sholat Maghrib (Utama: Berjamaah)',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌅',
         gender: 'male',
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
@@ -344,15 +344,15 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { afterPrayer: 'maghrib' },
         completionOptions: [
-            { label: 'Pray Alone', xpReward: 25 },
-            { label: 'Congregation', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', hasanahReward: 25 },
+            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
         ]
     },
     {
         id: 'isha_prayer_male',
         title: 'Sholat Isya',
         description: 'Tunaikan sholat Isya (Utama: Berjamaah)',
-        xpReward: 25,
+        hasanahReward: 25,
         icon: '🌃',
         gender: 'male',
         dalil: 'Sholat berjamaah lebih utama 27 derajat',
@@ -363,8 +363,8 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'time',
         validationConfig: { afterPrayer: 'isha' },
         completionOptions: [
-            { label: 'Pray Alone', xpReward: 25 },
-            { label: 'Congregation', xpReward: 75, icon: '🕌' }
+            { label: 'Pray Alone', hasanahReward: 25 },
+            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
         ]
     }
 ];

@@ -30,13 +30,13 @@ export interface MissionProgress {
 export interface CompletedMission {
   id: string;
   completedAt: string; // ISO timestamp
-  xpEarned: number;
+  hasanahEarned: number;
 }
 
 export interface MissionRepository {
   getProgress(missionId: string): MissionProgress;
   getCompletedMissions(): CompletedMission[];
-  completeMission(missionId: string, xpEarned: number, dateStr?: string): void;
+  completeMission(missionId: string, hasanahEarned: number, dateStr?: string): void;
   undoCompleteMission(missionId: string, dateStr?: string): void;
   isCompleted(missionId: string, dateStr?: string): boolean;
   resetCompletedMissions(): void;
@@ -97,7 +97,7 @@ export class LocalMissionRepository implements MissionRepository {
           converted.push({
             id,
             completedAt: (value as any).completedAt || new Date().toISOString(),
-            xpEarned: 0 // Unknown for old data
+            hasanahEarned: 0 // Unknown for old data
           });
         }
       }
@@ -111,7 +111,7 @@ export class LocalMissionRepository implements MissionRepository {
     return data as CompletedMission[];
   }
 
-  completeMission(missionId: string, xpEarned: number, dateStr?: string): void {
+  completeMission(missionId: string, hasanahEarned: number, dateStr?: string): void {
     const completed = this.getCompletedMissions();
     const today = dateStr || new Date().toISOString().split('T')[0];
 
@@ -132,7 +132,7 @@ export class LocalMissionRepository implements MissionRepository {
     completed.push({
       id: missionId,
       completedAt: completedTimestamp,
-      xpEarned
+      hasanahEarned
     });
 
     this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, completed);

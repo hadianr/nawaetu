@@ -233,7 +233,7 @@ export default function ReflectionPrompt({
                             >
                                 {isSubmitting
                                     ? t.intention_saving_reflection
-                                    : t.intention_complete_muhasabah_btn.replace('{xp}', isBackdated ? '25' : '50')}
+                                    : t.intention_complete_muhasabah_btn.replace('{hasanah}', isBackdated ? '25' : '50')}
                             </button>
                         </div>
                     </div>

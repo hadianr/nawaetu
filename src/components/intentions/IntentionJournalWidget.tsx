@@ -35,7 +35,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 import { useTheme } from "@/context/ThemeContext";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 
 interface IntentionJournalWidgetProps {
     className?: string;
@@ -177,7 +177,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
                 // Add XP locally
                 if (data.data.intention_points_earned > 0) {
-                    addXP(data.data.intention_points_earned, selectedDate);
+                    addHasanah(data.data.intention_points_earned, selectedDate);
                 }
             } else {
                 // Revert if failed
@@ -232,8 +232,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setTodayData(finalData);
 
                 // Add XP locally
-                addXP(xpAmount, selectedDate);
-                window.dispatchEvent(new CustomEvent("xp_updated"));
+                addHasanah(xpAmount, selectedDate);
+                window.dispatchEvent(new CustomEvent("hasanah_updated"));
 
                 // Update Cache
                 const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;

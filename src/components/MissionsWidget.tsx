@@ -27,7 +27,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Mission } from "@/data/missions";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 import { updateStreak } from "@/lib/streak-utils";
 import { cn } from "@/lib/utils";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
@@ -122,9 +122,9 @@ export default function MissionsWidget() {
 
     const handleCompleteMission = (xpAmount?: number) => {
         if (!selectedMission) return;
-        const reward = xpAmount || selectedMission.xpReward;
-        addXP(reward);
-        window.dispatchEvent(new CustomEvent("xp_updated"));
+        const reward = xpAmount || selectedMission.hasanahReward;
+        addHasanah(reward);
+        window.dispatchEvent(new CustomEvent("hasanah_updated"));
 
         const todayStr = new Date().toISOString().split('T')[0];
         const completedCountToday = completedMissions.filter(m => {
@@ -147,7 +147,7 @@ export default function MissionsWidget() {
         const randomMsg = messages[Math.floor(Math.random() * messages.length)];
 
         toast.success(t.toastMissionComplete, {
-            description: `${randomMsg} (+${reward} XP)`,
+            description: `${randomMsg} (+${reward} Hasanah)`,
             duration: 3000,
             icon: "🎉"
         });
@@ -156,12 +156,12 @@ export default function MissionsWidget() {
 
     const handleResetMission = () => {
         if (!selectedMission) return;
-        addXP(-selectedMission.xpReward);
-        window.dispatchEvent(new CustomEvent("xp_updated"));
+        addHasanah(-selectedMission.hasanahReward);
+        window.dispatchEvent(new CustomEvent("hasanah_updated"));
         undoCompleteMission(selectedMission.id);
 
         toast.info((t as any).mission_dialog_undo_title, {
-            description: `${selectedMission.title} ${(t as any).mission_dialog_undo_desc} (-${selectedMission.xpReward} XP)`,
+            description: `${selectedMission.title} ${(t as any).mission_dialog_undo_desc} (-${selectedMission.hasanahReward} Hasanah)`,
             duration: 3000,
             icon: "🔄"
         });
@@ -180,19 +180,19 @@ export default function MissionsWidget() {
             if (data.success) {
                 const mission = missions.find(m => m.id === 'daily_intention');
                 if (mission) {
-                    addXP(mission.xpReward);
-                    window.dispatchEvent(new CustomEvent("xp_updated"));
+                    addHasanah(mission.hasanahReward);
+                    window.dispatchEvent(new CustomEvent("hasanah_updated"));
                     const todayStr = new Date().toISOString().split('T')[0];
                     const completedCountToday = completedMissions.filter(m => {
                         const completedDate = m.completedAt.split('T')[0];
                         return completedDate === todayStr;
                     }).length;
                     if (completedCountToday === 0) updateStreak();
-                    completeMission(mission.id, mission.xpReward);
+                    completeMission(mission.id, mission.hasanahReward);
                     window.dispatchEvent(new CustomEvent("mission_storage_updated"));
                     setTodayIntention({ id: data.data.id, text: text, reflection: null });
                     toast.success(t.toastMissionComplete, {
-                        description: `${t.intention_success_title} (+${mission.xpReward} XP)`,
+                        description: `${t.intention_success_title} (+${mission.hasanahReward} Hasanah)`,
                         duration: 3000,
                         icon: "🎉"
                     });
@@ -326,7 +326,7 @@ export default function MissionsWidget() {
                                     onComplete={() => {
                                         setTodayIntention(prev => prev ? { ...prev, reflection: { rating: 5, text: "Done" } } : null);
                                         const muhasabah = missions.find(m => m.id === 'muhasabah');
-                                        if (muhasabah) handleCompleteMission(muhasabah.xpReward);
+                                        if (muhasabah) handleCompleteMission(muhasabah.hasanahReward);
                                     }}
                                 />
                             );
@@ -334,7 +334,7 @@ export default function MissionsWidget() {
                             customContent = (
                                 <IntentionInputForm
                                     userToken={userToken}
-                                    onComplete={() => handleCompleteMission(selectedMission.xpReward)}
+                                    onComplete={() => handleCompleteMission(selectedMission.hasanahReward)}
                                 />
                             );
                         }
@@ -344,7 +344,7 @@ export default function MissionsWidget() {
                                 userToken={userToken}
                                 intentionId={todayIntention?.id}
                                 intentionText={todayIntention?.text}
-                                onComplete={() => handleCompleteMission(selectedMission.xpReward)}
+                                onComplete={() => handleCompleteMission(selectedMission.hasanahReward)}
                             />
                         );
                     }

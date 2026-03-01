@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     default: "Nawaetu - Aplikasi Muslim Lengkap | Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital",
     template: "%s | Nawaetu - Aplikasi Muslim #NiatAjaDulu"
   },
-  description: "Nawaetu - Aplikasi Muslim lengkap dengan Habit Tracker Ibadah, Jadwal Sholat Akurat, Al Quran Online & Terjemahan, Arah Kiblat, Tasbih Digital, dan Asisten AI. Gamifikasi seru: Daily Missions, Streak System, XP & Leveling. Gratis! #NiatAjaDulu",
+  description: "Nawaetu - Aplikasi Muslim lengkap dengan Habit Tracker Ibadah, Jadwal Sholat Akurat, Al Quran Online & Terjemahan, Arah Kiblat, Tasbih Digital, dan Asisten AI. Gamifikasi seru: Daily Missions, Streak System, Hasanah & Leveling. Gratis! #NiatAjaDulu",
   keywords: [
     // Brand
     "Nawaetu", "NiatAjaDulu", "#NiatAjaDulu",
@@ -134,7 +134,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Nawaetu - Aplikasi Muslim Lengkap #NiatAjaDulu",
-    description: "Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital, Habit Tracker Ibadah. Gamifikasi seru: Daily Missions, Streak, XP. Gratis!",
+    description: "Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital, Habit Tracker Ibadah. Gamifikasi seru: Daily Missions, Streak, Hasanah. Gratis!",
     creator: "@nawaetuapp",
     images: ["/og-image.png"],
   },

@@ -23,7 +23,7 @@ import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, Calen
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { addXP } from "@/lib/leveling";
+import { addHasanah } from "@/lib/leveling";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
 import { useTheme } from "@/context/ThemeContext";
@@ -127,7 +127,7 @@ export default function DhikrCounter() {
     useEffect(() => {
         if (target && count === target) {
             setTimeout(() => {
-                addXP(50);
+                addHasanah(50);
                 setShowReward(true);
                 if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([200, 100, 200]);
             }, 100);

@@ -99,7 +99,7 @@ export function checkMissionValidation(
         return {
             locked: false,
             isEarly,
-            reason: isEarly ? "Early Time (+XP Bonus)" : `Time for ${prayerKey}`
+            reason: isEarly ? "Early Time (+Hasanah Bonus)" : `Time for ${prayerKey}`
         };
     }
 
