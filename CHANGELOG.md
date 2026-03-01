@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.2] - 2026-03-02
+
+### Added
+- **Feat: Implement a dismissible voting banner for the homepage and a permanent voting link for the settings page, including new localization strings.**
+- **Feat: Implement `PresetGuard` for conditional page rendering based on user intention and update onboarding titles.**
+- **Feat: Introduce feature presets and refactor user archetype to usage intention with new values.**
+- **Feat: Optimize Webpack chunking configuration and prevent infinite reloads on chunk loading errors.**
+- **Feat: update Quran verses per page options and default value**
+- **Feat: Enhance ChunkErrorHandler to detect resource loading failures for Next.js chunks and provide more detailed logging.**
+- **Feat: Add ChunkErrorHandler to automatically reload the page on chunk loading failures and improve chart component null safety.**
+- **Feat: Add `worker-src` directive to Content Security Policy to allow workers from 'self' and 'blob:'.**
+- **Feat: Implement a comprehensive fasting tracker for Ramadhan and refactor XP to Hasanah across the application.**
+- **Feat: rename database factor**
+
+### Improved
+- **Refactor: Standardize date handling for daily activity and mission completion using `DateUtils` helper functions.**
+- **Refactor: centralize date utilities and enhance date input UI in prayer and intention widgets.**
+
+
 ## [1.9.1] - 2026-03-01
 
 ### Added
