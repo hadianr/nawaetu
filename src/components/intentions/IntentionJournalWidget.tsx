@@ -18,9 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
-import { ChevronRight, Book, Flame, Sparkles, CheckCircle2, Moon, Heart, Compass, Edit2 } from "lucide-react";
+import { ChevronRight, Book, Flame, Sparkles, CheckCircle2, Moon, Heart, Compass, Edit2, Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const IntentionPrompt = dynamic(() => import("./IntentionPrompt"), {
@@ -36,6 +36,7 @@ import { toast } from "sonner";
 
 import { useTheme } from "@/context/ThemeContext";
 import { addHasanah } from "@/lib/leveling";
+import { DateUtils } from "@/lib/utils/date";
 
 interface IntentionJournalWidgetProps {
     className?: string;
@@ -53,12 +54,6 @@ function getOrCreateAnonymousId(): string {
 
 const CACHE_PREFIX = "nawaetu_intention_cache_";
 
-// Helper to get today's date string in YYYY-MM-DD format (local time)
-function getTodayDateString() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
 export default function IntentionJournalWidget({ className = "" }: IntentionJournalWidgetProps) {
     const { locale, t } = useLocale();
     const { currentTheme } = useTheme();
@@ -68,9 +63,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     const [showReflectionPrompt, setShowReflectionPrompt] = useState(false);
 
     // Add selectedDate state
-    const [selectedDate, setSelectedDate] = useState<string>(getTodayDateString());
+    const [selectedDate, setSelectedDate] = useState<string>(DateUtils.today());
+    const dateInputRef = useRef<HTMLInputElement>(null);
 
-    const isBackdated = selectedDate !== getTodayDateString();
+    const isBackdated = selectedDate !== DateUtils.today();
 
     // Default structure to avoid layout/hydration shifts when caching kicks in
     const [todayData, setTodayData] = useState<any>(null);
@@ -206,7 +202,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         toast.success(locale === 'id' ? 'Refleksi berhasil disimpan' : 'Reflection saved successfully');
 
         try {
-            const todayStr = getTodayDateString();
+            const todayStr = DateUtils.today();
             const isBackdated = selectedDate !== todayStr;
             const xpAmount = isBackdated ? 25 : 50;
 
@@ -281,30 +277,41 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity min-w-0">
                             <Compass className={cn("w-3 h-3 shrink-0", isDaylight ? "text-slate-900" : "text-white")} />
                             <span className={cn("text-[9px] font-bold uppercase tracking-tight truncate", isDaylight ? "text-slate-900" : "text-white")}>
-                                {selectedDate === getTodayDateString()
+                                {selectedDate === DateUtils.today()
                                     ? t.intention_widget_title
                                     : t.intention_widget_history_title}
                             </span>
                         </div>
 
                         {/* Date Selector */}
-                        <div className="relative shrink-0">
+                        <div
+                            onClick={() => dateInputRef.current?.showPicker()}
+                            className="relative shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group/date"
+                        >
+                            <Calendar className={cn("w-3 h-3 transition-colors pointer-events-none", isDaylight ? "text-slate-400 group-hover/date:text-slate-600" : "text-white/40 group-hover/date:text-white/70")} />
+                            <span className={cn(
+                                "text-[9px] font-bold uppercase transition-colors pointer-events-none",
+                                isDaylight
+                                    ? "text-slate-400 group-hover/date:text-slate-600"
+                                    : "text-white/40 group-hover/date:text-white/70"
+                            )}>
+                                {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                })}
+                            </span>
                             <input
+                                ref={dateInputRef}
                                 type="date"
                                 value={selectedDate}
-                                max={getTodayDateString()}
+                                max={DateUtils.today()}
                                 onChange={(e) => {
                                     if (e.target.value) {
                                         setSelectedDate(e.target.value);
                                     }
                                 }}
-                                className={cn(
-                                    "text-[9px] font-bold uppercase cursor-pointer outline-none bg-transparent appearance-none text-right px-0 relative z-10 w-[72px] h-5",
-                                    isDaylight
-                                        ? "text-slate-400 hover:text-slate-600"
-                                        : "text-white/40 hover:text-white/70",
-                                    "flex-row-reverse"
-                                )}
+                                className="absolute inset-0 opacity-0 cursor-pointer pointer-events-none"
                                 style={{ colorScheme: isDaylight ? 'light' : 'dark' }}
                             />
                         </div>

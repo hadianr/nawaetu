@@ -18,8 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect, useCallback } from "react";
-import { Check, Sparkles, AlertCircle } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Check, Sparkles, AlertCircle, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMissions } from "@/hooks/useMissions";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
+import { DateUtils } from "@/lib/utils/date";
 import type { Gender } from "@/data/missions";
 
 // Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
@@ -79,10 +80,11 @@ export default function PrayerCheckInWidget() {
     const [gender, setGender] = useState<Gender>(null);
     const [mounted, setMounted] = useState(false);
     const [sheet, setSheet] = useState<SheetState>(null);
-    const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
+    const [selectedDate, setSelectedDate] = useState<string>(DateUtils.today());
+    const dateInputRef = useRef<HTMLInputElement>(null);
     const [showSunnah, setShowSunnah] = useState(false);
 
-    const todayStr = new Date().toISOString().split("T")[0];
+    const todayStr = DateUtils.today();
     const isBackdated = selectedDate !== todayStr;
     const getHasanahReward = (baseHasanah: number) => isBackdated ? Math.floor(baseHasanah * 0.5) : baseHasanah;
 
@@ -116,7 +118,7 @@ export default function PrayerCheckInWidget() {
             const id = getMissionId(suffix);
             return completedMissions.some((m) => {
                 if (m.id !== id) return false;
-                return m.completedAt.split("T")[0] === selectedDate;
+                return DateUtils.toLocalDate(m.completedAt) === selectedDate;
             });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +135,7 @@ export default function PrayerCheckInWidget() {
         }
 
         // If the user selected a past date, all prayers are open (late) but not "future" anymore
-        const todayStr = new Date().toISOString().split("T")[0];
+        const todayStr = DateUtils.today();
         if (selectedDate < todayStr) {
             return { isActive: false, isUpcoming: false, isLate: true, isFuture: false };
         }
@@ -293,7 +295,7 @@ export default function PrayerCheckInWidget() {
                     <div className="flex items-center gap-1.5 min-w-0">
                         <span className="text-sm shrink-0">🕌</span>
                         <p className={cn("text-[10px] font-black uppercase tracking-tight truncate", isDaylight ? "text-slate-800" : "text-white")}>
-                            {selectedDate === new Date().toISOString().split("T")[0]
+                            {selectedDate === DateUtils.today()
                                 ? t.homePrayerCheckInTitle
                                 : t.homePrayerCheckInHistoryTitle}
                         </p>
@@ -301,23 +303,34 @@ export default function PrayerCheckInWidget() {
 
                     <div className="flex items-center gap-1.5 shrink-0">
                         {/* Date Selector */}
-                        <div className="relative group/date">
+                        <div
+                            onClick={() => dateInputRef.current?.showPicker()}
+                            className="relative shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group/date"
+                        >
+                            <Calendar className={cn("w-3 h-3 transition-colors pointer-events-none", isDaylight ? "text-slate-400 group-hover/date:text-slate-600" : "text-white/40 group-hover/date:text-white/70")} />
+                            <span className={cn(
+                                "text-[9px] font-bold uppercase transition-colors pointer-events-none",
+                                isDaylight
+                                    ? "text-slate-400 group-hover/date:text-slate-600"
+                                    : "text-white/40 group-hover/date:text-white/70"
+                            )}>
+                                {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                })}
+                            </span>
                             <input
+                                ref={dateInputRef}
                                 type="date"
                                 value={selectedDate}
-                                max={new Date().toISOString().split("T")[0]}
+                                max={DateUtils.today()}
                                 onChange={(e) => {
                                     if (e.target.value) {
                                         setSelectedDate(e.target.value);
                                     }
                                 }}
-                                className={cn(
-                                    "text-[9px] font-bold uppercase cursor-pointer outline-none bg-transparent appearance-none text-right px-0 relative z-10 w-[72px] h-5",
-                                    isDaylight
-                                        ? "text-slate-400 hover:text-slate-600"
-                                        : "text-white/40 hover:text-white/70",
-                                    "flex-row-reverse"
-                                )}
+                                className="absolute inset-0 opacity-0 cursor-pointer pointer-events-none"
                                 style={{ colorScheme: isDaylight ? 'light' : 'dark' }}
                             />
                         </div>

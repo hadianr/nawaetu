@@ -91,9 +91,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const now = new Date();
         const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
 
-        let next = "Imsak";
-        let nextTime = timings["Imsak"];
-        const prayerOrder = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+        let next = "Fajr";
+        let nextTime = timings["Fajr"];
+        const prayerOrder = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
         let found = false;
         for (const prayer of prayerOrder) {
@@ -106,8 +106,8 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         }
 
         if (!found) {
-            next = "Imsak";
-            nextTime = timings["Imsak"];
+            next = "Fajr";
+            nextTime = timings["Fajr"];
         }
 
         const hijri = dateInfo?.hijri;
@@ -497,11 +497,11 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const updateNextPrayer = () => {
             const now = new Date();
             const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-            const prayerOrder = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+            const prayerOrder = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
             const timings = data.prayerTimes;
 
-            let next = "Imsak";
-            let nextTime = timings["Imsak"];
+            let next = "Fajr";
+            let nextTime = timings["Fajr"];
             let found = false;
 
             for (const prayer of prayerOrder) {
@@ -513,10 +513,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
             }
 
-            // If we passed Isha, wrapped around to Imsak (tomorrow)
+            // If we passed Isha, wrapped around to Fajr (tomorrow)
             if (!found) {
-                next = "Imsak";
-                nextTime = timings["Imsak"];
+                next = "Fajr";
+                nextTime = timings["Fajr"];
             }
 
             // Only update if changed

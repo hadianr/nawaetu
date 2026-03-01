@@ -22,37 +22,45 @@
  */
 export class DateUtils {
   /**
-   * Get today's date in YYYY-MM-DD format
+   * Helper to format date as YYYY-MM-DD in local time
    */
-  static today(): string {
-    return new Date().toISOString().split('T')[0];
+  static toLocalDate(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
   /**
-   * Get yesterday's date in YYYY-MM-DD format
+   * Get today's date in YYYY-MM-DD format (local time)
+   */
+  static today(): string {
+    return this.toLocalDate(new Date());
+  }
+
+  /**
+   * Get yesterday's date in YYYY-MM-DD format (local time)
    */
   static yesterday(): string {
     const date = new Date();
     date.setDate(date.getDate() - 1);
-    return date.toISOString().split('T')[0];
+    return this.toLocalDate(date);
   }
 
   /**
-   * Get date N days ago
+   * Get date N days ago (local time)
    */
   static daysAgo(days: number): string {
     const date = new Date();
     date.setDate(date.getDate() - days);
-    return date.toISOString().split('T')[0];
+    return this.toLocalDate(date);
   }
 
   /**
-   * Get date N days from now
+   * Get date N days from now (local time)
    */
   static daysFromNow(days: number): string {
     const date = new Date();
     date.setDate(date.getDate() + days);
-    return date.toISOString().split('T')[0];
+    return this.toLocalDate(date);
   }
 
   /**
