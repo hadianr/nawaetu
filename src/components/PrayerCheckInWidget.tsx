@@ -204,7 +204,7 @@ export default function PrayerCheckInWidget() {
         const finalHasanah = getHasanahReward(hasanahReward);
 
         const completedTodayCount = completedMissions.filter(
-            (m) => m.completedAt.split("T")[0] === selectedDate
+            (m) => DateUtils.toLocalDate(m.completedAt) === selectedDate
         ).length;
 
         // Only trigger generic streak logic if it's really today's first activity
@@ -227,7 +227,7 @@ export default function PrayerCheckInWidget() {
     const handlePrayerTap = (prayer: typeof PRAYERS[number] | typeof SUNNAH_PRAYERS[number]) => {
         const isSunnah = 'id' in prayer;
         const missionId = isSunnah ? prayer.id : getMissionId(prayer.suffix);
-        const doneRecord = completedMissions.find(m => m.id === missionId && m.completedAt.split("T")[0] === selectedDate);
+        const doneRecord = completedMissions.find(m => m.id === missionId && DateUtils.toLocalDate(m.completedAt) === selectedDate);
         const done = !!doneRecord;
 
         if (done) {
@@ -501,7 +501,7 @@ export default function PrayerCheckInWidget() {
                                 });
 
                                 return activeSunnah.map((prayer) => {
-                                    const done = completedMissions.some(m => m.id === prayer.id && m.completedAt.split("T")[0] === selectedDate);
+                                    const done = completedMissions.some(m => m.id === prayer.id && DateUtils.toLocalDate(m.completedAt) === selectedDate);
                                     const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
                                     const isLocked = isFuture && !done;
 

@@ -19,6 +19,7 @@
 import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { getActivityRepository } from './activity.repository';
+import { DateUtils } from '@/lib/utils/date';
 
 export interface MissionProgress {
   missionId: string;
@@ -29,7 +30,7 @@ export interface MissionProgress {
 
 export interface CompletedMission {
   id: string;
-  completedAt: string; // ISO timestamp
+  completedAt: string; // YYYY-MM-DD or ISO timestamp (we'll prefer local date string for comparisons)
   hasanahEarned: number;
 }
 
@@ -96,7 +97,7 @@ export class LocalMissionRepository implements MissionRepository {
         if (typeof value === 'object' && value !== null && 'date' in value) {
           converted.push({
             id,
-            completedAt: (value as any).completedAt || new Date().toISOString(),
+            completedAt: (value as any).completedAt || DateUtils.today(),
             hasanahEarned: 0 // Unknown for old data
           });
         }
@@ -113,25 +114,24 @@ export class LocalMissionRepository implements MissionRepository {
 
   completeMission(missionId: string, hasanahEarned: number, dateStr?: string): void {
     const completed = this.getCompletedMissions();
-    const today = dateStr || new Date().toISOString().split('T')[0];
+    const targetDate = dateStr || DateUtils.today();
 
-    // Check if already completed on that date. 
-    if (completed.some(m => m.id === missionId && m.completedAt.startsWith(today))) {
+    // Check if already completed on that date.
+    // We use DateUtils.toLocalDate to ensure we are comparing local dates regardless of how completedAt is stored
+    if (completed.some(m => m.id === missionId && DateUtils.toLocalDate(m.completedAt) === targetDate)) {
       return;
     }
 
-    // Include the actual time if it's today, otherwise use midnight of the selected date to avoid timezone issues.
-    let completedTimestamp = new Date().toISOString();
-    if (dateStr) {
-      const isToday = new Date().toISOString().split('T')[0] === dateStr;
-      if (!isToday) {
-        completedTimestamp = `${dateStr}T12:00:00.000Z`; // Give it a synthetic time for past days
-      }
-    }
+    // For today, we can store full ISO if we want, but for consistency and to avoid UTC flip bugs, 
+    // we'll store a local-time based ISO-like string or just the date.
+    // Let's use DateUtils.toLocalDate for everything to be ultra-safe about per-day missions.
+    const completedAt = dateStr || new Date().toISOString();
+    // Note: If dateStr is provided (backdate), it's already YYYY-MM-DD. 
+    // If not, it's today's ISO. The isCompleted/undo logic below handles both via toLocalDate.
 
     completed.push({
       id: missionId,
-      completedAt: completedTimestamp,
+      completedAt: completedAt,
       hasanahEarned
     });
 
@@ -146,21 +146,17 @@ export class LocalMissionRepository implements MissionRepository {
 
   isCompleted(missionId: string, dateStr?: string): boolean {
     const completed = this.getCompletedMissions();
-    const today = dateStr || new Date().toISOString().split('T')[0];
+    const targetDate = dateStr || DateUtils.today();
 
-    // For simplicity, if it's in the list and was done today, it's definitely completed.
-    // If we want to support 'tracker' (one-time) missions correctly here, 
-    // we would need more info, but most missions are recurring.
-    // Let's use a safe approach: completed if it was done today.
-    return completed.some(m => m.id === missionId && m.completedAt.startsWith(today));
+    return completed.some(m => m.id === missionId && DateUtils.toLocalDate(m.completedAt) === targetDate);
   }
 
   undoCompleteMission(missionId: string, dateStr?: string): void {
     const completed = this.getCompletedMissions();
-    const today = dateStr || new Date().toISOString().split('T')[0];
+    const targetDate = dateStr || DateUtils.today();
 
     // Remove the completion for the specified date.
-    const filtered = completed.filter(m => !(m.id === missionId && m.completedAt.startsWith(today)));
+    const filtered = completed.filter(m => !(m.id === missionId && DateUtils.toLocalDate(m.completedAt) === targetDate));
 
     this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, filtered);
 

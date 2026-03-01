@@ -20,6 +20,7 @@
 
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { DateUtils } from "@/lib/utils/date";
 
 const storage = getStorageService();
 
@@ -55,7 +56,7 @@ export interface MonthlyStats {
 export function recordDailyActivity(activity: Partial<DailyActivity>, dateStr?: string) {
     if (typeof window === "undefined") return;
 
-    const date = dateStr || new Date().toISOString().split("T")[0];
+    const date = dateStr || DateUtils.today();
     const history = getDailyActivityHistory();
 
     // Find or create entry for the specified date
@@ -81,9 +82,7 @@ export function recordDailyActivity(activity: Partial<DailyActivity>, dateStr?: 
     }
 
     // Keep only last 90 days
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - 90);
-    const cutoff = cutoffDate.toISOString().split("T")[0];
+    const cutoff = DateUtils.daysAgo(90);
 
     const filtered = history
         .filter((a) => a.date >= cutoff)
@@ -102,7 +101,7 @@ export function incrementDailyActivity(key: keyof Omit<DailyActivity, 'date'>, a
     if (typeof window === "undefined") return;
 
     const history = getDailyActivityHistory();
-    const date = dateStr || new Date().toISOString().split("T")[0];
+    const date = dateStr || DateUtils.today();
     const existing = history.find(a => a.date === date);
 
     const currentVal = existing ? (existing[key] as number || 0) : 0;
@@ -113,7 +112,7 @@ export function incrementDailyActivity(key: keyof Omit<DailyActivity, 'date'>, a
  * Get today's activity entry
  */
 export function getTodayActivity(): DailyActivity {
-    const today = new Date().toISOString().split("T")[0];
+    const today = DateUtils.today();
     const history = getDailyActivityHistory();
     return history.find(a => a.date === today) || {
         date: today,
@@ -171,20 +170,18 @@ export function getWeeklyStats(): WeeklyStats {
 
     // Calculate streak
     let streak = 0;
-    const today = new Date().toISOString().split("T")[0];
-    const checkDate = new Date();
+    const today = DateUtils.today();
 
+    // Check backwards from today
     for (let i = 0; i < 30; i++) {
-        const dateStr = checkDate.toISOString().split("T")[0];
-        const activity = recent.find((a) => a.date === dateStr);
+        const dateStr = DateUtils.daysAgo(i);
+        const activity = getDailyActivityHistory().find((a) => a.date === dateStr);
 
         if (activity && activity.hasanahGained > 0) {
             streak++;
         } else if (dateStr !== today) {
             break;
         }
-
-        checkDate.setDate(checkDate.getDate() - 1);
     }
 
     return {
@@ -244,12 +241,9 @@ export function generateMockData() {
     if (typeof window === "undefined") return;
 
     const mockData: DailyActivity[] = [];
-    const today = new Date();
 
     for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        const dateStr = date.toISOString().split("T")[0];
+        const dateStr = DateUtils.daysAgo(i);
 
         // Random but realistic data
         const hasanahGained = Math.floor(Math.random() * 300) + 50;
