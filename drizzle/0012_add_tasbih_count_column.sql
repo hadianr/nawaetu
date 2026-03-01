@@ -1,0 +1,1 @@
+ALTER TABLE "daily_activities" ADD COLUMN "tasbih_count" integer DEFAULT 0;
