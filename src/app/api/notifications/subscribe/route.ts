@@ -33,11 +33,14 @@ export async function POST(req: NextRequest) {
             active: 1,
             deviceType: deviceType || "web",
             timezone: timezone || "UTC",
-            userLocation: userLocation || null, // Legacy
+            userLocation: userLocation || null, // Legacy (full object)
             latitude: userLocation?.lat || null,
             longitude: userLocation?.lng || null,
-            city: userLocation?.city || null,
-            // If provided, update preferences; otherwise keep existing (undefined means Drizzle ignores it in 'set')
+            // Prefer city-level name (Kabupaten/Kota), fallback to display name (kecamatan)
+            city: userLocation?.city || userLocation?.name || null,
+            // New geographic fields from enriched geocoding
+            country: userLocation?.country || null,
+            countryCode: userLocation?.countryCode || null,
             prayerPreferences: prayerPreferences || undefined,
         };
 
@@ -46,7 +49,6 @@ export async function POST(req: NextRequest) {
             .values({
                 token,
                 ...data,
-                // For new insert, ensure prayerPreferences is null if not provided
                 prayerPreferences: prayerPreferences || null,
                 userId: null,
                 lastUsedAt: null,

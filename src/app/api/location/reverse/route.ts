@@ -54,7 +54,11 @@ export async function GET(req: NextRequest) {
         }
 
         // 1. Try BigDataCloud first (usually faster, good global coverage)
-        let resolvedName = null;
+        let resolvedName: string | null = null;
+        let resolvedCity: string | null = null;
+        let resolvedCountry: string | null = null;
+        let resolvedCountryCode: string | null = null;
+
         try {
             const bdcUrl = `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${parsedLat}&longitude=${parsedLng}&localityLanguage=id`;
             const bdcRes = await fetch(bdcUrl, {
@@ -63,11 +67,12 @@ export async function GET(req: NextRequest) {
 
             if (bdcRes.ok) {
                 const bdcData = await bdcRes.json();
-                resolvedName =
-                    bdcData.locality ||
-                    bdcData.city ||
-                    bdcData.principalSubdivision ||
-                    bdcData.countryName;
+                // For display name: use locality (kecamatan) for precision
+                resolvedName = bdcData.locality || bdcData.city || bdcData.principalSubdivision || bdcData.countryName;
+                // For city-level analytics: use city or principalSubdivision (kabupaten/kota)
+                resolvedCity = bdcData.city || bdcData.principalSubdivision || bdcData.locality;
+                resolvedCountry = bdcData.countryName || null;
+                resolvedCountryCode = bdcData.countryCode?.toLowerCase() || null;
             }
         } catch (e) {
             console.warn("[LocationProxy] BigDataCloud failed:", e);
@@ -79,25 +84,29 @@ export async function GET(req: NextRequest) {
                 const nomUrl = `${API_CONFIG.LOCATION.NOMINATIM}?format=jsonv2&lat=${parsedLat}&lon=${parsedLng}&accept-language=id&email=nawaetu.app@gmail.com`;
 
                 // IMPORTANT: We MUST set a User-Agent server-side, otherwise Nominatim blocks it.
-                // We couldn't do this client-side due to browser Fetch API security restrictions.
                 const nomRes = await fetch(nomUrl, {
-                    headers: {
-                        "User-Agent": "NawaetuApp/1.0 (NextJS Server Proxy)",
-                    },
+                    headers: { "User-Agent": "NawaetuApp/1.0 (NextJS Server Proxy)" },
                     next: { revalidate: 86400 },
                 });
 
                 if (nomRes.ok) {
                     const locData = await nomRes.json();
                     const addr = locData.address || {};
+
+                    // Display name: show sub-district for precision (user-facing label)
                     resolvedName =
-                        addr.subdistrict ||
-                        addr.village ||
-                        addr.municipality ||
-                        addr.city ||
-                        addr.town ||
-                        addr.state ||
+                        addr.suburb || addr.subdistrict || addr.village ||
+                        addr.city || addr.town || addr.county ||
                         locData.display_name?.split(",")[0];
+
+                    // City-level (Kabupaten/Kota): for analytics, skip sub-districts
+                    resolvedCity =
+                        addr.city || addr.city_district || addr.county ||
+                        addr.municipality || addr.town || addr.state_district ||
+                        addr.state;
+
+                    resolvedCountry = addr.country || null;
+                    resolvedCountryCode = addr.country_code?.toLowerCase() || null;
                 }
             } catch (e) {
                 console.warn("[LocationProxy] Nominatim failed:", e);
@@ -108,6 +117,9 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({
                 success: true,
                 name: resolvedName,
+                city: resolvedCity || resolvedName,
+                country: resolvedCountry,
+                countryCode: resolvedCountryCode,
                 from: "proxy"
             });
         }

@@ -20,6 +20,7 @@
     "test": "VITE_CJS_IGNORE_WARNING=1 vitest",
     "test:run": "VITE_CJS_IGNORE_WARNING=1 vitest run",
     "release": "bash scripts/release.sh",
+    "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "build:extension": "cd extension && zip -r ../nawaetu-extension.zip *"

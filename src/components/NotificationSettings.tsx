@@ -97,12 +97,14 @@ export default function NotificationSettings() {
         if (locationStr) {
             try {
                 const loc = JSON.parse(locationStr);
-                // The app uses name/lat/lng in usePrayerTimes, but city/latitude/longitude elsewhere.
-                // We handle both for maximum compatibility.
                 return {
                     lat: loc.lat ?? loc.latitude ?? -6.2088,
                     lng: loc.lng ?? loc.longitude ?? 106.8456,
-                    city: loc.name || loc.city || loc.locality || "Unknown",
+                    name: loc.name || loc.city || loc.locality || "Unknown",
+                    // Pass city (kabupaten/kota level) and country for analytics
+                    city: loc.city || loc.name || "Unknown",
+                    country: loc.country || null,
+                    countryCode: loc.countryCode || null,
                 };
             } catch (e) {
             }

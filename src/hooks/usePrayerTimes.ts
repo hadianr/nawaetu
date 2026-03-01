@@ -195,6 +195,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string, isDefault: boolean = false) => {
         // fetch location name if not cached
         let locationName = cachedLocationName || "Lokasi Anda";
+        let geoDetails: { city?: string; country?: string; countryCode?: string } = {};
 
         try {
             setLoading(true);
@@ -216,6 +217,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                         const proxyData = await proxyResponse.json();
                         if (proxyData.success && proxyData.name) {
                             locationName = proxyData.name;
+                            // Capture enriched city/country for storing in USER_LOCATION
+                            geoDetails = {
+                                city: proxyData.city || proxyData.name,
+                                country: proxyData.country || undefined,
+                                countryCode: proxyData.countryCode || undefined,
+                            };
                         }
                     }
                 } catch (e) {
@@ -338,6 +345,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                     lat,
                     lng,
                     name: locationName,
+                    // City (Kabupaten/Kota level) and country for analytics — from enriched geocoding
+                    city: geoDetails.city || locationName,
+                    country: geoDetails.country,
+                    countryCode: geoDetails.countryCode,
                     timestamp: Date.now()
                 };
                 storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
