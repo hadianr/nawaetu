@@ -28,6 +28,12 @@ export const otherEN = {
     statsComingSoon: "Coming Soon",
     statsDescription: "Perfect your intention, monitor results later ✨",
 
+    // Voting Banner
+    votingBannerLabel: "Ma'a Impact Innovation Prize 2026",
+    votingBannerTitle: "Nawaetu has been Shortlisted! 🏆",
+    votingBannerSubtitle: "Help us win by casting your FREE vote!",
+    votingBannerCta: "Vote Now on GlobalSadaqah",
+
     // Location Section
     locationLabel: "Location",
     locationUpdating: "Updating...",

@@ -23,6 +23,7 @@ import RamadhanCountdown from "@/components/RamadhanCountdown";
 import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
 import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 import HomeHeader from "@/components/HomeHeader";
+import VotingBanner from "@/components/home/VotingBanner";
 
 interface HomeClientProps {
     initialDaysLeft: number;
@@ -47,6 +48,11 @@ export default function HomeClient({ initialDaysLeft, isRamadhanSeason }: HomeCl
 
                 {/* 1. Header & Greeting */}
                 <HomeHeader />
+
+                {/* 1b. Voting Banner - Ma'a Impact Innovation Prize 2026 */}
+                <section className="w-full">
+                    <VotingBanner />
+                </section>
 
                 {/* 2. Ramadhan Countdown - Hidden during Ramadhan season */}
                 {!isRamadhan && (

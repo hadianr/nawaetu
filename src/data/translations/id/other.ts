@@ -28,6 +28,12 @@ export const otherID = {
     statsComingSoon: "Segera Hadir",
     statsDescription: "Matangkan niat, pantau hasil nanti ✨",
 
+    // Voting Banner
+    votingBannerLabel: "Ma'a Impact Innovation Prize 2026",
+    votingBannerTitle: "Nawaetu Masuk Shortlist! 🏆",
+    votingBannerSubtitle: "Bantu kami menang dengan memberikan vote GRATIS Anda!",
+    votingBannerCta: "Vote Sekarang di GlobalSadaqah",
+
     // Location Section
     locationLabel: "Lokasi",
     locationUpdating: "Memperbarui...",

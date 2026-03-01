@@ -872,6 +872,65 @@ export default function SettingsPageContent() {
                     </Button>
                 </div>
 
+                {/* Voting Banner - Ma'a Impact Innovation Prize 2026 (Permanent) */}
+                <a
+                    href="https://award.globalsadaqah.com/profiles/327"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                        "block w-full relative overflow-hidden rounded-2xl group active:scale-[0.98] transition-transform border",
+                        isDaylight
+                            ? "bg-gradient-to-br from-emerald-50 to-white border-emerald-200 shadow-sm shadow-emerald-100"
+                            : "border-emerald-800/40"
+                    )}
+                >
+                    {!isDaylight && (
+                        <>
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-800 to-[#0a2e1a]" />
+                            <div className="absolute -bottom-4 -right-4 w-28 h-28 bg-emerald-400/10 rounded-full blur-[30px]" />
+                        </>
+                    )}
+                    <div className="relative z-10 p-4 flex items-center justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                            <p className={cn(
+                                "text-[9px] font-bold uppercase tracking-[0.15em] mb-0.5",
+                                isDaylight ? "text-amber-600" : "text-amber-400"
+                            )}>
+                                {t.votingBannerLabel}
+                            </p>
+                            <p className={cn(
+                                "text-sm font-black leading-tight truncate",
+                                isDaylight ? "text-emerald-900" : "text-white"
+                            )}>
+                                {t.votingBannerTitle}
+                            </p>
+                            <p className={cn(
+                                "text-[10px] mt-0.5",
+                                isDaylight ? "text-slate-500" : "text-white/60"
+                            )}>
+                                {t.votingBannerSubtitle}
+                            </p>
+                        </div>
+                        <div className={cn(
+                            "shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full transition-colors",
+                            isDaylight
+                                ? "bg-emerald-600 group-hover:bg-emerald-700 shadow-sm"
+                                : "bg-amber-400 group-hover:bg-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.4)]"
+                        )}>
+                            <Star className={cn(
+                                "w-3 h-3",
+                                isDaylight ? "text-white fill-white" : "text-emerald-900 fill-emerald-900"
+                            )} />
+                            <span className={cn(
+                                "text-[10px] font-black whitespace-nowrap",
+                                isDaylight ? "text-white" : "text-emerald-900"
+                            )}>
+                                {t.votingBannerCta}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
                 {/* Compact App Info Link - Swapped Back Down */}
                 <div className="flex justify-center pt-2">
                     <button
