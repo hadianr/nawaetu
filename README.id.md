@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.8.17-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.2-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -29,12 +29,16 @@
 > [!IMPORTANT]
 > **Nawaetu menggunakan Dual Licensing.** Gratis untuk Open Source (AGPLv3), namun memerlukan **Lisensi Komersial** untuk penggunaan komersial/proprietary.
 
-### 🚀 Highlight Terbaru (v1.8.x)
-- **Jurnal Niat & Refleksi**: Luruskan niat setiap pagi dan lakukan muhasabah setiap malam.
-- **Notifikasi FCM Lebih Presisi**: Adzan tepat waktu (< 60 detik delay) dengan reliabilitas tinggi di iOS (Killed State).
-- **Feed Spiritual Lengkap**: Widget Daily Spirit, Quote of the Day, dan Check-in Sholat yang interaktif.
-- **Dukungan Bilingual Modern**: Internasionalisasi penuh (ID/EN) untuk seluruh konten, termasuk Hadits dan Doa.
-- **Siap Ramadhan 2026**: Kalibrasi Hijriah yang fleksibel, fitur countdown, dan panduan Fiqh khusus.
+### 🚀 Highlight Terbaru (v1.9.2)
+- **🌙 Pelacak Puasa Ramadhan**: Logger puasa berbasis kalender dengan status fiqih (Puasa, Sakit, Musafir, dsb), preview konsekuensi (Qadha/Fidyah), dan reward Hasanah.
+- **💎 Refactor Gamifikasi Hasanah**: Overhaul total sistem reward, mengganti "XP" menjadi "Hasanah" untuk pengalaman yang lebih selaras secara spiritual.
+- **📊 Dashboard Statistik Ibadah Lengkap**: Halaman `/stats` baru dengan Hasanah Trend Chart (filter 7h/30h/90h/1th), pelacak Konsistensi Sholat, kartu Rank Spiritual, dan Insight Sholat berbasis AI—semuanya bilingual.
+- **🏆 Sistem Rank Spiritual**: Perankingan pemain yang digamifikasi (Mubtadi → Muhsinin) berdasarkan Hasanah dengan modal progres rank dan milestone.
+- **🕌 Kartu Konsistensi Sholat**: Pelacak visual 7h/14-hari dengan dot per-sholat, legenda inisial (S/D/A/M/I), dan pelabelan tanggal cerdas—dioptimalkan untuk mobile.
+- **🌙 Misi Sholat Sunnah**: Misi harian yang dapat diulang untuk Rawatib, Dhuha, Tahajjud, dan sholat musiman dengan reward Hasanah.
+- **🕌 Kalkulator Zakat Fitrah**: Kalkulator Zakat musiman bawaan dengan panduan lokal.
+- **🌍 Analitik Pengguna Global**: Pelacakan geografis melalui reverse geocoding — kota (Kabupaten/Kota) dan negara disimpan untuk setiap pengguna, memungkinkan pengambilan keputusan berbasis wilayah.
+- **📱 Judul Browser Dinamis**: Judul halaman yang peka rute dan lokal untuk UX dan SEO yang lebih baik.
 
 ---
 
@@ -46,7 +50,7 @@
 1.  🎯 **Pionir Intention-First**: Kami menjadikan "Niat" sebagai habit yang bisa dilacak, memindahkan fokus pertumbuhan spiritual dari jari (tasbih) ke hati.
 2.  🤖 **Tanya Nawaetu**: Tanya jawab Islami yang merujuk pada Al-Qur'an, Sunnah, dan Hadits shahih—bukan sekadar opini AI.
 3.  📔 **Loop Muhasabah**: Menghubungkan niat di pagi hari dengan refleksi di malam hari secara mulus.
-4.  🎮 **XP Spiritual**: Menggantikan gamifikasi generik dengan pencapaian Islami yang bermakna dan "Istiqamah Streak."
+4.  🎮 **Hasanah Spiritual**: Menggantikan gamifikasi generik dengan pencapaian Islami yang bermakna dan "Istiqamah Streak."
 5.  🛡️ **Siap Enterprise**: Dibangun dengan arsitektur Next.js yang skalabel, dukungan whitelabel, dan skema lisensi ganda.
 
 ---
@@ -581,10 +585,10 @@ Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
 **"Innama al-a'malu bin-niyyat" - Start with intention, end with blessings.**
 
-**#LuruskanNiat #BuildHabits #IstiqomahDaily**
+**#LuruskanNiat #BuildHabits #IstiqomahDaily #HasanahPoints**
 
 Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: February 23, 2026*
+*Last updated: March 1, 2026*

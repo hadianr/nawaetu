@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.1-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.2-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -29,11 +29,13 @@
 > [!IMPORTANT]
 > **Nawaetu is Dual Licensed.** Free for Open Source (AGPLv3), but requires a **Commercial License** for proprietary/closed-source use.
 
-### 🚀 Recent Highlights (v1.9.x)
-- **📊 Full Ibadah Statistics Dashboard**: New `/stats` page with XP Trend Chart (7d/30d/90d/1y filters), Prayer Consistency tracker, Spiritual Rank card, and AI-powered Prayer Insights—all bilingual.
-- **🏆 Spiritual Rank System**: Gamified player ranking (Mubtadi → Muhsinin) based on XP with rank progression modal and milestones.
-- **🕌 Prayer Consistency Card**: 7-day/14-day visual tracker with per-prayer dots, initials legend (S/D/A/M/I), and smart date labeling—optimized for mobile.
-- **🌙 Sunnah Prayer Missions**: Daily repeatable missions for Rawatib, Dhuha, Tahajjud, and seasonal prayers with XP rewards.
+### 🚀 Recent Highlights (v1.9.2)
+- **🌙 Ramadhan Fasting Tracker**: New calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.
+- **💎 Hasanah Gamification Refactor**: Complete overhaul of the reward system, replacing "XP" with "Hasanah" for a more spiritually aligned experience.
+- **📊 Full Ibadah Statistics Dashboard**: New `/stats` page with Hasanah Trend Chart (7d/30d/90d/1y filters), Prayer Consistency tracker, Spiritual Rank card, and AI-powered Prayer Insights—all bilingual.
+- **🏆 Spiritual Rank System**: Gamified player ranking (Mubtadi → Muhsinin) based on Hasanah with rank progression modal and milestones.
+- **🕌 Prayer Consistency Card**: 7nd/14-day visual tracker with per-prayer dots, initials legend (S/D/A/M/I), and smart date labeling—optimized for mobile.
+- **🌙 Sunnah Prayer Missions**: Daily repeatable missions for Rawatib, Dhuha, Tahajjud, and seasonal prayers with Hasanah rewards.
 - **🕌 Zakat Fitrah Calculator**: Built-in seasonal Zakat calculator with localized guidance.
 - **🌍 Global User Analytics**: Geographic tracking via reverse geocoding—city (Kabupaten/Kota) and country stored for each user, enabling decision-making by region.
 - **📱 Dynamic Browser Titles**: Route-aware, locale-sensitive page titles for better UX and SEO.
@@ -57,7 +59,7 @@
 1.  🎯 **The Intention-First Pioneer**: We treat "Niat" as a trackable habit, moving spiritual growth from the fingers (counters) to the heart.
 2.  🤖 **Tanya Nawaetu**: Specialized Islamic Q&A backed by Quran, Sunnah, and authenticated Hadith.
 3.  📔 **The Muhasabah Loop**: Seamlessly bridges the gap between morning intentions and evening reflections.
-4.  🎮 **Spiritual XP**: Replaces generic gamification with meaningful Islamic milestones and "Istiqamah Streaks."
+4.  🎮 **Spiritual Hasanah**: Replaces generic gamification with meaningful Islamic milestones and "Istiqamah Streaks."
 5.  ️ **Enterprise Ready**: Built from day one with dual-licensing, whitelabel support, and a scalable Next.js architecture.
 
 ---
