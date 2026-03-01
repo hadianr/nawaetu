@@ -135,21 +135,13 @@ export default function SurahList({ chapters }: SurahListProps) {
         (chapter.translated_name_en && chapter.translated_name_en.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    const prefetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const scrollPrefetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const prefetchedRef = useRef<Set<number>>(new Set());
     const prefetchedRouteRef = useRef<Set<string>>(new Set());
 
     const prefetchSurah = useCallback((surahId: number) => {
         if (prefetchedRef.current.has(surahId)) return;
-        if (prefetchTimeoutRef.current) {
-            clearTimeout(prefetchTimeoutRef.current);
-        }
-
-        prefetchTimeoutRef.current = setTimeout(() => {
-            router.prefetch(`/quran/${surahId}`);
-            prefetchedRef.current.add(surahId);
-        }, 120);
+        router.prefetch(`/quran/${surahId}`);
+        prefetchedRef.current.add(surahId);
     }, [router]);
 
     const prefetchRoute = useCallback((href: string) => {
@@ -158,26 +150,7 @@ export default function SurahList({ chapters }: SurahListProps) {
         prefetchedRouteRef.current.add(href);
     }, [router]);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (scrollPrefetchTimeoutRef.current) {
-                clearTimeout(scrollPrefetchTimeoutRef.current);
-            }
-
-            scrollPrefetchTimeoutRef.current = setTimeout(() => {
-                const batch = filteredChapters.slice(0, 6).map((chapter) => chapter.id);
-                batch.forEach(prefetchSurah);
-            }, 240);
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-            if (scrollPrefetchTimeoutRef.current) {
-                clearTimeout(scrollPrefetchTimeoutRef.current);
-            }
-        };
-    }, [filteredChapters, prefetchSurah]);
+    // Only prefetch on hover/focus (handled in return JSX)
 
     return (
         <div className="w-full max-w-4xl space-y-6">

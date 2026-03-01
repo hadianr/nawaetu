@@ -6,7 +6,7 @@ const withPWA = withPWAInit({
   dest: "public",
   sw: "sw.js", // Use actual SW output filename
   cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   disable: process.env.NODE_ENV === "development",
   workboxOptions: {
@@ -81,52 +81,24 @@ const nextConfig: NextConfig = {
         minimizer: config.optimization.minimizer || [],
         splitChunks: {
           chunks: 'all',
-          maxInitialRequests: 5,  // Increased from 3 to allow critical chunks
-          maxAsyncRequests: 8,    // Increased from 5 for better async loading
-          minSize: 30000,         // Increased from 20000 to reduce chunk fragmentation
-          minRemainingSize: 0,
+          maxInitialRequests: 3,
+          maxAsyncRequests: 5,
+          minSize: 20000,
           cacheGroups: {
             default: false,
             vendors: false,
-            // Vendor chunk for react/next + babel runtime (critical dependencies)
             framework: {
               name: 'framework',
               test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription|next|@babel[\\/]runtime)[\\/]/,
-              priority: 50,  // Increased priority
+              priority: 40,
               enforce: true,
-              reuseExistingChunk: true,
             },
-            // Framer Motion separate chunk (large library with babel runtime)
-            framerMotion: {
-              name: 'framer-motion',
-              test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
-              priority: 45,
-              enforce: true,
-              reuseExistingChunk: true,
-            },
-            // Common libraries - less aggressive splitting
             lib: {
               test: /[\\/]node_modules[\\/]/,
-              name(module: any) {
-                const packageName = module.context.match(
-                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-                )?.[1];
-                return `npm.${packageName?.replace('@', '')}`;
-              },
-              priority: 30,
-              minChunks: 3,  // Increased from 2 to reduce chunks
-              reuseExistingChunk: true,
-              enforce: true,
-              minSize: 40000,  // Increased to merge smaller libs
-            },
-            // Shared components (reduce unused code)
-            commons: {
-              name: 'commons',
-              minChunks: 4,  // Increased from 3
+              name: 'vendor',
               priority: 20,
+              minChunks: 2,
               reuseExistingChunk: true,
-              enforce: true,
-              minSize: 40000,  // Increased from 30000
             },
           },
         },
