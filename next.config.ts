@@ -81,9 +81,9 @@ const nextConfig: NextConfig = {
         minimizer: config.optimization.minimizer || [],
         splitChunks: {
           chunks: 'all',
-          maxInitialRequests: 3,
-          maxAsyncRequests: 5,
-          minSize: 20000,
+          maxInitialRequests: 25,
+          maxAsyncRequests: 25,
+          minSize: 40000, // Increase min size to prevent too many small chunks
           cacheGroups: {
             default: false,
             vendors: false,
@@ -97,7 +97,7 @@ const nextConfig: NextConfig = {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendor',
               priority: 20,
-              minChunks: 2,
+              minChunks: 1,
               reuseExistingChunk: true,
             },
           },
