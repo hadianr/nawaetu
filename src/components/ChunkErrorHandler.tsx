@@ -11,20 +11,30 @@ import { useEffect } from "react";
  */
 export default function ChunkErrorHandler() {
     useEffect(() => {
-        const handleError = (event: ErrorEvent | PromiseRejectionEvent) => {
+        const handleError = (event: ErrorEvent | PromiseRejectionEvent | Event) => {
+            // 1. Check for Javascript/Promise Errors via message
             const message = "message" in event ? event.message : (event as any).reason?.message || "";
-
-            // Check for chunk loading errors
-            const isChunkError =
+            const isScriptErrorMessage =
                 /Loading chunk .* failed/.test(message) ||
                 /Unexpected token '<'.*at chunk/.test(message) ||
                 message.includes("net::ERR_ABORTED 404") ||
                 message.includes("Failed to fetch dynamically imported module");
 
-            if (isChunkError) {
-                console.warn("[System] Chunk loading failed. System mismatch detected. Reloading for latest version...", message);
+            // 2. Check for Resource Loading Failures (CSS/JS tags)
+            // Resource errors don't bubble, so we listen in capture phase (handled by addEventListener third param)
+            const target = event.target as HTMLElement;
+            const isResourceError = target && (target.tagName === 'LINK' || target.tagName === 'SCRIPT');
+            const resourceUrl = (target as any)?.href || (target as any)?.src || "";
+            const isNextChunk = resourceUrl.includes('/_next/static/chunks/');
 
-                // Force reload from server bypassing cache if possible
+            if (isScriptErrorMessage || (isResourceError && isNextChunk)) {
+                console.warn("[System] Chunk/Resource loading failed. System mismatch detected. Reloading...", {
+                    message,
+                    url: resourceUrl,
+                    tag: target?.tagName
+                });
+
+                // Force reload
                 if (typeof window !== "undefined") {
                     window.location.reload();
                 }
