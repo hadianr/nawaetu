@@ -33,10 +33,13 @@ export class LocalStorageAdapter implements StorageAdapter {
 
     try {
       const test = '__storage_test__';
-      localStorage.setItem(test, test);
-      localStorage.removeItem(test);
+      window.localStorage.setItem(test, test);
+      window.localStorage.removeItem(test);
       return true;
-    } catch {
+    } catch (e) {
+      // In iframes, accessing window.localStorage might throw a SecurityError
+      // before even calling setItem.
+      console.warn("localStorage is not available (likely iframe restrictions or private mode).");
       return false;
     }
   }

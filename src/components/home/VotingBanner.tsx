@@ -34,14 +34,24 @@ export default function VotingBanner() {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        const dismissed = localStorage.getItem(DISMISSED_KEY);
+        let dismissed = null;
+        try {
+            dismissed = window.localStorage.getItem(DISMISSED_KEY);
+        } catch (e) {
+            console.warn("localStorage access denied in VotingBanner");
+        }
+
         if (!dismissed) {
             setVisible(true);
         }
     }, []);
 
     const handleDismiss = () => {
-        localStorage.setItem(DISMISSED_KEY, "true");
+        try {
+            window.localStorage.setItem(DISMISSED_KEY, "true");
+        } catch (e) {
+            console.warn("Could not save to localStorage upon dismiss");
+        }
         setVisible(false);
     };
 

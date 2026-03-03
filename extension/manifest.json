@@ -19,6 +19,21 @@
         }
     },
     "permissions": [
-        "storage"
-    ]
+        "storage",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
+    ],
+    "host_permissions": [
+        "*://nawaetu.com/*",
+        "*://*.nawaetu.com/*"
+    ],
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "rules",
+                "enabled": true,
+                "path": "rules.json"
+            }
+        ]
+    }
 }

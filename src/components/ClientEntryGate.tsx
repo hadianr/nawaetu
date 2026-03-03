@@ -33,7 +33,15 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
     useLayoutEffect(() => {
         // Run this synchronously before paint to prevent flash
         try {
-            const hasCompletedOnboarding = localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+            // In Chrome Extension iframes, accessing localStorage might throw a SecurityError
+            // if the user has blocked third-party cookies.
+            let hasCompletedOnboarding = null;
+            try {
+                hasCompletedOnboarding = window.localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+            } catch (storageError) {
+                console.warn("localStorage access denied (likely iframe restrictions). Automatically skipping onboarding.");
+                hasCompletedOnboarding = "true"; // Assume true to not block the app
+            }
 
             if (!hasCompletedOnboarding) {
                 setShowOnboarding(true);

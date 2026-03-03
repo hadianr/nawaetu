@@ -44,10 +44,18 @@ interface IntentionJournalWidgetProps {
 
 function getOrCreateAnonymousId(): string {
     const STORAGE_KEY = "nawaetu_anonymous_id";
-    let anonymousId = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-    if (!anonymousId && typeof window !== "undefined") {
-        anonymousId = `anon_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-        localStorage.setItem(STORAGE_KEY, anonymousId);
+    let anonymousId = null;
+    try {
+        if (typeof window !== "undefined") {
+            anonymousId = window.localStorage.getItem(STORAGE_KEY);
+            if (!anonymousId) {
+                anonymousId = `anon_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+                window.localStorage.setItem(STORAGE_KEY, anonymousId);
+            }
+        }
+    } catch (e) {
+        console.warn("localStorage denied in getOrCreateAnonymousId");
+        anonymousId = `anon_mem_${Date.now()}`;
     }
     return anonymousId || "";
 }
@@ -77,12 +85,20 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
     // 1. Initialize Token & Try reading cache synchronously (or fast mount)
     useEffect(() => {
-        const token = localStorage.getItem("user_token") || localStorage.getItem("fcm_token") || getOrCreateAnonymousId();
-        setUserToken(token);
+        let token = "anon_fallback";
+        let cachedStr = null;
 
-        // Check cache immediately when token is known
-        const cacheKey = `${CACHE_PREFIX}${token}_${selectedDate}`;
-        const cachedStr = localStorage.getItem(cacheKey);
+        try {
+            token = window.localStorage.getItem("user_token") || window.localStorage.getItem("fcm_token") || getOrCreateAnonymousId();
+            setUserToken(token);
+
+            // Check cache immediately when token is known
+            const cacheKey = `${CACHE_PREFIX}${token}_${selectedDate}`;
+            cachedStr = window.localStorage.getItem(cacheKey);
+        } catch (e) {
+            console.warn("localStorage read denied in IntentionJournalWidget");
+            setUserToken(token);
+        }
 
         if (cachedStr) {
             try {
@@ -91,6 +107,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setIsLoading(false); // Skip skeleton if cache exists
             } catch (e) {
                 // Ignore parsing errors
+                setIsLoading(true);
             }
         } else {
             // Need to show loading if cache misses when date changes
@@ -119,8 +136,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         setTodayData(data.data);
 
                         // Update cache
-                        const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
-                        localStorage.setItem(cacheKey, JSON.stringify(data.data));
+                        try {
+                            const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
+                            window.localStorage.setItem(cacheKey, JSON.stringify(data.data));
+                        } catch (e) {
+                            // ignore storage errors
+                        }
                     }
                 }
             } catch (error) {
@@ -168,8 +189,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setTodayData(finalData);
 
                 // Update Cache
-                const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
-                localStorage.setItem(cacheKey, JSON.stringify(finalData));
+                try {
+                    const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
+                    window.localStorage.setItem(cacheKey, JSON.stringify(finalData));
+                } catch (e) { }
 
                 // Add XP locally
                 if (data.data.intention_points_earned > 0) {
@@ -232,8 +255,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 window.dispatchEvent(new CustomEvent("hasanah_updated"));
 
                 // Update Cache
-                const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
-                localStorage.setItem(cacheKey, JSON.stringify(finalData));
+                try {
+                    const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
+                    window.localStorage.setItem(cacheKey, JSON.stringify(finalData));
+                } catch (e) { }
             } else {
                 setTodayData(todayData);
                 toast.error(data.error || (locale === 'id' ? 'Gagal menyimpan refleksi' : 'Failed to save reflection'));

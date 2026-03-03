@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Nawaetu</title>
@@ -10,9 +11,10 @@
       width: 400px;
       height: 600px;
       overflow: hidden;
-      background-color: #f8fafc; /* Support for light/dark mode iframe */
+      background-color: #f8fafc;
+      /* Support for light/dark mode iframe */
     }
-    
+
     @media (prefers-color-scheme: dark) {
       body {
         background-color: #0f172a;
@@ -24,7 +26,7 @@
       height: 100%;
       border: none;
     }
-    
+
     /* Loader while iframe is loading */
     .loader-container {
       position: absolute;
@@ -37,6 +39,7 @@
       align-items: center;
       z-index: -1;
     }
+
     .spinner {
       width: 40px;
       height: 40px;
@@ -45,16 +48,26 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="loader-container">
     <div class="spinner"></div>
   </div>
-  <iframe id="nawaetu-frame" src="https://nawaetu.com" allow="geolocation; microphone; camera; clipboard-write; clipboard-read"></iframe>
+  <iframe id="nawaetu-frame" src="https://nawaetu.com"
+    allow="geolocation; microphone; camera; clipboard-write; clipboard-read"></iframe>
+  <script src="popup.js"></script>
 </body>
+
 </html>
