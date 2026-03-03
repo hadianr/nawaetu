@@ -1,4 +1,6 @@
-console.log("[Nawaetu Extension] Popup script loaded. Target:", document.getElementById('nawaetu-frame').src);
+const targetUrl = "https://nawaetu.com/?v=extension&t=" + Date.now();
+console.log("[Nawaetu Extension] Popup script loaded. Target:", targetUrl);
+document.getElementById('nawaetu-frame').src = targetUrl;
 
 document.getElementById('nawaetu-frame').onload = function () {
     console.log("[Nawaetu Extension] Iframe loaded successfully.");
