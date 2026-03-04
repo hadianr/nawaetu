@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.4] - 2026-03-05
+
+### Added
+- **Feat: Add Vercel Speed Insights for performance monitoring.**
+- **Feat: Dispatch custom event on last read storage updates and standardize verse anchor link format.**
+- **Feat: implement Quran search modal and add word-by-word display option in settings.**
+- **Feat: Introduce a new tooltip component and integrate it into various UI elements, along with translation updates.**
+- **Feat: Introduce verse memorization mode and auto-scroll to current audio playback.**
+
+### Improved
+- **Refactor: add promise-based error handling for audio playback in loop modes**
+
+
 ## [1.9.3] - 2026-03-04
 
 ### Added

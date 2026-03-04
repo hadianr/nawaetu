@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.3-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.4-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -39,6 +39,9 @@
   - **Hafiz Mode (Memorization)**: New per-verse "Reveal" feature using a blur effect, allowing users to peek at verses while memorizing, following traditional tahfiz methods.
   - **Interactive Tooltips**: Added helpful tooltips to all icon actions (Play, Bookmark, Share, Tafsir, Hafiz Mode) for better UX.
   - **Smart Audio Caching**: Handled `AbortError` and playback interruptions for a seamless murottal experience.
+  - **Cloud Last-Read Sync**: Real-time cross-device syncing of your reading progress (Surah and Ayah), restoring exactly where you left off when you switch devices.
+  - **Bilingual Word-by-Word Translations**: Auto-adjusting Arabic-to-local language word translation that seamlessly bridges meaning for non-Arabic speakers.
+  - **Vercel Speed Insights**: Integrated performance analytics via Vercel for constant application speed monitoring.
 - **🔇 Feedback System Update**: Vibration features have been removed to ensure consistent cross-platform reliability on Web/PWA, focusing on high-fidelity sound feedback and mute modes.
 - **🌙 Ramadhan Fasting Tracker**: Calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.
 - **💎 Hasanah Gamification**: Spiritual growth system replacing generic "XP" with "Hasanah," featuring Rank progression (Mubtadi → Muhsinin) and milestones.

@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.3-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.4-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -39,6 +39,9 @@
   - **Mode Hafalan (Hafiz Mode)**: Fitur "Peek" per-ayat menggunakan efek blur, memungkinkan pengguna mengintip ayat saat menghafal sesuai metode tahfiz tradisional.
   - **Tooltip Interaktif**: Penambahan tooltip pada semua ikon aksi (Play, Bookmark, Share, Tafsir, Hafiz Mode) untuk UX yang lebih intuitif.
   - **Smart Audio Caching**: Penanganan `AbortError` dan interupsi pemutaran untuk pengalaman murottal yang lancar tanpa terputus.
+  - **Cloud Last-Read Sync**: Posisi terakhir bacaan Al-Qur'an (Surat dan Ayat) otomatis tersinkronisasi di Cloud, memungkinkan Anda melanjutkan bacaan dari perangkat manapun dengan instan.
+  - **Terjemahan Kata-per-Kata Dwibahasa**: Render terjemahan kata per kata yang langsung beradaptasi dengan bahasa perangkat (ID/EN) untuk memudahkan belajar bahasa Arab Al-Qur'an.
+  - **Vercel Speed Insights**: Terintegrasi penuh dengan pelacakan performa Web Vitals langsung dari Vercel.
 - **🔇 Update Sistem Feedback**: Fitur getar telah dihapus seluruhnya untuk menjaga reliabilitas lintas perangkat pada Web/PWA, berfokus pada feedback suara berkualitas tinggi dan mode mute.
 - **🌙 Pelacak Puasa Ramadhan**: Logger puasa berbasis kalender dengan status fiqih (Puasa, Sakit, Musafir, dsb), preview konsekuensi (Qadha/Fidyah), dan reward Hasanah.
 - **💎 Gamifikasi Hasanah**: Sistem pertumbuhan spiritual yang mengganti "XP" menjadi "Hasanah," lengkap dengan progres Rank (Mubtadi → Muhsinin) dan milestone.
