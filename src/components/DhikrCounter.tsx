@@ -126,8 +126,7 @@ export default function DhikrCounter() {
 
     const libraryPresets = useMemo(() => dhikrCategories.flatMap(c => c.items), []);
 
-    const [feedbackMode, setFeedbackMode] = useState<'vibrate' | 'sound' | 'both' | 'none'>('vibrate');
-    const [isVibrationSupported, setIsVibrationSupported] = useState(true);
+    const [feedbackMode, setFeedbackMode] = useState<'sound' | 'none'>('sound');
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isMilestoneModalOpen, setIsMilestoneModalOpen] = useState(false);
@@ -137,12 +136,7 @@ export default function DhikrCounter() {
     const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
     useEffect(() => {
-        // Deteksi apakah perangkat/browser mendukung getaran (contoh: iOS Safari dan beberapa in-app browser tidak)
-        const supported = typeof navigator !== "undefined" && 'vibrate' in navigator;
-        setIsVibrationSupported(supported);
-        if (!supported) {
-            setFeedbackMode(prev => (prev === 'vibrate' || prev === 'both') ? 'sound' : prev);
-        }
+        // No-op for now as vibration is removed
     }, []);
     const { state: dhikrState, updateState, hasHydrated } = useDhikrPersistence({
         defaultActiveId: dhikrPresets[0]?.id ?? "tasbih",
@@ -173,7 +167,6 @@ export default function DhikrCounter() {
                 if (sequenceIndex < activeSequence.items.length - 1) {
                     // Auto advance
                     setTimeout(() => {
-                        if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([400]);
                         const nextDhikrId = activeSequence.items[sequenceIndex + 1];
                         const nextDhikr = allPresets.find(p => p.id === nextDhikrId);
                         if (nextDhikr) {
@@ -193,7 +186,6 @@ export default function DhikrCounter() {
             setTimeout(() => {
                 addHasanah(50);
                 setShowReward(true);
-                if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([200, 100, 200]);
             }, 100);
         }
     }, [count, target, activeSequence, sequenceIndex, dhikrPresets, updateState]);
@@ -232,10 +224,7 @@ export default function DhikrCounter() {
             if (streak === 0) newStreak = 1;
         }
 
-        if ((feedbackMode === 'vibrate' || feedbackMode === 'both') && typeof navigator !== "undefined" && navigator.vibrate) {
-            if (!target || count + 1 !== target) navigator.vibrate(50);
-        }
-        if ((feedbackMode === 'sound' || feedbackMode === 'both') && ctx) playTick(ctx);
+        if (feedbackMode === 'sound' && ctx) playTick(ctx);
 
         // Gamification & Tracking
         const newLifetimeCount = (lifetimeCount || 0) + 1;
@@ -293,13 +282,7 @@ export default function DhikrCounter() {
     };
 
     const toggleFeedback = () => {
-        const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = isVibrationSupported
-            ? ['vibrate', 'sound', 'both', 'none']
-            : ['sound', 'none'];
-
-        const currentIndex = modes.indexOf(feedbackMode);
-        const nextIndex = currentIndex !== -1 ? (currentIndex + 1) % modes.length : 0;
-        setFeedbackMode(modes[nextIndex]);
+        setFeedbackMode(prev => prev === 'sound' ? 'none' : 'sound');
     };
 
     const handlePresetSelect = (preset: DhikrPreset) => {
@@ -328,7 +311,7 @@ export default function DhikrCounter() {
         setIsDialogOpen(false);
     };
 
-    const FeedbackIcon = { vibrate: Smartphone, sound: Volume2, both: Volume2, none: VolumeX }[feedbackMode] || Smartphone;
+    const FeedbackIcon = { sound: Volume2, none: VolumeX }[feedbackMode] || Volume2;
     const progress = target && hasHydrated ? (count / target) * 100 : 0;
 
     const zenModeUI = isZenMode ? (
@@ -387,7 +370,7 @@ export default function DhikrCounter() {
             >
                 <FeedbackIcon className="w-5 h-5" />
                 <span className="text-[8px] font-medium uppercase tracking-tighter opacity-70">
-                    {feedbackMode === 'vibrate' ? t.tasbihVibrate : feedbackMode === 'sound' ? t.tasbihSound : feedbackMode === 'both' ? t.tasbihDual : t.tasbihMute}
+                    {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
                 </span>
             </button>
         </div>
@@ -822,7 +805,7 @@ export default function DhikrCounter() {
                             setIsZenMode(true);
                             // Ensure feedback is on for "feel"
                             if (feedbackMode === 'none') {
-                                setFeedbackMode(isVibrationSupported ? 'both' : 'sound');
+                                setFeedbackMode('sound');
                             }
                         }}
                         className={cn(
@@ -850,7 +833,7 @@ export default function DhikrCounter() {
                     >
                         <FeedbackIcon className="h-4 w-4" />
                         <span className="text-[10px] font-medium uppercase tracking-tighter">
-                            {feedbackMode === 'vibrate' ? t.tasbihVibrate : feedbackMode === 'sound' ? t.tasbihSound : feedbackMode === 'both' ? t.tasbihDual : t.tasbihMute}
+                            {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
                         </span>
                     </Button>
                 </div >
