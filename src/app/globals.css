@@ -538,6 +538,22 @@
     transform: translate3d(0, 0, 0);
   }
 
+  @keyframes ripple {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(25);
+      opacity: 0;
+    }
+  }
+
+  .animate-ripple {
+    animation: ripple 0.6s ease-out forwards;
+    will-change: transform, opacity;
+  }
+
   /* Mobile performance: reduce blur on small screens */
   @media (max-width: 768px) {
     .blur-3xl {
