@@ -41,6 +41,7 @@
   - **Smart Audio Caching**: Handled `AbortError` and playback interruptions for a seamless murottal experience.
   - **Cloud Last-Read Sync**: Real-time cross-device syncing of your reading progress (Surah and Ayah), restoring exactly where you left off when you switch devices.
   - **Bilingual Word-by-Word Translations**: Auto-adjusting Arabic-to-local language word translation that seamlessly bridges meaning for non-Arabic speakers.
+  - **Real-time Word-by-Word Audio Highlighting (Karaoke Mode)**: Visual word-level tracking as you listen to murottal (supported for Mishary Rashid Alafasy).
   - **Vercel Speed Insights**: Integrated performance analytics via Vercel for constant application speed monitoring.
 - **🔇 Feedback System Update**: Vibration features have been removed to ensure consistent cross-platform reliability on Web/PWA, focusing on high-fidelity sound feedback and mute modes.
 - **🌙 Ramadhan Fasting Tracker**: Calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.

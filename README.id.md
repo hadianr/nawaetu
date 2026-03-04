@@ -41,6 +41,7 @@
   - **Smart Audio Caching**: Penanganan `AbortError` dan interupsi pemutaran untuk pengalaman murottal yang lancar tanpa terputus.
   - **Cloud Last-Read Sync**: Posisi terakhir bacaan Al-Qur'an (Surat dan Ayat) otomatis tersinkronisasi di Cloud, memungkinkan Anda melanjutkan bacaan dari perangkat manapun dengan instan.
   - **Terjemahan Kata-per-Kata Dwibahasa**: Render terjemahan kata per kata yang langsung beradaptasi dengan bahasa perangkat (ID/EN) untuk memudahkan belajar bahasa Arab Al-Qur'an.
+  - **Penyorotan Audio Kata-per-Kata Real-time (Mode Karaoke)**: Pelacakan visual per-kata saat mendengarkan murottal (didukung untuk Qari Mishary Rashid Alafasy).
   - **Vercel Speed Insights**: Terintegrasi penuh dengan pelacakan performa Web Vitals langsung dari Vercel.
 - **🔇 Update Sistem Feedback**: Fitur getar telah dihapus seluruhnya untuk menjaga reliabilitas lintas perangkat pada Web/PWA, berfokus pada feedback suara berkualitas tinggi dan mode mute.
 - **🌙 Pelacak Puasa Ramadhan**: Logger puasa berbasis kalender dengan status fiqih (Puasa, Sakit, Musafir, dsb), preview konsekuensi (Qadha/Fidyah), dan reward Hasanah.
