@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect, useMemo } from "react";
-import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, CalendarDays, ChevronDown } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, CalendarDays, ChevronDown, Trophy, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -28,6 +28,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
 import { addHasanah } from "@/lib/leveling";
+import { dhikrMilestones } from "@/data/dhikrMilestones";
+import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
 import { useTheme } from "@/context/ThemeContext";
@@ -127,6 +129,7 @@ export default function DhikrCounter() {
     const [isVibrationSupported, setIsVibrationSupported] = useState(true);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isMilestoneModalOpen, setIsMilestoneModalOpen] = useState(false);
     const [showReward, setShowReward] = useState(false);
     const [expandedCategory, setExpandedCategory] = useState<string | null>("harian");
 
@@ -143,7 +146,7 @@ export default function DhikrCounter() {
         validActiveIds: [...dhikrPresets, ...libraryPresets].map((preset) => preset.id),
         defaultTarget: 33
     });
-    const { count, target, activeDhikrId, dailyCount, streak, lastDhikrDate, activeSequenceId, sequenceIndex } = dhikrState;
+    const { count, target, activeDhikrId, dailyCount, streak, lastDhikrDate, activeSequenceId, sequenceIndex, lifetimeCount, dhikrHistory } = dhikrState;
     const allPresets = [...dhikrPresets, ...libraryPresets];
     const activeDhikr = allPresets.find((dhikr) => dhikr.id === activeDhikrId) || null;
     const activeSequence = dhikrSequences.find((seq) => seq.id === activeSequenceId) || null;
@@ -220,13 +223,41 @@ export default function DhikrCounter() {
         }
         if ((feedbackMode === 'sound' || feedbackMode === 'both') && ctx) playTick(ctx);
 
+        // Gamification & Tracking
+        const newLifetimeCount = (lifetimeCount || 0) + 1;
+        const newDhikrHistory = { ...(dhikrHistory || {}) };
+        if (activeDhikrId) {
+            newDhikrHistory[activeDhikrId] = (newDhikrHistory[activeDhikrId] || 0) + 1;
+        }
+
+        // Check if milestone crossed
+        const currentMilestoneIdx = dhikrMilestones.findIndex(m => m.target > (lifetimeCount || 0)) - 1;
+        const nextMilestoneIdx = dhikrMilestones.findIndex(m => m.target > newLifetimeCount) - 1;
+
+        if (nextMilestoneIdx > currentMilestoneIdx && nextMilestoneIdx >= 0) {
+            const milestone = dhikrMilestones[nextMilestoneIdx];
+            addHasanah(milestone.reward);
+            // Optionally could trigger Confetti here
+        }
+
+        // Debounce sync queue (sync every 10 counts roughly)
+        if (newLifetimeCount % 10 === 0) {
+            syncQueue.addToQueue('dhikr_stats', 'update', {
+                lifetimeCount: newLifetimeCount,
+                dhikrHistory: newDhikrHistory,
+                timestamp: Date.now()
+            });
+        }
+
         // Calculate new count and save immediately
         const newCount = (target && count + 1 > target) ? 1 : count + 1;
         updateState({
             count: newCount,
             dailyCount: newDailyCount,
             streak: newStreak,
-            lastDhikrDate: newLastDate
+            lastDhikrDate: newLastDate,
+            lifetimeCount: newLifetimeCount,
+            dhikrHistory: newDhikrHistory
         });
     };
 
@@ -408,42 +439,125 @@ export default function DhikrCounter() {
             </div>
 
             {/* Bottom Section: Stats & Controls - Fixed at Bottom clear of Nav */}
-            <div className="w-full shrink-0 flex flex-col items-center z-10 pt-2 pb-2">
+            <div className="w-full shrink-0 flex flex-col items-center relative z-20 pt-2 pb-2 pointer-events-none">
 
-                {/* Stats Bar */}
-                <div className={cn(
-                    "flex justify-center gap-3 text-[9px] font-bold uppercase tracking-widest mb-4",
-                    isDaylight ? "text-slate-400" : "text-white/30"
-                )}>
-                    <div className={cn(
-                        "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                        isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
-                    )}>
-                        <CalendarDays className={cn(
-                            "h-3.5 w-3.5",
-                            isDaylight ? "text-emerald-600/50" : "text-[rgb(var(--color-primary-light)/0.4)]"
-                        )} />
-                        <span>
-                            {t.tasbihDaily}:{" "}
-                            <span className={isDaylight ? "text-slate-900" : "text-white"}>
-                                {hasHydrated ? (isNaN(dailyCount) ? 0 : dailyCount) : "--"}
-                            </span>
-                        </span>
-                    </div>
-                    <div className={cn(
-                        "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                        isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
-                    )}>
-                        <Flame className="h-3.5 w-3.5 text-orange-500/70" />
-                        <span>
-                            {t.tasbihStreak}:{" "}
-                            <span className={isDaylight ? "text-slate-900" : "text-white"}>
-                                {hasHydrated ? (isNaN(streak) ? 0 : streak) : "--"}
-                            </span>{" "}
-                            {t.tasbihDays}
-                        </span>
-                    </div>
-                </div>
+                <Dialog open={isMilestoneModalOpen} onOpenChange={setIsMilestoneModalOpen}>
+                    <DialogTrigger asChild>
+                        <button
+                            className={cn(
+                                "flex flex-wrap justify-center items-center gap-2 text-[9px] font-bold uppercase tracking-widest mb-4 cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto relative z-50",
+                                isDaylight ? "text-slate-400" : "text-white/30"
+                            )}
+                        >
+                            <div className={cn(
+                                "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
+                                isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
+                            )}>
+                                <CalendarDays className={cn(
+                                    "h-3.5 w-3.5",
+                                    isDaylight ? "text-emerald-600/50" : "text-[rgb(var(--color-primary-light)/0.4)]"
+                                )} />
+                                <span>
+                                    {t.tasbihDaily}:{" "}
+                                    <span className={isDaylight ? "text-slate-900" : "text-white"}>
+                                        {hasHydrated ? (isNaN(dailyCount) ? 0 : dailyCount) : "--"}
+                                    </span>
+                                </span>
+                            </div>
+                            <div className={cn(
+                                "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
+                                isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
+                            )}>
+                                <Flame className="h-3.5 w-3.5 text-orange-500/70" />
+                                <span>
+                                    {t.tasbihStreak}:{" "}
+                                    <span className={isDaylight ? "text-slate-900" : "text-white"}>
+                                        {hasHydrated ? (isNaN(streak) ? 0 : streak) : "--"}
+                                    </span>{" "}
+                                    {t.tasbihDays}
+                                </span>
+                            </div>
+                            <div className={cn(
+                                "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
+                                isDaylight ? "bg-amber-100 border-amber-200/60 text-amber-700" : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+                            )}>
+                                <Trophy className="h-3.5 w-3.5" />
+                                <span>
+                                    Total:{" "}
+                                    <span className={isDaylight ? "text-slate-900 font-black" : "text-white font-black"}>
+                                        {hasHydrated ? (lifetimeCount || 0).toLocaleString('id-ID') : "--"}
+                                    </span>
+                                </span>
+                            </div>
+                        </button>
+                    </DialogTrigger>
+                    <DialogContent className={cn("w-[90%] max-w-sm rounded-[32px] border-white/10 backdrop-blur-3xl z-[100]", isDaylight ? "bg-white/90 text-slate-900" : "bg-neutral-950/98 text-white")}>
+                        <DialogHeader>
+                            <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-60">Statistik Zikir</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 space-y-6">
+
+                            {/* Top Dhikr Stats */}
+                            <div>
+                                <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3">Zikir Terfavorit</h3>
+                                <div className="space-y-2">
+                                    {Object.entries(dhikrHistory || {})
+                                        .sort((a, b) => b[1] - a[1])
+                                        .slice(0, 3)
+                                        .map(([id, total], index) => {
+                                            const preset = allPresets.find(p => p.id === id);
+                                            return (
+                                                <div key={id} className={cn("flex justify-between items-center px-4 py-3 rounded-2xl border", isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5")}>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={cn("text-xs font-bold w-4", index === 0 ? "text-[rgb(var(--color-primary))]" : "opacity-30")}>#{index + 1}</span>
+                                                        <div className="flex flex-col">
+                                                            <span className="font-bold text-sm w-full truncate max-w-[150px]">{preset?.label || "Zikir"}</span>
+                                                        </div>
+                                                    </div>
+                                                    <span className="text-xs font-mono font-bold">{total.toLocaleString('id-ID')}x</span>
+                                                </div>
+                                            );
+                                        })}
+                                    {(!dhikrHistory || Object.keys(dhikrHistory).length === 0) && (
+                                        <div className="text-center text-xs opacity-50 py-4">Belum ada riwayat zikir.</div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Milestones List */}
+                            <div>
+                                <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3">Pencapaian</h3>
+                                <div className="space-y-3">
+                                    {dhikrMilestones.map(ms => {
+                                        const isCompleted = (lifetimeCount || 0) >= ms.target;
+                                        const progress = Math.min(100, ((lifetimeCount || 0) / ms.target) * 100);
+
+                                        return (
+                                            <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border", isCompleted ? (isDaylight ? "bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20") : (isDaylight ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white/5 border-white/5 opacity-50"))}>
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <Medal className={cn("h-4 w-4", isCompleted ? "text-[rgb(var(--color-primary))]" : "opacity-30")} />
+                                                        <h4 className="font-bold text-sm">{ms.title}</h4>
+                                                    </div>
+                                                    {isCompleted ? (
+                                                        <Check className="h-4 w-4 text-[rgb(var(--color-primary))]" />
+                                                    ) : (
+                                                        <span className="text-[10px] font-mono opacity-50">{ms.target.toLocaleString('id-ID')}x</span>
+                                                    )}
+                                                </div>
+                                                {!isCompleted && (
+                                                    <div className="w-full bg-slate-200/50 dark:bg-black/40 rounded-full h-1.5 mt-1 overflow-hidden">
+                                                        <div className="bg-[rgb(var(--color-primary))] h-1.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
 
                 {/* Control Grid */}
                 <div className="grid grid-cols-3 gap-3 w-full max-w-[320px] pointer-events-auto px-2">

@@ -29,6 +29,8 @@ export const STORAGE_KEYS = {
     DHIKR_SEQUENCE_ID: "nawaetu_dhikr_sequence_id",
     DHIKR_SEQUENCE_INDEX: "nawaetu_dhikr_sequence_index",
     DHIKR_CUSTOM_PRESETS: "nawaetu_dhikr_custom_presets",
+    DHIKR_LIFETIME_COUNT: "nawaetu_dhikr_lifetime_count",
+    DHIKR_HISTORY: "nawaetu_dhikr_history",
 };
 
 
@@ -51,6 +53,8 @@ type DhikrState = {
     activeSequenceId: string | null;
     sequenceIndex: number;
     customPresets: DhikrPreset[];
+    lifetimeCount: number;
+    dhikrHistory: Record<string, number>;
 };
 
 type UseDhikrPersistenceOptions = {
@@ -93,7 +97,9 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
         lastDhikrDate: "",
         activeSequenceId: null,
         sequenceIndex: 0,
-        customPresets: []
+        customPresets: [],
+        lifetimeCount: 0,
+        dhikrHistory: {}
     });
     const [hasHydrated, setHasHydrated] = useState(false);
     const hasInitializedRef = useRef(false);
@@ -130,6 +136,12 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
         }
         if (partial.customPresets !== undefined) {
             safeSetItem(STORAGE_KEYS.DHIKR_CUSTOM_PRESETS, JSON.stringify(partial.customPresets));
+        }
+        if (partial.lifetimeCount !== undefined && !isNaN(partial.lifetimeCount)) {
+            safeSetItem(STORAGE_KEYS.DHIKR_LIFETIME_COUNT, partial.lifetimeCount.toString());
+        }
+        if (partial.dhikrHistory !== undefined) {
+            safeSetItem(STORAGE_KEYS.DHIKR_HISTORY, JSON.stringify(partial.dhikrHistory));
         }
     }, []);
 
@@ -171,6 +183,8 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
         const savedSequenceId = localStorage.getItem(STORAGE_KEYS.DHIKR_SEQUENCE_ID);
         const savedSequenceIndex = localStorage.getItem(STORAGE_KEYS.DHIKR_SEQUENCE_INDEX);
         const savedCustomPresetsString = localStorage.getItem(STORAGE_KEYS.DHIKR_CUSTOM_PRESETS);
+        const savedLifetimeCount = localStorage.getItem(STORAGE_KEYS.DHIKR_LIFETIME_COUNT);
+        const savedDhikrHistoryString = localStorage.getItem(STORAGE_KEYS.DHIKR_HISTORY);
 
         let parsedCustomPresets: DhikrPreset[] = [];
         try {
@@ -179,6 +193,15 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
             }
         } catch (e) {
             console.error("Failed to parse custom presets", e);
+        }
+
+        let parsedDhikrHistory: Record<string, number> = {};
+        try {
+            if (savedDhikrHistoryString) {
+                parsedDhikrHistory = JSON.parse(savedDhikrHistoryString);
+            }
+        } catch (e) {
+            console.error("Failed to parse dhikr history", e);
         }
 
         const resolvedActiveId = savedDhikrId && (validActiveIds.includes(savedDhikrId) || parsedCustomPresets.some(p => p.id === savedDhikrId))
@@ -194,7 +217,9 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
             lastDhikrDate: savedDate || today,
             activeSequenceId: savedSequenceId,
             sequenceIndex: parseNumber(savedSequenceIndex, 0),
-            customPresets: parsedCustomPresets
+            customPresets: parsedCustomPresets,
+            lifetimeCount: parseNumber(savedLifetimeCount, 0),
+            dhikrHistory: parsedDhikrHistory
         };
 
         if (nextState.lastDhikrDate && nextState.lastDhikrDate !== today) {

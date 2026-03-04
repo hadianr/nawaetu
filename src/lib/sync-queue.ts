@@ -33,7 +33,7 @@ import { v4 as uuidv4 } from 'uuid';
 /**
  * Supported entity types for syncing
  */
-export type SyncEntityType = 'bookmark' | 'setting' | 'journal' | 'mission' | 'mission_progress' | 'daily_activity' | 'reading_state';
+export type SyncEntityType = 'bookmark' | 'setting' | 'journal' | 'mission' | 'mission_progress' | 'daily_activity' | 'reading_state' | 'dhikr_stats';
 
 /**
  * Supported operation types
@@ -336,7 +336,7 @@ class SyncQueueManager {
 export const syncQueue = SyncQueueManager.getInstance();
 
 export function isSyncEntityType(value: unknown): value is SyncEntityType {
-  return ['bookmark', 'setting', 'journal', 'mission', 'mission_progress', 'daily_activity', 'reading_state'].includes(String(value));
+  return ['bookmark', 'setting', 'journal', 'mission', 'mission_progress', 'daily_activity', 'reading_state', 'dhikr_stats'].includes(String(value));
 }
 
 /**
