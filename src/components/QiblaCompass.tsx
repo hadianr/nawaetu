@@ -360,13 +360,7 @@ function QiblaCompass() {
         // Aligned if within ±8° threshold
         const isAligned = angleDiff <= 8;
 
-        // Haptic feedback on alignment change
-        if (isAligned && !aligned) {
-            // Vibrate when becoming aligned
-            if ('vibrate' in navigator) {
-                navigator.vibrate([50, 30, 50]); // Pattern: vibrate-pause-vibrate
-            }
-        }
+        // Alignment detection logic
 
         setAligned(isAligned);
     }, [compassRotate, qiblaBearing, aligned]);

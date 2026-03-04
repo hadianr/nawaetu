@@ -22,6 +22,7 @@ import { Lightbulb, X } from "lucide-react";
 import { type TafsirContent } from "@/lib/tafsir-api";
 import { formatFootnotes } from "@/lib/quran-utils";
 import { useLocale } from "@/context/LocaleContext";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 interface TafsirModalProps {
     open: boolean;
@@ -59,12 +60,21 @@ export default function TafsirModal({ open, onOpenChange, locale, content }: Taf
                         </div>
 
                         {/* Custom Close Button */}
-                        <button
-                            onClick={() => onOpenChange(false)}
-                            className="w-8 h-8 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors"
-                        >
-                            <X className="w-4 h-4 text-white" />
-                        </button>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button
+                                        onClick={() => onOpenChange(false)}
+                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors"
+                                    >
+                                        <X className="w-4 h-4 text-white" />
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent side="left">
+                                    {t.quranClose || "Tutup"}
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </div>
                 </div>
 

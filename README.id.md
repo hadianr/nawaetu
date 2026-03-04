@@ -35,13 +35,15 @@
   - **Mode Zen (Optimasi OLED)**: Imersi penuh layar bersih dengan **Feedback Ripple** dinamis dan rendering berbasis Portal untuk menutupi seluruh UI.
   - **Dzikir Kustom**: Tambahkan bacaan sendiri dengan target personal dan pantau statistik seumur hidup.
   - **Perpustakaan Dzikis**: Katalog dzikir shahih yang diperluas, lengkap dengan arti dan tadabbur.
-- **🔇 Sistem Feedback Sempurna**: Dioptimalkan khusus untuk web, beralih ke mode Suara dan Mute yang presisi untuk reliabilitas lintas perangkat.
+- **📖 Al-Qur'an Disempurnakan**: Pengalaman membaca yang lebih profesional dengan fitur kelas enterprise.
+  - **Mode Hafalan (Hafiz Mode)**: Fitur "Peek" per-ayat menggunakan efek blur, memungkinkan pengguna mengintip ayat saat menghafal sesuai metode tahfiz tradisional.
+  - **Tooltip Interaktif**: Penambahan tooltip pada semua ikon aksi (Play, Bookmark, Share, Tafsir, Hafiz Mode) untuk UX yang lebih intuitif.
+  - **Smart Audio Caching**: Penanganan `AbortError` dan interupsi pemutaran untuk pengalaman murottal yang lancar tanpa terputus.
+- **🔇 Update Sistem Feedback**: Fitur getar telah dihapus seluruhnya untuk menjaga reliabilitas lintas perangkat pada Web/PWA, berfokus pada feedback suara berkualitas tinggi dan mode mute.
 - **🌙 Pelacak Puasa Ramadhan**: Logger puasa berbasis kalender dengan status fiqih (Puasa, Sakit, Musafir, dsb), preview konsekuensi (Qadha/Fidyah), dan reward Hasanah.
 - **💎 Gamifikasi Hasanah**: Sistem pertumbuhan spiritual yang mengganti "XP" menjadi "Hasanah," lengkap dengan progres Rank (Mubtadi → Muhsinin) dan milestone.
 - **📊 Dashboard Statistik Ibadah**: Halaman `/stats` komprehensif dengan Chart Tren Hasanah, pelacak Konsistensi Sholat, dan riwayat Rank.
 - **🕌 Kartu Konsistensi Sholat**: Pelacak visual 7h/14h dengan dot status per-sholat, dioptimalkan untuk check-in mobile yang cepat.
-- **🌍 Analitik Pengguna Global**: Pelacakan regional via reverse geocoding untuk memantau pertumbuhan ummah berdasarkan kota dan negara.
-- **📅 Input Tanggal Mundur**: Fleksibilitas untuk mencatat Niat dan Sholat di tanggal lampau melalui picker kalender cerdas.
 
 ---
 

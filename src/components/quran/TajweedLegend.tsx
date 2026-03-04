@@ -19,6 +19,8 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/context/LocaleContext';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 interface TajweedRule {
     name: string;
@@ -81,21 +83,31 @@ const TAJWEED_RULES: TajweedRule[] = [
 
 export default function TajweedLegend() {
     const [isOpen, setIsOpen] = useState(false);
+    const { t } = useLocale();
 
     return (
         <div className="w-full mb-6">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group"
-            >
-                <div className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-[rgb(var(--color-primary))]" />
-                    <span className="text-sm font-bold text-slate-200 group-hover:text-white transition-colors">
-                        Panduan Kode Warna Tajwid
-                    </span>
-                </div>
-                {isOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-            </button>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Info className="w-4 h-4 text-[rgb(var(--color-primary))]" />
+                                <span className="text-sm font-bold text-slate-200 group-hover:text-white transition-colors">
+                                    {t.quranTajweedGuide || "Panduan Kode Warna Tajwid"}
+                                </span>
+                            </div>
+                            {isOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                        {t.quranTajweedGuide || "Panduan Tajwid"}
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
 
             {/* Collapsible Content */}
             <div className={cn(

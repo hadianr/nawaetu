@@ -20,7 +20,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { RotateCcw, Volume2, VolumeX, Smartphone, Settings2, Check, Flame, CalendarDays, ChevronDown, Trophy, Medal, Moon, X } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX, Settings2, Check, Flame, CalendarDays, ChevronDown, Trophy, Medal, Moon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -135,9 +135,7 @@ export default function DhikrCounter() {
     const [isZenMode, setIsZenMode] = useState(false);
     const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
-    useEffect(() => {
-        // No-op for now as vibration is removed
-    }, []);
+
     const { state: dhikrState, updateState, hasHydrated } = useDhikrPersistence({
         defaultActiveId: dhikrPresets[0]?.id ?? "tasbih",
         validActiveIds: [...dhikrPresets, ...libraryPresets].map((preset) => preset.id),

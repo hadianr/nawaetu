@@ -35,13 +35,15 @@
   - **Zen Mode (OLED Optimized)**: Full-screen, minimalist immersion with dynamic **Ripple Feedback** and portal-rendered UI overlay.
   - **Custom Dhikr**: Add your own readings with personal targets and track lifetime progress.
   - **Dhikr Library**: Expanded catalog of authentic dhikr with meanings and tadabbur notes.
-- **🔇 Refined Feedback System**: Optimized for web environments, switching to high-fidelity sound and mute modes for consistent cross-platform reliability.
+- **📖 Al-Quran Polished**: Improved reading experience with enterprise-grade features.
+  - **Hafiz Mode (Memorization)**: New per-verse "Reveal" feature using a blur effect, allowing users to peek at verses while memorizing, following traditional tahfiz methods.
+  - **Interactive Tooltips**: Added helpful tooltips to all icon actions (Play, Bookmark, Share, Tafsir, Hafiz Mode) for better UX.
+  - **Smart Audio Caching**: Handled `AbortError` and playback interruptions for a seamless murottal experience.
+- **🔇 Feedback System Update**: Vibration features have been removed to ensure consistent cross-platform reliability on Web/PWA, focusing on high-fidelity sound feedback and mute modes.
 - **🌙 Ramadhan Fasting Tracker**: Calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.
 - **💎 Hasanah Gamification**: Spiritual growth system replacing generic "XP" with "Hasanah," featuring Rank progression (Mubtadi → Muhsinin) and milestones.
 - **📊 Full Ibadah Statistics Dashboard**: Comprehensive `/stats` page with Hasanah Trend Charts, Prayer Consistency tracker, and Rank history.
 - **🕌 Prayer Consistency Card**: 7-day/14-day visual tracker with per-prayer status dots, optimized for quick mobile check-in.
-- **🌍 Global User Analytics**: Regional tracking via reverse geocoding to understand community growth by city and country.
-- **📅 Backdated Entries**: Flexibility to log past Intentions and Prayers via a smart calendar picker.
 
 
 **Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.

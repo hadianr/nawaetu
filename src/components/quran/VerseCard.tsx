@@ -18,6 +18,7 @@
 
 import { Verse } from "./VerseList";
 import { AyahMarker } from "./AyahMarker";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Link2, MoreVertical, Play, Pause, Bookmark, Info, Check, EyeOff, Eye, Share2, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -100,67 +101,105 @@ export default function VerseCard({
             <div className="flex items-center justify-between mb-6">
                 <AyahMarker number={toArabicNumber(verseNum)} size={fontSize} />
                 <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setIsMasked(!isMasked)}
-                        className={cn(
-                            "h-8 w-8 md:h-9 md:w-9 rounded-full transition-colors",
-                            isMasked ? "text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" : "text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/10"
-                        )}
-                        title={isMasked ? "Buka Ayat (Mode Hafalan)" : "Tutup Ayat (Mode Hafalan)"}
-                    >
-                        {isMasked ? <Eye className="h-4 w-4 md:h-5 md:w-5" /> : <EyeOff className="h-4 w-4 md:h-5 md:w-5" />}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onPlay(verse, false)}
-                        className={cn(
-                            "h-8 w-8 rounded-full transition-all duration-300",
-                            isPlayingVerse && isPlaying ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100",
-                            isPlayingVerse
-                                ? isDaylight
-                                    ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200"
-                                    : "bg-[rgb(var(--color-primary))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
-                                : isDaylight
-                                    ? "text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"
-                                    : "text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10"
-                        )}
-                    >
-                        <Play className="h-4 w-4" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onBookmarkToggle(verse)}
-                        className={cn(
-                            "h-8 w-8 rounded-full transition-colors",
-                            isBookmarked
-                                ? isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary))]"
-                                : isDaylight ? "text-slate-300 hover:text-emerald-500 hover:bg-emerald-50" : "text-slate-400 hover:text-[rgb(var(--color-primary))]"
-                        )}
-                    >
-                        <Bookmark className={cn("h-4 w-4", isBookmarked && "fill-current")} />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onMouseEnter={prefetchShareDialog}
-                        onFocus={prefetchShareDialog}
-                        onClick={() => onShareClick(verse)}
-                        className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"
-                    >
-                        <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onTafsirToggle(verse.verse_key)}
-                        className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}
-                    >
-                        <Lightbulb className="h-4 w-4" />
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setIsMasked(!isMasked)}
+                                className={cn(
+                                    "h-8 w-8 md:h-9 md:w-9 rounded-full transition-colors",
+                                    isMasked ? "text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" : "text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/10"
+                                )}
+                            >
+                                {isMasked ? <Eye className="h-4 w-4 md:h-5 md:w-5" /> : <EyeOff className="h-4 w-4 md:h-5 md:w-5" />}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {isMasked ? (t.quranHafizModeOn || "Buka Ayat (Mode Hafalan)") : (t.quranHafizModeOff || "Tutup Ayat (Mode Hafalan)")}
+                        </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => onPlay(verse, false)}
+                                className={cn(
+                                    "h-8 w-8 rounded-full transition-all duration-300",
+                                    isPlayingVerse && isPlaying ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100",
+                                    isPlayingVerse
+                                        ? isDaylight
+                                            ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200"
+                                            : "bg-[rgb(var(--color-primary))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                                        : isDaylight
+                                            ? "text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"
+                                            : "text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10"
+                                )}
+                            >
+                                <Play className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {t.quranPlayVerse || "Putar Ayat"}
+                        </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => onBookmarkToggle(verse)}
+                                className={cn(
+                                    "h-8 w-8 rounded-full transition-colors",
+                                    isBookmarked
+                                        ? isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary))]"
+                                        : isDaylight ? "text-slate-300 hover:text-emerald-500 hover:bg-emerald-50" : "text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                                )}
+                            >
+                                <Bookmark className={cn("h-4 w-4", isBookmarked && "fill-current")} />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {isBookmarked ? (t.quranRemoveBookmark || "Hapus Penanda") : (t.quranAddBookmark || "Tandai Ayat")}
+                        </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onMouseEnter={prefetchShareDialog}
+                                onFocus={prefetchShareDialog}
+                                onClick={() => onShareClick(verse)}
+                                className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                            >
+                                <Share2 className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {t.quranShareVerse || "Bagikan Ayat"}
+                        </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => onTafsirToggle(verse.verse_key)}
+                                className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}
+                            >
+                                <Lightbulb className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {activeTafsirVerse === verse.verse_key ? (t.quranCloseTafsir || "Tutup Tafsir") : (t.quranShowTafsir || "Lihat Tafsir")}
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             </div>
 

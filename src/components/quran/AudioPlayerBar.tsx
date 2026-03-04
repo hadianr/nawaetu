@@ -21,6 +21,7 @@ import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIco
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type LoopMode = 'off' | '1' | '3' | 'infinity';
 
@@ -71,52 +72,88 @@ export default function AudioPlayerBar({
                 <div className="h-8 w-px bg-white/10" />
                 <div className="flex items-center gap-1">
                     {onScrollToPlaying && (
-                        <Button
-                            onClick={onScrollToPlaying}
-                            size="icon"
-                            variant="ghost"
-                            title={t.quranJumpToVerse || "Jump to playing verse"}
-                            className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 mr-1"
-                        >
-                            <Target className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    onClick={onScrollToPlaying}
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 mr-1"
+                                >
+                                    <Target className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                                {t.quranJumpToVerse || "Lompat ke Ayat"}
+                            </TooltipContent>
+                        </Tooltip>
                     )}
-                    <Button
-                        onClick={() => {
-                            const modes: LoopMode[] = ['off', '1', '3', 'infinity'];
-                            const nextIndex = (modes.indexOf(loopMode) + 1) % modes.length;
-                            onLoopModeChange(modes[nextIndex]);
-                        }}
-                        size="icon"
-                        variant="ghost"
-                        className={`h-8 w-8 rounded-full hover:bg-white/10 ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10' : 'text-slate-400'}`}
-                    >
-                        {loopMode === 'infinity' ? <InfinityIcon className="h-4 w-4" /> :
-                            loopMode === 'off' ? <Repeat className="h-4 w-4" /> :
-                                <span className="text-[10px] font-bold border rounded px-0.5 border-current w-4 h-4 flex items-center justify-center">{loopMode}x</span>
-                        }
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                onClick={() => {
+                                    const modes: LoopMode[] = ['off', '1', '3', 'infinity'];
+                                    const nextIndex = (modes.indexOf(loopMode) + 1) % modes.length;
+                                    onLoopModeChange(modes[nextIndex]);
+                                }}
+                                size="icon"
+                                variant="ghost"
+                                className={`h-8 w-8 rounded-full hover:bg-white/10 ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10' : 'text-slate-400'}`}
+                            >
+                                {loopMode === 'infinity' ? <InfinityIcon className="h-4 w-4" /> :
+                                    loopMode === 'off' ? <Repeat className="h-4 w-4" /> :
+                                        <span className="text-[10px] font-bold border rounded px-0.5 border-current w-4 h-4 flex items-center justify-center">{loopMode}x</span>
+                                }
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {t.quranLoopMode || "Mode Pengulangan"}
+                        </TooltipContent>
+                    </Tooltip>
 
                     <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" onClick={onPrev} disabled={currentPlayingIndex <= 0} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
-                            <ChevronLeft className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={onPlayPause}
-                            className={cn(
-                                "h-10 w-10 rounded-full transition-all flex items-center justify-center",
-                                isDaylight
-                                    ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-200"
-                                    : "bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-light))] shadow-lg shadow-[rgb(var(--color-primary))]/30"
-                            )}
-                        >
-                            {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={onNext} disabled={currentPlayingIndex >= totalVerses - 1} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
-                            <ChevronRight className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={onPrev} disabled={currentPlayingIndex <= 0} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
+                                    <ChevronLeft className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                                {t.quranPrevious || "Sebelumnya"}
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={onPlayPause}
+                                    className={cn(
+                                        "h-10 w-10 rounded-full transition-all flex items-center justify-center",
+                                        isDaylight
+                                            ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-200"
+                                            : "bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-light))] shadow-lg shadow-[rgb(var(--color-primary))]/30"
+                                    )}
+                                >
+                                    {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                                {isPlaying ? (t.quranPauseVerse || "Jeda") : (t.quranPlayVerse || "Putar Ayat")}
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={onNext} disabled={currentPlayingIndex >= totalVerses - 1} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
+                                    <ChevronRight className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                                {t.quranNext || "Selanjutnya"}
+                            </TooltipContent>
+                        </Tooltip>
                     </div>
                 </div>
             </div>
