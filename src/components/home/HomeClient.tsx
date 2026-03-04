@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useEffect, useState } from "react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
 import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
@@ -25,21 +26,37 @@ import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 import HomeHeader from "@/components/HomeHeader";
 import VotingBanner from "@/components/home/VotingBanner";
 
-interface HomeClientProps {
-    initialDaysLeft: number;
-    /** Server-computed flag: true if the current date falls within the Ramadhan season (1447H) */
-    isRamadhanSeason: boolean;
-}
-
-export default function HomeClient({ initialDaysLeft, isRamadhanSeason }: HomeClientProps) {
+export default function HomeClient() {
     const { data } = usePrayerTimesContext();
 
-    // Use the server-computed flag as the ground truth on initial render.
+    // Move dynamic time calculation to internal state to avoid hydration mismatch.
+    // Server renders a stable default, and client updates after mount.
+    const [initialDaysLeft, setInitialDaysLeft] = useState(0);
+    const [isRamadhanSeason, setIsRamadhanSeason] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        const RAMADHAN_START_MS = new Date("2026-02-18T00:00:00+07:00").getTime();
+        const RAMADHAN_END_MS = new Date("2026-03-20T23:59:59+07:00").getTime();
+        const now = Date.now();
+
+        const isSeason = now >= RAMADHAN_START_MS && now <= RAMADHAN_END_MS;
+        setIsRamadhanSeason(isSeason);
+
+        if (!isSeason) {
+            const days = Math.max(0, Math.floor((RAMADHAN_START_MS - now) / 86400000));
+            setInitialDaysLeft(days);
+        }
+    }, []);
+
+    // Use the server-computed flag as the ground truth if available, otherwise wait for mount.
     // Once the API loads, refine with the hijri month for accuracy.
     const hijriMonth = data?.hijriMonth || "";
-    const isRamadhan = isRamadhanSeason || (data
+    // If not mounted yet, default to NOT Ramadhan to match server static HTML
+    const isRamadhan = mounted && (isRamadhanSeason || (data
         ? (hijriMonth.includes("Ramadan") || hijriMonth.includes("Ramadhan"))
-        : false);
+        : false));
 
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 py-4 font-sans sm:px-6">

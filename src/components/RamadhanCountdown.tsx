@@ -308,7 +308,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                     {/* Next Prayer Time (Imsak / Maghrib) */}
                                     <span className="text-sm font-medium text-white/70 mt-1 flex items-center gap-1.5">
                                         ⏱️ {
-                                            (() => {
+                                            !isMounted ? "..." : (() => {
                                                 const now = new Date();
                                                 const imsak = prayerData?.prayerTimes?.["Imsak"];
                                                 const maghrib = prayerData?.prayerTimes?.["Maghrib"];

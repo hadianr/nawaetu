@@ -47,16 +47,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default function Home() {
-  // Ramadhan 1447H: ~Feb 18 2026 to ~Mar 20 2026 (Gregorian approximation)
-  // These are compile-time constants — no new Date() needed at request time.
-  // HomeClient refines this using hijriMonth from the prayer times API.
-  const RAMADHAN_START_MS = new Date("2026-02-18T00:00:00+07:00").getTime();
-  const RAMADHAN_END_MS = new Date("2026-03-20T23:59:59+07:00").getTime();
-  const nowApprox = Date.now();
-  const isRamadhanSeason = nowApprox >= RAMADHAN_START_MS && nowApprox <= RAMADHAN_END_MS;
-  const daysLeft = isRamadhanSeason
-    ? 0
-    : Math.max(0, Math.floor((RAMADHAN_START_MS - nowApprox) / 86400000));
-
-  return <HomeClient initialDaysLeft={daysLeft} isRamadhanSeason={isRamadhanSeason} />;
+  // Homepage logic is now fully client-side for dynamic time-based components
+  // (prayer times, countdowns) while the shell remains static and ISR-optimized.
+  return <HomeClient />;
 }
