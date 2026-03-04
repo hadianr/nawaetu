@@ -119,6 +119,21 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const rafIdRef = useRef<number | null>(null);
     const segmentsRef = useRef<VerseSegmentMap | null>(null);
     const segmentsCacheKeyRef = useRef<string | null>(null);
+    // Local reciter ID — updates immediately on change (without waiting for router.refresh())
+    const [activeReciterId, setActiveReciterId] = useState<number>(currentReciterId ?? 7);
+
+    /**
+     * Compute audio URL dynamically from the CURRENTLY selected reciter.
+     * This ensures that changing the reciter takes effect on the next played verse
+     * without needing a page refresh — even during continuous surah playback.
+     */
+    const getVerseAudioUrl = useCallback((verse: Verse): string => {
+        const reciter = QURAN_RECITER_OPTIONS.find(r => r.id === activeReciterId);
+        if (reciter?.audio_url_format) {
+            return reciter.audio_url_format.replace('{verse}', String(verse.id));
+        }
+        return verse.audio.url; // fallback to pre-fetched URL
+    }, [activeReciterId]);
 
     // Settings State
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -288,7 +303,11 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [activeVerseForShare, setActiveVerseForShare] = useState<Verse | null>(null);
 
     const handleReciterChange = useCallback((value: string) => {
-        // Update cookie for server-side
+        const numId = parseInt(value, 10);
+        // Update local state IMMEDIATELY so segment sync reacts at once
+        // (router.refresh() is async — we can't wait for it to stop stale highlights)
+        setActiveReciterId(numId);
+        // Update cookie for server-side audio URL resolution
         document.cookie = `settings_reciter=${value}; path=/; max-age=31536000`;
         // Update localStorage for client-side persistence (Settings page sync)
         const storage = getStorageService();
@@ -476,7 +495,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         } else {
             setIsContinuous(continuous);
             setPlayingVerseKey(verse.verse_key);
-            setCurrentAudioUrl(verse.audio.url);
+            setCurrentAudioUrl(getVerseAudioUrl(verse));
             setIsPlaying(true);
             setRepeatCount(0); // Reset repeat on new play
             // Auto-scroll when specifically playing a verse
@@ -506,7 +525,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             const nextVerse = accumulatedVerses[currentIndex + 1];
             // Keep isContinuous state whatever it was
             setPlayingVerseKey(nextVerse.verse_key);
-            setCurrentAudioUrl(nextVerse.audio.url);
+            setCurrentAudioUrl(getVerseAudioUrl(nextVerse));
             scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
             setIsPlaying(true);
             setRepeatCount(0); // Reset repeat on manual next
@@ -522,7 +541,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             const prevVerse = accumulatedVerses[currentIndex - 1];
             // Keep isContinuous state
             setPlayingVerseKey(prevVerse.verse_key);
-            setCurrentAudioUrl(prevVerse.audio.url);
+            setCurrentAudioUrl(getVerseAudioUrl(prevVerse));
             scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
             setIsPlaying(true);
             setRepeatCount(0); // Reset repeat on manual prev
@@ -605,14 +624,14 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
 
     // --- Karaoke Mode: fetch segments and start RAF sync when verse changes ---
     useEffect(() => {
-        if (!playingVerseKey || !currentReciterId) {
+        if (!playingVerseKey || !activeReciterId) {
             stopWordSync();
             return;
         }
 
         const [surahIdStr] = playingVerseKey.split(':');
         const surahId = parseInt(surahIdStr);
-        const cacheKey = `${surahId}-${currentReciterId}`;
+        const cacheKey = `${surahId}-${activeReciterId}`;
 
         // If we already loaded segments for this surah+reciter, just start syncing
         if (segmentsCacheKeyRef.current === cacheKey && segmentsRef.current !== null) {
@@ -625,7 +644,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         segmentsRef.current = null;
         stopWordSync();
 
-        fetchSurahSegments(surahId, currentReciterId).then(data => {
+        fetchSurahSegments(surahId, activeReciterId).then(data => {
             segmentsRef.current = data; // null = reciter doesn't support segments (graceful fallback)
             if (data) {
                 // Only start RAF if still playing the same verse
@@ -637,7 +656,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             // Cleanup on verse change or unmount
             stopWordSync();
         };
-    }, [playingVerseKey, currentReciterId, startWordSync, stopWordSync]);
+    }, [playingVerseKey, activeReciterId, startWordSync, stopWordSync]);
 
     // Stop audio on unmount or pathname change
     useEffect(() => {

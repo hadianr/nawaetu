@@ -46,6 +46,27 @@ const pendingFetches = new Map<string, Promise<VerseSegmentMap | null>>();
 const SEGMENT_API_BASE = 'https://api.quran.com/api/v4/chapter_recitations';
 
 /**
+ * Maps app reciter IDs (from settings-data.ts) to the quran.com chapter_recitations API ID.
+ *
+ * IMPORTANT: Only Mishary Rashid Alafasy (ID 7) has been verified to have
+ * precise word-level segment timing that aligns correctly with per-verse MP3 playback.
+ * Other reciters return null → graceful fallback to normal playback (no highlight).
+ *
+ * To enable more reciters in the future, add their verified API IDs here.
+ * Verified candidates (API chapter_recitations IDs, tested 2026-03-05):
+ *   2 = Abdul Basit (Murattal) — has segments but timing may differ from CDN audio
+ *   3 = Abdul Rahman Al-Sudais — has segments but timing may differ from CDN audio
+ *  10 = Saud Al-Shuraim — has segments but timing may differ from CDN audio
+ */
+const APP_TO_API_RECITER_ID: Record<number, number | null> = {
+    7: 7,    // Mishary Rashid Alafasy ✅ — verified precise
+    2: null, // Abdul Rahman Al-Sudais — fallback (timing mismatch with CDN audio)
+    1: null, // Abdul Basit (Murattal) — fallback (timing mismatch with CDN audio)
+    3: null, // Saud Al-Shuraim — fallback (timing mismatch with CDN audio)
+    5: null, // Maher Al Muaiqly — no segment data in API
+};
+
+/**
  * Fetch all word-level timing data for an entire Surah + Reciter.
  * Results are normalized to verse-relative time (so they match per-verse MP3 currentTime).
  * Data is cached in memory for the lifetime of the browser session.
@@ -54,9 +75,17 @@ const SEGMENT_API_BASE = 'https://api.quran.com/api/v4/chapter_recitations';
  */
 export async function fetchSurahSegments(
     surahId: number,
-    reciterId: number
+    appReciterId: number
 ): Promise<VerseSegmentMap | null> {
-    const cacheKey = `${surahId}-${reciterId}`;
+    // Resolve the app's CDN reciter ID to the chapter_recitations API ID
+    const apiReciterId = appReciterId in APP_TO_API_RECITER_ID
+        ? APP_TO_API_RECITER_ID[appReciterId]
+        : null; // Unknown reciter → graceful fallback
+
+    // Early exit for reciters with no known segment data
+    if (apiReciterId === null) return null;
+
+    const cacheKey = `${surahId}-${apiReciterId}`;
 
     // 1. Return from cache (includes null for reciters that don't have segment data)
     if (segmentCache.has(cacheKey)) {
@@ -71,7 +100,7 @@ export async function fetchSurahSegments(
     // 3. Start the fetch
     const fetchPromise = (async (): Promise<VerseSegmentMap | null> => {
         try {
-            const url = `${SEGMENT_API_BASE}/${reciterId}/${surahId}?segments=true`;
+            const url = `${SEGMENT_API_BASE}/${apiReciterId}/${surahId}?segments=true`;
             const res = await fetch(url, {
                 signal: AbortSignal.timeout(10000), // 10s timeout
                 headers: { 'Accept': 'application/json' },
