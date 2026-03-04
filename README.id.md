@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.2-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.3-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -29,16 +29,19 @@
 > [!IMPORTANT]
 > **Nawaetu menggunakan Dual Licensing.** Gratis untuk Open Source (AGPLv3), namun memerlukan **Lisensi Komersial** untuk penggunaan komersial/proprietary.
 
-### 🚀 Highlight Terbaru (v1.9.2)
+### 🚀 Highlight Terbaru (v1.9.x)
+- **🌙 Dzikir 2.0 & Mode Zen**: Overhaul besar-besaran pada fitur Tasbih.
+  - **Dzikir Berantai (Sequential)**: Alur otomatis untuk dzikir bakda sholat (Subhanallah → Alhamdulillah → Allahu Akbar).
+  - **Mode Zen (Optimasi OLED)**: Imersi penuh layar bersih dengan **Feedback Ripple** dinamis dan rendering berbasis Portal untuk menutupi seluruh UI.
+  - **Dzikir Kustom**: Tambahkan bacaan sendiri dengan target personal dan pantau statistik seumur hidup.
+  - **Perpustakaan Dzikis**: Katalog dzikir shahih yang diperluas, lengkap dengan arti dan tadabbur.
+- **🔇 Sistem Feedback Sempurna**: Dioptimalkan khusus untuk web, beralih ke mode Suara dan Mute yang presisi untuk reliabilitas lintas perangkat.
 - **🌙 Pelacak Puasa Ramadhan**: Logger puasa berbasis kalender dengan status fiqih (Puasa, Sakit, Musafir, dsb), preview konsekuensi (Qadha/Fidyah), dan reward Hasanah.
-- **💎 Refactor Gamifikasi Hasanah**: Overhaul total sistem reward, mengganti "XP" menjadi "Hasanah" untuk pengalaman yang lebih selaras secara spiritual.
-- **📊 Dashboard Statistik Ibadah Lengkap**: Halaman `/stats` baru dengan Hasanah Trend Chart (filter 7h/30h/90h/1th), pelacak Konsistensi Sholat, kartu Rank Spiritual, dan Insight Sholat berbasis AI—semuanya bilingual.
-- **🏆 Sistem Rank Spiritual**: Perankingan pemain yang digamifikasi (Mubtadi → Muhsinin) berdasarkan Hasanah dengan modal progres rank dan milestone.
-- **🕌 Kartu Konsistensi Sholat**: Pelacak visual 7h/14-hari dengan dot per-sholat, legenda inisial (S/D/A/M/I), dan pelabelan tanggal cerdas—dioptimalkan untuk mobile.
-- **🌙 Misi Sholat Sunnah**: Misi harian yang dapat diulang untuk Rawatib, Dhuha, Tahajjud, dan sholat musiman dengan reward Hasanah.
-- **🕌 Kalkulator Zakat Fitrah**: Kalkulator Zakat musiman bawaan dengan panduan lokal.
-- **🌍 Analitik Pengguna Global**: Pelacakan geografis melalui reverse geocoding — kota (Kabupaten/Kota) dan negara disimpan untuk setiap pengguna, memungkinkan pengambilan keputusan berbasis wilayah.
-- **📱 Judul Browser Dinamis**: Judul halaman yang peka rute dan lokal untuk UX dan SEO yang lebih baik.
+- **💎 Gamifikasi Hasanah**: Sistem pertumbuhan spiritual yang mengganti "XP" menjadi "Hasanah," lengkap dengan progres Rank (Mubtadi → Muhsinin) dan milestone.
+- **📊 Dashboard Statistik Ibadah**: Halaman `/stats` komprehensif dengan Chart Tren Hasanah, pelacak Konsistensi Sholat, dan riwayat Rank.
+- **🕌 Kartu Konsistensi Sholat**: Pelacak visual 7h/14h dengan dot status per-sholat, dioptimalkan untuk check-in mobile yang cepat.
+- **🌍 Analitik Pengguna Global**: Pelacakan regional via reverse geocoding untuk memantau pertumbuhan ummah berdasarkan kota dan negara.
+- **📅 Input Tanggal Mundur**: Fleksibilitas untuk mencatat Niat dan Sholat di tanggal lampau melalui picker kalender cerdas.
 
 ---
 
@@ -81,9 +84,9 @@
 *   **Kalibrasi Hijriah**: Penyesuaian tanggal yang fleksibel sesuai dengan pengamatan hilal lokal.
 
 ### 4. 📈 Alat Konsistensi (Istiqamah)
-*   **Penghitung Tasbih**: Tasbih digital dengan preset yang bisa dikustomisasi.
-*   **Check-in Sholat**: Pantau performa ibadah harian secara real-time.
-*   **Statistik Aktivitas**: Visualisasi perkembangan spiritual kamu dari waktu ke waktu.
+*   **Tasbih 2.0**: Penghitung canggih dengan mode Berantai (Sequential), bacaan Kustom, dan Mode Zen OLED.
+*   **Check-in Sholat**: Pelacak ritual presisi tinggi dengan opsi jamaah/sendiri.
+*   **Dashboard Ibadah**: Statistik seumur hidup, milestone, dan visualisasi tren Hasanah.
 
 ### 5. 🌙 Pusat Ramadhan (Musiman)
 *   **Panduan Ramadhan**: Fiqh khusus, FAQ, dan panduan amalan selama bulan suci.
@@ -591,4 +594,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: March 1, 2026*
+*Last updated: March 4, 2026*

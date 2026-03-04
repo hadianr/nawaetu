@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.2-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.3-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -29,18 +29,19 @@
 > [!IMPORTANT]
 > **Nawaetu is Dual Licensed.** Free for Open Source (AGPLv3), but requires a **Commercial License** for proprietary/closed-source use.
 
-### 🚀 Recent Highlights (v1.9.2)
-- **🌙 Ramadhan Fasting Tracker**: New calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.
-- **💎 Hasanah Gamification Refactor**: Complete overhaul of the reward system, replacing "XP" with "Hasanah" for a more spiritually aligned experience.
-- **📊 Full Ibadah Statistics Dashboard**: New `/stats` page with Hasanah Trend Chart (7d/30d/90d/1y filters), Prayer Consistency tracker, Spiritual Rank card, and AI-powered Prayer Insights—all bilingual.
-- **🏆 Spiritual Rank System**: Gamified player ranking (Mubtadi → Muhsinin) based on Hasanah with rank progression modal and milestones.
-- **🕌 Prayer Consistency Card**: 7nd/14-day visual tracker with per-prayer dots, initials legend (S/D/A/M/I), and smart date labeling—optimized for mobile.
-- **🌙 Sunnah Prayer Missions**: Daily repeatable missions for Rawatib, Dhuha, Tahajjud, and seasonal prayers with Hasanah rewards.
-- **🕌 Zakat Fitrah Calculator**: Built-in seasonal Zakat calculator with localized guidance.
-- **🌍 Global User Analytics**: Geographic tracking via reverse geocoding—city (Kabupaten/Kota) and country stored for each user, enabling decision-making by region.
-- **📱 Dynamic Browser Titles**: Route-aware, locale-sensitive page titles for better UX and SEO.
-- **📅 Backdated Daily Entries**: Users can fill in past Intentions and Prayer Check-ins for any previous date via a calendar picker—no more missing days if you forgot to log.
-- **🔒 Security Hardening (v1.9.0)**: AI rate-limit bypass fix, LLM injection protection, CSP strengthening, and debug endpoint blocking in production.
+### 🚀 Recent Highlights (v1.9.x)
+- **🌙 Dhikr 2.0 & Zen Mode**: A massive overhaul to the Tasbih feature.
+  - **Dzikir Berantai (Sequential)**: Automatic flow for post-prayer dhikr (Subhanallah → Alhamdulillah → Allahu Akbar).
+  - **Zen Mode (OLED Optimized)**: Full-screen, minimalist immersion with dynamic **Ripple Feedback** and portal-rendered UI overlay.
+  - **Custom Dhikr**: Add your own readings with personal targets and track lifetime progress.
+  - **Dhikr Library**: Expanded catalog of authentic dhikr with meanings and tadabbur notes.
+- **🔇 Refined Feedback System**: Optimized for web environments, switching to high-fidelity sound and mute modes for consistent cross-platform reliability.
+- **🌙 Ramadhan Fasting Tracker**: Calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.
+- **💎 Hasanah Gamification**: Spiritual growth system replacing generic "XP" with "Hasanah," featuring Rank progression (Mubtadi → Muhsinin) and milestones.
+- **📊 Full Ibadah Statistics Dashboard**: Comprehensive `/stats` page with Hasanah Trend Charts, Prayer Consistency tracker, and Rank history.
+- **🕌 Prayer Consistency Card**: 7-day/14-day visual tracker with per-prayer status dots, optimized for quick mobile check-in.
+- **🌍 Global User Analytics**: Regional tracking via reverse geocoding to understand community growth by city and country.
+- **📅 Backdated Entries**: Flexibility to log past Intentions and Prayers via a smart calendar picker.
 
 
 **Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.
@@ -90,9 +91,9 @@
 *   **Hijri Calibration**: Flexible date adjustments to align with local moon sightings.
 
 ### 4. 📈 Consistency (Istiqamah) Tools
-*   **Tasbih Counter**: Digital counters with customizable presets.
-*   **Prayer Check-in**: Track your daily ritual performance in real-time.
-*   **Activity Stats**: Visualized progress of your spiritual journey over time.
+*   **Tasbih 2.0**: Advanced counter with Sequential (Berantai), Custom readings, and OLED Zen Mode.
+*   **Prayer Check-in**: High-precision ritual tracker with mosque/solo options.
+*   **Ibadah Dashboard**: Lifetime statistics, milestones, and Hasanah trend visualizers.
 
 ### 5. 🌙 Ramadhan Central (Seasonal)
 *   **Ramadhan Guide**: Specialized Fiqh, FAQ, and practice guides for the holy month.
