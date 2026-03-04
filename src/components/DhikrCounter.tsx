@@ -101,9 +101,19 @@ export default function DhikrCounter() {
         [t]
     );
     const [feedbackMode, setFeedbackMode] = useState<'vibrate' | 'sound' | 'both' | 'none'>('vibrate');
+    const [isVibrationSupported, setIsVibrationSupported] = useState(true);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [showReward, setShowReward] = useState(false);
+
+    useEffect(() => {
+        // Deteksi apakah perangkat/browser mendukung getaran (contoh: iOS Safari dan beberapa in-app browser tidak)
+        const supported = typeof navigator !== "undefined" && 'vibrate' in navigator;
+        setIsVibrationSupported(supported);
+        if (!supported) {
+            setFeedbackMode(prev => (prev === 'vibrate' || prev === 'both') ? 'sound' : prev);
+        }
+    }, []);
     const { state: dhikrState, updateState, hasHydrated } = useDhikrPersistence({
         defaultActiveId: dhikrPresets[0]?.id ?? "tasbih",
         validActiveIds: dhikrPresets.map((preset) => preset.id),
@@ -179,8 +189,13 @@ export default function DhikrCounter() {
     };
 
     const toggleFeedback = () => {
-        const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = ['vibrate', 'sound', 'both', 'none'];
-        setFeedbackMode(modes[(modes.indexOf(feedbackMode) + 1) % modes.length]);
+        const modes: ('vibrate' | 'sound' | 'both' | 'none')[] = isVibrationSupported
+            ? ['vibrate', 'sound', 'both', 'none']
+            : ['sound', 'none'];
+
+        const currentIndex = modes.indexOf(feedbackMode);
+        const nextIndex = currentIndex !== -1 ? (currentIndex + 1) % modes.length : 0;
+        setFeedbackMode(modes[nextIndex]);
     };
 
     const handlePresetSelect = (preset: DhikrPreset) => {
