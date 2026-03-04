@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.3] - 2026-03-04
+
+### Added
+- **Feat: Remove vibration feedback functionality from the DhikrCounter component.**
+- **Feat: add CSS ripple animation and utility class to globals.css**
+- **Feat: Add Zen Mode with full-screen counter, ripple effect, and updated control grid layout.**
+- **Feat: Add dhikr milestones, lifetime count, and statistics tracking with sync functionality.**
+- **Feat: Implement dhikr library, custom presets, and dhikr sequence functionality with persistence.**
+- **Feat: Add vibration support detection and dynamically adjust feedback mode options based on device capabilities.**
+- **Feat: Prevent future date selection in prayer check-in and intention journal widgets.**
+- **Feat: Improve date picker interaction with `showPicker` fallback and relax prayer time location cache expiry to prevent empty screens.**
+- **Feat: Update iframe source URL in popup script to include timestamp and enhance middleware regex for asset handling**
+- **Feat: Enhance iframe security and loading experience with improved sandboxing and error handling in popup and service worker components.**
+- **Feat: Add Chrome Extension support with declarativeNetRequest rules and robust localStorage error handling for iframe embedding.**
+
+### Improved
+- **Refactor: Portalize FastingDayModal for improved rendering and apply various UI and styling refinements.**
+
+
 ## [1.9.2] - 2026-03-02
 
 ### Added
