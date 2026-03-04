@@ -432,7 +432,12 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         if (loopMode === 'infinity') {
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
-                audioRef.current.play();
+                const playPromise = audioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        if (error.name !== 'AbortError') console.error("Infinity loop play error:", error);
+                    });
+                }
                 if (playingVerseKey) {
                     scrollToVerse(parseInt(playingVerseKey.split(':')[1]));
                 }
@@ -445,7 +450,12 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             setRepeatCount(prev => prev + 1);
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
-                audioRef.current.play();
+                const playPromise = audioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        if (error.name !== 'AbortError') console.error("Repeat loop play error:", error);
+                    });
+                }
                 if (playingVerseKey) {
                     scrollToVerse(parseInt(playingVerseKey.split(':')[1]));
                 }
