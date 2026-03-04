@@ -23,8 +23,9 @@ export const size = {
     width: 1200,
     height: 630,
 }
-
 export const contentType = 'image/png'
+// Static per-deploy — cache generated image for 7 days
+export const revalidate = 604800;
 
 export default async function Image() {
     return new ImageResponse(

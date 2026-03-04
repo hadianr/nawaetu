@@ -17,6 +17,7 @@
  */
 
 import NextAuth, { DefaultSession } from "next-auth"
+import { JWT } from "next-auth/jwt"
 
 declare module "next-auth" {
     /**
@@ -32,3 +33,14 @@ declare module "next-auth" {
         } & DefaultSession["user"]
     }
 }
+
+declare module "next-auth/jwt" {
+    /** JWT token shape — embedded in the encrypted cookie, read by session() callback */
+    interface JWT {
+        id?: string
+        isMuhsinin?: boolean
+        gender?: "male" | "female" | null
+        archetype?: "esensial" | "seimbang" | "lengkap" | null
+    }
+}
+
