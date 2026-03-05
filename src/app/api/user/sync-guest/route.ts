@@ -246,10 +246,13 @@ export async function POST(req: NextRequest) {
                     await tx.insert(intentions).values(intentionsToInsert);
                 }
 
-                for (const u of intentionsToUpdate) {
-                    await tx.update(intentions)
-                        .set(u.data)
-                        .where(eq(intentions.id, u.id));
+                if (intentionsToUpdate.length > 0) {
+                    const updatePromises = intentionsToUpdate.map((u) =>
+                        tx.update(intentions)
+                            .set(u.data)
+                            .where(eq(intentions.id, u.id))
+                    );
+                    await Promise.all(updatePromises);
                 }
             }
 
