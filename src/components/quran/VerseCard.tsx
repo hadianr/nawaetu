@@ -234,8 +234,7 @@ export default function VerseCard({
                                     {/* Arabic word — highlighted when this is the active karaoke word */}
                                     <span className={cn(
                                         "mb-2 cursor-pointer transition-colors duration-100",
-                                        // API wordIndex is 1-based; .map() index is 0-based, so compare (index + 1)
-                                        isPlayingVerse && (index + 1) === activeWordIdx
+                                        isPlayingVerse && word.position === activeWordIdx
                                             ? isDaylight
                                                 ? "text-emerald-600 font-bold scale-105"
                                                 : "text-[rgb(var(--color-primary))] font-bold"

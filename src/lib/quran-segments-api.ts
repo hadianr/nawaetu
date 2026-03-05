@@ -138,12 +138,18 @@ export async function fetchSurahSegments(
                 // - Subtract `offset` to get verse-relative time (matches per-verse MP3 currentTime)
                 const normalizedSegs: WordSegment[] = rawSegs
                     .filter((s: any) => Array.isArray(s) && s.length === 3)
-                    .map((s: any): WordSegment => [
-                        s[0],              // wordIndex (1-based)
-                        s[1] - offset,     // normalizedStartMs
-                        s[2] - offset,     // normalizedEndMs
-                    ])
-                    .filter(([, start, end]) => start >= 0 && end > start);
+                    .map((s: any): WordSegment => {
+                        const start = s[1] - offset;
+                        const end = s[2] - offset;
+                        // Clamp negative starts to 0 (sometimes API jitter gives -1 to -50ms)
+                        // but only if the word actually has some duration within this verse (end > 0)
+                        return [
+                            s[0],              // wordIndex (1-based)
+                            Math.max(0, start),
+                            end
+                        ];
+                    })
+                    .filter(([, start, end]) => end > start);
 
                 if (normalizedSegs.length > 0) {
                     hasSegmentData = true;
