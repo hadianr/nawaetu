@@ -26,10 +26,6 @@ export async function POST(req: NextRequest) {
     try {
         const webhookSecret = process.env.MAYAR_WEBHOOK_SECRET;
 
-        // Log headers to see what Mayar actually sends in production
-        const headersObj = Object.fromEntries(req.headers);
-        console.log("[Mayar Webhook] Incoming Headers:", JSON.stringify(headersObj));
-
         // 1. Configuration Check
         if (!webhookSecret) {
             console.error("[Mayar Webhook] MAYAR_WEBHOOK_SECRET is not set");
@@ -70,6 +66,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (!isValid) {
+            const headersObj = Object.fromEntries(req.headers);
             console.error("[Mayar Webhook] Invalid or Missing Signature. Headers:", JSON.stringify(headersObj));
             return NextResponse.json({ error: "Invalid Signature" }, { status: 400 });
         }
