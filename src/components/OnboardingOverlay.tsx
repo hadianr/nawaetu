@@ -49,7 +49,6 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     // even after the user uninstalls the app (wiping localStorage and triggering onboarding)
     useEffect(() => {
         if (status === "authenticated") {
-            console.log("Orphaned session detected during onboarding. Forcing logout...");
             signOut({ redirect: false });
         }
     }, [status]);
