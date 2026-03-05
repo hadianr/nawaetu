@@ -62,12 +62,14 @@ const queryChain = {
 };
 
 vi.mock('@/db', () => ({
+    checkConnection: vi.fn().mockResolvedValue({ success: true }),
     db: {
         insert: vi.fn(() => insertChain),
         update: vi.fn(() => updateChain),
         query: {
             users: { findFirst: vi.fn() },
             bookmarks: { findFirst: vi.fn() },
+            intentions: { findMany: vi.fn().mockResolvedValue([]) },
             userCompletedMissions: { findFirst: vi.fn() },
         },
     }
@@ -143,15 +145,18 @@ describe('User Sync API', () => {
         (db.query.users.findFirst as Mock).mockResolvedValue({ settings: {} });
 
         const count = 50;
-        const localIntentions = Array.from({ length: count }, (_, i) => ({
-            intentionText: `Intention ${i}`,
-            intentionType: 'daily',
-            intentionDate: `2024-01-0${i % 9 + 1}`,
-            reflectionText: 'Good',
-            reflectionRating: 5,
-            isPrivate: true,
-            createdAt: new Date().toISOString(),
-        }));
+        const localIntentions = Array.from({ length: count }, (_, i) => {
+            const date = new Date(Date.now() - i * 86400000);
+            return {
+                intentionText: `Intention ${i}`,
+                intentionType: 'daily',
+                intentionDate: date.toISOString().split('T')[0],
+                reflectionText: 'Good',
+                reflectionRating: 5,
+                isPrivate: true,
+                createdAt: date.toISOString(),
+            };
+        });
 
         const body = {
             intentions: localIntentions,

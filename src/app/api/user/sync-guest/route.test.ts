@@ -120,9 +120,9 @@ describe('POST /api/user/sync-guest', () => {
     it('should use bulk insert (1 call) for multiple completed missions', async () => {
         const payload = {
             completedMissions: [
-                { id: 'm1', xpEarned: 10, completedAt: '2023-01-01' },
-                { id: 'm2', xpEarned: 20, completedAt: '2023-01-02' },
-                { id: 'm3', xpEarned: 30, completedAt: '2023-01-03' },
+                { id: 'm1', hasanahEarned: 10, completedAt: '2023-01-01' },
+                { id: 'm2', hasanahEarned: 20, completedAt: '2023-01-02' },
+                { id: 'm3', hasanahEarned: 30, completedAt: '2023-01-03' },
             ]
         };
 
@@ -148,7 +148,7 @@ describe('POST /api/user/sync-guest', () => {
         expect(firstItem).toMatchObject({
             userId: 'test-user-id',
             missionId: 'm1',
-            xpEarned: 10,
+            hasanahEarned: 10,
         });
     });
 });
