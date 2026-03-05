@@ -113,8 +113,6 @@ describe('Sync Guest Optimization', () => {
         // Filter for bookmarks table insertions
         const bookmarkInserts = insertCalls.filter((args: any[]) => args[0] === bookmarks);
 
-        console.log(`db.insert(bookmarks) called ${bookmarkInserts.length} times.`);
-
         // Expect 1 call for bulk insert (will fail now, expected 2)
         expect(bookmarkInserts.length).toBe(1);
     });
