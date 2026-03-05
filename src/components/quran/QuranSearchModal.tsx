@@ -11,6 +11,7 @@ import type { SearchResponse } from "@/lib/kemenag-api";
 import Link from "next/link";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
+import DOMPurify from "isomorphic-dompurify";
 
 export default function QuranSearchModal() {
     const { t, locale } = useLocale();
@@ -112,7 +113,7 @@ export default function QuranSearchModal() {
                                     </p>
                                     <p
                                         className="text-sm text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors"
-                                        dangerouslySetInnerHTML={{ __html: verse.translation }}
+                                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(verse.translation) }}
                                     />
                                 </Link>
                             ))}
