@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
-import { eq, and, sql, gte, lt } from "drizzle-orm";
+import { eq, and, gte, lt } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -32,7 +32,11 @@ import { authOptions } from "@/lib/auth";
 export async function GET(req: NextRequest) {
     const startTime = Date.now();
     const authHeader = req.headers.get("authorization");
-    const providedToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null;
+
+    // Fallback to query param if missing in header (for backwards compatibility if needed, though header is preferred)
+    const url = new URL(req.url);
+    const queryToken = url.searchParams.get("user_token");
+    const providedToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : queryToken;
 
     try {
         const session = await getServerSession(authOptions);
@@ -46,13 +50,15 @@ export async function GET(req: NextRequest) {
         }
 
         let userId: string | null = null;
-        let userData: any = null;
+        let userData: { intentionStreakCurrent?: number } | null = null;
+        let isRegisteredUser = false;
 
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
 
         // Resolve userId
         if (session && session.user && session.user.id) {
             userId = session.user.id;
+            isRegisteredUser = true;
             // Optionally, fetch user data if needed for streak/reflection later
             const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
             if (user) userData = user;
@@ -67,6 +73,7 @@ export async function GET(req: NextRequest) {
 
                 if (subscription && subscription.userId) {
                     userId = subscription.userId;
+                    isRegisteredUser = true;
                     const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
                     if (user) userData = user;
                 }
@@ -88,6 +95,16 @@ export async function GET(req: NextRequest) {
             }
         }
 
+        // Security check: If resolved user is registered, enforce session authentication
+        if (isRegisteredUser) {
+            if (!session || !session.user || session.user.id !== userId) {
+                return NextResponse.json(
+                    { success: false, error: "Unauthorized: Session required for registered users" },
+                    { status: 403 }
+                );
+            }
+        }
+
         if (!userId) {
             return NextResponse.json({
                 success: true,
@@ -101,7 +118,6 @@ export async function GET(req: NextRequest) {
 
         // (userData is safely resolved above, we no longer need a redundant query block here)
 
-        const url = new URL(req.url);
         const queryDate = url.searchParams.get("date");
 
         // Use queryDate if provided, otherwise get today's date

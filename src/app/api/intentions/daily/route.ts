@@ -45,10 +45,13 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { intention_text, intention_date, is_private = true, user_token: providedToken } = body;
+        const { intention_text, intention_date, is_private = true } = body;
 
         // Try both session and token
         const session = await getServerSession();
+
+        const authHeader = req.headers.get("authorization");
+        const providedToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : body.user_token;
         const user_token = session?.user?.id || providedToken;
 
         // Token-based auth (FCM token or anonymous ID)
@@ -87,53 +90,63 @@ export async function POST(req: NextRequest) {
         }
 
         let userId: string;
+        let isRegisteredUser = false;
+
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
 
         if (session && session.user && session.user.id) {
             userId = session.user.id;
+            isRegisteredUser = true;
         } else {
-            userId = await getUserIdFromToken(user_token);
-        }
-
-        async function getUserIdFromToken(token: string): Promise<string> {
-            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token);
-
             // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
             if (!isUuid) {
                 const [subscription] = await db
                     .select()
                     .from(pushSubscriptions)
-                    .where(eq(pushSubscriptions.token, token))
+                    .where(eq(pushSubscriptions.token, user_token))
                     .limit(1);
 
                 if (subscription && subscription.userId) {
-                    return subscription.userId;
+                    userId = subscription.userId;
+                    isRegisteredUser = true;
                 }
             }
 
-            // Anonymous user
-            const anonymousEmail = `${token}@nawaetu.local`;
-            const [existingUser] = await db
-                .select()
-                .from(users)
-                .where(eq(users.email, anonymousEmail))
-                .limit(1);
+            // 2. Anonymous user
+            if (!userId!) {
+                const anonymousEmail = `${user_token}@nawaetu.local`;
+                const [existingUser] = await db
+                    .select()
+                    .from(users)
+                    .where(eq(users.email, anonymousEmail))
+                    .limit(1);
 
-            if (existingUser) {
-                return existingUser.id;
+                if (existingUser) {
+                    userId = existingUser.id;
+                } else {
+                    // Create new anonymous user
+                    const [newUser] = await db
+                        .insert(users)
+                        .values({
+                            email: anonymousEmail,
+                            name: "User",
+                            intentionStreakCurrent: 0,
+                            intentionStreakLongest: 0,
+                        })
+                        .returning();
+                    userId = newUser.id;
+                }
             }
+        }
 
-            // Create new anonymous user
-            const [newUser] = await db
-                .insert(users)
-                .values({
-                    email: anonymousEmail,
-                    name: "User",
-                    intentionStreakCurrent: 0,
-                    intentionStreakLongest: 0,
-                })
-                .returning();
-
-            return newUser.id;
+        // Security check: If resolved user is registered, enforce session authentication
+        if (isRegisteredUser) {
+            if (!session || !session.user || session.user.id !== userId) {
+                return NextResponse.json(
+                    { success: false, error: "Unauthorized: Session required for registered users" },
+                    { status: 403 }
+                );
+            }
         }
 
         const now = new Date();
@@ -263,10 +276,10 @@ async function calculateStreak(userId: string, actualTodayStr: string): Promise<
     }));
 
     // We start checking from the actual today
-    let actualToday = new Date(actualTodayStr);
+    const actualToday = new Date(actualTodayStr);
     actualToday.setHours(0, 0, 0, 0);
 
-    let yesterday = new Date(actualToday);
+    const yesterday = new Date(actualToday);
     yesterday.setDate(actualToday.getDate() - 1);
 
     let checkDate;

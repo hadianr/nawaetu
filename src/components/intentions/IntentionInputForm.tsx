@@ -58,9 +58,11 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
         try {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${userToken}`
+                },
                 body: JSON.stringify({
-                    user_token: userToken,
                     intention_text: intention,
                 }),
             });
@@ -126,7 +128,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                                     </p>
                                 )}
                                 <p className="text-sm md:text-base font-serif italic text-slate-600 dark:text-slate-400 leading-relaxed">
-                                    "{locale === 'id' ? dalil.textId : dalil.textEn}"
+                                    &quot;{locale === 'id' ? dalil.textId : dalil.textEn}&quot;
                                 </p>
                                 <p className="text-xs font-medium text-amber-600/70 dark:text-amber-500/70 tracking-widest uppercase mt-2">
                                     — {locale === 'id' ? dalil.sourceId : dalil.sourceEn}

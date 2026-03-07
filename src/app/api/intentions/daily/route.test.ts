@@ -133,8 +133,11 @@ describe('POST /api/intentions/daily', () => {
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
+      headers: {
+        'Authorization': 'Bearer test-token',
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        user_token: 'test-token',
         intention_text: 'Test intention',
       }),
     });
@@ -152,8 +155,11 @@ describe('POST /api/intentions/daily', () => {
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
+      headers: {
+        'Authorization': 'Bearer test-token',
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        user_token: 'test-token',
         intention_text: 'Test intention',
       }),
     });
@@ -174,8 +180,11 @@ describe('POST /api/intentions/daily', () => {
 
     const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
       method: 'POST',
+      headers: {
+        'Authorization': 'Bearer test-token',
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        user_token: 'test-token',
         intention_text: 'Test intention',
       }),
     });
