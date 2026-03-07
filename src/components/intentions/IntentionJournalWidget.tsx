@@ -20,7 +20,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
-import { ChevronRight, Book, Flame, Sparkles, CheckCircle2, Moon, Heart, Compass, Edit2, Calendar } from "lucide-react";
+import { ChevronRight, Book, CheckCircle2, Moon, Compass, Edit2, Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const IntentionPrompt = dynamic(() => import("./IntentionPrompt"), {
@@ -77,7 +77,13 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     const isBackdated = selectedDate !== DateUtils.today();
 
     // Default structure to avoid layout/hydration shifts when caching kicks in
-    const [todayData, setTodayData] = useState<any>(null);
+    const [todayData, setTodayData] = useState<{
+        has_intention?: boolean;
+        intention?: { id: string; intention_text: string; intention_date: string };
+        has_reflection?: boolean;
+        reflection?: { rating: number; text?: string; reflected_at: string };
+        streak?: number;
+    } | null>(null);
 
     // Only show loading if we really have no cached data at all on first paint
     const [isLoading, setIsLoading] = useState(true);
@@ -173,8 +179,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         try {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_token: userToken, intention_text: intentionText, intention_date: selectedDate }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${userToken}`
+                },
+                body: JSON.stringify({ intention_text: intentionText, intention_date: selectedDate }),
             });
             const data = await response.json();
 
@@ -231,9 +240,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
             const response = await fetch("/api/intentions/reflect", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${userToken}`
+                },
                 body: JSON.stringify({
-                    user_token: userToken,
                     intention_id: todayData.intention.id,
                     reflection_rating: rating,
                     reflection_text: reflectionText,
@@ -394,7 +405,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex items-center justify-between gap-3 mt-0.5">
                             <div className="flex-1 min-w-0 flex items-center gap-2 group/text cursor-pointer" onClick={() => setShowIntentionPrompt(true)}>
                                 <p className={cn("text-xs md:text-sm font-medium italic line-clamp-1 py-0.5", isDaylight ? "text-slate-700" : "text-white/90")}>
-                                    "{todayData.intention.intention_text}"
+                                    &quot;{todayData.intention?.intention_text}&quot;
                                 </p>
                                 <Edit2 className={cn("w-2.5 h-2.5 transition-colors shrink-0", isDaylight ? "text-slate-300 group-hover/text:text-slate-500" : "text-white/20 group-hover/text:text-white/60")} />
                             </div>

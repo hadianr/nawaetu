@@ -34,9 +34,12 @@ import { authOptions } from "@/lib/auth";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { intention_id, reflection_text, reflection_rating, user_token: providedToken } = body;
+        const { intention_id, reflection_text, reflection_rating } = body;
 
         const session = await getServerSession(authOptions);
+
+        const authHeader = req.headers.get("authorization");
+        const providedToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : body.user_token;
         const user_token = session?.user?.id || providedToken;
 
         // Token-based auth
@@ -70,9 +73,11 @@ export async function POST(req: NextRequest) {
         }
 
         let userId: string | null = null;
+        let isRegisteredUser = false;
 
         if (session && session.user && session.user.id) {
             userId = session.user.id;
+            isRegisteredUser = true;
         } else {
             // 1. Try to find in pushSubscriptions (FCM Token)
             const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
@@ -86,6 +91,7 @@ export async function POST(req: NextRequest) {
 
                 if (subscription && subscription.userId) {
                     userId = subscription.userId;
+                    isRegisteredUser = true;
                 }
             }
 
@@ -109,6 +115,16 @@ export async function POST(req: NextRequest) {
                 { success: false, error: "User not found or invalid token" },
                 { status: 404 }
             );
+        }
+
+        // Security check: If resolved user is registered, enforce session authentication
+        if (isRegisteredUser) {
+            if (!session || !session.user || session.user.id !== userId) {
+                return NextResponse.json(
+                    { success: false, error: "Unauthorized: Session required for registered users" },
+                    { status: 403 }
+                );
+            }
         }
 
         // Get intention and verify ownership
