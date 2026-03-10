@@ -18,7 +18,7 @@
 
 import { EvidenceData, RamadhanPracticeData, IntentionData, SunnahFood } from './types';
 import {
-    RAMADHAN_FASTING_INTENTION, TARAWEH_INTENTION, QURAN_RECITATION_INTENTION
+    RAMADHAN_FASTING_INTENTION, TARAWEH_INTENTION, QURAN_RECITATION_INTENTION, ITIKAF_INTENTION, LAILATUL_QADR_PRAYER as LAILATUL_QADR_INTENTION
 } from './intentions';
 
 // DALIL DATA
@@ -343,19 +343,6 @@ export const ITIKAF_10_NIGHTS_EVIDENCE: EvidenceData = {
     source_en: 'Reported by Bukhari No. 2026, Muslim No. 1172 — narrated by Aisha RA'
 };
 
-export const LAILATUL_QADR_PRAYER: IntentionData = {
-    id: 'dua_lailatul_qadr',
-    title: "Doa Malam Lailatul Qadr",
-    title_en: "Lailatul Qadr Night Prayer",
-    arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
-    latin: 'Allāhumma innaka \'afuwwun tuhibbul \'afwa fa\'\'fu \'annī.',
-    translation: 'Ya Allah, sesungguhnya Engkau Maha Pemaaf dan menyukai pemaafan, maka maafkanlah aku.',
-    translation_en: 'O Allah, You are the Most Forgiving and You love forgiveness, so forgive me.',
-    source: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — doa yang diajarkan Nabi SAW kepada Aisyah RA',
-    source_en: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — prayer taught by Prophet Muhammad SAW to Aisha RA',
-};
-
-
 // AMALAN RAMADHAN (enriched with niat & dalil)
 // ─────────────────────────────────────────────────────────────
 
@@ -437,6 +424,46 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
             'The Prophet (ﷺ) was the most generous of people, especially in Ramadhan',
             'Can be as simple as providing iftar for others',
             'Morning charity (Sadaqah Subuh) is highly recommended',
+        ],
+    },
+    {
+        id: 'itikaf_practice',
+        title: "I'tikaf di Masjid",
+        title_en: "I'tikaf in the Mosque",
+        description: "Berdiam diri di masjid untuk beribadah, terutama di 10 malam terakhir",
+        description_en: "Staying in the mosque for worship, especially in the last 10 nights",
+        icon: '🕌',
+        intention: ITIKAF_INTENTION,
+        dalil: ITIKAF_10_NIGHTS_EVIDENCE,
+        tips: [
+            'Sholat sunnah yang dianjurkan saat I\'tikaf: Tahajjud, Hajat, Taubat, dan Tasbih',
+            'Jauhi pembicaraan duniawi dan perbanyak dzikir',
+            'Perbanyak tadarus Al-Quran dan muhasabah diri',
+        ],
+        tips_en: [
+            'Recommended sunnah prayers: Tahajjud, prayer of Need (Hajat), Repentance (Tawbah), and Tasbih',
+            'Avoid worldly talk and increase remembrance of Allah (dhikr)',
+            'Increase Quran recitation and self-reflection',
+        ],
+    },
+    {
+        id: 'lailatul_qadr_seeking',
+        title: 'Mencari Lailatul Qadar',
+        title_en: 'Seeking Lailatul Qadar',
+        description: 'Malam yang lebih baik dari 1000 bulan',
+        description_en: 'A night better than 1000 months',
+        icon: '✨',
+        intention: LAILATUL_QADR_INTENTION,
+        dalil: ODD_NIGHTS_EVIDENCE,
+        tips: [
+            'Fokuskan pencarian pada malam genap dan ganjil, terutama malam 21, 23, 25, 27, 29',
+            'Perbanyak doa: "Allahumma innaka \'afuwwun tuhibbul \'afwa fa\'fu \'anni"',
+            'Hidupkan malam dengan sholat, doa, dan dzikir',
+        ],
+        tips_en: [
+            'Focus the search on both even and odd nights, especially the 21st, 23rd, 25th, 27th, and 29th',
+            'Increase the prayer: "Allahumma innaka \'afuwwun tuhibbul \'afwa fa\'fu \'anni"',
+            'Enliven the night with prayers, supplications, and remembrance',
         ],
     },
 ];

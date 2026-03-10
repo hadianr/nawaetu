@@ -50,6 +50,10 @@ const RamadhanGuideCard = dynamic(() => import("@/components/ramadhan/RamadhanGu
     ssr: false,
     loading: () => <div className="h-32 rounded-2xl bg-white/5 animate-pulse" />,
 });
+const RamadhanPracticesList = dynamic(() => import("@/components/ramadhan/RamadhanPracticesList"), {
+    ssr: false,
+    loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
+});
 
 const ZakatFitrahCard = dynamic(() => import("@/components/ramadhan/ZakatFitrahCard"), {
     ssr: false,
@@ -112,6 +116,13 @@ export default function RamadhanPage() {
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "400ms" }}>
                     <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
                         <LailatulQadrCard />
+                    </Suspense>
+                </section>
+
+                {/* Ramadhan Practices List (I'tikaf, Lailatul Qadar, etc.) */}
+                <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "420ms" }}>
+                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                        <RamadhanPracticesList />
                     </Suspense>
                 </section>
 

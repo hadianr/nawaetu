@@ -121,4 +121,14 @@ export const SUHOOR_PRAYER: IntentionData = {
     source: 'Doa makan yang dianjurkan',
     source_en: 'Recommended meal prayer',
 };
-
+export const LAILATUL_QADR_PRAYER: IntentionData = {
+    id: 'dua_lailatul_qadr',
+    title: "Doa Malam Lailatul Qadr",
+    title_en: "Lailatul Qadr Night Prayer",
+    arabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
+    latin: 'Allāhumma innaka \'afuwwun tuhibbul \'afwa fa\'\'fu \'annī.',
+    translation: 'Ya Allah, sesungguhnya Engkau Maha Pemaaf dan menyukai pemaafan, maka maafkanlah aku.',
+    translation_en: 'O Allah, You are the Most Forgiving and You love forgiveness, so forgive me.',
+    source: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — doa yang diajarkan Nabi SAW kepada Aisyah RA',
+    source_en: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — prayer taught by Prophet Muhammad SAW to Aisha RA',
+};
