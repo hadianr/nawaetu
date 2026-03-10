@@ -5,6 +5,9 @@
 
 const ALARM_PREFIX = 'nawaetu_prayer_';
 
+// Enable side panel behavior on action click
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error) => console.error(error));
+
 // Listen for messages from popup.js
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === 'SCHEDULE_ALARMS') {

@@ -12,12 +12,11 @@
 </head>
 
 <body>
-
   <!-- HEADER -->
   <header class="header">
     <div class="logo">
       <img src="icons/icon-48.png" alt="Nawaetu">
-      <span class="logo-text">Nawa<span>etu</span></span>
+      <span class="logo-text">Nawaetu</span>
     </div>
     <div class="header-actions">
       <button id="notif-toggle" class="notif-toggle" title="Aktifkan notifikasi adzan">🔕</button>
@@ -26,127 +25,208 @@
     </div>
   </header>
 
-  <!-- RAMADAN BANNER -->
-  <div id="ramadan-banner" class="ramadan-banner" style="display:none;">
-    <div class="ramadan-glow-left"></div>
-    <div class="ramadan-glow-right"></div>
-    <div class="ramadan-inner">
-      <div class="ramadan-crescents">
-        <span class="cr left">🌙</span>
-        <div class="ramadan-center-text">
-          <div class="ramadan-arabic">رمضان</div>
-          <div class="ramadan-banner-label" id="ramadan-banner-label">Ramadan Hari ke-1</div>
-          <div class="ramadan-day-display"><strong id="ramadan-day-num">1</strong></div>
+  <!-- TAB NAVIGATION -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-target="view-jadwal">
+      <span class="nav-icon">🕌</span>
+      <span class="nav-text">Jadwal</span>
+    </button>
+    <button class="nav-item" data-target="view-quran">
+      <span class="nav-icon">📖</span>
+      <span class="nav-text">Quran</span>
+    </button>
+    <button class="nav-item" data-target="view-spiritual">
+      <span class="nav-icon">🤲</span>
+      <span class="nav-text">Dzikir</span>
+    </button>
+  </div>
+
+  <main class="main-content">
+    <!-- VIEW: JADWAL -->
+    <div id="view-jadwal" class="view-container active">
+
+      <!-- RAMADAN BANNER -->
+      <div id="ramadan-banner" class="ramadan-banner" style="display:none;">
+        <div class="ramadan-glow-left"></div>
+        <div class="ramadan-glow-right"></div>
+        <div class="ramadan-inner">
+          <div class="ramadan-crescents">
+            <span class="cr left">🌙</span>
+            <div class="ramadan-center-text">
+              <div class="ramadan-arabic">رمضان</div>
+              <div class="ramadan-banner-label" id="ramadan-banner-label">Ramadan Hari ke-1</div>
+              <div class="ramadan-day-display"><strong id="ramadan-day-num">1</strong></div>
+            </div>
+            <span class="cr right">🌙</span>
+          </div>
         </div>
-        <span class="cr right">🌙</span>
+      </div>
+
+      <!-- COMPACT INFO BAR (Streamlined) -->
+      <div class="compact-info-bar unified">
+        <div class="info-inline">
+          <span class="date-text" id="date-gregorian">&nbsp;</span>
+          <span class="info-dot">•</span>
+          <span class="location-inline" title="Lokasi GPS">
+            📍 <span id="location-name">Mendeteksi…</span>
+            <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi">↻</button>
+          </span>
+          <span class="info-dot">•</span>
+          <div class="hijri-offset-inline" title="Koreksi Tanggal Hijriyah">
+            <span>⚙️</span>
+            <button id="offset-minus" class="offset-btn">−</button>
+            <span id="hijri-offset-value">-1</span>
+            <button id="offset-plus" class="offset-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEXT PRAYER CARD -->
+      <div class="next-prayer-card" id="next-prayer-card">
+        <div>
+          <div class="next-prayer-label" id="next-prayer-label">Sholat Berikutnya</div>
+          <div class="next-prayer-name" id="next-prayer-name">
+            <span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </div>
+          <div class="next-prayer-time" id="next-prayer-time-label">
+            <span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </div>
+        </div>
+        <div class="countdown">
+          <div class="countdown-value" id="countdown-value">--:--:--</div>
+          <div class="countdown-label" id="countdown-label">menuju sholat</div>
+        </div>
+      </div>
+
+      <!-- PRAYER GRID -->
+      <div class="prayer-grid" id="prayer-grid">
+        <div class="prayer-item">
+          <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+        <div class="prayer-item">
+          <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+        <div class="prayer-item">
+          <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+        <div class="prayer-item">
+          <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+        <div class="prayer-item">
+          <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+        <div class="prayer-item">
+          <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+      </div>
+
+      <!-- TARGET IBADAH WIDGET -->
+      <div class="target-ibadah-card">
+        <div class="widget-header">
+          <div class="widget-title">🎯 Target Ibadah Harian</div>
+          <div class="widget-streak" id="ibadah-streak-counter">🔥 0</div>
+        </div>
+        <div class="ibadah-checklist" id="ibadah-checklist">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- RAMADAN HIGHLIGHTS -->
+      <div id="ramadan-highlights" class="ramadan-highlights" style="display:none;">
+        <div class="rh-item imsak-item">
+          <span class="rh-icon">⏰</span>
+          <div class="rh-label" id="rh-imsak-label">Imsak</div>
+          <div class="rh-time" id="rh-imsak-time">--:--</div>
+        </div>
+        <div class="rh-divider"></div>
+        <div class="rh-item sahur-item">
+          <span class="rh-icon">🍽</span>
+          <div class="rh-label" id="rh-sahur-label">Sahur berakhir</div>
+          <div class="rh-time" id="rh-sahur-time">--:--</div>
+        </div>
+        <div class="rh-divider"></div>
+        <div class="rh-item buka-item">
+          <span class="rh-icon">🌅</span>
+          <div class="rh-label" id="rh-buka-label">Buka Puasa</div>
+          <div class="rh-time" id="rh-buka-time">--:--</div>
+        </div>
+      </div>
+
+      <!-- VERSE CARD (Authentic Quotes) -->
+      <div class="verse-card">
+        <div class="verse-label" id="verse-label">✨ Inspirasi Hari Ini</div>
+        <div id="verse-area">
+          <div class="verse-arabic" id="verse-arabic">
+            <span
+              class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </div>
+          <div class="verse-translation" id="verse-translation">
+            <span
+              class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </div>
+          <div class="verse-ref"><span id="verse-ref"></span></div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        Powered by <a href="https://nawaetu.com" target="_blank">nawaetu.com</a> · #NiatAjaDulu
+      </div>
+    </div> <!-- END VIEW: JADWAL -->
+
+    <!-- VIEW: QURAN -->
+    <div id="view-quran" class="view-container">
+      <div class="view-header quran-header-nav">
+        <h2>Al-Quran</h2>
+        <div class="quran-actions">
+          <button id="quran-last-read" class="quran-action-btn" style="display:none;"
+            title="Terakhir Dibaca">⏱️</button>
+          <button id="quran-bookmarks" class="quran-action-btn" title="Tersimpan">⭐</button>
+        </div>
+      </div>
+      <div id="quran-list" class="quran-list">
+        <!-- Surah list injected here -->
+      </div>
+      <div id="quran-detail" class="quran-detail" style="display: none;">
+        <div class="quran-detail-header">
+          <button id="quran-back-btn" class="back-btn">← Kembali</button>
+          <div class="quran-detail-actions">
+            <button id="quran-play-surah" class="quran-action-btn" title="Putar Seluruh Surah">▶️ Putar</button>
+            <button id="quran-mushaf-mode" class="quran-action-btn" title="Mode Mushaf">📖 Mushaf</button>
+          </div>
+        </div>
+        <div id="quran-verses" class="quran-verses"></div>
       </div>
     </div>
-  </div>
 
-  <!-- DATE + HIJRI OFFSET ROW -->
-  <div class="date-strip">
-    <div id="date-gregorian">&nbsp;</div>
-  </div>
-  <div class="date-offset-row">
-    <div class="location-row">
-      <span>📍</span>
-      <span id="location-name">Mendeteksi lokasi…</span>
-    </div>
-    <div class="hijri-offset-control">
-      <span class="hijri-offset-label" id="hijri-offset-label">Koreksi Hijriyah</span>
-      <button id="offset-minus" class="offset-btn">−</button>
-      <span id="hijri-offset-value">-1</span>
-      <button id="offset-plus" class="offset-btn">+</button>
-    </div>
-  </div>
-
-  <!-- NEXT PRAYER CARD -->
-  <div class="next-prayer-card" id="next-prayer-card">
-    <div>
-      <div class="next-prayer-label" id="next-prayer-label">Sholat Berikutnya</div>
-      <div class="next-prayer-name" id="next-prayer-name">
-        <span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <!-- VIEW: SPIRITUAL (Unified Doa & Hadith) -->
+    <div id="view-spiritual" class="view-container">
+      <div class="view-header spiritual-header-nav">
+        <h2>Doa & Hadits</h2>
+        <div class="search-box">
+          <input type="text" id="spiritual-search" placeholder="Cari doa atau hadits...">
+        </div>
       </div>
-      <div class="next-prayer-time" id="next-prayer-time-label">
-        <span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div id="spiritual-category-list" class="category-list">
+        <!-- Categories injected here -->
+      </div>
+      <div id="spiritual-detail-view" style="display: none;">
+        <button id="spiritual-back-btn" class="back-btn">← Kembali</button>
+        <div id="spiritual-list" class="spiritual-list">
+          <!-- Items injected here -->
+        </div>
       </div>
     </div>
-    <div class="countdown">
-      <div class="countdown-value" id="countdown-value">--:--:--</div>
-      <div class="countdown-label" id="countdown-label">menuju sholat</div>
-    </div>
-  </div>
 
-  <!-- PRAYER GRID -->
-  <div class="prayer-grid" id="prayer-grid">
-    <div class="prayer-item">
-      <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-    </div>
-    <div class="prayer-item">
-      <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-    </div>
-    <div class="prayer-item">
-      <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-    </div>
-    <div class="prayer-item">
-      <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-    </div>
-    <div class="prayer-item">
-      <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-    </div>
-    <div class="prayer-item">
-      <div class="prayer-item-name skeleton">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div class="prayer-item-time skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-    </div>
-  </div>
+  </main>
 
-  <!-- RAMADAN HIGHLIGHTS -->
-  <div id="ramadan-highlights" class="ramadan-highlights" style="display:none;">
-    <div class="rh-item imsak-item">
-      <span class="rh-icon">⏰</span>
-      <div class="rh-label" id="rh-imsak-label">Imsak</div>
-      <div class="rh-time" id="rh-imsak-time">--:--</div>
-    </div>
-    <div class="rh-divider"></div>
-    <div class="rh-item sahur-item">
-      <span class="rh-icon">🍽</span>
-      <div class="rh-label" id="rh-sahur-label">Sahur berakhir</div>
-      <div class="rh-time" id="rh-sahur-time">--:--</div>
-    </div>
-    <div class="rh-divider"></div>
-    <div class="rh-item buka-item">
-      <span class="rh-icon">🌅</span>
-      <div class="rh-label" id="rh-buka-label">Buka Puasa</div>
-      <div class="rh-time" id="rh-buka-time">--:--</div>
-    </div>
-  </div>
-
-  <!-- VERSE CARD -->
-  <div class="verse-card">
-    <div class="verse-label" id="verse-label">📖 Ayat Hari Ini</div>
-    <div id="verse-area">
-      <div class="verse-arabic" id="verse-arabic">
-        <span
-          class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      </div>
-      <div class="verse-translation" id="verse-translation">
-        <span
-          class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      </div>
-      <div class="verse-ref"><span id="verse-ref"></span></div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
-    Powered by <a href="https://nawaetu.com" target="_blank">nawaetu.com</a> · #StartWithIntention
-  </div>
-
+  <script src="spiritual-data.js"></script>
   <script src="popup.js"></script>
 </body>
 

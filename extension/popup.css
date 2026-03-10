@@ -203,56 +203,59 @@ body {
 
 /* Only shown in label */
 
-/* ── DATE + OFFSET ROW ── */
-.date-strip {
-    text-align: center;
-    padding: 7px 14px 1px;
-    font-size: 12px;
-    color: var(--text-muted);
+/* ── COMPACT INFO BAR (Unified & Streamlined) ── */
+.compact-info-bar.unified {
+    margin: 4px 12px 0px;
+    padding: 6px 10px;
+    background: transparent;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.date-offset-row {
+.info-inline {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 2px 12px 5px;
-}
-
-.location-row {
-    display: flex;
-    align-items: center;
-    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
     font-size: 11px;
     color: var(--text-dim);
 }
 
-.hijri-offset-control {
+.date-text {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.info-dot {
+    color: var(--border);
+    font-size: 10px;
+}
+
+.location-inline,
+.hijri-offset-inline {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 10px;
-    color: var(--text-dim);
-}
-
-.hijri-offset-label {
-    margin-right: 2px;
 }
 
 #hijri-offset-value {
     font-weight: 700;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--ramadan);
-    min-width: 20px;
+    min-width: 16px;
     text-align: center;
 }
 
 .offset-btn {
-    padding: 1px 6px;
+    padding: 0px 5px;
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 4px;
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     line-height: 1.2;
     transition: all 0.15s;
@@ -283,8 +286,105 @@ body {
     }
 
     50% {
-        border-color: rgba(16, 185, 129, 0.9);
+        border-color: rgba(16, 185, 129, 1);
     }
+}
+
+/* ── TARGET IBADAH WIDGET ── */
+.target-ibadah-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 8px 12px;
+    padding: 12px;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.widget-title {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.widget-streak {
+    font-size: 11px;
+    font-weight: bold;
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.15);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.ibadah-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.checklist-item:hover {
+    background: var(--surface2);
+}
+
+.checklist-item.checked .checklist-label {
+    text-decoration: line-through;
+    color: var(--text-dim);
+}
+
+.checklist-item.checked {
+    opacity: 0.7;
+}
+
+.checklist-checkbox {
+    width: 16px;
+    height: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1.5px solid var(--text-dim);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    margin: 0;
+}
+
+.checklist-checkbox:checked {
+    background: var(--green);
+    border-color: var(--green);
+}
+
+.checklist-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.checklist-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    user-select: none;
+    transition: all 0.2s;
 }
 
 .refresh-loc-btn {
@@ -603,4 +703,479 @@ body {
     100% {
         background-position: -200% 0;
     }
+}
+
+/* ── SIDE PANEL OVERRIDES & TABS ── */
+body {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.view-container {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.view-container.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bottom-nav {
+    display: flex;
+    background: linear-gradient(135deg, #0f2027, #1a3040);
+    border-top: 1px solid var(--border);
+    padding: 8px 0;
+    justify-content: space-around;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.nav-item {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 10px;
+    width: 25%;
+    transition: all 0.2s;
+}
+
+.nav-item:hover {
+    color: var(--text);
+}
+
+.nav-item.active {
+    color: var(--green);
+}
+
+.nav-icon {
+    font-size: 20px;
+    filter: grayscale(100%) opacity(0.7);
+    transition: all 0.2s;
+}
+
+.nav-item.active .nav-icon {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.1);
+}
+
+/* ── LIST VIEWS: QURAN, DOA, HADITS ── */
+.view-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.view-header h2 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.quran-list,
+.doa-list,
+.hadits-list {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.list-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.list-item:hover {
+    border-color: var(--green);
+    background: var(--surface2);
+}
+
+.surah-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.surah-num {
+    background: var(--surface2);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    color: var(--green);
+}
+
+.surah-details {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.surah-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.surah-meta {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+.surah-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    color: var(--yellow);
+}
+
+/* ── QURAN DETAIL (VERSES) ── */
+.quran-detail {
+    padding: 12px;
+}
+
+.quran-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.quran-detail-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.back-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    margin-bottom: 0;
+    /* Align with actions */
+}
+
+.back-btn:hover {
+    background: var(--surface2);
+}
+
+/* ── MUSHAF MODE ── */
+.quran-verses.mushaf .verse-translation,
+.quran-verses.mushaf .verse-transliteration {
+    display: none;
+}
+
+.quran-verses.mushaf .verse-text {
+    text-align: center;
+    font-size: 28px;
+    line-height: -2;
+    margin-bottom: 20px;
+}
+
+.quran-verses.mushaf .verse-item {
+    border-color: transparent;
+    background: transparent;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+}
+
+.verse-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.verse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+
+.verse-num-badge {
+    background: var(--green-soft);
+    color: var(--green);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.verse-text {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    line-height: -2;
+    text-align: right;
+    direction: rtl;
+    margin-bottom: 12px;
+    color: #fff;
+}
+
+.verse-transliteration {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.verse-translation {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+/* ── DOA & HADITS ITEM ── */
+.content-item-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--green);
+    margin-bottom: 8px;
+}
+
+.content-item-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    text-align: right;
+    direction: rtl;
+    line-height: 1.8;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.content-item-latin {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.content-item-trans {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.content-item-source {
+    font-size: 10px;
+    background: var(--surface2);
+    align-self: flex-start;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-dim);
+}
+
+/* ── QURAN ADVANCED FEATURES ── */
+.quran-header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quran-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.quran-action-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.quran-action-btn:hover {
+    background: var(--border);
+}
+
+.verse-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.verse-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.verse-btn:hover {
+    background: var(--surface2);
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.verse-btn.saved {
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.verse-btn.playing {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--green);
+    border-color: var(--green);
+    animation: pulse-border 2s infinite;
+}
+
+/* ── CATEGORY GRID (DOA/HADITH) ── */
+.category-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px 20px;
+}
+
+.category-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.category-card:hover {
+    background: var(--surface2);
+    border-color: var(--green);
+    transform: translateY(-2px);
+}
+
+.category-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.category-count {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ── SPIRITUAL UNIFIED VIEW ── */
+.spiritual-header-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 16px;
+}
+
+.search-box {
+    width: 100%;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--green);
+    background: rgba(16, 185, 129, 0.05);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+}
+
+.spiritual-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.spiritual-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s;
+}
+
+.spiritual-item:hover {
+    border-color: var(--green-soft);
+    background: var(--surface2);
+}
+
+.spiritual-item .content-item-type {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
 }

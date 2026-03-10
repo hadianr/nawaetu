@@ -65,7 +65,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderNotifToggle();
     await requestLocationAndLoad();
     await loadVerse();
+    renderDailyChecklist();
     setupEventListeners();
+
+    // Tab Navigation setup
+    setupTabNavigation();
+
+    // Refresh location button in popup
+    document.getElementById('refresh-loc-btn').addEventListener('click', () => {
+        localStorage.removeItem(CACHE_KEY_PRAYERS);
+        localStorage.removeItem('nawaetu_coords');
+        document.getElementById('location-name').textContent = t('detectingLoc');
+        requestLocationAndLoad();
+    });
+
+    // Initial content loads for Side Panel Tabs
+    loadQuranList();
+    loadSpiritualContent();
 });
 
 function setupEventListeners() {
@@ -82,7 +98,7 @@ function applyLang() {
     document.getElementById('open-web-btn').textContent = '↗ ' + t('openFull');
     document.getElementById('countdown-label').textContent = t('towardsPrayer');
     document.getElementById('verse-label').textContent = t('verseLabel');
-    document.getElementById('hijri-offset-label').textContent = t('hijriOffset');
+    // document.getElementById('hijri-offset-label').textContent = t('hijriOffset'); // Removed in unified UI
     if (globalTimings) renderPrayers(globalTimings.timings, globalTimings.hijri);
 }
 
@@ -106,7 +122,7 @@ function renderDate() {
 // ── HIJRI OFFSET ─────────────────────────────────────────────────────────────
 function renderHijriOffsetControl() {
     document.getElementById('hijri-offset-value').textContent = hijriOffset >= 0 ? `+${hijriOffset}` : String(hijriOffset);
-    document.getElementById('hijri-offset-label').textContent = t('hijriOffset');
+    // document.getElementById('hijri-offset-label').textContent = t('hijriOffset'); // Removed in unified UI
 
     document.getElementById('offset-minus').addEventListener('click', () => {
         if (hijriOffset > -3) {
@@ -436,33 +452,705 @@ function scheduleAdzanNotifications(timings) {
     }
 }
 
-// ── VERSE ─────────────────────────────────────────────────────────────────────
-async function loadVerse() {
-    const cached = readCache(CACHE_KEY_VERSE);
-    if (cached) { renderVerse(cached); return; }
-    try {
-        const verseNum = (getDayOfYear() % 6236) + 1;
-        const res = await fetch(`https://quranenc.com/api/v1/translation/aya/indonesian_mokhtasar/${verseNum}`);
-        const json = await res.json();
-        if (!json.result) throw new Error();
-        const d = { arabic: json.result.arabic_text, translation: json.result.translation, ref: `Q.S ${json.result.sura}:${json.result.aya}` };
-        saveCache(CACHE_KEY_VERSE, d); renderVerse(d);
-    } catch {
-        try {
-            const res = await fetch('https://quranenc.com/api/v1/translation/aya/indonesian_mokhtasar/255');
-            const json = await res.json();
-            const d = { arabic: json.result.arabic_text, translation: json.result.translation, ref: `Q.S ${json.result.sura}:${json.result.aya}` };
-            saveCache(CACHE_KEY_VERSE, d); renderVerse(d);
-        } catch {
-            document.getElementById('verse-area').innerHTML = '<p style="color:#64748b;font-size:12px">Gagal memuat ayat.</p>';
-        }
+function openOptions() {
+    chrome.runtime.openOptionsPage();
+}
+
+// ==========================================
+// TABS NAVIGATION & VIEWS
+// ==========================================
+function setupTabNavigation() {
+    const defaultView = "view-jadwal";
+    const navItems = document.querySelectorAll('.nav-item');
+    const viewContainers = document.querySelectorAll('.view-container');
+
+    // Retrieve active tab from local storage or set default
+    const savedView = localStorage.getItem('nawaetu_active_tab') || defaultView;
+
+    navItems.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetViewId = btn.getAttribute('data-target');
+
+            navItems.forEach(n => n.classList.remove('active'));
+            viewContainers.forEach(v => v.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(targetViewId).classList.add('active');
+
+            // Allow storing state so it remembers last open tab
+            localStorage.setItem('nawaetu_active_tab', targetViewId);
+
+            // Reset views if necessary
+            if (targetViewId === 'view-quran') {
+                document.getElementById('quran-list').style.display = 'flex';
+                document.getElementById('quran-detail').style.display = 'none';
+            }
+            if (targetViewId === 'view-spiritual') {
+                document.getElementById('spiritual-category-list').style.display = 'grid';
+                document.getElementById('spiritual-detail-view').style.display = 'none';
+                loadSpiritualContent();
+            }
+        });
+    });
+
+    // Initial activation
+    const initialNav = document.querySelector(`.nav-item[data-target="${savedView}"]`);
+    if (initialNav) {
+        initialNav.click();
     }
 }
 
+// ==========================================
+// QURAN AUDIO STATE
+// ==========================================
+let currentAudio = null;
+let currentAudioBtn = null;
+
+function toggleAudio(btn, url) {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+
+        // Also stop full surah playback if active
+        const playSurahBtn = document.getElementById('quran-play-surah');
+        if (playSurahBtn && playSurahBtn.classList.contains('playing')) {
+            playSurahBtn.classList.remove('playing');
+            playSurahBtn.textContent = '▶️ Putar';
+        }
+
+        if (currentAudioBtn) {
+            currentAudioBtn.classList.remove('playing');
+            currentAudioBtn.textContent = '🔊 Audio';
+        }
+    }
+
+    // If clicking the same button that was playing, we just pause it (already done above)
+    if (currentAudioBtn === btn) {
+        currentAudioBtn = null;
+        currentAudio = null;
+        return;
+    }
+
+    // Play new audio
+    currentAudio = new Audio(url);
+    currentAudioBtn = btn;
+    btn.classList.add('playing');
+    btn.textContent = '⏹ Berhenti';
+
+    currentAudio.play().catch(e => console.error("Audio play failed:", e));
+
+    currentAudio.onended = () => {
+        btn.classList.remove('playing');
+        btn.textContent = '🔊 Audio';
+        currentAudio = null;
+        currentAudioBtn = null;
+    };
+}
+
+function toggleBookmark(btn) {
+    const key = btn.getAttribute('data-key');
+    let bookmarks = JSON.parse(localStorage.getItem('nawaetu_quran_bookmarks') || '[]');
+    const isSaved = bookmarks.some(b => b.key === key);
+
+    if (isSaved) {
+        // Remove bookmark
+        bookmarks = bookmarks.filter(b => b.key !== key);
+        btn.classList.remove('saved');
+        btn.textContent = '⭐ Simpan';
+    } else {
+        // Add bookmark
+        bookmarks.push({
+            key: key,
+            surah: btn.getAttribute('data-surah'),
+            text: btn.getAttribute('data-text'),
+            translation: btn.getAttribute('data-trans')
+        });
+        btn.classList.add('saved');
+        btn.textContent = '⭐ Tersimpan';
+    }
+    localStorage.setItem('nawaetu_quran_bookmarks', JSON.stringify(bookmarks));
+}
+
+function renderBookmarksView() {
+    const listContainer = document.getElementById('quran-list');
+    const detailContainer = document.getElementById('quran-detail');
+    const versesContainer = document.getElementById('quran-verses');
+    const backBtn = document.getElementById('quran-back-btn');
+
+    listContainer.style.display = 'none';
+    detailContainer.style.display = 'block';
+
+    let bookmarks = JSON.parse(localStorage.getItem('nawaetu_quran_bookmarks') || '[]');
+
+    backBtn.onclick = () => {
+        detailContainer.style.display = 'none';
+        listContainer.style.display = 'flex';
+        versesContainer.innerHTML = '';
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; if (currentAudioBtn) currentAudioBtn.classList.remove('playing'); currentAudioBtn = null; }
+    };
+
+    if (bookmarks.length === 0) {
+        versesContainer.innerHTML = '<div style="text-align:center;color:var(--text-dim);margin-top:20px;">Belum ada ayat tersimpan.</div>';
+        return;
+    }
+
+    let html = '';
+    bookmarks.forEach(b => {
+        html += `
+            <div class="verse-item">
+                <div class="verse-header">
+                    <span style="color: var(--text-dim);">${b.surah}</span>
+                    <div class="verse-num-badge">${b.key.split(':')[1]}</div>
+                </div>
+                <div class="verse-text">${b.text}</div>
+                <div class="verse-translation">${b.translation}</div>
+                <div class="verse-actions">
+                    <button class="verse-btn btn-save saved" data-key="${b.key}" data-surah="${b.surah}" data-text="${b.text}" data-trans="${b.translation}">⭐ Tersimpan</button>
+                    <button class="verse-btn" onclick="loadQuranDetail(${b.key.split(':')[0]}, '${b.surah}')">📖 Buka Surah</button>
+                </div>
+            </div>
+        `;
+    });
+    versesContainer.innerHTML = html;
+    detailContainer.scrollTo(0, 0);
+
+    versesContainer.querySelectorAll('.btn-save').forEach(btn => {
+        btn.onclick = (e) => {
+            toggleBookmark(e.target);
+            // Hide parent if removed from bookmarks view
+            if (!e.target.classList.contains('saved')) {
+                e.target.closest('.verse-item').style.display = 'none';
+            }
+        };
+    });
+}
+
+// ==========================================
+// QURAN FEATURE
+// ==========================================
+async function loadQuranList() {
+    const listContainer = document.getElementById('quran-list');
+
+    // Last Read Badge functionality
+    const lastReadBtn = document.getElementById('quran-last-read');
+    const lastReadData = JSON.parse(localStorage.getItem('nawaetu_quran_lastRead') || 'null');
+    if (lastReadData) {
+        lastReadBtn.style.display = 'flex';
+        lastReadBtn.textContent = `⏱️ Lanjut: ${lastReadData.name}`;
+        lastReadBtn.onclick = () => loadQuranDetail(lastReadData.number, lastReadData.name);
+    } else {
+        lastReadBtn.style.display = 'none';
+    }
+
+    // Bookmarks View Button
+    const bookmarksBtn = document.getElementById('quran-bookmarks');
+    bookmarksBtn.onclick = () => renderBookmarksView();
+
+    // Check local cache
+    const cachedQuran = localStorage.getItem('nawaetu_quran_list');
+    if (cachedQuran) {
+        renderQuranList(JSON.parse(cachedQuran));
+        return;
+    }
+
+    try {
+        listContainer.innerHTML = '<div class="skeleton" style="width: 100%; height: 60px;"></div><div class="skeleton" style="width: 100%; height: 60px;"></div><div class="skeleton" style="width: 100%; height: 60px;"></div>';
+        const res = await fetch('https://quran-api-id.vercel.app/surah');
+        if (!res.ok) throw new Error("Failed to load surahs");
+
+        const json = await res.json();
+        if (json && json.data) {
+            localStorage.setItem('nawaetu_quran_list', JSON.stringify(json.data));
+            renderQuranList(json.data);
+        }
+    } catch (err) {
+        console.error("Quran Fetch Error", err);
+        listContainer.innerHTML = '<div style="text-align: center; color: var(--text-dim);">Gagal memuat Al-Quran.</div>';
+    }
+}
+
+function renderQuranList(surahs) {
+    const listContainer = document.getElementById('quran-list');
+    listContainer.innerHTML = '';
+
+    surahs.forEach(surah => {
+        const item = document.createElement('div');
+        item.className = 'list-item surah-item';
+        item.innerHTML = `
+            <div style="display: flex; align-items: center; max-width: 65%;">
+                <div class="surah-num">${surah.number}</div>
+                <div class="surah-details">
+                    <div class="surah-name">${surah.name.transliteration.id}</div>
+                    <div class="surah-meta">${surah.name.translation.id} • ${surah.numberOfVerses} ayat</div>
+                </div>
+            </div>
+            <div class="surah-arabic">${surah.name.short}</div>
+        `;
+
+        item.addEventListener('click', () => {
+            loadQuranDetail(surah.number, surah.name.transliteration.id);
+        });
+
+        listContainer.appendChild(item);
+    });
+}
+
+let isMushafMode = false;
+
+async function loadQuranDetail(surahNumber, surahName) {
+    const listContainer = document.getElementById('quran-list');
+    const detailContainer = document.getElementById('quran-detail');
+    const versesContainer = document.getElementById('quran-verses');
+    const backBtn = document.getElementById('quran-back-btn');
+    const playSurahBtn = document.getElementById('quran-play-surah');
+    const mushafToggleBtn = document.getElementById('quran-mushaf-mode');
+
+    // Save to last read
+    localStorage.setItem('nawaetu_quran_lastRead', JSON.stringify({ number: surahNumber, name: surahName }));
+    const lastReadBtn = document.getElementById('quran-last-read');
+    lastReadBtn.style.display = 'flex';
+    lastReadBtn.textContent = `⏱️ Lanjut: ${surahName}`;
+
+    listContainer.style.display = 'none';
+    detailContainer.style.display = 'block';
+
+    versesContainer.innerHTML = '<div class="skeleton" style="width: 100%; height: 100px;"></div><div class="skeleton" style="width: 100%; height: 100px;"></div>';
+
+    // Mushaf Mode State Handling
+    if (isMushafMode) {
+        versesContainer.classList.add('mushaf');
+        mushafToggleBtn.textContent = '📖 Standar';
+    } else {
+        versesContainer.classList.remove('mushaf');
+        mushafToggleBtn.textContent = '📖 Mushaf';
+    }
+    backBtn.onclick = () => {
+        detailContainer.style.display = 'none';
+        listContainer.style.display = 'flex';
+        versesContainer.innerHTML = '';
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; if (currentAudioBtn) currentAudioBtn.classList.remove('playing'); currentAudioBtn = null; }
+
+        // Reset Play Surah button
+        const playSurahBtnReset = document.getElementById('quran-play-surah');
+        if (playSurahBtnReset && playSurahBtnReset.classList.contains('playing')) {
+            playSurahBtnReset.classList.remove('playing');
+            playSurahBtnReset.textContent = '▶️ Putar';
+        }
+    };
+
+    mushafToggleBtn.onclick = () => {
+        isMushafMode = !isMushafMode;
+        if (isMushafMode) {
+            versesContainer.classList.add('mushaf');
+            mushafToggleBtn.textContent = '📖 Standar';
+        } else {
+            versesContainer.classList.remove('mushaf');
+            mushafToggleBtn.textContent = '📖 Mushaf';
+        }
+    };
+
+    try {
+        const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${surahNumber}?language=id&word_translation_language=id&words=true&word_fields=text_uthmani,text_indopak&translations=33&fields=text_uthmani,text_uthmani_tajweed&audio=7&page=1&per_page=300`);
+        const data = await res.json();
+
+        let html = '';
+        if (surahNumber !== 1 && surahNumber !== 9) {
+            html += `<div class="verse-text" style="text-align: center; margin-bottom: 24px;">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
+        }
+
+        const savedBookmarks = JSON.parse(localStorage.getItem('nawaetu_quran_bookmarks') || '[]');
+        const verseAudios = [];
+
+        data.verses.forEach(v => {
+            const verseKey = `${surahNumber}:${v.verse_number}`;
+            const text = v.text_uthmani;
+            const transliteration = v.words.map(w => w.transliteration?.text || '').filter(Boolean).join(' ');
+            const translation = v.translations && v.translations[0] ? v.translations[0].text : '';
+            const audioUrl = v.audio?.url ? (v.audio.url.startsWith('http') ? v.audio.url : `https://verses.quran.com/${v.audio.url}`) : null;
+            const isSaved = savedBookmarks.some(b => b.key === verseKey);
+
+            if (audioUrl) {
+                verseAudios.push({ key: verseKey, url: audioUrl });
+            }
+
+            html += `
+                <div class="verse-item" id="verse-${verseKey}">
+                    <div class="verse-header">
+                        <span style="color: var(--text-dim);">${surahName}</span>
+                        <div class="verse-num-badge">${v.verse_number}</div>
+                    </div>
+                    <div class="verse-text">${text}</div>
+                    <div class="verse-transliteration">${transliteration}</div>
+                    <div class="verse-translation">${translation}</div>
+                    <div class="verse-actions">
+                        ${audioUrl ? `<button class="verse-btn btn-audio" data-key="${verseKey}" data-audio="${audioUrl}">🔊 Audio</button>` : ''}
+                        <button class="verse-btn btn-save ${isSaved ? 'saved' : ''}" data-key="${verseKey}" data-surah="${surahName}" data-text="${text}" data-trans="${translation}">⭐ ${isSaved ? 'Tersimpan' : 'Simpan'}</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        versesContainer.innerHTML = html;
+        detailContainer.scrollTo(0, 0);
+
+        // Individual Audio & Bookmarks
+        versesContainer.querySelectorAll('.btn-audio').forEach(btn => {
+            btn.onclick = (e) => toggleAudio(e.target, btn.getAttribute('data-audio'));
+        });
+        versesContainer.querySelectorAll('.btn-save').forEach(btn => {
+            btn.onclick = (e) => toggleBookmark(e.target);
+        });
+
+        // Full Surah Playback Logic
+        playSurahBtn.onclick = () => {
+            if (playSurahBtn.classList.contains('playing')) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
+                playSurahBtn.classList.remove('playing');
+                playSurahBtn.textContent = '▶️ Putar';
+                return;
+            }
+
+            playSurahBtn.classList.add('playing');
+            playSurahBtn.textContent = '⏹ Berhenti';
+            playSequentially(0);
+        };
+
+        function playSequentially(index) {
+            if (index >= verseAudios.length || !playSurahBtn.classList.contains('playing')) {
+                playSurahBtn.classList.remove('playing');
+                playSurahBtn.textContent = '▶️ Putar';
+                return;
+            }
+
+            const verse = verseAudios[index];
+            const btn = versesContainer.querySelector(`.btn-audio[data-key="${verse.key}"]`);
+
+            // Scroll to verse
+            const targetEl = document.getElementById(`verse-${verse.key}`);
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(verse.url);
+            currentAudio.play();
+
+            if (currentAudioBtn) currentAudioBtn.classList.remove('playing');
+            currentAudioBtn = btn;
+            if (btn) btn.classList.add('playing');
+
+            currentAudio.onended = () => {
+                if (btn) btn.classList.remove('playing');
+                playSequentially(index + 1);
+            };
+
+            currentAudio.onerror = () => {
+                console.error("Sequential play failed at index", index);
+                playSequentially(index + 1);
+            };
+        }
+
+    } catch (error) {
+        console.error("Verses load error:", error);
+        versesContainer.innerHTML = '<div style="text-align: center; color: var(--text-dim);">Gagal memuat ayat.</div>';
+    }
+}
+
+// ==========================================
+// CATEGORY MAPPING
+// ==========================================
+const CATEGORY_MAP = {
+    spiritualCategoryCharacter: "Akhlak & Karakter",
+    spiritualCategoryWorship: "Ibadah",
+    spiritualCategorySocial: "Sosial & Muamalah",
+    spiritualCategoryDaily: "Doa Harian",
+    spiritualCategoryMorningEvening: "Dzikir Pagi & Petang",
+    spiritualCategoryProtection: "Perlindungan",
+    spiritualCategoryForgiveness: "Ampunan",
+    spiritualCategoryGratitude: "Syukur",
+    spiritualCategoryFamily: "Keluarga",
+    spiritualCategoryTravel: "Safar",
+    spiritualCategoryPain: "Saat Sakit",
+    spiritualCategoryGrief: "Kesedihan",
+    spiritualCategoryKnowledge: "Ilmu & Belajar",
+    spiritualCategoryFaith: "Iman & Keyakinan"
+};
+
+function getCategoryName(cat) {
+    return CATEGORY_MAP[cat] || cat;
+}
+
+// ==========================================
+// DOA & HADITS FEATURE
+// ==========================================
+// ==========================================
+// UNIFIED SPIRITUAL FEATURE (DOA & HADITS)
+// ==========================================
+let allSpiritualItems = [];
+const SPIRITUAL_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+async function loadSpiritualContent() {
+    const listCont = document.getElementById('spiritual-category-list');
+    if (!allSpiritualItems.length) {
+        listCont.innerHTML = '<div class="loading-spinner">Memasukkan hikmah...</div>';
+    }
+
+    try {
+        const cached = readCache('nawaetu_spiritual_data');
+        if (cached) {
+            allSpiritualItems = cached;
+        } else {
+            // Fetch from APIs
+            const [doaRes, hadithRes] = await Promise.allSettled([
+                fetch('https://doa-doa-harian-api.vercel.app/ads').then(r => r.json()),
+                fetch('https://api.hadith.gading.dev/books/bukhari?range=1-50').then(r => r.json())
+            ]);
+
+            let apiItems = [];
+
+            if (doaRes.status === 'fulfilled') {
+                doaRes.value.forEach(d => apiItems.push({
+                    id: `api_doa_${d.id}`,
+                    type: 'dua',
+                    category: 'spiritualCategoryDaily',
+                    content: { title: d.doa, arabic: d.ayat, latin: d.latin, translation: d.artinya, source: 'Doa Harian' }
+                }));
+            }
+
+            if (hadithRes.status === 'fulfilled') {
+                hadithRes.value.data.hadiths.forEach(h => apiItems.push({
+                    id: `api_hadith_${h.number}`,
+                    type: 'hadith',
+                    category: 'spiritualCategoryCharacter',
+                    content: { title: `Hadits Bukhari No. ${h.number}`, arabic: h.arab, latin: '', translation: h.id, source: 'HR. Bukhari' }
+                }));
+            }
+
+            allSpiritualItems = [...(window.SPIRITUAL_CONTENT || []), ...apiItems];
+            saveCache('nawaetu_spiritual_data', allSpiritualItems);
+        }
+
+        renderSpiritualCategories(allSpiritualItems);
+        setupSpiritualSearch();
+    } catch (e) {
+        console.error("Spiritual error:", e);
+        renderSpiritualCategories(window.SPIRITUAL_CONTENT || []);
+    }
+}
+
+function renderSpiritualCategories(items) {
+    const categoryListCont = document.getElementById('spiritual-category-list');
+    const detailView = document.getElementById('spiritual-detail-view');
+    const backBtn = document.getElementById('spiritual-back-btn');
+
+    const grouped = {};
+    items.forEach(item => {
+        const cat = item.category || 'spiritualCategoryOther';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(item);
+    });
+
+    categoryListCont.innerHTML = Object.keys(grouped).map(cat => `
+        <div class="category-card" data-category="${cat}">
+            <div class="category-title">${getCategoryName(cat)}</div>
+            <div class="category-count">${grouped[cat].length} Item</div>
+        </div>
+    `).join('');
+
+    categoryListCont.querySelectorAll('.category-card').forEach(card => {
+        card.onclick = () => {
+            const catId = card.getAttribute('data-category');
+            renderSpiritualDetail(grouped[catId], getCategoryName(catId));
+        };
+    });
+
+    backBtn.onclick = () => {
+        detailView.style.display = 'none';
+        categoryListCont.style.display = 'grid';
+        document.querySelector('.spiritual-header-nav h2').textContent = 'Doa & Hadits';
+        document.querySelector('.search-box').style.display = 'block';
+    };
+}
+
+function renderSpiritualDetail(items, title) {
+    const categoryListCont = document.getElementById('spiritual-category-list');
+    const detailView = document.getElementById('spiritual-detail-view');
+    const listCont = document.getElementById('spiritual-list');
+    const headerTitle = document.querySelector('.spiritual-header-nav h2');
+    const searchBox = document.querySelector('.search-box');
+
+    categoryListCont.style.display = 'none';
+    detailView.style.display = 'block';
+    headerTitle.textContent = title;
+    searchBox.style.display = 'none';
+
+    listCont.innerHTML = items.map(item => `
+        <div class="spiritual-item">
+            <div class="content-item-type">${item.type === 'dua' ? '🤲 Doa' : '📜 Hadits'}</div>
+            <div class="content-item-title">${item.content.title}</div>
+            <div class="content-item-arabic">${item.content.arabic}</div>
+            ${item.content.latin ? `<div class="content-item-latin">${item.content.latin}</div>` : ''}
+            <div class="content-item-trans">"${item.content.translation}"</div>
+            <div class="content-item-source">${item.content.source || 'Nawaetu'}</div>
+        </div>
+    `).join('');
+}
+
+function setupSpiritualSearch() {
+    const searchInput = document.getElementById('spiritual-search');
+    const categoryListCont = document.getElementById('spiritual-category-list');
+    const detailView = document.getElementById('spiritual-detail-view');
+    const listCont = document.getElementById('spiritual-list');
+    const headerTitle = document.querySelector('.spiritual-header-nav h2');
+
+    searchInput.oninput = (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        if (!term) {
+            detailView.style.display = 'none';
+            categoryListCont.style.display = 'grid';
+            headerTitle.textContent = 'Doa & Hadits';
+            return;
+        }
+
+        categoryListCont.style.display = 'none';
+        detailView.style.display = 'block';
+        headerTitle.textContent = 'Hasil Pencarian';
+
+        const filtered = allSpiritualItems.filter(item =>
+            item.content.title.toLowerCase().includes(term) ||
+            item.content.translation.toLowerCase().includes(term) ||
+            (item.content.latin && item.content.latin.toLowerCase().includes(term))
+        );
+
+        if (filtered.length === 0) {
+            listCont.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-dim);">Tidak ditemukan hasil untuk pencarian Anda.</div>';
+        } else {
+            listCont.innerHTML = filtered.map(item => `
+                <div class="spiritual-item">
+                    <div class="content-item-type">${item.type === 'dua' ? '🤲 Doa' : '📜 Hadits'}</div>
+                    <div class="content-item-title">${item.content.title}</div>
+                    <div class="content-item-arabic">${item.content.arabic}</div>
+                    ${item.content.latin ? `<div class="content-item-latin">${item.content.latin}</div>` : ''}
+                    <div class="content-item-trans">"${item.content.translation}"</div>
+                    <div class="content-item-source">${item.content.source || 'Nawaetu'}</div>
+                </div>
+            `).join('');
+        }
+    };
+}
+
+// ── VERSE ─────────────────────────────────────────────────────────────────────
+// ── VERSE (Authentic Source Quotes) ────────────────────────────────────────────────────────
+const RAMADAN_QUOTES = [
+    { arabic: "شَهْرُ رَمَضَانَ الَّذِي أُنْزِلَ فِيهِ الْقُرْآنُ هُدًى لِلنَّاسِ", translation: "Bulan Ramadan, bulan yang di dalamnya diturunkan (permulaan) Al-Qur'an sebagai petunjuk bagi manusia...", ref: "Q.S Al-Baqarah: 185" },
+    { arabic: "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ", translation: "Barangsiapa berpuasa Ramadan atas dasar iman dan mengharap pahala dari Allah, maka dosanya yang telah lalu akan diampuni.", ref: "H.R. Bukhari & Muslim" },
+    { arabic: "مَنْ قَامَ لَيْلَةَ الْقَدْرِ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ", translation: "Barangsiapa menghidupkan malam Lailatul Qadar karena iman dan mengharap pahala dari Allah, niscaya diampuni dosa-dosanya yang telah lalu.", ref: "H.R. Bukhari & Muslim" },
+    { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِنْ قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ", translation: "Wahai orang-orang yang beriman, diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang-orang sebelum kamu agar kamu bertakwa.", ref: "Q.S Al-Baqarah: 183" },
+    { arabic: "الصيام جنة فلما كان يوم صوم أحدكم فلا يرفث ولا يصخب", translation: "Puasa adalah perisai. Maka janganlah seseorang berkata kotor dan berteriak-teriak. Jika seseorang mencelanya, katakanlah: 'Aku sedang berpuasa.'", ref: "H.R. Bukhari & Muslim" },
+    { arabic: "إِذَا جَاءَ رَمَضَانُ فُتِّحَتْ أَبْوَابُ الْجَنَّةِ وَغُلِّقَتْ أَبْوَابُ النَّارِ وَصُفِّدَتِ الشَّيَاطِينُ", translation: "Apabila datang bulan Ramadan, pintu-pintu surga dibuka, pintu-pintu neraka ditutup, dan setan-setan dibelenggu.", ref: "H.R. Bukhari & Muslim" },
+    { arabic: "الصَّلَوَاتُ الْخَمْسُ وَالْجُمُعَةُ إِلَى الْجُمُعَةِ وَرَمَضَانُ إِلَى رَمَضَانَ مُكَفِّرَاتٌ مَا بَيْنَهُنَّ إِذَا اجْتَنَبَ الْكَبَائِرَ", translation: "Salat lima waktu, Jumat ke Jumat, dan Ramadan ke Ramadan adalah penghapus dosa di antara keduanya, jika dosa-dosa besar dijauhi.", ref: "H.R. Muslim" },
+    { arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", translation: "Sebaik-baik kalian adalah orang yang belajar Al-Qur'an dan mengajarkannya.", ref: "H.R. Bukhari" },
+    { arabic: "تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً", translation: "Bersahurlah kalian, karena sesungguhnya pada sahur itu terdapat keberkahan.", ref: "H.R. Bukhari & Muslim" },
+    { translation: "Hitunglah diri kalian sendiri sebelum kalian dihitung (dihisab pada hari kiamat).", ref: "Umar bin Khattab radiyallahu 'anhu" },
+    { translation: "Jadikanlah ilmu sebagai sahabat dan akhlak sebagai pedoman hidup.", ref: "Imam Asy-Syafi'i rahimahullah" },
+    { translation: "Dunia ini bagaikan bayangan. Kalau kau berusaha menangkapnya, ia akan lari. Tapi kalau kau membelakanginya, ia tak punya pilihan selain mengikutimu.", ref: "Ibnu Qayyim al-Jauziyah" },
+    { translation: "Orang yang paling aku sukai adalah dia yang menunjukkan kesalahanku.", ref: "Umar bin Khattab radiyallahu 'anhu" }
+];
+
+async function loadVerse() {
+    const index = getDayOfYear() % RAMADAN_QUOTES.length;
+    const data = RAMADAN_QUOTES[index];
+    renderVerse(data);
+}
+
 function renderVerse(data) {
-    document.getElementById('verse-arabic').textContent = data.arabic;
+    const arabicEl = document.getElementById('verse-arabic');
+    if (data.arabic) {
+        arabicEl.textContent = data.arabic;
+        arabicEl.style.display = 'block';
+    } else {
+        arabicEl.style.display = 'none';
+        arabicEl.textContent = '';
+    }
     document.getElementById('verse-translation').textContent = `"${data.translation}"`;
     document.getElementById('verse-ref').textContent = data.ref;
+}
+
+// ── TARGET IBADAH CHECKLIST ──────────────────────────────────────────────────
+const IBADAH_TASKS = [
+    { id: "ibadah_subuh_jamaah", label: "Sholat Subuh Berjamaah" },
+    { id: "ibadah_dhuha", label: "Sholat Dhuha" },
+    { id: "ibadah_tilawah", label: "Tilawah Al-Quran (1 Juz)" },
+    { id: "ibadah_sedekah", label: "Sedekah Harian" },
+    { id: "ibadah_tarawih", label: "Sholat Tarawih/Qiyam" },
+];
+
+function renderDailyChecklist() {
+    const todayStr = getTodayString();
+    let history = JSON.parse(localStorage.getItem('nawaetu_ibadah_history') || '{}');
+    let streakCount = Number(localStorage.getItem('nawaetu_ibadah_streak') || 0);
+
+    // Initialize today's record if empty
+    if (!history[todayStr]) {
+        history[todayStr] = {}; // All false by default
+    }
+
+    const container = document.getElementById('ibadah-checklist');
+    let completedToday = 0;
+
+    const html = IBADAH_TASKS.map(task => {
+        const isChecked = history[todayStr][task.id] === true;
+        if (isChecked) completedToday++;
+        return `
+            <label class="checklist-item ${isChecked ? 'checked' : ''}" for="${task.id}">
+                <input type="checkbox" id="${task.id}" class="checklist-checkbox" ${isChecked ? 'checked' : ''}>
+                <span class="checklist-label">${task.label}</span>
+            </label>
+        `;
+    }).join('');
+
+    container.innerHTML = html;
+
+    // Streak visualization (simplified)
+    document.getElementById('ibadah-streak-counter').textContent = `🔥 ${streakCount}`;
+
+    // Attach event listeners
+    const checkboxes = container.querySelectorAll('.checklist-checkbox');
+    checkboxes.forEach(chk => {
+        chk.addEventListener('change', (e) => {
+            const taskId = e.target.id;
+            const checked = e.target.checked;
+
+            // UI Update
+            e.target.closest('.checklist-item').classList.toggle('checked', checked);
+
+            // State Update
+            history = JSON.parse(localStorage.getItem('nawaetu_ibadah_history') || '{}');
+            if (!history[todayStr]) history[todayStr] = {};
+            history[todayStr][taskId] = checked;
+
+            // Check if all completed
+            const allChecked = IBADAH_TASKS.every(t => history[todayStr][t.id] === true);
+            if (allChecked && completedToday < IBADAH_TASKS.length) {
+                // Just turned full
+                streakCount++;
+                localStorage.setItem('nawaetu_ibadah_streak', streakCount.toString());
+                document.getElementById('ibadah-streak-counter').textContent = `🔥 ${streakCount}`;
+            } else if (!allChecked && completedToday === IBADAH_TASKS.length) {
+                // Was full, now not
+                streakCount = Math.max(0, streakCount - 1);
+                localStorage.setItem('nawaetu_ibadah_streak', streakCount.toString());
+                document.getElementById('ibadah-streak-counter').textContent = `🔥 ${streakCount}`;
+            }
+
+            localStorage.setItem('nawaetu_ibadah_history', JSON.stringify(history));
+            completedToday = IBADAH_TASKS.filter(t => history[todayStr][t.id] === true).length;
+        });
+    });
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
