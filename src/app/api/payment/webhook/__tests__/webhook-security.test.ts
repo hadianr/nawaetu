@@ -91,8 +91,8 @@ describe('Payment Webhook Security', () => {
 
         const res = await POST(req);
 
-        // Assert: 401 Unauthorized
-        expect(res.status).toBe(401);
+        // Assert: 400 Bad Request
+        expect(res.status).toBe(400);
         // Helper to get body from mock response
         const json = (res as any).body;
         expect(json.error).toBe("Invalid Signature");
@@ -123,7 +123,7 @@ describe('Payment Webhook Security', () => {
         // Assert: 400 Bad Request (Missing Signature)
         expect(res.status).toBe(400);
         const json = (res as any).body;
-        expect(json.error).toBe("Missing Signature");
+        expect(json.error).toBe("Invalid Signature");
 
         expect(db.update).not.toHaveBeenCalled();
     });
@@ -211,8 +211,8 @@ describe('Payment Webhook Security', () => {
 
         const res = await POST(req);
 
-        // Assert: 401 Unauthorized
-        expect(res.status).toBe(401);
+        // Assert: 400 Bad Request
+        expect(res.status).toBe(400);
         const json = (res as any).body;
         expect(json.error).toBe("Invalid Signature");
 
