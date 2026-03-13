@@ -632,4 +632,24 @@ export const otherEN = {
     intention_milestone_month: "1 Month",
     intention_milestone_100days: "100 Days",
 
+    // Zakat Fitrah
+    zakatCardTitle: "Zakat al-Fitr",
+    zakatCardSubtitle: "Fulfill the obligation before Eid prayer",
+    zakatObligationTitle: "Zakat Obligation",
+    zakatObligationDesc: "Zakat al-Fitr is mandatory for every free Muslim who has excess food for themselves and their family on the day of Eid al-Fitr. The amount is 1 sha' (approximately 2.5 kg or 3.5 liters) of staple food.",
+    zakatDalilTitle: "Zakat al-Fitr Reference",
+    zakatDalilText: "The Messenger of Allah (peace be upon him) enjoined Zakat al-Fitr on the one who fasts, to purify him from any indecent act or speech and for the purpose of providing food for the needy.",
+    zakatDalilSource: "Abu Dawud No. 1609, Ibn Majah No. 1827",
+    zakatFoodTitle: "Form of Food",
+    zakatFoodDesc: "Zakat is paid in the form of staple food that satisfies according to local customs (e.g., rice, wheat, dates, etc.).",
+    zakatMoneyTitle: "Paying with Money",
+    zakatMoneyDesc: "It is permissible to pay with money equal in value to the price of the staple food (2.5 kg) to ease the recipient.",
+    zakatCalcButton: "Calculate & Pay Zakat",
+    zakatCalcModalTitle: "Zakat al-Fitr Calculator",
+    zakatCalcFamilyLabel: "Number of Family Members",
+    zakatCalcPriceLabel: "Price of Rice/Staple Food per 2.5 kg",
+    zakatCalcTotalLabel: "Your Total Zakat al-Fitr",
+    zakatCalcNote: "Note: Adjust the price according to the announcement of BAZNAS (Zakat Agency) or local Mosque in your area.",
+
+
 };
