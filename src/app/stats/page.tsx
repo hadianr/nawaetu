@@ -23,6 +23,7 @@ import { PrayerConsistency } from '@/components/stats/PrayerConsistency';
 import { CategoryBreakdown } from '@/components/stats/CategoryBreakdown';
 import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
 import { PresetGuard } from '@/components/PresetGuard';
+import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
 
 export default function StatsPage() {
     const t = useTranslations();
@@ -32,12 +33,40 @@ export default function StatsPage() {
     const [activeInsight, setActiveInsight] = useState<InsightKey | null>(null);
     const [isRankModalOpen, setIsRankModalOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [totalQuranReadSeconds, setTotalQuranReadSeconds] = useState(0);
+    const [todayReadSeconds, setTodayReadSeconds] = useState(0);
 
     useEffect(() => {
         setMounted(true);
         const activityHistory = getDailyActivityHistory() as unknown as DailyActivity[];
         setHistory(activityHistory);
         setCompletedMissions(getMissionRepository().getCompletedMissions());
+
+        // Fetch today's Quran reading time
+        const dateString = (() => {
+            const today = new Date();
+            const offset = today.getTimezoneOffset();
+            today.setMinutes(today.getMinutes() - offset);
+            return today.toISOString().split('T')[0];
+        })();
+        const storedSeconds = parseInt(
+            localStorage.getItem(`nawaetu_quran_daily_total_${dateString}`) || '0', 10
+        );
+        const todayVal = isNaN(storedSeconds) ? 0 : storedSeconds;
+        setTotalQuranReadSeconds(todayVal);
+        setTodayReadSeconds(todayVal);
+
+        // Also try to fetch from server for up-to-date figure
+        fetch('/api/quran/sync-time')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && typeof data.totalTodaySeconds === 'number') {
+                    const serverVal = data.totalTodaySeconds;
+                    setTodayReadSeconds(prev => Math.max(prev, serverVal));
+                    setTotalQuranReadSeconds(prev => Math.max(prev, serverVal));
+                }
+            })
+            .catch(() => {});
     }, []);
 
     // ── Data Processing ─────────────────────────────────────────────────────
@@ -225,6 +254,12 @@ export default function StatsPage() {
                         PRAYER_SUFFIXES={PRAYER_SUFFIXES}
                     />
 
+                    <QuranStatsCard
+                        totalQuranAyat={totalQuranAyat}
+                        todayReadSeconds={todayReadSeconds}
+                        totalQuranReadSeconds={totalQuranReadSeconds}
+                    />
+
                     <CategoryBreakdown
                         t={t}
                         categoryStats={categoryStats}
@@ -293,7 +328,8 @@ export default function StatsPage() {
                             consistency,
                             totalQuranAyat,
                             nextQuranMilestone,
-                            history
+                            history,
+                            totalQuranReadSeconds
                         }}
                     />
                 </div>
