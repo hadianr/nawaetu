@@ -21,6 +21,15 @@ import {
 } from "lucide-react";
 import { InsightKey, DailyActivity } from "@/hooks/useStatsInsights";
 
+function formatReadingTime(totalSeconds: number): string {
+    if (totalSeconds === 0) return "0 menit";
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) return `${hours}j ${minutes}m ${seconds}s`;
+    if (minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds} detik`;
+}
 interface InsightModalProps {
     activeInsight: InsightKey | null;
     setActiveInsight: (val: InsightKey | null) => void;
@@ -37,6 +46,7 @@ interface InsightModalProps {
         totalQuranAyat: number;
         nextQuranMilestone: number;
         history: DailyActivity[];
+        totalQuranReadSeconds?: number; // NEW: total reading time today
     };
 }
 
@@ -163,6 +173,13 @@ export function InsightModal({
                         {activeInsight === 'quran' && (
                             <>
                                 <InsightRow label={t.stats.insights.quran.totalRead} value={data.totalQuranAyat.toLocaleString()} icon={<BookOpen className="w-3.5 h-3.5 text-blue-400" />} />
+                                {data.totalQuranReadSeconds !== undefined && data.totalQuranReadSeconds > 0 && (
+                                    <InsightRow
+                                        label="Durasi Tilawah Hari Ini"
+                                        value={formatReadingTime(data.totalQuranReadSeconds)}
+                                        icon={<span className="text-sm">⏱️</span>}
+                                    />
+                                )}
                                 <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Award className="w-3.5 h-3.5 text-blue-400" />

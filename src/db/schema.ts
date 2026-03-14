@@ -247,6 +247,7 @@ export const dailyActivities = pgTable("daily_activities", {
     date: date("date").notNull(), // YYYY-MM-DD
 
     quranAyat: integer("quran_ayat").default(0),
+    quranReadingSeconds: integer("quran_reading_seconds").default(0),
     hasanahGained: integer("hasanah_gained").default(0),
     tasbihCount: integer("tasbih_count").default(0),
 
