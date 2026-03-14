@@ -17,11 +17,16 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        const userId = session?.user?.id ?? null;
+
         const { token, deviceType, timezone, userLocation, prayerPreferences } = await req.json();
 
         if (!token) {
@@ -50,7 +55,7 @@ export async function POST(req: NextRequest) {
                 token,
                 ...data,
                 prayerPreferences: prayerPreferences || null,
-                userId: null,
+                userId: userId,
                 lastUsedAt: null,
             })
             .onConflictDoUpdate({

@@ -1,4 +1,21 @@
 // public/firebase-messaging-sw.js
+
+// ── Focus Mode State ──────────────────────────────────────────────────────────
+// Page sends FOCUS_MODE_ENTER / FOCUS_MODE_EXIT via BroadcastChannel
+// We use this to suppress Nawaetu's own notifications during active Tilawah.
+let isFocusMode = false;
+try {
+    const focusChannel = new BroadcastChannel('nawaetu_focus');
+    focusChannel.onmessage = (event) => {
+        if (event.data?.type === 'FOCUS_MODE_ENTER') isFocusMode = true;
+        if (event.data?.type === 'FOCUS_MODE_EXIT')  isFocusMode = false;
+        console.log('[SW] Focus mode:', isFocusMode);
+    };
+} catch {
+    // BroadcastChannel not supported in older browsers — fail silently
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 try {
     importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
     importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
@@ -22,6 +39,16 @@ try {
     // Set up background message handler IMMEDIATELY
     messaging.onBackgroundMessage((payload) => {
         console.log('[SW] 🔔 Received background message:', payload);
+
+        // ── Focus Mode Suppression ────────────────────────────────────────────
+        // If user is in Tilawah focus mode, suppress Nawaetu's own notifications
+        // so they can read without interruption.
+        if (isFocusMode) {
+            console.log('[SW] 🔕 Suppressed notification during Focus Mode (Tilawah active)');
+            return;
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
         // CRITICAL: PROHIBIT manual display here if payload has 'notification' key.
         // The browser/OS will automatically show the notification from the payload.
         // Calling showNotification here causes DUPLICATES.

@@ -1,0 +1,1 @@
+ALTER TABLE "daily_activities" ADD COLUMN "quran_reading_seconds" integer DEFAULT 0;

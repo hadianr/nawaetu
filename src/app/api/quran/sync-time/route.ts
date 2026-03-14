@@ -71,13 +71,17 @@ export async function POST(req: Request) {
         });
 
         let newTotal = additionalSeconds;
+        const additionalHasanah = Math.floor(additionalSeconds / 60);
 
         if (existingActivity) {
             newTotal = (existingActivity.quranReadingSeconds || 0) + additionalSeconds;
+            const newHasanah = (existingActivity.hasanahGained || 0) + additionalHasanah;
+
             // Update existing record
             await db.update(dailyActivities)
                 .set({
                     quranReadingSeconds: newTotal,
+                    hasanahGained: newHasanah,
                     lastUpdatedAt: new Date(),
                 })
                 .where(
@@ -92,6 +96,7 @@ export async function POST(req: Request) {
                 userId,
                 date: dateString,
                 quranReadingSeconds: additionalSeconds,
+                hasanahGained: additionalHasanah,
                 lastUpdatedAt: new Date(),
             });
         }
@@ -99,6 +104,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ 
             success: true, 
             addedSeconds: additionalSeconds,
+            addedHasanah: additionalHasanah,
             totalTodaySeconds: newTotal
         });
     } catch (error) {

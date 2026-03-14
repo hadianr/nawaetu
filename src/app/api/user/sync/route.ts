@@ -243,15 +243,19 @@ async function handleDailyActivitySync(
                 .values({
                     userId,
                     date: data.date,
-                    quranAyat: data.quranAyat,
-                    hasanahGained: data.tasbihCount,
-                    prayersLogged: data.prayersLogged,
+                    quranAyat: data.quranAyat || 0,
+                    quranReadingSeconds: data.quranReadingSeconds || 0,
+                    hasanahGained: data.hasanahGained || 0,
+                    tasbihCount: data.tasbihCount || 0,
+                    prayersLogged: data.prayersLogged || [],
                 })
                 .onConflictDoUpdate({
                     target: [dailyActivities.userId, dailyActivities.date],
                     set: {
                         quranAyat: data.quranAyat,
-                        hasanahGained: data.tasbihCount,
+                        quranReadingSeconds: data.quranReadingSeconds,
+                        hasanahGained: data.hasanahGained,
+                        tasbihCount: data.tasbihCount,
                         prayersLogged: data.prayersLogged,
                         lastUpdatedAt: new Date(),
                     },
@@ -560,14 +564,18 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                     userId,
                     date: localActivity.date,
                     quranAyat: localActivity.quranAyat || 0,
-                    hasanahGained: localActivity.tasbihCount || 0,
+                    quranReadingSeconds: localActivity.quranReadingSeconds || 0,
+                    hasanahGained: localActivity.hasanahGained || 0,
+                    tasbihCount: localActivity.tasbihCount || 0,
                     prayersLogged: localActivity.prayersLogged || [],
                 })
                 .onConflictDoUpdate({
                     target: [dailyActivities.userId, dailyActivities.date],
                     set: {
                         quranAyat: localActivity.quranAyat,
-                        hasanahGained: localActivity.tasbihCount,
+                        quranReadingSeconds: localActivity.quranReadingSeconds,
+                        hasanahGained: localActivity.hasanahGained,
+                        tasbihCount: localActivity.tasbihCount,
                         prayersLogged: localActivity.prayersLogged,
                         lastUpdatedAt: new Date(),
                     }

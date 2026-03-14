@@ -211,6 +211,14 @@ export async function POST(req: NextRequest) {
                     } catch (e) { }
                 }
 
+                // Fallback to dedicated latitude/longitude columns (newer subscriptions)
+                if (!lat || !lng) {
+                    if (sub.latitude && sub.longitude) {
+                        lat = sub.latitude;
+                        lng = sub.longitude;
+                    }
+                }
+
                 if (!lat || !lng) {
                     results.skipped++;
                     continue;

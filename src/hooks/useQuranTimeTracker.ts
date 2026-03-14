@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { addHasanah } from '@/lib/leveling';
 
 const STORAGE_KEY = 'nawaetu_quran_time_buffer';
 const SYNC_INTERVAL_MS = 30000; // 30 seconds
@@ -157,6 +158,12 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
                 setDailyTotalSeconds((prev) => {
                     const newValue = prev + 1;
                     localStorage.setItem(`nawaetu_quran_daily_total_${dateString}`, newValue.toString());
+                    
+                    // 4. Award Hasanah (1 point per minute)
+                    if (newValue % 60 === 0 && newValue > 0) {
+                        addHasanah(1);
+                    }
+                    
                     return newValue;
                 });
 

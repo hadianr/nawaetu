@@ -795,3 +795,41 @@ html[data-theme="daylight"] .mission-tab-trigger[data-state="active"][value="wee
   color: #4c1d95 !important;
   border-color: rgba(168, 85, 247, 0.6) !important;
 }
+
+/* =====================================================================
+   QURAN FOCUS MODE
+   Applied via body[data-focus-mode="true"]
+   Hides bottom navigation bar and scrollbar during active reading session.
+   Works for both dark and light (daylight) themes.
+   ===================================================================== */
+
+body[data-focus-mode="true"] nav,
+body[data-focus-mode="true"] [data-bottom-nav] {
+  transform: translateY(100%) !important;
+  transition: transform 0.3s ease !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* Hide scrollbar in focus mode but KEEP scrolling enabled */
+body[data-focus-mode="true"] {
+  scrollbar-width: none; /* Firefox */
+}
+
+body[data-focus-mode="true"]::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Edge */
+}
+
+body[data-focus-mode="true"] .pb-nav {
+  padding-bottom: 1rem !important;
+}
+
+/* Focus mode dimming — only in dark themes (not daylight) */
+body[data-focus-mode="true"]:not([data-theme="daylight"]) [data-quran-verse-list] {
+  /* no additional dimming at CSS level — handled by React overlay */
+}
+
+/* Transition for nav on enter/exit */
+nav {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
