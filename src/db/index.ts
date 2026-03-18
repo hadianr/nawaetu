@@ -16,26 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle as neonDrizzle } from "drizzle-orm/neon-http";
+import { drizzle as pgDrizzle } from "drizzle-orm/postgres-js";
+import { neon } from "@neondatabase/serverless";
 import postgres from "postgres";
+
 import * as schema from "./schema";
 
-/**
- * Cache the database connection in development to prevent hot-reloading
- * from creating too many connections.
- */
-const globalForDb = globalThis as unknown as {
-    conn: postgres.Sql | undefined;
-};
+import { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
-// Use DATABASE_URL from .env
-const conn = globalForDb.conn ?? postgres(process.env.DATABASE_URL || "");
+// Determine which driver to use based on the connection string
+const connectionString = process.env.DATABASE_URL || "";
+export const isNeon = connectionString.includes("neon.tech");
 
-if (process.env.NODE_ENV !== "production") {
-    globalForDb.conn = conn;
-}
-
-export const db = drizzle(conn, { schema });
+// Define a common interface for the database regardless of the underlying driver
+// We cast the exported db to `any` because the Neon and PostgresJS signatures slightly
+// differ internally in Drizzle, causing TS errors on `.returning()`. The runtime
+// behavior for our select/insert/update/delete operations is identical.
+export const db = (isNeon
+    ? neonDrizzle({ client: neon(connectionString), schema })
+    : pgDrizzle(postgres(connectionString), { schema })) as any as NeonHttpDatabase<typeof schema> & PostgresJsDatabase<typeof schema>;
 
 /**
  * Health check function to verify database connectivity.
@@ -43,8 +44,14 @@ export const db = drizzle(conn, { schema });
  */
 export async function checkConnection() {
     try {
-        // Simple query to verify connection
-        await conn`SELECT 1`;
+        if (isNeon) {
+            const sql = neon(connectionString);
+            await sql`SELECT 1`;
+        } else {
+            const sql = postgres(connectionString);
+            await sql`SELECT 1`;
+            await sql.end(); // Don't leave connection hanging in health check
+        }
         return { success: true };
     } catch (error) {
         console.error("Database connection failed:", error);

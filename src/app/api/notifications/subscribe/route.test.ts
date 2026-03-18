@@ -31,25 +31,40 @@ vi.mock('@/db', () => ({
     }
 }));
 
-vi.mock('@/db/schema', () => ({
-    pushSubscriptions: {
-        token: { name: 'token' },
-        updatedAt: { name: 'updated_at' },
-        active: { name: 'active' },
-        deviceType: { name: 'device_type' },
-        timezone: { name: 'timezone' },
-        userLocation: { name: 'user_location' },
-        latitude: { name: 'latitude' },
-        longitude: { name: 'longitude' },
-        city: { name: 'city' },
-        prayerPreferences: { name: 'prayer_preferences' },
-        userId: { name: 'userId' },
-        lastUsedAt: { name: 'last_used_at' },
-    }
-}));
+vi.mock('@/db/schema', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/db/schema')>();
+    return {
+        ...actual,
+        pushSubscriptions: {
+            token: { name: 'token' },
+            updatedAt: { name: 'updated_at' },
+            active: { name: 'active' },
+            deviceType: { name: 'device_type' },
+            timezone: { name: 'timezone' },
+            userLocation: { name: 'user_location' },
+            latitude: { name: 'latitude' },
+            longitude: { name: 'longitude' },
+            city: { name: 'city' },
+            prayerPreferences: { name: 'prayer_preferences' },
+            userId: { name: 'userId' },
+            lastUsedAt: { name: 'last_used_at' },
+        }
+    };
+});
 
-vi.mock('drizzle-orm', () => ({
-    eq: vi.fn(),
+vi.mock('drizzle-orm', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('drizzle-orm')>();
+    return {
+        ...actual,
+        eq: vi.fn(),
+        relations: vi.fn(),
+    };
+});
+
+vi.mock('next-auth', () => ({
+    getServerSession: vi.fn().mockResolvedValue({
+        user: { id: 'test-user-id' }
+    })
 }));
 
 describe('POST /api/notifications/subscribe', () => {
