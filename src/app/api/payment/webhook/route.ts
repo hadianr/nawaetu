@@ -196,7 +196,6 @@ export async function POST(req: NextRequest) {
                     totalInfaq: sql`${users.totalInfaq} + ${transaction.amount}`
                 })
                 .where(eq(users.id, transaction.userId));
-            console.log(`[Mayar Webhook] Granted Muhsinin to User ${transaction.userId}`);
         }
 
         return NextResponse.json({ status: "ok", data: updatedTx });
