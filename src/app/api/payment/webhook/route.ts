@@ -95,8 +95,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid Payload: Missing Transaction ID" }, { status: 400 });
         }
 
-        console.log(`[Mayar Webhook] Processing: MayarID=${mayarId}, ProductID=${productId}, Status=${status}`);
-
         // 5. Transaction Lookup Strategy
         const conditions = [eq(transactions.mayarId, mayarId)];
         if (linkId) conditions.push(eq(transactions.paymentLinkId, linkId));
