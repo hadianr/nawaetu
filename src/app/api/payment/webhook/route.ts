@@ -149,7 +149,6 @@ export async function POST(req: NextRequest) {
 
         // 8. Idempotency Check
         if (transaction.status === 'settlement') {
-            console.log("[Mayar Webhook] Transaction already settled. Ignoring.");
             return NextResponse.json({ status: "ok", message: "Already processed" });
         }
 
