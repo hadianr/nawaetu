@@ -95,8 +95,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid Payload: Missing Transaction ID" }, { status: 400 });
         }
 
-        console.log(`[Mayar Webhook] Processing: MayarID=${mayarId}, ProductID=${productId}, Status=${status}`);
-
         // 5. Transaction Lookup Strategy
         const conditions = [eq(transactions.mayarId, mayarId)];
         if (linkId) conditions.push(eq(transactions.paymentLinkId, linkId));
@@ -133,7 +131,6 @@ export async function POST(req: NextRequest) {
                         .where(eq(transactions.id, potentialTx.id));
 
                     transaction = potentialTx;
-                    console.log(`[Mayar Webhook] Fallback Sucess. Linked to Transaction ID: ${transaction.id}`);
                 }
             }
         }
@@ -149,7 +146,6 @@ export async function POST(req: NextRequest) {
 
         // 8. Idempotency Check
         if (transaction.status === 'settlement') {
-            console.log("[Mayar Webhook] Transaction already settled. Ignoring.");
             return NextResponse.json({ status: "ok", message: "Already processed" });
         }
 
@@ -196,7 +192,6 @@ export async function POST(req: NextRequest) {
                     totalInfaq: sql`${users.totalInfaq} + ${transaction.amount}`
                 })
                 .where(eq(users.id, transaction.userId));
-            console.log(`[Mayar Webhook] Granted Muhsinin to User ${transaction.userId}`);
         }
 
         return NextResponse.json({ status: "ok", data: updatedTx });
