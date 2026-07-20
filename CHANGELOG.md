@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.6] - 2026-07-20
+
+### Added
+- **Feat: Add new Privacy Policy and Terms of Service pages.**
+- **Feat: Add EidCard component to display Eid al-Fitr greetings and Sunnah practices, along with new translations.**
+- **Feat: Add Ramadhan daily and Taraweh log tables, including new enums, foreign key constraints, and indexes.**
+- **Feat: implement comprehensive Ramadhan daily log, summary, and tracking features with new API routes, UI components, and data schema.**
+- **Feat: Implement dynamic database driver selection for Neon and PostgresJS connections.**
+- **Feat: Implement Tilawah/Focus Mode with session tracking, stats, and i18n support across Quran components.**
+
+### Improved
+- **Chore: remove leftover console.log from Mayar webhook**
+- **Chore: remove leftover console.log in mayar webhook**
+- **Chore: remove leftover console.log in Mayar webhook**
+- **Chore: remove leftover console.log from payment webhook route**
+
+### Fixed
+- **Fix: upgrade core dependencies and stabilize notifications (#88)**
+- **Fix: Ignore Firefox-specific reference errors in client instrumentation and ensure its loading via the WebVitals component.**
+- **Fix: Add client-side mounting checks to Quran components to ensure proper hydration.**
+
+
 ## [1.9.5] - 2026-03-15
 
 ### Added
