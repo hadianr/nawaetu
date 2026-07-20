@@ -16,8 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import NextAuth, { DefaultSession } from "next-auth"
-import { JWT } from "next-auth/jwt"
+import type { DefaultSession } from "next-auth"
+import type { JWT as DefaultJWT } from "@auth/core/jwt"
+
+type UserGender = "male" | "female"
+type UserArchetype = "esensial" | "seimbang" | "lengkap"
 
 declare module "next-auth" {
     /**
@@ -28,19 +31,45 @@ declare module "next-auth" {
             /** The user's postal address. */
             id: string
             isMuhsinin: boolean
-            gender?: "male" | "female"
-            archetype?: "esensial" | "seimbang" | "lengkap"
+            gender?: UserGender | null
+            archetype?: UserArchetype | null
         } & DefaultSession["user"]
+    }
+
+    interface User {
+        isMuhsinin?: boolean | null
+        gender?: UserGender | null
+        archetype?: UserArchetype | null
+    }
+}
+
+declare module "@auth/core/jwt" {
+    /** JWT token shape — embedded in the encrypted cookie, read by session() callback */
+    interface JWT extends DefaultJWT {
+        id?: string
+        isMuhsinin?: boolean
+        gender?: UserGender | null
+        archetype?: UserArchetype | null
+        picture?: string | null
     }
 }
 
 declare module "next-auth/jwt" {
-    /** JWT token shape — embedded in the encrypted cookie, read by session() callback */
-    interface JWT {
+    interface JWT extends DefaultJWT {
         id?: string
         isMuhsinin?: boolean
-        gender?: "male" | "female" | null
-        archetype?: "esensial" | "seimbang" | "lengkap" | null
+        gender?: UserGender | null
+        archetype?: UserArchetype | null
+        picture?: string | null
     }
 }
 
+declare global {
+    interface Window {
+        gtag?: (
+            command: 'event',
+            eventName: string,
+            params?: Record<string, string | number | boolean>
+        ) => void
+    }
+}
