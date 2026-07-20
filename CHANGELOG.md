@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.10.0] - 2026-07-21
+
+### Performance
+- **Perf(qibla): lazy load compass client-side API to bypass SSR hydration**
+
+### Improved
+- **Style: apply global eslint auto-formatting and cleanup**
+- **Chore(clean): remove unreachable calculations, dead measureFetchTime utility, and unused constants**
+- **Refactor(sync): isolate database synchronization pattern to repository tier and harden with Promise.allSettled and Zod**
+- **Refactor(quran): extract complex karaoke word-sync and audio engine into reusable hook**
+
+
 ## [1.9.6] - 2026-07-20
 
 ### Added
