@@ -23,7 +23,8 @@ import { useState, useRef, useEffect, useMemo, useCallback, useTransition } from
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Play, Pause, Share2, Bookmark, Check, ChevronLeft, ChevronRight, Settings, Type, Palette, Search, Volume2, X, BookOpen, ChevronDown, Copy, Lightbulb, Loader2, Square, CheckCircle, AlignJustify, MoreVertical, ArrowLeft, ArrowRight, RotateCw, Repeat, Infinity as InfinityIcon, CornerDownRight, Hash, Headphones } from 'lucide-react';
+import { useQuranAudio } from "@/hooks/useQuranAudio";
+import { Play, Bookmark, Check, ChevronLeft, Settings, Loader2, ArrowLeft, ArrowRight, Repeat, CornerDownRight, Hash } from "lucide-react";
 import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -108,16 +109,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const isDaylight = currentTheme === "daylight";
 
     // --- State ---
-    const [playingVerseKey, setPlayingVerseKey] = useState<string | null>(null);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
-    const [autoplayExecuted, setAutoplayExecuted] = useState(false);
-
-    // Word-by-Word audio highlight state (Karaoke Mode)
-    const [activeWord, setActiveWord] = useState<{ verseKey: string; idx: number } | null>(null);
-    const activeWordRef = useRef<{ verseKey: string; idx: number } | null>(null);
-    const rafIdRef = useRef<number | null>(null);
-    const segmentsRef = useRef<VerseSegmentMap | null>(null);
     const segmentsCacheKeyRef = useRef<string | null>(null);
     // Local reciter ID — updates immediately on change (without waiting for router.refresh())
     const [activeReciterId, setActiveReciterId] = useState<number>(currentReciterId ?? 7);
@@ -141,6 +132,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [showWordByWord, setShowWordByWord] = useState(false);
     const [scriptType, setScriptType] = useState<'tajweed' | 'indopak'>('indopak'); // Default to Indopak for clarity
     const [viewMode, setViewMode] = useState<'list' | 'mushaf'>('list');
+    const [autoplayExecuted, setAutoplayExecuted] = useState(false);
     const [perPage, setPerPage] = useState<number>(DEFAULT_SETTINGS.versesPerPage);
     const locale = contextLocale;
     const [isPending, startTransition] = useTransition();
@@ -408,267 +400,30 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
             router.push(`/quran/${chapter.id}?page=${newPage}`);
         }
     };
+    const { 
+        audioRef, 
+        activeWord, 
+        isPlaying, 
+        isContinuous, 
+        loopMode, 
+        repeatCount, 
+        playingVerseKey, 
+        setLoopMode,
+        handleVersePlay, 
+        handleSurahPlay, 
+        handleNextVerse, 
+        handlePreviousVerse, 
+        handlePause, 
+        handleResume, 
+        handleStop, 
+        handleAudioEnded 
+    } = useQuranAudio({
+        accumulatedVerses,
+        activeReciterId,
+        scrollToVerse,
+        getVerseAudioUrl
+    });
 
-    // Audio State
-    const [isContinuous, setIsContinuous] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [loopMode, setLoopMode] = useState<'off' | '1' | '3' | 'infinity'>('off');
-    const [repeatCount, setRepeatCount] = useState(0);
-
-    // Audio Logic
-
-    // --- Word Sync helpers (Karaoke Mode) ---
-    const stopWordSync = useCallback(() => {
-        if (rafIdRef.current !== null) {
-            cancelAnimationFrame(rafIdRef.current);
-            rafIdRef.current = null;
-        }
-        activeWordRef.current = null;
-        setActiveWord(null);
-    }, []);
-
-    const startWordSync = useCallback((verseKey: string) => {
-        if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
-
-        const tick = () => {
-            const audio = audioRef.current;
-            if (!audio || !segmentsRef.current) return;
-
-            const currentMs = audio.currentTime * 1000;
-            const segs = segmentsRef.current[verseKey];
-            if (!segs) {
-                rafIdRef.current = requestAnimationFrame(tick);
-                return;
-            }
-
-            const foundIdx = findActiveWordIndex(segs, currentMs);
-
-            // Only update state when the word actually changes — prevents needless re-renders
-            if (
-                foundIdx !== activeWordRef.current?.idx ||
-                verseKey !== activeWordRef.current?.verseKey
-            ) {
-                const next = foundIdx >= 0 ? { verseKey, idx: foundIdx } : null;
-                activeWordRef.current = next;
-                setActiveWord(next);
-            }
-
-            rafIdRef.current = requestAnimationFrame(tick);
-        };
-
-        rafIdRef.current = requestAnimationFrame(tick);
-    }, []);
-
-    const handleStop = () => {
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.currentTime = 0;
-        }
-        stopWordSync();
-        setPlayingVerseKey(null);
-        setCurrentAudioUrl(null);
-        setIsContinuous(false);
-        setIsPlaying(false);
-        setRepeatCount(0); // Reset repeat on stop
-    };
-
-    const handlePause = () => {
-        if (audioRef.current) {
-            audioRef.current.pause();
-        }
-        setIsPlaying(false);
-    };
-
-    const handleResume = () => {
-        if (audioRef.current && currentAudioUrl) {
-            setIsPlaying(true);
-        }
-    };
-
-    const handleVersePlay = (verse: Verse, continuous = false) => {
-        if (playingVerseKey === verse.verse_key) {
-            if (isPlaying) {
-                handlePause();
-            } else {
-                handleResume();
-            }
-        } else {
-            setIsContinuous(continuous);
-            setPlayingVerseKey(verse.verse_key);
-            setCurrentAudioUrl(getVerseAudioUrl(verse));
-            setIsPlaying(true);
-            setRepeatCount(0); // Reset repeat on new play
-            // Auto-scroll when specifically playing a verse
-            scrollToVerse(parseInt(verse.verse_key.split(':')[1]));
-        }
-    };
-
-    const handleSurahPlay = () => {
-        if (playingVerseKey && isContinuous) {
-            if (isPlaying) {
-                handlePause();
-            } else {
-                handleResume();
-            }
-        } else {
-            if (accumulatedVerses.length > 0) {
-                handleVersePlay(accumulatedVerses[0], true);
-                scrollToVerse(parseInt(accumulatedVerses[0].verse_key.split(':')[1]));
-            }
-        }
-    };
-
-    const handleNextVerse = () => {
-        if (!playingVerseKey) return;
-        const currentIndex = accumulatedVerses.findIndex(v => v.verse_key === playingVerseKey);
-        if (currentIndex !== -1 && currentIndex < accumulatedVerses.length - 1) {
-            const nextVerse = accumulatedVerses[currentIndex + 1];
-            // Keep isContinuous state whatever it was
-            setPlayingVerseKey(nextVerse.verse_key);
-            setCurrentAudioUrl(getVerseAudioUrl(nextVerse));
-            scrollToVerse(parseInt(nextVerse.verse_key.split(':')[1]));
-            setIsPlaying(true);
-            setRepeatCount(0); // Reset repeat on manual next
-        } else {
-            handleStop();
-        }
-    };
-
-    const handlePrevVerse = () => {
-        if (!playingVerseKey) return;
-        const currentIndex = accumulatedVerses.findIndex(v => v.verse_key === playingVerseKey);
-        if (currentIndex > 0) {
-            const prevVerse = accumulatedVerses[currentIndex - 1];
-            // Keep isContinuous state
-            setPlayingVerseKey(prevVerse.verse_key);
-            setCurrentAudioUrl(getVerseAudioUrl(prevVerse));
-            scrollToVerse(parseInt(prevVerse.verse_key.split(':')[1]));
-            setIsPlaying(true);
-            setRepeatCount(0); // Reset repeat on manual prev
-        }
-    };
-
-    const handleAudioEnded = () => {
-        // Loop Logic
-        if (loopMode === 'infinity') {
-            if (audioRef.current) {
-                audioRef.current.currentTime = 0;
-                const playPromise = audioRef.current.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        if (error.name !== 'AbortError') console.error("Infinity loop play error:", error);
-                    });
-                }
-                if (playingVerseKey) {
-                    scrollToVerse(parseInt(playingVerseKey.split(':')[1]));
-                }
-            }
-            return;
-        }
-
-        const limit = loopMode === '1' ? 1 : loopMode === '3' ? 3 : 0;
-        if (limit > 0 && repeatCount < limit) {
-            setRepeatCount(prev => prev + 1);
-            if (audioRef.current) {
-                audioRef.current.currentTime = 0;
-                const playPromise = audioRef.current.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        if (error.name !== 'AbortError') console.error("Repeat loop play error:", error);
-                    });
-                }
-                if (playingVerseKey) {
-                    scrollToVerse(parseInt(playingVerseKey.split(':')[1]));
-                }
-            }
-            return;
-        }
-
-        // If loop finished or off, continue or stop
-        setRepeatCount(0);
-        if (isContinuous) {
-            handleNextVerse();
-        } else {
-            setIsPlaying(false);
-            handleStop();
-        }
-    };
-
-    useEffect(() => {
-        if (!audioRef.current) return;
-
-        if (currentAudioUrl) {
-            // Update src only if it's different and not already playing the same url
-            if (audioRef.current.src !== currentAudioUrl) {
-                audioRef.current.src = currentAudioUrl;
-            }
-
-            if (isPlaying) {
-                const playPromise = audioRef.current.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        if (error.name === 'AbortError') {
-                            // Silently catch AbortError as it's a common interruption
-                        } else {
-                        }
-                    });
-                }
-            } else {
-                audioRef.current.pause();
-            }
-        } else {
-            audioRef.current.pause();
-            audioRef.current.src = "";
-        }
-    }, [currentAudioUrl, isPlaying]);
-
-    // --- Karaoke Mode: fetch segments and start RAF sync when verse changes ---
-    useEffect(() => {
-        if (!playingVerseKey || !activeReciterId) {
-            stopWordSync();
-            return;
-        }
-
-        const [surahIdStr] = playingVerseKey.split(':');
-        const surahId = parseInt(surahIdStr);
-        const cacheKey = `${surahId}-${activeReciterId}`;
-
-        // If we already loaded segments for this surah+reciter, just start syncing
-        if (segmentsCacheKeyRef.current === cacheKey && segmentsRef.current !== null) {
-            startWordSync(playingVerseKey);
-            return;
-        }
-
-        // New surah or reciter — kick off a background fetch, don't block render
-        segmentsCacheKeyRef.current = cacheKey;
-        segmentsRef.current = null;
-        stopWordSync();
-
-        fetchSurahSegments(surahId, activeReciterId).then(data => {
-            segmentsRef.current = data; // null = reciter doesn't support segments (graceful fallback)
-            if (data) {
-                // Only start RAF if still playing the same verse
-                startWordSync(playingVerseKey);
-            }
-        });
-
-        return () => {
-            // Cleanup on verse change or unmount
-            stopWordSync();
-        };
-    }, [playingVerseKey, activeReciterId, startWordSync, stopWordSync]);
-
-    // Stop audio on unmount or pathname change
-    useEffect(() => {
-        const audioInstance = audioRef.current;
-        return () => {
-            if (audioInstance) {
-                audioInstance.pause();
-                audioInstance.src = "";
-                audioInstance.load();
-            }
-        };
-    }, [pathname]); // Fires whenever pathname changes
 
     // Bookmarking Logic
     const handleBookmarkClick = (verse: Verse) => {
@@ -1097,7 +852,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                     isDaylight={isDaylight}
                     locale={locale}
                     onLoopModeChange={setLoopMode}
-                    onPrev={handlePrevVerse}
+                    onPrev={handlePreviousVerse}
                     onNext={handleNextVerse}
                     onPlayPause={isPlaying ? handlePause : handleResume}
                     onScrollToPlaying={() => {
