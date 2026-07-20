@@ -6,7 +6,7 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.5-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.9.6-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
@@ -30,7 +30,7 @@
 > **Nawaetu is Dual Licensed.** Free for Open Source (AGPLv3), but requires a **Commercial License** for proprietary/closed-source use.
 
 ### 🚀 Recent Highlights (v1.9.x)
-- **⏱️ Quran Reading Time Tracker & Focus Mode (v1.9.5)**: A brand-new, intent-driven suite letting you consciously track and immerse yourself in reciting Al-Quran.
+- **⏱️ Quran Reading Time Tracker & Focus Mode (v1.9.6)**: A brand-new, intent-driven suite letting you consciously track and immerse yourself in reciting Al-Quran.
   - **🧘 Focus Mode (Tilawah Focus)**: An immersive, distraction-free reading experience that triggers when you start Tilawah.
     - **Fullscreen Immersive UI**: Automatically enters fullscreen to remove browser/OS distractions.
     - **Niyyah Anchor**: Mindful entry screen with Basmallah to help set pure intention before starting.
@@ -133,7 +133,7 @@
 Built with bleeding-edge technology for the best developer experience:
 
 ### Core Framework
-*   **Next.js 16.1.6** (App Router + Turbopack)
+*   **Next.js 16.2.10** (App Router + Turbopack)
 *   **TypeScript** - Type-safe development
 *   **React 19** - Latest concurrent features
 
