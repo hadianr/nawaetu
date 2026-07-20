@@ -47,18 +47,17 @@ describe('UpdateChecker', () => {
         vi.clearAllMocks();
         localStorage.clear();
 
-        try {
-             // @ts-ignore
-            delete window.location;
-             // @ts-ignore
-            window.location = { ...originalLocation, search: '', href: 'http://localhost/', reload: vi.fn() };
-        } catch (e) {}
+        Object.defineProperty(window, 'location', {
+            configurable: true,
+            value: { ...originalLocation, search: '', href: 'http://localhost/', reload: vi.fn() },
+        });
     });
 
     afterEach(() => {
-        try {
-            window.location = originalLocation;
-        } catch (e) {}
+        Object.defineProperty(window, 'location', {
+            configurable: true,
+            value: originalLocation,
+        });
     });
 
     it('should NOT render when server version matches current version', async () => {
@@ -101,6 +100,9 @@ describe('UpdateChecker', () => {
                 controller: {
                     postMessage,
                 },
+                getRegistration: vi.fn().mockResolvedValue({
+                    active: { postMessage },
+                }),
                 addEventListener: vi.fn(),
                 removeEventListener: vi.fn(),
             },
@@ -130,8 +132,8 @@ describe('UpdateChecker', () => {
         // Check localStorage update
         expect(localStorage.getItem('app_version')).toBe('1.1.0');
 
-        // Check cache clear
-        expect(deleteCache).toHaveBeenCalledWith('cache-v1');
+        // Workbox owns cache cleanup; the component should not delete caches manually.
+        expect(deleteCache).not.toHaveBeenCalled();
 
         // Check SW message
         expect(postMessage).toHaveBeenCalledWith({ type: 'SKIP_WAITING' });

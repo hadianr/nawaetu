@@ -65,6 +65,10 @@ describe('useRamadhanCalendar', () => {
     it('should handle fetch errors gracefully by logging to Sentry and not console', async () => {
         // Arrange
         const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        mockGetOptional.mockImplementation((key: string) => {
+            if (key === 'user_location') return { lat: -6.2, lng: 106.8 };
+            return null;
+        });
         mockFetchWithTimeout.mockRejectedValue(new Error('Network error'));
 
         // Act

@@ -22,10 +22,10 @@ import { GET } from '@/app/api/payment/sync/route';
 import { db } from '@/db';
 import { transactions } from '@/db/schema';
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth';
 
-// Mock NextAuth
-vi.mock('next-auth', () => ({
+vi.mock('@/lib/auth', () => ({
+    authOptions: {},
     getServerSession: vi.fn(),
 }));
 

@@ -19,7 +19,6 @@
  */
 
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 
 export async function checkAvailableModels() {
     const session = await getServerSession();

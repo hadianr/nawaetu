@@ -21,7 +21,6 @@ import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, desc, sql, and } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
     try {

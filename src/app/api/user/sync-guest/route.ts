@@ -18,7 +18,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import {
     bookmarks,

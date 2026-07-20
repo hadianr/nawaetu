@@ -61,7 +61,8 @@ vi.mock('drizzle-orm', async (importOriginal) => {
     };
 });
 
-vi.mock('next-auth', () => ({
+vi.mock('@/lib/auth', () => ({
+    authOptions: {},
     getServerSession: vi.fn().mockResolvedValue({
         user: { id: 'test-user-id' }
     })

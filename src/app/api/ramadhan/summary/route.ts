@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from '@/lib/auth';
 import { db } from '@/db';
 import { ramadhanFastingLog, dailyActivities, ramadhanTarawehLog, ramadhanDailyLog } from '@/db/schema';
 import { eq, and, gte, lte, sum } from 'drizzle-orm';

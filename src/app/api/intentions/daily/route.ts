@@ -263,10 +263,10 @@ async function calculateStreak(userId: string, actualTodayStr: string): Promise<
     }));
 
     // We start checking from the actual today
-    let actualToday = new Date(actualTodayStr);
+    const actualToday = new Date(actualTodayStr);
     actualToday.setHours(0, 0, 0, 0);
 
-    let yesterday = new Date(actualToday);
+    const yesterday = new Date(actualToday);
     yesterday.setDate(actualToday.getDate() - 1);
 
     let checkDate;

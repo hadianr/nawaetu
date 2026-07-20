@@ -21,7 +21,6 @@ import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 
 /**
  * GET /api/intentions/today?user_token=xxx

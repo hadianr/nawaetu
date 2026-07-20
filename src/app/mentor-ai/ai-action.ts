@@ -21,7 +21,6 @@
 import { chatRateLimiter } from '@/lib/rate-limit';
 import { getCurrentTimeContext, type TimeContext } from '@/lib/time-context';
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
 import { getSpiritualItemOfDay } from '@/data/spiritual-content';

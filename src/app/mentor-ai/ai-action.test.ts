@@ -20,15 +20,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { askMentor } from './ai-action';
 import { chatRateLimiter } from '@/lib/rate-limit';
-import { getServerSession } from 'next-auth';
-
-// Mocks
-vi.mock('next-auth', () => ({
-    getServerSession: vi.fn()
-}));
+import { getServerSession } from '@/lib/auth';
 
 vi.mock('@/lib/auth', () => ({
-    authOptions: {}
+    authOptions: {},
+    getServerSession: vi.fn()
 }));
 
 vi.mock('@/lib/rate-limit', () => ({
@@ -39,9 +35,11 @@ vi.mock('@/lib/rate-limit', () => ({
 
 vi.mock('@/lib/llm-providers/model-router', () => {
     return {
-        ModelRouter: vi.fn().mockImplementation(() => ({
-            chat: vi.fn().mockResolvedValue({ response: "AI Response", provider: "Mock" })
-        }))
+        ModelRouter: vi.fn().mockImplementation(function MockModelRouter() {
+            return {
+                chat: vi.fn().mockResolvedValue({ response: "AI Response", provider: "Mock" })
+            };
+        })
     }
 });
 
@@ -57,8 +55,9 @@ describe('askMentor', () => {
     it('should use user ID for rate limiting identifier (security fix)', async () => {
         // Setup authenticated session
         const mockUserId = 'user-123';
-        (getServerSession as any).mockResolvedValue({
-            user: { id: mockUserId }
+        vi.mocked(getServerSession).mockResolvedValue({
+            expires: new Date(Date.now() + 60_000).toISOString(),
+            user: { id: mockUserId, isMuhsinin: false }
         });
 
         const context = { name: 'Alice', prayerStreak: 5, lastPrayer: 'Fajr' };

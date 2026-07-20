@@ -23,7 +23,8 @@ import { db } from '@/db';
 import { intentions, users, bookmarks, userCompletedMissions, dailyActivities, userReadingState } from '@/db/schema';
 
 // Mock dependencies
-vi.mock('next-auth', () => ({
+vi.mock('@/lib/auth', () => ({
+    authOptions: {},
     getServerSession: vi.fn(() => Promise.resolve({
         user: { id: 'test-user-id', email: 'test@example.com' }
     }))
@@ -33,15 +34,17 @@ vi.mock('next-auth', () => ({
 const jsonMock = vi.fn((data, init) => ({ json: async () => data, status: init?.status || 200 }));
 vi.mock('next/server', () => ({
     NextRequest: class {
-        constructor(input, init) {
+        body?: string;
+
+        constructor(input: string, init?: { body?: string }) {
             this.body = init?.body;
         }
         json() {
-            return Promise.resolve(JSON.parse(this.body));
+            return Promise.resolve(JSON.parse(this.body ?? '{}'));
         }
     },
     NextResponse: {
-        json: (data, init) => ({ ...data, status: init?.status || 200 })
+        json: (data: Record<string, unknown>, init?: { status?: number }) => ({ ...data, status: init?.status || 200 })
     }
 }));
 
@@ -120,9 +123,9 @@ describe('POST /api/user/sync-guest', () => {
     it('should use bulk insert (1 call) for multiple completed missions', async () => {
         const payload = {
             completedMissions: [
-                { id: 'm1', xpEarned: 10, completedAt: '2023-01-01' },
-                { id: 'm2', xpEarned: 20, completedAt: '2023-01-02' },
-                { id: 'm3', xpEarned: 30, completedAt: '2023-01-03' },
+                { id: 'm1', hasanahEarned: 10, completedAt: '2023-01-01' },
+                { id: 'm2', hasanahEarned: 20, completedAt: '2023-01-02' },
+                { id: 'm3', hasanahEarned: 30, completedAt: '2023-01-03' },
             ]
         };
 
@@ -148,7 +151,7 @@ describe('POST /api/user/sync-guest', () => {
         expect(firstItem).toMatchObject({
             userId: 'test-user-id',
             missionId: 'm1',
-            xpEarned: 10,
+            hasanahEarned: 10,
         });
     });
 });
