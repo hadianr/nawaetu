@@ -199,7 +199,7 @@ export async function POST(req: NextRequest) {
             for (const sub of subscriptions) {
                 let lat: number | null = null;
                 let lng: number | null = null;
-                let timezone = sub.timezone || "UTC";
+                const timezone = sub.timezone || "UTC";
 
                 if (sub.userLocation) {
                     try {

@@ -119,7 +119,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 // If it's a specific platform request, we unfortunately can't force the app picker in Web Share Level 1/2 consistently
                 // But we can update the title/text to be relevant
-                let shareData = {
+                const shareData = {
                     files: [file],
                     title: `QS. ${surahName} Ayat ${verse.verse_key.split(":")[1]}`,
                     text: `Baca Al-Qur'an di Nawaetu`

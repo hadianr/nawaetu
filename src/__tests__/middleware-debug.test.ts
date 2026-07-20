@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach, type Mock } from 'vitest';
 import { NextRequest, NextResponse } from 'next/server';
 import { middleware } from '../../middleware';
 
 // Shared state for the mock
-const headersMap = new Map();
+const headersMap = new Map<string, string>();
 
 vi.mock('next/server', () => {
   return {
@@ -56,43 +56,41 @@ describe('Middleware Debug Route Blocking', () => {
   beforeEach(() => {
     headersMap.clear();
     vi.clearAllMocks();
-    process.env = { ...originalEnv };
+    vi.unstubAllEnvs();
   });
 
   afterEach(() => {
     process.env = originalEnv;
+    vi.unstubAllEnvs();
   });
 
   it('should block /api/debug in production', () => {
-    process.env.NODE_ENV = 'production';
+    vi.stubEnv('NODE_ENV', 'production');
     const request = new NextRequest('https://nawaetu.com/api/debug');
 
-    // @ts-expect-error - Mocking NextRequest partial
     middleware(request);
 
     // Check if rewrite was called with /404
     expect(NextResponse.rewrite).toHaveBeenCalled();
-    const rewriteCall = (NextResponse.rewrite as any).mock.calls[0];
+    const rewriteCall = (NextResponse.rewrite as Mock).mock.calls[0];
     expect(rewriteCall[0].pathname).toBe('/404');
   });
 
   it('should block /api/notifications/debug in production', () => {
-    process.env.NODE_ENV = 'production';
+    vi.stubEnv('NODE_ENV', 'production');
     const request = new NextRequest('https://nawaetu.com/api/notifications/debug');
 
-    // @ts-expect-error - Mocking NextRequest partial
     middleware(request);
 
     expect(NextResponse.rewrite).toHaveBeenCalled();
-    const rewriteCall = (NextResponse.rewrite as any).mock.calls[0];
+    const rewriteCall = (NextResponse.rewrite as Mock).mock.calls[0];
     expect(rewriteCall[0].pathname).toBe('/404');
   });
 
   it('should NOT block /api/debug in development', () => {
-    process.env.NODE_ENV = 'development';
+    vi.stubEnv('NODE_ENV', 'development');
     const request = new NextRequest('https://nawaetu.com/api/debug');
 
-    // @ts-expect-error - Mocking NextRequest partial
     middleware(request);
 
     expect(NextResponse.rewrite).not.toHaveBeenCalled();

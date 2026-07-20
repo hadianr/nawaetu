@@ -47,7 +47,7 @@ export default function JournalPage() {
     const fetchHistory = async (pageNum: number) => {
         try {
             // Unify token retrieval logic with IntentionJournalWidget
-            let token = localStorage.getItem("user_token") ||
+            const token = localStorage.getItem("user_token") ||
                 localStorage.getItem("fcm_token") ||
                 localStorage.getItem("nawaetu_anonymous_id");
 

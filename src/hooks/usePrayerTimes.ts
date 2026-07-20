@@ -123,7 +123,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const parsedAdj = parseInt(String(savedAdjustment || "-1"), 10);
         const activeAdj = isNaN(parsedAdj) ? -1 : parsedAdj;
 
-        let parsedDay = parseInt(hijri.day || "1", 10);
+        const parsedDay = parseInt(hijri.day || "1", 10);
         let day = isNaN(parsedDay) ? 1 : parsedDay;
         let monthIndex = (hijri.month?.number || 9) - 1; // Default to Ramadhan index if missing
         let year = parseInt(hijri.year, 10) || 1447;

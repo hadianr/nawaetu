@@ -18,18 +18,19 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { checkAvailableModels } from '../app/mentor-ai/model-check';
+import { getServerSession } from '@/lib/auth';
 
-// Mock next-auth
-vi.mock('next-auth', () => ({
+vi.mock('@/lib/auth', () => ({
+    authOptions: {},
     getServerSession: vi.fn(),
 }));
 
-// Mock @/lib/auth
-vi.mock('@/lib/auth', () => ({
-    authOptions: {},
-}));
-
 describe('model-check security', () => {
+    const session = {
+        expires: new Date(Date.now() + 60_000).toISOString(),
+        user: { id: 'user-1', name: 'Test User', isMuhsinin: false },
+    };
+
     beforeEach(() => {
         process.env.GEMINI_API_KEY = "test-key";
         vi.clearAllMocks();
@@ -43,8 +44,6 @@ describe('model-check security', () => {
     });
 
     it('should deny access if not authenticated', async () => {
-        const { getServerSession } = await import('next-auth');
-        // @ts-ignore
         vi.mocked(getServerSession).mockResolvedValue(null);
 
         const result = await checkAvailableModels();
@@ -52,9 +51,7 @@ describe('model-check security', () => {
     });
 
     it('should handle missing API key', async () => {
-        const { getServerSession } = await import('next-auth');
-        // @ts-ignore
-        vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Test User' } });
+        vi.mocked(getServerSession).mockResolvedValue(session);
         delete process.env.GEMINI_API_KEY;
 
         const result = await checkAvailableModels();
@@ -62,9 +59,7 @@ describe('model-check security', () => {
     });
 
     it('should list models if authenticated and API works', async () => {
-        const { getServerSession } = await import('next-auth');
-        // @ts-ignore
-        vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Test User' } });
+        vi.mocked(getServerSession).mockResolvedValue(session);
 
         const mockModelsResponse = {
             models: [
@@ -74,10 +69,10 @@ describe('model-check security', () => {
         };
 
         // Mock successful fetch response
-        (global.fetch as any).mockResolvedValue({
+        vi.mocked(global.fetch).mockResolvedValue({
             ok: true,
             json: async () => mockModelsResponse,
-        });
+        } as Response);
 
         const result = await checkAvailableModels();
         expect(result).toBe("Available models: gemini-pro, gemini-ultra");
@@ -87,17 +82,15 @@ describe('model-check security', () => {
     });
 
     it('should return error message if fetch fails', async () => {
-        const { getServerSession } = await import('next-auth');
-        // @ts-ignore
-        vi.mocked(getServerSession).mockResolvedValue({ user: { name: 'Test User' } });
+        vi.mocked(getServerSession).mockResolvedValue(session);
 
         // Mock failed fetch response
-        (global.fetch as any).mockResolvedValue({
+        vi.mocked(global.fetch).mockResolvedValue({
             ok: false,
             status: 403,
             statusText: "Forbidden",
             text: async () => "API key not valid",
-        });
+        } as Response);
 
         const result = await checkAvailableModels();
         expect(result).toContain("Error listing/checking models: Failed to list models: 403 Forbidden - API key not valid");

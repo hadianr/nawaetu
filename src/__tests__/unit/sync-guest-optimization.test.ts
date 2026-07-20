@@ -18,7 +18,6 @@
 
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest } from 'next/server';
 
 // Unmock dependencies to allow real schema imports
 vi.unmock('@/db/schema');
@@ -60,12 +59,9 @@ vi.mock('@/db', () => {
     };
 });
 
-vi.mock('next-auth', () => ({
-    getServerSession: vi.fn(() => Promise.resolve({ user: { id: 'test-user', email: 'test@example.com' } })),
-}));
-
 vi.mock('@/lib/auth', () => ({
     authOptions: {},
+    getServerSession: vi.fn(() => Promise.resolve({ user: { id: 'test-user', email: 'test@example.com' } })),
 }));
 
 

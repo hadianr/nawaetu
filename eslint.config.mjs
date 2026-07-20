@@ -12,6 +12,19 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "coverage/**",
+    "node_modules/**",
+
+    // Generated PWA/service-worker output.
+    "public/sw.js",
+    "public/sw.js.map",
+    "public/workbox-*.js",
+    "public/workbox-*.js.map",
+    "public/swe-worker-*.js",
+    "public/swe-worker-*.js.map",
+
+    // Browser extension files are plain JS and have their own runtime constraints.
+    "extension/**",
   ]),
 ]);
 

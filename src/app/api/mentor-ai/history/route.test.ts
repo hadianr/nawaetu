@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
 import { NextRequest } from 'next/server';
 
 // Hoisted Mocks
@@ -44,6 +44,7 @@ const {
 
 // Import AFTER mocks
 import { POST } from './route';
+import { getServerSession } from '@/lib/auth';
 
 // Helper for chainable mocks
 const createQueryBuilder = (result: any) => {
@@ -69,14 +70,9 @@ vi.mock('@/db', () => ({
 }));
 
 // Mock Auth
-vi.mock('next-auth', () => ({
-    getServerSession: vi.fn(() => Promise.resolve({
-        user: { id: 'user-123', name: 'Test User' }
-    })),
-}));
-
 vi.mock('@/lib/auth', () => ({
     authOptions: {},
+    getServerSession: vi.fn(),
 }));
 
 // Mock Schema
@@ -100,6 +96,9 @@ vi.mock('drizzle-orm', () => ({
 describe('Benchmark: POST /api/mentor-ai/history', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        (getServerSession as Mock).mockResolvedValue({
+            user: { id: 'user-123', name: 'Test User' },
+        });
 
         // Setup default chainable structure
         mockUpdate.mockReturnValue({

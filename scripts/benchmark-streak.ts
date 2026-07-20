@@ -25,7 +25,7 @@ function calculateStreakOld(userIntentions: Intention[], currentDate: string): n
     });
 
     // We start checking from the current intention backwards
-    let checkDate = new Date(targetDate);
+    const checkDate = new Date(targetDate);
 
     // Safety loop limit
     while (streak < 3650) {
@@ -60,7 +60,7 @@ function calculateStreakNew(userIntentions: Intention[], currentDate: string): n
     }));
 
     // We start checking from the current intention backwards
-    let checkDate = new Date(targetDate);
+    const checkDate = new Date(targetDate);
 
     // Safety loop limit
     while (streak < 3650) {

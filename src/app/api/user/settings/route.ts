@@ -18,7 +18,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";

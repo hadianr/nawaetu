@@ -17,21 +17,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-
-export const STORAGE_KEYS = {
-    // ...existing...
-    DHIKR_COUNT: "nawaetu_dhikr_count",
-    DHIKR_TARGET: "nawaetu_dhikr_target",
-    DHIKR_ACTIVE_PRESET: "nawaetu_dhikr_active_preset",
-    DHIKR_DAILY_COUNT: "nawaetu_dhikr_daily_count",
-    DHIKR_STREAK: "nawaetu_dhikr_streak",
-    DHIKR_LAST_DATE: "nawaetu_dhikr_last_date",
-    DHIKR_SEQUENCE_ID: "nawaetu_dhikr_sequence_id",
-    DHIKR_SEQUENCE_INDEX: "nawaetu_dhikr_sequence_index",
-    DHIKR_CUSTOM_PRESETS: "nawaetu_dhikr_custom_presets",
-    DHIKR_LIFETIME_COUNT: "nawaetu_dhikr_lifetime_count",
-    DHIKR_HISTORY: "nawaetu_dhikr_history",
-};
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 
 export type DhikrPreset = {

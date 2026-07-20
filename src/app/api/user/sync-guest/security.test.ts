@@ -22,7 +22,8 @@ import { POST } from './route';
 import { db } from '@/db';
 
 // Mock dependencies
-vi.mock('next-auth', () => ({
+vi.mock('@/lib/auth', () => ({
+    authOptions: {},
     getServerSession: vi.fn(() => Promise.resolve({
         user: { id: 'test-user-id', email: 'test@example.com' }
     }))
@@ -31,15 +32,17 @@ vi.mock('next-auth', () => ({
 // Mock NextRequest and NextResponse
 vi.mock('next/server', () => ({
     NextRequest: class {
-        constructor(input: any, init: any) {
+        body?: string;
+
+        constructor(input: string, init?: { body?: string }) {
             this.body = init?.body;
         }
         json() {
-            return Promise.resolve(JSON.parse(this.body));
+            return Promise.resolve(JSON.parse(this.body ?? '{}'));
         }
     },
     NextResponse: {
-        json: (data: any, init: any) => ({ ...data, status: init?.status || 200 })
+        json: (data: Record<string, unknown>, init?: { status?: number }) => ({ ...data, status: init?.status || 200 })
     }
 }));
 
