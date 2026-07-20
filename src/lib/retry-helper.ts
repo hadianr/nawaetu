@@ -45,8 +45,8 @@ export async function retryWithBackoff<T>(
     for (let attempt = 0; attempt <= opts.maxRetries; attempt++) {
         try {
             return await fn();
-        } catch (error: any) {
-            lastError = error;
+        } catch (error: unknown) {
+            lastError = error instanceof Error ? error : new Error(String(error));
 
             // Don't retry on certain errors
             if (shouldNotRetry(error)) {
@@ -71,8 +71,8 @@ export async function retryWithBackoff<T>(
 /**
  * Determine if an error should not be retried
  */
-function shouldNotRetry(error: any): boolean {
-    const message = error?.message?.toLowerCase() || '';
+function shouldNotRetry(error: unknown): boolean {
+    const message = error instanceof Error ? error.message.toLowerCase() : '';
 
     // Don't retry validation errors or auth errors
     if (

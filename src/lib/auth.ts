@@ -17,6 +17,7 @@
  */
 
 import NextAuth, { type NextAuthConfig } from "next-auth";
+import type { Adapter } from "@auth/core/adapters";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
@@ -44,7 +45,7 @@ export const authOptions: NextAuthConfig = {
         accountsTable: accounts,
         sessionsTable: sessions,
         verificationTokensTable: verificationTokens,
-    }) as any,
+    }) as Adapter,
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -63,14 +64,14 @@ export const authOptions: NextAuthConfig = {
          * jwt callback — runs when token is created (sign-in) or refreshed.
          * Embeds user fields into the token so session() doesn't need a DB lookup.
          */
-        async jwt({ token, user, trigger, session }) {
+        async jwt({ token, user, trigger }) {
             // On initial sign-in, `user` object is available from the adapter
             if (user) {
                 token.id = user.id;
-                token.isMuhsinin = (user as any).isMuhsinin ?? false;
-                token.gender = (user as any).gender ?? null;
-                token.archetype = (user as any).archetype ?? null;
-                token.picture = (user as any).image ?? null;
+                token.isMuhsinin = user.isMuhsinin ?? false;
+                token.gender = user.gender ?? null;
+                token.archetype = user.archetype ?? null;
+                token.picture = user.image ?? null;
             }
 
             // On explicit `update()` call, refresh trusted fields from the database.
@@ -104,9 +105,9 @@ export const authOptions: NextAuthConfig = {
         async session({ session, token }) {
             if (session.user && token) {
                 session.user.id = token.id as string;
-                (session.user as any).isMuhsinin = token.isMuhsinin as boolean;
-                (session.user as any).gender = token.gender as string | null;
-                (session.user as any).archetype = token.archetype as string | null;
+                session.user.isMuhsinin = token.isMuhsinin ?? false;
+                session.user.gender = token.gender ?? null;
+                session.user.archetype = token.archetype ?? null;
                 session.user.image = token.picture as string ?? null;
             }
             return session;

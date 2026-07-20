@@ -42,6 +42,10 @@ export interface BookmarkRepository {
   getBookmarkById(surahId: number, verseId: number): Bookmark | undefined;
   updateBookmark(id: string, updates: Partial<Bookmark>): void;
   removeAllBookmarks(): void;
+  syncBookmarkAsync(
+    data: any,
+    action: 'create' | 'update' | 'delete'
+  ): Promise<string | undefined>;
 }
 
 export class LocalBookmarkRepository implements BookmarkRepository {
@@ -118,6 +122,14 @@ export class LocalBookmarkRepository implements BookmarkRepository {
       this.storage.set(STORAGE_KEYS.QURAN_BOOKMARKS, bookmarks);
       this._notifyListeners();
     }
+  }
+
+
+  async syncBookmarkAsync(
+    data: any,
+    action: 'create' | 'update' | 'delete'
+  ): Promise<string | undefined> {
+    throw new Error('syncBookmarkAsync not supported on local repository');
   }
 
   removeAllBookmarks(): void {

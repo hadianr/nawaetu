@@ -47,24 +47,6 @@ export function debouncedPrefetchOnLocaleChange(locale: string): void {
   }, 500); // Wait 500ms after locale change before prefetching
 }
 
-// Utility to measure fetch performance
-export async function measureFetchTime<T>(
-  fn: () => Promise<T>,
-  label: string = "Fetch"
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    if (process.env.NODE_ENV === "development") {
-    }
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    throw error;
-  }
-}
-
 // Utility to check if network is slow
 export function isSlowNetwork(): boolean {
   if (typeof navigator === "undefined") return false;
