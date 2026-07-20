@@ -159,7 +159,9 @@ export default function NotificationSettings() {
                         });
                         return locale === 'id' ? "Notifikasi berhasil diaktifkan" : "Notifications enabled successfully";
                     } else {
-                        throw new Error(locale === 'id' ? "Gagal mendapatkan token. Hubungkan ke internet." : "Failed to get token. Check your connection.");
+                        return locale === 'id'
+                            ? "Sistem notifikasi sedang disiapkan. Coba lagi sebentar."
+                            : "Notification system is still preparing. Try again in a moment.";
                     }
                 } catch (error: any) {
                     console.error("[NotificationSettings] Toggle Error:", error);

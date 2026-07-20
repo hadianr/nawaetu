@@ -20,7 +20,7 @@
 
 import { chatRateLimiter } from '@/lib/rate-limit';
 import { getCurrentTimeContext, type TimeContext } from '@/lib/time-context';
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
@@ -53,7 +53,7 @@ export async function askMentor(
     // Check for spam (same message repeated quickly)
     const messageHash = message.toLowerCase().trim();
 
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     if (!session || !session.user?.id) {
         return "Maaf, kamu harus login dulu ya untuk menggunakan fitur ini 😊";
     }

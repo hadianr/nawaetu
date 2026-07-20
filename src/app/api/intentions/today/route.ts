@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 
 /**
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const providedToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null;
 
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         const user_token = session?.user?.id || providedToken;
 
         if (!user_token) {

@@ -17,7 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { db, checkConnection } from "@/db";
 import {
@@ -362,7 +362,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             ) as any;
         }
 
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         if (!session?.user?.id) {
             return NextResponse.json(
                 { error: 'Unauthorized' },

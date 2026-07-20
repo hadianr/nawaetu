@@ -17,14 +17,14 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         const userId = session?.user?.id ?? null;
 
         const { token, deviceType, timezone, userLocation, prayerPreferences } = await req.json();

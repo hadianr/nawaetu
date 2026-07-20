@@ -18,11 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 
 export async function checkAvailableModels() {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     if (!session) {
         return "Unauthorized";
     }

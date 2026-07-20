@@ -189,10 +189,10 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 35000))
         ]).catch((e: any) => {
             if (e.message === 'TOKEN_TIMEOUT') {
-                throw new Error("Sistem sedang mensinkronisasi pengunduhan awal. Mohon tunggu sekitar 30 detik, lalu coba aktifkan kembali.");
+                return null;
             }
             if (e.message.includes('getting push subscription required') || e.message.includes('A call to PushManager.subscribe() failed')) {
-                throw new Error("Browser belum siap menghubungkan profil Anda ke server. Coba Refresh halaman dan aktifkan kembali.");
+                return null;
             }
             throw e;
         });
@@ -205,12 +205,21 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             return null;
         }
     } catch (error: any) {
-        console.error("[FCM Setup Error Detail]: " + (error.message || "Unknown error"), error);
-
         const isKnownEnvironmentIssue = error.message?.includes("Sistem sedang mensinkronisasi") ||
             error.message?.includes("Browser belum siap") ||
             error.message?.includes("Izin notifikasi ditolak") ||
             error.message?.includes("Peramban Anda tidak mendukung");
+
+        if (isKnownEnvironmentIssue) {
+            Sentry.addBreadcrumb({
+                category: 'fcm',
+                message: error.message,
+                level: 'warning',
+            });
+            return null;
+        }
+
+        console.error("[FCM Setup Error Detail]: " + (error.message || "Unknown error"), error);
 
         if (!isKnownEnvironmentIssue) {
             if (error.message?.includes("Registration failed") || error.message?.includes("NetworkError")) {
@@ -230,17 +239,8 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
                     userAgent: navigator.userAgent
                 }
             });
-        } else {
-            // Just add as a breadcrumb so it's in the trail if something else fails, 
-            // but don't create an exception in Sentry dashboard.
-            Sentry.addBreadcrumb({
-                category: 'fcm',
-                message: error.message,
-                level: 'warning',
-            });
         }
 
-        // Throw the actual error so the UI can display it
         throw error;
     }
 }
