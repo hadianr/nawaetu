@@ -18,7 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QiblaCompass from "@/components/QiblaCompass";
+import dynamic from "next/dynamic";
+const QiblaCompass = dynamic(() => import("@/components/QiblaCompass"), { ssr: false, loading: () => <div className="animate-pulse w-32 h-32 rounded-full border-4 border-primary/20" /> });
 import QiblaTracker from "@/components/QiblaTracker";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
