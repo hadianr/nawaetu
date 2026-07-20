@@ -1,7 +1,6 @@
 import 'server-only';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
-import { authOptions } from '@/lib/auth';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Groq from 'groq-sdk';
 
