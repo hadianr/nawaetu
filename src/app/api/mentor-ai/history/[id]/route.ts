@@ -17,7 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { chatSessions } from "@/db/schema";
@@ -28,7 +28,7 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> } // Next.js 15+ param is promise
 ) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         if (!session?.user?.id) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }

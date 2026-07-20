@@ -17,7 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
@@ -25,7 +25,7 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
 
         // Ensure user is logged in
         if (!session?.user?.email) {

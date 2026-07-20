@@ -32,7 +32,8 @@ async function getAdmin() {
 
 async function initializeFirebase() {
     const admin = await getAdmin();
-    if (admin.apps.length) return;
+    const initializedApps = (admin as any).apps as unknown[];
+    if (initializedApps.length) return;
 
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,9 +63,9 @@ async function initializeFirebase() {
         }
 
         // Initialize Firebase Admin if service account is available
-        if (serviceAccount && !admin.apps.length) {
+        if (serviceAccount && !(admin as any).apps.length) {
             admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount),
+                credential: (admin as any).credential.cert(serviceAccount),
             });
         }
     } catch (error) {
@@ -75,12 +76,12 @@ async function initializeFirebase() {
 export async function getMessaging() {
     const admin = await getAdmin();
 
-    if (!admin.apps.length) {
+    if (!(admin as any).apps.length) {
         if (!initPromise) {
             initPromise = initializeFirebase();
         }
         await initPromise;
     }
     // Double check after init
-    return admin.apps.length ? admin.messaging() : null;
+    return (admin as any).apps.length ? (admin as any).messaging() : null;
 }

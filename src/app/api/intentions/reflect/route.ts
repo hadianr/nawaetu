@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 
 /**
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { intention_id, reflection_text, reflection_rating, user_token: providedToken } = body;
 
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         const user_token = session?.user?.id || providedToken;
 
         // Token-based auth

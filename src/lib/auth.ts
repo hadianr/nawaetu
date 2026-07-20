@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { NextAuthOptions, getServerSession as nextAuthGetServerSession } from "next-auth";
+import NextAuth, { type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
@@ -38,7 +38,7 @@ import { accounts, sessions, users, verificationTokens } from "@/db/schema";
  *   → The sessions table is no longer written to or read from for session validation.
  *     It's kept in the schema for compatibility but unused during normal operation.
  */
-export const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthConfig = {
     adapter: DrizzleAdapter(db, {
         usersTable: users,
         accountsTable: accounts,
@@ -73,12 +73,24 @@ export const authOptions: NextAuthOptions = {
                 token.picture = (user as any).image ?? null;
             }
 
-            // On explicit `update()` call from client (e.g. after settings change),
-            // merge in the new session data so client sees fresh values without re-login.
-            if (trigger === "update" && session) {
-                if (session.isMuhsinin !== undefined) token.isMuhsinin = session.isMuhsinin;
-                if (session.gender !== undefined) token.gender = session.gender;
-                if (session.archetype !== undefined) token.archetype = session.archetype;
+            // On explicit `update()` call, refresh trusted fields from the database.
+            if (trigger === "update" && token.id) {
+                const freshUser = await db.query.users.findFirst({
+                    where: (usersTable, { eq }) => eq(usersTable.id, token.id as string),
+                    columns: {
+                        isMuhsinin: true,
+                        gender: true,
+                        archetype: true,
+                        image: true,
+                    },
+                });
+
+                if (freshUser) {
+                    token.isMuhsinin = freshUser.isMuhsinin ?? false;
+                    token.gender = freshUser.gender ?? null;
+                    token.archetype = freshUser.archetype ?? null;
+                    token.picture = freshUser.image ?? null;
+                }
             }
 
             return token;
@@ -108,8 +120,10 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 };
 
+export const { auth, handlers } = NextAuth(authOptions);
+
 /**
  * Helper to get user session in Server Components and API Routes.
  * With JWT strategy, this is now O(1) — cryptographic decode only, no DB query.
  */
-export const getServerSession = () => nextAuthGetServerSession(authOptions);
+export const getServerSession = () => auth();

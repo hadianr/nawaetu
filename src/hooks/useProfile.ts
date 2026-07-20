@@ -61,13 +61,7 @@ export function useProfile() {
             if (!res.ok) throw new Error("Gagal update profil server");
 
             // Update Session (Client Side)
-            await updateSession({
-                ...session,
-                user: {
-                    ...session?.user,
-                    ...data
-                }
-            });
+            await updateSession();
 
             // Update Local Storage Fallback
             if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
