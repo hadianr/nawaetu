@@ -20,8 +20,8 @@
 
 // Helper to track custom events
 export const sendGAEvent = (eventName: string, params?: Record<string, string | number | boolean>) => {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', eventName, params);
+    if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', eventName, params);
     }
 };
 

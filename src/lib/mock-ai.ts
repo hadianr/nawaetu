@@ -36,12 +36,6 @@ const ISLAMIC_GREETINGS = [
     "Assalamualaikum, {name}. Semoga Allah mudahkan urusan hari ini. Ada yang bisa saya bantu?",
 ];
 
-const ENCOURAGEMENT_RESPONSES = [
-    "MasyaAllah, setiap langkah menuju kebaikan itu dicatat pahala. Jangan menyerah ya.",
-    "Ingatlah, Allah tidak membebani seseorang melainkan sesuai kesanggupannya (Al-Baqarah: 286).",
-    "La tahzan, innallaha ma'ana. Jangan bersedih, Allah bersama kita.",
-];
-
 const PRAYER_ADVICE = {
     lazy: "Rasa malas itu wajar, manusiawi. Tapi ingat, sholat adalah tiang agama. Coba paksakan wudhu, insyaAllah segar dan ringan setelahnya.",
     busy: "Sesibuk apapun kita, sholat adalah 'istirahat' terbaik bagi jiwa. 'Arihna biha ya Bilal' (Istirahatkan kami dengan sholat, wahai Bilal).",

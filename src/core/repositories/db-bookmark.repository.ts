@@ -158,6 +158,65 @@ export class DbBookmarkRepository implements BookmarkRepository {
         throw new Error("Use updateBookmarkAsync() for DB implementation");
     }
 
+
+    async syncBookmarkAsync(
+        data: any,
+        action: 'create' | 'update' | 'delete'
+    ): Promise<string | undefined> {
+        if (!data.surahId || !data.verseId) {
+            throw new Error('Missing surahId or verseId');
+        }
+
+        const key = `${data.surahId}:${data.verseId}`;
+
+        if (action === 'create' || action === 'update') {
+            const existing = await db.query.bookmarks.findFirst({
+                where: (bookmarks, { eq, and }) =>
+                    and(eq(bookmarks.userId, this.userId), eq(bookmarks.key, key)),
+            });
+
+            if (existing) {
+                await db
+                    .update(bookmarks)
+                    .set({
+                        note: data.note,
+                        tags: data.tags,
+                        translationText: data.translationText,
+                        updatedAt: new Date(),
+                    })
+                    .where(eq(bookmarks.id, existing.id));
+
+                return existing.id;
+            } else {
+                const [result] = await db
+                    .insert(bookmarks)
+                    .values({
+                        userId: this.userId,
+                        surahId: data.surahId,
+                        surahName: data.surahName,
+                        verseId: data.verseId,
+                        verseText: data.verseText,
+                        translationText: data.translationText,
+                        key,
+                        note: data.note,
+                        tags: data.tags,
+                        createdAt: new Date(),
+                    })
+                    .returning({ id: bookmarks.id });
+
+                return result?.id;
+            }
+        } else if (action === 'delete') {
+            await db
+                .delete(bookmarks)
+                .where(and(eq(bookmarks.key, key), eq(bookmarks.userId, this.userId)));
+
+            return undefined;
+        }
+
+        throw new Error(`Unknown action: ${action}`);
+    }
+
     removeAllBookmarks(): void {
         // Dangerous op in DB context, maybe keep for testing only
         throw new Error("Method not implemented for DB safety.");

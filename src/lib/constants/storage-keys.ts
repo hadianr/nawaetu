@@ -72,12 +72,17 @@ export const STORAGE_KEYS = {
   AI_USAGE: 'ai_usage_v1',
 
   // Dhikr (Tasbih)
-  DHIKR_COUNT: 'tasbih_count',
-  DHIKR_TARGET: 'tasbih_target',
-  DHIKR_ACTIVE_PRESET: 'tasbih_active_preset',
-  DHIKR_STREAK: 'tasbih_streak',
-  DHIKR_LAST_DATE: 'tasbih_last_date',
-  DHIKR_DAILY_COUNT: 'tasbih_daily_count',
+  DHIKR_COUNT: 'nawaetu_dhikr_count',
+  DHIKR_TARGET: 'nawaetu_dhikr_target',
+  DHIKR_ACTIVE_PRESET: 'nawaetu_dhikr_active_preset',
+  DHIKR_DAILY_COUNT: 'nawaetu_dhikr_daily_count',
+  DHIKR_STREAK: 'nawaetu_dhikr_streak',
+  DHIKR_LAST_DATE: 'nawaetu_dhikr_last_date',
+  DHIKR_SEQUENCE_ID: 'nawaetu_dhikr_sequence_id',
+  DHIKR_SEQUENCE_INDEX: 'nawaetu_dhikr_sequence_index',
+  DHIKR_CUSTOM_PRESETS: 'nawaetu_dhikr_custom_presets',
+  DHIKR_LIFETIME_COUNT: 'nawaetu_dhikr_lifetime_count',
+  DHIKR_HISTORY: 'nawaetu_dhikr_history',
 
   // Donation (Infaq)
   USER_TOTAL_DONATION: 'user_total_infaq',

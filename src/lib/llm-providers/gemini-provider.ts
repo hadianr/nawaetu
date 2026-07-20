@@ -97,7 +97,7 @@ export class GeminiProvider implements LLMProvider {
     async chat(message: string, context: UserContext, history: ChatMessage[]): Promise<string> {
         try {
             // Convert history to Gemini format and ensure it starts with a 'user' role
-            let geminiHistory = history.slice(-10).map(msg => ({
+            const geminiHistory = history.slice(-10).map(msg => ({
                 role: msg.role === 'user' ? 'user' : 'model',
                 parts: [{ text: msg.content }]
             }));

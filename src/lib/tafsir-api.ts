@@ -84,7 +84,7 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
             if (!res.ok) throw new Error('Failed to fetch English tafsir');
 
             const json = await res.json();
-            let tafsirText = json.tafsir?.text || "";
+            const tafsirText = json.tafsir?.text || "";
 
             if (!tafsirText) return null;
 
