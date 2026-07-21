@@ -16,9 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { LRUCache } from 'lru-cache';
-
-// Simple in-memory rate limiter using LRU cache
+// Simple in-memory rate limiter using native Map
 // For production with multiple servers, use Upstash Redis or similar
 
 interface RateLimitOptions {
@@ -27,39 +25,37 @@ interface RateLimitOptions {
 }
 
 export class RateLimiter {
-    private tokenCache: LRUCache<string, number[]>;
+    private tokenCache = new Map<string, number[]>();
     private interval: number;
+    private maxTokens: number;
 
     constructor(options: RateLimitOptions) {
         this.interval = options.interval;
-        this.tokenCache = new LRUCache({
-            max: options.uniqueTokenPerInterval,
-            ttl: options.interval,
-        });
+        this.maxTokens = options.uniqueTokenPerInterval;
     }
 
     async check(limit: number, token: string): Promise<{ success: boolean; remaining: number }> {
         const now = Date.now();
-        const tokenKey = token;
-        const timestamps = this.tokenCache.get(tokenKey) || [];
+        const timestamps = (this.tokenCache.get(token) || []).filter((timestamp) => now - timestamp < this.interval);
 
-        // Filter out timestamps outside the current window
-        const validTimestamps = timestamps.filter((timestamp) => now - timestamp < this.interval);
-
-        if (validTimestamps.length >= limit) {
+        if (timestamps.length >= limit) {
             return {
                 success: false,
                 remaining: 0,
             };
         }
 
-        // Add current timestamp
-        validTimestamps.push(now);
-        this.tokenCache.set(tokenKey, validTimestamps);
+        if (this.tokenCache.size >= this.maxTokens && !this.tokenCache.has(token)) {
+            const oldestKey = this.tokenCache.keys().next().value;
+            if (oldestKey) this.tokenCache.delete(oldestKey);
+        }
+
+        timestamps.push(now);
+        this.tokenCache.set(token, timestamps);
 
         return {
             success: true,
-            remaining: limit - validTimestamps.length,
+            remaining: limit - timestamps.length,
         };
     }
 }
