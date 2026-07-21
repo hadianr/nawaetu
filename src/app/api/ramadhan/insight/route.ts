@@ -2,7 +2,36 @@ import 'server-only';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import Groq from 'groq-sdk';
+async function generateWithGroq(prompt: string): Promise<string> {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) throw new Error('GROQ_API_KEY not set');
+
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            messages: [
+                { role: 'system', content: 'You are Nawaetu, a warm Islamic spiritual companion. Be concise (max 2 sentences), natural, and constructive.' },
+                { role: 'user', content: prompt },
+            ],
+            model: 'llama-3.1-8b-instant',
+            temperature: 0.8,
+            max_tokens: 150,
+        }),
+    });
+
+    if (!res.ok) {
+        throw Object.assign(new Error(`Groq error ${res.status}`), { status: res.status });
+    }
+
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content?.trim();
+    if (!text) throw new Error('Empty Groq response');
+    return text;
+}
 
 const FALLBACK_INSIGHTS = [
     "Puasa dan tarawihmu sudah bagus, yuk tingkatkan dzikir dan sholat sunnah lainnya biar ibadah makin lengkap. Semangat istiqomahnya!",
@@ -60,26 +89,7 @@ async function generateWithGemini(prompt: string): Promise<string> {
     return text;
 }
 
-async function generateWithGroq(prompt: string): Promise<string> {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) throw new Error('GROQ_API_KEY not set');
 
-    const groq = new Groq({ apiKey });
-    const completion = await groq.chat.completions.create({
-        messages: [
-            { role: 'system', content: 'You are Nawaetu, a warm Islamic spiritual companion. Be concise (max 2 sentences), natural, and constructive.' },
-            { role: 'user', content: prompt },
-        ],
-        model: 'llama-3.1-8b-instant',
-        temperature: 0.8,
-        max_tokens: 150,
-    });
-
-    const text = completion.choices[0]?.message?.content?.trim();
-    if (!text) throw new Error('Empty Groq response');
-    if ((completion as any).status === 429) throw Object.assign(new Error('Rate limited'), { status: 429 });
-    return text;
-}
 
 async function generateWithOpenRouter(prompt: string): Promise<string> {
     const apiKey = process.env.OPENROUTER_API_KEY;

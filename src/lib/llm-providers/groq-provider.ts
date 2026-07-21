@@ -17,7 +17,6 @@
  */
 
 import 'server-only';
-import Groq from "groq-sdk";
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
 import { sanitizeUserContext } from './utils';
 
@@ -40,7 +39,7 @@ const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang
 
 export class GroqProvider implements LLMProvider {
     name = 'Groq';
-    private groq: Groq;
+    private apiKey: string;
     private modelName: string;
 
     constructor() {
@@ -49,7 +48,7 @@ export class GroqProvider implements LLMProvider {
             throw new Error('GROQ_API_KEY not found in environment variables');
         }
 
-        this.groq = new Groq({ apiKey });
+        this.apiKey = apiKey;
         this.modelName = "llama-3.1-8b-instant"; // Fast and supported replacement
     }
 
@@ -60,7 +59,7 @@ export class GroqProvider implements LLMProvider {
             const groqMessages: any[] = [
                 { role: "system", content: SYSTEM_INSTRUCTION },
                 ...history.map(msg => ({
-                    role: msg.role === 'user' ? 'user' : 'assistant', // Groq uses 'assistant' not 'model'
+                    role: msg.role === 'user' ? 'user' : 'assistant',
                     content: msg.content
                 })),
                 {
@@ -69,18 +68,39 @@ export class GroqProvider implements LLMProvider {
                 }
             ];
 
-            const chatCompletion = await this.groq.chat.completions.create({
-                messages: groqMessages,
-                model: this.modelName,
-                temperature: 0.7,
-                max_tokens: 1024,
-                top_p: 1,
+            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${this.apiKey}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    messages: groqMessages,
+                    model: this.modelName,
+                    temperature: 0.7,
+                    max_tokens: 1024,
+                    top_p: 1,
+                }),
             });
 
-            return chatCompletion.choices[0]?.message?.content || "Maaf, saya tidak dapat menjawab saat ini.";
+            if (!res.ok) {
+                if (res.status === 429) {
+                    throw new ProviderError('Rate limit exceeded', 429, 'RATE_LIMIT', true);
+                }
+                const errorData = await res.json().catch(() => ({}));
+                throw new ProviderError(
+                    errorData.error?.message || `Groq API HTTP error ${res.status}`,
+                    res.status,
+                    errorData.error?.code || 'API_ERROR',
+                    true
+                );
+            }
+
+            const data = await res.json();
+            return data.choices?.[0]?.message?.content || "Maaf, saya tidak dapat menjawab saat ini.";
 
         } catch (error: any) {
-
+            if (error instanceof ProviderError) throw error;
             if (error.status === 429) {
                 throw new ProviderError('Rate limit exceeded', 429, 'RATE_LIMIT', true);
             }
