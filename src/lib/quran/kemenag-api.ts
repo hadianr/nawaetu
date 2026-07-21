@@ -1,0 +1,388 @@
+/**
+ * Nawaetu - Islamic Habit Tracker
+ * Copyright (C) 2026 Hadian Rahmat
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Kemenag-based Quran API Adapter
+ * Uses gadingnst/quran-api which sources data from Kemenag with proper waqof marks
+ * API URL: https://quran-api-id.vercel.app (hosted by gadingnst)
+ */
+
+import { cache } from "react";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
+import type { Chapter } from "@/components/quran/SurahList";
+import { API_CONFIG } from "@/config/apis";
+
+interface GadingQuranResponse {
+  code: number;
+  status: string;
+  message: string;
+  data: GadingSurah | GadingSurah[];
+}
+
+interface GadingSurah {
+  number: number;
+  sequence: number;
+  numberOfVerses: number;
+  name: {
+    short: string;
+    long: string;
+    transliteration: {
+      en: string;
+      id: string;
+    };
+    translation: {
+      en: string;
+      id: string;
+    };
+  };
+  revelation: {
+    arab: string;
+    en: string;
+    id: string;
+  };
+  tafsir: {
+    id: string;
+  };
+  preBismillah?: any;
+  verses?: GadingVerse[];
+}
+
+interface GadingVerse {
+  number: {
+    inQuran: number;
+    inSurah: number;
+  };
+  meta: {
+    juz: number;
+    page: number;
+    manzil: number;
+    ruku: number;
+    hizbQuarter: number;
+    sajda: {
+      recommended: boolean;
+      obligatory: boolean;
+    };
+  };
+  text: {
+    arab: string;
+    transliteration: {
+      en: string;
+    };
+  };
+  translation: {
+    en: string;
+    id: string;
+  };
+  audio: {
+    primary: string;
+    secondary: string[];
+  };
+  tafsir: {
+    id: {
+      short: string;
+      long: string;
+    };
+  };
+}
+
+// Get all chapters from Kemenag API
+export const getKemenagChapters = cache(async (): Promise<Chapter[]> => {
+  try {
+    const res = await fetchWithTimeout(
+      `${API_CONFIG.QURAN_ID.BASE_URL}/surah`,
+      { next: { revalidate: 86400 } },
+      { timeoutMs: 8000 }
+    );
+
+    if (!res.ok) throw new Error(`Failed to fetch chapters: ${res.status} ${res.statusText}`);
+
+    const response: GadingQuranResponse = await res.json();
+    const surahs = response.data as GadingSurah[];
+
+    if (!surahs || surahs.length === 0) {
+      throw new Error(`No chapters found in API response`);
+    }
+
+
+    // Transform to match SurahList.Chapter structure
+    return surahs.map((surah: GadingSurah) => ({
+      id: surah.number,
+      revelation_place: surah.revelation.id === "Makkiyyah" ? "Makkah" : "Madinah",
+      revelation_order: surah.sequence,
+      bismillah_pre: surah.number !== 9, // Surah At-Taubah doesn't have Bismillah
+      name_simple: surah.name.transliteration.id,
+      name_complex: surah.name.long,
+      name_arabic: surah.name.short,
+      verses_count: surah.numberOfVerses,
+      pages: [], // Not provided by this API
+      translated_name: {
+        language_name: "Indonesian",
+        name: surah.name.translation.id,
+      },
+      translated_name_en: surah.name.translation.en,
+    }));
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    throw error;
+  }
+});
+
+// Get specific chapter from Kemenag API (returns Chapter from SurahList)
+export async function getKemenagChapter(chapterId: string | number): Promise<Chapter> {
+  try {
+    const chapters = await getKemenagChapters();
+    const chapter = chapters.find((ch) => ch.id === parseInt(String(chapterId)));
+
+    if (!chapter) {
+      throw new Error(`Chapter ${chapterId} not found in chapters list`);
+    }
+
+    return chapter;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Get verses for a chapter from Kemenag API
+// Wrapped with React's cache to deduplicate identical requests within same render
+export const getKemenagVerses = cache(
+  async (
+    chapterId: string | number,
+    page: number = 1,
+    perPage: number = 20,
+    locale: string = "id"
+  ) => {
+    try {
+      // Determine translation ID based on locale
+      // 20 = Saheeh International (English), 33 = Indonesian (Kemenag)
+      const translationId = locale === "en" ? 20 : 33;
+
+      // Single API call - use quran.com only (faster, no dual API bottleneck)
+      // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
+      const apiUrl = `${API_CONFIG.QURAN_COM.BASE_URL}/verses/by_chapter/${chapterId}?language=${locale}&word_translation_language=${locale}&words=true&word_fields=text_uthmani,text_indopak&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
+
+      const startTime = Date.now();
+      const res = await fetchWithTimeout(
+        apiUrl,
+        { next: { revalidate: 86400 } },
+        { timeoutMs: 15000 }
+      );
+
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+
+      const data = await res.json();
+      if (!data) throw new Error(`Empty response from API`);
+
+      const verses = Array.isArray(data.verses) ? data.verses : [];
+      if (verses.length === 0) throw new Error(`No verses in API response`);
+
+      const duration = Date.now() - startTime;
+
+      // Transform to match app structure - simple, fast transformation with safety checks
+      return verses.map((verse: any) => {
+        // Safely build transliteration from words
+        const transliteration = Array.isArray(verse.words)
+          ? verse.words.map((w: any) => w?.transliteration?.text || '').filter(Boolean).join(' ')
+          : '';
+
+        // Safely access nested translation
+        const translation = Array.isArray(verse.translations) && verse.translations.length > 0
+          ? verse.translations[0]
+          : { id: -1, resource_id: -1, text: '' };
+
+        return {
+          id: verse.id || -1,
+          verse_number: verse.verse_number || 0,
+          verse_key: verse.verse_key || `0:0`,
+          text_uthmani: verse.text_uthmani || '',
+          text_uthmani_tajweed: verse.text_uthmani_tajweed || verse.text_uthmani || '',
+          translations: [translation],
+          transliteration: transliteration,
+          words: Array.isArray(verse.words) ? verse.words : [],
+          audio: {
+            url: verse.audio?.url || "",
+          },
+          meta: verse.meta || {},
+        } as any;
+      });
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+
+      // Re-throw with context
+      throw new Error(`Surah ${chapterId} failed: ${errorMsg.slice(0, 50)}`);
+    }
+  }
+);
+
+// Get single verse with details
+export async function getKemenagVerse(chapterId: string | number, verseNumber: string | number) {
+  try {
+    const res = await fetchWithTimeout(
+      `${API_CONFIG.QURAN_ID.BASE_URL}/surah/${chapterId}/${verseNumber}`,
+      { next: { revalidate: 86400 } },
+      { timeoutMs: 8000 }
+    );
+
+    if (!res.ok) throw new Error(`Verse ${chapterId}:${verseNumber} not found`);
+
+    const response: any = await res.json();
+    const verse = response.data as GadingVerse;
+
+    return {
+      id: verse.number.inQuran,
+      verse_number: verse.number.inSurah,
+      verse_key: `${chapterId}:${verse.number.inSurah}`,
+      text_uthmani: verse.text.arab,
+      text_uthmani_tajweed: verse.text.arab,
+      translation: {
+        id: {
+          text: verse.translation.id,
+        },
+      },
+      audio: {
+        primary: verse.audio.primary,
+        secondary: verse.audio.secondary,
+      },
+      tafsir: {
+        kemenag: {
+          short: verse.tafsir.id.short,
+          long: verse.tafsir.id.long,
+        },
+      },
+      meta: verse.meta,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Get audio URL for a verse - uses the audio provided by Kemenag API
+export function getVerseAudioUrl(verseId: number, reciterId: number): string {
+  // Map reciter IDs to Islamic.Network CDN folder names with correct bitrates
+  // IDs match quran.com API reciter identifiers
+  const reciterMap: { [key: number]: { name: string; bitrate: number } } = {
+    7: { name: "alafasy", bitrate: 128 },           // Mishary Rashid Alafasy
+    2: { name: "abdurrahmaansudais", bitrate: 192 }, // Abdul Rahman Al-Sudais
+    1: { name: "abdulbasitmurattal", bitrate: 192 }, // Abdul Basit (Murattal)
+    5: { name: "mahermuaiqly", bitrate: 128 },       // Maher Al Muaiqly
+    3: { name: "saoodshuraym", bitrate: 64 },        // Saud Al-Shuraim
+  };
+
+  const reciter = reciterMap[reciterId] || reciterMap[7];
+  return `${API_CONFIG.AUDIO.ISLAMIC_NETWORK_CDN}/${reciter.bitrate}/ar.${reciter.name}/${verseId}.mp3`;
+}
+
+// Prefetch utility for popular surahs during idle time
+// Call this on app startup to preload chapters 1-10 + frequently read surahs
+export function prefetchPopularSurahs(locale: string = "id"): void {
+  if (typeof window === "undefined") return; // Only in browser
+
+  // Popular surahs: Al-Fatiha(1), Al-Baqarah(2), Ali-Imran(3), An-Nisa(4), Al-Ma'idah(5),
+  // Al-An'am(6), Al-A'raf(7), Al-Anfal(8), At-Tawbah(9), Yunus(10), Ar-Rahman(55), Ya-Seen(36)
+  const popularSurahs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 36, 55];
+
+  // Use requestIdleCallback to prefetch without blocking user interaction
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(() => {
+      // Stagger prefetches to avoid N+1 API call warnings in Sentry/Performance tools
+      let i = 0;
+      const prefetchNext = () => {
+        if (i >= popularSurahs.length) return;
+
+        getKemenagVerses(popularSurahs[i], 1, 20, locale).catch(() => {
+          // Silently ignore prefetch errors
+        });
+
+        i++;
+        // Delay next fetch by 500ms
+        setTimeout(prefetchNext, 500);
+      };
+
+      prefetchNext();
+    });
+  }
+}
+
+// Fallback for failed API calls - returns minimal verse structure
+function createFallbackVerse(verseKey: string): any {
+  const [chapter, verse] = verseKey.split(":");
+  return {
+    id: parseInt(verseKey.replace(":", "")),
+    verse_number: parseInt(verse),
+    verse_key: verseKey,
+    text_uthmani: "",
+    text_uthmani_tajweed: "",
+    translations: [{ text: "Unable to load translation" }],
+    transliteration: "",
+    words: [],
+    audio: { url: "", primary: "", secondary: [] },
+    meta: null,
+  };
+}
+
+export interface SearchResultItem {
+  verse_key: string;
+  verse_id: number;
+  text_uthmani: string;
+  translation: string;
+  words: any[];
+}
+
+export interface SearchResponse {
+  query: string;
+  total_results: number;
+  current_page: number;
+  total_pages: number;
+  results: SearchResultItem[];
+}
+
+export const searchVerses = cache(async (query: string, page: number = 1, locale: string = "id", size: number = 20): Promise<SearchResponse> => {
+  if (!query || query.trim() === '') {
+    return { query, total_results: 0, current_page: 1, total_pages: 0, results: [] };
+  }
+
+  try {
+    const res = await fetchWithTimeout(
+      `${API_CONFIG.QURAN_COM.BASE_URL}/search?q=${encodeURIComponent(query)}&language=${locale}&word_translation_language=${locale}&size=${size}&page=${page}`,
+      { next: { revalidate: 3600 } },
+      { timeoutMs: 15000 }
+    );
+
+    if (!res.ok) throw new Error(`Search API failed: ${res.statusText}`);
+
+    const data = await res.json();
+    if (!data.search) throw new Error("Invalid search response");
+
+    return {
+      query: data.search.query,
+      total_results: data.search.total_results,
+      current_page: data.search.current_page,
+      total_pages: data.search.total_pages,
+      results: data.search.results.map((r: any) => ({
+        verse_key: r.verse_key,
+        verse_id: r.verse_id,
+        text_uthmani: r.text,
+        translation: r.translations?.[0]?.text || '',
+        words: r.words || [],
+      }))
+    };
+  } catch (error) {
+    console.error("Quran Search Error:", error);
+    throw error;
+  }
+});
