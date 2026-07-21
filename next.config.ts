@@ -43,7 +43,6 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-popover",
       "react-markdown",
       "@google/generative-ai",
-      "groq-sdk",
       "sentry",
       "@sentry/nextjs"
     ],
