@@ -28,7 +28,7 @@
  * - Status lifecycle: pending → synced/failed
  */
 
-import { v4 as uuidv4 } from 'uuid';
+
 
 /**
  * Supported entity types for syncing
@@ -154,7 +154,7 @@ class SyncQueueManager {
     }
 
     const entry: SyncQueueEntry = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       type,
       action,
       data,
