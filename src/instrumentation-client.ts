@@ -62,6 +62,8 @@ const initSentry = () => {
       /Can't find variable: __firefox__/i,
       /window\.webkit\.messageHandlers/i,
       /undefined is not an object \(evaluating 'window\.webkit\.messageHandlers'\)/i,
+      /Registration failed - push service error/i,
+      /AbortError: Registration failed/i,
     ],
   });
 };
