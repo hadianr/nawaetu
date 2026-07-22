@@ -208,12 +208,14 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         const isKnownEnvironmentIssue = error.message?.includes("Sistem sedang mensinkronisasi") ||
             error.message?.includes("Browser belum siap") ||
             error.message?.includes("Izin notifikasi ditolak") ||
-            error.message?.includes("Peramban Anda tidak mendukung");
+            error.message?.includes("Peramban Anda tidak mendukung") ||
+            error.message?.includes("Registration failed - push service error") ||
+            error.name === "AbortError";
 
         if (isKnownEnvironmentIssue) {
             Sentry.addBreadcrumb({
                 category: 'fcm',
-                message: error.message,
+                message: error.message || "FCM initialization skipped (known environment limitation)",
                 level: 'warning',
             });
             return null;
@@ -221,25 +223,23 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
 
         console.error("[FCM Setup Error Detail]: " + (error.message || "Unknown error"), error);
 
-        if (!isKnownEnvironmentIssue) {
-            if (error.message?.includes("Registration failed") || error.message?.includes("NetworkError")) {
-                // Add breadcrumb for this specific failure
-                Sentry.addBreadcrumb({
-                    category: 'fcm',
-                    message: `Initialization failed: ${error.message}`,
-                    level: 'error',
-                    data: { code: error.code }
-                });
-            }
-
-            Sentry.captureException(error, {
-                extra: {
-                    context: "fcm-init.registerServiceWorkerAndGetToken",
-                    hasServiceWorker: 'serviceWorker' in navigator,
-                    userAgent: navigator.userAgent
-                }
+        if (error.message?.includes("Registration failed") || error.message?.includes("NetworkError")) {
+            // Add breadcrumb for this specific failure
+            Sentry.addBreadcrumb({
+                category: 'fcm',
+                message: `Initialization failed: ${error.message}`,
+                level: 'error',
+                data: { code: error.code }
             });
         }
+
+        Sentry.captureException(error, {
+            extra: {
+                context: "fcm-init.registerServiceWorkerAndGetToken",
+                hasServiceWorker: 'serviceWorker' in navigator,
+                userAgent: navigator.userAgent
+            }
+        });
 
         throw error;
     }
