@@ -25,5 +25,28 @@ export const settingsID = {
     languageTitle: "Bahasa",
     languageDescription: "Bahasa aplikasi akan berubah sesuai pilihan.",
 
+    // Community & Feedback
+    communityTitle: "Komunitas & Kontribusi",
+    feedbackButton: "Hubungi & Kirim Masukan",
+    feedbackButtonCompact: "Kirim",
+    feedbackCardTitle: "Saran & Masukan",
+    feedbackCardDesc: "Laporkan bug atau usulkan ide fitur baru.",
+    feedbackDescription: "Minta fitur baru atau laporkan bug untuk membantu meningkatkan Nawaetu.",
+    feedbackModalTitle: "Kirim Masukan",
+    feedbackTypeLabel: "Tipe Masukan",
+    feedbackTypeBug: "Laporkan Bug",
+    feedbackTypeFeature: "Usul Fitur Baru",
+    feedbackMessageLabel: "Deskripsi Masukan",
+    feedbackMessagePlaceholder: "Tuliskan laporan bug atau ide fitur baru Anda di sini secara detail...",
+    feedbackScreenshotLabel: "Tangkapan Layar (Opsional)",
+    feedbackScreenshotDesc: "Unggah gambar pendukung (maks. 3 gambar, masing-masing maks. 5MB)",
+    feedbackSubmitButton: "Kirim Masukan",
+    feedbackSubmitting: "Mengirim...",
+    feedbackSuccessToast: "Masukan Anda berhasil dikirim. Terima kasih!",
+    feedbackErrorToast: "Gagal mengirim masukan. Silakan coba lagi.",
+    feedbackAuthRequired: "Silakan masuk terlebih dahulu untuk mengirim masukan.",
+    feedbackLoginButton: "Masuk Sekarang",
+
+
 
 };

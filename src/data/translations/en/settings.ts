@@ -25,5 +25,28 @@ export const settingsEN = {
     languageTitle: "Language",
     languageDescription: "The app language will change according to your selection.",
 
+    // Community & Feedback
+    communityTitle: "Community & Contribution",
+    feedbackButton: "Contact & Send Feedback",
+    feedbackButtonCompact: "Send",
+    feedbackCardTitle: "Feedback",
+    feedbackCardDesc: "Report bugs or propose new features.",
+    feedbackDescription: "Request new features or report bugs to help improve Nawaetu.",
+    feedbackModalTitle: "Send Feedback",
+    feedbackTypeLabel: "Feedback Type",
+    feedbackTypeBug: "Report a Bug",
+    feedbackTypeFeature: "Propose a Feature",
+    feedbackMessageLabel: "Feedback Description",
+    feedbackMessagePlaceholder: "Write your bug report or feature idea here in detail...",
+    feedbackScreenshotLabel: "Screenshot (Optional)",
+    feedbackScreenshotDesc: "Upload supporting images (max. 3 images, max. 5MB each)",
+    feedbackSubmitButton: "Submit Feedback",
+    feedbackSubmitting: "Submitting...",
+    feedbackSuccessToast: "Your feedback has been submitted successfully. Thank you!",
+    feedbackErrorToast: "Failed to send feedback. Please try again.",
+    feedbackAuthRequired: "Please sign in first to send feedback.",
+    feedbackLoginButton: "Sign In Now",
+
+
 
 };
