@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.11.0] - 2026-07-22
+
+### Added
+- **Feat: add new section card user feedback**
+- **Feat: add env telegram bot**
+- **Feat(db): add schema table user_feedback**
+
+### Improved
+- **Chore:  replace canvas-confetti with native HTML5 canvas**
+- **Refactor: group domain modules under src/lib/{quran,analytics,habits}**
+- **Chore: simple inmemory rate limiter using native map**
+- **Chore: remove sdk groq and change using fetch api**
+- **Chore: update packagelock json**
+- **Chore: remove unused code and library**
+
+
 ## [1.10.0] - 2026-07-21
 
 ### Performance
