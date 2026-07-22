@@ -447,3 +447,26 @@ export const ramadhanDailyLog = pgTable("ramadhan_daily_log", {
 
 export type RamadhanDailyLog = typeof ramadhanDailyLog.$inferSelect;
 export type NewRamadhanDailyLog = typeof ramadhanDailyLog.$inferInsert;
+
+// --- User Feedback Table (v1.11.0) ---
+export const userFeedback = pgTable("user_feedback", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull(), // 'bug' | 'feature'
+    message: text("message").notNull(),
+    deviceInfo: jsonb("device_info").notNull(), // browser, OS, app version, screen size, user-agent
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const userFeedbackRelations = relations(userFeedback, ({ one }) => ({
+    user: one(users, {
+        fields: [userFeedback.userId],
+        references: [users.id],
+    }),
+}));
+
+export type UserFeedback = typeof userFeedback.$inferSelect;
+export type NewUserFeedback = typeof userFeedback.$inferInsert;
+
