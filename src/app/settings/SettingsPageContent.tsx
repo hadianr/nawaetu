@@ -19,7 +19,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, Calendar } from "lucide-react";
+import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, Calendar, MessageSquarePlus } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"; // Import useSession
@@ -39,6 +39,8 @@ import UserProfileDialog from "@/components/UserProfileDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar
 import DonationModal from "@/components/DonationModal";
 import AboutAppModal from "@/components/AboutAppModal";
+import FeedbackModal from "@/components/FeedbackModal";
+
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
 import { useInfaq } from "@/context/InfaqContext";
@@ -89,7 +91,9 @@ export default function SettingsPageContent() {
     const [showDonationModal, setShowDonationModal] = useState(false);
     const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
     const [showAboutModal, setShowAboutModal] = useState(false);
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+
 
     // Profile State
     const [userName, setUserName] = useState("Sobat Nawaetu");
@@ -831,7 +835,47 @@ export default function SettingsPageContent() {
                     </Select>
                 </div>
 
+                {/* Community & Feedback Card */}
+                <div className={cn(
+                    "border rounded-2xl p-4 flex items-center justify-between transition-all",
+                    isDaylight
+                        ? "bg-slate-50 border-slate-200/50 shadow-sm"
+                        : "bg-white/[0.02] border-white/10"
+                )}>
+                    <div className="flex-1 min-w-0 pr-4">
+                        <div className="flex items-center gap-2 mb-1">
+                            <MessageSquarePlus className={cn(
+                                "w-4 h-4",
+                                isDaylight ? "text-slate-600" : "text-[rgb(var(--color-primary-light))]"
+                            )} />
+                            <span className={cn(
+                                "text-sm font-bold",
+                                isDaylight ? "text-slate-900" : "text-white"
+                            )}>{t.feedbackCardTitle}</span>
+                        </div>
+                        <p className={cn(
+                            "text-[10px] leading-relaxed",
+                            isDaylight ? "text-slate-500" : "text-white/40"
+                        )}>
+                            {t.feedbackCardDesc}
+                        </p>
+                    </div>
+                    <Button
+                        onClick={() => setShowFeedbackModal(true)}
+                        size="sm"
+                        className={cn(
+                            "font-bold h-8 px-3.5 text-xs rounded-xl shadow-lg transition-all active:scale-[0.98] shrink-0",
+                            isDaylight
+                                ? "bg-slate-900 hover:bg-slate-800 text-white"
+                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white shadow-[rgb(var(--color-primary))]/20"
+                        )}
+                    >
+                        {t.feedbackButtonCompact}
+                    </Button>
+                </div>
+
                 {/* Support Card (Persistent) - Swapped Back Up */}
+
                 <div className={cn(
                     "border rounded-2xl p-4 flex items-center justify-between transition-all",
                     isDaylight
@@ -952,6 +996,8 @@ export default function SettingsPageContent() {
             />
             <DonationModal isOpen={showDonationModal} onClose={() => setShowDonationModal(false)} />
             <AboutAppModal open={showAboutModal} onOpenChange={setShowAboutModal} />
+            <FeedbackModal open={showFeedbackModal} onOpenChange={setShowFeedbackModal} />
         </div >
     );
 }
+
