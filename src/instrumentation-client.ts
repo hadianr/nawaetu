@@ -60,6 +60,8 @@ const initSentry = () => {
       /Converting circular structure to JSON/i,
       /ReferenceError: Can't find variable: __firefox__/i,
       /Can't find variable: __firefox__/i,
+      /window\.webkit\.messageHandlers/i,
+      /undefined is not an object \(evaluating 'window\.webkit\.messageHandlers'\)/i,
     ],
   });
 };
