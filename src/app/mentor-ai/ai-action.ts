@@ -60,7 +60,7 @@ export async function askMentor(
     // ===== SECURITY LAYER 2: Rate Limiting =====
     // Use user ID as identifier for secure rate limiting
     const identifier = `chat:${session.user.id}`;
-    const rateLimit = await chatRateLimiter.check(10, identifier); // Max 10 requests per minute
+    const rateLimit = await chatRateLimiter.check(identifier);
 
     if (!rateLimit.success) {
         return `Wah, terlalu banyak pesan nih 😅 Tunggu sebentar ya, kamu bisa tanya lagi dalam 1 menit. Santai aja~`;
