@@ -18,6 +18,11 @@
 
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import type { Gender } from "@/data/missions";
 
 interface PrayerTimeCardProps {
     hijriDate: string;
@@ -33,12 +38,29 @@ export default function PrayerTimeCard({
     nextPrayer,
 }: PrayerTimeCardProps) {
     const { t } = useLocale();
+    const { data: session } = useSession();
+    const [gender, setGender] = useState<Gender>(null);
+
+    useEffect(() => {
+        const storage = getStorageService();
+        const savedGender = (session?.user?.gender || storage.getOptional(STORAGE_KEYS.USER_GENDER)) as Gender;
+        setGender(savedGender);
+    }, [session]);
+
+    // Check if gregorianDate or today is Friday (getDay() === 5)
+    const isFriday = (() => {
+        if (!gregorianDate) return new Date().getDay() === 5;
+        const d = new Date(gregorianDate);
+        return !isNaN(d.getTime()) ? d.getDay() === 5 : new Date().getDay() === 5;
+    })();
+
+    const isMaleFriday = gender === "male" && isFriday;
 
     // Only show formal prayer times + Imsak as a fasting reference
     const prayers: { key: string; label: string; isReference?: boolean }[] = [
         { key: "Imsak", label: t.prayerImsak, isReference: true },
         { key: "Fajr", label: t.prayerFajr },
-        { key: "Dhuhr", label: t.prayerDhuhr },
+        { key: "Dhuhr", label: isMaleFriday ? ((t as any).prayerJumuah || "Jumat") : t.prayerDhuhr },
         { key: "Asr", label: t.prayerAsr },
         { key: "Maghrib", label: t.prayerMaghrib },
         { key: "Isha", label: t.prayerIsha },
