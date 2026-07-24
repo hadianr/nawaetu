@@ -136,3 +136,11 @@ MAYAR_ERROR.log
 scripts/simulate_webhook.ts
 scripts/fix_dataplay_status.ts
 scripts/diagnose_payment.ts
+
+# Local tooling & agents output
+graphify-out/
+.obsidian/
+skills-lock.json
+.agents/
+
+

@@ -222,6 +222,36 @@ We welcome contributions from the global community! Whether it's bug fixes, new 
 4. **Push to branch** (`git push origin feature/AmazingFeature`)
 5. **Open Pull Request**
 
+### 🤖 AI Agent Setup (Optional)
+
+This project supports local AI pair-programming assistant extensions (Google Antigravity, Claude Code, Cursor, etc.). Configuration lives under `.agents/` (untracked by Git).
+
+#### Directory Structure
+```text
+.agents/
+├── rules/         # Custom rules applied automatically to agent turns (e.g., graphify.md)
+├── workflows/     # Actionable multi-step guides executable via slash commands (e.g., /graphify)
+└── skills/        # Modular capabilities and scripts (e.g., cavecrew, caveman-review)
+```
+
+#### How to Set Up
+1. **Create Directory**:
+   ```bash
+   mkdir -p .agents/rules .agents/workflows .agents/skills
+   ```
+2. **Add Custom Rules**: Create markdown files in `.agents/rules/` for repository guidelines.
+   *Example: `.agents/rules/graphify.md`*
+   ```markdown
+   ## Knowledge Graph
+   When graphify-out/graph.json exists, query the graph first before scanning raw files.
+   ```
+3. **Add Custom Workflows**: Create markdown guides in `.agents/workflows/` to automate repeatable agent tasks.
+   *Example: `.agents/workflows/graphify.md`*
+4. **Add Custom Skills**: Create subdirectories under `.agents/skills/<skill-name>/` with a `SKILL.md` file describing the triggers, workflows, and helper scripts.
+
+
+
+
 
 ## ☕ Support the Mission
 
