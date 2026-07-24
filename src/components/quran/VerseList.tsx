@@ -25,7 +25,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useQuranAudio } from "@/hooks/useQuranAudio";
 import { Play, Bookmark, Check, ChevronLeft, Settings, Loader2, ArrowLeft, ArrowRight, Repeat, CornerDownRight, Hash } from "lucide-react";
-import { getVerseTafsir, type TafsirContent } from '@/lib/tafsir-api';
+import { getVerseTafsir, type TafsirContent } from '@/lib/quran/tafsir-api';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
@@ -61,7 +61,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { syncQueue } from "@/lib/sync-queue";
 import { cleanTajweedText } from "@/lib/sanitize";
-import { incrementDailyActivity } from "@/lib/analytics-utils";
+import { incrementDailyActivity } from "@/lib/analytics/analytics-utils";
 import { toast } from "sonner";
 import { getBookmarkRepository } from '@/core/repositories/bookmark.repository';
 import {
@@ -71,7 +71,7 @@ import {
     getVerseFontClass,
     formatFootnotes
 } from "@/lib/quran-utils";
-import { fetchSurahSegments, findActiveWordIndex, type VerseSegmentMap } from "@/lib/quran-segments-api";
+import { fetchSurahSegments, findActiveWordIndex, type VerseSegmentMap } from "@/lib/quran/quran-segments-api";
 
 
 export interface Verse {

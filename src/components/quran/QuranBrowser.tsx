@@ -17,7 +17,7 @@
  */
 
 import SurahList, { Chapter } from "@/components/quran/SurahList";
-import { getKemenagChapters } from "@/lib/kemenag-api";
+import { getKemenagChapters } from "@/lib/quran/kemenag-api";
 import QuranErrorMessage from "./QuranErrorMessage";
 
 async function getChapters(): Promise<Chapter[]> {

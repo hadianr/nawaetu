@@ -20,7 +20,7 @@ import { cookies } from "next/headers";
 import VerseList from "@/components/quran/VerseList";
 import QuranTracker from "@/components/quran/QuranTracker";
 import { DEFAULT_SETTINGS } from "@/data/settings-data";
-import { getKemenagChapter, getKemenagVerses, getVerseAudioUrl } from "@/lib/kemenag-api";
+import { getKemenagChapter, getKemenagVerses, getVerseAudioUrl } from "@/lib/quran/kemenag-api";
 
 interface VerseBrowserProps {
     params: Promise<{ id: string }>;

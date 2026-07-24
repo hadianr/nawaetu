@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from '@/context/LocaleContext';
 import { usePlayerStats } from '@/lib/leveling';
-import { getDailyActivityHistory } from '@/lib/analytics-utils';
+import { getDailyActivityHistory } from '@/lib/analytics/analytics-utils';
 import { getMissionRepository } from '@/core/repositories/mission.repository';
 import {
     Dialog,

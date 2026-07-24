@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Loader2, BookOpen } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { searchQuranAction } from "@/app/actions/quran";
-import type { SearchResponse } from "@/lib/kemenag-api";
+import type { SearchResponse } from "@/lib/quran/kemenag-api";
 import Link from "next/link";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";

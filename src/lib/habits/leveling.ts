@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { incrementDailyActivity } from "@/lib/analytics-utils";
+import { incrementDailyActivity } from "@/lib/analytics/analytics-utils";
 
 export const LEVEL_THRESHOLDS = [
     0,      // Level 1 starts at 0 Hasanah

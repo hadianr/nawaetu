@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Verse } from "@/components/quran/VerseList";
-import { fetchSurahSegments, findActiveWordIndex } from "@/lib/quran-segments-api";
+import { fetchSurahSegments, findActiveWordIndex } from "@/lib/quran/quran-segments-api";
 
 export function useQuranAudio({
     accumulatedVerses,

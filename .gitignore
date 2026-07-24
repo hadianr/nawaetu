@@ -143,4 +143,16 @@ graphify-out/
 skills-lock.json
 .agents/
 
+# Jules AI assistant (internal tooling)
+.jules/
+
+# PWA / next-pwa build output (auto-regenerated on every `npm run build`)
+# dest: "public" in next.config.ts — these must NOT be committed
+public/workbox-*.js
+public/workbox-*.js.map
+public/sw.js
+public/sw.js.map
+public/swe-worker-*.js
+public/swe-worker-*.js.map
+
 

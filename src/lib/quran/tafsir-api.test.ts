@@ -17,7 +17,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getVerseTafsir } from "@/lib/tafsir-api";
+import { getVerseTafsir } from "@/lib/quran/tafsir-api";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 const storageMock = {
