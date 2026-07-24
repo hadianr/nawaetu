@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
@@ -18,8 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MentorAIClient from "./components/MentorAIClient";
-
-export default function MentorAIPage() {
-    return <MentorAIClient />;
-}
+export type DhikrPreset = {
+    id: string;
+    label: string;
+    arab: string;
+    latin: string;
+    tadabbur: string;
+    target: number;
+};

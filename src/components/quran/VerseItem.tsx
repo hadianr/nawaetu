@@ -32,7 +32,7 @@ import {
     formatFootnotes
 } from "@/lib/quran-utils";
 
-interface VerseCardProps {
+interface VerseItemProps {
     verse: Verse;
     verseNum: number;
     isPlayingVerse: boolean;
@@ -62,7 +62,7 @@ interface VerseCardProps {
 import { cleanTajweedText as sanitizeTajweedText } from "@/lib/sanitize";
 import { useState } from "react";
 
-export default function VerseCard({
+export default function VerseItem({
     verse,
     verseNum,
     isPlayingVerse,
@@ -84,7 +84,7 @@ export default function VerseCard({
     onReadFullTafsir,
     prefetchShareDialog,
     activeWordIdx,
-}: VerseCardProps) {
+}: VerseItemProps) {
     const { t } = useLocale();
     const [isMasked, setIsMasked] = useState(false);
 

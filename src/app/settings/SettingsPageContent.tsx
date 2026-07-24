@@ -60,6 +60,12 @@ import PaymentSuccessModal from "@/components/PaymentSuccessModal";
 import { APP_CONFIG } from "@/config/app-config";
 import UpdateChecker from "@/components/UpdateChecker";
 
+import ProfileCard from "./sections/ProfileCard";
+import ThemeCard from "./sections/ThemeCard";
+import AudioCard from "./sections/AudioCard";
+import LanguageCard from "./sections/LanguageCard";
+import CommunityCard from "./sections/CommunityCard";
+
 const storage = getStorageService();
 
 interface AdhanPreferences {
@@ -144,14 +150,8 @@ export default function SettingsPageContent() {
     const [calculationMethod, setCalculationMethod] = useState(DEFAULT_SETTINGS.calculationMethod.toString());
     const [hijriAdjustment, setHijriAdjustment] = useState("-1");
 
-    // Audio Preview State
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [playingId, setPlayingId] = useState<string | null>(null);
-    const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
-    const audioRequestRef = useRef(0);
-    const isMountedRef = useRef(true);
-
+    // Audio Preview State has been moved to AudioCard
+    
     const refreshProfile = () => {
         const [savedName, savedTitle, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
@@ -173,157 +173,6 @@ export default function SettingsPageContent() {
     useEffect(() => {
         refreshProfile();
     }, [session]);
-
-    // Helper to safely stop audio without triggering error
-    const stopCurrentAudio = (bumpRequest: boolean = true) => {
-        if (bumpRequest) {
-            audioRequestRef.current += 1;
-        }
-
-
-        if (audio) {
-            audio.onended = null;
-            audio.onerror = null;
-            audio.pause();
-            audio.src = "";
-            setAudio(null);
-        }
-        if (!isMountedRef.current) return;
-        setIsPlaying(false);
-        setPlayingId(null);
-        setIsLoading(false);
-    };
-
-    // Track mounted state for async audio callbacks
-    useEffect(() => {
-        isMountedRef.current = true;
-        return () => {
-            isMountedRef.current = false;
-        };
-    }, []);
-
-    // Cleanup audio on unmount or audio instance change
-    useEffect(() => {
-        return () => {
-            if (audio) {
-                audio.onended = null;
-                audio.onerror = null;
-                audio.pause();
-                audio.src = "";
-            }
-        };
-    }, [audio]);
-
-    const toggleAudioPreview = (id: string) => {
-        // Stop current audio if playing same ID
-        if (playingId === id && isPlaying) {
-            stopCurrentAudio();
-            return;
-        }
-
-        stopCurrentAudio(false);
-        setIsLoading(true);
-        setPlayingId(id);
-
-        let audioUrl = "";
-
-        const selectedMuadzin = MUADZIN_OPTIONS.find(m => m.id === id);
-        if (!selectedMuadzin || !selectedMuadzin.audio_url) {
-            stopCurrentAudio();
-            return;
-        }
-        audioUrl = selectedMuadzin.audio_url;
-
-        const requestId = audioRequestRef.current + 1;
-        audioRequestRef.current = requestId;
-
-        const newAudio = new Audio(audioUrl);
-        newAudio.preload = "auto";
-
-        let loadingTimeout: ReturnType<typeof setTimeout> | null = null;
-        const clearLoadingTimeout = () => {
-            if (loadingTimeout) {
-                clearTimeout(loadingTimeout);
-                loadingTimeout = null;
-            }
-        };
-
-        loadingTimeout = setTimeout(() => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            setIsLoading(false);
-        }, 4000);
-
-        const markPlayable = () => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            clearLoadingTimeout();
-            setIsLoading(false);
-        };
-
-        const markPlaying = () => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            clearLoadingTimeout();
-            setIsLoading(false);
-            setIsPlaying(true);
-        };
-
-        newAudio.onloadeddata = markPlayable;
-        newAudio.oncanplay = markPlayable;
-        newAudio.onplaying = markPlaying;
-        newAudio.onplay = markPlaying;
-
-        newAudio.oncanplaythrough = () => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            clearLoadingTimeout();
-            setIsLoading(false);
-            const playPromise = newAudio.play();
-            if (playPromise) {
-                playPromise.catch(err => {
-                    const message = err instanceof Error ? err.message : "";
-                    if (err?.name === "AbortError" || message.includes("interrupted by a call to pause")) {
-                        return;
-                    }
-                    if (!isMountedRef.current) return;
-                    setIsPlaying(false);
-                    setIsLoading(false);
-                });
-            }
-        };
-
-        newAudio.onpause = () => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            setIsPlaying(false);
-        };
-
-        newAudio.onended = () => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            clearLoadingTimeout();
-            setIsPlaying(false);
-            setPlayingId(null);
-        };
-
-        newAudio.onerror = () => {
-            if (audioRequestRef.current !== requestId) return;
-            if (!isMountedRef.current) return;
-            clearLoadingTimeout();
-            setIsLoading(false);
-            setIsPlaying(false);
-            setPlayingId(null);
-            // Ignore error if we are reloading or stopping
-            if (newAudio.src) {
-                alert("Gagal memutar pratinjau suara.");
-            }
-        };
-
-        newAudio.load();
-
-        setAudio(newAudio);
-    };
 
     useEffect(() => {
         const [savedMuadzin, savedMethod, savedAdjustment] = storage.getMany([
@@ -384,7 +233,6 @@ export default function SettingsPageContent() {
     };
 
     const handleMuadzinChange = (value: string) => {
-        stopCurrentAudio();
         setMuadzin(value);
         storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, value);
         saveSettingsToCloud('muadzin', value);
@@ -442,61 +290,18 @@ export default function SettingsPageContent() {
                 </div>
 
                 {/* Profile Card - Compact */}
-                {/* Profile Card - Compact */}
-                {(status === "loading" && !hasCachedProfile) ? (
-                    <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
-                        <div className="h-12 w-12 rounded-full bg-white/10" />
-                        <div className="flex-1 space-y-2">
-                            <div className="h-4 w-32 bg-white/10 rounded" />
-                            <div className="h-3 w-20 bg-white/10 rounded" />
-                        </div>
-                    </div>
-                ) : (
-                    <UserProfileDialog onProfileUpdate={refreshProfile}>
-                        <div className="w-full p-4 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-[rgb(var(--color-primary))]/40 transition-all group">
-                            <div className="relative">
-                                <div className={cn(
-                                    "h-12 w-12 rounded-full border-2 flex items-center justify-center text-lg font-bold overflow-hidden p-0.5 transition-all",
-                                    isDaylight
-                                        ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                                        : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
-                                )}>
-                                    <Avatar className="w-full h-full rounded-full">
-                                        <AvatarImage src={userAvatar || session?.user?.image || ""} className="object-cover" />
-                                        <AvatarFallback className={cn(
-                                            "text-lg font-bold",
-                                            isDaylight ? "bg-emerald-100 text-emerald-600" : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
-                                        )}>
-                                            {(userName || "U").charAt(0).toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </div>
-                                {(isMuhsinin || session?.user?.isMuhsinin) && (
-                                    <div className={cn(
-                                        "absolute -top-1 -right-1 rounded-full p-0.5 border-2 z-10 shadow-lg transition-all",
-                                        isDaylight
-                                            ? "bg-gradient-to-br from-emerald-400 to-emerald-600 border-white"
-                                            : "bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] border-black"
-                                    )}>
-                                        <Crown className="w-2.5 h-2.5 text-white fill-white" />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
-                                    {!isAuthenticated && (
-                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 border border-white/5 text-white/50">
-                                            Guest
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
-                        </div>
-                    </UserProfileDialog>
-                )}
+                <ProfileCard
+                    status={status}
+                    session={session}
+                    hasCachedProfile={hasCachedProfile}
+                    isDaylight={isDaylight}
+                    isMuhsinin={isMuhsinin}
+                    userAvatar={userAvatar}
+                    userName={userName}
+                    userTitle={userTitle}
+                    isAuthenticated={isAuthenticated}
+                    refreshProfile={refreshProfile}
+                />
 
 
 
@@ -615,264 +420,34 @@ export default function SettingsPageContent() {
                 </div>
 
                 {/* Theme Configuration Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
-                    <div className="flex items-center gap-2 text-[rgb(var(--color-primary))]">
-                        <Palette className="w-4 h-4" />
-                        <span className="text-sm font-semibold text-white">{t.themeTitle}</span>
-                    </div>
-
-                    <div className="relative">
-                        <div className="flex items-center gap-5 overflow-x-auto py-6 px-4 scrollbar-hide snap-x">
-                            {/* Physical Spacer to prevent clipping (40px) */}
-                            <div className="min-w-[40px] shrink-0" />
-
-                            {Object.values(THEMES).sort((a, b) => (a.isPremium === b.isPremium ? 0 : a.isPremium ? 1 : -1)).map((theme, index, array) => {
-                                const isSelected = currentTheme === theme.id;
-                                const isLocked = theme.isPremium && !isMuhsinin;
-
-                                // Check if this is the first PRO item to add a divider
-                                const showDivider = index > 0 && theme.isPremium && !array[index - 1].isPremium;
-
-                                return (
-                                    <div key={theme.id} className="flex items-center gap-4 snap-start">
-                                        {showDivider && (
-                                            <div className="h-12 w-px bg-white/10 mx-2" />
-                                        )}
-
-                                        <button
-                                            onClick={() => handleThemeSelect(theme.id)}
-                                            className="flex flex-col items-center gap-3 group transition-all relative py-2 px-2"
-                                        >
-                                            <div className={cn(
-                                                "relative rounded-full transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
-                                                isSelected ? "w-16 h-16 z-10 ring-2 ring-[rgb(var(--color-primary))] ring-offset-4 ring-offset-black" : "w-12 h-12 hover:scale-110 opacity-60 hover:opacity-100 grayscale hover:grayscale-0"
-                                            )}>
-
-                                                {/* Ambient Glow for Selected */}
-                                                {isSelected && theme?.colors && (
-                                                    <div
-                                                        className="absolute inset-0 rounded-full blur-md opacity-60 transition-all duration-500 animate-pulse"
-                                                        style={{ backgroundColor: `rgb(${theme.colors.primary})` }}
-                                                    />
-                                                )}
-
-                                                {/* Main Circle Content */}
-                                                <div className="absolute inset-0 rounded-full overflow-hidden flex flex-col border border-white/10 z-10 shadow-2xl bg-black">
-                                                    <div className="h-1/2 w-full transition-colors duration-500" style={{ backgroundColor: theme?.colors ? `rgb(${theme.colors.primary})` : 'rgb(16 185 129)' }} />
-                                                    <div className="h-1/2 w-full flex">
-                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: theme?.colors ? `rgb(${theme.colors.accent})` : 'rgb(251 191 36)' }} />
-                                                        <div className="w-1/2 h-full transition-colors duration-500" style={{ backgroundColor: theme?.colors ? `rgb(${theme.colors.surface})` : 'rgb(15 23 42)' }} />
-                                                    </div>
-                                                </div>
-
-                                                {/* Premium/Lock Indicators - Floating outside for pop styling */}
-                                                {theme.isPremium && (
-                                                    <div className={cn(
-                                                        "absolute -bottom-1 -right-1 rounded-full border-2 border-black z-20 shadow-lg flex items-center justify-center transition-all duration-300",
-                                                        isSelected ? "w-6 h-6 bg-[rgb(var(--color-accent))]" : "w-4 h-4 bg-slate-800 border-[rgb(var(--color-accent))]/30"
-                                                    )}>
-                                                        {isLocked ? (
-                                                            <Lock className={cn("text-black transition-all", isSelected ? "w-3 h-3" : "w-2 h-2")} />
-                                                        ) : (
-                                                            <Crown className={cn("transition-all", isSelected ? "w-3 h-3 text-black" : "w-2 h-2 text-[rgb(var(--color-accent))]")} />
-                                                        )}
-                                                    </div>
-                                                )}
-
-                                                {/* Selected Check Indicator */}
-                                                {isSelected && (
-                                                    <div className="absolute -top-1 -right-1 bg-[rgb(var(--color-primary))] rounded-full p-1 border-2 border-black z-20 shadow-lg scale-100 animate-in zoom-in duration-300">
-                                                        <Check className="w-3 h-3 text-black" strokeWidth={3} />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <span className={cn(
-                                                "text-[10px] font-bold transition-all duration-300 truncate max-w-[70px]",
-                                                isSelected ? "text-[rgb(var(--color-primary-light))] scale-110 translate-y-1" : "text-white/40 group-hover:text-white"
-                                            )}>
-                                                {theme.name}
-                                            </span>
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                            {/* Physical Spacer End (40px) */}
-                            <div className="min-w-[40px] shrink-0" />
-                        </div>
-                    </div>
-                </div>
+                <ThemeCard
+                    t={t}
+                    currentTheme={currentTheme}
+                    isMuhsinin={isMuhsinin}
+                    handleThemeSelect={handleThemeSelect}
+                />
 
                 {/* Audio Configuration Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
-                    <div className="flex items-center gap-2 text-[rgb(var(--color-primary-light))]">
-                        <Headphones className="w-4 h-4" />
-                        <span className="text-sm font-semibold text-white">{t.audioTitle}</span>
-                    </div>
-
-                    <div className="space-y-3">
-                        {/* Muadzin Select */}
-                        <div className={cn(
-                            "relative group border rounded-xl p-3 flex items-center justify-between transition-all",
-                            isDaylight
-                                ? "bg-white/40 border-slate-200/50 hover:bg-white/60 shadow-sm"
-                                : "bg-white/5 border border-white/10 hover:bg-white/10"
-                        )}>
-                            {/* Visual Layer */}
-                            <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
-                                <div className={cn(
-                                    "p-2 rounded-full shrink-0",
-                                    isDaylight ? "bg-emerald-50" : "bg-[rgb(var(--color-primary))]/10"
-                                )}>
-                                    <Volume2 className={cn(
-                                        "w-4 h-4",
-                                        isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
-                                    )} />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className={cn(
-                                        "text-[10px] uppercase tracking-wider font-bold mb-0.5",
-                                        isDaylight ? "text-slate-400" : "text-white/40"
-                                    )}>{t.muadzinLabel}</p>
-                                    <p className={cn(
-                                        "text-sm font-medium truncate",
-                                        isDaylight ? "text-slate-900" : "text-white"
-                                    )}>{currentMuadzin?.label || "Makkah"}</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                                {/* Preview Button (Z-20 to sit above Select Trigger) */}
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    className={cn(
-                                        "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
-                                        isPlaying && playingId === muadzin
-                                            ? isDaylight
-                                                ? "bg-emerald-100 border-emerald-200 text-emerald-600 scale-110 shadow-sm"
-                                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30 scale-110"
-                                            : isDaylight
-                                                ? "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100 hover:text-slate-600 hover:border-slate-300"
-                                                : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
-                                    )}
-                                    onPointerDown={(e) => e.stopPropagation()}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleAudioPreview(muadzin);
-                                    }}
-                                    disabled={isLoading || !currentMuadzin?.audio_url}
-                                >
-                                    {isLoading && playingId === muadzin ? (
-                                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    ) : isPlaying && playingId === muadzin ? (
-                                        <Pause className="w-3 h-3 fill-current" />
-                                    ) : (
-                                        <Play className="w-3 h-3 ml-0.5" />
-                                    )}
-                                </Button>
-
-                                {/* Chevron Indicator */}
-                                <ChevronDown className="w-4 h-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
-                            </div>
-
-                            {/* Select Overlay (Z-10) */}
-                            <Select value={muadzin} onValueChange={handleMuadzinChange}>
-                                <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/10">
-                                    {MUADZIN_OPTIONS.map((option) => (
-                                        <SelectItem key={option.id} value={option.id} className="text-white text-xs hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors">
-                                            <span>{option.label}</span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                </div>
+                <AudioCard
+                    t={t}
+                    isDaylight={isDaylight}
+                    muadzin={muadzin}
+                    onMuadzinChange={handleMuadzinChange}
+                />
 
                 {/* Language Settings Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
-                    <div className="flex items-center gap-2">
-                        <Globe className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                        <span className="text-sm font-semibold text-white">{t.languageTitle}</span>
-                    </div>
-
-                    <Select value={locale} onValueChange={handleLocaleChange}>
-                        <SelectTrigger className="w-full bg-white/5 border-white/10 text-white h-11">
-                            <SelectValue placeholder="Bahasa Indonesia">
-                                {locale && LANGUAGE_OPTIONS.find(l => l.id === locale) ? (
-                                    <span className="flex items-center gap-2">
-                                        <span>{LANGUAGE_OPTIONS.find(l => l.id === locale)?.flag}</span>
-                                        <span>{LANGUAGE_OPTIONS.find(l => l.id === locale)?.label}</span>
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-2">
-                                        <span>🇮🇩</span>
-                                        <span>Bahasa Indonesia</span>
-                                    </span>
-                                )}
-                            </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-white/10">
-                            {LANGUAGE_OPTIONS.map((lang) => (
-                                <SelectItem
-                                    key={lang.id}
-                                    value={lang.id}
-                                    textValue={lang.label}
-                                    className="text-white text-sm hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors"
-                                >
-                                    <span className="flex items-center gap-2">
-                                        <span className="text-lg">{lang.flag}</span>
-                                        <span>{lang.label}</span>
-                                    </span>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+                <LanguageCard
+                    t={t}
+                    locale={locale}
+                    handleLocaleChange={handleLocaleChange}
+                />
 
                 {/* Community & Feedback Card */}
-                <div className={cn(
-                    "border rounded-2xl p-4 flex items-center justify-between transition-all",
-                    isDaylight
-                        ? "bg-slate-50 border-slate-200/50 shadow-sm"
-                        : "bg-white/[0.02] border-white/10"
-                )}>
-                    <div className="flex-1 min-w-0 pr-4">
-                        <div className="flex items-center gap-2 mb-1">
-                            <MessageSquarePlus className={cn(
-                                "w-4 h-4",
-                                isDaylight ? "text-slate-600" : "text-[rgb(var(--color-primary-light))]"
-                            )} />
-                            <span className={cn(
-                                "text-sm font-bold",
-                                isDaylight ? "text-slate-900" : "text-white"
-                            )}>{t.feedbackCardTitle}</span>
-                        </div>
-                        <p className={cn(
-                            "text-[10px] leading-relaxed",
-                            isDaylight ? "text-slate-500" : "text-white/40"
-                        )}>
-                            {t.feedbackCardDesc}
-                        </p>
-                    </div>
-                    <Button
-                        onClick={() => setShowFeedbackModal(true)}
-                        size="sm"
-                        className={cn(
-                            "font-bold h-8 px-3.5 text-xs rounded-xl shadow-lg transition-all active:scale-[0.98] shrink-0",
-                            isDaylight
-                                ? "bg-slate-900 hover:bg-slate-800 text-white"
-                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white shadow-[rgb(var(--color-primary))]/20"
-                        )}
-                    >
-                        {t.feedbackButtonCompact}
-                    </Button>
-                </div>
+                <CommunityCard
+                    t={t}
+                    isDaylight={isDaylight}
+                    setShowFeedbackModal={() => setShowFeedbackModal(true)}
+                />
 
                 {/* Support Card (Persistent) - Swapped Back Up */}
 
