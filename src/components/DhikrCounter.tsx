@@ -19,14 +19,10 @@
  */
 
 import { useState, useEffect, useMemo } from "react";
-import { createPortal } from "react-dom";
-import { RotateCcw, Volume2, VolumeX, Settings2, Check, Flame, CalendarDays, ChevronDown, Trophy, Medal, Moon, X } from "lucide-react";
+import { Check, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
 import { addHasanah } from "@/lib/leveling";
 import { dhikrMilestones } from "@/data/dhikrMilestones";
@@ -34,6 +30,13 @@ import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
 import { useTheme } from "@/context/ThemeContext";
+
+import { DhikrPreset } from "./dhikr/types";
+import { DhikrDisplay } from "./dhikr/DhikrDisplay";
+import { DhikrHistory } from "./dhikr/DhikrHistory";
+import { DhikrPresetSelector } from "./dhikr/DhikrPresetSelector";
+import { DhikrControls } from "./dhikr/DhikrControls";
+import { DhikrZenMode } from "./dhikr/DhikrZenMode";
 
 const playTick = (ctx: AudioContext) => {
     const osc = ctx.createOscillator();
@@ -48,15 +51,6 @@ const playTick = (ctx: AudioContext) => {
     osc.stop(ctx.currentTime + 0.05);
 };
 
-type DhikrPreset = {
-    id: string;
-    label: string;
-    arab: string;
-    latin: string;
-    tadabbur: string;
-    target: number;
-};
-
 export default function DhikrCounter() {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
@@ -64,62 +58,13 @@ export default function DhikrCounter() {
 
     const dhikrPresets = useMemo<DhikrPreset[]>(
         () => [
-            {
-                id: "tasbih",
-                label: t.tasbihPresetTasbihLabel,
-                arab: "سُبْحَانَ ٱللَّٰهِ",
-                latin: t.tasbihPresetTasbihLatin,
-                tadabbur: t.tasbihPresetTasbihTadabbur,
-                target: 33
-            },
-            {
-                id: "tahmid",
-                label: t.tasbihPresetTahmidLabel,
-                arab: "ٱلْحَمْدُ لِلَّٰهِ",
-                latin: t.tasbihPresetTahmidLatin,
-                tadabbur: t.tasbihPresetTahmidTadabbur,
-                target: 33
-            },
-            {
-                id: "takbir",
-                label: t.tasbihPresetTakbirLabel,
-                arab: "ٱللَّٰهُ أَكْبَرُ",
-                latin: t.tasbihPresetTakbirLatin,
-                tadabbur: t.tasbihPresetTakbirTadabbur,
-                target: 33
-            },
-            {
-                id: "istighfar",
-                label: t.tasbihPresetIstighfarLabel,
-                arab: "أَسْتَغْفِرُ ٱللَّٰهَ",
-                latin: t.tasbihPresetIstighfarLatin,
-                tadabbur: t.tasbihPresetIstighfarTadabbur,
-                target: 100
-            },
-            {
-                id: "sholawat_jibril",
-                label: t.tasbihPresetSholawatJibrilLabel,
-                arab: "صَلَّى ٱللَّٰهُ عَلَىٰ مُحَمَّدٍ",
-                latin: t.tasbihPresetSholawatJibrilLatin,
-                tadabbur: t.tasbihPresetSholawatJibrilTadabbur,
-                target: 1000
-            },
-            {
-                id: "tahlil",
-                label: "Tahlil",
-                arab: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ",
-                latin: "Laa ilaaha illallaah",
-                tadabbur: "Tiada Tuhan selain Allah.",
-                target: 100
-            },
-            {
-                id: "hawqalah",
-                label: "Hawqalah",
-                arab: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰهِ",
-                latin: "Laa hawla wa laa quwwata illaa billaah",
-                tadabbur: "Tiada daya dan upaya kecuali dengan pertolongan Allah.",
-                target: 100
-            }
+            { id: "tasbih", label: t.tasbihPresetTasbihLabel, arab: "سُبْحَانَ ٱللَّٰهِ", latin: t.tasbihPresetTasbihLatin, tadabbur: t.tasbihPresetTasbihTadabbur, target: 33 },
+            { id: "tahmid", label: t.tasbihPresetTahmidLabel, arab: "ٱلْحَمْدُ لِلَّٰهِ", latin: t.tasbihPresetTahmidLatin, tadabbur: t.tasbihPresetTahmidTadabbur, target: 33 },
+            { id: "takbir", label: t.tasbihPresetTakbirLabel, arab: "ٱللَّٰهُ أَكْبَرُ", latin: t.tasbihPresetTakbirLatin, tadabbur: t.tasbihPresetTakbirTadabbur, target: 33 },
+            { id: "istighfar", label: t.tasbihPresetIstighfarLabel, arab: "أَسْتَغْفِرُ ٱللَّٰهَ", latin: t.tasbihPresetIstighfarLatin, tadabbur: t.tasbihPresetIstighfarTadabbur, target: 100 },
+            { id: "sholawat_jibril", label: t.tasbihPresetSholawatJibrilLabel, arab: "صَلَّى ٱللَّٰهُ عَلَىٰ مُحَمَّدٍ", latin: t.tasbihPresetSholawatJibrilLatin, tadabbur: t.tasbihPresetSholawatJibrilTadabbur, target: 1000 },
+            { id: "tahlil", label: "Tahlil", arab: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ", latin: "Laa ilaaha illallaah", tadabbur: "Tiada Tuhan selain Allah.", target: 100 },
+            { id: "hawqalah", label: "Hawqalah", arab: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰهِ", latin: "Laa hawla wa laa quwwata illaa billaah", tadabbur: "Tiada daya dan upaya kecuali dengan pertolongan Allah.", target: 100 }
         ],
         [t]
     );
@@ -133,14 +78,13 @@ export default function DhikrCounter() {
     const [showReward, setShowReward] = useState(false);
     const [expandedCategory, setExpandedCategory] = useState<string | null>("harian");
     const [isZenMode, setIsZenMode] = useState(false);
-    const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
-
 
     const { state: dhikrState, updateState, hasHydrated } = useDhikrPersistence({
         defaultActiveId: dhikrPresets[0]?.id ?? "tasbih",
         validActiveIds: [...dhikrPresets, ...libraryPresets].map((preset) => preset.id),
         defaultTarget: 33
     });
+    
     const { count, target, activeDhikrId, dailyCount, streak, lastDhikrDate, activeSequenceId, sequenceIndex, lifetimeCount, dhikrHistory } = dhikrState;
     const allPresets = [...dhikrPresets, ...libraryPresets];
     const activeDhikr = allPresets.find((dhikr) => dhikr.id === activeDhikrId) || null;
@@ -186,20 +130,9 @@ export default function DhikrCounter() {
                 setShowReward(true);
             }, 100);
         }
-    }, [count, target, activeSequence, sequenceIndex, dhikrPresets, updateState]);
+    }, [count, target, activeSequence, sequenceIndex, dhikrPresets, updateState, allPresets]);
 
-    const handleIncrement = (e?: React.MouseEvent | React.TouchEvent) => {
-        // Handle ripple effect for Zen Mode
-        if (isZenMode && e) {
-            const id = Date.now();
-            const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-            const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-            setRipples(prev => [...prev.slice(-5), { id, x: clientX, y: clientY }]);
-            setTimeout(() => {
-                setRipples(prev => prev.filter(r => r.id !== id));
-            }, 600);
-        }
-
+    const handleIncrement = () => {
         let ctx = audioContext;
         if (!ctx) ctx = initAudio();
         if (ctx && ctx.state === 'suspended') ctx.resume();
@@ -238,7 +171,6 @@ export default function DhikrCounter() {
         if (nextMilestoneIdx > currentMilestoneIdx && nextMilestoneIdx >= 0) {
             const milestone = dhikrMilestones[nextMilestoneIdx];
             addHasanah(milestone.reward);
-            // Optionally could trigger Confetti here
         }
 
         // Debounce sync queue (sync every 10 counts roughly)
@@ -309,536 +241,81 @@ export default function DhikrCounter() {
         setIsDialogOpen(false);
     };
 
-    const FeedbackIcon = { sound: Volume2, none: VolumeX }[feedbackMode] || Volume2;
     const progress = target && hasHydrated ? (count / target) * 100 : 0;
-
-    const zenModeUI = isZenMode ? (
-        <div className="fixed inset-0 z-[9999] bg-black text-white flex flex-col items-center justify-center overflow-hidden">
-            {/* Full screen tap area */}
-            <div className="absolute inset-0 cursor-pointer active:bg-white/5 transition-colors" onClick={(e) => handleIncrement(e)} />
-
-            {/* Ripples */}
-            {ripples.map(ripple => (
-                <div
-                    key={ripple.id}
-                    className="absolute rounded-full bg-[rgb(var(--color-primary)/0.2)] pointer-events-none animate-ripple"
-                    style={{
-                        left: ripple.x,
-                        top: ripple.y,
-                        width: '20px',
-                        height: '20px',
-                        transform: 'translate(-50%, -50%)',
-                    }}
-                />
-            ))}
-
-            {/* Close Button */}
-            <button
-                onClick={() => setIsZenMode(false)}
-                className="absolute top-8 right-6 z-[110] p-4 rounded-full opacity-20 hover:opacity-100 hover:bg-white/10 active:scale-95 transition-all text-white/50 hover:text-white"
-            >
-                <X className="w-8 h-8" />
-            </button>
-
-            {/* Counter Content */}
-            <div className="relative z-10 flex flex-col items-center pointer-events-none mt-[-10vh]">
-                <span className="text-[12px] md:text-sm font-bold tracking-widest uppercase mb-4 text-white/20">
-                    {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
-                </span>
-
-                <span className="text-[120px] leading-none xs:text-[140px] md:text-[180px] font-mono font-bold tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                    {hasHydrated ? count : "..."}
-                </span>
-
-                {target && (
-                    <span className="text-white/30 text-2xl md:text-3xl font-mono mt-2">
-                        / {target}
-                    </span>
-                )}
-
-                <div className="mt-16 text-xs md:text-sm animate-pulse font-medium text-white/20 tracking-widest uppercase">
-                    {t.tasbihTap || "Ketuk Layar"}
-                </div>
-            </div>
-
-            {/* Feedback Toggle */}
-            <button
-                onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
-                className="absolute bottom-8 right-6 z-[110] p-4 rounded-full opacity-30 hover:opacity-100 hover:bg-white/10 active:scale-95 transition-all text-white/50 hover:text-white flex flex-col items-center gap-1.5"
-            >
-                <FeedbackIcon className="w-5 h-5" />
-                <span className="text-[8px] font-medium uppercase tracking-tighter opacity-70">
-                    {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
-                </span>
-            </button>
-        </div>
-    ) : null;
 
     return (
         <div className="flex flex-col items-center w-full h-full relative px-4 pb-nav pt-4 overflow-hidden">
-            {isZenMode && typeof document !== 'undefined' && createPortal(zenModeUI, document.body)}
+            <DhikrZenMode
+                isZenMode={isZenMode}
+                setIsZenMode={setIsZenMode}
+                activeDhikr={activeDhikr}
+                target={target}
+                count={count}
+                hasHydrated={hasHydrated}
+                t={t}
+                handleIncrement={handleIncrement}
+                feedbackMode={feedbackMode}
+                toggleFeedback={toggleFeedback}
+            />
 
             {/* Tap Area Overlay */}
             <div className="absolute inset-0 z-0 cursor-pointer active:bg-white/5 transition-colors" onClick={handleIncrement} />
 
-            {/* Top: Branding + Zikir Text */}
-            <div className="w-full text-center z-10 pointer-events-none mt-1 xs:mt-6 shrink-0 relative">
-                {activeSequence && (
-                    <div className={cn(
-                        "inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full border text-[10px] font-bold tracking-widest uppercase shadow-sm",
-                        isDaylight ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-[rgb(var(--color-primary)/0.2)] text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary)/0.3)] shadow-[0_0_15px_rgba(var(--color-primary),0.2)]"
-                    )}>
-                        {activeSequence.label} • {sequenceIndex + 1}/{activeSequence.items.length}
-                    </div>
-                )}
-                <div className="mb-0.5 xs:mb-2">
-                    <h1 className={cn(
-                        "text-lg xs:text-xl font-bold tracking-tight leading-tight",
-                        isDaylight ? "text-slate-900" : "text-white/90"
-                    )}>{t.tasbihTitle}</h1>
-                    <p className={cn(
-                        "text-[9px] xs:text-[10px] uppercase tracking-[0.2em]",
-                        isDaylight ? "text-slate-400" : "text-white/40"
-                    )}>{t.tasbihSubtitle}</p>
-                </div>
-
-                {activeDhikr ? (
-                    <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2">
-                        <div className="px-4 pt-4 xs:pt-20 pb-0.5 xs:pb-1 bg-transparent">
-                            <h2 className={cn(
-                                "text-2xl xs:text-5xl font-bold font-serif leading-none transition-colors",
-                                isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
-                            )}>
-                                {activeDhikr.arab}
-                            </h2>
-                        </div>
-                        <div className="mt-1 xs:mt-3 flex flex-col items-center">
-                            <p className={cn(
-                                "font-extrabold text-[10px] xs:text-base tracking-tight uppercase",
-                                isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
-                            )}>
-                                {activeDhikr.latin}
-                            </p>
-                            <p className={cn(
-                                "text-[8px] xs:text-xs italic line-clamp-2 max-w-[90%] mt-0.5 xs:mt-1.5",
-                                isDaylight ? "text-slate-500" : "text-white/40"
-                            )}>
-                                {activeDhikr.tadabbur}
-                            </p>
-                        </div>
-                    </div>
-                ) : (
-                    <p className={cn(
-                        "text-[10px] italic",
-                        isDaylight ? "text-slate-400" : "text-white/20"
-                    )}>{t.tasbihFreeMode}</p>
-                )}
-            </div>
-
-            {/* Middle: Digital Counter - Responsive Size */}
-            <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10">
-                {/* Balanced Size: SE (375px) = w-52 (208px) fill space. Modern iPhones (390px+, xs) = w-64. Large Desktop = w-80 */}
-                <div className="relative w-52 h-52 xs:w-64 xs:h-64 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto shadow-[0_0_60px_rgba(0,0,0,0.6)] rounded-full transition-all duration-300">
-                    <div className="absolute inset-[-10px] rounded-full blur-3xl bg-[rgb(var(--color-primary)/0.08)] transition-all duration-700" />
-
-                    <div className="absolute inset-0 rounded-full border-[6px] md:border-[12px] border-white/5" />
-
-                    {target && (
-                        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-                            <circle
-                                cx="50" cy="50" r="46.5"
-                                fill="transparent"
-                                stroke="rgb(var(--color-primary))"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeDasharray="292"
-                                strokeDashoffset={292 - (292 * progress) / 100}
-                                className="transition-all duration-300 ease-out"
-                            />
-                        </svg>
-                    )}
-
-                    <button
-                        onClick={(e) => { e.stopPropagation(); handleIncrement(); }}
-                        className={cn(
-                            "absolute inset-1.5 md:inset-4 rounded-full active:scale-95 transition-all duration-75 flex flex-col items-center justify-center group z-20 shadow-xl border",
-                            isDaylight
-                                ? "bg-gradient-to-br from-emerald-100 to-emerald-50 border-emerald-200/50 shadow-emerald-500/10"
-                                : "bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border-[rgb(var(--color-primary)/0.15)] shadow-black/60"
-                        )}
-                    >
-                        <span className={cn(
-                            "text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5",
-                            isDaylight ? "text-emerald-700/40" : "text-white/30"
-                        )}>
-                            {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
-                        </span>
-                        <span className={cn(
-                            "text-7xl xs:text-8xl md:text-9xl font-mono font-bold tracking-tighter transition-colors",
-                            isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
-                        )}>
-                            {hasHydrated ? (
-                                count
-                            ) : (
-                                <span className={cn(
-                                    "inline-block w-12 xs:w-16 md:w-20 h-10 xs:h-12 md:h-14 rounded animate-pulse align-middle",
-                                    isDaylight ? "bg-slate-200" : "bg-white/10"
-                                )} />
-                            )}
-                        </span>
-                        <div className={cn(
-                            "mt-1 text-[8px] md:text-sm animate-pulse font-medium",
-                            isDaylight ? "text-emerald-600/60" : "text-[rgb(var(--color-primary))]/40"
-                        )}>
-                            {t.tasbihTap}
-                        </div>
-                    </button>
-                </div>
-            </div>
+            <DhikrDisplay
+                t={t}
+                isDaylight={isDaylight}
+                activeSequence={activeSequence}
+                sequenceIndex={sequenceIndex}
+                activeDhikr={activeDhikr}
+                target={target}
+                progress={progress}
+                count={count}
+                hasHydrated={hasHydrated}
+                handleIncrement={handleIncrement}
+            />
 
             {/* Bottom Section: Stats & Controls - Fixed at Bottom clear of Nav */}
             <div className="w-full shrink-0 flex flex-col items-center relative z-20 pt-2 pb-2 pointer-events-none">
+                <DhikrHistory
+                    isMilestoneModalOpen={isMilestoneModalOpen}
+                    setIsMilestoneModalOpen={setIsMilestoneModalOpen}
+                    t={t}
+                    isDaylight={isDaylight}
+                    dailyCount={dailyCount}
+                    streak={streak}
+                    lifetimeCount={lifetimeCount || 0}
+                    hasHydrated={hasHydrated}
+                    dhikrHistory={dhikrHistory || {}}
+                    allPresets={allPresets as DhikrPreset[]}
+                />
 
-                <Dialog open={isMilestoneModalOpen} onOpenChange={setIsMilestoneModalOpen}>
-                    <DialogTrigger asChild>
-                        <button
-                            className={cn(
-                                "flex flex-wrap justify-center items-center gap-2 text-[9px] font-bold uppercase tracking-widest mb-4 cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto relative z-50",
-                                isDaylight ? "text-slate-400" : "text-white/30"
-                            )}
-                        >
-                            <div className={cn(
-                                "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                                isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
-                            )}>
-                                <CalendarDays className={cn(
-                                    "h-3.5 w-3.5",
-                                    isDaylight ? "text-emerald-600/50" : "text-[rgb(var(--color-primary-light)/0.4)]"
-                                )} />
-                                <span>
-                                    {t.tasbihDaily}:{" "}
-                                    <span className={isDaylight ? "text-slate-900" : "text-white"}>
-                                        {hasHydrated ? (isNaN(dailyCount) ? 0 : dailyCount) : "--"}
-                                    </span>
-                                </span>
-                            </div>
-                            <div className={cn(
-                                "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                                isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
-                            )}>
-                                <Flame className="h-3.5 w-3.5 text-orange-500/70" />
-                                <span>
-                                    {t.tasbihStreak}:{" "}
-                                    <span className={isDaylight ? "text-slate-900" : "text-white"}>
-                                        {hasHydrated ? (isNaN(streak) ? 0 : streak) : "--"}
-                                    </span>{" "}
-                                    {t.tasbihDays}
-                                </span>
-                            </div>
-                            <div className={cn(
-                                "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                                isDaylight ? "bg-amber-100 border-amber-200/60 text-amber-700" : "bg-amber-500/10 border-amber-500/20 text-amber-400"
-                            )}>
-                                <Trophy className="h-3.5 w-3.5" />
-                                <span>
-                                    Total:{" "}
-                                    <span className={isDaylight ? "text-slate-900 font-black" : "text-white font-black"}>
-                                        {hasHydrated ? (lifetimeCount || 0).toLocaleString('id-ID') : "--"}
-                                    </span>
-                                </span>
-                            </div>
-                        </button>
-                    </DialogTrigger>
-                    <DialogContent className={cn("w-[90%] max-w-sm rounded-[32px] border-white/10 backdrop-blur-3xl z-[100]", isDaylight ? "bg-white/90 text-slate-900" : "bg-neutral-950/98 text-white")}>
-                        <DialogHeader>
-                            <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-60">Statistik Zikir</DialogTitle>
-                        </DialogHeader>
-                        <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 space-y-6">
-
-                            {/* Top Dhikr Stats */}
-                            <div>
-                                <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3">Zikir Terfavorit</h3>
-                                <div className="space-y-2">
-                                    {Object.entries(dhikrHistory || {})
-                                        .sort((a, b) => b[1] - a[1])
-                                        .slice(0, 3)
-                                        .map(([id, total], index) => {
-                                            const preset = allPresets.find(p => p.id === id);
-                                            return (
-                                                <div key={id} className={cn("flex justify-between items-center px-4 py-3 rounded-2xl border", isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5")}>
-                                                    <div className="flex items-center gap-3">
-                                                        <span className={cn("text-xs font-bold w-4", index === 0 ? "text-[rgb(var(--color-primary))]" : "opacity-30")}>#{index + 1}</span>
-                                                        <div className="flex flex-col">
-                                                            <span className="font-bold text-sm w-full truncate max-w-[150px]">{preset?.label || "Zikir"}</span>
-                                                        </div>
-                                                    </div>
-                                                    <span className="text-xs font-mono font-bold">{total.toLocaleString('id-ID')}x</span>
-                                                </div>
-                                            );
-                                        })}
-                                    {(!dhikrHistory || Object.keys(dhikrHistory).length === 0) && (
-                                        <div className="text-center text-xs opacity-50 py-4">Belum ada riwayat zikir.</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Milestones List */}
-                            <div>
-                                <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3">Pencapaian</h3>
-                                <div className="space-y-3">
-                                    {dhikrMilestones.map(ms => {
-                                        const isCompleted = (lifetimeCount || 0) >= ms.target;
-                                        const progress = Math.min(100, ((lifetimeCount || 0) / ms.target) * 100);
-
-                                        return (
-                                            <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border", isCompleted ? (isDaylight ? "bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20") : (isDaylight ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white/5 border-white/5 opacity-50"))}>
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-2">
-                                                        <Medal className={cn("h-4 w-4", isCompleted ? "text-[rgb(var(--color-primary))]" : "opacity-30")} />
-                                                        <h4 className="font-bold text-sm">{ms.title}</h4>
-                                                    </div>
-                                                    {isCompleted ? (
-                                                        <Check className="h-4 w-4 text-[rgb(var(--color-primary))]" />
-                                                    ) : (
-                                                        <span className="text-[10px] font-mono opacity-50">{ms.target.toLocaleString('id-ID')}x</span>
-                                                    )}
-                                                </div>
-                                                {!isCompleted && (
-                                                    <div className="w-full bg-slate-200/50 dark:bg-black/40 rounded-full h-1.5 mt-1 overflow-hidden">
-                                                        <div className="bg-[rgb(var(--color-primary))] h-1.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-
-                {/* Control Grid */}
-                <div className="grid grid-cols-4 gap-2 w-full max-w-[360px] pointer-events-auto px-2">
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => { e.stopPropagation(); handleReset(); }}
-                        className={cn(
-                            "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
-                            isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
-                        )}
-                    >
-                        <RotateCcw className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
-                        <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>{t.tasbihReset}</span>
-                    </Button>
-
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                onClick={(e) => e.stopPropagation()}
-                                className={cn(
-                                    "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
-                                    isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
-                                )}
-                            >
-                                <Settings2 className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
-                                <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>{t.tasbihSelectZikir}</span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="w-[90%] max-w-sm rounded-[32px] border-white/10 bg-neutral-950/98 backdrop-blur-3xl text-white">
-                            <DialogHeader>
-                                <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">{t.tasbihListTitle}</DialogTitle>
-                            </DialogHeader>
-                            <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 overflow-x-hidden">
-                                <div className="space-y-6 pb-4">
-
-                                    {/* Standalone Berantai (if only 1) */}
-                                    {dhikrSequences.length === 1 && (
-                                        <div className="space-y-2">
-                                            {dhikrSequences.map((seq) => (
-                                                <Button
-                                                    key={seq.id}
-                                                    variant="outline"
-                                                    onClick={() => handleSequenceSelect(seq)}
-                                                    className={cn(
-                                                        "justify-between h-auto py-3 px-4 w-full border-[rgb(var(--color-primary)/0.2)] bg-[rgb(var(--color-primary)/0.1)] rounded-2xl transition-all text-left shadow-sm",
-                                                        activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.25)] border-[rgb(var(--color-primary)/0.5)] shadow-[inset_0_0_15px_rgba(var(--color-primary),0.15)]"
-                                                    )}
-                                                >
-                                                    <div className="flex flex-col items-start w-full overflow-hidden">
-                                                        <span className="font-bold text-sm text-[rgb(var(--color-primary-light))] w-full truncate">{seq.label}</span>
-                                                        <span className="text-[10px] text-white/50 mt-0.5 truncate w-full">Otomatis lanjut ke dzikir berikutnya</span>
-                                                    </div>
-                                                </Button>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Group: Harian */}
-                                    <div>
-                                        <button
-                                            onClick={() => setExpandedCategory(expandedCategory === "harian" ? null : "harian")}
-                                            className="w-full flex items-center justify-between gap-2 mb-3 px-1 py-1 rounded-lg hover:bg-white/5 transition-colors"
-                                        >
-                                            <div className="flex items-center gap-2 flex-1">
-                                                <div className="h-px bg-white/10 flex-1"></div>
-                                                <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-widest text-left">Harian</h3>
-                                                <div className="h-px bg-white/10 flex-1"></div>
-                                            </div>
-                                            <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === "harian" ? "rotate-180" : "rotate-0")} />
-                                        </button>
-
-                                        {expandedCategory === "harian" && (
-                                            <div className="space-y-2 animate-in slide-in-from-top-2 fade-in duration-200">
-
-                                                {dhikrPresets.map((p) => (
-                                                    <Button
-                                                        key={p.id}
-                                                        variant="outline"
-                                                        onClick={() => handlePresetSelect(p)}
-                                                        className={cn(
-                                                            "justify-between h-auto py-3 px-4 border-white/5 bg-white/5 rounded-2xl w-full text-left",
-                                                            activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
-                                                        )}
-                                                    >
-                                                        <div className="flex flex-col items-start w-[80%] overflow-hidden">
-                                                            <span className="font-bold text-sm w-full truncate">{p.label}</span>
-                                                            <span className="text-[10px] text-white/40 truncate w-full mt-0.5">{p.latin}</span>
-                                                        </div>
-                                                        <span className="text-[10px] font-mono opacity-30 ml-2 shrink-0">{p.target}x</span>
-                                                    </Button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Group: Categories from Library */}
-                                    {dhikrCategories.map(cat => (
-                                        <div key={cat.id}>
-                                            <button
-                                                onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
-                                                className="w-full flex items-center justify-between gap-2 mb-3 px-1 py-1 rounded-lg hover:bg-white/5 transition-colors"
-                                            >
-                                                <div className="flex items-center gap-2 flex-1">
-                                                    <div className="h-px bg-white/10 flex-1"></div>
-                                                    <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-widest text-left">{cat.label}</h3>
-                                                    <div className="h-px bg-white/10 flex-1"></div>
-                                                </div>
-                                                <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === cat.id ? "rotate-180" : "rotate-0")} />
-                                            </button>
-
-                                            {expandedCategory === cat.id && (
-                                                <div className="space-y-2 animate-in slide-in-from-top-2 fade-in duration-200">
-
-                                                    {cat.items.map((p) => (
-                                                        <Button
-                                                            key={p.id}
-                                                            variant="outline"
-                                                            onClick={() => handlePresetSelect(p)}
-                                                            className={cn(
-                                                                "justify-between h-auto py-3 px-4 border-white/5 bg-white/5 rounded-2xl w-full text-left",
-                                                                activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
-                                                            )}
-                                                        >
-                                                            <div className="flex flex-col items-start w-[80%] overflow-hidden">
-                                                                <span className="font-bold text-sm w-full truncate">{p.label}</span>
-                                                                <span className="text-[10px] text-white/40 truncate w-full mt-0.5">{p.latin}</span>
-                                                            </div>
-                                                            <span className="text-[10px] font-mono opacity-30 ml-2 shrink-0">{p.target}x</span>
-                                                        </Button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-
-                                    {/* Group: Berantai (if > 1) */}
-                                    {dhikrSequences.length > 1 && (
-                                        <div>
-                                            <button
-                                                onClick={() => setExpandedCategory(expandedCategory === "berantai" ? null : "berantai")}
-                                                className="w-full flex items-center justify-between gap-2 mb-3 px-1 py-1 rounded-lg hover:bg-white/5 transition-colors"
-                                            >
-                                                <div className="flex items-center gap-2 flex-1">
-                                                    <div className="h-px bg-white/10 flex-1"></div>
-                                                    <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-widest text-left">Berantai</h3>
-                                                    <div className="h-px bg-white/10 flex-1"></div>
-                                                </div>
-                                                <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === "berantai" ? "rotate-180" : "rotate-0")} />
-                                            </button>
-
-                                            {expandedCategory === "berantai" && (
-                                                <div className="space-y-2 animate-in slide-in-from-top-2 fade-in duration-200">
-
-                                                    {dhikrSequences.map((seq) => (
-                                                        <Button
-                                                            key={seq.id}
-                                                            variant="outline"
-                                                            onClick={() => handleSequenceSelect(seq)}
-                                                            className={cn(
-                                                                "justify-between h-auto py-3 px-4 w-full border-[rgb(var(--color-primary)/0.1)] bg-[rgb(var(--color-primary)/0.05)] rounded-2xl transition-all text-left",
-                                                                activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.2)] border-[rgb(var(--color-primary)/0.4)] shadow-[inset_0_0_15px_rgba(var(--color-primary),0.1)]"
-                                                            )}
-                                                        >
-                                                            <div className="flex flex-col items-start w-full overflow-hidden">
-                                                                <span className="font-bold text-sm text-[rgb(var(--color-primary-light))] w-full truncate">{seq.label}</span>
-                                                                <span className="text-[10px] text-white/50 mt-0.5 truncate w-full">Otomatis lanjut ke dzikir berikutnya</span>
-                                                            </div>
-                                                        </Button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                </div>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsZenMode(true);
-                            // Ensure feedback is on for "feel"
-                            if (feedbackMode === 'none') {
-                                setFeedbackMode('sound');
-                            }
-                        }}
-                        className={cn(
-                            "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
-                            isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
-                        )}
-                    >
-                        <Moon className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
-                        <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>Mode Zen</span>
-                    </Button>
-
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
-                        className={cn(
-                            "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-all",
-                            feedbackMode !== 'none'
-                                ? isDaylight
-                                    ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                                    : "bg-[rgb(var(--color-primary)/0.15)] text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary)/0.25)]"
-                                : isDaylight
-                                    ? "bg-white border-slate-200 text-slate-300"
-                                    : "bg-white/5 text-white/40 border-white/5"
-                        )}
-                    >
-                        <FeedbackIcon className="h-4 w-4" />
-                        <span className="text-[10px] font-medium uppercase tracking-tighter">
-                            {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
-                        </span>
-                    </Button>
-                </div >
-            </div >
+                <DhikrControls
+                    t={t}
+                    isDaylight={isDaylight}
+                    handleReset={handleReset}
+                    setIsZenMode={setIsZenMode}
+                    feedbackMode={feedbackMode}
+                    setFeedbackMode={setFeedbackMode}
+                    toggleFeedback={toggleFeedback}
+                >
+                    <DhikrPresetSelector
+                        isDialogOpen={isDialogOpen}
+                        setIsDialogOpen={setIsDialogOpen}
+                        t={t}
+                        isDaylight={isDaylight}
+                        expandedCategory={expandedCategory}
+                        setExpandedCategory={setExpandedCategory}
+                        handleSequenceSelect={handleSequenceSelect}
+                        handlePresetSelect={handlePresetSelect}
+                        dhikrPresets={dhikrPresets}
+                        activeSequenceId={activeSequenceId}
+                        activeDhikr={activeDhikr}
+                    />
+                </DhikrControls>
+            </div>
 
             {/* Achievement Layer */}
-            < Dialog open={showReward} onOpenChange={setShowReward} >
+            <Dialog open={showReward} onOpenChange={setShowReward}>
                 <DialogContent className="w-[85%] max-w-[280px] rounded-[32px] bg-neutral-900/95 border-[rgb(var(--color-primary)/0.2)] text-white backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-2xl">
                     <DialogHeader className="flex flex-col items-center">
                         <div className="w-14 h-14 rounded-full bg-[rgb(var(--color-primary)/0.1)] flex items-center justify-center mb-4 border border-[rgb(var(--color-primary)/0.2)]">
@@ -861,7 +338,7 @@ export default function DhikrCounter() {
                                         <>
                                             <Button
                                                 onClick={() => {
-                                                    handlePresetSelect(nextZikir);
+                                                    handlePresetSelect(nextZikir as DhikrPreset);
                                                     setShowReward(false);
                                                 }}
                                                 className="flex-[1.5] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold h-11 rounded-xl flex flex-col items-center justify-center p-0"
@@ -919,7 +396,7 @@ export default function DhikrCounter() {
                         })()}
                     </div>
                 </DialogContent>
-            </Dialog >
-        </div >
+            </Dialog>
+        </div>
     );
 }
