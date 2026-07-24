@@ -22,7 +22,7 @@ import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Send, Sparkles, User, X, MessageSquare, History, Lock, Plus, Trash2, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useUserActivity, useUserProfile } from "@/lib/activity-tracker";
+import { useUserActivity, useUserProfile } from "@/lib/analytics/activity-tracker";
 import { askMentor } from "./ai-action";
 import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
 import { retryWithBackoff } from "@/lib/retry-helper";

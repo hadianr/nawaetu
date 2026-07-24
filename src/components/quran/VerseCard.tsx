@@ -22,7 +22,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { Link2, MoreVertical, Play, Pause, Bookmark, Info, Check, EyeOff, Eye, Share2, Lightbulb, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { type TafsirContent } from "@/lib/tafsir-api";
+import { type TafsirContent } from "@/lib/quran/tafsir-api";
 import { useLocale } from "@/context/LocaleContext";
 import {
     toArabicNumber,

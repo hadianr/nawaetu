@@ -1,6 +1,6 @@
 "use server";
 
-import { searchVerses, SearchResponse } from "@/lib/kemenag-api";
+import { searchVerses, SearchResponse } from "@/lib/quran/kemenag-api";
 
 export async function searchQuranAction(query: string, page: number = 1, locale: string = "id"): Promise<SearchResponse> {
     // Attempt search with primary locale

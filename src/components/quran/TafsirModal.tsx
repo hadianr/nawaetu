@@ -19,7 +19,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Lightbulb, X } from "lucide-react";
-import { type TafsirContent } from "@/lib/tafsir-api";
+import { type TafsirContent } from "@/lib/quran/tafsir-api";
 import { formatFootnotes } from "@/lib/quran-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
