@@ -48,7 +48,12 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
         const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
 
+        const isFriday = new Date().getDay() === 5;
         let allMissions = [...seasonal, ...weekly, ...daily];
+
+        if (savedGender === "male" && isFriday) {
+            allMissions = allMissions.filter(m => m.id !== 'dhuhr_prayer_male');
+        }
 
         if (isRamadhan) {
             allMissions = allMissions.filter(m =>

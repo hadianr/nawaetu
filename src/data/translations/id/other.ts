@@ -416,6 +416,7 @@ export const otherID = {
     prayerFajr: "Subuh",
     prayerSunrise: "Terbit",
     prayerDhuhr: "Dzuhur",
+    prayerJumuah: "Jumat",
     prayerAsr: "Ashar",
     prayerMaghrib: "Maghrib",
     prayerIsha: "Isya",

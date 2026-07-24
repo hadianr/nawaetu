@@ -416,6 +416,7 @@ export const otherEN = {
     prayerFajr: "Fajr",
     prayerSunrise: "Sunrise",
     prayerDhuhr: "Dhuhr",
+    prayerJumuah: "Jumu'ah",
     prayerAsr: "Asr",
     prayerMaghrib: "Maghrib",
     prayerIsha: "Isha",

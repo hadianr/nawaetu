@@ -110,8 +110,15 @@ export default function PrayerCheckInWidget() {
         };
     }, [session]);
 
-    const getMissionId = (suffix: string) =>
-        gender === "female" ? `sholat_${suffix}_female` : `sholat_${suffix}_male`;
+    const isFridaySelected = new Date(selectedDate).getDay() === 5;
+    const isMaleFriday = gender === "male" && isFridaySelected;
+
+    const getMissionId = (suffix: string) => {
+        if (suffix === "dzuhur" && isMaleFriday) {
+            return "friday_prayer";
+        }
+        return gender === "female" ? `sholat_${suffix}_female` : `sholat_${suffix}_male`;
+    };
 
     const isPrayerDone = useCallback(
         (suffix: string) => {
@@ -417,7 +424,9 @@ export default function PrayerCheckInWidget() {
                                 ) : isLate ? (
                                     <AlertCircle className={cn("w-4 h-4", isDaylight ? "text-orange-500" : "text-amber-400")} />
                                 ) : (
-                                    <span className="text-[13px] leading-none">{prayer.icon}</span>
+                                    <span className="text-[13px] leading-none">
+                                        {prayer.suffix === "dzuhur" && isMaleFriday ? "🕌" : prayer.icon}
+                                    </span>
                                 )}
 
                                 <span className={cn(
@@ -432,7 +441,9 @@ export default function PrayerCheckInWidget() {
                                                     ? isDaylight ? "text-slate-500" : "text-white/70"
                                                     : isDaylight ? "text-slate-400" : "text-white/50"
                                 )}>
-                                    {(t as any)[prayer.i18n] || prayer.i18n}
+                                    {prayer.suffix === "dzuhur" && isMaleFriday
+                                        ? ((t as any).prayerJumuah || "Jumat")
+                                        : (t as any)[prayer.i18n] || prayer.i18n}
                                 </span>
 
                                 {/* Status hint below label */}
@@ -607,53 +618,86 @@ export default function PrayerCheckInWidget() {
                                 "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors",
                                 isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
                             )}>
-                                {sheet.prayer.icon}
+                                {sheet.prayer.suffix === "dzuhur" && isMaleFriday ? "🕌" : sheet.prayer.icon}
                             </div>
                             <div>
                                 <p className={cn("text-sm font-black", isDaylight ? "text-slate-900" : "text-white")}>
-                                    {t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any)[sheet.prayer.i18n] || sheet.prayer.i18n)}
+                                    {sheet.prayer.suffix === "dzuhur" && isMaleFriday
+                                        ? (t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any).prayerJumuah || "Jumat"))
+                                        : (t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any)[sheet.prayer.i18n] || sheet.prayer.i18n))}
                                 </p>
-                                <p className={cn("text-[10px] font-medium", isDaylight ? "text-slate-400" : "text-white/50")}>{t.homePrayerCheckInSheetSubtitle}</p>
+                                <p className={cn("text-[10px] font-medium", isDaylight ? "text-slate-400" : "text-white/50")}>
+                                    {sheet.prayer.suffix === "dzuhur" && isMaleFriday
+                                        ? (locale === "id" ? "Sholat Jumat wajib dilaksanakan secara berjamaah di masjid." : "Friday prayer is obligatory in congregation at the mosque.")
+                                        : t.homePrayerCheckInSheetSubtitle}
+                                </p>
                             </div>
                         </div>
 
                         <div className="flex gap-3">
-                            {/* Sendiri */}
-                            <button
-                                onClick={() => {
-                                    doComplete(sheet.missionId, 25);
-                                    setSheet(null);
-                                }}
-                                className={cn(
-                                    "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border group",
-                                    isDaylight
-                                        ? "bg-slate-50 border-slate-100 hover:bg-slate-100"
-                                        : "bg-white/5 border-white/10 hover:bg-white/10"
-                                )}
-                            >
-                                <span className="text-2xl group-active:scale-110 transition-transform">🏠</span>
-                                <span className={cn("text-xs font-black uppercase tracking-wide", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInOptionSolo}</span>
-                                <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+{getHasanahReward(25)} Hasanah</span>
-                            </button>
+                            {/* For Friday Prayer (Male on Friday), only 1 option: Jamaah di Masjid */}
+                            {sheet.prayer.suffix === "dzuhur" && isMaleFriday ? (
+                                <button
+                                    onClick={() => {
+                                        doComplete(sheet.missionId, 200);
+                                        setSheet(null);
+                                    }}
+                                    className={cn(
+                                        "w-full flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
+                                        isDaylight
+                                            ? "bg-emerald-600 border-emerald-500 shadow-emerald-200/50 hover:bg-emerald-500"
+                                            : "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/20 shadow-[rgb(var(--color-primary))]/20 hover:brightness-110"
+                                    )}
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+                                    <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
+                                    <span className="text-xs font-black uppercase tracking-wide text-white relative">
+                                        {locale === "id" ? "Berjamaah di Masjid" : "Congregation (Mosque)"}
+                                    </span>
+                                    <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>
+                                        +{getHasanahReward(200)} Hasanah
+                                    </span>
+                                </button>
+                            ) : (
+                                <>
+                                    {/* Sendiri */}
+                                    <button
+                                        onClick={() => {
+                                            doComplete(sheet.missionId, 25);
+                                            setSheet(null);
+                                        }}
+                                        className={cn(
+                                            "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border group",
+                                            isDaylight
+                                                ? "bg-slate-50 border-slate-100 hover:bg-slate-100"
+                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                        )}
+                                    >
+                                        <span className="text-2xl group-active:scale-110 transition-transform">🏠</span>
+                                        <span className={cn("text-xs font-black uppercase tracking-wide", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInOptionSolo}</span>
+                                        <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+{getHasanahReward(25)} Hasanah</span>
+                                    </button>
 
-                            {/* Berjamaah */}
-                            <button
-                                onClick={() => {
-                                    doComplete(sheet.missionId, 75);
-                                    setSheet(null);
-                                }}
-                                className={cn(
-                                    "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
-                                    isDaylight
-                                        ? "bg-emerald-600 border-emerald-500 shadow-emerald-200/50 hover:bg-emerald-500"
-                                        : "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/20 shadow-[rgb(var(--color-primary))]/20 hover:brightness-110"
-                                )}
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-                                <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
-                                <span className="text-xs font-black uppercase tracking-wide text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
-                                <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+{getHasanahReward(75)} Hasanah</span>
-                            </button>
+                                    {/* Berjamaah */}
+                                    <button
+                                        onClick={() => {
+                                            doComplete(sheet.missionId, 75);
+                                            setSheet(null);
+                                        }}
+                                        className={cn(
+                                            "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
+                                            isDaylight
+                                                ? "bg-emerald-600 border-emerald-500 shadow-emerald-200/50 hover:bg-emerald-500"
+                                                : "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/20 shadow-[rgb(var(--color-primary))]/20 hover:brightness-110"
+                                        )}
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+                                        <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
+                                        <span className="text-xs font-black uppercase tracking-wide text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
+                                        <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+{getHasanahReward(75)} Hasanah</span>
+                                    </button>
+                                </>
+                            )}
                         </div>
 
                         <div className={cn(
