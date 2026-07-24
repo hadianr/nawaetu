@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.0] - 2026-07-24
+
+### Added
+- **Feat(security): Phase 3 & 4 — global rate limiter + CSP hardening**
+
+### Improved
+- **Refactor: Phase 5 — split 5 god-component files into focused sub-components**
+- **Chore: Phase 1 & 2 — git hygiene + complete lib domain refactor**
+
+### Fixed
+- **Fix(ui): add defensive null checks for translation keys in MosqueFinderModal (Fixes JAVASCRIPT-NEXTJS-22)**
+- **Fix(security): conditionally allow 'unsafe-eval' in dev mode for React stacktrace debugging**
+- **Fix(fcm): graceful rrror handling in fcm setup**
+- **Fix: add error pattern to sentry ignore list**
+
+
 ## [1.11.0] - 2026-07-22
 
 ### Added
