@@ -46,7 +46,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
     const options = [
         {
             id: "nearby",
-            label: t.mosqueFinderOptionNearby,
+            label: t?.mosqueFinderOptionNearby ?? "Masjid Terdekat",
             icon: MapPin,
             query: "masjid+terdekat",
             color: "from-blue-500/20 to-blue-600/20",
@@ -54,7 +54,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
         },
         {
             id: "musholla",
-            label: t.mosqueFinderOptionMusholla,
+            label: t?.mosqueFinderOptionMusholla ?? "Musholla",
             icon: Tent,
             query: "musholla+terdekat",
             color: "from-emerald-500/20 to-emerald-600/20",
@@ -62,7 +62,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
         },
         {
             id: "grand",
-            label: t.mosqueFinderOptionGrand,
+            label: t?.mosqueFinderOptionGrand ?? "Masjid Raya",
             icon: Building2,
             query: "masjid+raya+terdekat",
             color: "from-amber-500/20 to-amber-600/20",
@@ -70,7 +70,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
         },
         {
             id: "restarea",
-            label: t.mosqueFinderOptionRestArea,
+            label: t?.mosqueFinderOptionRestArea ?? "Rest Area",
             icon: Car,
             query: "rest+area+masjid+terdekat",
             color: "from-violet-500/20 to-violet-600/20",
@@ -103,13 +103,13 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                         "text-xl font-bold relative z-10",
                         isDaylight ? "text-slate-900" : "text-white"
                     )}>
-                        {t.mosqueFinderTitle}
+                        {t?.mosqueFinderTitle ?? "Mau Sholat di Mana?"}
                     </DialogTitle>
                     <p className={cn(
                         "text-sm mt-1 relative z-10",
                         isDaylight ? "text-slate-500" : "text-white/60"
                     )}>
-                        {t.mosqueFinderDesc}
+                        {t?.mosqueFinderDesc ?? "Pilih jenis tempat sholat yang kamu butuhkan:"}
                     </p>
 
                     {/* Close Button */}
