@@ -83,11 +83,7 @@ export default function MissionsWidget() {
         setMounted(true);
         let token = localStorage.getItem("user_token");
         if (!token) {
-            try {
-                token = crypto.randomUUID();
-            } catch (e) {
-                token = `anon_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-            }
+            token = crypto.randomUUID();
             localStorage.setItem("user_token", token);
         }
         setUserToken(token);
