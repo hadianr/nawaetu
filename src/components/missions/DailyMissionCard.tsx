@@ -20,6 +20,7 @@ import { Sparkles, AlertCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
 import { getRulingLabel } from "@/lib/mission-utils";
+import { formatHasanahRange } from "@/lib/utils/hasanah";
 
 interface DailyMissionCardProps {
     mission: Mission;
@@ -32,6 +33,7 @@ interface DailyMissionCardProps {
     t: any;
     getRulingLabel: (ruling: string, t: any) => string | string[];
     onClick: (mission: Mission) => void;
+    isBackdated?: boolean;
 }
 
 export default function DailyMissionCard({
@@ -44,7 +46,8 @@ export default function DailyMissionCard({
     gender,
     t,
     getRulingLabel,
-    onClick
+    onClick,
+    isBackdated = false
 }: DailyMissionCardProps) {
     let urgencyNode = null;
 
@@ -163,7 +166,7 @@ export default function DailyMissionCard({
                             {getRulingLabel(mission.ruling, t)}
                         </span>
                         <p className="text-[10px] text-white/90 truncate">
-                            +{mission.completionOptions ? `${Math.min(...mission.completionOptions.map(o => o.hasanahReward))}-${Math.max(...mission.completionOptions.map(o => o.hasanahReward))}` : mission.hasanahReward} Hasanah
+                            {formatHasanahRange(mission.hasanahReward, mission.completionOptions, isBackdated)} Hasanah
                         </p>
 
                         {isLocked ? (
