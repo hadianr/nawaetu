@@ -44,11 +44,14 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
         setGender(savedGender);
 
-        const daily = getDailyMissions(savedGender);
-        const weekly = getWeeklyMissions(savedGender);
+        const hijriMonth = prayerData?.hijriMonth;
+        const hijriDay = prayerData?.hijriDay;
+
+        const daily = getDailyMissions(savedGender, hijriMonth, hijriDay);
+        const weekly = getWeeklyMissions(savedGender, hijriMonth, hijriDay);
         const seasonal = getSeasonalMissions(prayerData?.hijriDate);
 
-        const isRamadhan = prayerData?.hijriMonth?.includes('Ramadan');
+        const isRamadhan = hijriMonth?.includes('Ramadan');
 
         const isFriday = new Date().getDay() === 5;
         let allMissions = [...seasonal, ...weekly, ...daily];
@@ -100,7 +103,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
             window.removeEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
             window.removeEventListener(APP_EVENTS.MISSION_UPDATED, handleUpdate);
         };
-    }, [prayerData?.hijriDate, locale, session, completedMissions]);
+    }, [prayerData?.hijriDate, prayerData?.hijriMonth, prayerData?.hijriDay, locale, session, completedMissions]);
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
         const todayStr = DateUtils.today();

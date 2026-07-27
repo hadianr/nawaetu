@@ -28,8 +28,8 @@ export * from './daily';
 export * from './seasonal';
 export * from './sunnah-prayer';
 
-// Get missions filtered by gender
-export function getMissionsForGender(gender: Gender): Mission[] {
+// Get missions filtered by gender and optional hijriDate/day visibility
+export function getMissionsForGender(gender: Gender, hijriMonth?: string, hijriDay?: number): Mission[] {
     const missions = [...UNIVERSAL_MISSIONS, ...SUNNAH_PRAYER_MISSIONS];
 
     if (gender === 'female') {
@@ -38,17 +38,34 @@ export function getMissionsForGender(gender: Gender): Mission[] {
         missions.push(...MALE_MISSIONS);
     }
 
-    return missions;
+    return missions.filter(m => {
+        const vis = m.validationConfig?.visibility;
+        if (!vis) return true;
+
+        if (vis.hijriMonth && hijriMonth) {
+            const currentMonthLower = hijriMonth.toLowerCase();
+            const targetMonthLower = vis.hijriMonth.toLowerCase();
+            if (!currentMonthLower.includes(targetMonthLower)) return false;
+        } else if (vis.hijriMonth && !hijriMonth) {
+            return false;
+        }
+
+        if (vis.hijriDay !== undefined && hijriDay !== undefined) {
+            if (vis.hijriDay !== hijriDay) return false;
+        }
+
+        return true;
+    });
 }
 
 // Get daily missions only
-export function getDailyMissions(gender: Gender): Mission[] {
-    return getMissionsForGender(gender).filter(m => m.type === 'daily');
+export function getDailyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number): Mission[] {
+    return getMissionsForGender(gender, hijriMonth, hijriDay).filter(m => m.type === 'daily');
 }
 
 // Get weekly missions only
-export function getWeeklyMissions(gender: Gender): Mission[] {
-    return getMissionsForGender(gender).filter(m => m.type === 'weekly');
+export function getWeeklyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number): Mission[] {
+    return getMissionsForGender(gender, hijriMonth, hijriDay).filter(m => m.type === 'weekly');
 }
 
 export function getRamadhanMissions(): Mission[] {
