@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.1] - 2026-07-27
+
+### Added
+- **Feat(prayer): replace Dhuhr with Jumu'ah for males on Friday**
+
+### Fixed
+- **Fix(notifications): enhance cross-platform FCM push and global prayer calculation**
+
+
 ## [1.12.0] - 2026-07-24
 
 ### Added
