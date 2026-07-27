@@ -19,6 +19,300 @@
 import { Reading, MissionContent } from './types';
 
 export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
+    'fajr_prayer_male': {
+        id: 'fajr_prayer_male',
+        intro: 'Sholat Subuh berjamaah disaksikan oleh para malaikat dan lebih baik dari dunia seisinya.',
+        fadhilah: [
+            'Pahala sholat semalam suntuk (berjamaah)',
+            'Berada dalam jaminan/perlindungan Allah',
+            'Disaksikan oleh Malaikat siang dan malam',
+            'Pahala 27 derajat lebih tinggi'
+        ],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Subuh (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الصُّبْح رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhas-subhi rak'ataini mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu subuh 2 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Subuh (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الصُّبْح رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhas-subhi rak'ataini mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu subuh 2 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
+        readings: [
+            {
+                title: "Doa Qunut",
+                arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ، وَصَلَّى اللهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ",
+                latin: "Allahummahdinii fiiman hadait, wa 'aafinii fiiman 'aafait, wa tawallanii fiiman tawallait, wa baarik lii fiima a'thait, wa qinii syarra maa qadhait. Fa innaka taqdhii wa laa yuqdhaa 'alaik, wa innahu laa yadzillu man waalaiit, wa laa ya'izzu man 'aadait, tabaarakta rabbanaa wa ta'aalait. Falakal hamdu 'alaa maa qadhait, astaghfiruka wa atuubu ilaik. Wa shallallaahu 'alaa sayyidinaa muhammadin nabiyyil ummiyyi wa 'alaa aalihi wa shahbihi wa sallam.",
+                translation: "Ya Allah, berilah aku petunjuk sebagaimana orang yang Engkau beri petunjuk, berilah kesehatan sebagaimana orang yang Engkau beri kesehatan, peliharalah aku sebagaimana orang yang Engkau pelihara, berakahilah apa yang Engkau berikan, lindungilah aku dari keburukan takdir-Mu. Sesungguhnya Engkau yang menetapkan dan tidak ada yang menetapkan atas-Mu. Tidak akan hina orang yang Engkau lindungi dan tidak akan mulia orang yang Engkau musuhi. Maha Suci Engkau Wahai Tuhan kami dan Maha Tinggi Engkau. Segala puji bagi-Mu atas ketetapan-Mu. Aku memohon ampun dan bertaubat kepada-Mu. Dan semoga sholawat serta salam tercurah kepada Nabi Muhammad, keluarga dan sahabatnya.",
+                note: "Sunnah Muakkad (Syafi'i)"
+            }
+        ],
+        guides: [
+            'Niat & Berdiri Tegak: Hadapkan dada ke kiblat, pancarkan niat sholat Subuh 2 rakaat di dalam hati.',
+            'Takbiratul Ihram: Angkat kedua tangan sejajar telinga/bahu sambil mengucap "Allahu Akbar".',
+            'Membaca Al-Fatihah & Surah: Baca doa Iftitah, Surah Al-Fatihah (wajib), lalu surah pilihan.',
+            'Ruku & I\'tidal: Ruku dengan tuma\'ninah lalu bangkit membaca "Sami\'allahu liman hamidah".',
+            'Sujud & Qunut: Sujud dua kali. Pada rakaat ke-2 setelah ruku, disunnahkan membaca Doa Qunut.',
+            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat lalu menoleh ke kanan dan kiri.'
+        ],
+        source: 'HR. Muslim'
+    },
+
+    'fajr_prayer_female': {
+        id: 'fajr_prayer_female',
+        intro: 'Sholat tepat waktu di rumah adalah sebaik-baik keadaan bagi wanita muslimah.',
+        fadhilah: [
+            'Sebaik-baik sholat wanita adalah di bagian terdalam rumahnya',
+            'Pahala ketaatan yang sempurna',
+            'Terhindar dari fitnah dan menjaga kehormatan'
+        ],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Subuh (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الصُّبْح رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhas-subhi rak'ataini mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu subuh 2 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
+        readings: [
+            {
+                title: "Doa Qunut",
+                arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ، وَصَلَّى اللهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ",
+                latin: "Allahummahdinii fiiman hadait, wa 'aafinii fiiman 'aafait, wa tawallanii fiiman tawallait, wa baarik lii fiima a'thait, wa qinii syarra maa qadhait. Fa innaka taqdhii wa laa yuqdhaa 'alaik, wa innahu laa yadzillu man waalaiit, wa laa ya'izzu man 'aadait, tabaarakta rabbanaa wa tabaarakta rabbanaa wa ta'aalait. Falakal hamdu 'alaa maa qadhait, astaghfiruka wa atuubu ilaik. Wa shallallaahu 'alaa sayyidinaa muhammadin nabiyyil ummiyyi wa 'alaa aalihi wa shahbihi wa sallam.",
+                translation: "Ya Allah, berilah aku petunjuk sebagaimana orang yang Engkau beri petunjuk, berilah kesehatan sebagaimana orang yang Engkau beri kesehatan, peliharalah aku sebagaimana orang yang Engkau pelihara, berakahilah apa yang Engkau berikan, lindungilah aku dari keburukan takdir-Mu. Sesungguhnya Engkau yang menetapkan dan tidak ada yang menetapkan atas-Mu. Tidak akan hina orang yang Engkau lindungi dan tidak akan mulia orang yang Engkau musuhi. Maha Suci Engkau Wahai Tuhan kami dan Maha Tinggi Engkau. Segala puji bagi-Mu atas ketetapan-Mu. Aku memohon ampun dan bertaubat kepada-Mu. Dan semoga sholawat serta salam tercurah kepada Nabi Muhammad, keluarga dan sahabatnya.",
+                note: "Sunnah Muakkad (Syafi'i)"
+            }
+        ],
+        guides: [
+            'Niat & Berdiri Tegak: Hadapkan dada ke kiblat di musholla rumah, hadirkan niat sholat Subuh 2 rakaat.',
+            'Takbiratul Ihram: Tangan diangkat rapat sejajar bahu sambil mengucap "Allahu Akbar".',
+            'Membaca Al-Fatihah & Surah: Baca Iftitah, Surah Al-Fatihah, dan surah pendek pilihan.',
+            'Ruku & I\'tidal: Ruku dengan tuma\'ninah lalu I\'tidal secara khusyu\'.',
+            'Sujud & Doa Qunut: Sujud dua kali tiap rakaat. Disunnahkan Qunut di rakaat ke-2.',
+            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat lalu mengucap salam.'
+        ],
+        source: 'HR. Abu Daud'
+    },
+
+    'dhuhr_prayer_male': {
+        id: 'dhuhr_prayer_male',
+        intro: 'Saat matahari tergelincir, pintu langit dibuka. Waktu utama untuk memohon ampunan.',
+        fadhilah: [
+            'Waktu dibukanya pintu-pintu langit',
+            'Pahala 27 derajat berjamaah',
+            'Dijauhkan dari api neraka'
+        ],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Dzuhur (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Dzuhur (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Niat sholat Dzuhur 4 rakaat (Sendiri/Makmum di masjid).',
+            'Takbiratul Ihram & Iftitah: Angkat tangan, takbir, lalu baca Al-Fatihah & surah.',
+            'Rakaat 1 & 2: Kerjakan Ruku, I\'tidal, dan 2x Sujud dengan tuma\'ninah.',
+            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
+            'Rakaat 3 & 4: Bangkit dan baca Al-Fatihah di rakaat 3 & 4.',
+            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat dan tutup dengan salam.'
+        ],
+        source: 'HR. Bukhari'
+    },
+
+    'dhuhr_prayer_female': {
+        id: 'dhuhr_prayer_female',
+        intro: 'Sholat Dzuhur tepat waktu di rumah adalah bukti ketaatan dan menjaga waktu.',
+        fadhilah: [
+            'Waktu dibukanya pintu-pintu langit',
+            'Ketenangan di tengah kesibukan harian'
+        ],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Dzuhur (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Niat sholat Dzuhur 4 rakaat di tempat sholat rumah.',
+            'Takbiratul Ihram & Iftitah: Takbiratul ihram dan baca Surah Al-Fatihah.',
+            'Rakaat 1 & 2: Kerjakan gerakan Ruku, I\'tidal, dan Sujud dengan khusyu\'.',
+            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
+            'Rakaat 3 & 4: Selesaikan rakaat 3 dan 4 dengan membaca Al-Fatihah.',
+            'Tashahhud Akhir & Salam: Tasyahud akhir dan mengucap salam ke kanan dan kiri.'
+        ],
+        source: 'Fiqih Wanita'
+    },
+
+    'asr_prayer_male': {
+        id: 'asr_prayer_male',
+        intro: 'Sholat Wustha yang harus dijaga dengan berjamaah.',
+        fadhilah: ['Masuk surga (Bardain)', 'Pahala dilipatgandakan'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Ashar (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Ashar (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Pancarkan niat sholat Ashar 4 rakaat sebelum takbir.',
+            'Takbiratul Ihram: Angkat kedua tangan dan ucapkan "Allahu Akbar".',
+            'Rakaat 1 & 2: Baca Al-Fatihah, ruku, i\'tidal, sujud dua kali.',
+            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
+            'Rakaat 3 & 4: Selesaikan dua rakaat terakhir (baca Al-Fatihah sirr/pelan).',
+            'Tashahhud Akhir & Salam: Tasyahud akhir, membaca sholawat, dan salam.'
+        ],
+        source: 'HR. Bukhari'
+    },
+
+    'asr_prayer_female': {
+        id: 'asr_prayer_female',
+        intro: 'Menjaga sholat Ashar di rumah di sela-sela waktu istirahat sore.',
+        fadhilah: ['Masuk surga karena menjaga Bardain (Subuh & Ashar)', 'Perlindungan sore hari'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Ashar (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Niat sholat Ashar 4 rakaat tepat waktu di rumah.',
+            'Takbiratul Ihram: Takbir lalu baca Iftitah & Surah Al-Fatihah.',
+            'Rakaat 1 & 2: Lakukan Ruku, I\'tidal, Sujud dua kali.',
+            'Tashahhud Awal: Duduk tasyahud awal setelah rakaat ke-2.',
+            'Rakaat 3 & 4: Lanjutkan rakaat 3 & 4 membaca Al-Fatihah.',
+            'Tashahhud Akhir & Salam: Tasyahud akhir, baca sholawat Nabi, dan salam.'
+        ],
+        source: 'HR. Bukhari'
+    },
+
+    'maghrib_prayer_male': {
+        id: 'maghrib_prayer_male',
+        intro: 'Waktu singkat yang utama untuk diisi dengan berjamaah di masjid.',
+        fadhilah: ['Waktu mustajab doa antara adzan iqamah', 'Menghapus dosa seharian'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Maghrib (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Maghrib (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Pancarkan niat sholat Maghrib 3 rakaat sebelum takbir.',
+            'Takbiratul Ihram & Iftitah: Takbiratul ihram, baca Iftitah, Al-Fatihah & surah (jahar/keras di 2 rakaat awal).',
+            'Rakaat 1 & 2: Kerjakan Ruku, I\'tidal, Sujud 2 kali dengan tuma\'ninah.',
+            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
+            'Rakaat 3: Bangkit berdiri untuk rakaat ke-3, membaca Al-Fatihah secara sirr (pelan).',
+            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, membaca sholawat Nabi, dan mengucap salam.'
+        ],
+        source: 'HR. Muslim'
+    },
+
+    'maghrib_prayer_female': {
+        id: 'maghrib_prayer_female',
+        intro: 'Waktu singkat saat matahari tenggelam. Segerakanlah di rumah.',
+        fadhilah: ['Waktu mustajab doa', 'Keberkahan awal malam bagi keluarga'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Maghrib (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Niat sholat Maghrib 3 rakaat tepat waktu di rumah.',
+            'Takbiratul Ihram: Takbir lalu baca Iftitah, Surah Al-Fatihah, dan surah pendek.',
+            'Rakaat 1 & 2: Lakukan Ruku, I\'tidal, Sujud dua kali.',
+            'Tashahhud Awal: Duduk tasyahud awal setelah rakaat ke-2.',
+            'Rakaat 3: Lanjutkan rakaat ke-3 membaca Al-Fatihah.',
+            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat Nabi, dan mengucap salam.'
+        ],
+        source: 'HR. Muslim'
+    },
+
+    'isha_prayer_male': {
+        id: 'isha_prayer_male',
+        intro: 'Sholat terberat bagi munafik, namun cahaya sempurna di hari kiamat.',
+        fadhilah: ['Pahala sholat setengah malam', 'Cahaya sempurna di Kiamat'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Isya (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Isya (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Niat sholat Isya 4 rakaat (Sendiri/Makmum di masjid).',
+            'Takbiratul Ihram: Angkat tangan, takbir, lalu baca Al-Fatihah & surah (jahar di 2 rakaat awal).',
+            'Rakaat 1 & 2: Selesaikan Ruku, I\'tidal, Sujud dua kali.',
+            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
+            'Rakaat 3 & 4: Bangkit dan baca Al-Fatihah di rakaat 3 & 4 secara sirr (pelan).',
+            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat dan tutup dengan salam.'
+        ],
+        source: 'HR. Muslim'
+    },
+
+    'isha_prayer_female': {
+        id: 'isha_prayer_female',
+        intro: 'Menutup hari dengan ketaatan sholat Isya sebelum istirahat.',
+        fadhilah: ['Ketentraman tidur', 'Perlindungan malam'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Isya (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
+        guides: [
+            'Niat & Berdiri: Niat sholat Isya 4 rakaat tepat waktu di rumah.',
+            'Takbiratul Ihram & Iftitah: Takbiratul ihram dan baca Surah Al-Fatihah.',
+            'Rakaat 1 & 2: Kerjakan Ruku, I\'tidal, Sujud dua kali.',
+            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
+            'Rakaat 3 & 4: Selesaikan rakaat 3 dan 4 dengan membaca Al-Fatihah.',
+            'Tashahhud Akhir & Salam: Tasyahud akhir dan mengucap salam ke kanan dan kiri.'
+        ],
+        source: 'HR. Muslim'
+    },
+
     'sholat_subuh_male': {
         id: 'sholat_subuh_male',
         intro: 'Sholat Subuh berjamaah disaksikan oleh para malaikat dan lebih baik dari dunia seisinya.',
@@ -98,6 +392,20 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
             'Pahala 27 derajat berjamaah',
             'Dijauhkan dari api neraka'
         ],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Dzuhur (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Dzuhur (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
         guides: ['Segera ke masjid saat adzan berkumandang.'],
         source: 'HR. Bukhari'
     },
@@ -109,6 +417,14 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
             'Waktu dibukanya pintu-pintu langit',
             'Ketenangan di tengah kesibukan harian'
         ],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Dzuhur (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
         guides: ['Segerakan sholat setelah waktu masuk, meski sibuk dengan urusan rumah.'],
         source: 'Fiqih Wanita'
     },
@@ -117,6 +433,20 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         id: 'sholat_ashar_male',
         intro: 'Sholat Wustha yang harus dijaga dengan berjamaah.',
         fadhilah: ['Masuk surga (Bardain)', 'Pahala dilipatgandakan'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Ashar (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Ashar (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
         source: 'HR. Bukhari'
     },
 
@@ -124,6 +454,14 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         id: 'sholat_ashar_female',
         intro: 'Menjaga sholat Ashar di rumah di sela-sela waktu istirahat sore.',
         fadhilah: ['Masuk surga karena menjaga Bardain (Subuh & Ashar)', 'Perlindungan sore hari'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Ashar (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
         source: 'HR. Bukhari'
     },
 
@@ -131,6 +469,20 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         id: 'sholat_maghrib_male',
         intro: 'Waktu singkat yang utama untuk diisi dengan berjamaah di masjid.',
         fadhilah: ['Waktu mustajab doa antara adzan iqamah', 'Menghapus dosa seharian'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Maghrib (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Maghrib (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
         source: 'HR. Muslim'
     },
 
@@ -138,6 +490,14 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         id: 'sholat_maghrib_female',
         intro: 'Waktu singkat saat matahari tenggelam. Segerakanlah di rumah.',
         fadhilah: ['Waktu mustajab doa', 'Keberkahan awal malam bagi keluarga'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Maghrib (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
         source: 'HR. Muslim'
     },
 
@@ -145,6 +505,20 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         id: 'sholat_isya_male',
         intro: 'Sholat terberat bagi munafik, namun cahaya sempurna di hari kiamat.',
         fadhilah: ['Pahala sholat setengah malam', 'Cahaya sempurna di Kiamat'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Isya (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            },
+            makmum: {
+                title: "Niat Sholat Isya (Makmum)",
+                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً مَأْمُوْمًا لله تَعَالَى",
+                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an ma'muuman lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, sebagai makmum, karena Allah ta'ala."
+            }
+        },
         source: 'HR. Muslim'
     },
 
@@ -152,6 +526,14 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         id: 'sholat_isya_female',
         intro: 'Menutup hari dengan ketaatan sholat Isya sebelum istirahat.',
         fadhilah: ['Ketentraman tidur', 'Perlindungan malam'],
+        niat: {
+            munfarid: {
+                title: "Niat Sholat Isya (Sendiri)",
+                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
+                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
+                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
+            }
+        },
         source: 'HR. Muslim'
     },
 

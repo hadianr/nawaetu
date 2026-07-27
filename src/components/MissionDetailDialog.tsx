@@ -31,7 +31,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles, X } from "lucide-react";
 import { Mission, ValidationType } from "@/data/missions";
-import { MISSION_CONTENTS, MissionContent } from "@/data/missions/content";
+import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -64,10 +64,10 @@ export default function MissionDetailDialog({
     onReset,
     customContent,
 }: MissionDetailDialogProps) {
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const content = MISSION_CONTENTS[mission.id];
+    const content = getLocalizedMissionContent(mission.id, locale);
     const [readingIndex, setReadingIndex] = useState(0);
     const [isConfirmingReset, setIsConfirmingReset] = useState(false); // Add this
 
@@ -330,7 +330,7 @@ export default function MissionDetailDialog({
                                             <div className="space-y-3">
                                                 <h3 className={cn("text-sm font-bold mb-2 transition-colors", isDaylight ? "text-slate-800" : "text-white")}>{t.mission_dialog_steps}</h3>
                                                 <div className="space-y-3">
-                                                    {content.guides.map((step, idx) => (
+                                                    {content.guides.map((step: string, idx: number) => (
                                                         <div key={idx} className="flex gap-3 text-sm">
                                                             <div className={cn(
                                                                 "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors border",
@@ -359,7 +359,7 @@ export default function MissionDetailDialog({
                                                     <SparklesIcon className="w-4 h-4" /> {t.mission_dialog_fadhilah}
                                                 </h3>
                                                 <ul className="space-y-2">
-                                                    {content.fadhilah.map((item, idx) => (
+                                                    {content.fadhilah.map((item: string, idx: number) => (
                                                         <li key={idx} className={cn(
                                                             "flex gap-2 text-sm p-3 rounded-lg border transition-colors",
                                                             isDaylight ? "bg-orange-50/50 border-orange-100 text-slate-600" : "text-white/80 bg-white/5 border-white/5"
@@ -383,7 +383,7 @@ export default function MissionDetailDialog({
                                                 )}>
                                                     <p className={cn("text-sm italic transition-colors", isDaylight ? "text-slate-600" : "text-white/90")}>"{mission.dalil}"</p>
                                                     {content.source && (
-                                                        <p className={cn("text-xs mt-2 font-medium transition-colors", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")}>Ref: {content.source}</p>
+                                                        <p className={cn("text-xs mt-2 font-medium transition-colors", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")}>{content.source}</p>
                                                     )}
                                                 </div>
                                             </div>
