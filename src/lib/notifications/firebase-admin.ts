@@ -16,72 +16,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { default as AdminType } from "firebase-admin";
+import { getApps, initializeApp, cert } from "firebase-admin/app";
+import { getMessaging as getAdminMessaging, Messaging } from "firebase-admin/messaging";
 import * as path from "path";
-import * as fs from "fs/promises";
+import * as fs from "fs";
 
-let admin: typeof AdminType;
-let initPromise: Promise<void> | null = null;
+// ponytail: init from env vars or local file fallback. ceiling: sync fs check only.
+function initAdmin() {
+    if (getApps().length) return;
 
-async function getAdmin() {
-    if (!admin) {
-        admin = (await import("firebase-admin")).default;
+    let rawJson = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64
+        ? Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, "base64").toString("utf-8")
+        : process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+
+    if (!rawJson) {
+        const filePath = path.join(process.cwd(), "firebase-service-account.json");
+        if (fs.existsSync(filePath)) {
+            try {
+                rawJson = fs.readFileSync(filePath, "utf-8");
+            } catch {}
+        }
     }
-    return admin;
-}
 
-async function initializeFirebase() {
-    const admin = await getAdmin();
-    const initializedApps = (admin as any).apps as unknown[];
-    if (initializedApps.length) return;
+    if (!rawJson) return;
 
     try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let serviceAccount: any;
-
-        // Production: Use base64-encoded service account from environment variable
-        if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
-            const decoded = Buffer.from(
-                process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
-                'base64'
-            ).toString('utf-8');
-            serviceAccount = JSON.parse(decoded);
-        }
-        // Use JSON string from environment variable
-        else if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-            serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-        }
-        // Development: Use local file
-        else {
-            const serviceAccountPath = path.join(process.cwd(), "firebase-service-account.json");
-            try {
-                const content = await fs.readFile(serviceAccountPath, "utf8");
-                serviceAccount = JSON.parse(content);
-            } catch {
-                // File doesn't exist or is not readable, ignore
-            }
-        }
-
-        // Initialize Firebase Admin if service account is available
-        if (serviceAccount && !(admin as any).apps.length) {
-            admin.initializeApp({
-                credential: (admin as any).credential.cert(serviceAccount),
-            });
-        }
-    } catch (error) {
-        console.error("Failed to initialize Firebase Admin:", error);
+        initializeApp({ credential: cert(JSON.parse(rawJson)) });
+    } catch (err) {
+        console.error("Firebase Admin init failed:", err);
     }
 }
 
-export async function getMessaging() {
-    const admin = await getAdmin();
-
-    if (!(admin as any).apps.length) {
-        if (!initPromise) {
-            initPromise = initializeFirebase();
-        }
-        await initPromise;
-    }
-    // Double check after init
-    return (admin as any).apps.length ? (admin as any).messaging() : null;
+export async function getMessaging(): Promise<Messaging | null> {
+    initAdmin();
+    return getApps().length ? getAdminMessaging() : null;
 }

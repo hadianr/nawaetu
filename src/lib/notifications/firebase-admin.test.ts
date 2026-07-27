@@ -19,10 +19,11 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock fs/promises
+// Mock fs
 const mockReadFile = vi.fn();
-vi.mock('fs/promises', () => ({
-    readFile: mockReadFile,
+vi.mock('fs', () => ({
+    existsSync: vi.fn(() => true),
+    readFileSync: mockReadFile,
 }));
 
 // Mock firebase-admin
@@ -31,18 +32,15 @@ const mockInitializeApp = vi.fn();
 const mockCert = vi.fn();
 const mockMessaging = vi.fn(() => ({ send: vi.fn() }));
 
-vi.mock('firebase-admin', () => {
-    return {
-        default: {
-            get apps() { return mockApps; },
-            initializeApp: mockInitializeApp,
-            credential: {
-                cert: mockCert,
-            },
-            messaging: mockMessaging,
-        },
-    };
-});
+vi.mock('firebase-admin/app', () => ({
+    getApps: () => mockApps,
+    initializeApp: mockInitializeApp,
+    cert: mockCert,
+}));
+
+vi.mock('firebase-admin/messaging', () => ({
+    getMessaging: mockMessaging,
+}));
 
 describe('firebase-admin', () => {
     const originalEnv = process.env;
@@ -67,7 +65,7 @@ describe('firebase-admin', () => {
     });
 
     it('should return null if no credentials and no apps', async () => {
-        mockReadFile.mockRejectedValue(new Error('File not found'));
+        mockReadFile.mockImplementation(() => { throw new Error('File not found'); });
         const messaging = await getMessaging();
         expect(messaging).toBeNull();
         expect(mockInitializeApp).not.toHaveBeenCalled();
@@ -95,7 +93,7 @@ describe('firebase-admin', () => {
 
     it('should initialize with local file if env vars missing', async () => {
         const creds = { project_id: 'test-project-file' };
-        mockReadFile.mockResolvedValue(JSON.stringify(creds));
+        mockReadFile.mockReturnValue(JSON.stringify(creds));
 
         await getMessaging();
 
