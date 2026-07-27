@@ -21,6 +21,7 @@ import { Mission, Gender } from './types';
 import { UNIVERSAL_MISSIONS, MALE_MISSIONS, FEMALE_MISSIONS } from './daily';
 import { SUNNAH_PRAYER_MISSIONS } from './sunnah-prayer';
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from './seasonal';
+import { MISSION_CONTENTS } from './content';
 
 export * from './types';
 export * from './daily';
@@ -83,11 +84,13 @@ function getMissionTranslation(missionId: string, locale: string) {
     const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
     const titleKey = `mission_${missionId}_title` as keyof typeof t;
     const descKey = `mission_${missionId}_desc` as keyof typeof t;
+    const dalilKey = `mission_${missionId}_dalil` as keyof typeof t;
 
     if (t[titleKey]) {
         return {
             title: t[titleKey] as string,
-            description: t[descKey] as string
+            description: t[descKey] as string,
+            dalil: (t[dalilKey] as string) || undefined,
         };
     }
     return null;
@@ -102,7 +105,8 @@ export function getLocalizedMission(mission: Mission, locale: string): Mission {
         const localizedMission = {
             ...mission,
             title: translation.title,
-            description: translation.description
+            description: translation.description,
+            dalil: translation.dalil || mission.dalil,
         };
 
         // Localize completion options if they exist
@@ -122,14 +126,46 @@ export function getLocalizedMission(mission: Mission, locale: string): Mission {
     return mission;
 }
 
-// Helper function to get all missions with translations
-export function getAllMissionsLocalized(locale: string): Mission[] {
-    return [...UNIVERSAL_MISSIONS, ...MALE_MISSIONS, ...FEMALE_MISSIONS]
-        .map(mission => getLocalizedMission(mission, locale));
-}
+// Helper function to get localized mission content (guides, fadhilah, intro, source, niat)
+export function getLocalizedMissionContent(missionId: string, locale: string) {
+    const content = MISSION_CONTENTS[missionId];
+    if (!content) return null;
 
-// Helper function to get seasonal missions with translations
-export function getSeasonalMissionsLocalized(hijriDateStr: string, locale: string): Mission[] {
-    const missions = getSeasonalMissions(hijriDateStr);
-    return missions.map(mission => getLocalizedMission(mission, locale));
+    const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
+    const introKey = `mission_${missionId}_intro` as keyof typeof t;
+    const fadhilahKey = `mission_${missionId}_fadhilah` as keyof typeof t;
+    const guidesKey = `mission_${missionId}_guides` as keyof typeof t;
+    const sourceKey = `mission_${missionId}_source` as keyof typeof t;
+
+    let niat = content.niat;
+    if (niat) {
+        const munfaridTitleKey = `mission_${missionId}_niat_munfarid_title` as keyof typeof t;
+        const munfaridTransKey = `mission_${missionId}_niat_munfarid_translation` as keyof typeof t;
+        const makmumTitleKey = `mission_${missionId}_niat_makmum_title` as keyof typeof t;
+        const makmumTransKey = `mission_${missionId}_niat_makmum_translation` as keyof typeof t;
+
+        niat = {
+            munfarid: {
+                ...niat.munfarid,
+                title: (t as any)[munfaridTitleKey] || niat.munfarid.title,
+                translation: (t as any)[munfaridTransKey] || niat.munfarid.translation,
+            },
+            ...(niat.makmum ? {
+                makmum: {
+                    ...niat.makmum,
+                    title: (t as any)[makmumTitleKey] || niat.makmum.title,
+                    translation: (t as any)[makmumTransKey] || niat.makmum.translation,
+                }
+            } : {})
+        };
+    }
+
+    return {
+        ...content,
+        intro: (t as any)[introKey] || content.intro,
+        fadhilah: (t as any)[fadhilahKey] || content.fadhilah,
+        guides: (t as any)[guidesKey] || content.guides,
+        source: (t as any)[sourceKey] || content.source,
+        niat,
+    };
 }
