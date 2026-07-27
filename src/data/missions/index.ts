@@ -132,40 +132,33 @@ export function getLocalizedMissionContent(missionId: string, locale: string) {
     if (!content) return null;
 
     const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
-    const introKey = `mission_${missionId}_intro` as keyof typeof t;
-    const fadhilahKey = `mission_${missionId}_fadhilah` as keyof typeof t;
-    const guidesKey = `mission_${missionId}_guides` as keyof typeof t;
-    const sourceKey = `mission_${missionId}_source` as keyof typeof t;
 
     let niat = content.niat;
     if (niat) {
-        const munfaridTitleKey = `mission_${missionId}_niat_munfarid_title` as keyof typeof t;
-        const munfaridTransKey = `mission_${missionId}_niat_munfarid_translation` as keyof typeof t;
-        const makmumTitleKey = `mission_${missionId}_niat_makmum_title` as keyof typeof t;
-        const makmumTransKey = `mission_${missionId}_niat_makmum_translation` as keyof typeof t;
-
         niat = {
             munfarid: {
                 ...niat.munfarid,
-                title: (t as any)[munfaridTitleKey] || niat.munfarid.title,
-                translation: (t as any)[munfaridTransKey] || niat.munfarid.translation,
+                title: (t as Record<string, any>)[`mission_${missionId}_niat_munfarid_title`] || niat.munfarid.title,
+                translation: (t as Record<string, any>)[`mission_${missionId}_niat_munfarid_translation`] || niat.munfarid.translation,
             },
             ...(niat.makmum ? {
                 makmum: {
                     ...niat.makmum,
-                    title: (t as any)[makmumTitleKey] || niat.makmum.title,
-                    translation: (t as any)[makmumTransKey] || niat.makmum.translation,
+                    title: (t as Record<string, any>)[`mission_${missionId}_niat_makmum_title`] || niat.makmum.title,
+                    translation: (t as Record<string, any>)[`mission_${missionId}_niat_makmum_translation`] || niat.makmum.translation,
                 }
             } : {})
         };
     }
 
+    const dict = t as Record<string, any>;
+
     return {
         ...content,
-        intro: (t as any)[introKey] || content.intro,
-        fadhilah: (t as any)[fadhilahKey] || content.fadhilah,
-        guides: (t as any)[guidesKey] || content.guides,
-        source: (t as any)[sourceKey] || content.source,
+        intro: dict[`mission_${missionId}_intro`] || content.intro,
+        fadhilah: dict[`mission_${missionId}_fadhilah`] || content.fadhilah,
+        guides: dict[`mission_${missionId}_guides`] || content.guides,
+        source: dict[`mission_${missionId}_source`] || content.source,
         niat,
     };
 }
