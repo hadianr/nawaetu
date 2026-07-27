@@ -48,9 +48,15 @@ const PRAYER_NOTIFICATION_WINDOW_MINUTES = 3;
 // NO DEFAULT COORDINATES: Application mandates location setup.
 
 // Helper: Check if current time is AT or just AFTER prayer time (within precision window)
-function isTimeInWindow(currentTime: string, prayerTime: string): boolean {
+function isTimeInWindow(currentTime: string, rawPrayerTime: string): boolean {
+    if (!rawPrayerTime) return false;
+    // Clean string from trailing offsets like "04:35 (WIB)" or "04:35 (+07)"
+    const cleanPrayerTime = rawPrayerTime.split(" ")[0].trim();
+
     const [cHour, cMin] = currentTime.split(":").map(Number);
-    const [pHour, pMin] = prayerTime.split(":").map(Number);
+    const [pHour, pMin] = cleanPrayerTime.split(":").map(Number);
+
+    if (isNaN(cHour) || isNaN(cMin) || isNaN(pHour) || isNaN(pMin)) return false;
 
     const currentTotalMin = cHour * 60 + cMin;
     const prayerTotalMin = pHour * 60 + pMin;
@@ -236,28 +242,49 @@ export async function POST(req: NextRequest) {
             // Process groups in parallel
             await Promise.all(Array.from(groups.values()).map(async (group) => {
                 try {
-                    const { lat, lng, timezone, subs } = group;
+                    const { lat, lng, timezone: rawTimezone, subs } = group;
+
+                    // Safe IANA timezone fallback check (UTC default for global users)
+                    let safeTimezone = rawTimezone || "UTC";
+                    try {
+                        Intl.DateTimeFormat(undefined, { timeZone: safeTimezone });
+                    } catch (e) {
+                        console.warn(`[Prayer Alert] Invalid timezone '${rawTimezone}', falling back to UTC`);
+                        safeTimezone = "UTC";
+                    }
 
                     // 2. Fetch prayer times for this location (timezone-aware date)
                     const localDateStr = now.toLocaleDateString("en-GB", {
-                        timeZone: timezone,
+                        timeZone: safeTimezone,
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric"
                     }).split("/").join("-"); // DD-MM-YYYY
 
-                    // Use method 20 (Kemenag RI) — the app default for Indonesian users.
-                    const userMethod = "20";
+                    // Dynamic Calculation Method for Global Users:
+                    //   Method 20: Kemenag RI (Indonesia - lat: -11 to 6, lng: 95 to 141)
+                    //   Method 3: Muslim World League (Europe / Asia)
+                    //   Method 2: ISNA (North America / Canada)
+                    //   Method 4: Umm al-Qura / Makkah (Middle East)
+                    let userMethod = "3"; // Default MWL (Global)
+                    if (lat >= -11 && lat <= 6 && lng >= 95 && lng <= 141) {
+                        userMethod = "20"; // Indonesia
+                    } else if (lng >= -170 && lng <= -50) {
+                        userMethod = "2"; // North America
+                    } else if (lat >= 12 && lat <= 32 && lng >= 34 && lng <= 60) {
+                        userMethod = "4"; // Makkah / Middle East
+                    }
+
                     const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
                     if (!timings) {
                         results.skipped += subs.length;
                         return;
                     }
 
-                    // 3. Get current time in that timezone
+                    // 3. Get current time in that timezone (h23 forces 00:00 to 23:59 24h format)
                     const localTimeStr = now.toLocaleTimeString("en-US", {
-                        timeZone: timezone,
-                        hour12: false,
+                        timeZone: safeTimezone,
+                        hourCycle: "h23",
                         hour: "2-digit",
                         minute: "2-digit"
                     });
@@ -331,7 +358,7 @@ export async function POST(req: NextRequest) {
                             const title = titles[Math.floor(Math.random() * titles.length)];
                             const body = bodies[Math.floor(Math.random() * bodies.length)];
 
-                            await messagingAdmin!.send({
+                             await messagingAdmin!.send({
                                 token: sub.token,
                                 notification: {
                                     title: title,
@@ -342,7 +369,24 @@ export async function POST(req: NextRequest) {
                                     prayer: activePrayer,
                                     url: "/jadwal-sholat" // Open specific page
                                 },
-                                // CRITICAL for iOS Safari PWA
+                                // CRITICAL for iOS Safari PWA & macOS
+                                apns: {
+                                    headers: {
+                                        "apns-priority": "10",
+                                        "apns-push-type": "alert"
+                                    },
+                                    payload: {
+                                        aps: {
+                                            alert: {
+                                                title: title,
+                                                body: body
+                                            },
+                                            sound: "default",
+                                            badge: 1
+                                        }
+                                    }
+                                },
+                                // CRITICAL for Cross-Platform WebPush (Chrome, Edge, Firefox, Mobile Safari PWA)
                                 webpush: {
                                     headers: {
                                         "Urgency": "high",
@@ -355,9 +399,14 @@ export async function POST(req: NextRequest) {
                                         badge: "/icon-192x192.png?v=1.5.7",
                                         tag: `prayer-${activePrayer.toLowerCase()}`,
                                         requireInteraction: true,
+                                        renotify: true,
+                                        vibrate: [200, 100, 200],
                                         data: {
                                             url: "/jadwal-sholat"
                                         }
+                                    },
+                                    fcmOptions: {
+                                        link: "/jadwal-sholat"
                                     }
                                 },
                                 android: {
@@ -365,7 +414,9 @@ export async function POST(req: NextRequest) {
                                     notification: {
                                         channelId: "prayer-alerts",
                                         priority: "max",
-                                        visibility: "public"
+                                        visibility: "public",
+                                        defaultSound: true,
+                                        defaultVibrateTimings: true
                                     }
                                 },
                             });
