@@ -28,6 +28,7 @@ import { updateStreak } from "@/lib/streak-utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
+import { calculateHasanahReward } from "@/lib/utils/hasanah";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
@@ -85,10 +86,9 @@ export default function PrayerCheckInWidget() {
     const [selectedDate, setSelectedDate] = useState<string>(DateUtils.today());
     const dateInputRef = useRef<HTMLInputElement>(null);
     const [showSunnah, setShowSunnah] = useState(false);
-
     const todayStr = DateUtils.today();
     const isBackdated = selectedDate !== todayStr;
-    const getHasanahReward = (baseHasanah: number) => isBackdated ? Math.floor(baseHasanah * 0.5) : baseHasanah;
+    const getHasanahReward = (baseHasanah: number) => calculateHasanahReward(baseHasanah, isBackdated);
 
     useEffect(() => {
         setMounted(true);
