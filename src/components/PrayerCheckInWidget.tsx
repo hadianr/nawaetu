@@ -31,6 +31,8 @@ import { toast } from "sonner";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
+import { APP_EVENTS } from "@/lib/constants/events";
+import { getPrayerMissionId } from "@/lib/mission-resolver";
 import { DateUtils } from "@/lib/utils/date";
 import type { Gender } from "@/data/missions";
 
@@ -102,22 +104,18 @@ export default function PrayerCheckInWidget() {
             const savedGender = (session?.user?.gender || storage.getOptional(STORAGE_KEYS.USER_GENDER)) as Gender;
             setGender(savedGender);
         };
-        window.addEventListener("profile_updated", handleUpdate);
-        window.addEventListener("storage", handleUpdate);
+        window.addEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
+        window.addEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
         return () => {
-            window.removeEventListener("profile_updated", handleUpdate);
-            window.removeEventListener("storage", handleUpdate);
+            window.removeEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
+            window.removeEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
         };
     }, [session]);
 
     const isFridaySelected = new Date(selectedDate).getDay() === 5;
-    const isMaleFriday = gender === "male" && isFridaySelected;
 
     const getMissionId = (suffix: string) => {
-        if (suffix === "dzuhur" && isMaleFriday) {
-            return "friday_prayer";
-        }
-        return gender === "female" ? `sholat_${suffix}_female` : `sholat_${suffix}_male`;
+        return getPrayerMissionId(suffix, gender, isFridaySelected);
     };
 
     const isPrayerDone = useCallback(
@@ -220,9 +218,9 @@ export default function PrayerCheckInWidget() {
         }
 
         addHasanah(finalHasanah, selectedDate);
-        window.dispatchEvent(new CustomEvent("hasanah_updated"));
+        window.dispatchEvent(new CustomEvent(APP_EVENTS.HASANAH_UPDATED));
         completeMission(missionId, finalHasanah, selectedDate);
-        window.dispatchEvent(new CustomEvent("mission_storage_updated"));
+        window.dispatchEvent(new CustomEvent(APP_EVENTS.MISSION_UPDATED));
 
         toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
             description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{hasanah} Hasanah)").replace("{hasanah}", String(finalHasanah)),
@@ -242,8 +240,8 @@ export default function PrayerCheckInWidget() {
             const hasanahToSubtract = doneRecord.hasanahEarned || 0;
             undoCompleteMission(missionId, selectedDate);
             addHasanah(-hasanahToSubtract, selectedDate);
-            window.dispatchEvent(new CustomEvent("hasanah_updated"));
-            window.dispatchEvent(new CustomEvent("mission_storage_updated"));
+            window.dispatchEvent(new CustomEvent(APP_EVENTS.HASANAH_UPDATED));
+            window.dispatchEvent(new CustomEvent(APP_EVENTS.MISSION_UPDATED));
 
             toast.info(t.habitUndoTitle || "Habit dibatalkan", {
                 description: t.habitUndoDesc || "Point Hasanah telah dikembalikan.",
@@ -425,7 +423,7 @@ export default function PrayerCheckInWidget() {
                                     <AlertCircle className={cn("w-4 h-4", isDaylight ? "text-orange-500" : "text-amber-400")} />
                                 ) : (
                                     <span className="text-[13px] leading-none">
-                                        {prayer.suffix === "dzuhur" && isMaleFriday ? "🕌" : prayer.icon}
+                                        {prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "🕌" : prayer.icon}
                                     </span>
                                 )}
 
@@ -441,7 +439,7 @@ export default function PrayerCheckInWidget() {
                                                     ? isDaylight ? "text-slate-500" : "text-white/70"
                                                     : isDaylight ? "text-slate-400" : "text-white/50"
                                 )}>
-                                    {prayer.suffix === "dzuhur" && isMaleFriday
+                                    {prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? ((t as any).prayerJumuah || "Jumat")
                                         : (t as any)[prayer.i18n] || prayer.i18n}
                                 </span>
@@ -618,16 +616,16 @@ export default function PrayerCheckInWidget() {
                                 "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors",
                                 isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
                             )}>
-                                {sheet.prayer.suffix === "dzuhur" && isMaleFriday ? "🕌" : sheet.prayer.icon}
+                                {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "🕌" : sheet.prayer.icon}
                             </div>
                             <div>
                                 <p className={cn("text-sm font-black", isDaylight ? "text-slate-900" : "text-white")}>
-                                    {sheet.prayer.suffix === "dzuhur" && isMaleFriday
+                                    {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? (t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any).prayerJumuah || "Jumat"))
                                         : (t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any)[sheet.prayer.i18n] || sheet.prayer.i18n))}
                                 </p>
                                 <p className={cn("text-[10px] font-medium", isDaylight ? "text-slate-400" : "text-white/50")}>
-                                    {sheet.prayer.suffix === "dzuhur" && isMaleFriday
+                                    {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? (locale === "id" ? "Sholat Jumat wajib dilaksanakan secara berjamaah di masjid." : "Friday prayer is obligatory in congregation at the mosque.")
                                         : t.homePrayerCheckInSheetSubtitle}
                                 </p>
@@ -636,7 +634,7 @@ export default function PrayerCheckInWidget() {
 
                         <div className="flex gap-3">
                             {/* For Friday Prayer (Male on Friday), only 1 option: Jamaah di Masjid */}
-                            {sheet.prayer.suffix === "dzuhur" && isMaleFriday ? (
+                            {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? (
                                 <button
                                     onClick={() => {
                                         doComplete(sheet.missionId, 200);

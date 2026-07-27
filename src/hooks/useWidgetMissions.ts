@@ -26,6 +26,8 @@ import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { APP_EVENTS } from "@/lib/constants/events";
+import { DateUtils } from "@/lib/utils/date";
 
 export function useWidgetMissions(completedMissions: { id: string; completedAt: string }[]) {
     const { data: session } = useSession();
@@ -53,6 +55,23 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
         if (savedGender === "male" && isFriday) {
             allMissions = allMissions.filter(m => m.id !== 'dhuhr_prayer_male');
+            // Ensure Friday prayer mission is included for males on Friday
+            const fridayMission: Mission = {
+                id: 'friday_prayer',
+                title: 'Sholat Jum\'at',
+                description: 'Tunaikan sholat Jum\'at di masjid',
+                category: 'prayer',
+                ruling: 'obligatory',
+                type: 'daily',
+                hasanahReward: 200,
+                icon: '🕌',
+                gender: 'male',
+                validationType: 'day',
+                validationConfig: { allowedDays: [5] }
+            };
+            if (!allMissions.some(m => m.id === 'friday_prayer')) {
+                allMissions.push(fridayMission);
+            }
         }
 
         if (isRamadhan) {
@@ -72,22 +91,24 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
     useEffect(() => {
         loadData();
         const handleUpdate = () => loadData();
-        window.addEventListener('profile_updated', handleUpdate);
-        window.addEventListener('storage', handleUpdate);
+        window.addEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
+        window.addEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
+        window.addEventListener(APP_EVENTS.MISSION_UPDATED, handleUpdate);
 
         return () => {
-            window.removeEventListener('profile_updated', handleUpdate);
-            window.removeEventListener('storage', handleUpdate);
+            window.removeEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
+            window.removeEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
+            window.removeEventListener(APP_EVENTS.MISSION_UPDATED, handleUpdate);
         };
-    }, [prayerData?.hijriDate, locale, session]);
+    }, [prayerData?.hijriDate, locale, session, completedMissions]);
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = DateUtils.today();
 
         if (type === 'daily' || type === 'weekly' || !type) {
             return completedMissions.some(m => {
                 if (m.id !== missionId) return false;
-                const completedDate = m.completedAt.split('T')[0];
+                const completedDate = DateUtils.toLocalDate(m.completedAt);
                 return completedDate === todayStr;
             });
         }
