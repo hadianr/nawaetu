@@ -177,83 +177,50 @@ export const FEMALE_MISSIONS: Mission[] = [
         ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'manual'
-    },
-    {
-        id: 'fajr_prayer_female',
-        title: 'Sholat Subuh',
-        description: 'Tunaikan sholat Subuh tepat waktu',
-        hasanahReward: 25,
-        icon: '🌙',
-        gender: 'female',
-        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'fajr' }
-    },
-    {
-        id: 'dhuhr_prayer_female',
-        title: 'Sholat Dzuhur',
-        description: 'Tunaikan sholat Dzuhur tepat waktu',
-        hasanahReward: 25,
-        icon: '☀️',
-        gender: 'female',
-        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'dhuhr' }
-    },
-    {
-        id: 'asr_prayer_female',
-        title: 'Sholat Ashar',
-        description: 'Tunaikan sholat Ashar tepat waktu',
-        hasanahReward: 25,
-        icon: '🌤️',
-        gender: 'female',
-        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'asr' }
-    },
-    {
-        id: 'maghrib_prayer_female',
-        title: 'Sholat Maghrib',
-        description: 'Tunaikan sholat Maghrib tepat waktu',
-        hasanahReward: 25,
-        icon: '🌅',
-        gender: 'female',
-        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'maghrib' }
-    },
-    {
-        id: 'isha_prayer_female',
-        title: 'Sholat Isya',
-        description: 'Tunaikan sholat Isya tepat waktu',
-        hasanahReward: 25,
-        icon: '🌃',
-        gender: 'female',
-        dalil: 'Sebaik-baik sholat wanita adalah di rumahnya',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'isha' }
     }
 ];
+
+// Reusable prayer mission factory
+const PRAYERS = [
+    { id: 'fajr', title: 'Sholat Subuh', icon: '🌙' },
+    { id: 'dhuhr', title: 'Sholat Dzuhur', icon: '☀️' },
+    { id: 'asr', title: 'Sholat Ashar', icon: '🌤️' },
+    { id: 'maghrib', title: 'Sholat Maghrib', icon: '🌅' },
+    { id: 'isha', title: 'Sholat Isya', icon: '🌃' }
+] as const;
+
+function createPrayerMission(
+    id: typeof PRAYERS[number]['id'],
+    title: string,
+    icon: string,
+    gender: 'male' | 'female'
+): Mission {
+    const isMale = gender === 'male';
+    return {
+        id: `${id}_prayer_${gender}`,
+        title,
+        description: isMale ? `Tunaikan ${title} (Utama: Berjamaah)` : `Tunaikan ${title} tepat waktu`,
+        hasanahReward: 25,
+        icon,
+        gender,
+        dalil: isMale ? 'Sholat berjamaah lebih utama 27 derajat' : 'Sebaik-baik sholat wanita adalah di rumahnya',
+        type: 'daily',
+        category: 'prayer',
+        ruling: 'obligatory',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: { afterPrayer: id },
+        ...(isMale && {
+            completionOptions: [
+                { label: 'Pray Alone', hasanahReward: 25 },
+                { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
+            ]
+        })
+    };
+}
+
+// Add daily prayers to female missions
+FEMALE_MISSIONS.push(...PRAYERS.map(p => createPrayerMission(p.id, p.title, p.icon, 'female')));
 
 export const MALE_MISSIONS: Mission[] = [
     {
@@ -271,100 +238,5 @@ export const MALE_MISSIONS: Mission[] = [
         validationType: 'day',
         validationConfig: { allowedDays: [5] } // Friday = 5
     },
-    // MALE PRAYER MISSIONS
-    {
-        id: 'fajr_prayer_male',
-        title: 'Sholat Subuh',
-        description: 'Tunaikan sholat Subuh (Utama: Berjamaah)',
-        hasanahReward: 25,
-        icon: '🌙',
-        gender: 'male',
-        dalil: 'Sholat berjamaah lebih utama 27 derajat',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'fajr' },
-        completionOptions: [
-            { label: 'Pray Alone', hasanahReward: 25 },
-            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'dhuhr_prayer_male',
-        title: 'Sholat Dzuhur',
-        description: 'Tunaikan sholat Dzuhur (Utama: Berjamaah)',
-        hasanahReward: 25,
-        icon: '☀️',
-        gender: 'male',
-        dalil: 'Sholat berjamaah lebih utama 27 derajat',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'dhuhr' },
-        completionOptions: [
-            { label: 'Pray Alone', hasanahReward: 25 },
-            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'asr_prayer_male',
-        title: 'Sholat Ashar',
-        description: 'Tunaikan sholat Ashar (Utama: Berjamaah)',
-        hasanahReward: 25,
-        icon: '🌤️',
-        gender: 'male',
-        dalil: 'Sholat berjamaah lebih utama 27 derajat',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'asr' },
-        completionOptions: [
-            { label: 'Pray Alone', hasanahReward: 25 },
-            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'maghrib_prayer_male',
-        title: 'Sholat Maghrib',
-        description: 'Tunaikan sholat Maghrib (Utama: Berjamaah)',
-        hasanahReward: 25,
-        icon: '🌅',
-        gender: 'male',
-        dalil: 'Sholat berjamaah lebih utama 27 derajat',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'maghrib' },
-        completionOptions: [
-            { label: 'Pray Alone', hasanahReward: 25 },
-            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
-        ]
-    },
-    {
-        id: 'isha_prayer_male',
-        title: 'Sholat Isya',
-        description: 'Tunaikan sholat Isya (Utama: Berjamaah)',
-        hasanahReward: 25,
-        icon: '🌃',
-        gender: 'male',
-        dalil: 'Sholat berjamaah lebih utama 27 derajat',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: 'isha' },
-        completionOptions: [
-            { label: 'Pray Alone', hasanahReward: 25 },
-            { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
-        ]
-    }
+    ...PRAYERS.map(p => createPrayerMission(p.id, p.title, p.icon, 'male'))
 ];
