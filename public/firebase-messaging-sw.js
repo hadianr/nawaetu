@@ -57,10 +57,13 @@ try {
         if (!payload.notification && payload.data) {
             const title = payload.data.title || 'Nawaetu';
             const body = payload.data.body || '';
+            const targetUrl = payload.data.url || '/';
             return self.registration.showNotification(title, {
                 body,
-                icon: '/icon.png',
-                tag: 'nawaetu-data-msg'
+                icon: '/icon-192x192.png?v=1.5.7',
+                badge: '/icon-192x192.png?v=1.5.7',
+                tag: 'nawaetu-data-msg',
+                data: { url: targetUrl }
             });
         }
     });
@@ -94,20 +97,25 @@ self.addEventListener('notificationclick', function (event) {
     console.log('[SW] Notification clicked:', event.notification.tag);
     event.notification.close();
 
+    const targetUrl = event.notification.data?.url || '/jadwal-sholat';
+
     // Standard PWA Window Open/Focus logic
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(function (clientList) {
-                // Focus if already open
+                // Focus if already open on same path or focus any app window
                 for (let i = 0; i < clientList.length; i++) {
                     const client = clientList[i];
-                    if (client.url.includes('/') && 'focus' in client) {
+                    if ('focus' in client) {
+                        if ('navigate' in client) {
+                            client.navigate(targetUrl);
+                        }
                         return client.focus();
                     }
                 }
-                // Open new if not
+                // Open new if app is closed
                 if (clients.openWindow) {
-                    return clients.openWindow('/');
+                    return clients.openWindow(targetUrl);
                 }
             })
     );
