@@ -163,7 +163,7 @@ export default function DailyMissionCard({
                             {getRulingLabel(mission.ruling, t)}
                         </span>
                         <p className="text-[10px] text-white/90 truncate">
-                            +{mission.hasanahReward} Hasanah
+                            +{mission.completionOptions ? `${Math.min(...mission.completionOptions.map(o => o.hasanahReward))}-${Math.max(...mission.completionOptions.map(o => o.hasanahReward))}` : mission.hasanahReward} Hasanah
                         </p>
 
                         {isLocked ? (
