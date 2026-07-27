@@ -82,11 +82,13 @@ export default function StatsPage() {
     const prayerMap: Record<string, Set<string>> = {};
     completedMissions.forEach(m => {
         const dateStr = m.completedAt.split('T')[0];
-        if (m.id.startsWith("sholat_")) {
+        if (m.id.startsWith("sholat_") || m.id.endsWith("_prayer_male") || m.id.endsWith("_prayer_female")) {
             if (!prayerMap[dateStr]) prayerMap[dateStr] = new Set();
-            const prayerType = m.id.split('_')[1];
-            if (PRAYER_SUFFIXES.includes(prayerType as any)) {
-                prayerMap[dateStr].add(prayerType);
+            const parts = m.id.split('_');
+            const prayerType = parts[0] === 'sholat' ? parts[1] : parts[0];
+            const normalizedType = prayerType === 'fajr' ? 'subuh' : prayerType === 'dhuhr' ? 'dzuhur' : prayerType === 'asr' ? 'ashar' : prayerType === 'isha' ? 'isya' : prayerType;
+            if (PRAYER_SUFFIXES.includes(normalizedType as any)) {
+                prayerMap[dateStr].add(normalizedType);
             }
         }
     });
