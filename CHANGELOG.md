@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.3] - 2026-07-29
+
+### Added
+- **Feat(ui): unify evidence source card with compact alignment and dual badges**
+- **Feat(quran): add reference parser and surah registry for interactive verse links**
+- **Feat(i18n): localize prayer mission guides, dalil, and intentions**
+
+### Improved
+- **Refactor(missions): standardize evidence dalil tags and Hadith citations**
+- **Refactor(hasanah): centralize Hasanah calculation and range formatting**
+- **Refactor(missions): DRY prayer mission definitions with factory function**
+- **Refactor(missions): simplify localized mission content lookup**
+- **Refactor(missions): remove duplicate legacy mission content entries**
+
+### Fixed
+- **Fix(missions): filter Hijri-restricted missions out of main mission list**
+- **Fix(stats): support English prayer mission IDs in statistics tracking**
+- **Fix(ui): display Hasanah point range for mission options**
+- **Fix(missions): sync prayer completion state across widgets**
+
+
 ## [1.12.2] - 2026-07-27
 
 ### Fixed

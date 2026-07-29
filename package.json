@@ -1,6 +1,6 @@
 {
   "name": "nawaetu",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "private": true,
   "browserslist": [
     "chrome >= 100",
