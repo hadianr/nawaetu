@@ -53,11 +53,11 @@ export default function DailyMissionCard({
 
     if (mission.category === 'prayer' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
         const idToKey: { [key: string]: string } = {
-            'sholat_subuh_male': 'Fajr', 'sholat_subuh_female': 'Fajr', 'fajr_prayer_male': 'Fajr', 'fajr_prayer_female': 'Fajr',
-            'sholat_dzuhur_male': 'Dhuhr', 'sholat_dzuhur_female': 'Dhuhr', 'dhuhr_prayer_male': 'Dhuhr', 'dhuhr_prayer_female': 'Dhuhr',
-            'sholat_ashar_male': 'Asr', 'sholat_ashar_female': 'Asr', 'asr_prayer_male': 'Asr', 'asr_prayer_female': 'Asr',
-            'sholat_maghrib_male': 'Maghrib', 'sholat_maghrib_female': 'Maghrib', 'maghrib_prayer_male': 'Maghrib', 'maghrib_prayer_female': 'Maghrib',
-            'sholat_isya_male': 'Isha', 'sholat_isya_female': 'Isha', 'isha_prayer_male': 'Isha', 'isha_prayer_female': 'Isha'
+            'fajr_prayer': 'Fajr', 'sholat_subuh_male': 'Fajr', 'sholat_subuh_female': 'Fajr', 'fajr_prayer_male': 'Fajr', 'fajr_prayer_female': 'Fajr',
+            'dhuhr_prayer': 'Dhuhr', 'sholat_dzuhur_male': 'Dhuhr', 'sholat_dzuhur_female': 'Dhuhr', 'dhuhr_prayer_male': 'Dhuhr', 'dhuhr_prayer_female': 'Dhuhr',
+            'asr_prayer': 'Asr', 'sholat_ashar_male': 'Asr', 'sholat_ashar_female': 'Asr', 'asr_prayer_male': 'Asr', 'asr_prayer_female': 'Asr',
+            'maghrib_prayer': 'Maghrib', 'sholat_maghrib_male': 'Maghrib', 'sholat_maghrib_female': 'Maghrib', 'maghrib_prayer_male': 'Maghrib', 'maghrib_prayer_female': 'Maghrib',
+            'isha_prayer': 'Isha', 'sholat_isya_male': 'Isha', 'sholat_isya_female': 'Isha', 'isha_prayer_male': 'Isha', 'isha_prayer_female': 'Isha'
         };
         const prayerKey = idToKey[mission.id];
 

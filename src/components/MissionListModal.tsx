@@ -18,13 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mission, Gender, getLocalizedMission } from "@/data/missions";
+import { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
-import { Check, CheckCircle2, Sparkles, AlertCircle, X } from "lucide-react";
-import MissionDetailDialog from "./MissionDetailDialog";
+import { Check, Sparkles, AlertCircle, X } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { getRulingLabel } from "@/lib/mission-utils";
 import { useTheme } from "@/context/ThemeContext";
@@ -40,6 +39,17 @@ interface MissionListModalProps {
     isOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
     initialTab?: string;
+}
+
+/**
+ * Worship filter tab configuration (All, Obligatory, Sunnah Prayer, Dhikr, Fasting, Quran, Recommended).
+ */
+type MissionTabType = 'all' | 'obligatory' | 'sunnah_prayer' | 'dhikr' | 'fasting' | 'quran' | 'recommended';
+
+interface TabDefinition {
+    id: MissionTabType;
+    label: string;
+    activeColorClass: string;
 }
 
 export default function MissionListModal({
@@ -59,55 +69,72 @@ export default function MissionListModal({
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
 
-    // Sync active tab if initialTab changes (re-opening logic)
-    // Note: In a real app we might want a useEffect on open.
-    // However, Shadcn Dialog remounts content? No.
-    // Let's use a key or effect.
-
     const [internalOpen, setInternalOpen] = useState(false);
     const isControlled = isOpen !== undefined;
 
     const finalOpen = isControlled ? isOpen : internalOpen;
     const finalOnOpenChange = isControlled ? onOpenChange : setInternalOpen;
 
-    // Reset tab when opening if initialTab is provided
-    // Simple approach: When finalOpen becomes true, set tab.
-    // But we can't detect change easily without effect.
+    // Worship filter tabs list
+    const tabs: TabDefinition[] = useMemo(() => [
+        { id: 'all', label: t.missionTabAll || "All", activeColorClass: "data-[state=active]:bg-white data-[state=active]:text-black" },
+        { id: 'obligatory', label: t.missionTabObligatory || "⭐ Obligatory", activeColorClass: "data-[state=active]:bg-blue-500 data-[state=active]:text-white" },
+        { id: 'sunnah_prayer', label: t.missionTabSunnahPrayer || "🕌 Sunnah Prayer", activeColorClass: "data-[state=active]:bg-purple-500 data-[state=active]:text-white" },
+        { id: 'dhikr', label: t.missionTabDhikr || "📿 Dhikr", activeColorClass: "data-[state=active]:bg-amber-500 data-[state=active]:text-black" },
+        { id: 'fasting', label: t.missionTabFasting || "🌙 Fasting", activeColorClass: "data-[state=active]:bg-indigo-500 data-[state=active]:text-white" },
+        { id: 'quran', label: t.missionTabQuran || "📖 Quran", activeColorClass: "data-[state=active]:bg-teal-500 data-[state=active]:text-white" },
+        { id: 'recommended', label: t.missionTabRecommended || "✨ Recommended", activeColorClass: "data-[state=active]:bg-emerald-500 data-[state=active]:text-black" }
+    ], [t]);
 
-    // Dynamic Tab Logic
-    const isRamadhan = hijriDate?.toLowerCase().includes("ramadhan") || hijriDate?.toLowerCase().includes("ramadan");
-    const isSyaban = hijriDate?.toLowerCase().includes("sha'ban") ||
-        hijriDate?.toLowerCase().includes("syaban") ||
-        hijriDate?.toLowerCase().includes("sya'ban") ||
-        hijriDate?.toLowerCase().includes("shaban") ||
-        hijriDate?.toLowerCase().includes("sha’ban") ||
-        hijriDate?.toLowerCase().includes("shaʿbān");
+    // Grouping & Sorting Missions with useMemo for performance optimization
+    const sortedMissionsMap = useMemo(() => {
+        const filterByTab = (type: MissionTabType) => {
+            if (type === 'obligatory') {
+                return missions.filter(m => m.ruling === 'obligatory');
+            }
+            if (type === 'sunnah_prayer') {
+                return missions.filter(m => m.category === 'prayer' && m.ruling !== 'obligatory');
+            }
+            if (type === 'dhikr') {
+                return missions.filter(m => m.category === 'dhikr');
+            }
+            if (type === 'fasting') {
+                return missions.filter(m => m.category === 'fasting');
+            }
+            if (type === 'quran') {
+                return missions.filter(m => m.category === 'quran');
+            }
+            if (type === 'recommended') {
+                return missions.filter(m => m.ruling === 'sunnah' || m.ruling === 'permissible');
+            }
+            return missions;
+        };
 
-    // Filtering
-    const dailyMissions = missions.filter(m => m.type === 'daily' && (m.phase === 'all_year' || !m.phase));
-    const weeklyMissions = missions.filter(m => m.type === 'weekly');
-    // const prepMissions = missions.filter(m => m.phase === 'ramadhan_prep');
+        const sortList = (list: Mission[]) => {
+            return [...list].sort((a, b) => {
+                const aCompleted = isMissionCompleted(a.id, a.type);
+                const bCompleted = isMissionCompleted(b.id, b.type);
 
-    const seasonalMissions = isRamadhan
-        ? missions.filter(m => m.phase === 'ramadhan_during')
-        : missions.filter(m => m.phase === 'ramadhan_prep');
+                if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
+                if (a.ruling === 'obligatory' && b.ruling !== 'obligatory') return -1;
+                if (b.ruling === 'obligatory' && a.ruling !== 'obligatory') return 1;
 
-    const sortMissions = (list: Mission[]) => {
-        return [...list].sort((a, b) => {
-            const aCompleted = isMissionCompleted(a.id, a.type);
-            const bCompleted = isMissionCompleted(b.id, b.type);
+                return 0;
+            });
+        };
 
-            if (aCompleted !== bCompleted) return aCompleted ? 1 : -1;
-            if (a.ruling === 'obligatory' && b.ruling !== 'obligatory') return -1;
-            if (b.ruling === 'obligatory' && a.ruling !== 'obligatory') return 1;
+        return {
+            all: sortList(filterByTab('all')),
+            obligatory: sortList(filterByTab('obligatory')),
+            sunnah_prayer: sortList(filterByTab('sunnah_prayer')),
+            dhikr: sortList(filterByTab('dhikr')),
+            fasting: sortList(filterByTab('fasting')),
+            quran: sortList(filterByTab('quran')),
+            recommended: sortList(filterByTab('recommended'))
+        };
+    }, [missions, isMissionCompleted]);
 
-            return 0;
-        });
-    };
-
-    const renderMissionList = (list: Mission[]) => {
-        const sortedList = sortMissions(list);
-
+    const renderMissionList = (sortedList: Mission[]) => {
         if (sortedList.length === 0) {
             return (
                 <div className="text-center py-8 text-white/40 text-sm">
@@ -218,13 +245,11 @@ export default function MissionListModal({
             <DialogContent
                 showCloseButton={false}
                 className="w-[95%] max-w-md h-auto max-h-[85vh] bg-black/40 backdrop-blur-xl border border-white/10 text-white p-0 overflow-hidden rounded-[32px] shadow-2xl flex flex-col"
-                onOpenAutoFocus={(e) => {
-                    // Update tab when opened if initialTab is set
+                onOpenAutoFocus={() => {
                     if (initialTab) setActiveTab(initialTab);
                 }}
             >
                 <DialogHeader className="p-5 pb-3 border-b border-white/5 bg-white/[0.02] relative">
-                    {/* Custom Close Button */}
                     <button
                         onClick={() => finalOnOpenChange?.(false)}
                         className="absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors z-20"
@@ -242,71 +267,29 @@ export default function MissionListModal({
                         isDaylight ? "bg-slate-100/80 border-slate-200" : "bg-black/20 border-white/5"
                     )}>
                         <TabsList className="bg-transparent h-auto p-0 gap-3 flex flex-nowrap w-max justify-start items-center border-none shadow-none ring-0 mission-tabs-list">
-                            <TabsTrigger
-                                value="all"
-                                className={cn(
-                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
-                                    isDaylight
-                                        ? "shadow-sm"
-                                        : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10 data-[state=active]:bg-white data-[state=active]:text-black"
-                                )}
-                            >
-                                {t.missionTabAll}
-                            </TabsTrigger>
-                            <TabsTrigger
-                                value="daily"
-                                className={cn(
-                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
-                                    isDaylight
-                                        ? "shadow-sm"
-                                        : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
-                                )}
-                            >
-                                {t.missionTabDaily}
-                            </TabsTrigger>
-
-                            <TabsTrigger
-                                value="weekly"
-                                className={cn(
-                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
-                                    isDaylight
-                                        ? "shadow-sm"
-                                        : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10 data-[state=active]:bg-purple-500 data-[state=active]:text-white"
-                                )}
-                            >
-                                {t.missionTabWeekly}
-                            </TabsTrigger>
-
-                            <TabsTrigger
-                                value="seasonal"
-                                className={cn(
-                                    "rounded-full border text-xs px-4 py-2 h-auto transition-all flex items-center gap-1 flex-none mission-tab-trigger",
-                                    isDaylight
-                                        ? "shadow-sm"
-                                        : isRamadhan
-                                            ? "border-white/10 bg-white/5 text-white/60 data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
-                                            : "border-white/10 bg-white/5 text-white/60 data-[state=active]:bg-amber-500 data-[state=active]:text-black"
-                                )}
-                            >
-                                {isRamadhan ? t.missionTabRamadhan : isSyaban ? t.missionTabSyaban : t.missionTabSeasonal}
-                            </TabsTrigger>
+                            {tabs.map(tab => (
+                                <TabsTrigger
+                                    key={tab.id}
+                                    value={tab.id}
+                                    className={cn(
+                                        "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
+                                        isDaylight
+                                            ? "shadow-sm"
+                                            : `border-white/10 bg-white/5 text-white/60 hover:bg-white/10 ${tab.activeColorClass}`
+                                    )}
+                                >
+                                    {tab.label}
+                                </TabsTrigger>
+                            ))}
                         </TabsList>
                     </div>
 
                     <div className="p-5 bg-gradient-to-b from-white/[0.02] to-transparent flex-1 overflow-hidden">
-                        <TabsContent value="all" className="mt-0 h-full">{renderMissionList(missions)}</TabsContent>
-                        <TabsContent value="daily" className="mt-0 h-full">{renderMissionList(dailyMissions)}</TabsContent>
-                        <TabsContent value="weekly" className="mt-0 h-full">{renderMissionList(weeklyMissions)}</TabsContent>
-
-                        <TabsContent value="seasonal" className="mt-0 h-full">
-                            {seasonalMissions.length > 0 ? renderMissionList(seasonalMissions) : (
-                                <div className="flex flex-col items-center justify-center h-48 text-center px-4">
-                                    <Sparkles className="w-8 h-8 text-white/20 mb-3" />
-                                    <p className="text-sm font-medium text-white/60">{t.missionEmptySeasonalTitle}</p>
-                                    <p className="text-xs text-white/40 mt-1">{t.missionEmptySeasonalDesc}</p>
-                                </div>
-                            )}
-                        </TabsContent>
+                        {tabs.map(tab => (
+                            <TabsContent key={tab.id} value={tab.id} className="mt-0 h-full">
+                                {renderMissionList(sortedMissionsMap[tab.id])}
+                            </TabsContent>
+                        ))}
                     </div>
                 </Tabs>
             </DialogContent>
