@@ -38,10 +38,16 @@ export function useMissions() {
 
     const handleUpdate = () => refresh();
     window.addEventListener('mission_updated', handleUpdate);
+    window.addEventListener('mission_storage_updated', handleUpdate);
+    window.addEventListener('storage_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
     window.addEventListener('missions_reset', handleUpdate);
 
     return () => {
       window.removeEventListener('mission_updated', handleUpdate);
+      window.removeEventListener('mission_storage_updated', handleUpdate);
+      window.removeEventListener('storage_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
       window.removeEventListener('missions_reset', handleUpdate);
     };
   }, [repository]);

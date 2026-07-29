@@ -19,14 +19,14 @@
 import { Reading, MissionContent } from './types';
 
 export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
-    'fajr_prayer_male': {
-        id: 'fajr_prayer_male',
+    'fajr_prayer': {
+        id: 'fajr_prayer',
         intro: 'Sholat Subuh berjamaah disaksikan oleh para malaikat dan lebih baik dari dunia seisinya.',
         fadhilah: [
             'Pahala sholat semalam suntuk (berjamaah)',
             'Berada dalam jaminan/perlindungan Allah',
             'Disaksikan oleh Malaikat siang dan malam',
-            'Pahala 27 derajat lebih tinggi'
+            'Pahala 27 derajat lebih tinggi (berjamaah)'
         ],
         niat: {
             munfarid: {
@@ -62,44 +62,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'HR. Muslim'
     },
 
-    'fajr_prayer_female': {
-        id: 'fajr_prayer_female',
-        intro: 'Sholat tepat waktu di rumah adalah sebaik-baik keadaan bagi wanita muslimah.',
-        fadhilah: [
-            'Sebaik-baik sholat wanita adalah di bagian terdalam rumahnya',
-            'Pahala ketaatan yang sempurna',
-            'Terhindar dari fitnah dan menjaga kehormatan'
-        ],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Subuh (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الصُّبْح رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhas-subhi rak'ataini mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu subuh 2 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            }
-        },
-        readings: [
-            {
-                title: "Doa Qunut",
-                arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ، وَصَلَّى اللهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ",
-                latin: "Allahummahdinii fiiman hadait, wa 'aafinii fiiman 'aafait, wa tawallanii fiiman tawallait, wa baarik lii fiima a'thait, wa qinii syarra maa qadhait. Fa innaka taqdhii wa laa yuqdhaa 'alaik, wa innahu laa yadzillu man waalaiit, wa laa ya'izzu man 'aadait, tabaarakta rabbanaa wa tabaarakta rabbanaa wa ta'aalait. Falakal hamdu 'alaa maa qadhait, astaghfiruka wa atuubu ilaik. Wa shallallaahu 'alaa sayyidinaa muhammadin nabiyyil ummiyyi wa 'alaa aalihi wa shahbihi wa sallam.",
-                translation: "Ya Allah, berilah aku petunjuk sebagaimana orang yang Engkau beri petunjuk, berilah kesehatan sebagaimana orang yang Engkau beri kesehatan, peliharalah aku sebagaimana orang yang Engkau pelihara, berakahilah apa yang Engkau berikan, lindungilah aku dari keburukan takdir-Mu. Sesungguhnya Engkau yang menetapkan dan tidak ada yang menetapkan atas-Mu. Tidak akan hina orang yang Engkau lindungi dan tidak akan mulia orang yang Engkau musuhi. Maha Suci Engkau Wahai Tuhan kami dan Maha Tinggi Engkau. Segala puji bagi-Mu atas ketetapan-Mu. Aku memohon ampun dan bertaubat kepada-Mu. Dan semoga sholawat serta salam tercurah kepada Nabi Muhammad, keluarga dan sahabatnya.",
-                note: "Sunnah Muakkad (Syafi'i)"
-            }
-        ],
-        guides: [
-            'Niat & Berdiri Tegak: Hadapkan dada ke kiblat di musholla rumah, hadirkan niat sholat Subuh 2 rakaat.',
-            'Takbiratul Ihram: Tangan diangkat rapat sejajar bahu sambil mengucap "Allahu Akbar".',
-            'Membaca Al-Fatihah & Surah: Baca Iftitah, Surah Al-Fatihah, dan surah pendek pilihan.',
-            'Ruku & I\'tidal: Ruku dengan tuma\'ninah lalu I\'tidal secara khusyu\'.',
-            'Sujud & Doa Qunut: Sujud dua kali tiap rakaat. Disunnahkan Qunut di rakaat ke-2.',
-            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat lalu mengucap salam.'
-        ],
-        source: 'HR. Abu Daud'
-    },
-
-    'dhuhr_prayer_male': {
-        id: 'dhuhr_prayer_male',
+    'dhuhr_prayer': {
+        id: 'dhuhr_prayer',
         intro: 'Saat matahari tergelincir, pintu langit dibuka. Waktu utama untuk memohon ampunan.',
         fadhilah: [
             'Waktu dibukanya pintu-pintu langit',
@@ -131,34 +95,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'HR. Bukhari'
     },
 
-    'dhuhr_prayer_female': {
-        id: 'dhuhr_prayer_female',
-        intro: 'Sholat Dzuhur tepat waktu di rumah adalah bukti ketaatan dan menjaga waktu.',
-        fadhilah: [
-            'Waktu dibukanya pintu-pintu langit',
-            'Ketenangan di tengah kesibukan harian'
-        ],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Dzuhur (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhadh-dhuhri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu dzuhur 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            }
-        },
-        guides: [
-            'Niat & Berdiri: Niat sholat Dzuhur 4 rakaat di tempat sholat rumah.',
-            'Takbiratul Ihram & Iftitah: Takbiratul ihram dan baca Surah Al-Fatihah.',
-            'Rakaat 1 & 2: Kerjakan gerakan Ruku, I\'tidal, dan Sujud dengan khusyu\'.',
-            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
-            'Rakaat 3 & 4: Selesaikan rakaat 3 dan 4 dengan membaca Al-Fatihah.',
-            'Tashahhud Akhir & Salam: Tasyahud akhir dan mengucap salam ke kanan dan kiri.'
-        ],
-        source: 'Fiqih Wanita'
-    },
-
-    'asr_prayer_male': {
-        id: 'asr_prayer_male',
+    'asr_prayer': {
+        id: 'asr_prayer',
         intro: 'Sholat Wustha yang harus dijaga dengan berjamaah.',
         fadhilah: ['Masuk surga (Bardain)', 'Pahala dilipatgandakan'],
         niat: {
@@ -186,31 +124,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'HR. Bukhari'
     },
 
-    'asr_prayer_female': {
-        id: 'asr_prayer_female',
-        intro: 'Menjaga sholat Ashar di rumah di sela-sela waktu istirahat sore.',
-        fadhilah: ['Masuk surga karena menjaga Bardain (Subuh & Ashar)', 'Perlindungan sore hari'],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Ashar (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhal-'ashri arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu ashar 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            }
-        },
-        guides: [
-            'Niat & Berdiri: Niat sholat Ashar 4 rakaat tepat waktu di rumah.',
-            'Takbiratul Ihram: Takbir lalu baca Iftitah & Surah Al-Fatihah.',
-            'Rakaat 1 & 2: Lakukan Ruku, I\'tidal, Sujud dua kali.',
-            'Tashahhud Awal: Duduk tasyahud awal setelah rakaat ke-2.',
-            'Rakaat 3 & 4: Lanjutkan rakaat 3 & 4 membaca Al-Fatihah.',
-            'Tashahhud Akhir & Salam: Tasyahud akhir, baca sholawat Nabi, dan salam.'
-        ],
-        source: 'HR. Bukhari'
-    },
-
-    'maghrib_prayer_male': {
-        id: 'maghrib_prayer_male',
+    'maghrib_prayer': {
+        id: 'maghrib_prayer',
         intro: 'Waktu singkat yang utama untuk diisi dengan berjamaah di masjid.',
         fadhilah: ['Waktu mustajab doa antara adzan iqamah', 'Menghapus dosa seharian'],
         niat: {
@@ -238,31 +153,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'HR. Muslim'
     },
 
-    'maghrib_prayer_female': {
-        id: 'maghrib_prayer_female',
-        intro: 'Waktu singkat saat matahari tenggelam. Segerakanlah di rumah.',
-        fadhilah: ['Waktu mustajab doa', 'Keberkahan awal malam bagi keluarga'],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Maghrib (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhal-maghribi thalaatha raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu maghrib 3 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            }
-        },
-        guides: [
-            'Niat & Berdiri: Niat sholat Maghrib 3 rakaat tepat waktu di rumah.',
-            'Takbiratul Ihram: Takbir lalu baca Iftitah, Surah Al-Fatihah, dan surah pendek.',
-            'Rakaat 1 & 2: Lakukan Ruku, I\'tidal, Sujud dua kali.',
-            'Tashahhud Awal: Duduk tasyahud awal setelah rakaat ke-2.',
-            'Rakaat 3: Lanjutkan rakaat ke-3 membaca Al-Fatihah.',
-            'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat Nabi, dan mengucap salam.'
-        ],
-        source: 'HR. Muslim'
-    },
-
-    'isha_prayer_male': {
-        id: 'isha_prayer_male',
+    'isha_prayer': {
+        id: 'isha_prayer',
         intro: 'Sholat terberat bagi munafik, namun cahaya sempurna di hari kiamat.',
         fadhilah: ['Pahala sholat setengah malam', 'Cahaya sempurna di Kiamat'],
         niat: {
@@ -286,29 +178,6 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
             'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
             'Rakaat 3 & 4: Bangkit dan baca Al-Fatihah di rakaat 3 & 4 secara sirr (pelan).',
             'Tashahhud Akhir & Salam: Duduk tasyahud akhir, baca sholawat dan tutup dengan salam.'
-        ],
-        source: 'HR. Muslim'
-    },
-
-    'isha_prayer_female': {
-        id: 'isha_prayer_female',
-        intro: 'Menutup hari dengan ketaatan sholat Isya sebelum istirahat.',
-        fadhilah: ['Ketentraman tidur', 'Perlindungan malam'],
-        niat: {
-            munfarid: {
-                title: "Niat Sholat Isya (Sendiri)",
-                arabic: "أُصَلِّى فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لله تَعَالَى",
-                latin: "Ushalli fardhal-'isyaa'i arba'a raka'aatim mustaqbilal qiblati adaa'an lillaahi ta'aalaa",
-                translation: "Aku niat melakukan shalat fardu isya 4 rakaat, sambil menghadap qiblat, saat ini, karena Allah ta'ala."
-            }
-        },
-        guides: [
-            'Niat & Berdiri: Niat sholat Isya 4 rakaat tepat waktu di rumah.',
-            'Takbiratul Ihram & Iftitah: Takbiratul ihram dan baca Surah Al-Fatihah.',
-            'Rakaat 1 & 2: Kerjakan Ruku, I\'tidal, Sujud dua kali.',
-            'Tashahhud Awal: Duduk tasyahud awal pada rakaat ke-2.',
-            'Rakaat 3 & 4: Selesaikan rakaat 3 dan 4 dengan membaca Al-Fatihah.',
-            'Tashahhud Akhir & Salam: Tasyahud akhir dan mengucap salam ke kanan dan kiri.'
         ],
         source: 'HR. Muslim'
     },
@@ -410,8 +279,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         ]
     },
 
-    'shalawat_100': {
-        id: 'shalawat_100',
+    'salawat_100x': {
+        id: 'salawat_100x',
         intro: 'Membaca shalawat kepada Nabi Muhammad SAW.',
         fadhilah: [
             'Barangsiapa bershalawat kepadaku 1x, Allah akan bershalawat kepadanya 10x',
@@ -430,8 +299,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         ]
     },
 
-    'sholat_jumat': {
-        id: 'sholat_jumat',
+    'friday_prayer': {
+        id: 'friday_prayer',
         intro: 'Kewajiban mingguan bagi laki-laki muslim.',
         fadhilah: [
             'Menghapus dosa antara dua Jumat',
@@ -449,8 +318,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'Hadits Riwayat Bukhari & Muslim'
     },
 
-    'sholat_dhuha': {
-        id: 'sholat_dhuha',
+    'dhuha_prayer': {
+        id: 'dhuha_prayer',
         intro: 'Sedekah bagi setiap persendian tubuh (360 sendi) di pagi hari.',
         fadhilah: [
             'Dicukupkan rezekinya pada hari itu',
@@ -541,8 +410,88 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'HR. Tirmidzi & Bukhari'
     },
 
-    'puasa_sunnah': {
-        id: 'puasa_sunnah',
+    'read_surah_al_mulk': {
+        id: 'read_surah_al_mulk',
+        intro: 'Surah Al-Mulk (Kerajaan) terdiri dari 30 ayat. Rasulullah SAW senantiasa membacanya sebelum tidur sebagai benteng dari siksa kubur.',
+        fadhilah: [
+            'Melindungi pembacanya dari azab dan nikmat kubur',
+            'Memberikan syafaat hingga pembacanya diampuni dosanya',
+            'Amalan sunnah yang dirutinkan Nabi SAW sebelum beristirahat malam'
+        ],
+        guides: [
+            'Disunnahkan dibaca setiap malam menjelang tidur',
+            'Dibaca dengan tartil dan meresapi keagungan ciptaan Allah',
+            'Dapat dibaca dari mushaf Quran maupun hafalan'
+        ],
+        source: 'HR. Tirmidzi no. 2891 & HR. Abu Dawud'
+    },
+
+    'read_surah_al_waqiah': {
+        id: 'read_surah_al_waqiah',
+        intro: 'Surah Al-Waqi\'ah (Hari Kiamat) diajarkan para sahabat dan ulama sebagai penawar kesempitan rezeki dan pelindung dari kemiskinan jiwa.',
+        fadhilah: [
+            'Menjauhkan pembacanya dari kefakiran dan kesusahan',
+            'Mengingatkan tentang huru-hara hari kiamat dan balasan ahli surga',
+            'Mendatangkan ketenangan dan keberekahan rezeki'
+        ],
+        guides: [
+            'Waktu utama dibaca pada malam hari (setelah Maghrib atau Isya)',
+            'Memperhatikan tajwid dan peresapan makna',
+            'Diiringi dengan usaha ikhtiar yang halal dan bersedekah'
+        ],
+        source: 'HR. Ibn Asakir & Shu\'ab al-Iman'
+    },
+
+    'read_surah_ar_rahman': {
+        id: 'read_surah_ar_rahman',
+        intro: 'Surah Ar-Rahman (Yang Maha Pengasih) adalah pengantinnya Al-Quran (Aroosul Quran) yang menegaskan kelimpahan kasih sayang dan nikmat Allah.',
+        fadhilah: [
+            'Dijuluki sebagai Pengantin Al-Quran (Aroosul Quran)',
+            'Menggugah rasa syukur atas segala nikmat yang sering terabaikan',
+            'Membersihkan hati dari kekufuran dan kesombongan'
+        ],
+        guides: [
+            'Dapat dibaca kapan saja, khususnya saat pagi atau sore hari',
+            'Resapi setiap pengulangan ayat nikmat "Fabi-ayyi ala-i Rabbikuma tukadzdziban"',
+            'Jadikan sebagai sarana tadabbur dan penenang jiwa'
+        ],
+        source: 'HR. Al-Baihaqi & HR. Tirmidzi'
+    },
+
+    'read_surah_al_kahf': {
+        id: 'read_surah_al_kahf',
+        intro: 'Membaca Surah Al-Kahf pada malam Jumat atau hari Jumat menyinarkan cahaya petunjuk dan benteng keselamatan dari fitnah Dajjal.',
+        fadhilah: [
+            'Dipancarkan cahaya di antara dua Jumat',
+            'Pelindung utama dari fitnah besar akhir zaman (fitnah Dajjal)',
+            'Mengampuni dosa-dosa kecil di antara dua pekan'
+        ],
+        guides: [
+            'Waktu baca dimulai sejak Kamis malam (Maghrib) hingga Jumat sebelum Maghrib',
+            'Dapat dibaca bertahap bila tidak selesai sekaligus',
+            'Dianjurkan pula menghafal 10 ayat pertama atau 10 ayat terakhir'
+        ],
+        source: 'HR. Al-Hakim & Al-Baihaqi'
+    },
+
+    'read_surah_yasin': {
+        id: 'read_surah_yasin',
+        intro: 'Surah Yasin adalah jantungnya Al-Quran (Qalbul Quran). Membacanya membawa keberkahan, kemudahan hajat, dan ampunan dosa.',
+        fadhilah: [
+            'Dikenal sebagai Jantung Al-Quran (Qalbul Quran)',
+            'Mempermudah urusan kehidupan dan hajat-hajat kebaikan',
+            'Dilipatgandakan pahala pembacanya di sisi Allah'
+        ],
+        guides: [
+            'Dianjurkan dibaca di pagi hari setelah Subuh atau malam hari',
+            'Dibaca secara khusyuk dan perlahan',
+            'Tutup dengan berdoa memohon kebaikan dunia dan akhirat'
+        ],
+        source: 'HR. Tirmidzi & Ad-Darimi'
+    },
+
+    'sunnah_fasting': {
+        id: 'sunnah_fasting',
         intro: 'Puasa Senin dan Kamis adalah kebiasaan Rasulullah SAW, di mana amal perbuatan manusia dilaporkan kepada Allah.',
         fadhilah: [
             'Pintu Surga khusus (Ar-Rayyan) bagi orang yang berpuasa',
@@ -567,6 +516,22 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'HR. Tirmidzi & Muslim'
     },
 
+    'set_khatam_target': {
+        id: 'set_khatam_target',
+        intro: 'Tadarus dan tilawah Al-Quran secara konsisten harian menuju khatam.',
+        fadhilah: [
+            'Satu huruf diganjar 10 kebaikan di sisi Allah',
+            'Memberikan mahkota kehormatan bagi kedua orang tua di akhirat',
+            'Hati menjadi tenang dan tenteram'
+        ],
+        guides: [
+            'Niatkan ikhlas karena Allah',
+            'Luangkan waktu khusus setiap habis sholat fardhu (misal 2 halaman)',
+            'Gunakan fitur penanda/tracker untuk mencatat halaman terakhir'
+        ],
+        source: 'HR. Tirmidzi & Muslim'
+    },
+
     'qadha_puasa_tracker': { // Alias to qadha_puasa logic
         id: 'qadha_puasa_tracker',
         intro: 'Hutang kepada Allah (puasa wajib) lebih berhak untuk ditunaikan. Gunakan tracker ini untuk mencatat progress pelunasan.',
@@ -586,8 +551,8 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         source: 'QS. Al-Baqarah: 184'
     },
 
-    'dzikir_haid': {
-        id: 'dzikir_haid',
+    'menstruation_dhikr': {
+        id: 'menstruation_dhikr',
         intro: 'Wanita yang sedang haid (udzur syar\'i) tidak boleh sholat/puasa, namun tetap bisa panen pahala dengan dzikir dan doa.',
         fadhilah: [
             'Tetap terhubung dengan Allah meski sedang berhalangan',

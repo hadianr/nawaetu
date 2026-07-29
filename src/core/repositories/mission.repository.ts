@@ -20,6 +20,7 @@ import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { getActivityRepository } from './activity.repository';
 import { DateUtils } from '@/lib/utils/date';
+import { normalizeMissionId } from '@/lib/mission-resolver';
 
 export interface MissionProgress {
   missionId: string;
@@ -115,22 +116,17 @@ export class LocalMissionRepository implements MissionRepository {
   completeMission(missionId: string, hasanahEarned: number, dateStr?: string): void {
     const completed = this.getCompletedMissions();
     const targetDate = dateStr || DateUtils.today();
+    const targetId = normalizeMissionId(missionId);
 
     // Check if already completed on that date.
-    // We use DateUtils.toLocalDate to ensure we are comparing local dates regardless of how completedAt is stored
-    if (completed.some(m => m.id === missionId && DateUtils.toLocalDate(m.completedAt) === targetDate)) {
+    if (completed.some(m => normalizeMissionId(m.id) === targetId && DateUtils.toLocalDate(m.completedAt) === targetDate)) {
       return;
     }
 
-    // For today, we can store full ISO if we want, but for consistency and to avoid UTC flip bugs, 
-    // we'll store a local-time based ISO-like string or just the date.
-    // Let's use DateUtils.toLocalDate for everything to be ultra-safe about per-day missions.
     const completedAt = dateStr || new Date().toISOString();
-    // Note: If dateStr is provided (backdate), it's already YYYY-MM-DD. 
-    // If not, it's today's ISO. The isCompleted/undo logic below handles both via toLocalDate.
 
     completed.push({
-      id: missionId,
+      id: targetId,
       completedAt: completedAt,
       hasanahEarned
     });
@@ -139,7 +135,7 @@ export class LocalMissionRepository implements MissionRepository {
 
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
-        new CustomEvent('mission_updated', { detail: { missionId, completed: true } })
+        new CustomEvent('mission_updated', { detail: { missionId: targetId, completed: true } })
       );
     }
   }
@@ -147,22 +143,24 @@ export class LocalMissionRepository implements MissionRepository {
   isCompleted(missionId: string, dateStr?: string): boolean {
     const completed = this.getCompletedMissions();
     const targetDate = dateStr || DateUtils.today();
+    const targetId = normalizeMissionId(missionId);
 
-    return completed.some(m => m.id === missionId && DateUtils.toLocalDate(m.completedAt) === targetDate);
+    return completed.some(m => normalizeMissionId(m.id) === targetId && DateUtils.toLocalDate(m.completedAt) === targetDate);
   }
 
   undoCompleteMission(missionId: string, dateStr?: string): void {
     const completed = this.getCompletedMissions();
     const targetDate = dateStr || DateUtils.today();
+    const targetId = normalizeMissionId(missionId);
 
     // Remove the completion for the specified date.
-    const filtered = completed.filter(m => !(m.id === missionId && DateUtils.toLocalDate(m.completedAt) === targetDate));
+    const filtered = completed.filter(m => !(normalizeMissionId(m.id) === targetId && DateUtils.toLocalDate(m.completedAt) === targetDate));
 
     this.storage.set(STORAGE_KEYS.COMPLETED_MISSIONS, filtered);
 
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
-        new CustomEvent('mission_updated', { detail: { missionId, completed: false } })
+        new CustomEvent('mission_updated', { detail: { missionId: targetId, completed: false } })
       );
     }
   }
