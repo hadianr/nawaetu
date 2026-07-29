@@ -67,6 +67,6 @@ describe('askMentor', () => {
         // Expect rate limiter to be called with user ID, not name
         // BEFORE FIX: This will fail because it uses `chat:Alice`
         // AFTER FIX: This should pass because it uses `chat:user-123`
-        expect(chatRateLimiter.check).toHaveBeenCalledWith(10, `chat:${mockUserId}`);
+        expect(chatRateLimiter.check).toHaveBeenCalledWith(`chat:${mockUserId}`);
     });
 });
