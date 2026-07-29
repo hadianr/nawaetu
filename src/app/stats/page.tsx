@@ -82,7 +82,7 @@ export default function StatsPage() {
     const prayerMap: Record<string, Set<string>> = {};
     completedMissions.forEach(m => {
         const dateStr = m.completedAt.split('T')[0];
-        if (m.id.startsWith("sholat_") || m.id.endsWith("_prayer_male") || m.id.endsWith("_prayer_female")) {
+        if (m.id.startsWith("sholat_") || m.id.endsWith("_prayer") || m.id.endsWith("_prayer_male") || m.id.endsWith("_prayer_female")) {
             if (!prayerMap[dateStr]) prayerMap[dateStr] = new Set();
             const parts = m.id.split('_');
             const prayerType = parts[0] === 'sholat' ? parts[1] : parts[0];

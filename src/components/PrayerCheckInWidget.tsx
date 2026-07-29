@@ -33,7 +33,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
 import { APP_EVENTS } from "@/lib/constants/events";
-import { getPrayerMissionId } from "@/lib/mission-resolver";
+import { getPrayerMissionId, normalizeMissionId } from "@/lib/mission-resolver";
 import { DateUtils } from "@/lib/utils/date";
 import type { Gender } from "@/data/missions";
 
@@ -120,9 +120,9 @@ export default function PrayerCheckInWidget() {
 
     const isPrayerDone = useCallback(
         (suffix: string) => {
-            const id = getMissionId(suffix);
+            const id = normalizeMissionId(getMissionId(suffix));
             return completedMissions.some((m) => {
-                if (m.id !== id) return false;
+                if (normalizeMissionId(m.id) !== id) return false;
                 return DateUtils.toLocalDate(m.completedAt) === selectedDate;
             });
         },
@@ -231,8 +231,8 @@ export default function PrayerCheckInWidget() {
 
     const handlePrayerTap = (prayer: typeof PRAYERS[number] | typeof SUNNAH_PRAYERS[number]) => {
         const isSunnah = 'id' in prayer;
-        const missionId = isSunnah ? prayer.id : getMissionId(prayer.suffix);
-        const doneRecord = completedMissions.find(m => m.id === missionId && DateUtils.toLocalDate(m.completedAt) === selectedDate);
+        const missionId = normalizeMissionId(isSunnah ? prayer.id : getMissionId(prayer.suffix));
+        const doneRecord = completedMissions.find(m => normalizeMissionId(m.id) === missionId && DateUtils.toLocalDate(m.completedAt) === selectedDate);
         const done = !!doneRecord;
 
         if (done) {

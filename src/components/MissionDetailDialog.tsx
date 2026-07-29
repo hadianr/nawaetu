@@ -29,13 +29,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles, X } from "lucide-react";
+import Link from "next/link";
+import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles, X, ExternalLink } from "lucide-react";
 import { Mission, ValidationType } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { getRulingLabel } from "@/lib/mission-utils";
+import { parseQuranReference } from "@/lib/quran/reference-parser";
 
 interface MissionDetailDialogProps {
     mission: Mission;
@@ -370,24 +372,77 @@ export default function MissionDetailDialog({
                                                     ))}
                                                 </ul>
                                             </div>
-                                        )}
+                                        )}                                         {mission.dalil && (() => {
+                                             // Split multiple dalil items if separated by '|', '\n', or ';'
+                                             const dalilTokens = mission.dalil
+                                                 .split(/[\|\n;]/)
+                                                 .map(s => s.trim())
+                                                 .filter(Boolean);
 
-                                        {mission.dalil && (
-                                            <div className="space-y-2">
-                                                <h3 className={cn("flex items-center gap-2 text-sm font-bold transition-colors", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
-                                                    <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
-                                                </h3>
-                                                <div className={cn(
-                                                    "p-4 rounded-xl border transition-colors",
-                                                    isDaylight ? "bg-slate-50 border-slate-100" : "bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20"
-                                                )}>
-                                                    <p className={cn("text-sm italic transition-colors", isDaylight ? "text-slate-600" : "text-white/90")}>"{mission.dalil}"</p>
-                                                    {content.source && (
-                                                        <p className={cn("text-xs mt-2 font-medium transition-colors", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")}>{content.source}</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
+                                             if (dalilTokens.length === 0) return null;
+
+                                             return (
+                                                 <div className="space-y-2">
+                                                     <h3 className={cn("flex items-center gap-2 text-sm font-bold transition-colors", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
+                                                         <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
+                                                     </h3>
+                                                     <div className={cn(
+                                                         "p-3 px-3.5 rounded-lg border transition-colors space-y-2.5",
+                                                         isDaylight ? "bg-slate-50 border-slate-200/70" : "bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20"
+                                                     )}>
+                                                         {dalilTokens.map((token, idx) => {
+                                                             const parsed = parseQuranReference(token);
+                                                             const isQuran = parsed.isQuranRef;
+                                                             const isHadith = !isQuran && /^hr\./i.test(token);
+
+                                                             return (
+                                                                  <div
+                                                                      key={idx}
+                                                                      className={cn(
+                                                                          "flex items-center gap-2.5 min-h-[24px]",
+                                                                          idx > 0 && "pt-2 border-t",
+                                                                          idx > 0 && (isDaylight ? "border-slate-200/60" : "border-white/10")
+                                                                      )}
+                                                                  >
+                                                                      <span className={cn(
+                                                                          "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shrink-0 transition-colors inline-flex items-center justify-center leading-none",
+                                                                          isQuran
+                                                                              ? (isDaylight ? "bg-emerald-100 text-emerald-800" : "bg-emerald-500/20 text-emerald-300")
+                                                                              : isHadith
+                                                                              ? (isDaylight ? "bg-amber-100 text-amber-800" : "bg-amber-500/20 text-amber-300")
+                                                                              : (isDaylight ? "bg-sky-100 text-sky-800" : "bg-sky-500/20 text-sky-300")
+                                                                      )}>
+                                                                          {isQuran
+                                                                              ? (locale === 'en' ? 'Quran' : 'Al-Qur\'an')
+                                                                              : isHadith
+                                                                              ? (locale === 'en' ? 'Hadith' : 'Hadits')
+                                                                              : (locale === 'en' ? 'Reference' : 'Rujukan')}
+                                                                      </span>
+
+                                                                      {isQuran && parsed.targetUrl ? (
+                                                                          <Link
+                                                                              href={parsed.targetUrl}
+                                                                              onClick={() => onClose()}
+                                                                              className={cn(
+                                                                                  "inline-flex items-center gap-1.5 text-xs font-semibold leading-none transition-all hover:underline group",
+                                                                                  isDaylight ? "text-emerald-700 hover:text-emerald-800" : "text-emerald-400 hover:text-emerald-300"
+                                                                              )}
+                                                                          >
+                                                                              <span className="leading-none">{token}</span>
+                                                                              <ExternalLink className="w-3 h-3 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                                                          </Link>
+                                                                      ) : (
+                                                                          <p className={cn("text-xs font-semibold leading-none transition-colors inline-flex items-center", isDaylight ? "text-slate-700" : "text-white/90")}>
+                                                                              {token}
+                                                                          </p>
+                                                                      )}
+                                                                  </div>
+                                                              );
+                                                         })}
+                                                     </div>
+                                                 </div>
+                                             );
+                                         })()}
                                     </div>
                                 </ScrollArea>
                             </TabsContent>
