@@ -37,9 +37,22 @@ describe("useWidgetMissions Friday handling", () => {
         const { result } = renderHook(() => useWidgetMissions([]));
 
         const missionIds = result.current.missions.map((m) => m.id);
-        expect(missionIds).not.toContain("dhuhr_prayer_male");
+        expect(missionIds).not.toContain("dhuhr_prayer");
         expect(missionIds).toContain("friday_prayer");
 
         vi.useRealTimers();
+    });
+
+    it("syncs prayer completion correctly between prayer check-in and mission list", () => {
+        const todayStr = new Date().toISOString().split("T")[0];
+        const completedMissions = [
+            { id: "fajr_prayer", completedAt: todayStr }
+        ];
+
+        const { result } = renderHook(() => useWidgetMissions(completedMissions));
+
+        expect(result.current.isMissionCompleted("fajr_prayer", "daily")).toBe(true);
+        expect(result.current.isMissionCompleted("fajr_prayer_male", "daily")).toBe(true);
+        expect(result.current.isMissionCompleted("fajr_prayer_female", "daily")).toBe(true);
     });
 });
