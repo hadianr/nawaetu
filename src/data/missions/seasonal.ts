@@ -45,7 +45,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Mukmin yang kuat lebih dicintai Allah'
+        dalil: 'HR. Muslim no. 2664'
     },
     {
         id: 'sunnah_fasting_ramadan_prep',
@@ -59,7 +59,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Tirmidzi 743'
+        dalil: 'HR. Tirmidzi no. 747'
     },
     {
         id: 'read_fiqh_article',
@@ -73,7 +73,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Menuntut ilmu itu wajib'
+        dalil: 'HR. Ibnu Majah no. 224'
     },
     {
         id: 'fajr_charity',
@@ -87,7 +87,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Malaikat mendoakan orang yang bersedekah'
+        dalil: 'HR. Bukhari no. 1442'
     },
     {
         id: 'seek_forgiveness',
@@ -101,7 +101,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Pemaaf adalah sifat mulia'
+        dalil: 'HR. Muslim no. 2588'
     },
     {
         id: 'set_khatam_target',
@@ -115,7 +115,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Bacalah Al-Quran, ia memberi syafaat'
+        dalil: 'HR. Muslim no. 804'
     },
     {
         id: 'tarawih_prayer',
@@ -129,7 +129,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'Qiyamul Lail di bulan Ramadhan'
+        dalil: 'HR. Bukhari no. 37'
     },
     {
         id: 'breaking_fast_dua',
@@ -143,7 +143,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'Makan dan minumlah, jangan berlebihan'
+        dalil: 'QS. Al-A\'raf: 31'
     },
     {
         id: 'pre_dawn_meal',
@@ -157,7 +157,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'Bersahurlah, karena pada sahur ada keberkahan'
+        dalil: 'HR. Bukhari no. 1923'
     },
 ];
 
@@ -174,7 +174,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Aisyah RA berkata: "Aku memiliki hutang puasa Ramadhan, aku tidak bisa mengqadhanya kecuali pada bulan Sya\'ban." (HR. Bukhari 1950)'
+        dalil: 'HR. Bukhari no. 1950'
     },
     {
         id: 'syaban_fasting',
@@ -188,7 +188,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Bukhari no. 1969: "Saya tidak melihat Rasulullah menyempurnakan puasa sebulan penuh selain Ramadhan, dan saya tidak melihat beliau memperbanyak puasa selain di bulan Sya\'ban."'
+        dalil: 'HR. Bukhari no. 1969'
     },
     {
         id: 'syaban_quran',
@@ -202,7 +202,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Salamah bin Kuhail berkata: "Bulan Sya\'ban adalah bulan para pembaca Al-Qur\'an."'
+        dalil: 'HR. Ibn Rajab no. 385'
     },
     {
         id: 'ramadan_fiqh_study', // Renamed/Standardized
@@ -216,7 +216,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Menuntut ilmu wajib bagi setiap muslim. (HR. Ibnu Majah)'
+        dalil: 'HR. Ibnu Majah no. 224'
     },
     {
         id: 'cek_kesehatan', // From RAMADHAN_PREP
@@ -230,7 +230,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Mukmin yang kuat lebih dicintai Allah'
+        dalil: 'HR. Muslim no. 2664'
     },
     {
         id: 'sedekah_subuh', // From RAMADHAN_PREP
@@ -244,7 +244,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Malaikat mendoakan orang yang bersedekah'
+        dalil: 'HR. Bukhari no. 1442'
     },
     {
         id: 'maaf_maafan', // From RAMADHAN_PREP
@@ -258,7 +258,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'Pemaaf adalah sifat mulia'
+        dalil: 'HR. Muslim no. 2588'
     },
     {
         id: 'mid_syaban_night',
@@ -272,6 +272,6 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Ibnu Majah 1390: "Sesungguhnya Allah melihat pada malam nisfu Sya\'ban..."',
+        dalil: 'HR. Ibnu Majah no. 1390',
     }
 ];

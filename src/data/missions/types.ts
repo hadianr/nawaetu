@@ -64,3 +64,41 @@ export const DEFAULT_QADHA_DATA: QadhaPuasaData = {
     completedDays: 0,
     lastUpdated: new Date().toISOString()
 };
+
+/**
+ * Standard factory for creating structured Mission objects consistently.
+ * Guarantees zero schema drift between missions and simplifies adding new worship items.
+ */
+export function createMission(config: {
+    id: string;
+    title: string;
+    description: string;
+    category: Mission['category'];
+    ruling: IslamicRuling;
+    hasanahReward: number;
+    icon: string;
+    dalil?: string;
+    gender?: Gender;
+    type?: Mission['type'];
+    validationType?: ValidationType;
+    validationConfig?: ValidationConfig;
+    phase?: Mission['phase'];
+    completionOptions?: Mission['completionOptions'];
+}): Mission {
+    return {
+        id: config.id,
+        title: config.title,
+        description: config.description,
+        category: config.category,
+        ruling: config.ruling,
+        hasanahReward: config.hasanahReward,
+        icon: config.icon,
+        gender: config.gender ?? null,
+        dalil: config.dalil,
+        type: config.type ?? 'daily',
+        validationType: config.validationType ?? 'manual',
+        validationConfig: config.validationConfig,
+        phase: config.phase ?? 'all_year',
+        completionOptions: config.completionOptions
+    };
+}

@@ -18,7 +18,7 @@
 
 import { SETTINGS_TRANSLATIONS } from '../translations';
 import { Mission, Gender } from './types';
-import { UNIVERSAL_MISSIONS, MALE_MISSIONS, FEMALE_MISSIONS } from './daily';
+import { UNIVERSAL_MISSIONS, MALE_MISSIONS, FEMALE_MISSIONS, resolveRitualForGender } from './daily';
 import { SUNNAH_PRAYER_MISSIONS } from './sunnah-prayer';
 import { RAMADHAN_MISSIONS, SYABAN_MISSIONS } from './seasonal';
 import { MISSION_CONTENTS } from './content';
@@ -28,30 +28,48 @@ export * from './daily';
 export * from './seasonal';
 export * from './sunnah-prayer';
 
-// Get missions filtered by gender and optional hijriDate/day visibility
-export function getMissionsForGender(gender: Gender, hijriMonth?: string, hijriDay?: number): Mission[] {
-    const missions = [...UNIVERSAL_MISSIONS, ...SUNNAH_PRAYER_MISSIONS];
+/**
+ * Returns missions filtered and polymorphically adapted by gender, Hijri date, and active days.
+ */
+export function getMissionsForGender(
+    gender: Gender,
+    hijriMonth?: string,
+    hijriDay?: number,
+    currentDay: number = new Date().getDay()
+): Mission[] {
+    const rawMissions = [...UNIVERSAL_MISSIONS, ...SUNNAH_PRAYER_MISSIONS];
 
     if (gender === 'female') {
-        missions.push(...FEMALE_MISSIONS);
+        rawMissions.push(...FEMALE_MISSIONS);
     } else if (gender === 'male') {
-        missions.push(...MALE_MISSIONS);
+        rawMissions.push(...MALE_MISSIONS);
     }
 
-    return missions.filter(m => {
-        const vis = m.validationConfig?.visibility;
-        if (!vis) return true;
+    // 1. Polymorphic gender adaptation for prayer rituals
+    const adaptedMissions = rawMissions.map(m => resolveRitualForGender(m, gender));
 
-        if (vis.hijriMonth && hijriMonth) {
-            const currentMonthLower = hijriMonth.toLowerCase();
-            const targetMonthLower = vis.hijriMonth.toLowerCase();
-            if (!currentMonthLower.includes(targetMonthLower)) return false;
-        } else if (vis.hijriMonth && !hijriMonth) {
-            return false;
+    // 2. Filter by Hijri date & active day (allowedDays)
+    return adaptedMissions.filter(m => {
+        // Hijri visibility validation
+        const vis = m.validationConfig?.visibility;
+        if (vis) {
+            if (vis.hijriMonth && hijriMonth) {
+                const currentMonthLower = hijriMonth.toLowerCase();
+                const targetMonthLower = vis.hijriMonth.toLowerCase();
+                if (!currentMonthLower.includes(targetMonthLower)) return false;
+            } else if (vis.hijriMonth && !hijriMonth) {
+                return false;
+            }
+
+            if (vis.hijriDay !== undefined && hijriDay !== undefined) {
+                if (vis.hijriDay !== hijriDay) return false;
+            }
         }
 
-        if (vis.hijriDay !== undefined && hijriDay !== undefined) {
-            if (vis.hijriDay !== hijriDay) return false;
+        // Active day validation (e.g. Friday = 5, Monday = 1, Thursday = 4)
+        const allowedDays = m.validationConfig?.allowedDays;
+        if (allowedDays && allowedDays.length > 0) {
+            if (!allowedDays.includes(currentDay)) return false;
         }
 
         return true;
@@ -59,13 +77,13 @@ export function getMissionsForGender(gender: Gender, hijriMonth?: string, hijriD
 }
 
 // Get daily missions only
-export function getDailyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number): Mission[] {
-    return getMissionsForGender(gender, hijriMonth, hijriDay).filter(m => m.type === 'daily');
+export function getDailyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number, currentDay?: number): Mission[] {
+    return getMissionsForGender(gender, hijriMonth, hijriDay, currentDay).filter(m => m.type === 'daily');
 }
 
 // Get weekly missions only
-export function getWeeklyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number): Mission[] {
-    return getMissionsForGender(gender, hijriMonth, hijriDay).filter(m => m.type === 'weekly');
+export function getWeeklyMissions(gender: Gender, hijriMonth?: string, hijriDay?: number, currentDay?: number): Mission[] {
+    return getMissionsForGender(gender, hijriMonth, hijriDay, currentDay).filter(m => m.type === 'weekly');
 }
 
 export function getRamadhanMissions(): Mission[] {
@@ -149,26 +167,35 @@ export function getLocalizedMissionContent(missionId: string, locale: string) {
     if (!content) return null;
 
     const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
+    const dict = t as Record<string, any>;
 
     let niat = content.niat;
     if (niat) {
         niat = {
             munfarid: {
                 ...niat.munfarid,
-                title: (t as Record<string, any>)[`mission_${missionId}_niat_munfarid_title`] || niat.munfarid.title,
-                translation: (t as Record<string, any>)[`mission_${missionId}_niat_munfarid_translation`] || niat.munfarid.translation,
+                title: dict[`mission_${missionId}_niat_munfarid_title`] || niat.munfarid.title,
+                translation: dict[`mission_${missionId}_niat_munfarid_translation`] || niat.munfarid.translation,
             },
             ...(niat.makmum ? {
                 makmum: {
                     ...niat.makmum,
-                    title: (t as Record<string, any>)[`mission_${missionId}_niat_makmum_title`] || niat.makmum.title,
-                    translation: (t as Record<string, any>)[`mission_${missionId}_niat_makmum_translation`] || niat.makmum.translation,
+                    title: dict[`mission_${missionId}_niat_makmum_title`] || niat.makmum.title,
+                    translation: dict[`mission_${missionId}_niat_makmum_translation`] || niat.makmum.translation,
                 }
             } : {})
         };
     }
 
-    const dict = t as Record<string, any>;
+    let readings = content.readings;
+    if (readings) {
+        readings = readings.map((r, idx) => ({
+            ...r,
+            title: dict[`mission_${missionId}_reading_${idx}_title`] || dict[`mission_${missionId}_qunut_title`] || r.title,
+            translation: dict[`mission_${missionId}_reading_${idx}_translation`] || dict[`mission_${missionId}_qunut_translation`] || r.translation,
+            note: dict[`mission_${missionId}_reading_${idx}_note`] || dict[`mission_${missionId}_qunut_note`] || r.note,
+        }));
+    }
 
     return {
         ...content,
@@ -177,5 +204,6 @@ export function getLocalizedMissionContent(missionId: string, locale: string) {
         guides: dict[`mission_${missionId}_guides`] || content.guides,
         source: dict[`mission_${missionId}_source`] || content.source,
         niat,
+        readings,
     };
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Mission } from './types';
+import { Mission, Gender, createMission } from './types';
 
 export const PRAYER_NAMES: Record<string, string> = {
     fajr: 'Subuh',
@@ -27,203 +27,230 @@ export const PRAYER_NAMES: Record<string, string> = {
     dhuha: 'Dhuha'
 };
 
+/**
+ * Core obligatory prayer ritual list (DRY base definitions without gender splits).
+ */
+const BASE_PRAYERS = [
+    { id: 'fajr_prayer', afterPrayer: 'fajr', title: 'Sholat Subuh', icon: '🌙' },
+    { id: 'dhuhr_prayer', afterPrayer: 'dhuhr', title: 'Sholat Dzuhur', icon: '☀️' },
+    { id: 'asr_prayer', afterPrayer: 'asr', title: 'Sholat Ashar', icon: '🌤️' },
+    { id: 'maghrib_prayer', afterPrayer: 'maghrib', title: 'Sholat Maghrib', icon: '🌅' },
+    { id: 'isha_prayer', afterPrayer: 'isha', title: 'Sholat Isya', icon: '🌃' },
+] as const;
+
+export const BASE_PRAYER_MISSIONS: Mission[] = BASE_PRAYERS.map(p =>
+    createMission({
+        id: p.id,
+        title: p.title,
+        description: `Tunaikan ${p.title} tepat waktu`,
+        hasanahReward: 25,
+        icon: p.icon,
+        category: 'prayer',
+        ruling: 'obligatory',
+        type: 'daily',
+        validationType: 'time',
+        validationConfig: { afterPrayer: p.afterPrayer }
+    })
+);
+
 export const UNIVERSAL_MISSIONS: Mission[] = [
-    {
+    ...BASE_PRAYER_MISSIONS,
+    createMission({
         id: 'daily_intention',
         title: 'Luruskan Niat',
         description: 'Tetapkan niat kebaikan hari ini',
         hasanahReward: 50,
         icon: '🎯',
-        gender: null,
-        dalil: 'HR. Bukhari no. 1: "Segala amal itu tergantung niatnya..."',
+        dalil: 'HR. Bukhari no. 1',
         type: 'daily',
         category: 'worship',
-        ruling: 'obligatory', // Foundation of all worship
-        phase: 'all_year',
-        validationType: 'manual', // Will be handled by custom form
-    },
-    {
+        ruling: 'obligatory',
+        validationType: 'manual',
+    }),
+    createMission({
         id: 'quran_10_ayat',
         title: 'Baca 10 Ayat Quran',
         description: 'Membaca minimal 10 ayat Al-Quran',
         hasanahReward: 50,
         icon: '📖',
-        gender: null,
-        dalil: 'QS. Al-Muzzammil:20',
+        dalil: 'QS. Al-Muzzammil: 20',
         type: 'daily',
         category: 'quran',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'auto',
         validationConfig: { requiredCount: 10 }
-    },
-    {
+    }),
+    createMission({
+        id: 'read_surah_al_mulk',
+        title: 'Baca Surah Al-Mulk',
+        description: 'Membaca Surah Al-Mulk (67) pelindung dari azab kubur',
+        hasanahReward: 60,
+        icon: '📖',
+        dalil: 'HR. Tirmidzi no. 2891',
+        type: 'daily',
+        category: 'quran',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+    createMission({
+        id: 'read_surah_al_waqiah',
+        title: 'Baca Surah Al-Waqi\'ah',
+        description: 'Membaca Surah Al-Waqi\'ah (56) penolak kefakiran',
+        hasanahReward: 60,
+        icon: '📖',
+        dalil: 'HR. Al-Baihaqi no. 2269',
+        type: 'daily',
+        category: 'quran',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+    createMission({
+        id: 'read_surah_ar_rahman',
+        title: 'Baca Surah Ar-Rahman',
+        description: 'Membaca Surah Ar-Rahman (55) pengingat nikmat Allah',
+        hasanahReward: 60,
+        icon: '📖',
+        dalil: 'HR. Al-Baihaqi no. 2252',
+        type: 'daily',
+        category: 'quran',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+    createMission({
+        id: 'read_surah_al_kahf',
+        title: 'Baca Surah Al-Kahf',
+        description: 'Membaca Surah Al-Kahf (18) penerang di hari Jumat',
+        hasanahReward: 80,
+        icon: '📖',
+        dalil: 'HR. Al-Hakim no. 3392',
+        type: 'weekly',
+        category: 'quran',
+        ruling: 'sunnah',
+        validationType: 'day',
+        validationConfig: { allowedDays: [4, 5] }
+    }),
+    createMission({
+        id: 'read_surah_yasin',
+        title: 'Baca Surah Yasin',
+        description: 'Membaca Surah Yasin (36) jantung Al-Quran',
+        hasanahReward: 60,
+        icon: '📖',
+        dalil: 'HR. Tirmidzi no. 2887',
+        type: 'daily',
+        category: 'quran',
+        ruling: 'sunnah',
+        validationType: 'manual'
+    }),
+    createMission({
         id: 'tasbih_99',
         title: 'Tasbih 99x',
         description: 'Selesaikan dzikir tasbih 99 kali',
         hasanahReward: 50,
         icon: '📿',
-        gender: null,
-        dalil: 'HR Bukhari 6329',
+        dalil: 'HR. Bukhari no. 6329',
         type: 'daily',
         category: 'dhikr',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'auto',
         validationConfig: { requiredCount: 99 }
-    },
-    {
+    }),
+    createMission({
         id: 'doa_pagi',
         title: 'Dzikir Pagi',
         description: 'Baca dzikir pagi (jam 04:00-10:00)',
         hasanahReward: 20,
         icon: '🌅',
-        gender: null,
-        dalil: 'Al-Ma\'thurat',
+        dalil: 'HR. Abu Dawud no. 5074',
         type: 'daily',
         category: 'dhikr',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 4, end: 10 } }
-    },
-    {
+    }),
+    createMission({
         id: 'doa_sore',
         title: 'Dzikir Sore',
         description: 'Baca dzikir sore (jam 15:00-18:00)',
         hasanahReward: 20,
         icon: '🌆',
-        gender: null,
-        dalil: 'Al-Ma\'thurat',
+        dalil: 'HR. Tirmidzi no. 3388',
         type: 'daily',
         category: 'dhikr',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'time',
         validationConfig: { timeWindow: { start: 15, end: 18 } }
-    },
-    {
+    }),
+    createMission({
         id: 'daily_reflection',
         title: 'Muhasabah Harian',
         description: 'Refleksi ibadah di penghujung hari',
         hasanahReward: 50,
         icon: '📝',
-        gender: null,
-        dalil: 'QS. Al-Hashr: 18: "Dan hendaklah setiap diri memperhatikan apa yang telah diperbuatnya..."',
+        dalil: 'QS. Al-Hasyr: 18',
         type: 'daily',
         category: 'worship',
         ruling: 'sunnah',
-        phase: 'all_year',
-        validationType: 'manual', // Will be handled by custom form
-    },
-
-    // Individual prayer missions (MOVED TO GENDER SPECIFIC)
-    {
+        validationType: 'manual',
+    }),
+    createMission({
         id: 'sunnah_fasting',
         title: 'Puasa Senin/Kamis',
         description: 'Puasa sunnah (hanya Senin/Kamis)',
         hasanahReward: 150,
         icon: '🌙',
-        gender: null,
-        dalil: 'HR Muslim 1162',
+        dalil: 'HR. Muslim no. 1162',
         type: 'weekly',
         category: 'fasting',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'day',
-        validationConfig: { allowedDays: [1, 4] } // Monday = 1, Thursday = 4
-    }
+        validationConfig: { allowedDays: [1, 4] }
+    })
 ];
 
 export const FEMALE_MISSIONS: Mission[] = [
-    {
+    createMission({
         id: 'makeup_fasting_tracker',
-        title: 'Tracker Qadha Puasa',
-        description: 'Catat dan bayar utang puasa Ramadhan',
+        title: 'Qadha Puasa',
+        description: 'Catat dan tunaikan hutang puasa Ramadhan',
         hasanahReward: 100,
-        icon: '📅',
+        icon: '🗓️',
         gender: 'female',
-        dalil: 'HR Muslim 335 - Aisyah r.a.',
-        type: 'tracker',
+        dalil: 'QS. Al-Baqarah: 184',
+        type: 'daily',
         category: 'fasting',
-        ruling: 'sunnah',
-        phase: 'ramadhan_prep',
+        ruling: 'obligatory',
         validationType: 'manual'
-    },
-    {
+    }),
+    createMission({
         id: 'menstruation_dhikr',
-        title: 'Dzikir Saat Udzur',
-        description: 'Perbanyak dzikir dan istighfar',
+        title: 'Dzikir Saat Haid',
+        description: 'Rutin berdzikir dan berdoa meski sedang berhalangan',
         hasanahReward: 30,
-        icon: '💜',
+        icon: '🌸',
         gender: 'female',
-        dalil: 'Amalan saat haid',
+        dalil: 'HR. Bukhari no. 305',
         type: 'daily',
         category: 'dhikr',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'manual'
-    },
-    {
+    }),
+    createMission({
         id: 'salawat_100x',
         title: 'Shalawat 100x',
         description: 'Membaca shalawat 100 kali',
         hasanahReward: 40,
         icon: '💚',
         gender: 'female',
-        dalil: 'QS. Al-Ahzab:56',
+        dalil: 'QS. Al-Ahzab: 56 | HR. Muslim no. 408',
         type: 'daily',
         category: 'dhikr',
         ruling: 'sunnah',
-        phase: 'all_year',
         validationType: 'manual'
-    }
+    })
 ];
 
-// Reusable prayer mission factory
-const PRAYERS = [
-    { id: 'fajr', title: 'Sholat Subuh', icon: '🌙' },
-    { id: 'dhuhr', title: 'Sholat Dzuhur', icon: '☀️' },
-    { id: 'asr', title: 'Sholat Ashar', icon: '🌤️' },
-    { id: 'maghrib', title: 'Sholat Maghrib', icon: '🌅' },
-    { id: 'isha', title: 'Sholat Isya', icon: '🌃' }
-] as const;
-
-function createPrayerMission(
-    id: typeof PRAYERS[number]['id'],
-    title: string,
-    icon: string,
-    gender: 'male' | 'female'
-): Mission {
-    const isMale = gender === 'male';
-    return {
-        id: `${id}_prayer_${gender}`,
-        title,
-        description: isMale ? `Tunaikan ${title} (Utama: Berjamaah)` : `Tunaikan ${title} tepat waktu`,
-        hasanahReward: 25,
-        icon,
-        gender,
-        dalil: isMale ? 'Sholat berjamaah lebih utama 27 derajat' : 'Sebaik-baik sholat wanita adalah di rumahnya',
-        type: 'daily',
-        category: 'prayer',
-        ruling: 'obligatory',
-        phase: 'all_year',
-        validationType: 'time',
-        validationConfig: { afterPrayer: id },
-        ...(isMale && {
-            completionOptions: [
-                { label: 'Pray Alone', hasanahReward: 25 },
-                { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
-            ]
-        })
-    };
-}
-
-// Add daily prayers to female missions
-FEMALE_MISSIONS.push(...PRAYERS.map(p => createPrayerMission(p.id, p.title, p.icon, 'female')));
-
 export const MALE_MISSIONS: Mission[] = [
-    {
+    createMission({
         id: 'friday_prayer',
         title: 'Sholat Jumat',
         description: 'Tunaikan sholat Jumat (hanya Jumat)',
@@ -234,9 +261,35 @@ export const MALE_MISSIONS: Mission[] = [
         type: 'weekly',
         category: 'prayer',
         ruling: 'obligatory',
-        phase: 'all_year',
         validationType: 'day',
         validationConfig: { allowedDays: [5] } // Friday = 5
-    },
-    ...PRAYERS.map(p => createPrayerMission(p.id, p.title, p.icon, 'male'))
+    })
 ];
+
+/**
+ * Polymorphic decorator to adapt prayer rituals based on user gender at runtime.
+ */
+export function resolveRitualForGender(baseMission: Mission, gender: Gender): Mission {
+    if (baseMission.category !== 'prayer' || !baseMission.validationConfig?.afterPrayer) {
+        return baseMission;
+    }
+
+    const isMale = gender === 'male';
+
+    return {
+        ...baseMission,
+        gender: gender,
+        description: isMale
+            ? `Tunaikan ${baseMission.title} (Utama: Berjamaah)`
+            : `Tunaikan ${baseMission.title} tepat waktu`,
+        dalil: isMale
+            ? 'HR. Bukhari no. 645 & HR. Muslim no. 650'
+            : 'HR. Abu Dawud no. 576 & HR. Ahmad no. 26550',
+        ...(isMale && {
+            completionOptions: [
+                { label: 'Pray Alone', hasanahReward: 25 },
+                { label: 'Congregation', hasanahReward: 75, icon: '🕌' }
+            ]
+        })
+    };
+}

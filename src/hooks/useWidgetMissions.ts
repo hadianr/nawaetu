@@ -28,6 +28,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { APP_EVENTS } from "@/lib/constants/events";
 import { DateUtils } from "@/lib/utils/date";
+import { normalizeMissionId } from "@/lib/mission-resolver";
 
 export function useWidgetMissions(completedMissions: { id: string; completedAt: string }[]) {
     const { data: session } = useSession();
@@ -47,18 +48,19 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
         const hijriMonth = prayerData?.hijriMonth;
         const hijriDay = prayerData?.hijriDay;
 
-        const daily = getDailyMissions(savedGender, hijriMonth, hijriDay);
-        const weekly = getWeeklyMissions(savedGender, hijriMonth, hijriDay);
+        const currentDay = new Date().getDay();
+        const daily = getDailyMissions(savedGender, hijriMonth, hijriDay, currentDay);
+        const weekly = getWeeklyMissions(savedGender, hijriMonth, hijriDay, currentDay);
         const seasonal = getSeasonalMissions(prayerData?.hijriDate);
 
         const isRamadhan = hijriMonth?.includes('Ramadan');
 
-        const isFriday = new Date().getDay() === 5;
+        const isFriday = currentDay === 5;
         let allMissions = [...seasonal, ...weekly, ...daily];
 
         if (savedGender === "male" && isFriday) {
-            allMissions = allMissions.filter(m => m.id !== 'dhuhr_prayer_male');
-            // Ensure Friday prayer mission is included for males on Friday
+            allMissions = allMissions.filter(m => m.id !== 'dhuhr_prayer');
+            // Ensure Friday prayer mission is included on Friday for male users
             const fridayMission: Mission = {
                 id: 'friday_prayer',
                 title: 'Sholat Jum\'at',
@@ -107,17 +109,18 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
         const todayStr = DateUtils.today();
+        const targetId = normalizeMissionId(missionId);
 
         if (type === 'daily' || type === 'weekly' || !type) {
             return completedMissions.some(m => {
-                if (m.id !== missionId) return false;
+                if (normalizeMissionId(m.id) !== targetId) return false;
                 const completedDate = DateUtils.toLocalDate(m.completedAt);
                 return completedDate === todayStr;
             });
         }
 
         if (type === 'tracker') {
-            return completedMissions.some(m => m.id === missionId);
+            return completedMissions.some(m => normalizeMissionId(m.id) === targetId);
         }
 
         return false;
