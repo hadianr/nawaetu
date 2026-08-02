@@ -122,12 +122,29 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             throw new Error("Gagal menginisiasi Service Worker.");
         }
 
-        // Ensure the worker is active before getting token (required by iOS Safari)
+        // Ensure the worker is active before getting token (required by iOS Safari and PushManager)
+        if (!activeRegistration.active) {
+            console.log("[FCM] Worker is not active yet, waiting for activation...");
+            try {
+                const readyReg = await Promise.race([
+                    navigator.serviceWorker.ready,
+                    new Promise<null>((resolve) => setTimeout(() => resolve(null), 5000))
+                ]);
+                if (readyReg && readyReg.active) {
+                    activeRegistration = readyReg;
+                }
+            } catch (err) {
+                console.warn("[FCM] Error waiting for ready SW:", err);
+            }
+        }
+
         if (activeRegistration.installing || activeRegistration.waiting) {
             console.log("[FCM] Worker is installing/waiting, waiting for activation...");
             await new Promise<void>((resolve) => {
                 const worker = activeRegistration!.installing || activeRegistration!.waiting;
                 if (!worker) return resolve();
+
+                if (worker.state === 'activated') return resolve();
 
                 worker.addEventListener('statechange', (e: any) => {
                     if (e.target.state === 'activated') resolve();
@@ -156,25 +173,56 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
 
         const getTokenWithRetry = async (retries = 3, delay = 1000): Promise<string | null> => {
             try {
-                // Note: We use the registration we found/created
+                // Double-check registration has an active worker before calling getToken
+                if (!activeRegistration?.active) {
+                    try {
+                        const readyReg = await Promise.race([
+                            navigator.serviceWorker.ready,
+                            new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000))
+                        ]);
+                        if (readyReg?.active) {
+                            activeRegistration = readyReg;
+                        }
+                    } catch {
+                        // proceed to attempt getToken or throw clean error
+                    }
+                }
+
+                if (!activeRegistration?.active) {
+                    throw new Error("Subscription failed - no active Service Worker");
+                }
+
                 return await getToken(messagingInstance, {
                     vapidKey,
                     serviceWorkerRegistration: activeRegistration as ServiceWorkerRegistration,
                 });
             } catch (err: any) {
                 if (retries > 0) {
+                    const isNoActiveSWError = err.message?.includes('no active Service Worker') ||
+                        err.message?.includes('Subscription failed');
                     const isSafariPushError = err.message?.includes('getting push subscription required') ||
                         err.message?.includes('A call to PushManager.subscribe() failed');
-                    // Give Safari extra time to spin up PushManager after SW activation
-                    const waitTime = isSafariPushError ? 2500 : delay;
+                    // Give extra time for SW activation & PushManager initialization
+                    const waitTime = (isNoActiveSWError || isSafariPushError) ? 2500 : delay;
 
                     console.warn(`[FCM] getToken failed. Retrying in ${waitTime}ms. Retries left: ${retries}. Error:`, err.message);
                     await new Promise(res => setTimeout(res, waitTime));
 
-                    // Double check if the registration mysteriously died
-                    if (!activeRegistration || !activeRegistration.active) {
-                        const regs = await navigator.serviceWorker.getRegistrations();
-                        if (regs.length > 0) activeRegistration = regs.find(r => r.scope === window.location.origin + '/') || regs[0];
+                    // Re-query active registrations
+                    try {
+                        const readyReg = await Promise.race([
+                            navigator.serviceWorker.ready,
+                            new Promise<null>((res) => setTimeout(() => res(null), 3000))
+                        ]);
+                        if (readyReg?.active) {
+                            activeRegistration = readyReg;
+                        } else {
+                            const regs = await navigator.serviceWorker.getRegistrations();
+                            const activeReg = regs.find(r => r.active);
+                            if (activeReg) activeRegistration = activeReg;
+                        }
+                    } catch {
+                        // ignore
                     }
 
                     return getTokenWithRetry(retries - 1, delay * 2);
@@ -191,7 +239,12 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             if (e.message === 'TOKEN_TIMEOUT') {
                 return null;
             }
-            if (e.message.includes('getting push subscription required') || e.message.includes('A call to PushManager.subscribe() failed')) {
+            if (
+                e.message.includes('getting push subscription required') ||
+                e.message.includes('A call to PushManager.subscribe() failed') ||
+                e.message.includes('no active Service Worker') ||
+                e.message.includes('Subscription failed')
+            ) {
                 return null;
             }
             throw e;
@@ -210,6 +263,8 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             error.message?.includes("Izin notifikasi ditolak") ||
             error.message?.includes("Peramban Anda tidak mendukung") ||
             error.message?.includes("Registration failed - push service error") ||
+            error.message?.includes("no active Service Worker") ||
+            error.message?.includes("Subscription failed") ||
             error.name === "AbortError";
 
         if (isKnownEnvironmentIssue) {
