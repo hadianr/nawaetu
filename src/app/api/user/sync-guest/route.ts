@@ -100,14 +100,8 @@ export async function POST(req: NextRequest) {
 
         let body: any = null;
         try {
-            if (typeof req.text === "function") {
-                const rawBody = await req.text();
-                if (rawBody && rawBody.trim()) {
-                    body = JSON.parse(rawBody);
-                }
-            } else if (typeof req.json === "function") {
-                body = await req.json();
-            }
+            const raw = await req.text();
+            body = raw && raw.trim() ? JSON.parse(raw) : {};
         } catch {
             return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
         }
