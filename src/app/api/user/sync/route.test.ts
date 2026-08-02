@@ -175,4 +175,39 @@ describe('User Sync API', () => {
         expect(args).toHaveLength(9);
         expect(args[0]).toHaveProperty('intentionText', 'Intention 0');
     });
+
+    it('should handle empty request body gracefully', async () => {
+        (getServerSession as Mock).mockResolvedValue({ user: { id: 'test-user-id' } });
+
+        const req = {
+            text: async () => '',
+        } as unknown as NextRequest;
+
+        const res = await POST(req);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            success: true,
+            synced: [],
+            failed: [],
+            message: 'No entries to sync (legacy mode)',
+        });
+    });
+
+    it('should return 400 for invalid JSON payload', async () => {
+        (getServerSession as Mock).mockResolvedValue({ user: { id: 'test-user-id' } });
+
+        const req = {
+            text: async () => '{ invalid json ',
+        } as unknown as NextRequest;
+
+        const res = await POST(req);
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({
+            success: false,
+            synced: [],
+            failed: [],
+            error: 'Invalid JSON payload',
+            message: 'Invalid request payload',
+        });
+    });
 });

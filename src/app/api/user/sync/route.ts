@@ -64,12 +64,28 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 }) as any;
         }
 
-        const body = await req.json();
+        let body: any = null;
+        try {
+            if (typeof req.text === "function") {
+                const rawBody = await req.text();
+                if (rawBody && rawBody.trim()) {
+                    body = JSON.parse(rawBody);
+                }
+            } else if (typeof req.json === "function") {
+                body = await req.json();
+            }
+        } catch (err) {
+            return NextResponse.json(
+                { success: false, synced: [], failed: [], error: "Invalid JSON payload", message: "Invalid request payload" } as any,
+                { status: 400 }
+            );
+        }
+
         const userId = session.user.id;
         const repo = new DbSyncRepository(userId);
 
         // Modern sync format
-        if (Array.isArray(body.entries) && body.entries.length > 0) {
+        if (body && Array.isArray(body.entries) && body.entries.length > 0) {
             const results = await Promise.allSettled(body.entries.map((entry: SyncQueueEntry) => processSyncEntry(repo, entry)));
 
             const synced: Array<{ id: string; cloudId?: string }> = [];
