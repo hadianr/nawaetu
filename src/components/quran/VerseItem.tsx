@@ -30,7 +30,7 @@ import {
     cleanIndopakText,
     getVerseFontClass,
     formatFootnotes
-} from "@/lib/quran-utils";
+} from "@/lib/quran/quran-utils";
 
 interface VerseItemProps {
     verse: Verse;

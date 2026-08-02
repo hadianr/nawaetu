@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
-import { addHasanah } from "@/lib/leveling";
+import { addHasanah } from "@/lib/habits/leveling";
 import { dhikrMilestones } from "@/data/dhikrMilestones";
 import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";

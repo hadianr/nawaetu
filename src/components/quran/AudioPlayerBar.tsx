@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { toArabicNumber } from "@/lib/quran-utils";
+import { toArabicNumber } from "@/lib/quran/quran-utils";
 import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIcon, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

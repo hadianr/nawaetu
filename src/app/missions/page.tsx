@@ -21,13 +21,13 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
 import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
-import { addHasanah } from "@/lib/leveling";
-import { updateStreak } from "@/lib/streak-utils";
+import { addHasanah } from "@/lib/habits/leveling";
+import { updateStreak } from "@/lib/habits/streak-utils";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
-import { checkMissionValidation, getRulingLabel } from "@/lib/mission-utils";
+import { checkMissionValidation, getRulingLabel } from "@/lib/habits/mission-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";

@@ -26,7 +26,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Chapter } from "./SurahList";
-import { surahNames } from "@/lib/surahData";
+import { surahNames } from "@/lib/quran/surahData";
 
 interface PageJumpDialogProps {
     chapter: Chapter;

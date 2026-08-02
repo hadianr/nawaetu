@@ -20,7 +20,7 @@
 
 import { useState, useEffect } from "react";
 import { Flame } from "lucide-react";
-import { getDisplayStreak, STREAK_MILESTONES } from "@/lib/streak-utils";
+import { getDisplayStreak, STREAK_MILESTONES } from "@/lib/habits/streak-utils";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";

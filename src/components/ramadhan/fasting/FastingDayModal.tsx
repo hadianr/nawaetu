@@ -14,7 +14,7 @@ import { createPortal } from "react-dom";
 import { useTranslations } from "@/context/LocaleContext";
 import { FASTING_STATUS_META, MADZHAB_OPTIONS, getConsequence } from "@/data/fasting/fiqh-rules";
 import type { FastingDayLog, FastingStatus, Madzhab } from "@/data/fasting/types";
-import { addHasanah } from "@/lib/leveling";
+import { addHasanah } from "@/lib/habits/leveling";
 import { toast } from "sonner";
 
 // ─── Consequence label helper ─────────────────────────────────────────────────

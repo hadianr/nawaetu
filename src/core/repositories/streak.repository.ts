@@ -19,7 +19,7 @@
 import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { DateUtils } from '@/lib/utils/date';
-import { addHasanah } from '@/lib/leveling';
+import { addHasanah } from '@/lib/habits/leveling';
 
 export interface StreakData {
   currentStreak: number;

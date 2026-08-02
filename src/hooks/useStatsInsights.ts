@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { RankKey } from "@/lib/leveling";
+import { RankKey } from "@/lib/habits/leveling";
 
 export const PRAYER_SUFFIXES = ["subuh", "dzuhur", "ashar", "maghrib", "isya"] as const;
 

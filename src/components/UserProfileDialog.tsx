@@ -29,8 +29,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { getDisplayStreak } from "@/lib/streak-utils";
-import { getPlayerStats } from "@/lib/leveling";
+import { getDisplayStreak } from "@/lib/habits/streak-utils";
+import { getPlayerStats } from "@/lib/habits/leveling";
 import { toast } from "sonner";
 
 // Sub-components

@@ -21,7 +21,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import { initializeQuranOptimizations } from "@/lib/optimize-quran";
+import { initializeQuranOptimizations } from "@/lib/quran/optimize-quran";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { APP_CONFIG } from "@/config/app-config";

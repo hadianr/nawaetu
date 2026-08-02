@@ -19,7 +19,7 @@
 import { Sparkles, AlertCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
-import { getRulingLabel } from "@/lib/mission-utils";
+import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { formatHasanahRange } from "@/lib/utils/hasanah";
 
 interface DailyMissionCardProps {

@@ -26,7 +26,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarChart3, TrendingUp } from "lucide-react";
-import { getPlayerStats } from "@/lib/leveling";
+import { getPlayerStats } from "@/lib/habits/leveling";
 import StreakBadge from "@/components/StreakBadge";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
