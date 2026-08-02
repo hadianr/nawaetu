@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import { useUserActivity, useUserProfile } from "@/lib/analytics/activity-tracker";
 import { askMentor } from "../ai-action";
 import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
-import { retryWithBackoff } from "@/lib/retry-helper";
+
 import { trackAIQuery } from "@/lib/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
@@ -381,10 +381,16 @@ export default function MentorAIClient() {
                     content: msg.content
                 }));
 
-            const response = await retryWithBackoff(
-                () => askMentor(text, context, chatHistoryContext),
-                { maxRetries: 2, initialDelay: 1000 }
-            );
+            let response = "";
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    response = await askMentor(text, context, chatHistoryContext);
+                    break;
+                } catch (err: any) {
+                    if (attempt === 2) throw err;
+                    await new Promise((res) => setTimeout(res, 1000 * Math.pow(2, attempt)));
+                }
+            }
 
             // Revert quota if the response is a known error message
             const isErrorMsg = response.startsWith("Maaf,") || response.startsWith("Wah,") || response.startsWith("Pesan ");
