@@ -97,67 +97,39 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         let activeRegistration: ServiceWorkerRegistration | null = null;
 
         try {
-            // navigator.serviceWorker.ready is the most reliable way to get the active registration
-            // We use a short 2s timeout to bypass New Install/Update PWA caching bottlenecks
             const readyPromise = navigator.serviceWorker.ready;
             const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000));
-
-            activeRegistration = await Promise.race([readyPromise, timeoutPromise]) as ServiceWorkerRegistration | null;
-
-            if (activeRegistration) {
-                console.log("[FCM] Reusing ready service worker:", activeRegistration.scope);
-            }
+            activeRegistration = (await Promise.race([readyPromise, timeoutPromise])) as ServiceWorkerRegistration | null;
         } catch (err) {
             console.warn("[FCM] Error waiting for service worker ready:", err);
         }
 
-        // Fallback: Register lightweight FCM worker manually if PWA is choking or dev mode
         if (!activeRegistration) {
-            console.log("[FCM] No ready SW found (or precaching takes too long). Registering lightweight /firebase-messaging-sw.js...");
+            console.log("[FCM] Registering lightweight /firebase-messaging-sw.js...");
             activeRegistration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-            console.log("[FCM] Firebase Service Worker registered manually:", activeRegistration.scope);
         }
 
         if (!activeRegistration) {
             throw new Error("Gagal menginisiasi Service Worker.");
         }
 
-        // Ensure the worker is active before getting token (required by iOS Safari and PushManager)
-        if (!activeRegistration.active) {
-            console.log("[FCM] Worker is not active yet, waiting for activation...");
-            try {
-                const readyReg = await Promise.race([
-                    navigator.serviceWorker.ready,
-                    new Promise<null>((resolve) => setTimeout(() => resolve(null), 5000))
-                ]);
-                if (readyReg && readyReg.active) {
-                    activeRegistration = readyReg;
-                }
-            } catch (err) {
-                console.warn("[FCM] Error waiting for ready SW:", err);
+        // Wait for active service worker if installing or waiting
+        if (!activeRegistration.active && (activeRegistration.installing || activeRegistration.waiting)) {
+            const worker = activeRegistration.installing || activeRegistration.waiting;
+            if (worker && worker.state !== 'activated') {
+                await new Promise<void>((resolve) => {
+                    const onStateChange = (e: any) => {
+                        if (e.target.state === 'activated') {
+                            worker.removeEventListener('statechange', onStateChange);
+                            resolve();
+                        }
+                    };
+                    worker.addEventListener('statechange', onStateChange);
+                    setTimeout(resolve, 3000);
+                });
             }
         }
 
-        if (activeRegistration.installing || activeRegistration.waiting) {
-            console.log("[FCM] Worker is installing/waiting, waiting for activation...");
-            await new Promise<void>((resolve) => {
-                const worker = activeRegistration!.installing || activeRegistration!.waiting;
-                if (!worker) return resolve();
-
-                if (worker.state === 'activated') return resolve();
-
-                worker.addEventListener('statechange', (e: any) => {
-                    if (e.target.state === 'activated') resolve();
-                });
-
-                // Fallback timeout since it's only 2KB, it should activate instantly
-                setTimeout(resolve, 5000);
-            });
-        }
-
-        console.log('[FCM] SW registered (Scope: ' + activeRegistration.scope + ')');
-
-        // Send Firebase config to service worker
         if (activeRegistration.active) {
             activeRegistration.active.postMessage({
                 type: 'FIREBASE_CONFIG',
@@ -165,27 +137,16 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             });
         }
 
-        // Get FCM token with RETRY logic
         const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
         if (!vapidKey) {
             throw new Error("VAPID key is missing from environment variables.");
         }
 
-        const getTokenWithRetry = async (retries = 3, delay = 1000): Promise<string | null> => {
+        const getTokenWithRetry = async (retries = 2, delay = 1500): Promise<string | null> => {
             try {
-                // Double-check registration has an active worker before calling getToken
                 if (!activeRegistration?.active) {
-                    try {
-                        const readyReg = await Promise.race([
-                            navigator.serviceWorker.ready,
-                            new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000))
-                        ]);
-                        if (readyReg?.active) {
-                            activeRegistration = readyReg;
-                        }
-                    } catch {
-                        // proceed to attempt getToken or throw clean error
-                    }
+                    const readyReg = await navigator.serviceWorker.ready.catch(() => null);
+                    if (readyReg?.active) activeRegistration = readyReg;
                 }
 
                 if (!activeRegistration?.active) {
@@ -194,56 +155,25 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
 
                 return await getToken(messagingInstance, {
                     vapidKey,
-                    serviceWorkerRegistration: activeRegistration as ServiceWorkerRegistration,
+                    serviceWorkerRegistration: activeRegistration,
                 });
             } catch (err: any) {
                 if (retries > 0) {
-                    const isNoActiveSWError = err.message?.includes('no active Service Worker') ||
-                        err.message?.includes('Subscription failed');
-                    const isSafariPushError = err.message?.includes('getting push subscription required') ||
-                        err.message?.includes('A call to PushManager.subscribe() failed');
-                    // Give extra time for SW activation & PushManager initialization
-                    const waitTime = (isNoActiveSWError || isSafariPushError) ? 2500 : delay;
-
-                    console.warn(`[FCM] getToken failed. Retrying in ${waitTime}ms. Retries left: ${retries}. Error:`, err.message);
-                    await new Promise(res => setTimeout(res, waitTime));
-
-                    // Re-query active registrations
-                    try {
-                        const readyReg = await Promise.race([
-                            navigator.serviceWorker.ready,
-                            new Promise<null>((res) => setTimeout(() => res(null), 3000))
-                        ]);
-                        if (readyReg?.active) {
-                            activeRegistration = readyReg;
-                        } else {
-                            const regs = await navigator.serviceWorker.getRegistrations();
-                            const activeReg = regs.find(r => r.active);
-                            if (activeReg) activeRegistration = activeReg;
-                        }
-                    } catch {
-                        // ignore
-                    }
-
+                    console.warn(`[FCM] getToken failed (${err.message}). Retrying in ${delay}ms...`);
+                    await new Promise((res) => setTimeout(res, delay));
                     return getTokenWithRetry(retries - 1, delay * 2);
                 }
                 throw err;
             }
         };
 
-        const tokenPromise = getTokenWithRetry();
-        const token = await Promise.race([
-            tokenPromise,
-            new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TOKEN_TIMEOUT')), 35000))
-        ]).catch((e: any) => {
-            if (e.message === 'TOKEN_TIMEOUT') {
-                return null;
-            }
+        const token = await getTokenWithRetry().catch((e: any) => {
             if (
-                e.message.includes('getting push subscription required') ||
-                e.message.includes('A call to PushManager.subscribe() failed') ||
-                e.message.includes('no active Service Worker') ||
-                e.message.includes('Subscription failed')
+                e.message === 'TOKEN_TIMEOUT' ||
+                e.message?.includes('getting push subscription required') ||
+                e.message?.includes('A call to PushManager.subscribe() failed') ||
+                e.message?.includes('no active Service Worker') ||
+                e.message?.includes('Subscription failed')
             ) {
                 return null;
             }
