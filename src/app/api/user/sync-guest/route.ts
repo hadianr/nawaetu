@@ -97,10 +97,23 @@ export async function POST(req: NextRequest) {
         }
 
         const userId = session.user.id;
-        const body = await req.json();
+
+        let body: any = null;
+        try {
+            if (typeof req.text === "function") {
+                const rawBody = await req.text();
+                if (rawBody && rawBody.trim()) {
+                    body = JSON.parse(rawBody);
+                }
+            } else if (typeof req.json === "function") {
+                body = await req.json();
+            }
+        } catch {
+            return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+        }
 
         // Validate request body
-        const result = syncSchema.safeParse(body);
+        const result = syncSchema.safeParse(body || {});
 
         if (!result.success) {
             return NextResponse.json({ error: "Invalid data format", details: result.error }, { status: 400 });
