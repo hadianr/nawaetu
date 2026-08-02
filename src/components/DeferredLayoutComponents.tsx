@@ -26,7 +26,6 @@ const NotificationWatcher = dynamic(() => import("@/components/NotificationWatch
 const FCMHandler = dynamic(() => import("@/components/FCMHandler"), { ssr: false });
 const AnalyticsLoader = dynamic(() => import("@/components/AnalyticsLoader"), { ssr: false });
 const DataSyncer = dynamic(() => import("@/components/DataSyncer"), { ssr: false });
-const AdvancedDataSyncer = dynamic(() => import("@/components/AdvancedDataSyncer"), { ssr: false });
 const OfflineIndicator = dynamic(() => import("@/components/OfflineIndicator"), { ssr: false });
 
 export default function DeferredLayoutComponents() {
@@ -35,7 +34,6 @@ export default function DeferredLayoutComponents() {
             <OfflineIndicator />
             <AnalyticsLoader />
             <DataSyncer />
-            <AdvancedDataSyncer />
             <NotificationWatcher />
             <FCMHandler />
         </Suspense>
