@@ -57,7 +57,7 @@
     "html-to-image": "^1.11.13",
     "isomorphic-dompurify": "^3.19.0",
     "lucide-react": "^0.563.0",
-    "next": "^16.2.10",
+    "next": "^16.2.12",
     "next-auth": "^5.0.0-beta.31",
     "nextjs-toploader": "^3.9.17",
     "postgres": "^3.4.9",
@@ -77,6 +77,8 @@
     "@auth/core": {
       "cookie": ">=0.7.0"
     },
+    "brace-expansion": ">=1.1.17",
+    "sharp": "^0.35.3",
     "gaxios": "^7.2.0",
     "postcss": "^8.5.20",
     "retry-request": "^8.0.3",
