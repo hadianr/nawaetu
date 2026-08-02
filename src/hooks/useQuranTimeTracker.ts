@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { addHasanah } from '@/lib/leveling';
+import { addHasanah } from '@/lib/habits/leveling';
 
 const STORAGE_KEY = 'nawaetu_quran_time_buffer';
 const SYNC_INTERVAL_MS = 30000; // 30 seconds

@@ -36,7 +36,7 @@ import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
-import { getRulingLabel } from "@/lib/mission-utils";
+import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
 
 interface MissionDetailDialogProps {

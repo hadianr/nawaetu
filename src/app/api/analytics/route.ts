@@ -17,7 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { trackMetric, WebVitalMetric } from "@/lib/server-analytics";
+import { trackMetric, WebVitalMetric } from "@/lib/analytics/server-analytics";
 
 /**
  * Analytics API endpoint for Web Vitals metrics

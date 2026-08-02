@@ -20,7 +20,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { getBookmarks, Bookmark } from "@/lib/bookmark-storage";
+import { getBookmarks, Bookmark } from "@/lib/quran/bookmark-storage";
 
 export function useBookmarks() {
     const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);

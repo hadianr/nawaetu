@@ -53,10 +53,10 @@ import TafsirModal from "./TafsirModal";
 import AudioPlayerBar from "./AudioPlayerBar";
 import QuranSettingsModal from "./QuranSettingsModal";
 import { PageJumpDialog, SurahNavigationCards } from "./QuranPageControls";
-import { surahNames } from "@/lib/surahData";
+import { surahNames } from "@/lib/quran/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 import { useBookmarks } from "@/hooks/useBookmarks";
-import { type Bookmark as BookmarkType } from "@/lib/bookmark-storage";
+import { type Bookmark as BookmarkType } from "@/lib/quran/bookmark-storage";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -71,7 +71,7 @@ import {
     cleanIndopakText,
     getVerseFontClass,
     formatFootnotes
-} from "@/lib/quran-utils";
+} from "@/lib/quran/quran-utils";
 import { fetchSurahSegments, findActiveWordIndex, type VerseSegmentMap } from "@/lib/quran/quran-segments-api";
 
 

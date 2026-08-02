@@ -23,7 +23,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, Bookmark as BookmarkIcon, Trash2, Calendar, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBookmarks } from "@/hooks/useBookmarks";
-import { removeBookmark } from "@/lib/bookmark-storage";
+import { removeBookmark } from "@/lib/quran/bookmark-storage";
 import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";

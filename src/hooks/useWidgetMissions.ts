@@ -20,7 +20,7 @@
 
 import { useState, useEffect } from "react";
 import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
-import { filterMissionsByArchetype, checkMissionValidation } from "@/lib/mission-utils";
+import { filterMissionsByArchetype, checkMissionValidation } from "@/lib/habits/mission-utils";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";

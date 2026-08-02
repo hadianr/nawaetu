@@ -27,7 +27,7 @@ import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations } from "@/context/LocaleContext";
-import { addHasanah } from "@/lib/leveling";
+import { addHasanah } from "@/lib/habits/leveling";
 import { toast } from "sonner";
 
 interface KhatamanLog {

@@ -33,7 +33,7 @@ import { useTranslations } from "@/context/LocaleContext";
 import LailatulQadrGuideModal from "./LailatulQadrGuideModal";
 import { useTarawehTracker } from "@/hooks/useTarawehTracker";
 import { toast } from "sonner";
-import { addHasanah } from "@/lib/leveling";
+import { addHasanah } from "@/lib/habits/leveling";
 
 export default function LailatulQadrCard() {
     const { data } = usePrayerTimesContext();

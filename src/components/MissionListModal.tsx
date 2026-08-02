@@ -25,7 +25,7 @@ import { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { Check, Sparkles, AlertCircle, X } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { getRulingLabel } from "@/lib/mission-utils";
+import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { useTheme } from "@/context/ThemeContext";
 
 interface MissionListModalProps {

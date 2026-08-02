@@ -35,7 +35,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 import { useTheme } from "@/context/ThemeContext";
-import { addHasanah } from "@/lib/leveling";
+import { addHasanah } from "@/lib/habits/leveling";
 import { DateUtils } from "@/lib/utils/date";
 
 interface IntentionJournalWidgetProps {
