@@ -156,11 +156,11 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             setUserImage(AVATAR_LIST[0].src);
         }
 
-        if (session?.user?.gender) setEditGender(session.user.gender as any);
-        else if (savedGender) setEditGender(savedGender as any);
+        if (savedGender) setEditGender(savedGender as any);
+        else if (session?.user?.gender) setEditGender(session.user.gender as any);
 
-        if (session?.user?.archetype) setEditArchetype(session.user.archetype as any);
-        else if (savedArchetype) setEditArchetype(savedArchetype as any);
+        if (savedArchetype) setEditArchetype(savedArchetype as any);
+        else if (session?.user?.archetype) setEditArchetype(session.user.archetype as any);
     }, [session, t]);
 
     useEffect(() => {

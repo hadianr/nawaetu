@@ -37,11 +37,28 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ error: "No data to update" }, { status: 400 });
         }
 
-        const updateData: any = {};
-        if (name) updateData.name = name;
-        if (image) updateData.image = image;
-        if (gender) updateData.gender = gender;
-        if (archetype) updateData.archetype = archetype;
+        const updateData: Record<string, any> = {
+            updatedAt: new Date(),
+        };
+
+        if (name && typeof name === "string") updateData.name = name.trim();
+        if (image && typeof image === "string") updateData.image = image;
+
+        if (gender !== undefined && gender !== null) {
+            if (gender === "male" || gender === "female") {
+                updateData.gender = gender;
+            } else {
+                return NextResponse.json({ error: "Invalid gender value" }, { status: 400 });
+            }
+        }
+
+        if (archetype !== undefined && archetype !== null) {
+            if (["esensial", "seimbang", "lengkap"].includes(archetype)) {
+                updateData.archetype = archetype;
+            } else {
+                return NextResponse.json({ error: "Invalid archetype value" }, { status: 400 });
+            }
+        }
 
         await db.update(users)
             .set(updateData)
@@ -54,6 +71,7 @@ export async function PATCH(req: NextRequest) {
         });
 
     } catch (e) {
+        console.error("[api/user/profile] PATCH error:", e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

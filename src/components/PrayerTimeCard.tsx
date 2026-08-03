@@ -43,7 +43,7 @@ export default function PrayerTimeCard({
 
     useEffect(() => {
         const storage = getStorageService();
-        const savedGender = (session?.user?.gender || storage.getOptional(STORAGE_KEYS.USER_GENDER)) as Gender;
+        const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
         setGender(savedGender);
     }, [session]);
 

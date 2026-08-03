@@ -79,6 +79,7 @@ export const authOptions: NextAuthConfig = {
                 const freshUser = await db.query.users.findFirst({
                     where: (usersTable, { eq }) => eq(usersTable.id, token.id as string),
                     columns: {
+                        name: true,
                         isMuhsinin: true,
                         gender: true,
                         archetype: true,
@@ -87,6 +88,7 @@ export const authOptions: NextAuthConfig = {
                 });
 
                 if (freshUser) {
+                    if (freshUser.name) token.name = freshUser.name;
                     token.isMuhsinin = freshUser.isMuhsinin ?? false;
                     token.gender = freshUser.gender ?? null;
                     token.archetype = freshUser.archetype ?? null;

@@ -33,6 +33,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
 import { useMissions } from "@/hooks/useMissions";
+import { useSession } from "next-auth/react";
 import { getMissionRepository } from "@/core/repositories/mission.repository";
 import { Metadata } from "next";
 
@@ -49,6 +50,7 @@ interface CompletedMissions {
 }
 
 export default function MisiPage() {
+    const { data: session } = useSession();
     const { t, locale } = useLocale();
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
     const [gender, setGender] = useState<Gender>(null);
@@ -61,7 +63,7 @@ export default function MisiPage() {
     const { data: prayerData } = usePrayerTimesContext();
 
     const loadData = () => {
-        const savedGender = storage.getOptional(STORAGE_KEYS.USER_GENDER) as Gender;
+        const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
         setGender(savedGender);
 
         const allMissions = getMissionsForGender(savedGender);
@@ -83,7 +85,7 @@ export default function MisiPage() {
             window.removeEventListener('storage', handleStorageUpdate);
             window.removeEventListener('profile_updated', handleStorageUpdate);
         };
-    }, [locale]);
+    }, [locale, session]);
 
     const isMissionCompletedToday = (missionId: string, type: Mission['type']) => {
         const today = new Date().toISOString().split('T')[0];
