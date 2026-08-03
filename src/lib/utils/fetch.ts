@@ -28,16 +28,9 @@ export async function fetchWithTimeout(
     options: FetchWithTimeoutOptions = {}
 ) {
     const { timeoutMs = 8000 } = options;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const timeoutSignal = AbortSignal.timeout(timeoutMs);
+    const signal = init.signal ? AbortSignal.any([init.signal, timeoutSignal]) : timeoutSignal;
 
-    const signal = init.signal && "any" in AbortSignal
-        ? (AbortSignal as typeof AbortSignal & { any: (signals: AbortSignal[]) => AbortSignal }).any([init.signal, controller.signal])
-        : controller.signal;
-
-    try {
-        return await fetch(input, { ...init, signal });
-    } finally {
-        clearTimeout(timeoutId);
-    }
+    return fetch(input, { ...init, signal });
 }
+
