@@ -20,6 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
+import { eq, and, ne } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     try {
@@ -32,10 +33,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Token is required" }, { status: 400 });
         }
 
+        const effectiveDeviceType = deviceType || "web";
+
         const data = {
             updatedAt: new Date(),
             active: 1,
-            deviceType: deviceType || "web",
+            deviceType: effectiveDeviceType,
             timezone: timezone || "UTC",
             userLocation: userLocation || null, // Legacy (full object)
             latitude: userLocation?.lat || null,
@@ -47,6 +50,22 @@ export async function POST(req: NextRequest) {
             countryCode: userLocation?.countryCode || null,
             prayerPreferences: prayerPreferences || undefined,
         };
+
+        // Deactivate previous tokens for the same user and device type if user is logged in
+        if (userId) {
+            try {
+                await db.update(pushSubscriptions)
+                    .set({ active: 0, updatedAt: new Date() })
+                    .where(and(
+                        eq(pushSubscriptions.userId, userId),
+                        eq(pushSubscriptions.deviceType, effectiveDeviceType),
+                        ne(pushSubscriptions.token, token)
+                    ));
+            } catch (e) {
+                // Non-fatal cleanup log
+                console.warn("[Subscribe API] Could not deactivate previous user tokens:", e);
+            }
+        }
 
         // Optimized: Single upsert operation
         await db.insert(pushSubscriptions)

@@ -95,11 +95,12 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
         return prayerTimesCache.get(cacheKey);
     }
 
+    let url = "";
     try {
         const tuneParam = method === "20"
             ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
             : "";
-        const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
+        url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
 
         const response = await fetch(url);
         if (!response.ok) return null;
@@ -109,11 +110,45 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
             prayerTimesCache.set(cacheKey, result.data.timings);
             return result.data.timings;
         }
-    } catch (e) {
+    } catch (e: any) {
+        console.error(`[fetchPrayerTimes Error] url=${url}:`, e?.message || e);
     }
     return null;
 }
 
+
+// Helper: Safe JSON parsing for jsonb fields that might be object or stringified JSON
+function parseJsonField<T>(val: any): T | null {
+    if (!val) return null;
+    if (typeof val === "object") return val as T;
+    if (typeof val === "string") {
+        try {
+            const parsed = JSON.parse(val);
+            if (typeof parsed === "string") return JSON.parse(parsed) as T;
+            return parsed as T;
+        } catch (e) {
+            return null;
+        }
+    }
+    return null;
+}
+
+// Helper: Infer timezone from coordinates if sub.timezone is missing or UTC
+function inferTimezoneFromCoords(lat: number, lng: number, rawTz?: string | null): string {
+    if (rawTz && rawTz !== "UTC") {
+        try {
+            Intl.DateTimeFormat(undefined, { timeZone: rawTz });
+            return rawTz;
+        } catch (e) { }
+    }
+    // Indonesia boundaries fallback
+    if (lat >= -11 && lat <= 6 && lng >= 95 && lng <= 141) {
+        if (lng < 110) return "Asia/Jakarta";   // WIB
+        if (lng < 125) return "Asia/Makassar";  // WITA
+        return "Asia/Jayapura";                 // WIT
+    }
+    return rawTz || "UTC";
+}
 
 // Helper: Check if notification was recently sent
 function wasRecentlyNotified(key: string): boolean {
@@ -136,8 +171,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { searchParams } = new URL(req.url);
-        const mode = searchParams.get("mode") || "sync";
+        const { searchParams } = new URL(req.url, "http://localhost");
+        const mode = searchParams.get("mode") || req.nextUrl?.searchParams?.get("mode") || "alert";
 
 
         const subscriptions = await db
@@ -160,13 +195,6 @@ export async function POST(req: NextRequest) {
         };
 
         const now = new Date();
-        // Convert to WIB (UTC+7) manually for logging/checking if needed, 
-        // but Aladhan API uses local time based on lat/lng.
-        // We compare against the server's current time (which should be UTC or intended local).
-        // Let's use the actual local time of the user's location if possible.
-
-        // Aladhan timings are in 24h format "HH:mm" based on the location.
-        // We need to compare it with the current time in that location.
 
         if (mode === "sync") {
             const syncMessage = {
@@ -197,27 +225,20 @@ export async function POST(req: NextRequest) {
         }
 
         if (mode === "alert") {
-            const todayStr = now.toISOString().split('T')[0];
-
             // Group subscriptions by location (rounded) to minimize API calls
             const groups = new Map<string, { lat: number, lng: number, timezone: string, subs: typeof subscriptions }>();
 
             for (const sub of subscriptions) {
                 let lat: number | null = null;
                 let lng: number | null = null;
-                const timezone = sub.timezone || "UTC";
 
-                if (sub.userLocation) {
-                    try {
-                        const loc = sub.userLocation as { lat?: number; lng?: number };
-                        if (loc.lat && loc.lng) {
-                            lat = loc.lat;
-                            lng = loc.lng;
-                        }
-                    } catch (e) { }
+                const locObj = parseJsonField<{ lat?: number; lng?: number; latitude?: number; longitude?: number }>(sub.userLocation);
+                if (locObj) {
+                    lat = locObj.lat ?? locObj.latitude ?? null;
+                    lng = locObj.lng ?? locObj.longitude ?? null;
                 }
 
-                // Fallback to dedicated latitude/longitude columns (newer subscriptions)
+                // Fallback to dedicated latitude/longitude columns
                 if (!lat || !lng) {
                     if (sub.latitude && sub.longitude) {
                         lat = sub.latitude;
@@ -229,6 +250,8 @@ export async function POST(req: NextRequest) {
                     results.skipped++;
                     continue;
                 }
+
+                const timezone = inferTimezoneFromCoords(lat, lng, sub.timezone);
 
                 // Key based on rounded location and timezone
                 const key = `${lat.toFixed(2)}_${lng.toFixed(2)}_${timezone}`;
@@ -242,30 +265,21 @@ export async function POST(req: NextRequest) {
             // Process groups in parallel
             await Promise.all(Array.from(groups.values()).map(async (group) => {
                 try {
-                    const { lat, lng, timezone: rawTimezone, subs } = group;
+                    const { lat, lng, timezone: safeTimezone, subs } = group;
 
-                    // Safe IANA timezone fallback check (UTC default for global users)
-                    let safeTimezone = rawTimezone || "UTC";
-                    try {
-                        Intl.DateTimeFormat(undefined, { timeZone: safeTimezone });
-                    } catch (e) {
-                        console.warn(`[Prayer Alert] Invalid timezone '${rawTimezone}', falling back to UTC`);
-                        safeTimezone = "UTC";
-                    }
+                    // 1. User local date for deduplication and Aladhan API
+                    const todayStr = now.toLocaleDateString("sv-SE", { timeZone: safeTimezone }); // YYYY-MM-DD
 
                     // 2. Fetch prayer times for this location (timezone-aware date)
-                    const localDateStr = now.toLocaleDateString("en-GB", {
+                    const rawDateStr = now.toLocaleDateString("en-GB", {
                         timeZone: safeTimezone,
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric"
-                    }).split("/").join("-"); // DD-MM-YYYY
+                    });
+                    const localDateStr = rawDateStr.replace(/[^\d/]/g, "").split("/").join("-"); // DD-MM-YYYY
 
                     // Dynamic Calculation Method for Global Users:
-                    //   Method 20: Kemenag RI (Indonesia - lat: -11 to 6, lng: 95 to 141)
-                    //   Method 3: Muslim World League (Europe / Asia)
-                    //   Method 2: ISNA (North America / Canada)
-                    //   Method 4: Umm al-Qura / Makkah (Middle East)
                     let userMethod = "3"; // Default MWL (Global)
                     if (lat >= -11 && lat <= 6 && lng >= 95 && lng <= 141) {
                         userMethod = "20"; // Indonesia
@@ -281,7 +295,7 @@ export async function POST(req: NextRequest) {
                         return;
                     }
 
-                    // 3. Get current time in that timezone (h23 forces 00:00 to 23:59 24h format)
+                    // 3. Get current time in that timezone
                     const localTimeStr = now.toLocaleTimeString("en-US", {
                         timeZone: safeTimezone,
                         hourCycle: "h23",
@@ -289,8 +303,8 @@ export async function POST(req: NextRequest) {
                         minute: "2-digit"
                     });
 
-                    // 4. Check each prayer
-                    const relevantPrayers = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+                    // 4. Check each prayer (including Imsak)
+                    const relevantPrayers = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
                     let activePrayer: string | null = null;
 
                     for (const prayer of relevantPrayers) {
@@ -311,9 +325,8 @@ export async function POST(req: NextRequest) {
                             // 5. Deduplication (DB-based for precision)
                             let lastSentMap: Record<string, string> = {};
                             if (sub.lastNotificationSent) {
-                                try {
-                                    lastSentMap = sub.lastNotificationSent as Record<string, string>;
-                                } catch (e) { }
+                                const parsedMap = parseJsonField<Record<string, string>>(sub.lastNotificationSent);
+                                if (parsedMap) lastSentMap = parsedMap;
                             }
 
                             if (lastSentMap[activePrayer] === todayStr) {
@@ -324,35 +337,48 @@ export async function POST(req: NextRequest) {
 
                             // 6. Check preferences
                             if (sub.prayerPreferences) {
-                                try {
-                                    const prefs = sub.prayerPreferences as Record<string, boolean>;
+                                const prefs = parseJsonField<Record<string, boolean>>(sub.prayerPreferences);
+                                if (prefs) {
                                     const key = activePrayer.toLowerCase();
                                     if (prefs[key] === false) {
                                         results.skipped++;
                                         continue;
                                     }
-                                } catch (e) { }
+                                }
                             }
 
                             // 7. Send Notification
                             const prayerLabels: Record<string, string> = {
-                                Fajr: "Subuh", Dhuhr: "Dzuhur", Asr: "Ashar", Maghrib: "Maghrib", Isha: "Isya"
+                                Imsak: "Imsak", Fajr: "Subuh", Dhuhr: "Dzuhur", Asr: "Ashar", Maghrib: "Maghrib", Isha: "Isya"
                             };
-                            const label = prayerLabels[activePrayer];
+                            const label = prayerLabels[activePrayer] || activePrayer;
 
                             // Mindfulness Wording
-                            const titles = [
+                            let titles = [
                                 `Waktunya Sholat ${label}`,
                                 `Panggilan ${label} Telah Tiba`,
                                 `${label} Telah Masuk`
                             ];
 
-                            const bodies = [
+                            let bodies = [
                                 `Mari sejenak menghadap Sang Pencipta.`,
                                 `Segarkan jiwa dengan air wudhu dan sholat.`,
                                 `"Hayya 'alas shalah" - Mari meraih kemenangan.`,
                                 `Rehat sejenak dari dunia, tunaikan kewajiban.`
                             ];
+
+                            if (activePrayer === "Imsak") {
+                                titles = [
+                                    `Waktunya Imsak`,
+                                    `Pengingat Imsak`,
+                                    `Waktu Imsak Telah Tiba`
+                                ];
+                                bodies = [
+                                    `Bersiap menyudahi sahur dan menyucikan niat.`,
+                                    `Segera tuntaskan sahur sebelum Subuh berkumandang.`,
+                                    `Waktu imsak telah masuk, mari bersiap untuk sholat Subuh.`
+                                ];
+                            }
 
                             // Randomize for variety
                             const title = titles[Math.floor(Math.random() * titles.length)];

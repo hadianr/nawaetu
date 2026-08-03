@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
             await db
                 .update(pushSubscriptions)
                 .set({
-                    prayerPreferences: prayerPreferences ? JSON.stringify(prayerPreferences) : null,
-                    userLocation: userLocation ? JSON.stringify(userLocation) : null,
+                    prayerPreferences: prayerPreferences || null,
+                    userLocation: userLocation || null,
                     latitude: userLocation?.lat || null,
                     longitude: userLocation?.lng || null,
                     city: userLocation?.city || null,
