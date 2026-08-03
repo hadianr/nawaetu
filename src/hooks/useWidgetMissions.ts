@@ -40,8 +40,8 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
     const loadData = () => {
         const storage = getStorageService();
-        const savedGender = (session?.user?.gender || storage.getOptional(STORAGE_KEYS.USER_GENDER)) as Gender;
-        const savedArchetype = (session?.user?.archetype || storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE)) as string | null;
+        const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
+        const savedArchetype = (storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) || session?.user?.archetype) as string | null;
 
         setGender(savedGender);
 
