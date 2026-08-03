@@ -678,6 +678,7 @@ export const otherEN = {
     storyShareCopied: "Image copied to clipboard!",
     storyShareClipboardUnsupported: "Clipboard not supported. Image downloaded!",
     storyShareShared: "Shared Successfully",
+    storyShareFailed: "Share failed. Downloading file instead...",
     storyShareArabic: "Arabic",
     storyShareLatin: "Latin",
     storyShareExplanation: "Reflection",
