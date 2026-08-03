@@ -12,6 +12,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { X, Share2, Download, Copy, Check, Sparkles, Moon, Sun, Type } from "lucide-react";
+import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import {
     ShareableCardData,
@@ -28,6 +29,7 @@ interface StoryShareModalProps {
 }
 
 export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalProps) {
+    const { t } = useLocale();
     const [mounted, setMounted] = useState(false);
     const [theme, setTheme] = useState<StoryTheme>("dark");
     const [fontSizeScale, setFontSizeScale] = useState<FontSizeScale>("normal");
@@ -106,7 +108,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 setTimeout(() => setSharedSuccess(false), 3000);
             } else {
                 handleDownloadBlob(blob, fileName);
-                setStatusMessage("Gambar telah diunduh! Buka Instagram & bagikan ke Story.");
+                setStatusMessage(t.storyShareDownloaded || "Gambar telah diunduh! Buka Instagram & bagikan ke Story.");
                 setTimeout(() => setStatusMessage(null), 4000);
             }
         } catch (err) {
@@ -130,7 +132,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 showExplanation,
             });
             handleDownloadBlob(blob, fileName);
-            setStatusMessage("Gambar WebP berhasil diunduh!");
+            setStatusMessage(t.storyShareWebpDownloaded || "Gambar WebP berhasil diunduh!");
             setTimeout(() => setStatusMessage(null), 3000);
         } catch (err) {
             console.error("Download error:", err);
@@ -155,14 +157,14 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 const clipboardItem = new ClipboardItem({ [blob.type]: blob });
                 await navigator.clipboard.write([clipboardItem]);
                 setCopied(true);
-                setStatusMessage("Gambar tersalin ke clipboard!");
+                setStatusMessage(t.storyShareCopied || "Gambar tersalin ke clipboard!");
                 setTimeout(() => {
                     setCopied(false);
                     setStatusMessage(null);
                 }, 3000);
             } else {
                 handleDownloadBlob(blob, fileName);
-                setStatusMessage("Clipboard tidak didukung browser. Gambar diunduh!");
+                setStatusMessage(t.storyShareClipboardUnsupported || "Clipboard tidak didukung browser. Gambar diunduh!");
                 setTimeout(() => setStatusMessage(null), 3000);
             }
         } catch (err) {
@@ -202,7 +204,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
                     <div className="flex items-center gap-1.5">
                         <Share2 className="w-4 h-4 text-emerald-500" />
-                        <h2 className="text-xs sm:text-sm font-bold tracking-tight">Bagikan ke Story</h2>
+                        <h2 className="text-xs sm:text-sm font-bold tracking-tight">{t.storyShareTitle || "Bagikan ke Story"}</h2>
                     </div>
                     <button
                         onClick={onClose}
@@ -227,7 +229,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                             {isExporting && (
                                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white text-[11px] font-bold gap-1.5 animate-in fade-in">
                                     <Sparkles className="w-3.5 h-3.5 animate-spin text-emerald-400" />
-                                    <span>Mengompres...</span>
+                                    <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>
                             )}
                         </div>
@@ -336,7 +338,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
                                 )}
                             >
-                                Arab {showArabic ? "✓" : "✕"}
+                                {(t.storyShareArabic || "Arab")} {showArabic ? "✓" : "✕"}
                             </button>
 
                             <button
@@ -349,7 +351,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
                                 )}
                             >
-                                Latin {showLatin ? "✓" : "✕"}
+                                {(t.storyShareLatin || "Latin")} {showLatin ? "✓" : "✕"}
                             </button>
 
                             <button
@@ -362,7 +364,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
                                 )}
                             >
-                                Tadabbur {showExplanation ? "✓" : "✕"}
+                                {(t.storyShareExplanation || "Tadabbur")} {showExplanation ? "✓" : "✕"}
                             </button>
                         </div>
                     </div>
@@ -381,7 +383,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                         ) : (
                             <Share2 className="w-3.5 h-3.5" />
                         )}
-                        <span>{sharedSuccess ? "Berhasil Dibagikan" : "Bagikan ke Story"}</span>
+                        <span>{sharedSuccess ? (t.storyShareShared || "Berhasil Dibagikan") : (t.storyShareTitle || "Bagikan ke Story")}</span>
                     </button>
 
                     {/* Download WebP */}

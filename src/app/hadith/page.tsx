@@ -255,7 +255,7 @@ const HadithCard = memo(function HadithCard({
                             )}
                         >
                             <Share2 className="w-3.5 h-3.5 text-emerald-500" />
-                            <span>Bagikan ke Story</span>
+                            <span>{t.shareToStory || "Bagikan ke Story"}</span>
                         </button>
 
                         <button
@@ -271,12 +271,12 @@ const HadithCard = memo(function HadithCard({
                             {copied ? (
                                 <>
                                     <Check className="w-3.5 h-3.5 text-emerald-500" />
-                                    <span>Tersalin</span>
+                                    <span>{t.copied || "Tersalin"}</span>
                                 </>
                             ) : (
                                 <>
                                     <Copy className="w-3.5 h-3.5 text-slate-400" />
-                                    <span>Salin</span>
+                                    <span>{t.copy || "Salin"}</span>
                                 </>
                             )}
                         </button>

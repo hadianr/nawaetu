@@ -670,6 +670,18 @@ export const otherID = {
     collapseDetail: "Ciutkan Detail",
     loadMore: "Tampilkan Lebih Banyak",
 
+    // Story Share Modal
+    storyShareTitle: "Bagikan ke Story",
+    storyShareCompressing: "Mengompres...",
+    storyShareDownloaded: "Gambar telah diunduh! Buka Instagram & bagikan ke Story.",
+    storyShareWebpDownloaded: "Gambar WebP berhasil diunduh!",
+    storyShareCopied: "Gambar tersalin ke clipboard!",
+    storyShareClipboardUnsupported: "Clipboard tidak didukung browser. Gambar diunduh!",
+    storyShareShared: "Berhasil Dibagikan",
+    storyShareArabic: "Arab",
+    storyShareLatin: "Latin",
+    storyShareExplanation: "Tadabbur",
+
     // ─── Halaman Dua & Dzikir ─────────────────────────────────────────────────
     duaLibraryTitle: "Kumpulan Doa & Dzikir",
     duaLibrarySubtitle: "{count} Doa Pilihan dari Al-Qur'an & Sunnah",
