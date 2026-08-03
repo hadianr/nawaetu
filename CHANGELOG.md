@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.5] - 2026-08-03
+
+### Added
+- **Feat(share): improve story modal responsiveness and enlarge canvas font scaling**
+
+### Improved
+- **Refactor(core): apply ponytail audit cleanup to fetch, qibla, and sync queue**
+- **Refactor(dua): unify dua library with 50 bilingual duas and shared primitives**
+- **Refactor(cards): optimize card header layout and move share/copy actions to expanded view**
+
+### Fixed
+- **Fix(i18n): ensure all modal popups follow active language for story share and verse dialogs**
+- **Fix(i18n): ensure bilingual support for card action buttons and story share modal**
+
+
 ## [1.12.4] - 2026-08-03
 
 ### Added
