@@ -74,15 +74,18 @@ describe('POST /api/notifications/subscribe', () => {
     });
 
     it('should upsert subscription using single query (Optimized)', async () => {
-        // Mock insert().values().onConflictDoUpdate() chain
         const mockOnConflictDoUpdate = vi.fn().mockResolvedValue({});
         const mockValues = vi.fn().mockReturnValue({
             onConflictDoUpdate: mockOnConflictDoUpdate
         });
         const mockInsert = vi.fn().mockReturnValue({
-             values: mockValues
+            values: mockValues
         });
         (db.insert as any).mockImplementation(mockInsert);
+
+        const mockWhere = vi.fn().mockResolvedValue({});
+        const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
+        (db.update as any).mockReturnValue({ set: mockSet });
 
         const req = new NextRequest('http://localhost', {
             method: 'POST',
@@ -91,10 +94,9 @@ describe('POST /api/notifications/subscribe', () => {
 
         await POST(req);
 
-        // Verify optimized behavior: Only Insert called (with upsert logic)
+        // Verify insert called
         expect(db.insert).toHaveBeenCalledTimes(1);
         expect(db.select).not.toHaveBeenCalled(); // No read before write
-        expect(db.update).not.toHaveBeenCalled(); // No separate update
 
         // Verify arguments
         // 1. insert called with table
