@@ -22,6 +22,7 @@ import { db } from "@/db";
 import { chatSessions } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 // Schema validation for chat history POST
 const chatHistorySchema = z.object({
@@ -55,7 +56,7 @@ export async function GET() {
         return NextResponse.json(history);
 
     } catch (error) {
-        console.error("Error fetching chat history:", error);
+        logger.error("Error fetching chat history", error, { route: "/api/mentor-ai/history" });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
@@ -116,7 +117,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
 
     } catch (error) {
-        console.error("Error saving chat session:", error);
+        logger.error("Error saving chat session", error, { route: "/api/mentor-ai/history" });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

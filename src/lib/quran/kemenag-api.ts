@@ -23,6 +23,7 @@
  */
 
 import { cache } from "react";
+import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import type { Chapter } from "@/components/quran/SurahList";
 import { API_CONFIG } from "@/config/apis";
@@ -382,7 +383,7 @@ export const searchVerses = cache(async (query: string, page: number = 1, locale
       }))
     };
   } catch (error) {
-    console.error("Quran Search Error:", error);
+    logger.error("Quran search error", error, { action: 'quran-search' });
     throw error;
   }
 });

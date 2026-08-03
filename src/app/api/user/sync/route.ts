@@ -21,6 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { db, checkConnection } from "@/db";
 import { bookmarks, intentions, users, userCompletedMissions, dailyActivities, userReadingState } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 import { type SyncQueueEntry } from "@/lib/sync-queue";
 import { DbSyncRepository } from "@/core/repositories/db-sync.repository";
 import { SyncEntrySchema } from "@/lib/validations/sync";
@@ -109,7 +110,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         });
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "Internal Server Error";
-        console.error("Sync Error:", e);
+        logger.error('Sync error', e, { route: '/api/user/sync' });
         return NextResponse.json(
             { success: false, synced: [], failed: [], error: errorMessage, message: "Sync failed" } as any,
             { status: 500 }

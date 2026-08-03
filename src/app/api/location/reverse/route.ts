@@ -18,6 +18,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { API_CONFIG } from "@/config/apis";
+import { logger } from "@/lib/logger";
 
 // Next.js API route to proxy reverse geocoding requests
 // By performing the fetch server-side, we bypass Safari iOS Safari Incognito ITP
@@ -75,7 +76,7 @@ export async function GET(req: NextRequest) {
                 resolvedCountryCode = bdcData.countryCode?.toLowerCase() || null;
             }
         } catch (e) {
-            console.warn("[LocationProxy] BigDataCloud failed:", e);
+            logger.warn("BigDataCloud reverse geocoding failed", { route: "/api/location/reverse", error: e instanceof Error ? e.message : String(e) });
         }
 
         // 2. Try Nominatim (OpenStreetMap) if BigDataCloud fails or returns nothing
@@ -109,7 +110,7 @@ export async function GET(req: NextRequest) {
                     resolvedCountryCode = addr.country_code?.toLowerCase() || null;
                 }
             } catch (e) {
-                console.warn("[LocationProxy] Nominatim failed:", e);
+                logger.warn("Nominatim reverse geocoding failed", { route: "/api/location/reverse", error: e instanceof Error ? e.message : String(e) });
             }
         }
 
@@ -131,7 +132,7 @@ export async function GET(req: NextRequest) {
         );
 
     } catch (error) {
-        console.error("[LocationProxy] Fatal error:", error);
+        logger.error("Location proxy fatal error", error, { route: "/api/location/reverse" });
         return NextResponse.json(
             { success: false, error: "Internal server error during geocoding" },
             { status: 500 }

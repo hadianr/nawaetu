@@ -2,6 +2,7 @@ import 'server-only';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { logger } from "@/lib/logger";
 async function generateWithGroq(prompt: string): Promise<string> {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error('GROQ_API_KEY not set');
@@ -142,17 +143,17 @@ export async function POST(req: NextRequest) {
         try {
             text = await generateWithGemini(prompt);
         } catch (geminiErr: any) {
-            console.warn('[Insight] Gemini failed, trying Groq:', geminiErr?.message);
+            logger.warn('Gemini failed, trying Groq', { route: '/api/ramadhan/insight', error: geminiErr?.message });
             if (isRateLimitError(geminiErr) || geminiErr?.message?.includes('API_KEY')) {
                 try {
                     text = await generateWithGroq(prompt);
                 } catch (groqErr: any) {
-                    console.warn('[Insight] Groq failed, trying OpenRouter:', groqErr?.message);
+                    logger.warn('Groq failed, trying OpenRouter', { route: '/api/ramadhan/insight', error: groqErr?.message });
                     if (isRateLimitError(groqErr) || groqErr?.message?.includes('API_KEY')) {
                         try {
                             text = await generateWithOpenRouter(prompt);
                         } catch (orErr: any) {
-                            console.error('[Insight] OpenRouter also failed:', orErr?.message);
+                            logger.error('OpenRouter also failed', orErr, { route: '/api/ramadhan/insight' });
                         }
                     }
                 }
@@ -168,7 +169,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ insight: fallback });
 
     } catch (error) {
-        console.error('[Insight] Unexpected error:', error);
+        logger.error('Insight unexpected error', error, { route: '/api/ramadhan/insight' });
         const fallback = FALLBACK_INSIGHTS[Math.floor(Math.random() * FALLBACK_INSIGHTS.length)];
         return NextResponse.json({ insight: fallback });
     }

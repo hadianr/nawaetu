@@ -3,6 +3,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from '@/db';
 import { ramadhanFastingLog, dailyActivities, ramadhanTarawehLog, ramadhanDailyLog } from '@/db/schema';
 import { eq, and, gte, lte, sum } from 'drizzle-orm';
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
     try {
@@ -160,7 +161,7 @@ export async function GET(request: Request) {
         });
 
     } catch (error) {
-        console.error("Error fetching Ramadhan stats:", error);
+        logger.error('Error fetching Ramadhan stats', error, { route: '/api/ramadhan/summary' });
         return NextResponse.json({ error: 'Failed to fetch Ramadhan stats' }, { status: 500 });
     }
 }

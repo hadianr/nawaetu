@@ -21,6 +21,7 @@ import { db, checkConnection } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 
 /**
  * POST /api/intentions/daily
@@ -227,8 +228,7 @@ export async function POST(req: NextRequest) {
             },
         });
     } catch (error: any) {
-        // Log error for debugging
-        console.error("Error in POST /api/intentions/daily:", error);
+        logger.error("Error in POST /api/intentions/daily", error, { route: "/api/intentions/daily" });
 
         return NextResponse.json(
             { success: false, error: "Internal server error" },

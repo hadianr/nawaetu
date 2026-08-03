@@ -159,11 +159,9 @@ const nextConfig: NextConfig = {
         source: '/workbox-:hash.js',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' }],
       },
-      // Public static assets — long cache (content-hashed by Next.js)
-      {
-        source: '/_next/static/(.*)',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
-      },
+      // Note: /_next/static/* Cache-Control is managed automatically by Next.js
+      // (public, max-age=31536000, immutable for content-hashed assets).
+      // Setting it manually here triggers a build warning in Next.js 16+.
       // Disallow robots from user-specific authored pages
       {
         source: '/(bookmarks|settings|stats|journal|hadith)(.*)',

@@ -21,6 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { chatSessions } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 export async function DELETE(
     req: NextRequest,
@@ -55,7 +56,7 @@ export async function DELETE(
         return NextResponse.json({ success: true });
 
     } catch (error) {
-        console.error("Error deleting chat session:", error);
+        logger.error("Error deleting chat session", error, { route: "/api/mentor-ai/history" });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

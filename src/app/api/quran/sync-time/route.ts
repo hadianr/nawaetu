@@ -3,6 +3,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { dailyActivities } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 function getLocalDateString() {
     const today = new Date();
@@ -35,7 +36,7 @@ export async function GET(req: Request) {
             totalTodaySeconds: existingActivity?.quranReadingSeconds || 0 
         });
     } catch (error) {
-        console.error("[QURAN_TIME_GET]", error);
+        logger.error('Quran time GET failed', error, { route: '/api/quran/sync-time' });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
@@ -107,7 +108,7 @@ export async function POST(req: Request) {
             totalTodaySeconds: newTotal
         });
     } catch (error) {
-        console.error("[QURAN_SYNC_TIME]", error);
+        logger.error('Quran sync time POST failed', error, { route: '/api/quran/sync-time' });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

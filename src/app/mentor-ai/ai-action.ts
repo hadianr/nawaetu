@@ -24,6 +24,7 @@ import { getServerSession } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
 import { getSpiritualItemOfDay } from '@/data/spiritual-content';
+import { logger } from "@/lib/logger";
 
 interface ChatMessage {
     role: 'user' | 'assistant';
@@ -110,7 +111,7 @@ export async function askMentor(
         }
 
         // Generic error for everything else
-        console.error("AI Error:", error);
+        logger.error("AI error", error, { route: '/mentor-ai' });
         return `Maaf, lagi ada kendala teknis. Coba lagi ya 🙏`;
     }
 }

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { logger } from "@/lib/logger";
+
 export interface WebVitalMetric {
     id: string;
     name: string;
@@ -30,5 +32,5 @@ export interface AnalyticsProvider {
 
 // ponytail: single provider, skip factory abstraction until 2nd provider added
 export async function trackMetric(metric: WebVitalMetric): Promise<void> {
-    console.info(`[Analytics] Web Vital: ${metric.name}`, metric);
+    logger.info(`Web vital: ${metric.name}`, { action: 'web-vital' });
 }

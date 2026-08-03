@@ -19,6 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
+import { logger } from "@/lib/logger";
 import {
     bookmarks,
     intentions,
@@ -133,7 +134,7 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (error) {
-        console.error("Error fetching full user data:", error);
+        logger.error('Error fetching full user data', error, { route: '/api/user/full-data' });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
