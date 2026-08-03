@@ -21,6 +21,7 @@ import { db, checkConnection } from "@/db";
 import { userFeedback } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { and, eq, gte, sql } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 const MAX_FEEDBACK_PER_HOUR = 5;
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -176,7 +177,7 @@ export async function POST(req: NextRequest) {
 
                     if (!tgRes.ok) {
                         const errText = await tgRes.text();
-                        console.error("Telegram sendMessage API failed:", errText);
+                        logger.error("Telegram sendMessage API failed", new Error(errText), { route: "/api/feedback" });
                         throw new Error("Gagal mengirim pesan ke Telegram.");
                     }
                 } else if (screenshots.length === 1) {
@@ -196,7 +197,7 @@ export async function POST(req: NextRequest) {
 
                     if (!tgRes.ok) {
                         const errText = await tgRes.text();
-                        console.error("Telegram sendPhoto API failed:", errText);
+                        logger.error("Telegram sendPhoto API failed", new Error(errText), { route: "/api/feedback" });
                         throw new Error("Gagal mengirim gambar ke Telegram.");
                     }
                 } else {
@@ -226,12 +227,12 @@ export async function POST(req: NextRequest) {
 
                     if (!tgRes.ok) {
                         const errText = await tgRes.text();
-                        console.error("Telegram sendMediaGroup API failed:", errText);
+                        logger.error("Telegram sendMediaGroup API failed", new Error(errText), { route: "/api/feedback" });
                         throw new Error("Gagal mengirim kumpulan gambar ke Telegram.");
                     }
                 }
             } catch (err) {
-                console.error("Error communicating with Telegram Bot:", err);
+                logger.error("Error communicating with Telegram Bot", err, { route: "/api/feedback" });
                 // We do NOT fail the user's request if Telegram fails, since the feedback is already stored in the DB
                 return NextResponse.json({ 
                     success: true, 
@@ -239,12 +240,12 @@ export async function POST(req: NextRequest) {
                 });
             }
         } else {
-            console.warn("TELEGRAM_BOT_TOKEN or TELEGRAM_FEEDBACK_CHAT_ID is missing. Notification skipped.");
+            logger.warn("TELEGRAM_BOT_TOKEN or TELEGRAM_FEEDBACK_CHAT_ID is missing, notification skipped", { route: "/api/feedback" });
         }
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        console.error("API error submitting feedback:", error);
+        logger.error("API error submitting feedback", error, { route: "/api/feedback" });
         return NextResponse.json(
             { error: "Terjadi kesalahan internal. Silakan coba lagi nanti." },
             { status: 500 }

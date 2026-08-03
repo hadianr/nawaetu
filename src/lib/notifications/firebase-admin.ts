@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { logger } from "@/lib/logger";
 import { getApps, initializeApp, cert } from "firebase-admin/app";
 import { getMessaging as getAdminMessaging, Messaging } from "firebase-admin/messaging";
 import * as path from "path";
@@ -43,7 +44,7 @@ function initAdmin() {
     try {
         initializeApp({ credential: cert(JSON.parse(rawJson)) });
     } catch (err) {
-        console.error("Firebase Admin init failed:", err);
+        logger.fatal("Firebase Admin init failed", err, { action: 'firebase-admin-init' });
     }
 }
 

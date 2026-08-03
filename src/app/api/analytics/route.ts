@@ -18,6 +18,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { trackMetric, WebVitalMetric } from "@/lib/analytics/server-analytics";
+import { logger } from "@/lib/logger";
 
 /**
  * Analytics API endpoint for Web Vitals metrics
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
-        console.error("[Analytics API Error]", error);
+        logger.error("Analytics API error", error, { route: "/api/analytics" });
         return NextResponse.json(
             { error: "Failed to process metric" },
             { status: 500 }

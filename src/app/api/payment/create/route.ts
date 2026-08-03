@@ -21,6 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
     try {
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
                 mayarData?.error ||
                 (typeof mayarData === 'string' ? mayarData : "Failed to create payment link");
 
-            console.error(`[${new Date().toISOString()}] Mayar Payment Creation Failed:`, errorMessage);
+            logger.error("Mayar payment creation failed", new Error(typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage), { route: "/api/payment/create" });
 
             return NextResponse.json({
                 error: typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage

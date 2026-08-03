@@ -21,6 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 export async function PATCH(req: NextRequest) {
     try {
@@ -71,7 +72,7 @@ export async function PATCH(req: NextRequest) {
         });
 
     } catch (e) {
-        console.error("[api/user/profile] PATCH error:", e);
+        logger.error('User profile PATCH error', e, { route: '/api/user/profile' });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

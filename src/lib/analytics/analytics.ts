@@ -63,3 +63,16 @@ export const trackFeatureUse = (featureName: string) => {
         feature_name: featureName
     });
 };
+
+/**
+ * Track client-side app errors to GA4 (100% Free & Unlimited).
+ * Use this in Client Components to surface app-level errors without
+ * adding server load. Error messages are truncated to 100 chars to
+ * stay within GA4 parameter length limits.
+ */
+export const trackAppError = (errorName: string, errorMessage: string) => {
+    sendGAEvent('app_error', {
+        error_name: errorName,
+        error_message: errorMessage.substring(0, 100),
+    });
+};

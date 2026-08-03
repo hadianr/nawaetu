@@ -19,6 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
+import { logger } from "@/lib/logger";
 import {
     bookmarks,
     intentions,
@@ -319,7 +320,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true, message: "Guest data synced successfully" });
 
     } catch (error) {
-        console.error("Error syncing guest data:", error);
+        logger.error('Error syncing guest data', error, { route: '/api/user/sync-guest' });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

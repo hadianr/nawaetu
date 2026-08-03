@@ -32,6 +32,8 @@
  *      and to Vercel environment variables.
  */
 
+import { logger } from "@/lib/logger";
+
 // ─── Shared result type (same shape for both implementations) ───────────────
 
 export interface RateLimitResult {
@@ -144,7 +146,7 @@ class UnifiedRateLimiter {
             return { success, remaining };
         } catch (err) {
             // Redis unavailable → degrade gracefully to in-memory
-            console.warn('[rate-limit] Redis error, falling back to in-memory:', err);
+            logger.warn('Redis error, falling back to in-memory', { action: 'rate-limit', error: err instanceof Error ? err.message : String(err) });
             return this.fallback.limit(this.config.requests, token);
         }
     }

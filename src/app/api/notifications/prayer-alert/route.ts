@@ -21,6 +21,7 @@ import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
+import { logger } from "@/lib/logger";
 
 /**
  * Enhanced Hybrid Prayer Notification API
@@ -111,7 +112,7 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
             return result.data.timings;
         }
     } catch (e: any) {
-        console.error(`[fetchPrayerTimes Error] url=${url}:`, e?.message || e);
+        logger.error(`Fetch prayer times error: url=${url}`, e, { route: "/api/notifications/prayer-alert" });
     }
     return null;
 }
@@ -465,7 +466,7 @@ export async function POST(req: NextRequest) {
                         }
                     }
                 } catch (e: any) {
-                    console.error(`Group processing error for ${group.lat},${group.lng}:`, e);
+                    logger.error(`Group processing error for ${group.lat},${group.lng}`, e, { route: "/api/notifications/prayer-alert" });
                     results.errors.push(`Group ${group.lat},${group.lng} error: ${e.message}`);
                     results.skipped += group.subs.length;
                 }

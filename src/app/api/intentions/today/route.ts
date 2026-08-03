@@ -21,6 +21,7 @@ import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 
 /**
  * GET /api/intentions/today?user_token=xxx
@@ -129,7 +130,7 @@ export async function GET(req: NextRequest) {
 
         const duration = Date.now() - startTime;
         if (duration > 500) {
-            console.warn(`[GET /api/intentions/today] Slow request: ${duration}ms for token ${user_token}`);
+            logger.warn("Slow request detected", { route: "/api/intentions/today", durationMs: duration });
         }
 
         if (!todayIntention) {
@@ -162,10 +163,7 @@ export async function GET(req: NextRequest) {
             },
         });
     } catch (error) {
-        console.error("[GET /api/intentions/today] Failed:", {
-            error: error instanceof Error ? error.message : "Non-error object",
-            stack: error instanceof Error ? error.stack : undefined,
-        });
+        logger.error("GET /api/intentions/today failed", error, { route: "/api/intentions/today" });
 
         return NextResponse.json(
             { success: false, error: "Internal server error" },

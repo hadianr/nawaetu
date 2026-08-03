@@ -21,6 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { eq, and, ne } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
     try {
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
                     ));
             } catch (e) {
                 // Non-fatal cleanup log
-                console.warn("[Subscribe API] Could not deactivate previous user tokens:", e);
+                logger.warn("Could not deactivate previous user tokens", { route: "/api/notifications/subscribe", error: e instanceof Error ? e.message : String(e) });
             }
         }
 
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error("[Subscribe API Error]:", error);
+        logger.error("Subscribe API error", error, { route: "/api/notifications/subscribe" });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

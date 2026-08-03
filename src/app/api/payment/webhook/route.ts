@@ -21,6 +21,7 @@ import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
 import { eq, and, desc, or, ne } from "drizzle-orm";
 import crypto from "crypto";
+import { logger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
     try {
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
 
         // 1. Configuration Check
         if (!webhookSecret) {
-            console.error("[Mayar Webhook] MAYAR_WEBHOOK_SECRET is not set");
+            logger.fatal("MAYAR_WEBHOOK_SECRET is not set", undefined, { route: "/api/payment/webhook" });
             return NextResponse.json({ error: "Configuration Error: Secret missing" }, { status: 500 });
         }
 
@@ -47,7 +48,6 @@ export async function POST(req: NextRequest) {
             authHeader === webhookSecret ||
             mayarToken === webhookSecret) {
             isValid = true;
-            console.log("[Mayar Webhook] Signature verified via direct token match");
         } else if (signature || callbackToken) {
             const tokenToHashWith = signature || callbackToken;
             // Try HMAC SHA256/512 hashes
@@ -56,18 +56,16 @@ export async function POST(req: NextRequest) {
 
             if (tokenToHashWith === expectedSha256) {
                 isValid = true;
-                console.log("[Mayar Webhook] Signature verified via HMAC SHA256");
             } else if (tokenToHashWith === expectedSha512) {
                 isValid = true;
-                console.log("[Mayar Webhook] Signature verified via HMAC SHA512");
             } else {
-                console.error(`[Mayar Webhook] Hash mismatch. Received: ${tokenToHashWith}`);
+                logger.error("Mayar webhook hash mismatch", new Error(`Received: ${tokenToHashWith}`), { route: "/api/payment/webhook" });
             }
         }
 
         if (!isValid) {
             const headersObj = Object.fromEntries(req.headers);
-            console.error("[Mayar Webhook] Invalid or Missing Signature. Headers:", JSON.stringify(headersObj));
+            logger.error("Mayar webhook invalid or missing signature", new Error(JSON.stringify(headersObj)), { route: "/api/payment/webhook" });
             return NextResponse.json({ error: "Invalid Signature" }, { status: 400 });
         }
 
@@ -80,7 +78,6 @@ export async function POST(req: NextRequest) {
 
         // 3.5 Check Event Type
         if (body.event && body.event !== "payment.received" && body.event !== "payment.reminder") {
-            console.log(`[Mayar Webhook] Ignoring unhandled event: ${body.event}`);
             return NextResponse.json({ status: "ok", message: `Event ${body.event} ignored` });
         }
 
@@ -110,7 +107,7 @@ export async function POST(req: NextRequest) {
             const email = data.customerEmail || data.customer?.email || data.merchantEmail;
             const amount = data.amount;
 
-            console.log(`[Mayar Webhook] Transaction not found by ID. Trying fallback for Email: ${email}, Amount: ${amount}`);
+            logger.warn("Mayar webhook transaction not found by ID, attempting fallback lookup", { route: "/api/payment/webhook", email, amount });
 
             if (email && amount !== undefined && amount !== null) {
                 // Find latest transaction with same email/amount, allowing pending or failed (retry scenario)
@@ -137,7 +134,7 @@ export async function POST(req: NextRequest) {
 
         // 7. Final Transaction Check
         if (!transaction) {
-            console.error("[Mayar Webhook] Transaction Not Found");
+            logger.error("Mayar webhook transaction not found", undefined, { route: "/api/payment/webhook", mayarId, productId, linkId });
             return NextResponse.json({
                 error: "Transaction not found",
                 debug: { mayarId, productId, linkId, email: data.customerEmail, amount: data.amount }
@@ -197,7 +194,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ status: "ok", data: updatedTx });
 
     } catch (e: any) {
-        console.error("[Mayar Webhook] Internal Error:", e);
+        logger.error("Mayar webhook internal error", e, { route: "/api/payment/webhook" });
         return NextResponse.json({ error: "Internal Server Error", details: e.message }, { status: 500 });
     }
 }

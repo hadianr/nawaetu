@@ -18,7 +18,7 @@
 
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getMessaging, getToken, onMessage, Messaging } from "firebase/messaging";
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from "@sentry/browser";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -105,7 +105,6 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         }
 
         if (!activeRegistration) {
-            console.log("[FCM] Registering lightweight /firebase-messaging-sw.js...");
             activeRegistration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
         }
 
