@@ -35,4 +35,32 @@ export const uiEN = {
     // Undo
     habitUndoTitle: "Habit undone",
     habitUndoDesc: "Hasanah points have been returned.",
+
+    // Hadith & Dua Library UI
+    hadithLibraryTitle: "Hadith Library",
+    hadithLibrarySubtitle: "{count} Selected Authentic & Reliable Hadiths",
+    hadithTabHadith: "Prophet's Hadiths",
+    hadithTabDua: "Duas & Supplications",
+    hadithSearchPlaceholder: "Search hadith, number (e.g. 6094), narrator, keywords...",
+    hadithAllNarrators: "All Narrators",
+    hadithShowingCount: "Showing {count} hadiths",
+    hadithEmptyState: "No hadiths match your search criteria.",
+    hadithTadabburTitle: "Hadith Commentary",
+    hadithNarratorBy: "Narrated by {narrator}",
+    hadithSourceLabel: "Narrated by {collection} No. {number}",
+
+    duaLibraryTitle: "Supplications & Adhkar",
+    duaLibrarySubtitle: "{count} Selected Duas with Sources & Virtues",
+    duaSearchPlaceholder: "Search dua, source (e.g. QS. An-Naml), virtue...",
+    duaShowingCount: "Showing {count} duas",
+    duaEmptyState: "No duas match your search criteria.",
+    duaVirtueTitle: "Virtue & Benefits",
+    duaLaunchCounter: "Start Dhikr with Tasbih Counter",
+    duaReciteCount: "Recite {count}x",
+
+    calendarCurrentMonthTab: "Current Month",
+    calendarRamadhanTab: "Ramadan",
+    calendarHijriHeader: "Hijri",
+    dalilViewHadithDetails: "View hadith details",
+    dalilViewDuaDetails: "View dua details",
 };

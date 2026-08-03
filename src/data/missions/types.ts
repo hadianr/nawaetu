@@ -40,6 +40,8 @@ export interface Mission {
     icon: string;
     gender: Gender;
     dalil?: string;
+    hadithId?: string;
+    duaId?: string;
     type: 'daily' | 'weekly' | 'tracker';
     category: 'worship' | 'quran' | 'dhikr' | 'fasting' | 'prayer';
     ruling: IslamicRuling;
@@ -78,6 +80,8 @@ export function createMission(config: {
     hasanahReward: number;
     icon: string;
     dalil?: string;
+    hadithId?: string;
+    duaId?: string;
     gender?: Gender;
     type?: Mission['type'];
     validationType?: ValidationType;
@@ -95,6 +99,8 @@ export function createMission(config: {
         icon: config.icon,
         gender: config.gender ?? null,
         dalil: config.dalil,
+        hadithId: config.hadithId,
+        duaId: config.duaId,
         type: config.type ?? 'daily',
         validationType: config.validationType ?? 'manual',
         validationConfig: config.validationConfig,

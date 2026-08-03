@@ -16,11 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Sparkles, AlertCircle, Check } from "lucide-react";
+import { Sparkles, AlertCircle, Check, ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { formatHasanahRange } from "@/lib/utils/hasanah";
+import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 
 interface DailyMissionCardProps {
     mission: Mission;
@@ -49,6 +51,7 @@ export default function DailyMissionCard({
     onClick,
     isBackdated = false
 }: DailyMissionCardProps) {
+    const router = useRouter();
     let urgencyNode = null;
 
     if (mission.category === 'prayer' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
@@ -168,6 +171,30 @@ export default function DailyMissionCard({
                         <p className="text-[10px] text-white/90 truncate">
                             {formatHasanahRange(mission.hasanahReward, mission.completionOptions, isBackdated)} Hasanah
                         </p>
+
+                        {mission.dalil && (() => {
+                            const ref = resolveReferenceForMission(mission);
+                            return (
+                                <span
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (ref?.targetUrl) {
+                                            router.push(ref.targetUrl);
+                                        }
+                                    }}
+                                    className={cn(
+                                        "text-[9px] px-1 py-0.5 rounded font-mono flex items-center gap-0.5 border transition-colors cursor-pointer shrink-0",
+                                        ref
+                                            ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/20 hover:underline"
+                                            : "bg-white/5 text-white/40 border-white/5"
+                                    )}
+                                    title={ref ? (ref.type === "hadith" ? (t.dalilViewHadithDetails || "Lihat rincian hadits") : (t.dalilViewDuaDetails || "Lihat rincian doa")) : mission.dalil}
+                                >
+                                    <span>📖 {mission.dalil}</span>
+                                    {ref && <ExternalLink className="w-2 h-2" />}
+                                </span>
+                            );
+                        })()}
 
                         {isLocked ? (
                             <span className="text-[9px] text-white/60 flex items-center gap-0.5 ml-auto">

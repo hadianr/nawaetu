@@ -19,14 +19,16 @@
  */
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
-import { Check, Sparkles, AlertCircle, X } from "lucide-react";
+import { Check, Sparkles, AlertCircle, X, ExternalLink, BookOpen } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { useTheme } from "@/context/ThemeContext";
+import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 
 interface MissionListModalProps {
     missions: Mission[];
@@ -64,6 +66,7 @@ export default function MissionListModal({
     onOpenChange,
     initialTab
 }: MissionListModalProps) {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState(initialTab || "all");
     const { t } = useLocale();
     const { currentTheme } = useTheme();
@@ -199,8 +202,33 @@ export default function MissionListModal({
 
                                 <p className="text-xs text-white/50 truncate mb-1">{mission.description}</p>
 
-                                <div className="flex items-center gap-2 mt-1">
+                                <div className="flex items-center gap-2 mt-1 flex-wrap">
                                     <span className="text-[10px] text-amber-400 font-mono">+{mission.hasanahReward} Hasanah</span>
+
+                                    {mission.dalil && (() => {
+                                        const ref = resolveReferenceForMission(mission);
+                                        return (
+                                            <span
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (ref?.targetUrl) {
+                                                        finalOnOpenChange?.(false);
+                                                        router.push(ref.targetUrl);
+                                                    }
+                                                }}
+                                                className={cn(
+                                                    "text-[9px] px-1.5 py-0.5 rounded font-mono flex items-center gap-1 border transition-colors cursor-pointer",
+                                                    ref
+                                                        ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/20 hover:underline"
+                                                        : "bg-white/5 text-white/40 border-white/5"
+                                                )}
+                                                title={ref ? (ref.type === "hadith" ? (t.dalilViewHadithDetails || "Lihat rincian hadits") : (t.dalilViewDuaDetails || "Lihat rincian doa")) : mission.dalil}
+                                            >
+                                                <span>📖 {mission.dalil}</span>
+                                                {ref && <ExternalLink className="w-2.5 h-2.5" />}
+                                            </span>
+                                        );
+                                    })()}
 
                                     {isLocked && (
                                         <span className="text-[9px] text-white/30 flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 border border-white/5">

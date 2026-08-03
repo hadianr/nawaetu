@@ -2,18 +2,7 @@
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Dynamic Hijri & Ramadan Calendar Hook
  */
 
 import { useState, useCallback, useEffect } from "react";
@@ -34,9 +23,9 @@ const HIJRI_MONTHS = [
 
 export interface RamadhanDay {
     gregorianDate: string; // "19 Feb 2026"
-    hijriDate: string; // "1 Ramadan 1447H"
-    hijriDay: number; // 1
-    hijriMonth: string; // "Ramadan"
+    hijriDate: string;     // "1 Ramadan 1447H"
+    hijriDay: number;      // 1
+    hijriMonth: string;    // "Ramadan"
     timings: {
         Imsak: string;
         Subuh: string;
@@ -46,10 +35,14 @@ export interface RamadhanDay {
     isToday: boolean;
 }
 
+export type CalendarViewMode = "current_month" | "ramadan";
+
 export function useRamadhanCalendar() {
     const [calendarData, setCalendarData] = useState<RamadhanDay[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<CalendarViewMode>("current_month");
+    const [activeHijriTitle, setActiveHijriTitle] = useState<string>("");
 
     // Clear data on adjustment change to force refetch
     useEffect(() => {
@@ -60,7 +53,7 @@ export function useRamadhanCalendar() {
         return () => window.removeEventListener('hijri_adjustment_changed', handleAdjustmentChange);
     }, []);
 
-    const fetchCalendar = useCallback(async () => {
+    const fetchCalendar = useCallback(async (mode: CalendarViewMode = viewMode) => {
         setLoading(true);
         setError(null);
 
@@ -68,8 +61,7 @@ export function useRamadhanCalendar() {
             // Get Location
             const cachedLocation = storage.getOptional<{ lat: number; lng: number }>(STORAGE_KEYS.USER_LOCATION);
             if (!cachedLocation || !cachedLocation.lat || !cachedLocation.lng) {
-                // If no location, we can't fetch reliable calendar.
-                // Onboarding ensures location existence.
+                setLoading(false);
                 return;
             }
             const lat = cachedLocation.lat;
@@ -83,17 +75,33 @@ export function useRamadhanCalendar() {
             const parsedAdj = parseInt(String(savedAdjustment || "-1"), 10);
             const activeAdj = isNaN(parsedAdj) ? -1 : parsedAdj;
 
-            // Fetch Feb & March 2026 (Ramadhan 1447 spans Feb 18 - Mar 19)
-            // Ideally we should calculate which Gregorian months correspond to current Hijri year's Ramadhan
-            // But for this seasonal feature targeted at 2026, hardcoding Feb/Mar 2026 is acceptable.
-            // Dynamically determining it requires complexity.
-            const year = 2026;
-            const monthsToFetch = [2, 3]; // Feb, March
+            // Dynamic Date Calculations based on current time
+            const now = new Date();
+            const currentGregorianYear = now.getFullYear();
+            const currentGregorianMonth = now.getMonth() + 1; // 1-indexed
 
-            // Coordinate-based Maghrib correction (mirrors usePrayerTimes.ts logic)
-            // Kemenag RI ikhtiyath for Maghrib varies by city:
-            //   Bandung Raya (within 25km of center): +8
-            //   Other Indonesian cities: +3
+            let targetRequests: { year: number; month: number }[] = [];
+
+            if (mode === "current_month") {
+                // Fetch current Gregorian month and next month for full Hijri month coverage
+                targetRequests = [
+                    { year: currentGregorianYear, month: currentGregorianMonth },
+                    {
+                        year: currentGregorianMonth === 12 ? currentGregorianYear + 1 : currentGregorianYear,
+                        month: currentGregorianMonth === 12 ? 1 : currentGregorianMonth + 1
+                    }
+                ];
+            } else {
+                // Ramadan mode: calculate upcoming or current Ramadan months
+                // Ramadan typically falls around Feb/Mar in 2026, Jan/Feb in 2027, etc.
+                const ramadanStartMonth = currentGregorianMonth > 4 ? currentGregorianMonth : 2;
+                targetRequests = [
+                    { year: currentGregorianYear, month: ramadanStartMonth },
+                    { year: currentGregorianYear, month: ramadanStartMonth + 1 }
+                ];
+            }
+
+            // Coordinate-based Maghrib correction
             const getMaghribCorrection = (userLat: number, userLng: number): number => {
                 const R = 6371;
                 const dLat = (userLat - (-6.9175)) * Math.PI / 180;
@@ -105,15 +113,13 @@ export function useRamadhanCalendar() {
                 return distKm <= 25 ? 8 : 3;
             };
 
-            // Apply same Kemenag RI tune as usePrayerTimes (method 20 only)
-            // tune format: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
             const tuneParam = method === "20"
                 ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
                 : "";
 
-            const requests = monthsToFetch.map(m =>
+            const requests = targetRequests.map(req =>
                 fetchWithTimeout(
-                    `${API_CONFIG.ALADHAN.BASE_URL}/calendar/${year}/${m}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${activeAdj}${tuneParam}`,
+                    `${API_CONFIG.ALADHAN.BASE_URL}/calendar/${req.year}/${req.month}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${activeAdj}${tuneParam}`,
                     {},
                     { timeoutMs: 10000 }
                 ).then(res => res.json() as Promise<AladhanCalendarResponse>)
@@ -128,17 +134,18 @@ export function useRamadhanCalendar() {
                 }
             });
 
-            // Process and Filter
-            const todayStr = new Date().toLocaleDateString("en-GB").split("/").join("-"); // 19-02-2026
+            // Format today's date for exact string match
+            const todayStr = `${now.getDate().toString().padStart(2, "0")}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getFullYear()}`;
 
-            const ramadhanDays: RamadhanDay[] = [];
+            const parsedDays: RamadhanDay[] = [];
+            let detectedHijriMonth = "";
 
             allDays.forEach(dayDat => {
                 const timings = dayDat.timings;
                 const hijri = dayDat.date.hijri;
                 const greg = dayDat.date.gregorian;
 
-                // Client-side Adjustment Logic (Same as usePrayerTimes)
+                // Client-side Adjustment Logic
                 let hDay = parseInt(hijri.day, 10);
                 let hMonthIndex = (hijri.month.number) - 1;
                 let hYear = parseInt(hijri.year, 10);
@@ -148,7 +155,7 @@ export function useRamadhanCalendar() {
                 if (hDay < 1) {
                     hMonthIndex--;
                     if (hMonthIndex < 0) { hMonthIndex = 11; hYear--; }
-                    hDay += 30; // approx
+                    hDay += 30;
                 } else if (hDay > 30) {
                     hDay -= 30;
                     hMonthIndex++;
@@ -157,10 +164,15 @@ export function useRamadhanCalendar() {
 
                 const hMonthName = HIJRI_MONTHS[hMonthIndex] || hijri.month.en;
 
-                // Check if Ramadhan
-                // Normalize string just in case: "Ramadan", "Ramadhan"
-                if (hMonthName.toLowerCase().includes("ramada") || hMonthName.toLowerCase().includes("ramadhan")) {
-                    ramadhanDays.push({
+                if (greg.date === todayStr && !detectedHijriMonth) {
+                    detectedHijriMonth = `${hMonthName} ${hYear}H`;
+                }
+
+                const isRamadhanMonth = hMonthName.toLowerCase().includes("ramada") || hMonthName.toLowerCase().includes("ramadhan");
+
+                // Filter condition
+                if (mode === "ramadan" ? isRamadhanMonth : true) {
+                    parsedDays.push({
                         gregorianDate: `${greg.day} ${greg.month.en} ${greg.year}`,
                         hijriDate: `${hDay} ${hMonthName} ${hYear}H`,
                         hijriDay: hDay,
@@ -171,15 +183,22 @@ export function useRamadhanCalendar() {
                             Maghrib: timings.Maghrib.split(" ")[0],
                             Isya: timings.Isha.split(" ")[0]
                         },
-                        isToday: greg.date === todayStr // "19-02-2026"
+                        isToday: greg.date === todayStr
                     });
                 }
             });
 
-            // Sort by hijri day
-            ramadhanDays.sort((a, b) => a.hijriDay - b.hijriDay);
+            // If current_month mode, limit to the current active Hijri month days
+            let finalDays = parsedDays;
+            if (mode === "current_month" && detectedHijriMonth) {
+                const currentMonthName = detectedHijriMonth.split(" ")[0];
+                finalDays = parsedDays.filter(d => d.hijriMonth === currentMonthName);
+            }
 
-            setCalendarData(ramadhanDays);
+            finalDays.sort((a, b) => a.hijriDay - b.hijriDay);
+
+            setCalendarData(finalDays);
+            setActiveHijriTitle(detectedHijriMonth || (finalDays[0]?.hijriDate ? finalDays[0].hijriDate.split(" ").slice(1).join(" ") : "Jadwal Hijriah"));
 
         } catch (err) {
             Sentry.captureException(err);
@@ -187,7 +206,15 @@ export function useRamadhanCalendar() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [viewMode]);
 
-    return { calendarData, loading, error, fetchCalendar };
+    return {
+        calendarData,
+        loading,
+        error,
+        fetchCalendar,
+        viewMode,
+        setViewMode,
+        activeHijriTitle
+    };
 }

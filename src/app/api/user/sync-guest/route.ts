@@ -57,7 +57,8 @@ const syncSchema = z.object({
     })).max(1000).optional(),
     completedMissions: z.array(z.object({
         id: z.string(),
-        hasanahEarned: z.number(),
+        hasanahEarned: z.number().optional(),
+        xpEarned: z.number().optional(),
         completedAt: z.string(),
     })).max(1000).optional(),
     intentions: z.array(z.object({
@@ -100,8 +101,14 @@ export async function POST(req: NextRequest) {
 
         let body: any = null;
         try {
-            const raw = await req.text();
-            body = raw && raw.trim() ? JSON.parse(raw) : {};
+            if (typeof req.text === "function") {
+                const raw = await req.text();
+                body = raw && raw.trim() ? JSON.parse(raw) : {};
+            } else if (typeof (req as any).json === "function") {
+                body = await (req as any).json();
+            } else {
+                body = {};
+            }
         } catch {
             return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
         }
