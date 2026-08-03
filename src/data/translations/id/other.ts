@@ -662,5 +662,45 @@ export const otherID = {
     zakatCalcTotalLabel: "Total Zakat Fitrah Anda",
     zakatCalcNote: "Catatan: Sesuaikan besaran dengan pengumuman BAZNAS kabupaten/kota atau DKM Masjid tempat tinggal Anda.",
 
+    // ─── Aksi Konten Islami Bersama (dipakai oleh halaman Hadits & Doa) ──────
+    shareToStory: "Bagikan ke Story",
+    copy: "Salin",
+    copied: "Tersalin!",
+    expandDetail: "Buka Detail",
+    collapseDetail: "Ciutkan Detail",
+    loadMore: "Tampilkan Lebih Banyak",
+
+    // ─── Halaman Dua & Dzikir ─────────────────────────────────────────────────
+    duaLibraryTitle: "Kumpulan Doa & Dzikir",
+    duaLibrarySubtitle: "{count} Doa Pilihan dari Al-Qur'an & Sunnah",
+    duaSearchPlaceholder: "Cari doa, dzikir, kata kunci...",
+    duaAllOccasions: "Semua Doa",
+    duaShowingCount: "Menampilkan {count} doa",
+    duaEmptyState: "Tidak ada doa yang sesuai kriteria pencarian.",
+    duaReciteCount: "Dibaca {count}x",
+    duaLaunchCounter: "Mulai Dzikir dengan Tasbih Counter",
+    duaVirtueLabel: "Keutamaan & Manfaat",
+    duaSourceLabel: "Sumber",
+
+    // Label tab kategori doa
+    duaTabMorning: "☀️ Dzikir Pagi",
+    duaTabEvening: "🌙 Dzikir Petang",
+    duaTabAfterPrayer: "🤲 Setelah Sholat",
+    duaTabSleeping: "😴 Sebelum Tidur",
+    duaTabProtection: "🛡️ Perlindungan",
+    duaTabGratitude: "🙏 Syukur",
+    duaTabGeneral: "📖 Sehari-hari",
+    duaTabSocial: "🤝 Sosial & Akhlak",
+
+    // Halaman Hadits (kunci tambahan yang belum ada di atas)
+    hadithLibraryTitle: "Perpustakaan Hadits",
+    hadithLibrarySubtitle: "{count} Hadits Shahih & Hasan Pilihan",
+    hadithSearchPlaceholder: "Cari hadits, nomor (e.g. 6094), perawi, kata kunci...",
+    hadithAllNarrators: "Semua Perawi",
+    hadithShowingCount: "Menampilkan {count} hadits",
+    hadithTadabburTitle: "Tadabbur Hadits",
+    hadithNarratorBy: "Dari {narrator}",
+    hadithTabHadith: "Hadits Nabi",
+    hadithTabDua: "Kumpulan Doa",
 
 };

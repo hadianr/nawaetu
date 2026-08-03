@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { IslamicContentBase } from "@/types/islamic-content";
+
 export type DuaOccasion =
     | "morning"
     | "evening"
@@ -24,25 +26,19 @@ export type DuaOccasion =
     | "sleeping"
     | "protection"
     | "gratitude"
-    | "general";
+    | "general"
+    | "social";
 
 export interface DuaSource {
     type: "quran" | "hadith" | "fiqh";
     referenceText: string;         // e.g., "QS. An-Naml [27]: 19" or "HR. Abu Dawud No. 2358"
+    referenceTextEn?: string;       // e.g., "Quran 27:19" or "HR. Abu Dawud No. 2358"
     quranDetails?: { surahName: string; surahNumber: number; ayahNumber: number | string };
     hadithDetails?: { collection: string; hadithNumber: number | string };
 }
 
-export interface DuaItem {
-    id: string;
+export interface DuaItem extends IslamicContentBase {
     occasion: DuaOccasion;
-    category: string;
-    title: string;
-    titleEn?: string;
-    arabic: string;
-    latin: string;
-    translation: string;           // Indonesian
-    translationEn?: string;        // English
     virtue?: string;               // Fadhilah / spiritual benefit (Indonesian)
     virtueEn?: string;             // Fadhilah / spiritual benefit (English)
     recommendedCount?: number;     // Target repetition, e.g. 1x or 3x

@@ -662,5 +662,45 @@ export const otherEN = {
     zakatCalcTotalLabel: "Your Total Zakat al-Fitr",
     zakatCalcNote: "Note: Adjust the price according to the announcement of BAZNAS (Zakat Agency) or local Mosque in your area.",
 
+    // ─── Shared Islamic Content Actions (used by both Hadith & Dua pages) ───
+    shareToStory: "Share to Story",
+    copy: "Copy",
+    copied: "Copied!",
+    expandDetail: "Expand Detail",
+    collapseDetail: "Collapse Detail",
+    loadMore: "Load More",
+
+    // ─── Dua Library Page ────────────────────────────────────────────────────
+    duaLibraryTitle: "Duas & Daily Adhkar",
+    duaLibrarySubtitle: "{count} Authentic Du'as from Qur'an & Sunnah",
+    duaSearchPlaceholder: "Search du'a, dhikr, keyword...",
+    duaAllOccasions: "All Du'as",
+    duaShowingCount: "Showing {count} du'a(s)",
+    duaEmptyState: "No du'as found for this category.",
+    duaReciteCount: "Recite {count}x",
+    duaLaunchCounter: "Start Dhikr with Tasbih Counter",
+    duaVirtueLabel: "Virtue & Benefit",
+    duaSourceLabel: "Source",
+
+    // Dua occasion tab labels
+    duaTabMorning: "☀️ Morning",
+    duaTabEvening: "🌙 Evening",
+    duaTabAfterPrayer: "🤲 After Prayer",
+    duaTabSleeping: "😴 Sleep",
+    duaTabProtection: "🛡️ Protection",
+    duaTabGratitude: "🙏 Gratitude",
+    duaTabGeneral: "📖 Daily Life",
+    duaTabSocial: "🤝 Social & Ethics",
+
+    // Hadith Library Page (additional keys not already defined above)
+    hadithLibraryTitle: "Hadith Library",
+    hadithLibrarySubtitle: "{count} Sahih & Hasan Selected Hadiths",
+    hadithSearchPlaceholder: "Search hadith, number (e.g. 6094), narrator, keyword...",
+    hadithAllNarrators: "All Narrators",
+    hadithShowingCount: "Showing {count} hadith(s)",
+    hadithTadabburTitle: "Reflection (Tadabbur)",
+    hadithNarratorBy: "From {narrator}",
+    hadithTabHadith: "Prophet's Hadith",
+    hadithTabDua: "Du'a Collection",
 
 };
