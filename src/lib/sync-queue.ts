@@ -184,29 +184,6 @@ class SyncQueueManager {
   }
 
   /**
-   * Get entries by type
-   */
-  getEntriesByType(type: SyncEntityType): SyncQueueEntry[] {
-    return this.queue.filter(entry => entry.type === type);
-  }
-
-  /**
-   * Get pending entries by type
-   */
-  getPendingByType(type: SyncEntityType): SyncQueueEntry[] {
-    return this.queue.filter(
-      entry => entry.status === 'pending' && entry.type === type
-    );
-  }
-
-  /**
-   * Get entry by ID
-   */
-  getEntryById(id: string): SyncQueueEntry | undefined {
-    return this.queue.find(entry => entry.id === id);
-  }
-
-  /**
    * Mark entry as successfully synced
    */
   markAsSynced(id: string): void {
@@ -215,7 +192,6 @@ class SyncQueueManager {
       entry.status = 'synced';
       entry.lastAttemptAt = Date.now();
       this.saveToStorage();
-    } else {
     }
   }
 
@@ -258,7 +234,7 @@ class SyncQueueManager {
   removeFromQueue(id: string): void {
     const index = this.queue.findIndex(e => e.id === id);
     if (index !== -1) {
-      const removed = this.queue.splice(index, 1)[0];
+      this.queue.splice(index, 1);
       this.saveToStorage();
     }
   }
@@ -279,54 +255,11 @@ class SyncQueueManager {
   }
 
   /**
-   * Clear all synced entries of specific type
-   */
-  clearSyncedByType(type: SyncEntityType): number {
-    const before = this.queue.length;
-    this.queue = this.queue.filter(
-      e => !(e.status === 'synced' && e.type === type)
-    );
-    const removed = before - this.queue.length;
-
-    if (removed > 0) {
-      this.saveToStorage();
-    }
-
-    return removed;
-  }
-
-  /**
-   * Get queue statistics for debugging
-   */
-  getStats() {
-    return {
-      total: this.queue.length,
-      pending: this.queue.filter(e => e.status === 'pending').length,
-      synced: this.queue.filter(e => e.status === 'synced').length,
-      failed: this.queue.filter(e => e.status === 'failed').length,
-      byType: {
-        bookmarks: this.queue.filter(e => e.type === 'bookmark').length,
-        settings: this.queue.filter(e => e.type === 'setting').length,
-        journals: this.queue.filter(e => e.type === 'journal').length,
-        missions: this.queue.filter(e => e.type === 'mission').length,
-      },
-    };
-  }
-
-  /**
-   * Clear entire queue (use with caution - usually only for testing/debugging)
+   * Clear entire queue
    */
   clearAll(): void {
-    const size = this.queue.length;
     this.queue = [];
     this.saveToStorage();
-  }
-
-  /**
-   * Export queue for debugging
-   */
-  exportQueue(): string {
-    return JSON.stringify(this.queue, null, 2);
   }
 }
 
@@ -335,13 +268,3 @@ class SyncQueueManager {
  */
 export const syncQueue = SyncQueueManager.getInstance();
 
-export function isSyncEntityType(value: unknown): value is SyncEntityType {
-  return ['bookmark', 'setting', 'journal', 'mission', 'mission_progress', 'daily_activity', 'reading_state', 'dhikr_stats'].includes(String(value));
-}
-
-/**
- * Type guard for SyncActionType
- */
-export function isSyncActionType(value: unknown): value is SyncActionType {
-  return ['create', 'update', 'delete'].includes(String(value));
-}
