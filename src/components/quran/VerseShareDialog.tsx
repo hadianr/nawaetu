@@ -25,6 +25,7 @@ import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui
 import { Button } from "@/components/ui/button";
 import { Verse } from "@/components/quran/VerseList";
 import { useTheme, Theme } from "@/context/ThemeContext";
+import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 
 interface VerseShareDialogProps {
@@ -73,6 +74,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
     const cardRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const { theme } = useTheme(); // Use global active theme
+    const { t, locale } = useLocale();
 
     if (!verse) return null;
 
@@ -154,7 +156,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent showCloseButton={false} className="max-w-sm sm:max-w-md bg-transparent border-none p-0 shadow-none overflow-visible flex flex-col items-center justify-center">
-                <DialogTitle className="sr-only">Bagikan Ayat</DialogTitle>
+                <DialogTitle className="sr-only">{t.quranShareVerse || (locale === "en" ? "Share Verse" : "Bagikan Ayat")}</DialogTitle>
 
                 {/* --- 1. PREVIEW CARD (Central Focus) --- */}
                 {/* 9:16 Aspect Ratio Container */}
@@ -212,7 +214,7 @@ export default function VerseShareDialog({ open, onOpenChange, verse, surahName,
                                     {surahName}
                                 </p>
                                 <p className="text-[10px] tracking-wider opacity-80">
-                                    Ayat {verse.verse_key.split(":")[1]}
+                                    {locale === "en" ? `Ayah ${verse.verse_key.split(":")[1]}` : `Ayat ${verse.verse_key.split(":")[1]}`}
                                 </p>
                             </div>
                         </div>

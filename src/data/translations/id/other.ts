@@ -678,6 +678,7 @@ export const otherID = {
     storyShareCopied: "Gambar tersalin ke clipboard!",
     storyShareClipboardUnsupported: "Clipboard tidak didukung browser. Gambar diunduh!",
     storyShareShared: "Berhasil Dibagikan",
+    storyShareFailed: "Gagal membagikan. Mencoba mengunduh file...",
     storyShareArabic: "Arab",
     storyShareLatin: "Latin",
     storyShareExplanation: "Tadabbur",
