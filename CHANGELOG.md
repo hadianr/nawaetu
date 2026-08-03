@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.6] - 2026-08-03
+
+### Added
+- **Feat: add share icon to homepage daily reflection card**
+
+### Improved
+- **Refactor: simplify date utils, storage factory, and analytics**
+
+### Fixed
+- **Fix(notifications): resolve FCM adhan push alert delivery issues**
+- **Fix(profile): resolve gender sync and validate PATCH profile**
+- **Fix(dua): auto-clear target highlight focus when changing filter tabs or switching items**
+
+
 ## [1.12.5] - 2026-08-03
 
 ### Added
