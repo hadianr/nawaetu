@@ -670,6 +670,18 @@ export const otherEN = {
     collapseDetail: "Collapse Detail",
     loadMore: "Load More",
 
+    // Story Share Modal
+    storyShareTitle: "Share to Story",
+    storyShareCompressing: "Compressing...",
+    storyShareDownloaded: "Image downloaded! Open Instagram & share to Story.",
+    storyShareWebpDownloaded: "WebP image downloaded!",
+    storyShareCopied: "Image copied to clipboard!",
+    storyShareClipboardUnsupported: "Clipboard not supported. Image downloaded!",
+    storyShareShared: "Shared Successfully",
+    storyShareArabic: "Arabic",
+    storyShareLatin: "Latin",
+    storyShareExplanation: "Reflection",
+
     // ─── Dua Library Page ────────────────────────────────────────────────────
     duaLibraryTitle: "Duas & Daily Adhkar",
     duaLibrarySubtitle: "{count} Authentic Du'as from Qur'an & Sunnah",
