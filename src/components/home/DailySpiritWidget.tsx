@@ -19,15 +19,25 @@
  */
 
 import { useEffect, useState } from "react";
-import { BookOpen, Sparkles, Quote, Copy, Check, ChevronRight } from "lucide-react";
+import dynamic from "next/dynamic";
+import { BookOpen, Sparkles, Quote, Copy, Check, ChevronRight, Share2 } from "lucide-react";
 import { getSpiritualItemOfDay, SpiritualItem, getLocalizedContent } from "@/data/spiritual-content";
 import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
+
+const StoryShareModal = dynamic(
+    () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
+    { ssr: false }
+);
 
 export default function DailySpiritWidget() {
     const { t, locale } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
     const [item, setItem] = useState<SpiritualItem | null>(null);
     const [isCopied, setIsCopied] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
 
     useEffect(() => {
         setItem(getSpiritualItemOfDay());
@@ -72,22 +82,31 @@ export default function DailySpiritWidget() {
                         </div>
                     </div>
 
-                    <button
-                        onClick={handleCopy}
-                        className="group relative p-2 rounded-full hover:bg-white/5 active:scale-95 transition-all text-white/30 hover:text-[rgb(var(--color-primary-light))]"
-                        title={t.spiritualCopyContent}
-                    >
-                        {isCopied ? (
-                            <Check className="w-3.5 h-3.5 text-green-400 animate-in zoom-in duration-300" />
-                        ) : (
-                            <Copy className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-                        )}
-                        {isCopied && (
-                            <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-green-500 text-[10px] font-bold text-white px-2 py-0.5 rounded-md animate-in fade-in slide-in-from-bottom-2">
-                                {t.spiritualCopied}
-                            </span>
-                        )}
-                    </button>
+                    <div className="flex items-center gap-0.5">
+                        <button
+                            onClick={() => setShowShareModal(true)}
+                            className="group relative p-2 rounded-full hover:bg-white/5 active:scale-95 transition-all text-white/40 hover:text-[rgb(var(--color-primary-light))]"
+                            title={t.shareToStory || (locale === "en" ? "Share to Story" : "Bagikan ke Story")}
+                        >
+                            <Share2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                        </button>
+                        <button
+                            onClick={handleCopy}
+                            className="group relative p-2 rounded-full hover:bg-white/5 active:scale-95 transition-all text-white/40 hover:text-[rgb(var(--color-primary-light))]"
+                            title={t.spiritualCopyContent}
+                        >
+                            {isCopied ? (
+                                <Check className="w-3.5 h-3.5 text-green-400 animate-in zoom-in duration-300" />
+                            ) : (
+                                <Copy className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                            )}
+                            {isCopied && (
+                                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-green-500 text-[10px] font-bold text-white px-2 py-0.5 rounded-md animate-in fade-in slide-in-from-bottom-2 whitespace-nowrap">
+                                    {t.spiritualCopied}
+                                </span>
+                            )}
+                        </button>
+                    </div>
                 </div>
 
                 {/* --- Content --- */}
@@ -140,6 +159,22 @@ export default function DailySpiritWidget() {
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-white/[0.04] opacity-50" />
                 </div>
             </div>
+
+            {/* --- Story Share Modal --- */}
+            {showShareModal && (
+                <StoryShareModal
+                    item={{
+                        id: item.id,
+                        title: localizedContent.title || item.content.title || (isHadith ? (t.spiritualHadithTitle || "Hadits Hari Ini") : (t.spiritualDuaTitle || "Doa Hari Ini")),
+                        arabic: item.content.arabic,
+                        latin: item.content.latin,
+                        translation: localizedContent.translation || item.content.translation,
+                        sourceText: item.content.source,
+                    }}
+                    onClose={() => setShowShareModal(false)}
+                    isDaylight={isDaylight}
+                />
+            )}
         </div>
     );
 }
