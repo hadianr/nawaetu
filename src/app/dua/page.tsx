@@ -4,14 +4,14 @@
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
  *
- * Dedicated Hadith Library Page (Narrator-Focused, High Performance, Auto-Highlight, Story Sharing)
+ * Dedicated Dua & Supplications Page (Bilingual EN/ID, High Performance, Auto-Highlight, Story Sharing)
  */
 
 import { useState, useMemo, useEffect, Suspense, memo } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, Search, ShieldCheck, User, Share2, ChevronDown as MoreIcon } from "lucide-react";
-import { HADITH_LIBRARY, HadithItem, HADITH_COLLECTIONS } from "@/data/hadiths";
+import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, Search, HeartHandshake, Play, Share2, ChevronDown as MoreIcon } from "lucide-react";
+import { DUA_LIBRARY, DuaItem, DUA_OCCASIONS } from "@/data/duas";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,7 @@ const StoryShareModal = dynamic(
 
 const INITIAL_BATCH = 25;
 
-const HadithCard = memo(function HadithCard({
+const DuaCard = memo(function DuaCard({
     item,
     t,
     locale,
@@ -34,21 +34,22 @@ const HadithCard = memo(function HadithCard({
     isHighlighted,
     onShare,
 }: {
-    item: HadithItem;
+    item: DuaItem;
     t: any;
     locale: string;
     isDaylight: boolean;
     isHighlighted: boolean;
-    onShare: (item: HadithItem) => void;
+    onShare: (item: DuaItem) => void;
 }) {
     const [expanded, setExpanded] = useState(isHighlighted);
     const [copied, setCopied] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         if (isHighlighted) {
             setExpanded(true);
             const scrollTarget = () => {
-                const el = document.getElementById(`hadith-${item.id}`);
+                const el = document.getElementById(`dua-${item.id}`);
                 if (el) {
                     el.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
@@ -69,28 +70,33 @@ const HadithCard = memo(function HadithCard({
         const title = (locale === "en" && item.titleEn) ? item.titleEn : item.title;
         const trans = (locale === "en" && item.translationEn) ? item.translationEn : item.translation;
         const sourcePrefix = locale === "en" ? "Source" : "Sumber";
-        const narratorPrefix = locale === "en" ? "Narrator" : "Perawi";
-        const text = `${title}\n\n${item.arabic}\n${item.latin}\n\n"${trans}"\n\n${sourcePrefix}: HR. ${item.collection} No. ${item.hadithNumber} (${item.authenticity})${item.narrator ? `\n${narratorPrefix}: ${item.narrator}` : ""}`;
+        const text = `${title}\n\n${item.arabic}\n${item.latin}\n\n"${trans}"\n\n${sourcePrefix}: ${item.source.referenceText}`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleLaunchCounter = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        router.push(`/dhikr?preset=${item.id}`);
+    };
+
     const translation = (locale === "en" && item.translationEn) ? item.translationEn : item.translation;
     const title = (locale === "en" && item.titleEn) ? item.titleEn : item.title;
-    const narratorText = item.narrator ? (t.hadithNarratorBy || "Dari {narrator}").replace("{narrator}", item.narrator) : null;
+    const virtueText = (locale === "en" && item.virtueEn) ? item.virtueEn : item.virtue;
+    const reciteCountText = item.recommendedCount ? (t.duaReciteCount || (locale === "en" ? "Recite {count}x" : "Dibaca {count}x")).replace("{count}", String(item.recommendedCount)) : null;
 
     return (
         <div
-            id={`hadith-${item.id}`}
+            id={`dua-${item.id}`}
             className={cn(
                 "rounded-2xl border transition-all duration-500 overflow-hidden select-text [content-visibility:auto] [contain-intrinsic-size:1px_140px]",
                 isHighlighted
                     ? isDaylight
-                        ? "bg-emerald-50/90 border-emerald-400 ring-4 ring-emerald-400/40 shadow-xl scale-[1.01]"
-                        : "bg-emerald-500/15 border-emerald-400 ring-4 ring-emerald-500/30 shadow-2xl scale-[1.01]"
+                        ? "bg-amber-50 border-amber-400 ring-4 ring-amber-400/40 shadow-xl scale-[1.01]"
+                        : "bg-amber-500/15 border-amber-400 ring-4 ring-amber-500/30 shadow-2xl scale-[1.01]"
                     : isDaylight
-                        ? "bg-white border-slate-200/60 shadow-sm hover:border-emerald-200/60"
+                        ? "bg-white border-slate-200/60 shadow-sm hover:border-amber-200/60"
                         : "bg-white/[0.03] border-white/8 backdrop-blur-sm hover:bg-white/[0.05] hover:border-white/10"
             )}
         >
@@ -107,15 +113,15 @@ const HadithCard = memo(function HadithCard({
                         "flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border cursor-pointer transition-colors",
                         isHighlighted
                             ? isDaylight
-                                ? "bg-emerald-500 text-white border-emerald-600"
-                                : "bg-emerald-500 text-white border-emerald-400"
+                                ? "bg-amber-500 text-white border-amber-600"
+                                : "bg-amber-500 text-white border-amber-400"
                             : isDaylight
-                                ? "bg-emerald-50 border-emerald-100 text-emerald-600 hover:bg-emerald-100"
-                                : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/20"
+                                ? "bg-amber-50 border-amber-100 text-amber-600 hover:bg-amber-100"
+                                : "bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20"
                     )}
                     title={expanded ? "Ciutkan Detail" : "Buka Detail"}
                 >
-                    <Quote className="w-4 h-4" />
+                    <HeartHandshake className="w-4 h-4" />
                 </button>
 
                 {/* Info preview (Selectable text) */}
@@ -124,22 +130,19 @@ const HadithCard = memo(function HadithCard({
                         <span className={cn(
                             "text-[10px] px-2 py-0.5 rounded-full font-bold font-mono border",
                             isHighlighted
-                                ? "bg-emerald-500 text-white border-emerald-400"
+                                ? "bg-amber-500 text-white border-amber-400"
                                 : isDaylight
-                                    ? "bg-emerald-100/80 text-emerald-800 border-emerald-200"
-                                    : "bg-emerald-500/15 text-emerald-300 border-emerald-500/20"
+                                    ? "bg-amber-100/80 text-amber-800 border-amber-200"
+                                    : "bg-amber-500/15 text-amber-300 border-amber-500/20"
                         )}>
-                            {locale === "en" ? `Narrated by ${item.collection} No. ${item.hadithNumber}` : `HR. ${item.collection} No. ${item.hadithNumber}`}
+                            {item.source.referenceText}
                         </span>
-                        <span className={cn(
-                            "text-[9px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider border flex items-center gap-0.5",
-                            item.authenticity === "Muttafaq 'Alaih"
-                                ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                                : "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                        )}>
-                            <ShieldCheck className="w-2.5 h-2.5" />
-                            {item.authenticity}
-                        </span>
+
+                        {reciteCountText && (
+                            <span className="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                {reciteCountText}
+                            </span>
+                        )}
                     </div>
 
                     <p className={cn(
@@ -168,7 +171,7 @@ const HadithCard = memo(function HadithCard({
                         }}
                         className={cn(
                             "p-1.5 rounded-lg transition-colors cursor-pointer",
-                            isDaylight ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-600" : "hover:bg-white/10 text-emerald-400"
+                            isDaylight ? "bg-amber-50 hover:bg-amber-100 text-amber-600" : "hover:bg-white/10 text-amber-400"
                         )}
                         title="Bagikan ke Instagram Story"
                     >
@@ -185,7 +188,7 @@ const HadithCard = memo(function HadithCard({
                         title={t.spiritualCopyContent}
                     >
                         {copied ? (
-                            <Check className={cn("w-3.5 h-3.5", isDaylight ? "text-emerald-500" : "text-green-400")} />
+                            <Check className={cn("w-3.5 h-3.5", isDaylight ? "text-amber-500" : "text-amber-400")} />
                         ) : (
                             <Copy className="w-3.5 h-3.5" />
                         )}
@@ -215,13 +218,6 @@ const HadithCard = memo(function HadithCard({
                     "px-4 pb-4 space-y-3 border-t pt-3 animate-in slide-in-from-top-1 duration-200",
                     isDaylight ? "border-slate-100 bg-slate-50/40" : "border-white/5 bg-black/10"
                 )}>
-                    {narratorText && (
-                        <p className={cn("text-[11px] font-medium flex items-center gap-1.5", isDaylight ? "text-slate-500" : "text-white/40")}>
-                            <User className="w-3 h-3 text-emerald-500" />
-                            <span>{narratorText}</span>
-                        </p>
-                    )}
-
                     {/* Arabic */}
                     <p
                         dir="rtl"
@@ -237,7 +233,7 @@ const HadithCard = memo(function HadithCard({
                     <div className="relative space-y-2 pl-3">
                         <div className={cn(
                             "absolute left-0 top-0 bottom-0 w-0.5 rounded-full",
-                            isDaylight ? "bg-emerald-500" : "bg-gradient-to-b from-[rgb(var(--color-primary))] to-transparent"
+                            isDaylight ? "bg-amber-500" : "bg-amber-500/80"
                         )} />
                         <p className={cn("text-[11px] italic leading-relaxed font-serif", isDaylight ? "text-slate-500" : "text-slate-400")}>
                             {item.latin}
@@ -247,25 +243,39 @@ const HadithCard = memo(function HadithCard({
                         </p>
                     </div>
 
-                    {/* Tadabbur / Commentary if available */}
-                    {((locale === "en" && item.explanationEn) || item.explanation) && (
+                    {/* Virtue callout if available */}
+                    {virtueText && (
                         <div className={cn(
                             "p-2.5 rounded-xl text-xs space-y-1 border",
-                            isDaylight ? "bg-emerald-50/60 border-emerald-100 text-slate-700" : "bg-white/[0.02] border-white/5 text-white/70"
+                            isDaylight ? "bg-amber-50/60 border-amber-100 text-slate-700" : "bg-white/[0.02] border-white/5 text-white/70"
                         )}>
-                            <p className="font-bold flex items-center gap-1 text-[10px] uppercase tracking-wider text-emerald-500">
-                                <Sparkles className="w-3 h-3" /> {t.hadithTadabburTitle || "Tadabbur Hadits"}
+                            <p className="font-bold flex items-center gap-1 text-[10px] uppercase tracking-wider text-amber-500">
+                                <Sparkles className="w-3 h-3" /> {t.duaVirtueTitle || "Keutamaan & Wasilah"}
                             </p>
-                            <p className="text-[11px] leading-relaxed">{(locale === "en" && item.explanationEn) ? item.explanationEn : item.explanation}</p>
+                            <p className="text-[11px] leading-relaxed">{virtueText}</p>
                         </div>
                     )}
+
+                    {/* Action: Launch Tasbih Counter */}
+                    <button
+                        onClick={handleLaunchCounter}
+                        className={cn(
+                            "w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
+                            isDaylight
+                                ? "bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800"
+                                : "bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/30 text-amber-300"
+                        )}
+                    >
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>{t.duaLaunchCounter || "Mulai Dzikir dengan Tasbih Counter"}</span>
+                    </button>
                 </div>
             )}
         </div>
     );
 });
 
-function HadithContent() {
+function DuaContent() {
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const searchParams = useSearchParams();
@@ -274,42 +284,42 @@ function HadithContent() {
     const targetId = searchParams?.get("id") || searchParams?.get("highlight") || "";
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedCollection, setSelectedCollection] = useState<string>("all");
+    const [selectedOccasion, setSelectedOccasion] = useState<string>("all");
     const [visibleCount, setVisibleCount] = useState<number>(INITIAL_BATCH);
-    const [shareItem, setShareItem] = useState<HadithItem | null>(null);
+    const [shareItem, setShareItem] = useState<DuaItem | null>(null);
 
-    // If query parameter targets a specific Hadith, reset filters and render all so target is immediately available
+    // If query parameter targets a specific Dua, reset filters and render all so target is immediately available
     useEffect(() => {
         if (targetId) {
-            setSelectedCollection("all");
+            setSelectedOccasion("all");
             setSearchQuery("");
-            setVisibleCount(HADITH_LIBRARY.length);
+            setVisibleCount(DUA_LIBRARY.length);
         } else {
             setVisibleCount(INITIAL_BATCH);
         }
-    }, [targetId, selectedCollection, searchQuery]);
+    }, [targetId, selectedOccasion, searchQuery]);
 
     const filtered = useMemo(() => {
-        return HADITH_LIBRARY.filter(item => {
-            const matchesCollection = selectedCollection === "all" || item.collection.toLowerCase() === selectedCollection.toLowerCase();
+        return DUA_LIBRARY.filter(item => {
+            const matchesOccasion = selectedOccasion === "all" || item.occasion === selectedOccasion;
 
-            if (!matchesCollection) return false;
+            if (!matchesOccasion) return false;
 
             if (!searchQuery.trim()) return true;
 
             const q = searchQuery.toLowerCase();
             const itemTitle = (locale === "en" && item.titleEn) ? item.titleEn : item.title;
             const itemTrans = (locale === "en" && item.translationEn) ? item.translationEn : item.translation;
+            const itemVirtue = (locale === "en" && item.virtueEn) ? item.virtueEn : item.virtue;
 
             return (
                 itemTitle.toLowerCase().includes(q) ||
                 itemTrans.toLowerCase().includes(q) ||
-                String(item.hadithNumber).includes(q) ||
-                item.collection.toLowerCase().includes(q) ||
-                (item.narrator && item.narrator.toLowerCase().includes(q))
+                (itemVirtue && itemVirtue.toLowerCase().includes(q)) ||
+                item.source.referenceText.toLowerCase().includes(q)
             );
         });
-    }, [selectedCollection, searchQuery, locale]);
+    }, [selectedOccasion, searchQuery, locale]);
 
     const visibleItems = useMemo(() => {
         if (targetId) return filtered;
@@ -328,8 +338,8 @@ function HadithContent() {
             arabic: shareItem.arabic,
             latin: shareItem.latin,
             translation: (locale === "en" && shareItem.translationEn) ? shareItem.translationEn : shareItem.translation,
-            explanation: (locale === "en" && shareItem.explanationEn) ? shareItem.explanationEn : shareItem.explanation,
-            sourceText: `HR. ${shareItem.collection} No. ${shareItem.hadithNumber} (${shareItem.authenticity})`,
+            explanation: (locale === "en" && shareItem.virtueEn) ? shareItem.virtueEn : shareItem.virtue,
+            sourceText: shareItem.source.referenceText,
         };
     }, [shareItem, locale]);
 
@@ -338,8 +348,8 @@ function HadithContent() {
             <div className={cn(
                 "flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500",
                 isDaylight
-                    ? "bg-[#f8fafc] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.1),transparent)]"
-                    : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.1),transparent)]"
+                    ? "bg-[#f8fafc] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.1),transparent)]"
+                    : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-accent),0.1),transparent)]"
             )}>
                 <main className="flex w-full max-w-md flex-col pb-nav">
                     {/* Header */}
@@ -348,16 +358,16 @@ function HadithContent() {
                             <div className="flex items-center gap-2">
                                 <div className={cn(
                                     "p-2 rounded-xl border transition-colors",
-                                    isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                                    isDaylight ? "bg-amber-50 border-amber-100" : "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                                 )}>
-                                    <BookOpen className={cn("w-5 h-5", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")} />
+                                    <BookOpen className={cn("w-5 h-5", isDaylight ? "text-amber-600" : "text-[rgb(var(--color-accent))]")} />
                                 </div>
                                 <div>
                                     <h1 className={cn("text-lg font-black tracking-tight", isDaylight ? "text-slate-900" : "text-white")}>
-                                        {t.hadithLibraryTitle || "Perpustakaan Hadits"}
+                                        {t.duaLibraryTitle || "Kumpulan Doa & Dzikir"}
                                     </h1>
                                     <p className={cn("text-[11px]", isDaylight ? "text-slate-400" : "text-white/40")}>
-                                        {(t.hadithLibrarySubtitle || "{count} Hadits Shahih & Hasan Pilihan").replace("{count}", String(HADITH_LIBRARY.length))}
+                                        {(t.duaLibrarySubtitle || "{count} Doa Pilihan dari Al-Qur'an & Sunnah").replace("{count}", String(DUA_LIBRARY.length))}
                                     </p>
                                 </div>
                             </div>
@@ -367,17 +377,17 @@ function HadithContent() {
                         <div className="grid grid-cols-2 p-1 rounded-2xl bg-black/10 backdrop-blur-md border border-white/10 mb-3">
                             <Link
                                 href="/hadith"
-                                className="py-2 rounded-xl text-xs font-bold text-center transition-all bg-emerald-500 text-white shadow-md flex items-center justify-center gap-1.5"
+                                className={cn(
+                                    "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
+                                    isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/60 hover:text-white"
+                                )}
                             >
                                 <Quote className="w-3.5 h-3.5" />
                                 <span>{t.hadithTabHadith || "Hadits Nabi"}</span>
                             </Link>
                             <Link
                                 href="/dua"
-                                className={cn(
-                                    "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
-                                    isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/60 hover:text-white"
-                                )}
+                                className="py-2 rounded-xl text-xs font-bold text-center transition-all bg-amber-500 text-white shadow-md flex items-center justify-center gap-1.5"
                             >
                                 <BookOpen className="w-3.5 h-3.5" />
                                 <span>{t.hadithTabDua || "Kumpulan Doa"}</span>
@@ -391,72 +401,72 @@ function HadithContent() {
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={t.hadithSearchPlaceholder || "Cari hadits, nomor (e.g. 6094), perawi, kata kunci..."}
+                                placeholder={t.duaSearchPlaceholder || "Cari doa harian, perlindungan, kata kunci..."}
                                 className={cn(
                                     "w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs border transition-all outline-none",
                                     isDaylight
-                                        ? "bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 focus:border-emerald-300"
-                                        : "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-emerald-500/50"
+                                        ? "bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 focus:border-amber-300"
+                                        : "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-amber-500/50"
                                 )}
                             />
                         </div>
                     </div>
 
-                    {/* Narrator / Collection Chips (Primary Filter) */}
+                    {/* Occasion Filter Chips */}
                     <div className="flex gap-2 overflow-x-auto pb-3 px-1 no-scrollbar mb-3">
                         <button
-                            onClick={() => setSelectedCollection("all")}
+                            onClick={() => setSelectedOccasion("all")}
                             className={cn(
                                 "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                selectedCollection === "all"
+                                selectedOccasion === "all"
                                     ? isDaylight
-                                        ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
-                                        : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
+                                        ? "bg-amber-100/80 border-amber-200 text-amber-800 shadow-sm"
+                                        : "bg-amber-500 text-white border-transparent shadow-lg shadow-amber-500/30"
                                     : isDaylight
                                         ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
                                         : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
                             )}
                         >
-                            {t.hadithAllNarrators || "Semua Perawi"}
+                            {t.duaAllOccasions || "Semua Doa"}
                         </button>
-                        {HADITH_COLLECTIONS.map(col => (
+                        {DUA_OCCASIONS.map(occ => (
                             <button
-                                key={col}
-                                onClick={() => setSelectedCollection(col)}
+                                key={occ.key}
+                                onClick={() => setSelectedOccasion(occ.key)}
                                 className={cn(
                                     "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                    selectedCollection === col
+                                    selectedOccasion === occ.key
                                         ? isDaylight
-                                            ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
-                                            : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
+                                            ? "bg-amber-100/80 border-amber-200 text-amber-800 shadow-sm"
+                                            : "bg-amber-500 text-white border-transparent shadow-lg shadow-amber-500/30"
                                         : isDaylight
                                             ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
                                             : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
                                 )}
                             >
-                                HR. {col}
+                                {locale === "en" ? occ.labelEn : occ.labelId}
                             </button>
                         ))}
                     </div>
 
                     {/* Filter count indicator */}
-                    {(selectedCollection !== "all" || searchQuery) && (
+                    {(selectedOccasion !== "all" || searchQuery) && (
                         <p className={cn("text-[11px] px-2 mb-2", isDaylight ? "text-slate-400" : "text-white/40")}>
-                            {(t.hadithShowingCount || "Menampilkan {count} hadits").replace("{count}", String(filtered.length))}
+                            {(t.duaShowingCount || "Menampilkan {count} doa").replace("{count}", String(filtered.length))}
                         </p>
                     )}
 
-                    {/* Hadith List */}
+                    {/* Dua List */}
                     <div className="flex flex-col gap-2.5">
                         {visibleItems.map((item) => (
-                            <HadithCard
+                            <DuaCard
                                 key={item.id}
                                 item={item}
                                 t={t}
                                 locale={locale}
                                 isDaylight={isDaylight}
                                 isHighlighted={item.id === targetId}
-                                onShare={(h) => setShareItem(h)}
+                                onShare={(d) => setShareItem(d)}
                             />
                         ))}
                     </div>
@@ -469,12 +479,12 @@ function HadithContent() {
                                 className={cn(
                                     "px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border inline-flex items-center gap-1.5 shadow-sm cursor-pointer",
                                     isDaylight
-                                        ? "bg-white border-slate-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-200"
-                                        : "bg-white/5 border-white/10 text-emerald-400 hover:bg-white/10 hover:border-emerald-500/30"
+                                        ? "bg-white border-slate-200 text-amber-700 hover:bg-amber-50 hover:border-amber-200"
+                                        : "bg-white/5 border-white/10 text-amber-400 hover:bg-white/10 hover:border-amber-500/30"
                                 )}
                             >
                                 <MoreIcon className="w-3.5 h-3.5" />
-                                <span>Tampilkan Lebih Banyak ({filtered.length - visibleItems.length} Hadits Lagi)</span>
+                                <span>Tampilkan Lebih Banyak ({filtered.length - visibleItems.length} Doa Lagi)</span>
                             </button>
                         </div>
                     )}
@@ -482,7 +492,7 @@ function HadithContent() {
                     {filtered.length === 0 && (
                         <div className={cn("text-center py-12", isDaylight ? "text-slate-300" : "text-white/30")}>
                             <Quote className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                            <p className="text-sm">{t.hadithEmptyState || "Tidak ada hadits yang sesuai kriteria pencarian."}</p>
+                            <p className="text-sm">{t.duaEmptyState || "Tidak ada doa yang sesuai kriteria pencarian."}</p>
                         </div>
                     )}
                 </main>
@@ -500,10 +510,10 @@ function HadithContent() {
     );
 }
 
-export default function HadithPage() {
+export default function DuaPage() {
     return (
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white/50 text-sm">Loading...</div>}>
-            <HadithContent />
+            <DuaContent />
         </Suspense>
     );
 }
