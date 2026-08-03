@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  *
  * Shared hook for filtering and batch-loading Islamic content (Hadith & Dua).
- * Replaces duplicated filter/search/pagination logic in both page components.
+ * Manages search, category filtering, virtualization, and target item focus/highlighting.
  */
 
 import { useState, useMemo, useEffect, useCallback } from "react";
@@ -34,6 +34,7 @@ interface UseIslamicContentFilterResult<T> {
     setSelectedFilter: (key: string) => void;
     handleLoadMore: () => void;
     hasMore: boolean;
+    activeTargetId: string;
 }
 
 export function useIslamicContentFilter<T extends { id: string }>({
@@ -47,8 +48,9 @@ export function useIslamicContentFilter<T extends { id: string }>({
 }: UseIslamicContentFilterOptions<T>): UseIslamicContentFilterResult<T> {
     const [searchQuery, setSearchQueryRaw] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState("");
-    const [selectedFilter, setSelectedFilter] = useState("all");
+    const [selectedFilter, setSelectedFilterRaw] = useState("all");
     const [visibleCount, setVisibleCount] = useState(initialBatch);
+    const [activeTargetId, setActiveTargetId] = useState(targetId);
 
     // 150ms debounce on search to avoid refiltering on every keystroke
     useEffect(() => {
@@ -56,23 +58,29 @@ export function useIslamicContentFilter<T extends { id: string }>({
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    const setSearchQuery = useCallback((q: string) => {
-        setSearchQueryRaw(q);
-        setVisibleCount(initialBatch); // reset batch when search changes
-    }, [initialBatch]);
-
-    // If URL targets a specific item, reset filters and show all
+    // When targetId from URL changes (e.g. redirected to another item), update activeTargetId and reset filters
     useEffect(() => {
+        setActiveTargetId(targetId);
         if (targetId) {
-            setSelectedFilter("all");
+            setSelectedFilterRaw("all");
             setSearchQueryRaw("");
             setDebouncedQuery("");
             setVisibleCount(library.length);
         } else {
             setVisibleCount(initialBatch);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [targetId]);
+    }, [targetId, library.length, initialBatch]);
+
+    const setSearchQuery = useCallback((q: string) => {
+        setSearchQueryRaw(q);
+        setActiveTargetId(""); // Clear focus highlight on manual search
+        setVisibleCount(initialBatch);
+    }, [initialBatch]);
+
+    const setSelectedFilter = useCallback((key: string) => {
+        setSelectedFilterRaw(key);
+        setActiveTargetId(""); // Clear focus highlight on manual category switch
+    }, []);
 
     const filtered = useMemo(() => {
         return library.filter(item => {
@@ -86,15 +94,15 @@ export function useIslamicContentFilter<T extends { id: string }>({
     }, [library, selectedFilter, debouncedQuery, locale]);
 
     const visibleItems = useMemo(() => {
-        if (targetId) return filtered;
+        if (activeTargetId) return filtered;
         return filtered.slice(0, visibleCount);
-    }, [filtered, visibleCount, targetId]);
+    }, [filtered, visibleCount, activeTargetId]);
 
     const handleLoadMore = useCallback(() => {
         setVisibleCount(prev => Math.min(prev + batchStep, filtered.length));
     }, [batchStep, filtered.length]);
 
-    const hasMore = !targetId && visibleItems.length < filtered.length;
+    const hasMore = !activeTargetId && visibleItems.length < filtered.length;
 
     return {
         filtered,
@@ -105,5 +113,6 @@ export function useIslamicContentFilter<T extends { id: string }>({
         setSelectedFilter,
         handleLoadMore,
         hasMore,
+        activeTargetId,
     };
 }

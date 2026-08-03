@@ -67,10 +67,10 @@ const DuaCard = memo(function DuaCard({
     const [copied, setCopied] = useState(false);
     const router = useRouter();
 
-    // Auto-scroll to highlighted card
+    // Auto-scroll to highlighted card and sync expansion with highlight state
     useEffect(() => {
+        setExpanded(isHighlighted);
         if (isHighlighted) {
-            setExpanded(true);
             const scrollTarget = () => {
                 const el = document.getElementById(`dua-${item.id}`);
                 if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -345,6 +345,7 @@ function DuaContent() {
         setSelectedFilter: setSelectedOccasion,
         handleLoadMore,
         hasMore,
+        activeTargetId,
     } = useIslamicContentFilter<DuaItem>({
         library: DUA_LIBRARY,
         searchFields: (item) => [
@@ -441,7 +442,7 @@ function DuaContent() {
                                 t={t}
                                 locale={locale}
                                 isDaylight={isDaylight}
-                                isHighlighted={item.id === targetId}
+                                isHighlighted={item.id === activeTargetId}
                                 onShare={(d) => setShareItem(d)}
                             />
                         ))}

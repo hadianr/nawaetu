@@ -17,6 +17,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { PresetGuard } from "@/components/PresetGuard";
 import Link from "next/link";
+import { useIslamicContentFilter } from "@/hooks/useIslamicContentFilter";
 import { ShareableCardData } from "@/lib/share/story-card-renderer";
 
 const StoryShareModal = dynamic(
@@ -45,8 +46,8 @@ const HadithCard = memo(function HadithCard({
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
+        setExpanded(isHighlighted);
         if (isHighlighted) {
-            setExpanded(true);
             const scrollTarget = () => {
                 const el = document.getElementById(`hadith-${item.id}`);
                 if (el) {
@@ -295,52 +296,33 @@ function HadithContent() {
 
     const targetId = searchParams?.get("id") || searchParams?.get("highlight") || "";
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedCollection, setSelectedCollection] = useState<string>("all");
-    const [visibleCount, setVisibleCount] = useState<number>(INITIAL_BATCH);
     const [shareItem, setShareItem] = useState<HadithItem | null>(null);
 
-    // If query parameter targets a specific Hadith, reset filters and render all so target is immediately available
-    useEffect(() => {
-        if (targetId) {
-            setSelectedCollection("all");
-            setSearchQuery("");
-            setVisibleCount(HADITH_LIBRARY.length);
-        } else {
-            setVisibleCount(INITIAL_BATCH);
-        }
-    }, [targetId, selectedCollection, searchQuery]);
-
-    const filtered = useMemo(() => {
-        return HADITH_LIBRARY.filter(item => {
-            const matchesCollection = selectedCollection === "all" || item.collection.toLowerCase() === selectedCollection.toLowerCase();
-
-            if (!matchesCollection) return false;
-
-            if (!searchQuery.trim()) return true;
-
-            const q = searchQuery.toLowerCase();
-            const itemTitle = (locale === "en" && item.titleEn) ? item.titleEn : item.title;
-            const itemTrans = (locale === "en" && item.translationEn) ? item.translationEn : item.translation;
-
-            return (
-                itemTitle.toLowerCase().includes(q) ||
-                itemTrans.toLowerCase().includes(q) ||
-                String(item.hadithNumber).includes(q) ||
-                item.collection.toLowerCase().includes(q) ||
-                (item.narrator && item.narrator.toLowerCase().includes(q))
-            );
-        });
-    }, [selectedCollection, searchQuery, locale]);
-
-    const visibleItems = useMemo(() => {
-        if (targetId) return filtered;
-        return filtered.slice(0, visibleCount);
-    }, [filtered, visibleCount, targetId]);
-
-    const handleLoadMore = () => {
-        setVisibleCount(prev => Math.min(prev + 25, filtered.length));
-    };
+    const {
+        filtered,
+        visibleItems,
+        searchQuery,
+        setSearchQuery,
+        selectedFilter: selectedCollection,
+        setSelectedFilter: setSelectedCollection,
+        handleLoadMore,
+        hasMore,
+        activeTargetId,
+    } = useIslamicContentFilter<HadithItem>({
+        library: HADITH_LIBRARY,
+        searchFields: (item: HadithItem) => [
+            (locale === "en" && item.titleEn) ? item.titleEn : item.title,
+            (locale === "en" && item.translationEn) ? item.translationEn : item.translation,
+            String(item.hadithNumber),
+            item.collection,
+            item.narrator || "",
+            item.arabic,
+            item.latin,
+        ],
+        filterMatch: (item: HadithItem, key: string) => item.collection.toLowerCase() === key.toLowerCase(),
+        targetId,
+        locale,
+    });
 
     const activeShareData: ShareableCardData | null = useMemo(() => {
         if (!shareItem) return null;
@@ -479,14 +461,14 @@ function HadithContent() {
                                 t={t}
                                 locale={locale}
                                 isDaylight={isDaylight}
-                                isHighlighted={item.id === targetId}
+                                isHighlighted={item.id === activeTargetId}
                                 onShare={(h) => setShareItem(h)}
                             />
                         ))}
                     </div>
 
                     {/* Load More Button for Batch Virtualization */}
-                    {!targetId && visibleItems.length < filtered.length && (
+                    {hasMore && (
                         <div className="text-center pt-4 pb-2">
                             <button
                                 onClick={handleLoadMore}
