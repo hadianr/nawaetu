@@ -223,23 +223,23 @@ export async function renderStoryCardToCanvas(
     ctx.fillStyle = isDark ? "#6ee7b7" : "#047857";
     ctx.fillText(badgeText, W / 2, badgeY);
 
-    // 4. Content Analysis & Dynamic Adaptive Sizing
+    // 4. Content Analysis & Dynamic Adaptive Sizing (Enlarged for Maximum Readability)
     const arabicLength = data.arabic.length;
     const transLength = data.translation.length;
     const isShort = (!showArabic || arabicLength < 100) && transLength < 180;
 
-    // Font size scaling multiplier
-    const scaleMultiplier = options.fontSizeScale === "xlarge" ? 1.35 : options.fontSizeScale === "large" ? 1.2 : 1.0;
+    // Font size scaling multiplier (Enlarged per user preference)
+    const scaleMultiplier = options.fontSizeScale === "xlarge" ? 1.58 : options.fontSizeScale === "large" ? 1.38 : 1.15;
 
-    let baseArabicSize = isShort ? 44 : arabicLength > 250 ? 30 : 36;
+    let baseArabicSize = isShort ? 50 : arabicLength > 250 ? 34 : 42;
     let arabicFontSize = Math.round(baseArabicSize * scaleMultiplier);
     let arabicLineHeight = Math.round(arabicFontSize * 2.0);
 
-    let baseTransSize = isShort ? (showArabic ? 28 : 34) : transLength > 300 ? 20 : 24;
+    let baseTransSize = isShort ? (showArabic ? 32 : 38) : transLength > 300 ? 23 : 28;
     let transFontSize = Math.round(baseTransSize * scaleMultiplier);
     let transLineHeight = Math.round(transFontSize * 1.6);
 
-    let baseLatinSize = isShort ? 24 : 20;
+    let baseLatinSize = isShort ? 26 : 22;
     let latinFontSize = Math.round(baseLatinSize * scaleMultiplier);
     let latinLineHeight = Math.round(latinFontSize * 1.5);
 
