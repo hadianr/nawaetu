@@ -4,45 +4,47 @@
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Dynamic Hijri & Ramadan Calendar Modal (Bilingual EN/ID)
  */
 
 import { useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRamadhanCalendar } from "@/hooks/useRamadhanCalendar";
-import { Loader2, Calendar as CalendarIcon, MapPin } from "lucide-react";
+import { useRamadhanCalendar, CalendarViewMode } from "@/hooks/useRamadhanCalendar";
+import { Loader2, Calendar as CalendarIcon, MapPin, Moon } from "lucide-react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/context/LocaleContext";
 import { getRamadhanDay } from "@/data/ramadhan";
 
 export default function RamadhanCalendar() {
-    const { calendarData, loading, error, fetchCalendar } = useRamadhanCalendar();
+    const {
+        calendarData,
+        loading,
+        error,
+        fetchCalendar,
+        viewMode,
+        setViewMode,
+        activeHijriTitle
+    } = useRamadhanCalendar();
+
     const { data: prayerData } = usePrayerTimesContext();
     const t = useTranslations();
 
     const onOpenChange = (open: boolean) => {
         if (open && calendarData.length === 0) {
-            fetchCalendar();
+            fetchCalendar("current_month");
         }
+    };
+
+    const handleModeChange = (mode: CalendarViewMode) => {
+        setViewMode(mode);
+        fetchCalendar(mode);
     };
 
     // Scroll to today logic
     useEffect(() => {
         if (calendarData.length > 0) {
-            // timeout to allow render
             setTimeout(() => {
                 const todayEl = document.getElementById("ramadhan-today");
                 if (todayEl) {
@@ -63,13 +65,46 @@ export default function RamadhanCalendar() {
             <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg bg-black/60 backdrop-blur-xl border-white/10 text-white p-0 overflow-hidden gap-0 shadow-2xl">
                 <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 bg-white/5 relative">
                     <div className="flex items-center justify-between">
-                        <DialogTitle className="text-left">
+                        <DialogTitle className="text-left flex items-center gap-2">
                             <span>{t.calendarTitle}</span>
+                            {activeHijriTitle && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-normal">
+                                    {activeHijriTitle}
+                                </span>
+                            )}
                         </DialogTitle>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-white/50 mt-1">
                         <MapPin className="w-3 h-3" />
                         <span>{prayerData?.locationName || t.calendarYourLocation}</span>
+                    </div>
+
+                    {/* View Mode Toggle Tabs */}
+                    <div className="grid grid-cols-2 p-1 rounded-xl bg-white/5 border border-white/10 mt-3">
+                        <button
+                            onClick={() => handleModeChange("current_month")}
+                            className={cn(
+                                "py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5",
+                                viewMode === "current_month"
+                                    ? "bg-white/15 text-white shadow-sm"
+                                    : "text-white/50 hover:text-white/80"
+                            )}
+                        >
+                            <CalendarIcon className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>{t.calendarCurrentMonthTab || "Bulan Ini"}</span>
+                        </button>
+                        <button
+                            onClick={() => handleModeChange("ramadan")}
+                            className={cn(
+                                "py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5",
+                                viewMode === "ramadan"
+                                    ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 shadow-sm"
+                                    : "text-white/50 hover:text-white/80"
+                            )}
+                        >
+                            <Moon className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>{t.calendarRamadhanTab || "Ramadhan"}</span>
+                        </button>
                     </div>
                 </DialogHeader>
 
@@ -82,14 +117,14 @@ export default function RamadhanCalendar() {
                     ) : error ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center text-white/50">
                             <p className="text-sm text-red-400">{error}</p>
-                            <button onClick={fetchCalendar} className="text-xs underline">{t.calendarRetry}</button>
+                            <button onClick={() => fetchCalendar(viewMode)} className="text-xs underline">{t.calendarRetry}</button>
                         </div>
                     ) : (
                         <ScrollArea className="h-full max-h-[60vh]">
                             <div className="min-w-full">
                                 {/* Table Header */}
                                 <div className="grid grid-cols-5 gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 text-[10px] sm:text-xs font-bold text-white/70 sticky top-0 backdrop-blur-md z-10 border-b border-white/5">
-                                    <div className="text-center">{t.calendarHeaderRamadhan}</div>
+                                    <div className="text-center">{viewMode === "ramadan" ? t.calendarHeaderRamadhan : (t.calendarHijriHeader || "Hijriah")}</div>
                                     <div className="text-center">{t.calendarHeaderDate}</div>
                                     <div className="text-center" style={{ color: "rgb(var(--color-primary-light))" }}>{t.calendarHeaderImsak}</div>
                                     <div className="text-center" style={{ color: "rgb(var(--color-primary-light))" }}>{t.calendarHeaderFajr}</div>

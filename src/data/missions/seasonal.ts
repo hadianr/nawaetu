@@ -2,18 +2,7 @@
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Seasonal Missions (Ramadhan & Sya'ban) with explicit Hadith & Dua mappings.
  */
 
 import { Mission } from './types';
@@ -31,7 +20,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'QS. Al-Baqarah: 184'
+        dalil: 'QS. Al-Baqarah: 184',
+        hadithId: 'hadith_ramadhan_diampuni'
     },
     {
         id: 'health_checkup',
@@ -45,7 +35,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Muslim no. 2664'
+        dalil: 'HR. Muslim no. 2664',
+        hadithId: 'hadith_mukmin_kuat'
     },
     {
         id: 'sunnah_fasting_ramadan_prep',
@@ -59,7 +50,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Tirmidzi no. 747'
+        dalil: 'HR. Tirmidzi no. 747',
+        hadithId: 'hadith_puasa_perisai'
     },
     {
         id: 'read_fiqh_article',
@@ -73,7 +65,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Ibnu Majah no. 224'
+        dalil: 'HR. Ibnu Majah no. 224',
+        hadithId: 'hadith_ilmu'
     },
     {
         id: 'fajr_charity',
@@ -87,7 +80,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Bukhari no. 1442'
+        dalil: 'HR. Bukhari no. 1442',
+        hadithId: 'hadith_sedekah_subuh'
     },
     {
         id: 'seek_forgiveness',
@@ -101,7 +95,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Muslim no. 2588'
+        dalil: 'HR. Muslim no. 2588',
+        hadithId: 'hadith_tawadhu'
     },
     {
         id: 'set_khatam_target',
@@ -115,7 +110,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Muslim no. 804'
+        dalil: 'HR. Muslim no. 804',
+        hadithId: 'hadith_ilmu'
     },
     {
         id: 'tarawih_prayer',
@@ -129,7 +125,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'HR. Bukhari no. 37'
+        dalil: 'HR. Bukhari no. 37',
+        hadithId: 'hadith_taraweh'
     },
     {
         id: 'breaking_fast_dua',
@@ -143,7 +140,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'QS. Al-A\'raf: 31'
+        dalil: 'QS. Al-A\'raf: 31',
+        hadithId: 'hadith_makan'
     },
     {
         id: 'pre_dawn_meal',
@@ -157,13 +155,14 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'HR. Bukhari no. 1923'
-    },
+        dalil: 'HR. Bukhari no. 1923',
+        hadithId: 'hadith_sahur'
+    }
 ];
 
 export const SYABAN_MISSIONS: Mission[] = [
     {
-        id: 'qadha_puasa', // Standardized ID to match Tracker
+        id: 'qadha_puasa',
         title: "Lunasi Qadha Puasa",
         description: 'Segera lunasi hutang puasa sebelum Ramadhan',
         category: 'fasting',
@@ -174,7 +173,8 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Bukhari no. 1950'
+        dalil: 'HR. Bukhari no. 1950',
+        hadithId: 'hadith_ramadhan_diampuni'
     },
     {
         id: 'syaban_fasting',
@@ -188,7 +188,8 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Bukhari no. 1969'
+        dalil: 'HR. Bukhari no. 1969',
+        hadithId: 'hadith_syaban_puasa'
     },
     {
         id: 'syaban_quran',
@@ -202,10 +203,11 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Ibn Rajab no. 385'
+        dalil: 'HR. Ibn Rajab no. 385',
+        hadithId: 'hadith_ilmu'
     },
     {
-        id: 'ramadan_fiqh_study', // Renamed/Standardized
+        id: 'ramadan_fiqh_study',
         title: "Pelajari Fiqih Ramadhan",
         description: 'Bekali diri dengan ilmu puasa & zakat',
         category: 'worship',
@@ -216,10 +218,11 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Ibnu Majah no. 224'
+        dalil: 'HR. Ibnu Majah no. 224',
+        hadithId: 'hadith_ilmu'
     },
     {
-        id: 'cek_kesehatan', // From RAMADHAN_PREP
+        id: 'cek_kesehatan',
         title: 'Cek Kesehatan (Checkup)',
         description: 'Pastikan tubuh fit sebelum Ramadhan',
         category: 'worship',
@@ -230,10 +233,11 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Muslim no. 2664'
+        dalil: 'HR. Muslim no. 2664',
+        hadithId: 'hadith_mukmin_kuat'
     },
     {
-        id: 'sedekah_subuh', // From RAMADHAN_PREP
+        id: 'sedekah_subuh',
         title: 'Rutin Sedekah Subuh',
         description: 'Sedekah di waktu subuh setiap hari',
         category: 'worship',
@@ -244,10 +248,11 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Bukhari no. 1442'
+        dalil: 'HR. Bukhari no. 1442',
+        hadithId: 'hadith_sedekah_subuh'
     },
     {
-        id: 'maaf_maafan', // From RAMADHAN_PREP
+        id: 'maaf_maafan',
         title: 'Saling Memaafkan',
         description: 'Minta maaf kepada orang tua & teman',
         category: 'worship',
@@ -258,7 +263,8 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Muslim no. 2588'
+        dalil: 'HR. Muslim no. 2588',
+        hadithId: 'hadith_tawadhu'
     },
     {
         id: 'mid_syaban_night',
@@ -273,5 +279,6 @@ export const SYABAN_MISSIONS: Mission[] = [
         phase: 'ramadhan_prep',
         gender: null,
         dalil: 'HR. Ibnu Majah no. 1390',
+        hadithId: 'hadith_nisfu_syaban'
     }
 ];

@@ -38,6 +38,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
+import { resolveReferenceByText, resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 
 interface MissionDetailDialogProps {
     mission: Mission;
@@ -372,77 +373,93 @@ export default function MissionDetailDialog({
                                                     ))}
                                                 </ul>
                                             </div>
-                                        )}                                         {mission.dalil && (() => {
-                                             // Split multiple dalil items if separated by '|', '\n', or ';'
-                                             const dalilTokens = mission.dalil
-                                                 .split(/[\|\n;]/)
-                                                 .map(s => s.trim())
-                                                 .filter(Boolean);
+                                        )}
 
-                                             if (dalilTokens.length === 0) return null;
+                                        {mission.dalil && (() => {
+                                            const dalilTokens = mission.dalil
+                                                .split(/[\|\n;&]/)
+                                                .map(s => s.trim())
+                                                .filter(Boolean);
 
-                                             return (
-                                                 <div className="space-y-2">
-                                                     <h3 className={cn("flex items-center gap-2 text-sm font-bold transition-colors", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
-                                                         <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
-                                                     </h3>
-                                                     <div className={cn(
-                                                         "p-3 px-3.5 rounded-lg border transition-colors space-y-2.5",
-                                                         isDaylight ? "bg-slate-50 border-slate-200/70" : "bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20"
-                                                     )}>
-                                                         {dalilTokens.map((token, idx) => {
-                                                             const parsed = parseQuranReference(token);
-                                                             const isQuran = parsed.isQuranRef;
-                                                             const isHadith = !isQuran && /^hr\./i.test(token);
+                                            if (dalilTokens.length === 0) return null;
 
-                                                             return (
-                                                                  <div
-                                                                      key={idx}
-                                                                      className={cn(
-                                                                          "flex items-center gap-2.5 min-h-[24px]",
-                                                                          idx > 0 && "pt-2 border-t",
-                                                                          idx > 0 && (isDaylight ? "border-slate-200/60" : "border-white/10")
-                                                                      )}
-                                                                  >
-                                                                      <span className={cn(
-                                                                          "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shrink-0 transition-colors inline-flex items-center justify-center leading-none",
-                                                                          isQuran
-                                                                              ? (isDaylight ? "bg-emerald-100 text-emerald-800" : "bg-emerald-500/20 text-emerald-300")
-                                                                              : isHadith
-                                                                              ? (isDaylight ? "bg-amber-100 text-amber-800" : "bg-amber-500/20 text-amber-300")
-                                                                              : (isDaylight ? "bg-sky-100 text-sky-800" : "bg-sky-500/20 text-sky-300")
-                                                                      )}>
-                                                                          {isQuran
-                                                                              ? (locale === 'en' ? 'Quran' : 'Al-Qur\'an')
-                                                                              : isHadith
-                                                                              ? (locale === 'en' ? 'Hadith' : 'Hadits')
-                                                                              : (locale === 'en' ? 'Reference' : 'Rujukan')}
-                                                                      </span>
+                                            return (
+                                                <div className="space-y-2">
+                                                    <h3 className={cn("flex items-center gap-2 text-sm font-bold transition-colors", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
+                                                        <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
+                                                    </h3>
+                                                    <div className={cn(
+                                                        "p-3 px-3.5 rounded-lg border transition-colors space-y-2.5",
+                                                        isDaylight ? "bg-slate-50 border-slate-200/70" : "bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20"
+                                                    )}>
+                                                        {dalilTokens.map((token, idx) => {
+                                                            const parsedQuran = parseQuranReference(token);
+                                                            const resolvedSpiritual = resolveReferenceByText(token) || resolveReferenceForMission(mission);
 
-                                                                      {isQuran && parsed.targetUrl ? (
-                                                                          <Link
-                                                                              href={parsed.targetUrl}
-                                                                              onClick={() => onClose()}
-                                                                              className={cn(
-                                                                                  "inline-flex items-center gap-1.5 text-xs font-semibold leading-none transition-all hover:underline group",
-                                                                                  isDaylight ? "text-emerald-700 hover:text-emerald-800" : "text-emerald-400 hover:text-emerald-300"
-                                                                              )}
-                                                                          >
-                                                                              <span className="leading-none">{token}</span>
-                                                                              <ExternalLink className="w-3 h-3 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                                                                          </Link>
-                                                                      ) : (
-                                                                          <p className={cn("text-xs font-semibold leading-none transition-colors inline-flex items-center", isDaylight ? "text-slate-700" : "text-white/90")}>
-                                                                              {token}
-                                                                          </p>
-                                                                      )}
-                                                                  </div>
-                                                              );
-                                                         })}
-                                                     </div>
-                                                 </div>
-                                             );
-                                         })()}
+                                                            const isQuran = parsedQuran.isQuranRef;
+                                                            const isHadith = !isQuran && (resolvedSpiritual?.type === "hadith" || /^hr\./i.test(token));
+                                                            const isDua = !isQuran && (resolvedSpiritual?.type === "dua" || /doa/i.test(token));
+
+                                                            const targetUrl = isQuran
+                                                                ? parsedQuran.targetUrl
+                                                                : resolvedSpiritual?.targetUrl;
+
+                                                            return (
+                                                                <div
+                                                                    key={idx}
+                                                                    className={cn(
+                                                                        "flex items-center gap-2.5 min-h-[24px]",
+                                                                        idx > 0 && "pt-2 border-t",
+                                                                        idx > 0 && (isDaylight ? "border-slate-200/60" : "border-white/10")
+                                                                    )}
+                                                                >
+                                                                    <span className={cn(
+                                                                        "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shrink-0 transition-colors inline-flex items-center justify-center leading-none",
+                                                                        isQuran
+                                                                            ? (isDaylight ? "bg-emerald-100 text-emerald-800" : "bg-emerald-500/20 text-emerald-300")
+                                                                            : isHadith
+                                                                            ? (isDaylight ? "bg-amber-100 text-amber-800" : "bg-amber-500/20 text-amber-300")
+                                                                            : isDua
+                                                                            ? (isDaylight ? "bg-blue-100 text-blue-800" : "bg-blue-500/20 text-blue-300")
+                                                                            : (isDaylight ? "bg-sky-100 text-sky-800" : "bg-sky-500/20 text-sky-300")
+                                                                    )}>
+                                                                        {isQuran
+                                                                            ? (locale === 'en' ? 'Quran' : 'Al-Qur\'an')
+                                                                            : isHadith
+                                                                            ? (locale === 'en' ? 'Hadith' : 'Hadits')
+                                                                            : isDua
+                                                                            ? (locale === 'en' ? 'Dua' : 'Doa')
+                                                                            : (locale === 'en' ? 'Reference' : 'Rujukan')}
+                                                                    </span>
+
+                                                                    {targetUrl ? (
+                                                                        <Link
+                                                                            href={targetUrl}
+                                                                            onClick={() => onClose()}
+                                                                            className={cn(
+                                                                                "inline-flex items-center gap-1.5 text-xs font-semibold leading-none transition-all hover:underline group",
+                                                                                isQuran
+                                                                                    ? (isDaylight ? "text-emerald-700 hover:text-emerald-800" : "text-emerald-400 hover:text-emerald-300")
+                                                                                    : isHadith
+                                                                                    ? (isDaylight ? "text-amber-700 hover:text-amber-800" : "text-amber-300 hover:text-amber-200")
+                                                                                    : (isDaylight ? "text-blue-700 hover:text-blue-800" : "text-blue-300 hover:text-blue-200")
+                                                                            )}
+                                                                        >
+                                                                            <span className="leading-none">{token}</span>
+                                                                            <ExternalLink className="w-3 h-3 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                                                        </Link>
+                                                                    ) : (
+                                                                        <p className={cn("text-xs font-semibold leading-none transition-colors inline-flex items-center", isDaylight ? "text-slate-700" : "text-white/90")}>
+                                                                            {token}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
                                 </ScrollArea>
                             </TabsContent>
@@ -454,15 +471,33 @@ export default function MissionDetailDialog({
                             <p className={cn("text-sm max-w-[200px]", isDaylight ? "text-slate-400" : "text-white/60")}>
                                 {t.mission_dialog_no_content}
                             </p>
-                            {mission.dalil && (
-                                <div className={cn(
-                                    "mt-4 p-4 rounded-xl border w-full",
-                                    isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
-                                )}>
-                                    <p className={cn("text-xs font-bold mb-1", isDaylight ? "text-emerald-600" : "text-emerald-400")}>{t.mission_dialog_dalil_label}</p>
-                                    <p className={cn("text-sm italic", isDaylight ? "text-slate-600" : "text-white/80")}>{mission.dalil}</p>
-                                </div>
-                            )}
+                            {mission.dalil && (() => {
+                                const resolvedSpiritual = resolveReferenceForMission(mission);
+                                const targetUrl = resolvedSpiritual?.targetUrl;
+                                return (
+                                    <div className={cn(
+                                        "mt-4 p-4 rounded-xl border w-full text-center",
+                                        isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+                                    )}>
+                                        <p className={cn("text-xs font-bold mb-1", isDaylight ? "text-emerald-600" : "text-emerald-400")}>{t.mission_dialog_dalil_label}</p>
+                                        {targetUrl ? (
+                                            <Link
+                                                href={targetUrl}
+                                                onClick={() => onClose()}
+                                                className={cn(
+                                                    "inline-flex items-center justify-center gap-1.5 text-sm italic font-semibold leading-none transition-all hover:underline group",
+                                                    isDaylight ? "text-emerald-700 hover:text-emerald-800" : "text-emerald-300 hover:text-emerald-200"
+                                                )}
+                                            >
+                                                <span>{mission.dalil}</span>
+                                                <ExternalLink className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                            </Link>
+                                        ) : (
+                                            <p className={cn("text-sm italic", isDaylight ? "text-slate-600" : "text-white/80")}>{mission.dalil}</p>
+                                        )}
+                                    </div>
+                                );
+                            })()}
                         </div>
                     )}
                 </div>

@@ -35,4 +35,32 @@ export const uiID = {
     // Undo
     habitUndoTitle: "Habit dibatalkan",
     habitUndoDesc: "Point Hasanah telah dikembalikan.",
+
+    // Hadith & Dua Library UI
+    hadithLibraryTitle: "Perpustakaan Hadits",
+    hadithLibrarySubtitle: "{count} Hadits Shahih & Hasan Pilihan",
+    hadithTabHadith: "Hadits Nabi",
+    hadithTabDua: "Kumpulan Doa",
+    hadithSearchPlaceholder: "Cari hadits, nomor (e.g. 6094), perawi, kata kunci...",
+    hadithAllNarrators: "Semua Perawi",
+    hadithShowingCount: "Menampilkan {count} hadits",
+    hadithEmptyState: "Tidak ada hadits yang sesuai kriteria pencarian.",
+    hadithTadabburTitle: "Tadabbur Hadits",
+    hadithNarratorBy: "Dari {narrator}",
+    hadithSourceLabel: "HR. {collection} No. {number}",
+
+    duaLibraryTitle: "Kumpulan Doa & Dzikir",
+    duaLibrarySubtitle: "{count} Doa Pilihan Beserta Sumber & Fadhilah",
+    duaSearchPlaceholder: "Cari doa, sumber (e.g. QS. An-Naml), fadhilah...",
+    duaShowingCount: "Menampilkan {count} doa",
+    duaEmptyState: "Tidak ada doa yang sesuai kriteria pencarian.",
+    duaVirtueTitle: "Fadhilah & Keutamaan",
+    duaLaunchCounter: "Mulai Dzikir dengan Tasbih Counter",
+    duaReciteCount: "Dibaca {count}x",
+
+    calendarCurrentMonthTab: "Bulan Ini",
+    calendarRamadhanTab: "Ramadhan",
+    calendarHijriHeader: "Hijriah",
+    dalilViewHadithDetails: "Lihat rincian hadits",
+    dalilViewDuaDetails: "Lihat rincian doa",
 };
