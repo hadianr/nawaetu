@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.4] - 2026-08-03
+
+### Added
+- **Feat(missions): update mission content mappings and ramadhan tracker logs**
+- **Feat(share): add native canvas 9:16 story share card generator with webp export**
+- **Feat(hadith-dua): expand hadith library to 100 items and restrict card collapse to icon**
+
+### Improved
+- **Chore(cleanup): remove unreferenced useBookmarksRepository and useNetworkStatus hooks**
+- **Refactor(lib): remove top-level proxy re-export modules**
+- **Refactor(api): simplify JSON body parsing in sync-guest route**
+- **Refactor(notifications): simplify FCM service worker setup**
+- **Refactor(mentor-ai): inline askMentor retry and remove retry-helper**
+- **Refactor(components): remove AdvancedDataSyncer component**
+- **Chore: update library version for fix vulnerabilities**
+
+### Fixed
+- **Fix: recharts initializes warning**
+- **Fix: the service worker activation race condition in fcm-init**
+- **Fix: validation error request with an empty body**
+
+
 ## [1.12.3] - 2026-07-29
 
 ### Added
