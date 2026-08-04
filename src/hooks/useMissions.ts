@@ -23,6 +23,8 @@ import {
   CompletedMission
 } from '@/core/repositories/mission.repository';
 
+import { trackMissionComplete } from '@/lib/analytics/analytics';
+
 export function useMissions() {
   const repository = getMissionRepository();
   const [completedMissions, setCompletedMissions] = useState<CompletedMission[]>(
@@ -62,6 +64,7 @@ export function useMissions() {
   const completeMission = useCallback(
     (missionId: string, hasanahEarned: number, dateStr?: string): void => {
       repository.completeMission(missionId, hasanahEarned, dateStr);
+      trackMissionComplete(missionId, missionId);
       setCompletedMissions(repository.getCompletedMissions());
     },
     [repository]
