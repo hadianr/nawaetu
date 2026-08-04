@@ -256,6 +256,8 @@ export default function RootLayout({
 
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://analytics.google.com" />
         <link rel="dns-prefetch" href="https://api.aladhan.com" />
 
         {/* iOS PWA Support */}
