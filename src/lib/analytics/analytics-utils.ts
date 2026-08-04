@@ -234,33 +234,3 @@ export function getMonthlyStats(): MonthlyStats {
     };
 }
 
-/**
- * Generate mock data for testing (last 30 days)
- */
-export function generateMockData() {
-    if (typeof window === "undefined") return;
-
-    const mockData: DailyActivity[] = [];
-
-    for (let i = 29; i >= 0; i--) {
-        const dateStr = DateUtils.daysAgo(i);
-
-        // Random but realistic data
-        const hasanahGained = Math.floor(Math.random() * 300) + 50;
-        const missionsCompleted = Math.floor(Math.random() * 8) + 1;
-        const prayersCompleted = Math.floor(Math.random() * 5);
-        const quranAyatRead = Math.floor(Math.random() * 20);
-        const tasbihCount = Math.floor(Math.random() * 100);
-
-        mockData.push({
-            date: dateStr,
-            hasanahGained,
-            missionsCompleted,
-            prayersCompleted,
-            quranAyatRead,
-            tasbihCount,
-        });
-    }
-
-    storage.set(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any, JSON.stringify(mockData));
-}

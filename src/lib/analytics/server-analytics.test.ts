@@ -18,10 +18,11 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { trackMetric, WebVitalMetric } from './server-analytics';
+import { logger } from '@/lib/logger';
 
 describe('server-analytics', () => {
-    it('should log metric to console', async () => {
-        const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    it('should log metric to logger', async () => {
+        const loggerSpy = vi.spyOn(logger, 'info').mockImplementation(() => {});
 
         const metric: WebVitalMetric = {
             id: 'test-id',
@@ -33,8 +34,8 @@ describe('server-analytics', () => {
 
         await trackMetric(metric);
 
-        expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Web Vital: FCP', metric);
+        expect(loggerSpy).toHaveBeenCalledWith('Web vital: FCP', { action: 'web-vital' });
 
-        consoleSpy.mockRestore();
+        loggerSpy.mockRestore();
     });
 });

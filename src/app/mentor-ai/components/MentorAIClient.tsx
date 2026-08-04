@@ -22,7 +22,8 @@ import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Send, Sparkles, History, Lock, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useUserActivity, useUserProfile } from "@/lib/analytics/activity-tracker";
+import { getActivityRepository } from "@/core/repositories/activity.repository";
+import { getDisplayStreak } from "@/lib/habits/streak-utils";
 import { askMentor } from "../ai-action";
 import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
 
@@ -43,8 +44,23 @@ const storage = getStorageService();
 
 export default function MentorAIClient() {
     const { data: session, status } = useSession();
-    const { stats } = useUserActivity();
-    const { profile } = useUserProfile();
+    const [stats, setStats] = useState({ streakDays: 0, todayAyat: 0, todayTasbih: 0, prayersLogged: [] as string[] });
+    const [profile, setProfile] = useState({ name: "Hamba Allah", title: "Hamba Allah" });
+
+    useEffect(() => {
+        const load = () => {
+            const streak = getDisplayStreak();
+            const activity = getActivityRepository().getActivity();
+            setStats({ streakDays: streak.streak, todayAyat: activity.quranAyat, todayTasbih: activity.tasbihCount, prayersLogged: activity.prayersLogged });
+            const name = storage.getOptional<string>(STORAGE_KEYS.USER_NAME as any);
+            const title = storage.getOptional<string>(STORAGE_KEYS.USER_TITLE as any);
+            if (name || title) setProfile({ name: name || "Hamba Allah", title: title || "Hamba Allah" });
+        };
+        load();
+        window.addEventListener("activity_updated", load);
+        window.addEventListener("streak_updated", load);
+        return () => { window.removeEventListener("activity_updated", load); window.removeEventListener("streak_updated", load); };
+    }, []);
     const { t } = useLocale();
     const HADITH_THEMES = [
         { label: "Sabar", prompt: "Berikan hadits tentang keutamaan sabar" },
