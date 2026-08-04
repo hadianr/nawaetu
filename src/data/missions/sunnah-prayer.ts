@@ -230,5 +230,42 @@ export const SUNNAH_PRAYER_MISSIONS: Mission[] = [
         ruling: 'sunnah',
         phase: 'all_year',
         validationType: 'manual'
+    },
+    // Eid Prayers — only visible on specific Hijri dates
+    {
+        id: 'sunnah_eid_fitri',
+        title: 'Sholat Idul Fitri',
+        description: 'Sholat hari raya 1 Syawal (jam 06:30-08:00)',
+        hasanahReward: 100,
+        icon: '🌙',
+        gender: null,
+        dalil: 'HR. Bukhari no. 958',
+        type: 'daily',
+        category: 'prayer',
+        ruling: 'sunnah',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: {
+            timeWindow: { start: 6, end: 8 },
+            visibility: { hijriMonth: 'shawwal', hijriDay: 1 }
+        }
+    },
+    {
+        id: 'sunnah_eid_adha',
+        title: 'Sholat Idul Adha',
+        description: 'Sholat hari raya 10 Dzulhijjah (jam 06:30-08:00)',
+        hasanahReward: 100,
+        icon: '🐑',
+        gender: null,
+        dalil: 'HR. Bukhari no. 968',
+        type: 'daily',
+        category: 'prayer',
+        ruling: 'sunnah',
+        phase: 'all_year',
+        validationType: 'time',
+        validationConfig: {
+            timeWindow: { start: 6, end: 8 },
+            visibility: { hijriMonth: 'dzulhijjah', hijriDay: 10 }
+        }
     }
 ];
