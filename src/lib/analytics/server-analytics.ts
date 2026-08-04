@@ -26,9 +26,8 @@ export interface WebVitalMetric {
     label: 'web-vital' | 'custom';
 }
 
-export interface AnalyticsProvider {
-    trackMetric(metric: WebVitalMetric): Promise<void>;
-}
+
+
 
 // ponytail: single provider, skip factory abstraction until 2nd provider added
 export async function trackMetric(metric: WebVitalMetric): Promise<void> {
