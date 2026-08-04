@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
+import { trackFeatureUse } from "@/lib/analytics/analytics";
 
 const storage = getStorageService();
 
@@ -38,6 +39,10 @@ export default function BookmarksPage() {
     const { bookmarks, refresh } = useBookmarks();
     const { t } = useLocale();
     const { currentTheme } = useTheme();
+
+    useEffect(() => {
+        trackFeatureUse("bookmarks_view");
+    }, []);
     const isDaylight = currentTheme === "daylight";
     const [mounted, setMounted] = useState(false);
 

@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
 import { addHasanah } from "@/lib/habits/leveling";
+import { trackDhikrSession } from "@/lib/analytics/analytics";
 import { dhikrMilestones } from "@/data/dhikrMilestones";
 import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";
@@ -162,6 +163,7 @@ export default function DhikrCounter() {
         const newDhikrHistory = { ...(dhikrHistory || {}) };
         if (activeDhikrId) {
             newDhikrHistory[activeDhikrId] = (newDhikrHistory[activeDhikrId] || 0) + 1;
+            trackDhikrSession(activeDhikrId, 1);
         }
 
         // Check if milestone crossed
