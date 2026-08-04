@@ -88,11 +88,13 @@ echo ""
 # CRITICAL: Update version files BEFORE checking git status
 echo -e "${BLUE}📝 Updating version files...${NC}"
 CURRENT_DATE=$(date +%Y-%m-%d)
-sed -i '' "s/\"version\": \".*\"/\"version\": \"$VERSION_NUMBER\"/" package.json
+npm version "$VERSION_NUMBER" --no-git-tag-version --allow-same-version > /dev/null
 sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-config.ts
 sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
-echo -e "${GREEN}✅ package.json → $VERSION_NUMBER${NC}"
+sed -i '' "s/Version-v[0-9]*\.[0-9]*\.[0-9]*-blue/Version-$VERSION-blue/" README.md
+echo -e "${GREEN}✅ package.json & package-lock.json → $VERSION_NUMBER${NC}"
 echo -e "${GREEN}✅ app-config.ts → $VERSION_NUMBER (updated: $CURRENT_DATE)${NC}"
+echo -e "${GREEN}✅ README.md badge → $VERSION${NC}"
 
 # Update CHANGELOG.md if entry doesn't exist
 if ! grep -q "## \[$VERSION_NUMBER\]" CHANGELOG.md; then
@@ -239,10 +241,10 @@ if ! git diff-index --quiet HEAD --; then
     echo -e "${BLUE}📝 Committing version bump changes...${NC}"
 
     git add .
-    git commit -m "chore: release $VERSION" -m "- Update package.json version
-- Update CHANGELOG.md
-- Update README.md
-- Update SECURITY.md"
+    git commit -m "chore: release $VERSION" -m "- Update package.json & package-lock.json
+- Update app-config.ts
+- Update README.md badge
+- Update CHANGELOG.md"
     echo -e "${GREEN}✅ Changes committed${NC}"
     echo ""
 else
