@@ -18,14 +18,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Helper to track custom events
+// Non-blocking event dispatch helper using browser idle callback for maximum performance
 export const sendGAEvent = (eventName: string, params?: Record<string, string | number | boolean>) => {
-    if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', eventName, params);
+    if (typeof window === 'undefined') return;
+
+    const dispatch = () => {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        if (typeof (window as any).gtag === 'function') {
+            (window as any).gtag('event', eventName, params);
+        } else {
+            (window as any).dataLayer.push(['event', eventName, params]);
+        }
+    };
+
+    if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(dispatch, { timeout: 2000 });
+    } else {
+        setTimeout(dispatch, 0);
     }
 };
 
-// Standardized Tracking Functions
+// Standardized Feature Tracking Functions
 
 /**
  * Track when user reads a specific Surah
@@ -38,16 +51,110 @@ export const trackQuranRead = (surahName: string, ayahCount?: number) => {
 };
 
 /**
- * Track when user asks the Asisten Muslim AI
+ * Debounced Dhikr tracker to prevent high-frequency tap lag
  */
-export const trackAIQuery = () => {
-    sendGAEvent('ai_query', {
+let dhikrDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingDhikrCounts: Record<string, number> = {};
+
+export const trackDhikrSession = (dhikrId: string, addedCount: number = 1) => {
+    pendingDhikrCounts[dhikrId] = (pendingDhikrCounts[dhikrId] || 0) + addedCount;
+
+    if (dhikrDebounceTimer) {
+        clearTimeout(dhikrDebounceTimer);
+    }
+
+    dhikrDebounceTimer = setTimeout(() => {
+        for (const [id, count] of Object.entries(pendingDhikrCounts)) {
+            sendGAEvent('dhikr_completed', {
+                dhikr_id: id,
+                count
+            });
+        }
+        pendingDhikrCounts = {};
+        dhikrDebounceTimer = null;
+    }, 1500);
+};
+
+/**
+ * Track Prayer Check-ins
+ */
+export const trackPrayerCheckIn = (prayerName: string) => {
+    sendGAEvent('prayer_check_in', {
+        prayer_name: prayerName,
         timestamp: new Date().toISOString()
     });
 };
 
 /**
- * Track when user uses the Kiblat feature
+ * Track Daily Missions
+ */
+export const trackMissionComplete = (missionId: string, missionTitle: string) => {
+    sendGAEvent('mission_completed', {
+        mission_id: missionId,
+        mission_title: missionTitle
+    });
+};
+
+/**
+ * Track Dua & Dzikir views
+ */
+export const trackDuaView = (duaTitle: string, category?: string) => {
+    sendGAEvent('dua_view', {
+        dua_title: duaTitle,
+        category: category || 'general'
+    });
+};
+
+/**
+ * Track Hadith searches and views
+ */
+export const trackHadithSearch = (query: string, bookSlug?: string) => {
+    sendGAEvent('hadith_search', {
+        search_query: query.substring(0, 50),
+        book_slug: bookSlug || 'all'
+    });
+};
+
+/**
+ * Track Journal & Intention entries
+ */
+export const trackJournalAction = (action: 'create' | 'edit' | 'delete') => {
+    sendGAEvent('journal_action', {
+        action_type: action
+    });
+};
+
+/**
+ * Track Ramadhan features (Imsakiyah, Fasting, Khataman, Taraweh)
+ */
+export const trackRamadhanActivity = (activityName: string) => {
+    sendGAEvent('ramadhan_activity', {
+        activity_name: activityName
+    });
+};
+
+/**
+ * Track Hasanah earned
+ */
+export const trackHasanahGained = (amount: number, source?: string) => {
+    sendGAEvent('hasanah_gained', {
+        amount,
+        source: source || 'general'
+    });
+};
+
+/**
+ * Track when user asks Asisten Muslim AI
+ */
+export const trackAIQuery = (category?: string) => {
+    sendGAEvent('ai_query', {
+        category: category || 'general',
+        timestamp: new Date().toISOString()
+    });
+};
+
+/**
+ * Track when user uses Kiblat feature
  */
 export const trackKiblatView = () => {
     sendGAEvent('kiblat_view', {
@@ -56,7 +163,7 @@ export const trackKiblatView = () => {
 };
 
 /**
- * Track general feature usage (e.g., missions, tasbih)
+ * Track general feature usage
  */
 export const trackFeatureUse = (featureName: string) => {
     sendGAEvent('feature_use', {
@@ -65,10 +172,7 @@ export const trackFeatureUse = (featureName: string) => {
 };
 
 /**
- * Track client-side app errors to GA4 (100% Free & Unlimited).
- * Use this in Client Components to surface app-level errors without
- * adding server load. Error messages are truncated to 100 chars to
- * stay within GA4 parameter length limits.
+ * Track client-side app errors
  */
 export const trackAppError = (errorName: string, errorMessage: string) => {
     sendGAEvent('app_error', {

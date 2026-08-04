@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { incrementDailyActivity } from "@/lib/analytics/analytics-utils";
+import { trackHasanahGained } from "@/lib/analytics/analytics";
 
 export const LEVEL_THRESHOLDS = [
     0,      // Level 1 starts at 0 Hasanah
@@ -108,6 +109,7 @@ export function addHasanah(amount: number, dateStr?: string) {
 
     // Record activity for stats
     incrementDailyActivity('hasanahGained', amount, dateStr);
+    trackHasanahGained(amount);
 
     // Dispatch events to update UI
     window.dispatchEvent(new Event("hasanah_updated"));
