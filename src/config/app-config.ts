@@ -23,7 +23,7 @@
 
 export const APP_CONFIG = {
     name: "Nawaetu",
-    version: "1.12.8", // Updated automatically by release script
+    version: "1.12.9", // Updated automatically by release script
     status: "Production",
     lastUpdated: "2026-08-10",
     hashtag: "#StartWithIntention",
