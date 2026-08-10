@@ -33,7 +33,7 @@ const storage = getStorageService();
 const LOCATION_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 // Bump this version when the `tune` parameter changes to invalidate stale cached prayer data
 // v4: Coordinate-based Maghrib correction (haversine distance, not text matching)
-const TUNE_VERSION = "v2025-kemenag-4";
+const TUNE_VERSION = "v2025-kemenag-5"; // bumped: Maghrib tune 0 (method=20 already includes ikhtiyath)
 
 const isValidCoords = (lat: unknown, lng: unknown) =>
     typeof lat === 'number' && typeof lng === 'number' &&
