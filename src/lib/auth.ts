@@ -39,6 +39,44 @@ import { accounts, sessions, users, verificationTokens } from "@/db/schema";
  *   → The sessions table is no longer written to or read from for session validation.
  *     It's kept in the schema for compatibility but unused during normal operation.
  */
+import { Redis } from "@upstash/redis";
+
+const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+    ? Redis.fromEnv()
+    : null;
+
+/**
+ * Checks whether a userId exists in DB, leveraging Upstash Redis caching for 0ms DB queries on hit.
+ */
+export async function isUserValid(userId: string): Promise<boolean> {
+    const cacheKey = `user:valid:${userId}`;
+    if (redis) {
+        try {
+            const cachedStatus = await redis.get<number>(cacheKey);
+            if (cachedStatus !== null && cachedStatus !== undefined) {
+                return cachedStatus === 1;
+            }
+        } catch (e) {
+            // Non-fatal Redis fallback to DB
+        }
+    }
+
+    const userExists = await db.query.users.findFirst({
+        where: (usersTable, { eq }) => eq(usersTable.id, userId),
+        columns: { id: true },
+    });
+
+    const isValid = Boolean(userExists);
+    if (redis) {
+        try {
+            // Cache valid user for 5 minutes (300s), invalid user for 1 minute (60s)
+            await redis.set(cacheKey, isValid ? 1 : 0, { ex: isValid ? 300 : 60 });
+        } catch (e) {}
+    }
+
+    return isValid;
+}
+
 export const authOptions: NextAuthConfig = {
     adapter: DrizzleAdapter(db, {
         usersTable: users,
@@ -101,16 +139,21 @@ export const authOptions: NextAuthConfig = {
 
         /**
          * session callback — shape the session object from the JWT token.
-         * This runs on every `getServerSession()` call — it's purely in-memory
-         * (no DB query) because the data comes from the validated JWT token.
+         * Checks user validity via Redis cache / DB. If user no longer exists,
+         * returns null to invalidate stale JWT session automatically.
          */
         async session({ session, token }) {
-            if (session.user && token) {
+            if (session.user && token.id) {
+                const isValid = await isUserValid(token.id as string);
+                if (!isValid) {
+                    return null as any;
+                }
+
                 session.user.id = token.id as string;
                 session.user.isMuhsinin = token.isMuhsinin ?? false;
                 session.user.gender = token.gender ?? null;
                 session.user.archetype = token.archetype ?? null;
-                session.user.image = token.picture as string ?? null;
+                session.user.image = (token.picture as string) ?? null;
             }
             return session;
         },

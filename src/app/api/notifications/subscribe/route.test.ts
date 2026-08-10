@@ -28,6 +28,11 @@ vi.mock('@/db', () => ({
         select: vi.fn(),
         update: vi.fn(),
         insert: vi.fn(),
+        query: {
+            users: {
+                findFirst: vi.fn().mockResolvedValue({ id: 'test-user-id' }),
+            },
+        },
     }
 }));
 
