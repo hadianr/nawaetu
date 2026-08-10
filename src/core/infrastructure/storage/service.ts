@@ -69,14 +69,10 @@ export class StorageService {
   }
 
   /**
-   * Get multiple items at once
+   * Get multiple items at once — returns array matching key order
    */
-  getMany<T>(keys: string[]): Map<string, T | null> {
-    const result = new Map<string, T | null>();
-    keys.forEach(key => {
-      result.set(key, this.adapter.getItem<T>(key));
-    });
-    return result;
+  getMany<T>(keys: string[]): (T | null)[] {
+    return keys.map(key => this.adapter.getItem<T>(key));
   }
 
   /**

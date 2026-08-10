@@ -53,7 +53,7 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
                 STORAGE_KEYS.USER_TOTAL_DONATION,
                 STORAGE_KEYS.USER_DONATION_HISTORY,
                 STORAGE_KEYS.IS_MUHSININ as any
-            ]).values();
+            ]);
 
             if (savedTotal) setTotalInfaq(parseInt(savedTotal as string, 10));
             if (savedHistory) setInfaqHistory(typeof savedHistory === 'string' ? JSON.parse(savedHistory) : savedHistory);
@@ -151,7 +151,7 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
                 STORAGE_KEYS.USER_TOTAL_DONATION,
                 STORAGE_KEYS.USER_DONATION_HISTORY,
                 STORAGE_KEYS.IS_MUHSININ as any
-            ]).values();
+            ]);
 
             if (savedTotal) setTotalInfaq(parseInt(savedTotal as string, 10));
             if (savedHistory) setInfaqHistory(typeof savedHistory === 'string' ? JSON.parse(savedHistory) : savedHistory);

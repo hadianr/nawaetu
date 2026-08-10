@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
                 .update(pushSubscriptions)
                 .set({
                     prayerPreferences: prayerPreferences || null,
-                    userLocation: userLocation || null,
                     latitude: userLocation?.lat || null,
                     longitude: userLocation?.lng || null,
                     city: userLocation?.city || null,

@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
             active: 1,
             deviceType: effectiveDeviceType,
             timezone: timezone || "UTC",
-            userLocation: userLocation || undefined, // Legacy (full object)
             latitude: userLocation?.lat || null,
             longitude: userLocation?.lng || null,
             // Prefer city-level name (Kabupaten/Kota), fallback to display name (kecamatan)
@@ -90,7 +89,6 @@ export async function POST(req: NextRequest) {
             .values({
                 token,
                 ...data,
-                userLocation: userLocation || null,
                 prayerPreferences: prayerPreferences || null,
                 userId: validUserId,
                 lastUsedAt: null,

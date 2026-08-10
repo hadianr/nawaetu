@@ -21,7 +21,7 @@
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 const QiblaCompass = dynamic(() => import("@/components/QiblaCompass"), { ssr: false, loading: () => <div className="animate-pulse w-32 h-32 rounded-full border-4 border-primary/20" /> });
-import { trackKiblatView } from "@/lib/analytics";
+import { trackKiblatView } from "@/lib/analytics/analytics";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 

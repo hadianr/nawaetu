@@ -73,13 +73,20 @@ export default function DataSyncer() {
                             storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
                         }
                         if (s.calculationMethod && isValid(s.calculationMethod) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD)) {
-                            storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
-                            // Trigger refresh of prayer times
-                            window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
+                            const currentMethod = storage.getOptional(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+                            // Only overwrite + dispatch if value actually changed — prevents stale DB from
+                            // corrupting a correct local method and triggering a wrong prayer-time re-fetch.
+                            if (String(s.calculationMethod) !== String(currentMethod)) {
+                                storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
+                                window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
+                            }
                         }
                         if (isValid(s.hijriAdjustment) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT)) {
-                            storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT, s.hijriAdjustment);
-                            window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: s.hijriAdjustment } }));
+                            const currentAdj = storage.getOptional(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+                            if (String(s.hijriAdjustment) !== String(currentAdj)) {
+                                storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT, s.hijriAdjustment);
+                                window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: s.hijriAdjustment } }));
+                            }
                         }
                         if (s.notificationPreferences && typeof s.notificationPreferences === 'object') {
                             storage.set(STORAGE_KEYS.ADHAN_PREFERENCES, s.notificationPreferences);

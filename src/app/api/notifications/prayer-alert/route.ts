@@ -218,22 +218,8 @@ export async function POST(req: NextRequest) {
             const groups = new Map<string, { lat: number, lng: number, timezone: string, subs: typeof subscriptions }>();
 
             for (const sub of subscriptions) {
-                let lat: number | null = null;
-                let lng: number | null = null;
-
-                const locObj = parseJsonField<{ lat?: number; lng?: number; latitude?: number; longitude?: number }>(sub.userLocation);
-                if (locObj) {
-                    lat = locObj.lat ?? locObj.latitude ?? null;
-                    lng = locObj.lng ?? locObj.longitude ?? null;
-                }
-
-                // Fallback to dedicated latitude/longitude columns
-                if (!lat || !lng) {
-                    if (sub.latitude && sub.longitude) {
-                        lat = sub.latitude;
-                        lng = sub.longitude;
-                    }
-                }
+                let lat: number | null = sub.latitude ?? null;
+                let lng: number | null = sub.longitude ?? null;
 
                 if (!lat || !lng) {
                     results.noLocation++;

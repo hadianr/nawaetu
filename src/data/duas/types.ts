@@ -16,7 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { IslamicContentBase } from "@/types/islamic-content";
+export interface IslamicContentBase {
+    id: string;
+    category: string;
+    title: string;
+    titleEn?: string;
+    arabic: string;
+    latin: string;
+    translation: string;
+    translationEn?: string;
+}
 
 export type DuaOccasion =
     | "morning"

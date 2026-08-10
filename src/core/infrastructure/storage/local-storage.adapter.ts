@@ -18,9 +18,7 @@
 
 import {
   StorageAdapter,
-  StorageError,
-  StorageQuotaExceededError,
-  StorageNotAvailableError
+  StorageError
 } from './adapter';
 
 /**
@@ -65,7 +63,7 @@ export class LocalStorageAdapter implements StorageAdapter {
 
   setItem<T>(key: string, value: T): void {
     if (!this.isAvailable()) {
-      throw new StorageNotAvailableError('localStorage is not available');
+      throw new StorageError('localStorage is not available');
     }
 
     try {
@@ -187,7 +185,7 @@ export class LocalStorageAdapter implements StorageAdapter {
           console.error('[Storage] Cleanup process failed:', cleanupError);
         }
 
-        throw new StorageQuotaExceededError(
+        throw new StorageError(
           `Failed to store ${key}: Storage quota exceeded. Please clear some data.`
         );
       }
