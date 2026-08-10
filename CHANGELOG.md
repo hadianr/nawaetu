@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.8] - 2026-08-10
+
+### Added
+- **Feat(analytics): integrate event tracking across app features**
+- **Feat(analytics): add non-blocking feature tracking and hasanah integration**
+
+### Improved
+- **Chore: update package npm library**
+- **Chore(release): bump package-lock.json and README badge in release script**
+- **Refactor(analytics): remove deprecated activity-tracker and unused dependencies**
+
+### Fixed
+- **Fix(build): disable standalone output and runtimeChunk override for Vercel deployment**
+- **Fix(notifications): validate user existence on push subscribe to prevent 500 error**
+- **Fix(analytics): resolve GA4 0 activity and CSP blocking**
+- **Fix(missions): add missing sunnah_eid_fitri and sunnah_eid_adha mission objects**
+
+
 ## [1.12.7] - 2026-08-03
 
 ### Improved
