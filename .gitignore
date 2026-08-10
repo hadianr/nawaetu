@@ -156,3 +156,5 @@ public/swe-worker-*.js
 public/swe-worker-*.js.map
 
 
+.neon
+.claude/
