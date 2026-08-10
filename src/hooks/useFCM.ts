@@ -21,6 +21,7 @@
 import { useEffect, useState } from "react";
 import { onMessage } from "firebase/messaging";
 import { registerServiceWorkerAndGetToken, messaging } from "@/lib/notifications/fcm-init";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export function useFCM() {
     const [token, setToken] = useState<string | null>(null);
@@ -43,10 +44,26 @@ export function useFCM() {
                     let userLocation = null;
                     if (storage) {
                         try {
-                            const parsed = JSON.parse(storage);
-                            if (parsed.lat && parsed.lng) {
-                                userLocation = { lat: parsed.lat, lng: parsed.lng };
+                            const loc = JSON.parse(storage);
+                            if (loc.lat && loc.lng) {
+                                userLocation = {
+                                    lat: loc.lat,
+                                    lng: loc.lng,
+                                    name: loc.name || loc.city || null,
+                                    city: loc.city || loc.name || null,
+                                    country: loc.country || null,
+                                    countryCode: loc.countryCode || null,
+                                };
                             }
+                        } catch (e) { }
+                    }
+
+                    // Get saved prayer preferences from localStorage
+                    let prayerPreferences = null;
+                    const savedPrefs = localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES as string);
+                    if (savedPrefs) {
+                        try {
+                            prayerPreferences = JSON.parse(savedPrefs);
                         } catch (e) { }
                     }
 
@@ -58,7 +75,8 @@ export function useFCM() {
                             token: currentToken,
                             deviceType: "web",
                             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                            userLocation: userLocation
+                            userLocation,
+                            prayerPreferences,
                         }),
                     });
                 }
