@@ -63,7 +63,6 @@ export async function POST(req: NextRequest) {
             .set({
                 choice: choice ?? null,
                 location: location ?? null,
-                isQiyamulLail: isQiyamulLail ?? false,
                 updatedAt: new Date(),
             })
             .where(eq(ramadhanTarawehLog.id, existing[0].id));
@@ -74,7 +73,6 @@ export async function POST(req: NextRequest) {
             hijriDay,
             choice: choice ?? null,
             location: location ?? null,
-            isQiyamulLail: isQiyamulLail ?? false,
         });
     }
 

@@ -27,7 +27,7 @@ import { getDisplayStreak } from "@/lib/habits/streak-utils";
 import { askMentor } from "../ai-action";
 import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
 
-import { trackAIQuery } from "@/lib/analytics";
+import { trackAIQuery } from "@/lib/analytics/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";

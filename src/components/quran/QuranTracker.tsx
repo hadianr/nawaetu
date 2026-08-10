@@ -19,7 +19,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { trackQuranRead } from "@/lib/analytics";
+import { trackQuranRead } from "@/lib/analytics/analytics";
 import { useQuranTimeTracker } from "@/hooks/useQuranTimeTracker";
 import { useFocusMode } from "@/hooks/useFocusMode";
 import { useTheme } from "@/context/ThemeContext";

@@ -37,17 +37,3 @@ export class StorageError extends Error {
     this.name = 'StorageError';
   }
 }
-
-export class StorageQuotaExceededError extends StorageError {
-  constructor(message: string = 'Storage quota exceeded') {
-    super(message, 'QUOTA_EXCEEDED');
-    this.name = 'StorageQuotaExceededError';
-  }
-}
-
-export class StorageNotAvailableError extends StorageError {
-  constructor(message: string = 'Storage not available') {
-    super(message, 'NOT_AVAILABLE');
-    this.name = 'StorageNotAvailableError';
-  }
-}

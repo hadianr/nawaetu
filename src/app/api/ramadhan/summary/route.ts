@@ -90,7 +90,7 @@ export async function GET(request: Request) {
             ));
 
         const tarawehCount = tarawehLogsAll.filter(log => log.choice !== null).length;
-        const qiyamulLailCount = tarawehLogsAll.filter(log => log.isQiyamulLail).length;
+        const qiyamulLailCount = 0;
 
         // ─── 4. Location Habit ─────────────────────────────────────────
         const logsWithLocation = tarawehLogsAll.filter(log => log.location !== null);
@@ -121,9 +121,11 @@ export async function GET(request: Request) {
         let totalDhuha = 0, totalWitir = 0, totalRawatib = 0, totalSunnahOther = 0;
 
         for (const dl of dailyLogs) {
-            if (dl.fardhuLocation === 'masjid') masjidDays++;
-            else if (dl.fardhuLocation === 'rumah') rumahDays++;
-            else if (dl.fardhuLocation === 'keduanya') keduanyaDays++;
+            const atMasjid = [dl.fajrAtMasjid, dl.dhuhrAtMasjid, dl.asrAtMasjid, dl.maghribAtMasjid, dl.ishaAtMasjid].filter(Boolean).length;
+            const atRumah = [dl.fajrAtMasjid, dl.dhuhrAtMasjid, dl.asrAtMasjid, dl.maghribAtMasjid, dl.ishaAtMasjid].filter(v => v === false).length;
+            if (atMasjid > atRumah) masjidDays++;
+            else if (atRumah > atMasjid) rumahDays++;
+            else if (atMasjid > 0 && atMasjid === atRumah) keduanyaDays++;
             if (dl.dhuha) totalDhuha++;
             if (dl.witir) totalWitir++;
             if (dl.rawatibQabl || dl.rawatibBad) totalRawatib++;

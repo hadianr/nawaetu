@@ -17,7 +17,7 @@
  */
 
 import { StorageService } from './service';
-import { StorageFactory } from './factory';
+import { LocalStorageAdapter } from './local-storage.adapter';
 
 /**
  * Singleton Storage Service Instance
@@ -27,7 +27,7 @@ let storageService: StorageService | null = null;
 
 export function getStorageService(): StorageService {
   if (!storageService) {
-    const adapter = StorageFactory.create('localStorage');
+    const adapter = new LocalStorageAdapter();
     storageService = new StorageService(adapter);
   }
   return storageService;
@@ -43,5 +43,4 @@ export function resetStorageService(): void {
 // Re-export types and classes
 export * from './adapter';
 export * from './service';
-export * from './factory';
 export { LocalStorageAdapter } from './local-storage.adapter';

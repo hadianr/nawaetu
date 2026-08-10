@@ -296,8 +296,6 @@ export const pushSubscriptions = pgTable("push_subscription", {
     // Prayer notification preferences (JSON: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true })
     prayerPreferences: jsonb("prayer_preferences"),
 
-    // User location for prayer time calculation (JSON: { lat: number, lng: number, city: string })
-    userLocation: jsonb("user_location"), // Deprecated in favor of columns below, keeping for migration
     latitude: real("latitude"),
     longitude: real("longitude"),
     city: text("city"),
@@ -355,7 +353,6 @@ export const ramadhanTarawehLog = pgTable("ramadhan_taraweh_log", {
     hijriDay: integer("hijri_day").notNull(),
     choice: tarawehChoiceEnum("choice"), // '8', '20', or null if deleted
     location: tarawehLocationEnum("location"), // 'masjid' or 'rumah'
-    isQiyamulLail: boolean("is_qiyamul_lail").default(false), // e.g. for last 10 nights dedicated tracker
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => ({
@@ -417,10 +414,6 @@ export const ramadhanDailyLog = pgTable("ramadhan_daily_log", {
 
     hijriYear: integer("hijri_year").notNull(),
     hijriDay: integer("hijri_day").notNull(), // 1–30
-
-    // Fardhu prayer location for the day (majority of 5 prayers)
-    // null = not recorded, "masjid" = mostly at mosque, "rumah" = mostly at home, "keduanya" = mixed
-    fardhuLocation: prayerLocationEnum("fardhu_location"),
 
     // Individual fardhu prayers at masjid (true = at masjid, false = at rumah/home, null = not logged)
     fajrAtMasjid: boolean("fajr_at_masjid"),
