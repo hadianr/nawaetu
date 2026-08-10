@@ -285,28 +285,12 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
 
             // For Kemenag RI (method 20), apply ikhtiyath offsets calibrated against
-            // official Kemenag API (myquran.com). Maghrib is CITY-SPECIFIC (coordinate-based):
-            //   Bandung Raya (within 25km of city center): +8
-            //   Other Indonesian cities: +3
-            // Text-based city matching is unreliable (locationName may be a kecamatan/kelurahan).
-            // All other prayers: Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Isha+2
+            // official Kemenag API (myquran.com).
+            // IMPORTANT: method=20 already includes Maghrib ikhtiyath — do NOT add extra.
+            // Other prayers: Imsak+2, Fajr+2, Dhuhr+4, Asr+4, Isha+2
             // Global methods (ISNA, MWL, etc.): no tune applied
-            const getMaghribCorrection = (userLat: number, userLng: number): number => {
-                // Haversine distance in km
-                const R = 6371;
-                const dLat = (userLat - (-6.9175)) * Math.PI / 180;
-                const dLng = (userLng - 107.6191) * Math.PI / 180;
-                const a = Math.sin(dLat / 2) ** 2
-                    + Math.cos(-6.9175 * Math.PI / 180) * Math.cos(userLat * Math.PI / 180)
-                    * Math.sin(dLng / 2) ** 2;
-                const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                // Bandung Raya: ~25km radius covers Kota Bandung, Cimahi, Kab. Bandung as well
-                if (distKm <= 25) return 8;
-                return 3; // Default for other Indonesian cities
-            };
-
             const tuneParam = method === "20"
-                ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
+                ? `&tune=2,2,0,4,4,0,0,2,0`
                 : "";
 
 

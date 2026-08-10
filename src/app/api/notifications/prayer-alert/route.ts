@@ -43,7 +43,7 @@ const DEDUP_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 // For fasting (puasa), notifications must be very close to the actual adzan time:
 //   - Subuh: marks the end of suhoor — must NOT be late or misleading
 //   - Maghrib: the iftar signal — people are waiting for this moment
-// Window = 3 minutes: absorbs any cron-job.org jitter while staying tight for fasting accuracy.
+// Window = 3 minutes: absorbs cron-job.org jitter while staying tight for fasting accuracy.
 const PRAYER_NOTIFICATION_WINDOW_MINUTES = 3;
 
 // NO DEFAULT COORDINATES: Application mandates location setup.
@@ -70,25 +70,12 @@ function isTimeInWindow(currentTime: string, rawPrayerTime: string): boolean {
     return diff >= 0 && diff <= PRAYER_NOTIFICATION_WINDOW_MINUTES;
 }
 
-// City-aware Maghrib correction — coordinate-based (mirrors usePrayerTimes.ts logic)
-// Uses haversine distance from Bandung city center:
-//   Within 25km → Kemenag Bandung ikhtiyath (+8)
-//   Otherwise → standard Indonesian ikhtiyath (+3)
-// This handles any kecamatan/kelurahan address within Bandung Raya correctly.
-function getMaghribCorrection(lat: number, lng: number): number {
-    const R = 6371;
-    const dLat = (lat - (-6.9175)) * Math.PI / 180;
-    const dLng = (lng - 107.6191) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2
-        + Math.cos(-6.9175 * Math.PI / 180) * Math.cos(lat * Math.PI / 180)
-        * Math.sin(dLng / 2) ** 2;
-    const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    if (distKm <= 25) return 8; // Bandung Raya
-    return 3; // Other Indonesian cities
-}
-
 // Helper: Fetch prayer times from Aladhan API, with Kemenag RI tune for method 20
 // tune format: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
+//
+// IMPORTANT: method=20 (Kemenag RI) already includes the Maghrib ikhtiyath in its
+// base calculation. Setting Maghrib tune to 0 — do NOT add extra correction here.
+// Other prayers (Fajr, Dhuhr, Asr, Isha, Imsak) use standard ikhtiyath offsets.
 async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<any> {
     const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}`;
 
@@ -99,7 +86,7 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
     let url = "";
     try {
         const tuneParam = method === "20"
-            ? `&tune=2,2,0,4,4,${getMaghribCorrection(lat, lng)},0,2,0`
+            ? `&tune=2,2,0,4,4,0,0,2,0`
             : "";
         url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
 
@@ -192,6 +179,7 @@ export async function POST(req: NextRequest) {
             sent: 0,
             failed: 0,
             skipped: 0,
+            noLocation: 0,  // subscriptions skipped due to missing coordinates
             errors: [] as string[],
         };
 
@@ -248,6 +236,7 @@ export async function POST(req: NextRequest) {
                 }
 
                 if (!lat || !lng) {
+                    results.noLocation++;
                     results.skipped++;
                     continue;
                 }
