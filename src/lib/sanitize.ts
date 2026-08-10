@@ -29,15 +29,10 @@ export const cleanTajweedText = (htmlText: string) => {
         ALLOWED_ATTR: ['class']
     });
 
-    let cleaned = sanitized;
-
-    // Remove verse number spans at the end only
-    // Do NOT remove waqof marks - preserve all Arabic characters and diacritics
-    cleaned = cleaned.replace(/<span\s+class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-    cleaned = cleaned.replace(/<span[^>]*class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '');
-
-    // Remove only trailing verse numbers (1-3 digits)
-    cleaned = cleaned.replace(/[\u0660-\u0669]{1,3}\s*$/u, '');
+    // Remove verse number spans at the end and trailing numbers
+    let cleaned = sanitized
+        .replace(/<span[^>]*class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '')
+        .replace(/[\u0660-\u0669]{1,3}\s*$/u, '');
 
     return cleaned.trim();
 };

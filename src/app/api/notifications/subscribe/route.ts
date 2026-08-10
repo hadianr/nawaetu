@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
-import { pushSubscriptions } from "@/db/schema";
+import { pushSubscriptions, users } from "@/db/schema";
 import { eq, and, ne } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
             active: 1,
             deviceType: effectiveDeviceType,
             timezone: timezone || "UTC",
-            userLocation: userLocation || null, // Legacy (full object)
+            userLocation: userLocation || undefined, // Legacy (full object)
             latitude: userLocation?.lat || null,
             longitude: userLocation?.lng || null,
             // Prefer city-level name (Kabupaten/Kota), fallback to display name (kecamatan)
@@ -52,13 +52,30 @@ export async function POST(req: NextRequest) {
             prayerPreferences: prayerPreferences || undefined,
         };
 
-        // Deactivate previous tokens for the same user and device type if user is logged in
+        let validUserId: string | null = null;
         if (userId) {
+            try {
+                const userExists = await db.query.users.findFirst({
+                    where: eq(users.id, userId),
+                    columns: { id: true },
+                });
+                if (userExists) {
+                    validUserId = userId;
+                } else {
+                    logger.warn("Session userId not found in database, subscribing anonymously", { userId, route: "/api/notifications/subscribe" });
+                }
+            } catch (e) {
+                logger.warn("Error checking user existence", { route: "/api/notifications/subscribe", error: e instanceof Error ? e.message : String(e) });
+            }
+        }
+
+        // Deactivate previous tokens for the same user and device type if user is logged in
+        if (validUserId) {
             try {
                 await db.update(pushSubscriptions)
                     .set({ active: 0, updatedAt: new Date() })
                     .where(and(
-                        eq(pushSubscriptions.userId, userId),
+                        eq(pushSubscriptions.userId, validUserId),
                         eq(pushSubscriptions.deviceType, effectiveDeviceType),
                         ne(pushSubscriptions.token, token)
                     ));
@@ -73,8 +90,9 @@ export async function POST(req: NextRequest) {
             .values({
                 token,
                 ...data,
+                userLocation: userLocation || null,
                 prayerPreferences: prayerPreferences || null,
-                userId: userId,
+                userId: validUserId,
                 lastUsedAt: null,
             })
             .onConflictDoUpdate({
