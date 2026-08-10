@@ -28,8 +28,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
-  // Modern output configuration
-  output: 'standalone',
+  // Modern output configuration (disable standalone in Vercel to avoid NFT trace missing error)
+  output: process.env.VERCEL ? undefined : 'standalone',
 
   // CSS optimization - defer non-critical CSS
   experimental: {
@@ -73,7 +73,6 @@ const nextConfig: NextConfig = {
       config.optimization = {
         ...config.optimization,
         moduleIds: 'deterministic',
-        runtimeChunk: 'single',
         usedExports: true, // Enable tree-shaking for unused code removal
         sideEffects: false,
         minimize: true,
