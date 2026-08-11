@@ -19,6 +19,7 @@ import { PresetGuard } from "@/components/PresetGuard";
 import Link from "next/link";
 import { useIslamicContentFilter } from "@/hooks/useIslamicContentFilter";
 import { ShareableCardData } from "@/lib/share/story-card-renderer";
+import { mapHadithToShareData } from "@/lib/share/share-mappers";
 
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
@@ -326,15 +327,7 @@ function HadithContent() {
 
     const activeShareData: ShareableCardData | null = useMemo(() => {
         if (!shareItem) return null;
-        return {
-            id: shareItem.id,
-            title: (locale === "en" && shareItem.titleEn) ? shareItem.titleEn : shareItem.title,
-            arabic: shareItem.arabic,
-            latin: shareItem.latin,
-            translation: (locale === "en" && shareItem.translationEn) ? shareItem.translationEn : shareItem.translation,
-            explanation: (locale === "en" && shareItem.explanationEn) ? shareItem.explanationEn : shareItem.explanation,
-            sourceText: `HR. ${shareItem.collection} No. ${shareItem.hadithNumber} (${shareItem.authenticity})`,
-        };
+        return mapHadithToShareData(shareItem, locale);
     }, [shareItem, locale]);
 
     return (
