@@ -27,67 +27,25 @@
 - [🤝 Contributing](#-contributing)
 
 > [!IMPORTANT]
-> **Nawaetu is Dual Licensed.** Free for Open Source (AGPLv3), but requires a **Commercial License** for proprietary/closed-source use.
-
-### 🚀 Recent Highlights (v1.9.x)
-- **⏱️ Quran Reading Time Tracker & Focus Mode (v1.9.6)**: A brand-new, intent-driven suite letting you consciously track and immerse yourself in reciting Al-Quran.
-  - **🧘 Focus Mode (Tilawah Focus)**: An immersive, distraction-free reading experience that triggers when you start Tilawah.
-    - **Fullscreen Immersive UI**: Automatically enters fullscreen to remove browser/OS distractions.
-    - **Niyyah Anchor**: Mindful entry screen with Basmallah to help set pure intention before starting.
-    - **Screen Wake Lock**: Prevents the screen from sleeping or dimming while you read.
-    - **Notification Suppression**: Suppresses in-app Nawaetu notifications (Adhan reminders, etc.) while Tilawah is active.
-    - **Session Timer Badge**: Floating minimal timer showing real-time progress at the top.
-    - **Exit Confirmation**: Mindful exit dialog showing session summary to prevent accidental stops.
-    - **Premium Adaptation**: Fully compatible with both **Daylight (Light)** and Dark themes.
-  - **Manual Tilawah Controls**: Start/stop tracking with dedicated **"Mulai Tilawah"** buttons on every Surah page.
-  - **Daily Accumulation**: Time accumulates seamlessly across multiple Surahs throughout the day.
-  - **Auto-Pause on Leave**: Timer automatically stops when you navigate away or minimise the app.
-  - **Daily Progress Banner**: A live progress card on the `/quran` page shows today's total reading time vs. your personal daily target.
-  - **Stats Dashboard Integration**: Dedicated **"Statistik Al-Quran"** card on `/stats` shows Total Ayat Dibaca, Today's Duration, and Lifetime Total.
-- **🌙 Dhikr 2.0 & Zen Mode**: A massive overhaul to the Tasbih feature.
-  - **Dzikir Berantai (Sequential)**: Automatic flow for post-prayer dhikr (Subhanallah → Alhamdulillah → Allahu Akbar).
-  - **Zen Mode (OLED Optimized)**: Full-screen, minimalist immersion with dynamic **Ripple Feedback** and portal-rendered UI overlay.
-  - **Custom Dhikr**: Add your own readings with personal targets and track lifetime progress.
-  - **Dhikr Library**: Expanded catalog of authentic dhikr with meanings and tadabbur notes.
-- **📖 Al-Quran Polished**: Improved reading experience with enterprise-grade features.
-  - **Hafiz Mode (Memorization)**: New per-verse "Reveal" feature using a blur effect, allowing users to peek at verses while memorizing, following traditional tahfiz methods.
-  - **Interactive Tooltips**: Added helpful tooltips to all icon actions (Play, Bookmark, Share, Tafsir, Hafiz Mode) for better UX.
-  - **Smart Audio Caching**: Handled `AbortError` and playback interruptions for a seamless murottal experience.
-  - **Cloud Last-Read Sync**: Real-time cross-device syncing of your reading progress (Surah and Ayah), restoring exactly where you left off when you switch devices.
-  - **Bilingual Word-by-Word Translations**: Auto-adjusting Arabic-to-local language word translation that seamlessly bridges meaning for non-Arabic speakers.
-  - **Real-time Word-by-Word Audio Highlighting (Karaoke Mode)**: Visual word-level tracking as you listen to murottal (supported for Mishary Rashid Alafasy).
-  - **Vercel Speed Insights**: Integrated performance analytics via Vercel for constant application speed monitoring.
-- **🔇 Feedback System Update**: Vibration features have been removed to ensure consistent cross-platform reliability on Web/PWA, focusing on high-fidelity sound feedback and mute modes.
-- **🌙 Ramadhan Fasting Tracker**: Calendar-based fasting logger with fiqh-based status (Fasting, Sick, Traveling, etc.), consequence previews (Qadha/Fidyah), and Hasanah rewards.
-- **💎 Hasanah Gamification**: Spiritual growth system replacing generic "XP" with "Hasanah," featuring Rank progression (Mubtadi → Muhsinin) and milestones.
-- **📊 Full Ibadah Statistics Dashboard**: Comprehensive `/stats` page with Hasanah Trend Charts, Prayer Consistency tracker, and Rank history.
-- **🕌 Prayer Consistency Card**: 7-day/14-day visual tracker with per-prayer status dots, optimized for quick mobile check-in.
-- **⚡ Performance & Stability Refinements (2026-03-05 Audit)**:
-  - **Edge-First Optimization**: Transitioned security headers (CSP, HSTS) from runtime middleware to static `next.config.ts` configuration, eliminating per-request CPU overhead.
-  - **ISR Everywhere**: Migrated critical pages (Quran, Home, Dhikr) from SSR to Incremental Static Regeneration (ISR) with smart revalidation logic.
-  - **SSO Resilience**: Fixed transient 401/404/5xx errors during Google SSO redirects by implementing a silent retry-safe synchronization manager.
-  - **Cache-Control Precision**: Implemented targeted caching for system version and health APIs while ensuring strict `no-store` for authenticated user data.
-  - **Zero Hydration Mismatches**: Refactored dynamic time-based components (Ramadhan Countdown, Home Greeting) to use client-side mounting guards, ensuring perfect SEO-ready HTML.
-
-
-**Nawaetu** (derived from "Niat" or Intention) is the **only Islamic app** that helps you build lasting spiritual habits by starting with pure intention—combining AI mentorship, gamification, and intention tracking to make istiqamah feel natural, not forced.
-
-### 🎯 "Track Your Niat, Build Your Legacy"
-
-> ⚠️ **Note:** This project is **Dual Licensed**. It is free for open-source use under **AGPLv3**, but requires a **Commercial License** for proprietary/closed-source use. See [License Section](#license) for details.
+> **Nawaetu is Dual Licensed.** Free for Open Source under **AGPLv3**, but requires a **Commercial License** for proprietary or closed-source use. See [License Section](#-license) for details.
 
 ---
 
 ## 🎯 What Makes Nawaetu Different?
 
-**Every Islamic app has prayer times, Quran, and Qibla. But almost none focus on the *why* behind your worship.**
+Most Islamic apps (such as Muslim Pro or Muslim Muna) focus primarily on **mechanical utilities**—calculating prayer schedules, counting tasbih digits, or displaying banner ads. **Nawaetu is built around the spiritual heart of worship: The Intention (Niat).**
 
-### The Nawaetu Uniqueness:
-1.  🎯 **The Intention-First Pioneer**: We treat "Niat" as a trackable habit, moving spiritual growth from the fingers (counters) to the heart.
-2.  🤖 **Tanya Nawaetu**: Specialized Islamic Q&A backed by Quran, Sunnah, and authenticated Hadith.
-3.  📔 **The Muhasabah Loop**: Seamlessly bridges the gap between morning intentions and evening reflections.
-4.  🎮 **Spiritual Hasanah**: Replaces generic gamification with meaningful Islamic milestones and "Istiqamah Streaks."
-5.  ️ **Enterprise Ready**: Built from day one with dual-licensing, whitelabel support, and a scalable Next.js architecture.
+### ⚔️ Nawaetu vs. Mainstream Islamic Apps (e.g. Muslim Pro)
+
+| Feature / Aspect | 🕌 Mainstream Apps (Muslim Pro, etc.) | 🌙 Nawaetu.com |
+| :--- | :--- | :--- |
+| **Core Philosophy** | **Utility-First**: Mechanical counters & static schedules | **Intention-First**: Focuses on the *why* behind your worship |
+| **User Experience & Ads** | Cluttered with pop-up ads, paywalls & heavy tracking | **100% Ad-Free**, clean, distraction-free & privacy-respecting |
+| **Spiritual Growth** | Basic counter numbers & passive reminders | **Muhasabah Journal**: Morning intentions + Evening reflections |
+| **Islamic Q&A & Support** | Static articles or basic text search | **Tanya Nawaetu**: 24/7 AI mentor grounded in Quran & authentic Hadith |
+| **Gamification** | Generic numbers or simple counters | **Hasanah System**: Rank progression (Mubtadi → Muhsinin) & Istiqamah Streaks |
+| **Tilawah & Dhikr** | Standard audio & basic counter | **Focus Mode**: Screen wake lock, Basmallah anchor, OLED Zen Tasbih |
+| **Openness & Licensing** | Closed-source, proprietary app | **Open Source (AGPLv3)** + Commercial License options |
 
 ---
 
@@ -121,38 +79,47 @@
 *   **Prayer Check-in**: High-precision ritual tracker with mosque/solo options.
 *   **Ibadah Dashboard**: Lifetime statistics, milestones, and Hasanah trend visualizers.
 
-### 5. 🌙 Ramadhan Central (Seasonal)
-*   **Ramadhan Guide**: Specialized Fiqh, FAQ, and practice guides for the holy month.
-*   **Sunnah Foods & Tips**: Curated Sahur and Iftar recommendations based on the Sunnah.
-*   **Ramadhan Countdown**: Precision tracking for moon sighting and daily countdown.
+### 5. 🗓️ Fasting & Seasonal Companion
+*   **Sunnah & Voluntary Fasting**: Track Monday/Thursday (Senin-Kamis), Ayyamul Bidh, and custom fasting with fiqh-based statuses and Hasanah rewards.
+*   **Seasonal & Hijri Events**: Precision tracking for Islamic calendar milestones, moon sightings, and seasonal spiritual guides.
+*   **Ramadhan Mode**: Specialized Fiqh guides, Sahur/Iftar Sunnah recommendations, and countdown timers dynamically activated during the Holy Month.
 
 ---
 
 ## 🛠️ Tech Stack
 
-Built with bleeding-edge technology for the best developer experience:
+Built with bleeding-edge technology for maximum performance and reliability:
 
 ### Core Framework
-*   **Next.js 16.2.10** (App Router + Turbopack)
-*   **TypeScript** - Type-safe development
-*   **React 19** - Latest concurrent features
+*   **Next.js 16.2** (App Router + Turbopack)
+*   **TypeScript 5.9** - Strict type-safe architecture
+*   **React 19.2** - Latest concurrent features & Server Components
 
-### Backend & Infrastructure
-*   **Drizzle ORM** - Type-safe database queries
-*   **PostgreSQL** (NeonDB) - Serverless database
-*   **Firebase Admin SDK** - Push notifications
-*   **Vercel Cron** - Scheduled tasks
+### Backend & Database
+*   **Drizzle ORM 0.45** - Type-safe SQL database queries
+*   **PostgreSQL (NeonDB)** - Serverless auto-scaling database
+*   **NextAuth v5** - Secure authentication layer
+*   **Upstash Redis & Rate Limiting** - Distributed API protection
+*   **Firebase Admin SDK** - Push notification infrastructure
+*   **Vercel Cron** - Scheduled background tasks
 
-### AI & APIs
-*   **Google Gemini 2.5 Flash-Lite**
-*   **Groq Llama 3.3 70B**
-*   **Aladhan API** (Prayer Times)
-*   **Quran.com API**
+### AI & External APIs
+*   **Google Gemini 2.5 Flash-Lite** (`@google/generative-ai`)
+*   **Groq Llama 3.3 70B** - High-speed LLM inference
+*   **Aladhan API** (GPS Prayer Times)
+*   **Quran.com API** (Uthmani Mushaf & Audio Recitations)
 
-### UI & Styling
-*   **Tailwind CSS v4**
-*   **Shadcn UI**
-*   **Framer Motion**
+### UI, Styling & Experience
+*   **Tailwind CSS v4** & **Shadcn UI** (Radix UI primitives)
+*   **Framer Motion 12** - Smooth animations & micro-interactions
+*   **Recharts 3.7** - Dynamic analytics & Hasanah trends
+*   **Lucide React** & **Sonner** - Iconography & toast notifications
+*   **Next PWA (`@ducanh2912/next-pwa`)** - Installable Progressive Web App
+
+### Monitoring & Quality
+*   **Sentry 10** - Real-time error tracking & performance monitoring
+*   **Vercel Speed Insights** - Real User Performance Monitoring
+*   **Vitest** - Unit and integration testing
 
 ---
 
@@ -181,34 +148,13 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-## 📦 Release Management
+## 📦 Release Workflow
 
-### Quick Release
-
-**The fastest way to safely release a new version:**
-
+Maintainers can publish releases using the automated release script:
 ```bash
-# 1. Ensure you are on the main branch & have the latest code
-git checkout main
-git pull origin main
-
-# 2. Use the release script (fully automated)
-npm run release -- v1.2.0
-# Or run directly: ./scripts/release.sh v1.2.0
+./scripts/release.sh v1.x.x
 ```
-
-**What happens automatically:**
-1. ✅ Validates version format (`vX.Y.Z`)
-2. ✅ Updates version files (`package.json`, `app-config.ts`)
-3. ✅ Auto-generates changelog from git commits
-4. ✅ Commits release changes automatically
-5. ✅ Creates an annotated git tag
-6. ✅ Pushes commits and new tag to origin
-7. ✅ Triggers GitHub Actions workflows & Vercel deployment
-
-### Detailed Release Guide
-
-For a complete guide and troubleshooting, see [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md).
+This updates `package.json`, `package-lock.json`, `src/config/app-config.ts`, badges, and `CHANGELOG.md`. For full details, see the [Release Workflow Guide](docs/RELEASE_WORKFLOW.md).
 
 ---
 
@@ -216,38 +162,16 @@ For a complete guide and troubleshooting, see [RELEASE_WORKFLOW.md](docs/RELEASE
 
 We welcome contributions from the global community! Whether it's bug fixes, new features, or translations.
 
+Please review our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing to ensure a welcoming and inclusive environment.
+To report bugs or suggest new features, please submit an issue using our [Issue Templates](https://github.com/hadianr/nawaetu/issues/new/choose). For complete guidelines, read [CONTRIBUTING.md](CONTRIBUTING.md).
+
 1. **Fork** the repository
 2. **Create feature branch** (`git checkout -b feature/AmazingFeature`)
 3. **Commit changes** (`git commit -m 'feat: add amazing feature'`)
 4. **Push to branch** (`git push origin feature/AmazingFeature`)
 5. **Open Pull Request**
 
-### 🤖 AI Agent Setup (Optional)
-
-This project supports local AI pair-programming assistant extensions (Google Antigravity, Claude Code, Cursor, etc.). Configuration lives under `.agents/` (untracked by Git).
-
-#### Directory Structure
-```text
-.agents/
-├── rules/         # Custom rules applied automatically to agent turns (e.g., graphify.md)
-├── workflows/     # Actionable multi-step guides executable via slash commands (e.g., /graphify)
-└── skills/        # Modular capabilities and scripts (e.g., cavecrew, caveman-review)
-```
-
-#### How to Set Up
-1. **Create Directory**:
-   ```bash
-   mkdir -p .agents/rules .agents/workflows .agents/skills
-   ```
-2. **Add Custom Rules**: Create markdown files in `.agents/rules/` for repository guidelines.
-   *Example: `.agents/rules/graphify.md`*
-   ```markdown
-   ## Knowledge Graph
-   When graphify-out/graph.json exists, query the graph first before scanning raw files.
-   ```
-3. **Add Custom Workflows**: Create markdown guides in `.agents/workflows/` to automate repeatable agent tasks.
-   *Example: `.agents/workflows/graphify.md`*
-4. **Add Custom Skills**: Create subdirectories under `.agents/skills/<skill-name>/` with a `SKILL.md` file describing the triggers, workflows, and helper scripts.
+> 💡 **AI Assistant Note**: This repository supports local rules, workflows, and skills for AI coding assistants (Google Antigravity, Cursor, Claude Code) under `.agents/`.
 
 
 
