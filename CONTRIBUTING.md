@@ -1,22 +1,24 @@
 # Contributing to Nawaetu 🙏
 
-Terima kasih sudah tertarik berkontribusi ke Nawaetu! Setiap kontribusi membantu kami membangun aplikasi ibadah yang lebih baik.
+Thank you for your interest in contributing to Nawaetu! Every contribution helps us build a better spiritual habit tracker for the global Ummah.
 
 ## 📋 Code of Conduct
 
-- Kami berkomitmen untuk menjaga lingkungan yang inklusif dan supportif
-- Hormati semua kontributor apapun latar belakang mereka
-- Fokus pada kualitas dan ide, bukan personal attacks
-- Melanggar dapat hasil dalam removal dari project
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating and contributing, you are expected to uphold the standards outlined in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+- We are committed to fostering an inclusive, welcoming, and healthy community environment.
+- Respect all contributors regardless of their background, identity, or experience level.
+- Focus on constructive feedback, code quality, and professional collaboration.
+- Violations of the Code of Conduct may result in temporary or permanent suspension from the project.
+
+---
 
 ## 🚀 Getting Started
 
-### 1. Fork Repository
-```bash
-# Click "Fork" button di GitHub
-```
+### 1. Fork the Repository
+Click the **Fork** button at the top right of the GitHub repository page.
 
-### 2. Clone Local
+### 2. Clone Locally
 ```bash
 git clone https://github.com/your-username/nawaetu.git
 cd nawaetu
@@ -27,18 +29,22 @@ cd nawaetu
 # Install dependencies
 npm install
 
-# Copy environment template
+# Copy environment variable template
 cp .env.example .env.local
 
-# Start dev server
+# Start local development server
 npm run dev
 ```
 
+Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
+
+---
+
 ## 📝 Commit Guidelines
 
-Kami menggunakan **Conventional Commits** untuk clarity:
+We enforce **Conventional Commits** for clarity and automated changelog generation:
 
-```
+```text
 type(scope): subject
 
 body (optional)
@@ -46,120 +52,87 @@ body (optional)
 footer (optional)
 ```
 
-### Types:
-- `feat`: Fitur baru
-- `fix`: Bug fix
-- `docs`: Dokumentasi
-- `style`: Formatting (no code logic change)
-- `refactor`: Code restructuring
+### Supported Commit Types:
+- `feat`: New feature (e.g., `feat(tilawah): add audio playback controls`)
+- `fix`: Bug fix (e.g., `fix(qibla): resolve compass calibration error`)
+- `docs`: Documentation updates (e.g., `docs: update setup instructions`)
+- `style`: Code formatting (no logic change)
+- `refactor`: Code restructuring without functional changes
 - `perf`: Performance improvements
-- `test`: Menambah/update tests
-- `chore`: Maintenance tasks
-- `ci`: CI/CD changes
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks or dependency updates
+- `ci`: CI/CD workflow changes
 
-### Examples:
+### Example Commits:
 ```bash
-git commit -m "feat(missions): add new daily mission system"
-git commit -m "fix(qibla): resolve compass calibration issue"
-git commit -m "docs: update installation instructions"
-git commit -m "refactor(tasbih): improve preset management"
+git commit -m "feat(missions): add new daily intention mission system"
+git commit -m "fix(dhikr): resolve OLED zen mode portal render issue"
+git commit -m "docs: update contributing guidelines to English"
+git commit -m "perf(quran): optimize surah static generation"
 ```
+
+---
 
 ## 🔄 Pull Request Process
 
-1. **Update your branch dari main**
+1. **Update your branch with `main`**:
    ```bash
    git fetch origin
    git rebase origin/main
    ```
 
-2. **Push to your fork**
+2. **Push to your fork**:
    ```bash
    git push origin feature/amazing-feature
    ```
 
-3. **Create Pull Request**
-   - Jelas jelaskan apa yang Anda ubah
-   - Referensi related issues (#123)
-   - Include screenshots jika UI changes
-   - Pastikan CI checks pass
+3. **Create Pull Request**:
+   - Provide a clear description of your changes using our [PR Template](.github/pull_request_template.md).
+   - Reference related issues (`Closes #123`).
+   - Include screenshots or visual recordings for UI changes.
+   - Ensure all CI/CD checks pass.
 
-4. **Review & Feedback**
-   - Respond ke review comments
-   - Push additional commits jika needed
-   - Jangan force push ke branch
+4. **Review & Feedback**:
+   - Respond to review comments promptly.
+   - Push additional commits to your feature branch if requested.
+   - Avoid force-pushing over existing review history unless requested.
 
-5. **Merge**
-   - Squash commits jika diperlukan
-   - Delete branch setelah merge
+5. **Merge**:
+   - Squash commits if necessary upon maintainer approval.
+   - Delete your feature branch after merging.
 
-## 🐛 Bug Reports
+---
 
-### Sebelum membuat issue:
-- Cek [existing issues](https://github.com/hadianr/nawaetu/issues)
-- Test di latest version
-- Cek [documentation](README.md)
+## 🐛 Bug Reports & 💡 Feature Requests
 
-### Format bug report:
-```markdown
-## Description
-Brief description of the bug
+Before creating an issue:
+- Search [existing issues](https://github.com/hadianr/nawaetu/issues) to avoid duplicates.
+- Verify the issue on the latest `main` branch version.
+- Review our [Documentation](README.md).
 
-## Steps to Reproduce
-1. Step 1
-2. Step 2
-3. ...
+### Submitting Issues:
+- **Bug Reports**: Please use our interactive [GitHub Bug Report Form](https://github.com/hadianr/nawaetu/issues/new?template=bug_report.yml).
+- **Feature Requests**: Please use our interactive [GitHub Feature Request Form](https://github.com/hadianr/nawaetu/issues/new?template=feature_request.yml).
 
-## Expected Behavior
-What should happen
-
-## Actual Behavior
-What actually happens
-
-## Screenshots
-If applicable, add screenshots
-
-## Environment
-- OS: [e.g. macOS, Windows, Linux]
-- Browser: [e.g. Chrome, Safari]
-- Version: [e.g. v1.1.0]
-- Device: [e.g. iPhone 14, Desktop]
-```
-
-## 💡 Feature Requests
-
-### Format:
-```markdown
-## Description
-Clear description of the feature
-
-## Motivation
-Why is this useful? What problem does it solve?
-
-## Proposed Solution
-How would you implement this?
-
-## Alternative Approaches
-Other ways to solve this?
-
-## Additional Context
-Any other relevant information
-```
+---
 
 ## 📚 Development Guidelines
 
-### Code Style
-- Use **TypeScript** strict mode
-- Follow **ESLint** rules
-- Format with **Prettier**
-- Use **meaningful variable names**
+### Code Style & Standards
+- Use **TypeScript** strict mode (`tsconfig.json`).
+- Follow **ESLint** rules (`npm run lint`).
+- Maintain clean component abstractions and descriptive variable names.
 
-### Components
+### React Components
 ```tsx
-// ✅ Good
+// ✅ Recommended
+interface UserProfileProps {
+  userId: string;
+}
+
 export default function UserProfile({ userId }: UserProfileProps) {
   const { user } = useUser(userId);
-  
+
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">{user.name}</h2>
@@ -174,70 +147,59 @@ const UserProfile = (props: any) => {
 };
 ```
 
-### Translations
-- Tambah text baru di `src/data/settings-translations.ts`
-- Support kedua bahasa: Indonesian (id) dan English (en)
-- Gunakan `useLocale()` hook di components
+### Localization (Bilingual Support)
+- Always maintain both English (`en`) and Indonesian (`id`) translations.
+- Update translation dictionaries under `src/data/` or component locale configs.
+- Use locale hooks rather than hardcoding static text strings.
 
-```typescript
-// Example
-const translations = {
-  id: {
-    myFeature: "Fitur Saya",
-    myFeatureDesc: "Deskripsi fitur saya"
-  },
-  en: {
-    myFeature: "My Feature",
-    myFeatureDesc: "Description of my feature"
-  }
-};
-```
-
-### Theme Colors
-- Gunakan CSS variables: `text-[rgb(var(--color-primary))]`
-- Hindari hardcoded colors
-- Test di semua themes (5 themes available)
-
-### Performance
-- Minimize bundle size
-- Use lazy loading untuk components besar
-- Optimize images
-- Avoid unnecessary re-renders
-
-## 🧪 Testing
-
-Kami encourage tests untuk semua features:
-
-```bash
-# Run tests (when available)
-npm test
-
-# Build locally
-npm run build
-
-# Check TypeScript
-npx tsc --noEmit
-```
-
-## 📦 Release Process
-
-Hanya maintainers yang bisa melakukan release, tapi Anda bisa request:
-
-1. Pastikan CHANGELOG.md updated
-2. Update version di package.json
-3. Create git tag `v*.*.*`
-4. GitHub Actions otomatis create release
-
-## 🙋 Questions?
-
-- 💬 GitHub Discussions: [Discussions](https://github.com/hadianr/nawaetu/discussions)
-- 📧 Email: [support@nawaetu.com](mailto:support@nawaetu.com)
-- 📝 Issues: [GitHub Issues](https://github.com/hadianr/nawaetu/issues)
+### Theming & Styling
+- Use predefined CSS variables: `text-[rgb(var(--color-primary))]`.
+- Avoid hardcoded HEX/RGB color values in components.
+- Test UI changes across all 5 available theme options (Light, Dark, OLED, etc.).
 
 ---
 
-## 🙏 Terima Kasih!
+## 🧪 Testing & Validation
 
-Setiap kontribusi, sekecil apapun, membuat perbedaan. Jazakallah khair atas support Anda!
+We encourage running tests before submitting a PR:
 
-**"Innama al-a'malu bin-niyyat" - Dengan niat yang lurus, setiap kontribusi Anda bernilai.**
+```bash
+# Run unit & integration tests
+npm run test:run
+
+# Run TypeScript type check
+npm run typecheck
+
+# Run linter
+npm run lint
+
+# Validate production build
+npm run build
+```
+
+---
+
+## 📦 Release Workflow
+
+Releases are managed by maintainers using the automated script:
+```bash
+./scripts/release.sh v1.X.Y
+```
+For complete release instructions and CI deployment steps, refer to [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md).
+
+---
+
+## 🙋 Community & Support
+
+- 💬 **GitHub Discussions**: [Discussions Hub](https://github.com/hadianr/nawaetu/discussions)
+- 🔒 **Security Reporting**: [SECURITY.md](SECURITY.md)
+- 📋 **Code of Conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- 📧 **Direct Contact**: [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com)
+
+---
+
+## 🙏 Thank You!
+
+Every contribution, whether a single typo fix or a major feature, makes a difference for the Ummah. Jazakallah Khair for your dedication and support!
+
+*"Innama al-a'malu bin-niyyat" — Actions are judged by intentions. May your contributions bring lasting blessings.*
