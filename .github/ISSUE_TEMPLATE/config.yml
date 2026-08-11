@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions & Q&A
+    url: https://github.com/hadianr/nawaetu/discussions
+    about: Ask questions, share ideas, or engage with the community.
+  - name: 🔒 Security Vulnerabilities
+    url: https://github.com/hadianr/nawaetu/blob/main/SECURITY.md
+    about: Report security issues safely following our security policy.
+  - name: 📋 Code of Conduct
+    url: https://github.com/hadianr/nawaetu/blob/main/CODE_OF_CONDUCT.md
+    about: Review our community standards and code of conduct.
