@@ -27,60 +27,25 @@
 - [🤝 Kontribusi](#-kontribusi)
 
 > [!IMPORTANT]
-> **Nawaetu menggunakan Dual Licensing.** Gratis untuk Open Source (AGPLv3), namun memerlukan **Lisensi Komersial** untuk penggunaan komersial/proprietary.
-
-### 🚀 Highlight Terbaru (v1.9.x)
-- **⏱️ Pelacak Waktu & Mode Fokus Al-Qur'an (v1.9.5)**: Fitur baru yang memungkinkan Anda secara sadar mencatat waktu dan berendam dalam kekhusyukan saat membaca Al-Qur'an.
-  - **🧘 Mode Fokus (Tilawah Imersif)**: Pengalaman membaca tanpa gangguan yang otomatis aktif saat Anda mulai tilawah.
-    - **Fullscreen Immersive UI**: Mode layar penuh otomatis untuk menghilangkan distraksi dari browser/sistem operasi.
-    - **Jangkar Niat (Niyyah Screen)**: Layar persiapan dengan Basmallah untuk meluruskan niat sebelum mulai membaca.
-    - **Screen Wake Lock**: Mencegah layar mati atau meredup saat aktif membaca (layar tetap ON).
-    - **Notification Suppression**: Memblokir notifikasi internal Nawaetu saat sedang fokus tilawah.
-    - **Badge Timer Sesi**: Timer minimalis yang melayang untuk memantau durasi sesi secara real-time.
-    - **Konfirmasi Selesai**: Dialog penutup dengan ringkasan waktu untuk mencegah penghentian sesi yang tidak sengaja.
-    - **Adaptasi Tema Premium**: Mendukung penuh tema **Daylight (Light Mode)** maupun tema gelap dengan estetika yang disesuaikan.
-  - **Kontrol Manual Tilawah**: Mulai/hentikan pelacakan dengan tombol **"Mulai Tilawah"** di setiap halaman Surah.
-  - **Akumulasi Harian**: Waktu terakumulasi secara mulus sepanjang hari antar Surah.
-  - **Auto-Pause saat Keluar**: Timer berhenti otomatis ketika Anda berpindah halaman atau meminimalkan aplikasi.
-  - **Banner Progress Harian**: Kartu live di halaman `/quran` menampilkan total waktu vs. target harian Anda.
-  - **Integrasi Dashboard Statistik**: Kartu **"Statistik Al-Quran"** di `/stats` menampilkan Total Ayat, Durasi Hari Ini, dan Total Seumur Hidup.
-- **🌙 Dzikir 2.0 & Mode Zen**: Overhaul besar-besaran pada fitur Tasbih.
-  - **Dzikir Berantai (Sequential)**: Alur otomatis untuk dzikir bakda sholat (Subhanallah → Alhamdulillah → Allahu Akbar).
-  - **Mode Zen (Optimasi OLED)**: Imersi penuh layar bersih dengan **Feedback Ripple** dinamis dan rendering berbasis Portal untuk menutupi seluruh UI.
-  - **Dzikir Kustom**: Tambahkan bacaan sendiri dengan target personal dan pantau statistik seumur hidup.
-  - **Perpustakaan Dzikis**: Katalog dzikir shahih yang diperluas, lengkap dengan arti dan tadabbur.
-- **📖 Al-Qur'an Disempurnakan**: Pengalaman membaca yang lebih profesional dengan fitur kelas enterprise.
-  - **Mode Hafalan (Hafiz Mode)**: Fitur "Peek" per-ayat menggunakan efek blur, memungkinkan pengguna mengintip ayat saat menghafal sesuai metode tahfiz tradisional.
-  - **Tooltip Interaktif**: Penambahan tooltip pada semua ikon aksi (Play, Bookmark, Share, Tafsir, Hafiz Mode) untuk UX yang lebih intuitif.
-  - **Smart Audio Caching**: Penanganan `AbortError` dan interupsi pemutaran untuk pengalaman murottal yang lancar tanpa terputus.
-  - **Cloud Last-Read Sync**: Posisi terakhir bacaan Al-Qur'an (Surat dan Ayat) otomatis tersinkronisasi di Cloud, memungkinkan Anda melanjutkan bacaan dari perangkat manapun dengan instan.
-  - **Terjemahan Kata-per-Kata Dwibahasa**: Render terjemahan kata per kata yang langsung beradaptasi dengan bahasa perangkat (ID/EN) untuk memudahkan belajar bahasa Arab Al-Qur'an.
-  - **Penyorotan Audio Kata-per-Kata Real-time (Mode Karaoke)**: Pelacakan visual per-kata saat mendengarkan murottal (didukung untuk Qari Mishary Rashid Alafasy).
-  - **Vercel Speed Insights**: Terintegrasi penuh dengan pelacakan performa Web Vitals langsung dari Vercel.
-- **🔇 Update Sistem Feedback**: Fitur getar telah dihapus seluruhnya untuk menjaga reliabilitas lintas perangkat pada Web/PWA, berfokus pada feedback suara berkualitas tinggi dan mode mute.
-- **🌙 Pelacak Puasa Ramadhan**: Logger puasa berbasis kalender dengan status fiqih (Puasa, Sakit, Musafir, dsb), preview konsekuensi (Qadha/Fidyah), dan reward Hasanah.
-- **💎 Gamifikasi Hasanah**: Sistem pertumbuhan spiritual yang mengganti "XP" menjadi "Hasanah," lengkap dengan progres Rank (Mubtadi → Muhsinin) dan milestone.
-- **📊 Dashboard Statistik Ibadah**: Halaman `/stats` komprehensif dengan Chart Tren Hasanah, pelacak Konsistensi Sholat, dan riwayat Rank.
-- **🕌 Kartu Konsistensi Sholat**: Pelacak visual 7h/14h dengan dot status per-sholat, dioptimalkan untuk check-in mobile yang cepat.
-- **⚡ Refinement Performa & Stabilitas (Audit 2026-03-05)**:
-  - **Optimasi Edge-First**: Pemindahan header keamanan (CSP, HSTS) dari middleware runtime ke konfigurasi statis `next.config.ts` untuk menghilangkan beban CPU per-request.
-  - **ISR Menyeluruh**: Migrasi halaman krusial (Qur'an, Home, Dzikir) dari SSR ke Incremental Static Regeneration (ISR).
-  - **Resiliensi SSO**: Penanganan error transient 401/404/5xx saat redirect Google SSO untuk pengalaman login yang lebih stabil.
-  - **Presisi Cache-Control**: Penerapan caching API yang ditargetkan untuk versi sistem dan health check, dengan `no-store` ketat untuk data user.
-  - **Bebas Hydration Mismatch**: Refaktor komponen berbasis waktu (Ramadhan Countdown, Greeting) menggunakan guard mounting client-side.
+> **Nawaetu menggunakan Dual Licensing.** Gratis untuk Open Source (AGPLv3), namun memerlukan **Lisensi Komersial** untuk penggunaan komersial/proprietary. Lihat [Seksi Lisensi](#-lisensi) untuk detail.
 
 ---
 
 ## 🎯 Apa yang Membuat Nawaetu Berbeda?
 
-**Hampir setiap aplikasi Islam memiliki jadwal sholat, Qur'an, dan Kiblat. Tapi hampir tidak ada yang fokus pada *alasan* (why) di balik ibadahmu.**
+Sebagian besar aplikasi Islam (seperti Muslim Pro atau Muslim Muna) berfokus pada **utilitas mekanis**—menghitung jadwal sholat, angka tasbih, atau menampilkan iklan banner. **Nawaetu dirancang di sekitar inti spiritual ibadah: Niat.**
 
-### Keunikan Nawaetu:
-1.  🎯 **Pionir Intention-First**: Kami menjadikan "Niat" sebagai habit yang bisa dilacak, memindahkan fokus pertumbuhan spiritual dari jari (tasbih) ke hati.
-2.  🤖 **Tanya Nawaetu**: Tanya jawab Islami yang merujuk pada Al-Qur'an, Sunnah, dan Hadits shahih—bukan sekadar opini AI.
-3.  📔 **Loop Muhasabah**: Menghubungkan niat di pagi hari dengan refleksi di malam hari secara mulus.
-4.  🎮 **Hasanah Spiritual**: Menggantikan gamifikasi generik dengan pencapaian Islami yang bermakna dan "Istiqamah Streak."
-5.  🛡️ **Siap Enterprise**: Dibangun dengan arsitektur Next.js yang skalabel, dukungan whitelabel, dan skema lisensi ganda.
+### ⚔️ Perbandingan Nawaetu vs. Aplikasi Islam Populer (cth. Muslim Pro)
+
+| Fitur / Aspek | 🕌 Aplikasi Populer (Muslim Pro, dll) | 🌙 Nawaetu.com |
+| :--- | :--- | :--- |
+| **Filosofi Utama** | **Utility-First**: Penghitung mekanis & jadwal statis | **Intention-First**: Berfokus pada *alasan (why)* di balik ibadahmu |
+| **Pengalaman Pengguna & Iklan** | Penuh iklan banner, pop-up, paywall & komersialisasi data | **100% Bebas Iklan**, bersih, tanpa distraksi & menjaga privasi |
+| **Pertumbuhan Spiritual** | Angka penghitung biasa & pengingat pasif | **Jurnal Muhasabah**: Niat pagi hari + Refleksi malam hari |
+| **Tanya Jawab Islami** | Artikel statis atau pencarian teks biasa | **Tanya Nawaetu**: Asisten AI 24/7 berbasis Al-Qur'an & Hadits Shahih |
+| **Gamifikasi** | Angka statistik generik | **Sistem Hasanah**: Progres Rank (Mubtadi → Muhsinin) & Streak Istiqamah |
+| **Tilawah & Dzikir** | Audio standar & tasbih biasa | **Mode Fokus**: Screen wake lock, Jangkar Basmallah, Mode Zen OLED |
+| **Lisensi & Transparansi** | Closed-source / proprietary | **Open Source (AGPLv3)** + Opsi Lisensi Komersial |
 
 ---
 
@@ -114,10 +79,10 @@
 *   **Check-in Sholat**: Pelacak ritual presisi tinggi dengan opsi jamaah/sendiri.
 *   **Dashboard Ibadah**: Statistik seumur hidup, milestone, dan visualisasi tren Hasanah.
 
-### 5. 🌙 Pusat Ramadhan (Musiman)
-*   **Panduan Ramadhan**: Fiqh khusus, FAQ, dan panduan amalan selama bulan suci.
-*   **Nutrisi Sunnah & Tips**: Rekomendasi makanan Sahur dan Iftar berdasarkan Sunnah.
-*   **Countdown Ramadhan**: Pelacakan presisi untuk hilal dan hitung mundur harian.
+### 5. 🗓️ Pendamping Puasa & Amalan Musiman
+*   **Puasa Sunnah & Sukarela**: Pelacak puasa Senin-Kamis, Ayyamul Bidh, dan puasa kustom dengan status berbasis fiqih dan reward Hasanah.
+*   **Peristiwa Hijriah & Musiman**: Pelacakan presisi untuk milestone kalender Islam, pengamatan hilal, dan panduan amalan musiman.
+*   **Mode Ramadhan**: Panduan Fiqh khusus, rekomendasi Sahur & Buka Puasa sesuai Sunnah, serta hitung mundur yang aktif secara dinamis di Bulan Suci.
 
 ---
 
@@ -167,44 +132,38 @@ Kami obsessed sama performa karena ibadah gak boleh distracted sama lag:
 
 ## 🛠️ Tech Stack
 
-Dibangun dengan teknologi bleeding-edge untuk experience terbaik:
+Dibangun dengan teknologi bleeding-edge untuk performa dan keandalan maksimal:
 
 ### Core Framework
-*   **Next.js 16.1.6** (App Router + Turbopack) - React meta-framework
-*   **TypeScript** - Type-safe development
-*   **React 19** - Latest React with concurrent features
+*   **Next.js 16.2** (App Router + Turbopack) - Meta-framework React utama
+*   **TypeScript 5.9** - Arsitektur type-safe yang ketat
+*   **React 19.2** - Fitur concurrent & Server Components terbaru
 
-### AI & APIs
-*   **Google Gemini 2.5 Flash-Lite** - Fast & accurate AI responses
-*   **Groq Llama 3.3 70B** - High-performance inference
-*   **Prayer Times API** - Accurate prayer schedules
-*   **Kemenag Quran API** - Surah, terjemahan & tafsir Indonesia
-*   **Quran.com API (Uthmani)** - Arabic text dengan harakat lengkap
-*   **Firebase Admin SDK** - Server-side messaging & notifications [NEW v1.5.0]
-*   **Vercel Cron** - Scheduled background tasks [NEW v1.5.0]
+### Backend & Database
+*   **Drizzle ORM 0.45** - Type-safe SQL database query
+*   **PostgreSQL (NeonDB)** - Database serverless auto-scaling
+*   **NextAuth v5** - Sesi autentikasi aman
+*   **Upstash Redis & Rate Limiting** - Proteksi dan pembatasan rate API terdistribusi
+*   **Firebase Admin SDK** - Infrastruktur push notification
+*   **Vercel Cron** - Tugas latar belakang terjadwal
 
-### Backend & Database (v1.2.0 Ready)
-*   **Drizzle ORM** - TypeScript ORM for scaling
-*   **Postgres Ready** - Architecture prepared for database migration
-*   **NextAuth.js** - Authentication ready
-*   **Centralized API Config** - DRY architecture for external services
+### AI & External APIs
+*   **Google Gemini 2.5 Flash-Lite** (`@google/generative-ai`)
+*   **Groq Llama 3.3 70B** - Inferensi LLM kecepatan tinggi
+*   **Aladhan API** (Jadwal Sholat GPS)
+*   **Quran.com API** (Mushaf Uthmani & Audio Murottal)
 
-### Styling & UI
-*   **Tailwind CSS v4** - Utility-first CSS framework
-*   **Shadcn UI** - Beautiful & accessible components
-*   **Framer Motion** - Smooth animations
-*   **Lucide React** - Modern icon library
+### UI, Styling & Experience
+*   **Tailwind CSS v4** & **Shadcn UI** (Primitif Radix UI)
+*   **Framer Motion 12** - Animasi mulus & mikro-interaksi
+*   **Recharts 3.7** - Analitik dinamis & grafik tren Hasanah
+*   **Lucide React** & **Sonner** - Ikonografi & notifikasi toast
+*   **Next PWA (`@ducanh2912/next-pwa`)** - Progressive Web App yang dapat diinstal
 
-### Performance & Monitoring
-*   **Sentry** - Error tracking & performance monitoring
-*   **Google Analytics 4** - User behavior analytics (deferred load)
-*   **Web Vitals** - Real user monitoring
-*   **PWA** - Installable on all platforms
-
-### Developer Experience
-*   **ESLint** - Code linting
-*   **Prettier** - Code formatting
-*   **Husky** - Git hooks (optional)
+### Monitoring & Kualitas
+*   **Sentry 10** - Pelacakan error real-time & pemantauan performa
+*   **Vercel Speed Insights** - Real User Performance Monitoring
+*   **Vitest** - Pengujian unit dan integrasi
 
 ---
 
@@ -323,18 +282,21 @@ Nawaetu bisa diinstall kayak native app:
 
 ## 🤝 Contributing
 
-Kami welcome kontribusi dari komunitas! Whether it's:
-- 🐛 Bug reports
-- ✨ Feature requests
-- 📝 Documentation improvements
-- 💻 Code contributions
+Kami sangat menyambut kontribusi dari seluruh komunitas global! Baik berupa perbaikan bug, fitur baru, dokumentasi, maupun terjemahan.
 
-**How to Contribute:**
-1. Fork the repo
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+## 🤝 Kontribusi
+
+Kami sangat menyambut kontribusi dari seluruh komunitas global! Baik berupa perbaikan bug, fitur baru, dokumentasi, maupun terjemahan.
+
+Harap pelajari [Code of Conduct](CODE_OF_CONDUCT.md) kami sebelum berkontribusi.
+Untuk melaporkan bug atau mengajukan ide fitur baru, silakan gunakan [GitHub Issue Templates](https://github.com/hadianr/nawaetu/issues/new/choose). Panduan kontribusi lengkap dapat dibaca di [CONTRIBUTING.id.md](CONTRIBUTING.id.md) (Bahasa Indonesia) atau [CONTRIBUTING.md](CONTRIBUTING.md) (English).
+
+**Cara Berkontribusi:**
+1. **Fork** repositori ini
+2. **Buat branch fitur** (`git checkout -b feature/amazing-feature`)
+3. **Commit perubahan** (`git commit -m 'feat: add amazing feature'`)
+4. **Push ke branch** (`git push origin feature/amazing-feature`)
+5. **Buat Pull Request**
 
 ---
 
@@ -402,79 +364,17 @@ npm run lint         # Run ESLint
 npm run analyze      # Analyze bundle size
 ```
 
-**Build Workflow:**
-1. Make changes di branch baru
-2. Push & create Pull Request
-3. Vercel akan automatically build & test (preview deployment)
-4. Merge ke main setelah approval
-5. Vercel automatically deploy to production
+## 📦 Alur Rilis (Release Workflow)
+
+Maintainer dapat melakukan rilis versi baru menggunakan script otomatis:
+```bash
+./scripts/release.sh v1.X.Y
+```
+Script ini akan secara otomatis memperbarui versi pada `package.json`, `package-lock.json`, `src/config/app-config.ts`, badge `README.md`, serta memperbarui `CHANGELOG.md`.
+
+Untuk panduan lengkap dan troubleshooting, baca [Panduan Alur Rilis](docs/RELEASE_WORKFLOW.md).
 
 ---
-
-## 📦 Release Management
-
-### Quick Release
-
-**Cara tercepat untuk release:**
-
-```bash
-# 1. Ensure main branch & latest code
-git checkout main
-git pull origin main
-
-# 2. Use release script (fully automated)
-npm run release -- v1.2.0
-# Atau jalankan langsung: ./scripts/release.sh v1.2.0
-```
-
-**Apa yang terjadi otomatis:**
-1. ✅ Validasi format version (`vX.Y.Z`)
-2. ✅ Update version files (`package.json`, `app-config.ts`)
-3. ✅ Auto-generate changelog dari git commits
-4. ✅ Commit otomatis ke branch main
-5. ✅ Membuat annotated git tag
-6. ✅ Push commits & tag baru ke origin (GitHub)
-7. ✅ Trigger GitHub Actions & Vercel deployment otomatis
-
-### Detailed Release Guide
-
-Untuk panduan lengkap dan troubleshooting: [RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md)
-
-**Topik yang covered:**
-- Pre-release checklist
-- Manual release (jika script error)
-- GitHub CLI alternative
-- Monitoring release status
-- Rollback procedures
-- FAQ
-
-### Release Workflow Overview
-
-```
-Local Machine              GitHub               Vercel
-────────────────────────  ──────────────────   ──────────
-npm run release v1.2.0
-    │
-    ├─ Validate version
-    ├─ Check git status
-    ├─ Create tag
-    └─ git push origin tag
-                           │
-                           ├─ Release Workflow
-                           │  ├─ Build (~3-5 min)
-                           │  ├─ Extract Changelog
-                           │  ├─ Create Release
-                           │  └─ Update package.json
-                           │
-                           └─ Trigger Vercel
-                                           │
-                                           ├─ Build & Test
-                                           ├─ Preview Deploy
-                                           └─ Production Deploy (~2-5 min)
-                                              https://nawaetu.com
-```
-
-**Total time:** ~10-20 minutes dari `npm run release` sampai live di production.
 
 **Note:** Vercel handles all build & test automation. GitHub Actions hanya untuk release management.
 
