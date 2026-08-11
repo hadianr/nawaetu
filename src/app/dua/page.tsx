@@ -38,6 +38,7 @@ import { IslamicSearchInput } from "@/components/islamic-content/IslamicSearchIn
 import { IslamicFilterChips, FilterChipItem } from "@/components/islamic-content/IslamicFilterChips";
 import { useIslamicContentFilter } from "@/hooks/useIslamicContentFilter";
 import { ShareableCardData } from "@/lib/share/story-card-renderer";
+import { mapDuaToShareData } from "@/lib/share/share-mappers";
 
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
@@ -364,15 +365,7 @@ function DuaContent() {
 
     const activeShareData: ShareableCardData | null = useMemo(() => {
         if (!shareItem) return null;
-        return {
-            id: shareItem.id,
-            title: (locale === "en" && shareItem.titleEn) ? shareItem.titleEn : shareItem.title,
-            arabic: shareItem.arabic,
-            latin: shareItem.latin,
-            translation: (locale === "en" && shareItem.translationEn) ? shareItem.translationEn : shareItem.translation,
-            explanation: (locale === "en" && shareItem.virtueEn) ? shareItem.virtueEn : shareItem.virtue,
-            sourceText: (locale === "en" && shareItem.source.referenceTextEn) ? shareItem.source.referenceTextEn : shareItem.source.referenceText,
-        };
+        return mapDuaToShareData(shareItem, locale);
     }, [shareItem, locale]);
 
     return (

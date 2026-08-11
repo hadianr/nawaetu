@@ -266,7 +266,7 @@ export async function renderStoryCardToCanvas(
 
     ctx.font = `500 ${transFontSize}px sans-serif`;
     const transLinesCount = measureWrappedTextLines(ctx, transTextFormatted, contentWidth);
-    const transBlockHeight = transLinesCount * transLineHeight;
+    let transBlockHeight = transLinesCount * transLineHeight;
 
     let expBlockHeight = 0;
     if (options.showExplanation && data.explanation) {
@@ -275,7 +275,7 @@ export async function renderStoryCardToCanvas(
         expBlockHeight = expLines * 32 + 50;
     }
 
-    const totalContentHeight =
+    let totalContentHeight =
         arabicBlockHeight +
         latinBlockHeight +
         transBlockHeight +
@@ -285,6 +285,46 @@ export async function renderStoryCardToCanvas(
     const topBoundary = 250;
     const bottomBoundary = H - 150;
     const availableArea = bottomBoundary - topBoundary;
+
+    // Dynamic auto-scale adjustment if content exceeds available height area
+    if (totalContentHeight > availableArea) {
+        const autoScale = Math.max(0.55, availableArea / totalContentHeight);
+        arabicFontSize = Math.max(20, Math.round(arabicFontSize * autoScale));
+        arabicLineHeight = Math.round(arabicFontSize * 1.9);
+        transFontSize = Math.max(16, Math.round(transFontSize * autoScale));
+        transLineHeight = Math.round(transFontSize * 1.5);
+        latinFontSize = Math.max(14, Math.round(latinFontSize * autoScale));
+        latinLineHeight = Math.round(latinFontSize * 1.4);
+
+        // Recalculate component heights with updated auto-scaled sizes
+        if (showArabic) {
+            ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
+            const arabicLinesCount = measureWrappedTextLines(ctx, data.arabic, contentWidth);
+            arabicBlockHeight = arabicLinesCount * arabicLineHeight + 25;
+        }
+
+        if (options.showLatin && data.latin) {
+            ctx.font = `italic ${latinFontSize}px Georgia, serif`;
+            const latinLines = measureWrappedTextLines(ctx, data.latin, contentWidth);
+            latinBlockHeight = latinLines * latinLineHeight + 25;
+        }
+
+        ctx.font = `500 ${transFontSize}px sans-serif`;
+        const transLinesCount = measureWrappedTextLines(ctx, transTextFormatted, contentWidth);
+        transBlockHeight = transLinesCount * transLineHeight;
+
+        if (options.showExplanation && data.explanation) {
+            ctx.font = "18px sans-serif";
+            const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
+            expBlockHeight = expLines * 28 + 40;
+        }
+
+        totalContentHeight =
+            arabicBlockHeight +
+            latinBlockHeight +
+            transBlockHeight +
+            (expBlockHeight ? expBlockHeight + 30 : 0);
+    }
 
     let startY = topBoundary + (availableArea - totalContentHeight) / 2;
     if (startY < topBoundary) startY = topBoundary; // Safety limit for long content
@@ -397,11 +437,30 @@ export async function renderStoryCardToCanvas(
  */
 export async function exportStoryCardBlob(
     data: ShareableCardData,
-    options: StoryRenderOptions
+    options: StoryRenderOptions,
+    format: "webp" | "png" = "webp"
 ): Promise<{ blob: Blob; mimeType: string; fileName: string }> {
     const canvas = await renderStoryCardToCanvas(data, options);
 
     return new Promise((resolve, reject) => {
+        if (format === "png") {
+            canvas.toBlob(
+                (blob) => {
+                    if (blob) {
+                        resolve({
+                            blob,
+                            mimeType: "image/png",
+                            fileName: `nawaetu-story-${data.id}.png`,
+                        });
+                    } else {
+                        reject(new Error("Failed to export story card PNG blob"));
+                    }
+                },
+                "image/png"
+            );
+            return;
+        }
+
         // Try WebP compression first for 70-80% smaller size
         canvas.toBlob(
             (blob) => {

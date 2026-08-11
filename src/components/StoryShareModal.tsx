@@ -111,7 +111,11 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 setStatusMessage(t.storyShareDownloaded || "Gambar telah diunduh! Buka Instagram & bagikan ke Story.");
                 setTimeout(() => setStatusMessage(null), 4000);
             }
-        } catch (err) {
+        } catch (err: any) {
+            if (err?.name === "AbortError") {
+                // User canceled native share sheet — handle silently without error
+                return;
+            }
             console.error("Share failed:", err);
             setStatusMessage(t.storyShareFailed || (locale === "en" ? "Share failed. Downloading file instead..." : "Gagal membagikan. Mencoba mengunduh file..."));
         } finally {
@@ -141,20 +145,28 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
         }
     };
 
-    // Handle Copy Image to Clipboard
+    // Handle Copy Image to Clipboard (Strictly PNG)
     const handleCopyImage = async () => {
         if (isExporting) return;
         setIsExporting(true);
         try {
-            const { blob, fileName } = await exportStoryCardBlob(item, {
-                theme,
-                fontSizeScale,
-                showArabic,
-                showLatin,
-                showExplanation,
-            });
-            if (navigator.clipboard && window.ClipboardItem) {
-                const clipboardItem = new ClipboardItem({ [blob.type]: blob });
+            // ClipboardItem API strictly requires image/png in modern browsers
+            const { blob, fileName } = await exportStoryCardBlob(
+                item,
+                {
+                    theme,
+                    fontSizeScale,
+                    showArabic,
+                    showLatin,
+                    showExplanation,
+                },
+                "png"
+            );
+
+            const pngBlob = blob.type === "image/png" ? blob : new Blob([blob], { type: "image/png" });
+
+            if (navigator.clipboard && typeof window.ClipboardItem !== "undefined") {
+                const clipboardItem = new ClipboardItem({ "image/png": pngBlob });
                 await navigator.clipboard.write([clipboardItem]);
                 setCopied(true);
                 setStatusMessage(t.storyShareCopied || "Gambar tersalin ke clipboard!");
@@ -163,12 +175,24 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                     setStatusMessage(null);
                 }, 3000);
             } else {
-                handleDownloadBlob(blob, fileName);
+                handleDownloadBlob(pngBlob, fileName);
                 setStatusMessage(t.storyShareClipboardUnsupported || "Clipboard tidak didukung browser. Gambar diunduh!");
                 setTimeout(() => setStatusMessage(null), 3000);
             }
-        } catch (err) {
-            console.error("Copy error:", err);
+        } catch (err: any) {
+            console.warn("Clipboard image copy failed or denied, falling back to PNG download:", err);
+            try {
+                const { blob, fileName } = await exportStoryCardBlob(
+                    item,
+                    { theme, fontSizeScale, showArabic, showLatin, showExplanation },
+                    "png"
+                );
+                handleDownloadBlob(blob, fileName);
+                setStatusMessage(t.storyShareClipboardFallback || "Gambar diunduh ke perangkat!");
+                setTimeout(() => setStatusMessage(null), 3000);
+            } catch (fallbackErr) {
+                console.error("Copy fallback failed:", fallbackErr);
+            }
         } finally {
             setIsExporting(false);
         }

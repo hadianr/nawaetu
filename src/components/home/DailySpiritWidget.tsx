@@ -25,6 +25,7 @@ import { getSpiritualItemOfDay, SpiritualItem, getLocalizedContent } from "@/dat
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
+import { mapDailySpiritToShareData } from "@/lib/share/share-mappers";
 
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
@@ -163,14 +164,11 @@ export default function DailySpiritWidget() {
             {/* --- Story Share Modal --- */}
             {showShareModal && (
                 <StoryShareModal
-                    item={{
-                        id: item.id,
-                        title: localizedContent.title || item.content.title || (isHadith ? (t.spiritualHadithTitle || "Hadits Hari Ini") : (t.spiritualDuaTitle || "Doa Hari Ini")),
-                        arabic: item.content.arabic,
-                        latin: item.content.latin,
-                        translation: localizedContent.translation || item.content.translation,
-                        sourceText: item.content.source,
-                    }}
+                    item={mapDailySpiritToShareData(
+                        item,
+                        localizedContent.title || item.content.title || (isHadith ? (t.spiritualHadithTitle || "Hadits Hari Ini") : (t.spiritualDuaTitle || "Doa Hari Ini")),
+                        localizedContent.translation || item.content.translation
+                    )}
                     onClose={() => setShowShareModal(false)}
                     isDaylight={isDaylight}
                 />
