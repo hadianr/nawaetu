@@ -43,7 +43,7 @@ const geistMono = Geist_Mono({
   adjustFontFallback: true,
 });
 
-import { Amiri, Lateef } from "next/font/google";
+import { Amiri, Lateef, Lora } from "next/font/google";
 
 // Arabic fonts - only load when needed
 const amiri = Amiri({
@@ -63,6 +63,18 @@ const lateef = Lateef({
   display: "swap",
   preload: false,
   fallback: ['serif'],
+  adjustFontFallback: true,
+});
+
+// Prose serif font for Sirah reader body text
+const lora = Lora({
+  variable: "--font-lora",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: false,
+  fallback: ["Georgia", "serif"],
   adjustFontFallback: true,
 });
 
@@ -279,7 +291,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} ${lora.variable} antialiased`}
         suppressHydrationWarning
       >
         <Toploader />
