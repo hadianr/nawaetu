@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.13] - 2026-08-13
+
+### Added
+- **Feat(sirah): enhance reader view with rich text formatting and EN notice**
+- **Feat(mentor-ai): add Sirah Nabawiyah knowledge boundary support**
+- **Feat(sirah): add Sirah Nabawiyah module, reader view, quiz, and Quran bridge**
+
+### Improved
+- **Style(typography): add Lora font and theme-aware Sirah reader prose styles**
+- **Refactor(sirah): migrate section content from string to string array**
+- **Chore(sirah): add paragraph migration and text annotation scripts**
+
+### Fixed
+- **Fix(sirah): generate unique React keys for inline formatted elements**
+- **Fix(sirah): resolve nested markdown formatting inside dialog quotes**
+- **Fix(sirah): add defensive array fallbacks for section content**
+- **Fix(auth): add exception handling and fallback for session user validation**
+
+
 ## [1.12.12] - 2026-08-11
 
 ### Improved
