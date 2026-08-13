@@ -31,6 +31,42 @@ interface ChatMessage {
     content: string;
 }
 
+// Redis RAG Caching helpers
+async function getCachedSirahResponse(query: string): Promise<string | null> {
+    if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+        return null;
+    }
+    try {
+        const { Redis } = await import('@upstash/redis');
+        const redis = new Redis({
+            url: process.env.UPSTASH_REDIS_REST_URL!,
+            token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+        });
+        const key = `sirah:rag:cache:${Buffer.from(query.toLowerCase().trim()).toString("base64").slice(0, 32)}`;
+        const cached = await redis.get<string>(key);
+        return cached || null;
+    } catch {
+        return null;
+    }
+}
+
+async function setCachedSirahResponse(query: string, response: string): Promise<void> {
+    if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+        return;
+    }
+    try {
+        const { Redis } = await import('@upstash/redis');
+        const redis = new Redis({
+            url: process.env.UPSTASH_REDIS_REST_URL!,
+            token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+        });
+        const key = `sirah:rag:cache:${Buffer.from(query.toLowerCase().trim()).toString("base64").slice(0, 32)}`;
+        await redis.set(key, response, { ex: 604800 });
+    } catch {
+        // Silently continue if Redis cache set fails
+    }
+}
+
 // Initialize model router (with Gemini primary, Groq fallback)
 const modelRouter = new ModelRouter();
 
@@ -41,7 +77,6 @@ export async function askMentor(
     timeContext?: TimeContext // Optional time context
 ) {
     // ===== SECURITY LAYER 1: Input Validation =====
-    // Reject empty or too long messages
     if (!message || message.trim().length === 0) {
         return "Pesan tidak boleh kosong ya 😊";
     }
@@ -50,16 +85,12 @@ export async function askMentor(
         return "Pesan terlalu panjang kak. Coba dipersingkat ya, maksimal 500 karakter 🙏";
     }
 
-    // Check for spam (same message repeated quickly)
-    const messageHash = message.toLowerCase().trim();
-
     const session = await getServerSession();
     if (!session || !session.user?.id) {
         return "Maaf, kamu harus login dulu ya untuk menggunakan fitur ini 😊";
     }
 
     // ===== SECURITY LAYER 2: Rate Limiting =====
-    // Use user ID as identifier for secure rate limiting
     const identifier = `chat:${session.user.id}`;
     const rateLimit = await chatRateLimiter.check(identifier);
 
@@ -68,21 +99,26 @@ export async function askMentor(
     }
 
     try {
-        // Get current time context if not provided
-        const timeCtx = timeContext || getCurrentTimeContext();
+        // Check Upstash Redis RAG Cache for sub-50ms response
+        const isSirahTopic = /sirah|sejarah|rasul|badr|uhud|khandaq|hubaidiyah|hijrah|fath/i.test(message);
+        if (isSirahTopic && chatHistory.length === 0) {
+            const cachedRes = await getCachedSirahResponse(message);
+            if (cachedRes) {
+                return cachedRes;
+            }
+        }
 
-        // Get current spiritual item of the day
+        const timeCtx = timeContext || getCurrentTimeContext();
         const spiritualItem = getSpiritualItemOfDay();
 
-        // Use model router with fallback
         const { response, provider } = await modelRouter.chat(
             message,
             { ...context, dailySpiritualItem: spiritualItem },
             chatHistory
         );
 
-        // Log which provider was used (server-side only)
-        if (provider !== 'Gemini') {
+        if (isSirahTopic && response && chatHistory.length === 0) {
+            await setCachedSirahResponse(message, response);
         }
 
         return response;
