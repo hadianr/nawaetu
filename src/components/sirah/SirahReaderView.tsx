@@ -310,7 +310,7 @@ export function SirahReaderView({
                     isDaylight ? "bg-white border-slate-200 text-slate-800" : "bg-white/[0.03] border-white/10 text-slate-100"
                 )}
             >
-                {section.content.map((paragraph, idx) => (
+                {(Array.isArray(section.content) ? section.content : [String(section.content)]).map((paragraph, idx) => (
                     <p
                         key={idx}
                         className={idx === 0 ? "sirah-dropcap" : "indent-6"}
