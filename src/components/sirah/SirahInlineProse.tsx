@@ -5,7 +5,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  *
  * Parses lightweight inline markdown within a paragraph string and returns
- * styled JSX. Handles nested formats (e.g. bold inside quotes).
+ * styled JSX with unique key generators. Handles nested formats.
  */
 
 import React from "react";
@@ -15,14 +15,15 @@ interface Props {
 }
 
 /**
- * Parses bold (**text**) and italic (*text*) inside plain string segments
+ * Parses bold (**text**) and italic (*text*) inside string segments.
+ * Uses prefix parameter to guarantee unique keys across parent callers.
  */
-function parseFormattedText(text: string): React.ReactNode[] {
+function parseFormattedText(text: string, keyPrefix: string): React.ReactNode[] {
     const pattern = /(\*\*[^*]+\*\*|\*[^*\n]+\*)/g;
     const nodes: React.ReactNode[] = [];
     let lastIndex = 0;
     let match: RegExpExecArray | null;
-    let key = 0;
+    let itemIdx = 0;
 
     while ((match = pattern.exec(text)) !== null) {
         if (match.index > lastIndex) {
@@ -30,10 +31,12 @@ function parseFormattedText(text: string): React.ReactNode[] {
         }
 
         const raw = match[0];
+        const uniqueKey = `${keyPrefix}-fmt-${itemIdx++}`;
+
         if (raw.startsWith("**")) {
-            nodes.push(<strong key={key++}>{raw.slice(2, -2)}</strong>);
+            nodes.push(<strong key={uniqueKey}>{raw.slice(2, -2)}</strong>);
         } else if (raw.startsWith("*")) {
-            nodes.push(<em key={key++}>{raw.slice(1, -1)}</em>);
+            nodes.push(<em key={uniqueKey}>{raw.slice(1, -1)}</em>);
         }
 
         lastIndex = match.index + raw.length;
@@ -50,25 +53,24 @@ function parseFormattedText(text: string): React.ReactNode[] {
  * Parses dialog quotes ("text") and delegates inner text to parseFormattedText
  */
 function parseInline(text: string): React.ReactNode[] {
-    // Match quotes ("..."), making sure not to cross multi-paragraphs or be over-greedy
     const quotePattern = /("[^"\n]+")(?=[^"]*($|\s|[.,;:!?]))/g;
     const nodes: React.ReactNode[] = [];
     let lastIndex = 0;
     let match: RegExpExecArray | null;
-    let key = 0;
+    let sectionIdx = 0;
 
     while ((match = quotePattern.exec(text)) !== null) {
         if (match.index > lastIndex) {
             const leadingText = text.slice(lastIndex, match.index);
-            nodes.push(...parseFormattedText(leadingText));
+            nodes.push(...parseFormattedText(leadingText, `lead-${sectionIdx}`));
         }
 
         const rawQuote = match[0];
-        // Parse any bold/italic formatted text INSIDE the quote
-        const innerContent = parseFormattedText(rawQuote);
+        const innerContent = parseFormattedText(rawQuote, `quote-inner-${sectionIdx}`);
+        const quoteKey = `quote-${sectionIdx++}`;
 
         nodes.push(
-            <em key={key++} className="sirah-quote">
+            <em key={quoteKey} className="sirah-quote">
                 {innerContent}
             </em>
         );
@@ -78,7 +80,7 @@ function parseInline(text: string): React.ReactNode[] {
 
     if (lastIndex < text.length) {
         const trailingText = text.slice(lastIndex);
-        nodes.push(...parseFormattedText(trailingText));
+        nodes.push(...parseFormattedText(trailingText, `trail-${sectionIdx}`));
     }
 
     return nodes;
