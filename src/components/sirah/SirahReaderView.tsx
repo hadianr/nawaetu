@@ -24,8 +24,10 @@ import Link from "next/link";
 import type { SirahSection, SirahQuranRef } from "@/data/sirah";
 import { SirahQuranBridgeModal } from "./SirahQuranBridgeModal";
 import { useTheme } from "@/context/ThemeContext";
+import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { SirahInlineProse } from "./SirahInlineProse";
 
 interface SirahReaderViewProps {
     section: SirahSection;
@@ -41,6 +43,7 @@ export function SirahReaderView({
     chapterSlug,
 }: SirahReaderViewProps) {
     const { currentTheme } = useTheme();
+    const { locale } = useLocale();
     const isDaylight = currentTheme === "daylight";
     const [fontSize, setFontSize] = useState<"sm" | "base" | "lg" | "xl">("base");
     const [isBookmarked, setIsBookmarked] = useState(false);
@@ -48,6 +51,8 @@ export function SirahReaderView({
     const [isPlayingAudio, setIsPlayingAudio] = useState(false);
     const [selectedQuranRef, setSelectedQuranRef] = useState<SirahQuranRef | null>(null);
     const [copied, setCopied] = useState(false);
+    const [enNoticeDismissed, setEnNoticeDismissed] = useState(false);
+    const [readProgress, setReadProgress] = useState(0);
 
     // Sync localStorage state for guest/offline support
     useEffect(() => {
@@ -58,6 +63,17 @@ export function SirahReaderView({
             setIsCompleted(completed.includes(section.id));
         }
     }, [section.id]);
+
+    // Reading progress bar
+    useEffect(() => {
+        const onScroll = () => {
+            const el = document.documentElement;
+            const total = el.scrollHeight - el.clientHeight;
+            setReadProgress(total > 0 ? Math.round((el.scrollTop / total) * 100) : 0);
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
 
     const toggleBookmark = () => {
         const bookmarks: string[] = JSON.parse(localStorage.getItem("nawaetu_sirah_bookmarks") || "[]");
@@ -105,7 +121,7 @@ export function SirahReaderView({
             window.speechSynthesis.cancel();
             setIsPlayingAudio(false);
         } else {
-            const utterance = new SpeechSynthesisUtterance(section.content);
+            const utterance = new SpeechSynthesisUtterance(section.content.join(" "));
             utterance.lang = "id-ID";
             utterance.rate = 0.95;
             utterance.onend = () => setIsPlayingAudio(false);
@@ -117,7 +133,7 @@ export function SirahReaderView({
     };
 
     const handleCopy = () => {
-        const text = `${section.chapterTitle} - ${section.subbab}\n\n${section.content}\n\n[Hikmah & Niat]: ${section.suggestedIntention}\n\n(Dibaca dari Nawaetu.com)`;
+        const text = `${section.chapterTitle} - ${section.subbab}\n\n${section.content.join("\n\n")}\n\n[Hikmah & Niat]: ${section.suggestedIntention}\n\n(Dibaca dari Nawaetu.com)`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -125,19 +141,31 @@ export function SirahReaderView({
     };
 
     const fontSizeClasses = {
-        sm: "text-sm leading-relaxed",
-        base: "text-base leading-relaxed sm:text-lg sm:leading-loose",
-        lg: "text-lg leading-loose sm:text-xl sm:leading-loose",
-        xl: "text-xl leading-loose sm:text-2xl sm:leading-loose",
+        sm:   "text-[15px] leading-[1.85] tracking-[0.01em]",
+        base: "text-[16px] leading-[1.9]  tracking-[0.01em] sm:text-[17px]",
+        lg:   "text-[17px] leading-[2.0]  tracking-[0.01em] sm:text-[19px]",
+        xl:   "text-[19px] leading-[2.0]  tracking-[0.01em] sm:text-[21px]",
     };
 
     const toolBtnClass = isDaylight
         ? "border-slate-300 text-slate-700 hover:bg-slate-50"
         : "border-emerald-500/20 text-white hover:bg-emerald-500/10";
 
+    const wordCount = section.content.join(" ").split(" ").length;
+    const readMinutes = Math.ceil(wordCount / 150);
+
     return (
+        <>
+        {/* Fixed reading progress bar */}
+        <div className="fixed top-0 left-0 right-0 z-50 h-0.5 bg-transparent pointer-events-none">
+            <div
+                className="h-full bg-emerald-500 transition-[width] duration-100"
+                style={{ width: `${readProgress}%` }}
+            />
+        </div>
+
         <div className={cn(
-            "min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-3xl mx-auto space-y-6 transition-colors",
+            "min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
             isDaylight ? "text-slate-900" : "text-white"
         )}>
             {/* Header Controls */}
@@ -222,6 +250,9 @@ export function SirahReaderView({
                         📄 Halaman Referensi: {section.pageStart} {section.pageEnd ? `- ${section.pageEnd}` : ""}
                     </p>
                 )}
+                <p className={cn("text-xs", isDaylight ? "text-slate-500" : "text-slate-400")}>
+                    ⏱️ ~{readMinutes} min baca
+                </p>
             </div>
 
             {/* Related Quran Verses Chips */}
@@ -248,16 +279,44 @@ export function SirahReaderView({
                 </div>
             )}
 
+            {/* EN language notice — shown only when locale is English */}
+            {locale === "en" && !enNoticeDismissed && (
+                <div className={cn(
+                    "flex items-start justify-between gap-3 px-4 py-3 rounded-2xl border text-xs",
+                    isDaylight
+                        ? "bg-amber-50 border-amber-200 text-amber-800"
+                        : "bg-amber-500/10 border-amber-500/20 text-amber-300"
+                )}>
+                    <p className="leading-relaxed">
+                        <span className="font-bold">🇮🇩 Indonesian only.</span>{" "}
+                        This Sirah content is currently available in Bahasa Indonesia.
+                        English translation is coming soon.
+                    </p>
+                    <button
+                        onClick={() => setEnNoticeDismissed(true)}
+                        className="shrink-0 font-bold opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+                        title="Dismiss"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
+
             {/* Main Section Content */}
             <div
                 className={cn(
-                    "p-6 sm:p-8 rounded-3xl border transition-all shadow-sm space-y-4 select-text",
+                    "px-5 py-6 sm:px-8 sm:py-8 rounded-3xl border transition-all shadow-sm space-y-5 select-text font-[family-name:var(--font-lora)]",
                     fontSizeClasses[fontSize],
                     isDaylight ? "bg-white border-slate-200 text-slate-800" : "bg-white/[0.03] border-white/10 text-slate-100"
                 )}
             >
-                {section.content.split("\n\n").map((paragraph, idx) => (
-                    <p key={idx}>{paragraph}</p>
+                {section.content.map((paragraph, idx) => (
+                    <p
+                        key={idx}
+                        className={idx === 0 ? "sirah-dropcap" : "indent-6"}
+                    >
+                        <SirahInlineProse text={paragraph} />
+                    </p>
                 ))}
             </div>
 
@@ -347,5 +406,6 @@ export function SirahReaderView({
                 onClose={() => setSelectedQuranRef(null)}
             />
         </div>
+        </>
     );
 }
