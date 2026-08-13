@@ -20,6 +20,7 @@ export const uiID = {
     // Navigation Menu
     navHome: "Beranda",
     navQuran: "Al-Qur'an",
+    navSirah: "Sirah",
     navTasbih: "Tasbih",
     navQibla: "Kiblat",
     navSettings: "Atur",

@@ -463,3 +463,34 @@ export const userFeedbackRelations = relations(userFeedback, ({ one }) => ({
 export type UserFeedback = typeof userFeedback.$inferSelect;
 export type NewUserFeedback = typeof userFeedback.$inferInsert;
 
+// --- Sirah Nabawiyah User State Tables ---
+export const sirahUserProgress = pgTable("sirah_user_progress", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    sectionId: text("section_id").notNull(),
+    chapterSlug: text("chapter_slug").notNull(),
+    completedAt: timestamp("completed_at").defaultNow().notNull(),
+}, (table) => ({
+    userSectionIdx: uniqueIndex("sirah_user_section_unique").on(table.userId, table.sectionId),
+    userIdIdx: index("sirah_user_progress_user_idx").on(table.userId),
+}));
+
+export const sirahBookmarks = pgTable("sirah_bookmarks", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    sectionId: text("section_id").notNull(),
+    chapterSlug: text("chapter_slug").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+    userBookmarkIdx: uniqueIndex("sirah_user_bookmark_unique").on(table.userId, table.sectionId),
+    userIdIdx: index("sirah_bookmarks_user_idx").on(table.userId),
+}));
+
+export type SirahUserProgress = typeof sirahUserProgress.$inferSelect;
+export type SirahBookmark = typeof sirahBookmarks.$inferSelect;
+
+

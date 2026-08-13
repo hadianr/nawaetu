@@ -53,6 +53,7 @@ import TafsirModal from "./TafsirModal";
 import AudioPlayerBar from "./AudioPlayerBar";
 import QuranSettingsModal from "./QuranSettingsModal";
 import { PageJumpDialog, SurahNavigationCards } from "./QuranPageControls";
+import { SirahQuranContextBanner } from "./SirahQuranContextBanner";
 import { surahNames } from "@/lib/quran/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 import { useBookmarks } from "@/hooks/useBookmarks";
@@ -616,6 +617,10 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 </div>
 
                 {/* --- Main Content --- */}
+                <div className="px-4 pt-3 md:px-0">
+                    <SirahQuranContextBanner surahId={chapter.id} />
+                </div>
+
                 {viewMode === 'mushaf' ? (
                     // --- Mushaf Mode View ---
 
