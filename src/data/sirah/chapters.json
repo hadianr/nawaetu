@@ -1,0 +1,452 @@
+[
+  {
+    "id": "chap-01",
+    "slug": "kelahiran-dan-empat-puluh-tahun-sebelum-nubuwah",
+    "orderIndex": 1,
+    "title": "Kelahiran dan Empat Puluh Tahun Sebelum Nubuwah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Kelahiran dan Empat Puluh Tahun Sebelum Nubuwah.",
+    "totalSections": 13
+  },
+  {
+    "id": "chap-02",
+    "slug": "di-bawah-lindungan-nubuwah-dan-risalah",
+    "orderIndex": 2,
+    "title": "Di Bawah Lindungan Nubuwah dan Risalah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Di Bawah Lindungan Nubuwah dan Risalah.",
+    "totalSections": 5
+  },
+  {
+    "id": "chap-03",
+    "slug": "perintah-melaksanakan-dakwah-kepada-allah-dan-materi-dakwah",
+    "orderIndex": 3,
+    "title": "Perintah Melaksanakan Dakwah Kepada Allah dan Materi Dakwah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Perintah Melaksanakan Dakwah Kepada Allah dan Materi Dakwah.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-04",
+    "slug": "periode-dan-tahapan-dakwah",
+    "orderIndex": 4,
+    "title": "Periode dan Tahapan Dakwah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Periode dan Tahapan Dakwah.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-05",
+    "slug": "tahapan-pertama-jihad-untuk-berdakwah",
+    "orderIndex": 5,
+    "title": "Tahapan Pertama: Jihad untuk Berdakwah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Tahapan Pertama: Jihad untuk Berdakwah.",
+    "totalSections": 4
+  },
+  {
+    "id": "chap-06",
+    "slug": "tahapan-kedua-dakwah-secara-terang-terangan",
+    "orderIndex": 6,
+    "title": "Tahapan Kedua: Dakwah Secara Terang-Terangan",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Tahapan Kedua: Dakwah Secara Terang-Terangan.",
+    "totalSections": 18
+  },
+  {
+    "id": "chap-07",
+    "slug": "pemboikotan-secara-menyeluruh",
+    "orderIndex": 7,
+    "title": "Pemboikotan Secara Menyeluruh",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Pemboikotan Secara Menyeluruh.",
+    "totalSections": 3
+  },
+  {
+    "id": "chap-08",
+    "slug": "utusan-quraisy-terakhir-yang-menemui-abu-thalib",
+    "orderIndex": 8,
+    "title": "Utusan Quraisy Terakhir yang Menemui Abu Thalib",
+    "era": "diplomacy",
+    "summary": "Pembahasan mengenai Utusan Quraisy Terakhir yang Menemui Abu Thalib.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-09",
+    "slug": "tahun-berduka",
+    "orderIndex": 9,
+    "title": "Tahun Berduka",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Tahun Berduka.",
+    "totalSections": 4
+  },
+  {
+    "id": "chap-10",
+    "slug": "tahapan-ketiga-dakwah-islam-di-luar-makkah",
+    "orderIndex": 10,
+    "title": "Tahapan Ketiga: Dakwah Islam di Luar Makkah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Tahapan Ketiga: Dakwah Islam di Luar Makkah.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-11",
+    "slug": "menawarkan-islam-kepada-berbagai-kabilah-dan-individu",
+    "orderIndex": 11,
+    "title": "Menawarkan Islam Kepada Berbagai Kabilah dan Individu",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Menawarkan Islam Kepada Berbagai Kabilah dan Individu.",
+    "totalSections": 3
+  },
+  {
+    "id": "chap-12",
+    "slug": "isra-dan-miraj",
+    "orderIndex": 12,
+    "title": "Isra' dan Mi'raj",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Isra' dan Mi'raj.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-13",
+    "slug": "baiat-aqabah-pertama",
+    "orderIndex": 13,
+    "title": "Baiat Aqabah Pertama",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Baiat Aqabah Pertama.",
+    "totalSections": 2
+  },
+  {
+    "id": "chap-14",
+    "slug": "baiat-aqabah-kedua",
+    "orderIndex": 14,
+    "title": "Baiat Aqabah Kedua",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Baiat Aqabah Kedua.",
+    "totalSections": 4
+  },
+  {
+    "id": "chap-15",
+    "slug": "permulaan-hijrah",
+    "orderIndex": 15,
+    "title": "Permulaan Hijrah",
+    "era": "madinah",
+    "summary": "Pembahasan mengenai Permulaan Hijrah.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-16",
+    "slug": "parlemen-quraisy-dan-daruh-nadwah",
+    "orderIndex": 16,
+    "title": "Parlemen Quraisy dan Daruh Nadwah",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Parlemen Quraisy dan Daruh Nadwah.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-17",
+    "slug": "rasulullah-صلى-الله-عليه-وسلم-hijrah",
+    "orderIndex": 17,
+    "title": "Rasulullah SAW Hijrah",
+    "era": "madinah",
+    "summary": "Pembahasan mengenai Rasulullah SAW Hijrah.",
+    "totalSections": 7
+  },
+  {
+    "id": "chap-18",
+    "slug": "kondisi-yang-masih-labil-di-madinah-tatkala-hijrah",
+    "orderIndex": 18,
+    "title": "Kondisi yang Masih Labil di Madinah Tatkala Hijrah",
+    "era": "madinah",
+    "summary": "Pembahasan mengenai Kondisi yang Masih Labil di Madinah Tatkala Hijrah.",
+    "totalSections": 3
+  },
+  {
+    "id": "chap-19",
+    "slug": "membangun-masyarakat-baru",
+    "orderIndex": 19,
+    "title": "Membangun Masyarakat Baru",
+    "era": "madinah",
+    "summary": "Pembahasan mengenai Membangun Masyarakat Baru.",
+    "totalSections": 4
+  },
+  {
+    "id": "chap-20",
+    "slug": "perjanjian-dengan-pihak-yahudi",
+    "orderIndex": 20,
+    "title": "Perjanjian dengan Pihak Yahudi",
+    "era": "diplomacy",
+    "summary": "Pembahasan mengenai Perjanjian dengan Pihak Yahudi.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-21",
+    "slug": "perjuangan-yang-menuntut-pengorbanan-nyawa",
+    "orderIndex": 21,
+    "title": "Perjuangan yang Menuntut Pengorbanan Nyawa",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Perjuangan yang Menuntut Pengorbanan Nyawa.",
+    "totalSections": 5
+  },
+  {
+    "id": "chap-22",
+    "slug": "perang-badr-kubra",
+    "orderIndex": 22,
+    "title": "Perang Badr Kubra",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Badr Kubra.",
+    "totalSections": 31
+  },
+  {
+    "id": "chap-23",
+    "slug": "aktivitas-pasukan-antara-perang-badr-dan-perang-uhud",
+    "orderIndex": 23,
+    "title": "Aktivitas Pasukan Antara Perang Badr dan Perang Uhud",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Aktivitas Pasukan Antara Perang Badr dan Perang Uhud.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-24",
+    "slug": "konspirasi-untuk-membunuh-nabi",
+    "orderIndex": 24,
+    "title": "Konspirasi untuk Membunuh Nabi",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Konspirasi untuk Membunuh Nabi.",
+    "totalSections": 9
+  },
+  {
+    "id": "chap-25",
+    "slug": "perang-uhud",
+    "orderIndex": 25,
+    "title": "Perang Uhud",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Uhud.",
+    "totalSections": 33
+  },
+  {
+    "id": "chap-26",
+    "slug": "perang-ahzab-atau-khandaq",
+    "orderIndex": 26,
+    "title": "Perang Ahzab atau Khandaq",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Ahzab atau Khandaq.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-27",
+    "slug": "perang-bani-quraizhah",
+    "orderIndex": 27,
+    "title": "Perang Bani Quraizhah",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Bani Quraizhah.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-28",
+    "slug": "manuver-manuver-militer-setelah-perang-bani-quraizhah",
+    "orderIndex": 28,
+    "title": "Manuver-Manuver Militer setelah Perang Bani Quraizhah",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Manuver-Manuver Militer setelah Perang Bani Quraizhah.",
+    "totalSections": 4
+  },
+  {
+    "id": "chap-29",
+    "slug": "peperangan-bani-mushthaliq-atau-perang-al-muraisi",
+    "orderIndex": 29,
+    "title": "Peperangan Bani Mushthaliq atau Perang Al-Muraisi",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Peperangan Bani Mushthaliq atau Perang Al-Muraisi.",
+    "totalSections": 2
+  },
+  {
+    "id": "chap-30",
+    "slug": "pengiriman-satuan-satuan-pasukan-sesudah-perang-muraisi",
+    "orderIndex": 30,
+    "title": "Pengiriman Satuan-satuan Pasukan sesudah Perang Muraisi",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Pengiriman Satuan-satuan Pasukan sesudah Perang Muraisi.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-31",
+    "slug": "perjanjian-hubaidiyah",
+    "orderIndex": 31,
+    "title": "Perjanjian Hubaidiyah",
+    "era": "diplomacy",
+    "summary": "Pembahasan mengenai Perjanjian Hubaidiyah.",
+    "totalSections": 13
+  },
+  {
+    "id": "chap-32",
+    "slug": "tahapan-kedua-babak-baru",
+    "orderIndex": 32,
+    "title": "Tahapan Kedua: Babak Baru",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Tahapan Kedua: Babak Baru.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-33",
+    "slug": "korespondensi-dengan-beberapa-raja-dan-amir",
+    "orderIndex": 33,
+    "title": "Korespondensi dengan Beberapa Raja dan Amir",
+    "era": "diplomacy",
+    "summary": "Pembahasan mengenai Korespondensi dengan Beberapa Raja dan Amir.",
+    "totalSections": 8
+  },
+  {
+    "id": "chap-34",
+    "slug": "manuver-militer-setelah-perjanjain-hubaidiyah-perang-ghabah-atau-dzu-qarad",
+    "orderIndex": 34,
+    "title": "Manuver Militer setelah Perjanjain Hubaidiyah (Perang Ghabah atau Dzu Qarad)",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Manuver Militer setelah Perjanjain Hubaidiyah (Perang Ghabah atau Dzu Qarad).",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-35",
+    "slug": "perang-khaibar-dan-wadil-qura",
+    "orderIndex": 35,
+    "title": "Perang Khaibar dan Wadil Qura",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Khaibar dan Wadil Qura.",
+    "totalSections": 21
+  },
+  {
+    "id": "chap-36",
+    "slug": "sisa-sisa-peperangan-dan-satuan-pasukan-pada-7-h",
+    "orderIndex": 36,
+    "title": "Sisa-sisa Peperangan dan Satuan pasukan Pada 7 H",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Sisa-sisa Peperangan dan Satuan pasukan Pada 7 H.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-37",
+    "slug": "umrah-qada",
+    "orderIndex": 37,
+    "title": "Umrah Qada'",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Umrah Qada'.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-38",
+    "slug": "perang-mutah",
+    "orderIndex": 38,
+    "title": "Perang Mu'tah",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Mu'tah.",
+    "totalSections": 11
+  },
+  {
+    "id": "chap-39",
+    "slug": "perang-dan-penaklukan-makkah",
+    "orderIndex": 39,
+    "title": "Perang dan Penaklukan Makkah",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang dan Penaklukan Makkah.",
+    "totalSections": 22
+  },
+  {
+    "id": "chap-40",
+    "slug": "tahapan-ketiga-perang-hunain",
+    "orderIndex": 40,
+    "title": "Tahapan Ketiga: Perang Hunain",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Tahapan Ketiga: Perang Hunain.",
+    "totalSections": 14
+  },
+  {
+    "id": "chap-41",
+    "slug": "pengiriman-duta-dan-satuan-perang-sepulang-dari-penaklukan-makkah",
+    "orderIndex": 41,
+    "title": "Pengiriman Duta dan Satuan Perang Sepulang dari Penaklukan Makkah",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Pengiriman Duta dan Satuan Perang Sepulang dari Penaklukan Makkah.",
+    "totalSections": 2
+  },
+  {
+    "id": "chap-42",
+    "slug": "perang-tabuk",
+    "orderIndex": 42,
+    "title": "Perang Tabuk",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Perang Tabuk.",
+    "totalSections": 12
+  },
+  {
+    "id": "chap-43",
+    "slug": "abu-bakar-menunaikan-haji",
+    "orderIndex": 43,
+    "title": "Abu Bakar Menunaikan Haji",
+    "era": "diplomacy",
+    "summary": "Pembahasan mengenai Abu Bakar Menunaikan Haji.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-44",
+    "slug": "sekilas-tentang-peperangan",
+    "orderIndex": 44,
+    "title": "Sekilas Tentang Peperangan",
+    "era": "ghazwah",
+    "summary": "Pembahasan mengenai Sekilas Tentang Peperangan.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-45",
+    "slug": "manusia-memasuki-agama-allah-secara-berbondong-bondong",
+    "orderIndex": 45,
+    "title": "Manusia Memasuki Agama Allah secara Berbondong-bondong",
+    "era": "makkah",
+    "summary": "Pembahasan mengenai Manusia Memasuki Agama Allah secara Berbondong-bondong.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-46",
+    "slug": "keberhasilan-dakwah-islam-dan-pengaruhnya",
+    "orderIndex": 46,
+    "title": "Keberhasilan Dakwah Islam dan Pengaruhnya",
+    "era": "legacy",
+    "summary": "Pembahasan mengenai Keberhasilan Dakwah Islam dan Pengaruhnya.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-47",
+    "slug": "haji-wada",
+    "orderIndex": 47,
+    "title": "Haji Wada'",
+    "era": "diplomacy",
+    "summary": "Pembahasan mengenai Haji Wada'.",
+    "totalSections": 1
+  },
+  {
+    "id": "chap-48",
+    "slug": "kembali-ke-haribaan-ilahi",
+    "orderIndex": 48,
+    "title": "Kembali ke Haribaan Ilahi",
+    "era": "legacy",
+    "summary": "Pembahasan mengenai Kembali ke Haribaan Ilahi.",
+    "totalSections": 10
+  },
+  {
+    "id": "chap-49",
+    "slug": "rumah-tangga-nabawi",
+    "orderIndex": 49,
+    "title": "Rumah Tangga Nabawi",
+    "era": "legacy",
+    "summary": "Pembahasan mengenai Rumah Tangga Nabawi.",
+    "totalSections": 11
+  },
+  {
+    "id": "chap-50",
+    "slug": "sifat-dan-akhlak-rasulullah",
+    "orderIndex": 50,
+    "title": "Sifat dan Akhlak Rasulullah",
+    "era": "legacy",
+    "summary": "Pembahasan mengenai Sifat dan Akhlak Rasulullah.",
+    "totalSections": 3
+  }
+]

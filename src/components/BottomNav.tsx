@@ -21,12 +21,11 @@
 import { useState, useEffect, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, Compass, Settings, Fingerprint, BarChart3 } from "lucide-react";
+import { Home, BookOpen, Scroll, Settings, Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTheme } from "@/context/ThemeContext";
-import { useFeaturePreset } from "@/hooks/useFeaturePreset";
 
 // Enhanced Moon icon for Ramadhan with crescent and star
 const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: boolean }) => (
@@ -57,7 +56,6 @@ const BottomNav = memo(function BottomNav() {
     const isDaylight = currentTheme === "daylight";
     const [mounted, setMounted] = useState(false);
     const { data } = usePrayerTimesContext();
-    const { showStats } = useFeaturePreset();
 
     useEffect(() => {
         setMounted(true);
@@ -68,23 +66,21 @@ const BottomNav = memo(function BottomNav() {
     const isRamadhan = hijriMonth.toLowerCase().includes("ramadan") || hijriMonth.toLowerCase().includes("ramadhan");
 
     // Seasonal nav: during Ramadhan, replace Tasbih (center) with Ramadhan Hub
-    // Stats icon hanya tampil jika preset Lengkap
     const navItems = isRamadhan
         ? [
             { href: "/", label: t.navHome, icon: Home, special: false },
             { href: "/quran", label: t.navQuran, icon: BookOpen, special: false },
             { href: "/ramadhan", label: "Ramadhan", icon: MoonStarIcon, special: true },
-            { href: "/dhikr", label: t.navTasbih, icon: Fingerprint, special: false },
+            { href: "/sirah", label: (t as any).navSirah ?? "Sirah", icon: Scroll, special: false },
             { href: "/settings", label: t.navSettings, icon: Settings, special: false },
         ]
         : [
             { href: "/", label: t.navHome, icon: Home, special: false },
             { href: "/quran", label: t.navQuran, icon: BookOpen, special: false },
-            showStats ? { href: "/stats", label: (t as any).navStats ?? "Statistik", icon: BarChart3, special: false } : null,
+            { href: "/sirah", label: (t as any).navSirah ?? "Sirah", icon: Scroll, special: false },
             { href: "/dhikr", label: t.navTasbih, icon: Fingerprint, special: false },
-            { href: "/qibla", label: t.navQibla, icon: Compass, special: false },
             { href: "/settings", label: t.navSettings, icon: Settings, special: false },
-        ].filter(Boolean) as { href: string; label: string; icon: React.ElementType; special: boolean }[];
+        ];
 
     if (!mounted || pathname === "/mentor-ai") return null;
 
