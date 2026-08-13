@@ -30,7 +30,7 @@ export interface SirahSection {
     subbab: string;
     pageStart?: number;
     pageEnd?: number;
-    content: string;
+    content: string[];
     highlights?: string;
     suggestedIntention: string;
     relatedQuranVerses?: SirahQuranRef[];

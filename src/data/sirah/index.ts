@@ -39,7 +39,7 @@ export function searchSirah(query: string): SirahSection[] {
         (s) =>
             s.subbab.toLowerCase().includes(q) ||
             s.chapterTitle.toLowerCase().includes(q) ||
-            s.content.toLowerCase().includes(q)
+            s.content.join(" ").toLowerCase().includes(q)
     );
 }
 

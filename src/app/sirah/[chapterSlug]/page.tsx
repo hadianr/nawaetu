@@ -154,7 +154,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                             {sec.subbab}
                                         </h3>
                                         <p className={cn("text-[11px]", isDaylight ? "text-slate-500" : "text-slate-400")}>
-                                            ⏱️ ~{Math.ceil(sec.content.split(" ").length / 150)} min baca
+                                            ⏱️ ~{Math.ceil(sec.content.join(" ").split(" ").length / 150)} min baca
                                             {sec.pageStart ? ` • Hlm ${sec.pageStart}` : ""}
                                         </p>
                                     </div>
