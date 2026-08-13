@@ -303,6 +303,45 @@ export default function SettingsPageContent() {
                     refreshProfile={refreshProfile}
                 />
 
+                {/* Statistics & Analytics Access Card */}
+                <div className={cn(
+                    "border rounded-2xl p-4 transition-all",
+                    isDaylight
+                        ? "bg-white border-slate-200/80 shadow-xs"
+                        : "bg-white/[0.04] border-white/10 hover:border-emerald-500/30"
+                )}>
+                    <Link
+                        href="/stats"
+                        className="flex items-center justify-between group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className={cn(
+                                "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shrink-0",
+                                isDaylight
+                                    ? "bg-emerald-500/10 text-emerald-600"
+                                    : "bg-emerald-500/20 text-emerald-400"
+                            )}>
+                                <BarChart3 className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className={cn(
+                                    "text-sm font-bold group-hover:text-emerald-500 transition-colors",
+                                    isDaylight ? "text-slate-900" : "text-white"
+                                )}>
+                                    Statistik Ibadah & Hasanah
+                                </h3>
+                                <p className={cn(
+                                    "text-xs leading-relaxed",
+                                    isDaylight ? "text-slate-500" : "text-slate-400"
+                                )}>
+                                    Lihat statistik lifetime, tren Hasanah, dan milestone ibadah
+                                </p>
+                            </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-emerald-500 shrink-0" />
+                    </Link>
+                </div>
+
 
 
                 {/* Worship Configuration Hub */}
