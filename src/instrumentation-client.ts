@@ -64,6 +64,9 @@ const initSentry = () => {
       /undefined is not an object \(evaluating 'window\.webkit\.messageHandlers'\)/i,
       /Registration failed - push service error/i,
       /AbortError: Registration failed/i,
+      // Ignore browser extension and Web3 errors
+      /Failed to connect to MetaMask/i,
+      /MetaMask extension not found/i,
     ],
   });
 };
