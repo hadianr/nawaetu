@@ -67,16 +67,22 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
                 "w-full p-4 rounded-2xl border transition-all mb-4 flex items-center justify-between gap-3",
                 isDaylight
                     ? "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 text-slate-800"
-                    : "bg-gradient-to-r from-emerald-950/40 to-teal-950/20 border-emerald-500/30 text-emerald-100"
+                    : "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-white"
             )}
         >
             <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-500 shrink-0">
+                <div className={cn(
+                    "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
+                    isDaylight ? "bg-emerald-50 text-emerald-600" : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
+                )}>
                     <BookOpen className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 space-y-0.5">
                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-extrabold uppercase text-emerald-600 dark:text-emerald-400 tracking-wider">
+                        <span className={cn(
+                            "text-[10px] font-extrabold uppercase tracking-wider",
+                            isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                        )}>
                             💡 Konteks Sejarah (Sirah Nabawiyah)
                         </span>
                     </div>
@@ -88,7 +94,12 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
 
             <Link
                 href={`/sirah/${info.chapterSlug}`}
-                className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1 shadow-xs"
+                className={cn(
+                    "px-3 py-1.5 rounded-xl text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1 shadow-xs cursor-pointer",
+                    isDaylight
+                        ? "bg-emerald-600 hover:bg-emerald-500"
+                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90"
+                )}
             >
                 <span>Baca Sirah</span>
                 <ChevronRight className="w-3.5 h-3.5" />
