@@ -45,8 +45,8 @@ export const settingsEN = {
     feedbackSuccessToast: "Your feedback has been submitted successfully. Thank you!",
     feedbackErrorToast: "Failed to send feedback. Please try again.",
     feedbackAuthRequired: "Please sign in first to send feedback.",
-    feedbackLoginButton: "Sign In Now",
-
-
-
+    // Share App
+    shareAppCardTitle: "Share App",
+    shareAppCardDesc: "Invite friends & family to join.",
+    shareButtonCompact: "Share",
 };
