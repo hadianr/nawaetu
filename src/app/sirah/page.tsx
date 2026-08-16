@@ -227,8 +227,10 @@ export default function SirahDashboardPage() {
                         placeholder="Cari bab atau peristiwa Sirah..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        autoCapitalize="none"
+                        autoCorrect="off"
                         className={cn(
-                            "w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl sm:rounded-2xl border transition-all outline-hidden",
+                            "w-full pl-10 pr-4 py-2 text-[16px] sm:text-sm rounded-xl sm:rounded-2xl border transition-all outline-hidden",
                             isDaylight
                                 ? "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                                 : "bg-white/[0.05] border-white/15 text-white placeholder:text-slate-400 focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20"

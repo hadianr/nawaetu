@@ -300,7 +300,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder={t.feedbackMessagePlaceholder}
                                     className={cn(
-                                        "min-h-[100px] text-xs leading-relaxed rounded-xl border resize-none focus-visible:ring-1 focus-visible:ring-[rgb(var(--color-primary-light))]",
+                                        "min-h-[100px] text-base md:text-xs leading-relaxed rounded-xl border resize-none focus-visible:ring-1 focus-visible:ring-[rgb(var(--color-primary-light))]",
                                         isDaylight ? "bg-white border-slate-200" : "bg-white/5 border-white/10"
                                     )}
                                 />

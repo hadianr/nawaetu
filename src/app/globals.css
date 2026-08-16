@@ -863,3 +863,23 @@ body[data-focus-mode="true"]:not([data-theme="daylight"]) [data-quran-verse-list
 nav {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
+/* =====================================================================
+   MOBILE INPUT AUTO-ZOOM PREVENTION
+   Prevents iOS Safari & mobile webviews from automatically zooming in
+   when an input/textarea/select field is tapped/focused.
+   ===================================================================== */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

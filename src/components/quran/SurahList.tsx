@@ -314,8 +314,10 @@ export default function SurahList({ chapters }: SurahListProps) {
                             placeholder={t.quranSearchPlaceholder}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            autoCapitalize="none"
+                            autoCorrect="off"
                             className={cn(
-                                "border-none bg-transparent text-sm focus-visible:ring-0 px-3 h-auto py-1",
+                                "border-none bg-transparent text-[16px] sm:text-sm focus-visible:ring-0 px-3 h-auto py-1",
                                 isDaylight ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-slate-500"
                             )}
                         />
