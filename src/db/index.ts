@@ -16,42 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { drizzle as neonDrizzle } from "drizzle-orm/neon-http";
-import { drizzle as pgDrizzle } from "drizzle-orm/postgres-js";
+import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
-import postgres from "postgres";
-
 import * as schema from "./schema";
 
-import { NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-
-// Determine which driver to use based on the connection string
 const connectionString = process.env.DATABASE_URL || "";
-export const isNeon = connectionString.includes("neon.tech");
+export const isNeon = true;
 
-// Define a common interface for the database regardless of the underlying driver
-// We cast the exported db to `any` because the Neon and PostgresJS signatures slightly
-// differ internally in Drizzle, causing TS errors on `.returning()`. The runtime
-// behavior for our select/insert/update/delete operations is identical.
-export const db = (isNeon
-    ? neonDrizzle({ client: neon(connectionString), schema })
-    : pgDrizzle(postgres(connectionString), { schema })) as any as NeonHttpDatabase<typeof schema> & PostgresJsDatabase<typeof schema>;
+const sql = neon(connectionString);
+export const db = drizzle(sql, { schema });
 
 /**
  * Health check function to verify database connectivity.
- * Useful for monitoring and graceful error handling.
  */
 export async function checkConnection() {
     try {
-        if (isNeon) {
-            const sql = neon(connectionString);
-            await sql`SELECT 1`;
-        } else {
-            const sql = postgres(connectionString);
-            await sql`SELECT 1`;
-            await sql.end(); // Don't leave connection hanging in health check
-        }
+        await sql`SELECT 1`;
         return { success: true };
     } catch (error) {
         console.error("Database connection failed:", error);
