@@ -86,13 +86,13 @@ export default function SirahQuizPage() {
             {/* Header / Back Link */}
             <div className={cn(
                 "flex items-center justify-between border-b pb-4",
-                isDaylight ? "border-slate-200" : "border-emerald-500/10"
+                isDaylight ? "border-slate-200" : "border-white/10"
             )}>
                 <Link
                     href="/sirah"
                     className={cn(
                         "inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity",
-                        isDaylight ? "text-emerald-700" : "text-emerald-400"
+                        isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
@@ -118,7 +118,7 @@ export default function SirahQuizPage() {
                 >
                     <div className={cn(
                         "w-16 h-16 rounded-full flex items-center justify-center mx-auto text-3xl",
-                        isDaylight ? "bg-emerald-100" : "bg-emerald-500/15"
+                        isDaylight ? "bg-emerald-100" : "bg-[rgb(var(--color-primary))]/20"
                     )}>
                         ✅
                     </div>
@@ -128,7 +128,7 @@ export default function SirahQuizPage() {
                             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border",
                             isDaylight 
                                 ? "bg-emerald-100 text-emerald-800 border-emerald-200" 
-                                : "bg-emerald-500/15 text-emerald-400 border-emerald-500/20"
+                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30"
                         )}>
                             <Sparkles className="w-3.5 h-3.5" />
                             <span>Kuis Hari Ini Sudah Selesai Dikerjakan</span>
@@ -144,7 +144,12 @@ export default function SirahQuizPage() {
                     <div className="pt-2 flex items-center justify-center gap-3">
                         <Link
                             href="/sirah"
-                            className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5"
+                            className={cn(
+                                "px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer",
+                                isDaylight
+                                    ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 shadow-[rgb(var(--color-primary))]/20"
+                            )}
                         >
                             <BookOpen className="w-4 h-4" />
                             <span>Baca Sirah Nabawiyah</span>
@@ -152,10 +157,10 @@ export default function SirahQuizPage() {
                         <Link
                             href="/"
                             className={cn(
-                                "px-5 py-2.5 rounded-xl border text-xs font-bold transition-colors flex items-center gap-1.5",
+                                "px-5 py-2.5 rounded-xl border text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer",
                                 isDaylight 
                                     ? "border-slate-300 text-slate-700 hover:bg-slate-50" 
-                                    : "border-emerald-500/20 text-white hover:bg-emerald-500/10"
+                                    : "border-white/15 text-white hover:bg-[rgb(var(--color-primary))]/15 hover:border-[rgb(var(--color-primary))]/30"
                             )}
                         >
                             <Home className="w-4 h-4" />
@@ -173,7 +178,7 @@ export default function SirahQuizPage() {
                 >
                     <div className={cn("flex items-center justify-between text-xs font-bold", isDaylight ? "text-slate-500" : "text-slate-400")}>
                         <span>SOAL {currentIndex + 1} DARI {questions.length}</span>
-                        <span className={isDaylight ? "text-emerald-700" : "text-emerald-400"}>Skor: {score} Benar (+{score * 10} Poin)</span>
+                        <span className={isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"}>Skor: {score} Benar (+{score * 10} Poin)</span>
                     </div>
 
                     <h2 className={cn("text-base sm:text-lg font-extrabold leading-snug", isDaylight ? "text-slate-900" : "text-white")}>
@@ -185,13 +190,13 @@ export default function SirahQuizPage() {
                         {currentQ?.options.map((opt, idx) => {
                             let optionStateStyle = isDaylight
                                 ? "bg-slate-50 border-slate-200 hover:border-emerald-400 text-slate-800"
-                                : "bg-white/5 border-white/10 hover:border-emerald-500/40 text-slate-200";
+                                : "bg-white/5 border-white/10 hover:border-[rgb(var(--color-primary))]/40 text-slate-200";
 
                             if (selectedOption !== null) {
                                 if (idx === currentQ.correctIndex) {
                                     optionStateStyle = isDaylight
                                         ? "bg-emerald-50 border-emerald-500 text-emerald-800 font-bold"
-                                        : "bg-emerald-500/20 border-emerald-500 text-emerald-400 font-bold";
+                                        : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-light))] font-bold";
                                 } else if (idx === selectedOption) {
                                     optionStateStyle = isDaylight
                                         ? "bg-rose-50 border-rose-500 text-rose-800 font-bold"
@@ -215,7 +220,7 @@ export default function SirahQuizPage() {
                                 >
                                     <span>{opt}</span>
                                     {selectedOption !== null && idx === currentQ.correctIndex && (
-                                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                                        <CheckCircle2 className={cn("w-5 h-5 shrink-0", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary))]" )} />
                                     )}
                                     {selectedOption !== null && idx === selectedOption && idx !== currentQ.correctIndex && (
                                         <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
@@ -231,9 +236,9 @@ export default function SirahQuizPage() {
                             "p-4 rounded-2xl border space-y-1 text-xs animate-in fade-in duration-200",
                             isDaylight 
                                 ? "bg-emerald-50/60 border-emerald-200" 
-                                : "bg-emerald-500/10 border-emerald-500/20"
+                                : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30"
                         )}>
-                            <p className={cn("font-bold", isDaylight ? "text-emerald-800" : "text-emerald-400")}>💡 Penjelasan Singkat:</p>
+                            <p className={cn("font-bold", isDaylight ? "text-emerald-800" : "text-[rgb(var(--color-primary-light))]")}>💡 Penjelasan Singkat:</p>
                             <p className={isDaylight ? "text-slate-700" : "text-slate-300"}>
                                 {currentQ?.explanation}
                             </p>
@@ -245,7 +250,12 @@ export default function SirahQuizPage() {
                         <div className="pt-2 flex justify-end">
                             <button
                                 onClick={handleNext}
-                                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md shadow-emerald-600/20"
+                                className={cn(
+                                    "px-6 py-2.5 rounded-xl text-white font-bold text-xs transition-all shadow-md cursor-pointer",
+                                    isDaylight
+                                        ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 shadow-[rgb(var(--color-primary))]/20"
+                                )}
                             >
                                 {currentIndex < questions.length - 1 ? "Soal Berikutnya ➔" : "Lihat Hasil & Rekomendasi ✨"}
                             </button>
@@ -262,7 +272,7 @@ export default function SirahQuizPage() {
                 >
                     <div className={cn(
                         "w-16 h-16 rounded-full flex items-center justify-center mx-auto text-2xl",
-                        isDaylight ? "bg-emerald-100 text-emerald-800" : "bg-emerald-500/15 text-emerald-500"
+                        isDaylight ? "bg-emerald-100 text-emerald-800" : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
                     )}>
                         🏆
                     </div>
@@ -270,7 +280,7 @@ export default function SirahQuizPage() {
                     <div className="space-y-1">
                         <h2 className={cn("text-2xl font-extrabold", isDaylight ? "text-slate-900" : "text-white")}>Kuis Selesai!</h2>
                         <p className={cn("text-xs", isDaylight ? "text-slate-600" : "text-slate-400")}>
-                            Anda menjawab benar <strong className={cn("font-bold", isDaylight ? "text-emerald-700" : "text-emerald-400")}>{score}</strong> dari {questions.length} soal.
+                            Anda menjawab benar <strong className={cn("font-bold", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>{score}</strong> dari {questions.length} soal.
                         </p>
                     </div>
 
@@ -278,7 +288,7 @@ export default function SirahQuizPage() {
                         "p-4 rounded-2xl border inline-flex flex-col items-center gap-1 text-xs font-bold w-full",
                         isDaylight 
                             ? "bg-emerald-50/60 border-emerald-200 text-emerald-800" 
-                            : "bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border-emerald-500/20 text-emerald-400"
+                            : "bg-gradient-to-r from-[rgb(var(--color-primary))]/15 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]"
                     )}>
                         <div className="flex items-center gap-1.5">
                             <Sparkles className="w-4 h-4 text-amber-400" />
@@ -308,7 +318,7 @@ export default function SirahQuizPage() {
                                         <p className={cn("font-bold", isDaylight ? "text-slate-800" : "text-slate-200")}>
                                             ❌ {q.question}
                                         </p>
-                                        <p className={cn("font-semibold", isDaylight ? "text-emerald-700" : "text-emerald-400")}>
+                                        <p className={cn("font-semibold", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
                                             ✓ Jawaban Benar: {q.options[q.correctIndex]}
                                         </p>
                                         <p className={isDaylight ? "text-slate-600" : "text-slate-400"}>
@@ -317,7 +327,12 @@ export default function SirahQuizPage() {
                                         <div className="pt-1">
                                             <Link
                                                 href={`/sirah/${q.targetChapterSlug}`}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all shadow-xs"
+                                                className={cn(
+                                                    "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-white font-bold text-[11px] transition-all shadow-xs cursor-pointer",
+                                                    isDaylight
+                                                        ? "bg-emerald-600 hover:bg-emerald-500"
+                                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90"
+                                                )}
                                             >
                                                 <span>📖 Pendalami di Bab: {q.targetChapterTitle} ➔</span>
                                             </Link>
@@ -331,7 +346,12 @@ export default function SirahQuizPage() {
                     <div className="pt-4 flex items-center justify-center gap-3">
                         <Link
                             href="/sirah"
-                            className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5"
+                            className={cn(
+                                "px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer",
+                                isDaylight
+                                    ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 shadow-[rgb(var(--color-primary))]/20"
+                            )}
                         >
                             <BookOpen className="w-4 h-4" />
                             <span>Kembali ke Sirah Hub</span>
@@ -339,10 +359,10 @@ export default function SirahQuizPage() {
                         <Link
                             href="/"
                             className={cn(
-                                "px-5 py-2.5 rounded-xl border text-xs font-bold transition-colors flex items-center gap-1.5",
+                                "px-5 py-2.5 rounded-xl border text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer",
                                 isDaylight 
                                     ? "border-slate-300 text-slate-700 hover:bg-slate-50" 
-                                    : "border-emerald-500/20 text-white hover:bg-emerald-500/10"
+                                    : "border-white/15 text-white hover:bg-[rgb(var(--color-primary))]/15 hover:border-[rgb(var(--color-primary))]/30"
                             )}
                         >
                             <Home className="w-4 h-4" />
