@@ -31,10 +31,14 @@ export default function AnalyticsLoader() {
   useEffect(() => {
     if (!id || process.env.NODE_ENV !== "production") return;
 
-    const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : "");
+    const queryString = searchParams?.toString();
+    const fullPath = pathname + (queryString ? `?${queryString}` : "");
 
     if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-      (window as any).gtag("config", id, { page_path: url });
+      (window as any).gtag("event", "page_view", {
+        page_location: window.location.href,
+        page_path: fullPath,
+      });
     }
   }, [id, pathname, searchParams]);
 
@@ -43,21 +47,25 @@ export default function AnalyticsLoader() {
   return (
     <>
       <Script
+        id="ga-script"
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
+      />
+      <Script
         id="ga-init"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${id}', { page_path: window.location.pathname });
+            gtag('config', '${id}', {
+              page_location: window.location.href,
+              page_path: window.location.pathname + window.location.search,
+              send_page_view: true
+            });
           `,
         }}
-      />
-      <Script
-        id="ga-script"
-        strategy="lazyOnload"
-        src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
       />
     </>
   );
