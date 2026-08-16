@@ -8,8 +8,8 @@
 /* Dialog quotes and hadith narration spans */
 .sirah-quote {
   font-style: italic;
-  /* Uses active theme primary color — set by ThemeContext on :root */
-  color: rgb(var(--color-primary-dark) / 0.85);
+  /* Uses active theme primary light color for high contrast in dark mode */
+  color: rgb(var(--color-primary-light));
 }
 
 /* Daylight theme: darker shade for contrast on white background */
@@ -25,7 +25,7 @@
   line-height: 0.8;
   margin-right: 0.15em;
   margin-top: 0.08em;
-  color: rgb(var(--color-primary));
+  color: rgb(var(--color-primary-light));
 }
 
 [data-theme="daylight"] .sirah-dropcap::first-letter {
