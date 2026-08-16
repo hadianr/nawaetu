@@ -102,7 +102,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 await navigator.share({
                     files: [file],
                     title: item.title,
-                    text: `${item.title} - ${item.sourceText}\nVia nawaetu.com`,
+                    text: `${item.title} - ${item.sourceText}\nVia https://nawaetu.com/?utm_source=story_share&utm_medium=social&utm_campaign=story_card`,
                 });
                 setSharedSuccess(true);
                 setTimeout(() => setSharedSuccess(false), 3000);

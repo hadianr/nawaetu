@@ -249,7 +249,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         const shareData = {
             title: 'Nawaetu - Teman Ibadah Digital',
             text: 'Yuk, luruskan niat ibadah bersama Nawaetu! Al-Quran, Jadwal Sholat, Tasbih Digital, Jurnal Niat, dan AI Mentor Islami. ✨',
-            url: 'https://nawaetu.com'
+            url: 'https://nawaetu.com/?utm_source=user_share&utm_medium=social&utm_campaign=app_share'
         };
 
         try {
@@ -257,7 +257,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                 await navigator.share(shareData);
                 toast.success(locale === 'id' ? 'Terima kasih telah membagikan Nawaetu!' : 'Thanks for sharing Nawaetu!');
             } else {
-                await navigator.clipboard.writeText(shareData.url);
+                await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
                 toast.success(locale === 'id' ? 'Link berhasil disalin!' : 'Link copied to clipboard!');
             }
         } catch (error) {
