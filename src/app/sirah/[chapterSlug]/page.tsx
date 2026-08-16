@@ -47,13 +47,13 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             {/* Header / Back Link */}
             <div className={cn(
                 "flex items-center justify-between border-b pb-4",
-                isDaylight ? "border-slate-200" : "border-emerald-500/10"
+                isDaylight ? "border-slate-200" : "border-white/10"
             )}>
                 <Link
                     href="/sirah"
                     className={cn(
                         "inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity",
-                        isDaylight ? "text-emerald-700" : "text-emerald-400"
+                        isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
@@ -64,7 +64,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                     "text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border",
                     isDaylight 
                         ? "bg-emerald-100 text-emerald-800 border-emerald-200" 
-                        : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30"
                 )}>
                     {chapter.era}
                 </span>
@@ -79,7 +79,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             >
                 <span className={cn(
                     "text-xs font-bold uppercase tracking-wider",
-                    isDaylight ? "text-emerald-700" : "text-emerald-400"
+                    isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
                 )}>
                     Bab {chapter.orderIndex} dari 50
                 </span>
@@ -94,13 +94,13 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                 <div className="pt-2 space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold">
                         <span className={isDaylight ? "text-slate-500" : "text-slate-400"}>Kemajuan Bab Ini</span>
-                        <span className={isDaylight ? "text-emerald-700" : "text-emerald-400"}>
+                        <span className={isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"}>
                             {doneCount} / {sections.length} Subbab ({progressPercent}%)
                         </span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
                         <div
-                            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                            className={cn("h-full rounded-full transition-all duration-500", isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]")}
                             style={{ width: `${progressPercent}%` }}
                         />
                     </div>
@@ -128,10 +128,12 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                 className={cn(
                                     "p-4 rounded-2xl border transition-all hover:scale-[1.005] active:scale-[0.995] flex items-center justify-between gap-3 group",
                                     isDone
-                                        ? "bg-emerald-500/5 border-emerald-500/30"
+                                        ? isDaylight
+                                            ? "bg-emerald-50/60 border-emerald-200 text-slate-800"
+                                            : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-white"
                                         : isDaylight
                                             ? "bg-white border-slate-200 hover:border-emerald-300 shadow-xs text-slate-800"
-                                            : "bg-white/[0.03] border-white/10 hover:border-emerald-500/30 text-white"
+                                            : "bg-white/[0.03] border-white/10 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 text-white"
                                 )}
                             >
                                 <div className="flex items-center gap-3 min-w-0">
@@ -139,8 +141,12 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                         className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0",
                                             isDone
-                                                ? "bg-emerald-500 text-white"
-                                                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                ? isDaylight
+                                                    ? "bg-emerald-500 text-white"
+                                                    : "bg-[rgb(var(--color-primary))] text-white"
+                                                : isDaylight
+                                                    ? "bg-emerald-50 text-emerald-600"
+                                                    : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
                                         )}
                                     >
                                         {isDone ? <CheckCircle2 className="w-4 h-4" /> : index + 1}
@@ -149,7 +155,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                     <div className="min-w-0 space-y-0.5">
                                         <h3 className={cn(
                                             "font-bold text-sm leading-snug truncate transition-colors",
-                                            isDaylight ? "group-hover:text-emerald-700" : "group-hover:text-emerald-400"
+                                            isDaylight ? "group-hover:text-emerald-700" : "group-hover:text-[rgb(var(--color-primary-light))]"
                                         )}>
                                             {sec.subbab}
                                         </h3>
