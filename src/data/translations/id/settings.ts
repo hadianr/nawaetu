@@ -45,8 +45,8 @@ export const settingsID = {
     feedbackSuccessToast: "Masukan Anda berhasil dikirim. Terima kasih!",
     feedbackErrorToast: "Gagal mengirim masukan. Silakan coba lagi.",
     feedbackAuthRequired: "Silakan masuk terlebih dahulu untuk mengirim masukan.",
-    feedbackLoginButton: "Masuk Sekarang",
-
-
-
+    // Share App
+    shareAppCardTitle: "Bagikan Aplikasi",
+    shareAppCardDesc: "Ajak teman & keluarga beribadah bersama.",
+    shareButtonCompact: "Bagikan",
 };

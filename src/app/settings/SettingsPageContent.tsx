@@ -64,6 +64,7 @@ import ProfileCard from "./sections/ProfileCard";
 import ThemeCard from "./sections/ThemeCard";
 import AudioCard from "./sections/AudioCard";
 import LanguageCard from "./sections/LanguageCard";
+import ShareAppCard from "./sections/ShareAppCard";
 import CommunityCard from "./sections/CommunityCard";
 
 const storage = getStorageService();
@@ -486,6 +487,12 @@ export default function SettingsPageContent() {
                     t={t}
                     isDaylight={isDaylight}
                     setShowFeedbackModal={() => setShowFeedbackModal(true)}
+                />
+
+                {/* Compact Share App Card */}
+                <ShareAppCard
+                    t={t}
+                    isDaylight={isDaylight}
                 />
 
                 {/* Support Card (Persistent) - Swapped Back Up */}
