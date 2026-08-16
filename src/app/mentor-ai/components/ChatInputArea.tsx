@@ -111,8 +111,10 @@ export function ChatInputArea({
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder={t.tanyaPlaceholder}
+                            autoCapitalize="none"
+                            autoCorrect="off"
                             className={cn(
-                                "flex-1 bg-transparent border-none outline-none text-sm py-2.5 min-h-[44px]",
+                                "flex-1 bg-transparent border-none outline-none text-[16px] sm:text-sm py-2.5 min-h-[44px]",
                                 isDaylight ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-white/30"
                             )}
                             disabled={isTyping}
