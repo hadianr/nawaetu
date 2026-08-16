@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.14] - 2026-08-16
+
+### Added
+- **Feat(settings): add compact share app card to settings page**
+- **Feat(share): attach complete UTM parameters to social and story share links**
+
+### Improved
+- **Style(typography): make Sirah reader prose utilities theme-aware**
+- **Refactor(storage): streamline local-storage adapter implementation**
+- **Refactor(db): standardize on neon http serverless driver with full type safety**
+
+### Fixed
+- **Fix(ui): prevent mobile viewport auto-zoom on input focus**
+- **Fix(quran): adapt Sirah context banner to active theme colors**
+- **Fix(sirah): style interactive quiz with active theme variables**
+- **Fix(sirah): apply theme colors to Quran bridge modal**
+- **Fix(sirah): integrate dynamic theme primary colors in reader view**
+- **Fix(sirah): make chapter detail view reactive to active theme**
+- **Fix(sirah): adapt hub dashboard to active theme colors**
+- **Fix(analytics): preserve query params and optimize script loading for GA4 attribution**
+- **Fix(sentry): ignored warning metamask**
+
+
 ## [1.12.13] - 2026-08-13
 
 ### Added
