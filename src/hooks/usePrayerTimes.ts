@@ -176,20 +176,8 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const locationName = cachedData.locationName;
             const isDefault = cachedData.isDefault;
 
-            // Get current settings to validate cache
-            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
-            const method = String(savedMethod || "20");
-            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-            const adjustment = (typeof savedAdjustment === 'string' ? savedAdjustment : savedAdjustment) || "-1";
-
-            const savedMethodCache = String(cachedData.method || "20");
-            const savedAdjustmentCache = String(cachedData.adjustment || "0");
-            const savedTuneVersion = cachedData.tuneVersion;
-
-            if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment && savedTuneVersion === TUNE_VERSION) {
+            if (date === today && savedData) {
                 processData(savedData, locationName || "Lokasi Tersimpan", true, !!isDefault);
-            } else if (storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any)) {
-                // cache is strictly invalid (method mismatch, date mismatch), we wait for the fetch if location is valid
             }
         }
     }, [processData]);
@@ -374,15 +362,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         setLoading(true);
         setError(null);
 
-        // FORCE REFRESH: Clear ALL location caches to prevent stale data
-        const existingUserLoc = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
-        const existingPrayerData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
-
-        if (existingUserLoc) {
-            storage.remove(STORAGE_KEYS.USER_LOCATION as any);
-        }
-
+        // DO NOT wipe USER_LOCATION upfront so it remains a reliable fallback.
         // Unconditionally clear PRAYER_DATA so that fetchPrayerTimes doesn't early-return based on cache.
+        const existingPrayerData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
         if (existingPrayerData) {
             storage.remove(STORAGE_KEYS.PRAYER_DATA as any);
         }
@@ -406,6 +388,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 // NO FALLBACK: Location is mandatory.
                 // If it fails, we show an error instead of using a default.
                 setError("Location mandatory. Please enable GPS.");
+                setLoading(false);
             },
             { timeout: 15000, maximumAge: 0, enableHighAccuracy: true }
         );
@@ -417,13 +400,21 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
         // 2. Check if we have a saved location
         const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
-        const isCoordinates = (name: string) => /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(name);
 
         if (isFreshLocation(cachedLocation)) {
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
 
-            if (!cachedData || cachedData.date !== today) {
+            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+            const method = String(savedMethod || "20");
+            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+            const adjustment = String(savedAdjustment !== undefined && savedAdjustment !== null ? savedAdjustment : "-1");
+
+            const savedMethodCache = String(cachedData?.method || "20");
+            const savedAdjustmentCache = String(cachedData?.adjustment !== undefined && cachedData?.adjustment !== null ? cachedData.adjustment : "-1");
+            const isTuneMatch = cachedData?.tuneVersion === TUNE_VERSION;
+
+            if (!cachedData || cachedData.date !== today || savedMethodCache !== method || savedAdjustmentCache !== adjustment || !isTuneMatch) {
                 fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
             } else {
                 setLoading(false); // Data is fresh, no need to fetch
