@@ -1,10 +1,16 @@
 import {  db } from "@/db";
 import {
+    bookmarks,
     intentions,
     userCompletedMissions,
     dailyActivities,
     users,
-    userReadingState
+    userReadingState,
+    ramadhanFastingLog,
+    ramadhanTarawehLog,
+    ramadhanDailyLog,
+    sirahUserProgress,
+    sirahBookmarks,
 } from "@/db/schema";
 import { eq, and, gte, lt } from "drizzle-orm";
 
@@ -12,24 +18,65 @@ export class DbSyncRepository {
     constructor(private userId: string) {}
 
     async syncBookmarkAsync(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
-        // Delegates to DbBookmarkRepository for this operation
-        return undefined;
+        if (action === 'create' || action === 'update') {
+            const surahId = Number(data.surahId);
+            const verseId = Number(data.verseId);
+            const key = data.key || `${surahId}:${verseId}`;
+            const result = await db
+                .insert(bookmarks)
+                .values({
+                    userId: this.userId,
+                    surahId,
+                    surahName: data.surahName || '',
+                    verseId,
+                    verseText: data.verseText || '',
+                    translationText: data.translationText || null,
+                    key,
+                    note: data.note || null,
+                    tags: Array.isArray(data.tags) ? data.tags : [],
+                    createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+                    updatedAt: new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [bookmarks.userId, bookmarks.key],
+                    set: {
+                        surahName: data.surahName || '',
+                        verseText: data.verseText || '',
+                        translationText: data.translationText || null,
+                        note: data.note || null,
+                        tags: Array.isArray(data.tags) ? data.tags : [],
+                        updatedAt: new Date(),
+                    },
+                })
+                .returning({ id: bookmarks.id });
+            return result[0]?.id;
+        } else if (action === 'delete') {
+            if (data.cloudId || data.id) {
+                await db.delete(bookmarks).where(and(eq(bookmarks.userId, this.userId), eq(bookmarks.id, data.cloudId || data.id)));
+            } else if (data.key || (data.surahId && data.verseId)) {
+                const key = data.key || `${data.surahId}:${data.verseId}`;
+                await db.delete(bookmarks).where(and(eq(bookmarks.userId, this.userId), eq(bookmarks.key, key)));
+            }
+            return undefined;
+        }
+
+        throw new Error(`Unknown action: ${action}`);
     }
 
     async syncIntention(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
-            const intentionDateValue = new Date(data.intentionDate || data.niatDate);
+            const intentionDateValue = new Date(data.intentionDate || data.niatDate || Date.now());
             const startOfToday = new Date(intentionDateValue);
             startOfToday.setUTCHours(0, 0, 0, 0);
             const startOfTomorrow = new Date(startOfToday);
             startOfTomorrow.setUTCDate(startOfToday.getUTCDate() + 1);
 
             const existingIntention = await db.query.intentions.findFirst({
-                where: (intentions, { eq, and, gte, lt }) =>
+                where: (intentionsTable, { eq, and, gte, lt }) =>
                     and(
-                        eq(intentions.userId, this.userId),
-                        gte(intentions.intentionDate, startOfToday),
-                        lt(intentions.intentionDate, startOfTomorrow)
+                        eq(intentionsTable.userId, this.userId),
+                        gte(intentionsTable.intentionDate, startOfToday),
+                        lt(intentionsTable.intentionDate, startOfTomorrow)
                     ),
             });
 
@@ -38,8 +85,8 @@ export class DbSyncRepository {
                     .insert(intentions)
                     .values({
                         userId: this.userId,
-                        intentionText: data.intentionText || data.niatText,
-                        intentionType: data.intentionType || data.niatType,
+                        intentionText: data.intentionText || data.niatText || '',
+                        intentionType: data.intentionType || data.niatType || 'daily',
                         intentionDate: intentionDateValue,
                         reflectionText: data.reflectionText,
                         reflectionRating: data.reflectionRating,
@@ -51,16 +98,16 @@ export class DbSyncRepository {
                 return result[0]?.id;
             } else {
                 await db.update(intentions).set({
-                    intentionText: data.intentionText || data.niatText,
-                    reflectionText: data.reflectionText || existingIntention.reflectionText,
-                    reflectionRating: data.reflectionRating || existingIntention.reflectionRating,
+                    intentionText: data.intentionText || data.niatText || existingIntention.intentionText,
+                    reflectionText: data.reflectionText !== undefined ? data.reflectionText : existingIntention.reflectionText,
+                    reflectionRating: data.reflectionRating !== undefined ? data.reflectionRating : existingIntention.reflectionRating,
                     updatedAt: new Date()
                 }).where(eq(intentions.id, existingIntention.id));
                 return existingIntention.id;
             }
         } else if (action === 'delete') {
-            if (data.cloudId) {
-                await db.delete(intentions).where(eq(intentions.id, data.cloudId));
+            if (data.cloudId || data.id) {
+                await db.delete(intentions).where(and(eq(intentions.userId, this.userId), eq(intentions.id, data.cloudId || data.id)));
             }
             return undefined;
         }
@@ -70,12 +117,12 @@ export class DbSyncRepository {
 
     async syncMission(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
-            const completedAt = new Date(data.completedAt);
+            const completedAt = data.completedAt ? new Date(data.completedAt) : new Date();
             const completedDate = completedAt.toISOString().split('T')[0];
 
             const existing = await db.query.userCompletedMissions.findFirst({
                 where: (ucm, { eq, and }) =>
-                    and(eq(ucm.userId, this.userId), eq(ucm.missionId, data.id), eq(ucm.completedDate, completedDate)),
+                    and(eq(ucm.userId, this.userId), eq(ucm.missionId, data.id || data.missionId), eq(ucm.completedDate, completedDate)),
             });
 
             if (!existing) {
@@ -83,8 +130,8 @@ export class DbSyncRepository {
                     .insert(userCompletedMissions)
                     .values({
                         userId: this.userId,
-                        missionId: data.id,
-                        hasanahEarned: data.xpEarned,
+                        missionId: data.id || data.missionId,
+                        hasanahEarned: data.hasanahEarned || data.xpEarned || 0,
                         completedAt: completedAt,
                         completedDate: completedDate,
                     })
@@ -98,11 +145,12 @@ export class DbSyncRepository {
 
     async syncDailyActivity(data: any, action: 'create' | 'update' | 'delete'): Promise<void> {
         if (action === 'create' || action === 'update') {
+            const dateStr = data.date || new Date().toISOString().split('T')[0];
             await db
                 .insert(dailyActivities)
                 .values({
                     userId: this.userId,
-                    date: data.date,
+                    date: dateStr,
                     quranAyat: data.quranAyat || 0,
                     quranReadingSeconds: data.quranReadingSeconds || 0,
                     hasanahGained: data.hasanahGained || 0,
@@ -112,11 +160,11 @@ export class DbSyncRepository {
                 .onConflictDoUpdate({
                     target: [dailyActivities.userId, dailyActivities.date],
                     set: {
-                        quranAyat: data.quranAyat,
-                        quranReadingSeconds: data.quranReadingSeconds,
-                        hasanahGained: data.hasanahGained,
-                        tasbihCount: data.tasbihCount,
-                        prayersLogged: data.prayersLogged,
+                        quranAyat: data.quranAyat !== undefined ? data.quranAyat : undefined,
+                        quranReadingSeconds: data.quranReadingSeconds !== undefined ? data.quranReadingSeconds : undefined,
+                        hasanahGained: data.hasanahGained !== undefined ? data.hasanahGained : undefined,
+                        tasbihCount: data.tasbihCount !== undefined ? data.tasbihCount : undefined,
+                        prayersLogged: data.prayersLogged !== undefined ? data.prayersLogged : undefined,
                         lastUpdatedAt: new Date(),
                     },
                 });
@@ -134,7 +182,7 @@ export class DbSyncRepository {
 
         await db
             .update(users)
-            .set({ settings: newSettings })
+            .set({ settings: newSettings, updatedAt: new Date() })
             .where(eq(users.id, this.userId));
     }
 
@@ -144,25 +192,200 @@ export class DbSyncRepository {
             try { qlr = JSON.parse(qlr); } catch (e) { }
         }
 
+        if (!qlr || !qlr.surahId) return;
+
         await db
             .insert(userReadingState)
             .values({
                 userId: this.userId,
-                surahId: qlr.surahId,
-                surahName: qlr.surahName,
-                verseId: qlr.verseId,
+                surahId: Number(qlr.surahId),
+                surahName: qlr.surahName || '',
+                verseId: Number(qlr.verseId || 1),
                 lastReadAt: new Date(qlr.timestamp || Date.now()),
                 updatedAt: new Date(),
             })
             .onConflictDoUpdate({
                 target: [userReadingState.userId],
                 set: {
-                    surahId: qlr.surahId,
-                    surahName: qlr.surahName,
-                    verseId: qlr.verseId,
+                    surahId: Number(qlr.surahId),
+                    surahName: qlr.surahName || '',
+                    verseId: Number(qlr.verseId || 1),
                     lastReadAt: new Date(qlr.timestamp || Date.now()),
                     updatedAt: new Date(),
                 },
             });
+    }
+
+    async syncStreak(data: any): Promise<void> {
+        await db
+            .update(users)
+            .set({
+                intentionStreakCurrent: data.current ?? data.streak ?? 0,
+                intentionStreakLongest: data.longest ?? data.longestStreak ?? 0,
+                lastIntentionDate: data.lastDate ? data.lastDate : undefined,
+                updatedAt: new Date(),
+            })
+            .where(eq(users.id, this.userId));
+    }
+
+    async syncRamadhanFasting(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+        if (action === 'create' || action === 'update') {
+            const result = await db
+                .insert(ramadhanFastingLog)
+                .values({
+                    userId: this.userId,
+                    hijriYear: Number(data.hijriYear),
+                    hijriDay: Number(data.hijriDay),
+                    status: data.status || 'fasting',
+                    consequence: data.consequence || 'none',
+                    madzhab: data.madzhab || null,
+                    note: data.note || null,
+                    qadhaDone: Boolean(data.qadhaDone),
+                    updatedAt: new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [ramadhanFastingLog.userId, ramadhanFastingLog.hijriYear, ramadhanFastingLog.hijriDay],
+                    set: {
+                        status: data.status || 'fasting',
+                        consequence: data.consequence || 'none',
+                        madzhab: data.madzhab || null,
+                        note: data.note || null,
+                        qadhaDone: Boolean(data.qadhaDone),
+                        updatedAt: new Date(),
+                    },
+                })
+                .returning({ id: ramadhanFastingLog.id });
+            return result[0]?.id;
+        }
+        return undefined;
+    }
+
+    async syncRamadhanTaraweh(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+        if (action === 'create' || action === 'update') {
+            const result = await db
+                .insert(ramadhanTarawehLog)
+                .values({
+                    userId: this.userId,
+                    hijriYear: Number(data.hijriYear),
+                    hijriDay: Number(data.hijriDay),
+                    choice: data.choice || null,
+                    location: data.location || null,
+                    updatedAt: new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [ramadhanTarawehLog.userId, ramadhanTarawehLog.hijriYear, ramadhanTarawehLog.hijriDay],
+                    set: {
+                        choice: data.choice || null,
+                        location: data.location || null,
+                        updatedAt: new Date(),
+                    },
+                })
+                .returning({ id: ramadhanTarawehLog.id });
+            return result[0]?.id;
+        }
+        return undefined;
+    }
+
+    async syncRamadhanDaily(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+        if (action === 'create' || action === 'update') {
+            const result = await db
+                .insert(ramadhanDailyLog)
+                .values({
+                    userId: this.userId,
+                    hijriYear: Number(data.hijriYear),
+                    hijriDay: Number(data.hijriDay),
+                    fajrAtMasjid: data.fajrAtMasjid ?? null,
+                    dhuhrAtMasjid: data.dhuhrAtMasjid ?? null,
+                    asrAtMasjid: data.asrAtMasjid ?? null,
+                    maghribAtMasjid: data.maghribAtMasjid ?? null,
+                    ishaAtMasjid: data.ishaAtMasjid ?? null,
+                    dhuha: Boolean(data.dhuha),
+                    rawatibQabl: Boolean(data.rawatibQabl),
+                    rawatibBad: Boolean(data.rawatibBad),
+                    witir: Boolean(data.witir),
+                    istikharah: Boolean(data.istikharah),
+                    hajat: Boolean(data.hajat),
+                    taubat: Boolean(data.taubat),
+                    updatedAt: new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [ramadhanDailyLog.userId, ramadhanDailyLog.hijriYear, ramadhanDailyLog.hijriDay],
+                    set: {
+                        fajrAtMasjid: data.fajrAtMasjid ?? null,
+                        dhuhrAtMasjid: data.dhuhrAtMasjid ?? null,
+                        asrAtMasjid: data.asrAtMasjid ?? null,
+                        maghribAtMasjid: data.maghribAtMasjid ?? null,
+                        ishaAtMasjid: data.ishaAtMasjid ?? null,
+                        dhuha: Boolean(data.dhuha),
+                        rawatibQabl: Boolean(data.rawatibQabl),
+                        rawatibBad: Boolean(data.rawatibBad),
+                        witir: Boolean(data.witir),
+                        istikharah: Boolean(data.istikharah),
+                        hajat: Boolean(data.hajat),
+                        taubat: Boolean(data.taubat),
+                        updatedAt: new Date(),
+                    },
+                })
+                .returning({ id: ramadhanDailyLog.id });
+            return result[0]?.id;
+        }
+        return undefined;
+    }
+
+    async syncSirahProgress(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+        if (action === 'create' || action === 'update') {
+            const sectionId = data.sectionId || data.id;
+            const result = await db
+                .insert(sirahUserProgress)
+                .values({
+                    userId: this.userId,
+                    sectionId,
+                    chapterSlug: data.chapterSlug || '',
+                    completedAt: data.completedAt ? new Date(data.completedAt) : new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [sirahUserProgress.userId, sirahUserProgress.sectionId],
+                    set: {
+                        chapterSlug: data.chapterSlug || '',
+                        completedAt: data.completedAt ? new Date(data.completedAt) : new Date(),
+                    },
+                })
+                .returning({ id: sirahUserProgress.id });
+            return result[0]?.id;
+        } else if (action === 'delete') {
+            await db
+                .delete(sirahUserProgress)
+                .where(and(eq(sirahUserProgress.userId, this.userId), eq(sirahUserProgress.sectionId, data.sectionId || data.id)));
+            return undefined;
+        }
+        return undefined;
+    }
+
+    async syncSirahBookmark(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+        if (action === 'create' || action === 'update') {
+            const sectionId = data.sectionId || data.id;
+            const result = await db
+                .insert(sirahBookmarks)
+                .values({
+                    userId: this.userId,
+                    sectionId,
+                    chapterSlug: data.chapterSlug || '',
+                    createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+                })
+                .onConflictDoUpdate({
+                    target: [sirahBookmarks.userId, sirahBookmarks.sectionId],
+                    set: {
+                        chapterSlug: data.chapterSlug || '',
+                    },
+                })
+                .returning({ id: sirahBookmarks.id });
+            return result[0]?.id;
+        } else if (action === 'delete') {
+            await db
+                .delete(sirahBookmarks)
+                .where(and(eq(sirahBookmarks.userId, this.userId), eq(sirahBookmarks.sectionId, data.sectionId || data.id)));
+            return undefined;
+        }
+        return undefined;
     }
 }
