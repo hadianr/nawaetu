@@ -107,6 +107,11 @@ export const STORAGE_KEYS = {
   RAMADHAN_FASTING_MADZHAB: 'nawaetu_ramadhan_fasting_madzhab', // "syafii" | "hanafi" | "maliki" | "hanbali"
   RAMADHAN_DAILY_LOG: 'nawaetu_ramadhan_daily_log',            // { "1447": { "1447-01": { fajrAtMasjid, dhuha, ... } } }
   RAMADHAN_INSIGHT_CACHE: 'nawaetu_ramadhan_insight_cache',    // { "1447": "insight text..." }
+
+  // Sirah Nabawiyah
+  SIRAH_COMPLETED: 'nawaetu_sirah_completed',
+  SIRAH_BOOKMARKS: 'nawaetu_sirah_bookmarks',
+  SIRAH_QUIZ_LAST_CLAIMED: 'nawaetu_sirah_quiz_last_claimed',
 } as const;
 
 // Type for storage keys
