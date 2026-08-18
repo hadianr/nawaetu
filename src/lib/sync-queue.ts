@@ -30,10 +30,22 @@
 
 
 
-/**
- * Supported entity types for syncing
- */
-export type SyncEntityType = 'bookmark' | 'setting' | 'journal' | 'mission' | 'mission_progress' | 'daily_activity' | 'reading_state' | 'dhikr_stats';
+export type SyncEntityType =
+  | 'bookmark'
+  | 'setting'
+  | 'journal'
+  | 'intention'
+  | 'mission'
+  | 'mission_progress'
+  | 'daily_activity'
+  | 'reading_state'
+  | 'dhikr_stats'
+  | 'ramadhan_fasting'
+  | 'ramadhan_taraweh'
+  | 'ramadhan_daily'
+  | 'sirah_progress'
+  | 'sirah_bookmark'
+  | 'streak';
 
 /**
  * Supported operation types

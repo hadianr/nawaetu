@@ -26,6 +26,25 @@ import {
  * Safe JSON parsing, quota handling, and event synchronization
  */
 export class LocalStorageAdapter implements StorageAdapter {
+  private channel: BroadcastChannel | null = null;
+
+  constructor() {
+    if (typeof window !== 'undefined' && typeof BroadcastChannel !== 'undefined') {
+      try {
+        this.channel = new BroadcastChannel('nawaetu_storage_sync');
+        this.channel.onmessage = (event) => {
+          if (event.data && typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
+              detail: { ...event.data, source: 'remote_tab' }
+            }));
+          }
+        };
+      } catch {
+        this.channel = null;
+      }
+    }
+  }
+
   private isAvailable(): boolean {
     if (typeof window === 'undefined') return false;
     try {
@@ -35,6 +54,18 @@ export class LocalStorageAdapter implements StorageAdapter {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  private notifyChange(key: string, action: 'set' | 'remove' | 'clear'): void {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
+      detail: { key, action, source: 'local_tab' }
+    }));
+    try {
+      this.channel?.postMessage({ key, action });
+    } catch {
+      // Ignore broadcast errors
     }
   }
 
@@ -58,9 +89,7 @@ export class LocalStorageAdapter implements StorageAdapter {
     try {
       const serialized = typeof value === 'string' ? value : JSON.stringify(value);
       localStorage.setItem(key, serialized);
-      window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
-        detail: { key, action: 'set' }
-      }));
+      this.notifyChange(key, 'set');
     } catch (error) {
       if (error instanceof DOMException && (error.name === 'QuotaExceededError' || error.code === 22)) {
         console.warn(`[Storage] Quota exceeded on ${key}, clearing purgeable keys.`);
@@ -72,6 +101,7 @@ export class LocalStorageAdapter implements StorageAdapter {
             }
           }
           localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+          this.notifyChange(key, 'set');
           return;
         } catch {
           // Quota still exceeded
@@ -85,9 +115,7 @@ export class LocalStorageAdapter implements StorageAdapter {
     if (!this.isAvailable()) return;
     try {
       localStorage.removeItem(key);
-      window.dispatchEvent(new CustomEvent('nawaetu_storage_change', {
-        detail: { key, action: 'remove' }
-      }));
+      this.notifyChange(key, 'remove');
     } catch {
       // ignore
     }
@@ -97,6 +125,7 @@ export class LocalStorageAdapter implements StorageAdapter {
     if (!this.isAvailable()) return;
     try {
       localStorage.clear();
+      this.notifyChange('*', 'clear');
     } catch {
       // ignore
     }
