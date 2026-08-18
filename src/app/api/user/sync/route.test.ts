@@ -189,7 +189,7 @@ describe('User Sync API', () => {
             success: true,
             synced: [],
             failed: [],
-            message: 'No entries to sync (legacy mode)',
+            message: 'No entries to sync',
         });
     });
 
