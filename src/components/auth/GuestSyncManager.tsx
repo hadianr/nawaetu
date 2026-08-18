@@ -307,9 +307,38 @@ export function GuestSyncManager() {
                 }
             }
 
+            if (data.profile?.streaks) {
+                const currentStreak = data.profile.streaks.current || 0;
+                const longestStreak = data.profile.streaks.longest || 0;
+                storage.set(STORAGE_KEYS.USER_STREAK as any, {
+                    streak: currentStreak,
+                    longestStreak: longestStreak,
+                    lastActiveDate: new Date().toISOString().split('T')[0]
+                });
+                window.dispatchEvent(new Event("streak_updated"));
+            }
+
+            // Calculate total Hasanah XP from completed missions + daily activities
+            let totalHasanahFromCloud = 0;
+            if (data.completedMissions && Array.isArray(data.completedMissions)) {
+                totalHasanahFromCloud += data.completedMissions.reduce((acc: number, m: any) => acc + (m.hasanahEarned || m.xpEarned || 0), 0);
+            }
+            if (data.dailyActivities && Array.isArray(data.dailyActivities)) {
+                totalHasanahFromCloud += data.dailyActivities.reduce((acc: number, a: any) => acc + (a.hasanahGained || 0), 0);
+            }
+
+            const currentLocalHasanah = parseInt((storage.getOptional(STORAGE_KEYS.USER_HASANAH) as string) || "0") || 0;
+            const finalHasanah = Math.max(currentLocalHasanah, totalHasanahFromCloud);
+            if (finalHasanah > 0) {
+                storage.set(STORAGE_KEYS.USER_HASANAH as any, finalHasanah.toString());
+                window.dispatchEvent(new Event("hasanah_updated"));
+            }
+
             window.dispatchEvent(new Event("storage"));
             window.dispatchEvent(new Event("bookmarks_updated"));
             window.dispatchEvent(new Event("mission_updated"));
+            window.dispatchEvent(new Event("streak_updated"));
+            window.dispatchEvent(new Event("hasanah_updated"));
 
             // Reload page to reflect changes (e.g. Theme, Language)
             // setTimeout(() => window.location.reload(), 1000);

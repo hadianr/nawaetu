@@ -41,6 +41,9 @@ export function useDataSync() {
             const lastReadQuran = storage.getOptional<any>(STORAGE_KEYS.QURAN_LAST_READ);
             const activityTracker = storage.getOptional<any>(STORAGE_KEYS.ACTIVITY_TRACKER) || {};
 
+            const sirahCompleted = storage.getOptional<string[]>(STORAGE_KEYS.SIRAH_COMPLETED as any) || [];
+            const sirahBookmarks = storage.getOptional<string[]>(STORAGE_KEYS.SIRAH_BOOKMARKS as any) || [];
+
             const localData = {
                 bookmarks: storage.getOptional<any>(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
                 intentions: storage.getOptional<any>(STORAGE_KEYS.INTENTION_JOURNAL) || [],
@@ -48,6 +51,8 @@ export function useDataSync() {
                 dailyActivity: {
                     date: activityTracker.date || new Date().toISOString().split('T')[0],
                     quranAyat: activityTracker.quranAyat || 0,
+                    quranReadingSeconds: activityTracker.quranReadingSeconds || 0,
+                    hasanahGained: activityTracker.hasanahGained || 0,
                     tasbihCount: activityTracker.tasbihCount || 0,
                     prayersLogged: activityTracker.prayersLogged || [],
                 },
@@ -72,6 +77,25 @@ export function useDataSync() {
                 }
             };
 
+            // Convert to SyncQueue entries if queue has pending items
+            const entries: any[] = [];
+            sirahCompleted.forEach((secId, i) => {
+                entries.push({
+                    id: `local-sirah-progress-${i}`,
+                    type: 'sirah_progress',
+                    action: 'create',
+                    data: { sectionId: secId, chapterSlug: secId.split('-')[0] || 'chapter' }
+                });
+            });
+            sirahBookmarks.forEach((secId, i) => {
+                entries.push({
+                    id: `local-sirah-bm-${i}`,
+                    type: 'sirah_bookmark',
+                    action: 'create',
+                    data: { sectionId: secId, chapterSlug: secId.split('-')[0] || 'chapter' }
+                });
+            });
+
             // If no data to sync, skip but mark as synced
             const hasBookmarks = localData.bookmarks.length > 0;
             const hasIntentions = localData.intentions.length > 0;
@@ -80,8 +104,9 @@ export function useDataSync() {
             const hasStreak = localData.streaks.current > 0;
             const hasSettings = !!localData.settings.notificationPreferences;
             const hasReadingState = !!lastReadQuran;
+            const hasSirah = entries.length > 0;
 
-            if (!hasBookmarks && !hasIntentions && !hasMissions && !hasActivity && !hasStreak && !hasSettings && !hasReadingState) {
+            if (!hasBookmarks && !hasIntentions && !hasMissions && !hasActivity && !hasStreak && !hasSettings && !hasReadingState && !hasSirah) {
                 storage.set("nawaetu_synced_v1" as any, "true");
                 if (toastId) toast.dismiss(toastId);
                 return { success: true, message: "Tidak ada data lokal untuk disinkronkan" };
@@ -91,7 +116,7 @@ export function useDataSync() {
             const res = await fetch("/api/user/sync", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(localData)
+                body: JSON.stringify({ ...localData, ...(entries.length > 0 ? { extraEntries: entries } : {}) })
             });
 
             if (!res.ok) throw new Error("Gagal menyimpan ke server");
