@@ -25,6 +25,13 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
     const [expandedItem, setExpandedItem] = useState<string | null>(null);
     const { t, locale } = useLocale();
 
+    const [activeTab, setActiveTab] = useState<string>("itikaf");
+
+    const handleTabChange = (value: string) => {
+        setActiveTab(value);
+        setExpandedItem(null);
+    };
+
     const handleAccordionToggle = (id: string) => {
         setExpandedItem(expandedItem === id ? null : id);
     };
@@ -69,7 +76,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                                 <ul className="space-y-2">
                                     {localizedSteps.map((step, i) => (
                                         <li key={i} className="flex items-start gap-2 text-xs text-white/70 leading-relaxed">
-                                            <span className="shrink-0 mt-0.5" style={{ color: "rgb(var(--color-primary-light))" }}>{i + 1}.</span>
+                                             <span className="shrink-0 mt-0.5" style={{ color: "rgb(var(--color-primary-light))" }}>{i + 1}.</span>
                                             <span>{step}</span>
                                         </li>
                                     ))}
@@ -131,7 +138,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
 
                 {/* Body Content with Tabs */}
                 <div className="flex flex-col h-[65vh] max-h-[550px]">
-                    <Tabs defaultValue="itikaf" className="flex flex-col flex-1 h-full w-full">
+                    <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col flex-1 h-full w-full">
                         <div className="px-2 sm:px-6 pt-3 pb-2 border-b border-white/5">
                             <TabsList className="w-full flex h-auto p-1 bg-white/5">
                                 {LAILATUL_QADR_GUIDE_SECTIONS.map((section) => (
@@ -139,7 +146,6 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                                         key={section.id}
                                         value={section.id}
                                         className="flex-1 text-[10px] sm:text-xs text-center whitespace-normal leading-tight h-auto py-2 text-white/50 data-[state=active]:bg-white/10 data-[state=active]:text-white hover:text-white/80 transition-colors"
-                                        onClick={() => setExpandedItem(null)} // Reset accordion on tab switch
                                     >
                                         {locale === "en" && section.title_en ? section.title_en : section.title}
                                     </TabsTrigger>
@@ -152,7 +158,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                                 <TabsContent
                                     key={section.id}
                                     value={section.id}
-                                    className="h-full m-0 outline-none data-[state=inactive]:hidden"
+                                    className="h-full m-0 outline-none"
                                 >
                                     <ScrollArea className="h-[calc(65vh-60px)] max-h-[490px] w-full pb-4">
                                         <div className="px-4 sm:px-6 py-4 space-y-3">
