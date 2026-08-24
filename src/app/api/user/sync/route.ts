@@ -22,7 +22,7 @@ import { db, checkConnection } from "@/db";
 import { bookmarks, intentions, users, userCompletedMissions, dailyActivities, userReadingState } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { logger } from "@/lib/logger";
-import { type SyncQueueEntry } from "@/lib/sync-queue";
+import { type SyncQueueEntry, type SyncEntityType } from "@/lib/sync-queue";
 import { DbSyncRepository } from "@/core/repositories/db-sync.repository";
 import { SyncEntrySchema } from "@/lib/validations/sync";
 
