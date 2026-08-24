@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.15] - 2026-08-24
+
+### Added
+- **Feat(client): sync sirah, hasanah xp, streaks, and hydration**
+- **Feat(sync): implement full domain sync handlers and unify sync endpoint**
+- **Feat(storage): add sirah keys, sync types, and cross-tab broadcast**
+
+### Fixed
+- **Fix(sync): import missing SyncEntityType in sync route**
+- **Fix(ramadhan): resolve DOM unmount error in LailatulQadrGuideModal**
+- **Fix(prayer): prevent false location prompt on refresh and preserve cached coordinates**
+
+
 ## [1.12.14] - 2026-08-16
 
 ### Added
