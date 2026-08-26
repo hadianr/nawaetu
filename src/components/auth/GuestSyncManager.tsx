@@ -311,9 +311,10 @@ export function GuestSyncManager() {
                 const currentStreak = data.profile.streaks.current || 0;
                 const longestStreak = data.profile.streaks.longest || 0;
                 storage.set(STORAGE_KEYS.USER_STREAK as any, {
-                    streak: currentStreak,
+                    currentStreak: currentStreak,
                     longestStreak: longestStreak,
-                    lastActiveDate: new Date().toISOString().split('T')[0]
+                    lastActiveDate: new Date().toISOString().split('T')[0],
+                    milestones: []
                 });
                 window.dispatchEvent(new Event("streak_updated"));
             }
