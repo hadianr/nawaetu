@@ -58,7 +58,16 @@ export class LocalStreakRepository implements StreakRepository {
   private storage = getStorageService();
 
   getStreak(): StreakData {
-    return this.storage.get<StreakData>(STORAGE_KEYS.USER_STREAK, DEFAULT_STREAK);
+    const raw = this.storage.get<any>(STORAGE_KEYS.USER_STREAK, DEFAULT_STREAK);
+    if (!raw || typeof raw !== 'object') {
+      return DEFAULT_STREAK;
+    }
+    return {
+      currentStreak: typeof raw.currentStreak === 'number' ? raw.currentStreak : (typeof raw.streak === 'number' ? raw.streak : 0),
+      longestStreak: typeof raw.longestStreak === 'number' ? raw.longestStreak : 0,
+      lastActiveDate: typeof raw.lastActiveDate === 'string' ? raw.lastActiveDate : '',
+      milestones: Array.isArray(raw.milestones) ? raw.milestones : []
+    };
   }
 
   saveStreak(data: StreakData): void {
@@ -90,7 +99,7 @@ export class LocalStreakRepository implements StreakRepository {
     const longestStreak = Math.max(newStreak, current.longestStreak);
 
     let newMilestone: StreakMilestone | null = null;
-    const milestones = [...current.milestones];
+    const milestones = Array.isArray(current.milestones) ? [...current.milestones] : [];
 
     for (const milestone of STREAK_MILESTONES) {
       if (newStreak >= milestone.days && !milestones.includes(milestone.days)) {
