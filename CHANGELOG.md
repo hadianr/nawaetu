@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.16] - 2026-08-26
+
+### Fixed
+- **Fix(auth): align guest sync streak payload with StreakData schema**
+- **Fix(habits): safely normalize streak data and handle undefined milestones**
+
+
 ## [1.12.15] - 2026-08-24
 
 ### Added
