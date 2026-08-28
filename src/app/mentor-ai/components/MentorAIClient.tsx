@@ -61,7 +61,7 @@ export default function MentorAIClient() {
         window.addEventListener("streak_updated", load);
         return () => { window.removeEventListener("activity_updated", load); window.removeEventListener("streak_updated", load); };
     }, []);
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
     const HADITH_THEMES = [
         { label: "Sabar", prompt: "Berikan hadits tentang keutamaan sabar" },
         { label: "Syukur", prompt: "Apa hadits tentang cara bersyukur?" },
@@ -385,7 +385,8 @@ export default function MentorAIClient() {
             const context = {
                 name: profile.name || "Hamba Allah",
                 prayerStreak: stats.streakDays,
-                lastPrayer: "Unknown"
+                lastPrayer: "Unknown",
+                locale: locale === "en" ? "en" : "id",
             };
 
             // Only send last 10 messages context to save tokens/complexity
