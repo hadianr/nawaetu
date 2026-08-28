@@ -23,9 +23,9 @@
 
 export const APP_CONFIG = {
     name: "Nawaetu",
-    version: "1.12.16", // Updated automatically by release script
+    version: "1.12.17", // Updated automatically by release script
     status: "Production",
-    lastUpdated: "2026-08-26",
+    lastUpdated: "2026-08-28",
     hashtag: "#StartWithIntention",
     description: "Islamic habit tracker with gamification: Daily Missions, Streak, Hasanah. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
 };
