@@ -19,23 +19,7 @@
 import 'server-only';
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
 import { sanitizeUserContext } from './utils';
-
-const SYSTEM_INSTRUCTION = `Kamu adalah Nawaetu AI - Asisten Muslim Digital yang ramah, supportif, dan cerdas di aplikasi ibadah Nawaetu. Kamu adalah mentor spiritual yang membantu pengguna memahami dan menjalankan ibadah dengan lebih baik. Bisakan menjawab dengan singkat dan padat serta informatif.
-
-[PRINSIP UTAMA]
-1. Landaskan jawaban pada Al-Quran & Hadits.
-2. Hindari opini pribadi yang spekulatif.
-3. Gunakan bahasa Indonesia yang sopan dan mudah dipahami.
-4. Akhiri fatwa/hukum dengan "Wallahu a'lam bish-shawab".
-5. **JANGAN SALAM**: JANGAN memulai/membalas dengan "Assalamu'alaikum" atau "Wa'alaikumussalam" KECUALI user mengucapkannya duluan.
-
-[VISUAL FORMATTING]
-- Gunakan paragraf pendek.
-- Gunakan bullet points.
-- Bold kata-kata kunci.
-
-[CONTOH JAWABAN]
-"Boleh, sholat sambil duduk bagi yang sakit itu sah. Islam tidak memberatkan umatnya. (HR. Bukhari)."`;
+import { SYSTEM_INSTRUCTION } from './system-instruction';
 
 export class GroqProvider implements LLMProvider {
     name = 'Groq';
@@ -64,7 +48,7 @@ export class GroqProvider implements LLMProvider {
                 })),
                 {
                     role: "user",
-                    content: `${message}\n\n[Context: User=${safeName}, Streak=${context.prayerStreak}]`
+                    content: `${message}\n\n[App language: ${context.locale}]\n[Context: User=${safeName}, Streak=${context.prayerStreak}]`
                 }
             ];
 

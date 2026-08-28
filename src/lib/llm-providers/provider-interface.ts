@@ -27,7 +27,7 @@ export interface UserContext {
     name: string;
     prayerStreak: number;
     lastPrayer: string;
-    dailySpiritualItem?: import('@/data/spiritual-content').SpiritualItem;
+    locale: 'id' | 'en';
 }
 
 export interface LLMProvider {
