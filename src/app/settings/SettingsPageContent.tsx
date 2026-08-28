@@ -309,7 +309,7 @@ export default function SettingsPageContent() {
                     "border rounded-2xl p-4 transition-all",
                     isDaylight
                         ? "bg-white border-slate-200/80 shadow-xs"
-                        : "bg-white/[0.04] border-white/10 hover:border-emerald-500/30"
+                        : "bg-white/[0.04] border-white/10 hover:border-[rgb(var(--color-primary))]/30"
                 )}>
                     <Link
                         href="/stats"
@@ -319,14 +319,14 @@ export default function SettingsPageContent() {
                             <div className={cn(
                                 "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shrink-0",
                                 isDaylight
-                                    ? "bg-emerald-500/10 text-emerald-600"
-                                    : "bg-emerald-500/20 text-emerald-400"
+                                    ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-dark))]"
+                                    : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
                             )}>
                                 <BarChart3 className="w-5 h-5" />
                             </div>
                             <div>
                                 <h3 className={cn(
-                                    "text-sm font-bold group-hover:text-emerald-500 transition-colors",
+                                    "text-sm font-bold group-hover:text-[rgb(var(--color-primary-light))] transition-colors",
                                     isDaylight ? "text-slate-900" : "text-white"
                                 )}>
                                     Statistik Ibadah & Hasanah
@@ -339,7 +339,7 @@ export default function SettingsPageContent() {
                                 </p>
                             </div>
                         </div>
-                        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-emerald-500 shrink-0" />
+                        <ChevronRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[rgb(var(--color-primary))] shrink-0" />
                     </Link>
                 </div>
 
@@ -621,4 +621,3 @@ export default function SettingsPageContent() {
         </div >
     );
 }
-
