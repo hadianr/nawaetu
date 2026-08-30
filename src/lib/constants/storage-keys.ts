@@ -62,6 +62,7 @@ export const STORAGE_KEYS = {
 
   // Prayer Times
   PRAYER_DATA: 'prayer_data',
+  HIJRI_CALENDAR_CACHE_PREFIX: 'hijri_calendar_v1_',
   USER_LOCATION: 'user_location',
   ADHAN_PREFERENCES: 'adhan_preferences',
 

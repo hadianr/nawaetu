@@ -313,7 +313,7 @@ export default function SettingsPageContent() {
                 )}>
                     <Link
                         href="/stats"
-                        className="flex items-center justify-between group"
+                        className="group flex min-h-11 items-center justify-between rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
                     >
                         <div className="flex items-center gap-3">
                             <div className={cn(
@@ -329,13 +329,13 @@ export default function SettingsPageContent() {
                                     "text-sm font-bold group-hover:text-[rgb(var(--color-primary-light))] transition-colors",
                                     isDaylight ? "text-slate-900" : "text-white"
                                 )}>
-                                    Statistik Ibadah & Hasanah
+                                    {t.statsLabel}
                                 </h3>
                                 <p className={cn(
                                     "text-xs leading-relaxed",
                                     isDaylight ? "text-slate-500" : "text-slate-400"
                                 )}>
-                                    Lihat statistik lifetime, tren Hasanah, dan milestone ibadah
+                                    {t.statsPageSubtitle}
                                 </p>
                             </div>
                         </div>
@@ -408,7 +408,7 @@ export default function SettingsPageContent() {
                 <NotificationSettings />
 
                 {/* Hijri Date Settings Card */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                <div id="hijri-date" className="scroll-mt-6 bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                         <span className="text-sm font-semibold text-white">{t.hijriDateTitle}</span>
@@ -457,6 +457,12 @@ export default function SettingsPageContent() {
                             </SelectContent>
                         </Select>
                     </div>
+                    <Button asChild variant="outline" className="min-h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+                        <Link href="/hijri-calendar">
+                            <Calendar className="mr-2 h-4 w-4 text-[rgb(var(--color-primary-light))]" />
+                            {t.hijriCalendarOpenFromSettings}
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Theme Configuration Card */}

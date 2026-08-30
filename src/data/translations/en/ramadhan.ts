@@ -117,19 +117,6 @@ export const ramadhanEN = {
     faqDisclaimerTitle: "⚠️ Important Note",
     faqDisclaimer: "For complex fiqh issues or special conditions, please consult with a trusted scholar or imam in your area.",
 
-    // Calendar Modal
-    calendarViewMonth: "View Monthly Schedule",
-    calendarTitle: "Ramadhan Imsakiyah Schedule 1447H",
-    calendarYourLocation: "Your Location",
-    calendarLoading: "Loading schedule...",
-    calendarRetry: "Try Again",
-    calendarHeaderRamadhan: "Ramadhan",
-    calendarHeaderDate: "Date",
-    calendarHeaderImsak: "Imsak",
-    calendarHeaderFajr: "Fajr",
-    calendarHeaderIftar: "Iftar",
-    calendarNoData: "No data available for this period.",
-
     // Intention Card
     intentionModalTitle: "Intention",
     intentionViewFull: "View full intention",

@@ -117,19 +117,6 @@ export const ramadhanID = {
     faqDisclaimerTitle: "⚠️ Catatan Penting",
     faqDisclaimer: "Untuk masalah fiqih yang kompleks atau kondisi khusus, silakan konsultasi dengan ustadz atau ulama terpercaya di daerah Anda.",
 
-    // Calendar Modal
-    calendarViewMonth: "Lihat Jadwal Sebulan",
-    calendarTitle: "Jadwal Imsakiyah Ramadhan 1447H",
-    calendarYourLocation: "Lokasi Anda",
-    calendarLoading: "Memuat jadwal...",
-    calendarRetry: "Coba Lagi",
-    calendarHeaderRamadhan: "Ramadhan",
-    calendarHeaderDate: "Tanggal",
-    calendarHeaderImsak: "Imsak",
-    calendarHeaderFajr: "Subuh",
-    calendarHeaderIftar: "Buka",
-    calendarNoData: "Data tidak tersedia untuk periode ini.",
-
     // Intention Card
     intentionModalTitle: "Niat",
     intentionViewFull: "Lihat niat lengkap",
