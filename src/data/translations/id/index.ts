@@ -26,6 +26,7 @@ import { ramadhanID } from './ramadhan';
 import { statsID } from './stats';
 import { sunnahPrayerID } from './sunnah-prayer';
 import { fastingTrackerID } from './fasting-tracker';
+import { hijriCalendarID } from './hijri-calendar';
 
 export const SETTINGS_ID = {
   ...missionsID,
@@ -38,4 +39,5 @@ export const SETTINGS_ID = {
   ...statsID,
   ...sunnahPrayerID,
   ...fastingTrackerID,
+  ...hijriCalendarID,
 };

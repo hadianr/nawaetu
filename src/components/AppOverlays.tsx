@@ -31,12 +31,14 @@ const SWUpdatePrompt = dynamic(() => import("@/components/SWUpdatePrompt"), { ss
 
 const CACHE_CLEANUP_RULES = [
     { prefix: "quran_tafsir_", ttlMs: 7 * 24 * 60 * 60 * 1000 },
-    { prefix: "verse_", ttlMs: 7 * 24 * 60 * 60 * 1000 }
+    { prefix: "verse_", ttlMs: 7 * 24 * 60 * 60 * 1000 },
+    { prefix: STORAGE_KEYS.HIJRI_CALENDAR_CACHE_PREFIX, ttlMs: 24 * 60 * 60 * 1000 },
 ];
 
 const CACHE_VERSIONS: Record<string, number> = {
     quran_tafsir_: 1,
-    verse_: 1
+    verse_: 1,
+    [STORAGE_KEYS.HIJRI_CALENDAR_CACHE_PREFIX]: 1,
 };
 
 const cleanupDynamicCaches = () => {

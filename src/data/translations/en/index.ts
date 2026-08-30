@@ -26,6 +26,7 @@ import { ramadhanEN } from './ramadhan';
 import { statsEN } from './stats';
 import { sunnahPrayerEN } from './sunnah-prayer';
 import { fastingTrackerEN } from './fasting-tracker';
+import { hijriCalendarEN } from './hijri-calendar';
 
 export const SETTINGS_EN = {
   ...missionsEN,
@@ -38,4 +39,5 @@ export const SETTINGS_EN = {
   ...statsEN,
   ...sunnahPrayerEN,
   ...fastingTrackerEN,
+  ...hijriCalendarEN,
 };

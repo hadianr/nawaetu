@@ -21,12 +21,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { API_CONFIG } from "@/config/apis";
-
-const HIJRI_MONTHS = [
-    "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
-    "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
-    "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
-];
+import { adjustHijriDate, formatHijriDate, parseHijriAdjustment } from "@/lib/hijri-date";
 
 const storage = getStorageService();
 
@@ -59,6 +54,8 @@ interface PrayerData {
     isDefaultLocation?: boolean;
     hijriMonth?: string;
     hijriDay?: number;
+    hijriMonthNumber?: number;
+    hijriYear?: number;
 }
 
 interface UsePrayerTimesResult {
@@ -113,55 +110,25 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const hijri = dateInfo?.hijri;
         if (!hijri) return;
 
-        // Normalization helper to remove macrons/dots (e.g. Ramaḍān -> Ramadan)
-        const normalize = (str: string) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ḍ/g, 'd') : "";
-        const monthEnNormal = normalize(hijri.month?.en || "");
-
-        // Manual Client-Side Hijri Adjustment
-        // Aladhan API adjustment param is unreliable, so we calculate it here.
         const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-        const parsedAdj = parseInt(String(savedAdjustment || "-1"), 10);
-        const activeAdj = isNaN(parsedAdj) ? -1 : parsedAdj;
-
-        const parsedDay = parseInt(hijri.day || "1", 10);
-        let day = isNaN(parsedDay) ? 1 : parsedDay;
-        let monthIndex = (hijri.month?.number || 9) - 1; // Default to Ramadhan index if missing
-        let year = parseInt(hijri.year, 10) || 1447;
-
-        // Apply Adjustment
-        day += activeAdj;
-
-        // Handle Rollover (Simple logic assuming 30 days for prev/curr month to be safe for visual adjustment)
-        if (day < 1) {
-            monthIndex--;
-            if (monthIndex < 0) {
-                monthIndex = 11;
-                year--;
-            }
-            day += 30;
-        } else if (day > 30) {
-            day -= 30;
-            monthIndex++;
-            if (monthIndex > 11) {
-                monthIndex = 0;
-                year++;
-            }
-        }
-
-        const month = HIJRI_MONTHS[monthIndex] || monthEnNormal;
-
-        const hijriString = `${day} ${month} ${hijri.year}H`;
+        const adjustedHijri = adjustHijriDate({
+            day: hijri.day,
+            month: hijri.month?.number,
+            year: hijri.year,
+        }, parseHijriAdjustment(savedAdjustment));
 
         setData({
-            hijriDate: hijriString,
+            hijriDate: formatHijriDate(adjustedHijri),
             gregorianDate: dateInfo?.readable || "",
             prayerTimes: relevantPrayers,
             nextPrayer: next,
             nextPrayerTime: nextTime,
             locationName,
             isDefaultLocation,
-            hijriMonth: month, // Use corrected month name
-            hijriDay: day
+            hijriMonth: adjustedHijri.monthName,
+            hijriDay: adjustedHijri.day,
+            hijriMonthNumber: adjustedHijri.month,
+            hijriYear: adjustedHijri.year,
         });
 
         if (isCached) setLoading(false);
@@ -247,10 +214,6 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             const method = String(savedMethod || "3");
 
-            // Get Hijri adjustment from settings (default: -1)
-            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-            const adjustment = String(savedAdjustment || "-1");
-
             // Check cache first
             const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
             if (cachedData && typeof cachedData === 'object') {
@@ -258,11 +221,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 const savedData = cachedData.data;
                 const savedLocationName = cachedData.locationName;
                 const savedMethodCache = String(cachedData.method || "20");
-                const savedAdjustmentCache = String(cachedData.adjustment || "0");
                 const savedTuneVersion = cachedData.tuneVersion;
 
-                // Only use cache if date, method, adjustment, and tune version match
-                if (date === today && savedData && savedMethodCache === method && savedAdjustmentCache === adjustment && savedTuneVersion === TUNE_VERSION) {
+                // Raw AlAdhan data is independent of Nawaetu's local Hijri adjustment.
+                if (date === today && savedData && savedMethodCache === method && savedTuneVersion === TUNE_VERSION) {
                     processData(savedData, savedLocationName || locationName, true); // Use cached data immediately
                     if (!cachedLocationName) {
                         // If we have a perfectly matching cache, we can skip the heavy fetch
@@ -283,7 +245,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
 
             const response = await fetchWithTimeout(
-                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}&adjustment=${adjustment}${tuneParam}`,
+                `${API_CONFIG.ALADHAN.BASE_URL}/timings/${today}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`,
                 {},
                 { timeoutMs: 8000 }
             );
@@ -306,7 +268,6 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 locationName,
                 isDefault,
                 method,
-                adjustment,
                 tuneVersion: TUNE_VERSION, // Track tune version for cache invalidation
             });
 
@@ -407,14 +368,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
             const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
             const method = String(savedMethod || "20");
-            const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-            const adjustment = String(savedAdjustment !== undefined && savedAdjustment !== null ? savedAdjustment : "-1");
-
             const savedMethodCache = String(cachedData?.method || "20");
-            const savedAdjustmentCache = String(cachedData?.adjustment !== undefined && cachedData?.adjustment !== null ? cachedData.adjustment : "-1");
             const isTuneMatch = cachedData?.tuneVersion === TUNE_VERSION;
 
-            if (!cachedData || cachedData.date !== today || savedMethodCache !== method || savedAdjustmentCache !== adjustment || !isTuneMatch) {
+            if (!cachedData || cachedData.date !== today || savedMethodCache !== method || !isTuneMatch) {
                 fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
             } else {
                 setLoading(false); // Data is fresh, no need to fetch
@@ -445,16 +402,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const handleMethodChange = () => handleUpdate();
 
         // Listen for Hijri adjustment changes
-        const handleAdjustmentChange = () => {
-            const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
-            if (isFreshLocation(cachedLocation)) {
-                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
-                return;
-            }
-            if (cachedLocation) {
-                storage.remove(STORAGE_KEYS.USER_LOCATION as any);
-            }
-        };
+        const handleAdjustmentChange = () => syncFromCache();
 
         window.addEventListener('location_updated', handleLocationUpdate);
         window.addEventListener('prayer_data_updated', handleUpdate);

@@ -19,15 +19,24 @@
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { CalendarDays, ChevronRight } from "lucide-react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
+import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
 import RamadhanCountdown from "@/components/RamadhanCountdown";
 import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
 import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 import HomeHeader from "@/components/HomeHeader";
 import EidCard from "@/components/ramadhan/EidCard";
+import { formatHijriDate } from "@/lib/hijri-date";
+import { cn } from "@/lib/utils";
 
 export default function HomeClient() {
     const { data } = usePrayerTimesContext();
+    const { locale, t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isDaylight = currentTheme === "daylight";
 
     // Move dynamic time calculation to internal state to avoid hydration mismatch.
     // Server renders a stable default, and client updates after mount.
@@ -59,6 +68,14 @@ export default function HomeClient() {
         : false));
     const isEidSeason = mounted && (hijriMonth === "Shawwal" && (data?.hijriDay || 0) <= 3);
     const showSeasonalCard = isRamadhan || isEidSeason;
+    const hijriLabel = data?.hijriDay && data.hijriMonthNumber && data.hijriYear
+        ? formatHijriDate({
+            day: data.hijriDay,
+            month: data.hijriMonthNumber,
+            monthName: data.hijriMonth || "",
+            year: data.hijriYear,
+        }, locale)
+        : data?.hijriDate || "";
 
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 py-4 font-sans sm:px-6">
@@ -67,6 +84,27 @@ export default function HomeClient() {
 
                 {/* 1. Header & Greeting */}
                 <HomeHeader />
+
+                {hijriLabel ? (
+                    <Link
+                        href="/hijri-calendar"
+                        aria-label={`${t.hijriCalendarOpen}: ${hijriLabel}`}
+                        className={cn(
+                            "group flex min-h-16 w-full items-center gap-3 rounded-2xl border px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            isDaylight ? "border-slate-200 bg-white/80 hover:bg-white" : "border-white/10 bg-white/5 hover:bg-white/10",
+                        )}
+                    >
+                        <CalendarDays className="h-5 w-5 shrink-0 text-[rgb(var(--color-primary))]" />
+                        <span className="min-w-0 flex-1">
+                            <span className={cn("block truncate text-sm font-bold", isDaylight ? "text-slate-800" : "text-white")}>{hijriLabel}</span>
+                            <span className={cn("block truncate text-xs", isDaylight ? "text-slate-500" : "text-white/45")}>{data?.gregorianDate}</span>
+                        </span>
+                        <span className="hidden text-xs font-semibold text-[rgb(var(--color-primary))] sm:inline">{t.hijriCalendarView}</span>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-[rgb(var(--color-primary))] transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                ) : (
+                    <div className={cn("h-16 w-full animate-pulse rounded-2xl", isDaylight ? "bg-slate-100" : "bg-white/5")} />
+                )}
 
 
                 {/* 2. Seasonal Card (Ramadhan / Lebaran) */}

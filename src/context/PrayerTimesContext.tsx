@@ -32,6 +32,8 @@ type PrayerData = {
     isDefaultLocation?: boolean;
     hijriMonth?: string;
     hijriDay?: number;
+    hijriMonthNumber?: number;
+    hijriYear?: number;
 };
 
 interface PrayerTimesContextType {

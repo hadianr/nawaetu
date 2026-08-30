@@ -23,7 +23,8 @@ import DalilBadge from "./DalilBadge";
 import IntentionCard from "./IntentionCard";
 import { FASTING_SCHEDULE_EVIDENCE, IFTAR_PRAYER, IFTAR_PRAYER_2, IFTAR_PRAYER_3, SUHOOR_PRAYER } from "@/data/ramadhan";
 import { useState, useEffect } from "react";
-import RamadhanCalendar from "./RamadhanCalendar";
+import Link from "next/link";
+import { CalendarDays } from "lucide-react";
 import { useTranslations } from "@/context/LocaleContext";
 
 function parseTimeToDate(timeStr: string): Date | null {
@@ -152,7 +153,10 @@ export default function RamadhanScheduleCard() {
 
             {/* Calendar Link */}
             <div className="bg-white/[0.02] border-t border-white/5 px-4 py-2 flex justify-center">
-                <RamadhanCalendar />
+                <Link href="/hijri-calendar?view=ramadan" className="flex min-h-11 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
+                    <CalendarDays className="h-3.5 w-3.5" />
+                    <span>{t.hijriCalendarOpen}</span>
+                </Link>
             </div>
         </div>
     );
