@@ -35,6 +35,7 @@ export const statsID = {
             nextRankGoal: "Target Berikutnya:",
             currentHasanah: "Hasanah Saat Ini",
             nextLevelHasanah: "Hasanah Berikutnya",
+            levelsRemaining: "level lagi",
             understand: "Mengerti"
         },
         quick: {
@@ -45,14 +46,18 @@ export const statsID = {
             weeklyHasanah: "Hasanah Minggu Ini",
             last7Days: "14 hari terakhir",
             consistency: "Konsistensi",
-            last30Days: "30 hari terakhir"
+            last30Days: "30 hari terakhir",
+            lastDays: "terakhir"
         },
         heatmap: {
             title: "Konsistensi Sholat (14 Hari)",
             today: "hari ini",
             total: "total",
             missed: "Terlewat",
-            completed: "Terlaksana"
+            completed: "Terlaksana",
+            activityTrend: "Tren aktivitas",
+            days7: "7H",
+            days14: "14H"
         },
         chart: {
             title: "Hasanah Harian",
@@ -138,6 +143,7 @@ export const statsID = {
                 trend: "Tren Dibanding Bulan Lalu",
                 tip: "Jadikan Nawaetu bagian dari rutinitas pagimu.",
                 highTitle: "Tips Kedisiplinan",
+                tipTitle: "Tips Kedisiplinan",
                 highDesc: "Konsistensimu sangat tinggi! Ini adalah fondasi yang kuat untuk pertumbuhan spiritual jangka panjang.",
                 lowDesc: "Jangan terlalu keras pada diri sendiri. Jika terlewat satu hari, segera kembali ke rutinitas di hari berikutnya."
             },

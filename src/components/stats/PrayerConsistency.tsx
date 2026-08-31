@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useLocale } from '@/context/LocaleContext';
 
 interface PrayerConsistencyProps {
     t: any;
@@ -17,6 +18,7 @@ export function PrayerConsistency({
     prayerMap,
     PRAYER_SUFFIXES
 }: PrayerConsistencyProps) {
+    const { locale } = useLocale();
     const [viewDays, setViewDays] = React.useState(14);
 
     // Filter the days based on selection
@@ -45,19 +47,19 @@ export function PrayerConsistency({
                             onClick={() => setViewDays(7)}
                             className={`px-3 py-1 rounded-lg text-[9px] font-black transition-all ${viewDays === 7 ? "bg-[rgb(var(--color-primary))] text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
                         >
-                            7H
+                            {t.stats.heatmap.days7}
                         </button>
                         <button
                             onClick={() => setViewDays(14)}
                             className={`px-3 py-1 rounded-lg text-[9px] font-black transition-all ${viewDays === 14 ? "bg-[rgb(var(--color-primary))] text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
                         >
-                            14H
+                            {t.stats.heatmap.days14}
                         </button>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between px-1">
-                    <span className="text-[10px] text-white/40 font-medium">Tren aktivitas</span>
+                    <span className="text-[10px] text-white/40 font-medium">{t.stats.heatmap.activityTrend}</span>
                     <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-black bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20 px-2.5 py-1 rounded-lg">
                         {todayPrayerCount}/5 {t.stats.heatmap.today}
                     </span>
@@ -81,9 +83,9 @@ export function PrayerConsistency({
                     {displayedDays.slice().reverse().map((dateStr) => {
                         const completedSet = prayerMap[dateStr] || new Set();
                         const d = new Date(dateStr);
-                        const dayName = d.toLocaleDateString(t.stats.header.title.includes("Statistik") ? "id-ID" : "en-US", { weekday: 'short' });
+                        const dayName = d.toLocaleDateString(locale === 'id' ? "id-ID" : "en-US", { weekday: 'short' });
                         const dateNum = d.getDate();
-                        const monthName = d.toLocaleDateString(t.stats.header.title.includes("Statistik") ? "id-ID" : "en-US", { month: 'short' });
+                        const monthName = d.toLocaleDateString(locale === 'id' ? "id-ID" : "en-US", { month: 'short' });
 
                         const now = new Date();
                         const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;

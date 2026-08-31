@@ -3,6 +3,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Keep legacy stats utility classes readable in the active Daylight theme. */
+[data-theme="daylight"] .stats-page [class~="text-white"] { color: rgb(15 23 42) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/90"] { color: rgb(15 23 42 / 0.9) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/80"] { color: rgb(15 23 42 / 0.8) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/70"] { color: rgb(15 23 42 / 0.7) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/60"] { color: rgb(15 23 42 / 0.6) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/50"] { color: rgb(15 23 42 / 0.5) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/40"] { color: rgb(15 23 42 / 0.55) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/30"] { color: rgb(15 23 42 / 0.45) !important; }
+[data-theme="daylight"] .stats-page [class~="text-white/20"] { color: rgb(15 23 42 / 0.35) !important; }
+[data-theme="daylight"] .stats-page [class~="bg-white/5"] { background-color: rgb(15 23 42 / 0.05) !important; }
+[data-theme="daylight"] .stats-page [class~="bg-white/[0.03]"] { background-color: rgb(15 23 42 / 0.03) !important; }
+[data-theme="daylight"] .stats-page [class~="bg-white/[0.02]"] { background-color: rgb(15 23 42 / 0.02) !important; }
+[data-theme="daylight"] .stats-page [class~="border-white/10"] { border-color: rgb(15 23 42 / 0.12) !important; }
+[data-theme="daylight"] .stats-page [class~="border-white/5"] { border-color: rgb(15 23 42 / 0.08) !important; }
+[data-theme="daylight"] .stats-page [class~="border-white/8"] { border-color: rgb(15 23 42 / 0.1) !important; }
+[data-theme="daylight"] .stats-page [class~="bg-[rgb(var(--color-primary))]"] { color: white !important; }
+
 /* ─── Sirah reader prose utilities ─────────────────────────────────────────── */
 
 /* Dialog quotes and hadith narration spans */

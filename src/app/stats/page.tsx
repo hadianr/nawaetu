@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useTranslations } from '@/context/LocaleContext';
+import { useLocale } from '@/context/LocaleContext';
 import { usePlayerStats } from '@/lib/habits/leveling';
 import { getDailyActivityHistory } from '@/lib/analytics/analytics-utils';
 import { getMissionRepository } from '@/core/repositories/mission.repository';
@@ -25,24 +25,32 @@ import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
 import { PresetGuard } from '@/components/PresetGuard';
 import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
 import { useStreak } from '@/hooks/useStreak';
+import { DateUtils } from '@/lib/utils/date';
+import StreakBadge from '@/components/StreakBadge';
 
 export default function StatsPage() {
-    const t = useTranslations();
+    const { t, locale } = useLocale();
     const playerStats = usePlayerStats();
     const { streak, display: streakDisplay } = useStreak();
     const [history, setHistory] = useState<DailyActivity[]>([]);
     const [completedMissions, setCompletedMissions] = useState<CompletedMission[]>([]);
     const [activeInsight, setActiveInsight] = useState<InsightKey | null>(null);
     const [isRankModalOpen, setIsRankModalOpen] = useState(false);
+    const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [totalQuranReadSeconds, setTotalQuranReadSeconds] = useState(0);
     const [todayReadSeconds, setTodayReadSeconds] = useState(0);
 
     useEffect(() => {
         setMounted(true);
-        const activityHistory = getDailyActivityHistory() as unknown as DailyActivity[];
-        setHistory(activityHistory);
-        setCompletedMissions(getMissionRepository().getCompletedMissions());
+        const loadStats = () => {
+            setHistory(getDailyActivityHistory() as unknown as DailyActivity[]);
+            setCompletedMissions(getMissionRepository().getCompletedMissions());
+        };
+        loadStats();
+        window.addEventListener('activity_updated', loadStats);
+        window.addEventListener('mission_updated', loadStats);
+        window.addEventListener('hasanah_updated', loadStats);
 
         // Fetch today's Quran reading time
         const dateString = (() => {
@@ -69,6 +77,11 @@ export default function StatsPage() {
                 }
             })
             .catch(() => {});
+        return () => {
+            window.removeEventListener('activity_updated', loadStats);
+            window.removeEventListener('mission_updated', loadStats);
+            window.removeEventListener('hasanah_updated', loadStats);
+        };
     }, []);
 
     // ── Data Processing ─────────────────────────────────────────────────────
@@ -114,9 +127,20 @@ export default function StatsPage() {
     const consistency = Math.round((activeDaysLast30 / Math.min(history.length || 1, 30)) * 100) || 0;
 
     const chartData = useMemo(() => {
+        const hasanahByDate = new Map<string, number>();
+        history.forEach(activity => hasanahByDate.set(activity.date, activity.hasanahGained || 0));
+        const missionHasanahByDate = new Map<string, number>();
+        completedMissions.forEach(mission => {
+            const date = DateUtils.toLocalDate(mission.completedAt);
+            missionHasanahByDate.set(date, (missionHasanahByDate.get(date) || 0) + (mission.hasanahEarned || 0));
+        });
+        missionHasanahByDate.forEach((value, date) => {
+            hasanahByDate.set(date, Math.max(hasanahByDate.get(date) || 0, value));
+        });
+
         if (timeRange === 'today') {
             const hours = Array.from({ length: 24 }, (_, i) => i);
-            const todayMissions = completedMissions.filter(m => m.completedAt.startsWith(todayStr));
+            const todayMissions = completedMissions.filter(m => DateUtils.toLocalDate(m.completedAt) === todayStr);
             return hours.map(hour => {
                 const hasanah = todayMissions
                     .filter(m => new Date(m.completedAt).getHours() === hour)
@@ -133,15 +157,15 @@ export default function StatsPage() {
             const last12Months = Array.from({ length: 12 }, (_, i) => {
                 const date = new Date();
                 date.setMonth(date.getMonth() - (11 - i));
-                return date.toISOString().substring(0, 7);
+                return DateUtils.toLocalDate(date).substring(0, 7);
             });
 
             return last12Months.map(monthStr => {
-                const hasanah = history
-                    .filter(h => h.date.startsWith(monthStr))
-                    .reduce((sum, h) => sum + h.hasanahGained, 0);
+                const hasanah = [...hasanahByDate.entries()]
+                    .filter(([date]) => date.startsWith(monthStr))
+                    .reduce((sum, [, value]) => sum + value, 0);
                 const [year, month] = monthStr.split('-');
-                const dateLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString(t.stats.header.title.includes("Statistik") ? "id-ID" : "en-US", { month: 'short' });
+                const dateLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString(locale === 'id' ? "id-ID" : "en-US", { month: 'short' });
                 return {
                     date: monthStr,
                     dateLabel,
@@ -152,25 +176,22 @@ export default function StatsPage() {
 
         const daysCount = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
         const rangeDays = Array.from({ length: daysCount }, (_, i) => {
-            const date = new Date();
-            date.setDate(date.getDate() - (daysCount - 1 - i));
-            return date.toISOString().split('T')[0];
+            return DateUtils.daysAgo(daysCount - 1 - i);
         });
 
         return rangeDays.map(dateStr => {
-            const h = history.find(entry => entry.date === dateStr);
-            const d = new Date(dateStr);
-            let dateLabel = d.toLocaleDateString(t.stats.header.title.includes("Statistik") ? "id-ID" : "en-US", { weekday: 'short' });
+            const d = new Date(`${dateStr}T12:00:00`);
+            let dateLabel = d.toLocaleDateString(locale === 'id' ? "id-ID" : "en-US", { weekday: 'short' });
             if (timeRange !== '7d') {
-                dateLabel = d.toLocaleDateString(t.stats.header.title.includes("Statistik") ? "id-ID" : "en-US", { day: 'numeric', month: 'short' });
+                dateLabel = d.toLocaleDateString(locale === 'id' ? "id-ID" : "en-US", { day: 'numeric', month: 'short' });
             }
             return {
                 date: dateStr,
                 dateLabel,
-                hasanah: h ? h.hasanahGained : 0
+                hasanah: hasanahByDate.get(dateStr) || 0
             };
         });
-    }, [history, t, timeRange, todayStr, completedMissions]);
+    }, [history, locale, t, timeRange, todayStr, completedMissions]);
 
     const rangeStats = useMemo(() => {
         const totalHasanah = chartData.reduce((sum, d) => sum + (d as any).hasanah, 0);
@@ -217,7 +238,7 @@ export default function StatsPage() {
 
     return (
         <PresetGuard requiredFeature="showStats">
-            <div className="min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
+            <div className="stats-page min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
 
                 <div className="max-w-2xl mx-auto px-6 pt-5">
@@ -237,6 +258,7 @@ export default function StatsPage() {
                     totalHasanah={rangeStats.totalHasanah}
                     setIsRankModalOpen={setIsRankModalOpen}
                     setActiveInsight={setActiveInsight}
+                    onStreakClick={() => setIsStreakModalOpen(true)}
                 />
 
                 <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
@@ -247,6 +269,8 @@ export default function StatsPage() {
                         timeRange={timeRange}
                         setTimeRange={setTimeRange}
                     />
+
+                    <StreakBadge modalOnly open={isStreakModalOpen} onOpenChange={setIsStreakModalOpen} />
 
                     <PrayerConsistency
                         t={t}

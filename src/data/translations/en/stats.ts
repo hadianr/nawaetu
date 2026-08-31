@@ -35,6 +35,7 @@ export const statsEN = {
             nextRankGoal: "Next Goal:",
             currentHasanah: "Current Hasanah",
             nextLevelHasanah: "Next Level Hasanah",
+            levelsRemaining: "levels remaining",
             understand: "Understand"
         },
         quick: {
@@ -45,14 +46,18 @@ export const statsEN = {
             weeklyHasanah: "Weekly Hasanah",
             last7Days: "last 14 days",
             consistency: "Consistency",
-            last30Days: "last 30 days"
+            last30Days: "last 30 days",
+            lastDays: "last"
         },
         heatmap: {
             title: "Prayer Consistency (14 Days)",
             today: "today",
             total: "total",
             missed: "Missed",
-            completed: "Completed"
+            completed: "Completed",
+            activityTrend: "Activity trend",
+            days7: "7D",
+            days14: "14D"
         },
         chart: {
             title: "Daily Hasanah",
@@ -138,6 +143,7 @@ export const statsEN = {
                 trend: "Trend vs Last Month",
                 tip: "Make Nawaetu part of your morning routine.",
                 highTitle: "Discipline Tips",
+                tipTitle: "Discipline Tips",
                 highDesc: "Your consistency is very high! This is a strong foundation for long-term spiritual growth.",
                 lowDesc: "Don't be too hard on yourself. If you miss a day, promptly return to your routine the next day."
             },
