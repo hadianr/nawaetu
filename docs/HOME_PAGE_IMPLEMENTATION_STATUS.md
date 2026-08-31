@@ -41,6 +41,7 @@
 - Floating Ask Nawaetu CTA remains usable on mobile and centered desktop layouts.
 - Spiritual feed labels resolve correctly in Indonesian and English.
 - Lint/test tooling now exposes real code findings instead of failing before execution.
+- Prayer-time loading now deduplicates identical in-flight location/date requests.
 
 ## Next implementation order
 
