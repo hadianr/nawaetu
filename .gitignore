@@ -122,8 +122,9 @@ Thumbs.db
 
 # Drizzle artifacts
 # Allow migration SQL files (these MUST be committed)
-# But ignore metadata journals (auto-generated per environment)
-drizzle/meta/
+# Keep the migration journal reproducible; ignore generated snapshots.
+drizzle/meta/*
+!drizzle/meta/_journal.json
 drizzle/0*.sql
 !drizzle/0*.sql
 
@@ -158,3 +159,4 @@ public/swe-worker-*.js.map
 
 .neon
 .claude/
+.codex/

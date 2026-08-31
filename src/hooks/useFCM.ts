@@ -68,7 +68,7 @@ export function useFCM() {
                     }
 
                     // Send token to backend with metadata
-                    await fetch("/api/notifications/subscribe", {
+                    const response = await fetch("/api/notifications/subscribe", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -79,6 +79,9 @@ export function useFCM() {
                             prayerPreferences,
                         }),
                     });
+                    if (!response.ok) {
+                        throw new Error(`FCM subscription failed (${response.status})`);
+                    }
                 }
             } catch (err) {
             }
@@ -93,8 +96,9 @@ export function useFCM() {
         // Listen for foreground messages
         if (messaging) {
             const unsubscribe = onMessage(messaging, (payload) => {
-                if (payload.notification && typeof window !== "undefined" && "Notification" in window) {
-                    const { title, body } = payload.notification;
+                if ((payload.notification || payload.data) && typeof window !== "undefined" && "Notification" in window) {
+                    const title = payload.notification?.title || payload.data?.title;
+                    const body = payload.notification?.body || payload.data?.body;
                     const options = { body };
                     const notifTitle = title || "Nawaetu";
 

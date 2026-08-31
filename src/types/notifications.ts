@@ -48,4 +48,3 @@ export const DEFAULT_PRAYER_PREFERENCES: PrayerPreferences = {
     maghrib: true,
     isha: true,
 };
-

@@ -132,6 +132,39 @@ export default function DataSyncer() {
         }
     }, [setTheme, setLocale]);
 
+    const restoreProgression = useCallback(async () => {
+        try {
+            const res = await fetch("/api/user/full-data", { cache: "no-store" });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (!data.progression) return;
+
+            const progression = data.progression;
+            const streak = progression.streak;
+            if (streak) {
+                storage.set(STORAGE_KEYS.USER_STREAK, {
+                    currentStreak: streak.currentDays || 0,
+                    longestStreak: streak.longestDays || 0,
+                    lastActiveDate: streak.lastStreakDate || "",
+                    milestones: [],
+                    freezesAvailable: streak.freezesAvailable || 0,
+                    protectedDates: (streak.days || [])
+                        .filter((day: { status?: string }) => day.status === "frozen")
+                        .map((day: { localDate: string }) => day.localDate),
+                });
+            }
+            storage.set(STORAGE_KEYS.CANONICAL_PROGRESSION, {
+                ...progression,
+                userId: session?.user?.id,
+            });
+            storage.set(STORAGE_KEYS.USER_HASANAH, String(progression.hasanah || 0));
+            window.dispatchEvent(new Event("streak_updated"));
+            window.dispatchEvent(new Event("hasanah_updated"));
+        } catch {
+            // Keep the local projection if the account snapshot is unavailable.
+        }
+    }, [session?.user?.id, storage]);
+
     useEffect(() => {
         const handleAuthSync = async () => {
             if (status === "authenticated" && session?.user && !hasSyncedRef.current) {
@@ -151,6 +184,7 @@ export default function DataSyncer() {
                 // 1. Always restore settings first to get cloud preferences
                 // This ensures we don't overwrite cloud settings with local defaults
                 await restoreSettings();
+                await restoreProgression();
 
                 // 2. Check if we need to push local guest data (bookmarks, etc) to cloud
                 const hasSyncedFlag = storage.getOptional("nawaetu_synced_v1" as any);
@@ -210,7 +244,7 @@ export default function DataSyncer() {
             if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
         };
 
-    }, [status, session, syncData, restoreSettings]);
+    }, [status, session, syncData, restoreSettings, restoreProgression]);
 
     return null; // Invisible component
 }

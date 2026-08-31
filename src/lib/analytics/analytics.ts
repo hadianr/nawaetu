@@ -171,6 +171,17 @@ export const trackFeatureUse = (featureName: string) => {
     });
 };
 
+export const trackStreakEvent = (
+    eventName: string,
+    params: { userMode: "guest" | "logged_in"; syncState?: string; streakDays?: number },
+) => {
+    sendGAEvent(`streak_${eventName}`, {
+        user_mode: params.userMode,
+        sync_state: params.syncState || (params.userMode === "logged_in" ? "canonical" : "local"),
+        streak_days: params.streakDays || 0,
+    });
+};
+
 /**
  * Track client-side app errors
  */

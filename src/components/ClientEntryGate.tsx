@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
 
@@ -30,8 +30,7 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
     const [isChecking, setIsChecking] = useState(true);
     const [showOnboarding, setShowOnboarding] = useState(false);
 
-    useLayoutEffect(() => {
-        // Run this synchronously before paint to prevent flash
+    useEffect(() => {
         try {
             // In Chrome Extension iframes, accessing localStorage might throw a SecurityError
             // if the user has blocked third-party cookies.
@@ -52,6 +51,13 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
             setIsChecking(false);
         }
     }, []);
+
+    // Do not leave Safari (or a blocked storage context) on an opaque SSR fallback forever.
+    useEffect(() => {
+        if (!isChecking) return;
+        const timeout = window.setTimeout(() => setIsChecking(false), 4000);
+        return () => window.clearTimeout(timeout);
+    }, [isChecking]);
 
     const handleOnboardingComplete = () => {
         setShowOnboarding(false);

@@ -95,17 +95,22 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
         // If we use multiple scopes, iOS Safari frequently drops Firebase Push events.
 
         let activeRegistration: ServiceWorkerRegistration | null = null;
+        const serviceWorkerUrl = process.env.NODE_ENV === "development"
+            ? "/firebase-messaging-sw.js"
+            : "/sw.js";
 
-        try {
-            const readyPromise = navigator.serviceWorker.ready;
-            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000));
-            activeRegistration = (await Promise.race([readyPromise, timeoutPromise])) as ServiceWorkerRegistration | null;
-        } catch (err) {
-            console.warn("[FCM] Error waiting for service worker ready:", err);
+        if (process.env.NODE_ENV !== "development") {
+            try {
+                const readyPromise = navigator.serviceWorker.ready;
+                const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000));
+                activeRegistration = (await Promise.race([readyPromise, timeoutPromise])) as ServiceWorkerRegistration | null;
+            } catch (err) {
+                console.warn("[FCM] Error waiting for service worker ready:", err);
+            }
         }
 
         if (!activeRegistration) {
-            activeRegistration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+            activeRegistration = await navigator.serviceWorker.register(serviceWorkerUrl);
         }
 
         if (!activeRegistration) {

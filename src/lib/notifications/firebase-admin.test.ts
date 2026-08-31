@@ -91,6 +91,21 @@ describe('firebase-admin', () => {
         expect(mockInitializeApp).toHaveBeenCalled();
     });
 
+    it('should initialize with split Firebase Admin credentials', async () => {
+        process.env.FIREBASE_PROJECT_ID = 'test-project-split';
+        process.env.FIREBASE_CLIENT_EMAIL = 'firebase@test-project-split.iam.gserviceaccount.com';
+        process.env.FIREBASE_PRIVATE_KEY = 'line-1\\nline-2';
+
+        await getMessaging();
+
+        expect(mockCert).toHaveBeenCalledWith({
+            projectId: 'test-project-split',
+            clientEmail: 'firebase@test-project-split.iam.gserviceaccount.com',
+            privateKey: 'line-1\nline-2',
+        });
+        expect(mockInitializeApp).toHaveBeenCalled();
+    });
+
     it('should initialize with local file if env vars missing', async () => {
         const creds = { project_id: 'test-project-file' };
         mockReadFile.mockReturnValue(JSON.stringify(creds));

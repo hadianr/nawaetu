@@ -19,7 +19,8 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, BellOff, Loader2 } from "lucide-react";
+import { Bell, BellOff, Flame, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
@@ -31,6 +32,7 @@ import { toast } from "sonner";
 
 export default function NotificationSettings() {
     const { locale, t } = useLocale();
+    const { status } = useSession();
 
     // State Management
     const [isEnabled, setIsEnabled] = useState(false);
@@ -39,6 +41,10 @@ export default function NotificationSettings() {
     const [fcmToken, setFcmToken] = useState<string | null>(null);
     const [preferences, setPreferences] = useState<PrayerPreferences>(DEFAULT_PRAYER_PREFERENCES);
     const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>("default");
+    const [streakReminderEnabled, setStreakReminderEnabled] = useState(false);
+    const [isSavingStreakReminder, setIsSavingStreakReminder] = useState(false);
+    const [subscriptionHealthy, setSubscriptionHealthy] = useState(false);
+    const [isTestingPush, setIsTestingPush] = useState(false);
     const isProcessingRef = useRef<boolean>(false);
 
     useEffect(() => {
@@ -54,6 +60,102 @@ export default function NotificationSettings() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (status !== "authenticated") return;
+        fetch("/api/user/settings", { cache: "no-store" })
+            .then((response) => response.ok ? response.json() : null)
+            .then((data) => setStreakReminderEnabled(data?.data?.settings?.streakReminderEnabled === true))
+            .catch(() => undefined);
+    }, [status]);
+
+    useEffect(() => {
+        if (status !== "authenticated" || !fcmToken) return;
+
+        const verify = async () => {
+            const health = await fetch(`/api/notifications/subscribe?token=${encodeURIComponent(fcmToken)}`, { cache: "no-store" });
+            const result = health.ok ? await health.json() : null;
+            if (result?.healthy) {
+                setSubscriptionHealthy(true);
+                return;
+            }
+
+            const token = await registerServiceWorkerAndGetToken();
+            if (!token) return;
+            const response = await fetch("/api/notifications/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    token,
+                    prayerPreferences: preferences,
+                    userLocation: getCurrentLocation(),
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                }),
+            });
+            if (response.ok) {
+                setFcmToken(token);
+                setSubscriptionHealthy(true);
+            }
+        };
+
+        void verify().catch(() => setSubscriptionHealthy(false));
+    }, [fcmToken, status]);
+
+    async function sendTestPush() {
+        if (!fcmToken) return;
+        setIsTestingPush(true);
+        try {
+            const response = await fetch("/api/notifications/test", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: fcmToken }),
+            });
+            if (response.status === 410) {
+                const freshToken = await registerServiceWorkerAndGetToken();
+                if (!freshToken) throw new Error("Unable to refresh notification device");
+                const subscription = await fetch("/api/notifications/subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        token: freshToken,
+                        prayerPreferences: preferences,
+                        userLocation: getCurrentLocation(),
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    }),
+                });
+                if (!subscription.ok) throw new Error("Unable to re-register notification device");
+                setFcmToken(freshToken);
+                setSubscriptionHealthy(true);
+                toast.success(locale === "id" ? "Perangkat diperbarui. Silakan kirim ulang." : "Device refreshed. Please send again.");
+                return;
+            }
+            if (!response.ok) throw new Error("Test push failed");
+            toast.success(t.notificationTestSent);
+        } catch {
+            toast.error(t.notificationTestFailed);
+        } finally {
+            setIsTestingPush(false);
+        }
+    }
+
+    async function toggleStreakReminder(enabled: boolean) {
+        const previous = streakReminderEnabled;
+        setStreakReminderEnabled(enabled);
+        setIsSavingStreakReminder(true);
+        try {
+            const response = await fetch("/api/user/settings", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ settings: { streakReminderEnabled: enabled } }),
+            });
+            if (!response.ok) throw new Error("Failed to save streak reminder preference");
+        } catch {
+            setStreakReminderEnabled(previous);
+            toast.error(t.streakReminderSaveFailed);
+        } finally {
+            setIsSavingStreakReminder(false);
+        }
+    }
 
     async function tryGetTokenSilently() {
         try {
@@ -147,7 +249,7 @@ export default function NotificationSettings() {
                         const userLocation = getCurrentLocation();
                         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-                        await fetch("/api/notifications/subscribe", {
+                        const response = await fetch("/api/notifications/subscribe", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
@@ -157,6 +259,10 @@ export default function NotificationSettings() {
                                 timezone
                             }),
                         });
+                        if (!response.ok) {
+                            throw new Error("Subscription registration failed");
+                        }
+                        setSubscriptionHealthy(true);
                         return locale === 'id' ? "Notifikasi berhasil diaktifkan" : "Notifications enabled successfully";
                     } else {
                         return locale === 'id'
@@ -232,6 +338,7 @@ export default function NotificationSettings() {
         maghrib: t.maghrib || "Maghrib",
         isha: t.isha || "Isya",
     };
+    const prayerPreferenceKeys: Array<keyof PrayerPreferences> = ["imsak", "fajr", "dhuhr", "asr", "maghrib", "isha"];
 
     // RENDER: PRE-PERMISSION STATE
     if (permissionStatus === "default") {
@@ -277,6 +384,7 @@ export default function NotificationSettings() {
 
     // RENDER: SETTINGS STATE (GRANTED)
     return (
+        <div className="space-y-3">
         <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
             {/* Main Toggle Area */}
             <div className="flex items-center justify-between gap-3">
@@ -344,7 +452,7 @@ export default function NotificationSettings() {
                                 </>
                             ) : (
                                 // Actual prayer toggles
-                                (Object.keys(preferences) as Array<keyof PrayerPreferences>).map(
+                                prayerPreferenceKeys.map(
                                     (prayer) => {
                                         const label = prayerNames[prayer.toLowerCase() as keyof typeof prayerNames] || prayer;
                                         return (
@@ -356,7 +464,7 @@ export default function NotificationSettings() {
                                                     {label}
                                                 </span>
                                                 <Switch
-                                                    checked={preferences[prayer]}
+                                                    checked={preferences[prayer] as boolean}
                                                     onCheckedChange={() => togglePrayer(prayer)}
                                                     className="scale-75 origin-right"
                                                 />
@@ -369,6 +477,39 @@ export default function NotificationSettings() {
                     </div>
                 </>
             )}
+        </div>
+
+        {status === "authenticated" && (
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10">
+                        <Flame className="h-5 w-5 text-[rgb(var(--color-primary))]" aria-hidden="true" />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-semibold text-white sm:text-base">{t.streakReminderTitle}</h3>
+                        <p className="text-xs text-white/50">{t.streakReminderDescription}</p>
+                    </div>
+                </div>
+                <Switch
+                    checked={streakReminderEnabled}
+                    disabled={isSavingStreakReminder}
+                    onCheckedChange={toggleStreakReminder}
+                    aria-label={t.streakReminderTitle}
+                    className="shrink-0"
+                />
+            </div>
+        )}
+
+        {status === "authenticated" && fcmToken && (
+            <button
+                type="button"
+                disabled={!subscriptionHealthy || isTestingPush}
+                onClick={sendTestPush}
+                className="w-full rounded-xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+                {isTestingPush ? t.notificationTestSending : t.notificationTestButton}
+            </button>
+        )}
         </div>
     );
 }

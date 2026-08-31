@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, isNotNull } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
 
@@ -166,7 +166,15 @@ export async function POST(req: NextRequest) {
         const subscriptions = await db
             .select()
             .from(pushSubscriptions)
-            .where(eq(pushSubscriptions.active, 1));
+            .where(and(eq(pushSubscriptions.active, 1), isNotNull(pushSubscriptions.userId)));
+
+        if (subscriptions.length === 0) {
+            return NextResponse.json({
+                success: true,
+                mode,
+                results: { total: 0, sent: 0, failed: 0, invalidTokens: 0, skipped: 0, noLocation: 0, errors: [] },
+            });
+        }
 
         const messagingAdmin = await getMessaging();
 
@@ -178,6 +186,7 @@ export async function POST(req: NextRequest) {
             total: subscriptions.length,
             sent: 0,
             failed: 0,
+            invalidTokens: 0,
             skipped: 0,
             noLocation: 0,  // subscriptions skipped due to missing coordinates
             errors: [] as string[],
@@ -206,6 +215,7 @@ export async function POST(req: NextRequest) {
                 } catch (e: any) {
                     results.failed++;
                     if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                        results.invalidTokens++;
                         await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
                     }
                 }
@@ -436,6 +446,7 @@ export async function POST(req: NextRequest) {
                         } catch (e: any) {
                             results.failed++;
                             if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                                results.invalidTokens++;
                                 await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
                             }
                         }
@@ -447,6 +458,18 @@ export async function POST(req: NextRequest) {
                 }
             }));
 
+            if (results.sent > 0 || results.failed > 0 || results.invalidTokens > 0 || results.noLocation > 0 || results.errors.length > 0) {
+                logger.info("Prayer alert run completed", {
+                    route: "/api/notifications/prayer-alert",
+                    action: "fcm_delivery_summary",
+                    sent: results.sent,
+                    skipped: results.skipped,
+                    failed: results.failed,
+                    invalidTokens: results.invalidTokens,
+                    noLocation: results.noLocation,
+                    errors: results.errors.length,
+                });
+            }
             return NextResponse.json({ success: true, mode: "alert", results });
         }
 
