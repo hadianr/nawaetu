@@ -160,3 +160,4 @@ public/swe-worker-*.js.map
 .neon
 .claude/
 .codex/
+AGENTS.md
