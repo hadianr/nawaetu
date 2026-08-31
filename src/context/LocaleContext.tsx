@@ -36,10 +36,11 @@ function getMergedTranslations() {
 
 const ALL_TRANSLATIONS = getMergedTranslations();
 
+type SupportedLocale = keyof typeof SETTINGS_TRANSLATIONS;
 interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;
-  t: any; // Type it correctly if possible, or use any for flexibility
+  t: any; // Translation tree contains nested, locale-specific sections.
   isLoading: boolean;
 }
 
@@ -51,8 +52,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   // Get translations for current locale with fallback
   // Also resolving activeLocale prevents UI locale mismatches
-  const activeLocale = (ALL_TRANSLATIONS as any)[locale] ? locale : DEFAULT_LOCALE;
-  const t = (ALL_TRANSLATIONS as any)[activeLocale];
+  const activeLocale: SupportedLocale = locale in ALL_TRANSLATIONS
+    ? locale as SupportedLocale
+    : DEFAULT_LOCALE;
+  const t = ALL_TRANSLATIONS[activeLocale] as any;
 
   // Initialize from localStorage on client mount
   useEffect(() => {
@@ -78,6 +81,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   }, []);
+
+  // Keep assistive technology and browser language heuristics aligned with the
+  // locale selected after hydration without making the root layout dynamic.
+  useEffect(() => {
+    document.documentElement.lang = activeLocale;
+  }, [activeLocale]);
 
   // Listen for localStorage changes from other tabs/windows
   useEffect(() => {
