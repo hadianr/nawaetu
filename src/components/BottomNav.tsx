@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect, memo } from "react";
+import { useSyncExternalStore, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, BookOpen, Scroll, Settings, Fingerprint } from "lucide-react";
@@ -54,12 +54,12 @@ const BottomNav = memo(function BottomNav() {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false,
+    );
     const { data } = usePrayerTimesContext();
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     // Detect Ramadhan from hijriMonth returned by usePrayerTimes
     const hijriMonth = data?.hijriMonth ?? "";
@@ -71,13 +71,13 @@ const BottomNav = memo(function BottomNav() {
             { href: "/", label: t.navHome, icon: Home, special: false },
             { href: "/quran", label: t.navQuran, icon: BookOpen, special: false },
             { href: "/ramadhan", label: "Ramadhan", icon: MoonStarIcon, special: true },
-            { href: "/sirah", label: (t as any).navSirah ?? "Sirah", icon: Scroll, special: false },
+            { href: "/sirah", label: t.navSirah ?? "Sirah", icon: Scroll, special: false },
             { href: "/settings", label: t.navSettings, icon: Settings, special: false },
         ]
         : [
             { href: "/", label: t.navHome, icon: Home, special: false },
             { href: "/quran", label: t.navQuran, icon: BookOpen, special: false },
-            { href: "/sirah", label: (t as any).navSirah ?? "Sirah", icon: Scroll, special: false },
+            { href: "/sirah", label: t.navSirah ?? "Sirah", icon: Scroll, special: false },
             { href: "/dhikr", label: t.navTasbih, icon: Fingerprint, special: false },
             { href: "/settings", label: t.navSettings, icon: Settings, special: false },
         ];
@@ -102,7 +102,7 @@ const BottomNav = memo(function BottomNav() {
                                 <Link
                                     key={href}
                                     href={href}
-                                    prefetch={true}
+                                    prefetch={false}
                                     className="relative flex flex-col items-center justify-center gap-1 min-w-[64px]"
                                 >
                                     {/* Elevated Button Container */}
@@ -226,7 +226,7 @@ const BottomNav = memo(function BottomNav() {
                                             ? "text-slate-400 hover:text-slate-600"
                                             : "text-slate-400 hover:text-white/90"
                                 )}
-                                prefetch={true}
+                                prefetch={false}
                             >
                                 <Icon className={cn(
                                     "h-6 w-6 transition-transform duration-300",
