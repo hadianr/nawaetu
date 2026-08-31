@@ -25,12 +25,27 @@ export interface SpiritualItem {
     content: Reading;
 }
 
+const SPIRITUAL_CATEGORY_ALIASES: Record<string, string> = {
+    spiritualCategoryCharacter: "spiritualCategoryAkhlak",
+    spiritualCategoryWorship: "spiritualCategoryIbadah",
+    spiritualCategorySocial: "spiritualCategorySosial",
+    spiritualCategoryFaith: "spiritualCategoryIman",
+    spiritualCategoryKnowledge: "spiritualCategoryIlmu",
+    spiritualCategoryLifestyle: "spiritualCategoryGayaHidup",
+    spiritualCategoryGratitude: "spiritualCategorySyukur",
+    spiritualCategoryProtection: "spiritualCategoryPerlindungan",
+};
+
+export function normalizeSpiritualCategory(category: string): string {
+    return SPIRITUAL_CATEGORY_ALIASES[category] ?? category;
+}
+
 /** Adapt HadithItem to SpiritualItem */
 function adaptHadith(item: HadithItem): SpiritualItem {
     return {
         id: item.id,
         type: "hadith",
-        category: item.category,
+        category: normalizeSpiritualCategory(item.category),
         content: {
             title: item.title,
             titleEn: item.titleEn,
@@ -48,7 +63,7 @@ function adaptDua(item: DuaItem): SpiritualItem {
     return {
         id: item.id,
         type: "dua",
-        category: item.category,
+        category: normalizeSpiritualCategory(item.category),
         content: {
             title: item.title,
             titleEn: item.titleEn,
@@ -99,12 +114,12 @@ export function getByCategory(category: string): SpiritualItem[] {
 export const SPIRITUAL_CATEGORIES = [
     { key: "all", labelId: "Semua", labelEn: "All" },
     { key: "spiritualCategoryRamadhan", labelId: "Ramadhan", labelEn: "Ramadhan" },
-    { key: "spiritualCategoryCharacter", labelId: "Akhlak", labelEn: "Character" },
-    { key: "spiritualCategoryWorship", labelId: "Ibadah", labelEn: "Worship" },
-    { key: "spiritualCategorySocial", labelId: "Sosial", labelEn: "Social" },
-    { key: "spiritualCategoryFaith", labelId: "Iman", labelEn: "Faith" },
-    { key: "spiritualCategoryKnowledge", labelId: "Ilmu", labelEn: "Knowledge" },
-    { key: "spiritualCategoryLifestyle", labelId: "Gaya Hidup", labelEn: "Lifestyle" },
-    { key: "spiritualCategoryGratitude", labelId: "Syukur", labelEn: "Gratitude" },
-    { key: "spiritualCategoryProtection", labelId: "Doa", labelEn: "Duas" },
+    { key: "spiritualCategoryAkhlak", labelId: "Akhlak", labelEn: "Character" },
+    { key: "spiritualCategoryIbadah", labelId: "Ibadah", labelEn: "Worship" },
+    { key: "spiritualCategorySosial", labelId: "Sosial", labelEn: "Social" },
+    { key: "spiritualCategoryIman", labelId: "Iman", labelEn: "Faith" },
+    { key: "spiritualCategoryIlmu", labelId: "Ilmu", labelEn: "Knowledge" },
+    { key: "spiritualCategoryGayaHidup", labelId: "Gaya Hidup", labelEn: "Lifestyle" },
+    { key: "spiritualCategorySyukur", labelId: "Syukur", labelEn: "Gratitude" },
+    { key: "spiritualCategoryPerlindungan", labelId: "Doa", labelEn: "Duas" },
 ];
