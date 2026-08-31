@@ -76,7 +76,9 @@
     "@auth/core": {
       "cookie": ">=0.7.0"
     },
-    "brace-expansion": ">=1.1.17",
+    "minimatch@3.1.5": {
+      "brace-expansion": "^2.0.1"
+    },
     "sharp": "^0.35.3",
     "gaxios": "^7.2.0",
     "postcss": "^8.5.20",

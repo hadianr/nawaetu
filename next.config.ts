@@ -20,7 +20,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   // Transpile packages that use @babel/runtime to prevent chunk loading issues
   transpilePackages: ['framer-motion'],
-  serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation"],
+  serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation", "isomorphic-dompurify"],
   productionBrowserSourceMaps: true,
 
   // Performance optimizations
