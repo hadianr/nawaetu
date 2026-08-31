@@ -81,8 +81,8 @@ export function recordDailyActivity(activity: Partial<DailyActivity>, dateStr?: 
         });
     }
 
-    // Keep only last 90 days
-    const cutoff = DateUtils.daysAgo(90);
+    // Keep one year so the 1Y stats range has historical data.
+    const cutoff = DateUtils.daysAgo(365);
 
     const filtered = history
         .filter((a) => a.date >= cutoff)
@@ -233,4 +233,3 @@ export function getMonthlyStats(): MonthlyStats {
         consistency,
     };
 }
-

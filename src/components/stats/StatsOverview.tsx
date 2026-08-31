@@ -27,6 +27,7 @@ interface StatsOverviewProps {
     totalHasanah: number;
     setIsRankModalOpen: (val: boolean) => void;
     setActiveInsight: (val: InsightKey | null) => void;
+    onStreakClick: () => void;
 }
 
 export function StatsOverview({
@@ -41,7 +42,8 @@ export function StatsOverview({
     timeRange,
     totalHasanah,
     setIsRankModalOpen,
-    setActiveInsight
+    setActiveInsight,
+    onStreakClick
 }: StatsOverviewProps) {
     return (
         <div className="space-y-4 max-w-2xl mx-auto px-6">
@@ -96,7 +98,7 @@ export function StatsOverview({
                                 <div className="shrink-0 flex items-center gap-1.5">
                                     <div className="w-1 h-1 rounded-full bg-white/10 hidden sm:block" />
                                     <div className="font-black text-[rgb(var(--color-primary-light))] uppercase tracking-tighter">
-                                        {nextRank.levelsRemaining} Lv Lagi
+                                        {nextRank.levelsRemaining} {t.stats.level.levelsRemaining}
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +137,7 @@ export function StatsOverview({
                         icon: <ZapIcon className="w-4 h-4 text-yellow-400" />,
                         label: `Hasanah ${t.stats.chart.filters[timeRange === 'today' ? 'today' : timeRange === '7d' ? 'last7d' : timeRange === '30d' ? 'last30d' : timeRange === '90d' ? 'last90d' : 'last1y']}`,
                         value: totalHasanah.toLocaleString(),
-                        sub: timeRange === 'today' ? t.stats.chart.subtitle : `${timeRange.toUpperCase()} ${t.stats.quick.lastDays || "Terakhir"}`,
+                        sub: timeRange === 'today' ? t.stats.chart.subtitle : `${timeRange.toUpperCase()} ${t.stats.quick.lastDays}`,
                         gradient: "from-yellow-500/10",
                     },
                     {
@@ -149,7 +151,7 @@ export function StatsOverview({
                 ].map((stat, i) => (
                     <button
                         key={i}
-                        onClick={() => setActiveInsight(stat.id)}
+                        onClick={() => stat.id === 'streak' ? onStreakClick() : setActiveInsight(stat.id)}
                         className={cn(
                             "text-left relative overflow-hidden rounded-2xl border border-white/8 bg-gradient-to-br to-transparent p-4 active:scale-[0.98] transition-all group",
                             stat.gradient
