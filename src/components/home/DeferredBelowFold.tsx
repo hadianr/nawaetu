@@ -142,12 +142,12 @@ export default function DeferredBelowFold() {
       </div>
 
 
-      {/* AI Mentor Access Point - Lazy loaded */}
-      <div className="fixed bottom-[90px] left-0 right-0 z-40 pointer-events-none">
-        <div className="max-w-md mx-auto w-full relative px-4">
+      {/* AI Mentor Access Point */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-24 z-40">
+        <div className="mx-auto flex w-full max-w-md justify-end px-4">
           <Link
             href="/mentor-ai"
-            className="absolute right-4 bottom-0 pointer-events-auto group animate-in slide-in-from-right-4 fade-in duration-700 delay-500"
+            className="pointer-events-auto group animate-in slide-in-from-right-4 fade-in duration-700 delay-500"
             prefetch={false}
           >
             <div className="relative flex items-center gap-2 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] p-1 pr-4 pl-1.5 rounded-full border border-white/20 shadow-[0_8px_32px_rgba(var(--color-primary),0.3)] hover:scale-105 active:scale-95 transition-all">
