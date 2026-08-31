@@ -126,6 +126,7 @@ export interface StreakAchievementLike {
     hasanahEarned?: number;
     level?: number;
     milestoneLabel?: string;
+    displayName?: string;
 }
 
 export function mapStreakAchievementToShareData(
@@ -142,13 +143,16 @@ export function mapStreakAchievementToShareData(
     return {
         kind: "achievement",
         id: `streak-${achievement.currentStreak}`,
-        title: achievement.milestoneLabel || (isEnglish ? "Istiqamah Streak" : "Jejak Istiqamah"),
-        arabic: `🔥 ${achievement.currentStreak}`,
+        title: isEnglish
+            ? `${achievement.currentStreak} day streak!`
+            : `Streak ${achievement.currentStreak} hari!`,
+        arabic: String(achievement.currentStreak),
         translation: isEnglish
-            ? `${achievement.currentStreak} consistent days with Nawaetu`
-            : `${achievement.currentStreak} hari konsisten bersama Nawaetu`,
+            ? `${achievement.currentStreak} days of staying consistent in daily worship`
+            : `${achievement.currentStreak} hari istiqamah dalam ibadah harian`,
         explanation: detail || (isEnglish ? `Longest streak: ${achievement.longestStreak} days` : `Streak terpanjang: ${achievement.longestStreak} hari`),
         sourceText: isEnglish ? "Nawaetu • Istiqamah Streak" : "Nawaetu • Jejak Istiqamah",
+        displayName: achievement.displayName,
     };
 }
 
