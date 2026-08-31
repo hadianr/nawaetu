@@ -117,11 +117,22 @@ export function GuestSyncManager() {
             }
         };
 
-        const syncTask = setTimeout(() => {
-            checkSyncStatus();
-        }, 800); // 800ms delay to give priority to page-specific loads
+        let fallbackTask: ReturnType<typeof setTimeout> | undefined;
+        let idleTask: number | undefined;
+        const runSync = () => { void checkSyncStatus(); };
 
-        return () => clearTimeout(syncTask);
+        if ("requestIdleCallback" in window) {
+            idleTask = (window as Window & typeof globalThis).requestIdleCallback(runSync, { timeout: 1500 });
+        } else {
+            fallbackTask = setTimeout(runSync, 1200);
+        }
+
+        return () => {
+            if (fallbackTask) clearTimeout(fallbackTask);
+            if (idleTask !== undefined && "cancelIdleCallback" in window) {
+                (window as Window & typeof globalThis).cancelIdleCallback(idleTask);
+            }
+        };
     }, [status, session]);
 
     const checkForLocalGuestData = () => {
