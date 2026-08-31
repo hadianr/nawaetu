@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
@@ -69,6 +69,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const [data, setData] = useState<PrayerData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const inFlightRequest = useRef<string | null>(null);
 
     const processData = useCallback((result: any, locationName: string, isCached: boolean = false, isDefaultLocation: boolean = false) => {
         const timings = result.data.timings;
@@ -150,6 +151,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     }, [processData]);
 
     const fetchPrayerTimes = useCallback(async (lat: number, lng: number, cachedLocationName?: string, isDefault: boolean = false) => {
+        const requestKey = `${lat}:${lng}:${new Date().toLocaleDateString("en-GB")}`;
+        if (inFlightRequest.current === requestKey) return;
+        inFlightRequest.current = requestKey;
+
         // fetch location name if not cached
         let locationName = cachedLocationName || "Lokasi Anda";
         let geoDetails: { city?: string; country?: string; countryCode?: string } = {};
@@ -309,6 +314,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
         } finally {
             setLoading(false);
+            if (inFlightRequest.current === requestKey) inFlightRequest.current = null;
         }
     }, [processData]);
 

@@ -12,6 +12,12 @@ The existing audit plan remains structurally sound. It needs two explicit gates 
 
 **Implementation closure — 2026-09-01:** All repository-level remediations identified in this pass are implemented and documented. Remaining checklist items are external validation (deployed HTTPS PWA/offline, physical browser QA, production cold-load measurement) or pre-existing technical debt/auth environment blockers.
 
+#### Prayer request deduplication — 2026-09-01
+
+- Added an in-flight request guard keyed by coordinates and local date in `usePrayerTimes`.
+- Repeated location/prayer update events now reuse the active request instead of starting duplicate API work.
+- **Validation:** TypeScript and diff checks pass.
+
 ## Verification Environment
 
 - Production build served with `next start` on localhost.
