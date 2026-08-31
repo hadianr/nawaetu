@@ -49,23 +49,22 @@ try {
         }
         // ─────────────────────────────────────────────────────────────────────
 
-        // CRITICAL: PROHIBIT manual display here if payload has 'notification' key.
-        // The browser/OS will automatically show the notification from the payload.
-        // Calling showNotification here causes DUPLICATES.
-
-        // Only handle data-only messages manually if needed (future proofing)
-        if (!payload.notification && payload.data) {
-            const title = payload.data.title || 'Nawaetu';
-            const body = payload.data.body || '';
-            const targetUrl = payload.data.url || '/';
-            return self.registration.showNotification(title, {
-                body,
-                icon: '/icon-192x192.png?v=1.5.7',
-                badge: '/icon-192x192.png?v=1.5.7',
-                tag: 'nawaetu-data-msg',
-                data: { url: targetUrl }
-            });
-        }
+        const title = payload.notification?.title || payload.data?.title || 'Nawaetu';
+        const body = payload.notification?.body || payload.data?.body || '';
+        const targetUrl = payload.data?.url || '/';
+        return self.registration.showNotification(title, {
+            body,
+            icon: '/icon-192x192.png?v=1.5.7',
+            badge: '/icon-192x192.png?v=1.5.7',
+            tag: payload.messageId || 'nawaetu-notification',
+            data: { url: targetUrl },
+            requireInteraction: true,
+        }).then(() => {
+            console.log('[SW] ✅ Notification displayed:', title);
+        }).catch((error) => {
+            console.error('[SW] ❌ Notification display failed:', error);
+            throw error;
+        });
     });
 
 } catch (error) {

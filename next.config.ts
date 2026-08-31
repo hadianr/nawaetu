@@ -13,7 +13,7 @@ const withPWA = withPWAInit({
     disableDevLogs: true,
     skipWaiting: true,   // Activate new SW immediately without waiting for tabs to close
     clientsClaim: true,  // New SW takes control of all open clients immediately after activation
-    importScripts: ["/firebase-messaging-sw.js"], // Import Firebase logic into the main PWA SW
+    importScripts: ["firebase-messaging-sw.js"], // Import Firebase logic into the main PWA SW
   },
 });
 
@@ -118,7 +118,7 @@ const nextConfig: NextConfig = {
         key: 'Content-Security-Policy',
         value: [
           "default-src 'self'",
-          `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ""} https://*.googletagmanager.com https://*.google-analytics.com https://va.vercel-scripts.com https://vercel.live`,
+          `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ""} https://*.googletagmanager.com https://*.google-analytics.com https://va.vercel-scripts.com https://vercel.live https://www.gstatic.com`,
           "worker-src 'self' blob:",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "img-src 'self' data: https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://avatar.vercel.sh https://lh3.googleusercontent.com https://cdn.islamic.network",

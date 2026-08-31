@@ -31,8 +31,9 @@ export default function FCMHandler() {
             subscribeForegroundMessages((payload) => {
 
                 // Show notification for foreground messages
-                if (payload.notification) {
-                    const { title, body } = payload.notification;
+                if (payload.notification || payload.data) {
+                    const title = payload.notification?.title || payload.data?.title;
+                    const body = payload.notification?.body || payload.data?.body;
 
 
                     if (typeof window !== "undefined" && "Notification" in window && window.Notification.permission === "granted") {

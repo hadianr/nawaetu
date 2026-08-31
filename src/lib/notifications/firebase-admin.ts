@@ -30,6 +30,22 @@ function initAdmin() {
         ? Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, "base64").toString("utf-8")
         : process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 
+    if (!rawJson && process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+        try {
+            initializeApp({
+                credential: cert({
+                    projectId: process.env.FIREBASE_PROJECT_ID,
+                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+                }),
+            });
+            return;
+        } catch (err) {
+            logger.fatal("Firebase Admin init failed", err, { action: 'firebase-admin-init' });
+            return;
+        }
+    }
+
     if (!rawJson) {
         const filePath = path.join(process.cwd(), "firebase-service-account.json");
         if (fs.existsSync(filePath)) {

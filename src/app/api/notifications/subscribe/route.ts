@@ -20,13 +20,47 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { pushSubscriptions, users } from "@/db/schema";
-import { eq, and, ne } from "drizzle-orm";
+import { eq, and, ne, or } from "drizzle-orm";
 import { logger } from "@/lib/logger";
+
+export async function GET(req: NextRequest) {
+    const session = await getServerSession();
+    if (!session?.user?.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = req.nextUrl.searchParams.get("token");
+    if (!token) {
+        return NextResponse.json({ error: "Token is required" }, { status: 400 });
+    }
+
+    const subscription = await db.query.pushSubscriptions.findFirst({
+        where: and(
+            eq(pushSubscriptions.token, token),
+            eq(pushSubscriptions.userId, session.user.id),
+        ),
+        columns: {
+            active: true,
+            timezone: true,
+            latitude: true,
+            longitude: true,
+            updatedAt: true,
+        },
+    });
+
+    return NextResponse.json({
+        healthy: subscription?.active === 1,
+        hasLocation: subscription?.latitude != null && subscription?.longitude != null,
+        timezone: subscription?.timezone ?? null,
+        updatedAt: subscription?.updatedAt ?? null,
+    });
+}
 
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession();
         const userId = session?.user?.id ?? null;
+        const sessionEmail = session?.user?.email ?? null;
 
         const { token, deviceType, timezone, userLocation, prayerPreferences } = await req.json();
 
@@ -52,19 +86,24 @@ export async function POST(req: NextRequest) {
         };
 
         let validUserId: string | null = null;
-        if (userId) {
+        if (userId || sessionEmail) {
             try {
+                const identity = [
+                    userId ? eq(users.id, userId) : null,
+                    sessionEmail ? eq(users.email, sessionEmail) : null,
+                ].filter(Boolean) as Array<ReturnType<typeof eq>>;
                 const userExists = await db.query.users.findFirst({
-                    where: eq(users.id, userId),
+                    where: identity.length === 1 ? identity[0] : or(...identity),
                     columns: { id: true },
                 });
                 if (userExists) {
-                    validUserId = userId;
+                    validUserId = userExists.id;
                 } else {
-                    logger.warn("Session userId not found in database, subscribing anonymously", { userId, route: "/api/notifications/subscribe" });
+                    return NextResponse.json({ error: "Authenticated account not found" }, { status: 401 });
                 }
             } catch (e) {
-                logger.warn("Error checking user existence", { route: "/api/notifications/subscribe", error: e instanceof Error ? e.message : String(e) });
+                logger.error("Error checking user existence", e, { route: "/api/notifications/subscribe" });
+                return NextResponse.json({ error: "Unable to verify authenticated account" }, { status: 503 });
             }
         }
 
