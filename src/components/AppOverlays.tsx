@@ -21,7 +21,6 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import { initializeQuranOptimizations } from "@/lib/quran/optimize-quran";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { APP_CONFIG } from "@/config/app-config";
@@ -75,7 +74,7 @@ const cleanupDynamicCaches = () => {
                 localStorage.removeItem(key);
             }
         }
-    } catch (e) {
+    } catch {
         // Silently fail if storage is restricted
     }
 };
@@ -88,7 +87,6 @@ export default function AppOverlays() {
     const [showPwaPrompt, setShowPwaPrompt] = useState(false);
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const isDev = process.env.NODE_ENV === "development";
 
     useEffect(() => {
         const show = () => setShowPwaPrompt(true);
@@ -115,13 +113,6 @@ export default function AppOverlays() {
         };
     }, []);
 
-    // Initialize Quran API optimizations on first client load
-    useEffect(() => {
-        const storage = getStorageService();
-        const locale = (storage.getOptional(STORAGE_KEYS.SETTINGS_LOCALE) as string | null) || "id";
-        initializeQuranOptimizations(locale);
-    }, []);
-
     // Cleanup dynamic cache keys on first client load
     useEffect(() => {
         cleanupDynamicCaches();
@@ -138,7 +129,7 @@ export default function AppOverlays() {
 
         try {
             wasInitialized = sessionStorage.getItem(GLOBAL_SESSION_KEY) === 'true';
-        } catch (e) {
+        } catch {
             // If sessionStorage is blocked, we can't track initialization this way.
             // But we shouldn't crash.
         }
@@ -154,7 +145,7 @@ export default function AppOverlays() {
         // Mark as initialized IMMEDIATELY to prevent redirect loop
         try {
             sessionStorage.setItem(GLOBAL_SESSION_KEY, 'true');
-        } catch (e) {
+        } catch {
             // Silently fail if sessionStorage is blocked
         }
 

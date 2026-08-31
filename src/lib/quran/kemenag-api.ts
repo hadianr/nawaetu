@@ -288,37 +288,6 @@ export function getVerseAudioUrl(verseId: number, reciterId: number): string {
   return `${API_CONFIG.AUDIO.ISLAMIC_NETWORK_CDN}/${reciter.bitrate}/ar.${reciter.name}/${verseId}.mp3`;
 }
 
-// Prefetch utility for popular surahs during idle time
-// Call this on app startup to preload chapters 1-10 + frequently read surahs
-export function prefetchPopularSurahs(locale: string = "id"): void {
-  if (typeof window === "undefined") return; // Only in browser
-
-  // Popular surahs: Al-Fatiha(1), Al-Baqarah(2), Ali-Imran(3), An-Nisa(4), Al-Ma'idah(5),
-  // Al-An'am(6), Al-A'raf(7), Al-Anfal(8), At-Tawbah(9), Yunus(10), Ar-Rahman(55), Ya-Seen(36)
-  const popularSurahs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 36, 55];
-
-  // Use requestIdleCallback to prefetch without blocking user interaction
-  if ("requestIdleCallback" in window) {
-    requestIdleCallback(() => {
-      // Stagger prefetches to avoid N+1 API call warnings in Sentry/Performance tools
-      let i = 0;
-      const prefetchNext = () => {
-        if (i >= popularSurahs.length) return;
-
-        getKemenagVerses(popularSurahs[i], 1, 20, locale).catch(() => {
-          // Silently ignore prefetch errors
-        });
-
-        i++;
-        // Delay next fetch by 500ms
-        setTimeout(prefetchNext, 500);
-      };
-
-      prefetchNext();
-    });
-  }
-}
-
 // Fallback for failed API calls - returns minimal verse structure
 function createFallbackVerse(verseKey: string): any {
   const [chapter, verse] = verseKey.split(":");
