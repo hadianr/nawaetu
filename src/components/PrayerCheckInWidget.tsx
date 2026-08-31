@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useSyncExternalStore } from "react";
 import { Check, Sparkles, AlertCircle, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMissions } from "@/hooks/useMissions";
@@ -79,11 +79,15 @@ export default function PrayerCheckInWidget() {
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const { completedMissions, completeMission, undoCompleteMission, isCompleted } = useMissions();
-    const { data: prayerData } = usePrayerTimesContext();
+    const { completedMissions, completeMission, undoCompleteMission } = useMissions();
+    const { data: prayerData, loading: prayerDataLoading } = usePrayerTimesContext();
 
     const [gender, setGender] = useState<Gender>(null);
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false,
+    );
     const [sheet, setSheet] = useState<SheetState>(null);
     const [selectedDate, setSelectedDate] = useState<string>(DateUtils.today());
     const dateInputRef = useRef<HTMLInputElement>(null);
@@ -93,10 +97,9 @@ export default function PrayerCheckInWidget() {
     const getHasanahReward = (baseHasanah: number) => calculateHasanahReward(baseHasanah, isBackdated);
 
     useEffect(() => {
-        setMounted(true);
         const storage = getStorageService();
         const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
-        setGender(savedGender);
+        queueMicrotask(() => setGender(savedGender));
     }, [session]);
 
     // Refresh gender when profile updates
@@ -135,7 +138,7 @@ export default function PrayerCheckInWidget() {
     const completedCount = PRAYERS.filter((p) => isPrayerDone(p.suffix)).length;
 
     // Determine current/next active prayer window
-    const getTimeStatus = (prayerKey: string | null, endKey: string | null) => {
+    const getTimeStatus = (prayerKey: string | null, endKey: string | null, isQobliyah = false) => {
         // Flexible/Special Prayers (Istikharah, Hajat, Taubat)
         if (!prayerKey) {
             return { isActive: true, isUpcoming: false, isLate: false, isFuture: false };
@@ -173,7 +176,7 @@ export default function PrayerCheckInWidget() {
         const minsFromStart = diffFromStart / 60000;
 
         // For Qobliyah: active before fardhu starts (up to 30 mins before) or during fardhu
-        if ((arguments[0] as any).isQobliyah) {
+        if (isQobliyah) {
             if (minsFromStart >= -30 && minsFromStart < 1) {
                 return { isActive: true, isUpcoming: false, isLate: false, isFuture: false };
             }
@@ -255,7 +258,11 @@ export default function PrayerCheckInWidget() {
             return;
         }
 
-        const status = getTimeStatus(prayer.prayerKey, prayer.endKey);
+        const status = getTimeStatus(
+            prayer.prayerKey,
+            prayer.endKey,
+            Boolean("isQobliyah" in prayer && prayer.isQobliyah),
+        );
 
         if (status.isFuture) {
             const label = (t as any)[prayer.i18n] || prayer.i18n;
@@ -277,7 +284,7 @@ export default function PrayerCheckInWidget() {
         }
     };
 
-    if (!mounted || !prayerData?.prayerTimes) {
+    if (!mounted || prayerDataLoading) {
         return (
             <div className={cn(
                 "w-full h-[88px] animate-pulse rounded-2xl border",
@@ -285,6 +292,8 @@ export default function PrayerCheckInWidget() {
             )} />
         );
     }
+
+    if (!prayerData?.prayerTimes) return null;
 
     return (
         <>
@@ -314,16 +323,16 @@ export default function PrayerCheckInWidget() {
                     <div className="flex items-center gap-1.5 shrink-0">
                         {/* Date Selector */}
                         <div
-                            onClick={(e) => {
+                            onClick={() => {
                                 // Provide native fallback by just allowing target click if showPicker isn't supported
                                 try {
                                     dateInputRef.current?.showPicker();
-                                } catch (e) {
+                                } catch {
                                     // Ignore error, fallback to focus and native mobile tap
                                     dateInputRef.current?.focus();
                                 }
                             }}
-                            className="relative shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group/date"
+                            className="relative min-h-11 min-w-11 shrink-0 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer touch-manipulation group/date"
                         >
                             <Calendar className={cn("w-3 h-3 transition-colors", isDaylight ? "text-slate-400 group-hover/date:text-slate-600" : "text-white/40 group-hover/date:text-white/70")} />
                             <span className={cn(
@@ -377,7 +386,11 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center gap-2 relative z-10">
                     {PRAYERS.map((prayer) => {
                         const done = isPrayerDone(prayer.suffix);
-                        const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
+                        const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(
+                            prayer.prayerKey,
+                            prayer.endKey,
+                            Boolean("isQobliyah" in prayer && prayer.isQobliyah),
+                        );
                         const isLocked = isFuture && !done;
 
                         return (
@@ -529,7 +542,11 @@ export default function PrayerCheckInWidget() {
 
                                 return activeSunnah.map((prayer) => {
                                     const done = completedMissions.some(m => m.id === prayer.id && DateUtils.toLocalDate(m.completedAt) === selectedDate);
-                                    const { isActive, isUpcoming, isLate, isFuture } = getTimeStatus(prayer.prayerKey, prayer.endKey);
+                                    const { isActive, isLate, isFuture } = getTimeStatus(
+                                        prayer.prayerKey,
+                                        prayer.endKey,
+                                        Boolean("isQobliyah" in prayer && prayer.isQobliyah),
+                                    );
                                     const isLocked = isFuture && !done;
 
                                     return (

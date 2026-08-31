@@ -20,14 +20,14 @@
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import PrayerCountdown from "@/components/PrayerCountdown";
-import { Clock, Sparkles, Volume2 } from "lucide-react";
+import { Clock, MapPin, Sparkles, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PREPARATION_QUOTES } from "@/data/prayerQuotes";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 
 export default function NextPrayerWidget() {
-    const { data } = usePrayerTimesContext();
+    const { data, loading } = usePrayerTimesContext();
     const { t } = useLocale();
     const [minutesLeft, setMinutesLeft] = useState<number>(Infinity);
     const [quoteIndex, setQuoteIndex] = useState(0);
@@ -71,9 +71,18 @@ export default function NextPrayerWidget() {
         return () => clearInterval(timer);
     }, [data?.nextPrayerTime]);
 
-    if (!data || !data.nextPrayer || !data.nextPrayerTime) {
+    if (loading && !data) {
         return (
             <div className="h-full w-full rounded-3xl bg-white/5 border border-white/10 animate-pulse min-h-[100px]" />
+        );
+    }
+
+    if (!data || !data.nextPrayer || !data.nextPrayerTime) {
+        return (
+            <div className="flex h-full min-h-[100px] w-full flex-col items-center justify-center gap-2 rounded-3xl border border-white/10 bg-white/5 p-4 text-center">
+                <MapPin className="h-5 w-5 text-[rgb(var(--color-primary))]" />
+                <p className="text-xs font-semibold text-white/60">{t.homeLocationRequiredTitle}</p>
+            </div>
         );
     }
 
