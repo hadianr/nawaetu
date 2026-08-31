@@ -18,7 +18,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
-import { db } from "@/db";
+import { db, transactionDb } from "@/db";
 import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -60,13 +60,13 @@ export async function GET(req: NextRequest) {
         ]);
 
         const currentSettings = (user?.settings || {}) as Record<string, any>;
-        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
+        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
         const sanitized: Record<string, any> = {};
 
         for (const key of allowedSettings) {
             if (key in currentSettings) {
                 const val = currentSettings[key];
-                if ((typeof val === 'string' || typeof val === 'number') && val.toString().length < 500) {
+                if ((typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') && val.toString().length < 500) {
                     sanitized[key] = val;
                 } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null && Object.keys(val).length < 20) {
                     sanitized[key] = val;
@@ -114,14 +114,14 @@ export async function PATCH(req: NextRequest) {
         }
 
         // --- Server-Side Sanitization (Final Defense) ---
-        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
+        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
         const sanitizedIncoming: Record<string, any> = {};
 
         for (const key of allowedSettings) {
             if (key in incomingSettings) {
                 const val = incomingSettings[key];
                 // Primitive validation
-                if (typeof val === 'string' || typeof val === 'number') {
+                if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
                     if (val.toString().length < 500) {
                         sanitizedIncoming[key] = val;
                     }
@@ -149,7 +149,7 @@ export async function PATCH(req: NextRequest) {
         for (const key of allowedSettings) {
             if (key in currentSettings) {
                 const val = currentSettings[key];
-                if ((typeof val === 'string' || typeof val === 'number') && val.toString().length < 500) {
+                if ((typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') && val.toString().length < 500) {
                     sanitizedCurrent[key] = val;
                 } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null && Object.keys(val).length < 20) {
                     sanitizedCurrent[key] = val;
@@ -165,7 +165,7 @@ export async function PATCH(req: NextRequest) {
             ...sanitizedIncoming
         };
 
-        await db.transaction(async (tx) => {
+        await transactionDb.transaction(async (tx) => {
             await tx.update(users)
                 .set({ settings: newSettings })
                 .where(eq(users.id, session.user.id));

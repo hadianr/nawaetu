@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1788063600000,
+      "tag": "0018_add_canonical_progression",
+      "breakpoints": true
+    }
+  ]
+}

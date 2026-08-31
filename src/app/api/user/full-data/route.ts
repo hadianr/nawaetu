@@ -26,9 +26,13 @@ import {
     userCompletedMissions,
     dailyActivities,
     users,
-    userReadingState
+    userReadingState,
+    userProgressState,
+    userStreakDays,
+    userStreakState,
 } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { calculatePlayerStats } from "@/lib/habits/progression";
 
 export async function GET(req: NextRequest) {
     try {
@@ -47,7 +51,10 @@ export async function GET(req: NextRequest) {
             userMissions,
             userIntentions,
             userDailyActivities,
-            readingState
+            readingState,
+            progressState,
+            streakState,
+            streakDays,
         ] = await Promise.all([
             // 1. Profile & Settings
             db.query.users.findFirst({
@@ -57,8 +64,6 @@ export async function GET(req: NextRequest) {
                     gender: true,
                     archetype: true,
                     settings: true,
-                    intentionStreakCurrent: true,
-                    intentionStreakLongest: true,
                     isMuhsinin: true,
                     totalInfaq: true,
                 }
@@ -92,12 +97,25 @@ export async function GET(req: NextRequest) {
             // 6. Reading State
             db.query.userReadingState.findFirst({
                 where: eq(userReadingState.userId, userId),
-            })
+            }),
+            db.query.userProgressState.findFirst({
+                where: eq(userProgressState.userId, userId),
+            }),
+            db.query.userStreakState.findFirst({
+                where: eq(userStreakState.userId, userId),
+            }),
+            db.query.userStreakDays.findMany({
+                where: eq(userStreakDays.userId, userId),
+                orderBy: [desc(userStreakDays.localDate)],
+                limit: 30,
+            }),
         ]);
 
         if (!userProfile) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
+
+        const playerStats = calculatePlayerStats(progressState?.hasanahTotal ?? 0, progressState?.level ?? 1);
 
         return NextResponse.json({
             profile: {
@@ -105,9 +123,10 @@ export async function GET(req: NextRequest) {
                 gender: userProfile.gender,
                 archetype: userProfile.archetype,
                 settings: userProfile.settings,
+                guestSyncEligible: (userProfile.settings as Record<string, unknown> | null)?.guestSyncEligible === true,
                 streaks: {
-                    current: userProfile.intentionStreakCurrent,
-                    longest: userProfile.intentionStreakLongest,
+                    current: streakState?.currentDays ?? 0,
+                    longest: streakState?.longestDays ?? 0,
                 },
                 isMuhsinin: userProfile.isMuhsinin,
                 totalInfaq: userProfile.totalInfaq,
@@ -116,6 +135,17 @@ export async function GET(req: NextRequest) {
             completedMissions: userMissions,
             intentions: userIntentions,
             dailyActivities: userDailyActivities,
+            progression: {
+                ...playerStats,
+                streak: {
+                    currentDays: streakState?.currentDays ?? 0,
+                    longestDays: streakState?.longestDays ?? 0,
+                    lastStreakDate: streakState?.lastStreakDate ?? null,
+                    freezesAvailable: streakState?.freezesAvailable ?? 0,
+                    timezone: streakState?.timezone ?? "UTC",
+                    days: streakDays,
+                },
+            },
             readingState: readingState ? {
                 ...readingState,
                 quranLastRead: {

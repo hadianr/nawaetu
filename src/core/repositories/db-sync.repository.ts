@@ -13,6 +13,29 @@ import {
     sirahBookmarks,
 } from "@/db/schema";
 import { eq, and, gte, lt } from "drizzle-orm";
+import { findMissionDefinition } from "@/data/missions";
+import { normalizeMissionId } from "@/lib/mission-resolver";
+import { processProgressionEvidence } from "@/core/repositories/progression.repository";
+
+function validTimezone(value: unknown): string {
+    if (typeof value !== "string" || value.length > 100) return "UTC";
+    try {
+        new Intl.DateTimeFormat("en-US", { timeZone: value }).format();
+        return value;
+    } catch {
+        return "UTC";
+    }
+}
+
+function canonicalMissionReward(missionId: string, requested: unknown): number | null {
+    const mission = findMissionDefinition(normalizeMissionId(missionId));
+    if (!mission) return null;
+
+    const fullRewards = [mission.hasanahReward, ...(mission.completionOptions?.map((option) => option.hasanahReward) ?? [])];
+    const validRewards = new Set(fullRewards.flatMap((reward) => [reward, Math.floor(reward * 0.5)]));
+    const amount = Number(requested);
+    return Number.isInteger(amount) && validRewards.has(amount) ? amount : mission.hasanahReward;
+}
 
 export class DbSyncRepository {
     constructor(private userId: string) {}
@@ -95,7 +118,16 @@ export class DbSyncRepository {
                     })
                     .returning({ id: intentions.id });
 
-                return result[0]?.id;
+                const intentionId = result[0]?.id;
+                await processProgressionEvidence(this.userId, {
+                    source: "intention",
+                    sourceId: `intention:${intentionDateValue.toISOString().slice(0, 10)}`,
+                    hasanah: 0,
+                    localDate: intentionDateValue.toISOString().slice(0, 10),
+                    occurredAt: intentionDateValue,
+                    timezone: validTimezone(data.timezone),
+                });
+                return intentionId;
             } else {
                 await db.update(intentions).set({
                     intentionText: data.intentionText || data.niatText || existingIntention.intentionText,
@@ -103,6 +135,14 @@ export class DbSyncRepository {
                     reflectionRating: data.reflectionRating !== undefined ? data.reflectionRating : existingIntention.reflectionRating,
                     updatedAt: new Date()
                 }).where(eq(intentions.id, existingIntention.id));
+                await processProgressionEvidence(this.userId, {
+                    source: "intention",
+                    sourceId: `intention:${intentionDateValue.toISOString().slice(0, 10)}`,
+                    hasanah: 0,
+                    localDate: intentionDateValue.toISOString().slice(0, 10),
+                    occurredAt: intentionDateValue,
+                    timezone: validTimezone(data.timezone),
+                });
                 return existingIntention.id;
             }
         } else if (action === 'delete') {
@@ -118,27 +158,47 @@ export class DbSyncRepository {
     async syncMission(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const completedAt = data.completedAt ? new Date(data.completedAt) : new Date();
-            const completedDate = completedAt.toISOString().split('T')[0];
+            const completedDate = /^\d{4}-\d{2}-\d{2}$/.test(data.completedAt)
+                ? data.completedAt
+                : completedAt.toISOString().split('T')[0];
+            const missionId = normalizeMissionId(data.id || data.missionId);
+            const hasanahEarned = canonicalMissionReward(missionId, data.hasanahEarned ?? data.xpEarned);
+
+            // Legacy clients can retain mission IDs no longer present in the
+            // catalog. Ignore those records without blocking valid evidence.
+            if (hasanahEarned === null) return undefined;
+            if (Number.isNaN(completedAt.getTime())) throw new Error("Invalid mission completion date");
 
             const existing = await db.query.userCompletedMissions.findFirst({
                 where: (ucm, { eq, and }) =>
-                    and(eq(ucm.userId, this.userId), eq(ucm.missionId, data.id || data.missionId), eq(ucm.completedDate, completedDate)),
+                    and(eq(ucm.userId, this.userId), eq(ucm.missionId, missionId), eq(ucm.completedDate, completedDate)),
             });
 
+            let resultId = existing?.id;
             if (!existing) {
                 const result = await db
                     .insert(userCompletedMissions)
                     .values({
                         userId: this.userId,
-                        missionId: data.id || data.missionId,
-                        hasanahEarned: data.hasanahEarned || data.xpEarned || 0,
+                        missionId,
+                        hasanahEarned,
                         completedAt: completedAt,
                         completedDate: completedDate,
                     })
                     .returning({ id: userCompletedMissions.id });
-                return result[0]?.id;
+                resultId = result[0]?.id;
             }
-            return existing.id;
+
+            await processProgressionEvidence(this.userId, {
+                source: "mission",
+                sourceId: `${missionId}:${completedDate}`,
+                hasanah: hasanahEarned,
+                localDate: completedDate,
+                occurredAt: completedAt,
+                timezone: validTimezone(data.timezone),
+            });
+
+            return resultId;
         }
         return undefined;
     }
@@ -168,6 +228,23 @@ export class DbSyncRepository {
                         lastUpdatedAt: new Date(),
                     },
                 });
+
+            const source = Array.isArray(data.prayersLogged) && data.prayersLogged.length > 0
+                ? "prayer"
+                : Number(data.quranAyat) > 0 || Number(data.quranReadingSeconds) > 0
+                    ? "quran"
+                    : Number(data.tasbihCount) > 0 ? "dhikr" : null;
+            if (source) {
+                const occurredAt = new Date(`${dateStr}T12:00:00Z`);
+                await processProgressionEvidence(this.userId, {
+                    source,
+                    sourceId: `${source}:${dateStr}`,
+                    hasanah: 0,
+                    localDate: dateStr,
+                    occurredAt,
+                    timezone: validTimezone(data.timezone),
+                });
+            }
         }
     }
 

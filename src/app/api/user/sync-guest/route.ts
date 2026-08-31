@@ -41,6 +41,7 @@ const quranLastReadSchema = z.object({
 });
 
 const syncSchema = z.object({
+    consumeOnly: z.boolean().optional(),
     profile: z.object({
         name: z.string().optional(),
         gender: z.enum(["male", "female"]).optional(),
@@ -122,6 +123,13 @@ export async function POST(req: NextRequest) {
         }
 
         const data = result.data;
+
+        if (data.consumeOnly) {
+            await db.update(users)
+                .set({ settings: sql`COALESCE(${users.settings}, '{}'::jsonb) - 'guestSyncEligible'`, updatedAt: new Date() })
+                .where(eq(users.id, userId));
+            return NextResponse.json({ success: true, message: "Guest sync eligibility consumed" });
+        }
 
         await db.transaction(async (tx) => {
             // 1. Sync Profile (Priority: Guest > Google Default)
@@ -315,6 +323,10 @@ export async function POST(req: NextRequest) {
                         }
                     });
             }
+
+            await tx.update(users)
+                .set({ settings: sql`COALESCE(${users.settings}, '{}'::jsonb) - 'guestSyncEligible'`, updatedAt: new Date() })
+                .where(eq(users.id, userId));
         });
 
         return NextResponse.json({ success: true, message: "Guest data synced successfully" });

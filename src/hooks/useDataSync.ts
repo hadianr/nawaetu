@@ -17,9 +17,11 @@
  */
 
 import { useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
+import { trackStreakEvent } from "@/lib/analytics/analytics";
 
 interface SyncResult {
     success: boolean;
@@ -27,6 +29,7 @@ interface SyncResult {
 }
 
 export function useDataSync() {
+    const { data: session } = useSession();
     const [isSyncing, setIsSyncing] = useState(false);
     const storage = getStorageService();
 
@@ -120,6 +123,44 @@ export function useDataSync() {
             });
 
             if (!res.ok) throw new Error("Gagal menyimpan ke server");
+            const syncResult = await res.json();
+            if (syncResult.failed?.length) {
+                console.warn("Partial sync failure", syncResult.failed);
+                throw new Error(`${syncResult.failed.length} sync item(s) failed; retry required`);
+            }
+
+            // Logged-in progression is server-authoritative; refresh it after evidence is accepted.
+            const fullDataRes = await fetch("/api/user/full-data", { cache: "no-store" });
+            if (fullDataRes.ok) {
+                const fullData = await fullDataRes.json();
+                if (fullData.progression?.streak) {
+                    const s = fullData.progression.streak;
+                    storage.set(STORAGE_KEYS.USER_STREAK, {
+                        currentStreak: s.currentDays || 0,
+                        longestStreak: s.longestDays || 0,
+                        lastActiveDate: s.lastStreakDate || "",
+                        milestones: [],
+                        freezesAvailable: s.freezesAvailable || 0,
+                        protectedDates: (s.days || [])
+                            .filter((day: { status?: string }) => day.status === "frozen")
+                            .map((day: { localDate: string }) => day.localDate),
+                    });
+                }
+                if (fullData.progression) {
+                    storage.set(STORAGE_KEYS.CANONICAL_PROGRESSION, {
+                        ...fullData.progression,
+                        userId: session?.user?.id,
+                    });
+                    storage.set(STORAGE_KEYS.USER_HASANAH, String(fullData.progression.hasanah || 0));
+                    trackStreakEvent("reconciled", {
+                        userMode: "logged_in",
+                        syncState: "canonical",
+                        streakDays: fullData.progression.streak?.currentDays || 0,
+                    });
+                }
+                window.dispatchEvent(new Event("streak_updated"));
+                window.dispatchEvent(new Event("hasanah_updated"));
+            }
 
             // 3. Mark as Synced
             storage.set("nawaetu_synced_v1" as any, "true");
@@ -133,7 +174,7 @@ export function useDataSync() {
         } finally {
             setIsSyncing(false);
         }
-    }, []);
+    }, [session?.user?.id]);
 
     return {
         isSyncing,

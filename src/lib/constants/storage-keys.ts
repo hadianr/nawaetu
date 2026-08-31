@@ -40,6 +40,7 @@ export const STORAGE_KEYS = {
   USER_STREAK: 'user_streak',
   USER_LEVEL: 'user_level',
   USER_HASANAH: 'nawaetu_user_hasanah',
+  CANONICAL_PROGRESSION: 'nawaetu_canonical_progression',
 
   // Missions
   COMPLETED_MISSIONS: 'completed_missions',

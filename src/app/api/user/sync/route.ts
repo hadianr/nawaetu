@@ -91,18 +91,27 @@ function convertLegacyBodyToEntries(body: any): SyncQueueEntry[] {
     }
 
     if (body.ramadhan?.tarawehLog && typeof body.ramadhan.tarawehLog === "object") {
-        Object.entries(body.ramadhan.tarawehLog).forEach(([dateOrDay, count]: [string, any], i: number) => {
-            const dayNum = parseInt(dateOrDay.split('-').pop() || '1', 10);
-            entries.push({
-                id: `legacy-taraweh-${i}`,
-                type: 'ramadhan_taraweh',
-                action: 'create',
-                data: { hijriYear: 1447, hijriDay: isNaN(dayNum) ? 1 : dayNum, choice: String(count) },
-                status: 'pending',
-                retryCount: 0,
-                createdAt: Date.now()
-            });
-        });
+        let i = 0;
+        for (const [yearOrDate, value] of Object.entries(body.ramadhan.tarawehLog)) {
+            const year = /^\d{4}$/.test(yearOrDate) ? Number(yearOrDate) : 1447;
+            const days = /^\d{4}$/.test(yearOrDate) && value && typeof value === "object"
+                ? Object.entries(value as Record<string, any>)
+                : [[yearOrDate, value] as [string, any]];
+            for (const [dateOrDay, entry] of days) {
+                const choice = entry && typeof entry === "object" ? entry.choice : entry;
+                if (choice !== "8" && choice !== "20" && choice !== 8 && choice !== 20) continue;
+                const dayNum = parseInt(dateOrDay.split('-').pop() || '1', 10);
+                entries.push({
+                    id: `legacy-taraweh-${i++}`,
+                    type: 'ramadhan_taraweh',
+                    action: 'create',
+                    data: { hijriYear: year, hijriDay: isNaN(dayNum) ? 1 : dayNum, choice: String(choice) },
+                    status: 'pending',
+                    retryCount: 0,
+                    createdAt: Date.now()
+                });
+            }
+        }
     }
 
     if (Array.isArray(body.extraEntries)) {

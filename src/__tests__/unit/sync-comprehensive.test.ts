@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { DbSyncRepository } from '@/core/repositories/db-sync.repository';
 import { db } from '@/db';
 
+vi.mock('@/core/repositories/progression.repository', () => ({
+    processProgressionEvidence: vi.fn().mockResolvedValue({ duplicate: false }),
+}));
+
 vi.mock('@/db', () => {
     const insertChain = {
         values: vi.fn().mockReturnThis(),
@@ -79,8 +83,8 @@ describe('DbSyncRepository - Full Domain Entity Coverage', () => {
 
     it('syncs daily missions with hasanah XP calculation', async () => {
         const missionData = {
-            id: 'read_quran_daily',
-            hasanahEarned: 25,
+            id: 'quran_10_ayat',
+            hasanahEarned: 50,
             completedAt: '2026-08-18T10:00:00.000Z',
         };
 

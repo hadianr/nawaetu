@@ -28,6 +28,19 @@ export * from './daily';
 export * from './seasonal';
 export * from './sunnah-prayer';
 
+const MISSION_CATALOG = [
+    ...UNIVERSAL_MISSIONS,
+    ...MALE_MISSIONS,
+    ...FEMALE_MISSIONS,
+    ...SUNNAH_PRAYER_MISSIONS,
+    ...RAMADHAN_MISSIONS,
+    ...SYABAN_MISSIONS,
+];
+
+export function findMissionDefinition(missionId: string): Mission | undefined {
+    return MISSION_CATALOG.find((mission) => mission.id === missionId);
+}
+
 /**
  * Returns missions filtered and polymorphically adapted by gender, Hijri date, and active days.
  */
