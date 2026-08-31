@@ -15,6 +15,7 @@ export default {
     out: "./drizzle",
     dialect: "postgresql",
     dbCredentials: {
-        url: process.env.DATABASE_URL!,
+        // Migrations need a direct session; application traffic may keep using the pooled URL.
+        url: process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL!,
     },
 } satisfies Config;

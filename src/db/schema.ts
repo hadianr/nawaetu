@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex, jsonb, pgEnum, real } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { pgTable, text, timestamp, integer, uuid, primaryKey, date, boolean, index, uniqueIndex, jsonb, pgEnum, real, check } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
 import type { AdapterAccount } from "next-auth/adapters";
 
 // --- Enums ---
@@ -25,6 +25,18 @@ export const genderEnum = pgEnum("gender", ["male", "female"]);
 export const archetypeEnum = pgEnum("archetype", ["esensial", "seimbang", "lengkap"]);
 export const transactionStatusEnum = pgEnum("transaction_status", ["pending", "settlement", "expired", "failed"]);
 export const intentionTypeEnum = pgEnum("intention_type", ["daily", "prayer", "custom"]);
+export const streakDayStatusEnum = pgEnum("streak_day_status", ["qualified", "frozen", "repaired"]);
+export const progressionOriginEnum = pgEnum("progression_origin", ["server", "guest_import", "backfill"]);
+export const hasanahSourceEnum = pgEnum("hasanah_source", [
+    "mission",
+    "prayer",
+    "quran",
+    "dhikr",
+    "intention",
+    "streak_milestone",
+    "reversal",
+    "adjustment",
+]);
 
 // --- Fasting Tracker Enums (v2.0.0) ---
 export const fastingStatusEnum = pgEnum("fasting_status", [
@@ -266,6 +278,75 @@ export const dailyActivities = pgTable("daily_activities", {
     };
 });
 
+// --- Canonical Streak & Progression (v2) ---
+
+export const userStreakDays = pgTable("user_streak_days", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    localDate: date("local_date").notNull(),
+    status: streakDayStatusEnum("status").notNull().default("qualified"),
+    source: hasanahSourceEnum("source").notNull(),
+    sourceId: text("source_id").notNull(),
+    occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
+    timezone: text("timezone").notNull(),
+    origin: progressionOriginEnum("origin").notNull().default("server"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+    userDateUnique: uniqueIndex("user_streak_days_user_date_unique").on(table.userId, table.localDate),
+    userDateIdx: index("user_streak_days_user_date_idx").on(table.userId, table.localDate),
+    sourceIdNotEmpty: check("user_streak_days_source_id_not_empty", sql`length(${table.sourceId}) > 0`),
+    timezoneNotEmpty: check("user_streak_days_timezone_not_empty", sql`length(${table.timezone}) > 0`),
+}));
+
+export const userStreakState = pgTable("user_streak_state", {
+    userId: text("user_id")
+        .primaryKey()
+        .references(() => users.id, { onDelete: "cascade" }),
+    currentDays: integer("current_days").notNull().default(0),
+    longestDays: integer("longest_days").notNull().default(0),
+    lastStreakDate: date("last_streak_date"),
+    freezesAvailable: integer("freezes_available").notNull().default(0),
+    timezone: text("timezone").notNull().default("UTC"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+    currentDaysNonnegative: check("user_streak_state_current_days_nonnegative", sql`${table.currentDays} >= 0`),
+    longestDaysValid: check("user_streak_state_longest_days_valid", sql`${table.longestDays} >= ${table.currentDays}`),
+    freezesNonnegative: check("user_streak_state_freezes_nonnegative", sql`${table.freezesAvailable} >= 0`),
+}));
+
+export const hasanahLedger = pgTable("hasanah_ledger", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    source: hasanahSourceEnum("source").notNull(),
+    sourceId: text("source_id").notNull(),
+    amount: integer("amount").notNull(),
+    occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
+    origin: progressionOriginEnum("origin").notNull().default("server"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+    userSourceUnique: uniqueIndex("hasanah_ledger_user_source_unique").on(table.userId, table.source, table.sourceId),
+    userOccurredAtIdx: index("hasanah_ledger_user_occurred_at_idx").on(table.userId, table.occurredAt),
+    sourceIdNotEmpty: check("hasanah_ledger_source_id_not_empty", sql`length(${table.sourceId}) > 0`),
+}));
+
+export const userProgressState = pgTable("user_progress_state", {
+    userId: text("user_id")
+        .primaryKey()
+        .references(() => users.id, { onDelete: "cascade" }),
+    hasanahTotal: integer("hasanah_total").notNull().default(0),
+    level: integer("level").notNull().default(1),
+    levelRuleVersion: integer("level_rule_version").notNull().default(1),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+    hasanahTotalNonnegative: check("user_progress_state_hasanah_nonnegative", sql`${table.hasanahTotal} >= 0`),
+    levelPositive: check("user_progress_state_level_positive", sql`${table.level} >= 1`),
+    ruleVersionPositive: check("user_progress_state_rule_version_positive", sql`${table.levelRuleVersion} >= 1`),
+}));
+
 // --- Chat History (v1.8.0) ---
 
 export const chatSessions = pgTable("chat_sessions", {
@@ -375,6 +456,11 @@ export type UserCompletedMission = typeof userCompletedMissions.$inferSelect;
 export type NewUserCompletedMission = typeof userCompletedMissions.$inferInsert;
 export type DailyActivity = typeof dailyActivities.$inferSelect;
 export type NewDailyActivity = typeof dailyActivities.$inferInsert;
+export type UserStreakDay = typeof userStreakDays.$inferSelect;
+export type NewUserStreakDay = typeof userStreakDays.$inferInsert;
+export type UserStreakState = typeof userStreakState.$inferSelect;
+export type HasanahLedgerEntry = typeof hasanahLedger.$inferSelect;
+export type UserProgressState = typeof userProgressState.$inferSelect;
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type NewChatSession = typeof chatSessions.$inferInsert;
 export type RamadhanFastingLog = typeof ramadhanFastingLog.$inferSelect;
@@ -492,5 +578,3 @@ export const sirahBookmarks = pgTable("sirah_bookmarks", {
 
 export type SirahUserProgress = typeof sirahUserProgress.$inferSelect;
 export type SirahBookmark = typeof sirahBookmarks.$inferSelect;
-
-

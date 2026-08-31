@@ -1,0 +1,25 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    { "idx": 0, "version": "7", "when": 1774058300000, "tag": "0000_create_core_tables", "breakpoints": true },
+    { "idx": 1, "version": "7", "when": 1774058301000, "tag": "0001_create_intention_and_streaks", "breakpoints": true },
+    { "idx": 2, "version": "7", "when": 1774058302000, "tag": "0002_create_transaction_and_settings", "breakpoints": true },
+    { "idx": 3, "version": "7", "when": 1774058303000, "tag": "0003_add_gender_and_jsonb", "breakpoints": true },
+    { "idx": 4, "version": "7", "when": 1774058304000, "tag": "0004_optimize_indexes", "breakpoints": true },
+    { "idx": 5, "version": "7", "when": 1774058305000, "tag": "0005_add_archetype_column", "breakpoints": true },
+    { "idx": 6, "version": "7", "when": 1774058306000, "tag": "0006_add_translation_to_bookmarks", "breakpoints": true },
+    { "idx": 7, "version": "7", "when": 1774058307000, "tag": "0007_intention_date_to_timestamp", "breakpoints": true },
+    { "idx": 8, "version": "7", "when": 1774058308000, "tag": "0008_rename_niat_to_intention", "breakpoints": true },
+    { "idx": 9, "version": "7", "when": 1774058309000, "tag": "0009_add_country_to_push_subscriptions", "breakpoints": true },
+    { "idx": 10, "version": "7", "when": 1774058310000, "tag": "0010_add_ramadhan_fasting_log", "breakpoints": true },
+    { "idx": 11, "version": "7", "when": 1774058311000, "tag": "0011_rename_xp_to_hasanah", "breakpoints": true },
+    { "idx": 12, "version": "7", "when": 1774058312000, "tag": "0012_add_tasbih_count_column", "breakpoints": true },
+    { "idx": 13, "version": "7", "when": 1774058313000, "tag": "0013_refactor_archetype_to_niat", "breakpoints": true },
+    { "idx": 14, "version": "7", "when": 1774058314000, "tag": "0014_fix_quran_tracking", "breakpoints": true },
+    { "idx": 15, "version": "7", "when": 1774058315000, "tag": "0015_add_ramadhan_daily_and_taraweh_logs", "breakpoints": true },
+    { "idx": 16, "version": "7", "when": 1774058316000, "tag": "0016_drop_deprecated_columns", "breakpoints": true },
+    { "idx": 17, "version": "7", "when": 1774058317000, "tag": "0017_add_sirah_user_progress_and_bookmarks", "breakpoints": true },
+    { "idx": 18, "version": "7", "when": 1788063600000, "tag": "0018_add_canonical_progression", "breakpoints": true }
+  ]
+}

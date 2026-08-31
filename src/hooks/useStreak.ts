@@ -17,22 +17,64 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   getStreakRepository,
   STREAK_MILESTONES,
   StreakData,
   StreakMilestone
 } from '@/core/repositories/streak.repository';
+import { getStorageService } from '@/core/infrastructure/storage';
+import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
+import { DateUtils } from '@/lib/utils/date';
+import { rebuildStreakState } from '@/lib/habits/progression';
 
 export function useStreak() {
   const repository = getStreakRepository();
-  const [streak, setStreak] = useState<StreakData>(repository.getStreak());
-  const [display, setDisplay] = useState(repository.getDisplayStreak());
+  const { data: session, status } = useSession();
+  const getProjection = useCallback(() => {
+    const local = repository.getStreak();
+    const canonical = status === 'authenticated'
+      ? getStorageService().getOptional<any>(STORAGE_KEYS.CANONICAL_PROGRESSION)
+      : null;
+    if (canonical && session?.user?.id && canonical.userId === session.user.id && canonical.streak) {
+      const canonicalDays = (canonical.streak.days ?? [])
+        .filter((day: { status?: string }) => day.status !== 'frozen')
+        .map((day: { localDate: string }) => day.localDate);
+      const rebuilt = canonicalDays.length
+        ? rebuildStreakState(canonicalDays, canonical.streak.freezesAvailable ?? 0)
+        : null;
+      const currentStreak = rebuilt?.currentDays ?? canonical.streak.currentDays ?? 0;
+      const lastActiveDate = rebuilt?.lastStreakDate ?? canonical.streak.lastStreakDate ?? '';
+      return {
+        streak: {
+          ...local,
+          currentStreak,
+          longestStreak: Math.max(canonical.streak.longestDays ?? 0, rebuilt?.longestDays ?? 0),
+          lastActiveDate: rebuilt?.lastStreakDate ?? lastActiveDate,
+          freezesAvailable: canonical.streak.freezesAvailable ?? 0,
+          protectedDates: (canonical.streak.days ?? [])
+            .filter((day: { status?: string }) => day.status === 'frozen')
+            .map((day: { localDate: string }) => day.localDate),
+        },
+        display: {
+          streak: currentStreak,
+          isActiveToday: lastActiveDate === DateUtils.today(),
+          isLost: false,
+        },
+      };
+    }
+    return { streak: local, display: repository.getDisplayStreak() };
+  }, [repository, session?.user?.id, status]);
+  const initialProjection = getProjection();
+  const [streak, setStreak] = useState<StreakData>(initialProjection.streak);
+  const [display, setDisplay] = useState(initialProjection.display);
 
   useEffect(() => {
     const refresh = () => {
-      setStreak(repository.getStreak());
-      setDisplay(repository.getDisplayStreak());
+      const projection = getProjection();
+      setStreak(projection.streak);
+      setDisplay(projection.display);
     };
 
     refresh();
@@ -42,7 +84,7 @@ export function useStreak() {
     return () => {
       window.removeEventListener('streak_updated', handleUpdate);
     };
-  }, [repository]);
+  }, [getProjection]);
 
   const updateStreak = useCallback((): { newMilestone: StreakMilestone | null; streak: StreakData } => {
     const result = repository.updateStreak();

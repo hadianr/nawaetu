@@ -164,6 +164,14 @@ export const authOptions: NextAuthConfig = {
             return session;
         },
     },
+    events: {
+        async createUser({ user }) {
+            if (!user.id) return;
+            await db.update(users)
+                .set({ settings: { guestSyncEligible: true }, updatedAt: new Date() })
+                .where(eq(users.id, user.id));
+        },
+    },
     session: {
         strategy: "jwt",
         // 30 days — affects how long the JWT cookie lives before forced re-login

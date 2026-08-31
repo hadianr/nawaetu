@@ -17,7 +17,8 @@
  */
 
 import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
+import { drizzle as drizzleServerless } from "drizzle-orm/neon-serverless";
+import { neon, Pool } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
 const connectionString = process.env.DATABASE_URL || "";
@@ -25,6 +26,14 @@ export const isNeon = true;
 
 const sql = neon(connectionString);
 export const db = drizzle(sql, { schema });
+
+// Neon HTTP is intentionally used for ordinary queries, but it cannot execute
+// transactions. Canonical progression needs a real transaction for its
+// advisory lock and idempotent ledger/day writes.
+const transactionalPool = new Pool({
+    connectionString,
+});
+export const transactionDb = drizzleServerless(transactionalPool, { schema });
 
 /**
  * Health check function to verify database connectivity.
