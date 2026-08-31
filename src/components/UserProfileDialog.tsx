@@ -194,6 +194,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         storage.remove(STORAGE_KEYS.INTENTION_JOURNAL);
         storage.remove(STORAGE_KEYS.QURAN_LAST_READ);
         storage.remove(STORAGE_KEYS.USER_STREAK);
+        storage.remove(STORAGE_KEYS.CANONICAL_PROGRESSION);
         storage.remove(STORAGE_KEYS.USER_LEVEL);
         storage.remove(STORAGE_KEYS.USER_HASANAH);
         storage.remove(STORAGE_KEYS.COMPLETED_MISSIONS);

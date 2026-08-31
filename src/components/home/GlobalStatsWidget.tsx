@@ -20,10 +20,18 @@
 
 import { motion } from "framer-motion";
 import { Users, Globe2, HeartHandshake } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
 
 export default function GlobalStatsWidget() {
     const { t } = useLocale();
+    const [stats, setStats] = useState({ missionsCompleted: 0, activeWorshipDays: 0, users: 0 });
+    useEffect(() => {
+        fetch("/api/stats/global", { cache: "no-store" })
+            .then((response) => response.ok ? response.json() : null)
+            .then((data) => data && setStats(data))
+            .catch(() => undefined);
+    }, []);
 
     return (
         <motion.div
@@ -37,32 +45,25 @@ export default function GlobalStatsWidget() {
             <div className="flex items-center gap-2 mb-4">
                 <Globe2 className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
                 <h2 className="font-bold text-sm text-white">{t.globalImpactTitle}</h2>
-                <div className="ml-auto flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    <span className="flex h-1.5 w-1.5 relative">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-[9px] font-semibold text-emerald-400 uppercase tracking-wider">{t.globalImpactLive}</span>
-                </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white/5 border border-white/5">
                     <HeartHandshake className="w-5 h-5 text-rose-400 mb-1" />
-                    <span className="text-lg font-black text-white">12.4K</span>
-                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactIntentionsToday}</span>
+                    <span className="text-lg font-black text-white">{stats.missionsCompleted.toLocaleString()}</span>
+                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactMissions}</span>
                 </div>
 
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white/5 border border-white/5">
                     <span className="text-xl mb-1">🕌</span>
-                    <span className="text-lg font-black text-white">150K+</span>
-                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactPrayers}</span>
+                    <span className="text-lg font-black text-white">{stats.activeWorshipDays.toLocaleString()}</span>
+                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactStreakDays}</span>
                 </div>
 
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white/5 border border-white/5">
                     <Users className="w-5 h-5 text-blue-400 mb-1" />
-                    <span className="text-lg font-black text-white">15+</span>
-                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactCountries}</span>
+                    <span className="text-lg font-black text-white">{stats.users.toLocaleString()}</span>
+                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactUsers}</span>
                 </div>
             </div>
 

@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { calculateHasanahReward } from "@/lib/utils/hasanah";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
+import { useDataSync } from "@/hooks/useDataSync";
 import { useTheme } from "@/context/ThemeContext";
 import { APP_EVENTS } from "@/lib/constants/events";
 import { getPrayerMissionId, normalizeMissionId } from "@/lib/mission-resolver";
@@ -74,6 +75,7 @@ type SheetState = {
 
 export default function PrayerCheckInWidget() {
     const { data: session } = useSession();
+    const { syncData } = useDataSync();
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
@@ -221,6 +223,9 @@ export default function PrayerCheckInWidget() {
         window.dispatchEvent(new CustomEvent(APP_EVENTS.HASANAH_UPDATED));
         completeMission(missionId, finalHasanah, selectedDate);
         window.dispatchEvent(new CustomEvent(APP_EVENTS.MISSION_UPDATED));
+        if (session?.user?.id && !isBackdated) {
+            void syncData({ silent: true });
+        }
 
         toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
             description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{hasanah} Hasanah)").replace("{hasanah}", String(finalHasanah)),
