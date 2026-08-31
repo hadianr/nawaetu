@@ -226,11 +226,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 // Raw AlAdhan data is independent of Nawaetu's local Hijri adjustment.
                 if (date === today && savedData && savedMethodCache === method && savedTuneVersion === TUNE_VERSION) {
                     processData(savedData, savedLocationName || locationName, true); // Use cached data immediately
-                    if (!cachedLocationName) {
-                        // If we have a perfectly matching cache, we can skip the heavy fetch
-                        setLoading(false);
-                        return;
-                    }
+                    // A matching cache is authoritative for the requested stored location.
+                    // Explicit refresh clears this cache before calling fetchPrayerTimes.
+                    setLoading(false);
+                    return;
                 }
             }
 
