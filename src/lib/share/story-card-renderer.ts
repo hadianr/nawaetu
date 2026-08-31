@@ -26,6 +26,7 @@ export interface ShareableCardData {
     translation: string;
     explanation?: string;
     sourceText: string; // e.g. "HR. Bukhari No. 6094 (Sahih)"
+    displayName?: string;
 }
 
 export interface StoryRenderOptions {
@@ -39,11 +40,11 @@ export interface StoryRenderOptions {
 /**
  * Draws Nawaetu's signature Islamic geometric star/rosette pattern watermark on Canvas
  */
-function drawIslamicPattern(ctx: CanvasRenderingContext2D, width: number, height: number, color: string) {
+function drawIslamicPattern(ctx: CanvasRenderingContext2D, width: number, height: number, color: string, opacity = 0.08) {
     ctx.save();
     ctx.strokeStyle = color;
     ctx.lineWidth = 1.5;
-    ctx.globalAlpha = 0.12;
+    ctx.globalAlpha = opacity;
 
     const tileSize = 120;
     const cols = Math.ceil(width / tileSize) + 1;
@@ -82,6 +83,24 @@ function drawIslamicPattern(ctx: CanvasRenderingContext2D, width: number, height
         }
     }
 
+    ctx.restore();
+}
+
+function drawFlame(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, color: string, accent: string) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y + size);
+    ctx.bezierCurveTo(x - size * 0.7, y + size * 0.7, x - size * 0.55, y + size * 0.1, x - size * 0.1, y - size * 0.25);
+    ctx.bezierCurveTo(x - size * 0.15, y + size * 0.25, x + size * 0.2, y + size * 0.3, x + size * 0.05, y - size * 0.7);
+    ctx.bezierCurveTo(x + size * 0.75, y - size * 0.05, x + size * 0.65, y + size * 0.65, x, y + size);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(x, y + size * 0.55);
+    ctx.bezierCurveTo(x - size * 0.25, y + size * 0.35, x - size * 0.15, y + size * 0.05, x + size * 0.08, y - size * 0.12);
+    ctx.bezierCurveTo(x + size * 0.32, y + size * 0.2, x + size * 0.25, y + size * 0.42, x, y + size * 0.55);
+    ctx.fill();
     ctx.restore();
 }
 
@@ -169,7 +188,9 @@ export async function renderStoryCardToCanvas(
     if (!ctx) throw new Error("Canvas 2D context not available");
 
     const isDark = options.theme === "dark";
-    const showArabic = options.showArabic !== false; // Default true
+    const isAchievement = data.kind === "achievement";
+    const isEnglish = isAchievement && data.translation.includes("daily worship");
+    const showArabic = options.showArabic !== false && !isAchievement; // Achievements use their own milestone layout
 
     // 1. Background Fill with Nawaetu Primary Emerald Green Blend for Dark Mode
     if (isDark) {
@@ -181,7 +202,7 @@ export async function renderStoryCardToCanvas(
         ctx.fillRect(0, 0, W, H);
 
         // Nawaetu Signature Pattern (Emerald Gold pendar)
-        drawIslamicPattern(ctx, W, H, "#34d399");
+        drawIslamicPattern(ctx, W, H, "#34d399", 0.055);
     } else {
         const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
         bgGrad.addColorStop(0, "#f8fafc"); // Off-white ceramic
@@ -191,7 +212,7 @@ export async function renderStoryCardToCanvas(
         ctx.fillRect(0, 0, W, H);
 
         // Nawaetu Signature Pattern (Emerald Green accent)
-        drawIslamicPattern(ctx, W, H, "#10b981");
+        drawIslamicPattern(ctx, W, H, "#10b981", 0.045);
     }
 
     // 2. Subtle Inner Frame Border
@@ -248,10 +269,16 @@ export async function renderStoryCardToCanvas(
 
     // Consistency: Clean translation string wrapped in uniform quotes ("...")
     const cleanTranslation = data.translation.trim().replace(/^["“'\s]+|["”'\s]+$/g, "");
-    const transTextFormatted = `"${cleanTranslation}"`;
+    const transTextFormatted = isAchievement ? cleanTranslation : `"${cleanTranslation}"`;
 
     // 5. Pre-Calculation Measurement Pass for Perfect Mathematical Vertical Centering
     let arabicBlockHeight = 0;
+    let achievementBlockHeight = 0;
+    let achievementProgressBlockHeight = 0;
+    if (isAchievement) {
+        achievementBlockHeight = 390;
+        achievementProgressBlockHeight = 190;
+    }
     if (showArabic) {
         ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
         const arabicLinesCount = measureWrappedTextLines(ctx, data.arabic, contentWidth);
@@ -267,24 +294,28 @@ export async function renderStoryCardToCanvas(
 
     ctx.font = `500 ${transFontSize}px sans-serif`;
     const transLinesCount = measureWrappedTextLines(ctx, transTextFormatted, contentWidth);
-    let transBlockHeight = transLinesCount * transLineHeight;
+    let transBlockHeight = isAchievement ? 0 : transLinesCount * transLineHeight;
 
     let expBlockHeight = 0;
     if (options.showExplanation && data.explanation) {
-        ctx.font = "20px sans-serif";
-        const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
-        expBlockHeight = expLines * 32 + 50;
+        if (!isAchievement) {
+            ctx.font = "20px sans-serif";
+            const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
+            expBlockHeight = expLines * 32 + 50;
+        }
     }
 
     let totalContentHeight =
         arabicBlockHeight +
+        achievementBlockHeight +
         latinBlockHeight +
         transBlockHeight +
+        achievementProgressBlockHeight +
         (expBlockHeight ? expBlockHeight + 40 : 0);
 
     // Mathematical Centering between Badge (Y=250) and Footer (Y=1770)
     const topBoundary = 250;
-    const bottomBoundary = H - 150;
+    const bottomBoundary = H - 250;
     const availableArea = bottomBoundary - topBoundary;
 
     // Dynamic auto-scale adjustment if content exceeds available height area
@@ -312,18 +343,22 @@ export async function renderStoryCardToCanvas(
 
         ctx.font = `500 ${transFontSize}px sans-serif`;
         const transLinesCount = measureWrappedTextLines(ctx, transTextFormatted, contentWidth);
-        transBlockHeight = transLinesCount * transLineHeight;
+        transBlockHeight = isAchievement ? 0 : transLinesCount * transLineHeight;
 
         if (options.showExplanation && data.explanation) {
-            ctx.font = "18px sans-serif";
-            const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
-            expBlockHeight = expLines * 28 + 40;
+            if (!isAchievement) {
+                ctx.font = "18px sans-serif";
+                const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
+                expBlockHeight = expLines * 28 + 40;
+            }
         }
 
         totalContentHeight =
             arabicBlockHeight +
+            achievementBlockHeight +
             latinBlockHeight +
             transBlockHeight +
+            achievementProgressBlockHeight +
             (expBlockHeight ? expBlockHeight + 30 : 0);
     }
 
@@ -331,7 +366,7 @@ export async function renderStoryCardToCanvas(
     if (startY < topBoundary) startY = topBoundary; // Safety limit for long content
 
     // 6. Optional Quote Accent Icon for Short Content
-    if (isShort && options.fontSizeScale !== "xlarge" && startY > 440) {
+    if (!isAchievement && isShort && options.fontSizeScale !== "xlarge" && startY > 440) {
         ctx.fillStyle = isDark ? "rgba(52, 211, 153, 0.15)" : "rgba(16, 185, 129, 0.15)";
         ctx.beginPath();
         ctx.arc(W / 2, startY - 80, 44, 0, Math.PI * 2);
@@ -346,7 +381,27 @@ export async function renderStoryCardToCanvas(
     let currentY = startY;
 
     // 7. Render Arabic Calligraphy Text (Optional & Center Alignment)
-    if (showArabic) {
+    if (isAchievement) {
+        ctx.textAlign = "center";
+        const flameColor = isDark ? "#fb923c" : "#f97316";
+        const flameAccent = isDark ? "#fde047" : "#fbbf24";
+        if (data.displayName) {
+            ctx.font = "italic 700 54px sans-serif";
+            ctx.fillStyle = isDark ? "#fed7aa" : "#c2410c";
+            ctx.fillText(data.displayName.slice(0, 32), W / 2, currentY - 200);
+        }
+        ctx.fillStyle = isDark ? "rgba(249, 115, 22, 0.2)" : "rgba(249, 115, 22, 0.14)";
+        ctx.beginPath();
+        ctx.arc(W / 2, currentY + 112, 195, 0, Math.PI * 2);
+        ctx.fill();
+        drawFlame(ctx, W / 2, currentY + 10, 210, flameColor, flameAccent);
+        currentY += achievementBlockHeight;
+
+        ctx.font = `bold ${Math.round(34 * scaleMultiplier)}px sans-serif`;
+        ctx.fillStyle = isDark ? "#d1fae5" : "#065f46";
+        drawWrappedText(ctx, data.title, W / 2, currentY - 30, contentWidth, 46, "center");
+        currentY += 35;
+    } else if (showArabic) {
         ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
         ctx.fillStyle = isDark ? "#6ee7b7" : "#065f46";
         ctx.direction = "rtl";
@@ -380,27 +435,102 @@ export async function renderStoryCardToCanvas(
     }
 
     // 9. Render Translation Text (Center Alignment with Uniform Quote Marks "")
-    ctx.font = `500 ${transFontSize}px sans-serif`;
-    ctx.fillStyle = isDark ? "#f8fafc" : "#1e293b";
-    const drawnTransH = drawWrappedText(
-        ctx,
-        transTextFormatted,
-        W / 2,
-        currentY,
-        contentWidth,
-        transLineHeight,
-        "center"
-    );
-    currentY += drawnTransH + 40;
+    if (!isAchievement) {
+        ctx.font = `500 ${transFontSize}px sans-serif`;
+        ctx.fillStyle = isDark ? "#f8fafc" : "#1e293b";
+        const drawnTransH = drawWrappedText(
+            ctx,
+            transTextFormatted,
+            W / 2,
+            currentY,
+            contentWidth,
+            transLineHeight,
+            "center"
+        );
+        currentY += drawnTransH + 40;
+    }
+
+    // Achievement progress cue makes the share card feel actionable, not static.
+    if (isAchievement) {
+        const milestones = [3, 7, 14, 30, 60, 100];
+        const nextMilestone = milestones.find((milestone) => milestone > Number(data.arabic)) || milestones[milestones.length - 1];
+        const currentDays = Math.max(0, Number(data.arabic) || 0);
+        const progress = Math.min(1, currentDays / nextMilestone);
+        const progressLabel = isEnglish ? `Next milestone · ${nextMilestone} days` : `Milestone berikutnya · ${nextMilestone} hari`;
+        const progressHint = isEnglish
+            ? "A little worship, every day · Keep going"
+            : "Sedikit amal, rutin setiap hari · Teruskan";
+        ctx.font = "bold 22px sans-serif";
+        ctx.fillStyle = isDark ? "#a7f3d0" : "#047857";
+        ctx.textAlign = "left";
+        ctx.fillText(progressLabel, 100, currentY + 8);
+        ctx.textAlign = "right";
+        ctx.fillStyle = isDark ? "#f8fafc" : "#1e293b";
+        ctx.fillText(`${currentDays}/${nextMilestone}`, W - 100, currentY + 8);
+
+        const barX = 100;
+        const barY = currentY + 32;
+        const barW = W - 200;
+        const barH = 20;
+        ctx.fillStyle = isDark ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.08)";
+        ctx.beginPath();
+        ctx.roundRect(barX, barY, barW, barH, barH / 2);
+        ctx.fill();
+        const barGradient = ctx.createLinearGradient(barX, barY, barX + barW, barY);
+        barGradient.addColorStop(0, isDark ? "#fb923c" : "#f97316");
+        barGradient.addColorStop(1, isDark ? "#facc15" : "#fb923c");
+        ctx.fillStyle = barGradient;
+        ctx.beginPath();
+        ctx.roundRect(barX, barY, Math.max(barH, barW * progress), barH, barH / 2);
+        ctx.fill();
+
+        ctx.font = "500 22px sans-serif";
+        ctx.fillStyle = isDark ? "rgba(255,255,255,0.7)" : "#475569";
+        ctx.textAlign = "center";
+        ctx.fillText(progressHint, W / 2, currentY + 88);
+        currentY += 190;
+
+        const hadithTitle = isEnglish ? "A reminder for your istiqamah" : "Pengingat untuk istiqamah";
+        const hadithText = isEnglish
+            ? "The most beloved deed to Allah is the most regular and constant, even if it were little."
+            : "Amalan yang paling dicintai Allah adalah yang paling rutin dan terus-menerus dikerjakan, meskipun sedikit.";
+        const hadithSource = isEnglish ? "Sahih al-Bukhari & Muslim" : "HR. Bukhari dan Muslim";
+        const verseX = (W - contentWidth) / 2;
+        const verseY = currentY;
+        const verseH = 150;
+        ctx.fillStyle = isDark ? "rgba(6, 40, 28, 0.78)" : "rgba(255, 247, 237, 0.88)";
+        ctx.strokeStyle = isDark ? "rgba(251, 146, 60, 0.45)" : "rgba(249, 115, 22, 0.32)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(verseX, verseY, contentWidth, verseH, 18);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = "bold 21px sans-serif";
+        ctx.fillStyle = isDark ? "#fed7aa" : "#c2410c";
+        ctx.textAlign = "left";
+        ctx.fillText(hadithTitle, verseX + 28, verseY + 34);
+        ctx.font = "500 22px sans-serif";
+        ctx.fillStyle = isDark ? "#f8fafc" : "#334155";
+        drawWrappedText(ctx, hadithText, W / 2, verseY + 72, contentWidth - 56, 30, "center");
+        ctx.font = "italic 18px sans-serif";
+        ctx.fillStyle = isDark ? "#fdba74" : "#9a3412";
+        ctx.textAlign = "right";
+        ctx.fillText(hadithSource, verseX + contentWidth - 28, verseY + verseH - 20);
+        currentY += 180;
+    }
 
     // 10. Render Explanation / Tadabbur Box (Center Alignment)
-    if (options.showExplanation && data.explanation && currentY < H - 250) {
+    if (options.showExplanation && data.explanation && !isAchievement && currentY < H - 250) {
         ctx.font = "20px sans-serif";
         const expW = contentWidth;
         const expX = (W - expW) / 2;
         const expY = currentY;
 
-        const expLinesCount = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, expW - 40);
+        const explanationText = isAchievement
+            ? `${isEnglish ? "Your progress" : "Progresmu"} · ${data.explanation}`
+            : `💡 ${data.explanation}`;
+        const expLinesCount = measureWrappedTextLines(ctx, explanationText, expW - 40);
         const expBoxH = expLinesCount * 32 + 40;
 
         ctx.fillStyle = isDark ? "rgba(6, 40, 28, 0.6)" : "rgba(16, 185, 129, 0.08)";
@@ -415,12 +545,23 @@ export async function renderStoryCardToCanvas(
         ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.9)" : "#334155";
         drawWrappedText(
             ctx,
-            `💡 ${data.explanation}`,
+            explanationText,
             W / 2,
             expY + 36,
             expW - 40,
             32,
             "center"
+        );
+    }
+
+    if (isAchievement) {
+        ctx.font = "600 22px sans-serif";
+        ctx.fillStyle = isDark ? "rgba(253, 186, 116, 0.82)" : "#c2410c";
+        ctx.textAlign = "center";
+        ctx.fillText(
+            isEnglish ? "Small deeds. Steady heart." : "Sedikit amal, hati tetap istiqamah.",
+            W / 2,
+            H - 170
         );
     }
 

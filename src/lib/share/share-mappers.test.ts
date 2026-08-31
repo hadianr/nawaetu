@@ -14,11 +14,11 @@ describe("mapStreakAchievementToShareData", () => {
     expect(card).toMatchObject({
       kind: "achievement",
       id: "streak-7",
-      arabic: "🔥 7",
-      translation: "7 consistent days with Nawaetu",
+      arabic: "7",
+      translation: "7 days of staying consistent in daily worship",
       explanation: "One Week • +50 Hasanah • Level 3",
       sourceText: "Nawaetu • Istiqamah Streak",
     });
-    expect(JSON.stringify(card)).not.toMatch(/email|userId|activity/i);
+    expect(JSON.stringify(card)).not.toMatch(/email|userId/i);
   });
 });

@@ -33,6 +33,9 @@ const StoryShareModal = dynamic(
 
 interface StreakBadgeProps {
   showLabel?: boolean;
+  modalOnly?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 interface CanonicalProgression {
@@ -60,20 +63,7 @@ function consecutiveDates(lastDate: string, count: number): Set<string> {
   return result;
 }
 
-function countConsecutiveDays(days: Array<{ localDate: string; status?: string }>): number {
-  const dates = [...new Set(days.filter((day) => day.status !== "frozen").map((day) => day.localDate.slice(0, 10)))].sort().reverse();
-  if (!dates.length) return 0;
-  let count = 1;
-  for (let index = 1; index < dates.length; index++) {
-    const previous = Date.parse(`${dates[index - 1]}T00:00:00Z`);
-    const current = Date.parse(`${dates[index]}T00:00:00Z`);
-    if (previous - current !== 86_400_000) break;
-    count++;
-  }
-  return count;
-}
-
-export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
+export default function StreakBadge({ showLabel = false, modalOnly = false, open, onOpenChange }: StreakBadgeProps) {
   const { locale, t } = useLocale();
   const { currentTheme } = useTheme();
   const { data: session, status } = useSession();
@@ -86,6 +76,9 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
   const qualificationTrackedRef = useRef<string | null>(null);
   const freezeTrackedRef = useRef(0);
   useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    if (open !== undefined) setDetailsOpen(open);
+  }, [open]);
   useEffect(() => {
     const celebrate = (event: Event) => {
       const { streak: achievement, milestone } = (event as CustomEvent<StreakAchievementEventDetail>).detail;
@@ -124,22 +117,9 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
   const canonical = cachedProgression && session?.user?.id && cachedProgression.userId === session.user.id
     ? cachedProgression
     : null;
-  const canonicalLastDate = canonical?.streak?.lastStreakDate
-    ? new Date(canonical.streak.lastStreakDate)
-    : null;
-  const todayKey = (() => {
-    const today = new Date();
-    return [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
-  })();
-  const canonicalToday = canonicalLastDate && !Number.isNaN(canonicalLastDate.getTime())
-    ? [canonicalLastDate.getFullYear(), String(canonicalLastDate.getMonth() + 1).padStart(2, "0"), String(canonicalLastDate.getDate()).padStart(2, "0")].join("-") === todayKey
-    : false;
-  const canonicalCurrentStreak = canonical?.streak?.days
-    ? countConsecutiveDays(canonical.streak.days)
-    : canonical?.streak?.currentDays;
-  const currentStreak = mounted ? canonicalCurrentStreak ?? display.streak : 0;
-  const isActiveToday = mounted && (canonical ? canonicalToday : display.isActiveToday);
-  const isLost = mounted && (canonical ? currentStreak === 0 && (canonical.streak?.longestDays ?? 0) > 0 : display.isLost);
+  const currentStreak = mounted ? display.streak : 0;
+  const isActiveToday = mounted && display.isActiveToday;
+  const isLost = mounted && display.isLost;
   const nextMilestone = milestones.find((milestone) => milestone.days > currentStreak);
   const milestoneProgress = nextMilestone
     ? Math.min(100, Math.round((currentStreak / nextMilestone.days) * 100))
@@ -181,8 +161,8 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
     });
   }, [activeDates, locale, protectedDates]);
 
-  const shareStreak = isLoggedIn ? canonicalCurrentStreak ?? 0 : currentStreak;
-  const shareLongest = canonical?.streak?.longestDays ?? streak.longestStreak;
+  const shareStreak = currentStreak;
+  const shareLongest = streak.longestStreak;
   const reachedMilestone = [...milestones].reverse().find((milestone) => milestone.days <= shareStreak);
   const milestoneLabel = (days?: number) => days ? t[`streakMilestone${days}`] : undefined;
   const canShare = shareStreak > 0;
@@ -192,6 +172,7 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
     hasanahEarned: reachedMilestone?.days === shareStreak ? reachedMilestone?.xp : undefined,
     level: canonical?.level ?? player.level,
     milestoneLabel: reachedMilestone?.days === shareStreak ? milestoneLabel(reachedMilestone?.days) : undefined,
+    displayName: session?.user?.name || undefined,
   }, locale);
 
   const statusText = isActiveToday
@@ -232,7 +213,7 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
 
   return (
     <>
-      <button
+      {!modalOnly && <button
         type="button"
         onClick={() => {
           trackStreakEvent("surface_opened", {
@@ -253,15 +234,18 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
         <Flame className={cn("h-5 w-5", isActiveToday && "fill-current")} aria-hidden="true" />
         <span className="text-sm font-black tabular-nums">{currentStreak}</span>
         {showLabel && <span className="hidden text-xs sm:inline">{t.streakDayCount}</span>}
-      </button>
+      </button>}
 
-      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+      <Dialog open={open ?? detailsOpen} onOpenChange={(nextOpen) => {
+        setDetailsOpen(nextOpen);
+        onOpenChange?.(nextOpen);
+      }}>
         <DialogContent className={cn(
           "max-w-sm overflow-hidden border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface))] p-0 motion-reduce:animate-none motion-reduce:transition-none",
           isDaylight ? "text-slate-900" : "text-white",
         )} closeLabel={t.streakClose}>
           <div className="bg-gradient-to-br from-[rgb(var(--color-primary-dark))] via-[rgb(var(--color-primary))] to-[rgb(var(--color-accent))] px-6 py-7 text-center text-white">
-            <Flame className="mx-auto h-14 w-14 fill-current motion-reduce:animate-none" aria-hidden="true" />
+            <Flame className="mx-auto h-14 w-14 fill-current text-[rgb(var(--color-primary-light))] motion-reduce:animate-none" aria-hidden="true" />
             <p className="mt-2 text-5xl font-black tabular-nums">{currentStreak}</p>
             <p className="text-sm font-bold">{t.streakDayCount}</p>
           </div>
@@ -288,7 +272,7 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
                   )}>
                     {day.protected
                       ? <Snowflake className="h-3.5 w-3.5" aria-label={t.streakProtectedDay} />
-                      : day.active ? <Flame className="h-3.5 w-3.5 fill-current" aria-label={t.streakCompleted} /> : "·"}
+                      : day.active ? <Flame className="h-3.5 w-3.5 fill-current text-[rgb(var(--color-primary-dark))]" aria-label={t.streakCompleted} /> : "·"}
                   </span>
                 </div>
               ))}
@@ -347,11 +331,17 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
                   streakDays: shareStreak,
                 });
                 setDetailsOpen(false);
+                onOpenChange?.(false);
                 setShareOpen(true);
               }}
-              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[rgb(var(--color-primary))] px-4 font-bold text-white transition-colors hover:bg-[rgb(var(--color-primary-dark))] disabled:cursor-not-allowed disabled:opacity-50"
+              className={cn(
+                "flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border px-4 font-bold backdrop-blur-xl transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                isDaylight
+                  ? "border-emerald-200/80 bg-emerald-100/70 text-emerald-900 shadow-sm hover:bg-emerald-100"
+                  : "border-transparent bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-dark))]",
+              )}
             >
-              <Share2 className="h-4 w-4" aria-hidden="true" />
+              <Share2 className={cn("h-4 w-4", isDaylight ? "text-emerald-700" : "text-current")} aria-hidden="true" />
               {t.streakShareAchievement}
             </button>
           </div>
@@ -359,7 +349,15 @@ export default function StreakBadge({ showLabel = false }: StreakBadgeProps) {
       </Dialog>
 
       {shareOpen && (
-        <StoryShareModal item={shareItem} onClose={() => setShareOpen(false)} isDaylight={isDaylight} />
+        <StoryShareModal
+          item={shareItem}
+          onClose={() => {
+            setShareOpen(false);
+            setDetailsOpen(true);
+            onOpenChange?.(true);
+          }}
+          isDaylight={isDaylight}
+        />
       )}
     </>
   );
