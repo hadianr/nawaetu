@@ -22,7 +22,6 @@
     "typecheck": "tsc --noEmit",
     "release": "bash scripts/release.sh",
     "db:migrate": "drizzle-kit migrate",
-    "db:migrate:progression": "drizzle-kit migrate --config drizzle.progression.config.ts",
     "db:verify:progression": "node scripts/verify-progression-migration.mjs",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
