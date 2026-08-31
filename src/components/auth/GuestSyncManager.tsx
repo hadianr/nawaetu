@@ -88,15 +88,24 @@ export function GuestSyncManager() {
                         toast.info((t as any).syncHydrateInfo || "⚠️ Data tamu di HP ini telah kami ganti dengan data akun utamamu.", { duration: 4000 });
                     }, 500);
 
-                } else if (hasLocalData) {
-                    // Scenario: User is new/empty account but has local guest data (UPLOAD)
-                    // ACTION: Auto-Upload (Sync guest to account).
+                } else if (hasLocalData && serverData.profile?.guestSyncEligible === true) {
+                    // Only a server-marked, brand-new account may import guest activity.
                     toast.info((t as any).syncUploadLoading || "🚀 Sedang memindahkan data tamu kamu ke akun baru...", { duration: 2000 });
                     await handleSyncToNewAccount();
-                    // Toast success is handled inside handleSyncToNewAccount
+                } else if (hasLocalData) {
+                    // Existing account: never import stale guest activity.
+                    clearLocalData();
+                    await hydrateFromServer(serverData);
+                    toast.info((t as any).syncHydrateInfo || "Data akunmu digunakan; progress tamu tidak diimpor.", { duration: 4000 });
                 } else {
                     // Scenario: Clean slate on both ends.
-                    // Just mark as synced.
+                    if (serverData.profile?.guestSyncEligible === true) {
+                        await fetch("/api/user/sync-guest", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ consumeOnly: true }),
+                        });
+                    }
                     storage.set(STORAGE_KEYS.LAST_SYNC_USER_ID as any, session.user.id);
                 }
 
@@ -165,6 +174,9 @@ export function GuestSyncManager() {
         if (data.profile?.name && data.profile.name.toLowerCase() !== "guest") return true;
         if (data.profile?.streaks?.current > 0) return true;
         if (data.readingState?.quranLastRead) return true;
+        if (data.dailyActivities?.length > 0) return true;
+        if (data.progression?.hasanah > 0) return true;
+        if (data.progression?.streak?.days?.length > 0) return true;
         return false;
     };
 
@@ -307,31 +319,27 @@ export function GuestSyncManager() {
                 }
             }
 
-            if (data.profile?.streaks) {
-                const currentStreak = data.profile.streaks.current || 0;
-                const longestStreak = data.profile.streaks.longest || 0;
+            if (data.progression?.streak) {
+                const canonicalStreak = data.progression.streak;
                 storage.set(STORAGE_KEYS.USER_STREAK as any, {
-                    currentStreak: currentStreak,
-                    longestStreak: longestStreak,
-                    lastActiveDate: new Date().toISOString().split('T')[0],
-                    milestones: []
+                    currentStreak: canonicalStreak.currentDays || 0,
+                    longestStreak: canonicalStreak.longestDays || 0,
+                    lastActiveDate: canonicalStreak.lastStreakDate || "",
+                    milestones: [],
+                    freezesAvailable: canonicalStreak.freezesAvailable || 0,
+                    protectedDates: (canonicalStreak.days || [])
+                        .filter((day: { status?: string }) => day.status === "frozen")
+                        .map((day: { localDate: string }) => day.localDate),
                 });
                 window.dispatchEvent(new Event("streak_updated"));
             }
 
-            // Calculate total Hasanah XP from completed missions + daily activities
-            let totalHasanahFromCloud = 0;
-            if (data.completedMissions && Array.isArray(data.completedMissions)) {
-                totalHasanahFromCloud += data.completedMissions.reduce((acc: number, m: any) => acc + (m.hasanahEarned || m.xpEarned || 0), 0);
-            }
-            if (data.dailyActivities && Array.isArray(data.dailyActivities)) {
-                totalHasanahFromCloud += data.dailyActivities.reduce((acc: number, a: any) => acc + (a.hasanahGained || 0), 0);
-            }
-
-            const currentLocalHasanah = parseInt((storage.getOptional(STORAGE_KEYS.USER_HASANAH) as string) || "0") || 0;
-            const finalHasanah = Math.max(currentLocalHasanah, totalHasanahFromCloud);
-            if (finalHasanah > 0) {
-                storage.set(STORAGE_KEYS.USER_HASANAH as any, finalHasanah.toString());
+            if (data.progression) {
+                storage.set(STORAGE_KEYS.CANONICAL_PROGRESSION as any, {
+                    ...data.progression,
+                    userId: session?.user?.id,
+                });
+                storage.set(STORAGE_KEYS.USER_HASANAH as any, String(data.progression.hasanah || 0));
                 window.dispatchEvent(new Event("hasanah_updated"));
             }
 

@@ -58,6 +58,6 @@ export function updateStreak(): { newMilestone: StreakMilestone | null; streak: 
  * Returns the actual current streak considering today's status
  * @deprecated Use getStreakRepository().getDisplayStreak() or useStreak hook instead
  */
-export function getDisplayStreak(): { streak: number; isActiveToday: boolean } {
+export function getDisplayStreak(): { streak: number; isActiveToday: boolean; isLost: boolean } {
     return getStreakRepository().getDisplayStreak();
 }
