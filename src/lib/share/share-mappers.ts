@@ -120,6 +120,38 @@ export interface DailySpiritLike {
     };
 }
 
+export interface StreakAchievementLike {
+    currentStreak: number;
+    longestStreak: number;
+    hasanahEarned?: number;
+    level?: number;
+    milestoneLabel?: string;
+}
+
+export function mapStreakAchievementToShareData(
+    achievement: StreakAchievementLike,
+    locale: string = "id",
+): ShareableCardData {
+    const isEnglish = locale === "en";
+    const detail = [
+        achievement.milestoneLabel,
+        achievement.hasanahEarned ? `+${achievement.hasanahEarned} Hasanah` : undefined,
+        achievement.level ? `Level ${achievement.level}` : undefined,
+    ].filter(Boolean).join(" • ");
+
+    return {
+        kind: "achievement",
+        id: `streak-${achievement.currentStreak}`,
+        title: achievement.milestoneLabel || (isEnglish ? "Istiqamah Streak" : "Jejak Istiqamah"),
+        arabic: `🔥 ${achievement.currentStreak}`,
+        translation: isEnglish
+            ? `${achievement.currentStreak} consistent days with Nawaetu`
+            : `${achievement.currentStreak} hari konsisten bersama Nawaetu`,
+        explanation: detail || (isEnglish ? `Longest streak: ${achievement.longestStreak} days` : `Streak terpanjang: ${achievement.longestStreak} hari`),
+        sourceText: isEnglish ? "Nawaetu • Istiqamah Streak" : "Nawaetu • Jejak Istiqamah",
+    };
+}
+
 /**
  * Maps DailySpirit item to ShareableCardData
  */

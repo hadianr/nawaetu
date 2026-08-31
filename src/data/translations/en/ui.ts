@@ -31,6 +31,9 @@ export const uiEN = {
     globalImpactIntentionsToday: "Intentions Today",
     globalImpactPrayers: "Prayers",
     globalImpactCountries: "Countries",
+    globalImpactUsers: "Users",
+    globalImpactMissions: "Missions completed",
+    globalImpactStreakDays: "Active worship days",
     globalImpactTagline: "Uniting the Ummah, one intention at a time.",
 
     // Undo

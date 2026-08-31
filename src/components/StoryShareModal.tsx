@@ -220,18 +220,20 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 className={cn(
                     "relative w-full max-w-sm min-[390px]:max-w-[420px] sm:max-w-md rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-colors duration-200 z-10",
                     isDaylight
-                        ? "bg-white border-slate-200 text-slate-900"
-                        : "bg-slate-900 border-white/10 text-white"
+                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-primary))]/20 text-slate-900"
+                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-primary))]/20 text-white"
                 )}
             >
                 {/* Modal Header */}
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+                <div className="flex items-center justify-between border-b border-[rgb(var(--color-primary))]/15 px-4 py-2.5">
                     <div className="flex items-center gap-1.5">
-                        <Share2 className="w-4 h-4 text-emerald-500" />
+                        <Share2 className="w-4 h-4 text-[rgb(var(--color-primary))]" />
                         <h2 className="text-xs sm:text-sm font-bold tracking-tight">{t.storyShareTitle || "Bagikan ke Story"}</h2>
                     </div>
                     <button
+                        type="button"
                         onClick={onClose}
+                        aria-label={t.storyShareClose}
                         className={cn(
                             "p-1 rounded-full transition-colors cursor-pointer",
                             isDaylight ? "hover:bg-slate-100 text-slate-400" : "hover:bg-white/10 text-white/40"
@@ -244,7 +246,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 {/* Modal Body: Fully Responsive Crisp Preview & Consolidated Controls */}
                 <div className="flex-1 overflow-y-auto p-3 space-y-3 no-scrollbar">
                     {/* Live 9:16 Dynamic Canvas Preview Card (Scales from iPhone SE -> 14 Pro Max -> Desktop) */}
-                    <div className="relative w-full flex justify-center py-2 px-2 rounded-xl border border-white/10 bg-black/40 shadow-inner overflow-hidden group">
+                    <div className="group relative flex w-full justify-center overflow-hidden rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-background))]/60 px-2 py-2 shadow-inner">
                         <div className="relative h-[260px] min-[390px]:h-[350px] min-[410px]:h-[390px] sm:h-[440px] max-h-[52vh] aspect-[9/16] rounded-xl overflow-hidden shadow-xl border border-white/10 flex items-center justify-center transition-all duration-300">
                             <canvas
                                 ref={previewCanvasRef}
@@ -252,7 +254,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                             />
                             {isExporting && (
                                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white text-[11px] font-bold gap-1.5 animate-in fade-in">
-                                    <Sparkles className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+                                    <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-light))]" />
                                     <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>
                             )}
@@ -261,7 +263,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
 
                     {/* Status Message Notification */}
                     {statusMessage && (
-                        <div className="p-2 rounded-lg text-[11px] font-medium bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-center animate-in slide-in-from-top-1">
+                        <div className="animate-in slide-in-from-top-1 rounded-lg border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-2 text-center text-[11px] font-medium text-[rgb(var(--color-primary-light))]">
                             {statusMessage}
                         </div>
                     )}
@@ -273,7 +275,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                             {/* Theme Pills */}
                             <div className={cn(
                                 "flex items-center gap-0.5 p-0.5 rounded-xl border flex-1",
-                                isDaylight ? "bg-slate-100 border-slate-200" : "bg-black/40 border-white/10"
+                                isDaylight ? "bg-slate-100 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-background))]/60 border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <button
                                     type="button"
@@ -281,12 +283,12 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     className={cn(
                                         "flex-1 py-1 px-2 rounded-lg font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
                                         theme === "dark"
-                                            ? "bg-slate-900 text-emerald-400 shadow-xs border border-emerald-400/30"
+                                            ? "border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-background))] text-[rgb(var(--color-primary-light))] shadow-xs"
                                             : isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/50 hover:text-white"
                                     )}
                                 >
                                     <Moon className="w-3 h-3" />
-                                    <span>Dark</span>
+                                    <span>{t.storyShareDark}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -294,19 +296,19 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     className={cn(
                                         "flex-1 py-1 px-2 rounded-lg font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
                                         theme === "light"
-                                            ? "bg-emerald-600 text-white shadow-xs"
+                                            ? "bg-[rgb(var(--color-primary))] text-white shadow-xs"
                                             : isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/50 hover:text-white"
                                     )}
                                 >
                                     <Sun className="w-3 h-3" />
-                                    <span>Light</span>
+                                    <span>{t.storyShareLight}</span>
                                 </button>
                             </div>
 
                             {/* Font Size Pills */}
                             <div className={cn(
                                 "flex items-center gap-0.5 p-0.5 rounded-xl border",
-                                isDaylight ? "bg-slate-100 border-slate-200" : "bg-black/40 border-white/10"
+                                isDaylight ? "bg-slate-100 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-background))]/60 border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <button
                                     type="button"
@@ -314,10 +316,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     className={cn(
                                         "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "normal"
-                                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                             : isDaylight ? "text-slate-500 hover:text-slate-800" : "text-white/40 hover:text-white"
                                     )}
-                                    title={locale === "en" ? "Normal Size" : "Ukuran Normal"}
+                                    title={t.storyShareNormalSize}
                                 >
                                     A
                                 </button>
@@ -327,10 +329,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     className={cn(
                                         "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "large"
-                                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                             : isDaylight ? "text-slate-500 hover:text-slate-800" : "text-white/40 hover:text-white"
                                     )}
-                                    title={locale === "en" ? "Large Size" : "Ukuran Besar"}
+                                    title={t.storyShareLargeSize}
                                 >
                                     A+
                                 </button>
@@ -340,10 +342,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     className={cn(
                                         "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "xlarge"
-                                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                             : isDaylight ? "text-slate-500 hover:text-slate-800" : "text-white/40 hover:text-white"
                                     )}
-                                    title={locale === "en" ? "Extra Large Size" : "Ukuran Sangat Besar"}
+                                    title={t.storyShareExtraLargeSize}
                                 >
                                     A++
                                 </button>
@@ -351,14 +353,15 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                         </div>
 
                         {/* Row 2: Text Toggles Combined */}
-                        <div className="grid grid-cols-3 gap-1 text-[10px]">
+                        {item.kind !== "achievement" && (
+                            <div className="grid grid-cols-3 gap-1 text-[10px]">
                             <button
                                 type="button"
                                 onClick={() => setShowArabic(!showArabic)}
                                 className={cn(
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showArabic
-                                        ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 font-bold"
+                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
                                         : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
                                 )}
                             >
@@ -371,7 +374,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                 className={cn(
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showLatin
-                                        ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 font-bold"
+                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
                                         : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
                                 )}
                             >
@@ -384,23 +387,24 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                 className={cn(
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showExplanation
-                                        ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 font-bold"
+                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
                                         : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
                                 )}
                             >
                                 {(t.storyShareExplanation || "Tadabbur")} {showExplanation ? "✓" : "✕"}
                             </button>
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Modal Footer Actions */}
-                <div className="p-2.5 sm:p-3 border-t border-white/10 bg-black/20 flex items-center gap-2">
+                <div className="flex items-center gap-2 border-t border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-background))]/30 p-2.5 sm:p-3">
                     {/* Native Share Button (Primary action for mobile) */}
                     <button
                         disabled={isExporting}
                         onClick={handleNativeShare}
-                        className="flex-1 py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/30 transition-all cursor-pointer disabled:opacity-50"
+                        className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[rgb(var(--color-primary))] px-3 py-2 text-xs font-bold text-white shadow-md shadow-[rgb(var(--color-primary))]/30 transition-all hover:bg-[rgb(var(--color-primary-dark))] active:scale-[0.98] disabled:opacity-50"
                     >
                         {sharedSuccess ? (
                             <Check className="w-3.5 h-3.5 text-white" />
@@ -420,7 +424,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                 ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"
                                 : "bg-white/10 hover:bg-white/20 border-white/10 text-white"
                         )}
-                        title={locale === "en" ? "Download WebP Image (Ultra-Light)" : "Unduh Gambar WebP (Super Ringan)"}
+                        title={t.storyShareDownloadTitle}
                     >
                         <Download className="w-3.5 h-3.5" />
                     </button>
@@ -435,9 +439,9 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                 ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"
                                 : "bg-white/10 hover:bg-white/20 border-white/10 text-white"
                         )}
-                        title="Salin Gambar ke Clipboard"
+                        title={t.storyShareCopyTitle}
                     >
-                        {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copied ? <Check className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                 </div>
             </div>

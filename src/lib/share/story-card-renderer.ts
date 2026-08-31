@@ -18,6 +18,7 @@ export type StoryTheme = "dark" | "light";
 export type FontSizeScale = "normal" | "large" | "xlarge";
 
 export interface ShareableCardData {
+    kind?: "content" | "achievement";
     id: string;
     title: string;
     arabic: string;

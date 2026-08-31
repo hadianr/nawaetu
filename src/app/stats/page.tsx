@@ -24,10 +24,12 @@ import { CategoryBreakdown } from '@/components/stats/CategoryBreakdown';
 import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
 import { PresetGuard } from '@/components/PresetGuard';
 import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
+import { useStreak } from '@/hooks/useStreak';
 
 export default function StatsPage() {
     const t = useTranslations();
     const playerStats = usePlayerStats();
+    const { streak, display: streakDisplay } = useStreak();
     const [history, setHistory] = useState<DailyActivity[]>([]);
     const [completedMissions, setCompletedMissions] = useState<CompletedMission[]>([]);
     const [activeInsight, setActiveInsight] = useState<InsightKey | null>(null);
@@ -95,12 +97,10 @@ export default function StatsPage() {
 
     const weeklyHasanah = history.slice(-7).reduce((acc, day) => acc + (day.hasanahGained || 0), 0);
 
-    // Streaks are usually managed by a separate service, but we'll use a derived one for now
-    // In actual app, we might want to get this from playerStats or a streak service
     const streakData = useMemo(() => ({
-        currentStreak: history.length > 0 ? (history[history.length - 1]?.hasanahGained > 0 ? history.length : 0) : 0,
-        longestStreak: history.length
-    }), [history]);
+        currentStreak: streakDisplay.streak,
+        longestStreak: streak.longestStreak,
+    }), [streak, streakDisplay]);
 
     const [timeRange, setTimeRange] = useState<'today' | '7d' | '30d' | '90d' | '1y'>('7d');
 

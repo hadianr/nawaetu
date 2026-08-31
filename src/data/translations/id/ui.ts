@@ -31,6 +31,9 @@ export const uiID = {
     globalImpactIntentionsToday: "Niat Hari Ini",
     globalImpactPrayers: "Sholat",
     globalImpactCountries: "Negara",
+    globalImpactUsers: "Pengguna",
+    globalImpactMissions: "Misi selesai",
+    globalImpactStreakDays: "Hari ibadah aktif",
     globalImpactTagline: "Menyatukan Ummah, satu niat setiap saat.",
 
     // Undo

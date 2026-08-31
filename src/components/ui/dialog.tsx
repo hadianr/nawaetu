@@ -69,9 +69,11 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  closeLabel = "Close",
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  closeLabel?: string
 }) {
   return (
     <DialogPortal data-slot="dialog-portal">
@@ -88,7 +90,8 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="absolute top-4 right-4 z-50 flex h-7 w-7 items-center justify-center rounded-full bg-slate-400/10 dark:bg-white/5 text-[rgb(var(--color-primary-dark))]/60 dark:text-[rgb(var(--color-primary-light))]/60 opacity-80 transition-all hover:bg-[rgb(var(--color-primary))/15] hover:text-[rgb(var(--color-primary))] dark:hover:bg-[rgb(var(--color-primary))/20] dark:hover:text-[rgb(var(--color-primary-light))] hover:opacity-100 disabled:pointer-events-none backdrop-blur-sm shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:h-3.5 [&_svg:not([class*='size-'])]:w-3.5 outline-none"
+            aria-label={closeLabel}
+            className="absolute top-3 right-3 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:h-5 [&_svg:not([class*='size-'])]:w-5"
           >
             <XIcon />
             <span className="sr-only">Close</span>
