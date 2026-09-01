@@ -27,55 +27,41 @@ interface PrayerCountdownProps {
     compact?: boolean;
 }
 
+function getTimeLeft(targetTime: string, nowMs: number) {
+    const now = new Date(nowMs);
+    const [targetHours, targetMinutes] = targetTime.split(":").map(Number);
+    const target = new Date(now);
+    target.setHours(targetHours, targetMinutes, 0, 0);
+
+    if (target.getTime() < nowMs) target.setDate(target.getDate() + 1);
+
+    const diff = Math.max(0, target.getTime() - nowMs);
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    return {
+        isNear: hours === 0 && minutes < 15,
+        timeLeft: [hours, minutes, seconds].map((value) => value.toString().padStart(2, "0")).join(":"),
+    };
+}
+
 export default function PrayerCountdown({ targetTime, prayerName, compact = false }: PrayerCountdownProps) {
-    const [timeLeft, setTimeLeft] = useState<string>("--:--:--");
-    const [isNear, setIsNear] = useState(false);
+    const [now, setNow] = useState(Date.now);
+    const { timeLeft, isNear } = getTimeLeft(targetTime, now);
 
     useEffect(() => {
-        const calculateTimeLeft = () => {
-            const now = new Date();
-            const [targetHours, targetMinutes] = targetTime.split(":").map(Number);
-
-            const target = new Date(now);
-            target.setHours(targetHours);
-            target.setMinutes(targetMinutes);
-            target.setSeconds(0);
-
-            // If target is earlier than now, assumes it's for tomorrow
-            if (target.getTime() < now.getTime()) {
-                target.setDate(target.getDate() + 1);
-            }
-
-            const diff = target.getTime() - now.getTime();
-
-            if (diff <= 0) {
-                return "00:00:00";
-            }
-
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            setIsNear(hours === 0 && minutes < 15);
-
-            return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-        };
-
-        setTimeLeft(calculateTimeLeft());
-
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft());
-        }, 1000);
+        const timer = setInterval(() => setNow(Date.now()), 1000);
 
         return () => clearInterval(timer);
-    }, [targetTime]);
+    }, []);
 
     if (compact) {
         return (
             <div className="animate-in fade-in duration-700">
                 <div className={cn(
                     "font-mono text-2xl font-bold tracking-tight",
-                    isNear ? "text-emerald-400" : "text-white"
+                    isNear ? "text-emerald-400" : "text-current"
                 )}>
                     {timeLeft}
                 </div>

@@ -311,16 +311,14 @@ export default function PrayerCheckInWidget() {
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-sm shrink-0">🕌</span>
-                        <p className={cn("text-[10px] font-black uppercase tracking-tight truncate", isDaylight ? "text-slate-800" : "text-white")}>
-                            {selectedDate === DateUtils.today()
-                                ? t.homePrayerCheckInTitle
-                                : t.homePrayerCheckInHistoryTitle}
+                    <div className="flex min-w-0 items-center gap-1.5">
+                        <span className="shrink-0 text-sm">🕌</span>
+                        <p className={cn("truncate text-[10px] font-black uppercase tracking-tight", isDaylight ? "text-slate-800" : "text-white")}>
+                            {isBackdated ? t.homePrayerCheckInHistoryTitle : t.homePrayerCheckInSectionTitle}
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="ml-auto flex shrink-0 items-center gap-1.5">
                         {/* Date Selector */}
                         <div
                             onClick={() => {
