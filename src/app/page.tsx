@@ -42,12 +42,10 @@ export const metadata: Metadata = {
   },
 };
 
-// ISR: Homepage structure is static, dynamic content (prayer times, user data)
-// is loaded client-side. Cache for 1 hour.
-export const revalidate = 3600;
+// Keep the entry document server-rendered so Next does not emit its static
+// export CSS-as-script preload for this route.
+export const dynamic = "force-dynamic";
 
 export default function Home() {
-  // Homepage logic is now fully client-side for dynamic time-based components
-  // (prayer times, countdowns) while the shell remains static and ISR-optimized.
   return <HomeClient />;
 }
