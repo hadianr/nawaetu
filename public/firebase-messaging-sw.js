@@ -49,9 +49,13 @@ try {
         }
         // ─────────────────────────────────────────────────────────────────────
 
-        const title = payload.notification?.title || payload.data?.title || 'Nawaetu';
-        const body = payload.notification?.body || payload.data?.body || '';
-        const targetUrl = payload.data?.url || '/';
+        // FCM automatically displays background messages containing a
+        // notification payload. Only data-only messages need manual display.
+        if (payload.notification || !payload.data) return;
+
+        const title = payload.data.title || 'Nawaetu';
+        const body = payload.data.body || '';
+        const targetUrl = payload.data.url || '/';
         return self.registration.showNotification(title, {
             body,
             icon: '/icon-192x192.png?v=1.5.7',
@@ -59,11 +63,6 @@ try {
             tag: payload.messageId || 'nawaetu-notification',
             data: { url: targetUrl },
             requireInteraction: true,
-        }).then(() => {
-            console.log('[SW] ✅ Notification displayed:', title);
-        }).catch((error) => {
-            console.error('[SW] ❌ Notification display failed:', error);
-            throw error;
         });
     });
 

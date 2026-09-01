@@ -418,7 +418,7 @@ export async function POST(req: NextRequest) {
                                         }
                                     },
                                     fcmOptions: {
-                                        link: "/jadwal-sholat"
+                                        link: new URL("/jadwal-sholat", req.url).toString()
                                     }
                                 },
                                 android: {
