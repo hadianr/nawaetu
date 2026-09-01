@@ -14,6 +14,8 @@ const withPWA = withPWAInit({
     // Keep the Workbox runtime inside /sw.js so deployment cannot leave the
     // worker pointing at a missing /workbox-*.js asset.
     inlineWorkboxRuntime: true,
+    // Next may omit this optional App Router manifest from the deployment.
+    exclude: [/\/_buildManifest\.js$/],
     skipWaiting: true,   // Activate new SW immediately without waiting for tabs to close
     clientsClaim: true,  // New SW takes control of all open clients immediately after activation
     // Workbox resolves imported workers from the site root. The leading slash
