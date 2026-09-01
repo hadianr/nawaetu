@@ -305,9 +305,11 @@ export const otherEN = {
     homePrayerTimesToday: "Today's Prayer Times",
     homeFindMosque: "Find Mosque",
     homeFindMosqueAria: "Find Nearby Mosque via Google Maps",
+    homeQuickAccessTitle: "Quick Access",
 
     // Prayer Check-In
     homePrayerCheckInTitle: "Today's Prayer",
+    homePrayerCheckInSectionTitle: "Prayer Check-in",
     homePrayerCheckInHistoryTitle: "Prayer Records",
     homePrayerCheckInStatus: "{count}/5 Completed",
     homePrayerCheckInDone: "All prayers for today completed! Masya Allah 🎉",

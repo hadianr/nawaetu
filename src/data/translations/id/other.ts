@@ -305,9 +305,11 @@ export const otherID = {
     homePrayerTimesToday: "Jadwal Sholat Hari Ini",
     homeFindMosque: "Cari Masjid",
     homeFindMosqueAria: "Cari Masjid Terdekat via Google Maps",
+    homeQuickAccessTitle: "Akses Cepat",
 
     // Prayer Check-In
     homePrayerCheckInTitle: "Sholat Hari Ini",
+    homePrayerCheckInSectionTitle: "Check-in Sholat",
     homePrayerCheckInHistoryTitle: "Catatan Sholat",
     homePrayerCheckInStatus: "{count}/5 Terlaksana",
     homePrayerCheckInDone: "Semua sholat hari ini terlaksana! Masya Allah 🎉",

@@ -18,50 +18,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { RefreshCw, Edit2, MapPin, Navigation } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 import PrayerTimeCard from "@/components/PrayerTimeCard";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import PrayerCountdown from "@/components/PrayerCountdown";
 
-import UserProfileDialog from "@/components/UserProfileDialog"; // New Component
 import MosqueFinderModal from "@/components/MosqueFinderModal";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
-import { getStorageService } from "@/core/infrastructure/storage";
-import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
+const PrayerCheckInWidget = dynamic(() => import("@/components/PrayerCheckInWidget"), {
+    ssr: false,
+    loading: () => <div className="h-[88px] w-full animate-pulse rounded-2xl border border-white/10 bg-white/5" />,
+});
 
 export default function PrayerTimesDisplay() {
     const { data, loading, error, refreshLocation } = usePrayerTimesContext();
     const { t } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const [userName, setUserName] = useState("Sobat Nawaetu");
     const [showMosqueFinder, setShowMosqueFinder] = useState(false);
-
-    const refreshProfile = () => {
-        const storage = getStorageService();
-        const savedName = storage.getOptional(STORAGE_KEYS.USER_NAME);
-        if (savedName) setUserName(savedName as string);
-    };
-
-    useEffect(() => {
-        refreshProfile();
-    }, []);
-
-    // Greeting Logic
-    const getGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour >= 4 && hour < 10) return t.homeGreetingMorning;
-        if (hour >= 10 && hour < 15) return t.homeGreetingNoon;
-        if (hour >= 15 && hour < 18) return t.homeGreetingAfternoon;
-        return t.homeGreetingEvening;
-    };
 
     if (loading && !data) {
         return <PrayerCardSkeleton />;
@@ -125,10 +107,18 @@ export default function PrayerTimesDisplay() {
         );
     }
 
-    return (
-        <div className="relative w-full max-w-md flex flex-col gap-4">
+    const nextPrayer = data.nextPrayer === "Imsak" ? "Fajr" : data.nextPrayer;
+    const nextPrayerTime = data.nextPrayer === "Imsak"
+        ? (data.prayerTimes?.Fajr ?? data.nextPrayerTime)
+        : data.nextPrayerTime;
+    const nextPrayerLabel = nextPrayer
+        ? (t as Record<string, string>)[`prayer${nextPrayer}`] || nextPrayer
+        : "";
 
-            <div className="relative space-y-3">
+    return (
+        <div className="relative flex w-full max-w-md flex-col gap-2">
+
+            <div className="relative space-y-2">
                 {data.isDefaultLocation && (
                     <div className={cn(
                         "flex items-center gap-3 rounded-2xl p-4 mb-1 animate-in fade-in slide-in-from-top-2 duration-500 border transition-all",
@@ -151,44 +141,91 @@ export default function PrayerTimesDisplay() {
                     </div>
                 )}
 
-                <div className="flex items-center justify-between px-1">
-                    <h2 className={cn("text-sm font-bold shrink-0", isDaylight ? "text-slate-800" : "text-white/80")}>{t.homePrayerTimesToday}</h2>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                        {/* Qibla Button */}
-                        <Link
-                            href="/qibla"
-                            className={cn(
-                                "flex items-center justify-center gap-1 min-w-[72px] h-[22px] px-2 rounded-full border transition-all group",
-                                isDaylight
-                                    ? "bg-slate-50 hover:bg-slate-100 border-slate-100 text-slate-600 hover:text-slate-900"
-                                    : "bg-white/5 hover:bg-white/10 border-white/5 text-slate-300 hover:text-white"
-                            )}
+                <h2 className={cn("px-1 text-sm font-bold", isDaylight ? "text-slate-800" : "text-white/80")}>
+                    {t.homePrayerCheckInTitle}
+                </h2>
+
+                {nextPrayer && nextPrayerTime && (
+                    <div className={cn(
+                        "flex items-center justify-between gap-4 rounded-2xl border px-4 py-3",
+                        isDaylight
+                            ? "border-blue-100 bg-blue-50/80"
+                            : "border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10",
+                    )}>
+                        <div className="min-w-0">
+                            <div className={cn(
+                                "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest",
+                                isDaylight ? "text-blue-600" : "text-[rgb(var(--color-primary-light))]",
+                            )}>
+                                <Clock className="h-3 w-3" />
+                                {t.homeNextLabel}
+                            </div>
+                            <p className={cn("mt-1 truncate text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>
+                                {nextPrayerLabel} <span className="tabular-nums opacity-70">{nextPrayerTime}</span>
+                            </p>
+                        </div>
+                        <div
+                            role="timer"
+                            aria-label={`${t.homeNextLabel} ${nextPrayerLabel}`}
+                            className={isDaylight ? "text-slate-900" : "text-white"}
                         >
-                            <span className="text-[9px] shrink-0">🧭</span>
-                            <span className="text-[7.5px] font-black uppercase tracking-widest whitespace-nowrap">{t.homeQiblaLabel}</span>
-                        </Link>
-                        {/* Mosque Finder Button */}
-                        <button
-                            onClick={() => setShowMosqueFinder(true)}
-                            aria-label={t.homeFindMosqueAria}
-                            className={cn(
-                                "flex items-center justify-center gap-1 min-w-[72px] h-[22px] px-2 rounded-full border transition-all group",
-                                isDaylight
-                                    ? "bg-slate-50 hover:bg-slate-100 border-slate-100 text-slate-600 hover:text-slate-900"
-                                    : "bg-white/5 hover:bg-white/10 border-white/5 text-slate-300 hover:text-white"
-                            )}
-                        >
-                            <MapPin className={cn("w-2.5 h-2.5 shrink-0 group-hover:scale-110 transition-transform", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary))]")} />
-                            <span className="text-[7.5px] font-black uppercase tracking-widest whitespace-nowrap">{t.homeFindMosque}</span>
-                        </button>
+                            <PrayerCountdown targetTime={nextPrayerTime} prayerName={nextPrayer} compact />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <PrayerTimeCard {...data} />
             </div>
 
-            {/* Bottom spacer to Ensure scrolling fits everything above bottom nav */}
-            <div className="h-4" />
+            <PrayerCheckInWidget />
+
+            <div className={cn(
+                "flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
+                isDaylight ? "border-slate-200 bg-white/80" : "border-white/10 bg-white/[0.03]",
+            )}>
+                <span className={cn("text-[9px] font-black uppercase tracking-widest", isDaylight ? "text-slate-500" : "text-white/40")}>
+                    {t.homeQuickAccessTitle}
+                </span>
+                <div className="grid w-full grid-cols-3 gap-2">
+                    <Link
+                        href="/hijri-calendar"
+                        className={cn(
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            isDaylight
+                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                        )}
+                    >
+                        <CalendarDays className="h-3.5 w-3.5 shrink-0 text-[rgb(var(--color-primary))]" />
+                        <span className="truncate text-[9px] font-black uppercase tracking-tight">{t.hijriCalendarTitle}</span>
+                    </Link>
+                    <Link
+                        href="/qibla"
+                        className={cn(
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            isDaylight
+                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                        )}
+                    >
+                        <span className="text-xs">🧭</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest">{t.homeQiblaLabel}</span>
+                    </Link>
+                    <button
+                        onClick={() => setShowMosqueFinder(true)}
+                        aria-label={t.homeFindMosqueAria}
+                        className={cn(
+                            "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                            isDaylight
+                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                        )}
+                    >
+                        <MapPin className="h-3 w-3 text-[rgb(var(--color-primary))]" />
+                        <span className="truncate text-[9px] font-black uppercase tracking-tight">{t.homeFindMosque}</span>
+                    </button>
+                </div>
+            </div>
 
             <MosqueFinderModal
                 isOpen={showMosqueFinder}
