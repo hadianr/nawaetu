@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { pushSubscriptions, users } from "@/db/schema";
-import { eq, and, ne, or } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 
 export async function GET(req: NextRequest) {
@@ -112,22 +112,6 @@ export async function POST(req: NextRequest) {
             } catch (e) {
                 logger.error("Error checking user existence", e, { route: "/api/notifications/subscribe" });
                 return NextResponse.json({ error: "Unable to verify authenticated account" }, { status: 503 });
-            }
-        }
-
-        // Deactivate previous tokens for the same user and device type if user is logged in
-        if (validUserId) {
-            try {
-                await db.update(pushSubscriptions)
-                    .set({ active: 0, updatedAt: new Date() })
-                    .where(and(
-                        eq(pushSubscriptions.userId, validUserId),
-                        eq(pushSubscriptions.deviceType, effectiveDeviceType),
-                        ne(pushSubscriptions.token, token)
-                    ));
-            } catch (e) {
-                // Non-fatal cleanup log
-                logger.warn("Could not deactivate previous user tokens", { route: "/api/notifications/subscribe", error: e instanceof Error ? e.message : String(e) });
             }
         }
 

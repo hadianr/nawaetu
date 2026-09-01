@@ -102,6 +102,7 @@ describe('POST /api/notifications/subscribe', () => {
         // Verify insert called
         expect(db.insert).toHaveBeenCalledTimes(1);
         expect(db.select).not.toHaveBeenCalled(); // No read before write
+        expect(db.update).not.toHaveBeenCalled(); // Multiple devices stay active
 
         // Verify arguments
         // 1. insert called with table
