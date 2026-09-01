@@ -59,6 +59,7 @@ import NotificationSettings from "@/components/NotificationSettings";
 import PaymentSuccessModal from "@/components/PaymentSuccessModal";
 import { APP_CONFIG } from "@/config/app-config";
 import UpdateChecker from "@/components/UpdateChecker";
+import { resetOnboardingForDevelopment } from "@/lib/onboarding/reset";
 
 import ProfileCard from "./sections/ProfileCard";
 import ThemeCard from "./sections/ThemeCard";
@@ -277,6 +278,11 @@ export default function SettingsPageContent() {
     // Get current selection labels
     const currentMuadzin = MUADZIN_OPTIONS.find(m => m.id === muadzin);
     const currentMethod = CALCULATION_METHODS.find(m => m.id.toString() === calculationMethod);
+
+    const handleResetOnboarding = () => {
+        if (!window.confirm("Reset onboarding only? Your profile and progress will stay unchanged.")) return;
+        if (resetOnboardingForDevelopment(localStorage)) window.location.reload();
+    };
 
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
@@ -607,6 +613,14 @@ export default function SettingsPageContent() {
                                 Token belum tersedia. Klik "Open Debugger" untuk mencoba mengambil token.
                             </p>
                         )}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleResetOnboarding}
+                            className="w-full border-amber-500/30 bg-amber-950/20 text-amber-300 hover:bg-amber-950/40 hover:text-amber-200"
+                        >
+                            Reset onboarding (QA only)
+                        </Button>
                     </div>
                 )}
             </div>
