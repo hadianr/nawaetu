@@ -18,10 +18,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { pushSubscriptions } from "@/db/schema";
-import { eq, and, isNotNull } from "drizzle-orm";
+import { pushSubscriptions, users } from "@/db/schema";
+import { eq, and, inArray, isNotNull } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
+import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
 
 /**
  * Enhanced Hybrid Prayer Notification API
@@ -167,6 +168,12 @@ export async function POST(req: NextRequest) {
             .select()
             .from(pushSubscriptions)
             .where(and(eq(pushSubscriptions.active, 1), isNotNull(pushSubscriptions.userId)));
+
+        const userIds = [...new Set(subscriptions.map((sub) => sub.userId).filter((id): id is string => Boolean(id)))];
+        const userRows = userIds.length
+            ? await db.select({ id: users.id, settings: users.settings }).from(users).where(inArray(users.id, userIds))
+            : [];
+        const localeByUser = new Map(userRows.map((user) => [user.id, (user.settings as Record<string, unknown> | null)?.locale]));
 
         if (subscriptions.length === 0) {
             return NextResponse.json({
@@ -334,41 +341,7 @@ export async function POST(req: NextRequest) {
                             }
 
                             // 7. Send Notification
-                            const prayerLabels: Record<string, string> = {
-                                Imsak: "Imsak", Fajr: "Subuh", Dhuhr: "Dzuhur", Asr: "Ashar", Maghrib: "Maghrib", Isha: "Isya"
-                            };
-                            const label = prayerLabels[activePrayer] || activePrayer;
-
-                            // Mindfulness Wording
-                            let titles = [
-                                `Waktunya Sholat ${label}`,
-                                `Panggilan ${label} Telah Tiba`,
-                                `${label} Telah Masuk`
-                            ];
-
-                            let bodies = [
-                                `Mari sejenak menghadap Sang Pencipta.`,
-                                `Segarkan jiwa dengan air wudhu dan sholat.`,
-                                `"Hayya 'alas shalah" - Mari meraih kemenangan.`,
-                                `Rehat sejenak dari dunia, tunaikan kewajiban.`
-                            ];
-
-                            if (activePrayer === "Imsak") {
-                                titles = [
-                                    `Waktunya Imsak`,
-                                    `Pengingat Imsak`,
-                                    `Waktu Imsak Telah Tiba`
-                                ];
-                                bodies = [
-                                    `Bersiap menyudahi sahur dan menyucikan niat.`,
-                                    `Segera tuntaskan sahur sebelum Subuh berkumandang.`,
-                                    `Waktu imsak telah masuk, mari bersiap untuk sholat Subuh.`
-                                ];
-                            }
-
-                            // Randomize for variety
-                            const title = titles[Math.floor(Math.random() * titles.length)];
-                            const body = bodies[Math.floor(Math.random() * bodies.length)];
+                            const { title, body } = getPrayerNotificationCopy(localeByUser.get(sub.userId ?? ""), activePrayer);
 
                              await messagingAdmin!.send({
                                 token: sub.token,
