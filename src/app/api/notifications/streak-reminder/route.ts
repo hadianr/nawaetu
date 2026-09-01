@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { pushSubscriptions, userStreakState, users } from "@/db/schema";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
+import { getStreakNotificationCopy } from "@/lib/notifications/push-copy";
 
 function parseMap(value: unknown): Record<string, string> {
   if (!value) return {};
@@ -49,17 +50,18 @@ export async function POST(request: Request) {
       continue;
     }
     try {
+      const copy = getStreakNotificationCopy(settings?.locale, subscription.streak.currentDays);
       await messaging.send({
         token: subscription.token,
         notification: {
-          title: "Keep your streak alive 🔥",
-          body: `Complete one meaningful activity to continue your ${subscription.streak.currentDays}-day streak.`,
+          title: copy.title,
+          body: copy.body,
         },
         data: { type: "streak_reminder", url: "/" },
         webpush: {
           notification: {
-            title: "Keep your streak alive 🔥",
-            body: `Complete one meaningful activity to continue your ${subscription.streak.currentDays}-day streak.`,
+            title: copy.title,
+            body: copy.body,
             icon: "/icon-192x192.png",
             tag: "streak-reminder",
           },
