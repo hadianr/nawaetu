@@ -84,6 +84,7 @@ export function useFCM() {
                     }
                 }
             } catch (err) {
+                console.error("[FCM] Background registration failed", err);
             }
         };
 

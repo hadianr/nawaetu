@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
+import { logger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession();
@@ -50,6 +51,11 @@ export async function POST(req: NextRequest) {
     }
 
     try {
+        logger.info("FCM test send requested", {
+            route: "/api/notifications/test",
+            userId: session.user.id,
+            tokenFingerprint: `${token.slice(0, 12)}…${token.length}`,
+        });
         await messaging.send({
             token,
             notification: {
@@ -74,7 +80,17 @@ export async function POST(req: NextRequest) {
                 fcmOptions: { link: new URL("/settings", req.url).toString() },
             },
         });
+        logger.info("FCM test send accepted", {
+            route: "/api/notifications/test",
+            userId: session.user.id,
+            tokenFingerprint: `${token.slice(0, 12)}…${token.length}`,
+        });
     } catch (error: any) {
+        logger.error("FCM test send failed", error, {
+            route: "/api/notifications/test",
+            userId: session.user.id,
+            tokenFingerprint: `${token.slice(0, 12)}…${token.length}`,
+        });
         if (error?.code === "messaging/registration-token-not-registered" || error?.code === "messaging/invalid-registration-token") {
             await db.update(pushSubscriptions)
                 .set({ active: 0, updatedAt: new Date() })

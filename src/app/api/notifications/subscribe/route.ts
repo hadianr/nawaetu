@@ -68,6 +68,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Token is required" }, { status: 400 });
         }
 
+        const tokenFingerprint = `${String(token).slice(0, 12)}…${String(token).length}`;
+        logger.info("FCM subscription received", {
+            route: "/api/notifications/subscribe",
+            userId: userId ?? undefined,
+            tokenFingerprint,
+            deviceType: deviceType || "web",
+        });
+
         const effectiveDeviceType = deviceType || "web";
 
         const data = {
@@ -136,6 +144,13 @@ export async function POST(req: NextRequest) {
                 target: pushSubscriptions.token,
                 set: data,
             });
+
+        logger.info("FCM subscription stored", {
+            route: "/api/notifications/subscribe",
+            userId: validUserId ?? undefined,
+            tokenFingerprint,
+            active: 1,
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {
