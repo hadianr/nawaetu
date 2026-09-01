@@ -138,7 +138,7 @@ const nextConfig: NextConfig = {
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "img-src 'self' data: https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://avatar.vercel.sh https://lh3.googleusercontent.com https://cdn.islamic.network",
           "font-src 'self' data: https://fonts.gstatic.com",
-          "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://api.aladhan.com https://*.sentry.io https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://quran-api-id.vercel.app https://api.quran.gading.dev https://api.quran.com https://api.bigdatacloud.net https://openrouter.ai https://cdn.islamic.network",
+          "connect-src 'self' https://www.googletagmanager.com https://*.googleapis.com https://*.firebaseio.com https://api.aladhan.com https://*.sentry.io https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://quran-api-id.vercel.app https://api.quran.gading.dev https://api.quran.com https://api.bigdatacloud.net https://openrouter.ai https://cdn.islamic.network",
           "media-src 'self' https://raw.githubusercontent.com https://www.ayouby.com https://cdn.islamic.network",
           "frame-src 'self' https://*.google.com https://vercel.live",
           "frame-ancestors 'self' chrome-extension://* edge-extension://* moz-extension://* chrome-extension: edge-extension: moz-extension:",
