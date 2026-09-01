@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.13.2] - 2026-09-01
+
+### Added
+- **Feat(qa): add safe onboarding reset**
+- **Feat(pwa): add mobile install fallback**
+- **Feat(notifications): add logging for FCM subscription and test send processes**
+
+### Improved
+- **Refactor: remove unused docs**
+- **Refactor(db): remove archetype schema**
+- **Refactor(onboarding): remove archetype gating**
+- **Chore: fix issue console warning**
+- **Refactor: update page rendering strategy to force dynamic content loading**
+- **Chore: update the background service**
+- **Chore: fix the issue build worker**
+- **Chore: fix build webpack**
+- **Refactor: code structure for improved readability and maintainability**
+- **Refactor: code structure for improved readability and maintainability**
+
+### Fixed
+- **Fix(sync): preserve local progress**
+- **Fix(onboarding): protect returning sessions**
+- **Fix(notifications): prevent deactivation of previous tokens for the same user and device type**
+- **Fix(fcm): push notif cannot send**
+- **Fix(fcm): restore web push delivery**
+- **Fix(sync): persist account settings**
+- **Fix(sync): coordinate login hydration**
+
+
 ## [1.13.1] - 2026-09-01
 
 ### Fixed
