@@ -20,7 +20,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
-import { filterMissionsByArchetype, checkMissionValidation } from "@/lib/habits/mission-utils";
+import { checkMissionValidation } from "@/lib/habits/mission-utils";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
@@ -41,7 +41,6 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
         void profileRevision;
         const storage = getStorageService();
         const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
-        const savedArchetype = (storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) || session?.user?.archetype) as string | null;
 
         const hijriMonth = prayerData?.hijriMonth;
         const hijriDay = prayerData?.hijriDay;
@@ -86,8 +85,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
             );
         }
 
-        const filteredMissions = filterMissionsByArchetype(allMissions, savedArchetype);
-        const localizedMissions = filteredMissions.map(mission => getLocalizedMission(mission, locale));
+        const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         return { gender: savedGender, missions: localizedMissions };
     }, [locale, prayerData?.hijriDate, prayerData?.hijriMonth, prayerData?.hijriDay, profileRevision, session]);
 

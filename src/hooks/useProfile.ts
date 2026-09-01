@@ -32,7 +32,6 @@ export function useProfile() {
         name?: string;
         image?: string;
         gender?: "male" | "female";
-        archetype?: "esensial" | "seimbang" | "lengkap";
     }) => {
         setIsUpdating(true);
         const toastId = toast.loading("Menyimpan profil...");
@@ -43,10 +42,6 @@ export function useProfile() {
                 if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
                 if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
                 if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
-                if (data.archetype) {
-                    storage.set(STORAGE_KEYS.USER_ARCHETYPE, data.archetype);
-                    storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, data.archetype);
-                }
                 toast.success("Profil berhasil diperbarui!", { id: toastId });
                 return true;
             }
@@ -67,10 +62,6 @@ export function useProfile() {
             if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
             if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
             if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
-            if (data.archetype) {
-                storage.set(STORAGE_KEYS.USER_ARCHETYPE, data.archetype);
-                storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, data.archetype);
-            }
 
             toast.success("Profil berhasil diperbarui!", { id: toastId });
             return true;

@@ -15,7 +15,6 @@ import { HADITH_LIBRARY, HadithItem, HADITH_COLLECTIONS } from "@/data/hadiths";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
-import { PresetGuard } from "@/components/PresetGuard";
 import Link from "next/link";
 import { useIslamicContentFilter } from "@/hooks/useIslamicContentFilter";
 import { ShareableCardData } from "@/lib/share/story-card-renderer";
@@ -331,7 +330,7 @@ function HadithContent() {
     }, [shareItem, locale]);
 
     return (
-        <PresetGuard requiredFeature="showHadith" redirectTo="/">
+        <>
             <div className={cn(
                 "flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500",
                 isDaylight
@@ -495,7 +494,7 @@ function HadithContent() {
                     isDaylight={isDaylight}
                 />
             )}
-        </PresetGuard>
+        </>
     );
 }
 
