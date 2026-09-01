@@ -45,7 +45,6 @@ const syncSchema = z.object({
     profile: z.object({
         name: z.string().optional(),
         gender: z.enum(["male", "female"]).optional(),
-        archetype: z.enum(["esensial", "seimbang", "lengkap"]).optional(),
     }).optional(),
     settings: z.record(z.string(), z.any()).optional(),
     bookmarks: z.array(z.object({
@@ -138,7 +137,6 @@ export async function POST(req: NextRequest) {
                     .set({
                         name: data.profile.name || undefined,
                         gender: (data.profile.gender as any) || undefined,
-                        archetype: (data.profile.archetype as any) || undefined,
                         updatedAt: new Date(),
                     })
                     .where(eq(users.id, userId));

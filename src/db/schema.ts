@@ -22,7 +22,6 @@ import type { AdapterAccount } from "next-auth/adapters";
 
 // --- Enums ---
 export const genderEnum = pgEnum("gender", ["male", "female"]);
-export const archetypeEnum = pgEnum("archetype", ["esensial", "seimbang", "lengkap"]);
 export const transactionStatusEnum = pgEnum("transaction_status", ["pending", "settlement", "expired", "failed"]);
 export const intentionTypeEnum = pgEnum("intention_type", ["daily", "prayer", "custom"]);
 export const streakDayStatusEnum = pgEnum("streak_day_status", ["qualified", "frozen", "repaired"]);
@@ -85,7 +84,6 @@ export const users = pgTable("user", {
 
     // User Preferences (v1.7.0)
     gender: genderEnum("gender"),
-    archetype: archetypeEnum("archetype"),
     settings: jsonb("settings"), // JSON: { theme, muadzin, calculationMethod, locale }
 
     createdAt: timestamp("created_at").defaultNow(),

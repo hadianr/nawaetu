@@ -31,10 +31,10 @@ export async function PATCH(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { name, image, gender, archetype } = body;
+        const { name, image, gender } = body;
 
         // Validation (Basic)
-        if (!name && !image && !gender && !archetype) {
+        if (!name && !image && !gender) {
             return NextResponse.json({ error: "No data to update" }, { status: 400 });
         }
 
@@ -50,14 +50,6 @@ export async function PATCH(req: NextRequest) {
                 updateData.gender = gender;
             } else {
                 return NextResponse.json({ error: "Invalid gender value" }, { status: 400 });
-            }
-        }
-
-        if (archetype !== undefined && archetype !== null) {
-            if (["esensial", "seimbang", "lengkap"].includes(archetype)) {
-                updateData.archetype = archetype;
-            } else {
-                return NextResponse.json({ error: "Invalid archetype value" }, { status: 400 });
             }
         }
 

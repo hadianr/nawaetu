@@ -20,7 +20,6 @@ import type { DefaultSession } from "next-auth"
 import type { JWT as DefaultJWT } from "@auth/core/jwt"
 
 type UserGender = "male" | "female"
-type UserArchetype = "esensial" | "seimbang" | "lengkap"
 
 declare module "next-auth" {
     /**
@@ -32,14 +31,12 @@ declare module "next-auth" {
             id: string
             isMuhsinin: boolean
             gender?: UserGender | null
-            archetype?: UserArchetype | null
         } & DefaultSession["user"]
     }
 
     interface User {
         isMuhsinin?: boolean | null
         gender?: UserGender | null
-        archetype?: UserArchetype | null
     }
 }
 
@@ -49,7 +46,6 @@ declare module "@auth/core/jwt" {
         id?: string
         isMuhsinin?: boolean
         gender?: UserGender | null
-        archetype?: UserArchetype | null
         picture?: string | null
     }
 }
@@ -59,7 +55,6 @@ declare module "next-auth/jwt" {
         id?: string
         isMuhsinin?: boolean
         gender?: UserGender | null
-        archetype?: UserArchetype | null
         picture?: string | null
     }
 }
