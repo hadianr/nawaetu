@@ -16,6 +16,14 @@ const withPWA = withPWAInit({
     inlineWorkboxRuntime: true,
     // Next may omit this optional App Router manifest from the deployment.
     exclude: [/\/_buildManifest\.js$/],
+    // Source maps are optional debugging assets and are not deployed reliably.
+    manifestTransforms: [
+      async (manifest) => ({
+        manifest: manifest.filter(({ url }) =>
+          !url.endsWith('.map') && !url.endsWith('/_buildManifest.js')
+        ),
+      }),
+    ],
     skipWaiting: true,   // Activate new SW immediately without waiting for tabs to close
     clientsClaim: true,  // New SW takes control of all open clients immediately after activation
     // Workbox resolves imported workers from the site root. The leading slash
