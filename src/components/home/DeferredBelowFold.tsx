@@ -23,7 +23,6 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import { useLocale } from "@/context/LocaleContext";
-import { useFeaturePreset } from "@/hooks/useFeaturePreset";
 
 const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay"), {
   ssr: false,
@@ -43,7 +42,6 @@ const DailySpiritWidget = dynamic(() => import("@/components/home/DailySpiritWid
 export default function DeferredBelowFold() {
   const [ready, setReady] = useState(false);
   const { t } = useLocale();
-  const { showMissions, showHadith } = useFeaturePreset();
 
   useEffect(() => {
     // Reduced from 1500ms to 200ms — components are blocked by this gate.
@@ -64,8 +62,8 @@ export default function DeferredBelowFold() {
           <PrayerTimesDisplay />
         </section>
 
-        {/* 5. Daily Missions — hidden for Esensial preset */}
-        {showMissions && (
+        {/* 5. Daily Missions */}
+        {
           <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
             {ready ? (
               <MissionsWidget />
@@ -73,10 +71,10 @@ export default function DeferredBelowFold() {
               <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
             )}
           </section>
-        )}
+        }
 
-        {/* 6. Unified Spiritual Feed — hidden for Esensial preset */}
-        {showHadith && (
+        {/* 6. Unified Spiritual Feed */}
+        {
           <section className="w-full mt-4 space-y-2 animate-in slide-in-from-bottom-6 fade-in duration-1000 delay-400">
             <div className="px-6 flex flex-col">
               <h2 className="text-sm font-black text-white/90 tracking-tight">{t.spiritualDailyTitle}</h2>
@@ -91,7 +89,7 @@ export default function DeferredBelowFold() {
               )}
             </div>
           </section>
-        )}
+        }
       </div>
 
       <div className="pointer-events-none fixed inset-x-0 bottom-24 z-40">

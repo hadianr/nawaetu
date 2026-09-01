@@ -137,43 +137,6 @@ export function checkMissionValidation(
 }
 
 /**
- * Filters missions based on User's Niat Preset.
- *
- * - esensial : Focus on Obligatory + Basic Quran. Hides generic Sunnah/Trackers.
- * - seimbang  : Focus on Daily Routine (Obligatory + Sunnah). Hides heavy Weekly/Trackers.
- * - lengkap   : Shows EVERYTHING.
- */
-export function filterMissionsByArchetype(missions: Mission[], archetype: string | null): Mission[] {
-    if (!archetype) return missions; // Default: Show all if no archetype selected
-
-    return missions.filter(mission => {
-        // 1. Mandatory missions (Obligatory) are ALWAYS shown for everyone
-        if (mission.ruling === 'obligatory') return true;
-
-        switch (archetype) {
-            case 'esensial': // Fokus Ibadah Inti
-                // Show Obligatory (already covered) OR Simple Quran tasks
-                // Hide other Sunnah (Dhuha, Dhikr, Fasting Sunnah)
-                if (mission.category === 'quran' && mission.validationConfig?.requiredCount && mission.validationConfig.requiredCount <= 10) return true;
-                return false;
-
-            case 'seimbang': // Wajib + Sunnah Harian
-                // Show All Daily Missions (Obligatory + Sunnah).
-                // Hide Weekly (Puasa Senin Kamis) heavy missions.
-                if (mission.type === 'daily') return true;
-                return false;
-
-            case 'lengkap': // Semua Fitur Aktif
-                // Show EVERYTHING
-                return true;
-
-            default:
-                return true;
-        }
-    });
-}
-
-/**
  * Gets the localized label for a mission's ruling (obligatory, sunnah, etc.)
  */
 export function getRulingLabel(ruling: string, t: any): string {

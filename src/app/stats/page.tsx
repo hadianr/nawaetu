@@ -22,7 +22,6 @@ import { StatsOverview, StatsHeader } from '@/components/stats/StatsOverview';
 import { PrayerConsistency } from '@/components/stats/PrayerConsistency';
 import { CategoryBreakdown } from '@/components/stats/CategoryBreakdown';
 import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
-import { PresetGuard } from '@/components/PresetGuard';
 import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
 import { useStreak } from '@/hooks/useStreak';
 import { DateUtils } from '@/lib/utils/date';
@@ -237,7 +236,6 @@ export default function StatsPage() {
     ];
 
     return (
-        <PresetGuard requiredFeature="showStats">
             <div className="stats-page min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
 
@@ -360,7 +358,6 @@ export default function StatsPage() {
                     />
                 </div>
             </div>
-        </PresetGuard>
     );
 }
 

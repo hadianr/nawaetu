@@ -29,8 +29,8 @@ export const STORAGE_KEYS = {
   USER_TITLE: 'user_title',
   USER_GENDER: 'user_gender',
   USER_AVATAR: 'user_avatar',
+  // Deprecated compatibility keys; current clients no longer use archetypes for feature access.
   USER_ARCHETYPE: 'user_archetype',
-  USER_FEATURE_PRESET: 'user_feature_preset', // Cache of active feature preset: 'esensial' | 'seimbang' | 'lengkap'
 
   // Activity Tracking
   ACTIVITY_TRACKER: 'activity_tracker',

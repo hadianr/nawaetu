@@ -18,17 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { Smartphone, BookOpen, Trophy, ShieldCheck, ChevronRight, Check, Moon, MapPin, Loader2 } from "lucide-react";
+import { Clock3, BookOpen, Fingerprint, Trophy, ChevronRight, Check, MapPin, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
 import { useLocale } from "@/context/LocaleContext";
+import { sendGAEvent } from "@/lib/analytics/analytics";
 
 const ONBOARDING_KEY = STORAGE_KEYS.ONBOARDING_COMPLETED;
 
@@ -42,74 +43,49 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const { t } = useLocale();
     // Removed internal visibility state - controlled by parent
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-location' | 'setup-archetype'>('intro');
-
-    // Force logout on mount if an orphaned session is detected
-    // This happens primarily on iOS PWAs where Safari retains the login cookie
-    // even after the user uninstalls the app (wiping localStorage and triggering onboarding)
-    useEffect(() => {
-        if (status === "authenticated") {
-            signOut({ redirect: false });
-        }
-    }, [status]);
+    const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-location'>('intro');
 
     const SLIDES = [
         {
-            id: "pwa",
-            icon: Smartphone,
-            color: "text-blue-400",
-            bg: "bg-blue-500/10",
-            border: "border-blue-500/20",
-            title: (t as any).onboardingSlide1Title,
-            description: (t as any).onboardingSlide1Desc,
-            highlight: (t as any).onboardingSlide1Hint
-        },
-        {
-            id: "features",
-            icon: BookOpen,
+            id: "prayer",
+            icon: Clock3,
             color: "text-emerald-400",
             bg: "bg-emerald-500/10",
             border: "border-emerald-500/20",
-            title: (t as any).onboardingSlide2Title,
-            description: (t as any).onboardingSlide2Desc,
-            highlight: (t as any).onboardingSlide2Hint
+            title: (t as any).onboardingCardPrayerTitle,
+            description: (t as any).onboardingCardPrayerDesc,
+            highlight: (t as any).onboardingCardPrayerHint
         },
         {
-            id: "gamification",
+            id: "quran",
+            icon: BookOpen,
+            color: "text-blue-400",
+            bg: "bg-blue-500/10",
+            border: "border-blue-500/20",
+            title: (t as any).onboardingCardQuranTitle,
+            description: (t as any).onboardingCardQuranDesc,
+            highlight: (t as any).onboardingCardQuranHint
+        },
+        {
+            id: "intention",
+            icon: Fingerprint,
+            color: "text-violet-400",
+            bg: "bg-violet-500/10",
+            border: "border-violet-500/20",
+            title: (t as any).onboardingCardIntentionTitle,
+            description: (t as any).onboardingCardIntentionDesc,
+            highlight: (t as any).onboardingCardIntentionHint
+        },
+        {
+            id: "progress",
             icon: Trophy,
             color: "text-amber-400",
             bg: "bg-amber-500/10",
             border: "border-amber-500/20",
-            title: (t as any).onboardingSlide3Title,
-            description: (t as any).onboardingSlide3Desc,
-            highlight: (t as any).onboardingSlide3Hint
-        },
-        {
-            id: "privacy",
-            icon: ShieldCheck,
-            color: "text-violet-400",
-            bg: "bg-violet-500/10",
-            border: "border-violet-500/20",
-            title: (t as any).onboardingSlide4Title,
-            description: (t as any).onboardingSlide4Desc,
-            highlight: (t as any).onboardingSlide4Hint
-        },
-        {
-            id: "ramadhan",
-            icon: Moon,
-            color: "text-yellow-400",
-            bg: "bg-yellow-500/10",
-            border: "border-yellow-500/20",
-            title: (t as any).onboardingSlide5Title,
-            description: (t as any).onboardingSlide5Desc,
-            highlight: (t as any).onboardingSlide5Hint
+            title: (t as any).onboardingCardProgressTitle,
+            description: (t as any).onboardingCardProgressDesc,
+            highlight: (t as any).onboardingCardProgressHint
         }
-    ];
-
-    const ARCHETYPES = [
-        { id: 'esensial', label: (t as any).onboardingArchetypeEsensialLabel, desc: (t as any).onboardingArchetypeEsensialDesc, icon: '🎯', color: 'text-sky-400', border: 'border-sky-400', bg: 'bg-sky-500/20' },
-        { id: 'seimbang', label: (t as any).onboardingArchetypeSeimbangLabel, desc: (t as any).onboardingArchetypeSeimbangDesc, icon: '🌿', color: 'text-emerald-400', border: 'border-emerald-400', bg: 'bg-emerald-500/20' },
-        { id: 'lengkap', label: (t as any).onboardingArchetypeLengkapLabel, desc: (t as any).onboardingArchetypeLengkapDesc, icon: '🚀', color: 'text-amber-400', border: 'border-amber-400', bg: 'bg-amber-500/20' },
     ];
 
     // Profile State
@@ -117,8 +93,11 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [isLocationLoading, setIsLocationLoading] = useState(false);
     const [isLocationSet, setIsLocationSet] = useState(false);
-    const [archetype, setArchetype] = useState<'esensial' | 'seimbang' | 'lengkap' | null>(null);
     const storage = getStorageService();
+
+    useEffect(() => {
+        sendGAEvent("onboarding_viewed", { version: "v2", locale: String((t as any).locale || "unknown") });
+    }, [t]);
 
     const handleNext = () => {
         if (step === 'intro') {
@@ -128,13 +107,11 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 setStep('setup-name');
             }
         } else if (step === 'setup-name') {
-            if (name.trim()) setStep('setup-gender');
+            setStep('setup-gender');
         } else if (step === 'setup-gender') {
             if (gender) setStep('setup-location');
         } else if (step === 'setup-location') {
-            if (isLocationSet) setStep('setup-archetype');
-        } else if (step === 'setup-archetype') {
-            if (archetype) handleFinish();
+            if (isLocationSet) handleFinish();
         }
     };
 
@@ -143,18 +120,15 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         const finalName = name || (t as any).onboardingDefaultName;
         storage.set(STORAGE_KEYS.USER_NAME, finalName);
         storage.set(STORAGE_KEYS.USER_GENDER, gender);
-        storage.set(STORAGE_KEYS.USER_ARCHETYPE, archetype);
-        // Juga simpan sebagai USER_FEATURE_PRESET agar BottomNav & hook langsung responsif
-        storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, archetype);
-        storage.set(ONBOARDING_KEY as any, true);
+        storage.set(ONBOARDING_KEY as any, "v2");
+        sendGAEvent("onboarding_completed", { version: "v2" });
 
         // 2. Database Sync (If authenticated)
         if (status === "authenticated") {
             try {
                 await updateProfile({
                     name: finalName,
-                    gender: gender as "male" | "female",
-                    archetype: archetype as "esensial" | "seimbang" | "lengkap"
+                    gender: gender as "male" | "female"
                 });
             } catch (e) {
                 console.error("Failed to sync onboarding to database", e);
@@ -169,6 +143,11 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         if (onComplete) {
             onComplete();
         }
+    };
+
+    const handleSkipLocation = () => {
+        sendGAEvent("onboarding_location_result", { result: "deferred" });
+        void handleFinish();
     };
 
     const handleDetectLocation = () => {
@@ -210,8 +189,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     window.dispatchEvent(new CustomEvent('prayer_data_updated'));
 
                     setIsLocationSet(true);
+                    sendGAEvent("onboarding_location_result", { result: "detected" });
                     toast.success((t as any).onboardingLocationSuccess);
-                    setTimeout(() => setStep('setup-archetype'), 1000);
+                    setTimeout(() => handleFinish(), 1000);
                 } catch (error) {
                     toast.error((t as any).onboardingLocationError);
                 } finally {
@@ -388,48 +368,19 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 </>
                             )}
                         </Button>
+                        <button
+                            type="button"
+                            onClick={handleSkipLocation}
+                            disabled={isLocationLoading}
+                            className="text-sm text-white/60 hover:text-white transition-colors disabled:opacity-50"
+                        >
+                            {(t as any).onboardingLocationSkip}
+                        </button>
                     </div>
                 </div>
             );
         }
 
-        if (step === 'setup-archetype') {
-            return (
-                <div
-                    key="setup-archetype"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden"
-                >
-                    <div className="relative z-10 w-full flex-1 flex flex-col">
-                        <div className="text-center mb-4">
-                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingArchetypeTitle}</h2>
-                            <p className="text-xs text-white/70 mt-1">{(t as any).onboardingArchetypeDesc}</p>
-                        </div>
-                        <div className="space-y-2 flex-1 overflow-y-auto pr-2 scrollbar-hide">
-                            {ARCHETYPES.map((type) => (
-                                <button
-                                    key={type.id}
-                                    onClick={() => setArchetype(type.id as any)}
-                                    aria-label={(t as any).onboardingArchetypeTitle + ' ' + type.label}
-                                    className={cn(
-                                        "w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left",
-                                        archetype === type.id ? `${type.bg} ${type.border}` : "bg-white/5 border border-white/5 hover:bg-white/10"
-                                    )}
-                                >
-                                    <div className="w-10 h-10 rounded-lg bg-black/20 flex items-center justify-center text-xl">
-                                        {type.icon}
-                                    </div>
-                                    <div className="flex-1">
-                                        <span className={cn("font-bold block text-sm", archetype === type.id ? "text-white" : "text-white/90")}>{type.label}</span>
-                                        <span className="text-[10px] text-white/60">{type.desc}</span>
-                                    </div>
-                                    {archetype === type.id && <Check className={cn("w-4 h-4", type.color)} />}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
     };
 
     return (
@@ -456,7 +407,6 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         <div className={cn("w-2 h-2 rounded-full", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
                         <div className={cn("w-2 h-2 rounded-full", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
                         <div className={cn("w-2 h-2 rounded-full", step === 'setup-location' ? "bg-white w-6" : "bg-white/20")} />
-                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-archetype' ? "bg-white w-6" : "bg-white/20")} />
                     </div>
                 )}
 
@@ -467,7 +417,10 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 <div className="mt-8 flex items-center justify-between gap-4">
                     {step === 'intro' && (
                         <button
-                            onClick={() => setStep('setup-name')}
+                            onClick={() => {
+                                sendGAEvent("onboarding_skipped", { stage: "welcome" });
+                                setStep('setup-name');
+                            }}
                             className="text-sm text-white/80 font-semibold px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all flex items-center gap-2"
                         >
                             <span>{(t as any).onboardingSkip}</span>
@@ -481,7 +434,6 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 if (step === 'setup-name') setStep('intro');
                                 if (step === 'setup-gender') setStep('setup-name');
                                 if (step === 'setup-location') setStep('setup-gender');
-                                if (step === 'setup-archetype') setStep('setup-location');
                             }}
                             className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
                         >
@@ -492,15 +444,13 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     <Button
                         onClick={handleNext}
                         disabled={
-                            (step === 'setup-name' && !name.trim()) ||
                             (step === 'setup-gender' && !gender) ||
-                            (step === 'setup-location' && !isLocationSet) ||
-                            (step === 'setup-archetype' && !archetype)
+                            (step === 'setup-location' && !isLocationSet)
                         }
                         className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {step === 'setup-archetype' ? (t as any).onboardingFinish : (t as any).onboardingNext}
-                        {step !== 'setup-archetype' && <ChevronRight className="w-4 h-4 ml-1" />}
+                        {step === 'setup-location' ? (t as any).onboardingFinish : (t as any).onboardingNext}
+                        {step !== 'setup-location' && <ChevronRight className="w-4 h-4 ml-1" />}
                     </Button>
                 </div>
             </div>

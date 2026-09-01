@@ -19,7 +19,7 @@
  */
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { Edit2, Sprout, Target, Shield } from "lucide-react";
+import { Edit2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
@@ -71,36 +71,10 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         return getStorageService().getOptional<string>(STORAGE_KEYS.USER_AVATAR) || AVATAR_LIST[0].src;
     });
 
-    const translatedArchetypes = [
-        {
-            id: "esensial",
-            icon: Target,
-            labelTitle: (t as any).onboardingArchetypeEsensialLabel,
-            labelDesc: (t as any).onboardingArchetypeEsensialDesc
-        },
-        {
-            id: "seimbang",
-            icon: Sprout,
-            labelTitle: (t as any).onboardingArchetypeSeimbangLabel,
-            labelDesc: (t as any).onboardingArchetypeSeimbangDesc
-        },
-        {
-            id: "lengkap",
-            icon: Shield,
-            labelTitle: (t as any).onboardingArchetypeLengkapLabel,
-            labelDesc: (t as any).onboardingArchetypeLengkapDesc
-        }
-    ];
-
-    const currentArchetypeId = session?.user?.archetype || 'esensial';
-    const currentArchetype = translatedArchetypes.find(a => a.id === currentArchetypeId) || translatedArchetypes[0];
-    const currentArchetypeLabel = currentArchetype.labelTitle;
-
     // State for Editing
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState("");
     const [editGender, setEditGender] = useState<"male" | "female" | null>(null);
-    const [editArchetype, setEditArchetype] = useState<"esensial" | "seimbang" | "lengkap" | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
     // UI States
@@ -134,7 +108,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         const savedName = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
         const savedAvatar = storage.getOptional<string>(STORAGE_KEYS.USER_AVATAR);
         const savedGender = storage.getOptional<string>(STORAGE_KEYS.USER_GENDER);
-        const savedArchetype = storage.getOptional<string>(STORAGE_KEYS.USER_ARCHETYPE);
 
         if (session?.user?.name) {
             setUserName(session.user.name);
@@ -159,8 +132,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         if (savedGender) setEditGender(savedGender as any);
         else if (session?.user?.gender) setEditGender(session.user.gender as any);
 
-        if (savedArchetype) setEditArchetype(savedArchetype as any);
-        else if (session?.user?.archetype) setEditArchetype(session.user.archetype as any);
     }, [session, t]);
 
     useEffect(() => {
@@ -234,8 +205,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
         const success = await updateProfile({
             name: editName,
-            gender: editGender as "male" | "female",
-            archetype: editArchetype as "esensial" | "seimbang" | "lengkap"
+            gender: editGender as "male" | "female"
         });
 
         if (success) {
@@ -302,9 +272,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                     setEditName={setEditName}
                                     editGender={editGender}
                                     setEditGender={setEditGender}
-                                    editArchetype={editArchetype}
-                                    setEditArchetype={setEditArchetype}
-                                    translatedArchetypes={translatedArchetypes}
                                     handleSaveProfile={handleSaveProfile}
                                     isUpdating={isUpdating}
                                     setIsEditing={setIsEditing}
@@ -329,20 +296,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                                 {session.user.email}
                                             </div>
                                         )}
-                                    </div>
-                                    <div className="flex flex-col gap-1.5 mt-2.5">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            {/* Archetype Badge */}
-                                            <div className={cn(
-                                                "text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 transition-all",
-                                                isDaylight
-                                                    ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                                                    : "bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-[rgb(var(--color-primary-light))]"
-                                            )}>
-                                                <currentArchetype.icon className="w-2.5 h-2.5" />
-                                                {currentArchetypeLabel}
-                                            </div>
-                                        </div>
                                     </div>
                                 </>
                             )}

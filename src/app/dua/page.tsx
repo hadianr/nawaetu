@@ -32,7 +32,6 @@ import { DUA_LIBRARY, DuaItem, DUA_OCCASIONS } from "@/data/duas";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
-import { PresetGuard } from "@/components/PresetGuard";
 import { IslamicSubTabBar } from "@/components/islamic-content/IslamicSubTabBar";
 import { IslamicSearchInput } from "@/components/islamic-content/IslamicSearchInput";
 import { IslamicFilterChips, FilterChipItem } from "@/components/islamic-content/IslamicFilterChips";
@@ -369,7 +368,7 @@ function DuaContent() {
     }, [shareItem, locale]);
 
     return (
-        <PresetGuard requiredFeature="showHadith" redirectTo="/">
+        <>
             <div className={cn(
                 "flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500",
                 isDaylight
@@ -479,7 +478,7 @@ function DuaContent() {
                     isDaylight={isDaylight}
                 />
             )}
-        </PresetGuard>
+        </>
     );
 }
 
