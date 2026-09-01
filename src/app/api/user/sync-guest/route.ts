@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
             // 2. Sync Settings
             if (data.settings) {
                 // --- Server-Side Sanitization ---
-                const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
+                const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
                 const sanitizedSettings: Record<string, any> = {};
 
                 for (const key of allowedSettings) {

@@ -29,6 +29,7 @@ import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import * as Sentry from "@sentry/nextjs";
 import { toast } from "sonner";
+import { getStorageService } from "@/core/infrastructure/storage";
 
 export default function NotificationSettings() {
     const { locale, t } = useLocale();
@@ -225,7 +226,7 @@ export default function NotificationSettings() {
             setIsEnabled(false);
             setFcmToken(null);
             localStorage.removeItem("fcm_token");
-            localStorage.removeItem(STORAGE_KEYS.ADHAN_PREFERENCES);
+            getStorageService().remove(STORAGE_KEYS.ADHAN_PREFERENCES);
         } else {
             // Enable (Optimistic UI)
             setIsEnabled(true);
@@ -304,7 +305,7 @@ export default function NotificationSettings() {
 
     async function savePreferences(token: string, prefs: PrayerPreferences) {
         try {
-            localStorage.setItem(STORAGE_KEYS.ADHAN_PREFERENCES, JSON.stringify(prefs));
+            getStorageService().set(STORAGE_KEYS.ADHAN_PREFERENCES, prefs);
             const userLocation = getCurrentLocation();
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

@@ -61,17 +61,18 @@ export function useDataSync() {
                 },
                 settings: {
                     theme: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_THEME),
+                    reciter: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_RECITER),
                     muadzin: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_MUADZIN),
                     calculationMethod: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD),
                     hijriAdjustment: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
                     locale: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_LOCALE),
-                    notificationPreferences: Object.keys(notificationPrefs).length > 0 ? notificationPrefs : null,
+                    adhanPreferences: Object.keys(notificationPrefs).length > 0 ? notificationPrefs : null,
                 },
                 readingState: {
                     quranLastRead: lastReadQuran
                 },
                 streaks: {
-                    current: streakData.streak || 0,
+                    current: streakData.currentStreak ?? streakData.streak ?? 0,
                     longest: streakData.longestStreak || 0,
                 },
                 ramadhan: {
@@ -105,7 +106,7 @@ export function useDataSync() {
             const hasMissions = localData.completedMissions.length > 0;
             const hasActivity = localData.dailyActivity.quranAyat > 0 || localData.dailyActivity.tasbihCount > 0 || localData.dailyActivity.prayersLogged.length > 0;
             const hasStreak = localData.streaks.current > 0;
-            const hasSettings = !!localData.settings.notificationPreferences;
+            const hasSettings = Object.values(localData.settings).some(value => value !== undefined && value !== null);
             const hasReadingState = !!lastReadQuran;
             const hasSirah = entries.length > 0;
 

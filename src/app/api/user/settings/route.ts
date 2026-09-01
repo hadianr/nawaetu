@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
         ]);
 
         const currentSettings = (user?.settings || {}) as Record<string, any>;
-        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
+        const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
         const sanitized: Record<string, any> = {};
 
         for (const key of allowedSettings) {
@@ -114,7 +114,7 @@ export async function PATCH(req: NextRequest) {
         }
 
         // --- Server-Side Sanitization (Final Defense) ---
-        const allowedSettings = ['theme', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
+        const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
         const sanitizedIncoming: Record<string, any> = {};
 
         for (const key of allowedSettings) {
