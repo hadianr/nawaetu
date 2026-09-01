@@ -21,7 +21,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence } from "framer-motion";
-import { ChevronRight, Book, Flame, Sparkles, CheckCircle2, Moon, Heart, Compass, Edit2, Calendar } from "lucide-react";
+import { ChevronRight, Book, CheckCircle2, Moon, Compass, Edit2, Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const IntentionPrompt = dynamic(() => import("./IntentionPrompt"), {
@@ -43,6 +43,14 @@ interface IntentionJournalWidgetProps {
     className?: string;
 }
 
+interface IntentionData {
+    has_intention: boolean;
+    has_reflection: boolean;
+    streak: number;
+    intention?: { id: string; intention_text: string; intention_date: string };
+    reflection?: { rating: number; text?: string; reflected_at?: string };
+}
+
 function getOrCreateAnonymousId(): string {
     const STORAGE_KEY = "nawaetu_anonymous_id";
     let anonymousId = null;
@@ -54,7 +62,7 @@ function getOrCreateAnonymousId(): string {
                 window.localStorage.setItem(STORAGE_KEY, anonymousId);
             }
         }
-    } catch (e) {
+    } catch {
         console.warn("localStorage denied in getOrCreateAnonymousId");
         anonymousId = `anon_mem_${Date.now()}`;
     }
@@ -78,43 +86,49 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     const isBackdated = selectedDate !== DateUtils.today();
 
     // Default structure to avoid layout/hydration shifts when caching kicks in
-    const [todayData, setTodayData] = useState<any>(null);
+    const [todayData, setTodayData] = useState<IntentionData | null>(null);
 
     // Only show loading if we really have no cached data at all on first paint
     const [isLoading, setIsLoading] = useState(true);
-    const [userToken, setUserToken] = useState<string | null>(null);
+    const [userToken] = useState<string | null>(() => {
+        if (typeof window === "undefined") return null;
+        try {
+            return window.localStorage.getItem("user_token")
+                || window.localStorage.getItem("fcm_token")
+                || getOrCreateAnonymousId();
+        } catch {
+            return "anon_fallback";
+        }
+    });
 
     // 1. Initialize Token & Try reading cache synchronously (or fast mount)
     useEffect(() => {
-        let token = "anon_fallback";
-        let cachedStr = null;
+        if (!userToken) return;
 
+        let cachedStr: string | null = null;
         try {
-            token = window.localStorage.getItem("user_token") || window.localStorage.getItem("fcm_token") || getOrCreateAnonymousId();
-            setUserToken(token);
-
-            // Check cache immediately when token is known
-            const cacheKey = `${CACHE_PREFIX}${token}_${selectedDate}`;
+            const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
             cachedStr = window.localStorage.getItem(cacheKey);
-        } catch (e) {
+        } catch {
             console.warn("localStorage read denied in IntentionJournalWidget");
-            setUserToken(token);
         }
 
         if (cachedStr) {
             try {
-                const cachedData = JSON.parse(cachedStr);
-                setTodayData(cachedData);
-                setIsLoading(false); // Skip skeleton if cache exists
-            } catch (e) {
+                const cachedData = JSON.parse(cachedStr) as IntentionData;
+                queueMicrotask(() => {
+                    setTodayData(cachedData);
+                    setIsLoading(false);
+                });
+            } catch {
                 // Ignore parsing errors
-                setIsLoading(true);
+                queueMicrotask(() => setIsLoading(true));
             }
         } else {
             // Need to show loading if cache misses when date changes
-            setIsLoading(true);
+            queueMicrotask(() => setIsLoading(true));
         }
-    }, [selectedDate]);
+    }, [selectedDate, userToken]);
 
     // 2. Background Fetch (Stale-While-Revalidate)
     useEffect(() => {
@@ -140,7 +154,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         try {
                             const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                             window.localStorage.setItem(cacheKey, JSON.stringify(data.data));
-                        } catch (e) {
+                        } catch {
                             // ignore storage errors
                         }
                     }
@@ -193,7 +207,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 try {
                     const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                     window.localStorage.setItem(cacheKey, JSON.stringify(finalData));
-                } catch (e) { }
+                } catch { }
 
                 // Add XP locally
                 if (data.data.intention_points_earned > 0) {
@@ -205,7 +219,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 setShowIntentionPrompt(true); // Bring form back
                 toast.error(data.error || (locale === 'id' ? 'Gagal menyimpan niat' : 'Failed to save intention'));
             }
-        } catch (error) {
+        } catch {
             setTodayData(todayData);
             setShowIntentionPrompt(true);
             toast.error(locale === 'id' ? 'Terjadi kesalahan' : 'An error occurred');
@@ -259,12 +273,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 try {
                     const cacheKey = `${CACHE_PREFIX}${userToken}_${selectedDate}`;
                     window.localStorage.setItem(cacheKey, JSON.stringify(finalData));
-                } catch (e) { }
+                } catch { }
             } else {
                 setTodayData(todayData);
                 toast.error(data.error || (locale === 'id' ? 'Gagal menyimpan refleksi' : 'Failed to save reflection'));
             }
-        } catch (error) {
+        } catch {
             setTodayData(todayData);
             toast.error(locale === 'id' ? 'Terjadi kesalahan' : 'An error occurred');
         }
@@ -274,7 +288,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         return (
             <div className={cn("relative w-full", className)}>
                 <div className={cn(
-                    "relative border rounded-3xl p-4 sm:p-5 h-[90px] animate-pulse",
+                    "relative h-20 rounded-3xl border p-3 animate-pulse",
                     isDaylight ? "bg-white/50 border-slate-200" : "bg-white/5 border-white/5"
                 )}>
                     <div className="flex items-center justify-between gap-4">
@@ -292,12 +306,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     return (
         <div className={cn("relative w-full group", className)}>
             <div className={cn(
-                "relative backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-lg p-4 sm:p-5",
+                "relative overflow-hidden rounded-3xl p-3 backdrop-blur-md transition-all duration-300 hover:shadow-lg sm:p-4",
                 isDaylight
                     ? "bg-white/60 border border-slate-200 shadow-sm"
                     : "bg-[rgb(var(--color-surface))]/20 border border-white/5"
             )}>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                     {/* Compact Label and Date Selector */}
                     <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity min-w-0">
@@ -311,10 +325,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
                         {/* Date Selector */}
                         <div
-                            onClick={(e) => {
+                            onClick={() => {
                                 try {
                                     dateInputRef.current?.showPicker();
-                                } catch (e) {
+                                } catch {
                                     dateInputRef.current?.focus();
                                 }
                             }}
@@ -354,14 +368,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     </div>
 
                     {!todayData?.has_intention ? (
-                        <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-2">
                             <div className="min-w-0">
-                                <h3 className={cn("text-sm md:text-base font-bold tracking-tight leading-tight mb-0.5", isDaylight ? "text-slate-800" : "text-white")}>
+                                <h3 className={cn("text-sm font-bold leading-tight tracking-tight", isDaylight ? "text-slate-800" : "text-white")}>
                                     {t.intention_widget_subtitle}
                                 </h3>
-                                <p className={cn("text-[10px] line-clamp-1 italic font-serif leading-relaxed pr-2", isDaylight ? "text-slate-500" : "text-white/40")}>
-                                    {t.intention_widget_quote}
-                                </p>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2">
@@ -396,7 +407,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         <div className="flex flex-col gap-3">
                             <button type="button" className="flex min-w-0 items-center gap-2 text-left group/text" onClick={() => setShowIntentionPrompt(true)}>
                                 <p className={cn("text-xs md:text-sm font-medium italic line-clamp-1 py-0.5", isDaylight ? "text-slate-700" : "text-white/90")}>
-                                    "{todayData.intention.intention_text}"
+                                    &quot;{todayData.intention?.intention_text}&quot;
                                 </p>
                                 <Edit2 className={cn("w-2.5 h-2.5 transition-colors shrink-0", isDaylight ? "text-slate-300 group-hover/text:text-slate-500" : "text-white/20 group-hover/text:text-white/60")} />
                             </button>
