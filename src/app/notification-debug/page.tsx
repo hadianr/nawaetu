@@ -164,12 +164,16 @@ export default function NotificationDebugPage() {
         setSendResult({ message: `Sending to ${manualToken ? 'Manual Token' : 'This Device'}...` });
 
         try {
-            const res = await fetch("/api/notifications/debug/send", {
+            // Use the authenticated test endpoint; /api/notifications/debug/send
+            // is not a registered route and returned the Next.js HTML 404 page.
+            const res = await fetch("/api/notifications/test", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token: targetToken }),
             });
-            const data = await res.json();
+            const data = await res.json().catch(() => ({
+                error: `Notification endpoint returned HTTP ${res.status}`,
+            }));
             setSendResult(data);
         } catch (e: any) {
             setSendResult({ error: e.message });
