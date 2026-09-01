@@ -62,7 +62,6 @@ export async function GET(req: NextRequest) {
                 columns: {
                     name: true,
                     gender: true,
-                    archetype: true,
                     settings: true,
                     isMuhsinin: true,
                     totalInfaq: true,
@@ -121,7 +120,6 @@ export async function GET(req: NextRequest) {
             profile: {
                 name: userProfile.name,
                 gender: userProfile.gender,
-                archetype: userProfile.archetype,
                 settings: userProfile.settings,
                 guestSyncEligible: (userProfile.settings as Record<string, unknown> | null)?.guestSyncEligible === true,
                 streaks: {

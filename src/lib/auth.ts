@@ -105,7 +105,6 @@ export const authOptions: NextAuthConfig = {
                 token.id = user.id;
                 token.isMuhsinin = user.isMuhsinin ?? false;
                 token.gender = user.gender ?? null;
-                token.archetype = user.archetype ?? null;
                 token.picture = user.image ?? null;
             }
 
@@ -117,7 +116,6 @@ export const authOptions: NextAuthConfig = {
                             name: users.name,
                             isMuhsinin: users.isMuhsinin,
                             gender: users.gender,
-                            archetype: users.archetype,
                             image: users.image,
                         })
                         .from(users)
@@ -128,7 +126,6 @@ export const authOptions: NextAuthConfig = {
                         if (freshUser.name) token.name = freshUser.name;
                         token.isMuhsinin = freshUser.isMuhsinin ?? false;
                         token.gender = freshUser.gender ?? null;
-                        token.archetype = freshUser.archetype ?? null;
                         token.picture = freshUser.image ?? null;
                     }
                 } catch (e) {
@@ -155,7 +152,6 @@ export const authOptions: NextAuthConfig = {
                     session.user.id = token.id as string;
                     session.user.isMuhsinin = token.isMuhsinin ?? false;
                     session.user.gender = token.gender ?? null;
-                    session.user.archetype = token.archetype ?? null;
                     session.user.image = (token.picture as string) ?? null;
                 }
             } catch (error) {
