@@ -13,7 +13,9 @@ const withPWA = withPWAInit({
     disableDevLogs: true,
     skipWaiting: true,   // Activate new SW immediately without waiting for tabs to close
     clientsClaim: true,  // New SW takes control of all open clients immediately after activation
-    importScripts: ["firebase-messaging-sw.js"], // Import Firebase logic into the main PWA SW
+    // Workbox resolves imported workers from the site root. The leading slash
+    // is required so the generated /sw.js keeps the Firebase handler.
+    importScripts: ["/firebase-messaging-sw.js"],
   },
 });
 
