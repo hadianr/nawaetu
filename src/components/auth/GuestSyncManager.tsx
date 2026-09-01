@@ -29,6 +29,8 @@ import { useLocale } from "@/context/LocaleContext";
 import { RefreshCw, Database, AlertTriangle, CheckCircle2, X } from "lucide-react";
 
 import { getStorageService } from "@/core/infrastructure/storage";
+import { mergeSyncRecords } from "@/lib/sync/merge-sync-data";
+import { sendGAEvent } from "@/lib/analytics/analytics";
 
 export function GuestSyncManager() {
     const { data: session, status } = useSession();
@@ -67,7 +69,10 @@ export function GuestSyncManager() {
                 // 404 = user record not yet created/propagated in DB.
                 // 5xx = transient server error.
                 // In these cases, return silently — the effect will re-trigger when session stabilizes.
-                if (res.status === 401 || res.status === 404 || res.status >= 500) return;
+                if (res.status === 401 || res.status === 404 || res.status >= 500) {
+                    sendGAEvent("sync_recovery_outcome", { outcome: "deferred" });
+                    return;
+                }
 
                 if (!res.ok) throw new Error(`Failed to fetch user data: ${res.status}`);
                 const serverData = await res.json();
@@ -87,16 +92,19 @@ export function GuestSyncManager() {
                     setTimeout(() => {
                         toast.info((t as any).syncHydrateInfo || "⚠️ Data tamu di HP ini telah kami ganti dengan data akun utamamu.", { duration: 4000 });
                     }, 500);
+                    sendGAEvent("sync_recovery_outcome", { outcome: "success" });
 
                 } else if (hasLocalData && serverData.profile?.guestSyncEligible === true) {
                     // Only a server-marked, brand-new account may import guest activity.
                     toast.info((t as any).syncUploadLoading || "🚀 Sedang memindahkan data tamu kamu ke akun baru...", { duration: 2000 });
                     await handleSyncToNewAccount();
                 } else if (hasLocalData) {
-                    // Existing account: never import stale guest activity.
-                    clearLocalData();
-                    await hydrateFromServer(serverData);
-                    toast.info((t as any).syncHydrateInfo || "Data akunmu digunakan; progress tamu tidak diimpor.", { duration: 4000 });
+                    // Do not import or delete guest activity when the account has
+                    // no server progress yet. Keeping it is recoverable; clearing
+                    // it here would make a transient/empty response destructive.
+                    storage.set(STORAGE_KEYS.LAST_SYNC_USER_ID as any, session.user.id);
+                    toast.info((t as any).syncHydrateInfo || "Data lokal kamu tetap aman; belum ada data akun untuk dipulihkan.", { duration: 4000 });
+                    sendGAEvent("sync_recovery_outcome", { outcome: "preserved_local" });
                 } else {
                     // Scenario: Clean slate on both ends.
                     if (serverData.profile?.guestSyncEligible === true) {
@@ -107,10 +115,12 @@ export function GuestSyncManager() {
                         });
                     }
                     storage.set(STORAGE_KEYS.LAST_SYNC_USER_ID as any, session.user.id);
+                    sendGAEvent("sync_recovery_outcome", { outcome: "success" });
                 }
 
             } catch (error) {
                 console.error("Sync error:", error);
+                sendGAEvent("sync_recovery_outcome", { outcome: "error" });
                 // Fail silently or toast error? Silent is better for auto-sync unless critical.
             } finally {
                 setIsSyncing(false);
@@ -142,7 +152,6 @@ export function GuestSyncManager() {
         const profileKeys = [
             STORAGE_KEYS.USER_NAME,
             STORAGE_KEYS.USER_GENDER,
-            STORAGE_KEYS.USER_ARCHETYPE,
         ];
 
         const hasCustomProfile = profileKeys.some(key => {
@@ -197,7 +206,6 @@ export function GuestSyncManager() {
                 profile: {
                     name: storage.getOptional<string>(STORAGE_KEYS.USER_NAME as any),
                     gender: storage.getOptional<string>(STORAGE_KEYS.USER_GENDER as any),
-                    archetype: storage.getOptional<string>(STORAGE_KEYS.USER_ARCHETYPE as any),
                 },
                 settings: {
                     theme: storage.getOptional<string>(STORAGE_KEYS.SETTINGS_THEME as any),
@@ -232,22 +240,15 @@ export function GuestSyncManager() {
 
             storage.set(STORAGE_KEYS.LAST_SYNC_USER_ID as any, session?.user?.id as string);
             toast.success((t as any).syncUploadSuccess || "✨ Berhasil! Progress tamu kamu sudah aman di akun ini.");
+            sendGAEvent("sync_recovery_outcome", { outcome: "success" });
             // Reload to ensure state is fresh? Not strictly needed for upload, but good for consistency
             // window.location.reload();
 
         } catch (error) {
             console.error(error);
             toast.error((t as any).syncError || "Failed to sync data.");
+            sendGAEvent("sync_recovery_outcome", { outcome: "error" });
         }
-    };
-
-    const clearLocalData = () => {
-        Object.values(STORAGE_KEYS).forEach(key => {
-            if (key !== STORAGE_KEYS.ONBOARDING_COMPLETED) {
-                storage.remove(key as any);
-            }
-        });
-        storage.set(STORAGE_KEYS.ONBOARDING_COMPLETED as any, "true");
     };
 
     const hydrateFromServer = async (data: any) => {
@@ -263,11 +264,6 @@ export function GuestSyncManager() {
             if (data.profile) {
                 if (data.profile.name) storage.set(STORAGE_KEYS.USER_NAME as any, data.profile.name);
                 if (data.profile.gender) storage.set(STORAGE_KEYS.USER_GENDER as any, data.profile.gender);
-                if (data.profile.archetype) {
-                    storage.set(STORAGE_KEYS.USER_ARCHETYPE as any, data.profile.archetype);
-                    // Sync feature preset cache so UI immediately reflects server preset
-                    storage.set(STORAGE_KEYS.USER_FEATURE_PRESET as any, data.profile.archetype);
-                }
                 if (data.profile.totalInfaq !== undefined) {
                     storage.set(STORAGE_KEYS.USER_TOTAL_DONATION as any, data.profile.totalInfaq.toString());
                 }
@@ -300,7 +296,10 @@ export function GuestSyncManager() {
                 storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, data.readingState.quranLastRead);
             }
 
-            if (data.bookmarks) storage.set(STORAGE_KEYS.QURAN_BOOKMARKS as any, data.bookmarks);
+            if (data.bookmarks) {
+                const localBookmarks = storage.getOptional(STORAGE_KEYS.QURAN_BOOKMARKS as any);
+                storage.set(STORAGE_KEYS.QURAN_BOOKMARKS as any, mergeSyncRecords(localBookmarks, data.bookmarks, "bookmark"));
+            }
 
             // Fix Mission Mapping: DB has 'missionId', LocalStorage needs 'id'
             if (data.completedMissions && Array.isArray(data.completedMissions)) {
@@ -308,10 +307,14 @@ export function GuestSyncManager() {
                     ...m,
                     id: m.missionId || m.id
                 }));
-                storage.set(STORAGE_KEYS.COMPLETED_MISSIONS as any, mappedMissions);
+                const localMissions = storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS as any);
+                storage.set(STORAGE_KEYS.COMPLETED_MISSIONS as any, mergeSyncRecords(localMissions, mappedMissions, "mission"));
             }
 
-            if (data.intentions) storage.set(STORAGE_KEYS.INTENTION_JOURNAL as any, data.intentions);
+            if (data.intentions) {
+                const localIntentions = storage.getOptional(STORAGE_KEYS.INTENTION_JOURNAL as any);
+                storage.set(STORAGE_KEYS.INTENTION_JOURNAL as any, mergeSyncRecords(localIntentions, data.intentions, "intention"));
+            }
 
             // Hydrate Activity if exists for today
             if (data.dailyActivities && data.dailyActivities.length > 0) {
