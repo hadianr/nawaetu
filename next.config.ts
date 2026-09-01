@@ -11,6 +11,9 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   workboxOptions: {
     disableDevLogs: true,
+    // Keep the Workbox runtime inside /sw.js so deployment cannot leave the
+    // worker pointing at a missing /workbox-*.js asset.
+    inlineWorkboxRuntime: true,
     skipWaiting: true,   // Activate new SW immediately without waiting for tabs to close
     clientsClaim: true,  // New SW takes control of all open clients immediately after activation
     // Workbox resolves imported workers from the site root. The leading slash
