@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.13.0] - 2026-09-01
+
+### Added
+- **Feat(streak): improve share achievement story**
+- **Feat(notifications): harden FCM reminders**
+- **Feat(streak): add gamified UI and sharing**
+- **Feat(streak): add canonical progression**
+- **Feat(calendar): add Hijri calendar page**
+
+### Performance
+- **Perf(home): dedupe prayer requests**
+- **Perf(home): reuse valid prayer cache**
+- **Perf(home): defer guest sync until idle**
+- **Perf(home): remove startup Quran prefetch**
+
+### Improved
+- **Refactor(missions): simplify widget derivation**
+- **Refactor(home): consolidate prayer overview**
+- **Refactor(home): remove obsolete widgets**
+- **Chore: keep home audit docs local**
+- **Chore: exclude the agent.md**
+- **Chore(db): standardize drizzle migrations**
+- **Refactor(home): simplify header**
+
+### Fixed
+- **Fix(journal): compact intention widget**
+- **Fix(tooling): scope minimatch dependency override**
+- **Fix(i18n): normalize locale and spiritual labels**
+- **Fix(home): position mentor CTA above nav**
+- **Fix(home): add terminal prayer states**
+- **Fix(home): keep shell visible during onboarding**
+- **Fix(stats): align data and theme behavior**
+- **Fix(streak): protect account hydration**
+- **Fix(journal): improve action accessibility**
+- **Fix: following active theme in section card stats**
+- **Fix(missions): remove overlapping card reference**
+
+
 ## [1.12.17] - 2026-08-28
 
 ### Fixed
