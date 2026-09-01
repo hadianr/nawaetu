@@ -43,6 +43,14 @@
 - Lint/test tooling now exposes real code findings instead of failing before execution.
 - Prayer-time loading now deduplicates identical in-flight location/date requests.
 
+## Latest local production validation
+
+- `/` returned HTTP 200 with ~6 ms time-to-first-byte and ~6 ms total response time on the local production server.
+- Initial HTML measured 31,341 bytes with 10 JavaScript and 2 CSS references.
+- `/sw.js` returned HTTP 200 (11,466 bytes).
+- `/manifest.webmanifest` returned HTTP 200 (1,165 bytes).
+- These are local-server measurements, not a replacement for deployed HTTPS/browser metrics.
+
 ## Next implementation order
 
 1. Verify service-worker control and offline reload on deployed HTTPS (external acceptance, not a repository implementation gap).

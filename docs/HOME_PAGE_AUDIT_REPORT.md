@@ -18,6 +18,13 @@ The existing audit plan remains structurally sound. It needs two explicit gates 
 - Repeated location/prayer update events now reuse the active request instead of starting duplicate API work.
 - **Validation:** TypeScript and diff checks pass.
 
+#### Latest local production smoke — 2026-09-01
+
+- `/` returned HTTP 200; local response measured ~6 ms TTFB / ~6 ms total and 31,341 bytes.
+- Initial HTML referenced 10 JavaScript and 2 CSS assets.
+- `/sw.js` and `/manifest.webmanifest` both returned HTTP 200.
+- **Caveat:** Deployed HTTPS browser metrics and offline control remain required for final acceptance.
+
 ## Verification Environment
 
 - Production build served with `next start` on localhost.
