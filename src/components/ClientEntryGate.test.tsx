@@ -4,8 +4,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import ClientEntryGate from "@/components/ClientEntryGate";
+import ClientEntryGate, { hasCompletedOnboarding } from "@/components/ClientEntryGate";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+
+const useSessionMock = vi.hoisted(() => vi.fn(() => ({ status: "unauthenticated" })));
+
+vi.mock("next-auth/react", () => ({ useSession: useSessionMock }));
 
 vi.mock("@/components/OnboardingOverlay", () => ({
     default: () => <div>Onboarding</div>,
@@ -14,7 +18,16 @@ vi.mock("@/components/OnboardingOverlay", () => ({
 describe("ClientEntryGate", () => {
     beforeEach(() => {
         window.localStorage.clear();
+        useSessionMock.mockReturnValue({ status: "unauthenticated" });
         vi.restoreAllMocks();
+    });
+
+    it.each(["true", "v2", "legacy-marker"]) ("recognizes %s as completed", (marker) => {
+        expect(hasCompletedOnboarding(marker)).toBe(true);
+    });
+
+    it("treats a missing marker as incomplete", () => {
+        expect(hasCompletedOnboarding(null)).toBe(false);
     });
 
     it("keeps the application visible while resolving onboarding", async () => {
@@ -30,6 +43,15 @@ describe("ClientEntryGate", () => {
         render(<ClientEntryGate><main>Home</main></ClientEntryGate>);
 
         expect(screen.getByText("Home")).toBeTruthy();
+        expect(screen.queryByText("Onboarding")).toBeNull();
+    });
+
+    it("does not block an authenticated returning user when the marker is missing", async () => {
+        useSessionMock.mockReturnValue({ status: "authenticated" });
+
+        render(<ClientEntryGate><main>Home</main></ClientEntryGate>);
+
+        await waitFor(() => expect(screen.getByText("Home")).toBeTruthy());
         expect(screen.queryByText("Onboarding")).toBeNull();
     });
 
