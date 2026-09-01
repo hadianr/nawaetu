@@ -19,157 +19,23 @@
  */
 
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useDataSync } from "@/hooks/useDataSync";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { useTheme } from "@/context/ThemeContext";
-import { useLocale } from "@/context/LocaleContext";
-
 import { getStorageService } from "@/core/infrastructure/storage";
 
 export default function DataSyncer() {
     const { data: session, status } = useSession();
-    const hasSyncedRef = useRef(false);
     const { syncData } = useDataSync();
     const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const { setTheme } = useTheme();
-    const { setLocale } = useLocale();
     const storage = getStorageService();
 
-    // Helper to check if a setting was recently changed manually
-    const RECENT_CHANGE_THRESHOLD_MS = 5000; // 5 seconds
-    const isRecentlyChanged = (settingKey: string): boolean => {
-        const timestamp = storage.getOptional(`${settingKey}_last_changed` as any);
-        if (!timestamp) return false;
-        return Date.now() - parseInt(timestamp as string) < RECENT_CHANGE_THRESHOLD_MS;
-    };
-
-    const restoreSettings = useCallback(async () => {
-        try {
-            const res = await fetch("/api/user/settings");
-            if (res.ok) {
-                const data = await res.json();
-                if (data.data) {
-                    const d = data.data;
-
-                    // 1. Restore Settings (with race condition protection)
-                    if (d.settings) {
-                        const s = d.settings;
-
-                        // Sanity check helper for primitive settings (allow string/number, handle 0)
-                        const isValid = (val: any) => (val !== undefined && val !== null) &&
-                            (typeof val === 'string' || typeof val === 'number') &&
-                            val.toString().length < 500;
-
-                        // Only restore if not recently changed by user
-                        if (s.theme && isValid(s.theme) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_THEME)) {
-                            setTheme(s.theme);
-                        }
-                        if (s.locale && isValid(s.locale) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_LOCALE)) {
-                            setLocale(s.locale);
-                        }
-                        if (s.muadzin && isValid(s.muadzin) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_MUADZIN)) {
-                            storage.set(STORAGE_KEYS.SETTINGS_MUADZIN, s.muadzin);
-                        }
-                        if (s.calculationMethod && isValid(s.calculationMethod) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD)) {
-                            const currentMethod = storage.getOptional(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
-                            // Only overwrite + dispatch if value actually changed — prevents stale DB from
-                            // corrupting a correct local method and triggering a wrong prayer-time re-fetch.
-                            if (String(s.calculationMethod) !== String(currentMethod)) {
-                                storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, s.calculationMethod);
-                                window.dispatchEvent(new CustomEvent("calculation_method_changed", { detail: { method: s.calculationMethod } }));
-                            }
-                        }
-                        if (isValid(s.hijriAdjustment) && !isRecentlyChanged(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT)) {
-                            const currentAdj = storage.getOptional(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
-                            if (String(s.hijriAdjustment) !== String(currentAdj)) {
-                                storage.set(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT, s.hijriAdjustment);
-                                window.dispatchEvent(new CustomEvent("hijri_adjustment_changed", { detail: { adjustment: s.hijriAdjustment } }));
-                            }
-                        }
-                        if (s.notificationPreferences && typeof s.notificationPreferences === 'object') {
-                            storage.set(STORAGE_KEYS.ADHAN_PREFERENCES, s.notificationPreferences);
-                        }
-                        if (s.lastReadQuran && typeof s.lastReadQuran === 'object') {
-                            storage.set(STORAGE_KEYS.QURAN_LAST_READ, s.lastReadQuran);
-                        }
-                    }
-
-                    // 2. Restore Bookmarks
-                    if (Array.isArray(d.bookmarks) && d.bookmarks.length > 0) {
-                        const bookmarksData = d.bookmarks.map((b: any) => ({
-                            surahId: b.surahId,
-                            surahName: b.surahName,
-                            verseId: b.verseId,
-                            verseText: b.verseText,
-                            key: b.key,
-                            note: b.note,
-                            tags: b.tags,
-                            createdAt: b.createdAt
-                        }));
-                        storage.set(STORAGE_KEYS.QURAN_BOOKMARKS, bookmarksData);
-                    }
-
-                    // 3. Restore Intentions (Journal)
-                    if (Array.isArray(d.intentions) && d.intentions.length > 0) {
-                        const intentionsData = d.intentions.map((i: any) => ({
-                            id: i.id,
-                            intentionText: i.intentionText || i.niatText,
-                            intentionType: i.intentionType || i.niatType,
-                            intentionDate: i.intentionDate || i.niatDate,
-                            reflectionText: i.reflectionText,
-                            reflectionRating: i.reflectionRating,
-                            isPrivate: i.isPrivate ?? true,
-                            createdAt: i.createdAt
-                        }));
-                        storage.set(STORAGE_KEYS.INTENTION_JOURNAL, intentionsData);
-                    }
-
-                }
-            }
-        } catch (e) {
-        }
-    }, [setTheme, setLocale]);
-
-    const restoreProgression = useCallback(async () => {
-        try {
-            const res = await fetch("/api/user/full-data", { cache: "no-store" });
-            if (!res.ok) return;
-            const data = await res.json();
-            if (!data.progression) return;
-
-            const progression = data.progression;
-            const streak = progression.streak;
-            if (streak) {
-                storage.set(STORAGE_KEYS.USER_STREAK, {
-                    currentStreak: streak.currentDays || 0,
-                    longestStreak: streak.longestDays || 0,
-                    lastActiveDate: streak.lastStreakDate || "",
-                    milestones: [],
-                    freezesAvailable: streak.freezesAvailable || 0,
-                    protectedDates: (streak.days || [])
-                        .filter((day: { status?: string }) => day.status === "frozen")
-                        .map((day: { localDate: string }) => day.localDate),
-                });
-            }
-            storage.set(STORAGE_KEYS.CANONICAL_PROGRESSION, {
-                ...progression,
-                userId: session?.user?.id,
-            });
-            storage.set(STORAGE_KEYS.USER_HASANAH, String(progression.hasanah || 0));
-            window.dispatchEvent(new Event("streak_updated"));
-            window.dispatchEvent(new Event("hasanah_updated"));
-        } catch {
-            // Keep the local projection if the account snapshot is unavailable.
-        }
-    }, [session?.user?.id, storage]);
-
+    // GuestSyncManager owns the login-time hydrate/import decision. This component
+    // only syncs changes made after authentication, avoiding concurrent uploads.
     useEffect(() => {
         const handleAuthSync = async () => {
-            if (status === "authenticated" && session?.user && !hasSyncedRef.current) {
-                hasSyncedRef.current = true;
-
+            if (status === "authenticated" && session?.user) {
                 // Logic for Welcome Toast - show only once per login session
                 const welcomeKey = `nawaetu_login_welcome_${session.user.id || session.user.email}`;
                 if (!storage.getOptional(welcomeKey as any)) {
@@ -181,16 +47,6 @@ export default function DataSyncer() {
                     storage.set(welcomeKey as any, "true");
                 }
 
-                // 1. Always restore settings first to get cloud preferences
-                // This ensures we don't overwrite cloud settings with local defaults
-                await restoreSettings();
-                await restoreProgression();
-
-                // 2. Check if we need to push local guest data (bookmarks, etc) to cloud
-                const hasSyncedFlag = storage.getOptional("nawaetu_synced_v1" as any);
-                if (!hasSyncedFlag) {
-                    await syncData();
-                }
             } else if (status === "unauthenticated") {
                 // Clear welcome flag on logout so it shows again on next login
                 const keys = Object.keys(localStorage);
@@ -199,7 +55,6 @@ export default function DataSyncer() {
                         localStorage.removeItem(key);
                     }
                 });
-                hasSyncedRef.current = false;
             }
         };
 
@@ -223,6 +78,12 @@ export default function DataSyncer() {
                 STORAGE_KEYS.COMPLETED_MISSIONS,
                 STORAGE_KEYS.ACTIVITY_TRACKER,
                 STORAGE_KEYS.ADHAN_PREFERENCES,
+                STORAGE_KEYS.SETTINGS_THEME,
+                STORAGE_KEYS.SETTINGS_LOCALE,
+                STORAGE_KEYS.SETTINGS_RECITER,
+                STORAGE_KEYS.SETTINGS_MUADZIN,
+                STORAGE_KEYS.SETTINGS_CALCULATION_METHOD,
+                STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT,
             ];
 
             if (syncableKeys.includes(key)) {
@@ -244,7 +105,7 @@ export default function DataSyncer() {
             if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
         };
 
-    }, [status, session, syncData, restoreSettings, restoreProgression]);
+    }, [status, session, storage, syncData]);
 
     return null; // Invisible component
 }
