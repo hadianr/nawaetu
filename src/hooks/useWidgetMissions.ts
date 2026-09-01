@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getDailyMissions, getSeasonalMissions, getWeeklyMissions, Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { filterMissionsByArchetype, checkMissionValidation } from "@/lib/habits/mission-utils";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
@@ -35,15 +35,13 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
     const { locale } = useLocale();
     const { data: prayerData } = usePrayerTimesContext();
 
-    const [gender, setGender] = useState<Gender>(null);
-    const [missions, setMissions] = useState<Mission[]>([]);
+    const [profileRevision, setProfileRevision] = useState(0);
 
-    const loadData = () => {
+    const { gender, missions } = useMemo(() => {
+        void profileRevision;
         const storage = getStorageService();
         const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
         const savedArchetype = (storage.getOptional(STORAGE_KEYS.USER_ARCHETYPE) || session?.user?.archetype) as string | null;
-
-        setGender(savedGender);
 
         const hijriMonth = prayerData?.hijriMonth;
         const hijriDay = prayerData?.hijriDay;
@@ -90,22 +88,19 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
 
         const filteredMissions = filterMissionsByArchetype(allMissions, savedArchetype);
         const localizedMissions = filteredMissions.map(mission => getLocalizedMission(mission, locale));
-        setMissions(localizedMissions);
-    };
+        return { gender: savedGender, missions: localizedMissions };
+    }, [locale, prayerData?.hijriDate, prayerData?.hijriMonth, prayerData?.hijriDay, profileRevision, session]);
 
     useEffect(() => {
-        loadData();
-        const handleUpdate = () => loadData();
+        const handleUpdate = () => setProfileRevision((revision) => revision + 1);
         window.addEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
         window.addEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
-        window.addEventListener(APP_EVENTS.MISSION_UPDATED, handleUpdate);
 
         return () => {
             window.removeEventListener(APP_EVENTS.PROFILE_UPDATED, handleUpdate);
             window.removeEventListener(APP_EVENTS.STORAGE_UPDATED, handleUpdate);
-            window.removeEventListener(APP_EVENTS.MISSION_UPDATED, handleUpdate);
         };
-    }, [prayerData?.hijriDate, prayerData?.hijriMonth, prayerData?.hijriDay, locale, session, completedMissions]);
+    }, []);
 
     const isMissionCompleted = (missionId: string, type: Mission['type']) => {
         const todayStr = DateUtils.today();
@@ -131,6 +126,8 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
     const widgetMissions = [...missions]
         .filter(m => {
             if (m.id === 'daily_intention' || m.id === 'daily_reflection') return false;
+            // Prayer completion already has a dedicated home check-in surface.
+            if (m.category === 'prayer') return false;
             if (isRamadhan) return m.phase !== 'ramadhan_prep';
             return m.phase !== 'ramadhan_during';
         })
@@ -143,7 +140,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
             const aVal = checkMissionValidation(a, prayerData);
             const bVal = checkMissionValidation(b, prayerData);
 
-            const getPriorityScore = (m: Mission, val: any) => {
+            const getPriorityScore = (m: Mission, val: ReturnType<typeof checkMissionValidation>) => {
                 if (val.locked) return -20;
                 if (val.isLate) return -10;
 

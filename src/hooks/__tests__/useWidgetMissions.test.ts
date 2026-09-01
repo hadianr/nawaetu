@@ -55,4 +55,10 @@ describe("useWidgetMissions Friday handling", () => {
         expect(result.current.isMissionCompleted("fajr_prayer_male", "daily")).toBe(true);
         expect(result.current.isMissionCompleted("fajr_prayer_female", "daily")).toBe(true);
     });
+
+    it("keeps prayer missions out of the home mission preview", () => {
+        const { result } = renderHook(() => useWidgetMissions([]));
+
+        expect(result.current.widgetMissions.every((mission) => mission.category !== "prayer")).toBe(true);
+    });
 });
