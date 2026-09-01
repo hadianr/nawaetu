@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.13.1] - 2026-09-01
+
+### Fixed
+- **Fix(pwa): correct import path for Firebase messaging in service worker**
+
+
 ## [1.13.0] - 2026-09-01
 
 ### Added
