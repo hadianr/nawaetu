@@ -28,6 +28,7 @@ interface BeforeInstallPromptEvent extends Event {
 export function usePWAInstall() {
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [isIOS, setIsIOS] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
 
     useEffect(() => {
@@ -43,6 +44,7 @@ export function usePWAInstall() {
         const userAgent = window.navigator.userAgent.toLowerCase();
         const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
         setIsIOS(isIosDevice);
+        setIsMobile(isIosDevice || /android|mobile/.test(userAgent));
 
         // Listen for beforeinstallprompt event (Android/Chrome)
         const handleBeforeInstallPrompt = (e: Event) => {
@@ -51,9 +53,15 @@ export function usePWAInstall() {
         };
 
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        const handleAppInstalled = () => {
+            setDeferredPrompt(null);
+            setIsStandalone(true);
+        };
+        window.addEventListener("appinstalled", handleAppInstalled);
 
         return () => {
             window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+            window.removeEventListener("appinstalled", handleAppInstalled);
         };
     }, []);
 
@@ -84,5 +92,5 @@ export function usePWAInstall() {
         }
     };
 
-    return { isStandalone, isIOS, deferredPrompt, promptInstall };
+    return { isStandalone, isIOS, isMobile, deferredPrompt, promptInstall };
 }

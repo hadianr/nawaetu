@@ -31,16 +31,21 @@ interface PWAInstallPromptProps {
 }
 
 export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPromptProps) {
-    const { isStandalone, isIOS, deferredPrompt, promptInstall } = usePWAInstall();
+    const { isStandalone, isIOS, isMobile, deferredPrompt, promptInstall } = usePWAInstall();
     const { t } = useLocale();
     const [isVisible, setIsVisible] = useState(false);
     const storage = getStorageService();
 
     useEffect(() => {
         // Only show if parent says it's ok (after interaction) AND not installed AND (has prompt OR iOS)
-        if (shouldShow && !isStandalone && (deferredPrompt || isIOS)) {
-            const lastDismissed = storage.getOptional<number>(STORAGE_KEYS.PWA_PROMPT_DISMISSED);
-            if (!lastDismissed || Date.now() - lastDismissed > 24 * 60 * 60 * 1000) {
+        if (shouldShow && !isStandalone && (deferredPrompt || isIOS || isMobile)) {
+            try {
+                const lastDismissed = storage.getOptional<number>(STORAGE_KEYS.PWA_PROMPT_DISMISSED);
+                if (!lastDismissed || Date.now() - lastDismissed > 24 * 60 * 60 * 1000) {
+                    setIsVisible(true);
+                }
+            } catch {
+                // Restricted/quota-full storage must not block the install prompt.
                 setIsVisible(true);
             }
         }
@@ -48,7 +53,11 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
 
     const handleDismiss = () => {
         setIsVisible(false);
-        storage.set(STORAGE_KEYS.PWA_PROMPT_DISMISSED, Date.now());
+        try {
+            storage.set(STORAGE_KEYS.PWA_PROMPT_DISMISSED, Date.now());
+        } catch {
+            // Dismissal still applies for this mount when persistence is unavailable.
+        }
     };
 
     if (!isVisible) return null;
@@ -89,7 +98,7 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                                     <span>{t.pwaInstallIosStep2} <PlusSquare className="w-3 h-3 inline mx-1" /></span>
                                 </div>
                             </div>
-                        ) : (
+                        ) : deferredPrompt ? (
                             <Button
                                 onClick={async () => {
                                     const success = await promptInstall();
@@ -105,6 +114,11 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                                 <Download className="w-3 h-3 mr-2" />
                                 {t.pwaInstallButton}
                             </Button>
+                        ) : (
+                            <div className="mt-3 space-y-2 bg-black/20 p-2 rounded-lg border border-white/5 text-xs text-slate-300">
+                                <p>{t.pwaInstallManualTitle}</p>
+                                <p>{t.pwaInstallManualDesc}</p>
+                            </div>
                         )}
                     </div>
                 </div>
