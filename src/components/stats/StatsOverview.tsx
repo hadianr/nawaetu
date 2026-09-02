@@ -113,6 +113,14 @@ export function StatsOverview({
                 </div>
             </button>
 
+            <Link
+                href="/rewards"
+                className="flex items-center justify-center gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs font-bold text-amber-200 transition-colors hover:bg-amber-400/20"
+            >
+                <ZapIcon className="h-4 w-4" />
+                {t.rewards.cta}
+            </Link>
+
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[

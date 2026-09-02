@@ -16,7 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Crown, Flame, Info } from "lucide-react";
+import { Crown, Flame, Info, Gift } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { useState } from "react";
@@ -135,6 +136,19 @@ export function GamificationStats({ isDaylight, stats }: GamificationStatsProps)
                     </p>
                 )}
             </div>
+
+            <Link
+                href="/rewards"
+                className={cn(
+                    "flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-colors",
+                    isDaylight
+                        ? "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
+                        : "border-amber-400/20 bg-amber-400/10 text-amber-200 hover:bg-amber-400/20"
+                )}
+            >
+                <Gift className="h-4 w-4" />
+                {(t as any).rewards.cta}
+            </Link>
 
             {/* Streak Row (Full Width) */}
             <div className={cn(
