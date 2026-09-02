@@ -19,6 +19,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, Compass, MessageSquare, Target, Zap, Heart } from "lucide-react";
+import RewardsSupportCard from "@/components/RewardsSupportCard";
 
 // ISR: Static marketing page — cache for 7 days
 export const revalidate = 604800;
@@ -147,6 +148,8 @@ export default function AboutPage() {
                                 </div>
                             </div>
                         </Link>
+
+                        <RewardsSupportCard />
                     </div>
                 </section>
 

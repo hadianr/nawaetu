@@ -27,6 +27,7 @@ import { statsEN } from './stats';
 import { sunnahPrayerEN } from './sunnah-prayer';
 import { fastingTrackerEN } from './fasting-tracker';
 import { hijriCalendarEN } from './hijri-calendar';
+import { rewardsEN } from './rewards';
 
 export const SETTINGS_EN = {
   ...missionsEN,
@@ -40,4 +41,5 @@ export const SETTINGS_EN = {
   ...sunnahPrayerEN,
   ...fastingTrackerEN,
   ...hijriCalendarEN,
+  ...rewardsEN,
 };
