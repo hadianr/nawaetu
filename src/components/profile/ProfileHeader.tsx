@@ -45,7 +45,7 @@ export function ProfileHeader({
                 "bg-gradient-to-r from-[rgb(var(--color-primary))]/80 to-[rgb(var(--color-secondary))]/80"
             )}>
                 {/* Base Gradient & Noise */}
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20"></div>
 
                 {/* Subtle Islamic Geometric Pattern via SVG background */}
                 <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{

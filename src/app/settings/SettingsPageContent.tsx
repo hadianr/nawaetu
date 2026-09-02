@@ -165,7 +165,10 @@ export default function SettingsPageContent() {
         if (session?.user?.name) setUserName(session.user.name);
         else if (savedName) setUserName(savedName as string);
 
-        if (session?.user?.image) setUserAvatar(session.user.image);
+        if (session?.user?.image) {
+            storage.set(STORAGE_KEYS.USER_AVATAR, session.user.image);
+            setUserAvatar(session.user.image);
+        }
         else setUserAvatar(savedAvatar as string | null);
 
         if (savedTitle) setUserTitle(savedTitle as string);
