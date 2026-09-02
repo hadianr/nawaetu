@@ -122,6 +122,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         }
 
         if (session?.user?.image) {
+            storage.set(STORAGE_KEYS.USER_AVATAR, session.user.image);
             setUserImage(session.user.image);
         } else if (savedAvatar) {
             setUserImage(savedAvatar);

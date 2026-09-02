@@ -103,7 +103,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                     "relative h-32 w-full flex items-center justify-center overflow-hidden",
                     isDaylight ? "bg-emerald-50" : "bg-emerald-600/20"
                 )}>
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20"></div>
                     <div className={cn(
                         "absolute -bottom-10 w-full h-20 z-10",
                         isDaylight ? "bg-gradient-to-t from-white to-transparent" : "bg-gradient-to-t from-[#0F172A] to-transparent"
