@@ -531,7 +531,7 @@ export const userFeedback = pgTable("user_feedback", {
     userId: text("user_id")
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").notNull(), // 'bug' | 'feature'
+    type: text("type").notNull(), // 'bug' | 'feature' | 'support'
     message: text("message").notNull(),
     deviceInfo: jsonb("device_info").notNull(), // browser, OS, app version, screen size, user-agent
     createdAt: timestamp("created_at").defaultNow().notNull(),
