@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.13.3] - 2026-09-03
+
+### Added
+- **Feat(dua): enrich discovery and dhikr**
+- **Feat(hadith): add topic discovery**
+- **Feat(rewards): add support page**
+- **Feat(notifications): localize push copy**
+
+### Fixed
+- **Fix: ava intermittent load**
+- **Fix(rewards): route support to telegram**
+
+
 ## [1.13.2] - 2026-09-01
 
 ### Added
