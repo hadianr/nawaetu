@@ -6,7 +6,7 @@
  * 50 duas organized across 5 thematic groups.
  */
 
-import { DuaItem, DuaCategoryDefinition } from "./types";
+import { DuaItem, DuaCategoryDefinition, DuaOccasion } from "./types";
 import { MORNING_DUAS } from "./morning";
 import { EVENING_DUAS } from "./evening";
 import { AFTER_PRAYER_DUAS } from "./after-prayer";
@@ -40,5 +40,5 @@ export function getDuaById(id: string): DuaItem | undefined {
 
 export function getDuasByOccasion(occasion: string): DuaItem[] {
     if (occasion === "all") return DUA_LIBRARY;
-    return DUA_LIBRARY.filter(item => item.occasion === occasion);
+    return DUA_LIBRARY.filter(item => item.occasion === occasion || item.additionalOccasions?.includes(occasion as DuaOccasion));
 }
