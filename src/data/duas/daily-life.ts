@@ -98,8 +98,9 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
         latin: "Allahumma kamaa hassanta khalqii fa hassin khuluqii.",
         translation: "Ya Allah, sebagaimana Engkau telah memperindah kejadianku (fisikku), maka indahkanlah pula akhlakku.",
         translationEn: "O Allah, as You have made my physical form beautiful, so make my character beautiful.",
-        virtue: "Keseimbangan antara penampilan luar dan keindahan akhlak di dalam.",
-        virtueEn: "Balance between outward appearance and inner character beauty.",
+        virtue: "Selfie, filter, dan penampilan boleh dirawat, tapi nilai diri tidak ditentukan oleh likes atau standar internet. Doa ini mengingatkan kita merawat luar dan dalam.",
+        virtueEn: "Selfies, filters, and appearance can be cared for, but your worth is not decided by likes or internet standards. This dua reminds us to care for both outside and inside.",
+        searchTerms: ["body image", "self worth", "appearance", "beauty standards", "likes", "filter", "percaya diri", "penampilan"],
         recommendedCount: 1,
         source: {
             type: "hadith",
@@ -158,8 +159,9 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
         latin: "Allahumma ghaaratin-nujuumu wa hada'atil-'uyuunu wa anta hayyun qayyuumul-laa ta'khudzuki sinatuw-wa laa nawm, yaa hayyu yaa qayyuumu ahdi' lailii wa anim 'ainii.",
         translation: "Ya Allah, bintang-bintang telah tenggelam dan mata-mata telah tenang, sedangkan Engkau Maha Hidup lagi terus-menerus mengurus makhluk-Mu, tidak mengantuk dan tidak tidur. Wahai Yang Maha Hidup lagi Maha Berdiri Sendiri, tenangkanlah malamku dan tidurkanlah mataku.",
         translationEn: "O Allah, the stars have set and eyes are at rest, and You are the Ever-Living, the Sustainer. Neither drowsiness overtakes You nor sleep. O Ever-Living, O Sustainer, calm my night and bring sleep to my eyes.",
-        virtue: "Doa menenangkan pikiran gelisah saat sulit tidur di malam hari.",
-        virtueEn: "Soothes an anxious mind when finding it difficult to sleep at night.",
+        virtue: "Saat kepala masih penuh setelah seharian online, kuliah, atau kerja, gunakan doa ini untuk menenangkan diri dan memberi tubuh kesempatan beristirahat.",
+        virtueEn: "When your mind is still full after a day online, studying, or working, use this dua to settle yourself and let your body rest.",
+        searchTerms: ["insomnia", "sleep", "night anxiety", "overthinking", "doomscrolling", "rest", "sulit tidur", "gelisah malam"],
         recommendedCount: 1,
         source: {
             type: "hadith",
@@ -170,6 +172,7 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
     {
         id: "dua_mimpi_buruk",
         occasion: "sleeping",
+        additionalOccasions: ["protection"],
         category: "spiritualCategoryPerlindungan",
         title: "Doa Terbangun karena Mimpi Buruk",
         titleEn: "Du'a Upon Waking from a Nightmare",
@@ -190,6 +193,7 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
     {
         id: "dua_kesulitan",
         occasion: "general",
+        additionalOccasions: ["protection"],
         category: "spiritualCategoryPerlindungan",
         title: "Doa Saat Menghadapi Kesulitan",
         titleEn: "Du'a When Facing Hardship",
@@ -197,8 +201,9 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
         latin: "Hasbunallaahu wa ni'mal wakiil.",
         translation: "Cukuplah Allah menjadi Penolong kami dan Allah adalah sebaik-baik Pelindung.",
         translationEn: "Sufficient for us is Allah, and [He is] the best Disposer of affairs.",
-        virtue: "Doa kepasrahan total dan sumber kekuatan bathin saat menghadapi ujian berat.",
-        virtueEn: "Dua of total reliance and inner strength during difficult trials.",
+        virtue: "Saat hidup terasa stuck, gunakan doa ini sebagai jeda untuk mengakui bahwa kita butuh pertolongan—lalu ambil satu langkah yang masih bisa dilakukan hari ini.",
+        virtueEn: "When life feels stuck, use this dua as a pause to admit that you need help—then take one step that is still possible today.",
+        searchTerms: ["hardship", "stuck", "overwhelmed", "crisis", "uncertain future", "help", "sulit", "kewalahan", "masa depan"],
         recommendedCount: 3,
         source: {
             type: "quran",
@@ -210,6 +215,7 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
     {
         id: "dua_sedih_gelisah",
         occasion: "general",
+        additionalOccasions: ["protection"],
         category: "spiritualCategoryPerlindungan",
         title: "Doa Penghilang Duka & Cemas",
         titleEn: "Du'a to Remove Grief & Anxiety",
@@ -219,6 +225,7 @@ export const DAILY_LIFE_DUAS: DuaItem[] = [
         translationEn: "O Allah, I seek refuge in You from anxiety, sorrow, weakness, laziness, cowardice, miserliness, the burden of debt, and the oppression of men.",
         virtue: "Doa komprehensif pelindung kesehatan mental dan ketenangan batin.",
         virtueEn: "Comprehensive prayer protecting mental well-being and inner peace.",
+        searchTerms: ["anxiety", "stress", "burnout", "worry", "debt", "pressure", "mental health", "cemas", "stres", "utang"],
         recommendedCount: 1,
         source: {
             type: "hadith",

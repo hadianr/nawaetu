@@ -11,6 +11,7 @@ export const EVENING_DUAS: DuaItem[] = [
     {
         id: "dua_petang_ayat_kursi",
         occasion: "evening",
+        additionalOccasions: ["protection"],
         category: "spiritualCategoryPerlindungan",
         title: "Ayat Kursi Dzikir Petang",
         titleEn: "Ayat Kursi (Evening Adhkar)",
@@ -51,6 +52,7 @@ export const EVENING_DUAS: DuaItem[] = [
     {
         id: "dua_petang_tasbih",
         occasion: "evening",
+        isDhikr: true,
         category: "spiritualCategoryIbadah",
         title: "Tasbih, Tahmid, Takbir Petang (33x)",
         titleEn: "Evening Glorification (33x)",
@@ -91,6 +93,7 @@ export const EVENING_DUAS: DuaItem[] = [
     {
         id: "dua_petang_perlindungan_keluarga",
         occasion: "evening",
+        additionalOccasions: ["protection"],
         category: "spiritualCategoryPerlindungan",
         title: "Doa Perlindungan Diri dan Keluarga",
         titleEn: "Du'a for Protection of Self and Family",
@@ -111,6 +114,8 @@ export const EVENING_DUAS: DuaItem[] = [
     {
         id: "dua_petang_qulhu",
         occasion: "evening",
+        additionalOccasions: ["protection"],
+        isDhikr: true,
         category: "spiritualCategoryPerlindungan",
         title: "Surat Pelindung Petang (Al-Ikhlas, Al-Falaq, An-Nas)",
         titleEn: "Evening Protection Surahs",
@@ -171,6 +176,7 @@ export const EVENING_DUAS: DuaItem[] = [
     {
         id: "dua_syukur",
         occasion: "evening",
+        additionalOccasions: ["gratitude"],
         category: "spiritualCategorySyukur",
         title: "Doa Mensyukuri Nikmat",
         titleEn: "Du'a of Gratitude",

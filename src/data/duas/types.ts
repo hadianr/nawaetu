@@ -25,6 +25,7 @@ export interface IslamicContentBase {
     latin: string;
     translation: string;
     translationEn?: string;
+    searchTerms?: string[];        // Modern user language and synonyms; not part of the source text
 }
 
 export type DuaOccasion =
@@ -48,6 +49,8 @@ export interface DuaSource {
 
 export interface DuaItem extends IslamicContentBase {
     occasion: DuaOccasion;
+    additionalOccasions?: DuaOccasion[]; // Secondary discovery tabs without changing the primary occasion
+    isDhikr?: boolean;                   // Shows the counter only for countable dhikr items
     virtue?: string;               // Fadhilah / spiritual benefit (Indonesian)
     virtueEn?: string;             // Fadhilah / spiritual benefit (English)
     recommendedCount?: number;     // Target repetition, e.g. 1x or 3x

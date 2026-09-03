@@ -31,6 +31,7 @@ export const AFTER_PRAYER_DUAS: DuaItem[] = [
     {
         id: "dua_setelah_sholat_tasbih",
         occasion: "after_prayer",
+        isDhikr: true,
         category: "spiritualCategoryIbadah",
         title: "Tasbih Setelah Sholat (33x)",
         titleEn: "Post-Prayer Glorification (33x)",

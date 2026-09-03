@@ -281,19 +281,21 @@ const DuaCard = memo(function DuaCard({
                         </button>
                     </div>
 
-                    {/* Launch Tasbih Counter */}
-                    <button
-                        onClick={handleLaunchCounter}
-                        className={cn(
-                            "w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
-                            isDaylight
-                                ? "bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800"
-                                : "bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/30 text-amber-300"
-                        )}
-                    >
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                        <span>{t.duaLaunchCounter || "Mulai Dzikir dengan Tasbih Counter"}</span>
-                    </button>
+                    {/* Launch Tasbih Counter only for explicitly countable dhikr */}
+                    {item.isDhikr && (
+                        <button
+                            onClick={handleLaunchCounter}
+                            className={cn(
+                                "w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
+                                isDaylight
+                                    ? "bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800"
+                                    : "bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/30 text-amber-300"
+                            )}
+                        >
+                            <Play className="w-3.5 h-3.5 fill-current" />
+                            <span>{locale === "en" ? "Count This Dhikr" : "Hitung Dzikir Ini"}</span>
+                        </button>
+                    )}
                 </div>
             )}
         </div>
@@ -356,8 +358,9 @@ function DuaContent() {
             item.source.referenceTextEn || "",
             item.arabic,
             item.latin,
+            ...(item.searchTerms || []),
         ],
-        filterMatch: (item, key) => item.occasion === key,
+        filterMatch: (item, key) => item.occasion === key || item.additionalOccasions?.includes(key as DuaItem["occasion"]) === true,
         targetId,
         locale,
     });
