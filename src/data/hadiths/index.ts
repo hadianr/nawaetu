@@ -5,11 +5,11 @@
  * Decoupled Hadith Data Library (Bilingual EN/ID)
  */
 
-import { HadithItem } from "./types";
+import { HadithItem, HadithTopic } from "./types";
 
 export * from "./types";
 
-export const HADITH_LIBRARY: HadithItem[] = [
+const RAW_HADITH_LIBRARY: HadithItem[] = [
     // ─── AKHLAK (CHARACTER) ──────────────────────────────────────────
     {
         id: "hadith_patience",
@@ -18,14 +18,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Abu Malik Al-Ash'ari RA",
         authenticity: "Sahih",
         category: "spiritualCategoryCharacter",
-        title: "Keutamaan Sabar",
-        titleEn: "The Virtue of Patience",
+        title: "Tetap Jalan Saat Hidup Lagi Berat",
+        titleEn: "Keep Going When Life Feels Heavy",
         arabic: "الصَّبْرُ ضِيَاءٌ",
         latin: "Ash-shobru dhiyaa-un",
         translation: "Sabar itu adalah cahaya.",
         translationEn: "Patience is light.",
-        explanation: "Sabar menerangi jalan seorang mukmin di tengah ujian dan kesulitan hidup.",
-        explanationEn: "Patience illuminates the believer's path through trials and life hardships."
+        explanation: "Saat hidup terasa berat, sabar bukan berarti pasif atau memendam semuanya. Ia membantu kita tetap melangkah dengan jernih sambil mencari pertolongan yang tepat.",
+        explanationEn: "When life feels heavy, patience is not passivity or bottling everything up. It helps us keep moving with clarity while seeking the right support.",
+        topics: ["emotional-wellbeing", "purpose"]
     },
     {
         id: "hadith_honesty",
@@ -182,14 +183,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Aisyah & Ibn Umar RA",
         authenticity: "Muttafaq 'Alaih",
         category: "spiritualCategorySocial",
-        title: "Hak Tetangga",
-        titleEn: "Rights of Neighbors",
+        title: "Jadi Tetangga yang Bikin Lingkungan Nyaman",
+        titleEn: "Be the Neighbor Who Makes Life Better",
         arabic: "مَا زَالَ جِبْرِيلُ يُوصِينِي بِالْجَارِ حَتَّى ظَنَنْتُ أَنَّهُ سَيُوَرِّثُهُ",
         latin: "Maa zaala Jibriilu yuushiinii bil-jaari hattaa dhonnantu annahu sayuwarritsuh.",
         translation: "Jibril terus berwasiat kepadaku tentang tetangga, hingga aku mengira bahwa tetangga akan mendapatkan hak waris.",
         translationEn: "Jibreel kept urging me to be kind to my neighbors until I thought he would make them heirs.",
-        explanation: "Menekankan betapa agungnya hak dan kedudukan tetangga dalam syariat Islam.",
-        explanationEn: "Emphasizes the great rights and honor accorded to neighbors in Islamic teachings."
+        explanation: "Tetangga bukan sekadar orang yang lewat di timeline atau tinggal di sebelah rumah. Perhatian kecil, menjaga privasi, dan tidak mengganggu adalah bagian dari membangun lingkungan yang aman.",
+        explanationEn: "Neighbors are not just people who pass by on our timeline or live next door. Small acts of care, respecting privacy, and not causing harm help build a safe community.",
+        topics: ["relationships", "emotional-wellbeing"]
     },
     {
         id: "hadith_silaturrahim",
@@ -198,14 +200,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Anas bin Malik RA",
         authenticity: "Muttafaq 'Alaih",
         category: "spiritualCategorySocial",
-        title: "Keutamaan Silaturrahim",
-        titleEn: "Excellence of Keeping Family Ties",
+        title: "Jangan Sampai Keluarga Cuma Jadi Kontak di HP",
+        titleEn: "Don’t Let Family Become Just a Contact",
         arabic: "مَنْ أَحَبَّ أَنْ يُبْسَطَ لَهُ فِي رِزْقِهِ وَأَنْ يُنْسَأَ لَهُ فِي أَثَرِهِ فَلْيَصِلْ رَحِمَهُ",
         latin: "Man ahabba an yubsatha lahu fii rizqihi wa an yunsaa lahu fii atsarihi falyashil rahimah.",
         translation: "Barangsiapa ingin dilapangkan rezekinya dan dipanjangkan umurnya, hendaklah ia menyambung tali silaturrahim.",
         translationEn: "Whoever wishes to have his provision expanded and his life span extended, should maintain ties of kinship.",
-        explanation: "Menyambung silaturrahim membawa keberkahan rezeki dan umur yang dipenuhi kebaikan.",
-        explanationEn: "Maintaining ties of kinship brings blessings in provision and a life filled with goodness."
+        explanation: "Kesibukan, jarak, dan chat yang menumpuk mudah membuat keluarga terasa jauh. Menyapa, menelepon, atau hadir saat dibutuhkan adalah cara nyata merawat hubungan keluarga.",
+        explanationEn: "Busy lives, distance, and unread chats can make family feel far away. Checking in, calling, or showing up when needed is a real way to maintain family bonds.",
+        topics: ["relationships", "gratitude", "emotional-wellbeing"]
     },
     {
         id: "hadith_tolong_menolong",
@@ -214,14 +217,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Abdullah bin Umar RA",
         authenticity: "Muttafaq 'Alaih",
         category: "spiritualCategorySocial",
-        title: "Muslim itu Bersaudara",
-        titleEn: "Muslims Are Brothers",
+        title: "Jangan Cuma Jadi Penonton Saat Teman Kesusahan",
+        titleEn: "Don’t Just Watch When a Friend Is Struggling",
         arabic: "الْمُسْلِمُ أَخُو الْمُسْلِمِ لَا يَظْلِمُهُ وَلَا يُسْلِمُهُ",
         latin: "Al-muslimu akhul muslimi, laa yadzlimuhu wa laa yuslimuhu.",
         translation: "Seorang muslim adalah saudara bagi muslim lainnya. Ia tidak boleh menzaliminya dan tidak boleh membiarkannya dalam kesulitan.",
         translationEn: "A Muslim is the brother of a Muslim. He does not oppress him, nor does he leave him in trouble.",
-        explanation: "Prinsip ukhuwah islamiyah dalam tolong-menolong dan perlindungan persaudaraan.",
-        explanationEn: "The principle of Islamic brotherhood in mutual support and protection."
+        explanation: "Pertemanan yang sehat bukan hanya hadir saat seru-serunya. Tawarkan bantuan, jaga keamanan teman, dan jangan membiarkan seseorang menghadapi masalah sendirian.",
+        explanationEn: "Healthy friendship is not only about being there for the fun moments. Offer help, protect your friend’s wellbeing, and do not leave someone to face hardship alone.",
+        topics: ["relationships", "emotional-wellbeing"]
     },
 
     // ─── GAYA HIDUP (LIFESTYLE) ───────────────────────────────────────
@@ -298,14 +302,16 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Umar bin Khattab RA",
         authenticity: "Sahih",
         category: "spiritualCategoryFaith",
-        title: "Keutamaan Tawakkal",
-        titleEn: "The Excellence of Reliance on Allah",
+        title: "Usaha Maksimal, Lepaskan Overthinking",
+        titleEn: "Do Your Part, Release the Overthinking",
         arabic: "لَوْ أَنَّكُمْ كُنْتُمْ تَوَكَّلُونَ عَلَى اللَّهِ حَقَّ تَوَكُّلِهِ لَرُزِقْتُمْ كَمَا يُرْزَقُ الطَّيْرُ",
         latin: "Lau annakum kuntum tawakkaluuna 'alallaahi haqqa tawakkulihi, laroziqtum kamaa yurzaqut-toir.",
         translation: "Jika kalian benar-benar bertawakkal kepada Allah, niscaya kalian akan diberi rezeki sebagaimana burung diberi rezeki.",
         translationEn: "If you truly rely upon Allah as He deserves to be relied upon, He would provide for you as He provides for the birds.",
-        explanation: "Tawakkal sejati menggabungkan usaha maksimal dan kepasrahan penuh atas ketentuan-Nya.",
-        explanationEn: "True reliance on Allah combines maximum effort with complete trust in His decree."
+        explanation: "Tawakkal berarti tetap mengirim lamaran, belajar, mengatur uang, dan mengambil langkah nyata—lalu menyerahkan hasil yang tidak bisa kita kontrol kepada Allah.",
+        explanationEn: "Tawakkul means applying for the job, learning, managing money, and taking real steps—then handing the outcomes we cannot control back to Allah.",
+        searchTerms: ["AI anxiety", "future anxiety", "job insecurity", "career", "financial anxiety", "uncertain future", "tawakkal", "masa depan", "rezeki"],
+        topics: ["emotional-wellbeing", "money-consumption", "purpose"]
     },
     {
         id: "hadith_huzhan",
@@ -332,14 +338,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Anas bin Malik RA",
         authenticity: "Sahih",
         category: "spiritualCategoryKnowledge",
-        title: "Kewajiban Menuntut Ilmu",
-        titleEn: "The Obligation of Seeking Knowledge",
+        title: "Belajar yang Bikin Hidup Bertumbuh",
+        titleEn: "Learning That Helps You Grow",
         arabic: "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ",
         latin: "Tholabul 'ilmi fariidlotun 'alaa kulli muslimin.",
         translation: "Menuntut ilmu adalah kewajiban bagi setiap muslim.",
         translationEn: "Seeking knowledge is an obligation upon every Muslim.",
-        explanation: "Menuntut ilmu yang bermanfaat adalah fardhu 'ain bagi setiap insan beriman.",
-        explanationEn: "Seeking beneficial knowledge is a personal obligation for every believer."
+        explanation: "Di tengah banjir konten dan opini, pilih ilmu yang benar-benar membentuk karakter, keputusan, dan kontribusi—bukan sekadar menambah konsumsi informasi.",
+        explanationEn: "Amid endless content and opinions, choose knowledge that shapes character, decisions, and contribution—not just more information to consume.",
+        topics: ["study-work", "purpose"]
     },
     {
         id: "hadith_amal_ilmu",
@@ -348,14 +355,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Abu Hurairah RA",
         authenticity: "Sahih",
         category: "spiritualCategoryKnowledge",
-        title: "Ilmu yang Bermanfaat",
-        titleEn: "Beneficial Knowledge",
+        title: "Ilmu yang Tetap Mengalir Setelah Kita Pergi",
+        titleEn: "Knowledge That Keeps Giving After We’re Gone",
         arabic: "إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلَاثَةٍ: إِلَّا مِنْ صَدَقَةٍ جَارِيَةٍ، وَعِلْمٍ يُنْتَفَعُ بِهِ",
         latin: "Idzaa maatal insaanu anqato'a 'anhu 'amaluhu illaa min tsalaatsin: illaa min shodaqotin jaariyatin, wa 'ilmin yuntafa'u bih.",
         translation: "Apabila seorang manusia meninggal, amalnya terputus kecuali tiga hal: sedekah jariyah, ilmu yang bermanfaat...",
         translationEn: "When a person dies, his deeds come to an end except for three: a continuing charity, beneficial knowledge, or a righteous child who prays for him.",
-        explanation: "Ilmu yang diajarkan dan dimanfaatkan orang lain pahalanya terus mengalir hingga setelah kematian.",
-        explanationEn: "Knowledge taught and utilized by others yields continuous rewards even after death."
+        explanation: "Satu hal yang kita ajarkan, dokumentasikan, atau bagikan dengan tulus bisa terus membantu orang lain—jauh lebih bermakna daripada sekadar mengejar views.",
+        explanationEn: "Something we teach, document, or share sincerely can keep helping others—more meaningful than simply chasing views.",
+        topics: ["study-work", "purpose", "relationships"]
     },
 
     // ─── SYUKUR (GRATITUDE) ───────────────────────────────────────────
@@ -366,14 +374,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Abu Hurairah RA",
         authenticity: "Sahih",
         category: "spiritualCategoryGratitude",
-        title: "Syukur kepada Manusia",
-        titleEn: "Gratitude to People",
+        title: "Jangan Lupa Bilang Terima Kasih",
+        titleEn: "Don’t Forget to Say Thank You",
         arabic: "مَنْ لَمْ يَشْكُرِ النَّاسَ لَمْ يَشْكُرِ اللَّهَ",
         latin: "Man lam yasykurin-naasa lam yasykurillaha.",
         translation: "Barangsiapa tidak bersyukur kepada manusia, berarti ia tidak bersyukur kepada Allah.",
         translationEn: "Whoever does not thank people does not thank Allah.",
-        explanation: "Menyampaikan terima kasih kepada sesama adalah bukti nyata kesyukuran kepada Sang Pencipta.",
-        explanationEn: "Expressing gratitude to fellow human beings is tangible proof of gratitude to the Creator."
+        explanation: "Mengakui bantuan orang lain bukan basa-basi. Mengucapkan terima kasih melatih kita melihat dukungan yang sering tertutup oleh budaya mandiri dan pencapaian pribadi.",
+        explanationEn: "Acknowledging other people’s help is not just etiquette. Saying thank you trains us to notice support that achievement culture can make invisible.",
+        topics: ["gratitude", "relationships"],
     },
     {
         id: "hadith_rezeki",
@@ -546,14 +555,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Mu'awiyah bin Jahimah RA",
         authenticity: "Hasan",
         category: "spiritualCategoryCharacter",
-        title: "Keutamaan Berbakti kepada Ibu",
-        titleEn: "Honoring One's Mother",
+        title: "Berbakti Itu Lebih dari Sekadar Bilang Sayang",
+        titleEn: "Honoring Your Mother Is More Than Saying You Care",
         arabic: "الْجَنَّةُ تَحْتَ أَقْدَامِ الأُمَّهَاتِ",
         latin: "Al-jannatu tahta aqdaamil ummahaat.",
         translation: "Surga itu berada di bawah telapak kaki ibu.",
         translationEn: "Paradise lies beneath the feet of mothers.",
-        explanation: "Berbakti dan berbuat baik kepada ibu adalah jalan tercepat menuju keredhaan Allah dan surga-Nya.",
-        explanationEn: "Serving and honoring one's mother is the direct pathway to Allah's pleasure and Paradise."
+        explanation: "Kasih kepada ibu terlihat lewat sikap, waktu, dan tanggung jawab sehari-hari—termasuk mendengar, membantu, dan menjaga ucapan saat berbeda pendapat.",
+        explanationEn: "Love for one’s mother shows through everyday attitude, time, and responsibility—including listening, helping, and speaking respectfully when you disagree.",
+        topics: ["relationships", "gratitude"]
     },
     {
         id: "hadith_pertolongan_nasai",
@@ -614,14 +624,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Umar bin Khattab RA",
         authenticity: "Muttafaq 'Alaih",
         category: "spiritualCategoryCharacter",
-        title: "Segala Amalan Tergantung Niat",
-        titleEn: "Deeds Are According to Intentions",
+        title: "Reset Niat Sebelum Mulai",
+        titleEn: "Reset Your Intention Before You Start",
         arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
         latin: "Innamal a'maalu bin-niyyaati wa innamaa likulli-mri-in maa nawaa.",
         translation: "Sesungguhnya setiap amalan tergantung pada niatnya, dan sesungguhnya setiap orang akan mendapatkan sesuai apa yang ia niatkan.",
         translationEn: "Verily, actions are specified according to intentions, and every person shall have only what he intended.",
-        explanation: "Pondasi utama dalam setiap ibadah dan habit kebaikan adalah niat yang ikhlas hanya karena Allah.",
-        explanationEn: "The primary foundation of every worship and habit is a sincere intention for Allah alone."
+        explanation: "Sebelum mengejar target, karier, nilai, atau validasi, cek kembali arah hati. Niat yang benar membantu habit baik tetap bernilai meski tidak ada yang melihat.",
+        explanationEn: "Before chasing goals, careers, grades, or validation, check your direction. A sincere intention keeps good habits meaningful even when nobody is watching.",
+        topics: ["purpose", "worship", "study-work"]
     },
     {
         id: "hadith_qobliyah_fajr",
@@ -630,14 +641,15 @@ export const HADITH_LIBRARY: HadithItem[] = [
         narrator: "Aisyah RA",
         authenticity: "Sahih",
         category: "spiritualCategoryWorship",
-        title: "Keutamaan Dua Rakaat Qobliyah Subuh",
-        titleEn: "Excellence of Two Rak'ahs Before Dawn",
+        title: "Dua Rakaat yang Lebih Berharga dari Dunia",
+        titleEn: "Two Rak‘ahs Worth More Than the World",
         arabic: "رَكْعَتَا الْفَجْرِ خَيْرٌ مِنَ الدُّنْيَا وَمَا فِيهَا",
         latin: "Rak'atal fajri khoirun minad-dunyaa wa maa fiihaa.",
         translation: "Dua rakaat sholat Sunnah Subuh lebih baik daripada dunia dan seisi dasarnya.",
         translationEn: "The two rak'ahs of Sunnah before Dawn are better than the world and all it contains.",
         explanation: "Keagungan pahala sholat Sunnah Qobliyah Subuh yang melebihi kenikmatan dan kekayaan seluruh dunia.",
-        explanationEn: "The immense reward of the Sunnah prayer before Fajr surpassing all worldly wealth."
+        explanationEn: "The immense reward of the Sunnah prayer before Fajr surpassing all worldly wealth.",
+        topics: ["worship", "purpose"]
     },
     {
         id: "hadith_sholat_rawatib",
@@ -958,7 +970,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Di antara tanda kebaikan Islam seseorang adalah meninggalkan hal yang tidak bermanfaat baginya.",
         translationEn: "Part of the perfection of a person's Islam is leaving alone that which does not concern him.",
         explanation: "Pengingat Gen Z untuk menyaring konsumsi media digital, menghindari doomscrolling dan drama internet yang menguras waktu serta energi mental.",
-        explanationEn: "A timeless reminder for Gen Z to filter digital consumption, avoiding doomscrolling and online drama that drains time and mental energy."
+        explanationEn: "A timeless reminder for Gen Z to filter digital consumption, avoiding doomscrolling and online drama that drains time and mental energy.",
+        searchTerms: ["brain rot", "doomscrolling", "scrolling", "distraction", "digital detox", "focus", "overstimulated", "tidak fokus"],
+        topics: ["digital-life", "emotional-wellbeing"]
     },
     {
         id: "hadith_tabayyun_hoax",
@@ -974,7 +988,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Cukuplah seseorang dikatakan berdusta jika ia menceritakan setiap apa yang ia dengar tanpa menyaringnya.",
         translationEn: "It is enough falsehood for a person to relate everything he hears without verification.",
         explanation: "Etika digital penting dalam memverifikasi kebenaran informasi (tabayyun) sebelum menyebarkannya di media sosial.",
-        explanationEn: "Crucial digital ethics emphasizing fact-checking and verifying information before sharing it across social platforms."
+        explanationEn: "Crucial digital ethics emphasizing fact-checking and verifying information before sharing it across social platforms.",
+        searchTerms: ["misinformation", "hoax", "fake news", "deepfake", "AI", "fact check", "cek fakta", "berita palsu"],
+        topics: ["digital-life", "relationships"]
     },
     {
         id: "hadith_ghibah_cyberbullying",
@@ -990,7 +1006,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Seorang muslim sejati adalah yang orang muslim lainnya selamat dari gangguan lisan dan tangannya.",
         translationEn: "A true Muslim is one from whose tongue and hand other Muslims are safe.",
         explanation: "Menjaga ucapan lisan maupun ketikan jemari di ruang digital dari ujaran kebencian, cyberbullying, dan komentar pedas.",
-        explanationEn: "Protects online interactions by discouraging hate speech, cyberbullying, and toxic comments across digital channels."
+        explanationEn: "Protects online interactions by discouraging hate speech, cyberbullying, and toxic comments across digital channels.",
+        searchTerms: ["cyberbullying", "bullying", "toxic comments", "hate speech", "cancel culture", "online conflict", "perundungan"],
+        topics: ["digital-life", "relationships"]
     },
     {
         id: "hadith_nasihat_konten_positif",
@@ -1006,7 +1024,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Agama itu adalah nasihat dan saling mengingatkan dalam kebaikan.",
         translationEn: "Religion is sincerity and good counsel to all.",
         explanation: "Dorongan bagi kreator muda untuk memanfaatkan platform publik dalam menyebarkan inspirasi, edukasi, dan nasihat kebaikan.",
-        explanationEn: "Encourages young creators to leverage public platforms to share inspiring, educational, and uplifting messages."
+        explanationEn: "Encourages young creators to leverage public platforms to share inspiring, educational, and uplifting messages.",
+        topics: ["digital-life", "relationships"]
     },
     {
         id: "hadith_syiar_kebaikan_viral",
@@ -1022,7 +1041,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Barangsiapa menunjukkan suatu kebaikan, maka ia mendapatkan pahala seperti orang yang mengerjakannya.",
         translationEn: "Whoever guides someone to goodness will have a reward like one who does it.",
         explanation: "Setiap postingan atau konten bermanfaat yang menginspirasi orang lain berbuat baik mendatangkan pahala mengalir.",
-        explanationEn: "Every beneficial post or tip that inspires others to do good yields continuous spiritual rewards."
+        explanationEn: "Every beneficial post or tip that inspires others to do good yields continuous spiritual rewards.",
+        topics: ["digital-life", "relationships", "purpose"]
     },
     {
         id: "hadith_hasad_fomo",
@@ -1038,7 +1058,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Jauhilah iri hati, karena iri hati menghapus pahala kebaikan sebagaimana api melahap kayu bakar.",
         translationEn: "Beware of envy, for envy consumes good deeds just as fire consumes wood.",
         explanation: "Penawar rasa iri akibat membandingkan hidup dengan pencapaian orang lain di media sosial (FOMO).",
-        explanationEn: "An antidote to envy triggered by comparing one's reality to curated social media highlights (FOMO)."
+        explanationEn: "An antidote to envy triggered by comparing one's reality to curated social media highlights (FOMO).",
+        searchTerms: ["FOMO", "comparison", "envy", "jealousy", "social media", "insecure", "iri", "membandingkan diri"],
+        topics: ["digital-life", "emotional-wellbeing"]
     },
     {
         id: "hadith_anxiety_relief",
@@ -1054,7 +1076,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Tidaklah seorang muslim tertimpa keletihan, penyakit, kecemasan, atau kesedihan melainkan Allah menghapuskan dosa-dosanya karenanya.",
         translationEn: "No fatigue, illness, anxiety, or sorrow befalls a Muslim except that Allah expiates some of his sins thereby.",
         explanation: "Penghibur jiwa saat mengalami burnout atau beban emosional bahwa rasa lelah dan cemas pun bernilai pembersih dosa.",
-        explanationEn: "Spiritual comfort during burnout or emotional stress, affirming that mental tiredness serves as purification."
+        explanationEn: "Spiritual comfort during burnout or emotional stress, affirming that mental tiredness serves as purification.",
+        searchTerms: ["anxiety", "stress", "burnout", "overwhelmed", "sad", "grief", "mental health", "cemas", "stres", "kelelahan mental"],
+        topics: ["emotional-wellbeing"]
     },
     {
         id: "hadith_kemudahan_bukan_beban",
@@ -1070,7 +1094,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Permudahlah dan jangan mempersulit, berilah kabar gembira dan jangan membuat orang merasa tertekan.",
         translationEn: "Make things easy for people and do not make them difficult; give glad tidings and do not drive people away.",
         explanation: "Prinsip fleksibilitas dan optimisme dalam menjalani aktivitas harian tanpa membebankan diri di luar batas.",
-        explanationEn: "Encourages a balanced and cheerful mindset, preventing toxic perfectionism and unnecessary strain."
+        explanationEn: "Encourages a balanced and cheerful mindset, preventing toxic perfectionism and unnecessary strain.",
+        searchTerms: ["burnout", "perfectionism", "people pleasing", "overwork", "pressure", "boundaries", "toxic productivity", "kewalahan"],
+        topics: ["emotional-wellbeing", "study-work", "relationships"]
     },
     {
         id: "hadith_senang_hati_bahagia",
@@ -1086,7 +1112,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Barangsiapa di antara kalian bangun pagi merasa aman di lingkungannya, sehat fisiknya, dan memiliki makanan untuk hari itu, seolah dunia telah dikumpulkan untuknya.",
         translationEn: "Whoever among you wakes up secure in his home, healthy in his body, having food for the day, it is as if the world were gathered for him.",
         explanation: "Mindfulness harian bahwa rasa aman, kesehatan fisik, dan kecukupan hari ini adalah karunia terbesar.",
-        explanationEn: "Daily mindfulness reminding us that safety, physical health, and daily bread constitute true wealth."
+        explanationEn: "Daily mindfulness reminding us that safety, physical health, and daily bread constitute true wealth.",
+        topics: ["gratitude", "money-consumption", "emotional-wellbeing"]
     },
     {
         id: "hadith_menjaga_kesehatan_mental",
@@ -1102,7 +1129,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Sesungguhnya Tuhanmu memiliki hak atasmu, dan dirimu memiliki hak atasmu, maka berikanlah setiap pemilik hak haknya.",
         translationEn: "Your Lord has a right over you, and your own self has a right over you; so give to everyone who has a right their due.",
         explanation: "Dasar syariat untuk menjaga keseimbangan hidup (*work-life-spiritual balance*) dan merawat kesehatan fisik serta mental.",
-        explanationEn: "Foundational guidance for maintaining work-life-spiritual balance and prioritizing wholesome self-care."
+        explanationEn: "Foundational guidance for maintaining work-life-spiritual balance and prioritizing wholesome self-care.",
+        topics: ["emotional-wellbeing", "study-work", "purpose"]
     },
     {
         id: "hadith_berkata_baik_atau_diam",
@@ -1118,7 +1146,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Barangsiapa beriman kepada Allah dan hari akhir, hendaklah ia berkata baik atau diam.",
         translationEn: "Whoever believes in Allah and the Last Day should speak good or remain silent.",
         explanation: "Prinsip penyaringan komunikasi agar setiap kata yang diucapkan atau diketik membawa dampak konstruktif.",
-        explanationEn: "Filters daily communication ensuring every spoken or typed word delivers constructive value."
+        explanationEn: "Filters daily communication ensuring every spoken or typed word delivers constructive value.",
+        topics: ["relationships", "digital-life"]
     },
     {
         id: "hadith_sabar_menghadapi_cobaan",
@@ -1134,7 +1163,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Sungguh menakjubkan urusan seorang mukmin, semua urusannya adalah baik: jika mendapat kesenangan ia bersyukur, dan jika tertimpa kesusahan ia bersabar.",
         translationEn: "Wondrous is the affair of the believer, for all of it is good: if ease comes to him he is grateful, and if hardship befalls him he is patient.",
         explanation: "Kunci ketahanan emosional Gen Z dalam menyikapi dinamika pasang surut kehidupan dengan rasa syukur dan kesabaran.",
-        explanationEn: "Empowers emotional resilience, enabling believers to navigate life's highs with gratitude and lows with patience."
+        explanationEn: "Empowers emotional resilience, enabling believers to navigate life's highs with gratitude and lows with patience.",
+        topics: ["emotional-wellbeing", "gratitude"]
     },
     {
         id: "hadith_dua_nikmat_terperdaya",
@@ -1150,7 +1180,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Dua nikmat yang seringkali membuat banyak manusia tertipu dan lalai: kesehatan dan waktu luang.",
         translationEn: "There are two blessings which many people lose: health and free time.",
         explanation: "Pengingat produktivitas agar tidak menunda-nunda pekerjaan (*anti-procrastination*) saat tubuh sehat dan ada kesempatan.",
-        explanationEn: "A productivity call to action urging against procrastination while blessed with vigor and available hours."
+        explanationEn: "A productivity call to action urging against procrastination while blessed with vigor and available hours.",
+        topics: ["study-work", "purpose"]
     },
     {
         id: "hadith_tangan_di_atas",
@@ -1166,7 +1197,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Tangan yang di atas (memberi/mandiri) lebih baik daripada tangan yang di bawah (meminta-minta).",
         translationEn: "The upper hand (giving) is better than the lower hand (taking).",
         explanation: "Semangat kerja keras dan mandiri secara finansial agar mampu berbagi keberkahan kepada sesama.",
-        explanationEn: "Inspires a strong work ethic and financial autonomy to become a benefactor for others."
+        explanationEn: "Inspires a strong work ethic and financial autonomy to become a benefactor for others.",
+        topics: ["money-consumption", "study-work", "relationships"]
     },
     {
         id: "hadith_mencari_rezeki_halal",
@@ -1182,7 +1214,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Tidak ada makanan yang lebih baik dimakan seseorang daripada hasil usaha dari kerja keras tangannya sendiri.",
         translationEn: "No one has ever eaten better food than that which he has earned by working with his own hands.",
         explanation: "Keutamaan mencari nafkah halal dengan kemampuan dan keterampilan diri secara mandiri dan jujur.",
-        explanationEn: "Honors personal effort, skill mastery, and earning an honest living through hard work."
+        explanationEn: "Honors personal effort, skill mastery, and earning an honest living through hard work.",
+        topics: ["study-work", "money-consumption", "purpose"]
     },
     {
         id: "hadith_profesionalisme_itqan",
@@ -1198,7 +1231,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Sesungguhnya Allah menyukai jika seseorang di antara kalian mengerjakan suatu pekerjaan, ia melakukannya secara itqan (tekun, rapi, dan profesional).",
         translationEn: "Verily, Allah loves that when any one of you does a job, he does it with excellence (itqan).",
         explanation: "Mendorong etos kerja berkualitas tinggi, perhatian pada detail, dan hasil karya terbaik dalam karir maupun studi.",
-        explanationEn: "Promotes high quality standards, attention to detail, and professional execution in study and career."
+        explanationEn: "Promotes high quality standards, attention to detail, and professional execution in study and career.",
+        topics: ["study-work", "purpose"]
     },
     {
         id: "hadith_pagi_hari_berkah",
@@ -1246,7 +1280,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Seseorang itu tergantung pada agama dan kebiasaan sahabat dekatnya, maka hendaklah kalian memperhatikan siapa yang ia jadikan teman dekat.",
         translationEn: "A person is upon the religion of his close friend, so let one of you look at whom he befriends.",
         explanation: "Pentingnya selektif membangun *circle* pergaulan harian yang saling mendukung dalam kebaikan dan ketaatan.",
-        explanationEn: "Highlights the impact of peer networks, advising youth to surround themselves with encouraging companions."
+        explanationEn: "Highlights the impact of peer networks, advising youth to surround themselves with encouraging companions.",
+        topics: ["relationships", "purpose"]
     },
     {
         id: "hadith_mencintai_saudara",
@@ -1262,7 +1297,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Tidak sempurna iman salah seorang dari kalian hingga ia mencintai untuk saudaranya apa yang ia cintai untuk dirinya sendiri.",
         translationEn: "None of you truly believes until he loves for his brother what he loves for himself.",
         explanation: "Membangun rasa empati yang mendalam, ikut bahagia atas kesuksesan teman dan siap mengulurkan bantuan saat dibutuhkan.",
-        explanationEn: "Deepens emotional empathy, urging us to celebrate friends' successes and offer timely support."
+        explanationEn: "Deepens emotional empathy, urging us to celebrate friends' successes and offer timely support.",
+        topics: ["relationships", "emotional-wellbeing"]
     },
     {
         id: "hadith_saling_hadiah",
@@ -1278,7 +1314,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Saling berilah hadiah, niscaya kalian akan saling mencintai.",
         translationEn: "Give gifts to one another and you will love one another.",
         explanation: "Gestur kecil seperti berbagi makanan atau hadiah apresiasi sederhana melunakkan hati dan mempererat hubungan persahabatan.",
-        explanationEn: "Simple acts of gift-giving build warmth, goodwill, and tight-knit friendships."
+        explanationEn: "Simple acts of gift-giving build warmth, goodwill, and tight-knit friendships.",
+        topics: ["relationships", "gratitude"]
     },
     {
         id: "hadith_menutup_aib_orang",
@@ -1294,7 +1331,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Barangsiapa menutup aib seorang muslim, Allah akan menutup aibnya di dunia dan di akhirat.",
         translationEn: "Whoever covers the faults of a Muslim, Allah will cover his faults in this world and the Hereafter.",
         explanation: "Menghindari perilaku membocorkan rahasia, *doxxing*, atau menyebarkan keburukan teman di media sosial.",
-        explanationEn: "Guards against betraying trusts, doxxing, or spreading private faults across public networks."
+        explanationEn: "Guards against betraying trusts, doxxing, or spreading private faults across public networks.",
+        topics: ["relationships", "digital-life"]
     },
     {
         id: "hadith_memaafkan_dan_damai",
@@ -1310,7 +1348,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Tidak halal bagi seseorang mendiamkan (memutus hubungan dengan) saudaranya lebih dari tiga malam.",
         translationEn: "It is not lawful for a man to desert his brother for more than three nights.",
         explanation: "Anjuran untuk tidak melanggengkan perselisihan (*ghosting* konflik) dan segera membuka pintu maaf.",
-        explanationEn: "Discourages prolonged silent treatments, encouraging open dialogue and timely reconciliation."
+        explanationEn: "Discourages prolonged silent treatments, encouraging open dialogue and timely reconciliation.",
+        topics: ["relationships", "emotional-wellbeing"]
     },
     {
         id: "hadith_mencegah_kemungkaran_bijak",
@@ -1342,7 +1381,8 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Amalan yang paling dicintai Allah adalah yang dilakukan secara terus-menerus (konsisten) meskipun sedikit.",
         translationEn: "The most beloved deeds to Allah are those done consistently, even if they are small.",
         explanation: "Prinsip *atomic habits* dalam Islam: kebiasaan baik kecil yang dirutinkan setiap hari jauh lebih berdampak daripada amalan besar yang timbul tenggelam.",
-        explanationEn: "Core principle of atomic habits: small, steady daily routines outperform sporadic bursts of effort."
+        explanationEn: "Core principle of atomic habits: small, steady daily routines outperform sporadic bursts of effort.",
+        topics: ["purpose", "worship", "study-work"]
     },
     {
         id: "hadith_niat_hijrah",
@@ -1390,7 +1430,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Pandangan mata adalah salah satu panah beracun dari panah-panah iblis; barangsiapa meninggalkannya karena takut kepada-Ku, Aku ganti dengan kemanisan iman di hatinya.",
         translationEn: "A lustful glance is a poisoned arrow of Iblees; whoever turns away from it out of awe for Me, I replace it with sweet faith in his heart.",
         explanation: "Menjaga pandangan mata di dunia nyata maupun pada layar gadget dari konten yang merusak kesucian hati.",
-        explanationEn: "Encourages visual boundaries offline and online, protecting inner peace from harmful imagery."
+        explanationEn: "Encourages visual boundaries offline and online, protecting inner peace from harmful imagery.",
+        searchTerms: ["screen time", "digital boundaries", "thirst trap", "body image", "appearance pressure", "porn", "konten", "waktu layar"],
+        topics: ["digital-life", "emotional-wellbeing"]
     },
     {
         id: "hadith_menjauhi_syubhat",
@@ -1406,7 +1448,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Barangsiapa menjaga diri dari hal-hal yang samar (syubhat), maka ia telah menyelamatkan agama dan kehormatan dirinya.",
         translationEn: "He who guards against doubtful matters clears himself in regard to his religion and his honor.",
         explanation: "Sikap berhati-hati dalam mengambil keputusan finansial atau etika pergaulan yang belum jelas kehalalannya.",
-        explanationEn: "Advises caution in financial dealings or lifestyle choices where ethical boundaries are vague."
+        explanationEn: "Advises caution in financial dealings or lifestyle choices where ethical boundaries are vague.",
+        searchTerms: ["frugal living", "ethical spending", "buy now pay later", "BNPL", "consumerism", "halal income", "belanja bijak", "hidup hemat"],
+        topics: ["money-consumption", "relationships"]
     },
     {
         id: "hadith_ilmu_berguna",
@@ -1422,7 +1466,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Ya Allah, sesungguhnya aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang halal dan baik, serta amalan yang diterima.",
         translationEn: "O Allah, I ask You for beneficial knowledge, good provision, and accepted deeds.",
         explanation: "Doa harian pagi hari meminta bimbingan ilmu yang berfaedah untuk kehidupan dunia dan akhirat.",
-        explanationEn: "A morning prayer seeking practical knowledge that enriches daily life and spiritual growth."
+        explanationEn: "A morning prayer seeking practical knowledge that enriches daily life and spiritual growth.",
+        searchTerms: ["purpose", "ikigai", "meaning", "career direction", "study", "useful knowledge", "personal growth", "makna hidup", "tujuan hidup"],
+        topics: ["purpose", "study-work", "money-consumption"]
     },
     {
         id: "hadith_menanam_pohon_eco",
@@ -1438,7 +1484,9 @@ export const HADITH_LIBRARY: HadithItem[] = [
         translation: "Tidaklah seorang muslim menanam tanaman atau pohon, lalu buahnya/hasilnya dimakan oleh burung, manusia, atau hewan melainkan itu bernilai sedekah baginya.",
         translationEn: "No Muslim plants a tree or sows a crop, then a bird, a human, or an animal eats from it, but it is charity for him.",
         explanation: "Semangat menjaga kelestarian alam, menanam pohon, dan mengusung gaya hidup ramah lingkungan (*green habit*).",
-        explanationEn: "Promotes environmental care, tree planting, and eco-friendly habits as continuous acts of charity."
+        explanationEn: "Promotes environmental care, tree planting, and eco-friendly habits as continuous acts of charity.",
+        searchTerms: ["climate anxiety", "eco anxiety", "eco grief", "sustainability", "green living", "environment", "climate change", "krisis iklim", "ramah lingkungan"],
+        topics: ["environment", "purpose", "emotional-wellbeing"]
     },
     {
         id: "hadith_menyingkirkan_duri_jalan",
@@ -1634,6 +1682,23 @@ export const HADITH_LIBRARY: HadithItem[] = [
         explanationEn: "Concludes the day by releasing mental fatigue, surrendering outcomes to Allah, and resting peacefully."
     }
 ];
+
+const HADITH_CATEGORY_TOPIC_FALLBACKS: Record<string, HadithTopic[]> = {
+    spiritualCategoryCharacter: ["relationships"],
+    spiritualCategoryFaith: ["emotional-wellbeing", "purpose"],
+    spiritualCategoryWorship: ["worship"],
+    spiritualCategorySocial: ["relationships"],
+    spiritualCategoryKnowledge: ["study-work", "purpose"],
+    spiritualCategoryLifestyle: ["study-work", "money-consumption"],
+    spiritualCategoryGratitude: ["gratitude"],
+    spiritualCategoryRamadhan: ["worship", "gratitude"],
+};
+
+/** Every hadith remains discoverable by a daily-life topic, with curated topics taking precedence. */
+export const HADITH_LIBRARY: HadithItem[] = RAW_HADITH_LIBRARY.map(item => ({
+    ...item,
+    topics: item.topics?.length ? item.topics : HADITH_CATEGORY_TOPIC_FALLBACKS[item.category] || ["purpose"],
+}));
 
 export function getHadithById(id: string): HadithItem | undefined {
     return HADITH_LIBRARY.find(item => item.id === id);

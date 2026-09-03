@@ -11,7 +11,7 @@ import { useState, useMemo, useEffect, Suspense, memo } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, Search, ShieldCheck, User, Share2, ChevronDown as MoreIcon } from "lucide-react";
-import { HADITH_LIBRARY, HadithItem, HADITH_COLLECTIONS } from "@/data/hadiths";
+import { HADITH_LIBRARY, HadithItem, HADITH_TOPIC_DEFINITIONS, HadithTopic } from "@/data/hadiths";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
@@ -303,8 +303,8 @@ function HadithContent() {
         visibleItems,
         searchQuery,
         setSearchQuery,
-        selectedFilter: selectedCollection,
-        setSelectedFilter: setSelectedCollection,
+        selectedFilter: selectedTopic,
+        setSelectedFilter: setSelectedTopic,
         handleLoadMore,
         hasMore,
         activeTargetId,
@@ -318,8 +318,9 @@ function HadithContent() {
             item.narrator || "",
             item.arabic,
             item.latin,
+            ...(item.searchTerms || []),
         ],
-        filterMatch: (item: HadithItem, key: string) => item.collection.toLowerCase() === key.toLowerCase(),
+        filterMatch: (item: HadithItem, key: string) => item.topics?.includes(key as HadithTopic) ?? false,
         targetId,
         locale,
     });
@@ -400,13 +401,13 @@ function HadithContent() {
                         </div>
                     </div>
 
-                    {/* Narrator / Collection Chips (Primary Filter) */}
+                    {/* Daily-life topic chips (primary filter) */}
                     <div className="flex gap-2 overflow-x-auto pb-3 px-1 no-scrollbar mb-3">
                         <button
-                            onClick={() => setSelectedCollection("all")}
+                            onClick={() => setSelectedTopic("all")}
                             className={cn(
                                 "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                selectedCollection === "all"
+                                selectedTopic === "all"
                                     ? isDaylight
                                         ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
                                         : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
@@ -415,15 +416,15 @@ function HadithContent() {
                                         : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
                             )}
                         >
-                            {t.hadithAllNarrators || "Semua Perawi"}
+                            {locale === "en" ? "All Topics" : "Semua Topik"}
                         </button>
-                        {HADITH_COLLECTIONS.map(col => (
+                        {HADITH_TOPIC_DEFINITIONS.map(topic => (
                             <button
-                                key={col}
-                                onClick={() => setSelectedCollection(col)}
+                                key={topic.key}
+                                onClick={() => setSelectedTopic(topic.key)}
                                 className={cn(
                                     "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                    selectedCollection === col
+                                    selectedTopic === topic.key
                                         ? isDaylight
                                             ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
                                             : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
@@ -432,13 +433,13 @@ function HadithContent() {
                                             : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
                                 )}
                             >
-                                HR. {col}
-                            </button>
+                            {locale === "en" ? topic.labelEn : topic.labelId}
+                        </button>
                         ))}
                     </div>
 
                     {/* Filter count indicator */}
-                    {(selectedCollection !== "all" || searchQuery) && (
+                    {(selectedTopic !== "all" || searchQuery) && (
                         <p className={cn("text-[11px] px-2 mb-2", isDaylight ? "text-slate-400" : "text-white/40")}>
                             {(t.hadithShowingCount || "Menampilkan {count} hadits").replace("{count}", String(filtered.length))}
                         </p>

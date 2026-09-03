@@ -27,6 +27,29 @@ export type HadithCollection =
 
 export type HadithAuthenticity = "Sahih" | "Hasan" | "Muttafaq 'Alaih";
 
+export type HadithTopic =
+    | "emotional-wellbeing"
+    | "digital-life"
+    | "relationships"
+    | "study-work"
+    | "money-consumption"
+    | "purpose"
+    | "worship"
+    | "gratitude"
+    | "environment";
+
+export const HADITH_TOPIC_DEFINITIONS: { key: HadithTopic; labelId: string; labelEn: string }[] = [
+    { key: "emotional-wellbeing", labelId: "Ketenangan Diri", labelEn: "Emotional Wellbeing" },
+    { key: "digital-life", labelId: "Dunia Digital", labelEn: "Digital Life" },
+    { key: "relationships", labelId: "Relasi & Akhlak", labelEn: "Relationships" },
+    { key: "study-work", labelId: "Belajar & Kerja", labelEn: "Study & Work" },
+    { key: "money-consumption", labelId: "Uang & Konsumsi", labelEn: "Money & Consumption" },
+    { key: "purpose", labelId: "Makna & Tujuan", labelEn: "Purpose & Meaning" },
+    { key: "worship", labelId: "Ibadah", labelEn: "Worship" },
+    { key: "gratitude", labelId: "Syukur", labelEn: "Gratitude" },
+    { key: "environment", labelId: "Lingkungan", labelEn: "Environment" },
+];
+
 export interface HadithItem {
     id: string;
     collection: HadithCollection;
@@ -44,6 +67,8 @@ export interface HadithItem {
     translationEn?: string;        // English translation
     explanation?: string;          // Comprehensive commentary / tadabbur (Indonesian)
     explanationEn?: string;        // Comprehensive commentary / tadabbur (English)
+    searchTerms?: string[];        // Modern user language and synonyms; not part of the source text
+    topics?: HadithTopic[];         // Daily-life discovery groups; not part of the source text
 }
 
 export const HADITH_COLLECTIONS: HadithCollection[] = [
