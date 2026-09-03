@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { HADITH_LIBRARY, getHadithById, getHadithsByCategory } from "../index";
-import { DUA_LIBRARY, getDuaById, getDuasByOccasion } from "../../duas/index";
+import { HADITH_LIBRARY, HADITH_TOPIC_DEFINITIONS, getHadithById, getHadithsByCategory } from "../index";
+import { DUA_LIBRARY, DUA_OCCASIONS, getDuaById, getDuasByOccasion } from "../../duas/index";
 import { resolveReferenceForMission, resolveReferenceByText } from "@/lib/hadith/reference-matcher";
 import { createMission } from "../../missions/types";
 import { UNIVERSAL_MISSIONS, FEMALE_MISSIONS, MALE_MISSIONS, SUNNAH_PRAYER_MISSIONS, RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "../../missions/index";
@@ -29,6 +29,25 @@ describe("Hadith & Dua Modular Data Library Tests", () => {
             expect(item.arabic).toBeTruthy();
             expect(item.translation).toBeTruthy();
         });
+    });
+
+    it("should keep library IDs, occasions, and discovery topics valid", () => {
+        const ids = [...HADITH_LIBRARY, ...DUA_LIBRARY].map(item => item.id);
+        expect(new Set(ids).size).toBe(ids.length);
+
+        for (const item of DUA_LIBRARY) {
+            expect(item.additionalOccasions || []).not.toContain(item.occasion);
+            for (const occasion of item.additionalOccasions || []) {
+                expect(DUA_OCCASIONS.some(tab => tab.key === occasion)).toBe(true);
+            }
+        }
+
+        for (const topic of HADITH_TOPIC_DEFINITIONS) {
+            expect(HADITH_LIBRARY.some(item => item.topics?.includes(topic.key))).toBe(true);
+        }
+
+        expect(getDuasByOccasion("protection").length).toBeGreaterThan(0);
+        expect(getDuasByOccasion("gratitude").length).toBeGreaterThan(1);
     });
 
     it("should query Hadiths and Duas by category/occasion", () => {
