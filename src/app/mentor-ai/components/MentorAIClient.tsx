@@ -49,6 +49,10 @@ interface AIUsage {
     tier?: "free" | "muhsinin";
 }
 
+function getTimestamp(): number {
+    return Date.now();
+}
+
 export default function MentorAIClient() {
     const { status } = useSession();
     const [stats, setStats] = useState({ streakDays: 0, todayAyat: 0, todayTasbih: 0, prayersLogged: [] as string[] });
@@ -212,8 +216,15 @@ export default function MentorAIClient() {
         if (isInfaqLoading) return; // Wait for tier to settle
 
         const savedUsage = storage.getOptional<AIUsage | string>(STORAGE_KEYS.AI_USAGE);
+        let deferredCountUpdate: ReturnType<typeof setTimeout> | undefined;
         const today = new Date().toDateString();
         const currentTier = isMuhsinin ? 'muhsinin' : 'free';
+        const deferUsageState = (count: number, date: string) => {
+            deferredCountUpdate = setTimeout(() => {
+                setDailyCount(count);
+                setLastResetDate(date);
+            }, 0);
+        };
 
         if (savedUsage) {
             const parsed = typeof savedUsage === 'string' ? JSON.parse(savedUsage) : savedUsage;
@@ -224,8 +235,7 @@ export default function MentorAIClient() {
                 // Check if user just upgraded (Stored as Free, now is Muhsinin)
                 if ((!tier || tier === 'free') && isMuhsinin) {
                     // Update tier to muhsinin but keep current usage count
-                    setDailyCount(count);
-                    setLastResetDate(today);
+                    deferUsageState(count, today);
                     storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                         date: today,
                         count: count,
@@ -233,21 +243,19 @@ export default function MentorAIClient() {
                     }));
                 } else {
                     // Normal Load
-                    setDailyCount(count);
-                    setLastResetDate(date);
+                    deferUsageState(count, date);
                 }
             } else {
                 // New Day Reset
-                setDailyCount(0);
-                setLastResetDate(today);
+                deferUsageState(0, today);
                 storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
             }
         } else {
             // Initial Start
-            setLastResetDate(today);
-            setDailyCount(0);
+            deferUsageState(0, today);
             storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
         }
+        return () => clearTimeout(deferredCountUpdate);
     }, [isMuhsinin, status]);
 
     // Auto-scroll
@@ -256,13 +264,13 @@ export default function MentorAIClient() {
     }, [messages, isTyping]);
 
     // Handle New Chat
-    const handleNewChat = () => {
+    function handleNewChat() {
         const newSession = createNewSession();
         setActiveSessionId(newSession.id);
         setMessages([]); // Empty messages for new chat
         setShowHistory(false);
         setIsTyping(false);
-    };
+    }
 
     // Handle Switch Session
     const handleSwitchSession = (sessionId: string) => {
@@ -327,11 +335,12 @@ export default function MentorAIClient() {
         }
 
         // Add User Message
+        const userTimestamp = getTimestamp();
         const userMsg: ChatMessage = {
-            id: Date.now().toString(),
+            id: userTimestamp.toString(),
             role: 'user',
             content: text,
-            timestamp: Date.now()
+            timestamp: userTimestamp
         };
 
         const newMessages = [...messages, userMsg];
@@ -345,27 +354,30 @@ export default function MentorAIClient() {
 
         if (!currentSession) {
             // First message in a new "staged" session
-            currentSession = createNewSession();
-            currentSession.id = activeSessionId || crypto.randomUUID(); // Should match state
-            currentSession.title = text.substring(0, 30) + (text.length > 30 ? "..." : "");
+            const newSession = createNewSession();
+            currentSession = {
+                ...newSession,
+                id: activeSessionId || newSession.id,
+                title: text.substring(0, 30) + (text.length > 30 ? "..." : ""),
+            };
             isNewSession = true;
         }
 
         // Update local session object
-        currentSession.messages = newMessages;
-        currentSession.updatedAt = Date.now();
-        if (isNewSession) {
-            currentSession.title = text.substring(0, 30) + (text.length > 30 ? "..." : "");
-        }
+        const updatedSession: ChatSession = {
+            ...currentSession,
+            messages: newMessages,
+            updatedAt: getTimestamp(),
+        };
 
         // Save to storage
-        saveSession(currentSession);
+        saveSession(updatedSession);
 
         // Update State
         if (isNewSession) {
-            setSessions(prev => [currentSession!, ...prev]);
+            setSessions(prev => [updatedSession, ...prev]);
         } else {
-            setSessions(prev => prev.map(s => s.id === currentSession!.id ? currentSession! : s).sort((a, b) => b.updatedAt - a.updatedAt));
+            setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s).sort((a, b) => b.updatedAt - a.updatedAt));
         }
 
         // INCREMENT COUNT
@@ -424,25 +436,29 @@ export default function MentorAIClient() {
                 trackAIQuery();
             }
 
+            const aiTimestamp = getTimestamp();
             const aiMsg: ChatMessage = {
-                id: (Date.now() + 1).toString(),
+                id: (aiTimestamp + 1).toString(),
                 role: 'assistant',
                 content: response,
-                timestamp: Date.now()
+                timestamp: aiTimestamp
             };
 
             const finalMessages = [...newMessages, aiMsg];
             setMessages(finalMessages);
 
             // Update session with AI response
-            currentSession.messages = finalMessages;
-            currentSession.updatedAt = Date.now();
-            saveSession(currentSession);
-            saveSessionToServer(currentSession); // SYNC TO SERVER
+            const finalSession: ChatSession = {
+                ...updatedSession,
+                messages: finalMessages,
+                updatedAt: getTimestamp(),
+            };
+            saveSession(finalSession);
+            saveSessionToServer(finalSession); // SYNC TO SERVER
 
             // Update session list order
             setSessions(prev => {
-                const updated = prev.map(s => s.id === currentSession!.id ? currentSession! : s);
+                const updated = prev.map(s => s.id === finalSession.id ? finalSession : s);
                 return updated.sort((a, b) => b.updatedAt - a.updatedAt);
             });
 
@@ -459,11 +475,12 @@ export default function MentorAIClient() {
                 return reverted;
             });
 
+            const errorTimestamp = getTimestamp();
             const errorMsg: ChatMessage = {
-                id: (Date.now() + 1).toString(),
+                id: (errorTimestamp + 1).toString(),
                 role: 'assistant',
                 content: "Maaf, lagi ada kendala teknis. Coba lagi ya 🙏",
-                timestamp: Date.now()
+                timestamp: errorTimestamp
             };
             setMessages(prev => [...prev, errorMsg]);
         } finally {
@@ -644,7 +661,7 @@ export default function MentorAIClient() {
                             "text-xl font-bold mb-2",
                             isDaylight ? "text-slate-900" : "text-white"
                         )}>
-                            Assalamu\'alaikum, {profile.name?.split(' ')[0] || "Teman"}!
+                            Assalamu&apos;alaikum, {profile.name?.split(' ')[0] || "Teman"}!
                         </h2>
                         <p className={cn(
                             "text-sm max-w-[260px] leading-relaxed mb-8",
