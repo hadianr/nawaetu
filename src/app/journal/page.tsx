@@ -229,7 +229,7 @@ export default function JournalPage() {
                                         <div className="mb-3">
                                             <div className="flex gap-2.5">
                                                 <div className="w-0.5 bg-blue-500/40 rounded-full shrink-0" />
-                                                <p className="text-white text-[15px] italic leading-relaxed opacity-90">"{intention.intention_text}"</p>
+                            <p className="text-white text-[15px] italic leading-relaxed opacity-90">&quot;{intention.intention_text}&quot;</p>
                                             </div>
                                         </div>
 

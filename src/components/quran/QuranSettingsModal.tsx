@@ -53,8 +53,6 @@ export default function QuranSettingsModal({
     setShowWordByWord,
     fontSize,
     setFontSize,
-    perPage,
-    handlePerPageChange,
     currentReciterId,
     handleReciterChange,
     isPending

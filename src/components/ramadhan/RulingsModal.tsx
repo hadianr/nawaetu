@@ -22,7 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
-import { RulingItem, RulingCategory, getAllRulingsByCategory } from "@/data/ramadhan";
+import { RulingCategory, getAllRulingsByCategory } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 
 interface RulingsModalProps {

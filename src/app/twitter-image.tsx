@@ -103,7 +103,7 @@ export default async function Image() {
                     {/* Features Badge Row */}
                     <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
                         <div style={{ padding: '8px 16px', borderRadius: '99px', backgroundColor: 'rgba(255,255,255,0.1)', fontSize: '18px', color: '#e2e8f0' }}>Jadwal Sholat</div>
-                        <div style={{ padding: '8px 16px', borderRadius: '99px', backgroundColor: 'rgba(255,255,255,0.1)', fontSize: '18px', color: '#e2e8f0' }}>Al-Qur'an</div>
+                        <div style={{ padding: '8px 16px', borderRadius: '99px', backgroundColor: 'rgba(255,255,255,0.1)', fontSize: '18px', color: '#e2e8f0' }}>Al-Qur&apos;an</div>
                         <div style={{ padding: '8px 16px', borderRadius: '99px', backgroundColor: 'rgba(255,255,255,0.1)', fontSize: '18px', color: '#e2e8f0' }}>Arah Kiblat</div>
                     </div>
                 </div>

@@ -140,7 +140,7 @@ export default function ZakatFitrahCard() {
                             {doaMenerimaZakat.arabic}
                         </div>
                         <div className="text-[10px] text-emerald-200/80 italic mb-1">
-                            "{doaMenerimaZakat.latin}"
+                            &quot;{doaMenerimaZakat.latin}&quot;
                         </div>
                         <div className="text-[10px] text-white/50 leading-relaxed">
                             Artinya: {doaMenerimaZakat.translation}

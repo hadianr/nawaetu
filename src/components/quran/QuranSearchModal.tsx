@@ -87,7 +87,7 @@ export default function QuranSearchModal() {
                     {!isPending && results && results.results.length === 0 && (
                         <div className="text-center py-12 text-slate-400">
                             <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                            <p>{(t as any).quranSearchNotFound} "{results.query}"</p>
+                        <p>{(t as any).quranSearchNotFound} &quot;{results.query}&quot;</p>
                         </div>
                     )}
 

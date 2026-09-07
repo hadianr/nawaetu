@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Reading, MissionContent } from './types';
+import { MissionContent } from './types';
 
 export const SEASONAL_MISSION_CONTENTS: Record<string, MissionContent> = {
     'cek_kesehatan': {

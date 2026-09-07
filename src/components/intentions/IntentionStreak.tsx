@@ -30,7 +30,7 @@ export default function IntentionStreak({
     longestStreak,
     className = "",
 }: IntentionStreakProps) {
-    const { locale, t } = useLocale();
+    const { t } = useLocale();
 
     const MILESTONES = [
         { days: 7, label: t.intention_milestone_week, emoji: "🌟" },

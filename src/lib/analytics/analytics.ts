@@ -19,20 +19,27 @@
  */
 
 // Non-blocking event dispatch helper using browser idle callback for maximum performance
+export type AnalyticsWindow = Window & {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+    requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+};
+
 export const sendGAEvent = (eventName: string, params?: Record<string, string | number | boolean>) => {
     if (typeof window === 'undefined') return;
 
+    const analyticsWindow = window as AnalyticsWindow;
     const dispatch = () => {
-        (window as any).dataLayer = (window as any).dataLayer || [];
-        if (typeof (window as any).gtag === 'function') {
-            (window as any).gtag('event', eventName, params);
+        analyticsWindow.dataLayer ??= [];
+        if (typeof analyticsWindow.gtag === 'function') {
+            analyticsWindow.gtag('event', eventName, params);
         } else {
-            (window as any).dataLayer.push(['event', eventName, params]);
+            analyticsWindow.dataLayer.push(['event', eventName, params]);
         }
     };
 
-    if ('requestIdleCallback' in window) {
-        (window as any).requestIdleCallback(dispatch, { timeout: 2000 });
+    if (typeof analyticsWindow.requestIdleCallback === 'function') {
+        analyticsWindow.requestIdleCallback(dispatch, { timeout: 2000 });
     } else {
         setTimeout(dispatch, 0);
     }

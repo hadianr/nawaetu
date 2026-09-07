@@ -69,7 +69,7 @@ export default function GlobalStatsWidget() {
 
             <div className="mt-3 text-center">
                 <p className="text-[10px] text-[rgb(var(--color-primary-light))]/80 italic">
-                    "{t.globalImpactTagline}"
+                    &quot;{t.globalImpactTagline}&quot;
                 </p>
             </div>
         </motion.div>

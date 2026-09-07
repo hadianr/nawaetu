@@ -183,7 +183,7 @@ export default function MissionDetailDialog({
                                                 "text-sm italic p-3 rounded-lg border transition-colors",
                                                 isDaylight ? "bg-slate-50 border-slate-100 text-slate-600" : "text-white/70 bg-white/5 border-white/10"
                                             )}>
-                                                "{content.intro}"
+                            &quot;{content.intro}&quot;
                                             </p>
                                         )}
 

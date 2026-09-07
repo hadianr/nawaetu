@@ -233,7 +233,7 @@ export default function BookmarksPage() {
                                                     isDaylight ? "text-emerald-500/60" : "text-[rgb(var(--color-primary))]/60"
                                                 )} />
                                                 <p className={cn("text-sm pl-7 italic leading-relaxed", isDaylight ? "text-slate-600" : "text-slate-300")}>
-                                                    "{bookmark.note}"
+                                                    &quot;{bookmark.note}&quot;
                                                 </p>
                                             </div>
                                         ) : (

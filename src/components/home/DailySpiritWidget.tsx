@@ -127,7 +127,7 @@ export default function DailySpiritWidget() {
                             {item.content.latin}
                         </p>
                         <p className="text-sm font-medium text-slate-100/90 leading-relaxed pl-3">
-                            "{localizedContent.translation}"
+                            &quot;{localizedContent.translation}&quot;
                         </p>
                     </div>
 

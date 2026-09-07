@@ -186,7 +186,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                         {getIntentionForType(recipient.type).arabic}
                                                     </p>
                                                     <p className="text-xs text-emerald-200/80 italic mb-2">
-                                                        "{getIntentionForType(recipient.type).latin}"
+                                                        &quot;{getIntentionForType(recipient.type).latin}&quot;
                                                     </p>
                                                     <p className="text-[10px] text-white/60 leading-relaxed">
                                                         Artinya: {getIntentionForType(recipient.type).translation}

@@ -19,7 +19,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { renderHook, act } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 

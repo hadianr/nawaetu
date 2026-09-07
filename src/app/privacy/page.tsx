@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
                     <section className="space-y-3">
                         <h2 className="text-2xl font-bold text-white mb-2">1. Introduction</h2>
                         <p>
-                            Welcome to <strong>Nawaetu</strong> ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our web application located at nawaetu.com and any related services.
+                            Welcome to <strong>Nawaetu</strong> (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your personal information and your right to privacy. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our web application located at nawaetu.com and any related services.
                         </p>
                     </section>
 
@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
                         <h2 className="text-2xl font-bold text-white mb-2">3. How We Use Your Information</h2>
                         <p>We use the collected information for various purposes, including:</p>
                         <ul className="list-disc pl-5 space-y-2">
-                            <li>To provide, operate, and maintain Nawaetu's features.</li>
+                            <li>To provide, operate, and maintain Nawaetu&apos;s features.</li>
                             <li>To manage your account and synchronize your data across devices.</li>
                             <li>To personalize user experience and provide AI-driven spiritual mentorship.</li>
                             <li>To send you important notifications related to prayer times and updates.</li>

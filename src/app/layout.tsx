@@ -19,7 +19,6 @@
 import type { Metadata, Viewport } from "next";
 import { APP_CONFIG } from "@/config/app-config";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import { Suspense } from "react";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
@@ -244,8 +243,6 @@ import { PrayerTimesProvider } from "@/context/PrayerTimesContext";
 import { WebVitals } from "@/components/WebVitals";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
-import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { getStorageService } from "@/core/infrastructure/storage";
 import { GuestSyncManager } from "@/components/auth/GuestSyncManager";
 import ClientEntryGate from "@/components/ClientEntryGate";
 import AppOverlays from "@/components/AppOverlays";
