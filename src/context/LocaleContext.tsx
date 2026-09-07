@@ -37,6 +37,7 @@ function getMergedTranslations() {
 const ALL_TRANSLATIONS = getMergedTranslations();
 
 type SupportedLocale = keyof typeof SETTINGS_TRANSLATIONS;
+export type TranslationTree = typeof SETTINGS_TRANSLATIONS.id;
 interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;

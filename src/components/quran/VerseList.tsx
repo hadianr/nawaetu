@@ -21,25 +21,12 @@
 import TajweedLegend from "./TajweedLegend";
 import { useState, useRef, useEffect, useMemo, useCallback, useTransition } from "react";
 import Link from "next/link";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useQuranAudio } from "@/hooks/useQuranAudio";
-import { Play, Bookmark, Check, ChevronLeft, Settings, Loader2, ArrowLeft, ArrowRight, Repeat, CornerDownRight, Hash } from "lucide-react";
+import { Play, ChevronLeft, Loader2 } from "lucide-react";
 import { getVerseTafsir, type TafsirContent } from '@/lib/quran/tafsir-api';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import dynamic from "next/dynamic";
 import { Chapter } from "@/components/quran/SurahList";
 import { useLocale } from "@/context/LocaleContext";
@@ -54,7 +41,6 @@ import AudioPlayerBar from "./AudioPlayerBar";
 import QuranSettingsModal from "./QuranSettingsModal";
 import { PageJumpDialog, SurahNavigationCards } from "./QuranPageControls";
 import { SirahQuranContextBanner } from "./SirahQuranContextBanner";
-import { surahNames } from "@/lib/quran/surahData";
 import { QURAN_RECITER_OPTIONS, DEFAULT_SETTINGS } from "@/data/settings-data";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { type Bookmark as BookmarkType } from "@/lib/quran/bookmark-storage";
@@ -71,9 +57,7 @@ import {
     cleanTranslation,
     cleanIndopakText,
     getVerseFontClass,
-    formatFootnotes
 } from "@/lib/quran/quran-utils";
-import { fetchSurahSegments, findActiveWordIndex, type VerseSegmentMap } from "@/lib/quran/quran-segments-api";
 
 
 export interface Verse {
@@ -105,13 +89,12 @@ interface VerseListProps {
 }
 
 
-export default function VerseList({ chapter, verses, audioUrl, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
+export default function VerseList({ chapter, verses, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
     const { t, locale: contextLocale } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
 
     // --- State ---
-    const segmentsCacheKeyRef = useRef<string | null>(null);
     // Local reciter ID — updates immediately on change (without waiting for router.refresh())
     const [activeReciterId, setActiveReciterId] = useState<number>(currentReciterId ?? 7);
 
@@ -150,7 +133,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     }, [locale, currentLocale, router]);
 
     const { data: session } = useSession();
-    const pathname = usePathname();
     const searchParams = useSearchParams();
     const autoplay = searchParams.get('autoplay') === 'true';
 
@@ -400,9 +382,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         audioRef, 
         activeWord, 
         isPlaying, 
-        isContinuous, 
         loopMode, 
-        repeatCount, 
         playingVerseKey, 
         setLoopMode,
         handleVersePlay, 
@@ -411,7 +391,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         handlePreviousVerse, 
         handlePause, 
         handleResume, 
-        handleStop, 
         handleAudioEnded 
     } = useQuranAudio({
         accumulatedVerses,
@@ -476,7 +455,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                 if (data) {
                     setTafsirCache(prev => new Map(prev).set(verseKey, { data, ts: Date.now() }));
                 }
-            } catch (error) {
+            } catch {
             } finally {
                 setLoadingTafsir(prev => {
                     const next = new Set(prev);
@@ -494,14 +473,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         );
         return result;
     }, [accumulatedVerses, searchQuery]);
-
-    const getFontSizeClass = () => {
-        switch (fontSize) {
-            case 'small': return 'text-2xl leading-[2.5]';
-            case 'large': return 'text-4xl leading-[3]';
-            default: return 'text-3xl leading-[2.8]';
-        }
-    };
 
     // Prepare bookmark for dialog (draft takes precedence)
     const activeBookmark = editingBookmarkDraft ?? (editingBookmarkKey ? getBookmark(editingBookmarkKey) : null);
@@ -675,7 +646,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                         <div key="tajweed-legend" className={`px-4 md:px-0 ${scriptType === 'tajweed' ? '' : 'hidden'}`}>
                             <TajweedLegend />
                         </div>
-                        {displayedVerses.map((verse, index) => {
+                        {displayedVerses.map((verse) => {
                             try {
                                 const verseNum = parseInt(verse.verse_key.split(':')[1]);
                                 return (
@@ -811,7 +782,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 });
                             }
                             toast.success((t as any).bookmarksSaved || "Tanda baca berhasil disimpan ✨");
-                        } catch (error) {
+                        } catch {
                         }
                     }}
                     onDelete={(bookmark) => {
@@ -831,7 +802,7 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
                                 });
                             }
                             toast.success((t as any).bookmarksDeleted || "Tanda baca berhasil dihapus");
-                        } catch (error) {
+                        } catch {
                         }
                     }}
                 />

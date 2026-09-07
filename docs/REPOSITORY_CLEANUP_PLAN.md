@@ -22,7 +22,12 @@ Finish the remaining maintainability work without changing product behavior, not
 - ESLint after the fourth Tier A slice: 1,029 findings — 732 errors, 297 warnings.
 - ESLint after the fifth Tier A slice: 1,002 findings — 705 errors, 297 warnings.
 - ESLint after the isolated analytics typing pilot: 994 findings — 697 errors, 297 warnings.
-- Working-tree exception: the pre-existing `package-lock.json` `fast-uri` update remains separate.
+- ESLint after the isolated `GamificationStats` typing pilot: 971 findings — 674 errors, 297 warnings.
+- ESLint after the low-risk `SettingsPageContent` cleanup: 940 findings — 672 errors, 268 warnings.
+- ESLint after the low-risk `VerseList` cleanup: 899 findings — 672 errors, 227 warnings.
+- ESLint after the `OnboardingOverlay` typing cleanup: 854 findings — 629 errors, 225 warnings.
+- ESLint after the `MentorAIClient` typing cleanup: 828 findings — 605 errors, 223 warnings.
+- Working-tree exception: the `package-lock.json` `fast-uri` update is preserved in separate commit `388b7d9`.
 
 ## Priority and safety policy
 
@@ -75,6 +80,16 @@ Do not use `eslint-disable`, lower a rule’s severity, or include FCM/auth/paym
 Completed Tier A slices: 3 non-notification library `prefer-const` fixes, 2 justified `@ts-expect-error` annotations in a security test, 10 unused imports/locals in data, test, and Ramadhan UI files, 49 escaped JSX text entities in static/presentational files, and 10 unused destructured values in layout/presentational components. Typecheck, 192 tests, production build, and `git diff --check` passed; the 2 notification-route `prefer-const` findings were intentionally deferred.
 
 Completed first Tier B pilot: replaced 8 analytics `any` casts with one explicit `AnalyticsWindow` contract shared by the event helper and loader. Typecheck, 192 tests, production build, and `git diff --check` passed; no FCM, auth, payment, sync, or PWA runtime code changed.
+
+Completed second Tier B pilot: replaced 23 translation `any` casts in `GamificationStats` with the inferred `TranslationTree` type. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; no FCM, auth, payment, sync, or PWA runtime code changed.
+
+Completed next Tier A batch: removed confirmed dead imports, locals, catch bindings, and JSX entities from `SettingsPageContent`. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; payment synchronization and notification settings effects were not changed.
+
+Completed next Quran UI Tier A batch: removed 41 confirmed dead imports/locals/catch bindings from `VerseList`. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; Quran audio, autoplay, bookmarks, infinite scroll, and reading tracking were not changed.
+
+Completed next Tier B batch: replaced 43 onboarding translation/storage `any` usages with the shared translation type and native string-key contract. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; onboarding persistence, profile sync, location detection, and analytics behavior were not changed.
+
+Completed next Mentor AI typing batch: replaced 24 clear translation/storage/timer/error `any` usages and one unused session binding with explicit types. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; prompts, quota, chat history, retry behavior, and server sync were not changed.
 
 Exit criteria: lint error count decreases, no blanket disable is added, and behavior-sensitive files receive tests before larger edits.
 
