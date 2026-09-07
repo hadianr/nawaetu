@@ -64,7 +64,7 @@ export class GeminiProvider implements LLMProvider {
 
             // Send message with context (only on first message)
             const safeName = sanitizeUserContext(context.name);
-            let contextStr = `[User: ${safeName}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`;
+            const contextStr = `[User: ${safeName}, Streak: ${context.prayerStreak} hari, Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}]`;
 
             const contextualMessage = history.length === 0
                 ? `${message}\n\n[App language: ${context.locale}]\n${contextStr}`

@@ -22,11 +22,11 @@ import { useState } from "react";
 import { SUNNAH_FOODS_SUHOOR, SUNNAH_FOODS_IFTAR } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
-import { Utensils, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
 export default function SunnahFoodsWidget() {
     const [activeTab, setActiveTab] = useState<"sahur" | "iftar">("iftar");
-    const { t, locale } = useLocale();
+    const { locale } = useLocale();
 
     const currentFoods = activeTab === "iftar" ? SUNNAH_FOODS_IFTAR : SUNNAH_FOODS_SUHOOR;
 
@@ -68,7 +68,7 @@ export default function SunnahFoodsWidget() {
             {/* Content List - Horizontal Scroll */}
             <div className="p-3 sm:p-4 pt-0">
                 <div className="flex gap-3 overflow-x-auto pb-4 pt-4 scrollbar-hide snap-x" style={{ WebkitOverflowScrolling: "touch" }}>
-                    {currentFoods.map((food, index) => (
+                    {currentFoods.map((food) => (
                         <div
                             key={food.id}
                             className="snap-start shrink-0 w-[180px] sm:w-[200px] bg-white/10 rounded-xl p-3 sm:p-4 border border-white/10 flex flex-col"

@@ -30,7 +30,7 @@ export const cleanTajweedText = (htmlText: string) => {
     });
 
     // Remove verse number spans at the end and trailing numbers
-    let cleaned = sanitized
+    const cleaned = sanitized
         .replace(/<span[^>]*class="end"[^>]*>[\u0660-\u0669\s]+<\/span>\s*$/u, '')
         .replace(/[\u0660-\u0669]{1,3}\s*$/u, '');
 

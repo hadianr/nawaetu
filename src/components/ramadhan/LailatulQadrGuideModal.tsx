@@ -63,7 +63,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                         {/* Description Fallback for Full View */}
                         {localizedDesc && (
                             <p className="text-sm text-white/70 italic text-center w-full block mb-3 opacity-80 border-b border-white/5 pb-2">
-                                "{localizedDesc}"
+                                &quot;{localizedDesc}&quot;
                             </p>
                         )}
 
@@ -123,7 +123,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                             <span className="leading-snug">Panduan 10 Malam Terakhir</span>
                         </DialogTitle>
                         <p className="text-[11px] sm:text-xs text-white/50 mt-1.5 leading-relaxed break-words text-left">
-                            Saku digital komprehensif untuk I'tikaf, Doa, dan Sholat Sunnah
+                            Saku digital komprehensif untuk I&apos;tikaf, Doa, dan Sholat Sunnah
                         </p>
                     </div>
                     <DialogClose asChild>

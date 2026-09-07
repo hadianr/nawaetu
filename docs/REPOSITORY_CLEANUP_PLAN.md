@@ -1,0 +1,193 @@
+# Repository Cleanup & Maintainability Plan
+
+Date: 2026-09-07  
+Related audit: [`REPOSITORY_AUDIT_2026-09-03.md`](./REPOSITORY_AUDIT_2026-09-03.md)
+
+## Objective
+
+Finish the remaining maintainability work without changing product behavior, notification delivery, authentication, payments, database migrations, or content data.
+
+## Current baseline
+
+- Checkout baseline: ~1.1 GB without generated output; `.next/dev` may be recreated by an active Next development process, and generated PWA workers remain absent between builds.
+- Runtime source: ~5.1 MB; no large tracked media or build artifacts remain.
+- Dependencies: `npm ls --depth=0` is clean; 38 runtime and 14 development dependencies remain.
+- Typecheck: passed.
+- Tests: 192 passed, 2 skipped.
+- Production build: passed; 177 static pages generated and `/sw.js` generated with the Firebase worker import.
+- ESLint before the first Tier A slice: 1,078 findings — 761 errors, 317 warnings; 7 errors were auto-fixable.
+- ESLint after the first Tier A slice: 1,071 findings — 754 errors, 317 warnings.
+- ESLint after the second Tier A slice: 1,061 findings — 754 errors, 307 warnings.
+- ESLint after the third Tier A slice: 1,039 findings — 732 errors, 307 warnings.
+- ESLint after the fourth Tier A slice: 1,029 findings — 732 errors, 297 warnings.
+- ESLint after the fifth Tier A slice: 1,002 findings — 705 errors, 297 warnings.
+- ESLint after the isolated analytics typing pilot: 994 findings — 697 errors, 297 warnings.
+- Working-tree exception: the pre-existing `package-lock.json` `fast-uri` update remains separate.
+
+## Priority and safety policy
+
+The next work is ranked by maintenance impact, confidence in the change, and rollback cost. “High impact” here means less code noise, fewer CI blockers, and a smaller future failure surface; it does not promise a user-visible speed increase.
+
+| Tier | Work | Expected impact | Risk | Decision |
+|---|---|---:|---:|---|
+| A | Generated/dead artifact cleanup | High | Low | Already completed |
+| A | Reviewed mechanical lint fixes: `prefer-const`, unused symbols, justified `@ts-expect-error`, and the 7 auto-fix candidates | High | Low | Do first |
+| A | Test-only cleanup with no assertion or fixture-behavior change | Medium | Low | Do after production lint batch |
+| B | `any` to `unknown`/existing types in isolated library code, then one API boundary at a time | High | Medium | Do with focused tests |
+| B | Source-map policy change | Medium | Medium | Only after Sentry proof |
+| C | React effect/memoization findings | Medium | High | Defer until each flow has a regression test |
+| C | FCM, auth, payment, sync, migration, and PWA runtime behavior changes | High | High | Never bundle into cleanup; separate task |
+
+The first implementation slice is therefore limited to Tier A production files that do not touch FCM, authentication, payment, sync, database migrations, public content, or PWA registration. It may delete an unused symbol or make a variable immutable, but it must not change branching, request/response shapes, persistence, side effects, or dependency behavior.
+
+## Work order
+
+### Phase 0 — establish a safe baseline
+
+1. Preserve the current working-tree changes; do not stage the pre-existing `package-lock.json` update with cleanup work.
+2. Record the current gates and lint output:
+   - `npm run lint`
+   - `npm run typecheck`
+   - `npm run test:run`
+   - `npm run build`
+3. Save the lint result by rule and file so progress is measurable.
+
+Exit criteria: baseline numbers are recorded and no unrelated working-tree changes are included.
+
+### Phase 1 — low-risk lint fixes
+
+Handle rules that do not alter control flow:
+
+- `prefer-const`: convert variables that are never reassigned.
+- unused imports, parameters, locals, and caught errors: remove them or use intentional names such as `_error` only where the configured rule allows it.
+- `ban-ts-comment`: replace valid `@ts-ignore` uses with `@ts-expect-error` and retain the reason.
+- The 7 ESLint auto-fix candidates: inspect with a dry run first, then apply only reviewed hunks.
+
+Execution order:
+
+1. Generate a dry-run lint report grouped by rule and file.
+2. Apply only mechanical findings outside high-risk paths, beginning with library and test-adjacent files.
+3. Review every hunk for accidental control-flow, import-order, or side-effect changes.
+4. Run typecheck, the nearest tests, and lint before moving to the next small batch.
+
+Do not use `eslint-disable`, lower a rule’s severity, or include FCM/auth/payment/sync/PWA files merely to reduce the count.
+
+Completed Tier A slices: 3 non-notification library `prefer-const` fixes, 2 justified `@ts-expect-error` annotations in a security test, 10 unused imports/locals in data, test, and Ramadhan UI files, 49 escaped JSX text entities in static/presentational files, and 10 unused destructured values in layout/presentational components. Typecheck, 192 tests, production build, and `git diff --check` passed; the 2 notification-route `prefer-const` findings were intentionally deferred.
+
+Completed first Tier B pilot: replaced 8 analytics `any` casts with one explicit `AnalyticsWindow` contract shared by the event helper and loader. Typecheck, 192 tests, production build, and `git diff --check` passed; no FCM, auth, payment, sync, or PWA runtime code changed.
+
+Exit criteria: lint error count decreases, no blanket disable is added, and behavior-sensitive files receive tests before larger edits.
+
+### Phase 2 — trust-boundary type cleanup
+
+Replace `any` only where the correct type is understood. Prioritize in this order:
+
+1. Authentication and user data:
+   - `src/lib/auth.ts`
+   - `src/app/api/user/**`
+   - guest sync and account settings paths
+2. Payments and webhooks:
+   - `src/app/api/payment/**`
+   - webhook security tests
+3. Notifications and FCM:
+   - `src/lib/notifications/**`
+   - notification API routes and tests
+4. Feedback/rewards and other API boundaries.
+
+Rules:
+
+- Parse external input with the existing Zod/domain validators where available.
+- Use `unknown` for caught or untrusted values, then narrow with `instanceof`, predicates, or schema parsing.
+- Use existing database/schema types instead of inventing duplicate interfaces.
+- Do not weaken authorization, rate limits, payload limits, HTML escaping, or error handling to satisfy lint.
+- Add or extend one regression test for each changed boundary.
+
+Exit criteria: no `any` replacement relies on an unsafe blanket cast, and endpoint behavior remains covered.
+
+### Phase 3 — React hook and effect cleanup
+
+Address React rule findings separately from type cleanup. Candidate areas observed in lint output include:
+
+- `src/hooks/useQuranTimeTracker.ts`
+- `src/hooks/useRamadhanDailyLog.ts`
+- `src/hooks/useTarawehTracker.ts`
+- `src/hooks/useStreak.ts`
+- components that synchronously set state inside effects.
+
+For each file:
+
+1. Identify whether the state is derived, initialized from storage, or synchronized with an external system.
+2. Prefer lazy state initialization or derived values for purely local data.
+3. Keep asynchronous fetch/subscription updates inside their callbacks.
+4. Fix dependency arrays based on actual ownership; do not silence the rule just to preserve a warning-free count.
+5. Preserve cleanup for timers, subscriptions, service workers, and event listeners.
+
+Exit criteria: focused hook tests pass, no timer/listener leak is introduced, and behavior remains stable across mount, auth change, and unmount.
+
+### Phase 4 — test and test-fixture cleanup
+
+Clean test-only findings after production paths are stable:
+
+- Remove unused mocks/imports.
+- Replace test `any` with narrow mock types or `unknown` plus assertions.
+- Replace `@ts-ignore` with justified `@ts-expect-error`.
+- Keep security, race-condition, sync, payment, and notification tests intact.
+
+Exit criteria: all existing tests pass; test coverage is not reduced to make lint easier.
+
+### Phase 5 — production source-map decision
+
+`productionBrowserSourceMaps: true` remains a deliberate decision point.
+
+Before changing it:
+
+1. Confirm Sentry receives browser source maps from the current `withSentryConfig` build.
+2. Test a production-like build with source maps disabled.
+3. Verify an intentionally captured client error is symbolicated in Sentry.
+4. Confirm `.map` files are no longer publicly served if source exposure is the concern.
+
+Rollback condition: restore the current setting immediately if client stack traces lose useful symbolication.
+
+### Phase 6 — operational script decision
+
+Keep `scripts/test-notification.sh` until its manual production-check workflow is explicitly retired. If retired, remove it in a separate commit and retain the endpoint tests as the automated safety net.
+
+## Required gates for every change batch
+
+```text
+npm run typecheck
+npm run test:run
+npm run lint                 # error count decreases or stays equal only for a reviewed reason
+npm run build                # required for PWA/config changes
+git diff --check
+```
+
+For Tier A lint-only batches, the minimum proof is `typecheck`, the full test suite, lint, and `git diff --check`; run the production build before merging the final batch or whenever configuration/import resolution changes. Revert the focused commit if any gate regresses.
+
+For FCM/PWA-related changes, additionally verify:
+
+- `/sw.js` is generated at scope `/`.
+- Generated `/sw.js` imports `/firebase-messaging-sw.js`.
+- `public/firebase-messaging-sw.js` remains tracked and unchanged unless intentionally modified.
+- `registerServiceWorkerAndGetToken()` still passes the active registration to Firebase `getToken()`.
+
+## Commit strategy
+
+Use one focused commit per phase or domain:
+
+1. `chore(lint): fix low-risk findings`
+2. `refactor(auth): type user boundary values`
+3. `refactor(notifications): narrow FCM error types`
+4. `refactor(react): stabilize effect state synchronization`
+5. `chore(build): decide browser source-map policy`
+
+Do not combine source-map, FCM, payment, and broad lint changes in one commit.
+
+## Definition of done
+
+- No generated output or known dead tooling is tracked.
+- `npm ls --depth=0` remains clean.
+- Typecheck, tests, and production build pass.
+- ESLint findings trend downward without blanket rule suppression.
+- Auth, payment, sync, notification, and migration behavior has focused regression proof.
+- The final audit records remaining intentional exceptions and unresolved decisions.

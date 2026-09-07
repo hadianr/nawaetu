@@ -119,7 +119,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
         <div className="p-6 space-y-6">
             <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                 <p className="text-xs text-white/40 uppercase tracking-widest font-bold mb-2">{t.intention_todays_label}</p>
-                <p className="text-white/90 italic">"{intentionText}"</p>
+                        <p className="text-white/90 italic">&quot;{intentionText}&quot;</p>
             </div>
 
             <div className="space-y-3">

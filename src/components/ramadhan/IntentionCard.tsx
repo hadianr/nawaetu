@@ -31,7 +31,7 @@ interface IntentionCardProps {
     variant?: "inline" | "pill";
 }
 
-export default function IntentionCard({ intention, defaultExpanded = false, compact = false, variant = "pill" }: IntentionCardProps) {
+export default function IntentionCard({ intention, variant = "pill" }: IntentionCardProps) {
     const [showDetail, setShowDetail] = useState(false);
     const { t, locale } = useLocale();
 

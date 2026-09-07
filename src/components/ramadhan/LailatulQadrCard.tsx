@@ -265,7 +265,7 @@ export default function LailatulQadrCard() {
                             Panduan 10 Malam Terakhir
                         </p>
                         <p className="text-[10px] text-white/40 mt-0.5">
-                            I'tikaf, Doa, Dzikir & Dalil Sahih
+                        I&apos;tikaf, Doa, Dzikir & Dalil Sahih
                         </p>
                     </div>
                     <ChevronRight className="h-4 w-4 shrink-0 text-white/25 group-hover:text-white/60 transition-colors" />

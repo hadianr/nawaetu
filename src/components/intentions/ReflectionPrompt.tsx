@@ -137,7 +137,7 @@ export default function ReflectionPrompt({
                                             </p>
                                         )}
                                         <p className={`text-[10px] sm:text-xs md:text-sm font-serif italic leading-relaxed px-2 ${isDaylight ? "text-slate-600" : "text-slate-400"}`}>
-                                            "{isId ? dalil.textId : dalil.textEn}"
+                                            &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
                                         <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-widest uppercase">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}
@@ -166,7 +166,7 @@ export default function ReflectionPrompt({
                         <div className={`backdrop-blur-md border rounded-2xl p-5 relative overflow-hidden ${isDaylight ? "bg-slate-50 border-slate-200" : "bg-white/5 border-white/5"}`}>
                             <div className="absolute top-0 left-0 w-1 h-full bg-[rgb(var(--color-primary))]" />
                             <p className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1 sm:mb-2 ${isDaylight ? "text-slate-400" : "text-white/50"}`}>{t.intention_todays_niat}</p>
-                            <p className={`text-base sm:text-lg font-medium italic leading-relaxed ${isDaylight ? "text-slate-800" : "text-white"}`}>"{intentionText}"</p>
+                            <p className={`text-base sm:text-lg font-medium italic leading-relaxed ${isDaylight ? "text-slate-800" : "text-white"}`}>&quot;{intentionText}&quot;</p>
                         </div>
 
                         {/* Rating */}

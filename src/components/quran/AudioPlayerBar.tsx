@@ -47,7 +47,6 @@ export default function AudioPlayerBar({
     currentPlayingIndex,
     totalVerses,
     isDaylight,
-    locale,
     onLoopModeChange,
     onPrev,
     onNext,

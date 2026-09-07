@@ -32,14 +32,14 @@ export default function TermsOfServicePage() {
                     <section className="space-y-3">
                         <h2 className="text-2xl font-bold text-white mb-2">1. Agreement to Terms</h2>
                         <p>
-                            By accessing or using <strong>Nawaetu</strong> ("the App"), you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access the service.
+                            By accessing or using <strong>Nawaetu</strong> (&quot;the App&quot;), you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access the service.
                         </p>
                     </section>
 
                     <section className="space-y-3">
                         <h2 className="text-2xl font-bold text-white mb-2">2. Description of Service</h2>
                         <p>
-                            Nawaetu is an intention-first Islamic habit tracker that provides features such as prayer times, a digital Quran, a Qibla compass, habit gamification, and AI-assisted spiritual guidance. The service is provided "AS IS" and we reserve the right to modify or discontinue features at any time.
+                            Nawaetu is an intention-first Islamic habit tracker that provides features such as prayer times, a digital Quran, a Qibla compass, habit gamification, and AI-assisted spiritual guidance. The service is provided &quot;AS IS&quot; and we reserve the right to modify or discontinue features at any time.
                         </p>
                     </section>
 
@@ -53,7 +53,7 @@ export default function TermsOfServicePage() {
                     <section className="space-y-3">
                         <h2 className="text-2xl font-bold text-white mb-2">4. Appropriate Use and Content</h2>
                         <p>
-                            You agree not to use Nawaetu for any unlawful purpose or in any way that violates Islamic principles of ethics and respect. The AI mentorship ("Tanya Nawaetu") is designed to provide reference information based on Quran and Hadith, but it does not replace the counsel of qualified Islamic scholars (Ulama) for formal religious rulings (Fatwa).
+                            You agree not to use Nawaetu for any unlawful purpose or in any way that violates Islamic principles of ethics and respect. The AI mentorship (&quot;Tanya Nawaetu&quot;) is designed to provide reference information based on Quran and Hadith, but it does not replace the counsel of qualified Islamic scholars (Ulama) for formal religious rulings (Fatwa).
                         </p>
                     </section>
                     

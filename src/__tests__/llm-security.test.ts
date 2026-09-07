@@ -39,9 +39,9 @@ describe('LLM Security - Input Sanitization', () => {
 
     it('should handle empty or invalid input', () => {
         expect(sanitizeUserContext('')).toBe('Hamba Allah');
-        // @ts-ignore
+        // @ts-expect-error null is intentionally rejected at the type boundary
         expect(sanitizeUserContext(null)).toBe('Hamba Allah');
-        // @ts-ignore
+        // @ts-expect-error undefined is intentionally rejected at the type boundary
         expect(sanitizeUserContext(undefined)).toBe('Hamba Allah');
     });
 

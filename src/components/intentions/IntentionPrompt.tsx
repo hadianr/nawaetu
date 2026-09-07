@@ -133,7 +133,7 @@ export default function IntentionPrompt({
                                             </p>
                                         )}
                                         <p className={`text-[10px] sm:text-xs md:text-sm font-serif italic leading-relaxed px-4 ${isDaylight ? "text-slate-600" : "text-slate-400"}`}>
-                                            "{isId ? dalil.textId : dalil.textEn}"
+                            &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
                                         <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-widest uppercase">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}

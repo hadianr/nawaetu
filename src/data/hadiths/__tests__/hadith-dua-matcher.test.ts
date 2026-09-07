@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { HADITH_LIBRARY, HADITH_TOPIC_DEFINITIONS, getHadithById, getHadithsByCategory } from "../index";
-import { DUA_LIBRARY, DUA_OCCASIONS, getDuaById, getDuasByOccasion } from "../../duas/index";
+import { DUA_LIBRARY, DUA_OCCASIONS, getDuasByOccasion } from "../../duas/index";
 import { resolveReferenceForMission, resolveReferenceByText } from "@/lib/hadith/reference-matcher";
 import { createMission } from "../../missions/types";
 import { UNIVERSAL_MISSIONS, FEMALE_MISSIONS, MALE_MISSIONS, SUNNAH_PRAYER_MISSIONS, RAMADHAN_MISSIONS, SYABAN_MISSIONS } from "../../missions/index";

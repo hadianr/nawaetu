@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Reading, MissionContent } from './types';
+import { MissionContent } from './types';
 
 export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
     'fajr_prayer': {

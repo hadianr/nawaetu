@@ -21,6 +21,7 @@
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
+import type { AnalyticsWindow } from "@/lib/analytics/analytics";
 
 export default function AnalyticsLoader() {
   const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
@@ -34,8 +35,9 @@ export default function AnalyticsLoader() {
     const queryString = searchParams?.toString();
     const fullPath = pathname + (queryString ? `?${queryString}` : "");
 
-    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-      (window as any).gtag("event", "page_view", {
+    const analyticsWindow = window as AnalyticsWindow;
+    if (typeof analyticsWindow.gtag === "function") {
+      analyticsWindow.gtag("event", "page_view", {
         page_location: window.location.href,
         page_path: fullPath,
       });

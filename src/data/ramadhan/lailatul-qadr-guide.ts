@@ -1,4 +1,4 @@
-import { EvidenceData, IntentionData } from "./types";
+import { EvidenceData } from "./types";
 
 // 1. Dzikir & Doa Lailatul Qadar
 // 2. Panduan I'tikaf

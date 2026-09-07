@@ -253,15 +253,15 @@ export async function renderStoryCardToCanvas(
     // Font size scaling multiplier (Enlarged per user preference)
     const scaleMultiplier = options.fontSizeScale === "xlarge" ? 1.58 : options.fontSizeScale === "large" ? 1.38 : 1.15;
 
-    let baseArabicSize = isShort ? 50 : arabicLength > 250 ? 34 : 42;
+    const baseArabicSize = isShort ? 50 : arabicLength > 250 ? 34 : 42;
     let arabicFontSize = Math.round(baseArabicSize * scaleMultiplier);
     let arabicLineHeight = Math.round(arabicFontSize * 2.0);
 
-    let baseTransSize = isShort ? (showArabic ? 32 : 38) : transLength > 300 ? 23 : 28;
+    const baseTransSize = isShort ? (showArabic ? 32 : 38) : transLength > 300 ? 23 : 28;
     let transFontSize = Math.round(baseTransSize * scaleMultiplier);
     let transLineHeight = Math.round(transFontSize * 1.6);
 
-    let baseLatinSize = isShort ? 26 : 22;
+    const baseLatinSize = isShort ? 26 : 22;
     let latinFontSize = Math.round(baseLatinSize * scaleMultiplier);
     let latinLineHeight = Math.round(latinFontSize * 1.5);
 

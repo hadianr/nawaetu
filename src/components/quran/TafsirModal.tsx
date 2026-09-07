@@ -31,7 +31,7 @@ interface TafsirModalProps {
     content: { verseKey: string; tafsir: TafsirContent } | null;
 }
 
-export default function TafsirModal({ open, onOpenChange, locale, content }: TafsirModalProps) {
+export default function TafsirModal({ open, onOpenChange, content }: TafsirModalProps) {
     const { t } = useLocale();
 
     return (

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { EvidenceData, RamadhanPracticeData, IntentionData, SunnahFood } from './types';
+import { EvidenceData, RamadhanPracticeData, SunnahFood } from './types';
 import {
     RAMADHAN_FASTING_INTENTION, TARAWEH_INTENTION, QURAN_RECITATION_INTENTION, ITIKAF_INTENTION, LAILATUL_QADR_PRAYER as LAILATUL_QADR_INTENTION
 } from './intentions';
@@ -513,4 +513,3 @@ export function getRamadhanProgress(hijriDay: number): number {
 export function formatHijriKey(year: number, day: number): string {
     return `${year}-09-${String(day).padStart(2, '0')}`;
 }
-

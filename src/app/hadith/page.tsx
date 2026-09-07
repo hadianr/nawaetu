@@ -178,7 +178,7 @@ const HadithCard = memo(function HadithCard({
                             "text-[11px] line-clamp-1 mt-0.5",
                             isDaylight ? "text-slate-500" : "text-white/50"
                         )}>
-                            "{translation}"
+                            &quot;{translation}&quot;
                         </p>
                     </div>
                 </div>
@@ -218,7 +218,7 @@ const HadithCard = memo(function HadithCard({
                             {item.latin}
                         </p>
                         <p className={cn("text-xs font-medium leading-relaxed", isDaylight ? "text-slate-700" : "text-slate-100/90")}>
-                            "{translation}"
+                            &quot;{translation}&quot;
                         </p>
                     </div>
 
