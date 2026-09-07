@@ -168,7 +168,7 @@ export async function askMentor(
             }
         }
 
-        const { response, provider } = await modelRouter.chat(
+        const { response } = await modelRouter.chat(
             message,
             { ...context, locale },
             safeHistory
@@ -188,7 +188,7 @@ export async function askMentor(
 
         return response;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         // Log full error for debugging (server-side only)
 
         // Handle ProviderError with specific messages
