@@ -19,12 +19,14 @@
  */
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import dynamic from "next/dynamic";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import RamadhanCountdown from "@/components/RamadhanCountdown";
 import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
 import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 import HomeHeader from "@/components/HomeHeader";
-import EidCard from "@/components/ramadhan/EidCard";
+
+const RamadhanCountdown = dynamic(() => import("@/components/RamadhanCountdown"), { ssr: false });
+const EidCard = dynamic(() => import("@/components/ramadhan/EidCard"), { ssr: false });
 
 export default function HomeClient() {
     const { data } = usePrayerTimesContext();
