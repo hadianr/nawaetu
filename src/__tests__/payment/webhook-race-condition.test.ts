@@ -71,7 +71,7 @@ describe('Payment Webhook Race Condition', () => {
         process.env = originalEnv;
     });
 
-    const createSignedRequest = (payload: any) => {
+    const createSignedRequest = (payload: Record<string, unknown>) => {
         const body = JSON.stringify(payload);
         const signature = crypto.createHmac('sha256', SECRET).update(body).digest('hex');
 
@@ -100,7 +100,7 @@ describe('Payment Webhook Race Condition', () => {
         };
 
         const req = createSignedRequest(payload);
-        const res: any = await POST(req);
+        const res = await POST(req);
 
         if (res.status !== 200) {
             console.error('Test Failed Response:', res.body || res);

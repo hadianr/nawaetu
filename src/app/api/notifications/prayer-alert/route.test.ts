@@ -8,6 +8,12 @@ import { POST } from './route';
 import { db } from '@/db';
 import { NextRequest } from 'next/server';
 
+interface PrayerAlertResponseBody {
+    success: boolean;
+    mode: string;
+    results: { total: number };
+}
+
 vi.mock('@/db', () => ({
     db: {
         select: vi.fn(),
@@ -60,7 +66,7 @@ describe('POST /api/notifications/prayer-alert', () => {
                     }
                 }
             })
-        } as any);
+        } as Response);
     });
 
     it('returns mode=alert results when invoked with ?mode=alert', async () => {
@@ -76,7 +82,8 @@ describe('POST /api/notifications/prayer-alert', () => {
             }
         ];
 
-        (db.select as any).mockReturnValue({
+        const selectMock = db.select as unknown as { mockReturnValue: (value: unknown) => void };
+        selectMock.mockReturnValue({
             from: vi.fn().mockReturnValue({
                 where: vi.fn().mockResolvedValue(mockSubscriptions),
             })
@@ -84,7 +91,7 @@ describe('POST /api/notifications/prayer-alert', () => {
 
         const req = new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
         const res = await POST(req);
-        const body = (res as any).body || (typeof (res as any).json === 'function' ? await (res as any).json() : res);
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);
         expect(body.success).toBe(true);
@@ -105,7 +112,8 @@ describe('POST /api/notifications/prayer-alert', () => {
             }
         ];
 
-        (db.select as any).mockReturnValue({
+        const selectMock = db.select as unknown as { mockReturnValue: (value: unknown) => void };
+        selectMock.mockReturnValue({
             from: vi.fn().mockReturnValue({
                 where: vi.fn().mockResolvedValue(mockSubscriptions),
             })
@@ -113,7 +121,7 @@ describe('POST /api/notifications/prayer-alert', () => {
 
         const req = new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
         const res = await POST(req);
-        const body = (res as any).body || (typeof (res as any).json === 'function' ? await (res as any).json() : res);
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);
         expect(body.success).toBe(true);

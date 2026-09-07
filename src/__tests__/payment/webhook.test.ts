@@ -20,7 +20,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import { POST } from '@/app/api/payment/webhook/route';
 import { db } from '@/db';
-import { transactions, users } from '@/db/schema';
 import { NextRequest } from 'next/server';
 import crypto from 'crypto';
 
@@ -72,7 +71,7 @@ describe('Payment Webhook', () => {
         process.env = originalEnv;
     });
 
-    const createSignedRequest = (payload: any) => {
+    const createSignedRequest = (payload: Record<string, unknown>) => {
         const body = JSON.stringify(payload);
         const signature = crypto.createHmac('sha256', SECRET).update(body).digest('hex');
 
@@ -212,7 +211,7 @@ describe('Payment Webhook', () => {
         const res = await POST(req);
 
         expect(res.status).toBe(200);
-        const json = (res as any).body;
+        const json = (res as unknown as { body: { message: string } }).body;
         expect(json.message).toBe("Already processed");
 
         expect(db.update).not.toHaveBeenCalled();

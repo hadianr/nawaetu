@@ -27,7 +27,7 @@ vi.mock('fs', () => ({
 }));
 
 // Mock firebase-admin
-const mockApps = [] as any[];
+const mockApps: unknown[] = [];
 const mockInitializeApp = vi.fn();
 const mockCert = vi.fn();
 const mockMessaging = vi.fn(() => ({ send: vi.fn() }));
@@ -54,7 +54,7 @@ describe('firebase-admin', () => {
         mockInitializeApp.mockReset();
         mockCert.mockReset();
         mockMessaging.mockReset();
-        mockMessaging.mockReturnValue({ send: vi.fn() } as any);
+        mockMessaging.mockReturnValue({ send: vi.fn() });
 
         const mod = await import('./firebase-admin');
         getMessaging = mod.getMessaging;

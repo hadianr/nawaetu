@@ -56,10 +56,6 @@ const updateChain = {
     where: vi.fn().mockResolvedValue([]),
 };
 
-const queryChain = {
-    findFirst: vi.fn(),
-};
-
 vi.mock('@/db', () => ({
     checkConnection: vi.fn().mockResolvedValue({ success: true }),
     db: {

@@ -94,7 +94,7 @@ describe('Payment Webhook Security', () => {
         // Assert: 400 Bad Request
         expect(res.status).toBe(400);
         // Helper to get body from mock response
-        const json = (res as any).body;
+        const json = (res as unknown as { body: { error: string } }).body;
         expect(json.error).toBe("Invalid Signature");
 
         // Verify that it did NOT process the update
@@ -122,7 +122,7 @@ describe('Payment Webhook Security', () => {
 
         // Assert: 400 Bad Request (Missing Signature)
         expect(res.status).toBe(400);
-        const json = (res as any).body;
+        const json = (res as unknown as { body: { error: string } }).body;
         expect(json.error).toBe("Invalid Signature");
 
         expect(db.update).not.toHaveBeenCalled();
@@ -160,17 +160,19 @@ describe('Payment Webhook Security', () => {
             mayarId: 'txn_123'
         };
 
-        vi.mocked(db.query.transactions.findFirst).mockResolvedValue(mockTransaction as any);
+        vi.mocked(db.query.transactions.findFirst).mockResolvedValue(
+            mockTransaction as unknown as Awaited<ReturnType<typeof db.query.transactions.findFirst>>
+        );
 
         // Mock update to handle .returning() and plain await
         vi.mocked(db.update).mockReturnValue({
              set: vi.fn().mockReturnValue({
                  where: vi.fn().mockReturnValue({
                      returning: vi.fn().mockResolvedValue([{ status: 'settlement' }]),
-                     then: (resolve: any) => resolve({}) // Handle await on where() result
+                     then: (resolve: (value: Record<string, never>) => unknown) => resolve({}) // Handle await on where() result
                  })
              })
-        } as any);
+        } as unknown as ReturnType<typeof db.update>);
 
         const res = await POST(req);
 
@@ -213,7 +215,7 @@ describe('Payment Webhook Security', () => {
 
         // Assert: 400 Bad Request
         expect(res.status).toBe(400);
-        const json = (res as any).body;
+        const json = (res as unknown as { body: { error: string } }).body;
         expect(json.error).toBe("Invalid Signature");
 
         expect(db.update).not.toHaveBeenCalled();

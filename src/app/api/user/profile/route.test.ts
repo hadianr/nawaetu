@@ -54,22 +54,22 @@ describe("PATCH /api/user/profile", () => {
         const req = {
             json: () => Promise.resolve({ gender: 'female' })
         };
-        const res: any = await PATCH(req as any);
+        const res = await PATCH(req as Parameters<typeof PATCH>[0]);
         expect(res.status).toBe(401);
     });
 
     it("should update gender successfully for authenticated user", async () => {
         vi.mocked(getServerSession).mockResolvedValueOnce({
             user: { id: 'user-123', email: 'test@example.com' }
-        } as any);
+        } as Awaited<ReturnType<typeof getServerSession>>);
 
         const req = {
             json: () => Promise.resolve({ gender: 'female' })
         };
 
-        const res: any = await PATCH(req as any);
+        const res = await PATCH(req as Parameters<typeof PATCH>[0]);
         expect(res.status).toBe(200);
-        const body = res.body || (await res.json());
+        const body = (res as unknown as { body: { data: { gender: string } } }).body;
         expect(body.data.gender).toBe('female');
         expect(mockUpdateSet).toHaveBeenCalledWith(expect.objectContaining({ gender: 'female' }));
     });

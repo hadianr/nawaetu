@@ -20,7 +20,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './route';
 import { db } from '@/db';
-import { intentions, users, bookmarks, userCompletedMissions, dailyActivities, userReadingState } from '@/db/schema';
+import { intentions, userCompletedMissions } from '@/db/schema';
 
 // Mock dependencies
 vi.mock('@/lib/auth', () => ({
@@ -31,7 +31,6 @@ vi.mock('@/lib/auth', () => ({
 }));
 
 // Mock NextRequest and NextResponse
-const jsonMock = vi.fn((data, init) => ({ json: async () => data, status: init?.status || 200 }));
 vi.mock('next/server', () => ({
     NextRequest: class {
         body?: string;
@@ -69,13 +68,10 @@ vi.mock('@/db/schema', () => ({
 }));
 
 describe('POST /api/user/sync-guest', () => {
-    let txMock: any;
+    let txMock = createTransactionMock();
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-
-        // Setup transaction mock
-        txMock = {
+    function createTransactionMock() {
+        return {
             insert: vi.fn().mockReturnThis(),
             values: vi.fn().mockReturnThis(),
             onConflictDoNothing: vi.fn().mockReturnThis(),
@@ -85,13 +81,20 @@ describe('POST /api/user/sync-guest', () => {
             where: vi.fn().mockReturnThis(),
             query: {
                 intentions: {
-                    findMany: vi.fn().mockResolvedValue([])
-                }
-            }
+                    findMany: vi.fn().mockResolvedValue([]),
+                },
+            },
         };
+    }
 
-        (db.transaction as any).mockImplementation(async (callback: any) => {
-            await callback(txMock);
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        // Setup transaction mock
+        txMock = createTransactionMock();
+
+        vi.mocked(db.transaction).mockImplementation(async (callback) => {
+            await callback(txMock as never);
         });
     });
 
@@ -109,12 +112,12 @@ describe('POST /api/user/sync-guest', () => {
             headers: new Headers(),
         };
 
-        await POST(req as any);
+        await POST(req as Parameters<typeof POST>[0]);
 
         expect(db.transaction).toHaveBeenCalled();
 
         // Filter calls for intentions table
-        const insertCalls = txMock.insert.mock.calls.filter((call: any) => call[0] === intentions);
+        const insertCalls = txMock.insert.mock.calls.filter((call: unknown[]) => call[0] === intentions);
 
         // Assert optimization: 1 call instead of N
         expect(insertCalls.length).toBe(1);
@@ -134,17 +137,18 @@ describe('POST /api/user/sync-guest', () => {
             headers: new Headers(),
         };
 
-        await POST(req as any);
+        await POST(req as Parameters<typeof POST>[0]);
 
         // Filter calls for userCompletedMissions table
-        const insertCalls = txMock.insert.mock.calls.filter((call: any) => call[0] === userCompletedMissions);
+        const insertCalls = txMock.insert.mock.calls.filter((call: unknown[]) => call[0] === userCompletedMissions);
 
         // Expecting 1 call (bulk insert)
         expect(insertCalls.length).toBe(1);
 
         // Verify values passed to the single insert call
-        const bulkInsertValuesCall = txMock.values.mock.calls.find((args: any) => Array.isArray(args[0]) && args[0].length === 3);
+        const bulkInsertValuesCall = txMock.values.mock.calls.find((args: unknown[]) => Array.isArray(args[0]) && args[0].length === 3);
         expect(bulkInsertValuesCall).toBeDefined();
+        if (!bulkInsertValuesCall) throw new Error('Expected one bulk values call');
 
         // Verify content of the first item
         const firstItem = bulkInsertValuesCall[0][0];

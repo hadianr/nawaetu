@@ -55,17 +55,17 @@ vi.mock('@/db', () => ({
 // Mock Next server
 vi.mock('next/server', () => ({
     NextResponse: {
-        json: vi.fn((body, init) => ({ body, status: init?.status || 200 })),
+        json: vi.fn((body: unknown, init?: { status?: number }) => ({ body, status: init?.status || 200 })),
     },
     NextRequest: class MockNextRequest {
-        body: any
+        body: string | null
         headers: Headers
-        constructor(input: string, init?: any) {
+        constructor(input: string, init?: { body?: string | null; headers?: HeadersInit }) {
             this.body = init?.body || null;
             this.headers = new Headers(init?.headers || {});
         }
         async json() {
-            return JSON.parse(this.body || '{}');
+            return JSON.parse(this.body ?? '{}');
         }
         async text() {
             return this.body || '';

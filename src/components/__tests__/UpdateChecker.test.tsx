@@ -25,11 +25,11 @@ import UpdateChecker from '@/components/UpdateChecker';
 // Mock global Fetch
 global.fetch = vi.fn();
 
-const mockFetch = (response: any, ok = true) => {
-    (global.fetch as any).mockResolvedValue({
+const mockFetch = (response: unknown, ok = true) => {
+    vi.mocked(global.fetch).mockResolvedValue({
         ok,
         json: () => Promise.resolve(response),
-    });
+    } as Response);
 };
 
 // Mock sonner toast
@@ -110,10 +110,13 @@ describe('UpdateChecker', () => {
         });
 
         const deleteCache = vi.fn().mockResolvedValue(true);
-        (global as any).caches = {
+        Object.defineProperty(globalThis, 'caches', {
+            configurable: true,
+            value: {
             keys: vi.fn().mockResolvedValue(['cache-v1']),
             delete: deleteCache,
-        };
+            },
+        });
 
         await act(async () => {
             render(<UpdateChecker currentVersion="1.0.0" />);

@@ -86,11 +86,17 @@ describe('POST /api/notifications/subscribe', () => {
         const mockInsert = vi.fn().mockReturnValue({
             values: mockValues
         });
-        (db.insert as any).mockImplementation(mockInsert);
+        const insertMock = db.insert as unknown as {
+            mockImplementation: (implementation: typeof mockInsert) => void;
+        };
+        insertMock.mockImplementation(mockInsert);
 
         const mockWhere = vi.fn().mockResolvedValue({});
         const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
-        (db.update as any).mockReturnValue({ set: mockSet });
+        const updateMock = db.update as unknown as {
+            mockReturnValue: (value: unknown) => void;
+        };
+        updateMock.mockReturnValue({ set: mockSet });
 
         const req = new NextRequest('http://localhost', {
             method: 'POST',
@@ -134,7 +140,10 @@ describe('POST /api/notifications/subscribe', () => {
         const mockInsert = vi.fn().mockReturnValue({
              values: mockValues
         });
-        (db.insert as any).mockImplementation(mockInsert);
+        const insertMock = db.insert as unknown as {
+            mockImplementation: (implementation: typeof mockInsert) => void;
+        };
+        insertMock.mockImplementation(mockInsert);
 
         const req = new NextRequest('http://localhost', {
             method: 'POST',
