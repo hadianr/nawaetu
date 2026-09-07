@@ -85,13 +85,14 @@ export async function POST(req: NextRequest) {
             userId: session.user.id,
             tokenFingerprint: `${token.slice(0, 12)}…${token.length}`,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         logger.error("FCM test send failed", error, {
             route: "/api/notifications/test",
             userId: session.user.id,
             tokenFingerprint: `${token.slice(0, 12)}…${token.length}`,
         });
-        if (error?.code === "messaging/registration-token-not-registered" || error?.code === "messaging/invalid-registration-token") {
+        const errorCode = error && typeof error === "object" && "code" in error ? error.code : undefined;
+        if (errorCode === "messaging/registration-token-not-registered" || errorCode === "messaging/invalid-registration-token") {
             await db.update(pushSubscriptions)
                 .set({ active: 0, updatedAt: new Date() })
                 .where(eq(pushSubscriptions.id, subscription.id));

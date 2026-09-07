@@ -49,11 +49,11 @@ export async function POST(req: NextRequest) {
         const response = await messagingAdmin.send(message);
 
         return NextResponse.json({ success: true, messageId: response });
-    } catch (error: any) {
+    } catch (error: unknown) {
 
         return NextResponse.json({
             error: "Failed to send notification",
-            details: error?.message || "Unknown error"
+            details: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }
 }
