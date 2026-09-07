@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 
 interface RamadhanStats {
@@ -18,6 +19,11 @@ interface RamadhanStats {
     totalQuranSeconds: number;
     totalHasanah: number;
     totalAyat: number;
+    totalTasbih: number;
+    totalSunnahAll: number;
+    fardhuMasjidDays: number;
+    fardhuRumahDays: number;
+    fardhuKeduanyaDays: number;
     tarawehCount: number;
     qiyamulLailCount: number;
     masjidCount: number;
@@ -26,6 +32,10 @@ interface RamadhanStats {
     rakaat8Count: number;
     rakaat20Count: number;
     topChoice: "8" | "20" | "balanced";
+}
+
+interface FastingLogEntry {
+    status?: string;
 }
 
 function formatDuration(seconds: number): string {
@@ -63,7 +73,7 @@ function MiniBar({ left, right, leftLabel, rightLabel, leftColor, rightColor }: 
 }
 
 export default function RamadhanWrappedCard() {
-    const t = useTranslations() as any;
+    const t = useTranslations() as TranslationTree;
     const { data: prayerData } = usePrayerTimesContext();
     const [stats, setStats] = useState<RamadhanStats | null>(null);
     const [insight, setInsight] = useState<string | null>(null);
@@ -82,20 +92,20 @@ export default function RamadhanWrappedCard() {
         async function fetchStats() {
             try {
                 const storage = getStorageService();
-                const sName = storage.getOptional(STORAGE_KEYS.USER_NAME as any);
+                const sName = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
                 if (sName) setUserName(sName as string);
 
                 const res = await fetch(`/api/ramadhan/summary?hijriYear=${activeHijriYear}`);
                 const apiData = await res.json();
 
-                const savedFastingLog = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_LOG as any);
+                const savedFastingLog = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_LOG);
                 let localFastingCount = 0;
                 const safeHijriYear = apiData?.hijriYear || activeHijriYear;
                 if (savedFastingLog) {
                     try {
-                        const parsed = JSON.parse(savedFastingLog);
+                        const parsed = JSON.parse(savedFastingLog) as Record<string, Record<string, FastingLogEntry>>;
                         const yr = parsed[safeHijriYear] || parsed[safeHijriYear.toString()] || {};
-                        localFastingCount = Object.values(yr).filter((v: any) => v && v.status === "fasting").length;
+                        localFastingCount = Object.values(yr).filter(v => v.status === "fasting").length;
                     } catch { /* ignore */ }
                 }
 
@@ -109,6 +119,11 @@ export default function RamadhanWrappedCard() {
                     qiyamulLailCount: apiData?.qiyamulLailCount || 0,
                     masjidCount: apiData?.masjidCount || 0,
                     rumahCount: apiData?.rumahCount || 0,
+                    totalTasbih: apiData?.totalTasbih || 0,
+                    totalSunnahAll: apiData?.totalSunnahAll || 0,
+                    fardhuMasjidDays: apiData?.fardhuMasjidDays || 0,
+                    fardhuRumahDays: apiData?.fardhuRumahDays || 0,
+                    fardhuKeduanyaDays: apiData?.fardhuKeduanyaDays || 0,
                     topLocation: apiData?.topLocation || "balanced",
                     rakaat8Count: apiData?.rakaat8Count || 0,
                     rakaat20Count: apiData?.rakaat20Count || 0,
@@ -117,7 +132,7 @@ export default function RamadhanWrappedCard() {
                 setStats(finalStats);
 
                 // --- AI Insight Caching Logic ---
-                const insightCacheKey = STORAGE_KEYS.RAMADHAN_INSIGHT_CACHE as any;
+                const insightCacheKey = STORAGE_KEYS.RAMADHAN_INSIGHT_CACHE;
                 const fullCache = storage.getOptional<Record<string, string>>(insightCacheKey) || {};
                 const cachedInsight = fullCache[safeHijriYear] || fullCache[safeHijriYear.toString()];
 
@@ -128,7 +143,7 @@ export default function RamadhanWrappedCard() {
                     // Fetch AI insight in background
                     setInsightLoading(true);
                     try {
-                        const lang = storage.getOptional<string>("nawaetu_language" as any) || "id";
+                        const lang = storage.getOptional<string>("nawaetu_language") || "id";
                         const insightRes = await fetch("/api/ramadhan/insight", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -184,9 +199,6 @@ export default function RamadhanWrappedCard() {
     }
 
     if (!stats) return null;
-
-    const totalTaraweh = stats.masjidCount + stats.rumahCount;
-    const totalRakaat = stats.rakaat8Count + stats.rakaat20Count;
 
     // ─── The downloadable 9:16 card ────────────────────────────────────────
     const WrappedCardContent = (
@@ -254,30 +266,30 @@ export default function RamadhanWrappedCard() {
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgba(168,85,247,0.08)", borderColor: "rgba(168,85,247,0.2)" }}>
                         <span className="text-base mb-0.5">📿</span>
                         <div className="text-white font-black text-sm leading-none">
-                            {(stats as any).totalTasbih > 999
-                                ? `${Math.floor((stats as any).totalTasbih / 1000)}k`
-                                : ((stats as any).totalTasbih || 0)}
+                            {stats.totalTasbih > 999
+                                ? `${Math.floor(stats.totalTasbih / 1000)}k`
+                                : stats.totalTasbih}
                         </div>
                         <div className="text-[7px] text-purple-400/70 uppercase tracking-wider mt-0.5 text-center">Dzikir</div>
                     </div>
                     {/* Sholat Sunnah */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgba(34,197,94,0.08)", borderColor: "rgba(34,197,94,0.2)" }}>
                         <span className="text-base mb-0.5">☀️</span>
-                        <div className="text-white font-black text-sm leading-none">{(stats as any).totalSunnahAll || 0}</div>
+                        <div className="text-white font-black text-sm leading-none">{stats.totalSunnahAll}</div>
                         <div className="text-[7px] text-green-400/70 uppercase tracking-wider mt-0.5 text-center">Sholat Sunnah</div>
                     </div>
                 </div>
 
                 {/* Lokasi Sholat Wajib bar */}
-                {((stats as any).fardhuMasjidDays + (stats as any).fardhuRumahDays + ((stats as any).fardhuKeduanyaDays || 0)) > 0 && (
+                {(stats.fardhuMasjidDays + stats.fardhuRumahDays + stats.fardhuKeduanyaDays) > 0 && (
                     <div className="rounded-xl p-3 border" style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}>
                         <div className="flex items-center gap-1.5 mb-2">
                             <span className="text-xs">🕌</span>
                             <span className="text-[9px] font-bold uppercase tracking-wider text-white/50">Lokasi Sholat Wajib</span>
                         </div>
                         <MiniBar
-                            left={(stats as any).fardhuMasjidDays || 0}
-                            right={(stats as any).fardhuRumahDays || 0}
+                            left={stats.fardhuMasjidDays}
+                            right={stats.fardhuRumahDays}
                             leftLabel="🕌 Masjid"
                             rightLabel="Rumah 🏠"
                             leftColor="bg-[rgba(var(--color-primary),0.7)]"
