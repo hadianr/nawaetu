@@ -18,9 +18,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
-import { db, checkConnection } from "@/db";
-import { bookmarks, intentions, users, userCompletedMissions, dailyActivities, userReadingState } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { checkConnection } from "@/db";
 import { logger } from "@/lib/logger";
 import { type SyncQueueEntry, type SyncEntityType } from "@/lib/sync-queue";
 import { DbSyncRepository } from "@/core/repositories/db-sync.repository";

@@ -35,7 +35,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   // Transpile packages that use @babel/runtime to prevent chunk loading issues
   transpilePackages: ['framer-motion'],
-  serverExternalPackages: ["@prisma/instrumentation", "@opentelemetry/instrumentation", "isomorphic-dompurify"],
+  serverExternalPackages: ["isomorphic-dompurify"],
   productionBrowserSourceMaps: true,
 
   // Performance optimizations
@@ -50,15 +50,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
       "lucide-react",
-      "date-fns",
-      "lodash",
       "@radix-ui/react-dialog",
       "@radix-ui/react-slot",
-      "@radix-ui/react-dropdown-menu",
-      "@radix-ui/react-popover",
-      "react-markdown",
       "@google/generative-ai",
-      "sentry",
       "@sentry/nextjs"
     ],
     optimizeCss: false, // Disabled to avoid critters dependency and parse errors

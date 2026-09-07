@@ -288,23 +288,6 @@ export function getVerseAudioUrl(verseId: number, reciterId: number): string {
   return `${API_CONFIG.AUDIO.ISLAMIC_NETWORK_CDN}/${reciter.bitrate}/ar.${reciter.name}/${verseId}.mp3`;
 }
 
-// Fallback for failed API calls - returns minimal verse structure
-function createFallbackVerse(verseKey: string): any {
-  const [chapter, verse] = verseKey.split(":");
-  return {
-    id: parseInt(verseKey.replace(":", "")),
-    verse_number: parseInt(verse),
-    verse_key: verseKey,
-    text_uthmani: "",
-    text_uthmani_tajweed: "",
-    translations: [{ text: "Unable to load translation" }],
-    transliteration: "",
-    words: [],
-    audio: { url: "", primary: "", secondary: [] },
-    meta: null,
-  };
-}
-
 export interface SearchResultItem {
   verse_key: string;
   verse_id: number;

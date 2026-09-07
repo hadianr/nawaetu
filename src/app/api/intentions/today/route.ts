@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
-import { eq, and, sql, gte, lt } from "drizzle-orm";
+import { eq, and, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 import { logger } from "@/lib/logger";
 
