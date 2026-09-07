@@ -21,7 +21,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronLeft, Book, Flame, ScrollText, Star, Calendar } from "lucide-react";
+import { ChevronLeft, Book, ScrollText, Star, Calendar } from "lucide-react";
 import IntentionStreak from "@/components/intentions/IntentionStreak";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
@@ -35,11 +35,18 @@ interface Intention {
     reflected_at?: string;
 }
 
+interface JournalStats {
+    current_streak: number;
+    longest_streak?: number;
+    total_intentions: number;
+    reflection_rate: number;
+}
+
 export default function JournalPage() {
     const { locale, t } = useLocale();
 
     const [intentions, setIntentions] = useState<Intention[]>([]);
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<JournalStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -71,7 +78,7 @@ export default function JournalPage() {
                 }
                 setHasMore(data.data.pagination.has_more);
             }
-        } catch (error) {
+        } catch {
         } finally {
             setIsLoading(false);
         }

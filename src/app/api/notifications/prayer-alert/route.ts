@@ -111,7 +111,7 @@ function parseJsonField<T>(val: any): T | null {
             const parsed = JSON.parse(val);
             if (typeof parsed === "string") return JSON.parse(parsed) as T;
             return parsed as T;
-        } catch (e) {
+        } catch {
             return null;
         }
     }
@@ -124,7 +124,7 @@ function inferTimezoneFromCoords(lat: number, lng: number, rawTz?: string | null
         try {
             Intl.DateTimeFormat(undefined, { timeZone: rawTz });
             return rawTz;
-        } catch (e) { }
+        } catch { }
     }
     // Indonesia boundaries fallback
     if (lat >= -11 && lat <= 6 && lng >= 95 && lng <= 141) {

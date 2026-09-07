@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
             }
         });
 
-    } catch (e) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
@@ -175,7 +175,7 @@ export async function PATCH(req: NextRequest) {
 
                 // Robustness: If the data came as a string, parse it
                 if (typeof qlr === 'string' && qlr.startsWith('{')) {
-                    try { qlr = JSON.parse(qlr); } catch (e) { }
+                    try { qlr = JSON.parse(qlr); } catch { }
                 }
                 await tx.insert(userReadingState)
                     .values({
@@ -205,7 +205,7 @@ export async function PATCH(req: NextRequest) {
             data: newSettings
         });
 
-    } catch (e) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

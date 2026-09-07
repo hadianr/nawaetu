@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
         } else {
             return NextResponse.json({ error: "Subscription not found" }, { status: 404 });
         }
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

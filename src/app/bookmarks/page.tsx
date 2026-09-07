@@ -20,12 +20,13 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Bookmark as BookmarkIcon, Trash2, Calendar, FileText } from "lucide-react";
+import { ChevronLeft, Bookmark as BookmarkIcon, Trash2, Calendar, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBookmarks } from "@/hooks/useBookmarks";
+import type { Bookmark } from "@/lib/quran/bookmark-storage";
 import { removeBookmark } from "@/lib/quran/bookmark-storage";
 import { useState, useEffect } from "react";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -51,11 +52,11 @@ export default function BookmarksPage() {
     useEffect(() => {
         setMounted(true);
         // Check current last read
-        const saved = storage.getOptional<any>(STORAGE_KEYS.QURAN_LAST_READ as any);
+        const saved = storage.getOptional<{ surahId: number; verseId: number } | string>(STORAGE_KEYS.QURAN_LAST_READ);
         if (saved) {
             try {
                 setLastRead(typeof saved === 'string' ? JSON.parse(saved) : saved);
-            } catch (e) { }
+            } catch { }
         }
     }, []);
 
@@ -65,11 +66,11 @@ export default function BookmarksPage() {
         if (confirm(t.bookmarksDeleteConfirm)) {
             removeBookmark(id);
             refresh();
-            toast.success((t as any).bookmarksDeleted || "Tanda baca dihapus");
+            toast.success((t as TranslationTree).bookmarksDeleted || "Tanda baca dihapus");
         }
     };
 
-    const handleSetLastRead = (bookmark: any, e: React.MouseEvent) => {
+    const handleSetLastRead = (bookmark: Pick<Bookmark, "surahId" | "surahName" | "verseId">, e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -79,7 +80,7 @@ export default function BookmarksPage() {
             verseId: bookmark.verseId,
             timestamp: Date.now()
         };
-        storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, lastReadData);
+        storage.set(STORAGE_KEYS.QURAN_LAST_READ, lastReadData);
         window.dispatchEvent(new CustomEvent('nawaetu_storage_change', { detail: { key: STORAGE_KEYS.QURAN_LAST_READ } }));
         setLastRead(lastReadData);
 

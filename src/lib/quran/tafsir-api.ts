@@ -66,7 +66,7 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
                 } else {
                     return parsed as TafsirContent;
                 }
-            } catch (e) {
+            } catch {
             }
         }
 
@@ -124,13 +124,13 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
             try {
                 const entry: TafsirCacheEntry = { data: content, ts: Date.now(), v: TAFSIR_CACHE_VERSION };
                 storage.set(cacheKey as any, JSON.stringify(entry));
-            } catch (e) {
+            } catch {
                 // Handle quota exceeded or other storage errors silently
             }
         }
 
         return content;
-    } catch (error) {
+    } catch {
         return null;
     }
 }

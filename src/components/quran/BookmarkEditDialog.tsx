@@ -66,7 +66,7 @@ export default function BookmarkEditDialog({
                     if (parsed.surahId === bookmark.surahId && parsed.verseId === bookmark.verseId) {
                         setIsLastRead(true);
                     }
-                } catch (e) { }
+                } catch { }
             }
         } else if (!open) {
             setNote("");

@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
         let deviceInfo: any = {};
         try {
             deviceInfo = JSON.parse(deviceInfoStr);
-        } catch (e) {
+        } catch {
             return NextResponse.json(
                 { error: "Format data perangkat tidak valid." },
                 { status: 400 }

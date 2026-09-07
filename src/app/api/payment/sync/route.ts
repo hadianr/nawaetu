@@ -147,7 +147,7 @@ export async function GET(req: NextRequest) {
             isMuhsinin: user.isMuhsinin
         });
 
-    } catch (e) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

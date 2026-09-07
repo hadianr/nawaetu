@@ -125,7 +125,7 @@ class SyncQueueManager {
       if (stored) {
         this.queue = JSON.parse(stored);
       }
-    } catch (error) {
+    } catch {
       this.queue = [];
     }
   }
@@ -138,7 +138,7 @@ class SyncQueueManager {
       if (typeof window === 'undefined') return;
 
       window.localStorage?.setItem(this.STORAGE_KEY, JSON.stringify(this.queue));
-    } catch (error) {
+    } catch {
     }
   }
 
@@ -279,4 +279,3 @@ class SyncQueueManager {
  * Export singleton instance for use throughout app
  */
 export const syncQueue = SyncQueueManager.getInstance();
-

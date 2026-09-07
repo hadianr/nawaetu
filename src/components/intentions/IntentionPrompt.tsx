@@ -22,7 +22,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { IntentionDalil, getRandomDalil } from "@/data/intention-dalils";
-import { BookHeart, Sparkles, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface IntentionPromptProps {
     onSubmit: (intentionText: string) => Promise<void>;
@@ -73,7 +73,7 @@ export default function IntentionPrompt({
         setIsSubmitting(true);
         try {
             await onSubmit(intentionText);
-        } catch (error) {
+        } catch {
         } finally {
             setIsSubmitting(false);
         }
