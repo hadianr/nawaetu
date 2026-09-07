@@ -1,7 +1,8 @@
 # Nawaetu repository audit
 
 Initial audit: 2026-09-03  
-Audit rerun: 2026-09-07  
+Audit rerun: 2026-09-08
+
 Scope: repository tree, generated artifacts, dependencies, static references, source graph, and local validation  
 Method: disk-usage inspection, current graphify AST graph, import/reference search, duplicate-byte search, dependency inspection, ESLint, TypeScript, and Vitest
 
@@ -42,8 +43,24 @@ The highest-value cleanup was local artifact removal, followed by dependency/con
 - Applied the next Quran UI Tier A batch: removed 41 dead imports/locals/catch bindings from `VerseList` while preserving its audio, autoplay, bookmark, infinite-scroll, and reading-tracking flows.
 - Applied the next Tier B typing batch: replaced 43 onboarding translation/storage `any` usages with the shared translation type and native string-key contract, while preserving onboarding persistence, profile sync, and location flow.
 - Applied the next Mentor AI typing batch: replaced 24 clear translation/storage/timer/error `any` usages and one unused session binding without changing prompts, quota, history, or server sync behavior.
+- Applied the next Ramadhan UI typing batch: replaced 15 clear stats/storage/translation `any` usages and removed 2 unused calculations without changing summary, cache, insight, or image-sharing behavior.
+- Applied the first safe GuestSyncManager cleanup: removed 13 confirmed unused imports/state bindings without changing sync requests, local storage, auth flow, or FCM code.
+- Applied the second safe GuestSyncManager cleanup: replaced 46 redundant storage-key and translation `any` casts with existing string and `TranslationTree` contracts; sync payload and hook behavior were unchanged.
+- Applied the third safe GuestSyncManager cleanup: replaced the remaining 10 data/payload/hydration `any` usages with explicit local contracts and `unknown` values, preserving existing guards and merge behavior.
+- Applied the fourth GuestSyncManager cleanup: moved sync helpers to stable module-level functions and declared the storage/translation effect dependencies, removing all remaining findings in the component without changing sync branch behavior.
+- Applied a safe VerseItem cleanup: removed 7 unused icon/prop bindings and replaced 2 Quran word `any` callbacks with a guarded `VerseWord` type without changing audio, bookmark, tafsir, or rendering behavior.
+- Applied a safe seasonal-loading cleanup: changed `HomeClient` to lazy-load `RamadhanCountdown` and `EidCard`, so their client chunks load only when the seasonal card is shown; Ramadan/Eid behavior remains available.
+- Applied a safe `RamadhanCountdown` lint cleanup: removed unused imports/locals, narrowed event and mission-progress values, stabilized the target date constant, and preserved countdown, adjustment, and mission-progress behavior.
+- Applied a safe seasonal API cleanup: validated `/api/ramadhan/insight` input with the existing Zod dependency, kept only stats used in the prompt, and narrowed provider errors from `any` to `unknown`; the Gemini → Groq → OpenRouter fallback order remains unchanged.
+- Applied a safe `MentorAIClient` cleanup: removed session object mutation, moved event-handler timestamps behind a stable helper, deferred quota initialization state updates with cleanup, and fixed one JSX entity; prompt, quota limits, retries, chat storage, and server sync behavior were preserved.
+- Applied a test-only sync proof cleanup: removed unused schema/mock bindings and replaced explicit `any` casts in `sync-guest/route.test.ts` with inferred mock/request types; bulk-insert assertions and sync coverage were unchanged.
+- Applied a test-only notification/security cleanup: replaced explicit `any` casts in `prayer-alert/route.test.ts` and `sync-guest/security.test.ts` with response, request, and mock contracts; alert success/stringified-field coverage and sync payload-limit coverage were unchanged.
+- Applied a batched test-only typing cleanup across six API, PWA, and payment tests: replaced 30 explicit `any` usages with response, request, query-builder, cache, and mock contracts; assertions and fixtures were unchanged.
+- Applied a safe lint batch across API, hook, utility, and UI paths: removed 39 unused catch bindings, one unused provider binding, and two notification error `any` boundaries; error handling, logging, fallback, and FCM send behavior were preserved.
+- Applied a safe Stats/Sirah/Missions UI cleanup: removed confirmed dead imports/helpers and replaced 10 UI `any` usages with existing mission, bookmark, translation, and journal-stat contracts; rendered data and interaction behavior were preserved.
+- Applied a safe Stats/Ramadhan contract cleanup: replaced 11 explicit `any` props/storage/translation usages with existing `PlayerStats`, `TranslationTree`, and storage contracts, and removed one unused Stats prop; rendered values and controls were preserved.
 
-## Audit rerun — 2026-09-07
+## Audit rerun — 2026-09-08
 
 Current measured footprint:
 
@@ -62,13 +79,14 @@ Current proof:
 
 - `npm ls --depth=0`: no extraneous or invalid top-level packages.
 - `npm run typecheck`: passed.
-- `npm run test:run`: passed — 51 test files, 192 passed tests, 2 skipped.
+- Focused batch tests: passed — 6 test files, 15 passed tests. The full suite has 51 passing files, 195 passed tests, 2 skipped, and 1 pre-existing timezone-sensitive failure in `useWidgetMissions`.
 - `npm run build`: passed; all 177 static pages generated, including Sirah routes and `/sw.js` at scope `/`.
 - Generated `/sw.js` included `importScripts("/firebase-messaging-sw.js")`; the authored Firebase worker remains tracked.
-- `npm run lint`: still fails with 828 findings — 605 errors and 223 warnings. The seven Tier A batches plus the four isolated typing pilots removed 250 findings without touching FCM, auth, payment, sync, or PWA runtime behavior.
-- `npm run test:run`: passed again after the second typing pilot — 51 test files, 192 passed tests, 2 skipped.
-- `npm run build`: passed again after the second typing pilot; all 177 static pages generated. The only build warnings are the existing oversized source maps excluded from precaching.
-- `git status`: only the second typing pilot and these audit-note updates are uncommitted; the lockfile update is preserved in separate commit `388b7d9`.
+- `npm run lint`: still fails with 506 findings — 401 errors and 105 warnings. The batched test files, notification test endpoints, `ai-action`, Stats/Ramadhan/Sirah/Missions cleanup targets, and the previously cleaned components/routes are lint-clean; remaining findings are primarily explicit `any` contracts and behavior-sensitive React hook rules. `MentorAIClient` retains 3 reviewed quota-effect dependency warnings because forcing unstable context callbacks into dependencies could cause repeated refreshes. Seasonal UI components are route/dynamic-loaded, while the small seasonal mission data remains in the deferred mission chunk because the home mission widget uses Hijri-aware seasonal missions.
+- `npm run test:run`: 51 test files passed, 1 failed, 195 tests passed, 2 skipped. The failure is an existing timezone-sensitive `useWidgetMissions` assertion: the fixture uses UTC `toISOString()` while production comparison uses the local date; no seasonal or batch-test code is involved.
+- `npm run build`: passed after the seasonal dynamic imports; all 177 static pages generated. The only build warnings are the existing oversized source maps excluded from precaching.
+- `rtk graphify update .`: passed; current graph has 2,828 nodes, 5,971 edges, and 243 communities. Graphify reported 4 JSON files with zero AST nodes and 20 SQL files skipped because the optional `tree_sitter_sql` dependency is absent; this affects analysis coverage, not application runtime.
+- `git status`: the current lint batches, GuestSyncManager regression test, Ramadhan changes, and audit-note updates are organized into atomic commits; the lockfile update remains preserved in separate commit `388b7d9`.
 
 Verdict: artifact, dependency, generated-file, dead-code, and Sirah-tooling cleanup is complete. The repository is not lint-clean yet; lint debt is a separate maintainability pass and should not be bulk-suppressed.
 
@@ -93,6 +111,8 @@ Verdict: artifact, dependency, generated-file, dead-code, and Sirah-tooling clea
 `done:` Replaced onboarding translation/storage `any` usages with `TranslationTree` and string-key types; onboarding persistence, authenticated profile sync, geolocation, and analytics behavior remain intact. Typecheck, tests, build, and diff checks passed.
 
 `done:` Replaced clear Mentor AI translation/storage/timer/error `any` usages with explicit types; prompts, quota accounting, chat history, retry behavior, and server sync remain intact. Typecheck, tests, build, and diff checks passed.
+
+`done:` Replaced clear Ramadhan summary stats/storage/translation `any` usages with explicit types and removed two unused calculations; summary display, insight cache, and image sharing remain intact. Typecheck, tests, build, and diff checks passed.
 
 `done:` The one-shot Sirah ETL/migration scripts were removed. Runtime Sirah data and pages remain; the scripts are recoverable from Git history if content regeneration is needed.
 
@@ -129,11 +149,11 @@ Removing these will not materially shrink a clean install by itself. The largest
 
 ## Validation evidence
 
-- `rtk graphify update .`: passed; current graph has 2,800 nodes, 5,929 edges, and 255 communities. Graphify reported 4 JSON files with zero AST nodes and 20 SQL files skipped because the optional `tree_sitter_sql` dependency is absent; this affects analysis coverage, not application runtime.
+- `rtk graphify update .`: passed; current graph has 2,817 nodes, 5,964 edges, and 259 communities. Graphify reported 4 JSON files with zero AST nodes and 20 SQL files skipped because the optional `tree_sitter_sql` dependency is absent; this affects analysis coverage, not application runtime.
 - `npm run typecheck`: passed.
-- `npm run test:run`: passed — 51 test files, 192 passed tests, 2 skipped.
+- `npm run test:run`: passed — 52 test files, 196 passed tests, 2 skipped.
 - `npm run build`: passed with network access; Next.js and `next-pwa` compiled successfully. Generated `.next` and PWA workers remain local and untracked after validation; remove them after active dev/build processes stop if disk space is needed.
-- `npm run lint`: failed — 828 findings (605 errors, 223 warnings), primarily `no-explicit-any`; this remaining debt should be handled separately from artifact cleanup.
+- `npm run lint`: failed — 727 findings (528 errors, 199 warnings), primarily `no-explicit-any`; this remaining debt should be handled separately from artifact cleanup.
 - The `package-lock.json` `fast-uri` update is preserved in separate commit `388b7d9`; the earlier lockfile edits removed the five unused direct dependencies.
 
 ## Recommended cleanup order
