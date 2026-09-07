@@ -29,6 +29,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
 import { useLocale } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 
 const ONBOARDING_KEY = STORAGE_KEYS.ONBOARDING_COMPLETED;
@@ -40,7 +41,8 @@ interface OnboardingOverlayProps {
 export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
     const { status } = useSession();
     const { updateProfile } = useProfile();
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
+    const translations = t as TranslationTree;
     // Removed internal visibility state - controlled by parent
     const [currentSlide, setCurrentSlide] = useState(0);
     const [step, setStep] = useState<'intro' | 'setup-name' | 'setup-gender' | 'setup-location'>('intro');
@@ -52,9 +54,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             color: "text-emerald-400",
             bg: "bg-emerald-500/10",
             border: "border-emerald-500/20",
-            title: (t as any).onboardingCardPrayerTitle,
-            description: (t as any).onboardingCardPrayerDesc,
-            highlight: (t as any).onboardingCardPrayerHint
+            title: translations.onboardingCardPrayerTitle,
+            description: translations.onboardingCardPrayerDesc,
+            highlight: translations.onboardingCardPrayerHint
         },
         {
             id: "quran",
@@ -62,9 +64,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             color: "text-blue-400",
             bg: "bg-blue-500/10",
             border: "border-blue-500/20",
-            title: (t as any).onboardingCardQuranTitle,
-            description: (t as any).onboardingCardQuranDesc,
-            highlight: (t as any).onboardingCardQuranHint
+            title: translations.onboardingCardQuranTitle,
+            description: translations.onboardingCardQuranDesc,
+            highlight: translations.onboardingCardQuranHint
         },
         {
             id: "intention",
@@ -72,9 +74,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             color: "text-violet-400",
             bg: "bg-violet-500/10",
             border: "border-violet-500/20",
-            title: (t as any).onboardingCardIntentionTitle,
-            description: (t as any).onboardingCardIntentionDesc,
-            highlight: (t as any).onboardingCardIntentionHint
+            title: translations.onboardingCardIntentionTitle,
+            description: translations.onboardingCardIntentionDesc,
+            highlight: translations.onboardingCardIntentionHint
         },
         {
             id: "progress",
@@ -82,9 +84,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             color: "text-amber-400",
             bg: "bg-amber-500/10",
             border: "border-amber-500/20",
-            title: (t as any).onboardingCardProgressTitle,
-            description: (t as any).onboardingCardProgressDesc,
-            highlight: (t as any).onboardingCardProgressHint
+            title: translations.onboardingCardProgressTitle,
+            description: translations.onboardingCardProgressDesc,
+            highlight: translations.onboardingCardProgressHint
         }
     ];
 
@@ -96,8 +98,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const storage = getStorageService();
 
     useEffect(() => {
-        sendGAEvent("onboarding_viewed", { version: "v2", locale: String((t as any).locale || "unknown") });
-    }, [t]);
+        sendGAEvent("onboarding_viewed", { version: "v2", locale: locale || "unknown" });
+    }, [t, locale]);
 
     const handleNext = () => {
         if (step === 'intro') {
@@ -117,10 +119,10 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
 
     const handleFinish = async () => {
         // 1. Local Storage Update (Immediate)
-        const finalName = name || (t as any).onboardingDefaultName;
+        const finalName = name || translations.onboardingDefaultName;
         storage.set(STORAGE_KEYS.USER_NAME, finalName);
         storage.set(STORAGE_KEYS.USER_GENDER, gender);
-        storage.set(ONBOARDING_KEY as any, "v2");
+        storage.set(ONBOARDING_KEY, "v2");
         sendGAEvent("onboarding_completed", { version: "v2" });
 
         // 2. Database Sync (If authenticated)
@@ -130,8 +132,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     name: finalName,
                     gender: gender as "male" | "female"
                 });
-            } catch (e) {
-                console.error("Failed to sync onboarding to database", e);
+            } catch (error) {
+                console.error("Failed to sync onboarding to database", error);
             }
         }
 
@@ -153,7 +155,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const handleDetectLocation = () => {
         setIsLocationLoading(true);
         if (!navigator.geolocation) {
-            toast.error((t as any).onboardingLocationError);
+            toast.error(translations.onboardingLocationError);
             setIsLocationLoading(false);
             return;
         }
@@ -175,14 +177,14 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         console.warn('Reverse geocoding failed', e);
                     }
 
-                    storage.set(STORAGE_KEYS.USER_LOCATION as any, {
+                    storage.set(STORAGE_KEYS.USER_LOCATION, {
                         lat: latitude,
                         lng: longitude,
                         name: locationName,
                         timestamp: Date.now()
                     });
 
-                    storage.remove(STORAGE_KEYS.PRAYER_DATA as any);
+                    storage.remove(STORAGE_KEYS.PRAYER_DATA);
 
                     // Notify the app about the new location
                     window.dispatchEvent(new CustomEvent('location_updated'));
@@ -190,16 +192,16 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
 
                     setIsLocationSet(true);
                     sendGAEvent("onboarding_location_result", { result: "detected" });
-                    toast.success((t as any).onboardingLocationSuccess);
+                    toast.success(translations.onboardingLocationSuccess);
                     setTimeout(() => handleFinish(), 1000);
-                } catch (error) {
-                    toast.error((t as any).onboardingLocationError);
+                } catch {
+                    toast.error(translations.onboardingLocationError);
                 } finally {
                     setIsLocationLoading(false);
                 }
             },
-            (error) => {
-                toast.error((t as any).onboardingLocationError);
+            () => {
+                toast.error(translations.onboardingLocationError);
                 setIsLocationLoading(false);
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -258,16 +260,16 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             <span className="text-3xl">👋</span>
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingNameTitle}</h2>
-                            <p className="text-sm text-white/70 mt-1">{(t as any).onboardingNameDesc}</p>
+                            <h2 className="text-xl font-bold text-white">{translations.onboardingNameTitle}</h2>
+                            <p className="text-sm text-white/70 mt-1">{translations.onboardingNameDesc}</p>
                         </div>
                         <input
                             autoFocus
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder={(t as any).onboardingNamePlaceholder}
-                            aria-label={(t as any).onboardingNamePlaceholder}
+                            placeholder={translations.onboardingNamePlaceholder}
+                            aria-label={translations.onboardingNamePlaceholder}
                             className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-lg font-bold"
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
@@ -284,13 +286,13 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 >
                     <div className="relative z-10 w-full space-y-4">
                         <div className="text-center mb-2">
-                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingGenderTitle}</h2>
-                            <p className="text-xs text-white/70 mt-1">{(t as any).onboardingGenderDesc}</p>
+                            <h2 className="text-xl font-bold text-white">{translations.onboardingGenderTitle}</h2>
+                            <p className="text-xs text-white/70 mt-1">{translations.onboardingGenderDesc}</p>
                         </div>
                         <div className="grid gap-3">
                             <button
                                 onClick={() => setGender('male')}
-                                aria-label={(t as any).onboardingMaleLabel}
+                                aria-label={translations.onboardingMaleLabel}
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
                                     gender === 'male' ? "bg-blue-500/20 border-blue-500 text-blue-100" : "bg-white/5 border-white/5 hover:bg-white/10"
@@ -298,14 +300,14 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             >
                                 <span className="text-3xl">👨</span>
                                 <div>
-                                    <span className="font-bold block text-sm">{(t as any).onboardingMaleLabel}</span>
-                                    <span className="text-[10px] opacity-70">{(t as any).onboardingMaleSub}</span>
+                                    <span className="font-bold block text-sm">{translations.onboardingMaleLabel}</span>
+                                    <span className="text-[10px] opacity-70">{translations.onboardingMaleSub}</span>
                                 </div>
                                 {gender === 'male' && <Check className="ml-auto w-5 h-5 text-blue-400" />}
                             </button>
                             <button
                                 onClick={() => setGender('female')}
-                                aria-label={(t as any).onboardingFemaleLabel}
+                                aria-label={translations.onboardingFemaleLabel}
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
                                     gender === 'female' ? "bg-pink-500/20 border-pink-500 text-pink-100" : "bg-white/5 border-white/5 hover:bg-white/10"
@@ -313,8 +315,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             >
                                 <span className="text-3xl">👩</span>
                                 <div>
-                                    <span className="font-bold block text-sm">{(t as any).onboardingFemaleLabel}</span>
-                                    <span className="text-[10px] opacity-70">{(t as any).onboardingFemaleSub}</span>
+                                    <span className="font-bold block text-sm">{translations.onboardingFemaleLabel}</span>
+                                    <span className="text-[10px] opacity-70">{translations.onboardingFemaleSub}</span>
                                 </div>
                                 {gender === 'female' && <Check className="ml-auto w-5 h-5 text-pink-400" />}
                             </button>
@@ -339,8 +341,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             {isLocationSet ? <Check className="w-8 h-8" /> : <MapPin className="w-8 h-8" />}
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">{(t as any).onboardingLocationTitle}</h2>
-                            <p className="text-sm text-white/70 mt-2 leading-relaxed">{(t as any).onboardingLocationDesc}</p>
+                            <h2 className="text-xl font-bold text-white">{translations.onboardingLocationTitle}</h2>
+                            <p className="text-sm text-white/70 mt-2 leading-relaxed">{translations.onboardingLocationDesc}</p>
                         </div>
                         <Button
                             onClick={handleDetectLocation}
@@ -354,17 +356,17 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             {isLocationLoading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    {(t as any).onboardingLocationDetecting}
+                                    {translations.onboardingLocationDetecting}
                                 </>
                             ) : isLocationSet ? (
                                 <>
                                     <Check className="w-5 h-5" />
-                                    {(t as any).onboardingLocationSuccess}
+                                    {translations.onboardingLocationSuccess}
                                 </>
                             ) : (
                                 <>
                                     <MapPin className="w-5 h-5" />
-                                    {(t as any).onboardingLocationDetect}
+                                    {translations.onboardingLocationDetect}
                                 </>
                             )}
                         </Button>
@@ -374,7 +376,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             disabled={isLocationLoading}
                             className="text-sm text-white/60 hover:text-white transition-colors disabled:opacity-50"
                         >
-                            {(t as any).onboardingLocationSkip}
+                            {translations.onboardingLocationSkip}
                         </button>
                     </div>
                 </div>
@@ -423,7 +425,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             }}
                             className="text-sm text-white/80 font-semibold px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all flex items-center gap-2"
                         >
-                            <span>{(t as any).onboardingSkip}</span>
+                            <span>{translations.onboardingSkip}</span>
                             <ChevronRight className="w-4 h-4" />
                         </button>
                     )}
@@ -437,7 +439,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             }}
                             className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
                         >
-                            {(t as any).onboardingBack}
+                            {translations.onboardingBack}
                         </button>
                     )}
 
@@ -449,7 +451,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         }
                         className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {step === 'setup-location' ? (t as any).onboardingFinish : (t as any).onboardingNext}
+                        {step === 'setup-location' ? translations.onboardingFinish : translations.onboardingNext}
                         {step !== 'setup-location' && <ChevronRight className="w-4 h-4 ml-1" />}
                     </Button>
                 </div>

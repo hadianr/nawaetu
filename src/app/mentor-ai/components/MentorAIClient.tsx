@@ -30,6 +30,7 @@ import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession
 import { trackAIQuery } from "@/lib/analytics/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -42,8 +43,14 @@ import { ChatMessageBubble } from "./ChatMessageBubble";
 
 const storage = getStorageService();
 
+interface AIUsage {
+    date: string;
+    count: number;
+    tier?: "free" | "muhsinin";
+}
+
 export default function MentorAIClient() {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const [stats, setStats] = useState({ streakDays: 0, todayAyat: 0, todayTasbih: 0, prayersLogged: [] as string[] });
     const [profile, setProfile] = useState({ name: "Hamba Allah", title: "Hamba Allah" });
 
@@ -52,8 +59,8 @@ export default function MentorAIClient() {
             const streak = getDisplayStreak();
             const activity = getActivityRepository().getActivity();
             setStats({ streakDays: streak.streak, todayAyat: activity.quranAyat, todayTasbih: activity.tasbihCount, prayersLogged: activity.prayersLogged });
-            const name = storage.getOptional<string>(STORAGE_KEYS.USER_NAME as any);
-            const title = storage.getOptional<string>(STORAGE_KEYS.USER_TITLE as any);
+            const name = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
+            const title = storage.getOptional<string>(STORAGE_KEYS.USER_TITLE);
             if (name || title) setProfile({ name: name || "Hamba Allah", title: title || "Hamba Allah" });
         };
         load();
@@ -62,6 +69,7 @@ export default function MentorAIClient() {
         return () => { window.removeEventListener("activity_updated", load); window.removeEventListener("streak_updated", load); };
     }, []);
     const { t, locale } = useLocale();
+    const translations = t as TranslationTree;
     const QUICK_PROMPTS = [
         t.tanyaPrompt1,
         t.tanyaPrompt2,
@@ -104,7 +112,7 @@ export default function MentorAIClient() {
     useEffect(() => {
         if (isInfaqLoading) return; // Don't check limits while loading tier status
 
-        let timer: any;
+        let timer: ReturnType<typeof setTimeout> | undefined;
         if (dailyCount >= DAILY_LIMIT && status === "authenticated" && !isMuhsinin) {
             // Auto-refresh immediately and then again in 5 seconds if still blocked
             refreshStatus();
@@ -177,7 +185,7 @@ export default function MentorAIClient() {
                             setDailyCount(prev => {
                                 if (serverDailyCount > prev) {
                                     const todayStr = new Date().toDateString();
-                                    storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                                    storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                                         date: todayStr,
                                         count: serverDailyCount,
                                         tier: isMuhsinin ? 'muhsinin' : 'free'
@@ -203,7 +211,7 @@ export default function MentorAIClient() {
     useEffect(() => {
         if (isInfaqLoading) return; // Wait for tier to settle
 
-        const savedUsage = storage.getOptional<any>(STORAGE_KEYS.AI_USAGE as any);
+        const savedUsage = storage.getOptional<AIUsage | string>(STORAGE_KEYS.AI_USAGE);
         const today = new Date().toDateString();
         const currentTier = isMuhsinin ? 'muhsinin' : 'free';
 
@@ -218,7 +226,7 @@ export default function MentorAIClient() {
                     // Update tier to muhsinin but keep current usage count
                     setDailyCount(count);
                     setLastResetDate(today);
-                    storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                    storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                         date: today,
                         count: count,
                         tier: 'muhsinin'
@@ -232,13 +240,13 @@ export default function MentorAIClient() {
                 // New Day Reset
                 setDailyCount(0);
                 setLastResetDate(today);
-                storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0, tier: currentTier }));
+                storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
             }
         } else {
             // Initial Start
             setLastResetDate(today);
             setDailyCount(0);
-            storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({ date: today, count: 0, tier: currentTier }));
+            storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
         }
     }, [isMuhsinin, status]);
 
@@ -363,7 +371,7 @@ export default function MentorAIClient() {
         // INCREMENT COUNT
         const newCount = dailyCount + 1;
         setDailyCount(newCount);
-        storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+        storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
             date: lastResetDate,
             count: newCount,
             tier: isMuhsinin ? 'muhsinin' : 'free'
@@ -392,7 +400,7 @@ export default function MentorAIClient() {
                 try {
                     response = await askMentor(text, context, chatHistoryContext);
                     break;
-                } catch (err: any) {
+                } catch (err) {
                     if (attempt === 2) throw err;
                     await new Promise((res) => setTimeout(res, 1000 * Math.pow(2, attempt)));
                 }
@@ -405,7 +413,7 @@ export default function MentorAIClient() {
                 setDailyCount(prev => {
                     const reverted = Math.max(0, prev - 1);
                     const todayStr = new Date().toDateString();
-                    storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                    storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                         date: todayStr,
                         count: reverted,
                         tier: isMuhsinin ? 'muhsinin' : 'free'
@@ -438,12 +446,12 @@ export default function MentorAIClient() {
                 return updated.sort((a, b) => b.updatedAt - a.updatedAt);
             });
 
-        } catch (error: any) {
+        } catch {
             // Revert quota on actual exception
             setDailyCount(prev => {
                 const reverted = Math.max(0, prev - 1);
                 const todayStr = new Date().toDateString();
-                storage.set(STORAGE_KEYS.AI_USAGE as any, JSON.stringify({
+                storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                     date: todayStr,
                     count: reverted,
                     tier: isMuhsinin ? 'muhsinin' : 'free'
@@ -489,13 +497,13 @@ export default function MentorAIClient() {
                             "text-2xl font-bold",
                             isDaylight ? "text-slate-900" : "bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
                         )}>
-                            {(t as any).tanyaLoginTitle || "Login Diperlukan"}
+                            {translations.tanyaLoginTitle || "Login Diperlukan"}
                         </h1>
                         <p className={cn(
                             "leading-relaxed text-sm",
                             isDaylight ? "text-slate-500" : "text-white/60"
                         )}>
-                            {(t as any).tanyaLoginDesc || "Fitur Tanya Nawaitu hanya tersedia untuk pengguna yang sudah login."}
+                            {translations.tanyaLoginDesc || "Fitur Tanya Nawaitu hanya tersedia untuk pengguna yang sudah login."}
                         </p>
                     </div>
 
@@ -515,7 +523,7 @@ export default function MentorAIClient() {
                                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                             </svg>
-                            {(t as any).profileAuthButton || "Login dengan Google"}
+                            {translations.profileAuthButton || "Login dengan Google"}
                         </button>
 
                         <Link
@@ -525,7 +533,7 @@ export default function MentorAIClient() {
                                 isDaylight ? "text-slate-400 hover:text-slate-600" : "text-white/40 hover:text-white"
                             )}
                         >
-                            {(t as any).onboardingBack || "Kembali"}
+                            {translations.onboardingBack || "Kembali"}
                         </Link>
                     </div>
                 </div>
@@ -716,10 +724,10 @@ export default function MentorAIClient() {
             <DonationModal
                 isOpen={showLimitBlocking}
                 onClose={() => setShowLimitBlocking(false)}
-                headerTitle={isMuhsinin ? (t as any).tanyaDailyLimit : (t as any).tanyaUnlockPremium}
+                headerTitle={isMuhsinin ? translations.tanyaDailyLimit : translations.tanyaUnlockPremium}
                 headerDescription={isMuhsinin
-                    ? (t as any).tanyaLimitReached + " " + (t as any).tanyaLimitReset
-                    : (t as any).tanyaLimitReached + " " + (t as any).tanyaUpgradeHint}
+                    ? translations.tanyaLimitReached + " " + translations.tanyaLimitReset
+                    : translations.tanyaLimitReached + " " + translations.tanyaUpgradeHint}
             />
         </div>
     );

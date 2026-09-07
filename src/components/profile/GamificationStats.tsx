@@ -20,6 +20,7 @@ import { Crown, Flame, Info, Gift } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { useState } from "react";
 
 interface GamificationStatsProps {
@@ -35,6 +36,7 @@ interface GamificationStatsProps {
 
 export function GamificationStats({ isDaylight, stats }: GamificationStatsProps) {
     const { t } = useLocale();
+    const translations = t as TranslationTree;
     const [showLevelInfo, setShowLevelInfo] = useState(false);
 
     return (
@@ -58,19 +60,19 @@ export function GamificationStats({ isDaylight, stats }: GamificationStatsProps)
                                 onClick={() => setShowLevelInfo(!showLevelInfo)}
                             >
                                 <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
-                                    {(t as any).gamificationLevelName} {stats.level} • {
-                                        stats.level <= 10 ? (t as any).gamificationLevelTitle_0_10 :
-                                            stats.level <= 25 ? (t as any).gamificationLevelTitle_11_25 :
-                                                stats.level <= 50 ? (t as any).gamificationLevelTitle_26_50 :
-                                                    stats.level <= 99 ? (t as any).gamificationLevelTitle_51_99 : (t as any).gamificationLevelTitle_100
+                                    {translations.gamificationLevelName} {stats.level} • {
+                                        stats.level <= 10 ? translations.gamificationLevelTitle_0_10 :
+                                            stats.level <= 25 ? translations.gamificationLevelTitle_11_25 :
+                                                stats.level <= 50 ? translations.gamificationLevelTitle_26_50 :
+                                                    stats.level <= 99 ? translations.gamificationLevelTitle_51_99 : translations.gamificationLevelTitle_100
                                     }
                                 </p>
                                 <Info className="w-3 h-3 text-slate-500" />
                             </div>
-                            <p className={cn("text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>{stats.hasanah} {(t as any).gamificationXpName}</p>
+                            <p className={cn("text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>{stats.hasanah} {translations.gamificationXpName}</p>
                         </div>
                     </div>
-                    <span className="text-[10px] text-slate-400">{stats.hasanah} / {stats.nextLevelHasanah} {(t as any).gamificationXpName}</span>
+                    <span className="text-[10px] text-slate-400">{stats.hasanah} / {stats.nextLevelHasanah} {translations.gamificationXpName}</span>
                 </div>
                 <div className={cn(
                     "h-2.5 w-full rounded-full overflow-hidden border shadow-inner mb-2.5 transition-all",
@@ -93,46 +95,46 @@ export function GamificationStats({ isDaylight, stats }: GamificationStatsProps)
                         "mt-3 p-4 rounded-xl border space-y-3 animate-in fade-in slide-in-from-top-1",
                         isDaylight ? "bg-emerald-50/50 border-emerald-100 text-slate-500" : "bg-black/40 border-white/5 text-slate-400"
                     )}>
-                        <div className={cn("font-bold mb-1 text-[11px] uppercase tracking-wider", isDaylight ? "text-emerald-700" : "text-white")}>{(t as any).gamificationLevelName} Tingkatan:</div>
+                        <div className={cn("font-bold mb-1 text-[11px] uppercase tracking-wider", isDaylight ? "text-emerald-700" : "text-white")}>{translations.gamificationLevelName} Tingkatan:</div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_0_10} (Lvl 1-10)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_0_10} (Lvl 1-10)</span>
                             </div>
-                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_0_10}</p>
+                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{translations.gamificationLevelDesc_0_10}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_11_25} (Lvl 11-25)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_11_25} (Lvl 11-25)</span>
                             </div>
-                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_11_25}</p>
+                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{translations.gamificationLevelDesc_11_25}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_26_50} (Lvl 26-50)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_26_50} (Lvl 26-50)</span>
                             </div>
-                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_26_50}</p>
+                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{translations.gamificationLevelDesc_26_50}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_51_99} (Lvl 51-99)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_51_99} (Lvl 51-99)</span>
                             </div>
-                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_51_99}</p>
+                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{translations.gamificationLevelDesc_51_99}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{(t as any).gamificationLevelTitle_100} (Lvl 100+)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_100} (Lvl 100+)</span>
                             </div>
-                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{(t as any).gamificationLevelDesc_100}</p>
+                            <p className="text-[9px] leading-relaxed italic border-l border-white/10 pl-2">{translations.gamificationLevelDesc_100}</p>
                         </div>
                     </div>
                 ) : (
                     <p className="text-[10px] text-slate-500 leading-snug">
-                        {(t as any).profileXpDesc}
+                        {translations.profileXpDesc}
                     </p>
                 )}
             </div>
@@ -147,7 +149,7 @@ export function GamificationStats({ isDaylight, stats }: GamificationStatsProps)
                 )}
             >
                 <Gift className="h-4 w-4" />
-                {(t as any).rewards.cta}
+                {translations.rewards.cta}
             </Link>
 
             {/* Streak Row (Full Width) */}
@@ -164,9 +166,9 @@ export function GamificationStats({ isDaylight, stats }: GamificationStatsProps)
                 <div>
                     <div className="flex items-end gap-2">
                         <span className={cn("text-2xl font-black leading-none", isDaylight ? "text-slate-900" : "text-white")}>{stats.streak}</span>
-                        <span className="text-[11px] text-slate-400 uppercase tracking-wider font-medium mb-[2px]">{(t as any).profileDays}</span>
+                        <span className="text-[11px] text-slate-400 uppercase tracking-wider font-medium mb-[2px]">{translations.profileDays}</span>
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1 leading-snug">{(t as any).profileStreakDesc}</div>
+                    <div className="text-[11px] text-slate-400 mt-1 leading-snug">{translations.profileStreakDesc}</div>
                 </div>
             </div>
         </div>

@@ -18,15 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Bell, Volume2, MapPin, ChevronRight, Info, BookOpen, Clock, Music, Settings2, Headphones, Play, Pause, Palette, Crown, Lock, Check, Star, Sunrise, Sun, CloudSun, Moon, Sunset, BarChart3, ChevronDown, Heart, Globe, Calendar, MessageSquarePlus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, MapPin, ChevronRight, Clock, Settings2, BarChart3, ChevronDown, Heart, Calendar } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"; // Import useSession
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -35,8 +33,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import UserProfileDialog from "@/components/UserProfileDialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar
 import DonationModal from "@/components/DonationModal";
 import AboutAppModal from "@/components/AboutAppModal";
 import FeedbackModal from "@/components/FeedbackModal";
@@ -47,12 +43,9 @@ import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useFCM } from "@/hooks/useFCM";
 import {
-    MUADZIN_OPTIONS,
     CALCULATION_METHODS,
     DEFAULT_SETTINGS,
-    LANGUAGE_OPTIONS,
 } from "@/data/settings-data";
-import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import NotificationSettings from "@/components/NotificationSettings";
@@ -69,23 +62,6 @@ import ShareAppCard from "./sections/ShareAppCard";
 import CommunityCard from "./sections/CommunityCard";
 
 const storage = getStorageService();
-
-interface AdhanPreferences {
-    Fajr: boolean;
-    Dhuhr: boolean;
-    Asr: boolean;
-    Maghrib: boolean;
-    Isha: boolean;
-    [key: string]: boolean;
-}
-
-const DEFAULT_PREFS: AdhanPreferences = {
-    Fajr: true,
-    Dhuhr: true,
-    Asr: true,
-    Maghrib: true,
-    Isha: true,
-};
 
 export default function SettingsPageContent() {
     const searchParams = useSearchParams();
@@ -140,7 +116,7 @@ export default function SettingsPageContent() {
                         update();
                     }
                 })
-                .catch(err => { });
+                .catch(() => { });
         } else if (paymentStatus === "failed") {
             toast.error("Maaf, pembayaran Anda tidak berhasil. Silakan coba lagi.");
         }
@@ -213,7 +189,7 @@ export default function SettingsPageContent() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ settings: { [key]: value } }) // Send partial update
             });
-        } catch (e) {
+        } catch {
         }
     };
 
@@ -263,14 +239,6 @@ export default function SettingsPageContent() {
         saveSettingsToCloud('locale', value);
     };
 
-    const prayerNames = [
-        { key: "Fajr", label: "Subuh", Icon: Sunrise },
-        { key: "Dhuhr", label: "Dzuhur", Icon: Sun },
-        { key: "Asr", label: "Ashar", Icon: CloudSun },
-        { key: "Maghrib", label: "Maghrib", Icon: Sunset },
-        { key: "Isha", label: "Isya", Icon: Moon },
-    ];
-
     const handleRefreshLocation = async () => {
         setIsRefreshing(true);
         await refreshLocation();
@@ -279,7 +247,6 @@ export default function SettingsPageContent() {
     };
 
     // Get current selection labels
-    const currentMuadzin = MUADZIN_OPTIONS.find(m => m.id === muadzin);
     const currentMethod = CALCULATION_METHODS.find(m => m.id.toString() === calculationMethod);
 
     const handleResetOnboarding = () => {
@@ -613,7 +580,7 @@ export default function SettingsPageContent() {
                             </div>
                         ) : (
                             <p className="text-[9px] text-white/20 italic">
-                                Token belum tersedia. Klik "Open Debugger" untuk mencoba mengambil token.
+                                Token belum tersedia. Klik &quot;Open Debugger&quot; untuk mencoba mengambil token.
                             </p>
                         )}
                         <Button
