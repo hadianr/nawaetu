@@ -19,7 +19,7 @@
 import { Verse } from "./VerseList";
 import { AyahMarker } from "./AyahMarker";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Link2, MoreVertical, Play, Pause, Bookmark, Info, Check, EyeOff, Eye, Share2, Lightbulb, Loader2, BookOpen } from "lucide-react";
+import { Play, Bookmark, EyeOff, Eye, Share2, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type TafsirContent } from "@/lib/quran/tafsir-api";
@@ -56,6 +56,20 @@ interface VerseItemProps {
     prefetchShareDialog: () => void;
 }
 
+interface VerseWord {
+    char_type_name?: string;
+    position?: number;
+    text?: string;
+    text_indopak?: string;
+    text_uthmani?: string;
+    transliteration?: { text?: string };
+    translation?: { text?: string };
+}
+
+function isVerseWord(word: unknown): word is VerseWord {
+    return typeof word === "object" && word !== null;
+}
+
 // In quran-utils, cleanTajweedText wasn't exported.
 // Note: We need to export cleanTajweedText from sanitize or rename if needed.
 // Wait, cleanTajweedText is imported from sanitize in VerseList.
@@ -76,7 +90,6 @@ export default function VerseItem({
     activeTafsirVerse,
     isLoadingTafsir,
     tafsirData,
-    locale,
     onPlay,
     onBookmarkToggle,
     onShareClick,
@@ -219,7 +232,7 @@ export default function VerseItem({
             >
                 {showWordByWord && verse.words && verse.words.length > 0 ? (
                     <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-6 md:gap-y-8 justify-start">
-                        {verse.words.filter((w: any) => w.char_type_name !== 'end').map((word: any, index: number) => {
+                        {verse.words.filter(isVerseWord).filter(word => word.char_type_name !== 'end').map((word, index: number) => {
                             // Extract raw text and remove waqf (pause) symbols that render as boxes in isolated word fonts
                             // \u06D6-\u06DC = Arabic waqf marks (used in Uthmani)
                             // \u200B-\u200F = Zero-width spaces and formatting characters (often injected by formatting)
