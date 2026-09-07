@@ -18,9 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
-import { RAMADHAN_MISSIONS, SYABAN_MISSIONS, getLocalizedMission } from "@/data/missions";
-import dynamic from "next/dynamic";
+import { useState, useEffect, useSyncExternalStore } from "react";
+import { SYABAN_MISSIONS } from "@/data/missions";
 
 // Inline critical icons to avoid lucide overhead on LCP
 const MoonIcon = ({ className }: { className?: string }) => (
@@ -49,8 +48,18 @@ interface Props {
     initialDays?: number;
 }
 
+interface HijriAdjustmentEventDetail {
+    adjustment?: string | number;
+}
+
+const BASE_TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null;
+}
+
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
-    const { t, locale } = useLocale();
+    const { t } = useLocale();
     const { data: prayerData } = usePrayerTimesContext();
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
     const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; totalMs: number }>({
@@ -61,16 +70,15 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
     });
     const [progress, setProgress] = useState(0);
     const [showInfo, setShowInfo] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
+    const isMounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false,
+    );
 
     const [adjustment, setAdjustment] = useState(-1);
 
-    // Target: Estimated 1 Ramadhan 1447H (Feb 18, 2026)
-    const BASE_TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
-
     useEffect(() => {
-        setIsMounted(true);
-
         const storage = getStorageService();
 
         // Load initial adjustment
@@ -107,15 +115,16 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             };
         };
 
-        // Immediately update on mount
-        setTimeLeft(calculateTimeLeft());
+        // Immediately update on mount without cascading inside the effect body.
+        const initialUpdate = window.setTimeout(() => setTimeLeft(calculateTimeLeft()), 0);
 
         // Update every 60 seconds
         const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
 
         // Listen for adjustment changes
-        const handleAdjustmentChange = (e: any) => {
-            const newAdj = parseInt(e.detail?.adjustment || "0", 10);
+        const handleAdjustmentChange = (event: Event) => {
+            const detail = (event as CustomEvent<HijriAdjustmentEventDetail>).detail;
+            const newAdj = parseInt(String(detail?.adjustment || "0"), 10);
             setAdjustment(newAdj);
         };
         window.addEventListener('hijri_adjustment_changed', handleAdjustmentChange);
@@ -127,12 +136,14 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             if (savedCompleted) {
                 try {
                     const completedData = typeof savedCompleted === 'string' ? JSON.parse(savedCompleted) : savedCompleted;
-                    const completedMap: Record<string, any> = Array.isArray(completedData)
-                        ? completedData.reduce((acc, m) => {
-                            acc[m.id] = m;
+                    const completedMap: Record<string, unknown> = Array.isArray(completedData)
+                        ? completedData.reduce<Record<string, unknown>>((acc, mission: unknown) => {
+                            if (isRecord(mission) && typeof mission.id === "string") {
+                                acc[mission.id] = mission;
+                            }
                             return acc;
-                        }, {} as Record<string, any>)
-                        : completedData;
+                        }, {})
+                        : isRecord(completedData) ? completedData : {};
 
                     const targetMissions = SYABAN_MISSIONS;
 
@@ -145,7 +156,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                     const totalXP = targetMissions.reduce((acc, m) => acc + m.hasanahReward, 0);
                     const p = totalXP > 0 ? Math.round((currentXP / totalXP) * 100) : 0;
                     setProgress(Math.min(100, p));
-                } catch (e) {
+                } catch {
                     setProgress(0);
                 }
             } else {
@@ -176,6 +187,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         window.addEventListener("storage", handleStorageUpdate);
 
         return () => {
+            window.clearTimeout(initialUpdate);
             clearInterval(timer);
             window.removeEventListener("mission_storage_updated", loadProgress);
             window.removeEventListener("hasanah_updated", handleBackupUpdate);
