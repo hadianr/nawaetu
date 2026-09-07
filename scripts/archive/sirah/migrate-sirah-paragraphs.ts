@@ -2,7 +2,7 @@
  * Nawaetu - Sirah Nabawiyah Content Migration Script
  * Migrates sections.json content field from string to string[] (paragraph array)
  *
- * Run: npx tsx scripts/migrate-sirah-paragraphs.ts
+ * Run: npx tsx scripts/archive/sirah/migrate-sirah-paragraphs.ts
  *
  * Idempotent: safe to re-run on already-migrated data.
  */
