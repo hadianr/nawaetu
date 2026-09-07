@@ -83,7 +83,7 @@ export default function ReflectionPrompt({
         setIsSubmitting(true);
         try {
             await onSubmit(rating, reflectionText || undefined);
-        } catch (error) {
+        } catch {
         } finally {
             setIsSubmitting(false);
         }

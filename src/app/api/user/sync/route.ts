@@ -154,7 +154,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             } else if (typeof req.json === "function") {
                 body = await req.json();
             }
-        } catch (err) {
+        } catch {
             return NextResponse.json(
                 { success: false, synced: [], failed: [], error: "Invalid JSON payload", message: "Invalid request payload" } as any,
                 { status: 400 }

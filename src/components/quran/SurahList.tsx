@@ -111,7 +111,7 @@ export default function SurahList({ chapters }: SurahListProps) {
         if (savedRead) {
             try {
                 setLastRead(typeof savedRead === 'string' ? JSON.parse(savedRead) : savedRead);
-            } catch (e) {
+            } catch {
             }
         }
 
@@ -125,7 +125,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                     const ids = new Set(parsed.map((b: any) => b.surahId));
                     setBookmarkedSurahIds(ids);
                 }
-            } catch (e) {
+            } catch {
             }
         }
     }, []);

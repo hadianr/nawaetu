@@ -87,7 +87,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
             } else {
                 setError(data.error || t.niat_error_fail_save_reflection);
             }
-        } catch (err) {
+        } catch {
             setError(t.niat_error_network);
         } finally {
             setIsSubmitting(false);

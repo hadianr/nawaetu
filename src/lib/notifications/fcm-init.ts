@@ -254,7 +254,7 @@ export function subscribeForegroundMessages(callback: (payload: any) => void) {
         onMessage(messaging, (payload) => {
             callback(payload);
         });
-    } catch (error) {
+    } catch {
     }
 }
 

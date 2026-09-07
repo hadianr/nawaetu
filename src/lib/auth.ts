@@ -44,7 +44,7 @@ export async function isUserValid(userId: string): Promise<boolean> {
             if (cachedStatus !== null && cachedStatus !== undefined) {
                 return cachedStatus === 1;
             }
-        } catch (e) {
+        } catch {
             // Non-fatal Redis fallback to DB
         }
     }
@@ -62,7 +62,7 @@ export async function isUserValid(userId: string): Promise<boolean> {
             try {
                 // Cache valid user for 5 minutes (300s), invalid user for 1 minute (60s)
                 await redis.set(cacheKey, isValid ? 1 : 0, { ex: isValid ? 300 : 60 });
-            } catch (e) {}
+            } catch {}
         }
 
         return isValid;

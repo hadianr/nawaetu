@@ -200,7 +200,7 @@ function QiblaCompass() {
                             permissionGrantedFlag = false;
                             return;
                         }
-                    } catch (e) {
+                    } catch {
                         // If error (no user gesture), fallback to showing button
                         sessionStorage.removeItem('nawaetu_qibla_session');
                         setPermissionGranted(false); // Revert optimistic state
@@ -301,7 +301,7 @@ function QiblaCompass() {
                     localStorage.removeItem('nawaetu_qibla_permission');
                     sessionStorage.removeItem('nawaetu_qibla_session'); // Clear session too
                 }
-            } catch (e) {
+            } catch {
                 setError(t.qiblaCompassFailed);
             }
         } else {

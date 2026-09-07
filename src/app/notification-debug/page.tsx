@@ -65,10 +65,10 @@ export default function NotificationDebugPage() {
                                 navigator.serviceWorker.ready.then(reg => {
                                     reg.showNotification(title, options);
                                 }).catch(() => {
-                                    try { new Notification(title, options); } catch (e) { }
+                                    try { new Notification(title, options); } catch { }
                                 });
                             } else {
-                                try { new Notification(title, options); } catch (e) { }
+                                try { new Notification(title, options); } catch { }
                             }
                         }
                     });
@@ -108,7 +108,7 @@ export default function NotificationDebugPage() {
                         if (parsed.lat && parsed.lng) {
                             userLocation = { lat: parsed.lat, lng: parsed.lng };
                         }
-                    } catch (e) { }
+                    } catch { }
                 }
 
                 await fetch("/api/notifications/subscribe", {

@@ -79,7 +79,7 @@ export function getAllSessions(): ChatSession[] {
         }
 
         return [];
-    } catch (error) {
+    } catch {
         return [];
     }
 }
@@ -146,7 +146,7 @@ export function deleteSession(id: string): void {
 function saveAllSessions(sessions: ChatSession[]): void {
     try {
         storage.set(CHAT_SESSIONS_KEY as any, JSON.stringify(sessions));
-    } catch (error) {
+    } catch {
     }
 }
 
@@ -161,4 +161,3 @@ function truncateTitle(content: string, maxLength = 30): string {
 // Deprecated functions (kept for compatibility during refactor if needed, or safe to remove if we update all calls)
 export function loadChatHistory() { return []; }
 export function saveChatHistory() { return false; }
-

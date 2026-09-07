@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
                 intention_points_earned: 5, // +5 NP for reflection
             },
         });
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { success: false, error: "Internal server error" },
             { status: 500 }
