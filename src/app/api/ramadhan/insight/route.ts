@@ -3,6 +3,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from "@/lib/logger";
+import { z } from "zod";
+
+const insightStatsSchema = z.object({
+    fastingCount: z.number().nonnegative().default(0),
+    totalQuranSeconds: z.number().nonnegative().default(0),
+    totalTasbih: z.number().nonnegative().default(0),
+    tarawehCount: z.number().nonnegative().default(0),
+    qiyamulLailCount: z.number().nonnegative().default(0),
+    totalSunnahAll: z.number().nonnegative().default(0),
+    fardhuMasjidDays: z.number().nonnegative().default(0),
+    fardhuRumahDays: z.number().nonnegative().default(0),
+});
+
+const insightRequestSchema = z.object({
+    stats: insightStatsSchema,
+    lang: z.string().default('id'),
+    userName: z.string().trim().min(1).max(100).default('Sobat Nawaetu'),
+});
+
+type InsightStats = z.infer<typeof insightStatsSchema>;
+
+function getErrorMessage(error: unknown): string | undefined {
+    return error instanceof Error ? error.message : undefined;
+}
 async function generateWithGroq(prompt: string): Promise<string> {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error('GROQ_API_KEY not set');
@@ -40,10 +64,10 @@ const FALLBACK_INSIGHTS = [
     "Tarawih dan qiyamulailmu luar biasa! Coba lengkapi dengan sholat sunnah rawatib yang konsisten, karena ibadah yang rutin lebih dicintai Allah daripada yang banyak tapi bolong-bolong.",
 ];
 
-function buildPrompt(stats: any, userName: string, lang: string): string {
-    const { fastingCount, bestFastingStreak, totalQuranSeconds, totalAyat, totalTasbih,
-        tarawehCount, qiyamulLailCount, topLocation, masjidCount, rumahCount,
-        fardhuMasjidDays, fardhuRumahDays, totalDhuha, totalWitir, totalRawatib, totalSunnahAll } = stats;
+function buildPrompt(stats: InsightStats, userName: string, lang: string): string {
+    const { fastingCount, totalQuranSeconds, totalTasbih,
+        tarawehCount, qiyamulLailCount,
+        fardhuMasjidDays, fardhuRumahDays, totalSunnahAll } = stats;
 
     const quranHours = Math.floor(totalQuranSeconds / 3600);
     const quranMins = Math.floor((totalQuranSeconds % 3600) / 60);
@@ -122,8 +146,12 @@ async function generateWithOpenRouter(prompt: string): Promise<string> {
     return text;
 }
 
-function isRateLimitError(err: any): boolean {
-    return err?.status === 429 || err?.message?.includes('429') || err?.message?.toLowerCase().includes('rate limit');
+function isRateLimitError(error: unknown): boolean {
+    const status = typeof error === 'object' && error !== null && 'status' in error
+        ? error.status
+        : undefined;
+    const message = getErrorMessage(error)?.toLowerCase() || '';
+    return status === 429 || message.includes('429') || message.includes('rate limit');
 }
 
 export async function POST(req: NextRequest) {
@@ -133,8 +161,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const body = await req.json();
-        const { stats, lang = 'id', userName = 'Sobat Nawaetu' } = body;
+        const result = insightRequestSchema.safeParse(await req.json());
+        if (!result.success) {
+            const fallback = FALLBACK_INSIGHTS[Math.floor(Math.random() * FALLBACK_INSIGHTS.length)];
+            return NextResponse.json({ insight: fallback });
+        }
+
+        const { stats, lang, userName } = result.data;
         const prompt = buildPrompt(stats, userName, lang);
 
         // 3-tier LLM fallback: Gemini → Groq → OpenRouter
@@ -142,18 +175,20 @@ export async function POST(req: NextRequest) {
 
         try {
             text = await generateWithGemini(prompt);
-        } catch (geminiErr: any) {
-            logger.warn('Gemini failed, trying Groq', { route: '/api/ramadhan/insight', error: geminiErr?.message });
-            if (isRateLimitError(geminiErr) || geminiErr?.message?.includes('API_KEY')) {
+        } catch (geminiError) {
+            const errorMessage = getErrorMessage(geminiError);
+            logger.warn('Gemini failed, trying Groq', { route: '/api/ramadhan/insight', error: errorMessage });
+            if (isRateLimitError(geminiError) || errorMessage?.includes('API_KEY')) {
                 try {
                     text = await generateWithGroq(prompt);
-                } catch (groqErr: any) {
-                    logger.warn('Groq failed, trying OpenRouter', { route: '/api/ramadhan/insight', error: groqErr?.message });
-                    if (isRateLimitError(groqErr) || groqErr?.message?.includes('API_KEY')) {
+                } catch (groqError) {
+                    const groqErrorMessage = getErrorMessage(groqError);
+                    logger.warn('Groq failed, trying OpenRouter', { route: '/api/ramadhan/insight', error: groqErrorMessage });
+                    if (isRateLimitError(groqError) || groqErrorMessage?.includes('API_KEY')) {
                         try {
                             text = await generateWithOpenRouter(prompt);
-                        } catch (orErr: any) {
-                            logger.error('OpenRouter also failed', orErr, { route: '/api/ramadhan/insight' });
+                        } catch (openRouterError) {
+                            logger.error('OpenRouter also failed', openRouterError, { route: '/api/ramadhan/insight' });
                         }
                     }
                 }
