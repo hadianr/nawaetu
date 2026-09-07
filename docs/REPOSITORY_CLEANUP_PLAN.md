@@ -1,6 +1,7 @@
 # Repository Cleanup & Maintainability Plan
 
-Date: 2026-09-07  
+Date: 2026-09-08
+
 Related audit: [`REPOSITORY_AUDIT_2026-09-03.md`](./REPOSITORY_AUDIT_2026-09-03.md)
 
 ## Objective
@@ -13,7 +14,7 @@ Finish the remaining maintainability work without changing product behavior, not
 - Runtime source: ~5.1 MB; no large tracked media or build artifacts remain.
 - Dependencies: `npm ls --depth=0` is clean; 38 runtime and 14 development dependencies remain.
 - Typecheck: passed.
-- Tests: 192 passed, 2 skipped.
+- Tests: 195 passed, 2 skipped, with one pre-existing timezone-sensitive failure.
 - Production build: passed; 177 static pages generated and `/sw.js` generated with the Firebase worker import.
 - ESLint before the first Tier A slice: 1,078 findings — 761 errors, 317 warnings; 7 errors were auto-fixable.
 - ESLint after the first Tier A slice: 1,071 findings — 754 errors, 317 warnings.
@@ -27,6 +28,21 @@ Finish the remaining maintainability work without changing product behavior, not
 - ESLint after the low-risk `VerseList` cleanup: 899 findings — 672 errors, 227 warnings.
 - ESLint after the `OnboardingOverlay` typing cleanup: 854 findings — 629 errors, 225 warnings.
 - ESLint after the `MentorAIClient` typing cleanup: 828 findings — 605 errors, 223 warnings.
+- ESLint after the `RamadhanWrappedCard` typing cleanup: 811 findings — 590 errors, 221 warnings.
+- ESLint after the safe `GuestSyncManager` unused-symbol cleanup: 798 findings — 590 errors, 208 warnings.
+- ESLint after the safe `GuestSyncManager` storage/translation typing cleanup: 752 findings — 544 errors, 208 warnings.
+- ESLint after the safe `GuestSyncManager` data/payload/hydration typing cleanup: 742 findings — 534 errors, 208 warnings.
+- ESLint after the safe `GuestSyncManager` hook cleanup: 736 findings — 530 errors, 206 warnings; `GuestSyncManager` is lint-clean.
+- ESLint after the safe `VerseItem` cleanup: 727 findings — 528 errors, 199 warnings; `VerseItem` is lint-clean.
+- ESLint after the safe seasonal-loading cleanup: 717 findings — 524 errors, 193 warnings; `RamadhanCountdown` and `HomeClient` are lint-clean.
+- ESLint after the safe seasonal API cleanup: 704 findings — 519 errors, 185 warnings; `/api/ramadhan/insight` is lint-clean.
+- ESLint after the safe `MentorAIClient` cleanup: 691 findings — 506 errors, 185 warnings; `MentorAIClient` has no errors and retains 3 reviewed quota-effect dependency warnings.
+- ESLint after the test-only `sync-guest/route.test.ts` cleanup: 678 findings — 498 errors, 180 warnings; the sync guest route test is lint-clean.
+- ESLint after the test-only notification/security cleanup: 660 findings — 480 errors, 180 warnings; `prayer-alert/route.test.ts` and `sync-guest/security.test.ts` are lint-clean.
+- ESLint after the batched test-only API/PWA/payment cleanup: 630 findings — 450 errors, 180 warnings; six additional test files are lint-clean without changing assertions or fixtures.
+- ESLint after the safe unused-catch and notification error-boundary cleanup: 569 findings — 430 errors, 139 warnings; 39 unused catch bindings and 3 additional low-risk bindings were removed without changing error handling or FCM send behavior.
+- ESLint after the safe Stats/Sirah/Missions UI cleanup: 517 findings — 411 errors, 106 warnings; confirmed dead UI helpers/imports and 10 explicit `any` usages were removed or typed without changing rendered data or interactions.
+- ESLint after the safe Stats/Ramadhan contract cleanup: 506 findings — 401 errors, 105 warnings; 11 explicit `any` usages and one unused Stats prop were removed or typed without changing rendered values or controls.
 - Working-tree exception: the `package-lock.json` `fast-uri` update is preserved in separate commit `388b7d9`.
 
 ## Priority and safety policy
@@ -90,6 +106,36 @@ Completed next Quran UI Tier A batch: removed 41 confirmed dead imports/locals/c
 Completed next Tier B batch: replaced 43 onboarding translation/storage `any` usages with the shared translation type and native string-key contract. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; onboarding persistence, profile sync, location detection, and analytics behavior were not changed.
 
 Completed next Mentor AI typing batch: replaced 24 clear translation/storage/timer/error `any` usages and one unused session binding with explicit types. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; prompts, quota, chat history, retry behavior, and server sync were not changed.
+
+Completed next Ramadhan UI typing batch: replaced 15 clear stats/storage/translation `any` usages and removed two unused calculations. Typecheck, 192 tests, production build, lint recount, and `git diff --check` passed; summary display, insight cache, and image sharing were not changed.
+
+Completed first safe GuestSyncManager cleanup: removed 13 confirmed unused imports/state bindings. Typecheck, the focused sync/security tests, lint recount, Graphify update, and `git diff --check` passed; sync requests, local storage, auth flow, FCM, and PWA behavior were not changed.
+
+Completed second safe GuestSyncManager cleanup: replaced 46 redundant storage-key and translation `any` casts with existing contracts. Typecheck, the full test suite, lint recount, Graphify update, and `git diff --check` passed; sync payloads, hook behavior, local storage, auth flow, FCM, and PWA behavior were not changed.
+
+Completed third safe GuestSyncManager cleanup: replaced 10 data/payload/hydration `any` usages with explicit local contracts and `unknown` values. Typecheck, the full test suite, lint recount, Graphify update, and `git diff --check` passed; sync requests, local storage, auth flow, FCM, and PWA behavior were not changed.
+
+Completed fourth GuestSyncManager cleanup: moved sync helpers to stable module-level functions and added the correct storage/translation effect dependencies. Typecheck, the full test suite, production build, lint recount, Graphify update, and `git diff --check` passed; sync branch behavior, local storage, auth flow, FCM, and PWA behavior were not changed.
+
+Completed safe VerseItem cleanup: removed 7 unused icon/prop bindings and replaced 2 Quran word `any` callbacks with a guarded `VerseWord` type. Typecheck, the full test suite, lint recount, Graphify update, and `git diff --check` passed; Quran audio, bookmarks, tafsir, and rendering behavior were not changed.
+
+Completed safe seasonal-loading cleanup: lazy-loaded `RamadhanCountdown` and `EidCard` from `HomeClient`, and removed/narrowed unused and explicit-`any` values in `RamadhanCountdown`. Outside Ramadan/Eid, seasonal client code is no longer part of the initial HomeClient load; during the season, both components remain available. Focused lint, typecheck, production build, Graphify update, and `git diff --check` passed. The full suite still has one pre-existing timezone-sensitive `useWidgetMissions` failure and is otherwise passing.
+
+Completed safe seasonal API cleanup: validated the Ramadhan insight payload with Zod, removed unused prompt fields, and narrowed LLM provider errors to `unknown`. The seasonal insight route stays server-only and is invoked only by the dynamically loaded Wrapped card; provider fallback behavior is unchanged. Focused lint, typecheck, production build, Graphify update, and `git diff --check` passed.
+
+Completed safe `MentorAIClient` cleanup: removed mutable session updates, isolated event-handler timestamps, deferred quota initialization state updates with unmount cleanup, and fixed one JSX entity. Prompt generation, quota limits, retry behavior, local chat storage, and authenticated server sync were not changed. Focused lint, typecheck, production build, Graphify update, and `git diff --check` passed; 3 quota-effect dependency warnings remain intentionally reviewed.
+
+Completed test-only `sync-guest/route.test.ts` cleanup: removed unused schema/mock bindings and replaced explicit `any` casts with inferred mock/request types. Bulk insert assertions and sync coverage were preserved. Focused lint, test, typecheck, Graphify update, and `git diff --check` passed.
+
+Completed test-only notification/security cleanup: replaced explicit `any` casts with response, request, and mock contracts in `prayer-alert/route.test.ts` and `sync-guest/security.test.ts`. Notification alert/stringified-field tests and sync payload-limit tests were preserved. Focused lint, 5 focused tests, typecheck, Graphify update, and `git diff --check` passed.
+
+Completed batched test-only cleanup: replaced 30 explicit `any` usages with typed response, request, query-builder, cache, and mock contracts in six API, PWA, and payment tests. Focused lint, 15 focused tests, and typecheck passed; the full suite retains only the pre-existing timezone-sensitive `useWidgetMissions` failure.
+
+Completed safe mechanical lint cleanup: removed unused catch bindings across API, hook, utility, and UI paths, narrowed two notification error boundaries to `unknown`, and removed one unused AI provider binding. Typecheck, production build, Graphify update, and diff checks passed; FCM send/fallback behavior was preserved.
+
+Completed safe Stats/Sirah/Missions UI cleanup: removed confirmed dead imports/helpers and replaced 10 explicit `any` usages with existing contracts for missions, bookmarks, translations, and journal stats. Typecheck, production build, Graphify update, and diff checks passed; hook timing findings remain deferred because they require behavior-level review.
+
+Completed safe Stats/Ramadhan contract cleanup: replaced 11 explicit `any` props/storage/translation usages with existing contracts and removed one unused Stats prop. Typecheck, production build, Graphify update, and diff checks passed; seasonal initialization hook findings remain deferred because they require hydration/timing review.
 
 Exit criteria: lint error count decreases, no blanket disable is added, and behavior-sensitive files receive tests before larger edits.
 
