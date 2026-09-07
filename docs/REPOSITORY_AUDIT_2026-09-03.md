@@ -28,7 +28,7 @@ The highest-value cleanup was local artifact removal, followed by dependency/con
 
 ## Follow-up actions — 2026-09-07
 
-- Archived the one-shot Sirah ETL/migration scripts under `scripts/archive/sirah/`; they remain recoverable without cluttering the active tooling directory.
+- Removed the one-shot Sirah ETL/migration scripts; the application’s runtime Sirah data and pages remain intact, and the scripts remain recoverable from Git history.
 - Untracked generated PWA workers; `next-pwa` regenerates them during deployment, while the authored Firebase worker remains tracked.
 
 ## Ranked findings
@@ -61,7 +61,7 @@ The highest-value cleanup was local artifact removal, followed by dependency/con
 
 `delete:` Archive or remove `scripts/add-license.mjs` (75 lines) if mass license-header insertion is complete; it is not referenced by `package.json`, CI, or another script. Keep it only if this repository still performs that operation.
 
-`archive:` The one-shot Sirah ETL/migration scripts now live under `scripts/archive/sirah/`. They are retained for possible content regeneration; `ingest-sirah.py` still contains machine-specific `/Users/hadianr/Downloads/...` input paths and is not a portable rebuild path.
+`done:` The one-shot Sirah ETL/migration scripts were removed. Runtime Sirah data and pages remain; the scripts are recoverable from Git history if content regeneration is needed.
 
 `yagni:` Review `scripts/test-notification.sh` as an operational utility. It is not wired into an npm script, but it may still be useful for manual production checks; delete only if that workflow is no longer used.
 
