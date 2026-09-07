@@ -22,11 +22,11 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mission } from "@/data/missions";
+import type { Mission } from "@/data/missions";
 import { cn } from "@/lib/utils";
-import { Check, Sparkles, AlertCircle, X, ExternalLink, BookOpen } from "lucide-react";
+import { Check, Sparkles, AlertCircle, X, ExternalLink } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { getRulingLabel } from "@/lib/habits/mission-utils";
+import { getRulingLabel, type ValidationResult } from "@/lib/habits/mission-utils";
 import { useTheme } from "@/context/ThemeContext";
 import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 
@@ -34,8 +34,8 @@ interface MissionListModalProps {
     missions: Mission[];
     completed: { [id: string]: { date: string } };
     onMissionClick: (mission: Mission) => void;
-    checkValidation: (mission: Mission) => any;
-    isMissionCompleted: (id: string, type: any) => boolean;
+    checkValidation: (mission: Mission) => ValidationResult;
+    isMissionCompleted: (id: string, type: Mission['type']) => boolean;
     children?: React.ReactNode;
     hijriDate?: string;
     isOpen?: boolean;
@@ -56,12 +56,10 @@ interface TabDefinition {
 
 export default function MissionListModal({
     missions,
-    completed,
     onMissionClick,
     checkValidation,
     isMissionCompleted,
     children,
-    hijriDate,
     isOpen,
     onOpenChange,
     initialTab

@@ -28,30 +28,22 @@ import Link from "next/link";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import MissionDetailDialog from "@/components/MissionDetailDialog";
 import { checkMissionValidation, getRulingLabel } from "@/lib/habits/mission-utils";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
 import { useMissions } from "@/hooks/useMissions";
 import { useSession } from "next-auth/react";
-import { getMissionRepository } from "@/core/repositories/mission.repository";
-import { Metadata } from "next";
 
 // Note: Metadata export cannot be used in client components
 // SEO metadata is handled in layout.tsx for this page
 
 const storage = getStorageService();
 
-interface CompletedMissions {
-    [missionId: string]: {
-        completedAt: string;
-        date: string;
-    };
-}
-
 export default function MisiPage() {
     const { data: session } = useSession();
     const { t, locale } = useLocale();
+    const translations = t as TranslationTree & { toastMissionReset?: string };
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
     const [gender, setGender] = useState<Gender>(null);
     const [missions, setMissions] = useState<Mission[]>([]);
@@ -92,13 +84,13 @@ export default function MisiPage() {
 
         // recurring check
         if (type === 'daily' || type === 'weekly' || !type) {
-            return completedMissions.some((m: any) =>
+            return completedMissions.some((m) =>
                 m.id === missionId && m.completedAt.split('T')[0] === today
             );
         }
 
         // one-time check
-        return completedMissions.some((m: any) => m.id === missionId);
+        return completedMissions.some((m) => m.id === missionId);
     };
 
     // --- Validation Logic ---
@@ -121,7 +113,7 @@ export default function MisiPage() {
 
         // Update streak (only on first mission of the day)
         const todayStr = new Date().toISOString().split('T')[0];
-        const completedCountToday = completedMissions.filter((m: any) =>
+        const completedCountToday = completedMissions.filter((m) =>
             m.completedAt.split('T')[0] === todayStr
         ).length;
 
@@ -141,7 +133,7 @@ export default function MisiPage() {
 
         undoCompleteMission(mission.id);
 
-        toast.info((t as any).toastMissionReset || "Misi dibatalkan", {
+        toast.info(translations.toastMissionReset || "Misi dibatalkan", {
             description: `${mission.title} telah di-reset. (-${mission.hasanahReward} Hasanah)`,
             duration: 3000,
             icon: "🔄"
@@ -231,7 +223,7 @@ export default function MisiPage() {
                     ) : validation.isEarly ? (
                         <div className="flex items-center gap-1 mt-1 text-emerald-400/80">
                             <Sparkles className="w-3 h-3" />
-                            <p className="text-[10px] font-medium">{(t as any).home_mission_early_bonus}</p>
+                            <p className="text-[10px] font-medium">{translations.home_mission_early_bonus}</p>
                         </div>
                     ) : (
                         <p className="text-[10px] text-white/40">{mission.description}</p>
@@ -339,7 +331,7 @@ export default function MisiPage() {
                 {!gender && (
                     <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
                         <p className="text-sm text-amber-400">
-                            {(t as any).home_mission_select_gender_hint}
+                            {translations.home_mission_select_gender_hint}
                         </p>
                     </div>
                 )}

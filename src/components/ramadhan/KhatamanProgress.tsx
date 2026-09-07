@@ -26,7 +26,7 @@ import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Minus, Plus } from "lucide-react";
-import { useTranslations } from "@/context/LocaleContext";
+import { useTranslations, type TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { toast } from "sonner";
 
@@ -49,7 +49,7 @@ export default function KhatamanProgress() {
 
     useEffect(() => {
         const storage = getStorageService();
-        const saved = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG as any);
+        const saved = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG);
         if (saved) {
             try {
                 setKhatamanData(JSON.parse(saved));
@@ -61,7 +61,7 @@ export default function KhatamanProgress() {
 
     const save = useCallback((updated: KhatamanLog) => {
         const storage = getStorageService();
-        storage.set(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG as any, JSON.stringify(updated));
+        storage.set(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG, JSON.stringify(updated));
         setKhatamanData(updated);
     }, []);
 
@@ -71,8 +71,9 @@ export default function KhatamanProgress() {
         if (delta > 0 && newJuz > khatamanData.currentJuz) {
             const xpEarned = 20 * (newJuz - khatamanData.currentJuz);
             addHasanah(xpEarned);
-            toast.success((t as any).khatamanTitle || "Tadarus", {
-                description: `Masya Allah! +${xpEarned} ${(t as any).gamificationXpName || "Hasanah"}`,
+            const translations = t as TranslationTree;
+            toast.success(translations.khatamanTitle || "Tadarus", {
+                description: `Masya Allah! +${xpEarned} ${translations.gamificationXpName || "Hasanah"}`,
                 duration: 3000,
                 icon: "📖"
             });
