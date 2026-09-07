@@ -62,17 +62,6 @@ export default function MentorAIClient() {
         return () => { window.removeEventListener("activity_updated", load); window.removeEventListener("streak_updated", load); };
     }, []);
     const { t, locale } = useLocale();
-    const HADITH_THEMES = [
-        { label: "Sabar", prompt: "Berikan hadits tentang keutamaan sabar" },
-        { label: "Syukur", prompt: "Apa hadits tentang cara bersyukur?" },
-        { label: "Adab", prompt: "Jelaskan adab berbicara dalam Islam" },
-        { label: "Ilmu", prompt: "Apa pentingnya menuntut ilmu?" },
-        { label: "Sholat", prompt: "Tips khusyuk dalam sholat" },
-        { label: "Sedekah", prompt: "Keutamaan sedekah subuh" },
-        { label: "Puasa", prompt: "Manfaat puasa bagi jiwa" },
-        { label: "Memaafkan", prompt: "Hadits tentang saling memaafkan" },
-    ];
-
     const QUICK_PROMPTS = [
         t.tanyaPrompt1,
         t.tanyaPrompt2,

@@ -35,10 +35,6 @@ import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
 // In-memory cache for prayer times to avoid repeated API calls in the same request
 const prayerTimesCache = new Map<string, any>();
 
-// In-memory deduplication cache (backup layer — DB-based dedup is the primary)
-const recentNotifications = new Map<string, number>();
-const DEDUP_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-
 // === Precision Notification Window ===
 // cron-job.org fires this endpoint every 1 minute.
 // For fasting (puasa), notifications must be very close to the actual adzan time:
@@ -137,18 +133,6 @@ function inferTimezoneFromCoords(lat: number, lng: number, rawTz?: string | null
         return "Asia/Jayapura";                 // WIT
     }
     return rawTz || "UTC";
-}
-
-// Helper: Check if notification was recently sent
-function wasRecentlyNotified(key: string): boolean {
-    const lastSent = recentNotifications.get(key);
-    if (!lastSent) return false;
-    const now = Date.now();
-    if (now - lastSent > DEDUP_WINDOW_MS) {
-        recentNotifications.delete(key);
-        return false;
-    }
-    return true;
 }
 
 export async function POST(req: NextRequest) {

@@ -25,8 +25,6 @@ const StoryShareModal = dynamic(
     { ssr: false }
 );
 
-const INITIAL_BATCH = 25;
-
 const HadithCard = memo(function HadithCard({
     item,
     t,

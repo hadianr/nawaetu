@@ -319,7 +319,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
     const [editingBookmarkDraft, setEditingBookmarkDraft] = useState<BookmarkType | null>(null);
 
     // Tafsir
-    const [expandedTafsir, setExpandedTafsir] = useState<Set<string>>(new Set());
     const [loadingTafsir, setLoadingTafsir] = useState<Set<string>>(new Set());
     const TAFSIR_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
     type TafsirCacheEntry = { data: TafsirContent; ts: number };
@@ -397,11 +396,6 @@ export default function VerseList({ chapter, verses, audioUrl, currentPage, tota
         }
     }, [verses, currentPage]);
 
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            router.push(`/quran/${chapter.id}?page=${newPage}`);
-        }
-    };
     const { 
         audioRef, 
         activeWord, 
