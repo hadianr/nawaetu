@@ -19,6 +19,24 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
+type MockChain = {
+  from: ReturnType<typeof vi.fn>;
+  where: ReturnType<typeof vi.fn>;
+  limit: ReturnType<typeof vi.fn>;
+  orderBy: ReturnType<typeof vi.fn>;
+  values: ReturnType<typeof vi.fn>;
+  set: ReturnType<typeof vi.fn>;
+  returning: ReturnType<typeof vi.fn>;
+  then: (resolve: (value: never[]) => unknown) => unknown;
+};
+
+type DailyResponseBody = {
+  success: boolean;
+  data?: { current_streak: number };
+  error?: string;
+  details?: unknown;
+};
+
 // Define mockChain and attach it to global so hoisted mocks can access it
 const mockChain = {
   from: vi.fn().mockReturnThis(),
@@ -28,18 +46,17 @@ const mockChain = {
   values: vi.fn().mockReturnThis(),
   set: vi.fn().mockReturnThis(),
   returning: vi.fn(),
+  then: (resolve: (value: never[]) => unknown) => resolve([]),
 };
-(global as any).mockChain = mockChain;
-
-// Make chain thenable for await db.update()...
-(mockChain as any).then = (resolve: any) => resolve([]);
+const testGlobal = globalThis as typeof globalThis & { mockChain: MockChain };
+testGlobal.mockChain = mockChain;
 
 vi.mock('@/db', () => ({
   db: {
-    select: vi.fn(() => (global as any).mockChain),
-    insert: vi.fn(() => (global as any).mockChain),
-    update: vi.fn(() => (global as any).mockChain),
-    from: vi.fn(() => (global as any).mockChain),
+    select: vi.fn(() => (globalThis as typeof globalThis & { mockChain: MockChain }).mockChain),
+    insert: vi.fn(() => (globalThis as typeof globalThis & { mockChain: MockChain }).mockChain),
+    update: vi.fn(() => (globalThis as typeof globalThis & { mockChain: MockChain }).mockChain),
+    from: vi.fn(() => (globalThis as typeof globalThis & { mockChain: MockChain }).mockChain),
   },
   checkConnection: vi.fn().mockResolvedValue({ success: true }),
 }));
@@ -140,7 +157,9 @@ describe('POST /api/intentions/daily', () => {
     });
 
     const response = await POST(req);
-    const data = (response as any).body;
+    const data = (response as unknown as {
+      body: DailyResponseBody & { data: { current_streak: number } };
+    }).body;
 
     expect(data.success).toBe(true);
     expect(data.data.current_streak).toBe(3);
@@ -159,8 +178,9 @@ describe('POST /api/intentions/daily', () => {
     });
 
     const response = await POST(req);
-    const data = (response as any).body;
-    const status = (response as any).status;
+    const result = response as unknown as { body: DailyResponseBody; status: number };
+    const data = result.body;
+    const status = result.status;
 
     expect(status).toBe(500);
     expect(data.success).toBe(false);
@@ -181,8 +201,9 @@ describe('POST /api/intentions/daily', () => {
     });
 
     const response = await POST(req);
-    const data = (response as any).body;
-    const status = (response as any).status;
+    const result = response as unknown as { body: DailyResponseBody; status: number };
+    const data = result.body;
+    const status = result.status;
 
     expect(status).toBe(500);
     expect(data.success).toBe(false);

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DbSyncRepository } from '@/core/repositories/db-sync.repository';
 import { db } from '@/db';
 

@@ -47,9 +47,10 @@ import { POST } from './route';
 import { getServerSession } from '@/lib/auth';
 
 // Helper for chainable mocks
-const createQueryBuilder = (result: any) => {
+const createQueryBuilder = (result: unknown) => {
     return {
-        then: (resolve: any, reject: any) => Promise.resolve(result).then(resolve, reject),
+        then: (resolve: (value: unknown) => unknown, reject?: (reason: unknown) => unknown) =>
+            Promise.resolve(result).then(resolve, reject),
         onConflictDoUpdate: mockInsertOnConflictDoUpdate,
         returning: mockInsertReturning,
         where: mockUpdateWhere,
@@ -131,10 +132,11 @@ describe('Benchmark: POST /api/mentor-ai/history', () => {
             })
         });
 
-        const res: any = await POST(req);
+        const res = await POST(req);
+        const result = res as unknown as { status: number; body: { success?: boolean } };
 
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual({ success: true });
+        expect(result.status).toBe(200);
+        expect(result.body).toEqual({ success: true });
 
         // Optimized: findFirst NOT called
         expect(mockFindFirst).toHaveBeenCalledTimes(0);
@@ -178,10 +180,11 @@ describe('Benchmark: POST /api/mentor-ai/history', () => {
             })
         });
 
-        const res: any = await POST(req);
+        const res = await POST(req);
+        const result = res as unknown as { status: number; body: { error?: string } };
 
-        expect(res.status).toBe(403);
-        expect(res.body).toEqual({ error: 'Forbidden' });
+        expect(result.status).toBe(403);
+        expect(result.body).toEqual({ error: 'Forbidden' });
 
         // Optimized: findFirst NOT called
         expect(mockFindFirst).toHaveBeenCalledTimes(0);

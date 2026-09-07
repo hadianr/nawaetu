@@ -97,17 +97,17 @@ describe('Sync Guest Optimization', () => {
             json: async () => ({
                 bookmarks: mockBookmarks,
             }),
-        } as any;
+        } as unknown as Parameters<typeof POST>[0];
 
-        const response: any = await POST(req);
+        const response = await POST(req);
 
         expect(response.status).toBe(200);
 
         // Get calls to insert
-        const insertCalls = (db.insert as any).mock.calls;
+        const insertCalls = vi.mocked(db.insert).mock.calls;
 
         // Filter for bookmarks table insertions
-        const bookmarkInserts = insertCalls.filter((args: any[]) => args[0] === bookmarks);
+        const bookmarkInserts = insertCalls.filter(([table]) => table === bookmarks);
 
         // Expect 1 call for bulk insert (will fail now, expected 2)
         expect(bookmarkInserts.length).toBe(1);

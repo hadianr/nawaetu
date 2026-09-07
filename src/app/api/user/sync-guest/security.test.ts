@@ -67,17 +67,14 @@ vi.mock('@/db/schema', () => ({
 }));
 
 describe('POST /api/user/sync-guest - Security Tests', () => {
-    let txMock: any;
+    let txMock = createTransactionMock();
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-
-        // Setup transaction mock
-        txMock = {
+    function createTransactionMock() {
+        return {
             query: {
                 intentions: {
                     findMany: vi.fn().mockResolvedValue([]),
-                }
+                },
             },
             insert: vi.fn().mockReturnThis(),
             values: vi.fn().mockReturnThis(),
@@ -87,9 +84,16 @@ describe('POST /api/user/sync-guest - Security Tests', () => {
             set: vi.fn().mockReturnThis(),
             where: vi.fn().mockReturnThis(),
         };
+    }
 
-        (db.transaction as any).mockImplementation(async (callback: any) => {
-            await callback(txMock);
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        // Setup transaction mock
+        txMock = createTransactionMock();
+
+        vi.mocked(db.transaction).mockImplementation(async (callback) => {
+            await callback(txMock as never);
         });
     });
 
@@ -110,11 +114,11 @@ describe('POST /api/user/sync-guest - Security Tests', () => {
             headers: new Headers(),
         };
 
-        const response: any = await POST(req as any);
+        const response = await POST(req as Parameters<typeof POST>[0]);
 
         // Should return 400 Bad Request
         expect(response.status).toBe(400);
-        expect(response.error).toBe('Invalid data format');
+        expect((response as unknown as { error?: string }).error).toBe('Invalid data format');
     });
 
     it('should reject request with too many intentions (>100)', async () => {
@@ -133,7 +137,7 @@ describe('POST /api/user/sync-guest - Security Tests', () => {
             headers: new Headers(),
         };
 
-        const response: any = await POST(req as any);
+        const response = await POST(req as Parameters<typeof POST>[0]);
 
         expect(response.status).toBe(400);
     });
@@ -155,7 +159,7 @@ describe('POST /api/user/sync-guest - Security Tests', () => {
             headers: new Headers(),
         };
 
-        const response: any = await POST(req as any);
+        const response = await POST(req as Parameters<typeof POST>[0]);
 
         expect(response.status).toBe(400);
     });
