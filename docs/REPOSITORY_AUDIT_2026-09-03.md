@@ -25,7 +25,11 @@ The highest-value cleanup was local artifact removal, followed by dependency/con
 - Removed the two unreferenced components, five unused Next starter SVGs, the duplicate precomposed icon, and the unused license-header script.
 - Removed confirmed dead locals/imports and the unused prayer-notification dedup helper.
 - Removed five unused direct dependency declarations and stale package names from `next.config.ts`.
-- Deferred Sirah ETL scripts, the notification test script, tracked generated PWA files, and the production source-map setting because each needs a product/deployment decision or may be an intentional operational tool.
+
+## Follow-up actions — 2026-09-07
+
+- Archived the one-shot Sirah ETL/migration scripts under `scripts/archive/sirah/`; they remain recoverable without cluttering the active tooling directory.
+- Untracked generated PWA workers; `next-pwa` regenerates them during deployment, while the authored Firebase worker remains tracked.
 
 ## Ranked findings
 
@@ -57,11 +61,11 @@ The highest-value cleanup was local artifact removal, followed by dependency/con
 
 `delete:` Archive or remove `scripts/add-license.mjs` (75 lines) if mass license-header insertion is complete; it is not referenced by `package.json`, CI, or another script. Keep it only if this repository still performs that operation.
 
-`yagni:` Review the Sirah ETL/migration scripts `scripts/ingest-sirah.py`, `scripts/migrate-sirah-paragraphs.ts`, and `scripts/annotate-sirah-content.ts`. They are one-shot data tooling, not runtime code; keep them only if the source dataset can be re-imported or content must be regenerated. `ingest-sirah.py` contains machine-specific `/Users/hadianr/Downloads/...` input paths, so it is not a portable rebuild path.
+`archive:` The one-shot Sirah ETL/migration scripts now live under `scripts/archive/sirah/`. They are retained for possible content regeneration; `ingest-sirah.py` still contains machine-specific `/Users/hadianr/Downloads/...` input paths and is not a portable rebuild path.
 
 `yagni:` Review `scripts/test-notification.sh` as an operational utility. It is not wired into an npm script, but it may still be useful for manual production checks; delete only if that workflow is no longer used.
 
-`shrink:` Decide whether generated PWA outputs are source-controlled. `public/sw.js` and `public/swe-worker-5c72df51bb1f6ee0.js` are tracked even though `.gitignore` and ESLint classify the PWA output as generated. If `next-pwa` generates them during deployment, untrack them and retain the authored `public/firebase-messaging-sw.js`; otherwise document why the generated files are committed.
+`done:` Generated PWA outputs are no longer source-controlled. `next-pwa` regenerates them during deployment, and the authored `public/firebase-messaging-sw.js` remains tracked.
 
 `shrink:` Consider disabling `productionBrowserSourceMaps` in `next.config.ts:39` unless client-side production debugging requires it. This is not a major local-disk fix, but it can reduce build/deployment artifact volume and source exposure. Coordinate with the Sentry source-map workflow before changing it.
 
@@ -100,9 +104,8 @@ Removing these will not materially shrink a clean install by itself. The largest
 ## Recommended cleanup order
 
 1. Review and commit the validated cleanup diff.
-2. Decide the generated-PWA tracking policy before changing `public/sw.js` or `public/swe-worker-*.js`.
-3. Archive or remove the one-shot Sirah and notification scripts if those workflows are no longer needed.
-4. Treat the remaining ESLint errors as a separate correctness/maintainability pass; do not bulk-disable the rules merely to make the count disappear.
+2. Archive or remove the notification test script if that workflow is no longer needed.
+3. Treat the remaining ESLint errors as a separate correctness/maintainability pass; do not bulk-disable the rules merely to make the count disappear.
 
 ## Net opportunity
 

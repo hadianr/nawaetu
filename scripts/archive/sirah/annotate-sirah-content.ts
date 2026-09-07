@@ -2,7 +2,7 @@
  * Nawaetu - Sirah Content Annotation Script
  * Adds lightweight inline markdown (**bold**, *italic*) to sections.json content arrays.
  *
- * Run: npx tsx scripts/annotate-sirah-content.ts
+ * Run: npx tsx scripts/archive/sirah/annotate-sirah-content.ts
  *
  * Idempotent: already-wrapped patterns are not double-wrapped.
  * Safe to re-run after content updates.
