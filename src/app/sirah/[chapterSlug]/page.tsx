@@ -7,7 +7,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, CheckCircle2, ChevronRight, Bookmark, Clock, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronRight, Bookmark } from "lucide-react";
 import { getSirahChapterBySlug, getSirahSectionsByChapterSlug } from "@/data/sirah";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";

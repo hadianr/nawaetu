@@ -13,15 +13,9 @@ import {
     Sparkles,
     CheckCircle2,
     ChevronRight,
-    Bookmark,
-    Clock,
-    Compass,
-    Shield,
-    Heart,
     Award,
-    Trophy,
 } from "lucide-react";
-import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra, type SirahChapter } from "@/data/sirah";
+import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra } from "@/data/sirah";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
@@ -40,18 +34,15 @@ export default function SirahDashboardPage() {
     const [selectedEra, setSelectedEra] = useState<SirahEra | "all">("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
-    const [bookmarkedSectionIds, setBookmarkedSectionIds] = useState<string[]>([]);
     const [isQuizDoneToday, setIsQuizDoneToday] = useState(false);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const completed = JSON.parse(localStorage.getItem("nawaetu_sirah_completed") || "[]");
-            const bookmarks = JSON.parse(localStorage.getItem("nawaetu_sirah_bookmarks") || "[]");
             const todayStr = new Date().toISOString().split("T")[0];
             const lastClaimed = localStorage.getItem("nawaetu_sirah_quiz_last_claimed");
 
             setCompletedSectionIds(completed);
-            setBookmarkedSectionIds(bookmarks);
             setIsQuizDoneToday(lastClaimed === todayStr);
         }
     }, []);
@@ -192,7 +183,7 @@ export default function SirahDashboardPage() {
                             isDaylight ? "text-slate-900" : "text-slate-100"
                         )}
                     >
-                        "{dailyHighlight.suggestedIntention}"
+                        &quot;{dailyHighlight.suggestedIntention}&quot;
                     </p>
                     <div className="pt-0.5 flex items-center justify-between gap-2 text-xs">
                         <span

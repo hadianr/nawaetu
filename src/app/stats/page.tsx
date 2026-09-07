@@ -13,8 +13,6 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Star } from "lucide-react";
-import Link from 'next/link';
 import GlobalStatsWidget from '@/components/home/GlobalStatsWidget';
 import { useStatsInsights, InsightKey, PRAYER_SUFFIXES, DailyActivity, CompletedMission } from '@/hooks/useStatsInsights';
 import { InsightModal } from '@/components/stats/InsightModal';
@@ -101,7 +99,7 @@ export default function StatsPage() {
             const parts = m.id.split('_');
             const prayerType = parts[0] === 'sholat' ? parts[1] : parts[0];
             const normalizedType = prayerType === 'fajr' ? 'subuh' : prayerType === 'dhuhr' ? 'dzuhur' : prayerType === 'asr' ? 'ashar' : prayerType === 'isha' ? 'isya' : prayerType;
-            if (PRAYER_SUFFIXES.includes(normalizedType as any)) {
+            if (PRAYER_SUFFIXES.includes(normalizedType as typeof PRAYER_SUFFIXES[number])) {
                 prayerMap[dateStr].add(normalizedType);
             }
         }
@@ -193,7 +191,7 @@ export default function StatsPage() {
     }, [history, locale, t, timeRange, todayStr, completedMissions]);
 
     const rangeStats = useMemo(() => {
-        const totalHasanah = chartData.reduce((sum, d) => sum + (d as any).hasanah, 0);
+        const totalHasanah = chartData.reduce((sum, d) => sum + d.hasanah, 0);
         return { totalHasanah };
     }, [chartData]);
 
@@ -227,14 +225,6 @@ export default function StatsPage() {
         return <div className="min-h-screen bg-[rgb(var(--color-background))]" />;
     }
 
-    const filters = [
-        { id: 'today', label: t.stats.chart.filters.today },
-        { id: '7d', label: t.stats.chart.filters.last7d },
-        { id: '30d', label: t.stats.chart.filters.last30d },
-        { id: '90d', label: t.stats.chart.filters.last90d },
-        { id: '1y', label: t.stats.chart.filters.last1y },
-    ];
-
     return (
             <div className="stats-page min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
@@ -250,7 +240,6 @@ export default function StatsPage() {
                     nextRank={nextRank}
                     streakData={streakData}
                     recentPrayerCount={recentPrayerCount}
-                    weeklyHasanah={weeklyHasanah}
                     consistency={consistency}
                     timeRange={timeRange}
                     totalHasanah={rangeStats.totalHasanah}
@@ -360,43 +349,3 @@ export default function StatsPage() {
             </div>
     );
 }
-
-function QuickStatCard({ title, value, subtitle, icon, onClick }: { title: string, value: string, subtitle: string, icon: React.ReactNode, onClick: () => void }) {
-    return (
-        <button
-            onClick={onClick}
-            className="p-4 rounded-[24px] border border-white/5 bg-white/[0.02] flex flex-col items-start gap-2 text-left hover:bg-white/5 transition-all group"
-        >
-            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                {icon}
-            </div>
-            <div>
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider">{title}</p>
-                <div className="flex items-baseline gap-1">
-                    <h3 className="text-lg font-black text-white font-mono">{value}</h3>
-                </div>
-                <p className="text-[9px] text-white/30 truncate">{subtitle}</p>
-            </div>
-        </button>
-    );
-}
-
-const ZapIcon = ({ className }: { className?: string }) => (
-    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-    </svg>
-);
-
-const Target = ({ className }: { className?: string }) => (
-    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <circle cx="12" cy="12" r="6" />
-        <circle cx="12" cy="12" r="2" />
-    </svg>
-);
-
-const Flame = ({ className }: { className?: string }) => (
-    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.5 3.5 6.5 1 1.5 2 3 2 4.5a6 6 0 1 1-12 0c0-1.5.5-3 2-4.5.5 1 1 2 1 3.5Z" />
-    </svg>
-);

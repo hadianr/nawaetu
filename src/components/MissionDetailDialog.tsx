@@ -23,18 +23,17 @@ import {
     Dialog,
     DialogContent,
     DialogHeader,
-    DialogTitle,
-    DialogFooter
+    DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { Check, Lock, BookOpen, Info, ChevronRight, ChevronLeft, AlertCircle, Sparkles, X, ExternalLink } from "lucide-react";
-import { Mission, ValidationType } from "@/data/missions";
+import { Mission } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
@@ -272,7 +271,7 @@ export default function MissionDetailDialog({
                                         {content.readings && content.readings.length > 0 && (
                                             <div className="space-y-4">
                                                 <div className={cn("flex items-center justify-between text-xs uppercase tracking-widest font-black", isDaylight ? "text-slate-400" : "text-white/40")}>
-                                                    <span>{(t as any).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
+                                                    <span>{(t as TranslationTree).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
                                                     {currentReading?.note && (
                                                         <span className={cn("font-bold transition-colors", isDaylight ? "text-emerald-600" : "text-emerald-400")}>{currentReading.note}</span>
                                                     )}

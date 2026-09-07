@@ -13,15 +13,19 @@ import {
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { InsightKey } from "@/hooks/useStatsInsights";
+import type { TranslationTree } from "@/context/LocaleContext";
+import type { PlayerStats } from "@/lib/habits/leveling";
+
+type RankDetails = TranslationTree["stats"]["ranks"][keyof TranslationTree["stats"]["ranks"]];
+type NextRankDetails = RankDetails & { levelsRemaining: number };
 
 interface StatsOverviewProps {
-    t: any;
-    playerStats: any;
-    playerRank: any;
-    nextRank: any;
+    t: TranslationTree;
+    playerStats: PlayerStats;
+    playerRank: RankDetails;
+    nextRank: NextRankDetails | null;
     streakData: { currentStreak: number; longestStreak: number };
     recentPrayerCount: number;
-    weeklyHasanah: number;
     consistency: number;
     timeRange: string;
     totalHasanah: number;
@@ -37,7 +41,6 @@ export function StatsOverview({
     nextRank,
     streakData,
     recentPrayerCount,
-    weeklyHasanah,
     consistency,
     timeRange,
     totalHasanah,
@@ -179,7 +182,7 @@ export function StatsOverview({
     );
 }
 
-export function StatsHeader({ t, playerStats }: { t: any, playerStats: any }) {
+export function StatsHeader({ t, playerStats }: { t: TranslationTree; playerStats: PlayerStats }) {
     return (
         <div className="sticky top-0 z-10 bg-gradient-to-b from-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl border-b border-white/5">
             <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
