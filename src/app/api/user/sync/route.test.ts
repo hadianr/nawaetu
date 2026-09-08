@@ -29,6 +29,10 @@ vi.mock('@/lib/auth', () => ({
     authOptions: {}
 }));
 
+vi.mock('@/core/repositories/progression.repository', () => ({
+    processProgressionEvidence: vi.fn().mockResolvedValue({ duplicate: false }),
+}));
+
 // Mock DB Schema - overriding global mock
 vi.mock('@/db/schema', () => ({
     users: { id: 'id', settings: 'settings' },
@@ -90,7 +94,7 @@ describe('User Sync API', () => {
         insertChain.onConflictDoNothing.mockClear();
     });
 
-    it.skip('should use bulk insert for syncing legacy missions (N+1 optimization)', async () => {
+    it('should use bulk insert for syncing legacy missions (N+1 optimization)', async () => {
         // Mock Session
         (getServerSession as Mock).mockResolvedValue({ user: { id: 'test-user-id', isMuhsinin: false } });
 
@@ -100,9 +104,9 @@ describe('User Sync API', () => {
         // Create a large payload of missions
         const missionCount = 100;
         const missions = Array.from({ length: missionCount }, (_, i) => ({
-            id: `mission-${i}`,
+            id: 'fajr_prayer',
             hasanahEarned: 10,
-            completedAt: new Date().toISOString(),
+            completedAt: new Date(Date.UTC(2024, 0, i + 1)).toISOString(),
         }));
 
         const body = {
@@ -131,10 +135,10 @@ describe('User Sync API', () => {
         expect(insertChain.values).toHaveBeenCalledTimes(1);
         const args = insertChain.values.mock.calls[0][0];
         expect(args).toHaveLength(missionCount);
-        expect(args[0]).toHaveProperty('missionId', 'mission-0');
+        expect(args[0]).toHaveProperty('missionId', 'fajr_prayer');
     });
 
-    it.skip('should use bulk insert for syncing legacy intentions (N+1 optimization)', async () => {
+    it('should use bulk insert for syncing legacy intentions (N+1 optimization)', async () => {
         // Mock Session
         (getServerSession as Mock).mockResolvedValue({ user: { id: 'test-user-id', isMuhsinin: false } });
         (db.query.users.findFirst as Mock).mockResolvedValue({ settings: {} });
@@ -169,7 +173,7 @@ describe('User Sync API', () => {
         expect(insertChain.values).toHaveBeenCalledTimes(1);
         const args = insertChain.values.mock.calls[0][0];
         expect(args).toHaveLength(9);
-        expect(args[0]).toHaveProperty('intentionText', 'Intention 0');
+        expect(args[0]).toHaveProperty('intentionText', 'Intention 45');
     });
 
     it('should handle empty request body gracefully', async () => {
