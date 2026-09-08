@@ -32,7 +32,7 @@ import { makeDayKey, makeYearKey } from "@/data/fasting/types";
 function loadFromStorage(): AllFastingLogs {
     try {
         const storage = getStorageService();
-        const raw = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_LOG as any);
+        const raw = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_LOG);
         if (!raw) return {};
         return JSON.parse(raw) as AllFastingLogs;
     } catch {
@@ -42,13 +42,13 @@ function loadFromStorage(): AllFastingLogs {
 
 function saveToStorage(logs: AllFastingLogs): void {
     const storage = getStorageService();
-    storage.set(STORAGE_KEYS.RAMADHAN_FASTING_LOG as any, JSON.stringify(logs));
+    storage.set(STORAGE_KEYS.RAMADHAN_FASTING_LOG, JSON.stringify(logs));
 }
 
 function loadMadzhabPref(): Madzhab | null {
     try {
         const storage = getStorageService();
-        const raw = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB as any);
+        const raw = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB);
         return (raw as Madzhab) || null;
     } catch {
         return null;
@@ -57,7 +57,7 @@ function loadMadzhabPref(): Madzhab | null {
 
 function saveMadzhabPref(madzhab: Madzhab): void {
     const storage = getStorageService();
-    storage.set(STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB as any, madzhab);
+    storage.set(STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB, madzhab);
 }
 
 function computeStats(yearLog: FastingYearLog): FastingYearStats {
@@ -105,8 +105,10 @@ export function useFastingTracker() {
 
     // Load from localStorage on mount
     useEffect(() => {
-        setAllLogs(loadFromStorage());
-        setDefaultMadzhab(loadMadzhabPref());
+        queueMicrotask(() => {
+            setAllLogs(loadFromStorage());
+            setDefaultMadzhab(loadMadzhabPref());
+        });
     }, []);
 
     // Sync dirty records to server when session becomes available

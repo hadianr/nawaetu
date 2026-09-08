@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => Promise<void>;
@@ -27,25 +27,25 @@ interface BeforeInstallPromptEvent extends Event {
 
 export function usePWAInstall() {
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-    const [isIOS, setIsIOS] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-    const [isStandalone, setIsStandalone] = useState(false);
+    const subscribe = (listener: () => void) => {
+        window.addEventListener("appinstalled", listener);
+        return () => window.removeEventListener("appinstalled", listener);
+    };
+    const getIsIOS = () => {
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        return /iphone|ipad|ipod/.test(userAgent);
+    };
+    const getIsMobile = () => getIsIOS() || /android|mobile/i.test(window.navigator.userAgent);
+    const isStandalone = useSyncExternalStore(
+        subscribe,
+        () => window.matchMedia("(display-mode: standalone)").matches || Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone) || document.referrer.includes("android-app://"),
+        () => false,
+    );
+    const isIOS = useSyncExternalStore(subscribe, getIsIOS, () => false);
+    const isMobile = useSyncExternalStore(subscribe, getIsMobile, () => false);
 
     useEffect(() => {
         // Check if running in standalone mode (already installed)
-        const isStandaloneMode =
-            window.matchMedia("(display-mode: standalone)").matches ||
-            (window.navigator as any).standalone ||
-            document.referrer.includes("android-app://");
-
-        setIsStandalone(isStandaloneMode);
-
-        // Detect iOS
-        const userAgent = window.navigator.userAgent.toLowerCase();
-        const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
-        setIsIOS(isIosDevice);
-        setIsMobile(isIosDevice || /android|mobile/.test(userAgent));
-
         // Listen for beforeinstallprompt event (Android/Chrome)
         const handleBeforeInstallPrompt = (e: Event) => {
             e.preventDefault(); // Prevent automatic mini-infobar
@@ -55,7 +55,6 @@ export function usePWAInstall() {
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
         const handleAppInstalled = () => {
             setDeferredPrompt(null);
-            setIsStandalone(true);
         };
         window.addEventListener("appinstalled", handleAppInstalled);
 
@@ -85,7 +84,7 @@ export function usePWAInstall() {
             } else {
                 return false;
             }
-        } catch (error) {
+        } catch {
             // Reset the prompt so user can try again
             setDeferredPrompt(null);
             return false;

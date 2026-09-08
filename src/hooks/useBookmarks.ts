@@ -37,7 +37,7 @@ export function useBookmarks() {
     }, []);
 
     useEffect(() => {
-        refresh();
+        queueMicrotask(refresh);
 
         const handleUpdate = () => refresh();
         window.addEventListener('bookmarks_updated', handleUpdate);

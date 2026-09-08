@@ -36,7 +36,7 @@ function normaliseChoice(raw: unknown): TarawehChoice {
 function readFullLog(): FullLog {
     try {
         const storage = getStorageService();
-        const raw = storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG as any);
+        const raw = storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG);
         if (!raw) return {};
         if (typeof raw === "string") {
             try { return JSON.parse(raw) as FullLog; } catch { return {}; }
@@ -51,7 +51,7 @@ function readFullLog(): FullLog {
 function writeFullLog(fullLog: FullLog): void {
     try {
         const storage = getStorageService();
-        storage.set(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG as any, fullLog);
+        storage.set(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG, fullLog);
     } catch (e) {
         console.error("[useTarawehTracker] Failed to write to localStorage", e);
     }
@@ -84,7 +84,7 @@ export function useTarawehTracker(hijriYear: number) {
         if (!hijriYear) return;
         const fullLog = readFullLog();
         const yearData = (fullLog[hijriYear] || fullLog[String(hijriYear)] || {}) as Record<string, unknown>;
-        setLog(migrateYearData(yearData));
+        queueMicrotask(() => setLog(migrateYearData(yearData)));
     }, [hijriYear]);
 
     // 2. DB sync: merge in real data only — normalise choice string→number from DB enum

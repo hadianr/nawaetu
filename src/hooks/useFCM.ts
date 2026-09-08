@@ -55,7 +55,7 @@ export function useFCM() {
                                     countryCode: loc.countryCode || null,
                                 };
                             }
-                        } catch (e) { }
+                    } catch { }
                     }
 
                     // Get saved prayer preferences from localStorage
@@ -64,7 +64,7 @@ export function useFCM() {
                     if (savedPrefs) {
                         try {
                             prayerPreferences = JSON.parse(savedPrefs);
-                        } catch (e) { }
+                        } catch { }
                     }
 
                     // Send token to backend with metadata

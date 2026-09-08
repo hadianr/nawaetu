@@ -182,7 +182,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const storage = getStorageService();
         const saved = storage.getOptional(STORAGE_KEYS.SETTINGS_THEME) as ThemeId;
         if (saved && THEMES[saved]) {
-            setCurrentTheme(saved);
+            queueMicrotask(() => setCurrentTheme(saved));
         }
     }, []);
 

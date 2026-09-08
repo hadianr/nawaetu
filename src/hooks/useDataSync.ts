@@ -28,10 +28,27 @@ interface SyncResult {
     message?: string;
 }
 
+interface LocalStreakData {
+    currentStreak?: number;
+    streak?: number;
+    longestStreak?: number;
+}
+
+interface LocalActivityData {
+    date?: string;
+    quranAyat?: number;
+    quranReadingSeconds?: number;
+    hasanahGained?: number;
+    tasbihCount?: number;
+    prayersLogged?: string[];
+}
+
+const storage = getStorageService();
+
 export function useDataSync() {
     const { data: session } = useSession();
+    const userId = session?.user?.id;
     const [isSyncing, setIsSyncing] = useState(false);
-    const storage = getStorageService();
 
     const syncData = useCallback(async (options?: { silent?: boolean }): Promise<SyncResult> => {
         setIsSyncing(true);
@@ -39,18 +56,18 @@ export function useDataSync() {
 
         try {
             // 1. Gather Local Data (using safety-focused storage service)
-            const streakData = storage.getOptional<any>(STORAGE_KEYS.USER_STREAK) || { streak: 0, longestStreak: 0 };
-            const notificationPrefs = storage.getOptional<any>(STORAGE_KEYS.ADHAN_PREFERENCES) || {};
-            const lastReadQuran = storage.getOptional<any>(STORAGE_KEYS.QURAN_LAST_READ);
-            const activityTracker = storage.getOptional<any>(STORAGE_KEYS.ACTIVITY_TRACKER) || {};
+            const streakData = storage.getOptional<LocalStreakData>(STORAGE_KEYS.USER_STREAK) || { streak: 0, longestStreak: 0 };
+            const notificationPrefs = storage.getOptional<Record<string, boolean>>(STORAGE_KEYS.ADHAN_PREFERENCES) || {};
+            const lastReadQuran = storage.getOptional<unknown>(STORAGE_KEYS.QURAN_LAST_READ);
+            const activityTracker = storage.getOptional<LocalActivityData>(STORAGE_KEYS.ACTIVITY_TRACKER) || {};
 
-            const sirahCompleted = storage.getOptional<string[]>(STORAGE_KEYS.SIRAH_COMPLETED as any) || [];
-            const sirahBookmarks = storage.getOptional<string[]>(STORAGE_KEYS.SIRAH_BOOKMARKS as any) || [];
+            const sirahCompleted = storage.getOptional<string[]>(STORAGE_KEYS.SIRAH_COMPLETED) || [];
+            const sirahBookmarks = storage.getOptional<string[]>(STORAGE_KEYS.SIRAH_BOOKMARKS) || [];
 
             const localData = {
-                bookmarks: storage.getOptional<any>(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
-                intentions: storage.getOptional<any>(STORAGE_KEYS.INTENTION_JOURNAL) || [],
-                completedMissions: storage.getOptional<any>(STORAGE_KEYS.COMPLETED_MISSIONS) || [],
+                bookmarks: storage.getOptional<unknown[]>(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
+                intentions: storage.getOptional<unknown[]>(STORAGE_KEYS.INTENTION_JOURNAL) || [],
+                completedMissions: storage.getOptional<unknown[]>(STORAGE_KEYS.COMPLETED_MISSIONS) || [],
                 dailyActivity: {
                     date: activityTracker.date || new Date().toISOString().split('T')[0],
                     quranAyat: activityTracker.quranAyat || 0,
@@ -76,13 +93,13 @@ export function useDataSync() {
                     longest: streakData.longestStreak || 0,
                 },
                 ramadhan: {
-                    tarawehLog: storage.getOptional<any>(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG) || {},
-                    khatamanLog: storage.getOptional<any>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG) || { currentJuz: 0, completedJuz: [], history: [] }
+                    tarawehLog: storage.getOptional<Record<string, unknown>>(STORAGE_KEYS.RAMADHAN_TARAWEH_LOG) || {},
+                    khatamanLog: storage.getOptional<Record<string, unknown>>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG) || { currentJuz: 0, completedJuz: [], history: [] }
                 }
             };
 
             // Convert to SyncQueue entries if queue has pending items
-            const entries: any[] = [];
+            const entries: Record<string, unknown>[] = [];
             sirahCompleted.forEach((secId, i) => {
                 entries.push({
                     id: `local-sirah-progress-${i}`,
@@ -111,7 +128,7 @@ export function useDataSync() {
             const hasSirah = entries.length > 0;
 
             if (!hasBookmarks && !hasIntentions && !hasMissions && !hasActivity && !hasStreak && !hasSettings && !hasReadingState && !hasSirah) {
-                storage.set("nawaetu_synced_v1" as any, "true");
+                storage.set("nawaetu_synced_v1", "true");
                 if (toastId) toast.dismiss(toastId);
                 return { success: true, message: "Tidak ada data lokal untuk disinkronkan" };
             }
@@ -150,7 +167,7 @@ export function useDataSync() {
                 if (fullData.progression) {
                     storage.set(STORAGE_KEYS.CANONICAL_PROGRESSION, {
                         ...fullData.progression,
-                        userId: session?.user?.id,
+                        userId,
                     });
                     storage.set(STORAGE_KEYS.USER_HASANAH, String(fullData.progression.hasanah || 0));
                     trackStreakEvent("reconciled", {
@@ -164,18 +181,18 @@ export function useDataSync() {
             }
 
             // 3. Mark as Synced
-            storage.set("nawaetu_synced_v1" as any, "true");
+            storage.set("nawaetu_synced_v1", "true");
 
             if (toastId) toast.success("Data berhasil disinkronkan!", { id: toastId });
             return { success: true };
 
-        } catch (e) {
+        } catch {
             if (toastId) toast.error("Gagal sinkronisasi data", { id: toastId });
             return { success: false, message: "Terjadi kesalahan saat sinkronisasi" };
         } finally {
             setIsSyncing(false);
         }
-    }, [session?.user?.id]);
+    }, [userId]);
 
     return {
         isSyncing,

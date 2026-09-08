@@ -44,7 +44,7 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
     useEffect(() => {
         const dateString = getLocalDateString();
         const storedDaily = parseInt(localStorage.getItem(`nawaetu_quran_daily_total_${dateString}`) || '0', 10);
-        setDailyTotalSeconds(storedDaily);
+        queueMicrotask(() => setDailyTotalSeconds(storedDaily));
         
         if (status === 'authenticated') {
             fetch('/api/quran/sync-time')
@@ -183,7 +183,7 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
     // Setup Background Sync Interval
     useEffect(() => {
         // Initial sync on mount if any left over time exists from previous unrecorded sessions
-        syncTimeToServer();
+        queueMicrotask(syncTimeToServer);
 
         syncIntervalRef.current = setInterval(() => {
             syncTimeToServer();

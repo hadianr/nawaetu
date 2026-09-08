@@ -15,13 +15,40 @@ export function useFocusMode(isLightTheme: boolean): FocusMode {
     const [isFocusMode, setIsFocusMode] = useState(false);
     const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
+    const exitFocusMode = useCallback(() => {
+        // 1. Exit fullscreen
+        try {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        } catch {/* ignore */}
+
+        // 2. Release wake lock
+        if (wakeLockRef.current) {
+            wakeLockRef.current.release().catch(() => {});
+            wakeLockRef.current = null;
+        }
+
+        // 3. Clear flag
+        localStorage.removeItem(FOCUS_MODE_KEY);
+        try {
+            const bc = new BroadcastChannel('nawaetu_focus');
+            bc.postMessage({ type: 'FOCUS_MODE_EXIT' });
+            bc.close();
+        } catch {/* ignore */}
+
+        // 4. Restore bottom navigation
+        document.body.removeAttribute('data-focus-mode');
+
+        setIsFocusMode(false);
+    }, []);
+
     // Release wake lock and exit fullscreen on unmount
     useEffect(() => {
         return () => {
             exitFocusMode();
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [exitFocusMode]);
 
     // Re-acquire wake lock when page becomes visible again (wake lock is released on minimize)
     useEffect(() => {
@@ -63,34 +90,6 @@ export function useFocusMode(isLightTheme: boolean): FocusMode {
         document.body.setAttribute('data-focus-mode', 'true');
 
         setIsFocusMode(true);
-    }, []);
-
-    const exitFocusMode = useCallback(() => {
-        // 1. Exit fullscreen
-        try {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            }
-        } catch {/* ignore */}
-
-        // 2. Release wake lock
-        if (wakeLockRef.current) {
-            wakeLockRef.current.release().catch(() => {});
-            wakeLockRef.current = null;
-        }
-
-        // 3. Clear flag
-        localStorage.removeItem(FOCUS_MODE_KEY);
-        try {
-            const bc = new BroadcastChannel('nawaetu_focus');
-            bc.postMessage({ type: 'FOCUS_MODE_EXIT' });
-            bc.close();
-        } catch {/* ignore */}
-
-        // 4. Restore bottom navigation
-        document.body.removeAttribute('data-focus-mode');
-
-        setIsFocusMode(false);
     }, []);
 
     return { isFocusMode, isLightTheme, enterFocusMode, exitFocusMode };

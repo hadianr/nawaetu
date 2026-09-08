@@ -25,10 +25,43 @@ import { adjustHijriDate, formatHijriDate, parseHijriAdjustment } from "@/lib/hi
 
 const storage = getStorageService();
 
-const LOCATION_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 // Bump this version when the `tune` parameter changes to invalidate stale cached prayer data
 // v4: Coordinate-based Maghrib correction (haversine distance, not text matching)
 const TUNE_VERSION = "v2025-kemenag-5"; // bumped: Maghrib tune 0 (method=20 already includes ikhtiyath)
+
+interface LocationCache {
+    lat: number;
+    lng: number;
+    name?: string;
+    timestamp?: number;
+}
+
+interface AlAdhanResponse {
+    data: {
+        timings: Record<string, string>;
+        date?: {
+            readable?: string;
+            hijri?: { day: number; month?: { number?: number }; year: number };
+        };
+    };
+}
+
+interface PrayerCache {
+    date?: string;
+    data?: AlAdhanResponse;
+    locationName?: string;
+    isDefault?: boolean;
+    method?: string;
+    tuneVersion?: string;
+}
+
+interface ReverseGeocodeResponse {
+    success?: boolean;
+    name?: string;
+    city?: string;
+    country?: string;
+    countryCode?: string;
+}
 
 const isValidCoords = (lat: unknown, lng: unknown) =>
     typeof lat === 'number' && typeof lng === 'number' &&
@@ -36,9 +69,9 @@ const isValidCoords = (lat: unknown, lng: unknown) =>
     lat >= -90 && lat <= 90 &&
     lng >= -180 && lng <= 180;
 
-const isFreshLocation = (cachedLocation: any) => {
+const isFreshLocation = (cachedLocation: unknown): cachedLocation is LocationCache => {
     if (!cachedLocation || typeof cachedLocation !== 'object') return false;
-    const { lat, lng } = cachedLocation as { lat?: number; lng?: number; timestamp?: number };
+    const { lat, lng } = cachedLocation as LocationCache;
     if (!isValidCoords(lat, lng)) return false;
     // Remove the strict 30-day `LOCATION_CACHE_TTL_MS` check so users aren't met with an empty "lokasi wajib" screen.
     return true;
@@ -71,7 +104,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
     const [error, setError] = useState<string | null>(null);
     const inFlightRequest = useRef<string | null>(null);
 
-    const processData = useCallback((result: any, locationName: string, isCached: boolean = false, isDefaultLocation: boolean = false) => {
+    const processData = useCallback((result: AlAdhanResponse, locationName: string, isCached: boolean = false, isDefaultLocation: boolean = false) => {
         const timings = result.data.timings;
         const dateInfo = result.data.date;
 
@@ -111,10 +144,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
         const hijri = dateInfo?.hijri;
         if (!hijri) return;
 
-        const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT as any);
+        const savedAdjustment = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT);
         const adjustedHijri = adjustHijriDate({
             day: hijri.day,
-            month: hijri.month?.number,
+            month: hijri.month?.number ?? 1,
             year: hijri.year,
         }, parseHijriAdjustment(savedAdjustment));
 
@@ -137,7 +170,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
     const syncFromCache = useCallback(() => {
         const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
-        const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+        const cachedData = storage.getOptional<PrayerCache>(STORAGE_KEYS.PRAYER_DATA);
         if (cachedData && typeof cachedData === 'object') {
             const date = cachedData.date;
             const savedData = cachedData.data;
@@ -176,7 +209,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                     const proxyResponse = await fetchWithTimeout(proxyUrl, {}, { timeoutMs: 10000 });
 
                     if (proxyResponse.ok) {
-                        const proxyData = await proxyResponse.json();
+                        const proxyData = await proxyResponse.json() as ReverseGeocodeResponse;
                         if (proxyData.success && proxyData.name) {
                             locationName = proxyData.name;
                             // Capture enriched city/country for storing in USER_LOCATION
@@ -197,7 +230,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
             }
 
-            let savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+            let savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD);
 
             // Smart Default Calculation Method based on coordinate regions
             if (!savedMethod) {
@@ -214,13 +247,13 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 }
 
                 // Save it so the user's settings page reflects this smart choice
-                storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any, savedMethod);
+                storage.set(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD, savedMethod);
             }
 
             const method = String(savedMethod || "3");
 
             // Check cache first
-            const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+            const cachedData = storage.getOptional<PrayerCache>(STORAGE_KEYS.PRAYER_DATA);
             if (cachedData && typeof cachedData === 'object') {
                 const date = cachedData.date;
                 const savedData = cachedData.data;
@@ -266,7 +299,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             }
 
             // Cache the fresh result
-            storage.set(STORAGE_KEYS.PRAYER_DATA as any, {
+            storage.set(STORAGE_KEYS.PRAYER_DATA, {
                 date: today,
                 data: result,
                 locationName,
@@ -289,7 +322,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                     countryCode: geoDetails.countryCode,
                     timestamp: Date.now()
                 };
-                storage.set(STORAGE_KEYS.USER_LOCATION as any, userLocationData);
+                storage.set(STORAGE_KEYS.USER_LOCATION, userLocationData);
             }
 
             processData(result, locationName, false, isDefault);
@@ -302,7 +335,7 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             const errorMessage = err instanceof Error ? err.message : "Failed to load prayer data";
 
             // Try to use cached data if available
-            const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+            const cachedData = storage.getOptional<PrayerCache>(STORAGE_KEYS.PRAYER_DATA);
             if (cachedData && typeof cachedData === 'object' && cachedData.data) {
                 // Silently recover from cache — don't surface the error to the user
                 // since they already have functional prayer data displayed.
@@ -330,9 +363,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
         // DO NOT wipe USER_LOCATION upfront so it remains a reliable fallback.
         // Unconditionally clear PRAYER_DATA so that fetchPrayerTimes doesn't early-return based on cache.
-        const existingPrayerData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+        const existingPrayerData = storage.getOptional<PrayerCache>(STORAGE_KEYS.PRAYER_DATA);
         if (existingPrayerData) {
-            storage.remove(STORAGE_KEYS.PRAYER_DATA as any);
+            storage.remove(STORAGE_KEYS.PRAYER_DATA);
         }
 
         // Request fresh geolocation (no cache check when explicitly refreshing)
@@ -343,9 +376,9 @@ export function usePrayerTimes(): UsePrayerTimesResult {
                 // Force fetch with fresh coordinates (not from cache)
                 fetchPrayerTimes(latitude, longitude, undefined, false);
             },
-            (err) => {
+            () => {
                 // Check if we have any cached location to fall back to
-                const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
+                const cachedLocation = storage.getOptional<LocationCache>(STORAGE_KEYS.USER_LOCATION);
                 if (isFreshLocation(cachedLocation)) {
                     fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name, false);
                     return;
@@ -362,27 +395,27 @@ export function usePrayerTimes(): UsePrayerTimesResult {
 
     useEffect(() => {
         // 1. Initial Sync
-        syncFromCache();
+        queueMicrotask(syncFromCache);
 
         // 2. Check if we have a saved location
-        const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
+        const cachedLocation = storage.getOptional<LocationCache>(STORAGE_KEYS.USER_LOCATION);
 
         if (isFreshLocation(cachedLocation)) {
             const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
-            const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+            const cachedData = storage.getOptional<PrayerCache>(STORAGE_KEYS.PRAYER_DATA);
 
-            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD as any);
+            const savedMethod = storage.getOptional<string>(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD);
             const method = String(savedMethod || "20");
             const savedMethodCache = String(cachedData?.method || "20");
             const isTuneMatch = cachedData?.tuneVersion === TUNE_VERSION;
 
             if (!cachedData || cachedData.date !== today || savedMethodCache !== method || !isTuneMatch) {
-                fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);
+                queueMicrotask(() => fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name));
             } else {
-                setLoading(false); // Data is fresh, no need to fetch
+                queueMicrotask(() => setLoading(false)); // Data is fresh, no need to fetch
             }
         } else {
-            setLoading(false); // No cached location found, end loading to show the location screen
+            queueMicrotask(() => setLoading(false)); // No cached location found, end loading to show the location screen
         }
 
         // 3. Listen for global updates
@@ -392,10 +425,10 @@ export function usePrayerTimes(): UsePrayerTimesResult {
             // Additional logic: If after sync we STILL don't have data,
             // check if there's a fresh location in storage and fetch it.
             // This handles the transition from Onboarding to Home.
-            const cachedLocation = storage.getOptional<any>(STORAGE_KEYS.USER_LOCATION as any);
+                const cachedLocation = storage.getOptional<LocationCache>(STORAGE_KEYS.USER_LOCATION);
             if (isFreshLocation(cachedLocation)) {
                 const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
-                const cachedData = storage.getOptional<any>(STORAGE_KEYS.PRAYER_DATA as any);
+                const cachedData = storage.getOptional<PrayerCache>(STORAGE_KEYS.PRAYER_DATA);
 
                 if (!cachedData || cachedData.date !== today) {
                     fetchPrayerTimes(cachedLocation.lat, cachedLocation.lng, cachedLocation.name);

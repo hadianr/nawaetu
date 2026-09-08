@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Verse } from "@/components/quran/VerseList";
 import { fetchSurahSegments, findActiveWordIndex } from "@/lib/quran/quran-segments-api";
+import type { VerseSegmentMap } from "@/lib/quran/quran-segments-api";
 
 export function useQuranAudio({
     accumulatedVerses,
@@ -16,7 +17,7 @@ export function useQuranAudio({
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const activeWordRef = useRef<{ verseKey: string; idx: number } | null>(null);
     const rafIdRef = useRef<number | null>(null);
-    const segmentsRef = useRef<any | null>(null);
+    const segmentsRef = useRef<VerseSegmentMap | null>(null);
     const segmentsCacheKeyRef = useRef<string | null>(null);
 
     const [isContinuous, setIsContinuous] = useState(false);
@@ -172,7 +173,7 @@ export function useQuranAudio({
 
     useEffect(() => {
         if (!playingVerseKey || !activeReciterId) {
-            stopWordSync();
+            queueMicrotask(stopWordSync);
             return;
         }
         const [surahIdStr] = playingVerseKey.split(':');

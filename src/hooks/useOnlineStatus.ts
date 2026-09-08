@@ -25,7 +25,7 @@ export function useOnlineStatus() {
 
     useEffect(() => {
         // Initial check relative to browser implementation
-        setIsOnline(typeof navigator !== "undefined" ? navigator.onLine : true);
+        queueMicrotask(() => setIsOnline(typeof navigator !== "undefined" ? navigator.onLine : true));
 
         const handleOnline = () => setIsOnline(true);
         const handleOffline = () => setIsOnline(false);

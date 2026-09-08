@@ -66,7 +66,7 @@ export function useProfile() {
             toast.success("Profil berhasil diperbarui!", { id: toastId });
             return true;
 
-        } catch (e) {
+        } catch {
             toast.error("Gagal memperbarui profil", { id: toastId });
             return false;
         } finally {
