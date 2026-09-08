@@ -14,7 +14,7 @@ Finish the remaining maintainability work without changing product behavior, not
 - Runtime source: ~5.1 MB; no large tracked media or build artifacts remain.
 - Dependencies: `npm ls --depth=0` is clean; 38 runtime and 14 development dependencies remain.
 - Typecheck: passed.
-- Tests: 195 passed, 2 skipped, with one pre-existing timezone-sensitive failure.
+- Tests: 198 passed, 2 skipped; the current full run has no failures.
 - Production build: passed; 177 static pages generated and `/sw.js` generated with the Firebase worker import.
 - ESLint before the first Tier A slice: 1,078 findings — 761 errors, 317 warnings; 7 errors were auto-fixable.
 - ESLint after the first Tier A slice: 1,071 findings — 754 errors, 317 warnings.
@@ -43,6 +43,7 @@ Finish the remaining maintainability work without changing product behavior, not
 - ESLint after the safe unused-catch and notification error-boundary cleanup: 569 findings — 430 errors, 139 warnings; 39 unused catch bindings and 3 additional low-risk bindings were removed without changing error handling or FCM send behavior.
 - ESLint after the safe Stats/Sirah/Missions UI cleanup: 517 findings — 411 errors, 106 warnings; confirmed dead UI helpers/imports and 10 explicit `any` usages were removed or typed without changing rendered data or interactions.
 - ESLint after the safe Stats/Ramadhan contract cleanup: 506 findings — 401 errors, 105 warnings; 11 explicit `any` usages and one unused Stats prop were removed or typed without changing rendered values or controls.
+- ESLint after the safe Kemenag Quran API adapter cleanup: 497 findings — 394 errors, 103 warnings; 7 external-response `any` usages and 2 unused bindings were removed with focused payload guards and regression tests.
 - Working-tree exception: the `package-lock.json` `fast-uri` update is preserved in separate commit `388b7d9`.
 
 ## Priority and safety policy
@@ -136,6 +137,8 @@ Completed safe mechanical lint cleanup: removed unused catch bindings across API
 Completed safe Stats/Sirah/Missions UI cleanup: removed confirmed dead imports/helpers and replaced 10 explicit `any` usages with existing contracts for missions, bookmarks, translations, and journal stats. Typecheck, production build, Graphify update, and diff checks passed; hook timing findings remain deferred because they require behavior-level review.
 
 Completed safe Stats/Ramadhan contract cleanup: replaced 11 explicit `any` props/storage/translation usages with existing contracts and removed one unused Stats prop. Typecheck, production build, Graphify update, and diff checks passed; seasonal initialization hook findings remain deferred because they require hydration/timing review.
+
+Completed safe Kemenag Quran API adapter cleanup: replaced untrusted response `any` values with `unknown`, narrow record helpers, and a validated single-verse payload guard; removed redundant catches/timing code and added two adapter regression tests. Full lint recount, typecheck, 53 test files, production build, Graphify update, and diff checks completed; Quran URLs, caching, translation selection, and UI response shapes remain unchanged.
 
 Exit criteria: lint error count decreases, no blanket disable is added, and behavior-sensitive files receive tests before larger edits.
 
