@@ -147,7 +147,7 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                     <p className={cn("text-sm leading-relaxed mb-8", isDaylight ? "text-slate-600" : "text-slate-300")}>
                         Terima kasih, Orang Baik. Infaq Anda telah kami terima dan akan digunakan untuk operasional serta pengembangan aplikasi Nawaetu.
                         <br /><br />
-                        <span className={cn("text-xs italic", isDaylight ? "text-slate-400" : "text-white/60")}>"Semoga menjadi amal jariyah yang tak terputus pahalanya."</span>
+                        <span className={cn("text-xs italic", isDaylight ? "text-slate-400" : "text-white/60")}>&quot;Semoga menjadi amal jariyah yang tak terputus pahalanya.&quot;</span>
                     </p>
 
                     <div className="w-full space-y-3">
