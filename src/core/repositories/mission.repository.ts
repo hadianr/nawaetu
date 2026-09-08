@@ -85,7 +85,7 @@ export class LocalMissionRepository implements MissionRepository {
   }
 
   getCompletedMissions(): CompletedMission[] {
-    const data = this.storage.getOptional<any>(
+    const data = this.storage.getOptional<unknown>(
       STORAGE_KEYS.COMPLETED_MISSIONS
     );
 
@@ -94,11 +94,12 @@ export class LocalMissionRepository implements MissionRepository {
     // Handle old format (object) - convert to new format (array)
     if (!Array.isArray(data)) {
       const converted: CompletedMission[] = [];
-      for (const [id, value] of Object.entries(data)) {
+      for (const [id, value] of Object.entries(data as Record<string, unknown>)) {
         if (typeof value === 'object' && value !== null && 'date' in value) {
+          const legacyValue = value as { completedAt?: string };
           converted.push({
             id,
-            completedAt: (value as any).completedAt || DateUtils.today(),
+            completedAt: legacyValue.completedAt || DateUtils.today(),
             hasanahEarned: 0 // Unknown for old data
           });
         }

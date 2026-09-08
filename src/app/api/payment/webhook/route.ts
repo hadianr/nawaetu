@@ -164,7 +164,7 @@ export async function POST(req: NextRequest) {
         // 10. Update Transaction
         const updatedTransactions = await db.update(transactions)
             .set({
-                status: normalizedStatus as any,
+                status: normalizedStatus as "pending" | "settlement" | "expired",
                 mayarId: mayarId
             })
             .where(and(
@@ -193,8 +193,8 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ status: "ok", data: updatedTx });
 
-    } catch (e: any) {
+    } catch (e: unknown) {
         logger.error("Mayar webhook internal error", e, { route: "/api/payment/webhook" });
-        return NextResponse.json({ error: "Internal Server Error", details: e.message }, { status: 500 });
+        return NextResponse.json({ error: "Internal Server Error", details: e instanceof Error ? e.message : String(e) }, { status: 500 });
     }
 }

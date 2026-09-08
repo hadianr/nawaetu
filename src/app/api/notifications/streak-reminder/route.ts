@@ -73,9 +73,10 @@ export async function POST(request: Request) {
         lastNotificationSent: { ...lastSent, streak: localDate },
       }).where(eq(pushSubscriptions.id, subscription.id));
       results.sent++;
-    } catch (error: any) {
+    } catch (error: unknown) {
       results.failed++;
-      if (error.code === "messaging/invalid-registration-token" || error.code === "messaging/registration-token-not-registered") {
+      const code = typeof error === "object" && error !== null && "code" in error ? error.code : undefined;
+      if (code === "messaging/invalid-registration-token" || code === "messaging/registration-token-not-registered") {
         results.invalidTokens++;
         await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, subscription.id));
       }

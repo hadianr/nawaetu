@@ -21,6 +21,9 @@ import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider
 import { sanitizeUserContext } from './utils';
 import { SYSTEM_INSTRUCTION } from './system-instruction';
 
+type ChatCompletionMessage = { role: "system" | "user" | "assistant"; content: string };
+type ProviderErrorLike = { status?: number; code?: string; message?: string };
+
 export class GroqProvider implements LLMProvider {
     name = 'Groq';
     private apiKey: string;
@@ -40,10 +43,10 @@ export class GroqProvider implements LLMProvider {
         try {
             // Convert history to Groq format (OpenAI compatible)
             const safeName = sanitizeUserContext(context.name);
-            const groqMessages: any[] = [
+            const groqMessages: ChatCompletionMessage[] = [
                 { role: "system", content: SYSTEM_INSTRUCTION },
                 ...history.map(msg => ({
-                    role: msg.role === 'user' ? 'user' : 'assistant',
+                    role: msg.role === 'user' ? 'user' as const : 'assistant' as const,
                     content: msg.content
                 })),
                 {
@@ -83,16 +86,17 @@ export class GroqProvider implements LLMProvider {
             const data = await res.json();
             return data.choices?.[0]?.message?.content || "Maaf, saya tidak dapat menjawab saat ini.";
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error instanceof ProviderError) throw error;
-            if (error.status === 429) {
+            const details = error as ProviderErrorLike;
+            if (details.status === 429) {
                 throw new ProviderError('Rate limit exceeded', 429, 'RATE_LIMIT', true);
             }
 
             throw new ProviderError(
-                error.message || 'Unknown Groq error',
-                error.status || 500,
-                error.code || 'UNKNOWN',
+                details.message || 'Unknown Groq error',
+                details.status || 500,
+                details.code || 'UNKNOWN',
                 true
             );
         }

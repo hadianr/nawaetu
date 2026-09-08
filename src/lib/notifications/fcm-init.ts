@@ -17,7 +17,7 @@
  */
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getMessaging, getToken, onMessage, Messaging } from "firebase/messaging";
+import { getMessaging, getToken, onMessage, Messaging, type MessagePayload } from "firebase/messaging";
 import * as Sentry from "@sentry/browser";
 
 const firebaseConfig = {
@@ -122,8 +122,8 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             const worker = activeRegistration.installing || activeRegistration.waiting;
             if (worker && worker.state !== 'activated') {
                 await new Promise<void>((resolve) => {
-                    const onStateChange = (e: any) => {
-                        if (e.target.state === 'activated') {
+                    const onStateChange = (event: Event) => {
+                        if ((event.target as ServiceWorker).state === 'activated') {
                             worker.removeEventListener('statechange', onStateChange);
                             resolve();
                         }
@@ -161,9 +161,9 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
                     vapidKey,
                     serviceWorkerRegistration: activeRegistration,
                 });
-            } catch (err: any) {
+            } catch (err: unknown) {
                 if (retries > 0) {
-                    console.warn(`[FCM] getToken failed (${err.message}). Retrying in ${delay}ms...`);
+                    console.warn(`[FCM] getToken failed (${err instanceof Error ? err.message : String(err)}). Retrying in ${delay}ms...`);
                     await new Promise((res) => setTimeout(res, delay));
                     return getTokenWithRetry(retries - 1, delay * 2);
                 }
@@ -171,13 +171,14 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             }
         };
 
-        const token = await getTokenWithRetry().catch((e: any) => {
+        const token = await getTokenWithRetry().catch((e: unknown) => {
+            const message = e instanceof Error ? e.message : String(e);
             if (
-                e.message === 'TOKEN_TIMEOUT' ||
-                e.message?.includes('getting push subscription required') ||
-                e.message?.includes('A call to PushManager.subscribe() failed') ||
-                e.message?.includes('no active Service Worker') ||
-                e.message?.includes('Subscription failed')
+                message === 'TOKEN_TIMEOUT' ||
+                message.includes('getting push subscription required') ||
+                message.includes('A call to PushManager.subscribe() failed') ||
+                message.includes('no active Service Worker') ||
+                message.includes('Subscription failed')
             ) {
                 return null;
             }
@@ -191,34 +192,35 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             console.warn("[FCM] getToken returned null");
             return null;
         }
-    } catch (error: any) {
-        const isKnownEnvironmentIssue = error.message?.includes("Sistem sedang mensinkronisasi") ||
-            error.message?.includes("Browser belum siap") ||
-            error.message?.includes("Izin notifikasi ditolak") ||
-            error.message?.includes("Peramban Anda tidak mendukung") ||
-            error.message?.includes("Registration failed - push service error") ||
-            error.message?.includes("no active Service Worker") ||
-            error.message?.includes("Subscription failed") ||
-            error.name === "AbortError";
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        const isKnownEnvironmentIssue = message.includes("Sistem sedang mensinkronisasi") ||
+            message.includes("Browser belum siap") ||
+            message.includes("Izin notifikasi ditolak") ||
+            message.includes("Peramban Anda tidak mendukung") ||
+            message.includes("Registration failed - push service error") ||
+            message.includes("no active Service Worker") ||
+            message.includes("Subscription failed") ||
+            (error instanceof Error && error.name === "AbortError");
 
         if (isKnownEnvironmentIssue) {
             Sentry.addBreadcrumb({
                 category: 'fcm',
-                message: error.message || "FCM initialization skipped (known environment limitation)",
+                message: message || "FCM initialization skipped (known environment limitation)",
                 level: 'warning',
             });
             return null;
         }
 
-        console.error("[FCM Setup Error Detail]: " + (error.message || "Unknown error"), error);
+        console.error("[FCM Setup Error Detail]: " + (message || "Unknown error"), error);
 
-        if (error.message?.includes("Registration failed") || error.message?.includes("NetworkError")) {
+        if (message.includes("Registration failed") || message.includes("NetworkError")) {
             // Add breadcrumb for this specific failure
             Sentry.addBreadcrumb({
                 category: 'fcm',
-                message: `Initialization failed: ${error.message}`,
+                message: `Initialization failed: ${message}`,
                 level: 'error',
-                data: { code: error.code }
+                data: { code: typeof error === "object" && error !== null && "code" in error ? error.code : undefined }
             });
         }
 
@@ -239,7 +241,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
  * Subscribe to foreground messages
  * Only works if messaging is already initialized (user has enabled notifications)
  */
-export function subscribeForegroundMessages(callback: (payload: any) => void) {
+export function subscribeForegroundMessages(callback: (payload: MessagePayload) => void) {
     if (typeof window === "undefined") {
         return;
     }

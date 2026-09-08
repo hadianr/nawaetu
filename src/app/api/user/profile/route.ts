@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ error: "No data to update" }, { status: 400 });
         }
 
-        const updateData: Record<string, any> = {
+        const updateData: Record<string, unknown> = {
             updatedAt: new Date(),
         };
 

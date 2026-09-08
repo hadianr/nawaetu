@@ -101,7 +101,7 @@ export function getCurrentTimeContext(): TimeContext {
  * Get greeting suggestion based on time
  */
 export function getTimeSensitiveGreeting(name: string, timeContext: TimeContext): string {
-    const { currentPeriod, nextPrayer } = timeContext;
+    const { currentPeriod } = timeContext;
 
     if (currentPeriod === "subuh") {
         return `Assalamualaikum ${name}! 🌅 Masya Allah, sudah bangun pagi nih. Semangat shalatnya!`;

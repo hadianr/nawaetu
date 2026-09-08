@@ -146,7 +146,7 @@ export const authOptions: NextAuthConfig = {
                 if (session.user && token.id) {
                     const isValid = await isUserValid(token.id as string);
                     if (!isValid) {
-                        return null as any;
+                        return null as never;
                     }
 
                     session.user.id = token.id as string;

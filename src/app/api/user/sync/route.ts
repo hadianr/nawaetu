@@ -57,9 +57,19 @@ async function processSyncEntry(repo: DbSyncRepository, entry: SyncQueueEntry) {
     }
 }
 
-function convertLegacyBodyToEntries(body: any): SyncQueueEntry[] {
+function asRecord(value: unknown): Record<string, unknown> | null {
+    return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
+function isSyncQueueEntry(value: unknown): value is SyncQueueEntry {
+    const record = asRecord(value);
+    return Boolean(record && typeof record.id === "string" && typeof record.type === "string" && typeof record.action === "string" && asRecord(record.data));
+}
+
+function convertLegacyBodyToEntries(value: unknown): SyncQueueEntry[] {
     const entries: SyncQueueEntry[] = [];
-    if (!body || typeof body !== "object") return entries;
+    const body = asRecord(value);
+    if (!body) return entries;
 
     const arrayMappers: Record<string, SyncEntityType> = {
         bookmarks: 'bookmark',
@@ -69,8 +79,8 @@ function convertLegacyBodyToEntries(body: any): SyncQueueEntry[] {
 
     for (const [key, type] of Object.entries(arrayMappers)) {
         if (Array.isArray(body[key])) {
-            body[key].forEach((data: any, i: number) => {
-                entries.push({ id: `legacy-${type}-${i}`, type, action: 'create', data, status: 'pending', retryCount: 0, createdAt: Date.now() });
+            body[key].forEach((data: unknown, i: number) => {
+                entries.push({ id: `legacy-${type}-${i}`, type, action: 'create', data: asRecord(data) ?? {}, status: 'pending', retryCount: 0, createdAt: Date.now() });
             });
         }
     }
@@ -84,19 +94,21 @@ function convertLegacyBodyToEntries(body: any): SyncQueueEntry[] {
 
     for (const [key, type] of Object.entries(objectMappers)) {
         if (body[key] && typeof body[key] === "object") {
-            entries.push({ id: `legacy-${type}`, type, action: 'create', data: body[key], status: 'pending', retryCount: 0, createdAt: Date.now() });
+            entries.push({ id: `legacy-${type}`, type, action: 'create', data: asRecord(body[key]) ?? {}, status: 'pending', retryCount: 0, createdAt: Date.now() });
         }
     }
 
-    if (body.ramadhan?.tarawehLog && typeof body.ramadhan.tarawehLog === "object") {
+    const ramadhan = asRecord(body.ramadhan);
+    const tarawehLog = asRecord(ramadhan?.tarawehLog);
+    if (tarawehLog) {
         let i = 0;
-        for (const [yearOrDate, value] of Object.entries(body.ramadhan.tarawehLog)) {
+        for (const [yearOrDate, value] of Object.entries(tarawehLog)) {
             const year = /^\d{4}$/.test(yearOrDate) ? Number(yearOrDate) : 1447;
             const days = /^\d{4}$/.test(yearOrDate) && value && typeof value === "object"
-                ? Object.entries(value as Record<string, any>)
-                : [[yearOrDate, value] as [string, any]];
+                ? Object.entries(value as Record<string, unknown>)
+                : [[yearOrDate, value] as [string, unknown]];
             for (const [dateOrDay, entry] of days) {
-                const choice = entry && typeof entry === "object" ? entry.choice : entry;
+                const choice = asRecord(entry)?.choice ?? entry;
                 if (choice !== "8" && choice !== "20" && choice !== 8 && choice !== 20) continue;
                 const dayNum = parseInt(dateOrDay.split('-').pop() || '1', 10);
                 entries.push({
@@ -113,12 +125,14 @@ function convertLegacyBodyToEntries(body: any): SyncQueueEntry[] {
     }
 
     if (Array.isArray(body.extraEntries)) {
-        body.extraEntries.forEach((extra: any, i: number) => {
+        body.extraEntries.forEach((extra: unknown, i: number) => {
+            const extraRecord = asRecord(extra);
+            if (!extraRecord || typeof extraRecord.type !== "string") return;
             entries.push({
-                id: extra.id || `legacy-extra-${i}`,
-                type: extra.type,
-                action: extra.action || 'create',
-                data: extra.data || {},
+                id: typeof extraRecord.id === "string" ? extraRecord.id : `legacy-extra-${i}`,
+                type: extraRecord.type as SyncEntityType,
+                action: extraRecord.action === "update" || extraRecord.action === "delete" ? extraRecord.action : 'create',
+                data: asRecord(extraRecord.data) ?? {},
                 status: 'pending',
                 retryCount: 0,
                 createdAt: Date.now()
@@ -136,15 +150,15 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             return NextResponse.json(
                 { success: false, error: "Database offline", message: "Database is currently unavailable" },
                 { status: 503 }
-            ) as any;
+            );
         }
 
         const session = await getServerSession();
         if (!session?.user?.id) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 }) as any;
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        let body: any = null;
+        let body: unknown = null;
         try {
             if (typeof req.text === "function") {
                 const rawBody = await req.text();
@@ -156,7 +170,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             }
         } catch {
             return NextResponse.json(
-                { success: false, synced: [], failed: [], error: "Invalid JSON payload", message: "Invalid request payload" } as any,
+                { success: false, synced: [], failed: [], error: "Invalid JSON payload", message: "Invalid request payload" },
                 { status: 400 }
             );
         }
@@ -164,7 +178,10 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         const userId = session.user.id;
         const repo = new DbSyncRepository(userId);
 
-        const rawEntries = body && Array.isArray(body.entries) ? body.entries : convertLegacyBodyToEntries(body);
+        const payload = asRecord(body) ?? {};
+        const rawEntries: SyncQueueEntry[] = Array.isArray(payload.entries)
+            ? payload.entries.filter(isSyncQueueEntry)
+            : convertLegacyBodyToEntries(payload);
 
         if (rawEntries.length > 0) {
             const results = await Promise.allSettled(rawEntries.map((entry: SyncQueueEntry) => processSyncEntry(repo, entry)));
@@ -191,7 +208,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         const errorMessage = e instanceof Error ? e.message : "Internal Server Error";
         logger.error('Sync error', e, { route: '/api/user/sync' });
         return NextResponse.json(
-            { success: false, synced: [], failed: [], error: errorMessage, message: "Sync failed" } as any,
+            { success: false, synced: [], failed: [], error: errorMessage, message: "Sync failed" },
             { status: 500 }
         );
     }

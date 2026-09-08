@@ -23,6 +23,7 @@ import { transactions, users } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
+    void req;
     try {
         const session = await getServerSession();
 
@@ -96,7 +97,7 @@ export async function GET(req: NextRequest) {
                 const transactionsList = listData.data || [];
 
                 // Find matching transaction (Link ID or Amount + recent)
-                const matchedTx = transactionsList.find((tx: any) =>
+                const matchedTx = transactionsList.find((tx: { link_id?: string; amount?: number; status?: string; id?: string }) =>
                     (latestTx.paymentLinkId && tx.link_id === latestTx.paymentLinkId) ||
                     (tx.amount === latestTx.amount &&
                         (tx.status === "PAID" || tx.status === "SETTLEMENT"))
@@ -107,7 +108,7 @@ export async function GET(req: NextRequest) {
                     await db.update(transactions)
                         .set({
                             mayarId: matchedTx.id,
-                            status: (matchedTx.status.toLowerCase() === "paid" ? "settlement" : matchedTx.status.toLowerCase()) as any
+                            status: (matchedTx.status?.toLowerCase() === "paid" ? "settlement" : matchedTx.status?.toLowerCase() || "pending") as "pending" | "settlement" | "failed"
                         })
                         .where(eq(transactions.id, latestTx.id));
 
@@ -123,7 +124,7 @@ export async function GET(req: NextRequest) {
             let validStatus = status.toLowerCase();
             if (validStatus === 'paid') validStatus = 'settlement';
             await db.update(transactions)
-                .set({ status: validStatus as any })
+                .set({ status: validStatus as "pending" | "settlement" | "failed" })
                 .where(eq(transactions.id, latestTx.id));
 
             // Update User

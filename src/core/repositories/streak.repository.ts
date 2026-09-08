@@ -70,17 +70,18 @@ export class LocalStreakRepository implements StreakRepository {
   private storage = getStorageService();
 
   getStreak(): StreakData {
-    const raw = this.storage.get<any>(STORAGE_KEYS.USER_STREAK, DEFAULT_STREAK);
+    const raw = this.storage.get<unknown>(STORAGE_KEYS.USER_STREAK, DEFAULT_STREAK);
     if (!raw || typeof raw !== 'object') {
       return DEFAULT_STREAK;
     }
+    const data = raw as Record<string, unknown>;
     return {
-      currentStreak: typeof raw.currentStreak === 'number' ? raw.currentStreak : (typeof raw.streak === 'number' ? raw.streak : 0),
-      longestStreak: typeof raw.longestStreak === 'number' ? raw.longestStreak : 0,
-      lastActiveDate: typeof raw.lastActiveDate === 'string' ? raw.lastActiveDate : '',
-      milestones: Array.isArray(raw.milestones) ? raw.milestones : [],
-      freezesAvailable: typeof raw.freezesAvailable === 'number' ? raw.freezesAvailable : 0,
-      protectedDates: Array.isArray(raw.protectedDates) ? raw.protectedDates : []
+      currentStreak: typeof data.currentStreak === 'number' ? data.currentStreak : (typeof data.streak === 'number' ? data.streak : 0),
+      longestStreak: typeof data.longestStreak === 'number' ? data.longestStreak : 0,
+      lastActiveDate: typeof data.lastActiveDate === 'string' ? data.lastActiveDate : '',
+      milestones: Array.isArray(data.milestones) ? data.milestones as StreakData["milestones"] : [],
+      freezesAvailable: typeof data.freezesAvailable === 'number' ? data.freezesAvailable : 0,
+      protectedDates: Array.isArray(data.protectedDates) ? data.protectedDates as string[] : []
     };
   }
 

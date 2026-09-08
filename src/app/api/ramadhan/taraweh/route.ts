@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { hijriYear, hijriDay, choice, location, isQiyamulLail } = body;
+    const { hijriYear, hijriDay, choice, location } = body;
 
     // We allow choice to be null to handle 'deletion' / unchecking.
     if (!hijriYear || !hijriDay) {

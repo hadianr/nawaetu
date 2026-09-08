@@ -48,14 +48,14 @@ export interface ChatSession {
 export function getAllSessions(): ChatSession[] {
     try {
         // 1. Check for new session storage
-        const storedSessions = storage.getOptional<string>(CHAT_SESSIONS_KEY as any);
+        const storedSessions = storage.getOptional<string>(CHAT_SESSIONS_KEY);
         if (storedSessions) {
             const sessions = JSON.parse(storedSessions) as ChatSession[];
             return sessions.sort((a, b) => b.updatedAt - a.updatedAt);
         }
 
         // 2. Migration: Check for old history and convert to first session
-        const oldHistory = storage.getOptional<string>(OLD_CHAT_HISTORY_KEY as any);
+        const oldHistory = storage.getOptional<string>(OLD_CHAT_HISTORY_KEY);
         if (oldHistory) {
             const messages = JSON.parse(oldHistory) as ChatMessage[];
             if (messages.length > 0) {
@@ -73,7 +73,7 @@ export function getAllSessions(): ChatSession[] {
 
                 // Save to new format and clear old
                 saveAllSessions([initialSession]);
-                storage.remove(OLD_CHAT_HISTORY_KEY as any);
+                storage.remove(OLD_CHAT_HISTORY_KEY);
                 return [initialSession];
             }
         }
@@ -145,7 +145,7 @@ export function deleteSession(id: string): void {
  */
 function saveAllSessions(sessions: ChatSession[]): void {
     try {
-        storage.set(CHAT_SESSIONS_KEY as any, JSON.stringify(sessions));
+        storage.set(CHAT_SESSIONS_KEY, JSON.stringify(sessions));
     } catch {
     }
 }

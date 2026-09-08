@@ -43,9 +43,19 @@ export interface BookmarkRepository {
   updateBookmark(id: string, updates: Partial<Bookmark>): void;
   removeAllBookmarks(): void;
   syncBookmarkAsync(
-    data: any,
+    data: BookmarkSyncData,
     action: 'create' | 'update' | 'delete'
   ): Promise<string | undefined>;
+}
+
+export interface BookmarkSyncData {
+  surahId: number;
+  verseId: number;
+  surahName: string;
+  verseText: string;
+  translationText?: string | null;
+  note?: string | null;
+  tags?: string[];
 }
 
 export class LocalBookmarkRepository implements BookmarkRepository {
@@ -125,10 +135,7 @@ export class LocalBookmarkRepository implements BookmarkRepository {
   }
 
 
-  async syncBookmarkAsync(
-    data: any,
-    action: 'create' | 'update' | 'delete'
-  ): Promise<string | undefined> {
+  async syncBookmarkAsync(): Promise<string | undefined> {
     throw new Error('syncBookmarkAsync not supported on local repository');
   }
 
