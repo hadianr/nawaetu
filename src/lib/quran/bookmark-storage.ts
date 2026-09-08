@@ -18,6 +18,7 @@
 
 
 import { getBookmarkRepository } from '@/core/repositories/bookmark.repository';
+import type { Bookmark } from '@/core/repositories/bookmark.repository';
 
 export type { Bookmark } from '@/core/repositories/bookmark.repository';
 
@@ -31,7 +32,7 @@ export const getBookmarks = () => {
 /**
  * @deprecated Use getBookmarkRepository().saveBookmark() or useBookmarks hook instead
  */
-export const saveBookmark = (bookmark: any) => {
+export const saveBookmark = (bookmark: Omit<Bookmark, 'id' | 'createdAt' | 'updatedAt'>) => {
     return getBookmarkRepository().saveBookmark(bookmark);
 };
 
