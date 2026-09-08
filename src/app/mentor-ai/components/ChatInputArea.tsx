@@ -20,6 +20,7 @@
 
 import { Lock, Sparkles, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface ChatInputAreaProps {
     input: string;
@@ -30,7 +31,7 @@ interface ChatInputAreaProps {
     dailyCount: number;
     DAILY_LIMIT: number;
     setShowLimitBlocking: (show: boolean) => void;
-    t: any;
+    t: TranslationTree;
     isMuhsinin: boolean;
 }
 
@@ -43,8 +44,7 @@ export function ChatInputArea({
     dailyCount,
     DAILY_LIMIT,
     setShowLimitBlocking,
-    t,
-    isMuhsinin
+    t
 }: ChatInputAreaProps) {
     return (
         <div className={cn(

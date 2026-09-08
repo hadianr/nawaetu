@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState, useRef, useCallback, memo } from "react";
+import { useEffect, useState, useRef, useCallback, useSyncExternalStore, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { Compass } from "lucide-react";
@@ -32,21 +32,40 @@ interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
     webkitCompassHeading?: number;
 }
 
+type DeviceOrientationWithPermission = typeof DeviceOrientationEvent & {
+    requestPermission?: () => Promise<"granted" | "denied">;
+};
+
+type OrientationWindow = Window & {
+    addEventListener(
+        type: "deviceorientationabsolute",
+        listener: (event: DeviceOrientationEvent) => void,
+        options?: AddEventListenerOptions,
+    ): void;
+    removeEventListener(
+        type: "deviceorientationabsolute",
+        listener: (event: DeviceOrientationEvent) => void,
+        options?: EventListenerOptions,
+    ): void;
+};
+
 function QiblaCompass() {
-    const [isClient, setIsClient] = useState<boolean>(false);
+    const isClient = useSyncExternalStore(() => () => {}, () => true, () => false);
 
     // We use "display" states for the smooth CSS transition values
     const [compassRotate, setCompassRotate] = useState<number>(0);
-    const [qiblaRelativeRotate, setQiblaRelativeRotate] = useState<number>(0);
 
     const [qiblaBearing, setQiblaBearing] = useState<number | null>(null);
     const [distance, setDistance] = useState<number | null>(null);
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [aligned, setAligned] = useState<boolean>(false);
     const [noSensor, setNoSensor] = useState<boolean>(false);
-    const [showSessionNote, setShowSessionNote] = useState<boolean>(true);
+    const showSessionNote = useSyncExternalStore(
+        () => () => {},
+        () => sessionStorage.getItem('nawaetu_qibla_session') !== 'active',
+        () => true,
+    );
 
     // Refs
     const lastHeadingRef = useRef<number>(0);
@@ -111,7 +130,7 @@ function QiblaCompass() {
                     setDistance(dist);
                     setLoading(false);
                 },
-                (err) => {
+                () => {
                     setError(t.qiblaLocationError);
                     setLoading(false);
                 }
@@ -149,7 +168,7 @@ function QiblaCompass() {
         const eventType = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
 
         if (eventType === 'deviceorientationabsolute') {
-            (window as any).addEventListener("deviceorientationabsolute", handleOrientation, { passive: true, capture: true });
+            (window as OrientationWindow).addEventListener("deviceorientationabsolute", handleOrientation, { passive: true, capture: true });
         } else {
             window.addEventListener("deviceorientation", handleOrientation, { passive: true, capture: true });
         }
@@ -167,19 +186,17 @@ function QiblaCompass() {
 
     // FIX: Permission check on mount - auto-init within same session
     useEffect(() => {
-        setIsClient(true);
         const savedPermission = localStorage.getItem('nawaetu_qibla_permission');
         const sessionActive = sessionStorage.getItem('nawaetu_qibla_session');
-        setShowSessionNote(sessionActive !== 'active');
 
 
         // Auto-init if permission granted AND session is active (not app restart)
         // This allows seamless navigation between pages without re-clicking button
         if (savedPermission === 'granted' && sessionActive === 'active') {
-            setPermissionGranted(true);
-            setLoading(true);
-
             const initCompass = async () => {
+                await Promise.resolve();
+                setPermissionGranted(true);
+                setLoading(true);
                 if (compassStartedRef.current) return;
 
                 lastHeadingRef.current = 0;
@@ -188,9 +205,10 @@ function QiblaCompass() {
 
                 // For iOS, permission API might still need to be called but won't show dialog
                 let permissionGrantedFlag = true;
-                if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
+                const requestPermission = (DeviceOrientationEvent as DeviceOrientationWithPermission).requestPermission;
+                if (requestPermission) {
                     try {
-                        const response = await (DeviceOrientationEvent as any).requestPermission();
+                        const response = await requestPermission();
                         if (response !== "granted") {
                             localStorage.removeItem('nawaetu_qibla_permission');
                             sessionStorage.removeItem('nawaetu_qibla_session');
@@ -243,7 +261,7 @@ function QiblaCompass() {
                 const eventType = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
 
                 if (eventType === 'deviceorientationabsolute') {
-                    (window as any).addEventListener(eventType, orientationHandler, { passive: true, capture: true });
+                    (window as OrientationWindow).addEventListener(eventType, orientationHandler, { passive: true, capture: true });
                 } else {
                     window.addEventListener(eventType, orientationHandler, { passive: true, capture: true });
                 }
@@ -268,7 +286,7 @@ function QiblaCompass() {
                             setDistance(dist);
                             setLoading(false); // Stop loading after location received
                         },
-                        (err) => {
+                        () => {
                             setError(t.qiblaLocationError);
                             setLoading(false);
                         }
@@ -282,18 +300,19 @@ function QiblaCompass() {
             initCompass();
         } else if (savedPermission === 'granted' && !sessionActive) {
             // Make sure loading is false if we're showing button
-            setLoading(false);
+            queueMicrotask(() => setLoading(false));
         } else {
-            setLoading(false);
+            queueMicrotask(() => setLoading(false));
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Run only once on mount
 
     const requestCompassPermission = async () => {
-        if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
+        const requestPermission = (DeviceOrientationEvent as DeviceOrientationWithPermission).requestPermission;
+        if (requestPermission) {
             try {
-                const response = await (DeviceOrientationEvent as any).requestPermission();
+                const response = await requestPermission();
                 if (response === "granted") {
                     startCompass();
                 } else {
@@ -323,14 +342,14 @@ function QiblaCompass() {
             if (orientationHandlerRef.current) {
                 window.removeEventListener("deviceorientation", orientationHandlerRef.current);
                 if ('ondeviceorientationabsolute' in window) {
-                    (window as any).removeEventListener("deviceorientationabsolute", orientationHandlerRef.current);
+                    (window as OrientationWindow).removeEventListener("deviceorientationabsolute", orientationHandlerRef.current);
                 }
                 orientationHandlerRef.current = null;
             }
 
             window.removeEventListener("deviceorientation", handleOrientation);
             if ('ondeviceorientationabsolute' in window) {
-                (window as any).removeEventListener("deviceorientationabsolute", handleOrientation);
+                (window as OrientationWindow).removeEventListener("deviceorientationabsolute", handleOrientation);
             }
 
             // Reset flags for next mount within same session
@@ -341,30 +360,14 @@ function QiblaCompass() {
         };
     }, [handleOrientation]);
 
-    // FIX: Calculate Qibla relative rotation and alignment detection
-    useEffect(() => {
-        if (qiblaBearing === null) return;
-
-        // Since dial is already counter-rotated by compassRotate (which keeps North at top),
-        // Kaaba icon simply needs to point to the qibla bearing from North
-        setQiblaRelativeRotate(qiblaBearing);
-
-        // For alignment detection: check if device heading matches qibla bearing
-        // compassRotate = -deviceHeading, so deviceHeading = -compassRotate
+    const qiblaRelativeRotate = qiblaBearing ?? 0;
+    const aligned = (() => {
+        if (qiblaBearing === null) return false;
         const deviceHeading = ((-compassRotate % 360) + 360) % 360;
-
-        // Calculate difference between device heading and qibla bearing
         let angleDiff = Math.abs(deviceHeading - qiblaBearing);
-        // Handle 360°/0° wraparound (e.g., 359° vs 1° should be 2° diff, not 358°)
         if (angleDiff > 180) angleDiff = 360 - angleDiff;
-
-        // Aligned if within ±8° threshold
-        const isAligned = angleDiff <= 8;
-
-        // Alignment detection logic
-
-        setAligned(isAligned);
-    }, [compassRotate, qiblaBearing, aligned]);
+        return angleDiff <= 8;
+    })();
 
     if (!isClient || loading) return <div className={cn(
         "animate-pulse text-center mt-20 transition-colors",

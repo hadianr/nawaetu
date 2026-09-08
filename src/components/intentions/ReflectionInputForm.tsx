@@ -34,7 +34,7 @@ interface ReflectionInputFormProps {
 }
 
 export default function ReflectionInputForm({ onComplete, userToken, intentionId, intentionText }: ReflectionInputFormProps) {
-    const { locale, t } = useLocale();
+    const { t } = useLocale();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
 

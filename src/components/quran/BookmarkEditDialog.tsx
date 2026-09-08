@@ -20,7 +20,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Bookmark, saveBookmark, removeBookmark } from "@/lib/quran/bookmark-storage";
 import { Trash2, Bookmark as BookmarkIcon } from "lucide-react";
@@ -55,7 +55,7 @@ export default function BookmarkEditDialog({
 
     useEffect(() => {
         if (open && bookmark) {
-            setNote(bookmark.note || "");
+            queueMicrotask(() => setNote(bookmark.note || ""));
 
             // Check if this is the last read verse
             const storage = getStorageService();
@@ -64,13 +64,15 @@ export default function BookmarkEditDialog({
                 try {
                     const parsed = JSON.parse(lastRead);
                     if (parsed.surahId === bookmark.surahId && parsed.verseId === bookmark.verseId) {
-                        setIsLastRead(true);
+                        queueMicrotask(() => setIsLastRead(true));
                     }
                 } catch { }
             }
         } else if (!open) {
-            setNote("");
-            setIsLastRead(false);
+            queueMicrotask(() => {
+                setNote("");
+                setIsLastRead(false);
+            });
         }
     }, [open, bookmark]);
 
@@ -94,7 +96,7 @@ export default function BookmarkEditDialog({
                 verseId: bookmark.verseId,
                 timestamp: Date.now()
             };
-            storage.set(STORAGE_KEYS.QURAN_LAST_READ as any, lastReadData);
+            storage.set(STORAGE_KEYS.QURAN_LAST_READ, lastReadData);
             window.dispatchEvent(new CustomEvent('nawaetu_storage_change', { detail: { key: STORAGE_KEYS.QURAN_LAST_READ } }));
         }
 

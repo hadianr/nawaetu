@@ -52,9 +52,9 @@ export default function KhatamanProgress() {
         const saved = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG);
         if (saved) {
             try {
-                setKhatamanData(JSON.parse(saved));
+                queueMicrotask(() => setKhatamanData(JSON.parse(saved)));
             } catch {
-                setKhatamanData(DEFAULT_LOG);
+                queueMicrotask(() => setKhatamanData(DEFAULT_LOG));
             }
         }
     }, []);

@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
 interface ProfileEditFormProps {
     isDaylight: boolean;
@@ -44,11 +44,12 @@ export function ProfileEditForm({
     setIsEditing
 }: ProfileEditFormProps) {
     const { t } = useLocale();
+    const translations = t as TranslationTree;
 
     return (
         <div className="space-y-4 mb-2 pr-2">
             <div className="space-y-1.5">
-                <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileNameLabel}</Label>
+                <Label className="text-[10px] uppercase tracking-wider text-slate-500">{translations.profileNameLabel}</Label>
                 <Input
                     type="text"
                     value={editName}
@@ -63,7 +64,7 @@ export function ProfileEditForm({
             </div>
 
             <div className="space-y-1.5">
-                <Label className="text-[10px] uppercase tracking-wider text-slate-500">{(t as any).profileGenderLabel}</Label>
+                <Label className="text-[10px] uppercase tracking-wider text-slate-500">{translations.profileGenderLabel}</Label>
                 <div className="grid grid-cols-2 gap-2">
                     <button
                         onClick={() => setEditGender('male')}
@@ -78,7 +79,7 @@ export function ProfileEditForm({
                                     : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                         )}
                     >
-                        <span>👨</span> {(t as any).onboardingMaleLabel}
+                        <span>👨</span> {translations.onboardingMaleLabel}
                     </button>
                     <button
                         onClick={() => setEditGender('female')}
@@ -93,7 +94,7 @@ export function ProfileEditForm({
                                     : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
                         )}
                     >
-                        <span>👩</span> {(t as any).onboardingFemaleLabel}
+                        <span>👩</span> {translations.onboardingFemaleLabel}
                     </button>
                 </div>
             </div>
@@ -112,7 +113,7 @@ export function ProfileEditForm({
                             : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-white"
                     )}
                 >
-                    {isUpdating ? (t as any).locationUpdating : (t as any).bookmarksSave}
+                    {isUpdating ? translations.locationUpdating : translations.bookmarksSave}
                 </Button>
                 <Button
                     variant="ghost"
@@ -122,7 +123,7 @@ export function ProfileEditForm({
                         isDaylight ? "text-slate-400 hover:text-slate-600 hover:bg-slate-50" : "text-slate-400 hover:text-white"
                     )}
                 >
-                    {(t as any).tasbihBack}
+                    {translations.tasbihBack}
                 </Button>
             </div>
         </div>

@@ -29,12 +29,14 @@ export default function HomeHeader() {
     const isDaylight = isMounted && currentTheme === "daylight";
 
     useEffect(() => {
-        setIsMounted(true);
         const hour = new Date().getHours();
-        if (hour >= 4 && hour < 10) setGreeting(t.homeGreetingMorning);
-        else if (hour >= 10 && hour < 15) setGreeting(t.homeGreetingNoon);
-        else if (hour >= 15 && hour < 18) setGreeting(t.homeGreetingAfternoon);
-        else setGreeting(t.homeGreetingEvening);
+        queueMicrotask(() => {
+            setIsMounted(true);
+            if (hour >= 4 && hour < 10) setGreeting(t.homeGreetingMorning);
+            else if (hour >= 10 && hour < 15) setGreeting(t.homeGreetingNoon);
+            else if (hour >= 15 && hour < 18) setGreeting(t.homeGreetingAfternoon);
+            else setGreeting(t.homeGreetingEvening);
+        });
     }, [t]);
 
     useEffect(() => {
@@ -48,7 +50,7 @@ export default function HomeHeader() {
             const savedName = storage.getOptional<string>(STORAGE_KEYS.USER_NAME);
             if (savedName) setUserName(savedName);
         };
-        refreshProfile();
+        queueMicrotask(refreshProfile);
         window.addEventListener("storage", refreshProfile);
         window.addEventListener("avatar_updated", refreshProfile);
         return () => {

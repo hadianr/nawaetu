@@ -22,10 +22,10 @@ import { Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
 interface ShareAppCardProps {
-    t: any;
+    t: TranslationTree;
     isDaylight: boolean;
 }
 

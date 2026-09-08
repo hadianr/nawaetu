@@ -42,14 +42,14 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
             try {
                 const lastDismissed = storage.getOptional<number>(STORAGE_KEYS.PWA_PROMPT_DISMISSED);
                 if (!lastDismissed || Date.now() - lastDismissed > 24 * 60 * 60 * 1000) {
-                    setIsVisible(true);
+                    queueMicrotask(() => setIsVisible(true));
                 }
             } catch {
                 // Restricted/quota-full storage must not block the install prompt.
-                setIsVisible(true);
+                queueMicrotask(() => setIsVisible(true));
             }
         }
-    }, [shouldShow, isStandalone, deferredPrompt, isIOS, storage]);
+    }, [shouldShow, isStandalone, deferredPrompt, isIOS, isMobile, storage]);
 
     const handleDismiss = () => {
         setIsVisible(false);

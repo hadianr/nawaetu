@@ -30,6 +30,8 @@ import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
+
+const getCurrentTimestamp = () => Date.now();
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
 import { trackFeatureUse } from "@/lib/analytics/analytics";
@@ -50,12 +52,12 @@ export default function BookmarksPage() {
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number } | null>(null);
 
     useEffect(() => {
-        setMounted(true);
+        queueMicrotask(() => setMounted(true));
         // Check current last read
         const saved = storage.getOptional<{ surahId: number; verseId: number } | string>(STORAGE_KEYS.QURAN_LAST_READ);
         if (saved) {
             try {
-                setLastRead(typeof saved === 'string' ? JSON.parse(saved) : saved);
+                queueMicrotask(() => setLastRead(typeof saved === 'string' ? JSON.parse(saved) : saved));
             } catch { }
         }
     }, []);
@@ -78,7 +80,7 @@ export default function BookmarksPage() {
             surahId: bookmark.surahId,
             surahName: bookmark.surahName,
             verseId: bookmark.verseId,
-            timestamp: Date.now()
+            timestamp: getCurrentTimestamp()
         };
         storage.set(STORAGE_KEYS.QURAN_LAST_READ, lastReadData);
         window.dispatchEvent(new CustomEvent('nawaetu_storage_change', { detail: { key: STORAGE_KEYS.QURAN_LAST_READ } }));
@@ -196,7 +198,7 @@ export default function BookmarksPage() {
 
                                             <div className="flex items-center gap-1.5 text-[10px] font-medium text-slate-500 bg-black/20 px-2.5 py-1.5 rounded-lg border border-white/5">
                                                 <Calendar className="w-3.5 h-3.5" />
-                                                {new Date(bookmark.updatedAt || bookmark.createdAt || Date.now()).toLocaleString('id-ID', {
+                                                {new Date(bookmark.updatedAt || bookmark.createdAt || getCurrentTimestamp()).toLocaleString('id-ID', {
                                                     day: 'numeric',
                                                     month: 'short',
                                                     hour: '2-digit',

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { createPortal } from "react-dom";
 import * as htmlToImage from "html-to-image";
 import { Download, Share2, Check, Loader2, X, Sparkles } from "lucide-react";
@@ -340,7 +341,7 @@ export default function RamadhanWrappedCard() {
 
             {/* ── Footer ── */}
             <div className="z-10 mt-2 text-center flex items-center justify-center gap-1.5">
-                <img src="/icons/icon-192x192.png" className="w-3 h-3 opacity-40 contrast-200 grayscale" alt="Nawaetu" />
+                <Image src="/icons/icon-192x192.png" width={12} height={12} className="opacity-40 contrast-200 grayscale" alt="Nawaetu" />
                 <span className="text-[8px] text-white/25 font-bold uppercase tracking-widest">nawaetu.com</span>
             </div>
         </div>

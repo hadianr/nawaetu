@@ -13,7 +13,7 @@ import {
     Moon,
     Settings2,
 } from "lucide-react";
-import { useLocale } from "@/context/LocaleContext";
+import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTheme } from "@/context/ThemeContext";
 import { getHijriEvents, type HijriEventId } from "@/data/hijri-events";
@@ -68,7 +68,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
 
     useEffect(() => {
         if (!calendarData.length) return;
-        setSelectedDay(calendarData.find(day => day.isToday) || calendarData[0]);
+        queueMicrotask(() => setSelectedDay(calendarData.find(day => day.isToday) || calendarData[0]));
     }, [calendarData]);
 
     const handleView = (mode: HijriCalendarViewMode) => {
@@ -218,7 +218,6 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                             onClick={() => setSelectedDay(day)}
                                             aria-label={`${day.hijriDay} ${getHijriMonthName(day.hijriMonthNumber, locale)} ${day.hijriYear}H, ${dateFormatter.format(new Date(`${day.gregorianIso}T12:00:00`))}${eventNames ? `, ${eventNames}` : ""}`}
                                             aria-current={day.isToday ? "date" : undefined}
-                                            aria-pressed={selected}
                                             className={cn(
                                                 "relative flex min-h-14 flex-col items-center justify-center rounded-xl border text-center transition-colors focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
                                                 selected ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-white" : day.isToday ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10" : isDaylight ? "border-slate-100 hover:bg-slate-50" : "border-white/5 hover:bg-white/5",
@@ -252,7 +251,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                             event.kind === "prohibited" ? isDaylight ? "bg-red-50 text-red-700" : "bg-red-500/10 text-red-300" : isDaylight ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-dark))]" : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))]",
                                         )}>
                                             {event.kind === "prohibited" ? <AlertTriangle className="h-4 w-4 shrink-0" /> : <Moon className="h-4 w-4 shrink-0" />}
-                                            {t[EVENT_LABELS[event.id]]}
+                                            {getTranslationText(t, EVENT_LABELS[event.id], event.id)}
                                         </div>
                                     )) : <p className={cn("text-xs", isDaylight ? "text-slate-400" : "text-white/35")}>{t.hijriCalendarNoEvents}</p>}
                                 </div>

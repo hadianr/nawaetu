@@ -9,9 +9,9 @@
  * Includes Font Size Scaling, Show/Hide Arabic Toggle & Obligatory nawaetu.com Watermark
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { X, Share2, Download, Copy, Check, Sparkles, Moon, Sun, Type } from "lucide-react";
+import { X, Share2, Download, Copy, Check, Sparkles, Moon, Sun } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import {
@@ -30,7 +30,7 @@ interface StoryShareModalProps {
 
 export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalProps) {
     const { t, locale } = useLocale();
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
     const [theme, setTheme] = useState<StoryTheme>("dark");
     const [fontSizeScale, setFontSizeScale] = useState<FontSizeScale>("normal");
     const [showArabic, setShowArabic] = useState(true);
@@ -43,10 +43,6 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
     const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     // Update preview canvas in real-time when controls change or when component mounts
     useEffect(() => {
@@ -111,12 +107,12 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 setStatusMessage(t.storyShareDownloaded || "Gambar telah diunduh! Buka Instagram & bagikan ke Story.");
                 setTimeout(() => setStatusMessage(null), 4000);
             }
-        } catch (err: any) {
-            if (err?.name === "AbortError") {
+        } catch (error: unknown) {
+            if (error instanceof DOMException && error.name === "AbortError") {
                 // User canceled native share sheet — handle silently without error
                 return;
             }
-            console.error("Share failed:", err);
+            console.error("Share failed:", error);
             setStatusMessage(t.storyShareFailed || (locale === "en" ? "Share failed. Downloading file instead..." : "Gagal membagikan. Mencoba mengunduh file..."));
         } finally {
             setIsExporting(false);
@@ -179,8 +175,8 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 setStatusMessage(t.storyShareClipboardUnsupported || "Clipboard tidak didukung browser. Gambar diunduh!");
                 setTimeout(() => setStatusMessage(null), 3000);
             }
-        } catch (err: any) {
-            console.warn("Clipboard image copy failed or denied, falling back to PNG download:", err);
+        } catch (error: unknown) {
+            console.warn("Clipboard image copy failed or denied, falling back to PNG download:", error);
             try {
                 const { blob, fileName } = await exportStoryCardBlob(
                     item,

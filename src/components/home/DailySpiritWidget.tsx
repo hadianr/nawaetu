@@ -23,6 +23,7 @@ import dynamic from "next/dynamic";
 import { BookOpen, Sparkles, Quote, Copy, Check, ChevronRight, Share2 } from "lucide-react";
 import { getSpiritualItemOfDay, SpiritualItem, getLocalizedContent } from "@/data/spiritual-content";
 import { useLocale } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
 import { mapDailySpiritToShareData } from "@/lib/share/share-mappers";
@@ -41,7 +42,7 @@ export default function DailySpiritWidget() {
     const [showShareModal, setShowShareModal] = useState(false);
 
     useEffect(() => {
-        setItem(getSpiritualItemOfDay());
+        queueMicrotask(() => setItem(getSpiritualItemOfDay()));
     }, []);
 
     const handleCopy = () => {
@@ -55,7 +56,8 @@ export default function DailySpiritWidget() {
     if (!item) return null;
 
     const isHadith = item.type === "hadith";
-    const localizedCategory = (t as any)[item.category] || item.category;
+    const categoryTranslation = (t as TranslationTree)[item.category as keyof TranslationTree];
+    const localizedCategory = typeof categoryTranslation === "string" ? categoryTranslation : item.category;
     const localizedContent = getLocalizedContent(item.content, locale);
 
     return (
@@ -150,7 +152,7 @@ export default function DailySpiritWidget() {
                     className="group flex items-center justify-between px-4 py-2.5 border-t border-white/5 hover:bg-white/[0.03] transition-colors"
                 >
                     <span className="text-[11px] font-semibold text-white/40 group-hover:text-white/60 transition-colors">
-                        {isHadith ? (t as any).hadithExploreLink : (t as any).hadithExploreLinkDua}
+                        {isHadith ? t.hadithExploreLink : t.hadithExploreLinkDua}
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-white/20 group-hover:text-[rgb(var(--color-primary-light))]/60 group-hover:translate-x-0.5 transition-all" />
                 </Link>

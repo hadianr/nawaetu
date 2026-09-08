@@ -115,7 +115,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
         return () => {
             navigator.serviceWorker?.removeEventListener('controllerchange', handleControllerChange);
         };
-    }, []);
+    }, [currentVersion]);
 
     const parseSemver = (version: string) =>
         version.replace(/^v/, "").split(".").map((part) => Number(part));

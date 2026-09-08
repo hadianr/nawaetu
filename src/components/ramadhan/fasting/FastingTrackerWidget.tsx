@@ -12,10 +12,11 @@
  * - Tighter vertical spacing
  */
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { useFastingTracker } from "@/hooks/useFastingTracker";
@@ -33,30 +34,26 @@ function buildYearRange(currentYear: number): number[] {
 }
 
 type TabId = "calendar" | "stats" | "qadha";
+type FastingTranslations = TranslationTree & Partial<Record<"fastingTabCalendar" | "fastingTabStats" | "fastingTabQadha", string>>;
 
 export default function FastingTrackerWidget() {
     const { data: session } = useSession();
     const { data: prayerData } = usePrayerTimesContext();
-    const t = useTranslations() as any;
+    const t = useTranslations() as FastingTranslations;
 
     const hijriDateStr = prayerData?.hijriDate ?? "";
     const hijriYearStr = hijriDateStr.split(" ").pop()?.replace("H", "") ?? "1447";
     const currentHijriYear = parseInt(hijriYearStr, 10) || 1447;
     const currentHijriDay = prayerData?.hijriDay ?? 1;
 
-    const [selectedYear, setSelectedYear] = useState<number>(currentHijriYear);
+    const [selectedYearOverride, setSelectedYearOverride] = useState<number | null>(null);
     const [activeTab, setActiveTab] = useState<TabId>("calendar");
-    const [gender, setGender] = useState<"male" | "female" | null>(null);
-
-    useEffect(() => { setSelectedYear(currentHijriYear); }, [currentHijriYear]);
-
-    useEffect(() => {
-        const sessionGender = (session?.user as any)?.gender as string | undefined;
-        if (sessionGender === "male" || sessionGender === "female") { setGender(sessionGender); return; }
-        const storage = getStorageService();
-        const stored = storage.getOptional<string>(STORAGE_KEYS.USER_GENDER as any);
-        if (stored === "male" || stored === "female") setGender(stored as "male" | "female");
-    }, [session?.user]);
+    const selectedYear = selectedYearOverride ?? currentHijriYear;
+    const sessionGender = (session?.user as { gender?: string } | undefined)?.gender;
+    const storedGender = getStorageService().getOptional<string>(STORAGE_KEYS.USER_GENDER);
+    const gender = sessionGender === "male" || sessionGender === "female"
+        ? sessionGender
+        : storedGender === "male" || storedGender === "female" ? storedGender : null;
 
     const availableYears = buildYearRange(currentHijriYear);
     const { getYearLog, getStats, getPendingQadha, defaultMadzhab, logDay, markQadhaDone } = useFastingTracker();
@@ -148,7 +145,7 @@ export default function FastingTrackerWidget() {
                         gender={gender}
                         availableYears={availableYears}
                         selectedYear={selectedYear}
-                        onYearChange={setSelectedYear}
+                        onYearChange={setSelectedYearOverride}
                         onLogDay={handleLogDay}
                     />
                 )}

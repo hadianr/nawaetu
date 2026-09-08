@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { InsightKey } from "@/hooks/useStatsInsights";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface CategoryBreakdownProps {
-    t: any;
+    t: TranslationTree;
     categoryStats: Record<string, { count: number; label: string; icon: string; color: string }>;
     maxCatCount: number;
     setActiveInsight: (val: InsightKey | null) => void;
@@ -17,7 +18,7 @@ export function CategoryBreakdown({
     setActiveInsight
 }: CategoryBreakdownProps) {
     // Filter out categories with 0 count to only show what's relevant
-    const activeStats = Object.entries(categoryStats).filter(([_, cat]) => cat.count > 0);
+    const activeStats = Object.entries(categoryStats).filter(([, cat]) => cat.count > 0);
 
     // If no stats yet, show a placeholder or nothing
     if (activeStats.length === 0) return null;

@@ -37,6 +37,7 @@ import { APP_EVENTS } from "@/lib/constants/events";
 import { getPrayerMissionId, normalizeMissionId } from "@/lib/mission-resolver";
 import { DateUtils } from "@/lib/utils/date";
 import type { Gender } from "@/data/missions";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 // Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
 const PRAYERS = [
@@ -95,6 +96,10 @@ export default function PrayerCheckInWidget() {
     const todayStr = DateUtils.today();
     const isBackdated = selectedDate !== todayStr;
     const getHasanahReward = (baseHasanah: number) => calculateHasanahReward(baseHasanah, isBackdated);
+    const getTranslation = (key: string, fallback = key) => {
+        const value = (t as TranslationTree)[key as keyof TranslationTree];
+        return typeof value === "string" ? value : fallback;
+    };
 
     useEffect(() => {
         const storage = getStorageService();
@@ -265,7 +270,7 @@ export default function PrayerCheckInWidget() {
         );
 
         if (status.isFuture) {
-            const label = (t as any)[prayer.i18n] || prayer.i18n;
+            const label = getTranslation(prayer.i18n);
             toast.error(t.homePrayerCheckInNotYet.replace("{prayer}", label), {
                 description: t.homePrayerCheckInWait,
                 icon: "🔒",
@@ -275,7 +280,7 @@ export default function PrayerCheckInWidget() {
 
         if (isSunnah) {
             // Sunnah points are smaller or fixed
-            const hasanah = (prayer as any).hasanah || 25;
+            const hasanah = "hasanah" in prayer ? prayer.hasanah : 25;
             doComplete(missionId, hasanah);
         } else if (gender !== "female") {
             setSheet({ prayer: prayer as typeof PRAYERS[number], missionId });
@@ -456,8 +461,8 @@ export default function PrayerCheckInWidget() {
                                                     : isDaylight ? "text-slate-400" : "text-white/50"
                                 )}>
                                     {prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
-                                        ? ((t as any).prayerJumuah || "Jumat")
-                                        : (t as any)[prayer.i18n] || prayer.i18n}
+                                        ? getTranslation("prayerJumuah", "Jumat")
+                                        : getTranslation(prayer.i18n)}
                                 </span>
 
                                 {/* Status hint below label */}
@@ -529,12 +534,12 @@ export default function PrayerCheckInWidget() {
                             {/* Sunnah Prayers Section */}
                             {(() => {
                                 const activeSunnah = SUNNAH_PRAYERS.filter(p => {
-                                    if (!(p as any).visibility) return true;
-                                    const vis = (p as any).visibility;
+                                    if (!("visibility" in p)) return true;
+                                    const vis = p.visibility;
                                     const hMonth = prayerData?.hijriMonth;
                                     const hDay = prayerData?.hijriDay;
                                     if (vis.hijriMonth && vis.hijriMonth !== hMonth) return false;
-                                    if (vis.hijriDay && vis.hijriDay !== hDay) return false;
+                                    if ("hijriDay" in vis && vis.hijriDay !== hDay) return false;
                                     return true;
                                 });
 
@@ -589,7 +594,7 @@ export default function PrayerCheckInWidget() {
                                                         ? isDaylight ? "text-orange-700" : "text-amber-400/80"
                                                         : isDaylight ? "text-slate-400" : "text-white/40"
                                             )}>
-                                                {(t as any)[prayer.i18n] || prayer.i18n.split("_").pop()}
+                                                {getTranslation(prayer.i18n, prayer.i18n.split("_").pop())}
                                             </span>
 
                                             {/* Sunnah XP Preview */}
@@ -600,7 +605,7 @@ export default function PrayerCheckInWidget() {
                                                         ? isDaylight ? "text-orange-600" : "text-amber-400/60"
                                                         : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
                                                 )}>
-                                                    +{getHasanahReward((prayer as any).hasanah || 25)} Hasanah
+                                                    +{getHasanahReward("hasanah" in prayer ? prayer.hasanah : 25)} Hasanah
                                                 </span>
                                             )}
                                         </button>
@@ -641,8 +646,8 @@ export default function PrayerCheckInWidget() {
                             <div>
                                 <p className={cn("text-sm font-black", isDaylight ? "text-slate-900" : "text-white")}>
                                     {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
-                                        ? (t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any).prayerJumuah || "Jumat"))
-                                        : (t.homePrayerCheckInSheetTitle.replace("{prayer}", (t as any)[sheet.prayer.i18n] || sheet.prayer.i18n))}
+                                        ? t.homePrayerCheckInSheetTitle.replace("{prayer}", getTranslation("prayerJumuah", "Jumat"))
+                                        : t.homePrayerCheckInSheetTitle.replace("{prayer}", getTranslation(sheet.prayer.i18n))}
                                 </p>
                                 <p className={cn("text-[10px] font-medium", isDaylight ? "text-slate-400" : "text-white/50")}>
                                     {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
@@ -739,7 +744,7 @@ export default function PrayerCheckInWidget() {
                                     : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
                             )}
                         >
-                            {(t as any).buttonCancel || "Batal"}
+                            {getTranslation("buttonCancel", "Batal")}
                         </button>
                     </div>
                 </div>

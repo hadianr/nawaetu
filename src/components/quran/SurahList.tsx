@@ -110,7 +110,7 @@ export default function SurahList({ chapters }: SurahListProps) {
         const savedRead = storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ);
         if (savedRead) {
             try {
-                setLastRead(typeof savedRead === 'string' ? JSON.parse(savedRead) : savedRead);
+                queueMicrotask(() => setLastRead(typeof savedRead === 'string' ? JSON.parse(savedRead) : savedRead));
             } catch {
             }
         }
@@ -121,9 +121,11 @@ export default function SurahList({ chapters }: SurahListProps) {
             try {
                 const parsed = typeof savedBookmarks === 'string' ? JSON.parse(savedBookmarks) : savedBookmarks;
                 if (Array.isArray(parsed)) {
-                    setBookmarkCount(parsed.length);
-                    const ids = new Set(parsed.map((b: any) => b.surahId));
-                    setBookmarkedSurahIds(ids);
+                    queueMicrotask(() => {
+                        setBookmarkCount(parsed.length);
+                        const ids = new Set(parsed.map((bookmark: { surahId: number }) => bookmark.surahId));
+                        setBookmarkedSurahIds(ids);
+                    });
                 }
             } catch {
             }
@@ -164,8 +166,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                     return (
                         <Link
                             href={`/quran/${safeLastRead.surahId}?page=${targetPage}#verse-${safeLastRead.verseId}`}
-                            onMouseEnter={() => prefetchSurah(safeLastRead.surahId)}
-                            onFocus={() => prefetchSurah(safeLastRead.surahId)}
+                            onMouseEnter={() => router.prefetch(`/quran/${safeLastRead.surahId}`)}
+                            onFocus={() => router.prefetch(`/quran/${safeLastRead.surahId}`)}
                             className={cn(
                                 "col-span-2 group relative overflow-hidden rounded-3xl border transition-all duration-500 hover:-translate-y-0.5 shadow-lg",
                                 isDaylight

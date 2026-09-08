@@ -20,7 +20,7 @@
 
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useEffect, useState } from "react";
-import { WifiOff, AlertTriangle } from "lucide-react";
+import { WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function OfflineIndicator() {
@@ -29,7 +29,7 @@ export default function OfflineIndicator() {
 
     useEffect(() => {
         if (!isOnline) {
-            setVisible(true);
+            queueMicrotask(() => setVisible(true));
         } else {
             // Delay hiding to prevent flickering or to show "Back Online" briefly if desired
             // For now, just hide immediately or nice fade out

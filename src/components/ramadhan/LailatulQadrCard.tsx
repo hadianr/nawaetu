@@ -30,14 +30,17 @@ import {
 } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import LailatulQadrGuideModal from "./LailatulQadrGuideModal";
 import { useTarawehTracker } from "@/hooks/useTarawehTracker";
 import { toast } from "sonner";
 import { addHasanah } from "@/lib/habits/leveling";
 
+type LailatulTranslations = TranslationTree & Partial<Record<"gamificationQiyamulLailSuccess" | "gamificationQiyamulLailDesc", string>>;
+
 export default function LailatulQadrCard() {
     const { data } = usePrayerTimesContext();
-    const t = useTranslations() as any;
+    const t = useTranslations() as LailatulTranslations;
     const [guideOpen, setGuideOpen] = useState(false);
 
     const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10);

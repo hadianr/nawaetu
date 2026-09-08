@@ -29,7 +29,7 @@ import {
     ChevronDown as MoreIcon,
 } from "lucide-react";
 import { DUA_LIBRARY, DuaItem, DUA_OCCASIONS } from "@/data/duas";
-import { useLocale } from "@/context/LocaleContext";
+import { getTranslationText, useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { IslamicSubTabBar } from "@/components/islamic-content/IslamicSubTabBar";
@@ -57,7 +57,7 @@ const DuaCard = memo(function DuaCard({
     onShare,
 }: {
     item: DuaItem;
-    t: Record<string, string>;
+    t: TranslationTree;
     locale: string;
     isDaylight: boolean;
     isHighlighted: boolean;
@@ -69,7 +69,7 @@ const DuaCard = memo(function DuaCard({
 
     // Auto-scroll to highlighted card and sync expansion with highlight state
     useEffect(() => {
-        setExpanded(isHighlighted);
+        queueMicrotask(() => setExpanded(isHighlighted));
         if (isHighlighted) {
             const scrollTarget = () => {
                 const el = document.getElementById(`dua-${item.id}`);
@@ -334,7 +334,7 @@ function DuaContent() {
             .filter(occ => occ.key !== "all")
             .map(occ => ({
                 key: occ.key,
-                label: t[TAB_KEY[occ.key]] || (locale === "en" ? occ.labelEn : occ.labelId),
+                label: getTranslationText(t, TAB_KEY[occ.key], locale === "en" ? occ.labelEn : occ.labelId),
             }));
     }, [locale, t]);
 

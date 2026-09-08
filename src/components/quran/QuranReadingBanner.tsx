@@ -46,7 +46,7 @@ export default function QuranReadingBanner() {
 
     // Hydrate from localStorage on client
     useEffect(() => {
-        setMounted(true);
+        queueMicrotask(() => setMounted(true));
         const dateString = getLocalDateString();
         const storedSeconds = parseInt(
             localStorage.getItem(`nawaetu_quran_daily_total_${dateString}`) || "0",
@@ -56,8 +56,10 @@ export default function QuranReadingBanner() {
             localStorage.getItem(DAILY_TARGET_KEY) || String(DEFAULT_TARGET_MINUTES),
             10
         );
-        setDailyTotalSeconds(isNaN(storedSeconds) ? 0 : storedSeconds);
-        setTargetMinutes(isNaN(storedTarget) ? DEFAULT_TARGET_MINUTES : storedTarget);
+        queueMicrotask(() => {
+            setDailyTotalSeconds(isNaN(storedSeconds) ? 0 : storedSeconds);
+            setTargetMinutes(isNaN(storedTarget) ? DEFAULT_TARGET_MINUTES : storedTarget);
+        });
 
         // Also poll every 5 seconds to pick up changes from the reading page
         const interval = setInterval(() => {

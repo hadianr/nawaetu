@@ -20,8 +20,12 @@ import {
     MessageSquare
 } from "lucide-react";
 import { InsightKey, DailyActivity } from "@/hooks/useStatsInsights";
+import type { TranslationTree } from "@/context/LocaleContext";
 
-function formatReadingTime(totalSeconds: number, q: any): string {
+function formatReadingTime(
+    totalSeconds: number,
+    q: Pick<TranslationTree, "unitMinuteLong" | "unitHour" | "unitMinute" | "unitSecond">
+): string {
     if (totalSeconds === 0) return `0 ${q.unitMinuteLong}`;
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -37,7 +41,7 @@ function formatReadingTime(totalSeconds: number, q: any): string {
 interface InsightModalProps {
     activeInsight: InsightKey | null;
     setActiveInsight: (val: InsightKey | null) => void;
-    t: any;
+    t: TranslationTree;
     data: {
         streakData: { currentStreak: number; longestStreak: number };
         recentPrayerCount: number;
@@ -119,7 +123,7 @@ export function InsightModal({
                                     {data.primaryPrayer ? (
                                         <>
                                             <p className="text-xs text-white/90 italic mb-2">
-                                                &quot;{t.stats.insights.prayers.mostConsistentMsg?.replace('{{prayer}}', data.primaryPrayer) || `${t.stats.insights.prayers.mostConsistent} ${data.primaryPrayer}.`}&quot;
+                                                &quot;{`${t.stats.insights.prayers.mostConsistent} ${data.primaryPrayer}.`}&quot;
                                             </p>
                                             <p className="text-[10px] text-white/50">
                                                 {data.sunnahTotal > 0
@@ -167,7 +171,7 @@ export function InsightModal({
                                     <p className="text-xs text-white/90">
                                         {data.consistency > 80
                                             ? t.stats.insights.consistency.highDesc
-                                            : t.stats.insights.consistency.tipDesc || t.stats.insights.consistency.lowDesc
+                                            : t.stats.insights.consistency.lowDesc
                                         }
                                     </p>
                                 </div>
@@ -179,8 +183,8 @@ export function InsightModal({
                                 <InsightRow label={t.stats.insights.quran.totalRead} value={data.totalQuranAyat.toLocaleString()} icon={<BookOpen className="w-3.5 h-3.5 text-blue-400" />} />
                                 {data.totalQuranReadSeconds !== undefined && data.totalQuranReadSeconds > 0 && (
                                     <InsightRow
-                                        label={t.quran.tilawahDurationToday}
-                                        value={formatReadingTime(data.totalQuranReadSeconds, t.quran)}
+                                        label={t.tilawahDurationToday}
+                                        value={formatReadingTime(data.totalQuranReadSeconds, t)}
                                         icon={<span className="text-sm">⏱️</span>}
                                     />
                                 )}

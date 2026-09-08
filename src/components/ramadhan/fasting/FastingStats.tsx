@@ -9,6 +9,7 @@
  */
 
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import type { FastingYearStats } from "@/data/fasting/types";
 
 interface FastingStatsProps {
@@ -18,7 +19,7 @@ interface FastingStatsProps {
 }
 
 export default function FastingStats({ stats, hijriYear, onViewDetail }: FastingStatsProps) {
-    const t = useTranslations() as any;
+    const t = useTranslations() as TranslationTree;
     const totalObligations = stats.pendingQadha + stats.pendingFidyah;
     const yearLabel = (t.fastingStatsYear as string).replace("{year}", String(hijriYear));
 

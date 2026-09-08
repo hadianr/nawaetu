@@ -20,6 +20,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { Volume2, VolumeX, X } from "lucide-react";
 import { DhikrPreset } from "./types";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface DhikrZenModeProps {
     isZenMode: boolean;
@@ -28,7 +29,7 @@ export interface DhikrZenModeProps {
     target: number | null;
     count: number;
     hasHydrated: boolean;
-    t: any;
+    t: TranslationTree;
     handleIncrement: () => void;
     feedbackMode: 'sound' | 'none';
     toggleFeedback: () => void;

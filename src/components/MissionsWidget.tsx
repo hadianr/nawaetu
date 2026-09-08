@@ -23,7 +23,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Mission } from "@/data/missions";
@@ -38,7 +38,6 @@ import { getRulingLabel } from "@/lib/habits/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 import { toast } from "sonner";
-import { useSession } from "next-auth/react";
 import IntentionInputForm from "./intentions/IntentionInputForm";
 import ReflectionInputForm from "./intentions/ReflectionInputForm";
 import IntentionPrompt from "./intentions/IntentionPrompt";
@@ -46,14 +45,13 @@ import DailyMissionCard from "./missions/DailyMissionCard";
 import { useWidgetMissions } from "@/hooks/useWidgetMissions";
 
 export default function MissionsWidget() {
-    const { data: session } = useSession();
     const { t } = useLocale();
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
 
     // Extracted Custom Hook for Missions Logic
-    const { missions, widgetMissions, gender, isMissionCompleted, checkValidation } = useWidgetMissions(completedMissions as any);
+    const { missions, widgetMissions, gender, isMissionCompleted, checkValidation } = useWidgetMissions(completedMissions);
 
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
     const [userToken, setUserToken] = useState<string | null>(null);
     const [todayIntention, setTodayIntention] = useState<{
         id: string;
@@ -80,13 +78,12 @@ export default function MissionsWidget() {
         : {};
 
     useEffect(() => {
-        setMounted(true);
         let token = localStorage.getItem("user_token");
         if (!token) {
             token = crypto.randomUUID();
             localStorage.setItem("user_token", token);
         }
-        setUserToken(token);
+        queueMicrotask(() => setUserToken(token));
     }, []);
 
     // Fetch Today's Intention
@@ -105,7 +102,7 @@ export default function MissionsWidget() {
                         reflection: data.data.has_reflection ? data.data.reflection : null
                     });
                 }
-            } catch (error) {
+            } catch {
             }
         };
         fetchIntention();
@@ -140,7 +137,7 @@ export default function MissionsWidget() {
             t.toastMissionMsg3,
             t.toastMissionMsg4
         ];
-        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+        const randomMsg = messages[selectedMission.id.length % messages.length];
 
         toast.success(t.toastMissionComplete, {
             description: `${randomMsg} (+${reward} Hasanah)`,
@@ -156,8 +153,9 @@ export default function MissionsWidget() {
         window.dispatchEvent(new CustomEvent("hasanah_updated"));
         undoCompleteMission(selectedMission.id);
 
-        toast.info((t as any).mission_dialog_undo_title, {
-            description: `${selectedMission.title} ${(t as any).mission_dialog_undo_desc} (-${selectedMission.hasanahReward} Hasanah)`,
+        const copy = t as unknown as Record<string, string>;
+        toast.info(copy.mission_dialog_undo_title || "Mission dibatalkan", {
+            description: `${selectedMission.title} ${copy.mission_dialog_undo_desc || "dibatalkan"} (-${selectedMission.hasanahReward} Hasanah)`,
             duration: 3000,
             icon: "🔄"
         });
@@ -205,8 +203,9 @@ export default function MissionsWidget() {
     const [initialModalTab, setInitialModalTab] = useState("all");
 
     useEffect(() => {
-        const handleOpenModal = (e: any) => {
-            if (e.detail?.tab) setInitialModalTab(e.detail.tab);
+        const handleOpenModal = (event: Event) => {
+            const tab = (event as CustomEvent<{ tab?: string }>).detail?.tab;
+            if (tab) setInitialModalTab(tab);
             setShowMissionModal(true);
         };
         window.addEventListener("open_mission_modal", handleOpenModal);

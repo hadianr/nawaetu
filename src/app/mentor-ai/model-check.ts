@@ -40,7 +40,7 @@ export async function checkAvailableModels() {
 
         const data = await response.json();
         // The API returns models in the format "models/gemini-pro", so we strip the prefix for cleaner output
-        const models = (data.models || []).map((m: any) => m.name.replace("models/", ""));
+        const models = (data.models || []).map((m: { name: string }) => m.name.replace("models/", ""));
         return `Available models: ${models.join(", ")}`;
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);

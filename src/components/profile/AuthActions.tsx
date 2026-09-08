@@ -19,7 +19,7 @@
 import { Button } from "@/components/ui/button";
 import { Settings, Share2, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
 interface AuthActionsProps {
     isDaylight: boolean;
@@ -41,6 +41,7 @@ export function AuthActions({
     handleLogout
 }: AuthActionsProps) {
     const { t } = useLocale();
+    const translations = t as TranslationTree;
 
     return (
         <>
@@ -56,8 +57,8 @@ export function AuthActions({
                     )}>
                         <Settings className={cn("w-5 h-5", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light)) ]")} />
                     </div>
-                    <h3 className={cn("text-sm font-bold mb-1", isDaylight ? "text-slate-900" : "text-white")}>{(t as any).profileAuthTitle}</h3>
-                    <p className={cn("text-xs mb-4 leading-relaxed", isDaylight ? "text-slate-500" : "text-slate-400")}>{(t as any).profileAuthDesc}</p>
+                    <h3 className={cn("text-sm font-bold mb-1", isDaylight ? "text-slate-900" : "text-white")}>{translations.profileAuthTitle}</h3>
+                    <p className={cn("text-xs mb-4 leading-relaxed", isDaylight ? "text-slate-500" : "text-slate-400")}>{translations.profileAuthDesc}</p>
                     <Button
                         onClick={handleLogin}
                         className={cn(
@@ -73,7 +74,7 @@ export function AuthActions({
                             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                         </svg>
-                        {(t as any).profileAuthButton}
+                        {translations.profileAuthButton}
                     </Button>
                 </div>
             )}
@@ -91,7 +92,7 @@ export function AuthActions({
                         )}>
                             <Share2 className={cn("w-4 h-4 transition-colors", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ] group-hover:text-[rgb(var(--color-primary))]")} />
                         </div>
-                        <span className={cn("text-sm font-medium transition-colors", isDaylight ? "text-slate-600 group-hover:text-slate-900" : "text-slate-300 group-hover:text-white")}>{(t as any).profileShareApp}</span>
+                        <span className={cn("text-sm font-medium transition-colors", isDaylight ? "text-slate-600 group-hover:text-slate-900" : "text-slate-300 group-hover:text-white")}>{translations.profileShareApp}</span>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400" />
                 </button>
@@ -106,7 +107,7 @@ export function AuthActions({
                                 <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
                                     <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors" />
                                 </div>
-                                <span className={cn("text-sm font-medium transition-colors", isDaylight ? "text-red-600 group-hover:text-red-700" : "text-red-400 group-hover:text-red-300")}>{(t as any).profileLogout}</span>
+                                <span className={cn("text-sm font-medium transition-colors", isDaylight ? "text-red-600 group-hover:text-red-700" : "text-red-400 group-hover:text-red-300")}>{translations.profileLogout}</span>
                             </div>
                         </button>
                     ) : (
@@ -117,7 +118,7 @@ export function AuthActions({
                             <p className={cn(
                                 "text-xs mb-3 text-center font-medium",
                                 isDaylight ? "text-red-600" : "text-red-200"
-                            )}>{(t as any).profileLogoutConfirm}</p>
+                            )}>{translations.profileLogoutConfirm}</p>
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleLogout}
@@ -128,7 +129,7 @@ export function AuthActions({
                                             : "bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/20 shadow-none"
                                     )}
                                 >
-                                    {(t as any).profileLogoutConfirmYes}
+                                    {translations.profileLogoutConfirmYes}
                                 </button>
                                 <button
                                     onClick={() => setShowLogoutConfirm(false)}
@@ -139,7 +140,7 @@ export function AuthActions({
                                             : "bg-white/5 hover:bg-white/10 text-slate-400"
                                     )}
                                 >
-                                    {(t as any).profileLogoutConfirmNo}
+                                    {translations.profileLogoutConfirmNo}
                                 </button>
                             </div>
                         </div>

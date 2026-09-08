@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
@@ -46,8 +46,8 @@ export default function IntentionPrompt({
 
     const [intentionText, setIntentionText] = useState(initialValue);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [mounted, setMounted] = useState(false);
-    const [dalil, setDalil] = useState<IntentionDalil | null>(null);
+    const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
+    const [dalil] = useState<IntentionDalil>(() => getRandomDalil());
 
     // Calculate greeting dynamically to ensure it's always in sync with t and locale
     const hour = new Date().getHours();
@@ -57,15 +57,6 @@ export default function IntentionPrompt({
         if (hour >= 15 && hour < 18) return { greetingText: t.intention_evening_title, greetingEmoji: "🌤️" };
         return { greetingText: t.intention_night_title, greetingEmoji: "🌙" };
     })();
-
-    useEffect(() => {
-        setMounted(true);
-        if (!dalil) {
-            setDalil(getRandomDalil());
-        }
-
-        return () => setMounted(false);
-    }, [locale]);
 
     const handleSubmit = async () => {
         if (!intentionText.trim() || isSubmitting) return;

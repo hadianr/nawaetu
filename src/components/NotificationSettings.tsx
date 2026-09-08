@@ -25,7 +25,6 @@ import { Switch } from "@/components/ui/switch";
 import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
 import { useLocale } from "@/context/LocaleContext";
-import { SETTINGS_TRANSLATIONS } from "@/data/translations";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import * as Sentry from "@sentry/nextjs";
 import { toast } from "sonner";
@@ -37,8 +36,8 @@ export default function NotificationSettings() {
 
     // State Management
     const [isEnabled, setIsEnabled] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [isInitializing, setIsInitializing] = useState(false);
+    const isLoading = false;
     const [fcmToken, setFcmToken] = useState<string | null>(null);
     const [preferences, setPreferences] = useState<PrayerPreferences>(DEFAULT_PRAYER_PREFERENCES);
     const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>("default");
@@ -50,14 +49,16 @@ export default function NotificationSettings() {
 
     useEffect(() => {
         if (typeof window !== "undefined" && "Notification" in window) {
-            setPermissionStatus(window.Notification.permission);
+            queueMicrotask(() => setPermissionStatus(window.Notification.permission));
 
             // Check if notifications are already enabled (Token exists)
             const token = localStorage.getItem("fcm_token");
             if (token) {
-                setFcmToken(token);
-                setIsEnabled(true);
-                loadPreferences(token);
+                queueMicrotask(() => {
+                    setFcmToken(token);
+                    setIsEnabled(true);
+                    loadPreferences();
+                });
             }
         }
     }, []);
@@ -100,7 +101,7 @@ export default function NotificationSettings() {
         };
 
         void verify().catch(() => setSubscriptionHealthy(false));
-    }, [fcmToken, status]);
+    }, [fcmToken, preferences, status]);
 
     async function sendTestPush() {
         if (!fcmToken) return;
@@ -158,23 +159,12 @@ export default function NotificationSettings() {
         }
     }
 
-    async function tryGetTokenSilently() {
-        try {
-            const token = await registerServiceWorkerAndGetToken();
-            if (token) {
-                setFcmToken(token);
-                loadPreferences(token);
-            }
-        } catch (e) { }
-    }
-
-    async function loadPreferences(token: string) {
+    function loadPreferences() {
         const saved = localStorage.getItem(STORAGE_KEYS.ADHAN_PREFERENCES);
         if (saved) {
             try {
                 setPreferences(JSON.parse(saved));
-            } catch (e) {
-            }
+            } catch { }
         }
     }
 
@@ -191,8 +181,7 @@ export default function NotificationSettings() {
             if (permission !== "granted") {
                 alert(t.notificationDenied);
             }
-        } catch (error) {
-        }
+        } catch { }
     }
 
     function getCurrentLocation() {
@@ -209,8 +198,7 @@ export default function NotificationSettings() {
                     country: loc.country || null,
                     countryCode: loc.countryCode || null,
                 };
-            } catch (e) {
-            }
+            } catch { }
         }
         // No fallback: User must have location set from onboarding.
         return null;
@@ -270,7 +258,7 @@ export default function NotificationSettings() {
                             ? "Sistem notifikasi sedang disiapkan. Coba lagi sebentar."
                             : "Notification system is still preparing. Try again in a moment.";
                     }
-                } catch (error: any) {
+                } catch (error: unknown) {
                     console.error("[NotificationSettings] Toggle Error:", error);
 
                     Sentry.captureException(error, {
@@ -282,7 +270,9 @@ export default function NotificationSettings() {
                         }
                     });
 
-                    const errorMessage = error.message || (locale === 'id' ? "Terjadi kesalahan tidak dikenal." : "An unknown error occurred.");
+                    const errorMessage = error instanceof Error && error.message
+                        ? error.message
+                        : (locale === 'id' ? "Terjadi kesalahan tidak dikenal." : "An unknown error occurred.");
 
                     // Revert Optimistic UI on failure
                     setIsEnabled(false);
@@ -319,8 +309,7 @@ export default function NotificationSettings() {
                     timezone,
                 }),
             });
-        } catch (error) {
-        }
+        } catch { }
     }
 
     async function togglePrayer(prayer: keyof PrayerPreferences) {
@@ -349,17 +338,17 @@ export default function NotificationSettings() {
                     <Bell className="w-8 h-8 text-[rgb(var(--color-primary))]" />
                 </div>
                 <h3 className="text-lg font-bold text-white">
-                    {(t as any).notificationPermissionTitle || "Aktifkan Notifikasi Sholat"}
+                    {(t as unknown as Record<string, string>).notificationPermissionTitle || "Aktifkan Notifikasi Sholat"}
                 </h3>
                 <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto">
-                    {(t as any).notificationPermissionDesc || "Untuk mendapatkan pengingat waktu sholat, mohon izinkan akses notifikasi."}
+                    {(t as unknown as Record<string, string>).notificationPermissionDesc || "Untuk mendapatkan pengingat waktu sholat, mohon izinkan akses notifikasi."}
                 </p>
                 <div className="pt-2">
                     <button
                         onClick={requestPermission}
                         className="w-full py-3 px-4 bg-[rgb(var(--color-primary))] text-white font-semibold rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 hover:opacity-90 transition-all active:scale-[0.98]"
                     >
-                        {(t as any).notificationPermissionButton || "Izinkan Notifikasi"}
+                        {(t as unknown as Record<string, string>).notificationPermissionButton || "Izinkan Notifikasi"}
                     </button>
                 </div>
             </div>

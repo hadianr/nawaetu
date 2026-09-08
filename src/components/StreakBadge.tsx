@@ -1,10 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useSession } from "next-auth/react";
 import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } from "lucide-react";
-import { useLocale } from "@/context/LocaleContext";
+import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";
@@ -71,18 +71,17 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   const player = usePlayerStats();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
   const lossTrackedRef = useRef(false);
   const qualificationTrackedRef = useRef<string | null>(null);
   const freezeTrackedRef = useRef(0);
-  useEffect(() => setMounted(true), []);
   useEffect(() => {
-    if (open !== undefined) setDetailsOpen(open);
+    if (open !== undefined) queueMicrotask(() => setDetailsOpen(open));
   }, [open]);
   useEffect(() => {
     const celebrate = (event: Event) => {
       const { streak: achievement, milestone } = (event as CustomEvent<StreakAchievementEventDetail>).detail;
-      const localizedMilestone = milestone ? t[`streakMilestone${milestone.days}`] : null;
+      const localizedMilestone = milestone ? getTranslationText(t, `streakMilestone${milestone.days}`) : null;
 
       toast.success(
         localizedMilestone
@@ -117,6 +116,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   const canonical = cachedProgression && session?.user?.id && cachedProgression.userId === session.user.id
     ? cachedProgression
     : null;
+  const canonicalDays = canonical?.streak?.days;
   const currentStreak = mounted ? display.streak : 0;
   const isActiveToday = mounted && display.isActiveToday;
   const isLost = mounted && display.isLost;
@@ -126,25 +126,25 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
     : 100;
 
   const activeDates = useMemo(() => {
-    if (canonical?.streak?.days) {
+    if (canonicalDays) {
       return new Set(
-        canonical.streak.days
+        canonicalDays
           .filter((day) => day.status !== "frozen")
           .map((day) => day.localDate.slice(0, 10)),
       );
     }
     return consecutiveDates(streak.lastActiveDate, streak.currentStreak);
-  }, [canonical?.streak?.days, streak.currentStreak, streak.lastActiveDate]);
+  }, [canonicalDays, streak.currentStreak, streak.lastActiveDate]);
   const protectedDates = useMemo(() => {
-    if (canonical?.streak?.days) {
+    if (canonicalDays) {
       return new Set(
-        canonical.streak.days
+        canonicalDays
           .filter((day) => day.status === "frozen")
           .map((day) => day.localDate.slice(0, 10)),
       );
     }
     return new Set(streak.protectedDates);
-  }, [canonical?.streak?.days, streak.protectedDates]);
+  }, [canonicalDays, streak.protectedDates]);
   const week = useMemo(() => {
     const today = new Date();
     return Array.from({ length: 7 }, (_, index) => {
@@ -164,7 +164,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   const shareStreak = currentStreak;
   const shareLongest = streak.longestStreak;
   const reachedMilestone = [...milestones].reverse().find((milestone) => milestone.days <= shareStreak);
-  const milestoneLabel = (days?: number) => days ? t[`streakMilestone${days}`] : undefined;
+  const milestoneLabel = (days?: number) => days ? getTranslationText(t, `streakMilestone${days}`) : undefined;
   const canShare = shareStreak > 0;
   const shareItem = mapStreakAchievementToShareData({
     currentStreak: shareStreak,

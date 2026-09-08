@@ -20,10 +20,11 @@ import { Crown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserProfileDialog from "@/components/UserProfileDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { Session } from "next-auth";
 
 interface ProfileCardProps {
     status: "authenticated" | "loading" | "unauthenticated";
-    session: any;
+    session: Session | null;
     hasCachedProfile: boolean;
     isDaylight: boolean;
     isMuhsinin: boolean;

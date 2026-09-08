@@ -26,10 +26,12 @@ async function getChapters(): Promise<Chapter[]> {
 }
 
 export default async function QuranBrowser() {
+    let chapters: Chapter[];
     try {
-        const chapters = await getChapters();
-        return <SurahList chapters={chapters} />;
-    } catch (error) {
+        chapters = await getChapters();
+    } catch {
         return <QuranErrorMessage />;
     }
+
+    return <SurahList chapters={chapters} />;
 }

@@ -9,9 +9,10 @@
  * optional note, consequence preview, dalil + translation display, Hasanah reward.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { FASTING_STATUS_META, MADZHAB_OPTIONS, getConsequence } from "@/data/fasting/fiqh-rules";
 import type { FastingDayLog, FastingStatus, Madzhab } from "@/data/fasting/types";
 import { addHasanah } from "@/lib/habits/leveling";
@@ -19,7 +20,7 @@ import { toast } from "sonner";
 
 // ─── Consequence label helper ─────────────────────────────────────────────────
 
-function getConsequenceStyle(consequence: string, t: any): { label: string; color: string; bg: string } {
+function getConsequenceStyle(consequence: string, t: TranslationTree): { label: string; color: string; bg: string } {
     switch (consequence) {
         case "none": return { label: t.fastingConsequenceNone, color: "text-green-300", bg: "bg-green-500/10 border-green-500/20" };
         case "qadha": return { label: t.fastingConsequenceQadha, color: "text-amber-300", bg: "bg-amber-500/10 border-amber-500/25" };
@@ -59,33 +60,29 @@ export default function FastingDayModal({
     onSave,
     onClose,
 }: FastingDayModalProps) {
-    const t = useTranslations() as any;
+    const t = useTranslations() as TranslationTree;
+    const getTranslation = (key: string, fallback: string) => {
+        const value = t[key as keyof TranslationTree];
+        return typeof value === "string" ? value : fallback;
+    };
     const [selectedStatus, setSelectedStatus] = useState<FastingStatus>(initialLog?.status ?? "fasting");
     const [selectedMadzhab, setSelectedMadzhab] = useState<Madzhab | null>(
         initialLog?.madzhab ?? defaultMadzhab ?? null
     );
     const [note, setNote] = useState(initialLog?.note ?? "");
-    const [showMadzhabSelector, setShowMadzhabSelector] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-        return () => setMounted(false);
-    }, []);
+    const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
 
     useEffect(() => {
         if (isOpen) {
-            setSelectedStatus(initialLog?.status ?? "fasting");
-            setSelectedMadzhab(initialLog?.madzhab ?? defaultMadzhab ?? null);
-            setNote(initialLog?.note ?? "");
+            queueMicrotask(() => {
+                setSelectedStatus(initialLog?.status ?? "fasting");
+                setSelectedMadzhab(initialLog?.madzhab ?? defaultMadzhab ?? null);
+                setNote(initialLog?.note ?? "");
+            });
         }
     }, [isOpen, initialLog, defaultMadzhab]);
 
     const requiresMadzhab = FASTING_STATUS_META[selectedStatus]?.requiresMadzhab ?? false;
-
-    useEffect(() => {
-        setShowMadzhabSelector(requiresMadzhab);
-    }, [requiresMadzhab]);
 
     const consequence = getConsequence(selectedStatus, requiresMadzhab ? selectedMadzhab : null);
     const { label: consequenceLabel, color: consequenceColor, bg: consequenceBg } = getConsequenceStyle(consequence, t);
@@ -167,7 +164,7 @@ export default function FastingDayModal({
                                 const meta = FASTING_STATUS_META[status];
                                 const isSelected = selectedStatus === status;
                                 const labelKey = `fastingStatus${status.charAt(0).toUpperCase() + status.slice(1).replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase())}`;
-                                const label = t[labelKey] ?? status;
+                                const label = getTranslation(labelKey, status);
 
                                 return (
                                     <button
@@ -187,7 +184,7 @@ export default function FastingDayModal({
                     </div>
 
                     {/* Madzhab Selector (conditional) */}
-                    {showMadzhabSelector && (
+                    {requiresMadzhab && (
                         <div className="rounded-2xl border border-purple-500/25 bg-purple-500/10 p-4 space-y-3">
                             <div>
                                 <p className="text-[11px] font-bold text-purple-300 mb-1">{t.fastingMadzhabTitle}</p>

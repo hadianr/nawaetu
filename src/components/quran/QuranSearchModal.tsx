@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2, BookOpen } from "lucide-react";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { searchQuranAction } from "@/app/actions/quran";
 import type { SearchResponse } from "@/lib/quran/kemenag-api";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import DOMPurify from "isomorphic-dompurify";
 
 export default function QuranSearchModal() {
     const { t, locale } = useLocale();
+    const translations = t as TranslationTree;
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
 
@@ -50,14 +51,14 @@ export default function QuranSearchModal() {
                     )}
                 >
                     <BookOpen className="h-4 w-4" />
-                    <span className="hidden sm:inline">{(t as any).quranSearchVerses}</span>
+                    <span className="hidden sm:inline">{translations.quranSearchVerses}</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl bg-[#0F172A] border-white/10 p-0 overflow-hidden flex flex-col max-h-[85vh]">
                 <DialogHeader className="p-4 border-b border-white/5 shrink-0 bg-[#0F172A]/80 backdrop-blur-xl z-10">
                     <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
                         <Search className="h-5 w-5 text-[rgb(var(--color-primary-light))]" />
-                        {(t as any).quranSearchVerses}
+                        {translations.quranSearchVerses}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -65,13 +66,13 @@ export default function QuranSearchModal() {
                     <form onSubmit={handleSearch} className="flex gap-2">
                         <Input
                             autoFocus
-                            placeholder={(t as any).quranSearchPlaceholderBody}
+                            placeholder={translations.quranSearchPlaceholderBody}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             className="bg-white/5 border-white/10 focus-visible:ring-[rgb(var(--color-primary))] h-12 text-base text-white rounded-xl placeholder:text-slate-500"
                         />
                         <Button type="submit" disabled={isPending || !query.trim()} className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white h-12 px-6 rounded-xl font-bold transition-all shadow-lg shadow-[rgb(var(--color-primary))]/20">
-                            {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : (t as any).quranSearchButton}
+                            {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : translations.quranSearchButton}
                         </Button>
                     </form>
                 </div>
@@ -80,21 +81,21 @@ export default function QuranSearchModal() {
                     {isPending && !results && (
                         <div className="flex flex-col items-center justify-center py-12 gap-3 opacity-50">
                             <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary))]" />
-                            <p className="text-sm font-medium text-slate-400">{(t as any).quranSearchSearching}</p>
+                            <p className="text-sm font-medium text-slate-400">{translations.quranSearchSearching}</p>
                         </div>
                     )}
 
                     {!isPending && results && results.results.length === 0 && (
                         <div className="text-center py-12 text-slate-400">
                             <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                        <p>{(t as any).quranSearchNotFound} &quot;{results.query}&quot;</p>
+                        <p>{translations.quranSearchNotFound} &quot;{results.query}&quot;</p>
                         </div>
                     )}
 
                     {!isPending && results && results.results.length > 0 && (
                         <div className="space-y-4">
                             <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider mb-2">
-                                {(t as any).quranSearchFound} {results.total_results} {(t as any).quranSearchAyat}
+                                {translations.quranSearchFound} {results.total_results} {translations.quranSearchAyat}
                             </p>
                             {results.results.map((verse) => (
                                 <Link

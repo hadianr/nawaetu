@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis, ResponsiveContainer } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
     ChartConfig,
     ChartContainer,
@@ -10,13 +10,17 @@ import {
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
+import type { TranslationTree } from "@/context/LocaleContext";
+
+type TimeRange = 'today' | '7d' | '30d' | '90d' | '1y';
+type HasanahPoint = { dateLabel: string; hasanah: number };
 
 interface HasanahTrendChartProps {
-    t: any;
-    chartData: any[];
+    t: TranslationTree;
+    chartData: HasanahPoint[];
     chartConfig: ChartConfig;
-    timeRange: string;
-    setTimeRange: (range: any) => void;
+    timeRange: TimeRange;
+    setTimeRange: (range: TimeRange) => void;
 }
 
 export function HasanahTrendChart({
@@ -28,7 +32,7 @@ export function HasanahTrendChart({
 }: HasanahTrendChartProps) {
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
-    const filters = [
+    const filters: { id: TimeRange; label: string }[] = [
         { id: 'today', label: t.stats.chart.filters.today },
         { id: '7d', label: t.stats.chart.filters.last7d },
         { id: '30d', label: t.stats.chart.filters.last30d },

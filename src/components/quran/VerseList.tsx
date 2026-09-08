@@ -75,7 +75,7 @@ export interface Verse {
         text: string;
     }[];
     transliteration: string;
-    words?: any[];
+    words?: unknown[];
 }
 
 interface VerseListProps {
@@ -173,13 +173,14 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
             { threshold: 0.1, rootMargin: '800px' }
         );
 
-        if (loadMoreRef.current) {
-            observer.observe(loadMoreRef.current);
+        const loadMoreElement = loadMoreRef.current;
+        if (loadMoreElement) {
+            observer.observe(loadMoreElement);
         }
 
         return () => {
-            if (loadMoreRef.current) {
-                observer.unobserve(loadMoreRef.current);
+            if (loadMoreElement) {
+                observer.unobserve(loadMoreElement);
             }
         };
     }, [currentPage, totalPages, isPending, router]);
@@ -246,10 +247,11 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         const elements = document.querySelectorAll("[data-verse-key]");
         elements.forEach((el) => observerRef.current?.observe(el));
 
+        const timers = timersRef.current;
         return () => {
             if (observerRef.current) observerRef.current.disconnect();
-            timersRef.current.forEach(clearTimeout);
-            timersRef.current.clear();
+            timers.forEach(clearTimeout);
+            timers.clear();
         };
     }, [verses]); // Re-run when page changes or verses load
 
@@ -287,7 +289,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         document.cookie = `settings_reciter=${value}; path=/; max-age=31536000`;
         // Update localStorage for client-side persistence (Settings page sync)
         const storage = getStorageService();
-        storage.set(STORAGE_KEYS.SETTINGS_RECITER as any, value);
+        storage.set(STORAGE_KEYS.SETTINGS_RECITER, value);
         // Refresh to get new audio URLs from VerseBrowser
         startTransition(() => router.refresh());
     }, [router]);
@@ -314,21 +316,9 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         const cookies = document.cookie.split(';');
         const perPageCookie = cookies.find(c => c.trim().startsWith('settings_verses_per_page='));
         if (perPageCookie) {
-            setPerPage(parseInt(perPageCookie.split('=')[1]));
+            queueMicrotask(() => setPerPage(parseInt(perPageCookie.split('=')[1])));
         }
     }, []);
-
-    // Handle Autoplay from Surah List - Only on initial page load
-    useEffect(() => {
-        if (autoplay && accumulatedVerses.length > 0 && !playingVerseKey && !autoplayExecuted) {
-            // Small delay to ensure everything is ready
-            const timer = setTimeout(() => {
-                handleSurahPlay();
-                setAutoplayExecuted(true); // Prevent future auto-plays
-            }, 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [autoplay]); // Only depend on autoplay, not verses
 
     // Scroll to verse handler
     const scrollToVerse = (verseNum: number) => {
@@ -398,6 +388,17 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         scrollToVerse,
         getVerseAudioUrl
     });
+
+    // Handle Autoplay from Surah List - Only on initial page load
+    useEffect(() => {
+        if (autoplay && accumulatedVerses.length > 0 && !playingVerseKey && !autoplayExecuted) {
+            const timer = setTimeout(() => {
+                handleSurahPlay();
+                setAutoplayExecuted(true);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [accumulatedVerses.length, autoplay, autoplayExecuted, handleSurahPlay, playingVerseKey]);
 
 
     // Bookmarking Logic
@@ -781,7 +782,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                     tags: bookmark.tags,
                                 });
                             }
-                            toast.success((t as any).bookmarksSaved || "Tanda baca berhasil disimpan ✨");
+                            toast.success((t as unknown as Record<string, string>).bookmarksSaved || "Tanda baca berhasil disimpan ✨");
                         } catch {
                         }
                     }}
@@ -801,7 +802,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                     verseId: bookmark.verseId,
                                 });
                             }
-                            toast.success((t as any).bookmarksDeleted || "Tanda baca berhasil dihapus");
+                            toast.success((t as unknown as Record<string, string>).bookmarksDeleted || "Tanda baca berhasil dihapus");
                         } catch {
                         }
                     }}

@@ -19,22 +19,36 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { notFound } from "next/navigation";
+import type { MessagePayload } from "firebase/messaging";
+
+type DebugResult = Record<string, unknown>;
+
+const permissionListeners = new Set<() => void>();
+const subscribeToPermission = (listener: () => void) => {
+    permissionListeners.add(listener);
+    return () => permissionListeners.delete(listener);
+};
+const getPermissionSnapshot = (): NotificationPermission =>
+    typeof window !== "undefined" && "Notification" in window ? Notification.permission : "default";
+const notifyPermissionChange = () => permissionListeners.forEach((listener) => listener());
 
 export default function NotificationDebugPage() {
     if (process.env.NODE_ENV === "production") {
         notFound();
     }
 
-    const [token, setToken] = useState<string | null>(null);
-    const [dbStatus, setDbStatus] = useState<any>(null);
-    const [sendResult, setSendResult] = useState<any>(null);
+    const [token, setToken] = useState<string | null>(() =>
+        typeof window !== "undefined" ? localStorage.getItem("fcm_token") : null
+    );
+    const [dbStatus, setDbStatus] = useState<DebugResult | null>(null);
+    const [sendResult, setSendResult] = useState<DebugResult | null>(null);
     const [loading, setLoading] = useState(false);
-    const [permission, setPermission] = useState<string>("default");
+    const permission = useSyncExternalStore(subscribeToPermission, getPermissionSnapshot, () => "default");
     const [errorLog, setErrorLog] = useState<string[]>([]);
 
-    const [lastMessage, setLastMessage] = useState<any>(null);
+    const [lastMessage, setLastMessage] = useState<MessagePayload | null>(null);
 
     // Capture console logs
     useEffect(() => {
@@ -43,14 +57,6 @@ export default function NotificationDebugPage() {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            if ("Notification" in window) {
-                setPermission(Notification.permission);
-            } else {
-                setPermission("unsupported");
-            }
-            const storedToken = localStorage.getItem("fcm_token");
-            if (storedToken) setToken(storedToken);
-
             // Listen for foreground messages
             import("@/lib/notifications/fcm-init").then(({ messaging, onMessage }) => {
                 if (messaging) {
@@ -83,7 +89,7 @@ export default function NotificationDebugPage() {
             // CRITICAL: Request permission FIRST before any async jumps to preserve "User Gesture" context
             if (typeof window !== "undefined" && "Notification" in window) {
                 const permission = await Notification.requestPermission();
-                setPermission(permission);
+                notifyPermissionChange();
                 if (permission !== "granted") {
                     alert("Permission denied or dismissed.");
                     setLoading(false);
@@ -136,10 +142,10 @@ export default function NotificationDebugPage() {
         setLoading(true);
         try {
             const res = await fetch(`/api/notifications/debug/check?token=${token}`);
-            const data = await res.json();
+            const data = await res.json() as DebugResult;
             setDbStatus(data);
-        } catch (e: any) {
-            setDbStatus({ error: e.message });
+        } catch (error: unknown) {
+            setDbStatus({ error: error instanceof Error ? error.message : String(error) });
         } finally {
             setLoading(false);
         }
@@ -175,8 +181,8 @@ export default function NotificationDebugPage() {
                 error: `Notification endpoint returned HTTP ${res.status}`,
             }));
             setSendResult(data);
-        } catch (e: any) {
-            setSendResult({ error: e.message });
+        } catch (error: unknown) {
+            setSendResult({ error: error instanceof Error ? error.message : String(error) });
         } finally {
             setLoading(false);
         }
@@ -298,7 +304,7 @@ export default function NotificationDebugPage() {
                                     navigator.serviceWorker.ready.then(reg => {
                                         reg.showNotification(title, options);
                                         alert("Service Worker Notification triggered! Check notif center if not visible.");
-                                    }).catch((e) => {
+                                    }).catch(() => {
                                         const notif = new Notification(title, options);
                                         notif.onclick = () => window.focus();
                                         alert("Fallback Notification triggered! Check notif center if not visible.");
@@ -308,8 +314,8 @@ export default function NotificationDebugPage() {
                                     notif.onclick = () => window.focus();
                                     alert("Standard Notification triggered! Check notif center if not visible.");
                                 }
-                            } catch (e: any) {
-                                alert("Error triggering native notif: " + e.message);
+                            } catch (error: unknown) {
+                                alert("Error triggering native notif: " + (error instanceof Error ? error.message : String(error)));
                             }
                         }}
                         className="bg-yellow-600 px-4 py-2 rounded text-sm text-white font-bold w-full"
@@ -340,7 +346,7 @@ export default function NotificationDebugPage() {
                 <div className="border p-4 rounded-lg border-gray-700">
                     <h2 className="font-semibold mb-2">2. Update Location Data</h2>
                     <p className="text-sm text-gray-400 mb-2">
-                        Forcing GPS detection to fix "userLocation: null".
+                        Forcing GPS detection to fix &quot;userLocation: null&quot;.
                     </p>
                     <button
                         onClick={async () => {

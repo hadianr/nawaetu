@@ -19,9 +19,10 @@
 import { MessageSquarePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface CommunityCardProps {
-    t: any;
+    t: TranslationTree;
     isDaylight: boolean;
     setShowFeedbackModal: (open: boolean) => void;
 }

@@ -21,7 +21,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Check, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
 import { addHasanah } from "@/lib/habits/leveling";
@@ -87,13 +86,13 @@ export default function DhikrCounter() {
     });
     
     const { count, target, activeDhikrId, dailyCount, streak, lastDhikrDate, activeSequenceId, sequenceIndex, lifetimeCount, dhikrHistory } = dhikrState;
-    const allPresets = [...dhikrPresets, ...libraryPresets];
+    const allPresets = useMemo(() => [...dhikrPresets, ...libraryPresets], [dhikrPresets, libraryPresets]);
     const activeDhikr = allPresets.find((dhikr) => dhikr.id === activeDhikrId) || null;
     const activeSequence = dhikrSequences.find((seq) => seq.id === activeSequenceId) || null;
 
     const initAudio = () => {
         if (!audioContext && typeof window !== "undefined") {
-            const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+            const AudioCtx = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
             if (AudioCtx) {
                 const ctx = new AudioCtx();
                 setAudioContext(ctx);

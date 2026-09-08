@@ -10,6 +10,7 @@
  */
 
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import type { FastingDayLog } from "@/data/fasting/types";
 import { FASTING_STATUS_META } from "@/data/fasting/fiqh-rules";
 import { toast } from "sonner";
@@ -25,7 +26,7 @@ interface QadhaTrackerProps {
     onMarkDone: (hijriYear: number, hijriDay: number) => void;
 }
 
-function getConsequenceBadge(consequence: string, t: any): { label: string; color: string } {
+function getConsequenceBadge(consequence: string, t: TranslationTree): { label: string; color: string } {
     switch (consequence) {
         case "qadha": return { label: t.fastingQadhaConsequenceQadha, color: "bg-amber-500/20 text-amber-300 border-amber-500/30" };
         case "fidyah": return { label: t.fastingQadhaConsequenceFidyah, color: "bg-orange-500/20 text-orange-300 border-orange-500/30" };
@@ -35,7 +36,7 @@ function getConsequenceBadge(consequence: string, t: any): { label: string; colo
 }
 
 export default function QadhaTracker({ pendingItems, onMarkDone }: QadhaTrackerProps) {
-    const t = useTranslations() as any;
+    const t = useTranslations() as TranslationTree;
 
     const handleMarkDone = (hijriYear: number, hijriDay: number) => {
         onMarkDone(hijriYear, hijriDay);

@@ -7,16 +7,19 @@
  * Compact Taraweh Tracker using new DB-synced hook.
  */
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { TARAWEH_EVIDENCE, TARAWEH_INTENTION } from "@/data/ramadhan";
 import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { toast } from "sonner";
 import { MapPin, Home } from "lucide-react";
 import { useTarawehTracker, type TarawehChoice, type TarawehLocation } from "@/hooks/useTarawehTracker";
+
+type TarawehTranslations = TranslationTree & Partial<Record<"fastingDayToday", string>>;
 
 function getStreak(log: Record<string, { choice: TarawehChoice, location: TarawehLocation, isQiyam: boolean }>, currentDay: number): number {
     let streak = 0;
@@ -33,7 +36,7 @@ function getStreak(log: Record<string, { choice: TarawehChoice, location: Tarawe
 
 export default function TarawehTracker() {
     const { data } = usePrayerTimesContext();
-    const t = useTranslations() as any;
+    const t = useTranslations() as TarawehTranslations;
 
     const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10);
     const currentHijriDay = data?.hijriDay ?? 1;
@@ -68,15 +71,6 @@ export default function TarawehTracker() {
         if (isFuture || !todayChoice) return;
         updateDay(viewDay, { location: todayLocation === loc ? null : loc });
     };
-
-    // Show current day and 4 previous days for compact history
-    const historyDays = useMemo(() => {
-        const days = [];
-        for (let i = Math.max(1, currentHijriDay - 4); i <= currentHijriDay; i++) {
-            days.push(i);
-        }
-        return days;
-    }, [currentHijriDay]);
 
     return (
         <div className="rounded-2xl border border-white/5 bg-black/20 backdrop-blur-md shadow-lg overflow-hidden">

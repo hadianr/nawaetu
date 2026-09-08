@@ -16,7 +16,7 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        queueMicrotask(() => setMounted(true));
     }, []);
 
     const hasAnyData = totalQuranAyat > 0 || totalQuranReadSeconds > 0 || todayReadSeconds > 0;

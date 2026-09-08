@@ -19,6 +19,7 @@
  */
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -184,9 +185,9 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
             setMessage("");
             clearAllScreenshots();
             onOpenChange(false);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Feedback submit error:", error);
-            toast.error(error.message || t.feedbackErrorToast || "Terjadi kesalahan saat mengirim masukan.");
+            toast.error(error instanceof Error ? error.message : t.feedbackErrorToast || "Terjadi kesalahan saat mengirim masukan.");
         } finally {
             setIsSubmitting(false);
         }
@@ -346,9 +347,11 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                                     isDaylight ? "border-slate-100" : "border-white/5"
                                                 )}
                                             >
-                                                <img
+                                                <Image
                                                     src={url}
                                                     alt={`Screenshot ${idx + 1}`}
+                                                    fill
+                                                    unoptimized
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />
                                                 <button
