@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 
@@ -222,8 +222,10 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
             };
         }
 
-        setState(nextState);
-        setHasHydrated(true);
+        startTransition(() => {
+            setState(nextState);
+            setHasHydrated(true);
+        });
         hasInitializedRef.current = true;
     }, [defaultActiveId, defaultTarget, validActiveIds]);
 
@@ -242,7 +244,7 @@ export function useDhikrPersistence(options: UseDhikrPersistenceOptions) {
     useEffect(() => {
         if (!hasHydrated) return;
         if (!validActiveIds.includes(state.activeDhikrId) && !state.customPresets.some(p => p.id === state.activeDhikrId)) {
-            updateState({ activeDhikrId: defaultActiveId });
+            queueMicrotask(() => updateState({ activeDhikrId: defaultActiveId }));
         }
     }, [defaultActiveId, hasHydrated, state.activeDhikrId, state.customPresets, updateState, validActiveIds]);
 

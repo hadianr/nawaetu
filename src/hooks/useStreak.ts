@@ -29,15 +29,27 @@ import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { DateUtils } from '@/lib/utils/date';
 import { rebuildStreakState } from '@/lib/habits/progression';
 
+interface CanonicalProgression {
+  userId?: string;
+  streak?: {
+    days?: Array<{ localDate: string; status?: string }>;
+    freezesAvailable?: number;
+    currentDays?: number;
+    lastStreakDate?: string | null;
+    longestDays?: number;
+  };
+}
+
 export function useStreak() {
   const repository = getStreakRepository();
   const { data: session, status } = useSession();
+  const userId = session?.user?.id;
   const getProjection = useCallback(() => {
     const local = repository.getStreak();
     const canonical = status === 'authenticated'
-      ? getStorageService().getOptional<any>(STORAGE_KEYS.CANONICAL_PROGRESSION)
+      ? getStorageService().getOptional<CanonicalProgression>(STORAGE_KEYS.CANONICAL_PROGRESSION)
       : null;
-    if (canonical && session?.user?.id && canonical.userId === session.user.id && canonical.streak) {
+    if (canonical && userId && canonical.userId === userId && canonical.streak) {
       const canonicalDays = (canonical.streak.days ?? [])
         .filter((day: { status?: string }) => day.status !== 'frozen')
         .map((day: { localDate: string }) => day.localDate);
@@ -65,7 +77,7 @@ export function useStreak() {
       };
     }
     return { streak: local, display: repository.getDisplayStreak() };
-  }, [repository, session?.user?.id, status]);
+  }, [repository, userId, status]);
   const initialProjection = getProjection();
   const [streak, setStreak] = useState<StreakData>(initialProjection.streak);
   const [display, setDisplay] = useState(initialProjection.display);

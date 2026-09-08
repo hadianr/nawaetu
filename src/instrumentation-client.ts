@@ -74,7 +74,7 @@ const initSentry = () => {
 // Defer Sentry initialization until idle or interaction
 if (typeof window !== "undefined") {
   if ("requestIdleCallback" in window) {
-    (window as any).requestIdleCallback(initSentry, { timeout: 5000 });
+    window.requestIdleCallback(initSentry, { timeout: 5000 });
   } else {
     setTimeout(initSentry, 2000);
   }

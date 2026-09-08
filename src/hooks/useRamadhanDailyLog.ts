@@ -44,7 +44,7 @@ export type DailyLogYearLog = Record<string, DailyLogEntry>;
 function readFullLog(): FullLog {
     try {
         const storage = getStorageService();
-        const raw = storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_DAILY_LOG as any);
+        const raw = storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_DAILY_LOG);
         if (!raw) return {};
         if (typeof raw === "string") { try { return JSON.parse(raw) as FullLog; } catch { return {}; } }
         if (typeof raw === "object") return raw as FullLog;
@@ -55,7 +55,7 @@ function readFullLog(): FullLog {
 function writeFullLog(fullLog: FullLog): void {
     try {
         const storage = getStorageService();
-        storage.set(STORAGE_KEYS.RAMADHAN_DAILY_LOG as any, fullLog);
+        storage.set(STORAGE_KEYS.RAMADHAN_DAILY_LOG, fullLog);
     } catch (e) {
         console.error("[useRamadhanDailyLog] write failed", e);
     }
@@ -70,7 +70,7 @@ export function useRamadhanDailyLog(hijriYear: number) {
         if (!hijriYear) return;
         const fullLog = readFullLog();
         const yearData = (fullLog[hijriYear] || fullLog[String(hijriYear)] || {}) as DailyLogYearLog;
-        setLog(yearData);
+        queueMicrotask(() => setLog(yearData));
     }, [hijriYear]);
 
     // DB sync on mount

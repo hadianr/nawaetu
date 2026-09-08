@@ -37,11 +37,44 @@ function getMergedTranslations() {
 const ALL_TRANSLATIONS = getMergedTranslations();
 
 type SupportedLocale = keyof typeof SETTINGS_TRANSLATIONS;
-export type TranslationTree = typeof SETTINGS_TRANSLATIONS.id;
+type IdTranslations = typeof SETTINGS_TRANSLATIONS.id;
+type EnTranslations = typeof SETTINGS_TRANSLATIONS.en;
+type SharedTranslationKeys = keyof IdTranslations & keyof EnTranslations;
+type TranslationValue = string | string[] | Record<string, unknown>;
+type LegacyTranslationKeys = {
+  feedbackLoginButton: string;
+  niat_rating_struggled: string;
+  niat_rating_difficult: string;
+  niat_rating_okay: string;
+  niat_rating_good: string;
+  niat_rating_excellent: string;
+  niat_rating_harimu_prompt: string;
+  niat_error_no_intention_id: string;
+  niat_error_fail_save_reflection: string;
+  niat_error_network: string;
+  niat_success_reflection_title: string;
+  niat_success_reflection_desc: string;
+  niat_rating_harimu: string;
+  niat_prompt_reflection_text: string;
+  niat_placeholder_reflect: string;
+  niat_saving_wait: string;
+  niat_complete_muhasabah_btn: string;
+  homeLocationDefaultTitle: string;
+  homeLocationDefaultDesc: string;
+  quranPauseVerse: string;
+  intention_view_full: string;
+  intention_translation: string;
+  storyShareClipboardFallback: string;
+};
+export type TranslationTree =
+  Omit<IdTranslations, keyof EnTranslations> &
+  Omit<EnTranslations, keyof IdTranslations> & {
+    [K in SharedTranslationKeys]: IdTranslations[K] | EnTranslations[K];
+  } & LegacyTranslationKeys & { [key: string]: TranslationValue };
 interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;
-  t: any; // Translation tree contains nested, locale-specific sections.
+  t: TranslationTree; // Translation tree contains nested, locale-specific sections.
   isLoading: boolean;
 }
 
@@ -56,7 +89,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const activeLocale: SupportedLocale = locale in ALL_TRANSLATIONS
     ? locale as SupportedLocale
     : DEFAULT_LOCALE;
-  const t = ALL_TRANSLATIONS[activeLocale] as any;
+  const t = ALL_TRANSLATIONS[activeLocale] as unknown as TranslationTree;
 
   // Initialize from localStorage on client mount
   useEffect(() => {
@@ -74,10 +107,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         document.cookie = `settings_locale=${savedLocale}; path=/; max-age=31536000`;
       }
 
-      setLocaleState(savedLocale);
+      queueMicrotask(() => setLocaleState(savedLocale));
     } catch (error) {
       Sentry.captureException(error);
-      setLocaleState(DEFAULT_LOCALE);
+      queueMicrotask(() => setLocaleState(DEFAULT_LOCALE));
     } finally {
       setIsLoading(false);
     }
@@ -145,4 +178,9 @@ export function useLocale() {
 export function useTranslations() {
   const { t } = useLocale();
   return t;
+}
+
+export function getTranslationText(t: TranslationTree, key: string, fallback = ""): string {
+  const value = t[key];
+  return typeof value === "string" ? value : fallback;
 }

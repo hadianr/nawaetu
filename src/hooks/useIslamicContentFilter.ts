@@ -60,15 +60,17 @@ export function useIslamicContentFilter<T extends { id: string }>({
 
     // When targetId from URL changes (e.g. redirected to another item), update activeTargetId and reset filters
     useEffect(() => {
-        setActiveTargetId(targetId);
-        if (targetId) {
-            setSelectedFilterRaw("all");
-            setSearchQueryRaw("");
-            setDebouncedQuery("");
-            setVisibleCount(library.length);
-        } else {
-            setVisibleCount(initialBatch);
-        }
+        queueMicrotask(() => {
+            setActiveTargetId(targetId);
+            if (targetId) {
+                setSelectedFilterRaw("all");
+                setSearchQueryRaw("");
+                setDebouncedQuery("");
+                setVisibleCount(library.length);
+            } else {
+                setVisibleCount(initialBatch);
+            }
+        });
     }, [targetId, library.length, initialBatch]);
 
     const setSearchQuery = useCallback((q: string) => {

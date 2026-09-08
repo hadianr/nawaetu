@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { RankKey } from "@/lib/habits/leveling";
+import { PlayerStats, RankKey } from "@/lib/habits/leveling";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 export const PRAYER_SUFFIXES = ["subuh", "dzuhur", "ashar", "maghrib", "isya"] as const;
 
@@ -24,12 +25,12 @@ export interface CompletedMission {
 
 interface UseStatsInsightsProps {
     history: DailyActivity[];
-    playerStats: any;
+    playerStats: PlayerStats;
     weeklyHasanah: number;
     last14Days: string[];
     prayerMap: Record<string, Set<string>>;
     completedMissions: CompletedMission[];
-    t: any;
+    t: TranslationTree;
 }
 
 export function useStatsInsights({
@@ -104,7 +105,7 @@ export function useStatsInsights({
         });
         if (!hasData) return null;
         const topPrayerId = Object.entries(prayerCounts).reduce((a, b) => b[1] > a[1] ? b : a, ["subuh", 0])[0];
-        return t.stats.insights.prayers.names[topPrayerId] || topPrayerId;
+        return t.stats.insights.prayers.names[topPrayerId as typeof PRAYER_SUFFIXES[number]] || topPrayerId;
     }, [last14Days, prayerMap, t]);
 
     const sunnahTotal = useMemo(() =>

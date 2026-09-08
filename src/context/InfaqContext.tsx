@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useCallback, useContext, useState, useEffect } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -52,7 +52,7 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
             const [savedTotal, savedHistory, savedIsMuhsinin] = storage.getMany([
                 STORAGE_KEYS.USER_TOTAL_DONATION,
                 STORAGE_KEYS.USER_DONATION_HISTORY,
-                STORAGE_KEYS.IS_MUHSININ as any
+                STORAGE_KEYS.IS_MUHSININ
             ]);
 
             if (savedTotal) setTotalInfaq(parseInt(savedTotal as string, 10));
@@ -90,9 +90,9 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
         setInfaqHistory(newHistory);
 
         // Persist
-        storage.setMany(new Map<string, any>([
-            [STORAGE_KEYS.USER_TOTAL_DONATION as any, newTotal.toString()],
-            [STORAGE_KEYS.USER_DONATION_HISTORY as any, newHistory]
+        storage.setMany(new Map<string, string | InfaqTransaction[]>([
+            [STORAGE_KEYS.USER_TOTAL_DONATION, newTotal.toString()],
+            [STORAGE_KEYS.USER_DONATION_HISTORY, newHistory]
         ]));
 
         // Dispatch event for UI updates
@@ -104,14 +104,14 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
     const resetInfaq = () => {
         setTotalInfaq(0);
         setInfaqHistory([]);
-        storage.remove(STORAGE_KEYS.USER_TOTAL_DONATION as any);
-        storage.remove(STORAGE_KEYS.USER_DONATION_HISTORY as any);
+        storage.remove(STORAGE_KEYS.USER_TOTAL_DONATION);
+        storage.remove(STORAGE_KEYS.USER_DONATION_HISTORY);
         window.dispatchEvent(new CustomEvent("infaq_updated", {
             detail: { isMuhsinin: false, total: 0 }
         }));
     };
 
-    const refreshStatus = async (): Promise<boolean> => {
+    const refreshStatus = useCallback(async (): Promise<boolean> => {
         try {
             const res = await fetch("/api/user/full-data");
             if (res.ok) {
@@ -125,8 +125,8 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
                     if (changed) {
                         setIsMuhsininState(serverIsMuhsinin);
                         setTotalInfaq(newTotal);
-                        storage.set(STORAGE_KEYS.IS_MUHSININ as any, serverIsMuhsinin.toString());
-                        storage.set(STORAGE_KEYS.USER_TOTAL_DONATION as any, newTotal.toString());
+                        storage.set(STORAGE_KEYS.IS_MUHSININ, serverIsMuhsinin.toString());
+                        storage.set(STORAGE_KEYS.USER_TOTAL_DONATION, newTotal.toString());
 
                         // Dispatch event for other components
                         window.dispatchEvent(new CustomEvent("infaq_updated", {
@@ -140,7 +140,7 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
             console.error("Failed to refresh infaq status", e);
         }
         return isMuhsininState;
-    };
+    }, [isMuhsininState, totalInfaq]);
 
     const isMuhsinin = isMuhsininState;
     const [isLoading, setIsLoading] = useState(true);
@@ -150,7 +150,7 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
             const [savedTotal, savedHistory, savedIsMuhsinin] = storage.getMany([
                 STORAGE_KEYS.USER_TOTAL_DONATION,
                 STORAGE_KEYS.USER_DONATION_HISTORY,
-                STORAGE_KEYS.IS_MUHSININ as any
+                STORAGE_KEYS.IS_MUHSININ
             ]);
 
             if (savedTotal) setTotalInfaq(parseInt(savedTotal as string, 10));
