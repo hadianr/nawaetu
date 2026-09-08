@@ -54,7 +54,7 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
 
     try {
         // 1. Check storage cache
-        const cached = storage.getOptional<string>(cacheKey as any);
+        const cached = storage.getOptional<string>(cacheKey);
         if (cached) {
             try {
                 const parsed = JSON.parse(cached) as TafsirContent | TafsirCacheEntry;
@@ -123,7 +123,7 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
         if (content) {
             try {
                 const entry: TafsirCacheEntry = { data: content, ts: Date.now(), v: TAFSIR_CACHE_VERSION };
-                storage.set(cacheKey as any, JSON.stringify(entry));
+                storage.set(cacheKey, JSON.stringify(entry));
             } catch {
                 // Handle quota exceeded or other storage errors silently
             }
