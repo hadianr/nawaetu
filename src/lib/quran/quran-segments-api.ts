@@ -38,6 +38,16 @@ export type WordSegment = [number, number, number];
 // Map of verseKey ("1:1") -> list of word segments (time-normalized to verse start)
 export type VerseSegmentMap = Record<string, WordSegment[]>;
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null;
+}
+
+function isTimedSegment(value: unknown): value is WordSegment {
+    return Array.isArray(value)
+        && value.length === 3
+        && value.every((part) => typeof part === "number");
+}
+
 // In-memory session cache keyed by "surahId-reciterId"
 const segmentCache = new Map<string, VerseSegmentMap | null>();
 // Track in-flight promises to prevent duplicate fetch requests
@@ -111,11 +121,14 @@ export async function fetchSurahSegments(
                 return null;
             }
 
-            const data = await res.json();
+            const data = await res.json() as unknown;
 
             // The quran.com API wraps the response under `audio_file` (singular)
             // with a `timestamps` array — each item represents one verse
-            const timestamps: any[] = data?.audio_file?.timestamps ?? [];
+            const audioFile = isRecord(data) && isRecord(data.audio_file) ? data.audio_file : null;
+            const timestamps = audioFile && Array.isArray(audioFile.timestamps)
+                ? audioFile.timestamps.filter(isRecord)
+                : [];
 
             if (!timestamps.length) {
                 segmentCache.set(cacheKey, null);
@@ -126,10 +139,11 @@ export async function fetchSurahSegments(
             let hasSegmentData = false;
 
             for (const ts of timestamps) {
-                const verseKey: string = ts.verse_key;
+                const verseKey = typeof ts.verse_key === "string" ? ts.verse_key : "";
+                if (!verseKey) continue;
                 // `timestamp_from` is the absolute start of this verse in the full Surah audio (ms)
-                const offset: number = ts.timestamp_from ?? 0;
-                const rawSegs: any[] = ts.segments ?? [];
+                const offset = typeof ts.timestamp_from === "number" ? ts.timestamp_from : 0;
+                const rawSegs = Array.isArray(ts.segments) ? ts.segments : [];
 
                 if (!rawSegs.length) continue;
 
@@ -137,8 +151,8 @@ export async function fetchSurahSegments(
                 // - Discard malformed entries (API sometimes emits sparse [wordIdx] entries with no timing)
                 // - Subtract `offset` to get verse-relative time (matches per-verse MP3 currentTime)
                 const normalizedSegs: WordSegment[] = rawSegs
-                    .filter((s: any) => Array.isArray(s) && s.length === 3)
-                    .map((s: any): WordSegment => {
+                    .filter(isTimedSegment)
+                    .map((s): WordSegment => {
                         const start = s[1] - offset;
                         const end = s[2] - offset;
                         // Clamp negative starts to 0 (sometimes API jitter gives -1 to -50ms)
