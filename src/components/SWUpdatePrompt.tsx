@@ -39,14 +39,6 @@ export default function SWUpdatePrompt() {
             return;
         }
 
-        const handleNewServiceWorker = (registration: ServiceWorkerRegistration) => {
-            const waitingWorker = registration.waiting;
-
-            if (waitingWorker) {
-                showUpdateToast(waitingWorker);
-            }
-        };
-
         const showUpdateToast = (worker: ServiceWorker) => {
             toast(t.pwaUpdateAvailableTitle || "Update Available", {
                 description: t.pwaUpdateAvailableDesc || "A new version of Nawaetu is available.",
@@ -59,11 +51,6 @@ export default function SWUpdatePrompt() {
                 },
                 icon: <RefreshCcw className="w-5 h-5 animate-spin-slow" />,
             });
-        };
-
-        const onSWUpdate = (e: Event) => {
-            const registration = (e as any).detail as ServiceWorkerRegistration;
-            handleNewServiceWorker(registration);
         };
 
         // Listen for controller change (when new SW takes over)
@@ -103,9 +90,9 @@ export default function SWUpdatePrompt() {
         const checkUpdate = async () => {
             // A. Standard SW Update
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then((reg) => {
-                    // Force update check
-                    reg.update().catch(() => { });
+            navigator.serviceWorker.ready.then((registration) => {
+                // Force update check
+                    registration.update().catch(() => { });
                 });
             }
 
@@ -113,16 +100,15 @@ export default function SWUpdatePrompt() {
             try {
                 const res = await fetch('/api/system/version?t=' + Date.now()); // Bust API cache
                 if (res.ok) {
-                    const data = await res.json();
                     if ('serviceWorker' in navigator) {
                         navigator.serviceWorker.getRegistrations().then(regs => {
-                            regs.forEach(reg => {
+                            regs.forEach(() => {
                                 // Logic to ensure we catch reverts could go here
                             });
                         });
                     }
                 }
-            } catch (e) {
+            } catch {
                 // Silently fail version check
             }
         };
@@ -135,7 +121,7 @@ export default function SWUpdatePrompt() {
             // Run this cleanup to ensure old SW is dead
             try {
                 // Use storage service instead of direct localStorage to avoid SecurityError
-                if (typeof window !== 'undefined' && !storage.getOptional(FIX_KEY as any)) {
+                if (typeof window !== 'undefined' && !storage.getOptional(FIX_KEY)) {
 
                     let reloadNeeded = false;
 
@@ -161,20 +147,20 @@ export default function SWUpdatePrompt() {
                         try {
                             const keys = await caches.keys();
                             await Promise.all(keys.map(key => caches.delete(key)));
-                        } catch (cacheErr) {
+                        } catch {
                             // Caches might also be blocked in restricted iframes
                         }
                     }
 
                     // 3. Mark as fixed
-                    storage.set(FIX_KEY as any, 'true');
+                    storage.set(FIX_KEY, 'true');
 
                     // 4. Force Reload if we killed something
                     if (reloadNeeded) {
                         window.location.reload();
                     }
                 }
-            } catch (e) {
+            } catch {
                 // Outer catch for extreme safety
             }
         };

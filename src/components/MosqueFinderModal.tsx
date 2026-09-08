@@ -37,7 +37,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        queueMicrotask(() => setMounted(true));
     }, []);
 
     if (!mounted) return null;

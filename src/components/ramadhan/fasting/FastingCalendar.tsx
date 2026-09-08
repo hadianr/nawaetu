@@ -18,6 +18,7 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "@/context/LocaleContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 import type { FastingDayLog, FastingStatus, FastingYearLog, Madzhab } from "@/data/fasting/types";
 import { makeDayKey } from "@/data/fasting/types";
 import FastingDayModal from "./FastingDayModal";
@@ -85,7 +86,11 @@ export default function FastingCalendar({
     onYearChange,
     onLogDay,
 }: FastingCalendarProps) {
-    const t = useTranslations() as any;
+    const t = useTranslations() as TranslationTree;
+    const getTranslation = (key: string, fallback: string) => {
+        const value = t[key as keyof TranslationTree];
+        return typeof value === "string" ? value : fallback;
+    };
     const [modalDay, setModalDay] = useState<number | null>(null);
 
     const days = useMemo(() => Array.from({ length: 30 }, (_, i) => i + 1), []);
@@ -152,8 +157,6 @@ export default function FastingCalendar({
                     const colors = log?.status ? STATUS_COLORS[log.status] : null;
 
                     // Qadha indicator as a small dot on corner, not inline text
-                    const hasQadha = log && log.consequence !== "none" && !log.qadhaDone;
-
                     return (
                         <button
                             key={day}
@@ -213,7 +216,7 @@ export default function FastingCalendar({
                     const labelKey = item.status
                         ? `fastingStatus${item.status.charAt(0).toUpperCase() + item.status.slice(1).replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase())}`
                         : null;
-                    const label = labelKey ? (t[labelKey] ?? item.status) : t.fastingCalendarUnfilled;
+                    const label = labelKey ? getTranslation(labelKey, item.status ?? "") : t.fastingCalendarUnfilled;
                     return (
                         <div key={i} className="flex items-center gap-1">
                             <span

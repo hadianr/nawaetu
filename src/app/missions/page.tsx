@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { ArrowLeft, Check, Sparkles, Trophy, AlertCircle } from "lucide-react";
 import { getMissionsForGender, Mission, Gender, getLocalizedMission } from "@/data/missions";
 import { addHasanah } from "@/lib/habits/leveling";
@@ -54,18 +54,18 @@ export default function MisiPage() {
 
     const { data: prayerData } = usePrayerTimesContext();
 
-    const loadData = () => {
+    const loadData = useCallback(() => {
         const savedGender = (storage.getOptional(STORAGE_KEYS.USER_GENDER) || session?.user?.gender) as Gender;
         setGender(savedGender);
 
         const allMissions = getMissionsForGender(savedGender);
         const localizedMissions = allMissions.map(mission => getLocalizedMission(mission, locale));
         setMissions(localizedMissions);
-    };
+    }, [locale, session]);
 
     useEffect(() => {
         // Initial load
-        loadData();
+        queueMicrotask(loadData);
 
         // Listen for updates from Onboarding or Settings
         const handleStorageUpdate = () => loadData();
@@ -77,7 +77,7 @@ export default function MisiPage() {
             window.removeEventListener('storage', handleStorageUpdate);
             window.removeEventListener('profile_updated', handleStorageUpdate);
         };
-    }, [locale, session]);
+    }, [loadData]);
 
     const isMissionCompletedToday = (missionId: string, type: Mission['type']) => {
         const today = new Date().toISOString().split('T')[0];

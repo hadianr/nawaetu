@@ -27,8 +27,10 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
         if (typeof window !== "undefined") {
             const completed = JSON.parse(localStorage.getItem("nawaetu_sirah_completed") || "[]");
             const bookmarks = JSON.parse(localStorage.getItem("nawaetu_sirah_bookmarks") || "[]");
-            setCompletedSectionIds(completed);
-            setBookmarkedSectionIds(bookmarks);
+            queueMicrotask(() => {
+                setCompletedSectionIds(completed);
+                setBookmarkedSectionIds(bookmarks);
+            });
         }
     }, []);
 

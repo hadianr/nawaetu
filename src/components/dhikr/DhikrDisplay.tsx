@@ -19,9 +19,10 @@
 import { cn } from "@/lib/utils";
 import { DhikrPreset } from "./types";
 import { dhikrSequences } from "@/data/dhikrLibrary";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface DhikrDisplayProps {
-    t: any;
+    t: TranslationTree;
     isDaylight: boolean;
     activeSequence: typeof dhikrSequences[0] | null;
     sequenceIndex: number;

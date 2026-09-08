@@ -19,9 +19,10 @@
 import { Palette, Lock, Crown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { THEMES, ThemeId } from "@/context/ThemeContext";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface ThemeCardProps {
-    t: any;
+    t: TranslationTree;
     currentTheme: string;
     isMuhsinin: boolean;
     handleThemeSelect: (themeId: ThemeId) => void;

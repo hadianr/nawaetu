@@ -30,7 +30,10 @@ import {
 import { MUADZIN_OPTIONS } from "@/data/settings-data";
 
 interface AudioCardProps {
-    t: any;
+    t: {
+        audioTitle: string;
+        muadzinLabel: string;
+    };
     isDaylight: boolean;
     muadzin: string;
     onMuadzinChange: (value: string) => void;
@@ -40,7 +43,7 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [playingId, setPlayingId] = useState<string | null>(null);
-    const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const audioRequestRef = useRef(0);
     const isMountedRef = useRef(true);
 
@@ -51,12 +54,12 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
             audioRequestRef.current += 1;
         }
 
-        if (audio) {
-            audio.onended = null;
-            audio.onerror = null;
-            audio.pause();
-            audio.src = "";
-            setAudio(null);
+        if (audioRef.current) {
+            audioRef.current.onended = null;
+            audioRef.current.onerror = null;
+            audioRef.current.pause();
+            audioRef.current.src = "";
+            audioRef.current = null;
         }
         if (!isMountedRef.current) return;
         setIsPlaying(false);
@@ -73,14 +76,14 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
 
     useEffect(() => {
         return () => {
-            if (audio) {
-                audio.onended = null;
-                audio.onerror = null;
-                audio.pause();
-                audio.src = "";
+            if (audioRef.current) {
+                audioRef.current.onended = null;
+                audioRef.current.onerror = null;
+                audioRef.current.pause();
+                audioRef.current.src = "";
             }
         };
-    }, [audio]);
+    }, []);
 
     const toggleAudioPreview = (id: string) => {
         if (playingId === id && isPlaying) {
@@ -185,7 +188,7 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
         };
 
         newAudio.load();
-        setAudio(newAudio);
+        audioRef.current = newAudio;
     };
 
     const handleMuadzinChange = (value: string) => {

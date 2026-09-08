@@ -85,7 +85,7 @@ export default function JournalPage() {
     };
 
     useEffect(() => {
-        fetchHistory(0);
+        queueMicrotask(() => fetchHistory(0));
     }, []);
 
     const loadMore = () => {

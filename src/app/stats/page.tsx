@@ -39,7 +39,7 @@ export default function StatsPage() {
     const [todayReadSeconds, setTodayReadSeconds] = useState(0);
 
     useEffect(() => {
-        setMounted(true);
+        queueMicrotask(() => setMounted(true));
         const loadStats = () => {
             setHistory(getDailyActivityHistory() as unknown as DailyActivity[]);
             setCompletedMissions(getMissionRepository().getCompletedMissions());
@@ -60,8 +60,10 @@ export default function StatsPage() {
             localStorage.getItem(`nawaetu_quran_daily_total_${dateString}`) || '0', 10
         );
         const todayVal = isNaN(storedSeconds) ? 0 : storedSeconds;
-        setTotalQuranReadSeconds(todayVal);
-        setTodayReadSeconds(todayVal);
+        queueMicrotask(() => {
+            setTotalQuranReadSeconds(todayVal);
+            setTodayReadSeconds(todayVal);
+        });
 
         // Also try to fetch from server for up-to-date figure
         fetch('/api/quran/sync-time')
@@ -188,7 +190,7 @@ export default function StatsPage() {
                 hasanah: hasanahByDate.get(dateStr) || 0
             };
         });
-    }, [history, locale, t, timeRange, todayStr, completedMissions]);
+    }, [history, locale, timeRange, todayStr, completedMissions]);
 
     const rangeStats = useMemo(() => {
         const totalHasanah = chartData.reduce((sum, d) => sum + d.hasanah, 0);

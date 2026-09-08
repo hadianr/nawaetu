@@ -8,7 +8,7 @@
 
 import { useState, useMemo } from "react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { useRamadhanDailyLog, type PrayerKey } from "@/hooks/useRamadhanDailyLog";
+import { useRamadhanDailyLog, type DailyLogEntry, type PrayerKey, type SunnahKey } from "@/hooks/useRamadhanDailyLog";
 import { MapPin, Home } from "lucide-react";
 
 const FARDHU_PRAYERS: { key: PrayerKey; label: string; fieldTrue: string; fieldFalse: string }[] = [
@@ -29,7 +29,7 @@ const SUNNAH_PRAYERS = [
     { key: "taubat",      label: "Taubat",          icon: "💧" },
 ] as const;
 
-const LOCATION_KEY_MAP: Record<PrayerKey, string> = {
+const LOCATION_KEY_MAP: Record<PrayerKey, keyof Pick<DailyLogEntry, "fajrAtMasjid" | "dhuhrAtMasjid" | "asrAtMasjid" | "maghribAtMasjid" | "ishaAtMasjid">> = {
     fajr:    "fajrAtMasjid",
     dhuhr:   "dhuhrAtMasjid",
     asr:     "asrAtMasjid",
@@ -68,16 +68,16 @@ export default function DailyPrayerTracker() {
 
     const handlePrayerLocation = (prayer: PrayerKey, atMasjid: boolean) => {
         if (isFuture) return;
-        const field = LOCATION_KEY_MAP[prayer] as any;
-        const current = dayData?.[field as keyof typeof dayData];
+        const field = LOCATION_KEY_MAP[prayer];
+        const current = dayData?.[field];
         // Toggle: if already set to same value, clear it (set null)
-        updateDay(viewDay, { [field]: current === atMasjid ? null : atMasjid } as any);
+        updateDay(viewDay, { [field]: current === atMasjid ? null : atMasjid });
     };
 
-    const handleSunnah = (key: string) => {
+    const handleSunnah = (key: SunnahKey) => {
         if (isFuture) return;
-        const current = Boolean(dayData?.[key as keyof typeof dayData]);
-        updateDay(viewDay, { [key]: !current } as any);
+        const current = dayData?.[key];
+        updateDay(viewDay, { [key]: !current });
     };
 
     return (

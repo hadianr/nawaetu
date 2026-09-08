@@ -21,12 +21,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Settings2, ChevronDown } from "lucide-react";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { DhikrPreset } from "./types";
 
 export interface DhikrPresetSelectorProps {
     isDialogOpen: boolean;
     setIsDialogOpen: (open: boolean) => void;
-    t: any;
+    t: TranslationTree;
     isDaylight: boolean;
     expandedCategory: string | null;
     setExpandedCategory: (cat: string | null) => void;
@@ -154,7 +155,7 @@ export function DhikrPresetSelector({
                                             <Button
                                                 key={p.id}
                                                 variant="outline"
-                                                onClick={() => handlePresetSelect(p as any)}
+                                                onClick={() => handlePresetSelect(p)}
                                                 className={cn(
                                                     "justify-between h-auto py-3 px-4 border-white/5 bg-white/5 rounded-2xl w-full text-left",
                                                     activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"

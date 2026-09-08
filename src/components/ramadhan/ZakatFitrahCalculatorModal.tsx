@@ -5,11 +5,11 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-import { useState } from "react";
+import { type SVGProps, useState } from "react";
 import { X, Calculator, Plus, Trash2, HeartHandshake, Info } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { zakatIntentions, ZakatIntention, doaMenerimaZakat } from "@/data/ramadhan/zakat-intentions";
+import { zakatIntentions, ZakatIntention } from "@/data/ramadhan/zakat-intentions";
 
 type ZakatFitrahCalculatorModalProps = {
     open: boolean;
@@ -143,7 +143,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                         />
                                                         <select 
                                                             value={recipient.type}
-                                                            onChange={(e) => updateRecipientStr(recipient.id, "type", e.target.value as any)}
+                                                            onChange={(e) => updateRecipientStr(recipient.id, "type", e.target.value as ZakatIntention["target"])}
                                                             className="bg-black/20 text-xs text-white/80 rounded-md border border-white/10 px-2 outline-none focus:border-emerald-500/50"
                                                             disabled={recipient.isPaid}
                                                         >
@@ -279,7 +279,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
 }
 
 // Simple Book icon as it wasn't imported from lucide
-function BookOpenIcon(props: any) {
+function BookOpenIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
             {...props}

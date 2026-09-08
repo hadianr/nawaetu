@@ -109,6 +109,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         const savedAvatar = storage.getOptional<string>(STORAGE_KEYS.USER_AVATAR);
         const savedGender = storage.getOptional<string>(STORAGE_KEYS.USER_GENDER);
 
+        queueMicrotask(() => {
         if (session?.user?.name) {
             setUserName(session.user.name);
             setEditName(session.user.name);
@@ -116,7 +117,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             setUserName(savedName);
             setEditName(savedName);
         } else {
-            const defaultName = (t as any).onboardingDefaultName || "Sobat Nawaetu";
+            const defaultName = (t as unknown as Record<string, string>).onboardingDefaultName || "Sobat Nawaetu";
             setUserName(defaultName);
             setEditName(defaultName);
         }
@@ -130,8 +131,9 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             setUserImage(AVATAR_LIST[0].src);
         }
 
-        if (savedGender) setEditGender(savedGender as any);
-        else if (session?.user?.gender) setEditGender(session.user.gender as any);
+        if (savedGender === "male" || savedGender === "female") setEditGender(savedGender);
+        else if (session?.user?.gender === "male" || session?.user?.gender === "female") setEditGender(session.user.gender);
+        });
 
     }, [session, t]);
 
@@ -317,7 +319,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                     {/* Footer */}
                     <div className="mt-6 pt-6 border-t border-white/5 text-center px-4">
-                        <p className="text-[10px] text-slate-600">{(t as any).profileFooter}</p>
+                        <p className="text-[10px] text-slate-600">{(t as unknown as Record<string, string>).profileFooter}</p>
                     </div>
 
                 </div>

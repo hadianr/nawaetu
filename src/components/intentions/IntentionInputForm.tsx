@@ -42,7 +42,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
 
     // Pick random dalil on mount to avoid hydration mismatch
     useEffect(() => {
-        setDalil(getRandomDalil());
+        queueMicrotask(() => setDalil(getRandomDalil()));
     }, []);
 
     const handleSubmit = async () => {
@@ -75,7 +75,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
             } else {
                 setError(data.error || t.intention_error_fail_save_niat);
             }
-        } catch (err) {
+        } catch {
             setError(t.intention_error_network);
         } finally {
             setIsSubmitting(false);

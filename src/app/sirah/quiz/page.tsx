@@ -29,12 +29,12 @@ export default function SirahQuizPage() {
     const [hasClaimedToday, setHasClaimedToday] = useState(false);
 
     useEffect(() => {
-        setQuestions(getRandomSirahQuestions(5));
+        queueMicrotask(() => setQuestions(getRandomSirahQuestions(5)));
         if (typeof window !== "undefined") {
             const todayStr = new Date().toISOString().split("T")[0];
             const lastClaimed = localStorage.getItem("nawaetu_sirah_quiz_last_claimed");
             if (lastClaimed === todayStr) {
-                setHasClaimedToday(true);
+                queueMicrotask(() => setHasClaimedToday(true));
             }
         }
     }, []);

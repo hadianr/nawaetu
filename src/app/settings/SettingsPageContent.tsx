@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { ArrowLeft, MapPin, ChevronRight, Clock, Settings2, BarChart3, ChevronDown, Heart, Calendar } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -92,9 +92,11 @@ export default function SettingsPageContent() {
             STORAGE_KEYS.USER_AVATAR
         ]).values();
 
-        if (savedName) setUserName(savedName as string);
-        if (savedTitle) setUserTitle(savedTitle as string);
-        if (savedAvatar) setUserAvatar(savedAvatar as string | null);
+        queueMicrotask(() => {
+            if (savedName) setUserName(savedName as string);
+            if (savedTitle) setUserTitle(savedTitle as string);
+            if (savedAvatar) setUserAvatar(savedAvatar as string | null);
+        });
     }, []);
 
     // Determining "Authenticated" for UI purposes:
@@ -108,7 +110,7 @@ export default function SettingsPageContent() {
     useEffect(() => {
         const paymentStatus = searchParams.get("payment");
         if (paymentStatus === "success") {
-            setShowPaymentSuccessModal(true);
+            queueMicrotask(() => setShowPaymentSuccessModal(true));
             fetch("/api/payment/sync")
                 .then(res => res.json())
                 .then(data => {
@@ -130,7 +132,7 @@ export default function SettingsPageContent() {
 
     // Audio Preview State has been moved to AudioCard
     
-    const refreshProfile = () => {
+    const refreshProfile = useCallback(() => {
         const [savedName, savedTitle, savedAvatar] = storage.getMany([
             STORAGE_KEYS.USER_NAME,
             STORAGE_KEYS.USER_TITLE,
@@ -148,12 +150,12 @@ export default function SettingsPageContent() {
         else setUserAvatar(savedAvatar as string | null);
 
         if (savedTitle) setUserTitle(savedTitle as string);
-    };
+    }, [session]);
 
     // Update profile when session changes
     useEffect(() => {
-        refreshProfile();
-    }, [session]);
+        queueMicrotask(refreshProfile);
+    }, [refreshProfile]);
 
     useEffect(() => {
         const [savedMuadzin, savedMethod, savedAdjustment] = storage.getMany([
@@ -162,19 +164,20 @@ export default function SettingsPageContent() {
             STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT
         ]).values();
 
-        refreshProfile();
-
-        if (savedMuadzin) setMuadzin(savedMuadzin as string);
-        if (savedMethod) setCalculationMethod(savedMethod as string);
-        if (savedAdjustment) setHijriAdjustment(savedAdjustment as string);
-    }, []);
+        queueMicrotask(() => {
+            refreshProfile();
+            if (savedMuadzin) setMuadzin(savedMuadzin as string);
+            if (savedMethod) setCalculationMethod(savedMethod as string);
+            if (savedAdjustment) setHijriAdjustment(savedAdjustment as string);
+        });
+    }, [refreshProfile]);
 
     // Real-time avatar sync listener
     useEffect(() => {
         const handleAvatarUpdate = () => refreshProfile();
         window.addEventListener('avatar_updated', handleAvatarUpdate);
         return () => window.removeEventListener('avatar_updated', handleAvatarUpdate);
-    }, []);
+    }, [refreshProfile]);
 
     const saveSettingsToCloud = async (key: string, value: string | number | boolean) => {
         if (!isAuthenticated) return;

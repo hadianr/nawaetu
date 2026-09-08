@@ -59,8 +59,10 @@ export function SirahReaderView({
         if (typeof window !== "undefined") {
             const bookmarks: string[] = JSON.parse(localStorage.getItem("nawaetu_sirah_bookmarks") || "[]");
             const completed: string[] = JSON.parse(localStorage.getItem("nawaetu_sirah_completed") || "[]");
-            setIsBookmarked(bookmarks.includes(section.id));
-            setIsCompleted(completed.includes(section.id));
+            queueMicrotask(() => {
+                setIsBookmarked(bookmarks.includes(section.id));
+                setIsCompleted(completed.includes(section.id));
+            });
         }
     }, [section.id]);
 

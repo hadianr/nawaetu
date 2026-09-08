@@ -38,13 +38,13 @@ export default function DataSyncer() {
             if (status === "authenticated" && session?.user) {
                 // Logic for Welcome Toast - show only once per login session
                 const welcomeKey = `nawaetu_login_welcome_${session.user.id || session.user.email}`;
-                if (!storage.getOptional(welcomeKey as any)) {
+                if (!storage.getOptional(welcomeKey)) {
                     toast.success(`Ahlan wa Sahlan, ${session.user.name?.split(' ')[0] || 'Sobat'}!`, {
                         icon: "👋",
                         description: "Login berhasil. Selamat datang kembali.",
                         duration: 4000
                     });
-                    storage.set(welcomeKey as any, "true");
+                    storage.set(welcomeKey, "true");
                 }
 
             } else if (status === "unauthenticated") {

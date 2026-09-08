@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Chapter } from "./SurahList";
 import { surahNames } from "@/lib/quran/surahData";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface PageJumpDialogProps {
     chapter: Chapter;
@@ -35,7 +36,7 @@ interface PageJumpDialogProps {
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     handleSearchSubmit: (e: React.FormEvent) => void;
-    t: any;
+    t: TranslationTree;
 }
 
 export function PageJumpDialog({
@@ -91,7 +92,7 @@ export function PageJumpDialog({
 
 interface SurahNavigationCardsProps {
     chapter: Chapter;
-    t: any;
+    t: TranslationTree;
 }
 
 export function SurahNavigationCards({ chapter, t }: SurahNavigationCardsProps) {

@@ -73,7 +73,7 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
                 sendGAEvent("onboarding_returning_user_bypass", { reason: "session" });
             }
             if (!completed && status !== "authenticated") {
-                setShowOnboarding(true);
+                queueMicrotask(() => setShowOnboarding(true));
             }
         } catch (e) {
             console.error("Failed to check onboarding status", e);

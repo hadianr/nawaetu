@@ -25,9 +25,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { LANGUAGE_OPTIONS } from "@/data/settings-data";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface LanguageCardProps {
-    t: any;
+    t: TranslationTree;
     locale: string;
     handleLocaleChange: (value: string) => void;
 }

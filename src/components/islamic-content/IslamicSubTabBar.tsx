@@ -10,12 +10,13 @@
 import Link from "next/link";
 import { Quote, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 interface IslamicSubTabBarProps {
     /** Which tab is currently active */
     activeTab: "hadith" | "dua";
     isDaylight: boolean;
-    t: Record<string, string>;
+    t: TranslationTree;
 }
 
 export function IslamicSubTabBar({ activeTab, isDaylight, t }: IslamicSubTabBarProps) {

@@ -19,7 +19,7 @@
 import { Sparkles, AlertCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
-import { getRulingLabel } from "@/lib/habits/mission-utils";
+import type { TranslationTree } from "@/context/LocaleContext";
 import { formatHasanahRange } from "@/lib/utils/hasanah";
 
 interface DailyMissionCardProps {
@@ -28,10 +28,10 @@ interface DailyMissionCardProps {
     isLocked: boolean;
     isSpecial: boolean;
     validation: { locked: boolean; reason?: string; isEarly?: boolean; isLate?: boolean };
-    prayerData: any;
+    prayerData: { prayerTimes?: Record<string, string> } | null | undefined;
     gender: 'male' | 'female' | null;
-    t: any;
-    getRulingLabel: (ruling: string, t: any) => string | string[];
+    t: TranslationTree;
+    getRulingLabel: (ruling: string, t: TranslationTree) => string | string[];
     onClick: (mission: Mission) => void;
     isBackdated?: boolean;
 }

@@ -20,7 +20,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Heart, Check, Sparkles, ExternalLink, LogIn } from "lucide-react";
+import { Heart, Check, Sparkles, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useInfaq } from "@/context/InfaqContext";
@@ -45,7 +45,7 @@ const DONATION_OPTIONS = [
 ];
 
 export default function DonationModal({ isOpen, onClose, headerTitle, headerDescription }: DonationModalProps) {
-    const { isMuhsinin } = useInfaq();
+    useInfaq();
     const { data: session } = useSession();
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
@@ -83,8 +83,8 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
             // Redirect to Mayar
             window.location.href = data.link;
 
-        } catch (e: any) {
-            toast.error(e.message || "Terjadi kesalahan. Coba lagi nanti.");
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : "Terjadi kesalahan. Coba lagi nanti.");
         } finally {
             setLoading(false);
         }

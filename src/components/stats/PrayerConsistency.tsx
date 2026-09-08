@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { useLocale } from '@/context/LocaleContext';
+import type { TranslationTree } from '@/context/LocaleContext';
 
 interface PrayerConsistencyProps {
-    t: any;
+    t: TranslationTree;
     todayPrayerCount: number;
     last14Days: string[];
     prayerMap: Record<string, Set<string>>;

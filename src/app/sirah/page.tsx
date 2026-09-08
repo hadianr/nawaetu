@@ -42,8 +42,10 @@ export default function SirahDashboardPage() {
             const todayStr = new Date().toISOString().split("T")[0];
             const lastClaimed = localStorage.getItem("nawaetu_sirah_quiz_last_claimed");
 
-            setCompletedSectionIds(completed);
-            setIsQuizDoneToday(lastClaimed === todayStr);
+            queueMicrotask(() => {
+                setCompletedSectionIds(completed);
+                setIsQuizDoneToday(lastClaimed === todayStr);
+            });
         }
     }, []);
 
@@ -135,7 +137,7 @@ export default function SirahDashboardPage() {
                             isDaylight ? "text-slate-600" : "text-slate-200"
                         )}
                     >
-                        Teladani perjalanan hidup Rasulullah SAW melalui 50 bab sejarah autentik, petikan Niat harian, dan rujukan ayat Al-Qur'an.
+                        Teladani perjalanan hidup Rasulullah SAW melalui 50 bab sejarah autentik, petikan Niat harian, dan rujukan ayat Al-Qur&apos;an.
                     </p>
 
                     {/* Overall Reading Progress */}

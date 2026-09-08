@@ -16,7 +16,8 @@ export default function ChunkErrorHandler() {
 
         const handleError = (event: ErrorEvent | PromiseRejectionEvent | Event) => {
             // 1. Check for Javascript/Promise Errors via message
-            const message = "message" in event ? event.message : (event as any).reason?.message || "";
+            const rejectionReason = event instanceof PromiseRejectionEvent ? event.reason : undefined;
+            const message = "message" in event ? event.message : rejectionReason instanceof Error ? rejectionReason.message : "";
             const isScriptErrorMessage =
                 /Loading chunk .* failed/.test(message) ||
                 /Unexpected token '<'.*at chunk/.test(message) ||
@@ -26,7 +27,7 @@ export default function ChunkErrorHandler() {
             // 2. Check for Resource Loading Failures (CSS/JS tags)
             const target = event.target as HTMLElement;
             const isResourceError = target && (target.tagName === 'LINK' || target.tagName === 'SCRIPT');
-            const resourceUrl = (target as any)?.href || (target as any)?.src || "";
+            const resourceUrl = target instanceof HTMLLinkElement ? target.href : target instanceof HTMLScriptElement ? target.src : "";
             const isNextChunk = resourceUrl.includes('/_next/static/chunks/');
 
             if (isScriptErrorMessage || (isResourceError && isNextChunk)) {

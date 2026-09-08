@@ -45,7 +45,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        queueMicrotask(() => setMounted(true));
     }, []);
 
     const { isTracking, sessionSeconds, dailyTotalSeconds, startTracking, stopTracking } =

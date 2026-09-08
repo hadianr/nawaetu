@@ -110,8 +110,7 @@ export default function MentorAIClient() {
         if (status === "authenticated") {
             refreshStatus();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status]);
+    }, [refreshStatus, status]);
     // Sync status if reached limit (Check for payment update)
     useEffect(() => {
         if (isInfaqLoading) return; // Don't check limits while loading tier status
@@ -126,7 +125,7 @@ export default function MentorAIClient() {
             }, 5000);
         }
         return () => clearTimeout(timer);
-    }, [dailyCount, DAILY_LIMIT, status, isMuhsinin]);
+    }, [dailyCount, DAILY_LIMIT, isInfaqLoading, isMuhsinin, refreshStatus, status]);
 
     // Initialize: Load Sessions (Optimistic & Background Sync)
     useEffect(() => {
@@ -209,7 +208,7 @@ export default function MentorAIClient() {
         if (status !== "loading") {
             initSessions();
         }
-    }, [status]);
+    }, [isInfaqLoading, isMuhsinin, status]);
 
     // Initialize & Watch: Rate Limit Logic (Run on mount & when isMuhsinin changes)
     useEffect(() => {
@@ -256,7 +255,7 @@ export default function MentorAIClient() {
             storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
         }
         return () => clearTimeout(deferredCountUpdate);
-    }, [isMuhsinin, status]);
+    }, [isInfaqLoading, isMuhsinin, status]);
 
     // Auto-scroll
     useEffect(() => {

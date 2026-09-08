@@ -21,7 +21,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Check, Heart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
@@ -100,7 +100,6 @@ function triggerNativeConfetti() {
 }
 
 export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessModalProps) {
-    const [timeLeft, setTimeLeft] = useState(10);
     const { currentTheme } = useTheme();
     const isDaylight = currentTheme === "daylight";
 

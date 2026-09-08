@@ -21,11 +21,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { CalendarDays, Flame, Trophy, Medal, Check } from "lucide-react";
 import { dhikrMilestones } from "@/data/dhikrMilestones";
 import { DhikrPreset } from "./types";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface DhikrHistoryProps {
     isMilestoneModalOpen: boolean;
     setIsMilestoneModalOpen: (open: boolean) => void;
-    t: any;
+    t: TranslationTree;
     isDaylight: boolean;
     dailyCount: number;
     streak: number;

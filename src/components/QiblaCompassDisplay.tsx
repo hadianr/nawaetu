@@ -21,6 +21,7 @@
 import { memo } from "react";
 import { KaabaIcon } from "@/components/icons/KaabaIcon";
 import { cn } from "@/lib/utils";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface CompassDisplayProps {
     compassRotate: number;
@@ -28,7 +29,7 @@ export interface CompassDisplayProps {
     aligned: boolean;
     distance: number | null;
     isDaylight: boolean;
-    t: any;
+    t: TranslationTree;
 }
 
 const CompassDisplay = memo(({

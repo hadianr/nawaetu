@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
@@ -35,7 +35,6 @@ interface ReflectionPromptProps {
 
 export default function ReflectionPrompt({
     intentionText,
-    intentionId,
     onSubmit,
     onSkip,
     initialValue = "",
@@ -58,7 +57,7 @@ export default function ReflectionPrompt({
     const [rating, setRating] = useState<number>(initialRating);
     const [reflectionText, setReflectionText] = useState(initialValue);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
     const [dalil, setDalil] = useState<ReflectionDalil | null>(null);
 
     const hour = new Date().getHours();
@@ -70,12 +69,10 @@ export default function ReflectionPrompt({
     })();
 
     useEffect(() => {
-        setMounted(true);
         if (!dalil) {
-            setDalil(getRandomReflectionDalil());
+            queueMicrotask(() => setDalil(getRandomReflectionDalil()));
         }
-        return () => setMounted(false);
-    }, [locale]);
+    }, [dalil]);
 
     const handleSubmit = async () => {
         if (rating === 0 || isSubmitting) return;

@@ -19,7 +19,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Crown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLocale } from "@/context/LocaleContext";
+import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
 interface ProfileHeaderProps {
     isAuthenticated: boolean;
@@ -37,6 +37,7 @@ export function ProfileHeader({
     onClose
 }: ProfileHeaderProps) {
     const { t } = useLocale();
+    const translations = t as TranslationTree;
 
     return (
         <div className="relative flex-none">
@@ -61,7 +62,7 @@ export function ProfileHeader({
                 {!isAuthenticated ? (
                     <div className="px-3 py-1 bg-black/20 backdrop-blur-md rounded-full border border-white/10 text-[10px] items-center flex gap-1 text-white">
                         <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                        {(t as any).profileGuestMode}
+                        {translations.profileGuestMode}
                     </div>
                 ) : (
                     <div /> // Spacer

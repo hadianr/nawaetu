@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useIslamicContentFilter } from "@/hooks/useIslamicContentFilter";
 import { ShareableCardData } from "@/lib/share/story-card-renderer";
 import { mapHadithToShareData } from "@/lib/share/share-mappers";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
@@ -34,7 +35,7 @@ const HadithCard = memo(function HadithCard({
     onShare,
 }: {
     item: HadithItem;
-    t: any;
+    t: TranslationTree;
     locale: string;
     isDaylight: boolean;
     isHighlighted: boolean;
@@ -44,7 +45,7 @@ const HadithCard = memo(function HadithCard({
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
-        setExpanded(isHighlighted);
+        queueMicrotask(() => setExpanded(isHighlighted));
         if (isHighlighted) {
             const scrollTarget = () => {
                 const el = document.getElementById(`hadith-${item.id}`);

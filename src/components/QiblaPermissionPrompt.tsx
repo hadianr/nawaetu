@@ -21,13 +21,14 @@
 import { Button } from "@/components/ui/button";
 import { Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface QiblaPermissionPromptProps {
     permissionGranted: boolean;
     error: string | null;
     showSessionNote: boolean;
     isDaylight: boolean;
-    t: any;
+    t: TranslationTree;
     requestCompassPermission: () => void;
 }
 
