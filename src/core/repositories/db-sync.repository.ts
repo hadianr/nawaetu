@@ -109,7 +109,7 @@ interface BookmarkSyncPayload {
     id?: string;
 }
 
-interface IntentionSyncPayload {
+export interface IntentionSyncPayload {
     intentionDate?: string | number;
     niatDate?: string | number;
     intentionText?: string;
@@ -125,13 +125,17 @@ interface IntentionSyncPayload {
     id?: string;
 }
 
-interface MissionSyncPayload {
+export interface MissionSyncPayload {
     completedAt?: string;
     id?: string;
     missionId?: string;
     hasanahEarned?: number;
     xpEarned?: number;
     timezone?: string;
+}
+
+function intentionType(value: string | undefined): 'daily' | 'prayer' | 'custom' {
+    return value === 'prayer' || value === 'custom' ? value : 'daily';
 }
 
 export class DbSyncRepository {
@@ -304,6 +308,106 @@ export class DbSyncRepository {
             return resultId;
         }
         return undefined;
+    }
+
+    async syncMissionsBatch(data: MissionSyncPayload[]): Promise<string[]> {
+        const rows = new Map<string, {
+            userId: string;
+            missionId: string;
+            hasanahEarned: number;
+            completedAt: Date;
+            completedDate: string;
+        }>();
+
+        for (const item of data) {
+            const completedAt = item.completedAt ? new Date(item.completedAt) : new Date();
+            if (Number.isNaN(completedAt.getTime())) continue;
+            const completedDate = /^\d{4}-\d{2}-\d{2}$/.test(item.completedAt ?? '')
+                ? item.completedAt ?? ''
+                : completedAt.toISOString().split('T')[0];
+            const missionId = normalizeMissionId(item.id || item.missionId || '');
+            const hasanahEarned = canonicalMissionReward(missionId, item.hasanahEarned ?? item.xpEarned);
+            if (hasanahEarned === null) continue;
+            rows.set(`${missionId}:${completedDate}`, {
+                userId: this.userId,
+                missionId,
+                hasanahEarned,
+                completedAt,
+                completedDate,
+            });
+        }
+
+        const values = [...rows.values()];
+        if (values.length === 0) return [];
+
+        const inserted = await db
+            .insert(userCompletedMissions)
+            .values(values)
+            .onConflictDoNothing()
+            .returning({ id: userCompletedMissions.id });
+
+        await Promise.all(values.map(row => processProgressionEvidence(this.userId, {
+            source: 'mission',
+            sourceId: `${row.missionId}:${row.completedDate}`,
+            hasanah: row.hasanahEarned,
+            localDate: row.completedDate,
+            occurredAt: row.completedAt,
+            timezone: 'UTC',
+        })));
+
+        return inserted.map(row => row.id);
+    }
+
+    async syncIntentionsBatch(data: IntentionSyncPayload[]): Promise<string[]> {
+        const latestByDate = new Map<string, IntentionSyncPayload>();
+        for (const item of data) {
+            const date = new Date(item.intentionDate || item.niatDate || Date.now());
+            if (!Number.isNaN(date.getTime())) latestByDate.set(date.toISOString().slice(0, 10), item);
+        }
+
+        const existing = await db.query.intentions.findMany({
+            where: (table, { eq }) => eq(table.userId, this.userId),
+        });
+        const existingByDate = new Map(existing.map(item => [item.intentionDate.toISOString().slice(0, 10), item]));
+        const inserts = [];
+
+        for (const [dateKey, item] of latestByDate) {
+            const intentionDate = new Date(item.intentionDate || item.niatDate || Date.now());
+            const values = {
+                userId: this.userId,
+                intentionText: item.intentionText || item.niatText || '',
+                intentionType: intentionType(item.intentionType || item.niatType),
+                intentionDate,
+                reflectionText: item.reflectionText,
+                reflectionRating: item.reflectionRating,
+                isPrivate: item.isPrivate ?? true,
+                createdAt: new Date(item.createdAt || Date.now()),
+            };
+            const current = existingByDate.get(dateKey);
+            if (current) {
+                await db.update(intentions).set({
+                    intentionText: values.intentionText,
+                    reflectionText: values.reflectionText,
+                    reflectionRating: values.reflectionRating,
+                    updatedAt: new Date(),
+                }).where(eq(intentions.id, current.id));
+            } else {
+                inserts.push(values);
+            }
+
+            await processProgressionEvidence(this.userId, {
+                source: 'intention',
+                sourceId: `intention:${dateKey}`,
+                hasanah: 0,
+                localDate: dateKey,
+                occurredAt: intentionDate,
+                timezone: validTimezone(item.timezone),
+            });
+        }
+
+        if (inserts.length === 0) return [];
+        const inserted = await db.insert(intentions).values(inserts).returning({ id: intentions.id });
+        return inserted.map(row => row.id);
     }
 
     async syncDailyActivity(data: DailyActivitySyncData, action: 'create' | 'update' | 'delete'): Promise<void> {

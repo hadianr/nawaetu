@@ -21,7 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { checkConnection } from "@/db";
 import { logger } from "@/lib/logger";
 import { type SyncQueueEntry, type SyncEntityType } from "@/lib/sync-queue";
-import { DbSyncRepository } from "@/core/repositories/db-sync.repository";
+import { DbSyncRepository, type IntentionSyncPayload, type MissionSyncPayload } from "@/core/repositories/db-sync.repository";
 import { SyncEntrySchema } from "@/lib/validations/sync";
 
 interface SyncResponse {
@@ -59,6 +59,33 @@ async function processSyncEntry(repo: DbSyncRepository, entry: SyncQueueEntry) {
 
 function asRecord(value: unknown): Record<string, unknown> | null {
     return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
+function toMissionPayload(value: Record<string, unknown>): MissionSyncPayload {
+    return {
+        id: typeof value.id === "string" ? value.id : undefined,
+        missionId: typeof value.missionId === "string" ? value.missionId : undefined,
+        completedAt: typeof value.completedAt === "string" ? value.completedAt : undefined,
+        hasanahEarned: typeof value.hasanahEarned === "number" ? value.hasanahEarned : undefined,
+        xpEarned: typeof value.xpEarned === "number" ? value.xpEarned : undefined,
+        timezone: typeof value.timezone === "string" ? value.timezone : undefined,
+    };
+}
+
+function toIntentionPayload(value: Record<string, unknown>): IntentionSyncPayload {
+    return {
+        intentionDate: typeof value.intentionDate === "string" || typeof value.intentionDate === "number" ? value.intentionDate : undefined,
+        niatDate: typeof value.niatDate === "string" || typeof value.niatDate === "number" ? value.niatDate : undefined,
+        intentionText: typeof value.intentionText === "string" ? value.intentionText : undefined,
+        niatText: typeof value.niatText === "string" ? value.niatText : undefined,
+        intentionType: typeof value.intentionType === "string" ? value.intentionType : undefined,
+        niatType: typeof value.niatType === "string" ? value.niatType : undefined,
+        reflectionText: typeof value.reflectionText === "string" ? value.reflectionText : null,
+        reflectionRating: typeof value.reflectionRating === "number" ? value.reflectionRating : null,
+        isPrivate: typeof value.isPrivate === "boolean" ? value.isPrivate : undefined,
+        createdAt: typeof value.createdAt === "string" || typeof value.createdAt === "number" ? value.createdAt : undefined,
+        timezone: typeof value.timezone === "string" ? value.timezone : undefined,
+    };
 }
 
 function isSyncQueueEntry(value: unknown): value is SyncQueueEntry {
@@ -179,15 +206,46 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         const repo = new DbSyncRepository(userId);
 
         const payload = asRecord(body) ?? {};
+        const synced: Array<{ id: string; cloudId?: string }> = [];
+        const failed: Array<{ id: string; error: string }> = [];
+        const remainingPayload = { ...payload };
+
+        if (!Array.isArray(payload.entries)) {
+            const missionRecords = Array.isArray(payload.completedMissions)
+                ? payload.completedMissions.map(asRecord).filter((value): value is Record<string, unknown> => value !== null)
+                : [];
+            const intentionRecords = Array.isArray(payload.intentions)
+                ? payload.intentions.map(asRecord).filter((value): value is Record<string, unknown> => value !== null)
+                : [];
+
+            delete remainingPayload.completedMissions;
+            delete remainingPayload.intentions;
+
+            if (missionRecords.length > 0) {
+                try {
+                    await repo.syncMissionsBatch(missionRecords.map(toMissionPayload));
+                    missionRecords.forEach((_, index) => synced.push({ id: `legacy-mission-${index}` }));
+                } catch (error) {
+                    failed.push({ id: 'legacy-missions', error: error instanceof Error ? error.message : 'Mission sync failed' });
+                }
+            }
+
+            if (intentionRecords.length > 0) {
+                try {
+                    await repo.syncIntentionsBatch(intentionRecords.map(toIntentionPayload));
+                    intentionRecords.forEach((_, index) => synced.push({ id: `legacy-intention-${index}` }));
+                } catch (error) {
+                    failed.push({ id: 'legacy-intentions', error: error instanceof Error ? error.message : 'Intention sync failed' });
+                }
+            }
+        }
+
         const rawEntries: SyncQueueEntry[] = Array.isArray(payload.entries)
             ? payload.entries.filter(isSyncQueueEntry)
-            : convertLegacyBodyToEntries(payload);
+            : convertLegacyBodyToEntries(remainingPayload);
 
         if (rawEntries.length > 0) {
             const results = await Promise.allSettled(rawEntries.map((entry: SyncQueueEntry) => processSyncEntry(repo, entry)));
-
-            const synced: Array<{ id: string; cloudId?: string }> = [];
-            const failed: Array<{ id: string; error: string }> = [];
 
             results.forEach((res, i) => {
                 const entry = rawEntries[i];
@@ -200,9 +258,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
 
         return NextResponse.json({
             success: true,
-            synced: [],
-            failed: [],
-            message: "No entries to sync",
+            synced,
+            failed,
+            message: synced.length > 0 || failed.length > 0 ? "Sync complete" : "No entries to sync",
         });
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "Internal Server Error";
