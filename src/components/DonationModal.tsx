@@ -156,7 +156,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                     "text-xs mb-0 leading-relaxed font-medium px-2",
                                     isDaylight ? "text-amber-800/80" : "text-amber-200/70"
                                 )}>
-                                    Agar status "Muhsinin" dan riwayat infaq Anda tersimpan permanen di database, mohon login terlebih dahulu.
+                                    Agar status &quot;Muhsinin&quot; dan riwayat infaq Anda tersimpan permanen di database, mohon login terlebih dahulu.
                                 </p>
                             </div>
                             <Button

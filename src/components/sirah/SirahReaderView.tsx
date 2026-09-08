@@ -338,7 +338,7 @@ export function SirahReaderView({
                     <span>HIKMAH & NIAT HARIAN</span>
                 </div>
                 <p className="text-sm sm:text-base font-semibold leading-relaxed">
-                    "{section.suggestedIntention}"
+                    &quot;{section.suggestedIntention}&quot;
                 </p>
                 <div className="pt-1 flex items-center justify-end">
                     <button
