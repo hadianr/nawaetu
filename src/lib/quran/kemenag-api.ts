@@ -59,7 +59,7 @@ interface GadingSurah {
   tafsir: {
     id: string;
   };
-  preBismillah?: any;
+  preBismillah?: unknown;
   verses?: GadingVerse[];
 }
 
@@ -101,9 +101,80 @@ interface GadingVerse {
   };
 }
 
+interface QuranWord {
+  char_type_name?: string;
+  position?: number;
+  text?: string;
+  text_indopak?: string;
+  text_uthmani?: string;
+  transliteration?: {
+    text?: string;
+  };
+  translation?: {
+    text?: string;
+  };
+}
+
+interface QuranTranslation {
+  id?: number;
+  resource_id?: number;
+  text: string;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function readString(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function readNumber(value: unknown, fallback = 0): number {
+  return typeof value === "number" ? value : fallback;
+}
+
+function isQuranWord(value: unknown): value is QuranWord {
+  return isRecord(value);
+}
+
+function toQuranTranslation(value: unknown): QuranTranslation {
+  if (!isRecord(value)) return { id: -1, resource_id: -1, text: "" };
+
+  return {
+    id: typeof value.id === "number" ? value.id : undefined,
+    resource_id: typeof value.resource_id === "number" ? value.resource_id : undefined,
+    text: readString(value.text),
+  };
+}
+
+function isGadingVerse(value: unknown): value is GadingVerse {
+  if (!isRecord(value)) return false;
+
+  const number = value.number;
+  const text = value.text;
+  const translation = value.translation;
+  const audio = value.audio;
+  const tafsir = value.tafsir;
+
+  return isRecord(number)
+    && typeof number.inQuran === "number"
+    && typeof number.inSurah === "number"
+    && isRecord(text)
+    && typeof text.arab === "string"
+    && isRecord(translation)
+    && typeof translation.id === "string"
+    && isRecord(audio)
+    && typeof audio.primary === "string"
+    && Array.isArray(audio.secondary)
+    && audio.secondary.every((item) => typeof item === "string")
+    && isRecord(tafsir)
+    && isRecord(tafsir.id)
+    && typeof tafsir.id.short === "string"
+    && typeof tafsir.id.long === "string";
+}
+
 // Get all chapters from Kemenag API
 export const getKemenagChapters = cache(async (): Promise<Chapter[]> => {
-  try {
     const res = await fetchWithTimeout(
       `${API_CONFIG.QURAN_ID.BASE_URL}/surah`,
       { next: { revalidate: 86400 } },
@@ -137,26 +208,18 @@ export const getKemenagChapters = cache(async (): Promise<Chapter[]> => {
       },
       translated_name_en: surah.name.translation.en,
     }));
-  } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : String(error);
-    throw error;
-  }
 });
 
 // Get specific chapter from Kemenag API (returns Chapter from SurahList)
 export async function getKemenagChapter(chapterId: string | number): Promise<Chapter> {
-  try {
-    const chapters = await getKemenagChapters();
-    const chapter = chapters.find((ch) => ch.id === parseInt(String(chapterId)));
+  const chapters = await getKemenagChapters();
+  const chapter = chapters.find((ch) => ch.id === parseInt(String(chapterId)));
 
-    if (!chapter) {
-      throw new Error(`Chapter ${chapterId} not found in chapters list`);
-    }
-
-    return chapter;
-  } catch (error) {
-    throw error;
+  if (!chapter) {
+    throw new Error(`Chapter ${chapterId} not found in chapters list`);
   }
+
+  return chapter;
 }
 
 // Get verses for a chapter from Kemenag API
@@ -177,7 +240,6 @@ export const getKemenagVerses = cache(
       // quran.com API has everything we need: Arabic text + translations + harakat + transliteration
       const apiUrl = `${API_CONFIG.QURAN_COM.BASE_URL}/verses/by_chapter/${chapterId}?language=${locale}&word_translation_language=${locale}&words=true&word_fields=text_uthmani,text_indopak&translations=${translationId}&fields=text_uthmani,text_uthmani_tajweed&page=${page}&per_page=${perPage}`;
 
-      const startTime = Date.now();
       const res = await fetchWithTimeout(
         apiUrl,
         { next: { revalidate: 86400 } },
@@ -186,40 +248,41 @@ export const getKemenagVerses = cache(
 
       if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
 
-      const data = await res.json();
-      if (!data) throw new Error(`Empty response from API`);
+      const data = await res.json() as unknown;
+      if (!isRecord(data)) throw new Error(`Empty response from API`);
 
-      const verses = Array.isArray(data.verses) ? data.verses : [];
+      const verses = Array.isArray(data.verses) ? data.verses.filter(isRecord) : [];
       if (verses.length === 0) throw new Error(`No verses in API response`);
 
-      const duration = Date.now() - startTime;
-
       // Transform to match app structure - simple, fast transformation with safety checks
-      return verses.map((verse: any) => {
+      return verses.map((verse) => {
         // Safely build transliteration from words
-        const transliteration = Array.isArray(verse.words)
-          ? verse.words.map((w: any) => w?.transliteration?.text || '').filter(Boolean).join(' ')
-          : '';
+        const words = Array.isArray(verse.words) ? verse.words.filter(isQuranWord) : [];
+        const transliteration = words
+          .map((word) => word.transliteration?.text || '')
+          .filter(Boolean)
+          .join(' ');
 
-        // Safely access nested translation
-        const translation = Array.isArray(verse.translations) && verse.translations.length > 0
-          ? verse.translations[0]
-          : { id: -1, resource_id: -1, text: '' };
+        const translations = Array.isArray(verse.translations)
+          ? verse.translations.map(toQuranTranslation)
+          : [];
+
+        const audio = isRecord(verse.audio) ? verse.audio : {};
 
         return {
-          id: verse.id || -1,
-          verse_number: verse.verse_number || 0,
-          verse_key: verse.verse_key || `0:0`,
-          text_uthmani: verse.text_uthmani || '',
-          text_uthmani_tajweed: verse.text_uthmani_tajweed || verse.text_uthmani || '',
-          translations: [translation],
+          id: readNumber(verse.id, -1),
+          verse_number: readNumber(verse.verse_number),
+          verse_key: readString(verse.verse_key, "0:0"),
+          text_uthmani: readString(verse.text_uthmani),
+          text_uthmani_tajweed: readString(verse.text_uthmani_tajweed, readString(verse.text_uthmani)),
+          translations: translations.length > 0 ? translations : [toQuranTranslation(null)],
           transliteration: transliteration,
-          words: Array.isArray(verse.words) ? verse.words : [],
+          words,
           audio: {
-            url: verse.audio?.url || "",
+            url: readString(audio.url),
           },
-          meta: verse.meta || {},
-        } as any;
+          meta: isRecord(verse.meta) ? verse.meta : {},
+        };
       });
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
@@ -232,44 +295,44 @@ export const getKemenagVerses = cache(
 
 // Get single verse with details
 export async function getKemenagVerse(chapterId: string | number, verseNumber: string | number) {
-  try {
-    const res = await fetchWithTimeout(
-      `${API_CONFIG.QURAN_ID.BASE_URL}/surah/${chapterId}/${verseNumber}`,
-      { next: { revalidate: 86400 } },
-      { timeoutMs: 8000 }
-    );
+  const res = await fetchWithTimeout(
+    `${API_CONFIG.QURAN_ID.BASE_URL}/surah/${chapterId}/${verseNumber}`,
+    { next: { revalidate: 86400 } },
+    { timeoutMs: 8000 }
+  );
 
-    if (!res.ok) throw new Error(`Verse ${chapterId}:${verseNumber} not found`);
+  if (!res.ok) throw new Error(`Verse ${chapterId}:${verseNumber} not found`);
 
-    const response: any = await res.json();
-    const verse = response.data as GadingVerse;
-
-    return {
-      id: verse.number.inQuran,
-      verse_number: verse.number.inSurah,
-      verse_key: `${chapterId}:${verse.number.inSurah}`,
-      text_uthmani: verse.text.arab,
-      text_uthmani_tajweed: verse.text.arab,
-      translation: {
-        id: {
-          text: verse.translation.id,
-        },
-      },
-      audio: {
-        primary: verse.audio.primary,
-        secondary: verse.audio.secondary,
-      },
-      tafsir: {
-        kemenag: {
-          short: verse.tafsir.id.short,
-          long: verse.tafsir.id.long,
-        },
-      },
-      meta: verse.meta,
-    };
-  } catch (error) {
-    throw error;
+  const response = await res.json() as unknown;
+  const verseData = isRecord(response) ? response.data : undefined;
+  if (!isGadingVerse(verseData)) {
+    throw new Error(`Invalid verse response for ${chapterId}:${verseNumber}`);
   }
+  const verse = verseData;
+
+  return {
+    id: verse.number.inQuran,
+    verse_number: verse.number.inSurah,
+    verse_key: `${chapterId}:${verse.number.inSurah}`,
+    text_uthmani: verse.text.arab,
+    text_uthmani_tajweed: verse.text.arab,
+    translation: {
+      id: {
+        text: verse.translation.id,
+      },
+    },
+    audio: {
+      primary: verse.audio.primary,
+      secondary: verse.audio.secondary,
+    },
+    tafsir: {
+      kemenag: {
+        short: verse.tafsir.id.short,
+        long: verse.tafsir.id.long,
+      },
+    },
+    meta: verse.meta,
+  };
 }
 
 // Get audio URL for a verse - uses the audio provided by Kemenag API
@@ -293,7 +356,7 @@ export interface SearchResultItem {
   verse_id: number;
   text_uthmani: string;
   translation: string;
-  words: any[];
+  words: unknown[];
 }
 
 export interface SearchResponse {
@@ -302,6 +365,21 @@ export interface SearchResponse {
   current_page: number;
   total_pages: number;
   results: SearchResultItem[];
+}
+
+function toSearchResult(value: unknown): SearchResultItem | null {
+  if (!isRecord(value)) return null;
+
+  const translations = Array.isArray(value.translations) ? value.translations : [];
+  const translation = translations.length > 0 ? toQuranTranslation(translations[0]).text : "";
+
+  return {
+    verse_key: readString(value.verse_key),
+    verse_id: readNumber(value.verse_id),
+    text_uthmani: readString(value.text),
+    translation,
+    words: Array.isArray(value.words) ? value.words : [],
+  };
 }
 
 export const searchVerses = cache(async (query: string, page: number = 1, locale: string = "id", size: number = 20): Promise<SearchResponse> => {
@@ -318,21 +396,20 @@ export const searchVerses = cache(async (query: string, page: number = 1, locale
 
     if (!res.ok) throw new Error(`Search API failed: ${res.statusText}`);
 
-    const data = await res.json();
-    if (!data.search) throw new Error("Invalid search response");
+    const data = await res.json() as unknown;
+    const search = isRecord(data) ? data.search : undefined;
+    if (!isRecord(search)) throw new Error("Invalid search response");
+
+    const results = Array.isArray(search.results)
+      ? search.results.map(toSearchResult).filter((result): result is SearchResultItem => result !== null)
+      : [];
 
     return {
-      query: data.search.query,
-      total_results: data.search.total_results,
-      current_page: data.search.current_page,
-      total_pages: data.search.total_pages,
-      results: data.search.results.map((r: any) => ({
-        verse_key: r.verse_key,
-        verse_id: r.verse_id,
-        text_uthmani: r.text,
-        translation: r.translations?.[0]?.text || '',
-        words: r.words || [],
-      }))
+      query: readString(search.query, query),
+      total_results: readNumber(search.total_results),
+      current_page: readNumber(search.current_page, page),
+      total_pages: readNumber(search.total_pages),
+      results,
     };
   } catch (error) {
     logger.error("Quran search error", error, { action: 'quran-search' });
