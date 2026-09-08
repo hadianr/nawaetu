@@ -12,7 +12,7 @@ import {
     sirahUserProgress,
     sirahBookmarks,
 } from "@/db/schema";
-import { eq, and, gte, lt } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { findMissionDefinition } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
 import { processProgressionEvidence } from "@/core/repositories/progression.repository";
@@ -37,10 +37,107 @@ function canonicalMissionReward(missionId: string, requested: unknown): number |
     return Number.isInteger(amount) && validRewards.has(amount) ? amount : mission.hasanahReward;
 }
 
+interface DailyActivitySyncData {
+    date?: string;
+    quranAyat?: number;
+    quranReadingSeconds?: number;
+    hasanahGained?: number;
+    tasbihCount?: number;
+    prayersLogged?: string[];
+    timezone?: string;
+}
+
+interface StreakSyncData {
+    current?: number;
+    streak?: number;
+    longest?: number;
+    longestStreak?: number;
+    lastDate?: string;
+}
+
+interface RamadhanDailySyncData {
+    hijriYear: number | string;
+    hijriDay: number | string;
+    fajrAtMasjid?: boolean | null;
+    dhuhrAtMasjid?: boolean | null;
+    asrAtMasjid?: boolean | null;
+    maghribAtMasjid?: boolean | null;
+    ishaAtMasjid?: boolean | null;
+    dhuha?: boolean;
+    rawatibQabl?: boolean;
+    rawatibBad?: boolean;
+    witir?: boolean;
+    istikharah?: boolean;
+    hajat?: boolean;
+    taubat?: boolean;
+}
+
+interface ReadingStateSyncData {
+    quranLastRead?: string | ReadingStateValue;
+    surahId?: number | string;
+    surahName?: string;
+    verseId?: number | string;
+    timestamp?: string | number;
+}
+
+interface ReadingStateValue {
+    surahId?: number | string;
+    surahName?: string;
+    verseId?: number | string;
+    timestamp?: string | number;
+}
+
+interface SirahSyncData {
+    sectionId?: string;
+    id?: string;
+    chapterSlug?: string;
+    completedAt?: string | number;
+    createdAt?: string | number;
+}
+
+interface BookmarkSyncPayload {
+    surahId?: number | string;
+    verseId?: number | string;
+    surahName?: string;
+    verseText?: string;
+    translationText?: string | null;
+    key?: string;
+    note?: string | null;
+    tags?: string[];
+    createdAt?: string | number;
+    cloudId?: string;
+    id?: string;
+}
+
+interface IntentionSyncPayload {
+    intentionDate?: string | number;
+    niatDate?: string | number;
+    intentionText?: string;
+    niatText?: string;
+    intentionType?: string;
+    niatType?: string;
+    reflectionText?: string | null;
+    reflectionRating?: number | null;
+    isPrivate?: boolean;
+    createdAt?: string | number;
+    timezone?: string;
+    cloudId?: string;
+    id?: string;
+}
+
+interface MissionSyncPayload {
+    completedAt?: string;
+    id?: string;
+    missionId?: string;
+    hasanahEarned?: number;
+    xpEarned?: number;
+    timezone?: string;
+}
+
 export class DbSyncRepository {
     constructor(private userId: string) {}
 
-    async syncBookmarkAsync(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncBookmarkAsync(data: BookmarkSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const surahId = Number(data.surahId);
             const verseId = Number(data.verseId);
@@ -74,8 +171,9 @@ export class DbSyncRepository {
                 .returning({ id: bookmarks.id });
             return result[0]?.id;
         } else if (action === 'delete') {
-            if (data.cloudId || data.id) {
-                await db.delete(bookmarks).where(and(eq(bookmarks.userId, this.userId), eq(bookmarks.id, data.cloudId || data.id)));
+            const bookmarkId = data.cloudId || data.id;
+            if (bookmarkId) {
+                await db.delete(bookmarks).where(and(eq(bookmarks.userId, this.userId), eq(bookmarks.id, bookmarkId)));
             } else if (data.key || (data.surahId && data.verseId)) {
                 const key = data.key || `${data.surahId}:${data.verseId}`;
                 await db.delete(bookmarks).where(and(eq(bookmarks.userId, this.userId), eq(bookmarks.key, key)));
@@ -86,7 +184,7 @@ export class DbSyncRepository {
         throw new Error(`Unknown action: ${action}`);
     }
 
-    async syncIntention(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncIntention(data: IntentionSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const intentionDateValue = new Date(data.intentionDate || data.niatDate || Date.now());
             const startOfToday = new Date(intentionDateValue);
@@ -109,7 +207,11 @@ export class DbSyncRepository {
                     .values({
                         userId: this.userId,
                         intentionText: data.intentionText || data.niatText || '',
-                        intentionType: data.intentionType || data.niatType || 'daily',
+                        intentionType: data.intentionType === 'prayer' || data.intentionType === 'custom'
+                            ? data.intentionType
+                            : data.niatType === 'prayer' || data.niatType === 'custom'
+                                ? data.niatType
+                                : 'daily',
                         intentionDate: intentionDateValue,
                         reflectionText: data.reflectionText,
                         reflectionRating: data.reflectionRating,
@@ -146,8 +248,9 @@ export class DbSyncRepository {
                 return existingIntention.id;
             }
         } else if (action === 'delete') {
-            if (data.cloudId || data.id) {
-                await db.delete(intentions).where(and(eq(intentions.userId, this.userId), eq(intentions.id, data.cloudId || data.id)));
+            const intentionId = data.cloudId || data.id;
+            if (intentionId) {
+                await db.delete(intentions).where(and(eq(intentions.userId, this.userId), eq(intentions.id, intentionId)));
             }
             return undefined;
         }
@@ -155,13 +258,13 @@ export class DbSyncRepository {
         throw new Error(`Unknown action: ${action}`);
     }
 
-    async syncMission(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncMission(data: MissionSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const completedAt = data.completedAt ? new Date(data.completedAt) : new Date();
-            const completedDate = /^\d{4}-\d{2}-\d{2}$/.test(data.completedAt)
-                ? data.completedAt
+            const completedDate = /^\d{4}-\d{2}-\d{2}$/.test(data.completedAt ?? '')
+                ? data.completedAt ?? ''
                 : completedAt.toISOString().split('T')[0];
-            const missionId = normalizeMissionId(data.id || data.missionId);
+            const missionId = normalizeMissionId(data.id || data.missionId || '');
             const hasanahEarned = canonicalMissionReward(missionId, data.hasanahEarned ?? data.xpEarned);
 
             // Legacy clients can retain mission IDs no longer present in the
@@ -203,7 +306,7 @@ export class DbSyncRepository {
         return undefined;
     }
 
-    async syncDailyActivity(data: any, action: 'create' | 'update' | 'delete'): Promise<void> {
+    async syncDailyActivity(data: DailyActivitySyncData, action: 'create' | 'update' | 'delete'): Promise<void> {
         if (action === 'create' || action === 'update') {
             const dateStr = data.date || new Date().toISOString().split('T')[0];
             await db
@@ -248,13 +351,14 @@ export class DbSyncRepository {
         }
     }
 
-    async syncSetting(data: any, action: 'create' | 'update' | 'delete'): Promise<void> {
+    async syncSetting(data: Record<string, unknown>, action: 'create' | 'update' | 'delete'): Promise<void> {
+        void action;
         const user = await db.query.users.findFirst({
             where: eq(users.id, this.userId),
             columns: { settings: true },
         });
 
-        const currentSettings = (user?.settings || {}) as Record<string, any>;
+        const currentSettings = (user?.settings || {}) as Record<string, unknown>;
         const newSettings = { ...currentSettings, ...data };
 
         await db
@@ -263,12 +367,11 @@ export class DbSyncRepository {
             .where(eq(users.id, this.userId));
     }
 
-    async syncReadingState(data: any, action: 'create' | 'update' | 'delete'): Promise<void> {
-        let qlr = data.quranLastRead || data;
-        if (typeof qlr === 'string' && qlr.startsWith('{')) {
-            try { qlr = JSON.parse(qlr); } catch (e) { }
-        }
-
+    async syncReadingState(data: ReadingStateSyncData, action: 'create' | 'update' | 'delete'): Promise<void> {
+        void action;
+        const qlr: ReadingStateValue = typeof data.quranLastRead === 'string'
+            ? JSON.parse(data.quranLastRead) as ReadingStateValue
+            : data.quranLastRead || data;
         if (!qlr || !qlr.surahId) return;
 
         await db
@@ -293,7 +396,7 @@ export class DbSyncRepository {
             });
     }
 
-    async syncStreak(data: any): Promise<void> {
+    async syncStreak(data: StreakSyncData): Promise<void> {
         await db
             .update(users)
             .set({
@@ -305,16 +408,30 @@ export class DbSyncRepository {
             .where(eq(users.id, this.userId));
     }
 
-    async syncRamadhanFasting(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncRamadhanFasting(data: {
+        hijriYear: number | string;
+        hijriDay: number | string;
+        status?: string;
+        consequence?: string;
+        madzhab?: string | null;
+        note?: string | null;
+        qadhaDone?: boolean;
+    }, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
+            const status = ['fasting', 'not_fasting', 'sick', 'traveling', 'menstruation', 'postpartum', 'pregnant', 'breastfeeding', 'elderly'].includes(data.status ?? '')
+                ? data.status as 'fasting' | 'not_fasting' | 'sick' | 'traveling' | 'menstruation' | 'postpartum' | 'pregnant' | 'breastfeeding' | 'elderly'
+                : 'fasting';
+            const consequence = ['none', 'qadha', 'fidyah', 'choice'].includes(data.consequence ?? '')
+                ? data.consequence as 'none' | 'qadha' | 'fidyah' | 'choice'
+                : 'none';
             const result = await db
                 .insert(ramadhanFastingLog)
                 .values({
                     userId: this.userId,
                     hijriYear: Number(data.hijriYear),
                     hijriDay: Number(data.hijriDay),
-                    status: data.status || 'fasting',
-                    consequence: data.consequence || 'none',
+                    status,
+                    consequence,
                     madzhab: data.madzhab || null,
                     note: data.note || null,
                     qadhaDone: Boolean(data.qadhaDone),
@@ -323,8 +440,8 @@ export class DbSyncRepository {
                 .onConflictDoUpdate({
                     target: [ramadhanFastingLog.userId, ramadhanFastingLog.hijriYear, ramadhanFastingLog.hijriDay],
                     set: {
-                        status: data.status || 'fasting',
-                        consequence: data.consequence || 'none',
+                        status,
+                        consequence,
                         madzhab: data.madzhab || null,
                         note: data.note || null,
                         qadhaDone: Boolean(data.qadhaDone),
@@ -337,23 +454,30 @@ export class DbSyncRepository {
         return undefined;
     }
 
-    async syncRamadhanTaraweh(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncRamadhanTaraweh(data: {
+        hijriYear: number | string;
+        hijriDay: number | string;
+        choice?: string | null;
+        location?: string | null;
+    }, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
+            const choice = data.choice === '8' || data.choice === '20' ? data.choice : null;
+            const location = data.location === 'masjid' || data.location === 'rumah' ? data.location : null;
             const result = await db
                 .insert(ramadhanTarawehLog)
                 .values({
                     userId: this.userId,
                     hijriYear: Number(data.hijriYear),
                     hijriDay: Number(data.hijriDay),
-                    choice: data.choice || null,
-                    location: data.location || null,
+                    choice,
+                    location,
                     updatedAt: new Date(),
                 })
                 .onConflictDoUpdate({
                     target: [ramadhanTarawehLog.userId, ramadhanTarawehLog.hijriYear, ramadhanTarawehLog.hijriDay],
                     set: {
-                        choice: data.choice || null,
-                        location: data.location || null,
+                        choice,
+                        location,
                         updatedAt: new Date(),
                     },
                 })
@@ -363,7 +487,7 @@ export class DbSyncRepository {
         return undefined;
     }
 
-    async syncRamadhanDaily(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncRamadhanDaily(data: RamadhanDailySyncData, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const result = await db
                 .insert(ramadhanDailyLog)
@@ -409,9 +533,10 @@ export class DbSyncRepository {
         return undefined;
     }
 
-    async syncSirahProgress(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncSirahProgress(data: SirahSyncData, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const sectionId = data.sectionId || data.id;
+            if (!sectionId) return undefined;
             const result = await db
                 .insert(sirahUserProgress)
                 .values({
@@ -430,17 +555,20 @@ export class DbSyncRepository {
                 .returning({ id: sirahUserProgress.id });
             return result[0]?.id;
         } else if (action === 'delete') {
+            const sectionId = data.sectionId || data.id;
+            if (!sectionId) return undefined;
             await db
                 .delete(sirahUserProgress)
-                .where(and(eq(sirahUserProgress.userId, this.userId), eq(sirahUserProgress.sectionId, data.sectionId || data.id)));
+                .where(and(eq(sirahUserProgress.userId, this.userId), eq(sirahUserProgress.sectionId, sectionId)));
             return undefined;
         }
         return undefined;
     }
 
-    async syncSirahBookmark(data: any, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
+    async syncSirahBookmark(data: SirahSyncData, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const sectionId = data.sectionId || data.id;
+            if (!sectionId) return undefined;
             const result = await db
                 .insert(sirahBookmarks)
                 .values({
@@ -458,9 +586,11 @@ export class DbSyncRepository {
                 .returning({ id: sirahBookmarks.id });
             return result[0]?.id;
         } else if (action === 'delete') {
+            const sectionId = data.sectionId || data.id;
+            if (!sectionId) return undefined;
             await db
                 .delete(sirahBookmarks)
-                .where(and(eq(sirahBookmarks.userId, this.userId), eq(sirahBookmarks.sectionId, data.sectionId || data.id)));
+                .where(and(eq(sirahBookmarks.userId, this.userId), eq(sirahBookmarks.sectionId, sectionId)));
             return undefined;
         }
         return undefined;

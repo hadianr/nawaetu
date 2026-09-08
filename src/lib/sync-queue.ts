@@ -71,7 +71,7 @@ export interface SyncQueueEntry {
   action: SyncActionType;
 
   /** Actual data to sync */
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 
   /** Current status of this entry */
   status: SyncStatus;
@@ -153,7 +153,7 @@ class SyncQueueManager {
   addToQueue(
     type: SyncEntityType,
     action: SyncActionType,
-    data: Record<string, any>
+    data: Record<string, unknown>
   ): string {
     // Validation
     if (!type || !action || !data) {

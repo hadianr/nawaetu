@@ -180,21 +180,31 @@ export function getLocalizedMissionContent(missionId: string, locale: string) {
     if (!content) return null;
 
     const t = SETTINGS_TRANSLATIONS[locale as keyof typeof SETTINGS_TRANSLATIONS] || SETTINGS_TRANSLATIONS.id;
-    const dict = t as Record<string, any>;
+    const dict = t as unknown as Record<string, unknown>;
+    const text = (key: string, fallback: string): string => {
+        const value = dict[key];
+        return typeof value === 'string' ? value : fallback;
+    };
+    const textList = (key: string, fallback: string[]): string[] => {
+        const value = dict[key];
+        return Array.isArray(value) && value.every(item => typeof item === 'string')
+            ? value
+            : fallback;
+    };
 
     let niat = content.niat;
     if (niat) {
         niat = {
             munfarid: {
                 ...niat.munfarid,
-                title: dict[`mission_${missionId}_niat_munfarid_title`] || niat.munfarid.title,
-                translation: dict[`mission_${missionId}_niat_munfarid_translation`] || niat.munfarid.translation,
+                title: text(`mission_${missionId}_niat_munfarid_title`, niat.munfarid.title ?? ''),
+                translation: text(`mission_${missionId}_niat_munfarid_translation`, niat.munfarid.translation),
             },
             ...(niat.makmum ? {
                 makmum: {
                     ...niat.makmum,
-                    title: dict[`mission_${missionId}_niat_makmum_title`] || niat.makmum.title,
-                    translation: dict[`mission_${missionId}_niat_makmum_translation`] || niat.makmum.translation,
+                    title: text(`mission_${missionId}_niat_makmum_title`, niat.makmum.title ?? ''),
+                    translation: text(`mission_${missionId}_niat_makmum_translation`, niat.makmum.translation),
                 }
             } : {})
         };
@@ -204,18 +214,18 @@ export function getLocalizedMissionContent(missionId: string, locale: string) {
     if (readings) {
         readings = readings.map((r, idx) => ({
             ...r,
-            title: dict[`mission_${missionId}_reading_${idx}_title`] || dict[`mission_${missionId}_qunut_title`] || r.title,
-            translation: dict[`mission_${missionId}_reading_${idx}_translation`] || dict[`mission_${missionId}_qunut_translation`] || r.translation,
-            note: dict[`mission_${missionId}_reading_${idx}_note`] || dict[`mission_${missionId}_qunut_note`] || r.note,
+            title: text(`mission_${missionId}_reading_${idx}_title`, text(`mission_${missionId}_qunut_title`, r.title ?? '')),
+            translation: text(`mission_${missionId}_reading_${idx}_translation`, text(`mission_${missionId}_qunut_translation`, r.translation)),
+            note: text(`mission_${missionId}_reading_${idx}_note`, text(`mission_${missionId}_qunut_note`, r.note ?? '')) || undefined,
         }));
     }
 
     return {
         ...content,
-        intro: dict[`mission_${missionId}_intro`] || content.intro,
-        fadhilah: dict[`mission_${missionId}_fadhilah`] || content.fadhilah,
-        guides: dict[`mission_${missionId}_guides`] || content.guides,
-        source: dict[`mission_${missionId}_source`] || content.source,
+        intro: text(`mission_${missionId}_intro`, content.intro ?? ''),
+        fadhilah: textList(`mission_${missionId}_fadhilah`, content.fadhilah),
+        guides: content.guides ? textList(`mission_${missionId}_guides`, content.guides) : undefined,
+        source: text(`mission_${missionId}_source`, content.source ?? ''),
         niat,
         readings,
     };

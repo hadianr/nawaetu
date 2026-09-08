@@ -22,7 +22,7 @@ import { db, transactionDb } from "@/db";
 import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
         const session = await getServerSession();
         if (!session?.user?.id) {
@@ -59,9 +59,9 @@ export async function GET(req: NextRequest) {
             })
         ]);
 
-        const currentSettings = (user?.settings || {}) as Record<string, any>;
+        const currentSettings = (user?.settings || {}) as Record<string, unknown>;
         const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
-        const sanitized: Record<string, any> = {};
+        const sanitized: Record<string, unknown> = {};
 
         for (const key of allowedSettings) {
             if (key in currentSettings) {
@@ -115,7 +115,7 @@ export async function PATCH(req: NextRequest) {
 
         // --- Server-Side Sanitization (Final Defense) ---
         const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences', 'streakReminderEnabled'];
-        const sanitizedIncoming: Record<string, any> = {};
+        const sanitizedIncoming: Record<string, unknown> = {};
 
         for (const key of allowedSettings) {
             if (key in incomingSettings) {
@@ -142,10 +142,10 @@ export async function PATCH(req: NextRequest) {
             columns: { settings: true }
         });
 
-        const currentSettings = (user?.settings || {}) as Record<string, any>;
+        const currentSettings = (user?.settings || {}) as Record<string, unknown>;
 
         // Clean current settings too (if they are already corrupted)
-        const sanitizedCurrent: Record<string, any> = {};
+        const sanitizedCurrent: Record<string, unknown> = {};
         for (const key of allowedSettings) {
             if (key in currentSettings) {
                 const val = currentSettings[key];

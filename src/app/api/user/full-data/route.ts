@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { logger } from "@/lib/logger";
@@ -34,7 +34,7 @@ import {
 import { eq, desc } from "drizzle-orm";
 import { calculatePlayerStats } from "@/lib/habits/progression";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
         const session = await getServerSession();
 

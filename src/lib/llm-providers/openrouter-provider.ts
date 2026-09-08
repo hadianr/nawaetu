@@ -22,6 +22,9 @@ import { API_CONFIG } from "@/config/apis";
 import { sanitizeUserContext } from './utils';
 import { SYSTEM_INSTRUCTION } from './system-instruction';
 
+type ChatCompletionMessage = { role: "system" | "user" | "assistant"; content: string };
+type ProviderErrorLike = { status?: number; code?: string; message?: string; name?: string };
+
 export class OpenRouterProvider implements LLMProvider {
     name = 'OpenRouter';
     private apiKey: string;
@@ -40,7 +43,7 @@ export class OpenRouterProvider implements LLMProvider {
     async chat(message: string, context: UserContext, history: ChatMessage[]): Promise<string> {
         try {
             // Prepare messages in OpenAI format (OpenRouter compatible)
-            const messages: any[] = [
+            const messages: ChatCompletionMessage[] = [
                 { role: 'system', content: SYSTEM_INSTRUCTION }
             ];
 
@@ -100,7 +103,7 @@ export class OpenRouterProvider implements LLMProvider {
 
             return content;
 
-        } catch (error: any) {
+        } catch (error: unknown) {
 
             // If already a ProviderError, re-throw
             if (error instanceof ProviderError) {
@@ -108,7 +111,8 @@ export class OpenRouterProvider implements LLMProvider {
             }
 
             // Handle fetch errors
-            if (error.name === 'TypeError' || error.message?.includes('fetch')) {
+            const details = error as ProviderErrorLike;
+            if (details.name === 'TypeError' || details.message?.includes('fetch')) {
                 throw new ProviderError(
                     'Network error',
                     undefined,
@@ -119,9 +123,9 @@ export class OpenRouterProvider implements LLMProvider {
 
             // Generic error
             throw new ProviderError(
-                error.message || 'Unknown OpenRouter error',
-                error.status,
-                error.code,
+                details.message || 'Unknown OpenRouter error',
+                details.status,
+                details.code,
                 true
             );
         }

@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        let deviceInfo: any = {};
+        let deviceInfo: Record<string, unknown> = {};
         try {
             deviceInfo = JSON.parse(deviceInfoStr);
         } catch {
@@ -244,7 +244,7 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
+    } catch (error: unknown) {
         logger.error("API error submitting feedback", error, { route: "/api/feedback" });
         return NextResponse.json(
             { error: "Terjadi kesalahan internal. Silakan coba lagi nanti." },

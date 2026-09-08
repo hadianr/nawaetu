@@ -227,7 +227,7 @@ export async function POST(req: NextRequest) {
                 auth_type: session ? 'session' : (providedToken ? 'token' : 'unknown'),
             },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         logger.error("Error in POST /api/intentions/daily", error, { route: "/api/intentions/daily" });
 
         return NextResponse.json(

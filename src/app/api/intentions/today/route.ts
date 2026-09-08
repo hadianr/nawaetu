@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
         }
 
         let userId: string | null = null;
-        let userData: any = null;
+        let userData: { intentionStreakCurrent: number | null } | null = null;
 
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
 

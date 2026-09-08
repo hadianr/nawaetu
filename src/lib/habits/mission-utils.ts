@@ -17,6 +17,11 @@
  */
 
 import { Mission } from "@/data/missions";
+import type { TranslationTree } from "@/context/LocaleContext";
+
+interface PrayerValidationData {
+    prayerTimes?: Record<string, string>;
+}
 
 export interface ValidationResult {
     locked: boolean;
@@ -31,7 +36,7 @@ export interface ValidationResult {
  */
 export function checkMissionValidation(
     mission: Mission,
-    prayerData: any,
+    prayerData: PrayerValidationData | null | undefined,
     currentTime: Date = new Date()
 ): ValidationResult {
     if (!mission.validationType || mission.validationType === 'manual' || mission.validationType === 'auto') {
@@ -139,8 +144,8 @@ export function checkMissionValidation(
 /**
  * Gets the localized label for a mission's ruling (obligatory, sunnah, etc.)
  */
-export function getRulingLabel(ruling: string, t: any): string {
-    const labels: Record<string, string> = {
+export function getRulingLabel(ruling: string, t: TranslationTree): string {
+    const labels: Record<string, keyof TranslationTree> = {
         'obligatory': 'rulingWajib',
         'sunnah': 'rulingSunnah',
         'permissible': 'rulingMubah',
@@ -148,5 +153,6 @@ export function getRulingLabel(ruling: string, t: any): string {
         'forbidden': 'rulingHaram'
     };
     const key = labels[ruling];
-    return (t[key] as string) || ruling;
+    const label = t[key];
+    return typeof label === "string" ? label : ruling;
 }

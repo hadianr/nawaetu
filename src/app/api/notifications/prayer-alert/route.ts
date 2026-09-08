@@ -33,7 +33,7 @@ import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
  */
 
 // In-memory cache for prayer times to avoid repeated API calls in the same request
-const prayerTimesCache = new Map<string, any>();
+const prayerTimesCache = new Map<string, Record<string, string>>();
 
 // === Precision Notification Window ===
 // cron-job.org fires this endpoint every 1 minute.
@@ -73,11 +73,11 @@ function isTimeInWindow(currentTime: string, rawPrayerTime: string): boolean {
 // IMPORTANT: method=20 (Kemenag RI) already includes the Maghrib ikhtiyath in its
 // base calculation. Setting Maghrib tune to 0 — do NOT add extra correction here.
 // Other prayers (Fajr, Dhuhr, Asr, Isha, Imsak) use standard ikhtiyath offsets.
-async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<any> {
+async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<Record<string, string> | null> {
     const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}`;
 
     if (prayerTimesCache.has(cacheKey)) {
-        return prayerTimesCache.get(cacheKey);
+        return prayerTimesCache.get(cacheKey) ?? null;
     }
 
     let url = "";
@@ -95,7 +95,7 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
             prayerTimesCache.set(cacheKey, result.data.timings);
             return result.data.timings;
         }
-    } catch (e: any) {
+    } catch (e: unknown) {
         logger.error(`Fetch prayer times error: url=${url}`, e, { route: "/api/notifications/prayer-alert" });
     }
     return null;
@@ -103,7 +103,7 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
 
 
 // Helper: Safe JSON parsing for jsonb fields that might be object or stringified JSON
-function parseJsonField<T>(val: any): T | null {
+function parseJsonField<T>(val: unknown): T | null {
     if (!val) return null;
     if (typeof val === "object") return val as T;
     if (typeof val === "string") {
@@ -203,9 +203,10 @@ export async function POST(req: NextRequest) {
                     await messagingAdmin.send({ ...syncMessage, token: sub.token });
                     results.sent++;
                     await db.update(pushSubscriptions).set({ lastUsedAt: new Date() }).where(eq(pushSubscriptions.id, sub.id));
-                } catch (e: any) {
+                } catch (e: unknown) {
                     results.failed++;
-                    if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                    const code = typeof e === "object" && e !== null && "code" in e ? e.code : undefined;
+                    if (code === "messaging/invalid-registration-token" || code === "messaging/registration-token-not-registered") {
                         results.invalidTokens++;
                         await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
                     }
@@ -219,8 +220,8 @@ export async function POST(req: NextRequest) {
             const groups = new Map<string, { lat: number, lng: number, timezone: string, subs: typeof subscriptions }>();
 
             for (const sub of subscriptions) {
-                let lat: number | null = sub.latitude ?? null;
-                let lng: number | null = sub.longitude ?? null;
+                const lat: number | null = sub.latitude ?? null;
+                const lng: number | null = sub.longitude ?? null;
 
                 if (!lat || !lng) {
                     results.noLocation++;
@@ -400,17 +401,18 @@ export async function POST(req: NextRequest) {
                                 lastNotificationSent: lastSentMap
                             }).where(eq(pushSubscriptions.id, sub.id));
 
-                        } catch (e: any) {
+                        } catch (e: unknown) {
                             results.failed++;
-                            if (e.code === "messaging/invalid-registration-token" || e.code === "messaging/registration-token-not-registered") {
+                            const code = typeof e === "object" && e !== null && "code" in e ? e.code : undefined;
+                            if (code === "messaging/invalid-registration-token" || code === "messaging/registration-token-not-registered") {
                                 results.invalidTokens++;
                                 await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
                             }
                         }
                     }
-                } catch (e: any) {
+                } catch (e: unknown) {
                     logger.error(`Group processing error for ${group.lat},${group.lng}`, e, { route: "/api/notifications/prayer-alert" });
-                    results.errors.push(`Group ${group.lat},${group.lng} error: ${e.message}`);
+                    results.errors.push(`Group ${group.lat},${group.lng} error: ${e instanceof Error ? e.message : String(e)}`);
                     results.skipped += group.subs.length;
                 }
             }));
@@ -432,8 +434,8 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
 
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 });
     }
 }
 

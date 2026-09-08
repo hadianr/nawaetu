@@ -29,7 +29,7 @@ import {
     userReadingState,
     NewIntention
 } from "@/db/schema";
-import { eq, sql, gte, lt } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 // Schema validation for request body
@@ -83,7 +83,7 @@ const syncSchema = z.object({
     readingState: z.object({
         quranLastRead: z.preprocess((val) => {
             if (typeof val === 'string' && val.startsWith('{')) {
-                try { return JSON.parse(val); } catch (e) { return val; }
+                try { return JSON.parse(val); } catch { return val; }
             }
             return val;
         }, quranLastReadSchema)
@@ -100,13 +100,13 @@ export async function POST(req: NextRequest) {
 
         const userId = session.user.id;
 
-        let body: any = null;
+        let body: unknown = null;
         try {
             if (typeof req.text === "function") {
                 const raw = await req.text();
                 body = raw && raw.trim() ? JSON.parse(raw) : {};
-            } else if (typeof (req as any).json === "function") {
-                body = await (req as any).json();
+            } else if (typeof req.json === "function") {
+                body = await req.json();
             } else {
                 body = {};
             }
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
                 await tx.update(users)
                     .set({
                         name: data.profile.name || undefined,
-                        gender: (data.profile.gender as any) || undefined,
+                        gender: data.profile.gender || undefined,
                         updatedAt: new Date(),
                     })
                     .where(eq(users.id, userId));
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
             if (data.settings) {
                 // --- Server-Side Sanitization ---
                 const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
-                const sanitizedSettings: Record<string, any> = {};
+                const sanitizedSettings: Record<string, unknown> = {};
 
                 for (const key of allowedSettings) {
                     if (key in data.settings) {
@@ -241,7 +241,7 @@ export async function POST(req: NextRequest) {
                         intentionsToInsert.push({
                             userId,
                             intentionText: i.intentionText || i.niatText || "",
-                            intentionType: (i.intentionType as any) || (i.niatType as any) || "daily",
+                            intentionType: (i.intentionType || i.niatType || "daily") as "custom" | "daily" | "prayer",
                             intentionDate: intentionDateValue,
                             reflectionText: i.reflectionText || null,
                             reflectionRating: i.reflectionRating || null,

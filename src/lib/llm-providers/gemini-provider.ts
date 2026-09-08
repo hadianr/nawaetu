@@ -22,10 +22,12 @@ import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider
 import { sanitizeUserContext } from './utils';
 import { SYSTEM_INSTRUCTION } from './system-instruction';
 
+type ProviderErrorLike = { status?: number; code?: string; message?: string };
+
 export class GeminiProvider implements LLMProvider {
     name = 'Gemini';
     private genAI: GoogleGenerativeAI;
-    private model: any;
+    private model: ReturnType<GoogleGenerativeAI["getGenerativeModel"]>;
 
     constructor() {
         const apiKey = process.env.GEMINI_API_KEY;
@@ -100,10 +102,11 @@ export class GeminiProvider implements LLMProvider {
                 throw textError;
             }
 
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const details = error as ProviderErrorLike;
 
             // Map Gemini errors to ProviderError
-            if (error.status === 429 || error.code === 'RESOURCE_EXHAUSTED') {
+            if (details.status === 429 || details.code === 'RESOURCE_EXHAUSTED') {
                 throw new ProviderError(
                     'Rate limit exceeded',
                     429,
@@ -112,7 +115,7 @@ export class GeminiProvider implements LLMProvider {
                 );
             }
 
-            if (error.status === 404 || error.message?.includes('models/')) {
+            if (details.status === 404 || details.message?.includes('models/')) {
                 throw new ProviderError(
                     'Model not found',
                     404,
@@ -121,10 +124,10 @@ export class GeminiProvider implements LLMProvider {
                 );
             }
 
-            if (error.status === 401 || error.status === 403) {
+            if (details.status === 401 || details.status === 403) {
                 throw new ProviderError(
                     'Authentication failed',
-                    error.status,
+                    details.status,
                     'AUTH_ERROR',
                     false
                 );
@@ -132,9 +135,9 @@ export class GeminiProvider implements LLMProvider {
 
             // Generic error
             throw new ProviderError(
-                error.message || 'Unknown Gemini error',
-                error.status,
-                error.code,
+                details.message || 'Unknown Gemini error',
+                details.status,
+                details.code,
                 true
             );
         }

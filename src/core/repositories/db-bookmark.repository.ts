@@ -18,7 +18,7 @@
 
 import { db } from "@/db";
 import { bookmarks, type Bookmark as DbBookmark } from "@/db/schema";
-import { Bookmark, BookmarkRepository } from "./bookmark.repository";
+import { Bookmark, BookmarkRepository, BookmarkSyncData } from "./bookmark.repository";
 import { eq, and } from "drizzle-orm";
 
 /**
@@ -91,6 +91,7 @@ export class DbBookmarkRepository implements BookmarkRepository {
     }
 
     saveBookmark(bookmark: Omit<Bookmark, "id" | "createdAt" | "updatedAt">): string {
+        void bookmark;
         throw new Error("Use saveBookmarkAsync() for DB implementation");
     }
 
@@ -105,6 +106,7 @@ export class DbBookmarkRepository implements BookmarkRepository {
     }
 
     removeBookmark(id: string): void {
+        void id;
         throw new Error("Use removeBookmarkAsync() for DB implementation");
     }
 
@@ -120,6 +122,8 @@ export class DbBookmarkRepository implements BookmarkRepository {
     }
 
     isBookmarked(surahId: number, verseId: number): boolean {
+        void surahId;
+        void verseId;
         throw new Error("Use isBookmarkedAsync() for DB implementation");
     }
 
@@ -136,12 +140,17 @@ export class DbBookmarkRepository implements BookmarkRepository {
     }
 
     getBookmarkById(surahId: number, verseId: number): Bookmark | undefined {
+        void surahId;
+        void verseId;
         throw new Error("Use getBookmarkByIdAsync() for DB implementation");
     }
 
     async updateBookmarkAsync(id: string, updates: Partial<Bookmark>): Promise<void> {
         // Separate ID and dates from updates to avoid type mismatches
-        const { id: _, createdAt: __, updatedAt: ___, ...safeUpdates } = updates;
+        const { id: ignoredId, createdAt: ignoredCreatedAt, updatedAt: ignoredUpdatedAt, ...safeUpdates } = updates;
+        void ignoredId;
+        void ignoredCreatedAt;
+        void ignoredUpdatedAt;
 
         await db.update(bookmarks)
             .set({
@@ -155,12 +164,14 @@ export class DbBookmarkRepository implements BookmarkRepository {
     }
 
     updateBookmark(id: string, updates: Partial<Bookmark>): void {
+        void id;
+        void updates;
         throw new Error("Use updateBookmarkAsync() for DB implementation");
     }
 
 
     async syncBookmarkAsync(
-        data: any,
+        data: BookmarkSyncData,
         action: 'create' | 'update' | 'delete'
     ): Promise<string | undefined> {
         if (!data.surahId || !data.verseId) {
