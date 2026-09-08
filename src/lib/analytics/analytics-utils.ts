@@ -88,7 +88,7 @@ export function recordDailyActivity(activity: Partial<DailyActivity>, dateStr?: 
         .filter((a) => a.date >= cutoff)
         .sort((a, b) => a.date.localeCompare(b.date));
 
-    storage.set(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any, JSON.stringify(filtered));
+    storage.set(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY, JSON.stringify(filtered));
     if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("activity_updated", { detail: filtered }));
     }
@@ -130,7 +130,7 @@ export function getTodayActivity(): DailyActivity {
 export function getDailyActivityHistory(): DailyActivity[] {
     if (typeof window === "undefined") return [];
 
-    const stored = storage.getOptional<string>(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY as any);
+    const stored = storage.getOptional<string>(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY);
     if (!stored) return [];
 
     try {
