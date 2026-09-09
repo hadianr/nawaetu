@@ -5,6 +5,9 @@ import withPWAInit from "@ducanh2912/next-pwa";
 const withPWA = withPWAInit({
   dest: "public",
   sw: "sw.js", // Use actual SW output filename
+  // Register from the guarded client component so unsupported browsers do not
+  // create an unhandled rejection when /sw.js cannot load.
+  register: false,
   // Workbox's front-end navigation wrapper can race registration and read an
   // undefined registration during client-side Quran navigation.
   cacheOnFrontEndNav: false,
