@@ -86,7 +86,7 @@ export function mapQuranVerseToShareData(
     surahName: string,
     surahNumber: number
 ): ShareableCardData {
-    const verseNum = verse.verse_key ? verse.verse_key.split(":")[1] : "1";
+    const verseNum = verse.verse_key?.split(":")[1] || "1";
     const translationObj =
         verse.translations?.find((t) => t.resource_id === 33) ||
         verse.translations?.[0];

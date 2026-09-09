@@ -21,6 +21,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './route';
 import { db } from '@/db';
 import { intentions, userCompletedMissions } from '@/db/schema';
+import { getServerSession } from '@/lib/auth';
 
 // Mock dependencies
 vi.mock('@/lib/auth', () => ({
@@ -51,6 +52,10 @@ vi.mock('next/server', () => ({
 vi.mock('@/db', () => ({
     db: {
         transaction: vi.fn(),
+        update: vi.fn(() => ({
+            set: vi.fn().mockReturnThis(),
+            where: vi.fn().mockResolvedValue([]),
+        })),
     }
 }));
 
@@ -157,5 +162,56 @@ describe('POST /api/user/sync-guest', () => {
             missionId: 'm1',
             hasanahEarned: 10,
         });
+    });
+
+    it('rejects unauthenticated, malformed, and invalid payloads', async () => {
+        vi.mocked(getServerSession).mockResolvedValueOnce(null as never);
+        const unauthorized = await POST({ json: async () => ({}) } as Parameters<typeof POST>[0]);
+        expect(unauthorized.status).toBe(401);
+
+        vi.mocked(getServerSession).mockResolvedValueOnce({ user: { id: 'test-user-id' } } as never);
+        const malformed = await POST({ json: async () => { throw new Error('invalid'); } } as unknown as Parameters<typeof POST>[0]);
+        expect(malformed.status).toBe(400);
+
+        const invalid = await POST({ json: async () => ({ bookmarks: [{ surahId: 'bad' }] }) } as Parameters<typeof POST>[0]);
+        expect(invalid.status).toBe(400);
+    });
+
+    it('consumes guest eligibility without opening a transaction', async () => {
+        const req = { json: async () => ({ consumeOnly: true }), headers: new Headers() };
+        const response = await POST(req as Parameters<typeof POST>[0]);
+
+        expect(response.status).toBe(200);
+        expect(response.status).toBe(200);
+        expect(db.transaction).not.toHaveBeenCalled();
+    });
+
+    it('syncs profile, settings, bookmarks, activity, and reading state in one transaction', async () => {
+        const payload = {
+            profile: { name: 'Aisyah', gender: 'female' },
+            settings: {
+                theme: 'dark',
+                locale: 'id',
+                calculationMethod: 20,
+                ignored: { value: true },
+                adhanPreferences: { fajr: true },
+            },
+            bookmarks: [{ surahId: 2, verseId: 255, surahName: 'Al-Baqarah', verseText: 'Ayah', tags: ['favorite'] }],
+            completedMissions: [{ id: 'fajr_prayer', hasanahEarned: 10, completedAt: '2026-01-15' }],
+            intentions: [
+                { intentionText: 'Read Quran', intentionType: 'daily', intentionDate: '2026-01-15', reflectionText: 'Good', reflectionRating: 5 },
+                { niatText: 'Second', niatDate: '2026-01-15' },
+            ],
+            activity: { date: '2026-01-15', quranAyat: 3, hasanahGained: 10, tasbihCount: 33, prayersLogged: ['fajr'] },
+            readingState: { quranLastRead: { surahId: 2, surahName: 'Al-Baqarah', verseId: 255, timestamp: 1768478400000 } },
+        };
+        const req = { json: async () => payload, headers: new Headers() };
+        const response = await POST(req as Parameters<typeof POST>[0]);
+
+        expect(response.status).toBe(200);
+        expect(response.status).toBe(200);
+        expect(txMock.insert).toHaveBeenCalled();
+        expect(txMock.update).toHaveBeenCalled();
+        expect(txMock.query.intentions.findMany).toHaveBeenCalled();
     });
 });

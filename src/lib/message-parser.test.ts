@@ -18,7 +18,23 @@
 
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
-import { formatMarkdown } from './message-parser';
+import { formatMarkdown, parseAIResponse } from './message-parser';
+
+describe('parseAIResponse', () => {
+    it('separates the main message and supported follow-up markers', () => {
+        expect(parseAIResponse('Main answer\n\n🔹 First question\n🔸 Second question\n• Third question\n- Fourth question')).toEqual({
+            mainMessage: 'Main answer',
+            followUpQuestions: ['First question', 'Second question', 'Third question', 'Fourth question'],
+        });
+    });
+
+    it('ignores empty questions and keeps ordinary content before the section', () => {
+        expect(parseAIResponse('Line one\n\n🔹   \nLine after section\n-   ')).toEqual({
+            mainMessage: 'Line one',
+            followUpQuestions: [],
+        });
+    });
+});
 
 describe('formatMarkdown', () => {
     it('should format bold text correctly', () => {

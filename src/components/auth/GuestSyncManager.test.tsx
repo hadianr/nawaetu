@@ -77,7 +77,29 @@ describe("GuestSyncManager sync branches", () => {
 
     it("hydrates an account that already has server progress", async () => {
         mocks.fetch.mockResolvedValueOnce(jsonResponse({
-            profile: { name: "Aisyah", gender: "female" },
+            profile: {
+                name: "Aisyah",
+                gender: "female",
+                totalInfaq: 10000,
+                settings: {
+                    theme: "dark",
+                    locale: "id",
+                    reciter: "7",
+                    muadzin: "mishary",
+                    calculationMethod: 20,
+                    hijriAdjustment: -1,
+                    adhanPreferences: { fajr: true },
+                },
+            },
+            readingState: { quranLastRead: { surah: 2, ayah: 255 } },
+            bookmarks: [{ id: "bookmark-1" }],
+            completedMissions: [{ missionId: "fajr_prayer" }],
+            intentions: [{ id: "intention-1" }],
+            dailyActivities: [{ date: new Date().toISOString().split("T")[0], quranAyat: 3, tasbihCount: 33, prayersLogged: ["fajr"] }],
+            progression: {
+                hasanah: 100,
+                streak: { currentDays: 3, longestDays: 7, lastStreakDate: "2026-01-15", freezesAvailable: 1, days: [{ status: "frozen", localDate: "2026-01-14" }] },
+            },
         }));
 
         await runSync();
@@ -87,6 +109,10 @@ describe("GuestSyncManager sync branches", () => {
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.USER_NAME, "Aisyah");
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.ONBOARDING_COMPLETED, "true");
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
+        expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.USER_TOTAL_DONATION, "10000");
+        expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.USER_STREAK, expect.objectContaining({ currentStreak: 3, protectedDates: ["2026-01-14"] }));
+        expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.USER_HASANAH, "100");
+        expect(mocks.sendGAEvent).toHaveBeenCalledWith("sync_recovery_outcome", { outcome: "success" });
     });
 
     it("uploads local guest data only for an eligible new account", async () => {
@@ -134,5 +160,38 @@ describe("GuestSyncManager sync branches", () => {
             }),
         );
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
+    });
+
+    it.each([401, 404, 500])("defers sync for transient server status %s", async (status) => {
+        mocks.fetch.mockResolvedValueOnce(jsonResponse({}, status));
+
+        await runSync();
+
+        expect(mocks.fetch).toHaveBeenCalledTimes(1);
+        expect(mocks.sendGAEvent).toHaveBeenCalledWith("sync_recovery_outcome", { outcome: "deferred" });
+    });
+
+    it("does not sync an account already processed in this session", async () => {
+        mocks.storageValues.set(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
+
+        await runSync();
+
+        expect(mocks.fetch).not.toHaveBeenCalled();
+    });
+
+    it("removes the sync marker after logout and ignores sessions without a user", async () => {
+        mocks.useSession.mockReturnValue({ status: "unauthenticated", data: null });
+        render(<GuestSyncManager />);
+        expect(mocks.storage.remove).toHaveBeenCalledWith(STORAGE_KEYS.LAST_SYNC_USER_ID);
+        expect(mocks.fetch).not.toHaveBeenCalled();
+    });
+
+    it("handles a failed server request without showing a destructive error", async () => {
+        mocks.fetch.mockRejectedValueOnce(new Error("network down"));
+
+        await runSync();
+
+        expect(mocks.sendGAEvent).toHaveBeenCalledWith("sync_recovery_outcome", { outcome: "error" });
+        expect(mocks.storage.remove).not.toHaveBeenCalled();
     });
 });
