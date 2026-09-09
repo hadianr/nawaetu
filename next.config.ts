@@ -5,7 +5,9 @@ import withPWAInit from "@ducanh2912/next-pwa";
 const withPWA = withPWAInit({
   dest: "public",
   sw: "sw.js", // Use actual SW output filename
-  cacheOnFrontEndNav: true,
+  // Workbox's front-end navigation wrapper can race registration and read an
+  // undefined registration during client-side Quran navigation.
+  cacheOnFrontEndNav: false,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   disable: process.env.NODE_ENV === "development",
