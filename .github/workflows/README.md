@@ -3,15 +3,18 @@
 ## Active Workflows
 
 ### `quality.yml`
-Runs lint, TypeScript checks, unit tests, and an 80% minimum coverage gate on
-pull requests and pushes to `main`.
+Runs lint, TypeScript checks, commit message validation, and the production
+build on pull requests targeting `main`.
+
+### `coverage.yml`
+Runs Vitest with an 80% minimum line coverage gate and comments coverage for
+changed files directly on the pull request.
 
 ### `reviewdog.yml`
 Posts ESLint findings as review comments on changed lines in pull requests.
 
 ### `codeql.yml`
-Runs GitHub CodeQL security analysis on pull requests, pushes to `main`, and
-weekly on Mondays.
+Runs GitHub CodeQL security analysis on pull requests and weekly on Mondays.
 
 ### `dependency-review.yml`
 Checks dependency changes in pull requests for known vulnerabilities and
@@ -26,8 +29,8 @@ Handles automated releases when a new version tag is pushed.
 
 To block production merges/deployments until quality passes, configure the
 GitHub `main` branch protection rule with the required check:
-`Quality Gate / Lint, typecheck, tests, and coverage`. For stronger review and
-security enforcement, also require `PR Code Review / ESLint review comments`
+`Quality Gate / Lint, typecheck, and build`. Also require
+`Coverage / Report Vitest coverage`, `PR Code Review / ESLint review comments`,
 and `CodeQL / Analyze JavaScript and TypeScript`.
 
 ---
