@@ -2,7 +2,11 @@
  * @vitest-environment jsdom
  */
 import { render, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("@sentry/nextjs", () => ({
+    captureException: vi.fn(),
+}));
 
 import { LocaleProvider } from "@/context/LocaleContext";
 
