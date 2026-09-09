@@ -6,6 +6,68 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.14.0] - 2026-09-09
+
+### Performance
+- **Perf(sync): batch legacy imports**
+- **Perf: defer seasonal home widgets**
+
+### Improved
+- **Chore(deps): simplify dependabot configuration and reduce open pull request limits**
+- **Chore(deps): bump isomorphic-dompurify from 3.19.0 to 4.1.0 (#140)**
+- **Chore(deps-dev): bump the development-dependencies group with 2 updates (#137)**
+- **Chore(deps): bump actions/checkout from 4 to 7 (#135)**
+- **Chore(deps): bump actions/upload-artifact from 4 to 7 (#134)**
+- **Chore: update dependsbot (#133)**
+- **Chore(deps): bump firebase-admin from 14.2.0 to 14.3.0 (#132)**
+- **Chore(deps): bump zod from 4.4.3 to 4.5.4 (#131)**
+- **Chore(deps-dev): bump jsdom from 24.1.3 to 30.0.1 (#128)**
+- **Chore(deps): bump next from 16.3.0 to 16.3.4 (#122)**
+- **Chore(deps): bump github/codeql-action from 3 to 4 (#129)**
+- **Chore(deps): bump @vercel/speed-insights from 1.3.1 to 2.0.0 (#127)**
+- **Chore(deps): bump reviewdog/action-eslint from 1.33.2 to 1.34.0 (#125)**
+- **Chore(deps): bump actions/setup-node from 4 to 7 (#126)**
+- **Chore(deps): bump actions/dependency-review-action from 4 to 5 (#124)**
+- **Chore(deps): bump softprops/action-gh-release from 1 to 3 (#123)**
+- **Chore(deps): bump @vitest/mocker and vitest (#121)**
+- **Chore(deps-dev): bump js-yaml from 4.3.1 to 4.3.2 (#120)**
+- **Chore(deps): bump fast-uri from 3.1.5 to 3.1.7 (#119)**
+- **Chore(deps): bump sharp from 0.35.3 to 0.35.4**
+- **Chore: fix yml worklflow ci cd**
+- **Chore: add depth ci**
+- **Chore(repo): enforce commit checks**
+- **Refactor: type analytics storage keys**
+- **Refactor: type tafsir cache keys**
+- **Refactor: type bookmark adapter input**
+- **Refactor: type Quran audio segments**
+- **Refactor: harden Quran API adapter**
+- **Refactor: clean VerseItem bindings**
+- **Refactor: tighten guest sync flow**
+- **Refactor: tighten Mentor AI client state**
+- **Refactor: tighten Ramadhan card types**
+- **Refactor: stabilize seasonal countdown**
+- **Refactor: tighten page and dialog types**
+- **Chore(lint): remove unused bindings**
+- **Chore(lint): reduce safe lint debt**
+- **Chore(deps): update fast-uri lock**
+- **Chore(lint): reduce safe lint debt**
+- **Chore(scripts): remove obsolete Sirah tooling**
+- **Chore(scripts): archive Sirah tooling**
+- **Chore(pwa): stop tracking generated workers**
+- **Chore(repo): prune generated and dead code**
+
+### Fixed
+- **Fix: remove localStorage usage for user location and sanitize translation text**
+- **Fix(ui): resolve lint lifecycle issues**
+- **Fix(hooks): stabilize client state lifecycles**
+- **Fix(sync): harden typed data boundaries**
+- **Fix: escape rendered quote entities**
+- **Fix: clean Quran browser lint errors**
+- **Fix: validate Ramadhan insight input**
+- **Fix: narrow mentor AI errors**
+- **Fix: narrow notification errors**
+
+
 ## [1.13.3] - 2026-09-03
 
 ### Added
