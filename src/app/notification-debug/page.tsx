@@ -359,8 +359,6 @@ export default function NotificationDebugPage() {
                             navigator.geolocation.getCurrentPosition(
                                 async (pos) => {
                                     const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                                    localStorage.setItem("user_location", JSON.stringify(loc));
-
                                     // If token exists, sync to DB
                                     if (token) {
                                         await fetch("/api/notifications/subscribe", {
