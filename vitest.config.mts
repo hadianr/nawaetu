@@ -12,7 +12,8 @@ export default defineConfig({
     setupFiles: ['./src/__tests__/setup.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json-summary', 'lcov'],
+      reporter: ['text', 'json-summary', 'json', 'lcov'],
+      reportOnFailure: true,
       thresholds: {
         lines: 80,
       },
