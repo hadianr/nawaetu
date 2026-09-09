@@ -214,8 +214,8 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
             addLog('[Update] STEP 7: Hard reload page...');
             addLog(`[Update] Redirecting to: /?v=${serverVersion}`);
 
-            // Use hard reload (Ctrl+Shift+R equivalent)
-            window.location.href = `/?v=${serverVersion}&updated=${Date.now()}`;
+            // Keep a hard reload so the newly activated Service Worker serves the new app shell.
+            window.location.replace(`/?v=${serverVersion}&updated=${Date.now()}`);
 
         } catch (e) {
             addLog(`[Update] ❌ ERROR: ${e}`);

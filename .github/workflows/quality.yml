@@ -29,7 +29,7 @@ jobs:
           cache: npm
 
       - name: Restore Next.js build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('package-lock.json') }}

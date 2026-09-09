@@ -15,7 +15,7 @@ const withPWA = withPWAInit({
     // worker pointing at a missing /workbox-*.js asset.
     inlineWorkboxRuntime: true,
     // Next may omit this optional App Router manifest from the deployment.
-    exclude: [/\/_buildManifest\.js$/],
+    exclude: [/\.map$/, /\/_buildManifest\.js$/],
     // Source maps are optional debugging assets and are not deployed reliably.
     manifestTransforms: [
       async (manifest) => ({
@@ -36,7 +36,9 @@ const nextConfig: NextConfig = {
   // Transpile packages that use @babel/runtime to prevent chunk loading issues
   transpilePackages: ['framer-motion'],
   serverExternalPackages: ["isomorphic-dompurify"],
-  productionBrowserSourceMaps: true,
+  // Generate browser source maps only when Sentry can upload them.
+  // This keeps CI/Preview builds smaller without changing runtime monitoring.
+  productionBrowserSourceMaps: Boolean(process.env.SENTRY_AUTH_TOKEN),
 
   // Performance optimizations
   compress: true,
@@ -179,11 +181,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Only enable Sentry in Production to avoid "tunnelRoute" (monitoring) blocking dev server (30s timeout/latency)
+// Only enable the Sentry build plugin when production credentials are available.
+// Runtime Sentry initialization remains handled by the instrumentation files.
 const isProd = process.env.NODE_ENV === "production";
+const hasSentryAuthToken = Boolean(process.env.SENTRY_AUTH_TOKEN);
+const baseConfig = withPWA(nextConfig);
 
-export default isProd
-  ? withSentryConfig(withPWA(nextConfig), {
+export default isProd && hasSentryAuthToken
+  ? withSentryConfig(baseConfig, {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
@@ -191,8 +196,13 @@ export default isProd
 
     project: "javascript-nextjs",
 
-    // Only print logs for uploading source maps in CI
-    silent: !process.env.CI,
+    // Keep unauthenticated CI/Preview builds quiet; authenticated production
+    // builds retain Sentry upload logs for verification.
+    silent: !hasSentryAuthToken,
+
+    // Disable Sentry's build-time telemetry; runtime error reporting remains enabled.
+    telemetry: false,
+    authToken: process.env.SENTRY_AUTH_TOKEN,
 
     // For all available options, see:
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
@@ -209,4 +219,4 @@ export default isProd
     // Disabling generic "enabled" flag isn't native to withSentryConfig options object usually, 
     // but wrapping conditionally is safer.
   })
-  : withPWA(nextConfig);
+  : baseConfig;
