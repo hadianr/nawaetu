@@ -126,7 +126,7 @@ Built with bleeding-edge technology for maximum performance and reliability:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 20+
+- Node.js 24.15.0+
 - npm / yarn / pnpm
 
 ### Installation
