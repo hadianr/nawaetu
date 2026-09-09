@@ -31,8 +31,9 @@ Execute the release script with your target version:
    - Updates `version` and `lastUpdated` date in `src/config/app-config.ts`
    - Updates release version badge in `README.md`
 3. **Changelog Generation**: Auto-generates structured `CHANGELOG.md` entries from git commit messages since the last release tag.
-4. **Git Commit & Tagging**: Creates an annotated git tag `vX.Y.Z` and commits release changes.
-5. **Push & CI/CD Trigger**: Pushes commits and tags to GitHub, triggering Vercel deployment and GitHub Actions workflows.
+4. **Release PR**: Creates `release/vX.Y.Z`, commits the release changes, pushes the branch, and opens a PR into protected `main`.
+5. **Automatic Tagging**: After the PR is merged, GitHub Actions creates the annotated tag on the merged `main` commit.
+6. **CI/CD Trigger**: The tag creates the GitHub Release; Vercel deploys production from the merged `main` commit.
 
 ---
 
