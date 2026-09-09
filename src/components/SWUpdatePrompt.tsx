@@ -39,6 +39,10 @@ export default function SWUpdatePrompt() {
             return;
         }
 
+        // Service workers are optional. Safari and restricted browsers may
+        // reject /sw.js; keep that failure from becoming an application error.
+        const registrationPromise = navigator.serviceWorker.register("/sw.js").catch(() => null);
+
         const showUpdateToast = (worker: ServiceWorker) => {
             toast(t.pwaUpdateAvailableTitle || "Update Available", {
                 description: t.pwaUpdateAvailableDesc || "A new version of Nawaetu is available.",
@@ -63,7 +67,8 @@ export default function SWUpdatePrompt() {
         });
 
         // 1. Check if there is already a waiting worker on load
-        navigator.serviceWorker.ready.then((registration) => {
+        registrationPromise.then((registration) => {
+            if (!registration) return;
             if (registration.waiting) {
                 showUpdateToast(registration.waiting);
             }
