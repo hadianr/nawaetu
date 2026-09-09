@@ -2,6 +2,9 @@
   "name": "nawaetu",
   "version": "1.14.0",
   "private": true,
+  "engines": {
+    "node": ">=24.15.0"
+  },
   "browserslist": [
     "chrome >= 100",
     "firefox >= 100",
@@ -92,7 +95,7 @@
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@tailwindcss/postcss": "^4.3.3",
-    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.4.1",
     "@types/react": "^19.2.17",
