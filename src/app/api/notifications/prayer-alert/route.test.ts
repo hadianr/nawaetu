@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, Mock } from 'vitest';
 import { POST } from './route';
 import { db } from '@/db';
 import { NextRequest } from 'next/server';
@@ -11,7 +11,7 @@ import { NextRequest } from 'next/server';
 interface PrayerAlertResponseBody {
     success: boolean;
     mode: string;
-    results: { total: number };
+    results: { total: number; skipped?: number; noLocation?: number; sent?: number; failed?: number; invalidTokens?: number };
 }
 
 vi.mock('@/db', () => ({
@@ -39,19 +39,37 @@ vi.mock('@/db/schema', async (importOriginal) => {
             active: { name: 'active' },
             lastUsedAt: { name: 'last_used_at' },
             lastNotificationSent: { name: 'last_notification_sent' },
-        }
+        },
+        users: { id: { name: 'id' }, settings: { name: 'settings' } },
     };
 });
 
-vi.mock('@/lib/notifications/firebase-admin', () => ({
-    getMessaging: vi.fn().mockResolvedValue({
-        send: vi.fn().mockResolvedValue('msg-id-123'),
-    })
+const mocks = vi.hoisted(() => ({
+    messagingSend: vi.fn().mockResolvedValue('msg-id-123'),
+    getMessaging: vi.fn().mockResolvedValue(null),
 }));
+
+vi.mock('@/lib/notifications/firebase-admin', () => ({
+    getMessaging: mocks.getMessaging,
+}));
+
+function mockDatabase(subscriptions: unknown[], userRows: unknown[] = []) {
+    (db.select as Mock).mockImplementation((selection?: unknown) => ({
+        from: vi.fn().mockReturnValue({
+            where: vi.fn().mockResolvedValue(selection ? userRows : subscriptions),
+        }),
+    }));
+    (db.update as Mock).mockImplementation(() => ({
+        set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue([]) }),
+    }));
+}
 
 describe('POST /api/notifications/prayer-alert', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        delete process.env.CRON_SECRET;
+        mocks.getMessaging.mockResolvedValue({ send: mocks.messagingSend });
+        mocks.messagingSend.mockResolvedValue('msg-id-123');
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({
@@ -126,5 +144,98 @@ describe('POST /api/notifications/prayer-alert', () => {
         expect(res.status).toBe(200);
         expect(body.success).toBe(true);
         expect(body.results.total).toBe(1);
+    });
+
+    it('rejects an invalid cron authorization header', async () => {
+        process.env.CRON_SECRET = 'secret';
+        const req = new NextRequest('http://localhost/api/notifications/prayer-alert?mode=sync', {
+            headers: { authorization: 'Bearer wrong' },
+        });
+
+        const res = await POST(req);
+        expect(res.status).toBe(401);
+        expect(db.select).not.toHaveBeenCalled();
+    });
+
+    it('returns an empty result when no active subscriptions exist', async () => {
+        mockDatabase([]);
+        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+        expect(res.status).toBe(200);
+        expect(body.results.total).toBe(0);
+        expect(mocks.getMessaging).not.toHaveBeenCalled();
+    });
+
+    it('returns 500 when Firebase Admin is unavailable', async () => {
+        mockDatabase([{ id: 'sub-3', userId: 'user-1', token: 'token-3', active: 1 }]);
+        mocks.getMessaging.mockResolvedValueOnce(null);
+
+        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        expect(res.status).toBe(500);
+    });
+
+    it('syncs tokens and deactivates invalid registration tokens', async () => {
+        mockDatabase([
+            { id: 'sub-4', userId: 'user-1', token: 'token-4', active: 1 },
+            { id: 'sub-5', userId: 'user-1', token: 'token-5', active: 1 },
+        ]);
+        mocks.messagingSend
+            .mockResolvedValueOnce('sent')
+            .mockRejectedValueOnce({ code: 'messaging/registration-token-not-registered' });
+
+        const res = await POST(new Request('http://localhost/api/notifications/prayer-alert?mode=sync') as unknown as NextRequest);
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+        expect(res.status).toBe(200);
+        expect(body.mode).toBe('sync');
+        expect(body.results).toMatchObject({ total: 2, sent: 1, failed: 1, invalidTokens: 1 });
+        expect(db.update).toHaveBeenCalledTimes(2);
+    });
+
+    it('rejects unsupported notification modes', async () => {
+        mockDatabase([{ id: 'sub-unknown', userId: 'user-1', token: 'token-unknown', active: 1 }]);
+        const res = await POST(new Request('http://localhost/api/notifications/prayer-alert?mode=unknown') as unknown as NextRequest);
+        expect(res.status).toBe(400);
+        expect((res as unknown as { body: { error: string } }).body.error).toBe('Invalid mode');
+    });
+
+    it('skips subscriptions without location without calling Firebase', async () => {
+        mockDatabase([{ id: 'sub-6', userId: 'user-1', token: 'token-6', active: 1, latitude: null, longitude: null }]);
+
+        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+        expect(res.status).toBe(200);
+        expect(body.results).toMatchObject({ total: 1, skipped: 1, noLocation: 1 });
+        expect(mocks.messagingSend).not.toHaveBeenCalled();
+    });
+
+    it('sends an alert, deduplicates today, respects preferences, and disables invalid tokens', async () => {
+        const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+        const localTime = new Date().toLocaleTimeString('en-US', {
+            timeZone: 'Asia/Jakarta', hourCycle: 'h23', hour: '2-digit', minute: '2-digit',
+        });
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ data: { timings: { Fajr: localTime } } }),
+        } as Response);
+        mockDatabase([
+            { id: 'sub-7', userId: 'user-1', token: 'token-7', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta' },
+            { id: 'sub-8', userId: 'user-1', token: 'token-8', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta', lastNotificationSent: JSON.stringify({ Fajr: today }) },
+            { id: 'sub-9', userId: 'user-1', token: 'token-9', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta', prayerPreferences: { fajr: false } },
+            { id: 'sub-10', userId: 'user-1', token: 'token-10', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta' },
+        ], [{ id: 'user-1', settings: { locale: 'id' } }]);
+        mocks.messagingSend
+            .mockResolvedValueOnce('sent')
+            .mockRejectedValueOnce({ code: 'messaging/invalid-registration-token' });
+
+        const res = await POST(new Request('http://localhost/api/notifications/prayer-alert?mode=alert') as unknown as NextRequest);
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+        expect(res.status).toBe(200);
+        expect(body.results).toMatchObject({ total: 4, sent: 1, failed: 1, invalidTokens: 1, skipped: 2 });
+        expect(mocks.messagingSend).toHaveBeenCalledTimes(2);
+        expect(db.update).toHaveBeenCalledTimes(2);
     });
 });

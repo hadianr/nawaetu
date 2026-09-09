@@ -44,9 +44,9 @@ export function parseAIResponse(response: string): ParsedResponse {
             if (question) {
                 followUpQuestions.push(question);
             }
-        } else if (trimmed.startsWith('🔸') || trimmed.startsWith('•') || trimmed.startsWith('-') && inFollowUpSection) {
+        } else if (trimmed.startsWith('🔸') || trimmed.startsWith('•') || (trimmed.startsWith('-') && inFollowUpSection)) {
             // Alternative markers
-            const question = trimmed.replace(/^[🔸•-]\s*/, '').trim();
+            const question = trimmed.replace(/^(?:🔸|•|-)\s*/, '').trim();
             if (question) {
                 followUpQuestions.push(question);
             }

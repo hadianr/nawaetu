@@ -93,4 +93,42 @@ describe("getVerseTafsir", () => {
         expect(result).toEqual({ short: "fresh", long: "fresh long" });
         expect(fetchWithTimeoutMock).toHaveBeenCalledTimes(1);
     });
+
+    it("fetches and caches English tafsir previews", async () => {
+        storageMock.getOptional.mockReturnValueOnce(null);
+        fetchWithTimeoutMock.mockResolvedValueOnce(
+            makeResponse({ tafsir: { text: "<p>Summary</p><p>Full explanation</p>" } })
+        );
+
+        await expect(getVerseTafsir(2, 255, "en")).resolves.toEqual({
+            short: "Summary",
+            long: "<p>Summary</p><p>Full explanation</p>",
+        });
+        expect(storageMock.set).toHaveBeenCalledWith(
+            expect.stringContaining("quran_tafsir_en_2:255"),
+            expect.any(String),
+        );
+    });
+
+    it("returns null for unavailable, empty, or malformed tafsir responses", async () => {
+        storageMock.getOptional.mockReturnValueOnce("not-json");
+        fetchWithTimeoutMock.mockResolvedValueOnce(makeResponse({ data: {} }));
+        await expect(getVerseTafsir(4, 1)).resolves.toBeNull();
+
+        storageMock.getOptional.mockReturnValueOnce(null);
+        fetchWithTimeoutMock.mockResolvedValueOnce(makeResponse({ tafsir: { text: "" } }));
+        await expect(getVerseTafsir(4, 1, "en")).resolves.toBeNull();
+
+        storageMock.getOptional.mockReturnValueOnce(null);
+        fetchWithTimeoutMock.mockResolvedValueOnce(makeResponse({}, false));
+        await expect(getVerseTafsir(4, 1)).resolves.toBeNull();
+    });
+
+    it("supports legacy cache entries without metadata", async () => {
+        const cached = { short: "legacy", long: "legacy long" };
+        storageMock.getOptional.mockReturnValueOnce(JSON.stringify(cached));
+
+        await expect(getVerseTafsir(5, 1)).resolves.toEqual(cached);
+        expect(fetchWithTimeoutMock).not.toHaveBeenCalled();
+    });
 });
