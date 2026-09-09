@@ -198,6 +198,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             message.includes("Browser belum siap") ||
             message.includes("Izin notifikasi ditolak") ||
             message.includes("Peramban Anda tidak mendukung") ||
+            message.includes("firebaseinstallations.googleapis.com") ||
             message.includes("Registration failed - push service error") ||
             message.includes("no active Service Worker") ||
             message.includes("Subscription failed") ||
