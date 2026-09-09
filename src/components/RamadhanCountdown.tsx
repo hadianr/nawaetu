@@ -19,6 +19,7 @@
  */
 
 import { useState, useEffect, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import { SYABAN_MISSIONS } from "@/data/missions";
 
 // Inline critical icons to avoid lucide overhead on LCP
@@ -59,6 +60,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
+    const router = useRouter();
     const { t } = useLocale();
     const { data: prayerData } = usePrayerTimesContext();
     // Initialize with server-provided value to allow immediate rendering (LCP optimization)
@@ -276,7 +278,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 onClick={() => {
                     if (isRamadhan) {
                         // Portal to Ramadhan Hub
-                        window.location.href = "/ramadhan";
+                        router.push("/ramadhan");
                     } else {
                         handleCardClick();
                     }
