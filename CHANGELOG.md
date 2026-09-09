@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.14.1] - 2026-09-10
+
+### Improved
+- **Chore(deps): ignore unsupported TypeScript 7**
+- **Chore(deps-dev): bump vitest from 4.1.11 to 5.0.0**
+- **Chore(runtime): require Node 24.15+**
+- **Chore(deps): bump the production-dependencies group across 1 directory with 6 updates**
+- **Chore(deps-dev): bump @types/node from 20.19.43 to 26.4.1**
+- **Chore(deps): bump actions/cache from 5 to 6**
+- **Chore: ci commit validation in commitlint config**
+- **Chore: optimize cicd proccess**
+- **Chore: simplify release versioning upgrade**
+
+### Fixed
+- **Fix(security): address code scanning alerts**
+- **Fix(test): align Vitest coverage adapter**
+- **Fix: handle service worker registration errors in SWUpdatePrompt**
+- **Fix: for pull request finding 'CodeQL / Incomplete URL substring sanitization'**
+- **Fix: issue cannot read properties of undefined reading waiting**
+- **Fix: audit runtime build production ci/cd**
+
+
 ## [1.14.0] - 2026-09-09
 
 ### Performance
