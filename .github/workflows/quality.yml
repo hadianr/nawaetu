@@ -3,8 +3,6 @@ name: Quality Gate
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -30,8 +28,17 @@ jobs:
           node-version: 24.x
           cache: npm
 
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ github.ref_name }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ github.ref_name }}-
+            ${{ runner.os }}-nextjs-
+
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit --fund=false
 
       - name: Lint
         run: npm run lint
