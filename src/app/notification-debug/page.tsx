@@ -344,51 +344,6 @@ export default function NotificationDebugPage() {
                 </div>
 
                 <div className="border p-4 rounded-lg border-gray-700">
-                    <h2 className="font-semibold mb-2">2. Update Location Data</h2>
-                    <p className="text-sm text-gray-400 mb-2">
-                        Forcing GPS detection to fix &quot;userLocation: null&quot;.
-                    </p>
-                    <button
-                        onClick={async () => {
-                            setLoading(true);
-                            if (!navigator.geolocation) {
-                                alert("Geolocation not supported");
-                                setLoading(false);
-                                return;
-                            }
-                            navigator.geolocation.getCurrentPosition(
-                                async (pos) => {
-                                    const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                                    // If token exists, sync to DB
-                                    if (token) {
-                                        await fetch("/api/notifications/subscribe", {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({
-                                                token: token,
-                                                deviceType: "web",
-                                                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                                                userLocation: loc
-                                            }),
-                                        });
-                                    }
-                                    alert("Location updated successfully!");
-                                    setLoading(false);
-                                },
-                                (err) => {
-                                    alert("Error: " + err.message);
-                                    setLoading(false);
-                                }
-                            );
-                        }}
-                        className="bg-purple-600 px-4 py-2 rounded text-sm text-white disabled:opacity-50"
-                        disabled={loading}
-                    >
-                        Detect & Sync My Location
-                    </button>
-                </div>
-
-                <div className="border p-4 rounded-lg border-gray-700">
                     <h2 className="font-semibold mb-2">3. Force Test Notification</h2>
                     <p className="text-sm text-gray-400 mb-2">
                         Sends an immediate high-priority notification to a specific token.
