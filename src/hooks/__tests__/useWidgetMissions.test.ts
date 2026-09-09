@@ -3,6 +3,7 @@
  */
 import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import { DateUtils } from "@/lib/utils/date";
 import { useWidgetMissions } from "../useWidgetMissions";
 
 vi.mock("next-auth/react", () => ({
@@ -44,7 +45,7 @@ describe("useWidgetMissions Friday handling", () => {
     });
 
     it("syncs prayer completion correctly between prayer check-in and mission list", () => {
-        const todayStr = new Date().toISOString().split("T")[0];
+        const todayStr = DateUtils.today();
         const completedMissions = [
             { id: "fajr_prayer", completedAt: todayStr }
         ];
