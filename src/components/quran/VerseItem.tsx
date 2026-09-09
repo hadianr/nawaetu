@@ -73,7 +73,7 @@ function isVerseWord(word: unknown): word is VerseWord {
 // In quran-utils, cleanTajweedText wasn't exported.
 // Note: We need to export cleanTajweedText from sanitize or rename if needed.
 // Wait, cleanTajweedText is imported from sanitize in VerseList.
-import { cleanTajweedText as sanitizeTajweedText } from "@/lib/sanitize";
+import { cleanTajweedText as sanitizeTajweedText, sanitizePlainText } from "@/lib/sanitize";
 import { useState } from "react";
 
 export default function VerseItem({
@@ -262,8 +262,8 @@ export default function VerseItem({
                                             </span>
                                         )}
                                         {word.translation?.text && (
-                                            <span className="text-[9px] md:text-[10px] text-slate-400 text-center leading-tight max-w-[90px] group-hover:text-slate-200 line-clamp-2" title={word.translation.text.replace(/<[^>]*>?/gm, '')}>
-                                                {word.translation.text.replace(/<[^>]*>?/gm, '')}
+                                            <span className="text-[9px] md:text-[10px] text-slate-400 text-center leading-tight max-w-[90px] group-hover:text-slate-200 line-clamp-2" title={sanitizePlainText(word.translation.text)}>
+                                                {sanitizePlainText(word.translation.text)}
                                             </span>
                                         )}
                                     </div>
