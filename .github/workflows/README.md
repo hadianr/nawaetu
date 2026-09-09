@@ -13,6 +13,14 @@ Posts ESLint findings as review comments on changed lines in pull requests.
 Runs GitHub CodeQL security analysis on pull requests, pushes to `main`, and
 weekly on Mondays.
 
+### `dependency-review.yml`
+Checks dependency changes in pull requests for known vulnerabilities and
+unsupported licenses.
+
+### Dependabot
+`.github/dependabot.yml` opens weekly update pull requests for npm packages and
+GitHub Actions.
+
 ### `release.yml`
 Handles automated releases when a new version tag is pushed.
 
