@@ -35,6 +35,26 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 let messaging: Messaging | undefined;
 
+function messageContainsHost(message: string, expectedHost: string): boolean {
+    const urlMatches = message.match(/https?:\/\/[^\s"']+/g);
+    if (!urlMatches) {
+        return false;
+    }
+
+    for (const rawUrl of urlMatches) {
+        try {
+            const parsed = new URL(rawUrl);
+            if (parsed.hostname === expectedHost) {
+                return true;
+            }
+        } catch {
+            // Ignore malformed URL fragments in error messages
+        }
+    }
+
+    return false;
+}
+
 /**
  * Lazy initialize messaging - only when user explicitly enables notifications
  * This prevents premature permission requests on mobile browsers
@@ -198,7 +218,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
             message.includes("Browser belum siap") ||
             message.includes("Izin notifikasi ditolak") ||
             message.includes("Peramban Anda tidak mendukung") ||
-            message.includes("firebaseinstallations.googleapis.com") ||
+            messageContainsHost(message, "firebaseinstallations.googleapis.com") ||
             message.includes("Registration failed - push service error") ||
             message.includes("no active Service Worker") ||
             message.includes("Subscription failed") ||
