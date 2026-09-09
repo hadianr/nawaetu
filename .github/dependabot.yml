@@ -9,6 +9,9 @@ updates:
     directory: /
     patterns:
       - '*'
+    ignore:
+      - dependency-name: typescript
+        versions: [">= 7.0.0"]
     open-pull-requests-limit: 1
     multi-ecosystem-group: routine-dependencies
 
