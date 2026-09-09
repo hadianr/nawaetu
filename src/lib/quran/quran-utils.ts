@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { sanitizeRichText } from "@/lib/sanitize";
+
 export const toArabicNumber = (n: number) => n.toString().replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
 
 export const formatFootnotes = (htmlText: string) => {
@@ -35,7 +37,7 @@ export const cleanTranslation = (text: string) => {
     cleaned = cleaned.replace(/^\s*[0O]\s+/, '').replace(/^\s*[0O]\./, '');
     // Remove trailing isolated verse numbers only
     cleaned = cleaned.replace(/\s*[\(\[]?\d{1,3}[\)\]]?\s*$/g, '');
-    return formatFootnotes(cleaned.trim());
+    return sanitizeRichText(formatFootnotes(cleaned.trim()));
 };
 
 export const cleanIndopakText = (text: string) => {

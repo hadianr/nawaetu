@@ -17,7 +17,18 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { cleanTajweedText } from './sanitize';
+import { cleanTajweedText, sanitizePlainText, sanitizeRichText } from './sanitize';
+
+describe('generic sanitizers', () => {
+    it('keeps only approved rich-text tags', () => {
+        expect(sanitizeRichText('<p>Safe</p><script>alert(1)</script><a href="x">link</a>'))
+            .toBe('<p>Safe</p>link');
+    });
+
+    it('returns external HTML as plain text', () => {
+        expect(sanitizePlainText('<img src=x onerror="alert(1)">Safe')).toBe('Safe');
+    });
+});
 
 describe('cleanTajweedText', () => {
     it('should allow safe tajweed HTML', () => {

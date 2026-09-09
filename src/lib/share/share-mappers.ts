@@ -6,6 +6,7 @@
  */
 
 import { ShareableCardData } from "./story-card-renderer";
+import { sanitizePlainText } from "@/lib/sanitize";
 
 export interface HadithLike {
     id: string;
@@ -91,8 +92,7 @@ export function mapQuranVerseToShareData(
         verse.translations?.find((t) => t.resource_id === 33) ||
         verse.translations?.[0];
     const rawTranslation = translationObj?.text || "";
-    const cleanTranslation = rawTranslation
-        .replace(/<[^>]*>?/gm, "")
+    const cleanTranslation = sanitizePlainText(rawTranslation)
         .replace(/(\d+)(?=\s|$|[.,;])/g, "")
         .replace(/(\w)(\d+)/g, "$1")
         .trim();

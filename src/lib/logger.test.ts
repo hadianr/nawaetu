@@ -31,7 +31,10 @@ describe("logger", () => {
 
   it("uses the development info path and production Sentry paths", () => {
     logger.info("development");
-    expect(console.log).toHaveBeenCalledWith("[INFO] development", "");
+    expect(console.log).toHaveBeenCalledWith("[INFO]", "development", "");
+
+    logger.info("%s user input", { route: "/test" });
+    expect(console.log).toHaveBeenCalledWith("[INFO]", "%s user input", { route: "/test" });
 
     vi.stubEnv("NODE_ENV", "production");
     logger.error("production error", new Error("boom"));

@@ -18,6 +18,20 @@
 
 import DOMPurify from 'isomorphic-dompurify';
 
+const RICH_TEXT_TAGS = ['p', 'h3', 'ul', 'ol', 'li', 'strong', 'em', 'sup', 'br'];
+
+export const sanitizeRichText = (htmlText: string) =>
+    DOMPurify.sanitize(htmlText, {
+        ALLOWED_TAGS: RICH_TEXT_TAGS,
+        ALLOWED_ATTR: []
+    });
+
+export const sanitizePlainText = (htmlText: string) =>
+    DOMPurify.sanitize(htmlText, {
+        ALLOWED_TAGS: [],
+        ALLOWED_ATTR: []
+    });
+
 export const cleanTajweedText = (htmlText: string) => {
     if (!htmlText) return '';
 
