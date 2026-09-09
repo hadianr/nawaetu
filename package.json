@@ -79,7 +79,7 @@
     "minimatch@3.1.5": {
       "brace-expansion": "^2.0.1"
     },
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.4",
     "gaxios": "^7.2.0",
     "postcss": "^8.5.20",
     "retry-request": "^8.0.3",
