@@ -5,13 +5,49 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
+  quality:
+    name: Validate release quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests and coverage
+        run: npm run test:coverage
+
+      - name: Production build
+        run: npm run build
+
   release:
+    needs: quality
     runs-on: ubuntu-latest
     
     permissions:
       contents: write
-      packages: write
 
     steps:
       - name: Checkout code
