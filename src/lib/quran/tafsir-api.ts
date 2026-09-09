@@ -19,6 +19,7 @@
 import { getStorageService } from "@/core/infrastructure/storage";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { API_CONFIG } from "@/config/apis";
+import { sanitizePlainText, sanitizeRichText } from "@/lib/sanitize";
 
 export interface TafsirContent {
     short: string;
@@ -90,12 +91,13 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
 
             // Keep full text for display in modal
             // Extract first paragraph as summary/preview
-            const firstPara = tafsirText.split('</p>')[0];
-            const preview = firstPara.replace(/<[^>]*>/g, '').trim();
+            const safeTafsirText = sanitizeRichText(tafsirText);
+            const firstPara = safeTafsirText.split('</p>')[0];
+            const preview = sanitizePlainText(firstPara).trim();
 
             content = {
                 short: preview,
-                long: tafsirText
+                long: safeTafsirText
             };
         } else {
             // 2b. Fetch Indonesian tafsir from Kemenag API

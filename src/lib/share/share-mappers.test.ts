@@ -98,6 +98,11 @@ describe("content share mappers", () => {
       latin: "",
       translation: "",
     });
+
+    expect(mapQuranVerseToShareData({
+      verse_key: "1:1",
+      translations: [{ text: '<img src=x onerror="alert(1)">Safe' }],
+    }, "Al-Fatihah", 1).translation).toBe("Safe");
   });
 
   it("maps daily spirit content using explicit values before fallbacks", () => {

@@ -93,7 +93,7 @@ class Logger {
     try {
       const payload = this.buildPayload("info", message, undefined, context);
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[INFO] ${message}`, context ?? "");
+        console.log("[INFO]", message, context ?? "");
       } else if (typeof window === "undefined") {
         // server-side production: console.warn passes SWC removeConsole filter
         console.warn(this.serialize(payload));

@@ -594,24 +594,51 @@ function renderBookmarksView() {
         return;
     }
 
-    let html = '';
+    versesContainer.replaceChildren();
     bookmarks.forEach(b => {
-        html += `
-            <div class="verse-item">
-                <div class="verse-header">
-                    <span style="color: var(--text-dim);">${b.surah}</span>
-                    <div class="verse-num-badge">${b.key.split(':')[1]}</div>
-                </div>
-                <div class="verse-text">${b.text}</div>
-                <div class="verse-translation">${b.translation}</div>
-                <div class="verse-actions">
-                    <button class="verse-btn btn-save saved" data-key="${b.key}" data-surah="${b.surah}" data-text="${b.text}" data-trans="${b.translation}">⭐ Tersimpan</button>
-                    <button class="verse-btn" onclick="loadQuranDetail(${b.key.split(':')[0]}, '${b.surah}')">📖 Buka Surah</button>
-                </div>
-            </div>
-        `;
+        const key = String(b.key ?? '');
+        const [surahNumber, verseNumber] = key.split(':');
+        const safeSurahNumber = Number.parseInt(surahNumber, 10);
+        const item = document.createElement('div');
+        item.className = 'verse-item';
+
+        const header = document.createElement('div');
+        header.className = 'verse-header';
+        const surah = document.createElement('span');
+        surah.style.color = 'var(--text-dim)';
+        surah.textContent = String(b.surah ?? '');
+        const number = document.createElement('div');
+        number.className = 'verse-num-badge';
+        number.textContent = verseNumber || '';
+        header.append(surah, number);
+
+        const text = document.createElement('div');
+        text.className = 'verse-text';
+        text.textContent = String(b.text ?? '');
+        const translation = document.createElement('div');
+        translation.className = 'verse-translation';
+        translation.textContent = String(b.translation ?? '');
+
+        const actions = document.createElement('div');
+        actions.className = 'verse-actions';
+        const saveButton = document.createElement('button');
+        saveButton.className = 'verse-btn btn-save saved';
+        saveButton.dataset.key = key;
+        saveButton.dataset.surah = String(b.surah ?? '');
+        saveButton.dataset.text = String(b.text ?? '');
+        saveButton.dataset.trans = String(b.translation ?? '');
+        saveButton.textContent = '⭐ Tersimpan';
+
+        const openButton = document.createElement('button');
+        openButton.className = 'verse-btn btn-open-surah';
+        openButton.dataset.surahNumber = Number.isFinite(safeSurahNumber) ? String(safeSurahNumber) : '';
+        openButton.dataset.surahName = String(b.surah ?? '');
+        openButton.textContent = '📖 Buka Surah';
+
+        actions.append(saveButton, openButton);
+        item.append(header, text, translation, actions);
+        versesContainer.appendChild(item);
     });
-    versesContainer.innerHTML = html;
     detailContainer.scrollTo(0, 0);
 
     versesContainer.querySelectorAll('.btn-save').forEach(btn => {
@@ -622,6 +649,13 @@ function renderBookmarksView() {
                 e.target.closest('.verse-item').style.display = 'none';
             }
         };
+    });
+
+    versesContainer.querySelectorAll('.btn-open-surah').forEach(btn => {
+        btn.onclick = () => loadQuranDetail(
+            Number.parseInt(btn.dataset.surahNumber || '', 10),
+            btn.dataset.surahName || ''
+        );
     });
 }
 
