@@ -39,6 +39,20 @@ export default function SWUpdatePrompt() {
             return;
         }
 
+        // PWA is disabled in development. Remove a production worker left on
+        // localhost so its old precache manifest cannot request deleted chunks.
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            void (async () => {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                const cacheNames = "caches" in window ? await caches.keys() : [];
+                if (!registrations.length && !cacheNames.length) return;
+                await Promise.all(registrations.map((registration) => registration.unregister()));
+                if ("caches" in window) await Promise.all(cacheNames.map((name) => caches.delete(name)));
+                window.location.reload();
+            })().catch(() => undefined);
+            return;
+        }
+
         // Service workers are optional. Safari and restricted browsers may
         // reject /sw.js; keep that failure from becoming an application error.
         const registrationPromise = navigator.serviceWorker.register("/sw.js").catch(() => null);

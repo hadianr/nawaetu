@@ -18,64 +18,9 @@
 
 import type { Metadata, Viewport } from "next";
 import { APP_CONFIG } from "@/config/app-config";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
-
-// Optimize font loading with fallback and preload
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
-  adjustFontFallback: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false, // Only preload primary font
-  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-  adjustFontFallback: true,
-});
-
-import { Amiri, Lateef, Lora } from "next/font/google";
-
-// Arabic fonts - only load when needed
-const amiri = Amiri({
-  variable: "--font-amiri",
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  display: "swap",
-  preload: false,
-  fallback: ['serif'],
-  adjustFontFallback: true,
-});
-
-const lateef = Lateef({
-  variable: "--font-lateef",
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  display: "swap",
-  preload: false,
-  fallback: ['serif'],
-  adjustFontFallback: true,
-});
-
-// Prose serif font for Sirah reader body text
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-  preload: false,
-  fallback: ["Georgia", "serif"],
-  adjustFontFallback: true,
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -260,9 +205,6 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning>
       <head>
         {/* Resource Hints - Preconnect to critical origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
@@ -288,7 +230,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${lateef.variable} ${lora.variable} antialiased`}
+        className="antialiased"
         suppressHydrationWarning
       >
         <Toploader />

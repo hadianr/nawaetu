@@ -82,45 +82,6 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
 
-  // Webpack optimizations
-  webpack: (config, { dev, isServer }) => {
-    // Production optimizations
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        moduleIds: 'deterministic',
-        usedExports: true, // Enable tree-shaking for unused code removal
-        sideEffects: false,
-        minimize: true,
-        minimizer: config.optimization.minimizer || [],
-        splitChunks: {
-          chunks: 'all',
-          maxInitialRequests: 25,
-          maxAsyncRequests: 25,
-          minSize: 40000, // Increase min size to prevent too many small chunks
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            framework: {
-              name: 'framework',
-              test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription|next|@babel[\\/]runtime)[\\/]/,
-              priority: 40,
-              enforce: true,
-            },
-            lib: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendor',
-              priority: 20,
-              minChunks: 1,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-      };
-    }
-    return config;
-  },
-
   // Force SW to not cache + Static security headers (moved from middleware for zero per-request CPU cost)
   async headers() {
     // Shared security headers applied to ALL routes
