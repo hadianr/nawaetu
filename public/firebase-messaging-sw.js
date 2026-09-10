@@ -51,7 +51,7 @@ try {
 
         // FCM automatically displays background messages containing a
         // notification payload. Only data-only messages need manual display.
-        if (payload.notification || !payload.data) return;
+        if (payload.notification || !payload.data?.title || !payload.data?.body) return;
 
         const title = payload.data.title || 'Nawaetu';
         const body = payload.data.body || '';

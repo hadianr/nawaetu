@@ -23,7 +23,6 @@ import { Suspense } from "react";
 
 // Progressively load non-visual global elements
 const NotificationWatcher = dynamic(() => import("@/components/NotificationWatcher"), { ssr: false });
-const FCMHandler = dynamic(() => import("@/components/FCMHandler"), { ssr: false });
 const AnalyticsLoader = dynamic(() => import("@/components/AnalyticsLoader"), { ssr: false });
 const DataSyncer = dynamic(() => import("@/components/DataSyncer"), { ssr: false });
 const OfflineIndicator = dynamic(() => import("@/components/OfflineIndicator"), { ssr: false });
@@ -35,7 +34,6 @@ export default function DeferredLayoutComponents() {
             <AnalyticsLoader />
             <DataSyncer />
             <NotificationWatcher />
-            <FCMHandler />
         </Suspense>
     );
 }
