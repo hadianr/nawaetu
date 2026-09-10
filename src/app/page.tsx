@@ -19,7 +19,7 @@
 import { Metadata } from "next";
 
 // Client component entry point
-import HomeClient from "@/components/home/HomeClient";
+import HomeEntry from "@/components/home/HomeEntry";
 
 export const metadata: Metadata = {
   title: "Nawaetu - #NiatAjaDulu | Habit Tracker Ibadah dengan Gamifikasi",
@@ -42,10 +42,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Keep the entry document server-rendered so Next does not emit its static
-// export CSS-as-script preload for this route.
-export const dynamic = "force-dynamic";
-
 export default function Home() {
-  return <HomeClient />;
+  return <HomeEntry />;
 }
