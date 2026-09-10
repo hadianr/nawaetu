@@ -337,7 +337,7 @@ export async function POST(req: NextRequest) {
                                 data: {
                                     type: "prayer_alert",
                                     prayer: activePrayer,
-                                    url: "/jadwal-sholat" // Open specific page
+                                    url: "/" // Open the home page
                                 },
                                 // CRITICAL for iOS Safari PWA & macOS
                                 apns: {
@@ -372,11 +372,11 @@ export async function POST(req: NextRequest) {
                                         renotify: true,
                                         vibrate: [200, 100, 200],
                                         data: {
-                                            url: "/jadwal-sholat"
+                                            url: "/"
                                         }
                                     },
                                     fcmOptions: {
-                                        link: new URL("/jadwal-sholat", req.url).toString()
+                                        link: new URL("/", req.url).toString()
                                     }
                                 },
                                 android: {

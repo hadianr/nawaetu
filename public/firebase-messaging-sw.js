@@ -95,7 +95,9 @@ self.addEventListener('notificationclick', function (event) {
     console.log('[SW] Notification clicked:', event.notification.tag);
     event.notification.close();
 
-    const targetUrl = event.notification.data?.url || '/jadwal-sholat';
+    const targetUrl = event.notification.data?.url === '/jadwal-sholat'
+        ? '/'
+        : event.notification.data?.url || '/';
 
     // Standard PWA Window Open/Focus logic
     event.waitUntil(
