@@ -212,7 +212,12 @@ export default function PrayerCheckInWidget() {
         }
 
         const isActive = minsFromStart >= 0 && minsFromStart < 240;
-        return { isActive, isUpcoming: false, isLate: minsFromStart > 180 && isActive, isFuture: false };
+        return {
+            isActive,
+            isUpcoming: false,
+            isLate: minsFromStart >= 240 || (minsFromStart > 180 && isActive),
+            isFuture: false,
+        };
     };
 
     const doComplete = (missionId: string, hasanahReward: number) => {
@@ -277,6 +282,8 @@ export default function PrayerCheckInWidget() {
             });
             return;
         }
+
+        if (status.isLate && !isBackdated) return;
 
         if (isSunnah) {
             // Sunnah points are smaller or fixed
@@ -394,7 +401,7 @@ export default function PrayerCheckInWidget() {
                             prayer.endKey,
                             Boolean("isQobliyah" in prayer && prayer.isQobliyah),
                         );
-                        const isLocked = isFuture && !done;
+                        const isLocked = (isFuture || (isLate && !isBackdated)) && !done;
 
                         return (
                             <button
@@ -550,7 +557,7 @@ export default function PrayerCheckInWidget() {
                                         prayer.endKey,
                                         Boolean("isQobliyah" in prayer && prayer.isQobliyah),
                                     );
-                                    const isLocked = isFuture && !done;
+                                    const isLocked = (isFuture || (isLate && !isBackdated)) && !done;
 
                                     return (
                                         <button

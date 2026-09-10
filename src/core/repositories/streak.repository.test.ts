@@ -17,6 +17,7 @@ vi.mock("@/lib/habits/leveling", () => ({ addHasanah }));
 
 import {
   LocalStreakRepository,
+  getDisplayStreakForData,
   STREAK_ACHIEVEMENT_EVENT,
   type StreakAchievementEventDetail,
 } from "./streak.repository";
@@ -28,6 +29,17 @@ describe("LocalStreakRepository achievements", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-30T12:00:00"));
     vi.stubGlobal("window", new EventTarget());
+  });
+
+  it("resets the displayed streak to zero after a missed day", () => {
+    expect(getDisplayStreakForData({
+      currentStreak: 4,
+      longestStreak: 4,
+      lastActiveDate: "2026-08-28",
+      milestones: [3],
+      freezesAvailable: 0,
+      protectedDates: [],
+    })).toEqual({ streak: 0, isActiveToday: false, isLost: true });
   });
 
   it("emits one persisted milestone celebration and never repeats it the same day", () => {
