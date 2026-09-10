@@ -40,6 +40,22 @@ export interface StreakAchievementEventDetail {
 
 export const STREAK_ACHIEVEMENT_EVENT = 'streak_achievement';
 
+export function getDisplayStreakForData(data: StreakData): { streak: number; isActiveToday: boolean; isLost: boolean } {
+  const today = DateUtils.today();
+  const yesterday = DateUtils.yesterday();
+  const isActiveToday = data.lastActiveDate === today;
+
+  if (data.lastActiveDate === yesterday || isActiveToday) {
+    return { streak: data.currentStreak, isActiveToday, isLost: false };
+  }
+
+  return {
+    streak: 0,
+    isActiveToday: false,
+    isLost: Boolean(data.lastActiveDate && data.longestStreak > 0),
+  };
+}
+
 export const STREAK_MILESTONES: StreakMilestone[] = [
   { days: 3, xp: 50, label: '3 Hari Konsisten', icon: '🔥' },
   { days: 7, xp: 100, label: 'Seminggu Istiqomah', icon: '🔥' },
@@ -145,21 +161,7 @@ export class LocalStreakRepository implements StreakRepository {
   }
 
   getDisplayStreak(): { streak: number; isActiveToday: boolean; isLost: boolean } {
-    const today = DateUtils.today();
-    const yesterday = DateUtils.yesterday();
-    const data = this.getStreak();
-
-    const isActiveToday = data.lastActiveDate === today;
-
-    if (data.lastActiveDate === yesterday || isActiveToday) {
-      return { streak: data.currentStreak, isActiveToday, isLost: false };
-    }
-
-    return {
-      streak: 0,
-      isActiveToday: false,
-      isLost: Boolean(data.lastActiveDate && data.longestStreak > 0),
-    };
+    return getDisplayStreakForData(this.getStreak());
   }
 
   resetStreak(): void {

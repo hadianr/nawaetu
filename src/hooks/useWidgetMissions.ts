@@ -126,6 +126,7 @@ export function useWidgetMissions(completedMissions: { id: string; completedAt: 
             if (m.id === 'daily_intention' || m.id === 'daily_reflection') return false;
             // Prayer completion already has a dedicated home check-in surface.
             if (m.category === 'prayer') return false;
+            if (!isMissionCompleted(m.id, m.type) && checkMissionValidation(m, prayerData).isLate) return false;
             if (isRamadhan) return m.phase !== 'ramadhan_prep';
             return m.phase !== 'ramadhan_during';
         })

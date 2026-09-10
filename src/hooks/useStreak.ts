@@ -20,13 +20,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   getStreakRepository,
+  getDisplayStreakForData,
   STREAK_MILESTONES,
   StreakData,
   StreakMilestone
 } from '@/core/repositories/streak.repository';
 import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
-import { DateUtils } from '@/lib/utils/date';
 import { rebuildStreakState } from '@/lib/habits/progression';
 
 interface CanonicalProgression {
@@ -70,9 +70,11 @@ export function useStreak() {
             .map((day: { localDate: string }) => day.localDate),
         },
         display: {
-          streak: currentStreak,
-          isActiveToday: lastActiveDate === DateUtils.today(),
-          isLost: false,
+          ...getDisplayStreakForData({
+            ...local,
+            currentStreak,
+            lastActiveDate,
+          }),
         },
       };
     }
