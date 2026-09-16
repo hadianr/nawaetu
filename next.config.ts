@@ -38,6 +38,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // Permit the loopback host used by local browsers to connect to HMR.
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
+
   // Transpile packages that use @babel/runtime to prevent chunk loading issues
   transpilePackages: ['framer-motion'],
   serverExternalPackages: ["isomorphic-dompurify"],

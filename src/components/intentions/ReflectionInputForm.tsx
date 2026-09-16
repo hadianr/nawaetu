@@ -20,7 +20,7 @@
 
 import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
@@ -36,7 +36,7 @@ interface ReflectionInputFormProps {
 export default function ReflectionInputForm({ onComplete, userToken, intentionId, intentionText }: ReflectionInputFormProps) {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const RATING_LABELS = [
         { emoji: "😔", label: t.niat_rating_struggled, color: "text-red-400" },

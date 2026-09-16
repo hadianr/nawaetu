@@ -15,7 +15,7 @@
 
 import { useMemo } from "react";
 import { Verse } from "@/components/quran/VerseList";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { StoryShareModal } from "@/components/StoryShareModal";
 import { mapQuranVerseToShareData } from "@/lib/share/share-mappers";
 
@@ -35,7 +35,7 @@ export default function VerseShareDialog({
     surahNumber,
 }: VerseShareDialogProps) {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const shareData = useMemo(() => {
         if (!verse) return null;

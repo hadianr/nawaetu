@@ -64,37 +64,37 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
 
     return (
         <div className="fixed bottom-20 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-10 fade-in duration-700">
-            <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl relative overflow-hidden">
+            <div className="bg-[rgb(var(--color-surface))]/95 backdrop-blur-xl border border-[rgb(var(--color-border))]/30 p-4 rounded-2xl shadow-[var(--shadow-floating)] relative overflow-hidden text-[rgb(var(--color-text))]">
                 {/* Background Noise */}
                 <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none"></div>
 
                 <button
                     onClick={handleDismiss}
-                    className="absolute top-2 right-2 p-3 bg-white/5 rounded-full hover:bg-white/10 active:scale-90 transition-all z-20 cursor-pointer touch-manipulation flex items-center justify-center"
+                    className="absolute top-2 right-2 p-3 bg-[rgb(var(--color-surface-subtle))] rounded-full hover:bg-[rgb(var(--color-surface-subtle))]/80 active:scale-90 transition-all z-20 cursor-pointer touch-manipulation flex items-center justify-center"
                     aria-label="Close"
                 >
-                    <X className="w-5 h-5 text-slate-300" />
+                    <X className="w-5 h-5 text-[rgb(var(--color-text-muted))]" />
                 </button>
 
                 <div className="relative z-10 flex gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[rgb(var(--color-primary))] to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                        <span className="text-xl font-bold text-white">N</span>
+                    <div className="w-12 h-12 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                        <span className="text-xl font-bold text-[rgb(var(--color-primary-foreground))]">N</span>
                     </div>
 
                     <div className="flex-1">
-                        <h3 className="font-bold text-white text-sm">{t.pwaInstallTitle}</h3>
-                        <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                        <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm">{t.pwaInstallTitle}</h3>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))] mt-1 leading-relaxed">
                             {t.pwaInstallDesc}
                         </p>
 
                         {isIOS ? (
-                            <div className="mt-3 space-y-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                                <div className="flex items-center gap-2 text-xs text-slate-300">
-                                    <span className="flex items-center justify-center w-5 h-5 bg-white/10 rounded-md">1</span>
+                            <div className="mt-3 space-y-2 bg-[rgb(var(--color-surface-subtle))]/70 p-2 rounded-lg border border-[rgb(var(--color-border))]/20">
+                                <div className="flex items-center gap-2 text-xs text-[rgb(var(--color-text))]">
+                                    <span className="flex items-center justify-center w-5 h-5 bg-[rgb(var(--color-border))]/20 rounded-md">1</span>
                                     <span>{t.pwaInstallIosStep1} <Share className="w-3 h-3 inline mx-1" /></span>
                                 </div>
-                                <div className="flex items-center gap-2 text-xs text-slate-300">
-                                    <span className="flex items-center justify-center w-5 h-5 bg-white/10 rounded-md">2</span>
+                                <div className="flex items-center gap-2 text-xs text-[rgb(var(--color-text))]">
+                                    <span className="flex items-center justify-center w-5 h-5 bg-[rgb(var(--color-border))]/20 rounded-md">2</span>
                                     <span>{t.pwaInstallIosStep2} <PlusSquare className="w-3 h-3 inline mx-1" /></span>
                                 </div>
                             </div>
@@ -109,13 +109,13 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                                         // User can try again or dismiss manually
                                     }
                                 }}
-                                className="mt-3 w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white font-bold h-9 text-xs"
+                                className="mt-3 w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] font-bold h-9 text-xs"
                             >
                                 <Download className="w-3 h-3 mr-2" />
                                 {t.pwaInstallButton}
                             </Button>
                         ) : (
-                            <div className="mt-3 space-y-2 bg-black/20 p-2 rounded-lg border border-white/5 text-xs text-slate-300">
+                            <div className="mt-3 space-y-2 bg-[rgb(var(--color-surface-subtle))]/70 p-2 rounded-lg border border-[rgb(var(--color-border))]/20 text-xs text-[rgb(var(--color-text))]">
                                 <p>{t.pwaInstallManualTitle}</p>
                                 <p>{t.pwaInstallManualDesc}</p>
                             </div>

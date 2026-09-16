@@ -35,14 +35,14 @@ interface LanguageCardProps {
 
 export default function LanguageCard({ t, locale, handleLocaleChange }: LanguageCardProps) {
     return (
-        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
             <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                <span className="text-sm font-semibold text-white">{t.languageTitle}</span>
+                <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.languageTitle}</span>
             </div>
 
             <Select value={locale} onValueChange={handleLocaleChange}>
-                <SelectTrigger className="w-full bg-white/5 border-white/10 text-white h-11">
+                <SelectTrigger className="w-full bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-strong))] h-11">
                     <SelectValue placeholder="Bahasa Indonesia">
                         {locale && LANGUAGE_OPTIONS.find(l => l.id === locale) ? (
                             <span className="flex items-center gap-2">
@@ -57,13 +57,13 @@ export default function LanguageCard({ t, locale, handleLocaleChange }: Language
                         )}
                     </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-white/10">
+                <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">
                     {LANGUAGE_OPTIONS.map((lang) => (
                         <SelectItem
                             key={lang.id}
                             value={lang.id}
                             textValue={lang.label}
-                            className="text-white text-sm hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors"
+                            className="text-[rgb(var(--color-text))] text-sm hover:bg-[rgb(var(--color-surface-subtle))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))] cursor-pointer transition-colors"
                         >
                             <span className="flex items-center gap-2">
                                 <span className="text-lg">{lang.flag}</span>

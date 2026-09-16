@@ -9,14 +9,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Award, CheckCircle2, XCircle, Sparkles, BookOpen, Home } from "lucide-react";
 import { getRandomSirahQuestions, type SirahQuizItem } from "@/data/sirah/quiz-questions";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 export default function SirahQuizPage() {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const [questions, setQuestions] = useState<SirahQuizItem[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -80,7 +80,7 @@ export default function SirahQuizPage() {
 
     const incorrectQuestions = questions.filter((q, idx) => userAnswers[idx] !== q.correctIndex);    return (
         <div className={cn(
-            "min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
+            "sirah-quiz-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
             isDaylight ? "text-slate-900" : "text-white"
         )}>
             {/* Header / Back Link */}

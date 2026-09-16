@@ -9,14 +9,14 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, Bookmark } from "lucide-react";
 import { getSirahChapterBySlug, getSirahSectionsByChapterSlug } from "@/data/sirah";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 export default function SirahChapterDetailPage({ params }: { params: Promise<{ chapterSlug: string }> }) {
     const { chapterSlug } = use(params);
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
     const [bookmarkedSectionIds, setBookmarkedSectionIds] = useState<string[]>([]);
 
@@ -43,7 +43,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
 
     return (
         <div className={cn(
-            "min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-3xl mx-auto space-y-6 transition-colors",
+            "sirah-detail-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-3xl mx-auto space-y-6 transition-colors",
             isDaylight ? "text-slate-900" : "text-white"
         )}>
             {/* Header / Back Link */}

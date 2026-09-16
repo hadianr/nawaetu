@@ -32,7 +32,7 @@ export function IslamicSubTabBar({ activeTab, isDaylight, t }: IslamicSubTabBarP
                 className={cn(
                     "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
                     activeTab === "hadith"
-                        ? "bg-emerald-500 text-white shadow-md"
+                        ? "bg-[rgb(var(--color-primary))] text-white shadow-md"
                         : isDaylight
                             ? "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                             : "text-white/60 hover:text-white hover:bg-white/5"
@@ -46,7 +46,7 @@ export function IslamicSubTabBar({ activeTab, isDaylight, t }: IslamicSubTabBarP
                 className={cn(
                     "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
                     activeTab === "dua"
-                        ? "bg-amber-500 text-white shadow-md"
+                        ? "bg-[rgb(var(--color-primary))] text-white shadow-md"
                         : isDaylight
                             ? "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                             : "text-white/60 hover:text-white hover:bg-white/5"

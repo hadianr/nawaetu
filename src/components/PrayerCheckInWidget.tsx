@@ -32,7 +32,7 @@ import { calculateHasanahReward } from "@/lib/utils/hasanah";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useDataSync } from "@/hooks/useDataSync";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { APP_EVENTS } from "@/lib/constants/events";
 import { getPrayerMissionId, normalizeMissionId } from "@/lib/mission-resolver";
 import { DateUtils } from "@/lib/utils/date";
@@ -79,7 +79,7 @@ export default function PrayerCheckInWidget() {
     const { syncData } = useDataSync();
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
     const { data: prayerData, loading: prayerDataLoading } = usePrayerTimesContext();
 
@@ -283,8 +283,6 @@ export default function PrayerCheckInWidget() {
             return;
         }
 
-        if (status.isLate && !isBackdated) return;
-
         if (isSunnah) {
             // Sunnah points are smaller or fixed
             const hasanah = "hasanah" in prayer ? prayer.hasanah : 25;
@@ -310,7 +308,7 @@ export default function PrayerCheckInWidget() {
     return (
         <>
             <div className={cn(
-                "relative overflow-hidden rounded-2xl border backdrop-blur-md px-4 py-3.5 transition-all",
+                "prayer-checkin-widget relative overflow-hidden rounded-2xl border backdrop-blur-md px-4 py-3.5 transition-all",
                 isDaylight
                     ? "bg-white border-slate-200 shadow-sm shadow-slate-200/50"
                     : "bg-black/20 border-white/10"
@@ -401,7 +399,7 @@ export default function PrayerCheckInWidget() {
                             prayer.endKey,
                             Boolean("isQobliyah" in prayer && prayer.isQobliyah),
                         );
-                        const isLocked = (isFuture || (isLate && !isBackdated)) && !done;
+                        const isLocked = isFuture && !done;
 
                         return (
                             <button
@@ -557,7 +555,7 @@ export default function PrayerCheckInWidget() {
                                         prayer.endKey,
                                         Boolean("isQobliyah" in prayer && prayer.isQobliyah),
                                     );
-                                    const isLocked = (isFuture || (isLate && !isBackdated)) && !done;
+                                    const isLocked = isFuture && !done;
 
                                     return (
                                         <button

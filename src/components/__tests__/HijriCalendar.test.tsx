@@ -27,7 +27,13 @@ vi.mock("@/context/LocaleContext", async () => {
     const { hijriCalendarID } = await import("@/data/translations/id/hijri-calendar");
     return { useLocale: () => ({ locale: state.locale, t: state.locale === "id" ? hijriCalendarID : hijriCalendarEN }) };
 });
-vi.mock("@/context/ThemeContext", () => ({ useTheme: () => ({ currentTheme: state.theme }) }));
+vi.mock("@/context/ThemeContext", () => ({
+    THEMES: {
+        daylight: { mode: "light" },
+        default: { mode: "dark" },
+    },
+    useTheme: () => ({ currentTheme: state.theme }),
+}));
 vi.mock("@/context/PrayerTimesContext", () => ({
     usePrayerTimesContext: () => ({ data: { locationName: "Jakarta", hijriMonthNumber: 3 } }),
 }));

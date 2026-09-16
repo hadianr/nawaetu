@@ -30,7 +30,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import dynamic from "next/dynamic";
 import { Chapter } from "@/components/quran/SurahList";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 
 const VerseShareDialog = dynamic(() => import("./VerseShareDialog"), { ssr: false });
 const BookmarkEditDialog = dynamic(() => import("./BookmarkEditDialog"), { ssr: false });
@@ -92,7 +92,7 @@ interface VerseListProps {
 export default function VerseList({ chapter, verses, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
     const { t, locale: contextLocale } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     // --- State ---
     // Local reciter ID — updates immediately on change (without waiting for router.refresh())
@@ -487,7 +487,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                 <div className="text-center space-y-4 px-4">
                     <h2 className="text-lg font-bold text-red-500">⚠️ No Verses Found</h2>
                     <p className="text-slate-400 text-sm">Verses data is empty. This might be a loading error.</p>
-                    <Link href="/quran" className="inline-block px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors">
+                    <Link href="/quran" className="inline-block rounded-lg bg-[rgb(var(--color-primary))] px-6 py-2 font-semibold text-[rgb(var(--color-text-strong))] transition-colors hover:bg-[rgb(var(--color-primary-light))]">
                         Kembali ke Daftar Surah
                     </Link>
                 </div>
@@ -501,20 +501,20 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
 
                 {/* --- Sticky Header --- */}
                 <div className="sticky top-0 z-30 -mx-4 md:mx-0">
-                    <div className="absolute inset-0 bg-[#0F172A]/80 backdrop-blur-xl border-b border-white/5" />
+                    <div className={cn("absolute inset-0 backdrop-blur-xl border-b", isDaylight ? "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]" : "bg-[#0F172A]/80 border-white/5")} />
                     <div className="relative px-4 h-16 flex items-center justify-between gap-4">
                         {/* Left: Back & Title */}
                         <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Link href="/quran" className="flex items-center justify-center h-9 w-9 -ml-2 rounded-full hover:bg-white/10 transition-colors text-slate-300 hover:text-white shrink-0 p-0">
+                                    <Link href="/quran" className={cn("flex items-center justify-center h-9 w-9 -ml-2 rounded-full transition-colors shrink-0 p-0", isDaylight ? "hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]" : "hover:bg-white/10 text-slate-300 hover:text-white")}>
                                         <ChevronLeft className="h-6 w-6" />
                                     </Link>
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">{t.quranBack}</TooltipContent>
                             </Tooltip>
                             <div className="flex flex-col min-w-0">
-                                <h1 className="text-base md:text-lg font-bold text-white truncate leading-tight">
+                                <h1 className={cn("text-base md:text-lg font-bold truncate leading-tight", isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-white")}>
                                     {chapter.name_simple}
                                 </h1>
                                 <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
@@ -594,7 +594,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         <div key="tajweed-legend-mushaf" className={scriptType === 'tajweed' ? '' : 'hidden'}>
                             <TajweedLegend />
                         </div>
-                        <div className={`text-right ${getVerseFontClass(scriptType, fontSize)} text-slate-200`} dir="rtl">
+                        <div className={cn("text-right", getVerseFontClass(scriptType, fontSize), isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-slate-200")} dir="rtl">
                             {displayedVerses.map((verse) => (
                                 <span key={`mushaf-${verse.verse_key}`} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
                                     <span className={cn(

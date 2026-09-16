@@ -27,7 +27,7 @@ import type { Bookmark } from "@/lib/quran/bookmark-storage";
 import { removeBookmark } from "@/lib/quran/bookmark-storage";
 import { useState, useEffect } from "react";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 
@@ -46,7 +46,7 @@ export default function BookmarksPage() {
     useEffect(() => {
         trackFeatureUse("bookmarks_view");
     }, []);
-    const isDaylight = currentTheme === "daylight";
+const isDaylight = THEMES[currentTheme].mode === "light";
     const [mounted, setMounted] = useState(false);
 
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number } | null>(null);
@@ -94,7 +94,7 @@ export default function BookmarksPage() {
 
     return (
         <div className={cn(
-            "flex min-h-screen flex-col items-center px-4 pt-8 pb-nav font-sans sm:px-6 transition-colors",
+            "bookmarks-page flex min-h-screen flex-col items-center px-4 pt-8 pb-nav font-sans sm:px-6 transition-colors",
             isDaylight
                 ? "bg-[rgb(var(--color-background))]"
                 : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] text-white"

@@ -5,6 +5,7 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import PrayerTimeCard from "../PrayerTimeCard";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 vi.mock("next-auth/react", () => ({
     useSession: () => ({ data: { user: { gender: "male" } } }),
@@ -31,6 +32,9 @@ vi.mock("@/core/infrastructure/storage", () => ({
 }));
 
 describe("PrayerTimeCard", () => {
+    const renderCard = (props: React.ComponentProps<typeof PrayerTimeCard>) => render(
+        <ThemeProvider><PrayerTimeCard {...props} /></ThemeProvider>
+    );
     const mockPrayerTimes = {
         Imsak: "04:20",
         Fajr: "04:30",
@@ -41,12 +45,12 @@ describe("PrayerTimeCard", () => {
     };
 
     it("displays Jumat for male user on Friday", () => {
-        render(
-            <PrayerTimeCard
-                hijriDate="15 Safar 1447H"
-                gregorianDate="2026-07-24" // 2026-07-24 is Friday
-                prayerTimes={mockPrayerTimes}
-            />
+        renderCard(
+            {
+                hijriDate: "15 Safar 1447H",
+                gregorianDate: "2026-07-24", // 2026-07-24 is Friday
+                prayerTimes: mockPrayerTimes,
+            }
         );
 
         expect(screen.getByText("Jumat")).toBeInTheDocument();
@@ -54,12 +58,12 @@ describe("PrayerTimeCard", () => {
     });
 
     it("displays Dzuhur on non-Friday date", () => {
-        render(
-            <PrayerTimeCard
-                hijriDate="16 Safar 1447H"
-                gregorianDate="2026-07-23" // 2026-07-23 is Thursday
-                prayerTimes={mockPrayerTimes}
-            />
+        renderCard(
+            {
+                hijriDate: "16 Safar 1447H",
+                gregorianDate: "2026-07-23", // 2026-07-23 is Thursday
+                prayerTimes: mockPrayerTimes,
+            }
         );
 
         expect(screen.getByText("Dzuhur")).toBeInTheDocument();

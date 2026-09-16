@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,7 @@ export default function HomeHeader() {
     const [userName, setUserName] = useState("Sobat Nawaetu");
     const [greeting, setGreeting] = useState(t.homeGreetingWelcome);
     const [isMounted, setIsMounted] = useState(false);
-    const isDaylight = isMounted && currentTheme === "daylight";
+    const isDaylight = isMounted && THEMES[currentTheme].mode === "light";
 
     useEffect(() => {
         const hour = new Date().getHours();
@@ -66,7 +66,7 @@ export default function HomeHeader() {
             <div className="min-w-0 flex-1">
                 <p className={cn(
                     "text-[11px] font-medium uppercase tracking-widest sm:text-sm",
-                    isDaylight ? "text-emerald-600/80" : "text-[rgb(var(--color-primary-light))]/90",
+                    isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]/90",
                 )}>
                     {greeting}
                 </p>
@@ -82,14 +82,14 @@ export default function HomeHeader() {
                     className={cn(
                         "flex min-h-11 max-w-[130px] shrink-0 items-center gap-2 rounded-full border px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:max-w-[160px]",
                         isDaylight
-                            ? data?.isDefaultLocation ? "border-amber-200 bg-amber-50 hover:bg-amber-100" : "border-emerald-100 bg-emerald-50 hover:bg-emerald-100/70"
+                            ? data?.isDefaultLocation ? "border-amber-200 bg-amber-50 hover:bg-amber-100" : "border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary-light))]/45 hover:bg-[rgb(var(--color-primary-light))]/70"
                             : data?.isDefaultLocation ? "border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30" : "border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20",
                     )}
                 >
                     <NavigationIcon className={cn("h-3.5 w-3.5 shrink-0", data?.isDefaultLocation ? "text-amber-500" : "text-[rgb(var(--color-primary))]")} />
                     <span className={cn(
                         "truncate text-[10px] font-black uppercase tracking-widest",
-                        isDaylight ? data?.isDefaultLocation ? "text-amber-700" : "text-emerald-700" : data?.isDefaultLocation ? "text-amber-200" : "text-[rgb(var(--color-primary-light))]",
+                        isDaylight ? data?.isDefaultLocation ? "text-amber-700" : "text-[rgb(var(--color-primary-strong))]" : data?.isDefaultLocation ? "text-amber-200" : "text-[rgb(var(--color-primary-light))]",
                     )}>
                         {locationLabel ? data?.isDefaultLocation ? t.homeSetLocationNow : locationLabel : t.hijriCalendarYourLocation}
                     </span>

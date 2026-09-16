@@ -48,7 +48,8 @@ export default function SWUpdatePrompt() {
                 if (!registrations.length && !cacheNames.length) return;
                 await Promise.all(registrations.map((registration) => registration.unregister()));
                 if ("caches" in window) await Promise.all(cacheNames.map((name) => caches.delete(name)));
-                window.location.reload();
+                // Do not reload here: notification initialization may register
+                // a worker immediately after cleanup in development.
             })().catch(() => undefined);
             return;
         }

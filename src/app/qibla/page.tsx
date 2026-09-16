@@ -22,12 +22,12 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 const QiblaCompass = dynamic(() => import("@/components/QiblaCompass"), { ssr: false, loading: () => <div className="animate-pulse w-32 h-32 rounded-full border-4 border-primary/20" /> });
 import { trackKiblatView } from "@/lib/analytics/analytics";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 export default function QiblaPage() {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     useEffect(() => {
         trackKiblatView();
@@ -47,4 +47,3 @@ export default function QiblaPage() {
         </div>
     );
 }
-

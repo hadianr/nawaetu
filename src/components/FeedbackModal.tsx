@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
 import { useSession, signIn } from "next-auth/react";
 import { Bug, Lightbulb, Upload, X, ShieldAlert, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -41,9 +40,7 @@ const MAX_IMAGES_COUNT = 3;
 
 export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
     const { status } = useSession();
-    const isDaylight = currentTheme === "daylight";
     const isAuthenticated = status === "authenticated";
 
     // Form state
@@ -200,9 +197,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
         }}>
             <DialogContent className={cn(
                 "max-w-md w-[92%] rounded-[2rem] border p-0 overflow-hidden shadow-2xl [&>button]:z-50",
-                isDaylight
-                    ? "bg-white border-slate-200 text-slate-900"
-                    : "bg-[#0F172A] border-white/10 text-white"
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))]"
             )}>
                 {/* Gradient Header decor */}
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-primary))]/5 to-transparent pointer-events-none" />
@@ -214,7 +209,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                     </DialogTitle>
                     <DialogDescription className={cn(
                         "text-xs leading-relaxed pt-1",
-                        isDaylight ? "text-slate-500" : "text-white/60"
+                        "text-[rgb(var(--color-text-muted))]"
                     )}>
                         {t.feedbackDescription}
                     </DialogDescription>
@@ -225,23 +220,23 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                         /* Login Required Guard UI */
                         <div className={cn(
                             "flex flex-col items-center justify-center text-center p-6 border rounded-2xl space-y-4 my-2",
-                            isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/[0.02] border-white/5"
+                            "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                         )}>
                             <div className={cn(
                                 "p-3 rounded-full",
-                                isDaylight ? "bg-amber-50 text-amber-600" : "bg-amber-500/10 text-amber-400"
+                                "bg-[rgb(var(--color-warning))]/10 text-[rgb(var(--color-warning))]"
                             )}>
                                 <ShieldAlert className="w-8 h-8" />
                             </div>
                             <div className="space-y-1">
                                 <h4 className="text-sm font-bold">{t.feedbackAuthRequired}</h4>
-                                <p className={cn("text-[10px] leading-relaxed", isDaylight ? "text-slate-400" : "text-white/40")}>
+                                <p className="text-[10px] leading-relaxed text-[rgb(var(--color-text-muted))]">
                                     Masukan tidak anonim untuk mencegah spam dan mempermudah tindak lanjut.
                                 </p>
                             </div>
                             <Button
                                 onClick={() => signIn("google")}
-                                className="w-full font-bold rounded-xl shadow-lg bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white"
+                                className="w-full font-bold rounded-xl shadow-[var(--shadow-card)] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                             >
                                 {t.feedbackLoginButton}
                             </Button>
@@ -251,10 +246,10 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
                             {/* Feedback Type Tabs */}
                             <div className="space-y-1.5">
-                                <Label className="text-xs font-bold text-white/60">{t.feedbackTypeLabel}</Label>
+                                <Label className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.feedbackTypeLabel}</Label>
                                 <div className={cn(
                                     "flex p-1 rounded-xl border",
-                                    isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+                                    "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                                 )}>
                                     <button
                                         type="button"
@@ -262,10 +257,8 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                         className={cn(
                                             "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all active:scale-[0.98]",
                                             type === "bug"
-                                                ? isDaylight
-                                                    ? "bg-red-50 text-red-600 shadow-sm border border-red-100"
-                                                    : "bg-red-500/15 text-red-400 border border-red-500/20 shadow-md shadow-red-950/20"
-                                                : "text-white/40 hover:text-white/60"
+                                                ? "bg-[rgb(var(--color-danger))]/10 text-[rgb(var(--color-danger))] border border-[rgb(var(--color-danger))]/25 shadow-[var(--shadow-card)]"
+                                                : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                         )}
                                     >
                                         <Bug className="w-3.5 h-3.5" />
@@ -277,10 +270,8 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                         className={cn(
                                             "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all active:scale-[0.98]",
                                             type === "feature"
-                                                ? isDaylight
-                                                    ? "bg-emerald-50 text-emerald-600 shadow-sm border border-emerald-100"
-                                                    : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30 shadow-md shadow-[rgb(var(--color-primary-dark))]/20"
-                                                : "text-white/40 hover:text-white/60"
+                                                ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))]/25 shadow-[var(--shadow-card)]"
+                                                : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                         )}
                                     >
                                         <Lightbulb className="w-3.5 h-3.5" />
@@ -291,7 +282,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
 
                             {/* Message / Description */}
                             <div className="space-y-1.5">
-                                <Label htmlFor="feedback-desc" className="text-xs font-bold text-white/60">
+                                <Label htmlFor="feedback-desc" className="text-xs font-bold text-[rgb(var(--color-text-muted))]">
                                     {t.feedbackMessageLabel}
                                 </Label>
                                 <Textarea
@@ -302,14 +293,14 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                     placeholder={t.feedbackMessagePlaceholder}
                                     className={cn(
                                         "min-h-[100px] text-base md:text-xs leading-relaxed rounded-xl border resize-none focus-visible:ring-1 focus-visible:ring-[rgb(var(--color-primary-light))]",
-                                        isDaylight ? "bg-white border-slate-200" : "bg-white/5 border-white/10"
+                                        "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-strong))]"
                                     )}
                                 />
                             </div>
 
                             {/* Multiple Screenshots Uploader */}
                             <div className="space-y-1.5">
-                                <Label className="text-xs font-bold text-white/60">{t.feedbackScreenshotLabel}</Label>
+                                <Label className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.feedbackScreenshotLabel}</Label>
                                 <input
                                     type="file"
                                     ref={fileInputRef}
@@ -325,11 +316,11 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                         type="button"
                                         onClick={() => fileInputRef.current?.click()}
                                         className={cn(
-                                            "w-full flex flex-col items-center justify-center p-4 rounded-xl border border-dashed text-center hover:bg-white/[0.02] cursor-pointer transition-all active:scale-[0.99] mb-3",
-                                            isDaylight ? "border-slate-200" : "border-white/15"
+                                            "w-full flex flex-col items-center justify-center p-4 rounded-xl border border-dashed text-center hover:bg-[rgb(var(--color-surface-subtle))] cursor-pointer transition-all active:scale-[0.99] mb-3",
+                                            "border-[rgb(var(--color-border))]/30 hover:bg-[rgb(var(--color-surface-subtle))]"
                                         )}
                                     >
-                                        <Upload className={cn("w-5 h-5 mb-1 text-white/40")} />
+                                        <Upload className="w-5 h-5 mb-1 text-[rgb(var(--color-text-muted))]" />
                                         <span className="text-[10px] font-bold">
                                             {t.feedbackScreenshotDesc || `Unggah gambar pendukung (maks. 3, maks. 5MB per gambar)`}
                                         </span>
@@ -344,7 +335,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                                 key={idx}
                                                 className={cn(
                                                     "relative border rounded-xl overflow-hidden aspect-video bg-black/20 group p-1 flex items-center justify-center",
-                                                    isDaylight ? "border-slate-100" : "border-white/5"
+                                                    "border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]"
                                                 )}
                                             >
                                                 <Image
@@ -357,7 +348,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                                 <button
                                                     type="button"
                                                     onClick={() => removeScreenshot(idx)}
-                                                    className="absolute top-1 right-1 h-5 w-5 rounded-full border border-black/40 bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors active:scale-95 shadow-md"
+                                        className="absolute top-1 right-1 h-5 w-5 rounded-full border border-[rgb(var(--color-border))]/30 bg-[rgb(var(--color-surface))]/90 hover:bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] flex items-center justify-center transition-colors active:scale-95 shadow-[var(--shadow-card)]"
                                                 >
                                                     <X className="w-3 h-3" />
                                                 </button>
@@ -373,14 +364,12 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                 disabled={isSubmitting}
                                 className={cn(
                                     "w-full font-bold h-11 rounded-xl shadow-lg transition-all active:scale-[0.98] mt-2",
-                                    isDaylight
-                                        ? "bg-slate-900 hover:bg-slate-800 text-white"
-                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white"
+                                        "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                                 )}
                             >
                                 {isSubmitting ? (
                                     <div className="flex items-center gap-2">
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-4 h-4 border-2 border-[rgb(var(--color-primary-foreground))] border-t-transparent rounded-full animate-spin" />
                                         <span>{t.feedbackSubmitting}</span>
                                     </div>
                                 ) : (

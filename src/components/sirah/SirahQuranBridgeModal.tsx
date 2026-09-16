@@ -9,7 +9,7 @@ import { X, BookOpen, ExternalLink } from "lucide-react";
 import { surahNames } from "@/lib/quran/surahData";
 import type { SirahQuranRef } from "@/data/sirah";
 import Link from "next/link";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 interface SirahQuranBridgeModalProps {
@@ -19,14 +19,14 @@ interface SirahQuranBridgeModalProps {
 
 export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModalProps) {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     if (!refData) return null;
 
     const surahName = surahNames[refData.surah] || `Surah ${refData.surah}`;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="sirah-quran-bridge-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
             <div
                 className={cn(
                     "w-full max-w-md rounded-2xl border p-5 shadow-2xl transition-all",

@@ -27,7 +27,7 @@ import { Trash2, Bookmark as BookmarkIcon } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 interface BookmarkEditDialogProps {
@@ -49,7 +49,7 @@ export default function BookmarkEditDialog({
 }: BookmarkEditDialogProps) {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [note, setNote] = useState("");
     const [isLastRead, setIsLastRead] = useState(false);
 

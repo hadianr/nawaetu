@@ -16,7 +16,7 @@ import {
     Award,
 } from "lucide-react";
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra } from "@/data/sirah";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 const ERA_TABS: { id: SirahEra | "all"; label: string; icon: string }[] = [
@@ -30,7 +30,7 @@ const ERA_TABS: { id: SirahEra | "all"; label: string; icon: string }[] = [
 
 export default function SirahDashboardPage() {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [selectedEra, setSelectedEra] = useState<SirahEra | "all">("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
@@ -67,7 +67,7 @@ export default function SirahDashboardPage() {
 
     return (
         <div className={cn(
-            "min-h-screen pb-24 pt-3 px-3.5 sm:px-6 max-w-4xl mx-auto space-y-3.5 sm:space-y-5 transition-colors",
+            "sirah-page min-h-screen pb-24 pt-3 px-3.5 sm:px-6 max-w-4xl mx-auto space-y-3.5 sm:space-y-5 transition-colors",
             isDaylight ? "text-slate-900" : "text-white"
         )}>
             {/* Header Banner */}

@@ -21,6 +21,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import UpdateChecker from '@/components/UpdateChecker';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 // Mock global Fetch
 global.fetch = vi.fn();
@@ -41,6 +42,9 @@ vi.mock('sonner', () => ({
 }));
 
 describe('UpdateChecker', () => {
+    const renderChecker = (currentVersion: string) => render(
+        <ThemeProvider><UpdateChecker currentVersion={currentVersion} /></ThemeProvider>
+    );
     const originalLocation = window.location;
 
     beforeEach(() => {
@@ -63,7 +67,7 @@ describe('UpdateChecker', () => {
     it('should NOT render when server version matches current version', async () => {
         mockFetch({ version: '1.0.0' });
         await act(async () => {
-            render(<UpdateChecker currentVersion="1.0.0" />);
+            renderChecker("1.0.0");
         });
 
         expect(global.fetch).toHaveBeenCalled();
@@ -73,7 +77,7 @@ describe('UpdateChecker', () => {
     it('should NOT render when server version is older', async () => {
         mockFetch({ version: '0.9.9' });
         await act(async () => {
-            render(<UpdateChecker currentVersion="1.0.0" />);
+            renderChecker("1.0.0");
         });
 
         expect(global.fetch).toHaveBeenCalled();
@@ -83,7 +87,7 @@ describe('UpdateChecker', () => {
     it('should render when server version is newer', async () => {
         mockFetch({ version: '1.0.1' });
         await act(async () => {
-            render(<UpdateChecker currentVersion="1.0.0" />);
+            renderChecker("1.0.0");
         });
 
         expect(screen.getByText('Update Tersedia!')).toBeInTheDocument();
@@ -119,7 +123,7 @@ describe('UpdateChecker', () => {
         });
 
         await act(async () => {
-            render(<UpdateChecker currentVersion="1.0.0" />);
+            renderChecker("1.0.0");
         });
 
         expect(screen.getByText('Update Tersedia!')).toBeInTheDocument();

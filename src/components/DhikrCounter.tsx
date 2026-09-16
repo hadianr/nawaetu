@@ -29,7 +29,8 @@ import { dhikrMilestones } from "@/data/dhikrMilestones";
 import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
+import { cn } from "@/lib/utils";
 
 import { DhikrPreset } from "./dhikr/types";
 import { DhikrDisplay } from "./dhikr/DhikrDisplay";
@@ -54,7 +55,7 @@ const playTick = (ctx: AudioContext) => {
 export default function DhikrCounter() {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const dhikrPresets = useMemo<DhikrPreset[]>(
         () => [
@@ -245,7 +246,7 @@ export default function DhikrCounter() {
     const progress = target && hasHydrated ? (count / target) * 100 : 0;
 
     return (
-        <div className="flex flex-col items-center w-full h-full relative px-4 pb-nav pt-4 overflow-hidden">
+        <div className="dhikr-counter flex flex-col items-center w-full h-full relative px-4 pb-nav pt-4 overflow-hidden">
             <DhikrZenMode
                 isZenMode={isZenMode}
                 setIsZenMode={setIsZenMode}
@@ -317,14 +318,19 @@ export default function DhikrCounter() {
 
             {/* Achievement Layer */}
             <Dialog open={showReward} onOpenChange={setShowReward}>
-                <DialogContent className="w-[85%] max-w-[280px] rounded-[32px] bg-neutral-900/95 border-[rgb(var(--color-primary)/0.2)] text-white backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-2xl">
+                <DialogContent className={cn(
+                    "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-[32px] border backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-2xl",
+                    isDaylight
+                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
+                        : "bg-neutral-900/95 border-[rgb(var(--color-primary)/0.2)] text-white"
+                )}>
                     <DialogHeader className="flex flex-col items-center">
                         <div className="w-14 h-14 rounded-full bg-[rgb(var(--color-primary)/0.1)] flex items-center justify-center mb-4 border border-[rgb(var(--color-primary)/0.2)]">
                             <Check className="w-7 h-7 text-[rgb(var(--color-primary-light))]" />
                         </div>
                         <DialogTitle className="text-xl font-bold mb-1">{t.tasbihComplete}</DialogTitle>
                     </DialogHeader>
-                    <p className="text-white/40 text-[13px] mb-6 px-2 leading-relaxed">{t.tasbihCompleteMessage}</p>
+                    <p className={cn("text-[13px] mb-6 px-2 leading-relaxed", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>{t.tasbihCompleteMessage}</p>
 
                     <div className="flex flex-row items-stretch gap-2.5 w-full">
                         {(() => {

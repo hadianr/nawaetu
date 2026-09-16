@@ -25,7 +25,7 @@ import { Home, BookOpen, Scroll, Settings, Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 
 // Enhanced Moon icon for Ramadhan with crescent and star
 const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: boolean }) => (
@@ -53,7 +53,7 @@ const BottomNav = memo(function BottomNav() {
     const pathname = usePathname();
     const { t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const mounted = useSyncExternalStore(
         () => () => {},
         () => true,
@@ -86,6 +86,7 @@ const BottomNav = memo(function BottomNav() {
 
     return (
         <nav
+            aria-label="Navigasi utama"
             className={cn(
                 "fixed bottom-0 left-0 z-50 w-full border-t backdrop-blur-xl pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.05)]",
                 isDaylight ? "bg-white/90 border-slate-200/60" : "bg-black/80 border-white/10"
@@ -103,6 +104,7 @@ const BottomNav = memo(function BottomNav() {
                                     key={href}
                                     href={href}
                                     prefetch={false}
+                                    aria-current={isActive ? "page" : undefined}
                                     className="relative flex flex-col items-center justify-center gap-1 min-w-[64px]"
                                 >
                                     {/* Elevated Button Container */}
@@ -114,7 +116,7 @@ const BottomNav = memo(function BottomNav() {
                                                 isActive
                                                     ? "blur-lg opacity-70 animate-pulse-glow"
                                                     : "blur-md opacity-40",
-                                                isDaylight && isActive ? "bg-emerald-300" : ""
+                                                isDaylight && isActive ? "bg-[rgb(var(--color-primary-light))]" : ""
                                             )}
                                             style={!isDaylight ? {
                                                 transform: "scale(1.4)",
@@ -123,7 +125,9 @@ const BottomNav = memo(function BottomNav() {
                                                     : "rgba(var(--color-primary), 0.8)"
                                             } : {
                                                 transform: "scale(1.4)",
-                                                backgroundColor: isActive ? "" : "rgba(16, 185, 129, 0.2)"
+                                                backgroundColor: isActive
+                                                    ? "rgb(var(--color-primary-light) / 0.24)"
+                                                    : "rgb(var(--color-primary) / 0.18)"
                                             }}
                                         />
 
@@ -140,14 +144,14 @@ const BottomNav = memo(function BottomNav() {
                                         <span
                                             className={cn(
                                                 "relative flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all duration-300",
-                                                isActive && "scale-105 shadow-xl shadow-emerald-500/20"
+                                                isActive && "scale-105 shadow-xl shadow-[rgb(var(--color-primary))]/20"
                                             )}
                                             style={isActive ? (isDaylight ? {
-                                                borderColor: "#34d399",
-                                                background: `radial-gradient(circle at 30% 30%, #a7f3d0, #34d399)`,
+                                                borderColor: "rgb(var(--color-primary-light))",
+                                                background: `radial-gradient(circle at 30% 30%, rgb(var(--color-primary-light) / 0.7), rgb(var(--color-primary) / 0.45))`,
                                                 boxShadow: `
-                                                    0 0 0 1px rgba(16, 185, 129, 0.3),
-                                                    0 4px 15px rgba(16, 185, 129, 0.2),
+                                                    0 0 0 1px rgb(var(--color-primary) / 0.3),
+                                                    0 4px 15px rgb(var(--color-primary) / 0.2),
                                                     inset 0 1px 2px rgba(255, 255, 255, 0.4)
                                                 `
                                             } : {
@@ -160,10 +164,10 @@ const BottomNav = memo(function BottomNav() {
                                                     inset 0 1px 2px rgba(255, 255, 255, 0.3)
                                                 `
                                             }) : (isDaylight ? {
-                                                borderColor: "rgba(16, 185, 129, 0.2)",
-                                                background: `radial-gradient(circle at 30% 30%, #f0fdf4, #d1fae5)`,
+                                                borderColor: "rgb(var(--color-primary) / 0.2)",
+                                                background: `radial-gradient(circle at 30% 30%, rgb(var(--color-surface)), rgb(var(--color-primary-light) / 0.28))`,
                                                 boxShadow: `
-                                                    0 2px 8px rgba(16, 185, 129, 0.05)
+                                                    0 2px 8px rgb(var(--color-primary) / 0.08)
                                                 `
                                             } : {
                                                 borderColor: "rgba(var(--color-primary), 0.5)",
@@ -188,9 +192,9 @@ const BottomNav = memo(function BottomNav() {
                                                     "relative h-6 w-6 transition-all duration-300",
                                                     isActive
                                                         ? isDaylight
-                                                            ? "text-emerald-950"
+                                                            ? "text-[rgb(var(--color-primary-strong))]"
                                                             : "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]"
-                                                        : isDaylight ? "text-emerald-600" : "text-white/90"
+                                                        : isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/90"
                                                 )}
                                             />
                                         </span>
@@ -198,12 +202,12 @@ const BottomNav = memo(function BottomNav() {
                                     <span
                                         className={cn(
                                             "text-[10px] font-extrabold tracking-tight transition-all duration-300",
-                                            isActive && (isDaylight ? "text-emerald-700" : "drop-shadow-[0_0_4px_rgba(var(--color-primary-light),0.8)]")
+                                            isActive && (isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "drop-shadow-[0_0_4px_rgba(var(--color-primary-light),0.8)]")
                                         )}
                                         style={{
                                             color: isActive
                                                 ? isDaylight ? "" : `rgb(var(--color-primary-light))`
-                                                : isDaylight ? "rgba(5, 150, 105, 0.7)" : `rgba(var(--color-primary-light), 0.7)`
+                                                : isDaylight ? "rgb(var(--color-primary-strong) / 0.72)" : `rgba(var(--color-primary-light), 0.7)`
                                         }}
                                     >
                                         {label}
@@ -216,11 +220,12 @@ const BottomNav = memo(function BottomNav() {
                             <Link
                                 key={href}
                                 href={href}
+                                aria-current={isActive ? "page" : undefined}
                                 className={cn(
                                     "flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
                                     isActive
                                         ? isDaylight
-                                            ? "text-emerald-600"
+                                            ? "text-[rgb(var(--color-primary-strong))]"
                                             : "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"
                                         : isDaylight
                                             ? "text-slate-400 hover:text-slate-600"
@@ -230,7 +235,7 @@ const BottomNav = memo(function BottomNav() {
                             >
                                 <Icon className={cn(
                                     "h-6 w-6 transition-transform duration-300",
-                                    isActive && (isDaylight ? "fill-emerald-500/10 scale-110" : "fill-[rgb(var(--color-primary-light))]/20 scale-110")
+                                    isActive && (isDaylight ? "fill-[rgb(var(--color-primary))]/10 scale-110" : "fill-[rgb(var(--color-primary-light))]/20 scale-110")
                                 )} />
                                 <span className={cn(
                                     "text-[10px] transition-all",

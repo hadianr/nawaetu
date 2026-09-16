@@ -7,7 +7,7 @@
 
 import Link from "next/link";
 import { BookOpen, ChevronRight } from "lucide-react";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 interface SirahContextInfo {
@@ -56,7 +56,7 @@ const SURAH_SIRAH_MAPPINGS: Record<number, SirahContextInfo> = {
 
 export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const info = SURAH_SIRAH_MAPPINGS[surahId];
 
     if (!info) return null;
@@ -66,14 +66,14 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
             className={cn(
                 "w-full p-4 rounded-2xl border transition-all mb-4 flex items-center justify-between gap-3",
                 isDaylight
-                    ? "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 text-slate-800"
+                    ? "bg-[rgb(var(--color-primary-light))]/30 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)]"
                     : "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-white"
             )}
         >
             <div className="flex items-center gap-3 min-w-0">
                 <div className={cn(
                     "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
-                    isDaylight ? "bg-emerald-50 text-emerald-600" : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
+                    isDaylight ? "bg-[rgb(var(--color-primary-light))]/45 text-[rgb(var(--color-primary-strong))]" : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
                 )}>
                     <BookOpen className="w-4 h-4" />
                 </div>
@@ -81,7 +81,7 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
                     <div className="flex items-center gap-2">
                         <span className={cn(
                             "text-[10px] font-extrabold uppercase tracking-wider",
-                            isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                            isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
                         )}>
                             💡 Konteks Sejarah (Sirah Nabawiyah)
                         </span>
@@ -97,7 +97,7 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
                 className={cn(
                     "px-3 py-1.5 rounded-xl text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1 shadow-xs cursor-pointer",
                     isDaylight
-                        ? "bg-emerald-600 hover:bg-emerald-500"
+                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-primary-light))]"
                         : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90"
                 )}
             >

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { BookOpen, Clock, Target, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/context/LocaleContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 
 const DAILY_TARGET_KEY = "nawaetu_quran_daily_target_minutes";
 const DEFAULT_TARGET_MINUTES = 15;
@@ -21,6 +22,8 @@ export default function QuranReadingBanner() {
     const [showTargetPicker, setShowTargetPicker] = useState(false);
     const [mounted, setMounted] = useState(false);
     const t = useTranslations();
+    const { currentTheme } = useTheme();
+    const isLight = THEMES[currentTheme].mode === "light";
 
     const TARGET_OPTIONS = [
         { label: "5m", longLabel: `5 ${t.unitMinuteLong}`, value: 5 },
@@ -87,22 +90,22 @@ export default function QuranReadingBanner() {
     const timeLeft = Math.max(0, targetSeconds - dailyTotalSeconds);
 
     return (
-        <div className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-blue-900/20 via-black/30 to-black/10 p-4">
+        <div className={cn("relative rounded-2xl border p-4", isLight ? "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)]" : "border-white/10 bg-gradient-to-br from-blue-900/20 via-black/30 to-black/10")}>
             {/* Background glow - uses negative z so it doesn't interfere with dropdown */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl pointer-events-none -z-0" />
+            <div className={cn("absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl pointer-events-none -z-0", isLight ? "bg-[rgb(var(--color-primary))]/10" : "bg-blue-500/10")} />
 
             <div className="relative z-10">
                 {/* Header row */}
                 <div className="flex items-center justify-between mb-3 gap-2">
                     <div className="flex items-center gap-2 min-w-0">
-                        <div className="w-6 h-6 shrink-0 rounded-xl bg-blue-500/20 border border-blue-400/20 flex items-center justify-center">
-                            <BookOpen className="w-3 h-3 text-blue-400" />
+                        <div className={cn("w-6 h-6 shrink-0 rounded-xl border flex items-center justify-center", isLight ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary-light))]" : "bg-blue-500/20 border-blue-400/20")}>
+                            <BookOpen className={cn("w-3 h-3", isLight ? "text-[rgb(var(--color-primary-strong))]" : "text-blue-400")} />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[9px] font-bold uppercase tracking-widest text-white/40">{t.tilawahBannerTitle}</p>
-                            <p className="text-sm font-black text-white leading-tight truncate">
+                            <p className={cn("text-[9px] font-bold uppercase tracking-widest", isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>{t.tilawahBannerTitle}</p>
+                            <p className={cn("text-sm font-black leading-tight truncate", isLight ? "text-[rgb(var(--color-text-strong))]" : "text-white")}>
                                 {dailyTotalSeconds > 0 ? formatDuration(dailyTotalSeconds) : (
-                                    <span className="text-white/40 font-medium text-xs">{t.tilawahBannerNoStart}</span>
+                                    <span className={cn("font-medium text-xs", isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>{t.tilawahBannerNoStart}</span>
                                 )}
                             </p>
                         </div>
@@ -111,7 +114,7 @@ export default function QuranReadingBanner() {
                     {/* Target toggle button */}
                     <button
                         onClick={() => setShowTargetPicker((prev) => !prev)}
-                        className="shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-[10px] text-white/60 hover:text-white"
+                        className={cn("shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-xl border transition-all text-[10px]", isLight ? "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-text-strong))]" : "bg-white/5 hover:bg-white/10 border-white/10 text-white/60 hover:text-white")}
                     >
                         <Target className="w-3 h-3" />
                         <span className="whitespace-nowrap">{targetMinutes < 60 ? `${targetMinutes}${t.unitMinute}` : `1${t.unitHour}`}</span>
@@ -129,8 +132,8 @@ export default function QuranReadingBanner() {
                                 className={cn(
                                     "py-1.5 rounded-xl text-xs font-medium transition-all border text-center",
                                     targetMinutes === opt.value
-                                        ? "bg-blue-500/20 border-blue-400/40 text-blue-300 font-bold"
-                                        : "bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:text-white"
+                                        ? (isLight ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-ring))] text-[rgb(var(--color-primary-strong))] font-bold" : "bg-blue-500/20 border-blue-400/40 text-blue-300 font-bold")
+                                        : (isLight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]" : "bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:text-white")
                                 )}
                             >
                                 <span className="block">{opt.label}</span>
@@ -141,13 +144,13 @@ export default function QuranReadingBanner() {
                 )}
 
                 {/* Progress bar */}
-                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 mb-2">
+                <div className={cn("h-1.5 w-full rounded-full overflow-hidden border mb-2", isLight ? "bg-[rgb(var(--color-border))]/60 border-[rgb(var(--color-border))]" : "bg-white/5 border-white/5")}>
                     <div
                         className={cn(
                             "h-full rounded-full transition-all duration-1000",
                             isCompleted
-                                ? "bg-gradient-to-r from-emerald-500 to-emerald-400"
-                                : "bg-gradient-to-r from-blue-600 to-blue-400"
+                                ? (isLight ? "bg-[rgb(var(--color-success))]" : "bg-gradient-to-r from-emerald-500 to-emerald-400")
+                                : (isLight ? "bg-[rgb(var(--color-info))]" : "bg-gradient-to-r from-blue-600 to-blue-400")
                         )}
                         style={{ width: `${progress}%` }}
                     />
@@ -155,17 +158,17 @@ export default function QuranReadingBanner() {
 
                 {/* Status row */}
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-[10px] text-white/40">
+                    <div className={cn("flex items-center gap-1 text-[10px]", isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>
                         <Clock className="w-3 h-3" />
                         {isCompleted ? (
-                            <span className="text-emerald-400 font-bold">{t.tilawahTargetReached}</span>
+                            <span className={cn("font-bold", isLight ? "text-[rgb(var(--color-success))]" : "text-emerald-400")}>{t.tilawahTargetReached}</span>
                         ) : (
                             <span>{t.tilawahTimeLeft.replace('{{time}}', formatDuration(timeLeft))}</span>
                         )}
                     </div>
                     <span className={cn(
                         "text-[10px] font-black",
-                        isCompleted ? "text-emerald-400" : "text-white/40"
+                        isCompleted ? (isLight ? "text-[rgb(var(--color-success))]" : "text-emerald-400") : (isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")
                     )}>
                         {progress}%
                     </span>

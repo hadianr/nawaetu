@@ -127,6 +127,25 @@ const PatternOverlay = memo(function PatternOverlay() {
                 <rect width="100%" height="100%" fill="url(#damask-pattern)" className="text-white" />
             </svg>
         ),
+        floral: (
+            <svg className="absolute inset-0 w-full h-full pointer-events-none text-[rgb(var(--color-primary-light))]" style={{ opacity: Math.min(0.14, opacity + 0.04), contentVisibility: 'auto' }}>
+                <defs>
+                    <pattern id="floral-pattern" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse">
+                        <g fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.55">
+                            <path d="M26 132 C34 105 45 88 66 72 C83 59 99 42 108 22" />
+                            <path d="M44 102 C31 94 24 83 25 70 C38 73 47 84 44 102 Z" fill="currentColor" opacity="0.22" />
+                            <path d="M65 73 C53 62 51 48 57 36 C69 43 74 57 65 73 Z" fill="currentColor" opacity="0.18" />
+                            <path d="M82 56 C91 46 103 43 114 48 C108 59 96 63 82 56 Z" fill="currentColor" opacity="0.2" />
+                            <circle cx="112" cy="20" r="7" fill="currentColor" opacity="0.16" />
+                            <circle cx="112" cy="20" r="2" fill="currentColor" opacity="0.35" />
+                            <path d="M112 10 L114 16 L120 16 L115 20 L117 26 L112 22 L107 26 L109 20 L104 16 L110 16 Z" fill="currentColor" opacity="0.22" />
+                        </g>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#floral-pattern)" className="text-[rgb(var(--color-primary-light))]" />
+            </svg>
+        ),
+        none: null,
     };
 
     return (

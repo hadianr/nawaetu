@@ -90,7 +90,10 @@ export function useFCM() {
 
         // Check if permission is already granted or if we should request it
         // We only auto-init if we already have permission to avoid annoying prompts
-        if (typeof window !== "undefined" && "Notification" in window && window.Notification.permission === "granted") {
+        // PWA/service workers are intentionally disabled by the dev runtime;
+        // only initialize background FCM registration in production. Explicit
+        // notification enable actions still call the registration helper.
+        if (process.env.NODE_ENV !== "development" && typeof window !== "undefined" && "Notification" in window && window.Notification.permission === "granted") {
             initFCM();
         }
 

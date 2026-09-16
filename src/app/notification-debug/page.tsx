@@ -39,9 +39,7 @@ export default function NotificationDebugPage() {
         notFound();
     }
 
-    const [token, setToken] = useState<string | null>(() =>
-        typeof window !== "undefined" ? localStorage.getItem("fcm_token") : null
-    );
+    const [token, setToken] = useState<string | null>(null);
     const [dbStatus, setDbStatus] = useState<DebugResult | null>(null);
     const [sendResult, setSendResult] = useState<DebugResult | null>(null);
     const [loading, setLoading] = useState(false);
@@ -49,6 +47,10 @@ export default function NotificationDebugPage() {
     const [errorLog, setErrorLog] = useState<string[]>([]);
 
     const [lastMessage, setLastMessage] = useState<MessagePayload | null>(null);
+
+    useEffect(() => {
+        queueMicrotask(() => setToken(localStorage.getItem("fcm_token")));
+    }, []);
 
     // Capture console logs
     useEffect(() => {

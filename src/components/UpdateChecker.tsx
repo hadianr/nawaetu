@@ -228,20 +228,20 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
 
     return (
         <div className="fixed bottom-20 left-4 right-4 z-50">
-            <div className="bg-emerald-900/95 backdrop-blur-md border border-emerald-500/30 p-4 rounded-2xl flex items-center justify-between shadow-2xl animate-in slide-in-from-bottom-5">
+            <div className="bg-[rgb(var(--color-surface))]/95 backdrop-blur-md border border-[rgb(var(--color-border))]/30 p-4 rounded-2xl flex items-center justify-between shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-5 text-[rgb(var(--color-text))]">
                 <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center animate-pulse">
-                        <Sparkles className="w-5 h-5 text-emerald-400" />
+                    <div className="h-10 w-10 rounded-full bg-[rgb(var(--color-primary))]/15 flex items-center justify-center animate-pulse">
+                        <Sparkles className="w-5 h-5 text-[rgb(var(--color-primary))]" />
                     </div>
                     <div>
-                        <h3 className="text-white font-bold text-sm">Update Tersedia!</h3>
-                        <p className="text-emerald-200/70 text-xs">Versi {serverVersion} siap digunakan.</p>
+                        <h3 className="text-[rgb(var(--color-text-strong))] font-bold text-sm">Update Tersedia!</h3>
+                        <p className="text-[rgb(var(--color-text-muted))] text-xs">Versi {serverVersion} siap digunakan.</p>
                     </div>
                 </div>
                 <Button
                     onClick={handleUpdate}
                     disabled={checking}
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-9 rounded-xl"
+                    className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] font-bold h-9 rounded-xl"
                 >
                     {checking ? "Memproses..." : "Update Sekarang"}
                 </Button>
@@ -249,9 +249,9 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
 
             {/* DEBUG LOGS */}
             {debugLog.length > 0 && (
-                <div className="mt-2 bg-black/80 border border-white/10 rounded-lg p-2 text-[10px] font-mono text-white/70 max-h-32 overflow-y-auto">
+                <div className="mt-2 bg-[rgb(var(--color-surface-subtle))]/95 border border-[rgb(var(--color-border))]/20 rounded-lg p-2 text-[10px] font-mono text-[rgb(var(--color-text-muted))] max-h-32 overflow-y-auto">
                     {debugLog.map((log, i) => (
-                        <div key={i} className="text-white/50">{log}</div>
+                        <div key={i} className="text-[rgb(var(--color-text-muted))]">{log}</div>
                     ))}
                 </div>
             )}

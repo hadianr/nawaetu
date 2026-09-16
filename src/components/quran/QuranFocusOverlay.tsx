@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { BookOpen, X, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useTranslations } from "@/context/LocaleContext";
 
 interface QuranFocusOverlayProps {
@@ -17,7 +17,7 @@ interface QuranFocusOverlayProps {
  */
 export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProps) {
     const { currentTheme } = useTheme();
-    const isLight = currentTheme === "daylight";
+    const isLight = THEMES[currentTheme].mode === "light";
     const [visible, setVisible] = useState(false);
     const t = useTranslations();
 
@@ -117,7 +117,7 @@ interface FocusBadgeProps {
  */
 export function QuranFocusBadge({ sessionSeconds, onExit }: FocusBadgeProps) {
     const { currentTheme } = useTheme();
-    const isLight = currentTheme === "daylight";
+    const isLight = THEMES[currentTheme].mode === "light";
     const t = useTranslations();
 
     const formatTime = (s: number) => {
@@ -179,7 +179,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
     onCancel: () => void;
 }) {
     const { currentTheme } = useTheme();
-    const isLight = currentTheme === "daylight";
+    const isLight = THEMES[currentTheme].mode === "light";
     const t = useTranslations();
 
     const minutes = Math.floor(sessionSeconds / 60);
@@ -237,7 +237,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
 /** Small theme indicator badge shown at top-right in focus mode */
 export function FocusModeThemeIndicator() {
     const { currentTheme } = useTheme();
-    const isLight = currentTheme === "daylight";
+    const isLight = THEMES[currentTheme].mode === "light";
     return (
         <div className="fixed top-5 right-4 z-[201]">
             {isLight

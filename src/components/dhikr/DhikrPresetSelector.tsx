@@ -66,7 +66,12 @@ export function DhikrPresetSelector({
                     <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>{t.tasbihSelectZikir}</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="w-[90%] max-w-sm rounded-[32px] border-white/10 bg-neutral-950/98 backdrop-blur-3xl text-white">
+            <DialogContent className={cn(
+                "dhikr-preset-dialog w-[90%] max-w-sm rounded-[32px] border backdrop-blur-3xl",
+                isDaylight
+                    ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
+                    : "border-white/10 bg-neutral-950/98 text-white"
+            )}>
                 <DialogHeader>
                     <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">{t.tasbihListTitle}</DialogTitle>
                 </DialogHeader>
@@ -126,7 +131,7 @@ export function DhikrPresetSelector({
                                                 <span className="font-bold text-sm w-full truncate">{p.label}</span>
                                                 <span className="text-[10px] text-white/40 truncate w-full mt-0.5">{p.latin}</span>
                                             </div>
-                                            <span className="text-[10px] font-mono opacity-30 ml-2 shrink-0">{p.target}x</span>
+                                            <span className={cn("text-[10px] font-mono ml-2 shrink-0", isDaylight ? "text-[rgb(var(--color-primary-strong)/0.65)]" : "text-white/40")}>{p.target}x</span>
                                         </Button>
                                     ))}
                                 </div>
@@ -165,7 +170,7 @@ export function DhikrPresetSelector({
                                                     <span className="font-bold text-sm w-full truncate">{p.label}</span>
                                                     <span className="text-[10px] text-white/40 truncate w-full mt-0.5">{p.latin}</span>
                                                 </div>
-                                                <span className="text-[10px] font-mono opacity-30 ml-2 shrink-0">{p.target}x</span>
+                                                <span className={cn("text-[10px] font-mono ml-2 shrink-0", isDaylight ? "text-[rgb(var(--color-primary-strong)/0.65)]" : "text-white/40")}>{p.target}x</span>
                                             </Button>
                                         ))}
                                     </div>

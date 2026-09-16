@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Children } from "react";
 
 export const metadata: Metadata = {
     title: "Rewards & Support | Nawaetu",
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function RewardsLayout({ children }: { children: React.ReactNode }) {
-    return children;
+    return <>{Children.toArray(children)}</>;
 }

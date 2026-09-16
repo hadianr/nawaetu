@@ -17,6 +17,7 @@
  */
 
 import { Metadata } from "next";
+import { Children } from "react";
 
 export const metadata: Metadata = {
     title: "Daily Missions - Misi Ibadah Harian | Nawaetu",
@@ -32,5 +33,5 @@ export default function MissionsLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return children;
+    return <>{Children.toArray(children)}</>;
 }

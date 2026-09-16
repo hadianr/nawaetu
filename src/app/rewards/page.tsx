@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Gift, Heart, Mail, Send, Sparkles } from "lucide-react";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useLocale } from "@/context/LocaleContext";
 import { signIn, useSession } from "next-auth/react";
 
@@ -15,7 +15,7 @@ export default function RewardsPage() {
     const copy = t.rewards;
     const { status } = useSession();
     const isAuthenticated = status === "authenticated";
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [submitState, setSubmitState] = useState<"idle" | "sending" | "success" | "fallback">("idle");
 
     const submitSupportOffer = async (event: FormEvent<HTMLFormElement>) => {

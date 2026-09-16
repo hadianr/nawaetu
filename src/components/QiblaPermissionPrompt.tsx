@@ -45,15 +45,15 @@ export function QiblaPermissionPrompt({
     return (
         <div className={cn(
             "fixed inset-0 z-[100] flex flex-col items-center justify-center p-6 text-center transition-colors duration-500",
-            isDaylight ? "bg-white" : "bg-[#0a0a0a]"
+            isDaylight ? "bg-[rgb(var(--color-canvas))]" : "bg-[rgb(var(--color-background))]"
         )}>
             <div className={cn(
                 "w-20 h-20 rounded-full flex items-center justify-center mb-6 ring-1 transition-all",
-                isDaylight ? "bg-emerald-50 ring-emerald-100" : "bg-[rgb(var(--color-primary))]/10 ring-[rgb(var(--color-primary))]/20"
+                isDaylight ? "bg-[rgb(var(--color-primary-light))]/35 ring-[rgb(var(--color-border))]" : "bg-[rgb(var(--color-primary))]/10 ring-[rgb(var(--color-primary))]/20"
             )}>
                 <Compass className={cn(
                     "w-10 h-10 animate-[spin_3s_linear_infinite]",
-                    isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light))]"
+                    isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
                 )} />
             </div>
 
@@ -79,7 +79,7 @@ export function QiblaPermissionPrompt({
                 className={cn(
                     "rounded-full px-10 py-7 text-lg font-medium transition-all hover:scale-105 active:scale-95",
                     isDaylight
-                        ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.3)]"
+                        ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-floating)]"
                         : "bg-[rgb(var(--color-primary-dark))] hover:bg-[rgb(var(--color-primary))] text-white shadow-[0_0_30px_rgba(var(--color-primary),0.25)]"
                 )}
             >

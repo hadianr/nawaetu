@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { Compass } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import CompassDisplay from "./QiblaCompassDisplay";
 import { QiblaPermissionPrompt } from "./QiblaPermissionPrompt";
@@ -78,7 +78,7 @@ function QiblaCompass() {
 
     const { t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const applyHeading = useCallback((rawHeading: number) => {
         const now = performance.now();

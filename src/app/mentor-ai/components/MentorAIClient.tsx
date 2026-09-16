@@ -31,7 +31,7 @@ import { trackAIQuery } from "@/lib/analytics/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -93,7 +93,7 @@ export default function MentorAIClient() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq();
 
     // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)

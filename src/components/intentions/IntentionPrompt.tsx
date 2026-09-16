@@ -20,7 +20,7 @@ import { useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { IntentionDalil, getRandomDalil } from "@/data/intention-dalils";
 import { Loader2 } from "lucide-react";
 
@@ -41,7 +41,7 @@ export default function IntentionPrompt({
 }: IntentionPromptProps) {
     const { locale, t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const isId = locale === 'id' || (locale && locale.startsWith('id'));
 
     const [intentionText, setIntentionText] = useState(initialValue);

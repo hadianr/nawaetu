@@ -37,7 +37,7 @@ export function IslamicFilterChips({
                 : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
             : isDaylight
                 ? "bg-amber-100/80 border-amber-200 text-amber-800 shadow-sm"
-                : "bg-amber-500 text-white border-transparent shadow-lg shadow-amber-500/30";
+                : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]";
 
     const inactiveStyles = isDaylight
         ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
@@ -50,7 +50,7 @@ export function IslamicFilterChips({
         );
 
     return (
-        <div className="flex gap-2 overflow-x-auto pb-3 px-1 no-scrollbar mb-3">
+        <div className="flex gap-2 overflow-x-auto pb-3 px-1 themed-scrollbar mb-3">
             {/* All */}
             <button
                 type="button"

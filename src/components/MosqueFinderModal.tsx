@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { X, MapPin, Tent, Building2, Car } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 interface MosqueFinderModalProps {
@@ -33,7 +33,7 @@ interface MosqueFinderModalProps {
 export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModalProps) {
     const { t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
