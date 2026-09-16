@@ -34,7 +34,7 @@ import { Mission } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
 import { resolveReferenceByText, resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
@@ -68,7 +68,7 @@ export default function MissionDetailDialog({
 }: MissionDetailDialogProps) {
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const content = getLocalizedMissionContent(mission.id, locale);
     const [readingIndex, setReadingIndex] = useState(0);
     const [isConfirmingReset, setIsConfirmingReset] = useState(false); // Add this
@@ -154,7 +154,7 @@ export default function MissionDetailDialog({
                                         className={cn(
                                             "bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 focus-visible:ring-0 focus-visible:outline-none",
                                             isDaylight
-                                                ? "text-slate-400 hover:text-slate-600 data-[state=active]:text-emerald-700 after:bg-emerald-600 after:opacity-0 data-[state=active]:after:opacity-100"
+                                                ? "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary-strong))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
                                                 : "text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
                                         )}
                                     >
@@ -165,7 +165,7 @@ export default function MissionDetailDialog({
                                         className={cn(
                                             "bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 focus-visible:ring-0 focus-visible:outline-none",
                                             isDaylight
-                                                ? "text-slate-400 hover:text-slate-600 data-[state=active]:text-emerald-700 after:bg-emerald-600 after:opacity-0 data-[state=active]:after:opacity-100"
+                                                ? "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary-strong))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
                                                 : "text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
                                         )}
                                     >

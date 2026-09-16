@@ -99,7 +99,7 @@ export function DhikrHistory({
                     </div>
                 </button>
             </DialogTrigger>
-            <DialogContent className={cn("w-[90%] max-w-sm rounded-[32px] border-white/10 backdrop-blur-3xl z-[100]", isDaylight ? "bg-white/90 text-slate-900" : "bg-neutral-950/98 text-white")}>
+            <DialogContent className={cn("dhikr-history-dialog w-[90%] max-w-sm rounded-[32px] border backdrop-blur-3xl z-[100]", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]" : "border-white/10 bg-neutral-950/98 text-white")}>
                 <DialogHeader>
                     <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-60">Statistik Zikir</DialogTitle>
                 </DialogHeader>

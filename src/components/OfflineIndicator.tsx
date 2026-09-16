@@ -47,11 +47,11 @@ export default function OfflineIndicator() {
                 isOnline ? "translate-y-10 opacity-0" : "translate-y-0 opacity-100"
             )}
         >
-            <div className="bg-black/80 backdrop-blur-md border border-red-500/30 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2.5 max-w-[90%] pointer-events-auto">
+            <div className="backdrop-blur-md px-4 py-2 rounded-full shadow-[var(--shadow-floating)] flex items-center gap-2.5 max-w-[90%] pointer-events-auto bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">
                 {isOnline ? (
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-[rgb(var(--color-success))] animate-pulse" />
                 ) : (
-                    <WifiOff className="w-3.5 h-3.5 text-red-400 animate-pulse" />
+                    <WifiOff className="w-3.5 h-3.5 text-[rgb(var(--color-danger))] animate-pulse" />
                 )}
 
                 <span className="text-xs font-medium">
@@ -61,7 +61,7 @@ export default function OfflineIndicator() {
                 {!isOnline && (
                     <button
                         onClick={() => window.location.reload()}
-                        className="ml-1 text-[10px] bg-white/10 hover:bg-white/20 px-2 py-0.5 rounded text-white/80 transition-colors"
+                        className="ml-1 text-[10px] px-2 py-0.5 rounded transition-colors bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text-muted))]"
                     >
                         Muat Ulang
                     </button>

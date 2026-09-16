@@ -9,7 +9,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 
 type TimeRange = 'today' | '7d' | '30d' | '90d' | '1y';
@@ -31,7 +31,7 @@ export function HasanahTrendChart({
     setTimeRange
 }: HasanahTrendChartProps) {
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const filters: { id: TimeRange; label: string }[] = [
         { id: 'today', label: t.stats.chart.filters.today },
         { id: '7d', label: t.stats.chart.filters.last7d },

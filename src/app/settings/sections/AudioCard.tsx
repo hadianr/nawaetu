@@ -197,37 +197,37 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
     };
 
     return (
-        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4 mb-6">
+        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4 mb-6">
             <div className="flex items-center gap-2 text-[rgb(var(--color-primary-light))]">
                 <Headphones className="w-4 h-4" />
-                <span className="text-sm font-semibold text-white">{t.audioTitle}</span>
+                <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.audioTitle}</span>
             </div>
 
             <div className="space-y-3">
                 <div className={cn(
                     "relative group border rounded-xl p-3 flex items-center justify-between transition-all",
                     isDaylight
-                        ? "bg-white/40 border-slate-200/50 hover:bg-white/60 shadow-sm"
-                        : "bg-white/5 border border-white/10 hover:bg-white/10"
+                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
+                        : "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface-subtle))]"
                 )}>
                     <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
                         <div className={cn(
                             "p-2 rounded-full shrink-0",
-                            isDaylight ? "bg-emerald-50" : "bg-[rgb(var(--color-primary))]/10"
+                            isDaylight ? "bg-[rgb(var(--color-primary-light))]/45" : "bg-[rgb(var(--color-primary))]/10"
                         )}>
                             <Volume2 className={cn(
                                 "w-4 h-4",
-                                isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
+                                isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
                             )} />
                         </div>
                         <div className="min-w-0">
                             <p className={cn(
                                 "text-[10px] uppercase tracking-wider font-bold mb-0.5",
-                                isDaylight ? "text-slate-400" : "text-white/40"
+                                "text-[rgb(var(--color-text-muted))]"
                             )}>{t.muadzinLabel}</p>
                             <p className={cn(
                                 "text-sm font-medium truncate",
-                                isDaylight ? "text-slate-900" : "text-white"
+                                "text-[rgb(var(--color-text-strong))]"
                             )}>{currentMuadzin?.label || "Makkah"}</p>
                         </div>
                     </div>
@@ -241,11 +241,11 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
                                 "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
                                 isPlaying && playingId === muadzin
                                     ? isDaylight
-                                        ? "bg-emerald-100 border-emerald-200 text-emerald-600 scale-110 shadow-sm"
+                                        ? "bg-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-strong))] scale-110 shadow-[var(--shadow-card)]"
                                         : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30 scale-110"
                                     : isDaylight
-                                        ? "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100 hover:text-slate-600 hover:border-slate-300"
-                                        : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20 hover:scale-105"
+                                        ? "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))]/30"
+                                        : "bg-[rgb(var(--color-surface-subtle))]/60 text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))]/30 hover:scale-105"
                             )}
                             onPointerDown={(e) => e.stopPropagation()}
                             onClick={(e) => {
@@ -255,23 +255,23 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
                             disabled={isLoading || !currentMuadzin?.audio_url}
                         >
                             {isLoading && playingId === muadzin ? (
-                                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <div className="w-3 h-3 border-2 border-[rgb(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
                             ) : isPlaying && playingId === muadzin ? (
                                 <Pause className="w-3 h-3 fill-current" />
                             ) : (
                                 <Play className="w-3 h-3 ml-0.5" />
                             )}
                         </Button>
-                        <ChevronDown className="w-4 h-4 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
+                        <ChevronDown className="w-4 h-4 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
                     </div>
 
                     <Select value={muadzin} onValueChange={handleMuadzinChange}>
                         <SelectTrigger className="w-full h-full absolute inset-0 opacity-0 cursor-pointer [&>svg]:hidden z-10">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-white/10">
+                        <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">
                             {MUADZIN_OPTIONS.map((option) => (
-                                <SelectItem key={option.id} value={option.id} className="text-white text-xs hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors">
+                                <SelectItem key={option.id} value={option.id} className="text-[rgb(var(--color-text))] text-xs hover:bg-[rgb(var(--color-surface-subtle))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))] cursor-pointer transition-colors">
                                     <span>{option.label}</span>
                                 </SelectItem>
                             ))}

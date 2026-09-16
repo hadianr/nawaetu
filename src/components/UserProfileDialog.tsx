@@ -24,7 +24,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -55,21 +55,14 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const isAuthenticated = status === "authenticated";
     const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
 
-    const [userName, setUserName] = useState<string>(() => {
-        if (typeof window === 'undefined') return "Sobat Nawaetu";
-        const saved = getStorageService().getOptional<string>(STORAGE_KEYS.USER_NAME);
-        return saved || "Sobat Nawaetu";
-    });
-
-    const [userImage, setUserImage] = useState<string>(() => {
-        if (typeof window === 'undefined') return AVATAR_LIST[0].src;
-        return getStorageService().getOptional<string>(STORAGE_KEYS.USER_AVATAR) || AVATAR_LIST[0].src;
-    });
+    // Keep the first render identical on server and client; storage is loaded below.
+    const [userName, setUserName] = useState<string>("Sobat Nawaetu");
+    const [userImage, setUserImage] = useState<string>(AVATAR_LIST[0].src);
 
     // State for Editing
     const [isEditing, setIsEditing] = useState(false);

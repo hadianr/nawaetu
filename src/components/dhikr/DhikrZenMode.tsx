@@ -21,6 +21,8 @@ import { createPortal } from "react-dom";
 import { Volume2, VolumeX, X } from "lucide-react";
 import { DhikrPreset } from "./types";
 import type { TranslationTree } from "@/context/LocaleContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
+import { cn } from "@/lib/utils";
 
 export interface DhikrZenModeProps {
     isZenMode: boolean;
@@ -47,6 +49,8 @@ export function DhikrZenMode({
     feedbackMode,
     toggleFeedback
 }: DhikrZenModeProps) {
+    const { currentTheme } = useTheme();
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
     if (!isZenMode || typeof document === 'undefined') return null;
@@ -65,9 +69,12 @@ export function DhikrZenMode({
     };
 
     const zenModeUI = (
-        <div className="fixed inset-0 z-[9999] bg-black text-white flex flex-col items-center justify-center overflow-hidden">
+        <div className={cn(
+            "dhikr-zen-mode fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden",
+            isDaylight ? "bg-[rgb(var(--color-background))] text-[rgb(var(--color-text-strong))]" : "bg-black text-white"
+        )}>
             {/* Full screen tap area */}
-            <div className="absolute inset-0 cursor-pointer active:bg-white/5 transition-colors" onClick={handleClick} />
+            <div className={cn("absolute inset-0 cursor-pointer transition-colors", isDaylight ? "active:bg-[rgb(var(--color-primary)/0.06)]" : "active:bg-white/5")} onClick={handleClick} />
 
             {/* Ripples */}
             {ripples.map(ripple => (
@@ -87,28 +94,28 @@ export function DhikrZenMode({
             {/* Close Button */}
             <button
                 onClick={() => setIsZenMode(false)}
-                className="absolute top-8 right-6 z-[110] p-4 rounded-full opacity-20 hover:opacity-100 hover:bg-white/10 active:scale-95 transition-all text-white/50 hover:text-white"
+                className={cn("absolute top-8 right-6 z-[110] p-4 rounded-full active:scale-95 transition-all", isDaylight ? "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary)/0.1)] hover:text-[rgb(var(--color-primary-strong))]" : "opacity-20 hover:opacity-100 hover:bg-white/10 text-white/50 hover:text-white")}
             >
                 <X className="w-8 h-8" />
             </button>
 
             {/* Counter Content */}
             <div className="relative z-10 flex flex-col items-center pointer-events-none mt-[-10vh]">
-                <span className="text-[12px] md:text-sm font-bold tracking-widest uppercase mb-4 text-white/20">
+                <span className={cn("text-[12px] md:text-sm font-bold tracking-widest uppercase mb-4", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/20")}>
                     {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                 </span>
 
-                <span className="text-[120px] leading-none xs:text-[140px] md:text-[180px] font-mono font-bold tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                <span className={cn("text-[120px] leading-none xs:text-[140px] md:text-[180px] font-mono font-bold tracking-tighter", isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]")}>
                     {hasHydrated ? count : "..."}
                 </span>
 
                 {target && (
-                    <span className="text-white/30 text-2xl md:text-3xl font-mono mt-2">
+                    <span className={cn("text-2xl md:text-3xl font-mono mt-2", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/30")}>
                         / {target}
                     </span>
                 )}
 
-                <div className="mt-16 text-xs md:text-sm animate-pulse font-medium text-white/20 tracking-widest uppercase">
+                <div className={cn("mt-16 text-xs md:text-sm animate-pulse font-medium tracking-widest uppercase", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/20")}>
                     {t.tasbihTap || "Ketuk Layar"}
                 </div>
             </div>
@@ -116,7 +123,7 @@ export function DhikrZenMode({
             {/* Feedback Toggle */}
             <button
                 onClick={(e) => { e.stopPropagation(); toggleFeedback(); }}
-                className="absolute bottom-8 right-6 z-[110] p-4 rounded-full opacity-30 hover:opacity-100 hover:bg-white/10 active:scale-95 transition-all text-white/50 hover:text-white flex flex-col items-center gap-1.5"
+                className={cn("absolute bottom-8 right-6 z-[110] p-4 rounded-full active:scale-95 transition-all flex flex-col items-center gap-1.5", isDaylight ? "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary)/0.1)] hover:text-[rgb(var(--color-primary-strong))]" : "opacity-30 hover:opacity-100 hover:bg-white/10 text-white/50 hover:text-white")}
             >
                 <FeedbackIcon className="w-5 h-5" />
                 <span className="text-[8px] font-medium uppercase tracking-tighter opacity-70">

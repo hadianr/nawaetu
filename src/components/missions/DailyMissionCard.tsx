@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { formatHasanahRange } from "@/lib/utils/hasanah";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 
 interface DailyMissionCardProps {
     mission: Mission;
@@ -49,6 +50,8 @@ export default function DailyMissionCard({
     onClick,
     isBackdated = false
 }: DailyMissionCardProps) {
+    const { currentTheme } = useTheme();
+    const isLight = THEMES[currentTheme].mode === "light";
     let urgencyNode = null;
 
     if (mission.category === 'prayer' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
@@ -120,8 +123,8 @@ export default function DailyMissionCard({
                 "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden",
                 "border backdrop-blur-sm",
                 isCompleted
-                    ? "bg-black/20 border-white/5 opacity-60"
-                    : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10"
+                    ? (isLight ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-70" : "bg-black/20 border-white/5 opacity-60")
+                    : (isLight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5 hover:border-[rgb(var(--color-primary-light))]" : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10")
             )}
         >
             {!isCompleted && !isLocked && (
@@ -146,7 +149,7 @@ export default function DailyMissionCard({
                                 ? gender === 'female' ? "text-pink-400 line-through" :
                                     gender === 'male' ? "text-blue-400 line-through" :
                                         "text-[rgb(var(--color-primary-light))] line-through"
-                                : isSpecial ? "text-amber-200" : "text-white"
+                                : isSpecial ? (isLight ? "text-[rgb(var(--color-accent-foreground))]" : "text-amber-200") : (isLight ? "text-[rgb(var(--color-text-strong))]" : "text-white")
                         )}>
                             {mission.title}
                         </p>
@@ -165,12 +168,12 @@ export default function DailyMissionCard({
                         )}>
                             {getRulingLabel(mission.ruling, t)}
                         </span>
-                        <p className="text-[10px] text-white/90 truncate">
+                        <p className={cn("text-[10px] truncate", isLight ? "text-[rgb(var(--color-text))]" : "text-white/90")}>
                             {formatHasanahRange(mission.hasanahReward, mission.completionOptions, isBackdated)} Hasanah
                         </p>
 
                         {isLocked ? (
-                            <span className="text-[9px] text-white/60 flex items-center gap-0.5 ml-auto">
+                            <span className={cn("text-[9px] flex items-center gap-0.5 ml-auto", isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/60")}>
                                 {t.home_mission_locked}
                             </span>
                         ) : validation.isLate ? (
@@ -194,7 +197,7 @@ export default function DailyMissionCard({
                 ) : (
                     <div className={cn(
                         "w-5 h-5 rounded-full border transition-colors",
-                        isSpecial ? "border-amber-500/40 group-hover:border-amber-400/60" : "border-white/20 group-hover:border-white/40"
+                        isSpecial ? "border-amber-500/40 group-hover:border-amber-400/60" : (isLight ? "border-[rgb(var(--color-border))] group-hover:border-[rgb(var(--color-primary))]" : "border-white/20 group-hover:border-white/40")
                     )} />
                 )}
             </div>

@@ -51,9 +51,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         {
             id: "prayer",
             icon: Clock3,
-            color: "text-emerald-400",
-            bg: "bg-emerald-500/10",
-            border: "border-emerald-500/20",
+            color: "text-[rgb(var(--color-primary))]",
+            bg: "bg-[rgb(var(--color-primary))]/10",
+            border: "border-[rgb(var(--color-primary))]/20",
             title: translations.onboardingCardPrayerTitle,
             description: translations.onboardingCardPrayerDesc,
             highlight: translations.onboardingCardPrayerHint
@@ -61,9 +61,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         {
             id: "quran",
             icon: BookOpen,
-            color: "text-blue-400",
-            bg: "bg-blue-500/10",
-            border: "border-blue-500/20",
+            color: "text-[rgb(var(--color-info))]",
+            bg: "bg-[rgb(var(--color-info))]/10",
+            border: "border-[rgb(var(--color-info))]/20",
             title: translations.onboardingCardQuranTitle,
             description: translations.onboardingCardQuranDesc,
             highlight: translations.onboardingCardQuranHint
@@ -71,9 +71,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         {
             id: "intention",
             icon: Fingerprint,
-            color: "text-violet-400",
-            bg: "bg-violet-500/10",
-            border: "border-violet-500/20",
+            color: "text-[rgb(var(--color-primary-light))]",
+            bg: "bg-[rgb(var(--color-primary-light))]/10",
+            border: "border-[rgb(var(--color-primary-light))]/20",
             title: translations.onboardingCardIntentionTitle,
             description: translations.onboardingCardIntentionDesc,
             highlight: translations.onboardingCardIntentionHint
@@ -81,9 +81,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         {
             id: "progress",
             icon: Trophy,
-            color: "text-amber-400",
-            bg: "bg-amber-500/10",
-            border: "border-amber-500/20",
+            color: "text-[rgb(var(--color-accent))]",
+            bg: "bg-[rgb(var(--color-accent))]/10",
+            border: "border-[rgb(var(--color-accent))]/20",
             title: translations.onboardingCardProgressTitle,
             description: translations.onboardingCardProgressDesc,
             highlight: translations.onboardingCardProgressHint
@@ -214,26 +214,26 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             return (
                 <div
                     key={currentSlide}
-                    className="mt-8 bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative min-h-[380px] flex flex-col"
+                    className="mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-3xl p-6 shadow-[var(--shadow-floating)] overflow-hidden relative min-h-[380px] flex flex-col text-[rgb(var(--color-text))]"
                 >
                     {/* Background Pattern */}
                     <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
 
                     <div className={cn(
-                        "w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border shadow-lg relative z-10",
+                        "w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border shadow-[var(--shadow-card)] relative z-10",
                         slide.bg, slide.border
                     )}>
                         <slide.icon className={cn("w-8 h-8", slide.color)} />
                     </div>
 
                     <div className="space-y-3 relative z-10 flex-1">
-                        <h2 className="text-2xl font-bold text-white leading-tight">{slide.title}</h2>
-                        <p className="text-sm text-white/90 leading-relaxed">{slide.description}</p>
-                        <div className="bg-white/5 border border-white/5 rounded-xl p-3 flex items-start gap-3 mt-4">
-                            <div className="bg-white/10 rounded-full p-1 mt-0.5">
-                                <Check className="w-3 h-3 text-emerald-400" />
+                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] leading-tight">{slide.title}</h2>
+                        <p className="text-sm text-[rgb(var(--color-text))] leading-relaxed">{slide.description}</p>
+                        <div className="bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/15 rounded-xl p-3 flex items-start gap-3 mt-4">
+                            <div className="bg-[rgb(var(--color-primary))]/10 rounded-full p-1 mt-0.5">
+                                <Check className="w-3 h-3 text-[rgb(var(--color-primary))]" />
                             </div>
-                            <p className="text-xs text-white/70 italic">{slide.highlight}</p>
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] italic">{slide.highlight}</p>
                         </div>
                     </div>
 
@@ -252,16 +252,16 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             return (
                 <div
                     key="setup-name"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden"
+                    className="mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-3xl p-6 shadow-[var(--shadow-floating)] min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden text-[rgb(var(--color-text))]"
                 >
                     <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
                     <div className="relative z-10 w-full space-y-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
+                        <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 rounded-2xl flex items-center justify-center mx-auto shadow-[var(--shadow-card)]">
                             <span className="text-3xl">👋</span>
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">{translations.onboardingNameTitle}</h2>
-                            <p className="text-sm text-white/70 mt-1">{translations.onboardingNameDesc}</p>
+                            <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{translations.onboardingNameTitle}</h2>
+                            <p className="text-sm text-[rgb(var(--color-text-muted))] mt-1">{translations.onboardingNameDesc}</p>
                         </div>
                         <input
                             autoFocus
@@ -270,7 +270,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             onChange={(e) => setName(e.target.value)}
                             placeholder={translations.onboardingNamePlaceholder}
                             aria-label={translations.onboardingNamePlaceholder}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-lg font-bold"
+                            className="w-full bg-[rgb(var(--color-canvas))]/40 border border-[rgb(var(--color-border))]/20 rounded-xl px-4 py-3 text-center text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))] focus:outline-none focus:border-[rgb(var(--color-ring))] transition-all text-lg font-bold"
                             onKeyDown={(e) => e.key === 'Enter' && name.trim() && handleNext()}
                         />
                     </div>
@@ -282,12 +282,12 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             return (
                 <div
                     key="setup-gender"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col relative overflow-hidden"
+                    className="mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-3xl p-6 shadow-[var(--shadow-floating)] min-h-[380px] flex flex-col relative overflow-hidden text-[rgb(var(--color-text))]"
                 >
                     <div className="relative z-10 w-full space-y-4">
                         <div className="text-center mb-2">
-                            <h2 className="text-xl font-bold text-white">{translations.onboardingGenderTitle}</h2>
-                            <p className="text-xs text-white/70 mt-1">{translations.onboardingGenderDesc}</p>
+                            <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{translations.onboardingGenderTitle}</h2>
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] mt-1">{translations.onboardingGenderDesc}</p>
                         </div>
                         <div className="grid gap-3">
                             <button
@@ -295,7 +295,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 aria-label={translations.onboardingMaleLabel}
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
-                                    gender === 'male' ? "bg-blue-500/20 border-blue-500 text-blue-100" : "bg-white/5 border-white/5 hover:bg-white/10"
+                                    gender === 'male' ? "bg-[rgb(var(--color-info))]/20 border-[rgb(var(--color-info))] text-[rgb(var(--color-text-strong))]" : "bg-[rgb(var(--color-surface-subtle))]/50 border-[rgb(var(--color-border))]/15 hover:bg-[rgb(var(--color-surface-subtle))]"
                                 )}
                             >
                                 <span className="text-3xl">👨</span>
@@ -303,14 +303,14 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                     <span className="font-bold block text-sm">{translations.onboardingMaleLabel}</span>
                                     <span className="text-[10px] opacity-70">{translations.onboardingMaleSub}</span>
                                 </div>
-                                {gender === 'male' && <Check className="ml-auto w-5 h-5 text-blue-400" />}
+                                {gender === 'male' && <Check className="ml-auto w-5 h-5 text-[rgb(var(--color-info))]" />}
                             </button>
                             <button
                                 onClick={() => setGender('female')}
                                 aria-label={translations.onboardingFemaleLabel}
                                 className={cn(
                                     "p-4 rounded-xl border transition-all flex items-center gap-4 text-left",
-                                    gender === 'female' ? "bg-pink-500/20 border-pink-500 text-pink-100" : "bg-white/5 border-white/5 hover:bg-white/10"
+                                    gender === 'female' ? "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]" : "bg-[rgb(var(--color-surface-subtle))]/50 border-[rgb(var(--color-border))]/15 hover:bg-[rgb(var(--color-surface-subtle))]"
                                 )}
                             >
                                 <span className="text-3xl">👩</span>
@@ -318,7 +318,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                     <span className="font-bold block text-sm">{translations.onboardingFemaleLabel}</span>
                                     <span className="text-[10px] opacity-70">{translations.onboardingFemaleSub}</span>
                                 </div>
-                                {gender === 'female' && <Check className="ml-auto w-5 h-5 text-pink-400" />}
+                                {gender === 'female' && <Check className="ml-auto w-5 h-5 text-[rgb(var(--color-primary-light))]" />}
                             </button>
                         </div>
                     </div>
@@ -330,19 +330,19 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             return (
                 <div
                     key="setup-location"
-                    className="mt-8 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden"
+                    className="mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-3xl p-6 shadow-[var(--shadow-floating)] min-h-[380px] flex flex-col items-center justify-center text-center relative overflow-hidden text-[rgb(var(--color-text))]"
                 >
                     <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
                     <div className="relative z-10 w-full space-y-6 flex flex-col items-center">
                         <div className={cn(
-                            "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-lg transition-colors p-4",
-                            isLocationSet ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] text-white shadow-[rgb(var(--color-primary))]/20"
+                            "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-[var(--shadow-card)] transition-colors p-4",
+                            isLocationSet ? "bg-[rgb(var(--color-success))]/20 text-[rgb(var(--color-success))] border border-[rgb(var(--color-success))]/30" : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
                         )}>
                             {isLocationSet ? <Check className="w-8 h-8" /> : <MapPin className="w-8 h-8" />}
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">{translations.onboardingLocationTitle}</h2>
-                            <p className="text-sm text-white/70 mt-2 leading-relaxed">{translations.onboardingLocationDesc}</p>
+                            <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{translations.onboardingLocationTitle}</h2>
+                            <p className="text-sm text-[rgb(var(--color-text-muted))] mt-2 leading-relaxed">{translations.onboardingLocationDesc}</p>
                         </div>
                         <Button
                             onClick={handleDetectLocation}
@@ -350,7 +350,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             variant="secondary"
                             className={cn(
                                 "w-full py-6 text-base font-bold rounded-xl transition-all flex border border-transparent items-center gap-2",
-                                isLocationSet ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30 opacity-100" : "bg-white/10 text-white hover:bg-white/20 border-white/10"
+                                isLocationSet ? "bg-[rgb(var(--color-success))]/20 text-[rgb(var(--color-success))] border-[rgb(var(--color-success))]/30 hover:bg-[rgb(var(--color-success))]/30 opacity-100" : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]/80 border-[rgb(var(--color-border))]/20"
                             )}
                         >
                             {isLocationLoading ? (
@@ -374,7 +374,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             type="button"
                             onClick={handleSkipLocation}
                             disabled={isLocationLoading}
-                            className="text-sm text-white/60 hover:text-white transition-colors disabled:opacity-50"
+                            className="text-sm text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] transition-colors disabled:opacity-50"
                         >
                             {translations.onboardingLocationSkip}
                         </button>
@@ -386,7 +386,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-[rgb(var(--color-canvas))]/95 backdrop-blur-xl flex items-center justify-center p-4 text-[rgb(var(--color-text))]">
             <div className="w-full max-w-sm relative">
                 {/* Progress Bar - Only valid in Intro Phase */}
                 {step === 'intro' && (
@@ -396,7 +396,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 key={idx}
                                 className={cn(
                                     "h-1 flex-1 rounded-full",
-                                    idx <= currentSlide ? "bg-white" : "bg-white/20"
+                                    idx <= currentSlide ? "bg-[rgb(var(--color-primary))]" : "bg-[rgb(var(--color-border))]/20"
                                 )}
                             />
                         ))}
@@ -406,9 +406,9 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 {/* SETUP Progress Dots */}
                 {step !== 'intro' && (
                     <div className="absolute top-0 left-0 right-0 flex justify-center gap-2 p-1">
-                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-name' ? "bg-white w-6" : "bg-white/20")} />
-                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-gender' ? "bg-white w-6" : "bg-white/20")} />
-                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-location' ? "bg-white w-6" : "bg-white/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-name' ? "bg-[rgb(var(--color-primary))] w-6" : "bg-[rgb(var(--color-border))]/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-gender' ? "bg-[rgb(var(--color-primary))] w-6" : "bg-[rgb(var(--color-border))]/20")} />
+                        <div className={cn("w-2 h-2 rounded-full", step === 'setup-location' ? "bg-[rgb(var(--color-primary))] w-6" : "bg-[rgb(var(--color-border))]/20")} />
                     </div>
                 )}
 
@@ -423,7 +423,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 sendGAEvent("onboarding_skipped", { stage: "welcome" });
                                 setStep('setup-name');
                             }}
-                            className="text-sm text-white/80 font-semibold px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all flex items-center gap-2"
+                            className="text-sm text-[rgb(var(--color-text))] font-semibold px-5 py-2.5 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] rounded-xl border border-[rgb(var(--color-border))]/20 transition-all flex items-center gap-2"
                         >
                             <span>{translations.onboardingSkip}</span>
                             <ChevronRight className="w-4 h-4" />
@@ -437,7 +437,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                 if (step === 'setup-gender') setStep('setup-name');
                                 if (step === 'setup-location') setStep('setup-gender');
                             }}
-                            className="text-sm text-white/60 font-medium px-4 py-2 hover:text-white transition-colors"
+                            className="text-sm text-[rgb(var(--color-text-muted))] font-medium px-4 py-2 hover:text-[rgb(var(--color-text-strong))] transition-colors"
                         >
                             {translations.onboardingBack}
                         </button>
@@ -449,7 +449,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                             (step === 'setup-gender' && !gender) ||
                             (step === 'setup-location' && !isLocationSet)
                         }
-                        className="flex-1 h-12 bg-white text-black hover:bg-slate-200 font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 h-12 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-strong))] font-bold rounded-xl shadow-[var(--shadow-floating)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {step === 'setup-location' ? translations.onboardingFinish : translations.onboardingNext}
                         {step !== 'setup-location' && <ChevronRight className="w-4 h-4 ml-1" />}

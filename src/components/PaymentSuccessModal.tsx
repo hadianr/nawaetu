@@ -22,7 +22,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Check, Heart } from "lucide-react";
 import { useEffect } from "react";
-import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 interface PaymentSuccessModalProps {
@@ -100,8 +99,6 @@ function triggerNativeConfetti() {
 }
 
 export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessModalProps) {
-    const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
 
     useEffect(() => {
         if (isOpen) {
@@ -113,40 +110,36 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className={cn(
                 "max-w-sm sm:max-w-md p-0 rounded-3xl overflow-hidden shadow-2xl transition-all",
-                isDaylight
-                    ? "bg-white border-slate-200 text-slate-900 shadow-emerald-500/10"
-                    : "bg-gradient-to-b from-slate-900 to-[#0F172A] border-white/10 text-white shadow-emerald-900/40"
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))] shadow-[var(--shadow-floating)]"
             )}>
                 <div className="relative flex flex-col items-center justify-center p-8 pt-12 text-center">
 
                     {/* Animated Checkmark Background */}
-                    <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-emerald-500/20 to-transparent pointer-events-none" />
+                    <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent pointer-events-none" />
 
                     {/* Main Icon */}
                     <div className="relative mb-6">
                         <div className={cn(
                             "w-24 h-24 rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-500",
-                            isDaylight
-                                ? "bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-emerald-500/20"
-                                : "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/30"
+                            "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                         )}>
-                            <Check className="w-12 h-12 text-white stroke-[3]" />
+                            <Check className="w-12 h-12 text-[rgb(var(--color-primary-foreground))] stroke-[3]" />
                         </div>
                         <div className={cn(
                             "absolute -bottom-2 -right-2 rounded-full p-2 shadow-md animate-bounce",
-                            isDaylight ? "bg-emerald-50 text-emerald-600" : "bg-white text-emerald-600"
+                            "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-primary))]"
                         )}>
-                            <Heart className="w-4 h-4 fill-emerald-600" />
+                            <Heart className="w-4 h-4 fill-[rgb(var(--color-primary))]" />
                         </div>
                     </div>
 
-                    <h2 className={cn("text-2xl font-bold mb-2", isDaylight ? "text-slate-900" : "text-white")}>Alhamdulillah!</h2>
-                    <p className="text-emerald-500 font-bold mb-6">Pembayaran Berhasil</p>
+                    <h2 className="text-2xl font-bold mb-2 text-[rgb(var(--color-text-strong))]">Alhamdulillah!</h2>
+                    <p className="text-[rgb(var(--color-primary))] font-bold mb-6">Pembayaran Berhasil</p>
 
-                    <p className={cn("text-sm leading-relaxed mb-8", isDaylight ? "text-slate-600" : "text-slate-300")}>
+                    <p className="text-sm leading-relaxed mb-8 text-[rgb(var(--color-text-muted))]">
                         Terima kasih, Orang Baik. Infaq Anda telah kami terima dan akan digunakan untuk operasional serta pengembangan aplikasi Nawaetu.
                         <br /><br />
-                        <span className={cn("text-xs italic", isDaylight ? "text-slate-400" : "text-white/60")}>&quot;Semoga menjadi amal jariyah yang tak terputus pahalanya.&quot;</span>
+                        <span className="text-xs italic text-[rgb(var(--color-text-muted))]">&quot;Semoga menjadi amal jariyah yang tak terputus pahalanya.&quot;</span>
                     </p>
 
                     <div className="w-full space-y-3">
@@ -154,9 +147,7 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                             onClick={onClose}
                             className={cn(
                                 "w-full font-bold h-12 rounded-xl shadow-lg transition-all active:scale-[0.98]",
-                                isDaylight
-                                    ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-200"
-                                    : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20"
+                                "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             )}
                         >
                             Aamiin, Tutup

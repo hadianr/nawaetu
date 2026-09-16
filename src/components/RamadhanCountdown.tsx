@@ -38,6 +38,7 @@ const InfoIcon = ({ className }: { className?: string }) => (
 );
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -60,6 +61,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
+    const { currentTheme } = useTheme();
+    const isLight = THEMES[currentTheme].mode === "light";
     const router = useRouter();
     const { t } = useLocale();
     const { data: prayerData } = usePrayerTimesContext();
@@ -226,6 +229,16 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
     // Dynamic Intensity Logic
     const getIntensityStyles = (days: number) => {
+        if (isLight) {
+            return {
+                bg: "from-[rgb(var(--color-primary-light))]/60 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary-light))]/30",
+                border: "border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]",
+                text: "text-[rgb(var(--color-primary-strong))]",
+                icon: "fill-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))]",
+                glow: "bg-[rgb(var(--color-primary-light))]/50",
+                animate: ""
+            };
+        }
         if (isRamadhan) {
             // Use CSS Variables for Dynamic Theme Integration
             return {
@@ -371,7 +384,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                 {/* Minimalist Bar */}
                                 <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-amber-400 transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
+                                        className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>

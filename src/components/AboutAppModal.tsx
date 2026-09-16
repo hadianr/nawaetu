@@ -20,7 +20,6 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
 import { Sparkles, BookOpen, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,16 +30,12 @@ interface AboutAppModalProps {
 
 export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps) {
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={cn(
                 "max-w-sm w-[90%] rounded-[2rem] border p-0 overflow-hidden shadow-2xl [&>button]:z-50",
-                isDaylight
-                    ? "bg-white border-slate-200 text-slate-900"
-                    : "bg-[#0F172A] border-white/10 text-white"
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))]"
             )}>
                 {/* Gradient Header - smaller height */}
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-primary))]/5 to-transparent pointer-events-none" />
@@ -49,9 +44,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                     {/* Compact Logo */}
                     <div className={cn(
                         "w-14 h-14 mx-auto rounded-xl flex items-center justify-center shadow-lg mb-3 rotate-3 transition-all",
-                        isDaylight
-                            ? "bg-gradient-to-br from-emerald-400 to-teal-500 shadow-emerald-500/20"
-                            : "bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] shadow-[rgb(var(--color-primary))]/30"
+                        "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                     )}>
                         <span className="text-3xl font-bold text-white">N</span>
                     </div>
@@ -63,9 +56,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                     <div className="flex justify-center mt-1.5">
                         <span className={cn(
                             "text-[10px] uppercase tracking-widest font-extrabold px-3 py-1 rounded-full border",
-                            isDaylight
-                                ? "text-emerald-600 bg-emerald-50 border-emerald-100"
-                                : "text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                            "text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             {t.aboutTagline}
                         </span>
@@ -77,15 +68,15 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                         {/* What is Nawaetu - merging description & title for compactness */}
                         <div className={cn(
                             "space-y-1.5 p-3.5 rounded-2xl border",
-                            isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/[0.03] border-white/5"
+                            "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">
-                                <Sparkles className={cn("w-3.5 h-3.5", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
+                                <Sparkles className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
                                 {t.aboutWhatIsTitle}
                             </h3>
                             <p className={cn(
                                 "text-[11px] leading-relaxed",
-                                isDaylight ? "text-slate-600" : "opacity-70"
+                                "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {t.aboutDescription}
                             </p>
@@ -94,15 +85,15 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                         {/* Our Approach */}
                         <div className={cn(
                             "space-y-1.5 p-3.5 rounded-2xl border transition-all",
-                            isDaylight ? "bg-emerald-50/50 border-emerald-100" : "bg-[rgb(var(--color-primary))]/[0.03] border border-[rgb(var(--color-primary))]/10"
+                            "bg-[rgb(var(--color-primary))]/[0.05] border-[rgb(var(--color-primary))]/15"
                         )}>
                             <h3 className="text-xs font-bold flex items-center gap-2">
-                                <BookOpen className={cn("w-3.5 h-3.5", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
+                                <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
                                 {t.aboutApproachTitle}
                             </h3>
                             <p className={cn(
                                 "text-[11px] leading-relaxed",
-                                isDaylight ? "text-slate-600" : "opacity-70"
+                                "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {t.aboutApproachDesc}
                             </p>
@@ -110,11 +101,11 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                     </div>
 
                     {/* Footer - minimal */}
-                    <div className={cn("flex flex-col items-center gap-2 pt-2 border-t", isDaylight ? "border-slate-100" : "border-white/5")}>
-                        <div className={cn("flex items-center gap-1.5 text-[9px] font-medium", isDaylight ? "text-slate-400" : "opacity-50")}>
+                    <div className="flex flex-col items-center gap-2 pt-2 border-t border-[rgb(var(--color-border))]/20">
+                        <div className="flex items-center gap-1.5 text-[9px] font-medium text-[rgb(var(--color-text-muted))]">
                             <span className={cn(
                                 "px-1.5 py-0.5 rounded border uppercase tracking-tighter",
-                                isDaylight ? "bg-slate-100 border-slate-200 text-slate-500" : "bg-white/5 border-white/10"
+                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20"
                             )}>
                                 {t.aboutVersion.split('•')[0].trim()}
                             </span>

@@ -9,7 +9,7 @@ import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { searchQuranAction } from "@/app/actions/quran";
 import type { SearchResponse } from "@/lib/quran/kemenag-api";
 import Link from "next/link";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import DOMPurify from "isomorphic-dompurify";
 
@@ -17,7 +17,7 @@ export default function QuranSearchModal() {
     const { t, locale } = useLocale();
     const translations = t as TranslationTree;
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -46,7 +46,7 @@ export default function QuranSearchModal() {
                     className={cn(
                         "h-[44px] px-4 rounded-2xl shadow-lg border transition-all gap-2",
                         isDaylight
-                            ? "bg-white border-slate-200 text-slate-600 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50"
+                            ? "bg-[rgb(var(--color-primary-light))]/35 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary-light))]/60"
                             : "bg-[#0f172a]/60 backdrop-blur-xl border-white/10 text-slate-300 hover:text-[rgb(var(--color-primary))] hover:border-[rgb(var(--color-primary))]/30"
                     )}
                 >
@@ -54,22 +54,22 @@ export default function QuranSearchModal() {
                     <span className="hidden sm:inline">{translations.quranSearchVerses}</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-xl bg-[#0F172A] border-white/10 p-0 overflow-hidden flex flex-col max-h-[85vh]">
-                <DialogHeader className="p-4 border-b border-white/5 shrink-0 bg-[#0F172A]/80 backdrop-blur-xl z-10">
-                    <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+            <DialogContent className={cn("sm:max-w-xl p-0 overflow-hidden flex flex-col max-h-[85vh]", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]" : "bg-[#0F172A] border-white/10")}>
+                <DialogHeader className={cn("p-4 border-b shrink-0 backdrop-blur-xl z-10", isDaylight ? "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]" : "border-white/5 bg-[#0F172A]/80")}>
+                    <DialogTitle className={cn("text-lg font-bold flex items-center gap-2", isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-white")}>
                         <Search className="h-5 w-5 text-[rgb(var(--color-primary-light))]" />
                         {translations.quranSearchVerses}
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="p-4 shrink-0 bg-white/5 border-b border-white/5 shadow-sm relative z-0">
+                <div className={cn("p-4 shrink-0 border-b shadow-sm relative z-0", isDaylight ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]" : "bg-white/5 border-white/5")}>
                     <form onSubmit={handleSearch} className="flex gap-2">
                         <Input
                             autoFocus
                             placeholder={translations.quranSearchPlaceholderBody}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            className="bg-white/5 border-white/10 focus-visible:ring-[rgb(var(--color-primary))] h-12 text-base text-white rounded-xl placeholder:text-slate-500"
+                            className={cn("h-12 text-base rounded-xl focus-visible:ring-[rgb(var(--color-primary))]", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))]" : "bg-white/5 border-white/10 text-white placeholder:text-slate-500")}
                         />
                         <Button type="submit" disabled={isPending || !query.trim()} className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white h-12 px-6 rounded-xl font-bold transition-all shadow-lg shadow-[rgb(var(--color-primary))]/20">
                             {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : translations.quranSearchButton}

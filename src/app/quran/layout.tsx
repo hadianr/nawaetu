@@ -24,5 +24,5 @@ export default function QuranLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <>{children}</>;
+    return <>{React.Children.toArray(children)}</>;
 }

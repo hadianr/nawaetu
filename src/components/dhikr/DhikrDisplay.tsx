@@ -70,10 +70,10 @@ export function DhikrDisplay({
                 </div>
 
                 {activeDhikr ? (
-                    <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2">
-                        <div className="px-4 pt-4 xs:pt-20 pb-0.5 xs:pb-1 bg-transparent">
+                    <div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500 pb-0.5 xs:pb-2 mb-5 sm:mb-0 max-h-[27dvh] sm:max-h-[38dvh] overflow-y-auto overscroll-contain">
+                        <div className="px-4 pt-4 xs:pt-10 sm:pt-20 pb-0.5 xs:pb-1 bg-transparent">
                             <h2 className={cn(
-                                "text-2xl xs:text-5xl font-bold font-serif leading-none transition-colors",
+                                "text-[clamp(1.35rem,5vw,2.75rem)] font-bold font-serif leading-[1.2] transition-colors",
                                 isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
                             )}>
                                 {activeDhikr.arab}
@@ -104,7 +104,10 @@ export function DhikrDisplay({
 
             {/* Middle: Digital Counter - Responsive Size */}
             <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10">
-                <div className="relative w-52 h-52 xs:w-64 xs:h-64 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto shadow-[0_0_60px_rgba(0,0,0,0.6)] rounded-full transition-all duration-300">
+                <div className={cn(
+                    "relative w-44 h-44 xs:w-56 xs:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
+                    isDaylight ? "shadow-[0_12px_36px_rgb(var(--color-primary)/0.12)]" : "shadow-[0_0_60px_rgba(0,0,0,0.6)]"
+                )}>
                     <div className="absolute inset-[-10px] rounded-full blur-3xl bg-[rgb(var(--color-primary)/0.08)] transition-all duration-700" />
 
                     <div className="absolute inset-0 rounded-full border-[6px] md:border-[12px] border-white/5" />
@@ -129,7 +132,7 @@ export function DhikrDisplay({
                         className={cn(
                             "absolute inset-1.5 md:inset-4 rounded-full active:scale-95 transition-all duration-75 flex flex-col items-center justify-center group z-20 shadow-xl border",
                             isDaylight
-                                ? "bg-gradient-to-br from-emerald-100 to-emerald-50 border-emerald-200/50 shadow-emerald-500/10"
+                                ? "bg-gradient-to-br from-[rgb(var(--color-primary-light)/0.3)] to-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[0_8px_24px_rgb(var(--color-primary)/0.12)]"
                                 : "bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border-[rgb(var(--color-primary)/0.15)] shadow-black/60"
                         )}
                     >
@@ -140,7 +143,7 @@ export function DhikrDisplay({
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                         </span>
                         <span className={cn(
-                            "text-7xl xs:text-8xl md:text-9xl font-mono font-bold tracking-tighter transition-colors",
+                            "text-[clamp(4.5rem,15vw,8rem)] font-mono font-bold tracking-tighter transition-colors",
                             isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
                         )}>
                             {hasHydrated ? (

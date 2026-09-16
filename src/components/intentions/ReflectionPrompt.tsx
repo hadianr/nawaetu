@@ -20,7 +20,7 @@ import { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { ReflectionDalil, getRandomReflectionDalil } from "@/data/reflection-dalils";
 
 interface ReflectionPromptProps {
@@ -43,7 +43,7 @@ export default function ReflectionPrompt({
 }: ReflectionPromptProps) {
     const { locale, t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const isId = locale === 'id' || (locale && locale.startsWith('id'));
 
     const RATING_LABELS = [

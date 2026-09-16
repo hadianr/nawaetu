@@ -20,7 +20,6 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 
@@ -91,33 +90,6 @@ export default function DeferredBelowFold() {
           </section>
         }
       </div>
-
-      <div className="pointer-events-none fixed inset-x-0 bottom-24 z-40">
-        <div className="mx-auto flex w-full max-w-md justify-end px-4">
-          <Link
-            href="/mentor-ai"
-            aria-label={`${t.homeAiTitle}: ${t.homeAiSubtitle}`}
-            className="pointer-events-auto group animate-in slide-in-from-right-4 fade-in duration-700 delay-500"
-            prefetch={false}
-          >
-            <div className="relative flex items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] p-1.5 pr-4 shadow-[0_8px_28px_rgba(var(--color-primary),0.3)] transition-transform hover:scale-105 active:scale-95">
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20">
-                <svg viewBox="0 0 24 24" className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
-                </svg>
-                <svg viewBox="0 0 24 24" className="absolute -right-1 -top-1 h-3 w-3 text-amber-300" fill="currentColor">
-                  <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z" />
-                </svg>
-              </div>
-              <span className="relative flex flex-col">
-                <span className="text-[11px] font-bold leading-none text-white">{t.homeAiTitle}</span>
-                <span className="mt-0.5 text-[9px] leading-none text-white/70">{t.homeAiSubtitle}</span>
-              </span>
-            </div>
-          </Link>
-        </div>
-      </div>
-
 
     </>
   );

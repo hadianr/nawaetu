@@ -202,7 +202,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" className="theme-loading" suppressHydrationWarning>
       <head>
         {/* Resource Hints - Preconnect to critical origins */}
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
@@ -219,15 +219,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Nawaetu" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-        {/* Defer script execution for faster LCP */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Mark when first byte is received - helps trace LCP
-              window.__pageLoadStart = performance.now();
-            `
-          }}
-        />
       </head>
       <body
         className="antialiased"
@@ -237,13 +228,10 @@ export default function RootLayout({
         <ChunkErrorHandler />
         <WebVitals />
         {/* Structured Data - Multiple Schemas */}
-        {jsonLdSchemas.map((schema, index) => (
-          <script
-            key={index}
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-          />
-        ))}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchemas) }}
+        />
         <LocaleProvider>
           <DynamicTitle />
           <ThemeProvider>

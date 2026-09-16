@@ -333,20 +333,20 @@ export default function NotificationSettings() {
     // RENDER: PRE-PERMISSION STATE
     if (permissionStatus === "default") {
         return (
-            <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 text-center space-y-4">
+            <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-6 text-center space-y-4">
                 <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
                     <Bell className="w-8 h-8 text-[rgb(var(--color-primary))]" />
                 </div>
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-[rgb(var(--color-text-strong))]">
                     {(t as unknown as Record<string, string>).notificationPermissionTitle || "Aktifkan Notifikasi Sholat"}
                 </h3>
-                <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto">
+                <p className="text-[rgb(var(--color-text-muted))] text-sm leading-relaxed max-w-xs mx-auto">
                     {(t as unknown as Record<string, string>).notificationPermissionDesc || "Untuk mendapatkan pengingat waktu sholat, mohon izinkan akses notifikasi."}
                 </p>
                 <div className="pt-2">
                     <button
                         onClick={requestPermission}
-                        className="w-full py-3 px-4 bg-[rgb(var(--color-primary))] text-white font-semibold rounded-xl shadow-lg shadow-[rgb(var(--color-primary))]/20 hover:opacity-90 transition-all active:scale-[0.98]"
+                        className="w-full py-3 px-4 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] font-semibold rounded-xl shadow-[var(--shadow-card)] hover:opacity-90 transition-all active:scale-[0.98]"
                     >
                         {(t as unknown as Record<string, string>).notificationPermissionButton || "Izinkan Notifikasi"}
                     </button>
@@ -358,13 +358,13 @@ export default function NotificationSettings() {
     // RENDER: DENIED STATE
     if (permissionStatus === "denied") {
         return (
-            <div className="bg-red-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4 shadow-2xl flex items-start gap-3">
-                <BellOff className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+            <div className="bg-[rgb(var(--color-danger))]/10 backdrop-blur-xl border border-[rgb(var(--color-danger))]/25 rounded-2xl p-4 shadow-[var(--shadow-card)] flex items-start gap-3">
+                <BellOff className="w-5 h-5 text-[rgb(var(--color-danger))] mt-0.5 flex-shrink-0" />
                 <div>
-                    <h3 className="font-semibold text-red-400 text-sm mb-1">
+                    <h3 className="font-semibold text-[rgb(var(--color-danger))] text-sm mb-1">
                         {locale === 'id' ? 'Akses Ditolak' : 'Permission Denied'}
                     </h3>
-                    <p className="text-xs text-red-400/80 leading-relaxed">
+                    <p className="text-xs text-[rgb(var(--color-danger))]/80 leading-relaxed">
                         {t.notificationDenied}
                     </p>
                 </div>
@@ -375,7 +375,7 @@ export default function NotificationSettings() {
     // RENDER: SETTINGS STATE (GRANTED)
     return (
         <div className="space-y-3">
-        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+        <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
             {/* Main Toggle Area */}
             <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1">
@@ -388,19 +388,19 @@ export default function NotificationSettings() {
                             )}
                         </div>
                     ) : (
-                        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/20 flex items-center justify-center shrink-0">
                             {isLoading ? (
-                                <Loader2 className="w-5 h-5 text-white/50 animate-spin" />
+                                <Loader2 className="w-5 h-5 text-[rgb(var(--color-text-muted))] animate-spin" />
                             ) : (
-                                <BellOff className="w-5 h-5 text-white/40" />
+                                <BellOff className="w-5 h-5 text-[rgb(var(--color-text-muted))]" />
                             )}
                         </div>
                     )}
                     <div className="min-w-0">
-                        <h3 className="font-semibold text-white text-sm sm:text-base">
+                        <h3 className="font-semibold text-[rgb(var(--color-text-strong))] text-sm sm:text-base">
                             {t.prayerNotifications}
                         </h3>
-                        <p className="text-xs text-white/50">
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">
                             {isLoading
                                 ? (locale === 'id' ? 'Mengaktifkan...' : 'Enabling...')
                                 : isEnabled
@@ -419,10 +419,10 @@ export default function NotificationSettings() {
             {/* Prayer Selection Area */}
             {isEnabled && (
                 <>
-                    <div className="h-px bg-white/10 w-full" />
+                    <div className="h-px bg-[rgb(var(--color-border))]/20 w-full" />
 
                     <div className="space-y-3">
-                        <h4 className="font-semibold text-white/90 text-xs sm:text-sm">
+                        <h4 className="font-semibold text-[rgb(var(--color-text))] text-xs sm:text-sm">
                             {t.selectPrayerTimes}
                         </h4>
 
@@ -433,10 +433,10 @@ export default function NotificationSettings() {
                                     {[1, 2, 3, 4, 5, 6].map((i) => (
                                         <div
                                             key={i}
-                                            className="flex items-center justify-between py-2 px-3 bg-white/5 rounded-xl border border-white/5 animate-pulse h-11"
+                                            className="flex items-center justify-between py-2 px-3 bg-[rgb(var(--color-surface-subtle))]/60 rounded-xl border border-[rgb(var(--color-border))]/15 animate-pulse h-11"
                                         >
-                                            <div className="h-3 bg-white/10 rounded w-16"></div>
-                                            <div className="h-5 bg-white/10 rounded-full w-9"></div>
+                                            <div className="h-3 bg-[rgb(var(--color-border))]/20 rounded w-16"></div>
+                                            <div className="h-5 bg-[rgb(var(--color-border))]/20 rounded-full w-9"></div>
                                         </div>
                                     ))}
                                 </>
@@ -448,9 +448,9 @@ export default function NotificationSettings() {
                                         return (
                                             <div
                                                 key={prayer}
-                                                className="flex items-center justify-between py-2 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors h-11 group"
+                                                className="flex items-center justify-between py-2 px-3 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] rounded-xl border border-[rgb(var(--color-border))]/20 transition-colors h-11 group"
                                             >
-                                                <span className="text-white/80 group-hover:text-white capitalize font-medium text-xs sm:text-sm">
+                                                <span className="text-[rgb(var(--color-text))] group-hover:text-[rgb(var(--color-text-strong))] capitalize font-medium text-xs sm:text-sm">
                                                     {label}
                                                 </span>
                                                 <Switch
@@ -470,14 +470,14 @@ export default function NotificationSettings() {
         </div>
 
         {status === "authenticated" && (
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface))]/70 p-4">
                 <div className="flex min-w-0 items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10">
                         <Flame className="h-5 w-5 text-[rgb(var(--color-primary))]" aria-hidden="true" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-semibold text-white sm:text-base">{t.streakReminderTitle}</h3>
-                        <p className="text-xs text-white/50">{t.streakReminderDescription}</p>
+                        <h3 className="text-sm font-semibold text-[rgb(var(--color-text-strong))] sm:text-base">{t.streakReminderTitle}</h3>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.streakReminderDescription}</p>
                     </div>
                 </div>
                 <Switch
@@ -495,7 +495,7 @@ export default function NotificationSettings() {
                 type="button"
                 disabled={!subscriptionHealthy || isTestingPush}
                 onClick={sendTestPush}
-                className="w-full rounded-xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-xl border border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary-light))] px-4 py-3 text-sm font-semibold text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-light))]/80 disabled:cursor-not-allowed disabled:opacity-50"
             >
                 {isTestingPush ? t.notificationTestSending : t.notificationTestButton}
             </button>

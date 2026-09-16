@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { useSession } from "next-auth/react";
 import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } from "lucide-react";
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";
 import { usePlayerStats } from "@/lib/habits/leveling";
@@ -108,7 +108,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
     window.addEventListener(STREAK_ACHIEVEMENT_EVENT, celebrate);
     return () => window.removeEventListener(STREAK_ACHIEVEMENT_EVENT, celebrate);
   }, [status, t]);
-  const isDaylight = mounted && currentTheme === "daylight";
+  const isDaylight = mounted && THEMES[currentTheme].mode === "light";
   const isLoggedIn = status === "authenticated";
   const cachedProgression = isLoggedIn
     ? getStorageService().getOptional<CanonicalProgression>(STORAGE_KEYS.CANONICAL_PROGRESSION)

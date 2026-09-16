@@ -23,7 +23,7 @@ import {
 import Link from "next/link";
 import type { SirahSection, SirahQuranRef } from "@/data/sirah";
 import { SirahQuranBridgeModal } from "./SirahQuranBridgeModal";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -44,7 +44,7 @@ export function SirahReaderView({
 }: SirahReaderViewProps) {
     const { currentTheme } = useTheme();
     const { locale } = useLocale();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [fontSize, setFontSize] = useState<"sm" | "base" | "lg" | "xl">("base");
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
@@ -167,7 +167,7 @@ export function SirahReaderView({
         </div>
 
         <div className={cn(
-            "min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
+            "sirah-reader-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
             isDaylight ? "text-slate-900" : "text-white"
         )}>
             {/* Header Controls */}

@@ -43,9 +43,12 @@ import ReflectionInputForm from "./intentions/ReflectionInputForm";
 import IntentionPrompt from "./intentions/IntentionPrompt";
 import DailyMissionCard from "./missions/DailyMissionCard";
 import { useWidgetMissions } from "@/hooks/useWidgetMissions";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 
 export default function MissionsWidget() {
     const { t } = useLocale();
+    const { currentTheme } = useTheme();
+    const isLight = THEMES[currentTheme].mode === "light";
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
 
     // Extracted Custom Hook for Missions Logic
@@ -220,7 +223,7 @@ export default function MissionsWidget() {
     return (
         <div className={cn(
             "relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all group",
-            "bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30 hover:border-white/20"
+            isLight ? "bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]" : "bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30 hover:border-white/20"
         )}>
             <div className={cn(
                 "absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] pointer-events-none opacity-20 transition-colors",
@@ -238,8 +241,8 @@ export default function MissionsWidget() {
                         {gender === 'female' ? '🌸' : gender === 'male' ? '💠' : '✨'}
                     </div>
                     <div>
-                        <h2 className="text-sm font-bold text-white leading-none">{t.home_mission_focus_title}</h2>
-                        <p className="text-[10px] text-white/90 mt-0.5">{t.home_mission_daily_target}</p>
+                        <h2 className={cn("text-sm font-bold leading-none", isLight ? "text-[rgb(var(--color-text-strong))]" : "text-white")}>{t.home_mission_focus_title}</h2>
+                        <p className={cn("text-[10px] mt-0.5", isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/90")}>{t.home_mission_daily_target}</p>
                     </div>
                 </div>
 
@@ -247,7 +250,7 @@ export default function MissionsWidget() {
                     "text-[10px] px-3 py-1 rounded-full font-medium border backdrop-blur-sm",
                     completedCount === missions.length
                         ? "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary-dark))]/20 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))]"
-                        : "bg-white/5 border-white/10 text-white/80"
+                        : (isLight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]" : "bg-white/5 border-white/10 text-white/80")
                 )}>
                     {completedCount}/{missions.length} {t.home_mission_completed}
                 </div>
@@ -289,7 +292,7 @@ export default function MissionsWidget() {
                     <button
                         className={cn(
                             "w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium transition-all",
-                            "bg-white/5 hover:bg-white/10 active:scale-95 border border-white/5 text-white/70 hover:text-white"
+                            isLight ? "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-primary))]/10 active:scale-95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:text-[rgb(var(--color-primary-strong))]" : "bg-white/5 hover:bg-white/10 active:scale-95 border border-white/5 text-white/70 hover:text-white"
                         )}
                         onClick={() => setShowMissionModal(true)}
                     >

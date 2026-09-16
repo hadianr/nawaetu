@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { InsightKey } from "@/hooks/useStatsInsights";
 import type { TranslationTree } from "@/context/LocaleContext";
 import type { PlayerStats } from "@/lib/habits/leveling";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 
 type RankDetails = TranslationTree["stats"]["ranks"][keyof TranslationTree["stats"]["ranks"]];
 type NextRankDetails = RankDetails & { levelsRemaining: number };
@@ -48,6 +49,8 @@ export function StatsOverview({
     setActiveInsight,
     onStreakClick
 }: StatsOverviewProps) {
+    const { currentTheme } = useTheme();
+    const isLight = THEMES[currentTheme].mode === "light";
     return (
         <div className="space-y-4 max-w-2xl mx-auto px-6">
             {/* Level & XP Card - Compact Version */}
@@ -118,7 +121,7 @@ export function StatsOverview({
 
             <Link
                 href="/rewards"
-                className="flex items-center justify-center gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs font-bold text-amber-200 transition-colors hover:bg-amber-400/20"
+                className={cn("flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-xs font-bold transition-colors", isLight ? "border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/20" : "border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary))]/20")}
             >
                 <ZapIcon className="h-4 w-4" />
                 {t.rewards.cta}

@@ -18,23 +18,69 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useLayoutEffect } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
-export type ThemeId = "default" | "daylight" | "midnight" | "sunset" | "lavender" | "ocean" | "royal";
+export type ThemeId =
+    | "default"
+    | "daylight"
+    | "midnight"
+    | "sunset"
+    | "lavender"
+    | "ocean"
+    | "royal"
+    | "blossom";
+
+export type ThemeMode = "light" | "dark";
+
+export type ThemeToken =
+    | "canvas"
+    | "surface"
+    | "surfaceSubtle"
+    | "textStrong"
+    | "text"
+    | "textMuted"
+    | "primary"
+    | "primaryStrong"
+    | "primaryForeground"
+    | "accent"
+    | "accentForeground"
+    | "info"
+    | "success"
+    | "warning"
+    | "danger"
+    | "dangerForeground"
+    | "border"
+    | "ring"
+    | "shadowCard"
+    | "shadowFloating"
+    | "radiusControl"
+    | "radiusCard"
+    | "spacePage"
+    | "spaceSection"
+    | "fontUi"
+    | "fontReading"
+    | "fontEditorial"
+    | "readerLineHeight";
+
+export type ThemeTokens = Record<ThemeToken, string>;
 
 export interface ThemePattern {
-    type: 'geometric' | 'organic' | 'stars' | 'waves' | 'damask' | 'none';
+    type: 'geometric' | 'organic' | 'stars' | 'waves' | 'damask' | 'floral' | 'none';
     opacity: number;
 }
 
 export interface Theme {
     id: ThemeId;
+    mode: ThemeMode;
+    nameKey: string;
+    descriptionKey: string;
     name: string;
     description: string;
     isPremium: boolean;
     pattern?: ThemePattern;
+    tokens: ThemeTokens;
     colors: {
         primary: string;
         primaryLight: string;
@@ -45,9 +91,56 @@ export interface Theme {
     };
 }
 
+type ThemeInput = Omit<Theme, "tokens"> & { tokens?: Partial<ThemeTokens> };
+
+const createTheme = (input: ThemeInput): Theme => {
+    const { colors, mode, tokens: overrides, ...theme } = input;
+    const isLight = mode === "light";
+
+    return {
+        ...theme,
+        mode,
+        colors,
+        tokens: {
+            canvas: colors.background,
+            surface: colors.surface,
+            surfaceSubtle: isLight ? "248 250 252" : "30 41 59",
+            textStrong: isLight ? "15 23 42" : "255 255 255",
+            text: isLight ? "51 65 85" : "226 232 240",
+            textMuted: isLight ? "71 85 105" : "148 163 184",
+            primary: colors.primary,
+            primaryStrong: colors.primaryDark,
+            primaryForeground: "255 255 255",
+            accent: colors.accent,
+            accentForeground: isLight ? "63 39 51" : "15 23 42",
+            info: "96 165 250",
+            success: "52 211 153",
+            warning: "251 191 36",
+            danger: "248 113 113",
+            dangerForeground: "255 255 255",
+            border: isLight ? "226 232 240" : "255 255 255",
+            ring: colors.primaryLight,
+            shadowCard: isLight ? "0 4px 20px rgb(15 23 42 / 0.08)" : "0 4px 20px rgb(0 0 0 / 0.24)",
+            shadowFloating: isLight ? "0 12px 32px rgb(15 23 42 / 0.16)" : "0 12px 32px rgb(0 0 0 / 0.4)",
+            radiusControl: "0.625rem",
+            radiusCard: "0.75rem",
+            spacePage: "1rem",
+            spaceSection: "1.5rem",
+            fontUi: "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+            fontReading: "Amiri, Lateef, serif",
+            fontEditorial: "Lora, Georgia, serif",
+            readerLineHeight: "1.9",
+            ...overrides,
+        },
+    };
+};
+
 export const THEMES: Record<ThemeId, Theme> = {
-    default: {
+    default: createTheme({
         id: "default",
+        mode: "dark",
+        nameKey: "themeDefaultName",
+        descriptionKey: "themeDefaultDescription",
         name: "Default",
         description: "Tema gelap klasik dengan aksen hijau emerald",
         isPremium: false,
@@ -59,9 +152,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "10 10 10", // near black
             surface: "15 23 42", // slate-900
         },
-    },
-    daylight: {
+        tokens: { primaryStrong: "4 120 87" },
+    }),
+    daylight: createTheme({
         id: "daylight",
+        mode: "light",
+        nameKey: "themeDaylightName",
+        descriptionKey: "themeDaylightDescription",
         name: "Daylight ☀️",
         description: "Cerah, ringan, dan nyaman untuk siang hari",
         isPremium: false,
@@ -73,9 +170,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "248 250 252", // slate-50 (light)
             surface: "255 255 255",    // white
         },
-    },
-    midnight: {
+        tokens: { primaryStrong: "4 120 87", border: "203 213 225" },
+    }),
+    midnight: createTheme({
         id: "midnight",
+        mode: "dark",
+        nameKey: "themeMidnightName",
+        descriptionKey: "themeMidnightDescription",
         name: "Midnight",
         description: "Biru gelap malam dengan bintang berkilauan",
         isPremium: true,
@@ -91,9 +192,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "3 7 18", // very dark blue
             surface: "30 41 59", // slate-800 with blue tint
         },
-    },
-    sunset: {
+        tokens: { primaryStrong: "194 65 12" },
+    }),
+    sunset: createTheme({
         id: "sunset",
+        mode: "dark",
+        nameKey: "themeSunsetName",
+        descriptionKey: "themeSunsetDescription",
         name: "Sunset",
         description: "Kehangatan senja dengan gelombang lembut",
         isPremium: true,
@@ -109,9 +214,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "12 10 9", // warm black
             surface: "41 37 36", // stone-800
         },
-    },
-    lavender: {
+        tokens: { primaryStrong: "109 40 217" },
+    }),
+    lavender: createTheme({
         id: "lavender",
+        mode: "dark",
+        nameKey: "themeLavenderName",
+        descriptionKey: "themeLavenderDescription",
         name: "Lavender",
         description: "Ungu spiritual dengan motif geometric islami",
         isPremium: true,
@@ -127,9 +236,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "10 8 15", // dark purple-black
             surface: "46 16 101", // purple-900
         },
-    },
-    ocean: {
+        tokens: { primaryStrong: "15 118 110" },
+    }),
+    ocean: createTheme({
         id: "ocean",
+        mode: "dark",
+        nameKey: "themeOceanName",
+        descriptionKey: "themeOceanDescription",
         name: "Ocean",
         description: "Teal segar dengan riak air yang menenangkan",
         isPremium: true,
@@ -145,9 +258,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "4 12 12", // dark teal-black
             surface: "19 78 74", // teal-900
         },
-    },
-    royal: {
+        tokens: { primaryStrong: "159 18 57" },
+    }),
+    royal: createTheme({
         id: "royal",
+        mode: "dark",
+        nameKey: "themeRoyalName",
+        descriptionKey: "themeRoyalDescription",
         name: "Royal",
         description: "Merah burgundy elegan dengan motif damask",
         isPremium: true,
@@ -163,8 +280,96 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "12 7 9", // dark rose-black
             surface: "76 5 25", // rose-950
         },
-    },
+        tokens: { primaryStrong: "159 18 57" },
+    }),
+    blossom: createTheme({
+        id: "blossom",
+        mode: "light",
+        nameKey: "themeBlossomName",
+        descriptionKey: "themeBlossomDescription",
+        name: "Blossom",
+        description: "Merah muda lembut dengan sentuhan bunga yang elegan",
+        isPremium: true,
+        pattern: {
+            type: "floral",
+            opacity: 0.08,
+        },
+        colors: {
+            // Soft blush accents; primaryStrong remains dark enough for white-text actions.
+            primary: "224 155 178",
+            primaryLight: "245 211 222",
+            primaryDark: "171 86 115",
+            accent: "222 151 176",
+            background: "255 247 250",
+            surface: "255 250 252",
+        },
+        tokens: {
+            surfaceSubtle: "253 236 243",
+            textStrong: "66 40 52",
+            text: "83 56 69",
+            textMuted: "112 82 97",
+            primaryStrong: "132 45 75",
+            accentForeground: "66 40 52",
+            border: "236 203 217",
+            ring: "190 88 122",
+        },
+    }),
 };
+
+const THEME_TOKEN_CSS_NAMES: Record<ThemeToken, string> = {
+    canvas: "--color-canvas",
+    surface: "--color-surface",
+    surfaceSubtle: "--color-surface-subtle",
+    textStrong: "--color-text-strong",
+    text: "--color-text",
+    textMuted: "--color-text-muted",
+    primary: "--color-primary",
+    primaryStrong: "--color-primary-strong",
+    primaryForeground: "--color-primary-foreground",
+    accent: "--color-accent",
+    accentForeground: "--color-accent-foreground",
+    info: "--color-info",
+    success: "--color-success",
+    warning: "--color-warning",
+    danger: "--color-danger",
+    dangerForeground: "--color-danger-foreground",
+    border: "--color-border",
+    ring: "--color-ring",
+    shadowCard: "--shadow-card",
+    shadowFloating: "--shadow-floating",
+    radiusControl: "--radius-control",
+    radiusCard: "--radius-card",
+    spacePage: "--space-page",
+    spaceSection: "--space-section",
+    fontUi: "--font-ui",
+    fontReading: "--font-reading",
+    fontEditorial: "--font-editorial",
+    readerLineHeight: "--reader-line-height",
+};
+
+export const hasCompleteThemeTokens = (theme: Theme): boolean =>
+    Object.keys(THEME_TOKEN_CSS_NAMES).every((token) => {
+        const value = theme.tokens[token as ThemeToken];
+        return typeof value === "string" && value.trim().length > 0;
+    });
+
+export function applyTheme(theme: Theme): void {
+    const validTheme = hasCompleteThemeTokens(theme) ? theme : THEMES.default;
+    const root = document.documentElement;
+
+    Object.entries(validTheme.tokens).forEach(([token, value]) => {
+        root.style.setProperty(THEME_TOKEN_CSS_NAMES[token as ThemeToken], value);
+    });
+
+    // Compatibility variables for screens that have not migrated yet.
+    root.style.setProperty("--color-primary-light", validTheme.colors.primaryLight);
+    root.style.setProperty("--color-primary-dark", validTheme.colors.primaryDark);
+    root.style.setProperty("--color-background", validTheme.colors.background);
+
+    root.dataset.theme = validTheme.id;
+    root.dataset.colorMode = validTheme.mode;
+    root.style.colorScheme = validTheme.mode;
+}
 
 interface ThemeContextType {
     currentTheme: ThemeId;
@@ -174,40 +379,23 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [currentTheme, setCurrentTheme] = useState<ThemeId>("default");
 
-    // Load saved theme on mount
-    useEffect(() => {
-        const storage = getStorageService();
-        const saved = storage.getOptional(STORAGE_KEYS.SETTINGS_THEME) as ThemeId;
-        if (saved && THEMES[saved]) {
-            queueMicrotask(() => setCurrentTheme(saved));
-        }
+    // Resolve persisted theme before the first client paint without changing
+    // the server/client render output used for hydration.
+    useIsomorphicLayoutEffect(() => {
+        const saved = getStorageService().getOptional(STORAGE_KEYS.SETTINGS_THEME) as ThemeId;
+        const resolvedTheme = saved && THEMES[saved] ? saved : "default";
+        if (resolvedTheme !== currentTheme) setCurrentTheme(resolvedTheme);
+        applyTheme(THEMES[resolvedTheme]);
+        document.documentElement.classList.remove("theme-loading");
     }, []);
 
-    // Apply theme to document
-    useEffect(() => {
-        const theme = THEMES[currentTheme];
-
-        // Fallback to default theme if current theme is invalid
-        const validTheme = theme || THEMES['default'];
-        const root = document.documentElement;
-
-        if (!validTheme?.colors) {
-            return;
-        }
-
-        // Apply CSS variables
-        root.style.setProperty("--color-primary", validTheme.colors.primary);
-        root.style.setProperty("--color-primary-light", validTheme.colors.primaryLight);
-        root.style.setProperty("--color-primary-dark", validTheme.colors.primaryDark);
-        root.style.setProperty("--color-accent", validTheme.colors.accent);
-        root.style.setProperty("--color-background", validTheme.colors.background);
-        root.style.setProperty("--color-surface", validTheme.colors.surface);
-
-        // Also set data attribute for potential CSS selectors
-        root.setAttribute("data-theme", currentTheme);
+    useIsomorphicLayoutEffect(() => {
+        applyTheme(THEMES[currentTheme] || THEMES.default);
     }, [currentTheme]);
 
     const setTheme = (themeId: ThemeId) => {

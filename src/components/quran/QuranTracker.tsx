@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { trackQuranRead } from "@/lib/analytics/analytics";
 import { useQuranTimeTracker } from "@/hooks/useQuranTimeTracker";
 import { useFocusMode } from "@/hooks/useFocusMode";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useTranslations } from "@/context/LocaleContext";
 import { BookOpen } from "lucide-react";
 import {
@@ -40,7 +40,7 @@ interface QuranTrackerProps {
 
 export default function QuranTracker({ name, count }: QuranTrackerProps) {
     const { currentTheme } = useTheme();
-    const isLight = currentTheme === "daylight";
+    const isLight = THEMES[currentTheme].mode === "light";
     const t = useTranslations();
     const [mounted, setMounted] = useState(false);
 
@@ -139,7 +139,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-lg transition-all hover:scale-105",
                                 isLight
-                                    ? "bg-amber-500/90 hover:bg-amber-600 border-amber-400/50 text-white shadow-amber-200/40 backdrop-blur-md"
+                                    ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)] backdrop-blur-md"
                                     : "bg-emerald-600/90 hover:bg-emerald-600 border-emerald-400/50 text-white shadow-emerald-900/20 backdrop-blur-md"
                             )}
                         >
@@ -161,7 +161,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-lg transition-all hover:scale-105 backdrop-blur-md",
                                 isLight
-                                    ? "bg-white/80 hover:bg-amber-50 border-amber-400/30 text-amber-700 shadow-amber-100/40"
+                                    ? "bg-[rgb(var(--color-primary-light))]/35 hover:bg-[rgb(var(--color-primary-light))]/60 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
                                     : "bg-[#0d0d0d]/80 hover:bg-[#1a1a1a]/90 border-emerald-500/30 text-emerald-400 shadow-black/40"
                             )}
                         >

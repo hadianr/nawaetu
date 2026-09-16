@@ -10,16 +10,18 @@
 import { useState, useMemo, useEffect, Suspense, memo } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, Search, ShieldCheck, User, Share2, ChevronDown as MoreIcon } from "lucide-react";
+import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon } from "lucide-react";
 import { HADITH_LIBRARY, HadithItem, HADITH_TOPIC_DEFINITIONS, HadithTopic } from "@/data/hadiths";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useIslamicContentFilter } from "@/hooks/useIslamicContentFilter";
 import { ShareableCardData } from "@/lib/share/story-card-renderer";
 import { mapHadithToShareData } from "@/lib/share/share-mappers";
 import type { TranslationTree } from "@/context/LocaleContext";
+import { IslamicSubTabBar } from "@/components/islamic-content/IslamicSubTabBar";
+import { IslamicSearchInput } from "@/components/islamic-content/IslamicSearchInput";
+import { IslamicFilterChips } from "@/components/islamic-content/IslamicFilterChips";
 
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
@@ -291,7 +293,7 @@ function HadithContent() {
     const { t, locale } = useLocale();
     const { currentTheme } = useTheme();
     const searchParams = useSearchParams();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const targetId = searchParams?.get("id") || searchParams?.get("highlight") || "";
 
@@ -332,9 +334,9 @@ function HadithContent() {
     return (
         <>
             <div className={cn(
-                "flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500",
+                "hadith-page flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500",
                 isDaylight
-                    ? "bg-[#f8fafc] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.1),transparent)]"
+                    ? "bg-[rgb(var(--color-canvas))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgb(var(--color-primary)/0.1),transparent)]"
                     : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.1),transparent)]"
             )}>
                 <main className="flex w-full max-w-md flex-col pb-nav">
@@ -359,83 +361,19 @@ function HadithContent() {
                             </div>
                         </div>
 
-                        {/* Top Sub-Tab Navigation Switcher */}
-                        <div className="grid grid-cols-2 p-1 rounded-2xl bg-black/10 backdrop-blur-md border border-white/10 mb-3">
-                            <Link
-                                href="/hadith"
-                                className="py-2 rounded-xl text-xs font-bold text-center transition-all bg-emerald-500 text-white shadow-md flex items-center justify-center gap-1.5"
-                            >
-                                <Quote className="w-3.5 h-3.5" />
-                                <span>{t.hadithTabHadith || "Hadits Nabi"}</span>
-                            </Link>
-                            <Link
-                                href="/dua"
-                                className={cn(
-                                    "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
-                                    isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/60 hover:text-white"
-                                )}
-                            >
-                                <BookOpen className="w-3.5 h-3.5" />
-                                <span>{t.hadithTabDua || "Kumpulan Doa"}</span>
-                            </Link>
-                        </div>
+                        <IslamicSubTabBar activeTab="hadith" isDaylight={isDaylight} t={t} />
 
-                        {/* Search Input */}
-                        <div className="relative mb-3">
-                            <Search className={cn("w-4 h-4 absolute left-3.5 top-3", isDaylight ? "text-slate-400" : "text-white/30")} />
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                autoCapitalize="none"
-                                autoCorrect="off"
-                                placeholder={t.hadithSearchPlaceholder || "Cari hadits, nomor (e.g. 6094), perawi, kata kunci..."}
-                                className={cn(
-                                    "w-full pl-10 pr-4 py-2.5 rounded-2xl text-[16px] sm:text-xs border transition-all outline-none",
-                                    isDaylight
-                                        ? "bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 focus:border-emerald-300"
-                                        : "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-emerald-500/50"
-                                )}
-                            />
-                        </div>
+                        <IslamicSearchInput value={searchQuery} onChange={setSearchQuery} placeholder={t.hadithSearchPlaceholder || "Cari hadits, nomor (e.g. 6094), perawi, kata kunci..."} accentColor="emerald" isDaylight={isDaylight} />
                     </div>
 
-                    {/* Daily-life topic chips (primary filter) */}
-                    <div className="flex gap-2 overflow-x-auto pb-3 px-1 no-scrollbar mb-3">
-                        <button
-                            onClick={() => setSelectedTopic("all")}
-                            className={cn(
-                                "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                selectedTopic === "all"
-                                    ? isDaylight
-                                        ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
-                                        : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
-                                    : isDaylight
-                                        ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-                                        : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
-                            )}
-                        >
-                            {locale === "en" ? "All Topics" : "Semua Topik"}
-                        </button>
-                        {HADITH_TOPIC_DEFINITIONS.map(topic => (
-                            <button
-                                key={topic.key}
-                                onClick={() => setSelectedTopic(topic.key)}
-                                className={cn(
-                                    "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border",
-                                    selectedTopic === topic.key
-                                        ? isDaylight
-                                            ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
-                                            : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
-                                        : isDaylight
-                                            ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-                                            : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70"
-                                )}
-                            >
-                            {locale === "en" ? topic.labelEn : topic.labelId}
-                        </button>
-                        ))}
-                    </div>
+                    <IslamicFilterChips
+                        items={HADITH_TOPIC_DEFINITIONS.map((topic) => ({ key: topic.key, label: locale === "en" ? topic.labelEn : topic.labelId }))}
+                        selected={selectedTopic}
+                        onSelect={setSelectedTopic}
+                        allLabel={locale === "en" ? "All Topics" : "Semua Topik"}
+                        accentColor="emerald"
+                        isDaylight={isDaylight}
+                    />
 
                     {/* Filter count indicator */}
                     {(selectedTopic !== "all" || searchQuery) && (

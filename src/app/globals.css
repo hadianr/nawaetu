@@ -1,4 +1,8 @@
 @import "tailwindcss";
+
+.theme-loading body {
+  visibility: hidden;
+}
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
@@ -164,6 +168,210 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Runtime theme contract. ThemeContext updates the --color-* channels; the
+   shadcn aliases below keep utility classes on the same source of truth. */
+:root {
+  --color-canvas: 10 10 10;
+  --color-surface: 15 23 42;
+  --color-surface-subtle: 30 41 59;
+  --color-text-strong: 255 255 255;
+  --color-text: 226 232 240;
+  --color-text-muted: 148 163 184;
+  --color-primary: 16 185 129;
+  --color-primary-strong: 4 120 87;
+  --color-primary-foreground: 255 255 255;
+  --color-accent: 251 191 36;
+  --color-accent-foreground: 15 23 42;
+  --color-info: 96 165 250;
+  --color-success: 52 211 153;
+  --color-warning: 251 191 36;
+  --color-danger: 248 113 113;
+  --color-danger-foreground: 255 255 255;
+  --color-border: 255 255 255;
+  --color-ring: 52 211 153;
+  --shadow-card: 0 4px 20px rgb(0 0 0 / 0.24);
+  --shadow-floating: 0 12px 32px rgb(0 0 0 / 0.4);
+  --radius-control: 0.625rem;
+  --radius-card: 0.75rem;
+  --space-page: 1rem;
+  --space-section: 1.5rem;
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-reading: Amiri, Lateef, serif;
+  --font-editorial: Lora, Georgia, serif;
+  --reader-line-height: 1.9;
+  color-scheme: dark;
+
+  --background: rgb(var(--color-canvas));
+  --foreground: rgb(var(--color-text));
+  --card: rgb(var(--color-surface));
+  --card-foreground: rgb(var(--color-text));
+  --popover: rgb(var(--color-surface));
+  --popover-foreground: rgb(var(--color-text));
+  --primary: rgb(var(--color-primary-strong));
+  --primary-foreground: rgb(var(--color-primary-foreground));
+  --secondary: rgb(var(--color-surface-subtle));
+  --secondary-foreground: rgb(var(--color-text-strong));
+  --muted: rgb(var(--color-surface-subtle));
+  --muted-foreground: rgb(var(--color-text-muted));
+  --accent: rgb(var(--color-accent));
+  --accent-foreground: rgb(var(--color-accent-foreground));
+  --destructive: rgb(var(--color-danger));
+  --border: rgb(var(--color-border) / 0.16);
+  --input: rgb(var(--color-border) / 0.22);
+  --ring: rgb(var(--color-ring));
+  --chart-1: rgb(var(--color-primary));
+  --chart-2: rgb(var(--color-info));
+  --chart-3: rgb(var(--color-success));
+  --chart-4: rgb(var(--color-warning));
+  --chart-5: rgb(var(--color-danger));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+[data-color-mode="light"],
+[data-color-mode="light"] body {
+  background-color: rgb(var(--color-canvas));
+  color: rgb(var(--color-text-strong));
+}
+
+/* shadcn primitives inherit the active theme instead of the legacy dark seed. */
+[data-color-mode="light"] {
+  --primary: rgb(var(--color-primary));
+  --primary-foreground: rgb(var(--color-text-strong));
+  --background: rgb(var(--color-canvas));
+  --foreground: rgb(var(--color-text-strong));
+  --card: rgb(var(--color-surface));
+  --card-foreground: rgb(var(--color-text));
+  --popover: rgb(var(--color-surface));
+  --popover-foreground: rgb(var(--color-text));
+  --secondary: rgb(var(--color-surface-subtle));
+  --secondary-foreground: rgb(var(--color-text-strong));
+  --muted: rgb(var(--color-surface-subtle));
+  --muted-foreground: rgb(var(--color-text-muted));
+  --accent: rgb(var(--color-primary-light));
+  --accent-foreground: rgb(var(--color-primary-strong));
+  --border: rgb(var(--color-border));
+  --input: rgb(var(--color-border));
+  --ring: rgb(var(--color-ring));
+}
+
+/* Hadith library: replace legacy emerald accents with the active light-theme palette. */
+[data-color-mode="light"] .hadith-page :is([class~="bg-emerald-50"], [class~="bg-emerald-100"], [class~="bg-emerald-100/80"], [class~="bg-emerald-500"], [class~="bg-emerald-500/15"], [class~="bg-emerald-50/60"], [class~="bg-emerald-50/90"]) {
+  background-color: rgb(var(--color-primary-light) / 0.35) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="bg-emerald-500"], [class~="bg-emerald-500/15"], [class~="bg-emerald-100/80"]).text-white {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"], [class~="text-emerald-800"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="border-emerald-100"], [class~="border-emerald-200"], [class~="border-emerald-400"], [class~="border-emerald-500/20"], [class~="border-emerald-500/30"], [class~="border-emerald-600"]) {
+  border-color: rgb(var(--color-primary) / 0.35) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="hover:bg-emerald-50"], [class~="hover:bg-emerald-100"]):hover {
+  background-color: rgb(var(--color-primary-light) / 0.45) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="hover:border-emerald-200"], [class~="hover:border-emerald-500/30"]):hover {
+  border-color: rgb(var(--color-primary) / 0.45) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="text-blue-400"], [class~="text-blue-500"], [class~="text-blue-600"], [class~="text-blue-700"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="bg-blue-500/10"], [class~="bg-blue-500/15"], [class~="bg-blue-100"], [class~="bg-blue-50"]) {
+  background-color: rgb(var(--color-primary-light) / 0.35) !important;
+}
+[data-color-mode="light"] .hadith-page :is([class~="border-blue-500/20"], [class~="border-blue-500/30"], [class~="border-blue-200"]) {
+  border-color: rgb(var(--color-primary) / 0.35) !important;
+}
+[data-color-mode="light"] .hadith-page [class~="bg-emerald-500"] {
+  background-color: rgb(var(--color-primary-light)) !important;
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .hadith-page ::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-primary) / 0.45);
+}
+[data-color-mode="light"] .hadith-page ::-webkit-scrollbar-track {
+  background: rgb(var(--color-surface-subtle));
+}
+/* Dua library: keep amber/emerald legacy utilities inside the active theme. */
+[data-color-mode="light"] :is(.hadith-page, .dua-page) :is([class~="bg-slate-100/70"], [class~="hover:bg-slate-200/50"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] :is(.hadith-page, .dua-page) :is([class~="border-slate-200/60"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] :is(.hadith-page, .dua-page) :is([class~="text-slate-600"], [class~="hover:text-slate-900"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dua-page :is([class*="bg-amber-"], [class*="bg-emerald-"]) {
+  background-color: rgb(var(--color-primary-light) / 0.35) !important;
+}
+[data-color-mode="light"] .mission-list-modal :is([class*="bg-blue-"], [class*="bg-purple-"], [class*="bg-indigo-"], [class*="bg-teal-"], [class*="bg-emerald-"]) {
+  background-color: rgb(var(--color-primary-light) / 0.45) !important;
+}
+[data-color-mode="light"] .mission-list-modal :is([class*="text-blue-"], [class*="text-purple-"], [class*="text-indigo-"], [class*="text-teal-"], [class*="text-emerald-"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .mission-list-modal :is([class*="border-blue-"], [class*="border-purple-"], [class*="border-indigo-"], [class*="border-teal-"], [class*="border-emerald-"]) {
+  border-color: rgb(var(--color-primary) / 0.35) !important;
+}
+[data-color-mode="light"] .prayer-checkin-widget :is([class*="bg-emerald-"]) {
+  background-color: rgb(var(--color-primary-light) / 0.4) !important;
+}
+[data-color-mode="light"] .prayer-checkin-widget :is([class*="text-emerald-"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .prayer-checkin-widget :is([class*="border-emerald-"]) {
+  border-color: rgb(var(--color-primary) / 0.35) !important;
+}
+[data-color-mode="light"] :is(.bookmarks-page, .sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="bg-emerald-"], [class*="bg-teal-"]) {
+  background-color: rgb(var(--color-primary-light) / 0.4) !important;
+}
+[data-color-mode="light"] :is(.bookmarks-page, .sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="text-emerald-"], [class*="text-teal-"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] :is(.bookmarks-page, .sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="border-emerald-"], [class*="border-teal-"]) {
+  border-color: rgb(var(--color-primary) / 0.35) !important;
+}
+[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="hover:bg-emerald-"], [class*="hover:bg-teal-"]):hover {
+  background-color: rgb(var(--color-primary-light) / 0.5) !important;
+}
+[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="hover:text-emerald-"], [class*="hover:text-teal-"]):hover {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="hover:border-emerald-"], [class*="hover:border-teal-"]):hover {
+  border-color: rgb(var(--color-primary) / 0.45) !important;
+}
+[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="focus:border-emerald-"], [class*="focus:ring-emerald-"]):focus {
+  border-color: rgb(var(--color-primary)) !important;
+  --tw-ring-color: rgb(var(--color-primary) / 0.25) !important;
+}
+[data-color-mode="light"] :is(.sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="shadow-emerald-"], [class*="shadow-teal-"]) {
+  --tw-shadow-color: rgb(var(--color-primary) / 0.2) !important;
+}
+[data-color-mode="light"] .dua-page :is([class*="text-amber-"], [class*="text-emerald-"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .dua-page :is([class*="border-amber-"], [class*="border-emerald-"]) {
+  border-color: rgb(var(--color-primary) / 0.35) !important;
+}
+[data-color-mode="light"] .dua-page :is([class*="bg-amber-"], [class*="bg-emerald-"]).text-white {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .dua-page [class~="bg-amber-500"] {
+  background-color: rgb(var(--color-primary-light)) !important;
+  color: rgb(var(--color-primary-strong)) !important;
 }
 
 @layer base {
@@ -682,8 +890,40 @@
     scrollbar-width: none;
   }
 
+  .themed-scrollbar {
+    scrollbar-color: rgb(var(--color-primary) / 0.45) rgb(var(--color-surface-subtle));
+    scrollbar-width: thin;
+  }
+
+  .themed-scrollbar::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .themed-scrollbar::-webkit-scrollbar-track {
+    background: rgb(var(--color-surface-subtle));
+    border-radius: 999px;
+  }
+
+  .themed-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-primary) / 0.45);
+    border-radius: 999px;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   .pb-nav {
     padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
@@ -900,4 +1140,352 @@ nav {
   textarea {
     font-size: 16px !important;
   }
+}
+
+/* =====================================================================
+   LIGHT MODE COMPATIBILITY BRIDGE
+   A few older screens still use dark-mode white/black utility classes.
+   Keep those screens readable for every light theme (not only Daylight)
+   while preserving white labels on colored action surfaces.
+   ===================================================================== */
+[data-color-mode="light"] [class*="bg-white/"] {
+  background-color: rgb(var(--color-surface) / 0.82) !important;
+}
+
+[data-color-mode="light"] [class*="bg-black/"] {
+  background-color: rgb(var(--color-text-strong) / 0.06) !important;
+}
+
+/* Prevent legacy slate canvases from becoming accidental dark cards in light mode. */
+[data-color-mode="light"] :is([class~="bg-slate-900"], [class~="bg-slate-950"]) {
+  background-color: rgb(var(--color-surface)) !important;
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] :is([class*="bg-[#0a0a0a]"], [class*="bg-[#0A0A0A]"]) {
+  background-color: rgb(var(--color-canvas)) !important;
+}
+[data-color-mode="light"] :is([class*="bg-[#0f172a]"], [class*="bg-[#0F172A]"]) {
+  background-color: rgb(var(--color-surface)) !important;
+}
+[data-color-mode="light"] :is(button, a, [role="button"])[class~="bg-slate-900"] {
+  background-color: rgb(var(--color-primary)) !important;
+}
+[data-color-mode="light"] :is(button, a, [role="button"])[class~="hover:bg-slate-800"]:hover {
+  background-color: rgb(var(--color-primary-light)) !important;
+}
+
+[data-color-mode="light"] [class*="fixed"][class*="inset-0"][class*="bg-black/"] {
+  background-color: rgb(var(--color-text-strong) / 0.3) !important;
+}
+
+[data-color-mode="light"] [class*="bg-[rgb(var(--color-primary))]"]:not([class*="hover:bg-"]):is(
+  [class~="text-white"],
+  [class*="text-white/"]
+) {
+  background-color: rgb(var(--color-primary)) !important;
+}
+
+[data-color-mode="light"] [class*="border-white/"] {
+  border-color: rgb(var(--color-text-strong) / 0.14) !important;
+}
+
+[data-color-mode="light"] [class~="text-white"] {
+  color: rgb(var(--color-text-strong)) !important;
+}
+
+[data-color-mode="light"] [class*="text-white/"] {
+  color: rgb(var(--color-text-muted)) !important;
+}
+
+[data-color-mode="light"] [class*="text-slate-4"],
+[data-color-mode="light"] [class*="text-slate-3"] {
+  color: rgb(var(--color-text-muted)) !important;
+}
+
+[data-color-mode="light"] [class*="text-[rgb(var(--color-primary))"],
+[data-color-mode="light"] [class*="text-[rgb(var(--color-primary-light))"] {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+
+[data-color-mode="light"] :is(
+  [class*="bg-[rgb(var(--color-primary))"],
+  [class*="bg-[rgb(var(--color-primary-dark))"],
+  [class*="from-[rgb(var(--color-primary))"],
+  [class*="from-[rgb(var(--color-primary-dark))"],
+  [class*="bg-gradient-"]
+) :is([class~="text-white"], [class*="text-white/"]),
+[data-color-mode="light"] :is(
+  [class*="bg-[rgb(var(--color-primary))"],
+  [class*="bg-[rgb(var(--color-primary-dark))"],
+  [class*="from-[rgb(var(--color-primary))"],
+  [class*="from-[rgb(var(--color-primary-dark))"],
+  [class*="bg-gradient-"]
+):not([class*="hover:bg-"])[class~="text-white"] {
+  color: #fff !important;
+}
+
+/* Blossom replaces legacy Emerald/Teal utilities with its blush scale. */
+[data-theme="blossom"] :is(
+  [class~="text-emerald-400"], [class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"],
+  [class~="text-teal-400"], [class~="text-teal-500"], [class~="text-teal-600"], [class~="text-teal-700"]
+) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+
+[data-theme="blossom"] :is(
+  [class~="bg-emerald-500/10"], [class~="bg-emerald-500/15"], [class~="bg-emerald-500/20"], [class~="bg-emerald-500/30"],
+  [class~="bg-teal-500/10"], [class~="bg-teal-500/15"], [class~="bg-teal-500/20"], [class~="bg-teal-500/30"]
+) {
+  background-color: rgb(var(--color-primary) / 0.14) !important;
+}
+
+[data-theme="blossom"] :is(
+  [class~="bg-emerald-50"], [class~="bg-emerald-100"], [class~="bg-emerald-200"],
+  [class~="bg-teal-50"], [class~="bg-teal-100"], [class~="bg-teal-200"]
+) {
+  background-color: rgb(var(--color-primary-light) / 0.32) !important;
+}
+
+[data-theme="blossom"] :is(
+  [class~="bg-emerald-500"],
+  [class~="bg-emerald-600"],
+  [class~="bg-emerald-700"],
+  [class~="bg-teal-500"],
+  [class~="bg-teal-600"],
+  [class~="bg-teal-700"]
+) {
+  background-color: rgb(var(--color-primary-strong)) !important;
+}
+
+[data-theme="blossom"] :is([class~="border-emerald-100"], [class~="border-emerald-200"], [class~="border-emerald-400"], [class~="border-teal-100"], [class~="border-teal-200"], [class~="border-teal-400"]) {
+  border-color: rgb(var(--color-primary-light)) !important;
+}
+
+[data-theme="blossom"] :is([class~="ring-emerald-100"], [class~="ring-emerald-400"], [class~="ring-emerald-500/20"], [class~="ring-teal-100"], [class~="ring-teal-400"], [class~="ring-teal-500/20"]) {
+  --tw-ring-color: rgb(var(--color-ring)) !important;
+}
+
+[data-theme="blossom"] :is([class~="from-emerald-400"], [class~="from-emerald-500"], [class~="from-teal-400"], [class~="from-teal-500"]) {
+  --tw-gradient-from: rgb(var(--color-primary-light)) !important;
+}
+
+[data-theme="blossom"] :is([class~="to-emerald-400"], [class~="to-emerald-500"], [class~="to-teal-400"], [class~="to-teal-500"]) {
+  --tw-gradient-to: rgb(var(--color-primary)) !important;
+}
+
+/* Legacy accent utilities are aliases, never a second color system. */
+[data-color-mode="light"] :is([class~="text-emerald-400"], [class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"], [class~="text-teal-400"], [class~="text-teal-500"], [class~="text-teal-600"], [class~="text-teal-700"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] :is(
+  [class~="bg-emerald-50"], [class~="bg-emerald-100"], [class~="bg-emerald-200"],
+  [class~="bg-teal-50"], [class~="bg-teal-100"], [class~="bg-teal-200"]
+) {
+  background-color: rgb(var(--color-primary-light) / 0.38) !important;
+}
+[data-color-mode="light"] :is([class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"]) {
+  background-color: rgb(var(--color-primary)) !important;
+}
+[data-color-mode="light"] :is([class~="bg-emerald-500/10"], [class~="bg-emerald-500/15"], [class~="bg-emerald-500/20"], [class~="bg-emerald-500/30"], [class~="bg-teal-500/10"], [class~="bg-teal-500/15"], [class~="bg-teal-500/20"], [class~="bg-teal-500/30"]) {
+  background-color: rgb(var(--color-primary) / 0.14) !important;
+}
+[data-color-mode="light"] :is([class~="border-emerald-100"], [class~="border-emerald-200"], [class~="border-emerald-400"], [class~="border-teal-100"], [class~="border-teal-200"], [class~="border-teal-400"]) {
+  border-color: rgb(var(--color-primary-light)) !important;
+}
+
+/* Card elevation is a semantic decision shared by every light surface. */
+[data-color-mode="light"] :is([class~="rounded-2xl"], [class~="rounded-xl"])[class~="border"] {
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* Keep intentionally dark action surfaces readable in every light theme. */
+[data-color-mode="light"] :is([class~="bg-slate-900"], [class*="bg-black"], [class*="bg-[#0f172a]"], [class*="bg-[#0F172A]"]) :is([class~="text-white"], [class*="text-white/"]),
+[data-color-mode="light"] :is([class~="bg-slate-900"], [class*="bg-black"], [class*="bg-[#0f172a]"], [class*="bg-[#0F172A]"]).text-white {
+  color: #fff !important;
+}
+
+[data-color-mode="light"] :is([class~="bg-[rgb(var(--color-primary-strong))]"], [class~="bg-[rgb(var(--color-primary-dark))]"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"]):is(.text-white, [class*="text-white/"]) {
+  color: #fff !important;
+}
+
+/* Settings and other light-theme cards share one surface and elevation. */
+[data-color-mode="light"] :is([class*="bg-white/[0.02]"], [class*="bg-white/5"], [class*="bg-slate-50"]) {
+  background-color: rgb(var(--color-surface)) !important;
+}
+[data-color-mode="light"] :is([class*="border-white/10"], [class*="border-slate-200"], [class*="border-slate-100"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] :is([class~="shadow-xs"], [class~="shadow-sm"], [class~="shadow-md"], [class~="shadow-lg"]) {
+  --tw-shadow: var(--shadow-card) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* Every settings card/control uses the same low-elevation token. */
+[data-color-mode="light"] .settings-page :is([class~="rounded-2xl"], [class~="rounded-xl"])[class~="border"] {
+  box-shadow: var(--shadow-card) !important;
+}
+[data-color-mode="light"] .settings-page :is([class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-white/40"], [class*="bg-white/60"]) {
+  background-color: rgb(var(--color-surface)) !important;
+}
+
+/* Stats uses legacy dark utility classes; normalize its cards in any light theme. */
+[data-color-mode="light"] .stats-page {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] .stats-page :is([class*="bg-black/"], [class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface)) !important;
+}
+[data-color-mode="light"] .stats-page :is([class*="from-[rgb(var(--color-primary))"], [class*="bg-gradient-"]) {
+  background-image: linear-gradient(135deg, rgb(var(--color-surface-subtle)), rgb(var(--color-surface))) !important;
+}
+[data-color-mode="light"] .stats-page [class~="text-white"] {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] .stats-page [class*="text-white/"] {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .stats-page :is([class*="border-white/"], [class*="border-slate-"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+
+/* Soft, low-noise switch states for light themes. */
+[data-color-mode="light"] [role="switch"][data-state="checked"] {
+  background-color: rgb(var(--color-primary)) !important;
+}
+[data-color-mode="light"] [role="switch"][data-state="unchecked"] {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+  border-color: rgb(var(--color-border)) !important;
+}
+
+[data-color-mode="light"] :is([data-slot="select-content"], select) {
+  background-color: rgb(var(--color-surface)) !important;
+  color: rgb(var(--color-text-strong)) !important;
+  border-color: rgb(var(--color-border)) !important;
+  box-shadow: var(--shadow-floating) !important;
+}
+[data-color-mode="dark"] :is([data-slot="select-content"], select) {
+  background-color: rgb(var(--color-surface)) !important;
+  color: rgb(var(--color-text-strong)) !important;
+  border-color: rgb(var(--color-border) / 0.35) !important;
+}
+[data-color-mode="light"] option,
+[data-color-mode="dark"] option {
+  background-color: rgb(var(--color-surface)) !important;
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] [data-slot="select-item"] {
+  color: rgb(var(--color-text)) !important;
+}
+[data-color-mode="light"] [data-slot="select-item"] * {
+  color: rgb(var(--color-text)) !important;
+}
+[data-color-mode="dark"] [data-slot="select-item"] {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="dark"] [data-slot="select-item"] * {
+  color: rgb(var(--color-text-strong)) !important;
+}
+
+/* Mission dialog copy must remain readable on light modal surfaces. */
+[data-color-mode="light"] [role="dialog"] :is(.text-white, [class*="text-white/"]):not(button):not([class*="bg-"]) {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] [data-slot="select-item"]:focus,
+[data-color-mode="light"] [data-slot="select-item"][data-highlighted] {
+  background-color: rgb(var(--color-primary) / 0.12) !important;
+  color: rgb(var(--color-primary-strong)) !important;
+}
+
+/* Quran settings segmented controls: soft active tint, readable inactive text. */
+[data-color-mode="light"] .quran-settings-modal :is([class*="bg-[rgb(var(--color-primary))]/5"], [class*="bg-[rgb(var(--color-primary))]/10"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .quran-settings-modal button.quran-tab-active {
+  background-color: rgb(var(--color-primary-light)) !important;
+  color: rgb(var(--color-primary-strong)) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+[data-color-mode="light"] .quran-settings-modal button:not(.quran-tab-active) {
+  color: rgb(var(--color-text-muted)) !important;
+  opacity: 1 !important;
+}
+[data-color-mode="light"] .quran-settings-modal .quran-tajweed-active {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+
+/* Dhikr controls inherit the active theme instead of legacy emerald utilities. */
+[data-color-mode="light"] .dhikr-page {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="bg-emerald-"], [class*="bg-teal-"]) {
+  background-color: rgb(var(--color-primary-light) / 0.4) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="text-emerald-"], [class*="text-teal-"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="border-emerald-"], [class*="border-teal-"]) {
+  border-color: rgb(var(--color-primary-light)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="hover:bg-emerald-"], [class*="hover:bg-teal-"]):hover {
+  background-color: rgb(var(--color-primary-light) / 0.55) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="shadow-emerald-"], [class*="shadow-teal-"]) {
+  --tw-shadow-color: rgb(var(--color-primary) / 0.2) !important;
+}
+[data-color-mode="light"] .dhikr-completion-dialog :is([class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-completion-dialog :is([class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-completion-dialog :is([class*="text-white/"], [class~="text-white"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="text-white/"], [class~="text-white"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="hover:bg-white/"]):hover {
+  background-color: rgb(var(--color-primary-light) / 0.35) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog [data-slot="button"] {
+  --tw-shadow: 0 2px 10px rgb(var(--color-primary) / 0.06) !important;
+  box-shadow: var(--tw-shadow) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class~="text-slate-900"], [class~="text-slate-800"]) {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class~="text-slate-500"], [class~="text-slate-400"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="bg-slate-"], [class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="border-slate-"], [class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class*="bg-slate-"], [class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class*="border-slate-"], [class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class*="text-slate-"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] body:has(.dhikr-history-dialog) [data-slot="dialog-overlay"],
+[data-color-mode="light"] body:has(.dhikr-preset-dialog) [data-slot="dialog-overlay"],
+[data-color-mode="light"] body:has(.dhikr-completion-dialog) [data-slot="dialog-overlay"] {
+  background-color: rgb(var(--color-primary) / 0.14) !important;
+  backdrop-filter: blur(2px);
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class~="rounded-2xl"])[class~="border"] {
+  --tw-shadow: 0 2px 10px rgb(var(--color-primary) / 0.045) !important;
+  box-shadow: var(--tw-shadow) !important;
 }

@@ -49,11 +49,11 @@ export default function ProfileCard({
 }: ProfileCardProps) {
     if (status === "loading" && !hasCachedProfile) {
         return (
-            <div className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4 animate-pulse">
-                <div className="h-12 w-12 rounded-full bg-white/10" />
+            <div className="w-full p-4 bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/20 rounded-2xl flex items-center gap-4 animate-pulse">
+                <div className="h-12 w-12 rounded-full bg-[rgb(var(--color-border))]/20" />
                 <div className="flex-1 space-y-2">
-                    <div className="h-4 w-32 bg-white/10 rounded" />
-                    <div className="h-3 w-20 bg-white/10 rounded" />
+                    <div className="h-4 w-32 bg-[rgb(var(--color-border))]/20 rounded" />
+                    <div className="h-3 w-20 bg-[rgb(var(--color-border))]/20 rounded" />
                 </div>
             </div>
         );
@@ -66,14 +66,14 @@ export default function ProfileCard({
                     <div className={cn(
                         "h-12 w-12 rounded-full border-2 flex items-center justify-center text-lg font-bold overflow-hidden p-0.5 transition-all",
                         isDaylight
-                            ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                            ? "bg-[rgb(var(--color-primary-light))]/45 border-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-strong))]"
                             : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
                     )}>
                         <Avatar className="w-full h-full rounded-full">
                             <AvatarImage src={userAvatar || session?.user?.image || ""} className="object-cover" />
                             <AvatarFallback className={cn(
                                 "text-lg font-bold",
-                                isDaylight ? "bg-emerald-100 text-emerald-600" : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
+                                isDaylight ? "bg-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))]" : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
                             )}>
                                 {(userName || "U").charAt(0).toUpperCase()}
                             </AvatarFallback>
@@ -82,26 +82,24 @@ export default function ProfileCard({
                     {(isMuhsinin || session?.user?.isMuhsinin) && (
                         <div className={cn(
                             "absolute -top-1 -right-1 rounded-full p-0.5 border-2 z-10 shadow-lg transition-all",
-                            isDaylight
-                                ? "bg-gradient-to-br from-emerald-400 to-emerald-600 border-white"
-                                : "bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] border-black"
+                            "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-surface))]"
                         )}>
-                            <Crown className="w-2.5 h-2.5 text-white fill-white" />
+                            <Crown className="w-2.5 h-2.5 text-[rgb(var(--color-primary-foreground))] fill-[rgb(var(--color-primary-foreground))]" />
                         </div>
                     )}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-white truncate group-hover:text-[rgb(var(--color-primary-light))] transition-colors">{userName}</h3>
+                    <h3 className="text-base font-bold text-[rgb(var(--color-text-strong))] truncate group-hover:text-[rgb(var(--color-primary))] transition-colors">{userName}</h3>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
                         {!isAuthenticated && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 border border-white/5 text-white/50">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-muted))]">
                                 Guest
                             </span>
                         )}
                     </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
+                <ChevronRight className="w-5 h-5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors flex-shrink-0" />
             </div>
         </UserProfileDialog>
     );

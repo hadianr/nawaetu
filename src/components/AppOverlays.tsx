@@ -80,13 +80,13 @@ const cleanupDynamicCaches = () => {
 };
 
 import { Toaster } from "sonner";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 export default function AppOverlays() {
     const [showPwaPrompt, setShowPwaPrompt] = useState(false);
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const themeMode = THEMES[currentTheme].mode;
 
     useEffect(() => {
         const show = () => setShowPwaPrompt(true);
@@ -164,26 +164,21 @@ export default function AppOverlays() {
 
             <Toaster
                 position="top-center"
-                theme={isDaylight ? "light" : "dark"}
+                theme={themeMode}
                 toastOptions={{
                     classNames: {
                         toast: cn(
                             "group toast group-[.toaster]:shadow-lg group-[.toaster]:backdrop-blur-xl transition-all border",
-                            isDaylight
-                                ? "group-[.toaster]:bg-white/90 group-[.toaster]:text-slate-900 group-[.toaster]:border-emerald-100 group-[.toaster]:shadow-emerald-500/5"
-                                : "group-[.toaster]:bg-[rgb(var(--color-surface))] group-[.toaster]:text-white group-[.toaster]:border-[rgb(var(--color-primary))]/30 group-[.toaster]:shadow-black/20"
+                            "group-[.toaster]:bg-[rgb(var(--color-surface))]/95 group-[.toaster]:text-[rgb(var(--color-text))] group-[.toaster]:border-[rgb(var(--color-border))] group-[.toaster]:shadow-[var(--shadow-floating)]"
                         ),
-                        description: isDaylight ? "group-[.toast]:text-slate-500" : "group-[.toast]:text-white/70 font-medium",
-                        actionButton: cn(
-                            "group-[.toast]:text-white",
-                            isDaylight ? "group-[.toast]:bg-emerald-500" : "group-[.toast]:bg-[rgb(var(--color-primary))]"
-                        ),
-                        cancelButton: isDaylight ? "group-[.toast]:bg-slate-100 group-[.toast]:text-slate-600" : "group-[.toast]:bg-white/10 group-[.toast]:text-white",
+                        description: "group-[.toast]:text-[rgb(var(--color-text-muted))] font-medium",
+                        actionButton: "group-[.toast]:bg-[rgb(var(--color-primary))] group-[.toast]:text-[rgb(var(--color-primary-foreground))]",
+                        cancelButton: "group-[.toast]:bg-[rgb(var(--color-surface-subtle))] group-[.toast]:text-[rgb(var(--color-text-muted))]",
                         title: cn(
                             "font-bold",
-                            isDaylight ? "group-[.toast]:text-emerald-700" : "group-[.toast]:text-[rgb(var(--color-primary-light))]"
+                            "group-[.toast]:text-[rgb(var(--color-text-strong))]"
                         ),
-                        icon: isDaylight ? "group-[.toast]:text-emerald-500" : "group-[.toast]:text-[rgb(var(--color-primary-light))]"
+                        icon: "group-[.toast]:text-[rgb(var(--color-primary))]"
                     }
                 }}
             />

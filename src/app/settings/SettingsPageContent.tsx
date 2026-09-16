@@ -68,7 +68,7 @@ export default function SettingsPageContent() {
     const { data: session, status, update } = useSession(); // Add update
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimesContext();
     const { currentTheme, setTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
@@ -77,6 +77,11 @@ export default function SettingsPageContent() {
     const [showAboutModal, setShowAboutModal] = useState(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        queueMicrotask(() => setIsClient(true));
+    }, []);
 
 
     // Profile State
@@ -258,15 +263,15 @@ export default function SettingsPageContent() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
+        <div className="settings-page flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
 
             <div className="w-full max-w-md space-y-6">
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
-                        <ArrowLeft className="w-6 h-6 text-white" />
+                    <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">
+                        <ArrowLeft className="w-6 h-6 text-[rgb(var(--color-text-strong))]" />
                     </Link>
-                    <h1 className="text-2xl font-bold text-white">{t.title}</h1>
+                    <h1 className="text-2xl font-bold text-[rgb(var(--color-text-strong))]">{t.title}</h1>
                 </div>
 
                 {/* Profile Card - Compact */}
@@ -287,8 +292,8 @@ export default function SettingsPageContent() {
                 <div className={cn(
                     "border rounded-2xl p-4 transition-all",
                     isDaylight
-                        ? "bg-white border-slate-200/80 shadow-xs"
-                        : "bg-white/[0.04] border-white/10 hover:border-[rgb(var(--color-primary))]/30"
+                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/30 shadow-[var(--shadow-card)]"
+                        : "bg-[rgb(var(--color-surface))]/70 border-[rgb(var(--color-border))]/20 hover:border-[rgb(var(--color-primary))]/30"
                 )}>
                     <Link
                         href="/stats"
@@ -306,13 +311,13 @@ export default function SettingsPageContent() {
                             <div>
                                 <h3 className={cn(
                                     "text-sm font-bold group-hover:text-[rgb(var(--color-primary-light))] transition-colors",
-                                    isDaylight ? "text-slate-900" : "text-white"
+                                    "text-[rgb(var(--color-text-strong))]"
                                 )}>
                                     {t.statsLabel}
                                 </h3>
                                 <p className={cn(
                                     "text-xs leading-relaxed",
-                                    isDaylight ? "text-slate-500" : "text-slate-400"
+                                    "text-[rgb(var(--color-text-muted))]"
                                 )}>
                                     {t.statsPageSubtitle}
                                 </p>
@@ -330,15 +335,15 @@ export default function SettingsPageContent() {
                     <button
                         onClick={handleRefreshLocation}
                         disabled={isRefreshing || locationLoading}
-                        className="h-[84px] p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between"
+                        className="h-[84px] p-3 bg-[rgb(var(--color-surface-subtle))]/60 border border-[rgb(var(--color-border))]/20 rounded-xl text-left hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/30 transition-all group disabled:opacity-70 flex flex-col justify-between"
                     >
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.locationLabel}</span>
+                                <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.locationLabel}</span>
                             </div>
                             <svg
-                                className={`w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary-light))]' : ''}`}
+                                className={`w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-all ${(isRefreshing || locationLoading) ? 'animate-spin text-[rgb(var(--color-primary))]' : ''}`}
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -347,22 +352,22 @@ export default function SettingsPageContent() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                         </div>
-                        <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-0.5">
+                        <p className="text-xs text-[rgb(var(--color-text-strong))] font-medium line-clamp-1 leading-none mb-0.5">
                             {(isRefreshing || locationLoading) ? t.locationUpdating : (data?.locationName?.split(',')[0] || t.locationDetecting)}
                         </p>
                     </button>
 
-                    <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors h-[84px]">
+                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
                         {/* Visual Layer - Exact copy of Location card structure */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                                    <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.methodLabel}</span>
+                                    <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.methodLabel}</span>
                                 </div>
-                                <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
+                                <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
                             </div>
-                            <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-0.5">
+                            <p className="text-xs text-[rgb(var(--color-text-strong))] font-medium line-clamp-1 leading-none mb-0.5">
                                 {currentMethod?.label || "Kemenag RI"}
                             </p>
                         </div>
@@ -372,9 +377,9 @@ export default function SettingsPageContent() {
                             <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-slate-800">
+                            <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">
                                 {CALCULATION_METHODS.map((method) => (
-                                    <SelectItem key={method.id} value={method.id.toString()} className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                <SelectItem key={method.id} value={method.id.toString()} className="text-[rgb(var(--color-text))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))]">
                                         {method.label}
                                     </SelectItem>
                                 ))}
@@ -387,26 +392,26 @@ export default function SettingsPageContent() {
                 <NotificationSettings />
 
                 {/* Hijri Date Settings Card */}
-                <div id="hijri-date" className="scroll-mt-6 bg-white/[0.02] border border-white/10 rounded-2xl p-4 space-y-4">
+                <div id="hijri-date" className="scroll-mt-6 bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
-                        <span className="text-sm font-semibold text-white">{t.hijriDateTitle}</span>
+                        <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.hijriDateTitle}</span>
                     </div>
 
-                    <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors h-[84px]">
+                    <div className="relative group overflow-hidden rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]/60 hover:bg-[rgb(var(--color-surface-subtle))] transition-colors h-[84px]">
                         {/* Visual Layer */}
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
-                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{t.hijriAdjustmentLabel}</span>
-                                <ChevronDown className="w-3 h-3 text-white/30 group-hover:text-[rgb(var(--color-primary-light))] transition-colors" />
+                                <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.hijriAdjustmentLabel}</span>
+                                <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
                             </div>
                             <div>
-                                <p className="text-xs text-white font-medium line-clamp-1 leading-none mb-1">
+                                <p className="text-xs text-[rgb(var(--color-text-strong))] font-medium line-clamp-1 leading-none mb-1">
                                     {hijriAdjustment === "0" ? t.adjustmentStandard :
                                         hijriAdjustment === "-1" ? t.adjustmentMuhammadiyah :
                                             `${t.adjustmentManual} (${hijriAdjustment})`}
                                 </p>
-                                <p className="text-[10px] text-white/40 line-clamp-1">
+                                <p className="text-[10px] text-[rgb(var(--color-text-muted))] line-clamp-1">
                                     {t.hijriDateDesc}
                                 </p>
                             </div>
@@ -417,26 +422,26 @@ export default function SettingsPageContent() {
                             <SelectTrigger className="absolute inset-0 w-full h-full bg-transparent border-none shadow-none focus:ring-0 z-10 opacity-0 cursor-pointer">
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-slate-800">
-                                <SelectItem value="0" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                            <SelectContent className="bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/20">
+                                <SelectItem value="0" className="text-[rgb(var(--color-text))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))]">
                                     {t.adjustmentStandard}
                                 </SelectItem>
-                                <SelectItem value="-1" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                <SelectItem value="-1" className="text-[rgb(var(--color-text))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))]">
                                     {t.adjustmentMuhammadiyah}
                                 </SelectItem>
-                                <SelectItem value="-2" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                <SelectItem value="-2" className="text-[rgb(var(--color-text))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))]">
                                     {t.adjustmentManual} (-2)
                                 </SelectItem>
-                                <SelectItem value="1" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                <SelectItem value="1" className="text-[rgb(var(--color-text))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))]">
                                     {t.adjustmentManual} (+1)
                                 </SelectItem>
-                                <SelectItem value="2" className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                                <SelectItem value="2" className="text-[rgb(var(--color-text))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))]">
                                     {t.adjustmentManual} (+2)
                                 </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
-                    <Button asChild variant="outline" className="min-h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+                    <Button asChild variant="outline" className="min-h-11 w-full border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]/60 text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]">
                         <Link href="/hijri-calendar">
                             <Calendar className="mr-2 h-4 w-4 text-[rgb(var(--color-primary-light))]" />
                             {t.hijriCalendarOpenFromSettings}
@@ -470,14 +475,12 @@ export default function SettingsPageContent() {
                 {/* Community & Feedback Card */}
                 <CommunityCard
                     t={t}
-                    isDaylight={isDaylight}
                     setShowFeedbackModal={() => setShowFeedbackModal(true)}
                 />
 
                 {/* Compact Share App Card */}
                 <ShareAppCard
                     t={t}
-                    isDaylight={isDaylight}
                 />
 
                 {/* Support Card (Persistent) - Swapped Back Up */}
@@ -485,23 +488,23 @@ export default function SettingsPageContent() {
                 <div className={cn(
                     "border rounded-2xl p-4 flex items-center justify-between transition-all",
                     isDaylight
-                        ? "bg-emerald-50 border-emerald-100 shadow-sm shadow-emerald-500/5"
-                        : "bg-gradient-to-br from-[rgb(var(--color-primary-dark))]/40 to-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/20"
+                        ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
+                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                 )}>
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Heart className={cn(
                                 "w-4 h-4",
-                                isDaylight ? "text-emerald-600 fill-emerald-200" : "text-[rgb(var(--color-primary-light))] fill-[rgb(var(--color-primary))]/20"
+                                "text-[rgb(var(--color-primary))] fill-[rgb(var(--color-primary))]/20"
                             )} />
                             <span className={cn(
                                 "text-sm font-bold",
-                                isDaylight ? "text-slate-900" : "text-white"
+                                "text-[rgb(var(--color-text-strong))]"
                             )}>{t.supportTitle}</span>
                         </div>
                         <p className={cn(
                             "text-[10px] max-w-[200px] leading-relaxed",
-                            isDaylight ? "text-slate-500" : "text-[rgb(var(--color-primary-light))]/70"
+                            "text-[rgb(var(--color-text-muted))]"
                         )}>
                             {isMuhsinin
                                 ? t.supportPremiumText
@@ -513,9 +516,7 @@ export default function SettingsPageContent() {
                         size="sm"
                         className={cn(
                             "font-bold h-9 px-4 rounded-xl shadow-lg transition-all active:scale-[0.98]",
-                            isDaylight
-                                ? "bg-[#10b981] hover:bg-[#059669] text-white shadow-emerald-200/50"
-                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white shadow-[rgb(var(--color-primary))]/20"
+                            "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         )}
                     >
                         {isMuhsinin ? t.infaqButtonPremium : t.infaqButton}
@@ -529,60 +530,56 @@ export default function SettingsPageContent() {
                         onClick={() => setShowAboutModal(true)}
                         className={cn(
                             "flex items-center gap-2 group transition-all active:scale-[0.98] py-2 px-4 rounded-full border",
-                            isDaylight
-                                ? "bg-slate-100 border-slate-200 hover:bg-slate-200/50"
-                                : "bg-[rgb(var(--color-primary))]/5 border border-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/10"
+                            "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface-subtle))]/80"
                         )}
                     >
                         <div className={cn(
                             "w-5 h-5 rounded-md flex items-center justify-center transition-all",
-                            isDaylight
-                                ? "bg-gradient-to-br from-emerald-400 to-teal-400 shadow-sm"
-                                : "bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))]"
+                            "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                         )}>
-                            <span className="text-[10px] font-bold text-white">N</span>
+                            <span className="text-[10px] font-bold text-[rgb(var(--color-primary-foreground))]">N</span>
                         </div>
                         <span className={cn(
                             "text-[10px] font-bold transition-colors",
-                            isDaylight ? "text-slate-600" : "text-white/60"
+                            "text-[rgb(var(--color-text-muted))]"
                         )}>
                             {t.aboutAppName} {APP_CONFIG.version}
                         </span>
                         <ChevronRight className={cn(
                             "w-3 h-3 transition-colors",
-                            isDaylight ? "text-slate-400 group-hover:text-emerald-500" : "text-[rgb(var(--color-primary))]/40 group-hover:text-[rgb(var(--color-primary))]"
+                            "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))]"
                         )} />
                     </button>
                 </div>
 
                 {/* Update Available Banner - New Feature v1.5.5 */}
-                {typeof window !== 'undefined' && (
+                {isClient && (
                     <UpdateChecker currentVersion={APP_CONFIG.version} />
                 )}
 
                 {/* Debug Tools - Only visible in development */}
                 {process.env.NODE_ENV === 'development' && (
-                    <div className="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-3">
-                        <div className="flex items-center justify-between text-white/40">
+                    <div className="border rounded-2xl p-4 space-y-3 bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]">
+                        <div className="flex items-center justify-between text-[rgb(var(--color-text-muted))]">
                             <div className="flex items-center gap-2">
                                 <Settings2 className="w-3 h-3" />
                                 <span className="text-[10px] font-bold uppercase tracking-widest">Developer Tools</span>
                             </div>
                             <Link
                                 href="/notification-debug"
-                                className="text-[10px] bg-red-900/30 text-red-400 px-2 py-1 rounded border border-red-900/50 hover:bg-red-900/50 transition-colors"
+                                className="text-[10px] px-2 py-1 rounded border transition-colors bg-[rgb(var(--color-danger))]/10 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30 hover:bg-[rgb(var(--color-danger))]/20"
                             >
                                 Open Debugger
                             </Link>
                         </div>
                         {fcmToken ? (
-                            <div className="bg-black/60 p-3 rounded-xl border border-white/10">
+                            <div className="p-3 rounded-xl border bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
                                 <p className="text-[10px] font-mono text-[rgb(var(--color-primary-light))]/70 break-all leading-relaxed">
                                     {fcmToken}
                                 </p>
                             </div>
                         ) : (
-                            <p className="text-[9px] text-white/20 italic">
+                            <p className="text-[9px] italic text-[rgb(var(--color-text-muted))]">
                                 Token belum tersedia. Klik &quot;Open Debugger&quot; untuk mencoba mengambil token.
                             </p>
                         )}
@@ -590,7 +587,7 @@ export default function SettingsPageContent() {
                             type="button"
                             variant="outline"
                             onClick={handleResetOnboarding}
-                            className="w-full border-amber-500/30 bg-amber-950/20 text-amber-300 hover:bg-amber-950/40 hover:text-amber-200"
+                            className="w-full border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-foreground))] hover:bg-[rgb(var(--color-accent))]/20"
                         >
                             Reset onboarding (QA only)
                         </Button>

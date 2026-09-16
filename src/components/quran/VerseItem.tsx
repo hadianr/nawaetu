@@ -109,7 +109,7 @@ export default function VerseItem({
                 "group relative py-8 px-4 md:px-6 border-b border-white/5 transition-all duration-500",
                 isPlayingVerse
                     ? isDaylight
-                        ? "bg-emerald-100/90 border-emerald-200 shadow-sm"
+                        ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary-light))] shadow-sm"
                         : "bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20"
                     : "hover:bg-white/[0.02]"
             )}
@@ -126,7 +126,7 @@ export default function VerseItem({
                                 onClick={() => setIsMasked(!isMasked)}
                                 className={cn(
                                     "h-8 w-8 md:h-9 md:w-9 rounded-full transition-colors",
-                                    isMasked ? "text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" : "text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/10"
+                                    isMasked ? "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20" : "text-slate-400 hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
                                 {isMasked ? <Eye className="h-4 w-4 md:h-5 md:w-5" /> : <EyeOff className="h-4 w-4 md:h-5 md:w-5" />}
@@ -148,10 +148,10 @@ export default function VerseItem({
                                     isPlayingVerse && isPlaying ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100",
                                     isPlayingVerse
                                         ? isDaylight
-                                            ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200"
+                                            ? "bg-[rgb(var(--color-primary-strong))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
                                             : "bg-[rgb(var(--color-primary))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
                                         : isDaylight
-                                            ? "text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"
+                                            ? "text-slate-400 hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
                                             : "text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
@@ -172,8 +172,8 @@ export default function VerseItem({
                                 className={cn(
                                     "h-8 w-8 rounded-full transition-colors",
                                     isBookmarked
-                                        ? isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary))]"
-                                        : isDaylight ? "text-slate-300 hover:text-emerald-500 hover:bg-emerald-50" : "text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                                        ? "text-[rgb(var(--color-primary-strong))]"
+                                        : isDaylight ? "text-slate-500 hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10" : "text-slate-400 hover:text-[rgb(var(--color-primary))]"
                                 )}
                             >
                                 <Bookmark className={cn("h-4 w-4", isBookmarked && "fill-current")} />
@@ -227,7 +227,7 @@ export default function VerseItem({
                 className={cn(
                     "w-full text-right mb-6 transition-all duration-300 relative",
                     getVerseFontClass(scriptType, fontSize),
-                    isMasked ? "blur-md opacity-40 hover:opacity-60 cursor-pointer select-none" : "text-slate-200"
+                    isMasked ? "blur-md opacity-40 hover:opacity-60 cursor-pointer select-none" : (isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-slate-200")
                 )}
             >
                 {showWordByWord && verse.words && verse.words.length > 0 ? (

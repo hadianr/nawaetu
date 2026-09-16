@@ -23,32 +23,29 @@ import type { TranslationTree } from "@/context/LocaleContext";
 
 interface CommunityCardProps {
     t: TranslationTree;
-    isDaylight: boolean;
     setShowFeedbackModal: (open: boolean) => void;
 }
 
-export default function CommunityCard({ t, isDaylight, setShowFeedbackModal }: CommunityCardProps) {
+export default function CommunityCard({ t, setShowFeedbackModal }: CommunityCardProps) {
     return (
         <div className={cn(
             "border rounded-2xl p-4 flex items-center justify-between transition-all",
-            isDaylight
-                ? "bg-slate-50 border-slate-200/50 shadow-sm"
-                : "bg-white/[0.02] border-white/10"
+            "bg-[rgb(var(--color-surface))]/70 border-[rgb(var(--color-border))]/20 shadow-[var(--shadow-card)]"
         )}>
             <div className="flex-1 min-w-0 pr-4">
                 <div className="flex items-center gap-2 mb-1">
                     <MessageSquarePlus className={cn(
                         "w-4 h-4",
-                        isDaylight ? "text-slate-600" : "text-[rgb(var(--color-primary-light))]"
+                        "text-[rgb(var(--color-primary))]"
                     )} />
                     <span className={cn(
                         "text-sm font-bold",
-                        isDaylight ? "text-slate-900" : "text-white"
+                        "text-[rgb(var(--color-text-strong))]"
                     )}>{t.feedbackCardTitle}</span>
                 </div>
                 <p className={cn(
                     "text-[10px] leading-relaxed",
-                    isDaylight ? "text-slate-500" : "text-white/40"
+                    "text-[rgb(var(--color-text-muted))]"
                 )}>
                     {t.feedbackCardDesc}
                 </p>
@@ -58,9 +55,7 @@ export default function CommunityCard({ t, isDaylight, setShowFeedbackModal }: C
                 size="sm"
                 className={cn(
                     "font-bold h-8 px-3.5 text-xs rounded-xl shadow-lg transition-all active:scale-[0.98] shrink-0",
-                    isDaylight
-                        ? "bg-slate-900 hover:bg-slate-800 text-white"
-                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white shadow-[rgb(var(--color-primary))]/20"
+                    "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                 )}
             >
                 {t.feedbackButtonCompact}

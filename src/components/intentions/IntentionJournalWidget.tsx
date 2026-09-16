@@ -35,7 +35,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { DateUtils } from "@/lib/utils/date";
 
@@ -74,7 +74,7 @@ const CACHE_PREFIX = "nawaetu_intention_cache_";
 export default function IntentionJournalWidget({ className = "" }: IntentionJournalWidgetProps) {
     const { locale, t } = useLocale();
     const { currentTheme } = useTheme();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
     const [showReflectionPrompt, setShowReflectionPrompt] = useState(false);
@@ -382,7 +382,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl px-4 py-2 text-xs font-bold shadow-md transition-all active:scale-95 group/btn sm:flex-none",
                                         isDaylight
-                                            ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/20"
+                                            ? "bg-[rgb(var(--color-primary-light))]/35 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30 hover:bg-[rgb(var(--color-primary-light))]/55"
                                             : "bg-[rgb(var(--color-primary))] text-white font-bold hover:opacity-90 shadow-[rgb(var(--color-primary))]/20"
                                     )}
                                 >
@@ -394,11 +394,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
                                         isDaylight
-                                            ? "bg-slate-100 border-slate-200 hover:bg-slate-200"
+                                            ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary-light))]/30"
                                             : "bg-white/5 border-white/10 hover:bg-white/10"
                                     )}
                                 >
-                                    <Book className={cn("h-4 w-4", isDaylight ? "text-slate-500" : "text-white/50")} />
+                                    <Book className={cn("h-4 w-4", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/50")} />
                                     <span>{t.intention_history_btn_title}</span>
                                 </Link>
                             </div>
@@ -451,11 +451,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
                                         isDaylight
-                                            ? "bg-slate-100 border-slate-200 hover:bg-slate-200"
+                                            ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary-light))]/30"
                                             : "bg-white/5 border-white/10 hover:bg-white/10"
                                     )}
                                 >
-                                    <Book className={cn("h-4 w-4", isDaylight ? "text-slate-500" : "text-white/50")} />
+                                    <Book className={cn("h-4 w-4", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/50")} />
                                     <span>{t.intention_history_btn_title}</span>
                                 </Link>
                             </div>

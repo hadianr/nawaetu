@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { useTheme } from "@/context/ThemeContext";
+import { THEMES, useTheme } from "@/context/ThemeContext";
 import { getHijriEvents, type HijriEventId } from "@/data/hijri-events";
 import {
     useHijriCalendar,
@@ -47,7 +47,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
     const { locale, t } = useLocale();
     const { currentTheme } = useTheme();
     const { data: prayerData } = usePrayerTimesContext();
-    const isDaylight = currentTheme === "daylight";
+    const isDaylight = THEMES[currentTheme].mode === "light";
     const [selectedDay, setSelectedDay] = useState<HijriCalendarDay | null>(null);
     const {
         calendarData,
