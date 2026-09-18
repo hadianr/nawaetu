@@ -1235,3 +1235,27 @@ nav {
   --tw-shadow: 0 2px 10px rgb(var(--color-primary) / 0.045) !important;
   box-shadow: var(--tw-shadow) !important;
 }
+
+/* Opt-in frosted surface for navigation and a few foreground panels. */
+.glass-surface {
+  background-color: rgb(var(--color-surface));
+  border-color: rgb(var(--color-border) / 0.18);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-surface {
+    background-color: rgb(var(--color-surface) / 0.88);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  [data-color-mode="light"] .glass-surface {
+    background-color: rgb(var(--color-surface) / 0.92);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface,
+  [data-color-mode="light"] .glass-surface {
+    background-color: rgb(var(--color-surface)) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}

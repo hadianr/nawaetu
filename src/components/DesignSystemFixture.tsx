@@ -48,7 +48,7 @@ export default function DesignSystemFixture() {
         </section>
 
         <section aria-labelledby="tokens-heading" className="grid gap-4 lg:grid-cols-2">
-          <Card>
+          <Card className="glass-surface">
             <CardHeader>
               <CardTitle id="tokens-heading">Semantic tokens</CardTitle>
               <CardDescription>Active: {theme.name} ({theme.mode})</CardDescription>
@@ -77,7 +77,7 @@ export default function DesignSystemFixture() {
               <Input aria-label="Fixture input" placeholder="Input with focus ring" />
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild><Button variant="secondary">Open dialog</Button></DialogTrigger>
-                <DialogContent>
+                <DialogContent className="glass-surface">
                   <DialogHeader>
                     <DialogTitle>Dialog fixture</DialogTitle>
                     <DialogDescription>Verify title, description, close label, Escape, and focus return.</DialogDescription>
