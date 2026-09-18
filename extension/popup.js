@@ -18,7 +18,7 @@ const REMINDER_MINUTES = 15; // Show "Bersiap" reminder this many minutes before
 const T = {
     id: {
         nextPrayer: 'Sholat Berikutnya', towardsPrayer: 'menuju sholat',
-        verseLabel: '📖 Ayat Hari Ini', openFull: 'Buka Lengkap',
+        verseLabel: 'Ayat Hari Ini', openFull: 'Buka Lengkap',
         detectingLoc: 'Mendeteksi lokasi…', allowLocation: 'Izinkan Lokasi',
         locationDenied: 'Jakarta (default)',
         prayerNames: {
@@ -27,14 +27,14 @@ const T = {
         },
         ramadanDay: 'Ramadan Hari ke-', ramadanLabel: 'Ramadan',
         imsak: 'Imsak', sahur: 'Sahur berakhir', buka: 'Buka Puasa',
-        bersiap: '⚠️ Bersiap sholat!', adzanNear: 'Waktu adzan dalam',
+        bersiap: 'Bersiap sholat!', adzanNear: 'Waktu adzan dalam',
         hijriOffset: 'Koreksi Tanggal Hijriyah',
-        notifOn: '🔔', notifOff: '🔕',
+        notifOn: 'On', notifOff: 'Off',
         notifTooltipOn: 'Notifikasi adzan aktif', notifTooltipOff: 'Aktifkan notifikasi adzan'
     },
     en: {
         nextPrayer: 'Next Prayer', towardsPrayer: 'to prayer',
-        verseLabel: '📖 Verse of the Day', openFull: 'Open Full App',
+        verseLabel: 'Verse of the Day', openFull: 'Open Full App',
         detectingLoc: 'Detecting location…', allowLocation: 'Allow Location',
         locationDenied: 'Jakarta (default)',
         prayerNames: {
@@ -43,9 +43,9 @@ const T = {
         },
         ramadanDay: 'Ramadan Day ', ramadanLabel: 'Ramadan',
         imsak: 'Imsak', sahur: 'Sahur ends', buka: 'Iftar',
-        bersiap: '⚠️ Prepare for prayer!', adzanNear: 'Adzan in',
+        bersiap: 'Prepare for prayer!', adzanNear: 'Adzan in',
         hijriOffset: 'Hijri Date Correction',
-        notifOn: '🔔', notifOff: '🔕',
+        notifOn: 'On', notifOff: 'Off',
         notifTooltipOn: 'Adzan notifications active', notifTooltipOff: 'Enable adzan notifications'
     }
 };
@@ -95,7 +95,7 @@ function setupEventListeners() {
 
 function applyLang() {
     document.getElementById('lang-toggle').textContent = lang === 'id' ? 'EN' : 'ID';
-    document.getElementById('open-web-btn').textContent = '↗ ' + t('openFull');
+    document.getElementById('open-web-btn').textContent = t('openFull');
     document.getElementById('countdown-label').textContent = t('towardsPrayer');
     document.getElementById('verse-label').textContent = t('verseLabel');
     // document.getElementById('hijri-offset-label').textContent = t('hijriOffset'); // Removed in unified UI
@@ -156,7 +156,7 @@ function renderNotifToggle() {
                 notifEnabled = true;
                 localStorage.setItem(CACHE_KEY_NOTIF, 'true');
                 if (globalTimings) scheduleAdzanNotifications(globalTimings.timings);
-                new Notification('Nawaetu 🕌', { body: lang === 'id' ? 'Notifikasi adzan diaktifkan.' : 'Adzan notifications enabled.' });
+                new Notification('Nawaetu', { body: lang === 'id' ? 'Notifikasi adzan diaktifkan.' : 'Adzan notifications enabled.' });
             }
         } else {
             notifEnabled = false;
@@ -209,7 +209,7 @@ async function requestLocationAndLoad() {
 
 function setLocationUI(cityName) {
     document.getElementById('location-name').innerHTML =
-        `${cityName} <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi">🔄</button>`;
+        `${cityName} <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi">Perbarui</button>`;
     document.getElementById('refresh-loc-btn').addEventListener('click', async () => {
         document.getElementById('location-name').textContent = t('detectingLoc');
         try {
@@ -225,7 +225,7 @@ function setLocationUI(cityName) {
 
 function showLocationPrompt() {
     document.getElementById('location-name').innerHTML =
-        `<button id="allow-loc-btn" class="allow-loc-btn">${t('allowLocation')} 📍</button>`;
+        `<button id="allow-loc-btn" class="allow-loc-btn">${t('allowLocation')}</button>`;
     document.getElementById('allow-loc-btn').addEventListener('click', async () => {
         document.getElementById('location-name').textContent = t('detectingLoc');
         try {
@@ -407,7 +407,7 @@ function startCountdown(targetDate, prayerLabel) {
                 cardEl.classList.add('bersiap');
                 // Notification (if user allowed)
                 if (notifEnabled && Notification.permission === 'granted') {
-                    new Notification(`🕌 ${prayerLabel} – Nawaetu`, {
+                    new Notification(`${prayerLabel} – Nawaetu`, {
                         body: lang === 'id'
                             ? `Bersiap, waktu adzan ${prayerLabel} dalam ${minutes} menit.`
                             : `Prepare! ${prayerLabel} adhan in ${minutes} minutes.`,
@@ -415,7 +415,7 @@ function startCountdown(targetDate, prayerLabel) {
                     });
                 }
             }
-            labelEl.textContent = t('bersiap').replace('⚠️ ', '');
+            labelEl.textContent = t('bersiap');
             valueEl.classList.add('urgent');
         } else {
             cardEl.classList.remove('bersiap');
@@ -425,10 +425,10 @@ function startCountdown(targetDate, prayerLabel) {
                 // Adzan time reached!
                 clearInterval(countdownInterval);
                 cardEl.classList.add('adzan');
-                nameEl.textContent = lang === 'id' ? `🕌 Adzan ${prayerLabel}!` : `🕌 Adhan ${prayerLabel}!`;
+                nameEl.textContent = lang === 'id' ? `Adzan ${prayerLabel}!` : `Adhan ${prayerLabel}!`;
                 valueEl.textContent = lang === 'id' ? 'Allahu Akbar' : 'God is Greatest';
                 if (notifEnabled && Notification.permission === 'granted') {
-                    new Notification(`🕌 Waktu Adzan – ${prayerLabel}`, {
+                    new Notification(`Waktu Adzan – ${prayerLabel}`, {
                         body: lang === 'id' ? `Allahu Akbar! Waktu ${prayerLabel} telah tiba.` : `Allahu Akbar! Time for ${prayerLabel}.`,
                         icon: 'icons/icon-128.png'
                     });
@@ -515,12 +515,12 @@ function toggleAudio(btn, url) {
         const playSurahBtn = document.getElementById('quran-play-surah');
         if (playSurahBtn && playSurahBtn.classList.contains('playing')) {
             playSurahBtn.classList.remove('playing');
-            playSurahBtn.textContent = '▶️ Putar';
+            playSurahBtn.textContent = 'Putar';
         }
 
         if (currentAudioBtn) {
             currentAudioBtn.classList.remove('playing');
-            currentAudioBtn.textContent = '🔊 Audio';
+            currentAudioBtn.textContent = 'Audio';
         }
     }
 
@@ -541,7 +541,7 @@ function toggleAudio(btn, url) {
 
     currentAudio.onended = () => {
         btn.classList.remove('playing');
-        btn.textContent = '🔊 Audio';
+        btn.textContent = 'Audio';
         currentAudio = null;
         currentAudioBtn = null;
     };
@@ -556,7 +556,7 @@ function toggleBookmark(btn) {
         // Remove bookmark
         bookmarks = bookmarks.filter(b => b.key !== key);
         btn.classList.remove('saved');
-        btn.textContent = '⭐ Simpan';
+        btn.textContent = 'Simpan';
     } else {
         // Add bookmark
         bookmarks.push({
@@ -566,7 +566,7 @@ function toggleBookmark(btn) {
             translation: btn.getAttribute('data-trans')
         });
         btn.classList.add('saved');
-        btn.textContent = '⭐ Tersimpan';
+        btn.textContent = 'Tersimpan';
     }
     localStorage.setItem('nawaetu_quran_bookmarks', JSON.stringify(bookmarks));
 }
@@ -627,13 +627,13 @@ function renderBookmarksView() {
         saveButton.dataset.surah = String(b.surah ?? '');
         saveButton.dataset.text = String(b.text ?? '');
         saveButton.dataset.trans = String(b.translation ?? '');
-        saveButton.textContent = '⭐ Tersimpan';
+        saveButton.textContent = 'Tersimpan';
 
         const openButton = document.createElement('button');
         openButton.className = 'verse-btn btn-open-surah';
         openButton.dataset.surahNumber = Number.isFinite(safeSurahNumber) ? String(safeSurahNumber) : '';
         openButton.dataset.surahName = String(b.surah ?? '');
-        openButton.textContent = '📖 Buka Surah';
+        openButton.textContent = 'Buka Surah';
 
         actions.append(saveButton, openButton);
         item.append(header, text, translation, actions);
@@ -670,7 +670,7 @@ async function loadQuranList() {
     const lastReadData = JSON.parse(localStorage.getItem('nawaetu_quran_lastRead') || 'null');
     if (lastReadData) {
         lastReadBtn.style.display = 'flex';
-        lastReadBtn.textContent = `⏱️ Lanjut: ${lastReadData.name}`;
+        lastReadBtn.textContent = `Lanjut: ${lastReadData.name}`;
         lastReadBtn.onclick = () => loadQuranDetail(lastReadData.number, lastReadData.name);
     } else {
         lastReadBtn.style.display = 'none';
@@ -715,7 +715,7 @@ function renderQuranList(surahs) {
                 <div class="surah-num">${surah.number}</div>
                 <div class="surah-details">
                     <div class="surah-name">${surah.name.transliteration.id}</div>
-                    <div class="surah-meta">${surah.name.translation.id} • ${surah.numberOfVerses} ayat</div>
+                    <div class="surah-meta">${surah.name.translation.id} (${surah.numberOfVerses} ayat)</div>
                 </div>
             </div>
             <div class="surah-arabic">${surah.name.short}</div>
@@ -743,7 +743,7 @@ async function loadQuranDetail(surahNumber, surahName) {
     localStorage.setItem('nawaetu_quran_lastRead', JSON.stringify({ number: surahNumber, name: surahName }));
     const lastReadBtn = document.getElementById('quran-last-read');
     lastReadBtn.style.display = 'flex';
-    lastReadBtn.textContent = `⏱️ Lanjut: ${surahName}`;
+    lastReadBtn.textContent = `Lanjut: ${surahName}`;
 
     listContainer.style.display = 'none';
     detailContainer.style.display = 'block';
@@ -753,10 +753,10 @@ async function loadQuranDetail(surahNumber, surahName) {
     // Mushaf Mode State Handling
     if (isMushafMode) {
         versesContainer.classList.add('mushaf');
-        mushafToggleBtn.textContent = '📖 Standar';
+        mushafToggleBtn.textContent = 'Standar';
     } else {
         versesContainer.classList.remove('mushaf');
-        mushafToggleBtn.textContent = '📖 Mushaf';
+        mushafToggleBtn.textContent = 'Mushaf';
     }
     backBtn.onclick = () => {
         detailContainer.style.display = 'none';
@@ -768,7 +768,7 @@ async function loadQuranDetail(surahNumber, surahName) {
         const playSurahBtnReset = document.getElementById('quran-play-surah');
         if (playSurahBtnReset && playSurahBtnReset.classList.contains('playing')) {
             playSurahBtnReset.classList.remove('playing');
-            playSurahBtnReset.textContent = '▶️ Putar';
+            playSurahBtnReset.textContent = 'Putar';
         }
     };
 
@@ -776,10 +776,10 @@ async function loadQuranDetail(surahNumber, surahName) {
         isMushafMode = !isMushafMode;
         if (isMushafMode) {
             versesContainer.classList.add('mushaf');
-            mushafToggleBtn.textContent = '📖 Standar';
+            mushafToggleBtn.textContent = 'Standar';
         } else {
             versesContainer.classList.remove('mushaf');
-            mushafToggleBtn.textContent = '📖 Mushaf';
+            mushafToggleBtn.textContent = 'Mushaf';
         }
     };
 
@@ -817,8 +817,8 @@ async function loadQuranDetail(surahNumber, surahName) {
                     <div class="verse-transliteration">${transliteration}</div>
                     <div class="verse-translation">${translation}</div>
                     <div class="verse-actions">
-                        ${audioUrl ? `<button class="verse-btn btn-audio" data-key="${verseKey}" data-audio="${audioUrl}">🔊 Audio</button>` : ''}
-                        <button class="verse-btn btn-save ${isSaved ? 'saved' : ''}" data-key="${verseKey}" data-surah="${surahName}" data-text="${text}" data-trans="${translation}">⭐ ${isSaved ? 'Tersimpan' : 'Simpan'}</button>
+                        ${audioUrl ? `<button class="verse-btn btn-audio" data-key="${verseKey}" data-audio="${audioUrl}">Audio</button>` : ''}
+                        <button class="verse-btn btn-save ${isSaved ? 'saved' : ''}" data-key="${verseKey}" data-surah="${surahName}" data-text="${text}" data-trans="${translation}">${isSaved ? 'Tersimpan' : 'Simpan'}</button>
                     </div>
                 </div>
             `;
@@ -843,7 +843,7 @@ async function loadQuranDetail(surahNumber, surahName) {
                     currentAudio = null;
                 }
                 playSurahBtn.classList.remove('playing');
-                playSurahBtn.textContent = '▶️ Putar';
+                playSurahBtn.textContent = 'Putar';
                 return;
             }
 
@@ -855,7 +855,7 @@ async function loadQuranDetail(surahNumber, surahName) {
         function playSequentially(index) {
             if (index >= verseAudios.length || !playSurahBtn.classList.contains('playing')) {
                 playSurahBtn.classList.remove('playing');
-                playSurahBtn.textContent = '▶️ Putar';
+                playSurahBtn.textContent = 'Putar';
                 return;
             }
 
@@ -1024,7 +1024,7 @@ function renderSpiritualDetail(items, title) {
 
     listCont.innerHTML = items.map(item => `
         <div class="spiritual-item">
-            <div class="content-item-type">${item.type === 'dua' ? '🤲 Doa' : '📜 Hadits'}</div>
+            <div class="content-item-type">${item.type === 'dua' ? 'Doa' : 'Hadits'}</div>
             <div class="content-item-title">${item.content.title}</div>
             <div class="content-item-arabic">${item.content.arabic}</div>
             ${item.content.latin ? `<div class="content-item-latin">${item.content.latin}</div>` : ''}
@@ -1065,7 +1065,7 @@ function setupSpiritualSearch() {
         } else {
             listCont.innerHTML = filtered.map(item => `
                 <div class="spiritual-item">
-                    <div class="content-item-type">${item.type === 'dua' ? '🤲 Doa' : '📜 Hadits'}</div>
+            <div class="content-item-type">${item.type === 'dua' ? 'Doa' : 'Hadits'}</div>
                     <div class="content-item-title">${item.content.title}</div>
                     <div class="content-item-arabic">${item.content.arabic}</div>
                     ${item.content.latin ? `<div class="content-item-latin">${item.content.latin}</div>` : ''}
@@ -1150,7 +1150,7 @@ function renderDailyChecklist() {
     container.innerHTML = html;
 
     // Streak visualization (simplified)
-    document.getElementById('ibadah-streak-counter').textContent = `🔥 ${streakCount}`;
+    document.getElementById('ibadah-streak-counter').textContent = String(streakCount);
 
     // Attach event listeners
     const checkboxes = container.querySelectorAll('.checklist-checkbox');
@@ -1173,12 +1173,12 @@ function renderDailyChecklist() {
                 // Just turned full
                 streakCount++;
                 localStorage.setItem('nawaetu_ibadah_streak', streakCount.toString());
-                document.getElementById('ibadah-streak-counter').textContent = `🔥 ${streakCount}`;
+                document.getElementById('ibadah-streak-counter').textContent = String(streakCount);
             } else if (!allChecked && completedToday === IBADAH_TASKS.length) {
                 // Was full, now not
                 streakCount = Math.max(0, streakCount - 1);
                 localStorage.setItem('nawaetu_ibadah_streak', streakCount.toString());
-                document.getElementById('ibadah-streak-counter').textContent = `🔥 ${streakCount}`;
+        document.getElementById('ibadah-streak-counter').textContent = String(streakCount);
             }
 
             localStorage.setItem('nawaetu_ibadah_history', JSON.stringify(history));

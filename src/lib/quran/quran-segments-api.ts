@@ -60,7 +60,7 @@ const SEGMENT_API_BASE = 'https://api.quran.com/api/v4/chapter_recitations';
  *
  * IMPORTANT: Only Mishary Rashid Alafasy (ID 7) has been verified to have
  * precise word-level segment timing that aligns correctly with per-verse MP3 playback.
- * Other reciters return null → graceful fallback to normal playback (no highlight).
+ * Other reciters return null for graceful fallback to normal playback (no highlight).
  *
  * To enable more reciters in the future, add their verified API IDs here.
  * Verified candidates (API chapter_recitations IDs, tested 2026-03-05):
@@ -90,7 +90,7 @@ export async function fetchSurahSegments(
     // Resolve the app's CDN reciter ID to the chapter_recitations API ID
     const apiReciterId = appReciterId in APP_TO_API_RECITER_ID
         ? APP_TO_API_RECITER_ID[appReciterId]
-        : null; // Unknown reciter → graceful fallback
+        : null; // Unknown reciter uses graceful fallback
 
     // Early exit for reciters with no known segment data
     if (apiReciterId === null) return null;

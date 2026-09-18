@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
         const { stats, lang, userName } = result.data;
         const prompt = buildPrompt(stats, userName, lang);
 
-        // 3-tier LLM fallback: Gemini → Groq → OpenRouter
+        // 3-tier LLM fallback: Gemini, then Groq, then OpenRouter
         let text: string | null = null;
 
         try {
@@ -199,7 +199,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ insight: text });
         }
 
-        // All providers failed → use static fallback
+        // All providers failed; use static fallback
         const fallback = FALLBACK_INSIGHTS[Math.floor(Math.random() * FALLBACK_INSIGHTS.length)];
         return NextResponse.json({ insight: fallback });
 

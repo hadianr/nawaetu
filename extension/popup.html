@@ -19,24 +19,24 @@
       <span class="logo-text">Nawaetu</span>
     </div>
     <div class="header-actions">
-      <button id="notif-toggle" class="notif-toggle" title="Aktifkan notifikasi adzan">🔕</button>
+      <button id="notif-toggle" class="notif-toggle" title="Aktifkan notifikasi adzan">Notifikasi</button>
       <button id="lang-toggle" class="lang-toggle">EN</button>
-      <a id="open-web-btn" href="https://nawaetu.com" target="_blank" class="open-web-btn">↗ Buka Lengkap</a>
+      <a id="open-web-btn" href="https://nawaetu.com" target="_blank" class="open-web-btn">Buka Lengkap</a>
     </div>
   </header>
 
   <!-- TAB NAVIGATION -->
   <div class="bottom-nav">
     <button class="nav-item active" data-target="view-jadwal">
-      <span class="nav-icon">🕌</span>
+      <span class="nav-icon" aria-hidden="true"></span>
       <span class="nav-text">Jadwal</span>
     </button>
     <button class="nav-item" data-target="view-quran">
-      <span class="nav-icon">📖</span>
+      <span class="nav-icon" aria-hidden="true"></span>
       <span class="nav-text">Quran</span>
     </button>
     <button class="nav-item" data-target="view-spiritual">
-      <span class="nav-icon">🤲</span>
+      <span class="nav-icon" aria-hidden="true"></span>
       <span class="nav-text">Dzikir</span>
     </button>
   </div>
@@ -51,13 +51,13 @@
         <div class="ramadan-glow-right"></div>
         <div class="ramadan-inner">
           <div class="ramadan-crescents">
-            <span class="cr left">🌙</span>
+            <span class="cr left" aria-hidden="true"></span>
             <div class="ramadan-center-text">
               <div class="ramadan-arabic">رمضان</div>
               <div class="ramadan-banner-label" id="ramadan-banner-label">Ramadan Hari ke-1</div>
               <div class="ramadan-day-display"><strong id="ramadan-day-num">1</strong></div>
             </div>
-            <span class="cr right">🌙</span>
+            <span class="cr right" aria-hidden="true"></span>
           </div>
         </div>
       </div>
@@ -66,14 +66,14 @@
       <div class="compact-info-bar unified">
         <div class="info-inline">
           <span class="date-text" id="date-gregorian">&nbsp;</span>
-          <span class="info-dot">•</span>
+          <span class="info-dot" aria-hidden="true"></span>
           <span class="location-inline" title="Lokasi GPS">
-            📍 <span id="location-name">Mendeteksi…</span>
+            <span id="location-name">Mendeteksi...</span>
             <button id="refresh-loc-btn" class="refresh-loc-btn" title="Perbarui lokasi">↻</button>
           </span>
-          <span class="info-dot">•</span>
+          <span class="info-dot" aria-hidden="true"></span>
           <div class="hijri-offset-inline" title="Koreksi Tanggal Hijriyah">
-            <span>⚙️</span>
+            <span class="settings-glyph" aria-hidden="true"></span>
             <button id="offset-minus" class="offset-btn">−</button>
             <span id="hijri-offset-value">-1</span>
             <button id="offset-plus" class="offset-btn">+</button>
@@ -129,8 +129,8 @@
       <!-- TARGET IBADAH WIDGET -->
       <div class="target-ibadah-card">
         <div class="widget-header">
-          <div class="widget-title">🎯 Target Ibadah Harian</div>
-          <div class="widget-streak" id="ibadah-streak-counter">🔥 0</div>
+          <div class="widget-title">Target Ibadah Harian</div>
+          <div class="widget-streak" id="ibadah-streak-counter">0</div>
         </div>
         <div class="ibadah-checklist" id="ibadah-checklist">
           <!-- Injected via JS -->
@@ -140,19 +140,19 @@
       <!-- RAMADAN HIGHLIGHTS -->
       <div id="ramadan-highlights" class="ramadan-highlights" style="display:none;">
         <div class="rh-item imsak-item">
-          <span class="rh-icon">⏰</span>
+          <span class="rh-icon" aria-hidden="true"></span>
           <div class="rh-label" id="rh-imsak-label">Imsak</div>
           <div class="rh-time" id="rh-imsak-time">--:--</div>
         </div>
         <div class="rh-divider"></div>
         <div class="rh-item sahur-item">
-          <span class="rh-icon">🍽</span>
+          <span class="rh-icon" aria-hidden="true"></span>
           <div class="rh-label" id="rh-sahur-label">Sahur berakhir</div>
           <div class="rh-time" id="rh-sahur-time">--:--</div>
         </div>
         <div class="rh-divider"></div>
         <div class="rh-item buka-item">
-          <span class="rh-icon">🌅</span>
+          <span class="rh-icon" aria-hidden="true"></span>
           <div class="rh-label" id="rh-buka-label">Buka Puasa</div>
           <div class="rh-time" id="rh-buka-time">--:--</div>
         </div>
@@ -160,7 +160,7 @@
 
       <!-- VERSE CARD (Authentic Quotes) -->
       <div class="verse-card">
-        <div class="verse-label" id="verse-label">✨ Inspirasi Hari Ini</div>
+        <div class="verse-label" id="verse-label">Inspirasi Hari Ini</div>
         <div id="verse-area">
           <div class="verse-arabic" id="verse-arabic">
             <span
@@ -176,7 +176,7 @@
 
       <!-- FOOTER -->
       <div class="footer">
-        Powered by <a href="https://nawaetu.com" target="_blank">nawaetu.com</a> · #NiatAjaDulu
+        Powered by <a href="https://nawaetu.com" target="_blank">nawaetu.com</a> #NiatAjaDulu
       </div>
     </div> <!-- END VIEW: JADWAL -->
 
@@ -187,7 +187,7 @@
         <div class="quran-actions">
           <button id="quran-last-read" class="quran-action-btn" style="display:none;"
             title="Terakhir Dibaca">⏱️</button>
-          <button id="quran-bookmarks" class="quran-action-btn" title="Tersimpan">⭐</button>
+          <button id="quran-bookmarks" class="quran-action-btn" title="Tersimpan">Simpan</button>
         </div>
       </div>
       <div id="quran-list" class="quran-list">
@@ -195,10 +195,10 @@
       </div>
       <div id="quran-detail" class="quran-detail" style="display: none;">
         <div class="quran-detail-header">
-          <button id="quran-back-btn" class="back-btn">← Kembali</button>
+          <button id="quran-back-btn" class="back-btn">Kembali</button>
           <div class="quran-detail-actions">
-            <button id="quran-play-surah" class="quran-action-btn" title="Putar Seluruh Surah">▶️ Putar</button>
-            <button id="quran-mushaf-mode" class="quran-action-btn" title="Mode Mushaf">📖 Mushaf</button>
+            <button id="quran-play-surah" class="quran-action-btn" title="Putar Seluruh Surah">Putar</button>
+            <button id="quran-mushaf-mode" class="quran-action-btn" title="Mode Mushaf">Mushaf</button>
           </div>
         </div>
         <div id="quran-verses" class="quran-verses"></div>
@@ -217,7 +217,7 @@
         <!-- Categories injected here -->
       </div>
       <div id="spiritual-detail-view" style="display: none;">
-        <button id="spiritual-back-btn" class="back-btn">← Kembali</button>
+        <button id="spiritual-back-btn" class="back-btn">Kembali</button>
         <div id="spiritual-list" class="spiritual-list">
           <!-- Items injected here -->
         </div>

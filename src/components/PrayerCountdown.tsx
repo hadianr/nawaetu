@@ -47,8 +47,10 @@ function getTimeLeft(targetTime: string, nowMs: number) {
 }
 
 export default function PrayerCountdown({ targetTime, prayerName, compact = false }: PrayerCountdownProps) {
-    const [now, setNow] = useState(Date.now);
-    const { timeLeft, isNear } = getTimeLeft(targetTime, now);
+    const [now, setNow] = useState(0);
+    const { timeLeft, isNear } = now === 0
+        ? { timeLeft: "--:--:--", isNear: false }
+        : getTimeLeft(targetTime, now);
 
     useEffect(() => {
         const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -61,7 +63,7 @@ export default function PrayerCountdown({ targetTime, prayerName, compact = fals
             <div className="animate-in fade-in duration-700">
                 <div className={cn(
                     "font-mono text-2xl font-bold tracking-tight",
-                    isNear ? "text-emerald-400" : "text-current"
+                    isNear ? "text-[rgb(var(--color-primary-light))]" : "text-[rgb(var(--color-text-strong))]"
                 )}>
                     {timeLeft}
                 </div>
@@ -71,17 +73,17 @@ export default function PrayerCountdown({ targetTime, prayerName, compact = fals
 
     return (
         <div className="flex flex-col items-center justify-center py-6 animate-in fade-in zoom-in duration-700">
-            <p className="text-emerald-200/60 font-medium text-sm uppercase tracking-widest mb-2">
+            <p className="text-[rgb(var(--color-text-muted))] font-medium text-sm uppercase tracking-widest mb-2">
                 Menuju {prayerName}
             </p>
             <div className={cn(
                 "font-mono text-5xl md:text-6xl font-bold tracking-tighter transition-all duration-500",
-                isNear ? "text-emerald-400 drop-shadow-[0_0_30px_rgba(52,211,153,0.6)]" : "text-white drop-shadow-xl"
+                isNear ? "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_30px_rgb(var(--color-primary)/0.35)]" : "text-[rgb(var(--color-text-strong))] drop-shadow-xl"
             )}>
                 {timeLeft}
             </div>
             {isNear && (
-                <p className="mt-2 text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full animate-pulse border border-emerald-500/20">
+                <p className="mt-2 text-xs font-semibold text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-3 py-1 rounded-full animate-pulse border border-[rgb(var(--color-primary))]/20">
                     Waktu Sholat Segera Tiba
                 </p>
             )}

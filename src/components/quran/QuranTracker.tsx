@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 import { trackQuranRead } from "@/lib/analytics/analytics";
 import { useQuranTimeTracker } from "@/hooks/useQuranTimeTracker";
 import { useFocusMode } from "@/hooks/useFocusMode";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useTranslations } from "@/context/LocaleContext";
 import { BookOpen } from "lucide-react";
 import {
@@ -39,8 +38,6 @@ interface QuranTrackerProps {
 }
 
 export default function QuranTracker({ name, count }: QuranTrackerProps) {
-    const { currentTheme } = useTheme();
-    const isLight = THEMES[currentTheme].mode === "light";
     const t = useTranslations();
     const [mounted, setMounted] = useState(false);
 
@@ -50,7 +47,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
 
     const { isTracking, sessionSeconds, dailyTotalSeconds, startTracking, stopTracking } =
         useQuranTimeTracker();
-    const { isFocusMode, enterFocusMode, exitFocusMode } = useFocusMode(isLight);
+    const { isFocusMode, enterFocusMode, exitFocusMode } = useFocusMode();
 
     // Niyyah screen state (shown before timer starts)
     const [showNiyyah, setShowNiyyah] = useState(false);
@@ -71,7 +68,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
         return `${minutes}m ${seconds}s`;
     };
 
-    /** Called when user taps "Mulai Tilawah" → show Niyyah screen first */
+    /** Called when user taps "Mulai Tilawah" then show Niyyah screen first */
     const handleStartRequest = () => {
         setShowNiyyah(true);
     };
@@ -83,7 +80,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
         await enterFocusMode();
     };
 
-    /** Called when user taps ✕ in FocusBadge → show exit confirmation */
+    /** Called when user taps close in FocusBadge then show exit confirmation */
     const handleExitRequest = () => {
         setShowExitConfirm(true);
     };
@@ -138,17 +135,15 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                             onClick={handleExitRequest}
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-lg transition-all hover:scale-105",
-                                isLight
-                                    ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)] backdrop-blur-md"
-                                    : "bg-emerald-600/90 hover:bg-emerald-600 border-emerald-400/50 text-white shadow-emerald-900/20 backdrop-blur-md"
+                                "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] backdrop-blur-md"
                             )}
                         >
                             <div className="relative flex h-2 w-2">
                                 <span className={cn(
                                     "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-                                    isLight ? "bg-amber-200" : "bg-emerald-200"
+                                    "bg-[rgb(var(--color-accent))]"
                                 )} />
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[rgb(var(--color-primary-foreground))]" />
                             </div>
                             {t.tilawahStop}
                             <span className="opacity-80 ml-1 font-mono text-xs hidden sm:inline-block">
@@ -160,9 +155,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                             onClick={handleStartRequest}
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-lg transition-all hover:scale-105 backdrop-blur-md",
-                                isLight
-                                    ? "bg-[rgb(var(--color-primary-light))]/35 hover:bg-[rgb(var(--color-primary-light))]/60 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
-                                    : "bg-[#0d0d0d]/80 hover:bg-[#1a1a1a]/90 border-emerald-500/30 text-emerald-400 shadow-black/40"
+                                "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
                             )}
                         >
                             <BookOpen className="w-4 h-4" />

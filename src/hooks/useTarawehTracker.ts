@@ -31,7 +31,7 @@ function normaliseChoice(raw: unknown): TarawehChoice {
  * Safely reads the full taraweh log from localStorage.
  * Handles both:
  * - New format: object stored directly (adapter auto-parses JSON)
- * - Legacy format: double-stringified (adapter returns string → needs one more JSON.parse)
+ * - Legacy format: double-stringified (adapter returns string, needs one more JSON.parse)
  */
 function readFullLog(): FullLog {
     try {
@@ -87,7 +87,7 @@ export function useTarawehTracker(hijriYear: number) {
         queueMicrotask(() => setLog(migrateYearData(yearData)));
     }, [hijriYear]);
 
-    // 2. DB sync: merge in real data only — normalise choice string→number from DB enum
+                        // 2. DB sync: merge in real data only and normalize choice string to number from DB enum
     useEffect(() => {
         if (status !== "authenticated" || !hijriYear) return;
 
@@ -104,7 +104,7 @@ export function useTarawehTracker(hijriYear: number) {
 
                     for (const row of rows) {
                         const key = `${row.hijriYear}-${row.hijriDay}`;
-                        // ──KEY FIX: DB enum returns "8"/"20" strings → parse to number
+                    // Key fix: DB enum returns "8"/"20" strings, so parse to number
                         const dbChoice = normaliseChoice(row.choice);
                         const dbLocation = (row.location as TarawehLocation) || null;
                         const dbQiyam = Boolean(row.isQiyamulLail);

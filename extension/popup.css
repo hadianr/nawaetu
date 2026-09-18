@@ -8,21 +8,39 @@
 }
 
 :root {
-    --bg: #0f172a;
-    --surface: #1e293b;
-    --surface2: #253347;
-    --border: #334155;
-    --green: #10b981;
-    --green-soft: rgba(16, 185, 129, 0.12);
-    --text: #f1f5f9;
-    --text-muted: #94a3b8;
-    --text-dim: #64748b;
-    --yellow: #fbbf24;
-    --orange: #f97316;
-    --blue: #60a5fa;
-    --ramadan: #a78bfa;
-    --ramadan-soft: rgba(167, 139, 250, 0.12);
-    --radius: 12px;
+    /* Shared semantic names; popup keeps its fixed dark dimensions by design. */
+    --color-canvas: #0f172a;
+    --color-surface: #1e293b;
+    --color-surface-subtle: #253347;
+    --color-border: #334155;
+    --color-primary: #10b981;
+    --color-primary-soft: rgba(16, 185, 129, 0.12);
+    --color-text-strong: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-text-subtle: #64748b;
+    --color-warning: #fbbf24;
+    --color-accent: #f97316;
+    --color-info: #60a5fa;
+    --color-ramadhan: #a78bfa;
+    --color-ramadhan-soft: rgba(167, 139, 250, 0.12);
+    --radius-card: 12px;
+
+    /* Legacy aliases keep the extension markup compact and backwards-compatible. */
+    --bg: var(--color-canvas);
+    --surface: var(--color-surface);
+    --surface2: var(--color-surface-subtle);
+    --border: var(--color-border);
+    --green: var(--color-primary);
+    --green-soft: var(--color-primary-soft);
+    --text: var(--color-text-strong);
+    --text-muted: var(--color-text-muted);
+    --text-dim: var(--color-text-subtle);
+    --yellow: var(--color-warning);
+    --orange: var(--color-accent);
+    --blue: var(--color-info);
+    --ramadan: var(--color-ramadhan);
+    --ramadan-soft: var(--color-ramadhan-soft);
+    --radius: var(--radius-card);
 }
 
 body {
@@ -370,7 +388,7 @@ body {
 }
 
 .checklist-checkbox:checked::after {
-    content: "✓";
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;

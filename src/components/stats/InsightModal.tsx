@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { InsightKey, DailyActivity } from "@/hooks/useStatsInsights";
 import type { TranslationTree } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 function formatReadingTime(
     totalSeconds: number,
@@ -68,23 +69,23 @@ export function InsightModal({
 
     return (
         <Dialog open={!!activeInsight} onOpenChange={(open) => !open && setActiveInsight(null)}>
-            <DialogContent showCloseButton={false} className="bg-[#0A0A0B]/95 border-white/5 backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-[32px]">
+            <DialogContent showCloseButton={false} className="bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-[32px] text-[rgb(var(--color-text-strong))]">
                 <div className="relative p-6">
                     <DialogHeader className="mb-6">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
-                                {activeInsight === 'streak' && <Flame className="w-5 h-5 text-orange-400" />}
-                                {activeInsight === 'prayers' && <span className="text-xl">🕌</span>}
-                                {activeInsight === 'hasanah' && <ZapIcon className="w-5 h-5 text-yellow-400" />}
-                                {activeInsight === 'consistency' && <Target className="w-5 h-5 text-violet-400" />}
-                                {activeInsight === 'quran' && <BookOpen className="w-5 h-5 text-blue-400" />}
-                                {activeInsight === 'dhikr' && <span className="text-xl">📿</span>}
+                            <div className="p-2.5 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                                {activeInsight === 'streak' && <Flame className="w-5 h-5 text-[rgb(var(--color-accent))]" />}
+                                {activeInsight === 'prayers' && <AppIcon name="landmark" size="lg" tone="primary" label={t.stats.insights.prayers.title} />}
+                                {activeInsight === 'hasanah' && <ZapIcon className="w-5 h-5 text-[rgb(var(--color-warning))]" />}
+                                {activeInsight === 'consistency' && <Target className="w-5 h-5 text-[rgb(var(--color-info))]" />}
+                                {activeInsight === 'quran' && <BookOpen className="w-5 h-5 text-[rgb(var(--color-info))]" />}
+                                {activeInsight === 'dhikr' && <AppIcon name="hands" size="lg" tone="primary" label={t.stats.insights.dhikr.title} />}
                             </div>
                             <div>
-                                <DialogTitle className="text-xl font-black text-white">
+                                <DialogTitle className="text-xl font-black text-[rgb(var(--color-text-strong))]">
                                     {t.stats.insights[activeInsight].title}
                                 </DialogTitle>
-                                <DialogDescription className="text-xs text-white/50 leading-relaxed mt-1">
+                                <DialogDescription className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed mt-1">
                                     {t.stats.insights[activeInsight].desc}
                                 </DialogDescription>
                             </div>
@@ -94,14 +95,14 @@ export function InsightModal({
                     <div className="space-y-4">
                         {activeInsight === 'streak' && (
                             <>
-                                <InsightRow label={t.stats.insights.streak.current} value={data.streakData.currentStreak.toString()} icon={<Flame className="w-3.5 h-3.5 text-orange-400" />} />
-                                <InsightRow label={t.stats.insights.streak.longest} value={data.streakData.longestStreak.toString()} icon={<Award className="w-3.5 h-3.5 text-yellow-400" />} />
-                                <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl">
+                                <InsightRow label={t.stats.insights.streak.current} value={data.streakData.currentStreak.toString()} icon={<Flame className="w-3.5 h-3.5 text-[rgb(var(--color-accent))]" />} />
+                                <InsightRow label={t.stats.insights.streak.longest} value={data.streakData.longestStreak.toString()} icon={<Award className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
+                                <div className="p-4 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <TrendingUp className="w-3.5 h-3.5 text-orange-400" />
-                                        <p className="text-[10px] font-bold text-orange-400 uppercase">{t.stats.insights.streak.status}</p>
+                                        <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-accent))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-accent))] uppercase">{t.stats.insights.streak.status}</p>
                                     </div>
-                                    <p className="text-xs text-white/90 font-medium leading-relaxed">
+                                    <p className="text-xs text-[rgb(var(--color-text))] font-medium leading-relaxed">
                                         {data.streakData.currentStreak >= 40
                                             ? t.stats.insights.streak.successDesc
                                             : t.stats.insights.streak.progressDesc?.replace('{{needed}}', (40 - data.streakData.currentStreak).toString())
@@ -113,8 +114,8 @@ export function InsightModal({
 
                         {activeInsight === 'prayers' && (
                             <>
-                                <InsightRow label={t.stats.insights.prayers.fardu} value={data.recentPrayerCount.toString()} icon={<span className="text-sm">🕌</span>} />
-                                <InsightRow label={t.stats.insights.prayers.sunnah} value={data.sunnahTotal.toString()} icon={<span className="text-sm">✨</span>} />
+                                <InsightRow label={t.stats.insights.prayers.fardu} value={data.recentPrayerCount.toString()} icon={<AppIcon name="landmark" size="sm" tone="primary" />} />
+                                <InsightRow label={t.stats.insights.prayers.sunnah} value={data.sunnahTotal.toString()} icon={<AppIcon name="sparkles" size="sm" tone="primary" />} />
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-light))]" />
@@ -122,10 +123,10 @@ export function InsightModal({
                                     </div>
                                     {data.primaryPrayer ? (
                                         <>
-                                            <p className="text-xs text-white/90 italic mb-2">
+                                            <p className="text-xs text-[rgb(var(--color-text))] italic mb-2">
                                                 &quot;{`${t.stats.insights.prayers.mostConsistent} ${data.primaryPrayer}.`}&quot;
                                             </p>
-                                            <p className="text-[10px] text-white/50">
+                                            <p className="text-[10px] text-[rgb(var(--color-text-muted))]">
                                                 {data.sunnahTotal > 0
                                                     ? t.stats.insights.prayers.sunnahDone?.replace('{{count}}', data.sunnahTotal.toString())
                                                     : t.stats.insights.prayers.sunnahNone
@@ -133,7 +134,7 @@ export function InsightModal({
                                             </p>
                                         </>
                                     ) : (
-                                        <p className="text-xs text-white/40 italic">{t.stats.insights.prayers.noData}</p>
+                                        <p className="text-xs text-[rgb(var(--color-text-muted))] italic">{t.stats.insights.prayers.noData}</p>
                                     )}
                                 </div>
                             </>
@@ -141,14 +142,14 @@ export function InsightModal({
 
                         {activeInsight === 'hasanah' && (
                             <>
-                                <InsightRow label={t.stats.insights.hasanah.weekly} value={data.weeklyHasanah.toLocaleString()} icon={<ZapIcon className="w-3.5 h-3.5 text-yellow-400" />} />
-                                <InsightRow label={t.stats.insights.hasanah.avgDaily} value={data.avgDailyHasanah.toLocaleString()} icon={<Calendar className="w-3.5 h-3.5 text-blue-400" />} />
-                                <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl">
+                                <InsightRow label={t.stats.insights.hasanah.weekly} value={data.weeklyHasanah.toLocaleString()} icon={<ZapIcon className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
+                                <InsightRow label={t.stats.insights.hasanah.avgDaily} value={data.avgDailyHasanah.toLocaleString()} icon={<Calendar className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />} />
+                                <div className="p-4 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <TrendingUp className="w-3.5 h-3.5 text-yellow-400" />
-                                        <p className="text-[10px] font-bold text-yellow-400 uppercase">{t.stats.insights.hasanah.insightTitle}</p>
+                                        <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-warning))] uppercase">{t.stats.insights.hasanah.insightTitle}</p>
                                     </div>
-                                    <p className="text-xs text-white/90">
+                                    <p className="text-xs text-[rgb(var(--color-text))]">
                                         {data.powerDayName
                                             ? t.stats.insights.hasanah.powerDayDesc?.replace('{{day}}', data.powerDayName)
                                             : t.stats.insights.hasanah.noData
@@ -160,15 +161,15 @@ export function InsightModal({
 
                         {activeInsight === 'consistency' && (
                             <>
-                                <InsightRow label={t.stats.insights.consistency.rate} value={`${data.consistency}%`} icon={<Target className="w-3.5 h-3.5 text-violet-400" />} />
-                                <div className="p-4 bg-violet-500/10 border border-violet-500/20 rounded-2xl">
+                                <InsightRow label={t.stats.insights.consistency.rate} value={`${data.consistency}%`} icon={<Target className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />} />
+                                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <TrendingUp className="w-3.5 h-3.5 text-violet-400" />
-                                        <p className="text-[10px] font-bold text-violet-400 uppercase">
+                                        <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-info))] uppercase">
                                             {data.consistency > 80 ? t.stats.insights.consistency.highTitle : t.stats.insights.consistency.tipTitle || "Tips Disiplin"}
                                         </p>
                                     </div>
-                                    <p className="text-xs text-white/90">
+                                    <p className="text-xs text-[rgb(var(--color-text))]">
                                         {data.consistency > 80
                                             ? t.stats.insights.consistency.highDesc
                                             : t.stats.insights.consistency.lowDesc
@@ -180,23 +181,23 @@ export function InsightModal({
 
                         {activeInsight === 'quran' && (
                             <>
-                                <InsightRow label={t.stats.insights.quran.totalRead} value={data.totalQuranAyat.toLocaleString()} icon={<BookOpen className="w-3.5 h-3.5 text-blue-400" />} />
+                                <InsightRow label={t.stats.insights.quran.totalRead} value={data.totalQuranAyat.toLocaleString()} icon={<BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />} />
                                 {data.totalQuranReadSeconds !== undefined && data.totalQuranReadSeconds > 0 && (
                                     <InsightRow
                                         label={t.tilawahDurationToday}
                                         value={formatReadingTime(data.totalQuranReadSeconds, t)}
-                                        icon={<span className="text-sm">⏱️</span>}
+                                        icon={<AppIcon name="calendar" size="sm" tone="info" />}
                                     />
                                 )}
-                                <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <Award className="w-3.5 h-3.5 text-blue-400" />
-                                        <p className="text-[10px] font-bold text-blue-400 uppercase">{t.stats.insights.quran.insightTitle || "Wawasan Tilawah"}</p>
+                                        <Award className="w-3.5 h-3.5 text-[rgb(var(--color-info))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-info))] uppercase">{t.stats.insights.quran.insightTitle || "Wawasan Tilawah"}</p>
                                     </div>
-                                    <p className="text-xs text-white/90 font-medium mb-1">
+                                    <p className="text-xs text-[rgb(var(--color-text))] font-medium mb-1">
                                         {t.stats.insights.quran.summary?.replace('{{count}}', data.totalQuranAyat.toString())}
                                     </p>
-                                    <p className="text-[10px] text-white/60">
+                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))]">
                                         {data.totalQuranAyat > 0
                                             ? t.stats.insights.quran.milestoneReach?.replace('{{needed}}', (data.nextQuranMilestone - data.totalQuranAyat).toString()).replace('{{target}}', data.nextQuranMilestone.toString())
                                             : t.stats.insights.quran.startTip
@@ -208,13 +209,13 @@ export function InsightModal({
 
                         {activeInsight === 'dhikr' && (
                             <>
-                                <InsightRow label={t.stats.insights.dhikr.total} value={data.history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()} icon={<span className="text-sm">📿</span>} />
-                                <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-2xl">
+                                <InsightRow label={t.stats.insights.dhikr.total} value={data.history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()} icon={<AppIcon name="hands" size="sm" tone="primary" />} />
+                                <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <MessageSquare className="w-3.5 h-3.5 text-purple-400" />
-                                        <p className="text-[10px] font-bold text-purple-400 uppercase">{t.stats.insights.dhikr.benefitTitle}</p>
+                                        <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-light))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase">{t.stats.insights.dhikr.benefitTitle}</p>
                                     </div>
-                                    <p className="text-xs text-white/90 italic">
+                                    <p className="text-xs text-[rgb(var(--color-text))] italic">
                                         &quot;{t.stats.insights.dhikr.summary}&quot;
                                     </p>
                                 </div>
@@ -223,7 +224,7 @@ export function InsightModal({
 
                         <Button
                             onClick={() => setActiveInsight(null)}
-                            className="w-full h-12 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm border border-white/10 transition-all mt-2"
+                            className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all mt-2"
                         >
                             {t.stats.insights.close}
                         </Button>
@@ -236,14 +237,14 @@ export function InsightModal({
 
 export function InsightRow({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
     return (
-        <div className="flex items-center justify-between p-3.5 bg-white/[0.03] border border-white/5 rounded-2xl">
+        <div className="flex items-center justify-between p-3.5 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
             <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[rgb(var(--color-surface))] flex items-center justify-center">
                     {icon}
                 </div>
-                <span className="text-xs text-white/60 font-medium">{label}</span>
+                <span className="text-xs text-[rgb(var(--color-text-muted))] font-medium">{label}</span>
             </div>
-            <span className="text-sm font-black text-white">{value}</span>
+            <span className="text-sm font-black text-[rgb(var(--color-text-strong))]">{value}</span>
         </div>
     );
 }

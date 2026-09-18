@@ -107,7 +107,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
                                 "px-1.5 py-0.5 rounded border uppercase tracking-tighter",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20"
                             )}>
-                                {t.aboutVersion.split('•')[0].trim()}
+                                {t.aboutVersion.split(' ')[0].trim()}
                             </span>
                             <div className="w-1 h-1 rounded-full bg-current opacity-20" />
                             <Calendar className="w-2.5 h-2.5" />

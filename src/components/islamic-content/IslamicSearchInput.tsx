@@ -13,33 +13,19 @@ interface IslamicSearchInputProps {
     value: string;
     onChange: (value: string) => void;
     placeholder: string;
-    accentColor: "emerald" | "amber";
-    isDaylight: boolean;
 }
 
 export function IslamicSearchInput({
     value,
     onChange,
     placeholder,
-    accentColor,
-    isDaylight,
 }: IslamicSearchInputProps) {
-    const focusBorder =
-        accentColor === "emerald"
-            ? "focus:border-emerald-300"
-            : "focus:border-amber-300";
-
-    const focusBorderDark =
-        accentColor === "emerald"
-            ? "focus:border-emerald-500/50"
-            : "focus:border-amber-500/50";
-
     return (
         <div className="relative mb-3">
             <Search
                 className={cn(
                     "w-4 h-4 absolute left-3.5 top-3",
-                    isDaylight ? "text-slate-400" : "text-white/30"
+                    "text-[rgb(var(--color-text-muted))]"
                 )}
             />
             <input
@@ -51,9 +37,7 @@ export function IslamicSearchInput({
                 placeholder={placeholder}
                 className={cn(
                     "w-full pl-10 pr-4 py-2.5 rounded-2xl text-[16px] sm:text-xs border transition-all outline-none",
-                    isDaylight
-                        ? `bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 ${focusBorder}`
-                        : `bg-white/5 border-white/10 text-white placeholder:text-white/30 ${focusBorderDark}`
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))] focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-ring))]"
                 )}
             />
         </div>

@@ -7,10 +7,13 @@
  */
 
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
+import type { AppIconName } from "@/lib/icon-names";
 
 export interface FilterChipItem {
     key: string;
     label: string;
+    icon?: AppIconName;
 }
 
 interface IslamicFilterChipsProps {
@@ -18,8 +21,6 @@ interface IslamicFilterChipsProps {
     selected: string;
     onSelect: (key: string) => void;
     allLabel: string;
-    accentColor: "emerald" | "amber";
-    isDaylight: boolean;
 }
 
 export function IslamicFilterChips({
@@ -27,21 +28,10 @@ export function IslamicFilterChips({
     selected,
     onSelect,
     allLabel,
-    accentColor,
-    isDaylight,
 }: IslamicFilterChipsProps) {
-    const activeStyles =
-        accentColor === "emerald"
-            ? isDaylight
-                ? "bg-emerald-100/80 border-emerald-200 text-emerald-700 shadow-sm"
-                : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]"
-            : isDaylight
-                ? "bg-amber-100/80 border-amber-200 text-amber-800 shadow-sm"
-                : "bg-[rgb(var(--color-primary))] text-white border-transparent shadow-lg shadow-[rgba(var(--color-primary),0.3)]";
+    const activeStyles = "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]";
 
-    const inactiveStyles = isDaylight
-        ? "bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-        : "bg-white/5 border-white/8 text-white/50 hover:bg-white/10 hover:text-white/70";
+    const inactiveStyles = "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]";
 
     const chipClass = (isActive: boolean) =>
         cn(
@@ -68,6 +58,7 @@ export function IslamicFilterChips({
                     onClick={() => onSelect(item.key)}
                     className={chipClass(selected === item.key)}
                 >
+                    {item.icon && <AppIcon name={item.icon} size="xs" tone={selected === item.key ? "default" : "muted"} />}
                     {item.label}
                 </button>
             ))}

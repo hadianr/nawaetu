@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { Mission } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { formatHasanahRange } from "@/lib/utils/hasanah";
-import { THEMES, useTheme } from "@/context/ThemeContext";
+import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
 
 interface DailyMissionCardProps {
     mission: Mission;
@@ -30,7 +30,6 @@ interface DailyMissionCardProps {
     isSpecial: boolean;
     validation: { locked: boolean; reason?: string; isEarly?: boolean; isLate?: boolean };
     prayerData: { prayerTimes?: Record<string, string> } | null | undefined;
-    gender: 'male' | 'female' | null;
     t: TranslationTree;
     getRulingLabel: (ruling: string, t: TranslationTree) => string | string[];
     onClick: (mission: Mission) => void;
@@ -44,14 +43,11 @@ export default function DailyMissionCard({
     isSpecial,
     validation,
     prayerData,
-    gender,
     t,
     getRulingLabel,
     onClick,
     isBackdated = false
 }: DailyMissionCardProps) {
-    const { currentTheme } = useTheme();
-    const isLight = THEMES[currentTheme].mode === "light";
     let urgencyNode = null;
 
     if (mission.category === 'prayer' && !isCompleted && !isLocked && !validation.isLate && prayerData?.prayerTimes) {
@@ -103,11 +99,11 @@ export default function DailyMissionCard({
                     );
                 } else if (minsRemaining <= 30 && minsRemaining > 0) {
                     urgencyNode = (
-                        <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-amber-500/10 border border-amber-500/20">
-                            <AlertCircle className="w-3 h-3 text-amber-500 mt-0.5 shrink-0" />
+                        <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20">
+                            <AlertCircle className="w-3 h-3 text-[rgb(var(--color-warning))] mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-[10px] font-bold text-amber-500 leading-tight">{t.home_mission_late_title.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
-                                <p className="text-[9px] text-amber-500/70 leading-tight italic">{t.home_mission_late_quote}</p>
+                                <p className="text-[10px] font-bold text-[rgb(var(--color-warning))] leading-tight">{t.home_mission_late_title.replace("{minutes}", Math.floor(minsRemaining).toString())}</p>
+                                <p className="text-[9px] text-[rgb(var(--color-warning))]/70 leading-tight italic">{t.home_mission_late_quote}</p>
                             </div>
                         </div>
                     );
@@ -123,38 +119,35 @@ export default function DailyMissionCard({
                 "w-full flex flex-col gap-2 p-3 rounded-2xl transition-all text-left group relative overflow-hidden",
                 "border backdrop-blur-sm",
                 isCompleted
-                    ? (isLight ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-70" : "bg-black/20 border-white/5 opacity-60")
-                    : (isLight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5 hover:border-[rgb(var(--color-primary-light))]" : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10")
+                    ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-70"
+                    : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5 hover:border-[rgb(var(--color-primary-light))]"
             )}
         >
             {!isCompleted && !isLocked && (
                 <div className={cn(
                     "absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                    mission.ruling === 'obligatory' ? "bg-blue-500" : "bg-emerald-500/50"
+                    "bg-[rgb(var(--color-primary))]"
                 )} />
             )}
             <div className="flex items-center gap-3 w-full">
-                <span className={cn(
-                    "text-xl transition-all",
-                    isCompleted && "grayscale",
-                    isLocked && "opacity-50 grayscale"
-                )}>
-                    {mission.icon}
-                </span>
+                <AppIcon
+                    name={mission.iconKey ?? resolveAppIconName(mission.icon)}
+                    size="lg"
+                    tone={isCompleted ? "muted" : "primary"}
+                    className={cn(isCompleted && "opacity-60", isLocked && "opacity-50")}
+                />
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
                         <p className={cn(
                             "text-xs font-semibold truncate pr-2",
                             isCompleted
-                                ? gender === 'female' ? "text-pink-400 line-through" :
-                                    gender === 'male' ? "text-blue-400 line-through" :
-                                        "text-[rgb(var(--color-primary-light))] line-through"
-                                : isSpecial ? (isLight ? "text-[rgb(var(--color-accent-foreground))]" : "text-amber-200") : (isLight ? "text-[rgb(var(--color-text-strong))]" : "text-white")
+                                ? "text-[rgb(var(--color-primary-light))] line-through"
+                                : isSpecial ? "text-[rgb(var(--color-accent-foreground))]" : "text-[rgb(var(--color-text-strong))]"
                         )}>
                             {mission.title}
                         </p>
                         {isSpecial && !isCompleted && !isLocked && (
-                            <span className="text-[8px] px-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            <span className="text-[8px] px-1 rounded bg-[rgb(var(--color-accent))]/15 text-[rgb(var(--color-accent-foreground))] border border-[rgb(var(--color-accent))]/30">
                                 {t.home_mission_special}
                             </span>
                         )}
@@ -163,21 +156,21 @@ export default function DailyMissionCard({
                         <span className={cn(
                             "text-[7px] px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0",
                             mission.ruling === 'obligatory'
-                                ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
-                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                ? "bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))] border-[rgb(var(--color-info))]/30"
+                                : "bg-[rgb(var(--color-success))]/10 text-[rgb(var(--color-success))] border-[rgb(var(--color-success))]/20"
                         )}>
                             {getRulingLabel(mission.ruling, t)}
                         </span>
-                        <p className={cn("text-[10px] truncate", isLight ? "text-[rgb(var(--color-text))]" : "text-white/90")}>
+                        <p className="text-[10px] truncate text-[rgb(var(--color-text))]">
                             {formatHasanahRange(mission.hasanahReward, mission.completionOptions, isBackdated)} Hasanah
                         </p>
 
                         {isLocked ? (
-                            <span className={cn("text-[9px] flex items-center gap-0.5 ml-auto", isLight ? "text-[rgb(var(--color-text-muted))]" : "text-white/60")}>
+                            <span className="text-[9px] flex items-center gap-0.5 ml-auto text-[rgb(var(--color-text-muted))]">
                                 {t.home_mission_locked}
                             </span>
                         ) : validation.isLate ? (
-                            <span className="text-[9px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
+                            <span className="text-[9px] text-[rgb(var(--color-danger))] bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
                                 <AlertCircle className="w-2.5 h-2.5" /> {t.home_mission_late}
                             </span>
                         ) : validation.isEarly ? (
@@ -190,14 +183,14 @@ export default function DailyMissionCard({
                 {isCompleted ? (
                     <div className={cn(
                         "w-5 h-5 rounded-full flex items-center justify-center",
-                        gender === 'female' ? "bg-pink-500" : gender === 'male' ? "bg-blue-500" : "bg-[rgb(var(--color-primary))]"
+                        "bg-[rgb(var(--color-primary))]"
                     )}>
-                        <Check className="w-3 h-3 text-white" />
+                        <Check className="w-3 h-3 text-[rgb(var(--color-primary-foreground))]" />
                     </div>
                 ) : (
                     <div className={cn(
                         "w-5 h-5 rounded-full border transition-colors",
-                        isSpecial ? "border-amber-500/40 group-hover:border-amber-400/60" : (isLight ? "border-[rgb(var(--color-border))] group-hover:border-[rgb(var(--color-primary))]" : "border-white/20 group-hover:border-white/40")
+                        isSpecial ? "border-[rgb(var(--color-accent))]/40 group-hover:border-[rgb(var(--color-accent))]/60" : "border-[rgb(var(--color-border))] group-hover:border-[rgb(var(--color-primary))]"
                     )} />
                 )}
             </div>

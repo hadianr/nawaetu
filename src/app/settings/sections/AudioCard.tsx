@@ -34,12 +34,11 @@ interface AudioCardProps {
         audioTitle: string;
         muadzinLabel: string;
     };
-    isDaylight: boolean;
     muadzin: string;
     onMuadzinChange: (value: string) => void;
 }
 
-export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: AudioCardProps) {
+export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [playingId, setPlayingId] = useState<string | null>(null);
@@ -206,18 +205,16 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
             <div className="space-y-3">
                 <div className={cn(
                     "relative group border rounded-xl p-3 flex items-center justify-between transition-all",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
-                        : "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface-subtle))]"
+                    "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]"
                 )}>
                     <div className="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
                         <div className={cn(
                             "p-2 rounded-full shrink-0",
-                            isDaylight ? "bg-[rgb(var(--color-primary-light))]/45" : "bg-[rgb(var(--color-primary))]/10"
+                            "bg-[rgb(var(--color-primary))]/15"
                         )}>
                             <Volume2 className={cn(
                                 "w-4 h-4",
-                                isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
+                                "text-[rgb(var(--color-primary-light))]"
                             )} />
                         </div>
                         <div className="min-w-0">
@@ -240,12 +237,8 @@ export default function AudioCard({ t, isDaylight, muadzin, onMuadzinChange }: A
                             className={cn(
                                 "h-8 w-8 rounded-full shrink-0 transition-all duration-300 relative z-20 border flex items-center justify-center",
                                 isPlaying && playingId === muadzin
-                                    ? isDaylight
-                                        ? "bg-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-strong))] scale-110 shadow-[var(--shadow-card)]"
-                                        : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30 scale-110"
-                                    : isDaylight
-                                        ? "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))]/30"
-                                        : "bg-[rgb(var(--color-surface-subtle))]/60 text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))]/30 hover:scale-105"
+                                    ? "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] scale-110 shadow-[var(--shadow-card)]"
+                                    : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))]/30 hover:scale-105"
                             )}
                             onPointerDown={(e) => e.stopPropagation()}
                             onClick={(e) => {

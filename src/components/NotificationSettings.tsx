@@ -495,7 +495,7 @@ export default function NotificationSettings() {
                 type="button"
                 disabled={!subscriptionHealthy || isTestingPush}
                 onClick={sendTestPush}
-                className="w-full rounded-xl border border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary-light))] px-4 py-3 text-sm font-semibold text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-light))]/80 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-xl border border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))] px-4 py-3 text-sm font-semibold text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-strong))] disabled:cursor-not-allowed disabled:opacity-50"
             >
                 {isTestingPush ? t.notificationTestSending : t.notificationTestButton}
             </button>

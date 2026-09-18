@@ -25,7 +25,7 @@
  * - localStorage persistence with error handling
  * - UUID-based tracking for reliability
  * - Retry count tracking for exponential backoff
- * - Status lifecycle: pending → synced/failed
+ * - Status lifecycle: pending to synced or failed
  */
 
 

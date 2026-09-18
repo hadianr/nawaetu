@@ -16,21 +16,20 @@ import {
     Award,
 } from "lucide-react";
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra } from "@/data/sirah";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
+import type { AppIconName } from "@/lib/icon-names";
 
-const ERA_TABS: { id: SirahEra | "all"; label: string; icon: string }[] = [
-    { id: "all", label: "Semua Bab", icon: "📚" },
-    { id: "makkah", label: "Periode Makkah", icon: "🕋" },
-    { id: "madinah", label: "Periode Madinah", icon: "🕌" },
-    { id: "ghazwah", label: "Peperangan (Ghazwah)", icon: "⚔️" },
-    { id: "diplomacy", label: "Diplomasi & Surat Raja", icon: "📜" },
-    { id: "legacy", label: "Akhlak & Wafat", icon: "✨" },
+const ERA_TABS: { id: SirahEra | "all"; label: string; icon: AppIconName }[] = [
+    { id: "all", label: "Semua Bab", icon: "library" },
+    { id: "makkah", label: "Periode Makkah", icon: "kaaba" },
+    { id: "madinah", label: "Periode Madinah", icon: "landmark" },
+    { id: "ghazwah", label: "Peperangan (Ghazwah)", icon: "shield-check" },
+    { id: "diplomacy", label: "Diplomasi & Surat Raja", icon: "scroll" },
+    { id: "legacy", label: "Akhlak & Wafat", icon: "sparkles" },
 ];
 
 export default function SirahDashboardPage() {
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [selectedEra, setSelectedEra] = useState<SirahEra | "all">("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
@@ -68,15 +67,13 @@ export default function SirahDashboardPage() {
     return (
         <div className={cn(
             "sirah-page min-h-screen pb-24 pt-3 px-3.5 sm:px-6 max-w-4xl mx-auto space-y-3.5 sm:space-y-5 transition-colors",
-            isDaylight ? "text-slate-900" : "text-white"
+            "text-[rgb(var(--color-text))]"
         )}>
             {/* Header Banner */}
             <div
                 className={cn(
                     "p-4 sm:p-6 rounded-2xl sm:rounded-3xl border relative overflow-hidden transition-all shadow-xs",
-                    isDaylight
-                        ? "bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/5 border-emerald-200/80"
-                        : "bg-gradient-to-br from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-white"
+                    "bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-[rgb(var(--color-primary))]/5 to-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))]"
                 )}
             >
                 <div className="space-y-2 sm:space-y-3 relative z-10 max-w-2xl">
@@ -86,9 +83,7 @@ export default function SirahDashboardPage() {
                             onClick={(e) => e.preventDefault()}
                             className={cn(
                                 "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 cursor-default",
-                                isDaylight
-                                    ? "bg-emerald-100/80 text-emerald-800 border-emerald-300/60"
-                                    : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/40"
+                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                             )}
                         >
                             <BookOpen className="w-2.5 h-2.5 shrink-0" />
@@ -100,12 +95,10 @@ export default function SirahDashboardPage() {
                                 onClick={(e) => e.preventDefault()}
                                 className={cn(
                                     "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 cursor-default",
-                                    isDaylight
-                                        ? "bg-emerald-100/80 text-emerald-800 border-emerald-300/60"
-                                        : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/40"
+                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                                 )}
                             >
-                                <CheckCircle2 className={cn("w-2.5 h-2.5 shrink-0", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")} />
+                                <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-[rgb(var(--color-success))]" />
                                 <span>Kuis Hari Ini Selesai</span>
                             </Link>
                         ) : (
@@ -113,12 +106,10 @@ export default function SirahDashboardPage() {
                                 href="/sirah/quiz"
                                 className={cn(
                                     "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 transition-all",
-                                    isDaylight
-                                        ? "bg-amber-100/80 text-amber-900 border-amber-300/60 hover:bg-amber-200/80"
-                                        : "bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30"
+                                    "bg-[rgb(var(--color-warning))]/10 text-[rgb(var(--color-warning))] border-[rgb(var(--color-warning))]/25 hover:bg-[rgb(var(--color-warning))]/20"
                                 )}
                             >
-                                <Award className="w-2.5 h-2.5 shrink-0 text-amber-500 dark:text-amber-400" />
+                                <Award className="w-2.5 h-2.5 shrink-0 text-[rgb(var(--color-warning))]" />
                                 <span>Kuis Sirah Harian</span>
                             </Link>
                         )}
@@ -126,15 +117,15 @@ export default function SirahDashboardPage() {
                     <h1
                         className={cn(
                             "text-lg sm:text-2xl font-extrabold tracking-tight",
-                            isDaylight ? "text-slate-900" : "text-white"
+                            "text-[rgb(var(--color-text-strong))]"
                         )}
                     >
-                        Sirah Nabawiyah 🌙
+                        <span className="inline-flex items-center gap-2"><AppIcon name="moon" size="sm" tone="primary" /> Sirah Nabawiyah</span>
                     </h1>
                     <p
                         className={cn(
                             "text-[11px] sm:text-xs sm:text-sm leading-relaxed font-normal",
-                            isDaylight ? "text-slate-600" : "text-slate-200"
+                            "text-[rgb(var(--color-text-muted))]"
                         )}
                     >
                         Teladani perjalanan hidup Rasulullah SAW melalui 50 bab sejarah autentik, petikan Niat harian, dan rujukan ayat Al-Qur&apos;an.
@@ -143,14 +134,14 @@ export default function SirahDashboardPage() {
                     {/* Overall Reading Progress */}
                     <div className="pt-1 space-y-1">
                         <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold">
-                            <span className={isDaylight ? "text-slate-700" : "text-slate-200"}>Kemajuan Membaca</span>
-                            <span className={isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))] font-bold"}>
+                            <span className="text-[rgb(var(--color-text-muted))]">Kemajuan Membaca</span>
+                            <span className="text-[rgb(var(--color-primary-strong))] font-bold">
                                 {completedSectionIds.length} / {totalSections} Subbab ({progressPercent}%)
                             </span>
                         </div>
-                        <div className="w-full h-1.5 sm:h-2 rounded-full bg-black/10 dark:bg-white/15 overflow-hidden">
+                        <div className="w-full h-1.5 sm:h-2 rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
                             <div
-                                className={cn("h-full rounded-full transition-all duration-500", isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]")}
+                                className="h-full rounded-full transition-all duration-500 bg-[rgb(var(--color-primary))]"
                                 style={{ width: `${progressPercent}%` }}
                             />
                         </div>
@@ -163,16 +154,14 @@ export default function SirahDashboardPage() {
                 <div
                     className={cn(
                         "p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border space-y-1.5 relative overflow-hidden transition-all",
-                        isDaylight
-                            ? "bg-white border-emerald-200/80 shadow-xs"
-                            : "bg-white/[0.04] border-[rgb(var(--color-primary))]/25 hover:border-[rgb(var(--color-primary))]/40 text-white"
+                        "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40"
                     )}
                 >
                     <div className="flex items-center justify-between">
                         <div
                             className={cn(
                                 "flex items-center gap-1.5 text-[10px] sm:text-xs font-bold",
-                                isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                                "text-[rgb(var(--color-primary-strong))]"
                             )}
                         >
                             <Sparkles className="w-3.5 h-3.5" />
@@ -182,7 +171,7 @@ export default function SirahDashboardPage() {
                     <p
                         className={cn(
                             "text-xs sm:text-sm font-semibold leading-relaxed",
-                            isDaylight ? "text-slate-900" : "text-slate-100"
+                            "text-[rgb(var(--color-text))]"
                         )}
                     >
                         &quot;{dailyHighlight.suggestedIntention}&quot;
@@ -191,16 +180,16 @@ export default function SirahDashboardPage() {
                         <span
                             className={cn(
                                 "font-medium text-[10px] sm:text-xs truncate min-w-0",
-                                isDaylight ? "text-slate-500" : "text-slate-300"
+                                "text-[rgb(var(--color-text-muted))]"
                             )}
                         >
-                            📍 {dailyHighlight.chapterTitle} • {dailyHighlight.subbab}
+                            <span className="inline-flex items-center gap-1"><AppIcon name="landmark" size="xs" tone="muted" /> {dailyHighlight.chapterTitle}, {dailyHighlight.subbab}</span>
                         </span>
                         <Link
                             href={`/sirah/${dailyHighlight.chapterSlug}/${dailyHighlight.id}`}
                             className={cn(
                                 "text-xs font-bold hover:underline flex items-center gap-0.5 shrink-0",
-                                isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                                "text-[rgb(var(--color-primary-strong))]"
                             )}
                         >
                             <span>Baca Subbab</span>
@@ -214,7 +203,7 @@ export default function SirahDashboardPage() {
             <div className="space-y-2">
                 {/* Search Input */}
                 <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[rgb(var(--color-text-muted))]" />
                     <input
                         type="text"
                         placeholder="Cari bab atau peristiwa Sirah..."
@@ -224,9 +213,7 @@ export default function SirahDashboardPage() {
                         autoCorrect="off"
                         className={cn(
                             "w-full pl-10 pr-4 py-2 text-[16px] sm:text-sm rounded-xl sm:rounded-2xl border transition-all outline-hidden",
-                            isDaylight
-                                ? "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                                : "bg-white/[0.05] border-white/15 text-white placeholder:text-slate-400 focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20"
+                            "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20"
                         )}
                     />
                 </div>
@@ -240,15 +227,11 @@ export default function SirahDashboardPage() {
                             className={cn(
                                 "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 cursor-pointer",
                                 selectedEra === tab.id
-                                    ? isDaylight
-                                        ? "bg-emerald-600 text-white shadow-xs"
-                                        : "bg-[rgb(var(--color-primary))] text-white shadow-[0_0_15px_rgba(var(--color-primary),0.3)]"
-                                    : isDaylight
-                                        ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                                        : "bg-white/10 text-slate-200 hover:bg-white/15"
+                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
+                                    : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10"
                             )}
                         >
-                            <span>{tab.icon}</span>
+                            <AppIcon name={tab.icon} size="sm" tone={selectedEra === tab.id ? "default" : "muted"} />
                             <span>{tab.label}</span>
                         </button>
                     ))}
@@ -258,8 +241,8 @@ export default function SirahDashboardPage() {
             {/* Chapter List Grid */}
             <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold px-0.5">
-                    <span className={isDaylight ? "text-slate-600" : "text-slate-300"}>DAFTAR BAB UTAMA ({filteredChapters.length})</span>
-                    <span className={isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"}>
+                    <span className="text-[rgb(var(--color-text-muted))]">DAFTAR BAB UTAMA ({filteredChapters.length})</span>
+                    <span className="text-[rgb(var(--color-primary-strong))]">
                         {completedSectionIds.length > 0 && `${completedSectionIds.length} Subbab Selesai`}
                     </span>
                 </div>
@@ -278,12 +261,8 @@ export default function SirahDashboardPage() {
                                 className={cn(
                                     "p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all hover:scale-[1.005] active:scale-[0.99] flex flex-col justify-between gap-2 group",
                                     isAllDone
-                                        ? isDaylight
-                                            ? "border-emerald-500/40 bg-emerald-500/5"
-                                            : "border-[rgb(var(--color-primary))]/50 bg-[rgb(var(--color-primary))]/10"
-                                        : isDaylight
-                                            ? "bg-white border-slate-200/80 hover:border-emerald-300 shadow-xs"
-                                            : "bg-white/[0.03] border-white/10 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5"
+                                        ? "border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/10"
+                                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5"
                                 )}
                             >
                                 <div className="space-y-1 sm:space-y-1.5">
@@ -291,15 +270,13 @@ export default function SirahDashboardPage() {
                                         <span
                                             className={cn(
                                                 "text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md",
-                                                isDaylight
-                                                    ? "bg-emerald-100/80 text-emerald-800"
-                                                    : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
+                                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/25"
                                             )}
                                         >
-                                            Bab {chap.orderIndex} • {formattedEra}
+                                            Bab {chap.orderIndex}, {formattedEra}
                                         </span>
                                         {isAllDone && (
-                                            <span className={cn("text-[10px] font-bold flex items-center gap-0.5", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")}>
+                                            <span className="text-[10px] font-bold flex items-center gap-0.5 text-[rgb(var(--color-success))]">
                                                 <CheckCircle2 className="w-3 h-3" />
                                                 Selesai
                                             </span>
@@ -308,16 +285,16 @@ export default function SirahDashboardPage() {
                                     <h3
                                         className={cn(
                                             "font-bold text-xs sm:text-sm leading-snug transition-colors",
-                                            isDaylight ? "text-slate-900 group-hover:text-emerald-700" : "text-white group-hover:text-[rgb(var(--color-primary-light))]"
+                                            "text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]"
                                         )}
                                     >
                                         {chap.title}
                                     </h3>
                                 </div>
 
-                                <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-black/5 dark:border-white/5">
-                                    <span className={isDaylight ? "text-slate-500" : "text-slate-300"}>{chap.totalSections} Subbab</span>
-                                    <div className={cn("flex items-center gap-0.5 font-semibold", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
+                                <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-[rgb(var(--color-border))]">
+                                    <span className="text-[rgb(var(--color-text-muted))]">{chap.totalSections} Subbab</span>
+                                    <div className="flex items-center gap-0.5 font-semibold text-[rgb(var(--color-primary-strong))]">
                                         <span>Buka Bab</span>
                                         <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                                     </div>

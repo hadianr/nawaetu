@@ -46,12 +46,10 @@ export default function LanguageCard({ t, locale, handleLocaleChange }: Language
                     <SelectValue placeholder="Bahasa Indonesia">
                         {locale && LANGUAGE_OPTIONS.find(l => l.id === locale) ? (
                             <span className="flex items-center gap-2">
-                                <span>{LANGUAGE_OPTIONS.find(l => l.id === locale)?.flag}</span>
                                 <span>{LANGUAGE_OPTIONS.find(l => l.id === locale)?.label}</span>
                             </span>
                         ) : (
                             <span className="flex items-center gap-2">
-                                <span>🇮🇩</span>
                                 <span>Bahasa Indonesia</span>
                             </span>
                         )}
@@ -66,7 +64,6 @@ export default function LanguageCard({ t, locale, handleLocaleChange }: Language
                             className="text-[rgb(var(--color-text))] text-sm hover:bg-[rgb(var(--color-surface-subtle))] focus:bg-[rgb(var(--color-surface-subtle))] focus:text-[rgb(var(--color-text-strong))] cursor-pointer transition-colors"
                         >
                             <span className="flex items-center gap-2">
-                                <span className="text-lg">{lang.flag}</span>
                                 <span>{lang.label}</span>
                             </span>
                         </SelectItem>

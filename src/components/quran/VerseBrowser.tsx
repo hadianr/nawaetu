@@ -22,6 +22,7 @@ import VerseList from "@/components/quran/VerseList";
 import QuranTracker from "@/components/quran/QuranTracker";
 import { DEFAULT_SETTINGS } from "@/data/settings-data";
 import { getKemenagChapter, getKemenagVerses, getVerseAudioUrl } from "@/lib/quran/kemenag-api";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface VerseBrowserProps {
     params: Promise<{ id: string }>;
@@ -91,15 +92,15 @@ export default async function VerseBrowser({ params, searchParams }: VerseBrowse
         return (
             <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
                 <div className="text-center space-y-4">
-                    <h2 className="text-xl font-bold text-red-500">⚠️ Gagal Memuat Surah</h2>
-                    <p className="text-slate-400">{errorMessage}</p>
-                    <p className="text-sm text-slate-500">
+                    <h2 className="text-xl font-bold text-[rgb(var(--color-danger))] flex items-center gap-2"><AppIcon name="warning" size="md" tone="danger" /> Gagal Memuat Surah</h2>
+                    <p className="text-[rgb(var(--color-text-muted))]">{errorMessage}</p>
+                    <p className="text-sm text-[rgb(var(--color-text-muted))]">
                         Silakan coba lagi atau periksa koneksi internet Anda.
                     </p>
                     <div className="pt-4">
                         <Link
                             href="/quran"
-                            className="inline-block px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors"
+                            className="inline-block px-6 py-2 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] rounded-lg transition-colors"
                         >
                             Kembali ke Daftar Surah
                         </Link>

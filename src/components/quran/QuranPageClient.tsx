@@ -38,14 +38,14 @@ export default function QuranPageClient() {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" asChild className="rounded-full text-white/70 hover:bg-white/10 hover:text-white">
+                <Button variant="ghost" size="icon" asChild className="rounded-full text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]">
                     <Link href="/">
                         <ChevronLeft className="h-6 w-6" />
                     </Link>
                 </Button>
                 <div>
                     <h1 className="text-xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">{t.quranTitle}</h1>
-                    <p className="text-xs text-white/60">{t.quranSubtitle}</p>
+                    <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.quranSubtitle}</p>
                 </div>
             </div>
             <QuranReadingBanner />

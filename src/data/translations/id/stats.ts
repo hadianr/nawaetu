@@ -171,7 +171,7 @@ export const statsID = {
         },
         ranks: {
             mubtadi: {
-                icon: "🌱",
+                icon: "sparkles",
                 title: "Mubtadi",
                 desc: "Istilah bagi pemula (al-mubtadi) yang baru memulai langkah pertama dalam perjalanan kedisiplinan diri dan perbaikan spiritual.",
                 milestone: "Fokus pada menyempurnakan niat dalam setiap amal.",
@@ -179,7 +179,7 @@ export const statsID = {
                 source: "Hadits Bukhari & Muslim"
             },
             seeker: {
-                icon: "🔍",
+                icon: "compass",
                 title: "Pencari Rahmat",
                 desc: "Mulai menemukan ketenangan dalam keteraturan ibadah fardhu.",
                 milestone: "Usahakan sholat tepat waktu sebagai prioritas utama.",
@@ -187,7 +187,7 @@ export const statsID = {
                 source: "QS. Az-Zumar: 53"
             },
             warrior: {
-                icon: "⚔️",
+                icon: "shield-check",
                 title: "Pejuang Subuh",
                 desc: "Disiplin di waktu yang paling sulit namun penuh berkah.",
                 milestone: "Jaga konsistensi sholat Subuh berjamaah atau tepat waktu.",
@@ -195,7 +195,7 @@ export const statsID = {
                 source: "QS. Al-Isra: 78"
             },
             abid: {
-                icon: "🕌",
+                icon: "landmark",
                 title: "Abid",
                 desc: "Hamba yang mulai merasakan manisnya ibadah melebihi kewajiban.",
                 milestone: "Mulai tambahkan amalan sunnah rawatib secara perlahan.",
@@ -203,7 +203,7 @@ export const statsID = {
                 source: "Hadits Qudsi (Bukhari)"
             },
             salik: {
-                icon: "👣",
+                icon: "compass",
                 title: "Salik",
                 desc: "Seorang penempuh jalan spiritual yang sadar akan setiap langkahnya.",
                 milestone: "Latih kehadiran hati (khusyuk) dalam setiap gerakan sholat.",
@@ -211,7 +211,7 @@ export const statsID = {
                 source: "Hadits Bukhari & Muslim"
             },
             mukhlis: {
-                icon: "💎",
+                icon: "star",
                 title: "Mukhlis",
                 desc: "Memurnikan segala amal hanya untuk mencari ridha Allah semata.",
                 milestone: "Hindari perasaan ingin dipuji orang lain dalam beribadah.",
@@ -219,7 +219,7 @@ export const statsID = {
                 source: "QS. Al-Bayyinah: 5"
             },
             muhsin: {
-                icon: "✨",
+                icon: "sparkles",
                 title: "Muhsin",
                 desc: "Beribadah seakan-akan melihat Allah, atau sadar Ia melihatmu.",
                 milestone: "Jadikan setiap detik sebagai bentuk zikir dan rasa syukur.",

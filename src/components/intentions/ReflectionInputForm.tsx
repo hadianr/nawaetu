@@ -20,11 +20,11 @@
 
 import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface ReflectionInputFormProps {
     onComplete: () => void;
@@ -35,15 +35,13 @@ interface ReflectionInputFormProps {
 
 export default function ReflectionInputForm({ onComplete, userToken, intentionId, intentionText }: ReflectionInputFormProps) {
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const RATING_LABELS = [
-        { emoji: "😔", label: t.niat_rating_struggled, color: "text-red-400" },
-        { emoji: "😕", label: t.niat_rating_difficult, color: "text-orange-400" },
-        { emoji: "😐", label: t.niat_rating_okay, color: "text-yellow-400" },
-        { emoji: "😊", label: t.niat_rating_good, color: "text-green-400" },
-        { emoji: "🤩", label: t.niat_rating_excellent, color: "text-emerald-400" },
+        { icon: "warning" as const, label: t.niat_rating_struggled, color: "text-[rgb(var(--color-danger))]" },
+        { icon: "help" as const, label: t.niat_rating_difficult, color: "text-[rgb(var(--color-warning))]" },
+        { icon: "target" as const, label: t.niat_rating_okay, color: "text-[rgb(var(--color-accent))]" },
+        { icon: "heart-handshake" as const, label: t.niat_rating_good, color: "text-[rgb(var(--color-success))]" },
+        { icon: "sparkles" as const, label: t.niat_rating_excellent, color: "text-[rgb(var(--color-primary-light))]" },
     ];
 
     const [rating, setRating] = useState(0);
@@ -97,18 +95,18 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
     if (isSuccess) {
         return (
             <div className="flex flex-col items-center justify-center p-8 space-y-4 text-center animate-in fade-in zoom-in duration-500">
-                <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-2">
-                    <CheckCircle2 className="w-8 h-8 text-blue-400" />
+                <div className="w-16 h-16 bg-[rgb(var(--color-success))]/15 rounded-full flex items-center justify-center mb-2">
+                    <CheckCircle2 className="w-8 h-8 text-[rgb(var(--color-success))]" />
                 </div>
-                <h3 className="text-xl font-bold text-white">{t.niat_success_reflection_title}</h3>
-                <p className="text-white/60 text-sm">{t.niat_success_reflection_desc}</p>
+                <h3 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{t.niat_success_reflection_title}</h3>
+                <p className="text-[rgb(var(--color-text-muted))] text-sm">{t.niat_success_reflection_desc}</p>
             </div>
         );
     }
 
     if (!intentionId) {
         return (
-            <div className="p-6 text-center text-white/60">
+            <div className="p-6 text-center text-[rgb(var(--color-text-muted))]">
                 <p>{t.intention_no_today_title}</p>
                 <p className="text-xs mt-2">{t.intention_no_today_desc}</p>
             </div>
@@ -117,13 +115,13 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
 
     return (
         <div className="p-6 space-y-6">
-            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <p className="text-xs text-white/40 uppercase tracking-widest font-bold mb-2">{t.intention_todays_label}</p>
-                        <p className="text-white/90 italic">&quot;{intentionText}&quot;</p>
+            <div className="bg-[rgb(var(--color-surface-subtle))] p-4 rounded-xl border border-[rgb(var(--color-border))]">
+                <p className="text-xs text-[rgb(var(--color-text-muted))] uppercase tracking-widest font-bold mb-2">{t.intention_todays_label}</p>
+                        <p className="text-[rgb(var(--color-text))] italic">&quot;{intentionText}&quot;</p>
             </div>
 
             <div className="space-y-3">
-                <label className="text-sm font-medium text-white/80 block text-center">
+                <label className="text-sm font-medium text-[rgb(var(--color-text))] block text-center">
                     {t.niat_rating_harimu}
                 </label>
                 <div className="flex justify-between gap-1 px-2">
@@ -138,16 +136,16 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                                 className={cn(
                                     "flex flex-col items-center gap-2 p-2.5 rounded-2xl transition-all duration-300 w-14 sm:w-16 group border",
                                     isSelected
-                                        ? (isDaylight ? "bg-slate-100 border-slate-300 shadow-sm" : "bg-white/10 border-white/20 shadow-lg") + " scale-110"
-                                        : (isDaylight ? "hover:bg-slate-100 hover:border-slate-200" : "hover:bg-white/5 hover:border-white/10") + " border-transparent opacity-60 hover:opacity-100 scale-100"
+                                        ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)] scale-110"
+                                        : "hover:bg-[rgb(var(--color-primary))]/5 hover:border-[rgb(var(--color-border))] border-transparent opacity-60 hover:opacity-100 scale-100"
                                 )}
                             >
                                 <span className={cn("text-2xl sm:text-3xl transition-transform", isSelected ? "scale-125" : "group-hover:scale-110")}>
-                                    {item.emoji}
+                                    <AppIcon name={item.icon} size="xl" tone={isSelected ? "primary" : "muted"} />
                                 </span>
                                 <span className={cn(
                                     "text-[9px] font-bold tracking-wide transition-colors",
-                                    isSelected ? item.color : (isDaylight ? "text-slate-400 group-hover:text-slate-600" : "text-white/40 group-hover:text-white/80")
+                                    isSelected ? item.color : "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))]"
                                 )}>
                                     {item.label}
                                 </span>
@@ -158,22 +156,22 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
             </div>
 
             <div className="space-y-2">
-                <label className="text-sm font-medium text-white/80 block">
+                <label className="text-sm font-medium text-[rgb(var(--color-text))] block">
                     {t.niat_prompt_reflection_text}
                 </label>
                 <Textarea
                     value={reflection}
                     onChange={(e) => setReflection(e.target.value)}
                     placeholder={t.niat_placeholder_reflect}
-                    className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/30 resize-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50"
+                    className="min-h-[100px] bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] resize-none focus:border-[rgb(var(--color-primary))]/50 focus:ring-1 focus:ring-[rgb(var(--color-primary))]/50"
                 />
-                {error && <p className="text-red-400 text-xs">{error}</p>}
+                {error && <p className="text-[rgb(var(--color-danger))] text-xs">{error}</p>}
             </div>
 
             <Button
                 onClick={handleSubmit}
                 disabled={rating === 0 || isSubmitting}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-6 shadow-lg shadow-blue-900/20"
+                className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-foreground))] font-bold py-6 shadow-[var(--shadow-floating)]"
             >
                 {isSubmitting ? (
                     <>

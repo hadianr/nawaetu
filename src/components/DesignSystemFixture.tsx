@@ -40,7 +40,7 @@ export default function DesignSystemFixture() {
                 </span>
                 <span className="mt-1 block text-sm text-muted-foreground">{candidate.description}</span>
                 <span className="mt-3 block text-xs uppercase tracking-wide text-muted-foreground">
-                  {candidate.mode} · {candidate.id === currentTheme ? "selected" : "select"}
+                  {candidate.mode} - {candidate.id === currentTheme ? "selected" : "select"}
                 </span>
               </button>
             ))}

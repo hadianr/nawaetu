@@ -25,54 +25,54 @@ import { trackRamadhanActivity } from "@/lib/analytics/analytics";
 // Lazy load all heavy components — 'use client' allows ssr: false
 const RamadhanHeroCard = dynamic(() => import("@/components/ramadhan/RamadhanHeroCard"), {
     ssr: false,
-    loading: () => <div className="h-32 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-32 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const RamadhanScheduleCard = dynamic(() => import("@/components/ramadhan/RamadhanScheduleCard"), {
     ssr: false,
-    loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-48 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const SunnahFoodsWidget = dynamic(() => import("@/components/ramadhan/SunnahFoodsWidget"), {
     ssr: false,
-    loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-48 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const TarawehTracker = dynamic(() => import("@/components/ramadhan/TarawehTracker"), {
     ssr: false,
-    loading: () => <div className="h-40 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-40 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const DailyPrayerTracker = dynamic(() => import("@/components/ramadhan/DailyPrayerTracker"), {
     ssr: false,
-    loading: () => <div className="h-56 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-56 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const KhatamanProgress = dynamic(() => import("@/components/ramadhan/KhatamanProgress"), {
     ssr: false,
-    loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-48 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const LailatulQadrCard = dynamic(() => import("@/components/ramadhan/LailatulQadrCard"), {
     ssr: false,
-    loading: () => <div className="h-40 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-40 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const RamadhanGuideCard = dynamic(() => import("@/components/ramadhan/RamadhanGuideCard"), {
     ssr: false,
-    loading: () => <div className="h-32 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-32 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 const RamadhanPracticesList = dynamic(() => import("@/components/ramadhan/RamadhanPracticesList"), {
     ssr: false,
-    loading: () => <div className="h-48 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-48 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 
 const ZakatFitrahCard = dynamic(() => import("@/components/ramadhan/ZakatFitrahCard"), {
     ssr: false,
-    loading: () => <div className="h-40 rounded-2xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-40 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 
 const FastingTrackerWidget = dynamic(() => import("@/components/ramadhan/fasting/FastingTrackerWidget"), {
     ssr: false,
-    loading: () => <div className="h-64 rounded-3xl bg-white/5 animate-pulse" />,
+    loading: () => <div className="h-64 rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 
 const RamadhanWrappedCard = dynamic(() => import("@/components/ramadhan/RamadhanWrappedCard"), {
     ssr: false,
-    loading: () => <div className="h-80 w-full rounded-3xl bg-white/5 animate-pulse border border-white/10" />,
+    loading: () => <div className="h-80 w-full rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse border border-[rgb(var(--color-border))]" />,
 });
 
 export default function RamadhanPage() {
@@ -86,84 +86,84 @@ export default function RamadhanPage() {
 
                 {/* Hero */}
                 <section className="w-full">
-                    <Suspense fallback={<div className="h-32 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                        <Suspense fallback={<div className="h-32 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <RamadhanHeroCard />
                     </Suspense>
                 </section>
 
                 {/* Ramadhan Wrapped / Rapor Ramadhan */}
                 <section className="w-full animate-in slide-in-from-bottom-2 fade-in duration-500" style={{ animationDelay: "50ms" }}>
-                    <Suspense fallback={<div className="h-80 w-full rounded-3xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-80 w-full rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <RamadhanWrappedCard />
                     </Suspense>
                 </section>
 
                 {/* Fasting Tracker */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "80ms" }}>
-                    <Suspense fallback={<div className="h-64 w-full rounded-3xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-64 w-full rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <FastingTrackerWidget />
                     </Suspense>
                 </section>
 
                 {/* Jadwal Imsak & Buka */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "100ms" }}>
-                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <RamadhanScheduleCard />
                     </Suspense>
                 </section>
 
                 {/* Sunnah Foods */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "150ms" }}>
-                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <SunnahFoodsWidget />
                     </Suspense>
                 </section>
 
                 {/* Taraweh Tracker */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "200ms" }}>
-                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <TarawehTracker />
                     </Suspense>
                 </section>
 
                 {/* Daily Prayer & Sunnah Tracker */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "230ms" }}>
-                    <Suspense fallback={<div className="h-56 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-56 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <DailyPrayerTracker />
                     </Suspense>
                 </section>
 
                 {/* Khataman Progress */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "300ms" }}>
-                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <KhatamanProgress />
                     </Suspense>
                 </section>
 
                 {/* Lailatul Qadr */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "400ms" }}>
-                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <LailatulQadrCard />
                     </Suspense>
                 </section>
 
                 {/* Ramadhan Practices List (I'tikaf, Lailatul Qadar, etc.) */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "420ms" }}>
-                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-48 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <RamadhanPracticesList />
                     </Suspense>
                 </section>
 
                 {/* Zakat Fitrah */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "450ms" }}>
-                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <ZakatFitrahCard />
                     </Suspense>
                 </section>
 
                 {/* Panduan Puasa (Fiqh & FAQ) */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "500ms" }}>
-                    <Suspense fallback={<div className="h-32 w-full rounded-2xl bg-white/5 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-32 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <RamadhanGuideCard />
                     </Suspense>
                 </section>

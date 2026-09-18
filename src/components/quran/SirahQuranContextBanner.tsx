@@ -7,7 +7,7 @@
 
 import Link from "next/link";
 import { BookOpen, ChevronRight } from "lucide-react";
-import { THEMES, useTheme } from "@/context/ThemeContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { cn } from "@/lib/utils";
 
 interface SirahContextInfo {
@@ -55,8 +55,6 @@ const SURAH_SIRAH_MAPPINGS: Record<number, SirahContextInfo> = {
 };
 
 export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const info = SURAH_SIRAH_MAPPINGS[surahId];
 
     if (!info) return null;
@@ -65,15 +63,13 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
         <div
             className={cn(
                 "w-full p-4 rounded-2xl border transition-all mb-4 flex items-center justify-between gap-3",
-                isDaylight
-                    ? "bg-[rgb(var(--color-primary-light))]/30 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)]"
-                    : "bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-white"
+                "bg-gradient-to-r from-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-text))] shadow-[var(--shadow-card)]"
             )}
         >
             <div className="flex items-center gap-3 min-w-0">
                 <div className={cn(
                     "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
-                    isDaylight ? "bg-[rgb(var(--color-primary-light))]/45 text-[rgb(var(--color-primary-strong))]" : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
+                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]"
                 )}>
                     <BookOpen className="w-4 h-4" />
                 </div>
@@ -81,9 +77,9 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
                     <div className="flex items-center gap-2">
                         <span className={cn(
                             "text-[10px] font-extrabold uppercase tracking-wider",
-                            isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
+                            "text-[rgb(var(--color-primary-strong))]"
                         )}>
-                            💡 Konteks Sejarah (Sirah Nabawiyah)
+                            <span className="inline-flex items-center gap-1"><AppIcon name="sparkles" size="xs" tone="primary" /> Konteks Sejarah (Sirah Nabawiyah)</span>
                         </span>
                     </div>
                     <p className="text-xs font-semibold leading-snug truncate">
@@ -95,10 +91,7 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
             <Link
                 href={`/sirah/${info.chapterSlug}`}
                 className={cn(
-                    "px-3 py-1.5 rounded-xl text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1 shadow-xs cursor-pointer",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-primary-light))]"
-                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90"
+                    "px-3 py-1.5 rounded-xl text-[rgb(var(--color-primary-foreground))] text-xs font-bold transition-all shrink-0 flex items-center gap-1 shadow-[var(--shadow-card)] cursor-pointer bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))]"
                 )}
             >
                 <span>Baca Sirah</span>

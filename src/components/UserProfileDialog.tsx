@@ -24,7 +24,6 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -54,8 +53,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const { isMuhsinin: contextIsMuhsinin, resetInfaq } = useInfaq();
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const isAuthenticated = status === "authenticated";
     const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
@@ -243,15 +240,12 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                 showCloseButton={false}
                 className={cn(
                     "w-[calc(100vw-32px)] sm:w-[380px] max-w-sm max-h-[85vh] p-0 rounded-3xl overflow-hidden flex flex-col transition-all",
-                    isDaylight
-                        ? "bg-white border-slate-200 text-slate-900"
-                        : "bg-[#0F172A] border-white/10 text-white"
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] shadow-[var(--shadow-floating)]"
                 )}
             >
                 <DialogTitle className="sr-only">Profil Pengguna</DialogTitle>
 
                 <ProfileHeader
-                    isDaylight={isDaylight}
                     isAuthenticated={isAuthenticated}
                     isMuhsinin={isMuhsinin}
                     userImage={userImage}
@@ -263,7 +257,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                         <div className="flex-1">
                             {isEditing ? (
                                 <ProfileEditForm
-                                    isDaylight={isDaylight}
                                     editName={editName}
                                     setEditName={setEditName}
                                     editGender={editGender}
@@ -276,18 +269,18 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                                 <>
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
-                                            <h2 className={cn("text-xl font-bold leading-tight", isDaylight ? "text-slate-900" : "text-white")}>{userName}</h2>
-                                            <button onClick={() => setIsEditing(true)} className="text-slate-500 hover:text-white transition-colors">
+                                            <h2 className="text-xl font-bold leading-tight text-[rgb(var(--color-text-strong))]">{userName}</h2>
+                                            <button onClick={() => setIsEditing(true)} className="text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] transition-colors">
                                                 <Edit2 className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
                                         {isAuthenticated && session?.user?.email && (
-                                            <div className={cn("flex items-center gap-1.5 text-[10px] mt-0.5", isDaylight ? "text-slate-500" : "text-slate-400")}>
+                                            <div className="flex items-center gap-1.5 text-[10px] mt-0.5 text-[rgb(var(--color-text-muted))]">
                                                 <div className={cn(
                                                     "w-3 h-3 rounded-full flex items-center justify-center",
-                                                    isDaylight ? "bg-slate-100" : "bg-white/10"
+                                                    "bg-[rgb(var(--color-surface-subtle))]"
                                                 )}>
-                                                    <span className={cn("text-[6px] font-bold", isDaylight ? "text-slate-600" : "text-white")}>G</span>
+                                                    <span className="text-[6px] font-bold text-[rgb(var(--color-text))]">G</span>
                                                 </div>
                                                 {session.user.email}
                                             </div>
@@ -298,10 +291,9 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                         </div>
                     </div>
 
-                    <GamificationStats isDaylight={isDaylight} stats={stats} />
+                    <GamificationStats stats={stats} />
 
                     <AuthActions
-                        isDaylight={isDaylight}
                         isAuthenticated={isAuthenticated}
                         handleLogin={handleLogin}
                         handleShareApp={handleShareApp}
@@ -311,8 +303,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
                     />
 
                     {/* Footer */}
-                    <div className="mt-6 pt-6 border-t border-white/5 text-center px-4">
-                        <p className="text-[10px] text-slate-600">{(t as unknown as Record<string, string>).profileFooter}</p>
+                    <div className="mt-6 pt-6 border-t border-[rgb(var(--color-border))] text-center px-4">
+                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">{(t as unknown as Record<string, string>).profileFooter}</p>
                     </div>
 
                 </div>

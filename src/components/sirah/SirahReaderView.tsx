@@ -19,15 +19,16 @@ import {
     Check,
     ChevronLeft,
     ChevronRight,
+    X,
 } from "lucide-react";
 import Link from "next/link";
 import type { SirahSection, SirahQuranRef } from "@/data/sirah";
 import { SirahQuranBridgeModal } from "./SirahQuranBridgeModal";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SirahInlineProse } from "./SirahInlineProse";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface SirahReaderViewProps {
     section: SirahSection;
@@ -42,9 +43,7 @@ export function SirahReaderView({
     nextSectionId,
     chapterSlug,
 }: SirahReaderViewProps) {
-    const { currentTheme } = useTheme();
     const { locale } = useLocale();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [fontSize, setFontSize] = useState<"sm" | "base" | "lg" | "xl">("base");
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
@@ -149,9 +148,7 @@ export function SirahReaderView({
         xl:   "text-[19px] leading-[2.0]  tracking-[0.01em] sm:text-[21px]",
     };
 
-    const toolBtnClass = isDaylight
-        ? "border-slate-300 text-slate-700 hover:bg-slate-50"
-        : "border-white/15 text-white hover:bg-[rgb(var(--color-primary))]/15 hover:border-[rgb(var(--color-primary))]/30";
+    const toolBtnClass = "border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/30";
 
     const wordCount = section.content.join(" ").split(" ").length;
     const readMinutes = Math.ceil(wordCount / 150);
@@ -161,25 +158,25 @@ export function SirahReaderView({
         {/* Fixed reading progress bar */}
         <div className="fixed top-0 left-0 right-0 z-50 h-0.5 bg-transparent pointer-events-none">
             <div
-                className={cn("h-full transition-[width] duration-100", isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]")}
+                className="h-full transition-[width] duration-100 bg-[rgb(var(--color-primary))]"
                 style={{ width: `${readProgress}%` }}
             />
         </div>
 
         <div className={cn(
             "sirah-reader-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
-            isDaylight ? "text-slate-900" : "text-white"
+            "text-[rgb(var(--color-text))]"
         )}>
             {/* Header Controls */}
             <div className={cn(
                 "flex items-center justify-between gap-2 border-b pb-4",
-                isDaylight ? "border-slate-200" : "border-white/10"
+                "border-[rgb(var(--color-border))]"
             )}>
                 <Link
                     href={`/sirah/${chapterSlug}`}
                     className={cn(
                         "inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity",
-                        isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                        "text-[rgb(var(--color-primary-strong))]"
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
@@ -206,10 +203,8 @@ export function SirahReaderView({
                         onClick={toggleTTS}
                         className={cn(
                             "p-2 rounded-xl border transition-colors cursor-pointer",
-                            isPlayingAudio
-                                ? isDaylight
-                                    ? "bg-emerald-500 text-white border-emerald-500"
-                                    : "bg-[rgb(var(--color-primary))] text-white border-[rgb(var(--color-primary))]"
+                                isPlayingAudio
+                                ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : toolBtnClass
                         )}
                         title="Dengarkan Audio"
@@ -222,7 +217,7 @@ export function SirahReaderView({
                         onClick={toggleBookmark}
                         className={cn(
                             "p-2 rounded-xl border transition-colors cursor-pointer",
-                            isBookmarked ? "bg-amber-500 text-white border-amber-500" : toolBtnClass
+                            isBookmarked ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]" : toolBtnClass
                         )}
                         title="Simpan Markah"
                     >
@@ -235,7 +230,7 @@ export function SirahReaderView({
                         className={cn("p-2 rounded-xl border transition-colors cursor-pointer", toolBtnClass)}
                         title="Salin Teks"
                     >
-                        {copied ? <Check className={cn("w-4 h-4", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")} /> : <Share2 className="w-4 h-4" />}
+                        {copied ? <Check className="w-4 h-4 text-[rgb(var(--color-success))]" /> : <Share2 className="w-4 h-4" />}
                     </button>
                 </div>
             </div>
@@ -244,28 +239,28 @@ export function SirahReaderView({
             <div className="space-y-2">
                 <p className={cn(
                     "text-xs font-bold tracking-wider uppercase",
-                    isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                    "text-[rgb(var(--color-primary-strong))]"
                 )}>
                     {section.chapterTitle}
                 </p>
-                <h1 className={cn("text-xl sm:text-2xl font-extrabold tracking-tight", isDaylight ? "text-slate-900" : "text-white")}>
+                <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[rgb(var(--color-text-strong))]">
                     {section.subbab}
                 </h1>
                 {section.pageStart && (
-                    <p className={cn("text-xs", isDaylight ? "text-slate-500" : "text-slate-400")}>
-                        📄 Halaman Referensi: {section.pageStart} {section.pageEnd ? `- ${section.pageEnd}` : ""}
+                    <p className="text-xs text-[rgb(var(--color-text-muted))]">
+                        <AppIcon name="book" size="xs" tone="muted" /> Halaman Referensi: {section.pageStart} {section.pageEnd ? `- ${section.pageEnd}` : ""}
                     </p>
                 )}
-                <p className={cn("text-xs", isDaylight ? "text-slate-500" : "text-slate-400")}>
-                    ⏱️ ~{readMinutes} min baca
+                <p className="text-xs text-[rgb(var(--color-text-muted))]">
+                    <AppIcon name="calendar" size="xs" tone="muted" /> ~{readMinutes} min baca
                 </p>
             </div>
 
             {/* Related Quran Verses Chips */}
             {section.relatedQuranVerses && section.relatedQuranVerses.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2 pt-1">
-                    <span className={cn("text-xs font-medium flex items-center gap-1", isDaylight ? "text-slate-600" : "text-slate-300")}>
-                        <BookOpen className={cn("w-3.5 h-3.5", isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]")} />
+                    <span className="text-xs font-medium flex items-center gap-1 text-[rgb(var(--color-text-muted))]">
+                        <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
                         Rujukan Quran:
                     </span>
                     {section.relatedQuranVerses.map((ref, idx) => (
@@ -274,9 +269,7 @@ export function SirahReaderView({
                             onClick={() => setSelectedQuranRef(ref)}
                             className={cn(
                                 "px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border cursor-pointer",
-                                isDaylight
-                                    ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
-                                    : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/25 hover:bg-[rgb(var(--color-primary))]/25"
+                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25 hover:bg-[rgb(var(--color-primary))]/20"
                             )}
                         >
                             {ref.label || `Surah ${ref.surah}:${ref.verses}`}
@@ -289,12 +282,10 @@ export function SirahReaderView({
             {locale === "en" && !enNoticeDismissed && (
                 <div className={cn(
                     "flex items-start justify-between gap-3 px-4 py-3 rounded-2xl border text-xs",
-                    isDaylight
-                        ? "bg-amber-50 border-amber-200 text-amber-800"
-                        : "bg-amber-500/10 border-amber-500/20 text-amber-300"
+                        "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25 text-[rgb(var(--color-warning))]"
                 )}>
                     <p className="leading-relaxed">
-                        <span className="font-bold">🇮🇩 Indonesian only.</span>{" "}
+                        <span className="font-bold">Indonesian only.</span>{" "}
                         This Sirah content is currently available in Bahasa Indonesia.
                         English translation is coming soon.
                     </p>
@@ -303,7 +294,7 @@ export function SirahReaderView({
                         className="shrink-0 font-bold opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
                         title="Dismiss"
                     >
-                        ✕
+                        <X className="h-4 w-4" />
                     </button>
                 </div>
             )}
@@ -313,7 +304,7 @@ export function SirahReaderView({
                 className={cn(
                     "px-5 py-6 sm:px-8 sm:py-8 rounded-3xl border transition-all shadow-sm space-y-5 select-text font-[family-name:var(--font-lora)]",
                     fontSizeClasses[fontSize],
-                    isDaylight ? "bg-white border-slate-200 text-slate-800" : "bg-white/[0.03] border-white/10 text-slate-100"
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                 )}
             >
                 {(Array.isArray(section.content) ? section.content : [String(section.content)]).map((paragraph, idx) => (
@@ -330,12 +321,10 @@ export function SirahReaderView({
             <div
                 className={cn(
                     "p-5 rounded-2xl border space-y-3 relative overflow-hidden transition-all",
-                    isDaylight
-                        ? "bg-gradient-to-br from-emerald-50 to-teal-50/60 border-emerald-200 text-slate-900"
-                        : "bg-gradient-to-br from-[rgb(var(--color-primary))]/15 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-white"
+                        "bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-text))]"
                 )}
             >
-                <div className={cn("flex items-center gap-2 font-bold text-xs", isDaylight ? "text-emerald-800" : "text-[rgb(var(--color-primary-light))]")}>
+                <div className="flex items-center gap-2 font-bold text-xs text-[rgb(var(--color-primary-strong))]">
                     <Sparkles className="w-4 h-4" />
                     <span>HIKMAH & NIAT HARIAN</span>
                 </div>
@@ -346,10 +335,8 @@ export function SirahReaderView({
                     <button
                         onClick={handleSetIntention}
                         className={cn(
-                            "px-4 py-2 text-xs font-bold rounded-xl text-white transition-all flex items-center gap-1.5 cursor-pointer",
-                            isDaylight
-                                ? "bg-emerald-600 hover:bg-emerald-500 shadow-md shadow-emerald-600/20"
-                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 shadow-md shadow-[rgb(var(--color-primary))]/20"
+                            "px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer",
+                            "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         )}
                     >
                         <Sparkles className="w-3.5 h-3.5" />
@@ -361,19 +348,15 @@ export function SirahReaderView({
             {/* Completion & Next/Prev Navigation */}
             <div className={cn(
                 "pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t",
-                isDaylight ? "border-slate-200" : "border-white/10"
+                "border-[rgb(var(--color-border))]"
             )}>
                 <button
                     onClick={toggleComplete}
                     className={cn(
                         "w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer",
                         isCompleted
-                            ? isDaylight
-                                ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                                : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
-                            : isDaylight
-                                ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20"
-                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-white shadow-md shadow-[rgb(var(--color-primary))]/20"
+                            ? "bg-[rgb(var(--color-success))]/10 text-[rgb(var(--color-success))] border border-[rgb(var(--color-success))]/30"
+                            : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                     )}
                 >
                     <CheckCircle2 className="w-4 h-4" />

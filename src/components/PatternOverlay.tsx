@@ -43,7 +43,7 @@ const PatternOverlay = memo(function PatternOverlay() {
                         <circle cx="65" cy="15" r="1" fill="currentColor" opacity="0.4" />
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#stars-pattern)" className="text-white" />
+                <rect width="100%" height="100%" fill="url(#stars-pattern)" className="text-[rgb(var(--color-primary-light))]" />
             </svg>
         ),
         waves: (
@@ -66,7 +66,7 @@ const PatternOverlay = memo(function PatternOverlay() {
                         />
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#waves-pattern)" className="text-white" />
+                <rect width="100%" height="100%" fill="url(#waves-pattern)" className="text-[rgb(var(--color-primary-light))]" />
             </svg>
         ),
         geometric: (
@@ -88,7 +88,7 @@ const PatternOverlay = memo(function PatternOverlay() {
                         />
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#geometric-pattern)" className="text-white" />
+                <rect width="100%" height="100%" fill="url(#geometric-pattern)" className="text-[rgb(var(--color-primary-light))]" />
             </svg>
         ),
         organic: (
@@ -103,7 +103,7 @@ const PatternOverlay = memo(function PatternOverlay() {
                         <ellipse cx="110" cy="110" rx="20" ry="15" fill="currentColor" opacity="0.06" />
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#organic-pattern)" className="text-white" />
+                <rect width="100%" height="100%" fill="url(#organic-pattern)" className="text-[rgb(var(--color-primary-light))]" />
             </svg>
         ),
         damask: (
@@ -124,7 +124,7 @@ const PatternOverlay = memo(function PatternOverlay() {
                         <ellipse cx="60" cy="30" rx="8" ry="12" fill="currentColor" opacity="0.1" />
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#damask-pattern)" className="text-white" />
+                <rect width="100%" height="100%" fill="url(#damask-pattern)" className="text-[rgb(var(--color-primary-light))]" />
             </svg>
         ),
         floral: (

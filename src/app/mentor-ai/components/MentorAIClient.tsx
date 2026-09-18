@@ -31,7 +31,6 @@ import { trackAIQuery } from "@/lib/analytics/analytics";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -92,8 +91,6 @@ export default function MentorAIClient() {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq();
 
     // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)
@@ -478,7 +475,7 @@ export default function MentorAIClient() {
             const errorMsg: ChatMessage = {
                 id: (errorTimestamp + 1).toString(),
                 role: 'assistant',
-                content: "Maaf, lagi ada kendala teknis. Coba lagi ya 🙏",
+                content: "Maaf, lagi ada kendala teknis. Coba lagi ya.",
                 timestamp: errorTimestamp
             };
             setMessages(prev => [...prev, errorMsg]);
@@ -493,31 +490,24 @@ export default function MentorAIClient() {
     if (status === "unauthenticated") {
         return (
             <div className={cn(
-                "min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans",
-                isDaylight ? "bg-[#f8fafc]" : "bg-black text-white"
+                "min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]"
             )}>
                 {/* Background Pattern */}
-                {!isDaylight && <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />}
-                <div className={cn(
-                    "absolute top-0 left-0 right-0 h-64 blur-3xl pointer-events-none",
-                    isDaylight ? "bg-emerald-500/10" : "bg-[rgb(var(--color-primary))]/20"
-                )} />
+                <div className="absolute top-0 left-0 right-0 h-64 blur-3xl pointer-events-none bg-[rgb(var(--color-primary))]/10" />
 
                 <div className="relative z-10 max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-[rgb(var(--color-primary))]/30 rotate-3">
-                        <Lock className="w-10 h-10 text-white" />
+                        <Lock className="w-10 h-10 text-[rgb(var(--color-primary-foreground))]" />
                     </div>
 
                     <div className="space-y-3">
                         <h1 className={cn(
-                            "text-2xl font-bold",
-                            isDaylight ? "text-slate-900" : "bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
+                            "text-2xl font-bold text-[rgb(var(--color-text-strong))]"
                         )}>
                             {translations.tanyaLoginTitle || "Login Diperlukan"}
                         </h1>
                         <p className={cn(
-                            "leading-relaxed text-sm",
-                            isDaylight ? "text-slate-500" : "text-white/60"
+                            "leading-relaxed text-sm text-[rgb(var(--color-text-muted))]"
                         )}>
                             {translations.tanyaLoginDesc || "Fitur Tanya Nawaitu hanya tersedia untuk pengguna yang sudah login."}
                         </p>
@@ -527,10 +517,7 @@ export default function MentorAIClient() {
                         <button
                             onClick={() => signIn('google')}
                             className={cn(
-                                "w-full h-12 font-bold rounded-xl transition-all flex items-center justify-center gap-3",
-                                isDaylight
-                                    ? "bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50"
-                                    : "bg-white text-slate-900 hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                                "w-full h-12 font-bold rounded-xl transition-all flex items-center justify-center gap-3 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-sm hover:bg-[rgb(var(--color-surface-subtle))]"
                             )}
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -545,8 +532,7 @@ export default function MentorAIClient() {
                         <Link
                             href="/"
                             className={cn(
-                                "block text-sm transition-colors",
-                                isDaylight ? "text-slate-400 hover:text-slate-600" : "text-white/40 hover:text-white"
+                                "block text-sm transition-colors text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                             )}
                         >
                             {translations.onboardingBack || "Kembali"}
@@ -563,19 +549,19 @@ export default function MentorAIClient() {
     return (
         <div className={cn(
             "h-screen h-[100dvh] flex flex-col font-sans relative overflow-hidden",
-            isDaylight ? "bg-[#f0f4f8] text-slate-900" : "bg-black text-white"
+            "bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]"
         )}>
             {/* Header */}
             <div className={cn(
                 "fixed top-0 left-0 right-0 z-40 backdrop-blur-md border-b",
-                isDaylight ? "bg-white/80 border-slate-200/60" : "bg-black/80 border-white/10"
+                "bg-[rgb(var(--color-surface))]/80 border-[rgb(var(--color-border))]"
             )}>
                 <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {/* Back Button */}
                         <Link href="/" className={cn(
                             "p-2 -ml-2 rounded-full transition-colors",
-                            isDaylight ? "hover:bg-slate-100 text-slate-900" : "hover:bg-white/10 text-white"
+                            "text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                         )}>
                             <ArrowLeft className="w-5 h-5" />
                         </Link>
@@ -584,30 +570,28 @@ export default function MentorAIClient() {
                         <div>
                             <h1 className={cn(
                                 "text-sm font-bold flex items-center gap-1.5",
-                                isDaylight ? "text-slate-900" : "text-white"
+                                "text-[rgb(var(--color-text-strong))]"
                             )}>
                                 Tanya Nawaetu
                                 {isMuhsinin && <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary))]" />}
                             </h1>
                             <div className="flex items-center gap-2">
                                 <p className="text-[10px] text-[rgb(var(--color-primary-light))] flex items-center gap-1">
-                                    <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                                    <span className="w-1 h-1 rounded-full bg-[rgb(var(--color-primary))] animate-pulse" />
                                     Online
                                 </p>
                                 {isInfaqLoading ? (
-                                    <span className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-white/30 animate-pulse">
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] animate-pulse">
                                         Loading...
                                     </span>
                                 ) : (
                                     <span className={cn(
                                         "text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1",
                                         dailyCount >= DAILY_LIMIT
-                                            ? "bg-red-500/20 text-red-400 border-red-500/30"
-                                            : isDaylight
-                                                ? "bg-slate-100 text-slate-500 border-slate-200"
-                                                : "bg-white/5 text-white/50 border-white/10"
+                                            ? "bg-[rgb(var(--color-danger))]/20 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30"
+                                            : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
                                     )}>
-                                        <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-red-500" : "bg-emerald-500")} />
+                                        <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-[rgb(var(--color-danger))]" : "bg-[rgb(var(--color-primary))]")} />
                                         {Math.max(0, DAILY_LIMIT - dailyCount)} Credit
                                     </span>
                                 )}
@@ -621,7 +605,7 @@ export default function MentorAIClient() {
                             onClick={() => setShowHistory(true)}
                             className={cn(
                                 "p-2 rounded-full transition-colors",
-                                isDaylight ? "hover:bg-slate-100 text-slate-600" : "hover:bg-white/10 text-white/70"
+                                "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10"
                             )}
                         >
                             <History className="w-5 h-5" />
@@ -640,7 +624,6 @@ export default function MentorAIClient() {
             <ChatHistorySidebar
                 showHistory={showHistory}
                 setShowHistory={setShowHistory}
-                isDaylight={isDaylight}
                 sessions={sessions}
                 activeSessionId={activeSessionId}
                 handleSwitchSession={handleSwitchSession}
@@ -654,38 +637,36 @@ export default function MentorAIClient() {
                     // Empty State / Greeting
                     <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in duration-700 min-h-[calc(100vh-250px)]">
                         <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-xl shadow-[rgb(var(--color-primary))]/20">
-                            <Sparkles className="w-8 h-8 text-white" />
+                            <Sparkles className="w-8 h-8 text-[rgb(var(--color-primary-foreground))]" />
                         </div>
                         <h2 className={cn(
                             "text-xl font-bold mb-2",
-                            isDaylight ? "text-slate-900" : "text-white"
+                            "text-[rgb(var(--color-text-strong))]"
                         )}>
                             Assalamu&apos;alaikum, {profile.name?.split(' ')[0] || "Teman"}!
                         </h2>
                         <p className={cn(
                             "text-sm max-w-[260px] leading-relaxed mb-8",
-                            isDaylight ? "text-slate-500" : "text-white/60"
+                            "text-[rgb(var(--color-text-muted))]"
                         )}>
                             Saya asisten AI Nawaetu. Ada yang bisa saya bantu terkait ibadah atau agama hari ini?
                         </p>
 
                         {/* Quick Prompts */}
                         <div className="grid grid-cols-1 gap-2 w-full max-w-[300px]">
-                            {QUICK_PROMPTS.map((prompt, idx) => (
+                            {QUICK_PROMPTS.map((prompt) => (
                                 <button
-                                    key={idx}
+                                    key={prompt}
                                     onClick={() => handleSend(prompt)}
                                     className={cn(
                                         "p-3 rounded-xl border text-left text-sm transition-all flex items-center justify-between group",
-                                        isDaylight
-                                            ? "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-emerald-200"
-                                            : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20 text-white/80"
+                                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10 hover:border-[rgb(var(--color-primary))]/30"
                                     )}
                                 >
                                     {prompt}
                                     <Send className={cn(
                                         "w-3 h-3 transition-all -translate-x-2 group-hover:translate-x-0",
-                                        isDaylight ? "text-emerald-500 opacity-0 group-hover:opacity-100" : "text-white/0 group-hover:text-[rgb(var(--color-primary))]"
+                                        "text-[rgb(var(--color-primary))] opacity-0 group-hover:opacity-100"
                                     )} />
                                 </button>
                             ))}
@@ -695,13 +676,13 @@ export default function MentorAIClient() {
                     // Chat Messages
                     <>
                         <div className="flex justify-center my-4 opacity-50">
-                            <span className="text-[10px] bg-white/5 px-2 py-1 rounded-full text-white/40">
+                            <span className="text-[10px] bg-[rgb(var(--color-surface-subtle))] px-2 py-1 rounded-full text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))]">
                                 {messages.length > 0 && new Date(messages[0].timestamp).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
                             </span>
                         </div>
 
                         {messages.map((msg) => (
-                            <ChatMessageBubble key={msg.id} msg={msg} isDaylight={isDaylight} />
+                            <ChatMessageBubble key={msg.id} msg={msg} />
                         ))}
 
                         {/* Typing Indicator */}
@@ -711,10 +692,10 @@ export default function MentorAIClient() {
                                     <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0 mt-1 border border-[rgb(var(--color-primary))]/30">
                                         <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
                                     </div>
-                                    <div className="bg-[#1e293b] p-3 rounded-2xl rounded-tl-none border border-white/5 flex items-center gap-1 h-10">
-                                        <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                        <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                        <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce" />
+                                    <div className="bg-[rgb(var(--color-surface-subtle))] p-3 rounded-2xl rounded-tl-none border border-[rgb(var(--color-border))] flex items-center gap-1 h-10">
+                                        <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                        <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                        <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce" />
                                     </div>
                                 </div>
                             </div>
@@ -729,7 +710,6 @@ export default function MentorAIClient() {
                 setInput={setInput}
                 handleSend={handleSend}
                 isTyping={isTyping}
-                isDaylight={isDaylight}
                 dailyCount={dailyCount}
                 DAILY_LIMIT={DAILY_LIMIT}
                 setShowLimitBlocking={setShowLimitBlocking}

@@ -32,6 +32,7 @@ import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { toast } from "sonner";
+import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
 import { useMissions } from "@/hooks/useMissions";
 import { useSession } from "next-auth/react";
 
@@ -136,20 +137,13 @@ export default function MisiPage() {
         toast.info(translations.toastMissionReset || "Misi dibatalkan", {
             description: `${mission.title} telah di-reset. (-${mission.hasanahReward} Hasanah)`,
             duration: 3000,
-            icon: "🔄"
+            icon: <AppIcon name="refresh" size="sm" tone="primary" />
         });
 
         setIsDialogOpen(false);
     };
 
     const completedCount = missions.filter(m => isMissionCompletedToday(m.id, m.type)).length;
-
-    // Theme colors based on gender
-    const theme = gender === 'female'
-        ? { accent: 'pink', color: 'pink-400', bg: 'pink-500/10', border: 'pink-500/20', icon: '👩' }
-        : gender === 'male'
-            ? { accent: 'blue', color: 'blue-400', bg: 'blue-500/10', border: 'blue-500/20', icon: '👨' }
-            : { accent: 'emerald', color: 'emerald-400', bg: 'emerald-500/10', border: 'emerald-500/20', icon: '🎯' };
 
     // Group missions by type
     const dailyMissions = missions.filter(m => m.type === 'daily');
@@ -169,88 +163,73 @@ export default function MisiPage() {
                 className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
                     isCompleted
-                        ? `bg-${theme.accent}-500/10 border-${theme.accent}-500/20`
+                        ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         : isLocked
-                            ? "bg-white/[0.02] border border-white/5 opacity-60 cursor-not-allowed"
-                            : "bg-white/5 border-white/10 hover:border-white/20"
+                            ? "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))] opacity-60 cursor-not-allowed"
+                            : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40"
                 )}
-                style={isCompleted ? {
-                    backgroundColor: gender === 'female' ? 'rgba(236,72,153,0.1)' : gender === 'male' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)',
-                    borderColor: gender === 'female' ? 'rgba(236,72,153,0.2)' : gender === 'male' ? 'rgba(59,130,246,0.2)' : 'rgba(16,185,129,0.2)'
-                } : {}}
             >
                 <span className={cn("text-2xl", isCompleted && "grayscale", isLocked && "opacity-50 grayscale")}>
-                    {mission.icon}
+                    <AppIcon name={mission.iconKey ?? resolveAppIconName(mission.icon)} size="lg" tone="primary" />
                 </span>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1.5 flex-wrap">
                             <p className={cn(
                                 "text-sm font-semibold",
-                                isCompleted ? `text-${theme.color} line-through` : "text-white"
+                                isCompleted ? "text-[rgb(var(--color-primary-light))] line-through" : "text-[rgb(var(--color-text-strong))]"
                             )}
-                                style={isCompleted ? {
-                                    color: gender === 'female' ? '#f472b6' : gender === 'male' ? '#60a5fa' : '#34d399'
-                                } : {}}
                             >
                                 {mission.title}
                             </p>
                             <span className={cn(
                                 "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
                                 mission.ruling === 'obligatory'
-                                    ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                    : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                    ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent))] border border-[rgb(var(--color-accent))]/30"
+                                    : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                             )}>
                                 {getRulingLabel(mission.ruling, t)}
                             </span>
                         </div>
                         {isGenderSpecific && (
-                            <span className="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-white/50">
-                                {mission.gender === 'female' ? '👩' : '👨'}
+                            <span className="text-[9px] bg-[rgb(var(--color-surface))] px-1.5 py-0.5 rounded text-[rgb(var(--color-text-muted))]">
+                                <AppIcon name={mission.gender === 'female' ? "heart-handshake" : "hands"} size="xs" tone="muted" />
                             </span>
                         )}
                     </div>
                     {isLocked ? (
-                        <div className="flex items-center gap-1 mt-1 text-amber-500/70">
+                        <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-warning))]">
                             <AlertCircle className="w-3 h-3" />
                             <p className="text-[10px] font-medium">{validation.reason}</p>
                         </div>
                     ) : validation.isLate ? (
-                        <div className="flex items-center gap-1 mt-1 text-red-400/70">
+                        <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-danger))]">
                             <AlertCircle className="w-3 h-3" />
                             <p className="text-[10px] font-medium">{validation.reason}</p>
                         </div>
                     ) : validation.isEarly ? (
-                        <div className="flex items-center gap-1 mt-1 text-emerald-400/80">
+                        <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-primary-light))]">
                             <Sparkles className="w-3 h-3" />
                             <p className="text-[10px] font-medium">{translations.home_mission_early_bonus}</p>
                         </div>
                     ) : (
-                        <p className="text-[10px] text-white/40">{mission.description}</p>
+                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">{mission.description}</p>
                     )}
                 </div>
                 <div className="flex flex-col items-end gap-1">
                     <span className={cn(
                         "text-[10px] font-bold px-2 py-0.5 rounded-full",
-                        `text-${theme.color} bg-${theme.bg}`
+                        "text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10"
                     )}
-                        style={{
-                            color: gender === 'female' ? '#f472b6' : gender === 'male' ? '#60a5fa' : '#34d399',
-                            backgroundColor: gender === 'female' ? 'rgba(236,72,153,0.1)' : gender === 'male' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)'
-                        }}
                     >
                         +{mission.hasanahReward} Hasanah
                     </span>
                     {isCompleted ? (
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center"
-                            style={{
-                                backgroundColor: gender === 'female' ? '#ec4899' : gender === 'male' ? '#3b82f6' : '#10b981'
-                            }}
-                        >
-                            <Check className="w-3 h-3 text-white" />
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center bg-[rgb(var(--color-primary))]">
+                            <Check className="w-3 h-3 text-[rgb(var(--color-primary-foreground))]" />
                         </div>
                     ) : (
-                        <div className="w-5 h-5 rounded-full border border-white/20" />
+                        <div className="w-5 h-5 rounded-full border border-[rgb(var(--color-border))]" />
                     )}
                 </div>
             </button>
@@ -258,49 +237,38 @@ export default function MisiPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[#0a0a0a] px-4 py-6 font-sans sm:px-6 pb-nav">
+        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))] px-4 py-6 font-sans sm:px-6 pb-nav">
             <div className="w-full max-w-md space-y-6">
 
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
-                        <ArrowLeft className="w-6 h-6 text-white" />
+                    <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">
+                        <ArrowLeft className="w-6 h-6 text-[rgb(var(--color-text-strong))]" />
                     </Link>
                     <div className="flex-1">
-                        <h1 className="text-2xl font-bold text-white">{t.home_mission_list_title}</h1>
-                        <p className="text-xs text-white/50">{t.home_mission_list_subtitle || "Raih Hasanah dengan menyelesaikan misi"}</p>
+                        <h1 className="text-2xl font-bold text-[rgb(var(--color-text-strong))]">{t.home_mission_list_title}</h1>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.home_mission_list_subtitle || "Raih Hasanah dengan menyelesaikan misi"}</p>
                     </div>
-                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-full"
-                        style={{
-                            backgroundColor: gender === 'female' ? 'rgba(236,72,153,0.1)' : gender === 'male' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)'
-                        }}
-                    >
-                        <Trophy className="w-4 h-4"
-                            style={{ color: gender === 'female' ? '#f472b6' : gender === 'male' ? '#60a5fa' : '#34d399' }}
-                        />
-                        <span className="text-sm font-bold"
-                            style={{ color: gender === 'female' ? '#f472b6' : gender === 'male' ? '#60a5fa' : '#34d399' }}
-                        >
+                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))]">
+                        <Trophy className="w-4 h-4" />
+                        <span className="text-sm font-bold">
                             {completedCount}/{missions.length}
                         </span>
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[rgb(var(--color-surface-subtle))] rounded-full overflow-hidden">
                     <div
-                        className="h-full transition-all duration-500"
-                        style={{
-                            width: `${(completedCount / missions.length) * 100}%`,
-                            backgroundColor: gender === 'female' ? '#ec4899' : gender === 'male' ? '#3b82f6' : '#10b981'
-                        }}
+                        className="h-full transition-all duration-500 bg-[rgb(var(--color-primary))]"
+                        style={{ width: `${(completedCount / missions.length) * 100}%` }}
                     />
                 </div>
 
                 {/* Daily Missions */}
                 {dailyMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📅 {t.missionTabDaily}</h2>
+                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider flex items-center gap-1.5"><AppIcon name="calendar" size="xs" tone="muted" /> {t.missionTabDaily}</h2>
                         <div className="space-y-2">
                             {dailyMissions.map(renderMission)}
                         </div>
@@ -310,7 +278,7 @@ export default function MisiPage() {
                 {/* Weekly Missions */}
                 {weeklyMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📆 {t.missionTabWeekly}</h2>
+                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider flex items-center gap-1.5"><AppIcon name="calendar" size="xs" tone="muted" /> {t.missionTabWeekly}</h2>
                         <div className="space-y-2">
                             {weeklyMissions.map(renderMission)}
                         </div>
@@ -320,7 +288,7 @@ export default function MisiPage() {
                 {/* Tracker Missions */}
                 {trackerMissions.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-xs font-bold text-white/50 uppercase tracking-wider">📊 {t.missionTabTracker || "Tracker"}</h2>
+                        <h2 className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider flex items-center gap-1.5"><AppIcon name="target" size="xs" tone="muted" /> {t.missionTabTracker || "Tracker"}</h2>
                         <div className="space-y-2">
                             {trackerMissions.map(renderMission)}
                         </div>
@@ -329,8 +297,8 @@ export default function MisiPage() {
 
                 {/* Gender Prompt */}
                 {!gender && (
-                    <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
-                        <p className="text-sm text-amber-400">
+                    <div className="p-4 bg-[rgb(var(--color-warning))]/10 border border-[rgb(var(--color-warning))]/20 rounded-xl text-center">
+                        <p className="text-sm text-[rgb(var(--color-warning))]">
                             {translations.home_mission_select_gender_hint}
                         </p>
                     </div>

@@ -24,10 +24,8 @@ import { BookOpen, Sparkles, Quote, Copy, Check, ChevronRight, Share2 } from "lu
 import { getSpiritualItemOfDay, SpiritualItem, getLocalizedContent } from "@/data/spiritual-content";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
 import { mapDailySpiritToShareData } from "@/lib/share/share-mappers";
-import { cn } from "@/lib/utils";
 
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
@@ -36,8 +34,6 @@ const StoryShareModal = dynamic(
 
 export default function DailySpiritWidget() {
     const { t, locale } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [item, setItem] = useState<SpiritualItem | null>(null);
     const [isCopied, setIsCopied] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
@@ -63,10 +59,10 @@ export default function DailySpiritWidget() {
 
     return (
         <div className="w-full max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className={cn("relative overflow-hidden rounded-2xl border backdrop-blur-2xl spiritual-card", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]" : "bg-gradient-to-br from-white/[0.05] to-transparent border-white/10 shadow-xl")}>
+            <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-2xl shadow-[var(--shadow-card)] spiritual-card">
                 {/* Decorative blur blobs */}
                 <div className="absolute -top-8 -right-8 w-28 h-28 bg-[rgb(var(--color-primary))]/10 rounded-full blur-2xl pointer-events-none" />
-                <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-[rgb(var(--color-primary-dark))]/5 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-[rgb(var(--color-primary))]/5 rounded-full blur-2xl pointer-events-none" />
 
                 {/* --- Header --- */}
                 <div className="flex items-center justify-between px-4 pt-4 pb-2">
@@ -82,30 +78,30 @@ export default function DailySpiritWidget() {
                             <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[rgb(var(--color-primary-light))]/70 leading-none">
                                 {isHadith ? t.spiritualHadithTitle : t.spiritualDuaTitle}
                             </span>
-                            <span className={cn("text-[11px] font-medium mt-0.5", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>{localizedCategory}</span>
+                            <span className="text-[11px] font-medium mt-0.5 text-[rgb(var(--color-text-muted))]">{localizedCategory}</span>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-0.5">
                         <button
                             onClick={() => setShowShareModal(true)}
-                            className={cn("group relative p-2 rounded-full active:scale-95 transition-all hover:bg-[rgb(var(--color-primary))]/10", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}
+                            className="group relative p-2 rounded-full active:scale-95 transition-all hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
                             title={t.shareToStory || (locale === "en" ? "Share to Story" : "Bagikan ke Story")}
                         >
                             <Share2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                         </button>
                         <button
                             onClick={handleCopy}
-                            className={cn("group relative p-2 rounded-full active:scale-95 transition-all hover:bg-[rgb(var(--color-primary))]/10", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}
+                            className="group relative p-2 rounded-full active:scale-95 transition-all hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
                             title={t.spiritualCopyContent}
                         >
                             {isCopied ? (
-                                <Check className="w-3.5 h-3.5 text-green-400 animate-in zoom-in duration-300" />
+                                <Check className="w-3.5 h-3.5 text-[rgb(var(--color-success))] animate-in zoom-in duration-300" />
                             ) : (
                                 <Copy className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
                             )}
                             {isCopied && (
-                                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-green-500 text-[10px] font-bold text-white px-2 py-0.5 rounded-md animate-in fade-in slide-in-from-bottom-2 whitespace-nowrap">
+                                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[rgb(var(--color-success))] text-[10px] font-bold text-[rgb(var(--color-primary-foreground))] px-2 py-0.5 rounded-md animate-in fade-in slide-in-from-bottom-2 whitespace-nowrap">
                                     {t.spiritualCopied}
                                 </span>
                             )}
@@ -118,7 +114,7 @@ export default function DailySpiritWidget() {
                     {/* Arabic */}
                     <div
                         dir="rtl"
-                        className={cn("text-right text-xl font-arabic leading-[1.8] drop-shadow-sm py-1", isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-slate-50/90")}
+                        className="text-right text-xl font-arabic leading-[1.8] text-[rgb(var(--color-text-strong))] py-1"
                     >
                         {item.content.arabic}
                     </div>
@@ -126,36 +122,36 @@ export default function DailySpiritWidget() {
                     {/* Transliteration & Translation */}
                     <div className="relative space-y-1.5">
                         <div className="absolute -left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[rgb(var(--color-primary))]/40 to-transparent rounded-full" />
-                        <p className={cn("text-[10px] font-medium italic leading-relaxed pl-3", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-slate-400/70")}>
+                        <p className="text-[10px] font-medium italic leading-relaxed pl-3 text-[rgb(var(--color-text-muted))]">
                             {item.content.latin}
                         </p>
-                        <p className={cn("text-sm font-medium leading-relaxed pl-3", isDaylight ? "text-[rgb(var(--color-text))]" : "text-slate-100/90")}>
+                        <p className="text-sm font-medium leading-relaxed pl-3 text-[rgb(var(--color-text))]">
                             &quot;{localizedContent.translation}&quot;
                         </p>
                     </div>
 
                     {/* Source row */}
                     <div className="flex items-center gap-3 pt-1">
-                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/5">
-                            <Sparkles className="w-2.5 h-2.5 text-amber-400/50" />
-                            <span className={cn("text-[9px] font-black uppercase tracking-[0.15em] whitespace-nowrap", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>
+                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgb(var(--color-border))] to-transparent" />
+                        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                            <Sparkles className="w-2.5 h-2.5 text-[rgb(var(--color-accent))]" />
+                            <span className="text-[9px] font-black uppercase tracking-[0.15em] whitespace-nowrap text-[rgb(var(--color-text-muted))]">
                                 {item.content.source}
                             </span>
                         </div>
-                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgb(var(--color-border))] to-transparent" />
                     </div>
                 </div>
 
                 {/* --- Shortcut: Lihat Hadits Lainnya --- */}
                 <Link
                     href="/hadith"
-                    className={cn("group flex items-center justify-between px-4 py-2.5 border-t transition-colors", isDaylight ? "border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/5" : "border-white/5 hover:bg-white/[0.03]")}
+                    className="group flex items-center justify-between px-4 py-2.5 border-t border-[rgb(var(--color-border))] transition-colors hover:bg-[rgb(var(--color-primary))]/5"
                 >
-                    <span className={cn("text-[11px] font-semibold transition-colors", isDaylight ? "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))]" : "text-white/40 group-hover:text-white/60")}>
+                    <span className="text-[11px] font-semibold transition-colors text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))]">
                         {isHadith ? t.hadithExploreLink : t.hadithExploreLinkDua}
                     </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-white/20 group-hover:text-[rgb(var(--color-primary-light))]/60 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-3.5 h-3.5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-light))] group-hover:translate-x-0.5 transition-all" />
                 </Link>
 
                 {/* Shine overlay */}
@@ -173,7 +169,6 @@ export default function DailySpiritWidget() {
                         localizedContent.translation || item.content.translation
                     )}
                     onClose={() => setShowShareModal(false)}
-                    isDaylight={isDaylight}
                 />
             )}
         </div>

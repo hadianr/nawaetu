@@ -26,6 +26,7 @@ import { useState } from "react";
 import { useInfaq } from "@/context/InfaqContext";
 import { toast } from "sonner";
 import { useSession, signIn } from "next-auth/react";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface DonationModalProps {
     isOpen: boolean;
@@ -35,12 +36,12 @@ interface DonationModalProps {
 }
 
 const DONATION_OPTIONS = [
-    { value: 5000, label: "Rp 5.000", emoji: "🍬" },
-    { value: 10000, label: "Rp 10.000", emoji: "☕" },
-    { value: 25000, label: "Rp 25.000", emoji: "🍛" },
-    { value: 50000, label: "Rp 50.000", emoji: "🎁" },
-    { value: 75000, label: "Rp 75.000", emoji: "🌟" },
-    { value: 100000, label: "Rp 100.000", emoji: "💎" },
+    { value: 5000, label: "Rp 5.000", icon: "droplets" as const },
+    { value: 10000, label: "Rp 10.000", icon: "utensils" as const },
+    { value: 25000, label: "Rp 25.000", icon: "hands" as const },
+    { value: 50000, label: "Rp 50.000", icon: "heart-handshake" as const },
+    { value: 75000, label: "Rp 75.000", icon: "sparkles" as const },
+    { value: 100000, label: "Rp 100.000", icon: "star" as const },
 ];
 
 export default function DonationModal({ isOpen, onClose, headerTitle, headerDescription }: DonationModalProps) {
@@ -119,7 +120,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                         "text-center text-xl font-bold mb-2",
                         "text-[rgb(var(--color-text-strong))]"
                     )}>
-                        {headerTitle || "Dukung Nawaetu 🕌"}
+                        {headerTitle || "Dukung Nawaetu"}
                     </DialogTitle>
 
                     <p className={cn(
@@ -184,7 +185,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                         )}
                                     >
                                         <div className="flex justify-between items-start mb-1">
-                                            <span className="text-xl">{option.emoji}</span>
+                                            <AppIcon name={option.icon} size="md" tone="primary" />
                                             {!isCustomMode && selectedAmount === option.value && (
                                                 <div className="bg-[rgb(var(--color-primary))] rounded-full p-0.5">
                                                     <Check className="w-3 h-3 text-[rgb(var(--color-primary-foreground))]" />
@@ -214,7 +215,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 >
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xl">✨</span>
+                                            <AppIcon name="sparkles" size="md" tone="primary" />
                                             <span className={cn(
                                                 "font-bold",
                                                 isCustomMode
@@ -272,7 +273,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                             </Button>
 
                             <p className="text-[10px] text-center text-[rgb(var(--color-text-muted))]">
-                                Powered by Mayar.id • Aman & Terverifikasi
+                                Powered by Mayar.id - Aman & Terverifikasi
                             </p>
                         </div>
                     )}

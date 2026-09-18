@@ -38,13 +38,13 @@ try {
 
     // Set up background message handler IMMEDIATELY
     messaging.onBackgroundMessage((payload) => {
-        console.log('[SW] 🔔 Received background message:', payload);
+        console.log('[SW] Received background message:', payload);
 
         // ── Focus Mode Suppression ────────────────────────────────────────────
         // If user is in Tilawah focus mode, suppress Nawaetu's own notifications
         // so they can read without interruption.
         if (isFocusMode) {
-            console.log('[SW] 🔕 Suppressed notification during Focus Mode (Tilawah active)');
+        console.log('[SW] Suppressed notification during Focus Mode (Tilawah active)');
             return;
         }
         // ─────────────────────────────────────────────────────────────────────
@@ -83,7 +83,7 @@ self.addEventListener('message', (event) => {
     console.log('[SW] Message received:', event.data);
 
     if (event.data && event.data.type === 'SKIP_WAITING') {
-        console.log('[SW] 🚀 SKIP_WAITING triggered! Force activating new SW...');
+    console.log('[SW] SKIP_WAITING triggered! Force activating new SW...');
         self.skipWaiting().catch(err => {
             console.error('[SW] skipWaiting failed:', err);
         });

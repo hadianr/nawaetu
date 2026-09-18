@@ -22,37 +22,39 @@ import type { TranslationTree } from "@/context/LocaleContext";
 import type { FastingDayLog, FastingStatus, FastingYearLog, Madzhab } from "@/data/fasting/types";
 import { makeDayKey } from "@/data/fasting/types";
 import FastingDayModal from "./FastingDayModal";
+import { AppIcon } from "@/components/ui/AppIcon";
+import type { AppIconName } from "@/lib/icon-names";
 
 // ─── Status colors ─────────────────────────────────────────────────────────────
 
 const STATUS_COLORS: Record<string, { bg: string; border: string }> = {
     fasting: { bg: "rgba(var(--color-primary), 0.25)", border: "rgba(var(--color-primary), 0.5)" },
-    not_fasting: { bg: "rgba(239,68,68,0.22)", border: "rgba(239,68,68,0.5)" },
-    sick: { bg: "rgba(245,158,11,0.22)", border: "rgba(245,158,11,0.5)" },
-    traveling: { bg: "rgba(59,130,246,0.22)", border: "rgba(59,130,246,0.5)" },
-    menstruation: { bg: "rgba(244,63,94,0.22)", border: "rgba(244,63,94,0.5)" },
-    postpartum: { bg: "rgba(236,72,153,0.22)", border: "rgba(236,72,153,0.5)" },
-    pregnant: { bg: "rgba(168,85,247,0.22)", border: "rgba(168,85,247,0.5)" },
-    breastfeeding: { bg: "rgba(139,92,246,0.22)", border: "rgba(139,92,246,0.5)" },
-    elderly: { bg: "rgba(100,116,139,0.22)", border: "rgba(100,116,139,0.5)" },
+    not_fasting: { bg: "rgba(var(--color-danger),0.22)", border: "rgba(var(--color-danger),0.5)" },
+    sick: { bg: "rgba(var(--color-warning),0.22)", border: "rgba(var(--color-warning),0.5)" },
+    traveling: { bg: "rgba(var(--color-info),0.22)", border: "rgba(var(--color-info),0.5)" },
+    menstruation: { bg: "rgba(var(--color-accent),0.22)", border: "rgba(var(--color-accent),0.5)" },
+    postpartum: { bg: "rgba(var(--color-primary-light),0.22)", border: "rgba(var(--color-primary-light),0.5)" },
+    pregnant: { bg: "rgba(var(--color-primary),0.22)", border: "rgba(var(--color-primary),0.5)" },
+    breastfeeding: { bg: "rgba(var(--color-primary-strong),0.22)", border: "rgba(var(--color-primary-strong),0.5)" },
+    elderly: { bg: "rgba(var(--color-text-muted),0.22)", border: "rgba(var(--color-text-muted),0.5)" },
 };
 
-const STATUS_ICONS: Record<string, string> = {
-    fasting: "✅", not_fasting: "❌", sick: "🤒",
-    traveling: "✈️", menstruation: "🌸", postpartum: "🌺",
-    pregnant: "🤰", breastfeeding: "🤱", elderly: "👴",
+const STATUS_ICONS: Record<string, AppIconName> = {
+    fasting: "shield-check", not_fasting: "warning", sick: "help",
+    traveling: "compass", menstruation: "sparkles", postpartum: "sparkles",
+    pregnant: "hands", breastfeeding: "hands", elderly: "help",
 };
 
 // ─── Legend config (female-only flagged) ───────────────────────────────────────
 
 const LEGEND: Array<{ status: string | null; label?: string; bg: string; border: string; femaleOnly?: boolean }> = [
     { status: "fasting", bg: "rgba(var(--color-primary),0.35)", border: "rgba(var(--color-primary),0.5)" },
-    { status: "sick", bg: "rgba(245,158,11,0.3)", border: "rgba(245,158,11,0.5)" },
-    { status: "traveling", bg: "rgba(59,130,246,0.3)", border: "rgba(59,130,246,0.5)", },
-    { status: "menstruation", bg: "rgba(244,63,94,0.3)", border: "rgba(244,63,94,0.5)", femaleOnly: true },
-    { status: "pregnant", bg: "rgba(168,85,247,0.3)", border: "rgba(168,85,247,0.5)", femaleOnly: true },
-    { status: "elderly", bg: "rgba(100,116,139,0.3)", border: "rgba(100,116,139,0.5)" },
-    { status: null, bg: "rgba(255,255,255,0.05)", border: "rgba(255,255,255,0.12)" },
+    { status: "sick", bg: "rgba(var(--color-warning),0.3)", border: "rgba(var(--color-warning),0.5)" },
+    { status: "traveling", bg: "rgba(var(--color-info),0.3)", border: "rgba(var(--color-info),0.5)", },
+    { status: "menstruation", bg: "rgba(var(--color-accent),0.3)", border: "rgba(var(--color-accent),0.5)", femaleOnly: true },
+    { status: "pregnant", bg: "rgba(var(--color-primary),0.3)", border: "rgba(var(--color-primary),0.5)", femaleOnly: true },
+    { status: "elderly", bg: "rgba(var(--color-text-muted),0.3)", border: "rgba(var(--color-text-muted),0.5)" },
+    { status: null, bg: "rgba(var(--color-border),0.05)", border: "rgba(var(--color-border),0.12)" },
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -122,25 +124,25 @@ export default function FastingCalendar({
                 <button
                     onClick={() => canGoPrev && onYearChange(availableYears[prevIdx])}
                     disabled={!canGoPrev}
-                    className="flex items-center gap-1 text-white/50 hover:text-white/80 disabled:opacity-20 transition-colors px-1 py-1"
+                    className="flex items-center gap-1 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] disabled:opacity-20 transition-colors px-1 py-1"
                     aria-label="Previous year"
                 >
                     <span className="text-sm">‹</span>
                     {canGoPrev && (
-                        <span className="text-[10px] text-white/30">{availableYears[prevIdx]}H</span>
+                        <span className="text-[10px] text-[rgb(var(--color-text-muted))]">{availableYears[prevIdx]}H</span>
                     )}
                 </button>
 
-                <p className="text-[12px] font-bold text-white">{selectedYear}H</p>
+                <p className="text-[12px] font-bold text-[rgb(var(--color-text-strong))]">{selectedYear}H</p>
 
                 <button
                     onClick={() => canGoNext && onYearChange(availableYears[nextIdx])}
                     disabled={!canGoNext}
-                    className="flex items-center gap-1 text-white/50 hover:text-white/80 disabled:opacity-0 transition-colors px-1 py-1"
+                    className="flex items-center gap-1 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] disabled:opacity-0 transition-colors px-1 py-1"
                     aria-label="Next year"
                 >
                     {canGoNext && (
-                        <span className="text-[10px] text-white/30">{availableYears[nextIdx]}H</span>
+                        <span className="text-[10px] text-[rgb(var(--color-text-muted))]">{availableYears[nextIdx]}H</span>
                     )}
                     <span className="text-sm">›</span>
                 </button>
@@ -168,11 +170,11 @@ export default function FastingCalendar({
                                 }`}
                             style={{
                                 background: future
-                                    ? "rgba(255,255,255,0.03)"
-                                    : colors?.bg ?? "rgba(255,255,255,0.05)",
+                                    ? "rgba(var(--color-border),0.03)"
+                                    : colors?.bg ?? "rgba(var(--color-border),0.05)",
                                 borderColor: future
-                                    ? "rgba(255,255,255,0.07)"
-                                    : colors?.border ?? "rgba(255,255,255,0.12)",
+                                    ? "rgba(var(--color-border),0.07)"
+                                    : colors?.border ?? "rgba(var(--color-border),0.12)",
                                 // Today gets a ring
                                 boxShadow: isToday && !future
                                     ? "0 0 0 2px rgb(var(--color-primary)), 0 0 0 3px rgba(var(--color-primary),0.25)"
@@ -187,8 +189,8 @@ export default function FastingCalendar({
                                     color: isToday
                                         ? "rgb(var(--color-primary-light, var(--color-primary)))"
                                         : future
-                                            ? "rgba(255,255,255,0.15)"
-                                            : "rgba(255,255,255,0.6)",
+                                            ? "rgba(var(--color-text-muted),0.35)"
+                                            : "rgba(var(--color-text),0.7)",
                                 }}
                             >
                                 {day}
@@ -196,11 +198,11 @@ export default function FastingCalendar({
 
                             {/* Status icon — or empty dot */}
                             {icon ? (
-                                <span className="text-[18px] leading-none mt-0.5">{icon}</span>
+                                <AppIcon name={icon} size="md" tone="primary" className="mt-0.5" />
                             ) : (
                                 <span
                                     className="w-2 h-2 rounded-full mt-1"
-                                    style={{ background: future ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.2)" }}
+                                    style={{ background: future ? "rgba(var(--color-border),0.06)" : "rgba(var(--color-border),0.2)" }}
                                 />
                             )}
 
@@ -223,13 +225,13 @@ export default function FastingCalendar({
                                 className="w-2.5 h-2.5 rounded-sm border inline-block"
                                 style={{ background: item.bg, borderColor: item.border }}
                             />
-                            <span className="text-[9px] text-white/35">{label}</span>
+                            <span className="text-[9px] text-[rgb(var(--color-text-muted))]">{label}</span>
                         </div>
                     );
                 })}
                 <div className="flex items-center gap-1">
                     <span className="text-[10px]">⏳</span>
-                    <span className="text-[9px] text-white/35">{t.fastingQadhaConsequenceQadha}</span>
+                    <span className="text-[9px] text-[rgb(var(--color-text-muted))]">{t.fastingQadhaConsequenceQadha}</span>
                 </div>
             </div>
 

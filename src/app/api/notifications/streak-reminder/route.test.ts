@@ -74,7 +74,7 @@ describe("POST /api/notifications/streak-reminder", () => {
     expect(send).toHaveBeenCalledOnce();
     const message = send.mock.calls[0][0];
     expect(message.notification).toEqual({
-      title: "Your streak is still glowing 🔥",
+      title: "Your streak is still glowing",
       body: "One meaningful activity keeps your 7-day streak going.",
     });
     expect(message.webpush.notification).toEqual(expect.objectContaining(message.notification));

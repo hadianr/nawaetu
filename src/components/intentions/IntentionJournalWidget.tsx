@@ -35,7 +35,6 @@ import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { DateUtils } from "@/lib/utils/date";
 
@@ -73,8 +72,6 @@ const CACHE_PREFIX = "nawaetu_intention_cache_";
 
 export default function IntentionJournalWidget({ className = "" }: IntentionJournalWidgetProps) {
     const { locale, t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const [showIntentionPrompt, setShowIntentionPrompt] = useState(false);
     const [showReflectionPrompt, setShowReflectionPrompt] = useState(false);
@@ -289,14 +286,14 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             <div className={cn("relative w-full", className)}>
                 <div className={cn(
                     "relative h-20 rounded-3xl border p-3 animate-pulse",
-                    isDaylight ? "bg-white/50 border-slate-200" : "bg-white/5 border-white/5"
+                    "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                 )}>
                     <div className="flex items-center justify-between gap-4">
                         <div className="flex-1 space-y-2">
-                            <div className={cn("h-3 w-20 rounded-full", isDaylight ? "bg-slate-200" : "bg-white/10")} />
-                            <div className={cn("h-4 w-32 rounded", isDaylight ? "bg-slate-200" : "bg-white/10")} />
+                            <div className="h-3 w-20 rounded-full bg-[rgb(var(--color-border))]" />
+                            <div className="h-4 w-32 rounded bg-[rgb(var(--color-border))]" />
                         </div>
-                        <div className={cn("h-9 w-20 rounded-xl", isDaylight ? "bg-slate-200" : "bg-white/10")} />
+                        <div className="h-9 w-20 rounded-xl bg-[rgb(var(--color-border))]" />
                     </div>
                 </div>
             </div>
@@ -307,16 +304,14 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         <div className={cn("relative w-full group", className)}>
             <div className={cn(
                 "relative overflow-hidden rounded-3xl p-3 backdrop-blur-md transition-all duration-300 hover:shadow-lg sm:p-4",
-                isDaylight
-                    ? "bg-white/60 border border-slate-200 shadow-sm"
-                    : "bg-[rgb(var(--color-surface))]/20 border border-white/5"
+                "bg-[rgb(var(--color-surface))]/80 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
             )}>
                 <div className="flex flex-col gap-2">
                     {/* Compact Label and Date Selector */}
                     <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity min-w-0">
-                            <Compass className={cn("w-3 h-3 shrink-0", isDaylight ? "text-slate-900" : "text-white")} />
-                            <span className={cn("text-[9px] font-bold uppercase tracking-tight truncate", isDaylight ? "text-slate-900" : "text-white")}>
+                            <Compass className="w-3 h-3 shrink-0 text-[rgb(var(--color-text-strong))]" />
+                            <span className="text-[9px] font-bold uppercase tracking-tight truncate text-[rgb(var(--color-text-strong))]">
                                 {selectedDate === DateUtils.today()
                                     ? t.intention_widget_title
                                     : t.intention_widget_history_title}
@@ -332,15 +327,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     dateInputRef.current?.focus();
                                 }
                             }}
-                            className="relative shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer group/date"
+                            className="relative shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-[rgb(var(--color-primary))]/10 transition-colors cursor-pointer group/date"
                         >
-                            <Calendar className={cn("w-3 h-3 transition-colors", isDaylight ? "text-slate-400 group-hover/date:text-slate-600" : "text-white/40 group-hover/date:text-white/70")} />
-                            <span className={cn(
-                                "text-[9px] font-bold uppercase transition-colors",
-                                isDaylight
-                                    ? "text-slate-400 group-hover/date:text-slate-600"
-                                    : "text-white/40 group-hover/date:text-white/70"
-                            )}>
+                            <Calendar className="w-3 h-3 transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]" />
+                            <span className="text-[9px] font-bold uppercase transition-colors text-[rgb(var(--color-text-muted))] group-hover/date:text-[rgb(var(--color-text))]">
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
@@ -362,7 +352,6 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     }
                                 }}
                                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                                style={{ colorScheme: isDaylight ? 'light' : 'dark' }}
                             />
                         </div>
                     </div>
@@ -370,7 +359,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     {!todayData?.has_intention ? (
                         <div className="flex flex-col gap-2">
                             <div className="min-w-0">
-                                <h3 className={cn("text-sm font-bold leading-tight tracking-tight", isDaylight ? "text-slate-800" : "text-white")}>
+                                <h3 className="text-sm font-bold leading-tight tracking-tight text-[rgb(var(--color-text-strong))]">
                                     {t.intention_widget_subtitle}
                                 </h3>
                             </div>
@@ -381,9 +370,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     onClick={() => setShowIntentionPrompt(true)}
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl px-4 py-2 text-xs font-bold shadow-md transition-all active:scale-95 group/btn sm:flex-none",
-                                        isDaylight
-                                            ? "bg-[rgb(var(--color-primary-light))]/35 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30 hover:bg-[rgb(var(--color-primary-light))]/55"
-                                            : "bg-[rgb(var(--color-primary))] text-white font-bold hover:opacity-90 shadow-[rgb(var(--color-primary))]/20"
+                                        "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border border-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]"
                                     )}
                                 >
                                     <span>{t.intention_set_btn}</span>
@@ -393,12 +380,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     href="/journal"
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
-                                        isDaylight
-                                            ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary-light))]/30"
-                                            : "bg-white/5 border-white/10 hover:bg-white/10"
+                                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                                     )}
                                 >
-                                    <Book className={cn("h-4 w-4", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/50")} />
+                                    <Book className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                                     <span>{t.intention_history_btn_title}</span>
                                 </Link>
                             </div>
@@ -406,10 +391,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     ) : (
                         <div className="flex flex-col gap-3">
                             <button type="button" className="flex min-w-0 items-center gap-2 text-left group/text" onClick={() => setShowIntentionPrompt(true)}>
-                                <p className={cn("text-xs md:text-sm font-medium italic line-clamp-1 py-0.5", isDaylight ? "text-slate-700" : "text-white/90")}>
+                                <p className="text-xs md:text-sm font-medium italic line-clamp-1 py-0.5 text-[rgb(var(--color-text))]">
                                     &quot;{todayData.intention?.intention_text}&quot;
                                 </p>
-                                <Edit2 className={cn("w-2.5 h-2.5 transition-colors shrink-0", isDaylight ? "text-slate-300 group-hover/text:text-slate-500" : "text-white/20 group-hover/text:text-white/60")} />
+                                <Edit2 className="w-2.5 h-2.5 transition-colors shrink-0 text-[rgb(var(--color-text-muted))] group-hover/text:text-[rgb(var(--color-text))]" />
                             </button>
 
                             <div className="flex flex-wrap items-center gap-2">
@@ -419,13 +404,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         onClick={() => setShowReflectionPrompt(true)}
                                         className={cn(
                                             "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border px-4 py-2 transition-all active:scale-95 sm:flex-none",
-                                            isDaylight
-                                                ? "bg-slate-100 border-slate-200 hover:bg-slate-200"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                            "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                         )}
                                     >
-                                        <Moon className={cn("w-3 h-3", isDaylight ? "text-blue-500" : "text-blue-400")} />
-                                        <span className={cn("text-[9px] font-bold uppercase tracking-tight", isDaylight ? "text-slate-600" : "text-white/70")}>
+                                        <Moon className="w-3 h-3 text-[rgb(var(--color-primary))]" />
+                                        <span className="text-[9px] font-bold uppercase tracking-tight text-[rgb(var(--color-text))]">
                                             {t.intention_refleksi_btn}
                                         </span>
                                     </button>
@@ -435,13 +418,11 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                         onClick={() => setShowReflectionPrompt(true)}
                                         className={cn(
                                             "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border px-4 py-2 opacity-80 transition-all hover:opacity-100 sm:flex-none",
-                                            isDaylight
-                                                ? "bg-emerald-50/50 border-emerald-500/20"
-                                                : "bg-emerald-500/5 border-emerald-500/20"
+                                            "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/20"
                                         )}
                                     >
-                                        <CheckCircle2 className={cn("w-3 h-3", isDaylight ? "text-emerald-600" : "text-emerald-500")} />
-                                        <span className={cn("text-[9px] font-bold uppercase", isDaylight ? "text-emerald-600" : "text-emerald-500/80")}>
+                                        <CheckCircle2 className="w-3 h-3 text-[rgb(var(--color-success))]" />
+                                        <span className="text-[9px] font-bold uppercase text-[rgb(var(--color-success))]">
                                             {t.intention_selesai_label}
                                         </span>
                                     </button>
@@ -450,12 +431,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     href="/journal"
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
-                                        isDaylight
-                                            ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary-light))]/30"
-                                            : "bg-white/5 border-white/10 hover:bg-white/10"
+                                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                                     )}
                                 >
-                                    <Book className={cn("h-4 w-4", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/50")} />
+                                    <Book className="h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                                     <span>{t.intention_history_btn_title}</span>
                                 </Link>
                             </div>

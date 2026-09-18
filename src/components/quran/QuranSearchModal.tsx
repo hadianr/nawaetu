@@ -9,15 +9,12 @@ import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { searchQuranAction } from "@/app/actions/quran";
 import type { SearchResponse } from "@/lib/quran/kemenag-api";
 import Link from "next/link";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import DOMPurify from "isomorphic-dompurify";
 
 export default function QuranSearchModal() {
     const { t, locale } = useLocale();
     const translations = t as TranslationTree;
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -44,34 +41,32 @@ export default function QuranSearchModal() {
                 <Button
                     variant="outline"
                     className={cn(
-                        "h-[44px] px-4 rounded-2xl shadow-lg border transition-all gap-2",
-                        isDaylight
-                            ? "bg-[rgb(var(--color-primary-light))]/35 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary-light))]/60"
-                            : "bg-[#0f172a]/60 backdrop-blur-xl border-white/10 text-slate-300 hover:text-[rgb(var(--color-primary))] hover:border-[rgb(var(--color-primary))]/30"
+                        "h-[44px] px-4 rounded-2xl shadow-[var(--shadow-card)] border transition-all gap-2",
+                        "bg-[rgb(var(--color-surface))]/80 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/40"
                     )}
                 >
                     <BookOpen className="h-4 w-4" />
                     <span className="hidden sm:inline">{translations.quranSearchVerses}</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className={cn("sm:max-w-xl p-0 overflow-hidden flex flex-col max-h-[85vh]", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]" : "bg-[#0F172A] border-white/10")}>
-                <DialogHeader className={cn("p-4 border-b shrink-0 backdrop-blur-xl z-10", isDaylight ? "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]" : "border-white/5 bg-[#0F172A]/80")}>
-                    <DialogTitle className={cn("text-lg font-bold flex items-center gap-2", isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-white")}>
+            <DialogContent className="sm:max-w-xl p-0 overflow-hidden flex flex-col max-h-[85vh] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">
+                <DialogHeader className="p-4 border-b border-[rgb(var(--color-border))] shrink-0 backdrop-blur-xl z-10 bg-[rgb(var(--color-surface))]">
+                    <DialogTitle className="text-lg font-bold flex items-center gap-2 text-[rgb(var(--color-text-strong))]">
                         <Search className="h-5 w-5 text-[rgb(var(--color-primary-light))]" />
                         {translations.quranSearchVerses}
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className={cn("p-4 shrink-0 border-b shadow-sm relative z-0", isDaylight ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]" : "bg-white/5 border-white/5")}>
+                <div className="p-4 shrink-0 border-b border-[rgb(var(--color-border))] shadow-sm relative z-0 bg-[rgb(var(--color-surface-subtle))]">
                     <form onSubmit={handleSearch} className="flex gap-2">
                         <Input
                             autoFocus
                             placeholder={translations.quranSearchPlaceholderBody}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            className={cn("h-12 text-base rounded-xl focus-visible:ring-[rgb(var(--color-primary))]", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))]" : "bg-white/5 border-white/10 text-white placeholder:text-slate-500")}
+                            className="h-12 text-base rounded-xl focus-visible:ring-[rgb(var(--color-primary))] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] placeholder:text-[rgb(var(--color-text-muted))]"
                         />
-                        <Button type="submit" disabled={isPending || !query.trim()} className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white h-12 px-6 rounded-xl font-bold transition-all shadow-lg shadow-[rgb(var(--color-primary))]/20">
+                        <Button type="submit" disabled={isPending || !query.trim()} className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] h-12 px-6 rounded-xl font-bold transition-all shadow-[var(--shadow-card)]">
                             {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : translations.quranSearchButton}
                         </Button>
                     </form>
@@ -81,12 +76,12 @@ export default function QuranSearchModal() {
                     {isPending && !results && (
                         <div className="flex flex-col items-center justify-center py-12 gap-3 opacity-50">
                             <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary))]" />
-                            <p className="text-sm font-medium text-slate-400">{translations.quranSearchSearching}</p>
+                            <p className="text-sm font-medium text-[rgb(var(--color-text-muted))]">{translations.quranSearchSearching}</p>
                         </div>
                     )}
 
                     {!isPending && results && results.results.length === 0 && (
-                        <div className="text-center py-12 text-slate-400">
+                        <div className="text-center py-12 text-[rgb(var(--color-text-muted))]">
                             <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
                         <p>{translations.quranSearchNotFound} &quot;{results.query}&quot;</p>
                         </div>
@@ -94,7 +89,7 @@ export default function QuranSearchModal() {
 
                     {!isPending && results && results.results.length > 0 && (
                         <div className="space-y-4">
-                            <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider mb-2">
+                            <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider mb-2">
                                 {translations.quranSearchFound} {results.total_results} {translations.quranSearchAyat}
                             </p>
                             {results.results.map((verse) => (
@@ -102,18 +97,18 @@ export default function QuranSearchModal() {
                                     key={verse.verse_key}
                                     href={`/quran/${verse.verse_key.split(':')[0]}#verse-${verse.verse_key.split(':')[1]}`}
                                     onClick={() => setOpen(false)}
-                                    className="block p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-[rgb(var(--color-primary))]/30 hover:bg-white/10 transition-all group"
+                                    className="block p-4 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/30 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-surface))] transition-all group"
                                 >
                                     <div className="flex justify-between items-start mb-3 gap-4">
                                         <span className="inline-flex items-center justify-center px-2 py-1 rounded bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-xs font-bold shrink-0">
                                             Surah {verse.verse_key.replace(':', ', Ayat ')}
                                         </span>
                                     </div>
-                                    <p className="text-right font-amiri text-2xl text-slate-200 leading-loose mb-3" dir="rtl">
+                                    <p className="text-right font-amiri text-2xl text-[rgb(var(--color-text-strong))] leading-loose mb-3" dir="rtl">
                                         {verse.text_uthmani}
                                     </p>
                                     <p
-                                        className="text-sm text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors"
+                                        className="text-sm text-[rgb(var(--color-text-muted))] leading-relaxed group-hover:text-[rgb(var(--color-text))] transition-colors"
                                         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(verse.translation) }}
                                     />
                                 </Link>

@@ -9,14 +9,11 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, Bookmark } from "lucide-react";
 import { getSirahChapterBySlug, getSirahSectionsByChapterSlug } from "@/data/sirah";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 export default function SirahChapterDetailPage({ params }: { params: Promise<{ chapterSlug: string }> }) {
     const { chapterSlug } = use(params);
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
     const [bookmarkedSectionIds, setBookmarkedSectionIds] = useState<string[]>([]);
 
@@ -44,18 +41,18 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
     return (
         <div className={cn(
             "sirah-detail-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-3xl mx-auto space-y-6 transition-colors",
-            isDaylight ? "text-slate-900" : "text-white"
+            "text-[rgb(var(--color-text))]"
         )}>
             {/* Header / Back Link */}
             <div className={cn(
                 "flex items-center justify-between border-b pb-4",
-                isDaylight ? "border-slate-200" : "border-white/10"
+                "border-[rgb(var(--color-border))]"
             )}>
                 <Link
                     href="/sirah"
                     className={cn(
                         "inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity",
-                        isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                        "text-[rgb(var(--color-primary-strong))]"
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
@@ -64,9 +61,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
 
                 <span className={cn(
                     "text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border",
-                    isDaylight 
-                        ? "bg-emerald-100 text-emerald-800 border-emerald-200" 
-                        : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30"
+                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                 )}>
                     {chapter.era}
                 </span>
@@ -76,33 +71,33 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             <div
                 className={cn(
                     "p-6 sm:p-8 rounded-3xl border space-y-3 shadow-sm",
-                    isDaylight ? "bg-white border-slate-200" : "bg-white/[0.03] border-white/10"
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                 )}
             >
                 <span className={cn(
                     "text-xs font-bold uppercase tracking-wider",
-                    isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                    "text-[rgb(var(--color-primary-strong))]"
                 )}>
                     Bab {chapter.orderIndex} dari 50
                 </span>
-                <h1 className={cn("text-2xl sm:text-3xl font-extrabold tracking-tight", isDaylight ? "text-slate-900" : "text-white")}>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[rgb(var(--color-text-strong))]">
                     {chapter.title}
                 </h1>
-                <p className={cn("text-xs sm:text-sm leading-relaxed", isDaylight ? "text-slate-600" : "text-slate-300")}>
+                <p className="text-xs sm:text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">
                     {chapter.summary}
                 </p>
 
                 {/* Progress Bar */}
                 <div className="pt-2 space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold">
-                        <span className={isDaylight ? "text-slate-500" : "text-slate-400"}>Kemajuan Bab Ini</span>
-                        <span className={isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"}>
+                        <span className="text-[rgb(var(--color-text-muted))]">Kemajuan Bab Ini</span>
+                        <span className="text-[rgb(var(--color-primary-strong))]">
                             {doneCount} / {sections.length} Subbab ({progressPercent}%)
                         </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+                    <div className="w-full h-2 rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
                         <div
-                            className={cn("h-full rounded-full transition-all duration-500", isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]")}
+                            className="h-full rounded-full transition-all duration-500 bg-[rgb(var(--color-primary))]"
                             style={{ width: `${progressPercent}%` }}
                         />
                     </div>
@@ -113,7 +108,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             <div className="space-y-3">
                 <h2 className={cn(
                     "text-xs font-bold uppercase tracking-wider",
-                    isDaylight ? "text-slate-500" : "text-slate-400"
+                    "text-[rgb(var(--color-text-muted))]"
                 )}>
                     Daftar Subbab ({sections.length})
                 </h2>
@@ -130,12 +125,8 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                 className={cn(
                                     "p-4 rounded-2xl border transition-all hover:scale-[1.005] active:scale-[0.995] flex items-center justify-between gap-3 group",
                                     isDone
-                                        ? isDaylight
-                                            ? "bg-emerald-50/60 border-emerald-200 text-slate-800"
-                                            : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-white"
-                                        : isDaylight
-                                            ? "bg-white border-slate-200 hover:border-emerald-300 shadow-xs text-slate-800"
-                                            : "bg-white/[0.03] border-white/10 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 text-white"
+                                        ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-text))]"
+                                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 text-[rgb(var(--color-text))]"
                                 )}
                             >
                                 <div className="flex items-center gap-3 min-w-0">
@@ -143,12 +134,8 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                         className={cn(
                                             "w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0",
                                             isDone
-                                                ? isDaylight
-                                                    ? "bg-emerald-500 text-white"
-                                                    : "bg-[rgb(var(--color-primary))] text-white"
-                                                : isDaylight
-                                                    ? "bg-emerald-50 text-emerald-600"
-                                                    : "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
+                                                ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
+                                                : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]"
                                         )}
                                     >
                                         {isDone ? <CheckCircle2 className="w-4 h-4" /> : index + 1}
@@ -157,20 +144,20 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                     <div className="min-w-0 space-y-0.5">
                                         <h3 className={cn(
                                             "font-bold text-sm leading-snug truncate transition-colors",
-                                            isDaylight ? "group-hover:text-emerald-700" : "group-hover:text-[rgb(var(--color-primary-light))]"
+                                            "group-hover:text-[rgb(var(--color-primary-strong))]"
                                         )}>
                                             {sec.subbab}
                                         </h3>
-                                        <p className={cn("text-[11px]", isDaylight ? "text-slate-500" : "text-slate-400")}>
+                                        <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
                                             ⏱️ ~{Math.ceil(sec.content.join(" ").split(" ").length / 150)} min baca
-                                            {sec.pageStart ? ` • Hlm ${sec.pageStart}` : ""}
+                                            {sec.pageStart ? `, Hlm ${sec.pageStart}` : ""}
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-2 shrink-0">
-                                    {isSaved && <Bookmark className="w-4 h-4 fill-amber-500 text-amber-500" />}
-                                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                                    {isSaved && <Bookmark className="w-4 h-4 fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent))]" />}
+                                    <ChevronRight className="w-4 h-4 text-[rgb(var(--color-text-muted))] group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                             </Link>
                         );

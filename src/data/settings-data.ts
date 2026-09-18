@@ -45,8 +45,8 @@ export const CALCULATION_METHODS = [
 
 // Language Options
 export const LANGUAGE_OPTIONS = [
-    { id: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
-    { id: "en", label: "English", flag: "🇬🇧" },
+    { id: "id", label: "Bahasa Indonesia" },
+    { id: "en", label: "English" },
 ];
 
 // Default Settings

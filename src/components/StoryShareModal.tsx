@@ -25,10 +25,9 @@ import {
 interface StoryShareModalProps {
     item: ShareableCardData;
     onClose: () => void;
-    isDaylight: boolean;
 }
 
-export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalProps) {
+export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
     const { t, locale } = useLocale();
     const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
     const [theme, setTheme] = useState<StoryTheme>("dark");
@@ -208,16 +207,14 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
     if (!mounted) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 backdrop-blur-md animate-in fade-in duration-150">
             {/* Backdrop click to close */}
             <div className="absolute inset-0" onClick={onClose} />
 
             <div
                 className={cn(
                     "relative w-full max-w-sm min-[390px]:max-w-[420px] sm:max-w-md rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-colors duration-200 z-10",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-primary))]/20 text-slate-900"
-                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-primary))]/20 text-white"
+                        "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]"
                 )}
             >
                 {/* Modal Header */}
@@ -232,7 +229,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                         aria-label={t.storyShareClose}
                         className={cn(
                             "p-1 rounded-full transition-colors cursor-pointer",
-                            isDaylight ? "hover:bg-slate-100 text-slate-400" : "hover:bg-white/10 text-white/40"
+                            "hover:bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))]"
                         )}
                     >
                         <X className="w-4 h-4" />
@@ -243,13 +240,13 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                 <div className="flex-1 overflow-y-auto p-3 space-y-3 no-scrollbar">
                     {/* Live 9:16 Dynamic Canvas Preview Card (Scales from iPhone SE -> 14 Pro Max -> Desktop) */}
                     <div className="group relative flex w-full justify-center overflow-hidden rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-background))]/60 px-2 py-2 shadow-inner">
-                        <div className="relative h-[260px] min-[390px]:h-[350px] min-[410px]:h-[390px] sm:h-[440px] max-h-[52vh] aspect-[9/16] rounded-xl overflow-hidden shadow-xl border border-white/10 flex items-center justify-center transition-all duration-300">
+                        <div className="relative h-[260px] min-[390px]:h-[350px] min-[410px]:h-[390px] sm:h-[440px] max-h-[52vh] aspect-[9/16] rounded-xl overflow-hidden shadow-xl border border-[rgb(var(--color-border))] flex items-center justify-center transition-all duration-300">
                             <canvas
                                 ref={previewCanvasRef}
                                 className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.01]"
                             />
                             {isExporting && (
-                                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-white text-[11px] font-bold gap-1.5 animate-in fade-in">
+                                <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-sm flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-[11px] font-bold gap-1.5 animate-in fade-in">
                                     <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-light))]" />
                                     <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>
@@ -271,7 +268,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                             {/* Theme Pills */}
                             <div className={cn(
                                 "flex items-center gap-0.5 p-0.5 rounded-xl border flex-1",
-                                isDaylight ? "bg-slate-100 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-background))]/60 border-[rgb(var(--color-primary))]/20"
+                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <button
                                     type="button"
@@ -280,7 +277,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         "flex-1 py-1 px-2 rounded-lg font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
                                         theme === "dark"
                                             ? "border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-background))] text-[rgb(var(--color-primary-light))] shadow-xs"
-                                            : isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/50 hover:text-white"
+                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                 >
                                     <Moon className="w-3 h-3" />
@@ -292,8 +289,8 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     className={cn(
                                         "flex-1 py-1 px-2 rounded-lg font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
                                         theme === "light"
-                                            ? "bg-[rgb(var(--color-primary))] text-white shadow-xs"
-                                            : isDaylight ? "text-slate-600 hover:text-slate-900" : "text-white/50 hover:text-white"
+                                            ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
+                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                 >
                                     <Sun className="w-3 h-3" />
@@ -304,7 +301,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                             {/* Font Size Pills */}
                             <div className={cn(
                                 "flex items-center gap-0.5 p-0.5 rounded-xl border",
-                                isDaylight ? "bg-slate-100 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-background))]/60 border-[rgb(var(--color-primary))]/20"
+                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <button
                                     type="button"
@@ -313,7 +310,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "normal"
                                             ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
-                                            : isDaylight ? "text-slate-500 hover:text-slate-800" : "text-white/40 hover:text-white"
+                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                     title={t.storyShareNormalSize}
                                 >
@@ -326,7 +323,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "large"
                                             ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
-                                            : isDaylight ? "text-slate-500 hover:text-slate-800" : "text-white/40 hover:text-white"
+                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                     title={t.storyShareLargeSize}
                                 >
@@ -339,7 +336,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                         "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "xlarge"
                                             ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
-                                            : isDaylight ? "text-slate-500 hover:text-slate-800" : "text-white/40 hover:text-white"
+                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                     title={t.storyShareExtraLargeSize}
                                 >
@@ -358,10 +355,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showArabic
                                         ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
-                                        : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
+                                        : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] opacity-60"
                                 )}
                             >
-                                {(t.storyShareArabic || "Arab")} {showArabic ? "✓" : "✕"}
+                                {(t.storyShareArabic || "Arab")} {showArabic ? <Check className="inline h-3 w-3" /> : <X className="inline h-3 w-3" />}
                             </button>
 
                             <button
@@ -371,10 +368,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showLatin
                                         ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
-                                        : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
+                                        : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] opacity-60"
                                 )}
                             >
-                                {(t.storyShareLatin || "Latin")} {showLatin ? "✓" : "✕"}
+                                {(t.storyShareLatin || "Latin")} {showLatin ? <Check className="inline h-3 w-3" /> : <X className="inline h-3 w-3" />}
                             </button>
 
                             <button
@@ -384,10 +381,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showExplanation
                                         ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
-                                        : isDaylight ? "bg-slate-100 border-slate-200 text-slate-400 opacity-60" : "bg-white/5 border-white/10 text-white/30 opacity-60"
+                                        : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] opacity-60"
                                 )}
                             >
-                                {(t.storyShareExplanation || "Tadabbur")} {showExplanation ? "✓" : "✕"}
+                                {(t.storyShareExplanation || "Tadabbur")} {showExplanation ? <Check className="inline h-3 w-3" /> : <X className="inline h-3 w-3" />}
                             </button>
                             </div>
                         )}
@@ -400,10 +397,10 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                     <button
                         disabled={isExporting}
                         onClick={handleNativeShare}
-                        className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[rgb(var(--color-primary))] px-3 py-2 text-xs font-bold text-white shadow-md shadow-[rgb(var(--color-primary))]/30 transition-all hover:bg-[rgb(var(--color-primary-dark))] active:scale-[0.98] disabled:opacity-50"
+                        className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[rgb(var(--color-primary))] px-3 py-2 text-xs font-bold text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] transition-all hover:bg-[rgb(var(--color-primary-strong))] active:scale-[0.98] disabled:opacity-50"
                     >
                         {sharedSuccess ? (
-                            <Check className="w-3.5 h-3.5 text-white" />
+                            <Check className="w-3.5 h-3.5 text-[rgb(var(--color-primary-foreground))]" />
                         ) : (
                             <Share2 className="w-3.5 h-3.5" />
                         )}
@@ -416,9 +413,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                         onClick={handleDownload}
                         className={cn(
                             "p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center",
-                            isDaylight
-                                ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"
-                                : "bg-white/10 hover:bg-white/20 border-white/10 text-white"
+                            "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                         )}
                         title={t.storyShareDownloadTitle}
                     >
@@ -431,9 +426,7 @@ export function StoryShareModal({ item, onClose, isDaylight }: StoryShareModalPr
                         onClick={handleCopyImage}
                         className={cn(
                             "p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-center",
-                            isDaylight
-                                ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"
-                                : "bg-white/10 hover:bg-white/20 border-white/10 text-white"
+                            "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                         )}
                         title={t.storyShareCopyTitle}
                     >

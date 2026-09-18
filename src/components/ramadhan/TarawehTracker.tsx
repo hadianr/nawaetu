@@ -16,8 +16,9 @@ import { useTranslations } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { toast } from "sonner";
-import { MapPin, Home } from "lucide-react";
+import { MapPin, Home, X } from "lucide-react";
 import { useTarawehTracker, type TarawehChoice, type TarawehLocation } from "@/hooks/useTarawehTracker";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 type TarawehTranslations = TranslationTree & Partial<Record<"fastingDayToday", string>>;
 
@@ -61,7 +62,7 @@ export default function TarawehTracker() {
             toast.success(t.tarawehTitle || "Taraweh", {
                 description: t.toastRamadhanTarawehReward || `Alhamdulillah! +15 ${t.gamificationXpName || "Hasanah"}`,
                 duration: 3000,
-                icon: "🕌"
+                icon: <AppIcon name="landmark" size="sm" tone="primary" />
             });
         }
         updateDay(viewDay, { choice });
@@ -73,25 +74,25 @@ export default function TarawehTracker() {
     };
 
     return (
-        <div className="rounded-2xl border border-white/5 bg-black/20 backdrop-blur-md shadow-lg overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] backdrop-blur-md shadow-[var(--shadow-card)] overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
-                    <span className="text-lg">🕌</span>
-                    <h3 className="font-bold text-white text-base">{t.tarawehTitle}</h3>
+                    <AppIcon name="landmark" size="sm" tone="primary" />
+                    <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-base">{t.tarawehTitle}</h3>
                 </div>
                 <DalilBadge dalil={TARAWEH_EVIDENCE} variant="pill" />
             </div>
 
             {/* Stats row */}
             <div className="flex gap-1.5 px-3 mb-2 sm:gap-2 sm:px-4 sm:mb-3">
-                <div className="flex-1 rounded-xl bg-black/20 border border-white/10 px-3 py-2 text-center backdrop-blur-sm shadow-md">
-                    <p className="text-lg font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{streak > 0 ? `🔥 ${streak}` : "—"}</p>
-                    <p className="text-xs text-white/40">{t.tarawehStreakNights}</p>
+                <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center backdrop-blur-sm shadow-[var(--shadow-card)]">
+                    <p className="text-lg font-bold text-[rgb(var(--color-primary-light))] flex items-center justify-center gap-1">{streak > 0 && <AppIcon name="sparkles" size="sm" tone="primary" />}{streak || "—"}</p>
+                    <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.tarawehStreakNights}</p>
                 </div>
-                <div className="flex-1 rounded-xl bg-black/20 border border-white/10 px-3 py-2 text-center backdrop-blur-sm shadow-md">
-                    <p className="text-lg font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{totalNights}</p>
-                    <p className="text-xs text-white/40">{t.tarawehTotalNights}</p>
+                <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center backdrop-blur-sm shadow-[var(--shadow-card)]">
+                    <p className="text-lg font-bold text-[rgb(var(--color-primary-light))]">{totalNights}</p>
+                    <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.tarawehTotalNights}</p>
                 </div>
             </div>
 
@@ -110,14 +111,12 @@ export default function TarawehTracker() {
                                 key={day}
                                 onClick={() => setViewDay(day)}
                                 className={`flex flex-col items-center justify-center rounded-lg h-9 sm:h-10 transition-all border
-                                    ${active ? "bg-white/15 border-white/30 scale-105 shadow-[0_0_10px_rgba(255,255,255,0.1)]" : "bg-white/5 border-white/10"} 
-                                    ${future ? "opacity-30 mix-blend-luminosity" : "hover:bg-white/10 active:scale-95"}
+                                    ${active ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/40 scale-105 shadow-[var(--shadow-card)]" : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"}
+                                    ${future ? "opacity-30 mix-blend-luminosity" : "hover:bg-[rgb(var(--color-surface-subtle))] active:scale-95"}
                                 `}
                             >
-                                <span className="text-[10px] text-white/50 leading-none mb-1 font-bold">{day}</span>
-                                <span className="text-[12px] leading-none text-white drop-shadow-md">
-                                    {dChoice === 8 ? "🌙" : dChoice === 20 ? "✨" : "·"}
-                                </span>
+                                <span className="text-[10px] text-[rgb(var(--color-text-muted))] leading-none mb-1 font-bold">{day}</span>
+                                <AppIcon name={dChoice === 8 ? "moon" : "sparkles"} size="xs" tone={dChoice ? "primary" : "muted"} className={!dChoice ? "opacity-0" : undefined} />
                             </button>
                         );
                     })}
@@ -125,23 +124,22 @@ export default function TarawehTracker() {
             </div>
 
             {/* Active Day Action Area */}
-            <div className="px-3 pb-3 sm:px-4 sm:pb-4 border-t border-white/5 pt-3">
+            <div className="px-3 pb-3 sm:px-4 sm:pb-4 border-t border-[rgb(var(--color-border))] pt-3">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-white/50 uppercase tracking-widest">
+                    <span className="text-xs font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-widest">
                         {isToday ? t.fastingDayToday : `Hari ke-${viewDay}`}
                     </span>
-                    {isFuture && <span className="text-xs text-white/30">Belum Waktunya</span>}
+                    {isFuture && <span className="text-xs text-[rgb(var(--color-text-muted))]">Belum Waktunya</span>}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     {([8, 20] as TarawehChoice[]).map((choice) => {
                         const isSelected = todayChoice === choice;
                         const label = choice === 8 ? t.taraweh8Rakaat || "8 Rakaat" : t.taraweh20Rakaat || "20 Rakaat";
-                        const icon = choice === 8 ? "🌙" : "✨";
                         const activeStyle =
                             choice === 8
-                                ? "border-blue-500/60 bg-gradient-to-br from-blue-500/30 to-blue-500/10 text-blue-300 shadow-lg shadow-blue-500/20"
-                                : "border-purple-500/60 bg-gradient-to-br from-purple-500/30 to-purple-500/10 text-purple-300 shadow-lg shadow-purple-500/20";
+                                ? "border-[rgb(var(--color-info))]/60 bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))] shadow-[var(--shadow-card)]"
+                                : "border-[rgb(var(--color-primary))]/60 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]";
 
                         return (
                             <button
@@ -152,17 +150,17 @@ export default function TarawehTracker() {
                                     relative flex flex-col items-center justify-center gap-1 rounded-xl py-3 border transition-all duration-300
                                     ${isSelected
                                         ? activeStyle
-                                        : "bg-black/40 border-white/10 text-white/50 hover:bg-white/10"}
+                                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"}
                                     ${isFuture ? "opacity-30 cursor-not-allowed" : "active:scale-95"}
                                 `}
                             >
                                 {/* Cancel affordance badge */}
                                 {isSelected && (
-                                    <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[8px] text-white/70 font-bold border border-white/10">
-                                        ×
+                                    <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[rgb(var(--color-surface-subtle))] text-[8px] text-[rgb(var(--color-text-muted))] font-bold border border-[rgb(var(--color-border))]">
+                                        <X className="h-2.5 w-2.5" />
                                     </span>
                                 )}
-                                <span className={`text-xl ${isSelected ? "" : "opacity-60 grayscale"}`}>{icon}</span>
+                                <AppIcon name={choice === 8 ? "moon" : "sparkles"} size="md" tone={isSelected ? "primary" : "muted"} />
                                 <span className="font-semibold text-xs">{label}</span>
                                 {isSelected && (
                                     <span className="text-[8px] opacity-60 -mt-0.5">ketuk untuk batal</span>
@@ -174,13 +172,13 @@ export default function TarawehTracker() {
 
                 {/* Location Toggles */}
                 {todayChoice !== null && (
-                    <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-white/5 animate-in slide-in-from-top-1 fade-in duration-200">
+                    <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-[rgb(var(--color-border))] animate-in slide-in-from-top-1 fade-in duration-200">
                         <button
                             onClick={() => handleLocationSelect("masjid")}
                             className={`flex items-center justify-center gap-1.5 py-2 rounded-lg border text-xs font-medium transition-all ${
                                 todayLocation === "masjid" 
-                                ? "bg-[rgba(var(--color-primary),0.2)] border-[rgba(var(--color-primary-light),0.4)] text-[rgba(var(--color-primary-light),1)]" 
-                                : "bg-black/30 border-white/5 text-white/40 hover:bg-white/5"
+                                ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary-light))]/40 text-[rgb(var(--color-primary-light))]"
+                                : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                             }`}
                         >
                             <MapPin className="w-3.5 h-3.5" />
@@ -190,8 +188,8 @@ export default function TarawehTracker() {
                             onClick={() => handleLocationSelect("rumah")}
                             className={`flex items-center justify-center gap-1.5 py-2 rounded-lg border text-xs font-medium transition-all ${
                                 todayLocation === "rumah" 
-                                ? "bg-white/15 border-white/30 text-white" 
-                                : "bg-black/30 border-white/5 text-white/40 hover:bg-white/5"
+                                ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
+                                : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                             }`}
                         >
                             <Home className="w-3.5 h-3.5" />
@@ -202,7 +200,7 @@ export default function TarawehTracker() {
             </div>
 
             {/* Niat button */}
-            <div className="px-3 pb-3 sm:px-4 sm:pb-4 border-t border-white/5 pt-3">
+            <div className="px-3 pb-3 sm:px-4 sm:pb-4 border-t border-[rgb(var(--color-border))] pt-3">
                 <IntentionCard intention={TARAWEH_INTENTION} variant="pill" />
             </div>
         </div>

@@ -23,7 +23,6 @@ import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface DhikrDisplayProps {
     t: TranslationTree;
-    isDaylight: boolean;
     activeSequence: typeof dhikrSequences[0] | null;
     sequenceIndex: number;
     activeDhikr: DhikrPreset | null;
@@ -36,7 +35,6 @@ export interface DhikrDisplayProps {
 
 export function DhikrDisplay({
     t,
-    isDaylight,
     activeSequence,
     sequenceIndex,
     activeDhikr,
@@ -53,19 +51,19 @@ export function DhikrDisplay({
                 {activeSequence && (
                     <div className={cn(
                         "inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full border text-[10px] font-bold tracking-widest uppercase shadow-sm",
-                        isDaylight ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-[rgb(var(--color-primary)/0.2)] text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary)/0.3)] shadow-[0_0_15px_rgba(var(--color-primary),0.2)]"
+                        "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25 shadow-[var(--shadow-card)]"
                     )}>
-                        {activeSequence.label} • {sequenceIndex + 1}/{activeSequence.items.length}
+                        {activeSequence.label} ({sequenceIndex + 1}/{activeSequence.items.length})
                     </div>
                 )}
                 <div className="mb-0.5 xs:mb-2">
                     <h1 className={cn(
                         "text-lg xs:text-xl font-bold tracking-tight leading-tight",
-                        isDaylight ? "text-slate-900" : "text-white/90"
+                        "text-[rgb(var(--color-text-strong))]"
                     )}>{t.tasbihTitle}</h1>
                     <p className={cn(
                         "text-[9px] xs:text-[10px] uppercase tracking-[0.2em]",
-                        isDaylight ? "text-slate-400" : "text-white/40"
+                        "text-[rgb(var(--color-text-muted))]"
                     )}>{t.tasbihSubtitle}</p>
                 </div>
 
@@ -74,7 +72,7 @@ export function DhikrDisplay({
                         <div className="px-4 pt-4 xs:pt-10 sm:pt-20 pb-0.5 xs:pb-1 bg-transparent">
                             <h2 className={cn(
                                 "text-[clamp(1.35rem,5vw,2.75rem)] font-bold font-serif leading-[1.2] transition-colors",
-                                isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
+                                "text-[rgb(var(--color-text-strong))]"
                             )}>
                                 {activeDhikr.arab}
                             </h2>
@@ -82,13 +80,13 @@ export function DhikrDisplay({
                         <div className="mt-1 xs:mt-3 flex flex-col items-center">
                             <p className={cn(
                                 "font-extrabold text-[10px] xs:text-base tracking-tight uppercase",
-                                isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]"
+                                "text-[rgb(var(--color-primary-strong))]"
                             )}>
                                 {activeDhikr.latin}
                             </p>
                             <p className={cn(
                                 "text-[8px] xs:text-xs italic line-clamp-2 max-w-[90%] mt-0.5 xs:mt-1.5",
-                                isDaylight ? "text-slate-500" : "text-white/40"
+                                "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {activeDhikr.tadabbur}
                             </p>
@@ -97,7 +95,7 @@ export function DhikrDisplay({
                 ) : (
                     <p className={cn(
                         "text-[10px] italic",
-                        isDaylight ? "text-slate-400" : "text-white/20"
+                        "text-[rgb(var(--color-text-muted))]"
                     )}>{t.tasbihFreeMode}</p>
                 )}
             </div>
@@ -106,11 +104,11 @@ export function DhikrDisplay({
             <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10">
                 <div className={cn(
                     "relative w-44 h-44 xs:w-56 xs:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
-                    isDaylight ? "shadow-[0_12px_36px_rgb(var(--color-primary)/0.12)]" : "shadow-[0_0_60px_rgba(0,0,0,0.6)]"
+                    "shadow-[var(--shadow-floating)]"
                 )}>
                     <div className="absolute inset-[-10px] rounded-full blur-3xl bg-[rgb(var(--color-primary)/0.08)] transition-all duration-700" />
 
-                    <div className="absolute inset-0 rounded-full border-[6px] md:border-[12px] border-white/5" />
+                    <div className="absolute inset-0 rounded-full border-[6px] md:border-[12px] border-[rgb(var(--color-border))]/60" />
 
                     {target && (
                         <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -131,33 +129,31 @@ export function DhikrDisplay({
                         onClick={(e) => { e.stopPropagation(); handleIncrement(e); }}
                         className={cn(
                             "absolute inset-1.5 md:inset-4 rounded-full active:scale-95 transition-all duration-75 flex flex-col items-center justify-center group z-20 shadow-xl border",
-                            isDaylight
-                                ? "bg-gradient-to-br from-[rgb(var(--color-primary-light)/0.3)] to-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[0_8px_24px_rgb(var(--color-primary)/0.12)]"
-                                : "bg-gradient-to-br from-[rgb(var(--color-primary-dark)/0.4)] to-black border-[rgb(var(--color-primary)/0.15)] shadow-black/60"
+                            "bg-gradient-to-br from-[rgb(var(--color-primary))]/15 to-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
                         )}
                     >
                         <span className={cn(
                             "text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5",
-                            isDaylight ? "text-emerald-700/40" : "text-white/30"
+                            "text-[rgb(var(--color-primary-strong))]/60"
                         )}>
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                         </span>
                         <span className={cn(
                             "text-[clamp(4.5rem,15vw,8rem)] font-mono font-bold tracking-tighter transition-colors",
-                            isDaylight ? "text-slate-900" : "text-white drop-shadow-2xl"
+                            "text-[rgb(var(--color-text-strong))]"
                         )}>
                             {hasHydrated ? (
                                 count
                             ) : (
                                 <span className={cn(
                                     "inline-block w-12 xs:w-16 md:w-20 h-10 xs:h-12 md:h-14 rounded animate-pulse align-middle",
-                                    isDaylight ? "bg-slate-200" : "bg-white/10"
+                                    "bg-[rgb(var(--color-border))]/30"
                                 )} />
                             )}
                         </span>
                         <div className={cn(
                             "mt-1 text-[8px] md:text-sm animate-pulse font-medium",
-                            isDaylight ? "text-emerald-600/60" : "text-[rgb(var(--color-primary))]/40"
+                            "text-[rgb(var(--color-primary-strong))]/70"
                         )}>
                             {t.tasbihTap}
                         </div>

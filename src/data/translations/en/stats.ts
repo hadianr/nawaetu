@@ -171,7 +171,7 @@ export const statsEN = {
         },
         ranks: {
             mubtadi: {
-                icon: "🌱",
+                icon: "sparkles",
                 title: "Mubtadi",
                 desc: "A term for a beginner (al-mubtadi) who is just taking the first steps in the journey of self-discipline and spiritual refinement.",
                 milestone: "Focus on purifying your intention in every action.",
@@ -179,7 +179,7 @@ export const statsEN = {
                 source: "Hadith Bukhari & Muslim"
             },
             seeker: {
-                icon: "🔍",
+                icon: "compass",
                 title: "Seeker of Mercy",
                 desc: "Finding peace in the regularity of obligatory worship.",
                 milestone: "Prioritize performing prayers exactly on time.",
@@ -187,7 +187,7 @@ export const statsEN = {
                 source: "Quran, Az-Zumar: 53"
             },
             warrior: {
-                icon: "⚔️",
+                icon: "shield-check",
                 title: "Fajr Warrior",
                 desc: "Disciplined in the most challenging yet blessed time.",
                 milestone: "Maintain consistency in Fajr prayer on time.",
@@ -195,7 +195,7 @@ export const statsEN = {
                 source: "Quran, Al-Isra: 78"
             },
             abid: {
-                icon: "🕌",
+                icon: "landmark",
                 title: "Abid",
                 desc: "A servant who begins to taste the sweetness of worship.",
                 milestone: "Gradually incorporate Sunnah Rawatib prayers.",
@@ -203,7 +203,7 @@ export const statsEN = {
                 source: "Hadith Qudsi (Bukhari)"
             },
             salik: {
-                icon: "👣",
+                icon: "compass",
                 title: "Salik",
                 desc: "A spiritual wayfarer mindful of every single step.",
                 milestone: "Practice presence of heart (khusyuk) in prayer.",
@@ -211,7 +211,7 @@ export const statsEN = {
                 source: "Hadith Bukhari & Muslim"
             },
             mukhlis: {
-                icon: "💎",
+                icon: "star",
                 title: "Mukhlis",
                 desc: "Purifying all deeds solely for the sake of Allah.",
                 milestone: "Guard your heart against seeking praise from others.",
@@ -219,7 +219,7 @@ export const statsEN = {
                 source: "Quran, Al-Bayyinah: 5"
             },
             muhsin: {
-                icon: "✨",
+                icon: "sparkles",
                 title: "Muhsin",
                 desc: "Worshipping as if you see Him, or knowing He sees you.",
                 milestone: "Make every moment a form of remembrance and gratitude.",

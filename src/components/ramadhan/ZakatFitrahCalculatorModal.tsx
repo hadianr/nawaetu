@@ -83,23 +83,23 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
             <DialogPrimitive.Portal>
                 {/* Overlay with blur effect */}
-                <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in" />
+                <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-md transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in" />
 
                 {/* Content wrapper */}
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-                    <DialogPrimitive.Content className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-[2rem] border border-white/20 bg-emerald-950/90 shadow-2xl backdrop-blur-xl transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 focus:outline-none">
+                    <DialogPrimitive.Content className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-[2rem] border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/95 shadow-[var(--shadow-floating)] backdrop-blur-xl transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 focus:outline-none">
                         
                         {/* Header (Sticky) */}
-                        <div className="flex items-center justify-between border-b border-white/10 p-5 sm:p-6 bg-emerald-950/50 backdrop-blur-xl">
+                        <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] p-5 sm:p-6 bg-[rgb(var(--color-surface-subtle))] backdrop-blur-xl">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/20 text-emerald-400 backdrop-blur-md">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] backdrop-blur-md">
                                     <Calculator className="h-5 w-5" />
                                 </div>
-                                <DialogPrimitive.Title className="text-lg font-bold text-white">
+                                <DialogPrimitive.Title className="text-lg font-bold text-[rgb(var(--color-text-strong))]">
                                     {t.zakatCalcModalTitle || "Kalkulator Zakat Fitrah"}
                                 </DialogPrimitive.Title>
                             </div>
-                            <DialogPrimitive.Close className="rounded-full p-2 text-white/50 transition-colors hover:bg-white/10 hover:text-white focus:outline-none">
+                            <DialogPrimitive.Close className="rounded-full p-2 text-[rgb(var(--color-text-muted))] transition-colors hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))] focus:outline-none">
                                 <X className="h-5 w-5" />
                             </DialogPrimitive.Close>
                         </div>
@@ -110,10 +110,10 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                             {/* Section 1: Tanggungan List */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-sm font-medium text-emerald-200">Daftar Tanggungan ({recipients.length} Jiwa)</h3>
+                                    <h3 className="text-sm font-medium text-[rgb(var(--color-text))]">Daftar Tanggungan ({recipients.length} Jiwa)</h3>
                                     <button 
                                         onClick={addRecipient}
-                                        className="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 px-2 py-1.5 rounded-lg transition-colors border border-emerald-500/20"
+                                        className="flex items-center gap-1 text-xs font-semibold text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 px-2 py-1.5 rounded-lg transition-colors border border-[rgb(var(--color-primary))]/25"
                                     >
                                         <Plus className="h-3.5 w-3.5" /> Tambah Orang
                                     </button>
@@ -121,14 +121,14 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                 
                                 <div className="space-y-2">
                                     {recipients.map((recipient) => (
-                                        <div key={recipient.id} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm transition-all focus-within:border-emerald-500/50">
+                                        <div key={recipient.id} className="flex flex-col gap-2 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-3 backdrop-blur-sm transition-all focus-within:border-[rgb(var(--color-primary))]/50">
                                             <div className="flex items-start gap-3">
                                                 {/* Checkbox */}
                                                 <button 
                                                     onClick={() => togglePaidStatus(recipient.id)}
-                                                    className={`mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${recipient.isPaid ? 'bg-emerald-500 border-emerald-500' : 'border-white/30 bg-transparent'} transition-colors`}
+                                                    className={`mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${recipient.isPaid ? 'bg-[rgb(var(--color-success))] border-[rgb(var(--color-success))]' : 'border-[rgb(var(--color-border-strong))] bg-transparent'} transition-colors`}
                                                 >
-                                                    {recipient.isPaid && <HeartHandshake className="h-3.5 w-3.5 text-emerald-950" />}
+                                                    {recipient.isPaid && <HeartHandshake className="h-3.5 w-3.5 text-[rgb(var(--color-surface))]" />}
                                                 </button>
                                                 
                                                 {/* Inputs */}
@@ -139,12 +139,12 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                             value={recipient.name}
                                                             onChange={(e) => updateRecipientStr(recipient.id, "name", e.target.value)}
                                                             placeholder="Nama Anggota"
-                                                            className={`w-full bg-transparent px-1 pb-1 text-sm font-semibold outline-none border-b border-transparent focus:border-emerald-500/50 transition-colors ${recipient.isPaid ? 'text-white/50 line-through decoration-white/30' : 'text-white'}`}
+                                                            className={`w-full bg-transparent px-1 pb-1 text-sm font-semibold outline-none border-b border-transparent focus:border-[rgb(var(--color-primary))]/50 transition-colors ${recipient.isPaid ? 'text-[rgb(var(--color-text-muted))] line-through decoration-[rgb(var(--color-text-muted))]' : 'text-[rgb(var(--color-text-strong))]'}`}
                                                         />
                                                         <select 
                                                             value={recipient.type}
                                                             onChange={(e) => updateRecipientStr(recipient.id, "type", e.target.value as ZakatIntention["target"])}
-                                                            className="bg-black/20 text-xs text-white/80 rounded-md border border-white/10 px-2 outline-none focus:border-emerald-500/50"
+                                                            className="bg-[rgb(var(--color-surface))] text-xs text-[rgb(var(--color-text))] rounded-md border border-[rgb(var(--color-border))] px-2 outline-none focus:border-[rgb(var(--color-primary))]/50"
                                                             disabled={recipient.isPaid}
                                                         >
                                                             <option value="self">Diri Sendiri</option>
@@ -157,7 +157,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                         {recipients.length > 1 && (
                                                             <button 
                                                                 onClick={() => removeRecipient(recipient.id)}
-                                                                className="text-white/30 hover:text-red-400 p-1"
+                                                                className="text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-danger))] p-1"
                                                                 disabled={recipient.isPaid}
                                                             >
                                                                 <Trash2 className="h-4 w-4" />
@@ -169,7 +169,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                     {!recipient.isPaid && (
                                                         <button 
                                                             onClick={() => setActiveIntentionId(activeIntentionId === recipient.id ? null : recipient.id)}
-                                                            className="text-xs text-emerald-400/80 hover:text-emerald-300 flex items-center gap-1 transition-colors"
+                                                            className="text-xs text-[rgb(var(--color-primary-light))] hover:text-[rgb(var(--color-primary-strong))] flex items-center gap-1 transition-colors"
                                                         >
                                                             <BookOpenIcon className="h-3 w-3" /> Lihat Niat Zakat
                                                         </button>
@@ -179,16 +179,16 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
 
                                             {/* Niat Collapsible Box */}
                                             {activeIntentionId === recipient.id && !recipient.isPaid && (
-                                                <div className="mt-2 rounded-xl bg-black/30 p-3 pt-4 border border-white/5 text-center relative overflow-hidden">
-                                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500 to-emerald-500/0 opacity-30"></div>
-                                                    <h4 className="text-xs font-semibold text-emerald-300 mb-2">{getIntentionForType(recipient.type).title}</h4>
-                                                    <p className="font-arabic text-xl sm:text-2xl leading-loose text-white mb-3" dir="rtl">
+                                                <div className="mt-2 rounded-xl bg-[rgb(var(--color-surface))] p-3 pt-4 border border-[rgb(var(--color-border))] text-center relative overflow-hidden">
+                                                    <div className="absolute top-0 left-0 w-full h-1 bg-[rgb(var(--color-primary))] opacity-30"></div>
+                                                    <h4 className="text-xs font-semibold text-[rgb(var(--color-primary-light))] mb-2">{getIntentionForType(recipient.type).title}</h4>
+                                                    <p className="font-arabic text-xl sm:text-2xl leading-loose text-[rgb(var(--color-text-strong))] mb-3" dir="rtl">
                                                         {getIntentionForType(recipient.type).arabic}
                                                     </p>
-                                                    <p className="text-xs text-emerald-200/80 italic mb-2">
+                                                    <p className="text-xs text-[rgb(var(--color-text-muted))] italic mb-2">
                                                         &quot;{getIntentionForType(recipient.type).latin}&quot;
                                                     </p>
-                                                    <p className="text-[10px] text-white/60 leading-relaxed">
+                                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed">
                                                         Artinya: {getIntentionForType(recipient.type).translation}
                                                     </p>
                                                 </div>
@@ -199,12 +199,12 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                             </div>
 
                             {/* Section 2: Besaran Zakat (BAZNAS Presets) */}
-                            <div className="space-y-3 pt-2 border-t border-white/10">
+                            <div className="space-y-3 pt-2 border-t border-[rgb(var(--color-border))]">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="text-sm font-medium text-emerald-200">Besaran Zakat Fitrah (per jiwa)</h3>
+                                    <h3 className="text-sm font-medium text-[rgb(var(--color-text))]">Besaran Zakat Fitrah (per jiwa)</h3>
                                     <div className="group relative">
-                                        <Info className="h-4 w-4 text-white/40 cursor-help" />
-                                        <div className="absolute bottom-full left-1/2 mb-2 w-48 -translate-x-1/2 scale-95 rounded-lg border border-white/10 bg-emerald-950 p-2 text-[10px] leading-relaxed text-white/80 opacity-0 shadow-xl transition-all group-hover:scale-100 group-hover:opacity-100 pointer-events-none z-10">
+                                        <Info className="h-4 w-4 text-[rgb(var(--color-text-muted))] cursor-help" />
+                                        <div className="absolute bottom-full left-1/2 mb-2 w-48 -translate-x-1/2 scale-95 rounded-lg border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-2 text-[10px] leading-relaxed text-[rgb(var(--color-text))] opacity-0 shadow-[var(--shadow-floating)] transition-all group-hover:scale-100 group-hover:opacity-100 pointer-events-none z-10">
                                             Sesuaikan besaran dengan pengumuman BAZNAS kabupaten/kota atau DKM Masjid tempat tinggal Anda.
                                         </div>
                                     </div>
@@ -217,22 +217,22 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                             onClick={() => setSelectedRatePreset(rate.value)}
                                             className={`flex flex-col items-start rounded-xl border p-2.5 text-left transition-all ${
                                                 selectedRatePreset === rate.value 
-                                                ? 'border-emerald-500 bg-emerald-500/20' 
-                                                : 'border-white/10 bg-white/5 hover:bg-white/10'
+                                                ? 'border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/20'
+                                                : 'border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))]'
                                             }`}
                                         >
-                                            <span className="text-sm font-bold text-white">Rp {rate.value.toLocaleString('id-ID')}</span>
-                                            <span className="text-[10px] text-white/50">{rate.label}</span>
+                                            <span className="text-sm font-bold text-[rgb(var(--color-text-strong))]">Rp {rate.value.toLocaleString('id-ID')}</span>
+                                            <span className="text-[10px] text-[rgb(var(--color-text-muted))]">{rate.label}</span>
                                         </button>
                                     ))}
                                     
                                     <div className={`flex flex-col justify-center rounded-xl border p-2.5 transition-all ${
                                         selectedRatePreset === "custom" 
-                                        ? 'border-emerald-500 bg-emerald-500/20' 
-                                        : 'border-white/10 bg-white/5 focus-within:border-emerald-500/50'
+                                        ? 'border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/20'
+                                        : 'border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] focus-within:border-[rgb(var(--color-primary))]/50'
                                     }`}>
                                         <div className="flex items-center gap-2 w-full">
-                                            <span className="text-sm font-bold text-white/50">Rp</span>
+                                            <span className="text-sm font-bold text-[rgb(var(--color-text-muted))]">Rp</span>
                                             <input 
                                                 type="number"
                                                 value={customPrice}
@@ -241,10 +241,10 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                     setSelectedRatePreset("custom");
                                                 }}
                                                 onFocus={() => setSelectedRatePreset("custom")}
-                                                className="w-full bg-transparent text-sm font-bold text-white outline-none"
+                                                className="w-full bg-transparent text-sm font-bold text-[rgb(var(--color-text-strong))] outline-none"
                                             />
                                         </div>
-                                        <span className="text-[10px] text-white/50">Nominal Custom (Lainnya)</span>
+                                        <span className="text-[10px] text-[rgb(var(--color-text-muted))]">Nominal Custom (Lainnya)</span>
                                     </div>
                                 </div>
                             </div>
@@ -252,19 +252,19 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                         </div>
 
                         {/* Footer (Sticky Result) */}
-                        <div className="border-t border-white/10 bg-gradient-to-t from-emerald-950/80 to-emerald-950/50 p-5 sm:p-6 backdrop-blur-xl">
+                        <div className="border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 sm:p-6 backdrop-blur-xl">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-emerald-200/80 mb-0.5">
+                                    <p className="text-xs text-[rgb(var(--color-text-muted))] mb-0.5">
                                         Total Zakat ({recipients.length} jiwa)
                                     </p>
-                                    <p className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
+                                    <p className="text-2xl font-bold tracking-tight text-[rgb(var(--color-text-strong))]">
                                         {formattedTotal}
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-[10px] text-white/40">Sisa belum dibayar:</p>
-                                    <p className="text-sm font-semibold text-amber-400">
+                                    <p className="text-[10px] text-[rgb(var(--color-text-muted))]">Sisa belum dibayar:</p>
+                                    <p className="text-sm font-semibold text-[rgb(var(--color-warning))]">
                                         {recipients.filter(r => !r.isPaid).length} Orang
                                     </p>
                                 </div>

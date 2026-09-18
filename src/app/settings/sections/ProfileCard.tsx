@@ -26,7 +26,6 @@ interface ProfileCardProps {
     status: "authenticated" | "loading" | "unauthenticated";
     session: Session | null;
     hasCachedProfile: boolean;
-    isDaylight: boolean;
     isMuhsinin: boolean;
     userAvatar: string | null;
     userName: string;
@@ -39,7 +38,6 @@ export default function ProfileCard({
     status,
     session,
     hasCachedProfile,
-    isDaylight,
     isMuhsinin,
     userAvatar,
     userName,
@@ -65,15 +63,13 @@ export default function ProfileCard({
                 <div className="relative">
                     <div className={cn(
                         "h-12 w-12 rounded-full border-2 flex items-center justify-center text-lg font-bold overflow-hidden p-0.5 transition-all",
-                        isDaylight
-                            ? "bg-[rgb(var(--color-primary-light))]/45 border-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-strong))]"
-                            : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
+                        "bg-[rgb(var(--color-primary-light))]/30 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))]"
                     )}>
                         <Avatar className="w-full h-full rounded-full">
                             <AvatarImage src={userAvatar || session?.user?.image || ""} className="object-cover" />
                             <AvatarFallback className={cn(
                                 "text-lg font-bold",
-                                isDaylight ? "bg-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))]" : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
+                                "bg-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary-strong))]"
                             )}>
                                 {(userName || "U").charAt(0).toUpperCase()}
                             </AvatarFallback>

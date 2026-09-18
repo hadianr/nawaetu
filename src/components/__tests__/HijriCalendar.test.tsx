@@ -57,7 +57,7 @@ describe("HijriCalendarPageContent", () => {
         state.theme = "daylight";
         const { rerender } = render(<HijriCalendarPageContent />);
 
-        expect(screen.getByRole("grid").closest("section")?.className).toContain("bg-white");
+        expect(screen.getByRole("grid").closest("section")?.className).toContain("bg-[rgb(var(--color-surface))]");
         expect(screen.getByText("Hijri Calendar")).not.toBeNull();
         expect(screen.queryByRole("dialog")).toBeNull();
         expect(fetchCalendar).toHaveBeenCalledTimes(1);
@@ -67,7 +67,7 @@ describe("HijriCalendarPageContent", () => {
         rerender(<HijriCalendarPageContent />);
 
         expect(screen.getByText("Kalender Hijriah")).not.toBeNull();
-        expect(screen.getByRole("grid").closest("section")?.className).toContain("bg-white/5");
+        expect(screen.getByRole("grid").closest("section")?.className).toContain("bg-[rgb(var(--color-surface))]");
         expect(fetchCalendar).toHaveBeenCalledTimes(1);
     });
 });

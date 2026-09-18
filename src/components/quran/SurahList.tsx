@@ -26,7 +26,6 @@ import { Input } from "@/components/ui/input";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import QuranSearchModal from "./QuranSearchModal";
 
@@ -94,9 +93,8 @@ interface SurahListProps {
 
 export default function SurahList({ chapters }: SurahListProps) {
     const { t, locale } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number; surahName: string; timestamp: number } | null>(null);
     const [bookmarkedSurahIds, setBookmarkedSurahIds] = useState<Set<number>>(new Set());
@@ -104,6 +102,7 @@ export default function SurahList({ chapters }: SurahListProps) {
 
     // Load data on mount
     useEffect(() => {
+        queueMicrotask(() => setMounted(true));
         const storage = getStorageService();
 
         // Last Read
@@ -155,6 +154,10 @@ export default function SurahList({ chapters }: SurahListProps) {
 
     // Only prefetch on hover/focus (handled in return JSX)
 
+    // Keep the server and first client render identical. Locale, theme, and
+    // persisted Quran state are resolved after hydration.
+    if (!mounted) return <div className="min-h-[520px]" aria-hidden="true" />;
+
     return (
         <div className="w-full max-w-4xl space-y-6">
             {/* Dashboard Grid - Grouping Last Read & Bookmarks */}
@@ -170,9 +173,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                             onFocus={() => router.prefetch(`/quran/${safeLastRead.surahId}`)}
                             className={cn(
                                 "col-span-2 group relative overflow-hidden rounded-3xl border transition-all duration-500 hover:-translate-y-0.5 shadow-lg",
-                                isDaylight
-                                    ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/10"
-                                    : "bg-[#0f172a] border-[rgb(var(--color-primary))]/50 shadow-[rgb(var(--color-primary))]/5 hover:shadow-[rgb(var(--color-primary))]/20"
+                                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/10 hover:border-[rgb(var(--color-primary))]/40"
                             )}
                         >
                             {/* Dynamic Background Mesh */}
@@ -184,11 +185,11 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     <div className="flex items-center gap-2">
                                         <div className={cn(
                                             "h-1.5 w-1.5 rounded-full animate-pulse",
-                                            isDaylight ? "bg-[rgb(var(--color-primary))]" : "bg-[rgb(var(--color-primary))]"
+                                            "bg-[rgb(var(--color-primary))]"
                                         )} />
                                         <span className={cn(
                                             "text-[10px] font-bold uppercase tracking-widest",
-                                            isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
+                                            "text-[rgb(var(--color-primary-strong))]"
                                         )}>
                                             {t.quranLastRead}
                                         </span>
@@ -196,13 +197,13 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     <div>
                                         <h3 className={cn(
                                             "text-xl md:text-2xl font-bold transition-colors",
-                                            isDaylight ? "text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]" : "text-white group-hover:text-[rgb(var(--color-primary-light))]"
+                                            "text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]"
                                         )}>
                                             {safeLastRead.surahName}
                                         </h3>
                                         <p className={cn(
                                             "text-xs md:text-sm font-medium mt-0.5",
-                                            isDaylight ? "text-slate-500" : "text-white/70"
+                                            "text-[rgb(var(--color-text-muted))]"
                                         )}>
                                             {t.quranVerse} {safeLastRead.verseId}
                                         </p>
@@ -211,15 +212,11 @@ export default function SurahList({ chapters }: SurahListProps) {
 
                                 <div className={cn(
                                     "flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full border transition-all",
-                                    isDaylight
-                                            ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary-light))] group-hover:bg-[rgb(var(--color-primary))] group-hover:border-[rgb(var(--color-primary))]"
-                                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 group-hover:bg-[rgb(var(--color-primary))] group-hover:border-[rgb(var(--color-primary))]"
+                                    "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25 group-hover:bg-[rgb(var(--color-primary))] group-hover:border-[rgb(var(--color-primary))]"
                                 )}>
                                     <Clock className={cn(
                                         "h-5 w-5 md:h-6 md:w-6 transition-colors",
-                                        isDaylight
-                                            ? "text-[rgb(var(--color-primary-strong))] group-hover:text-white"
-                                            : "text-[rgb(var(--color-primary))] group-hover:text-white"
+                                        "text-[rgb(var(--color-primary-strong))] group-hover:text-[rgb(var(--color-primary-foreground))]"
                                     )} />
                                 </div>
                             </div>
@@ -228,15 +225,15 @@ export default function SurahList({ chapters }: SurahListProps) {
                 })() : (
                     <div className={cn(
                         "col-span-2 rounded-3xl border p-5 flex flex-col justify-center gap-1",
-                        isDaylight ? "bg-white border-slate-100 shadow-sm" : "border-white/5 bg-[#0f172a]/40"
+                        "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                     )}>
                         <h3 className={cn(
                             "text-base font-bold",
-                            isDaylight ? "text-slate-400" : "text-white/70"
+                            "text-[rgb(var(--color-text-muted))]"
                         )}>{t.quranNoHistory}</h3>
                         <p className={cn(
                             "text-xs font-medium uppercase tracking-widest",
-                            isDaylight ? "text-[rgb(var(--color-primary-strong))]/60" : "text-white/50"
+                            "text-[rgb(var(--color-primary-strong))]/70"
                         )}>{t.quranStartReading}</p>
                     </div>
                 )}
@@ -248,43 +245,37 @@ export default function SurahList({ chapters }: SurahListProps) {
                     onFocus={() => prefetchRoute("/bookmarks")}
                     className={cn(
                         "col-span-2 md:col-span-1 group relative overflow-hidden rounded-3xl border backdrop-blur-sm p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:shadow-lg",
-                        isDaylight
-                            ? bookmarkCount > 0
-                                ? "bg-[rgb(var(--color-primary-light))]/35 border-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-light))]/55"
-                                : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))]"
-                            : "bg-[#0f172a]/40 border-white/10 hover:bg-[#0f172a]/80 hover:border-[rgb(var(--color-primary))]/30"
+                        bookmarkCount > 0
+                            ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/35 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/20"
+                            : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))]"
                     )}
                 >
                     <div className={cn(
                         "absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity",
-                        isDaylight ? "from-[rgb(var(--color-primary))]/12 to-transparent" : "from-white/5 to-transparent"
+                        "from-[rgb(var(--color-primary))]/12 to-transparent"
                     )} />
 
                     <div className="relative flex items-center md:flex-col md:items-start gap-4 md:gap-0 w-full">
                         <div className={cn(
                             "h-10 w-10 md:h-10 md:w-10 rounded-full flex items-center justify-center border transition-all md:mb-4",
-                            isDaylight
-                                ? bookmarkCount > 0
-                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))] border-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]"
-                                    : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] group-hover:bg-[rgb(var(--color-primary-light))]/25 group-hover:border-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary-strong))]"
-                                : "bg-white/5 border-white/10 group-hover:bg-[rgb(var(--color-primary))]/20 group-hover:border-[rgb(var(--color-primary))]/30"
+                            bookmarkCount > 0
+                                ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
+                                : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] group-hover:bg-[rgb(var(--color-primary))]/10 group-hover:border-[rgb(var(--color-primary))]/30 group-hover:text-[rgb(var(--color-primary-strong))]"
                         )}>
                             <Bookmark className={cn(
                                 "h-5 w-5 transition-colors",
-                                isDaylight
-                                    ? bookmarkCount > 0 ? "fill-current" : ""
-                                    : "text-white/70 group-hover:text-[rgb(var(--color-primary))]"
+                                bookmarkCount > 0 ? "fill-current" : "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))]"
                             )} />
                         </div>
 
                         <div className="flex-1">
                             <h3 className={cn(
                                 "text-base md:text-lg font-bold mb-0.5",
-                                isDaylight ? "text-slate-900" : "text-white"
+                                "text-[rgb(var(--color-text-strong))]"
                             )}>{t.quranBookmarks}</h3>
                             <p className={cn(
                                 "text-xs",
-                                isDaylight ? "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))]" : "text-white/70 group-hover:text-white/90"
+                                "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))]"
                             )}>
                                 {bookmarkCount} {t.quranVersesSaved}
                             </p>
@@ -292,7 +283,7 @@ export default function SurahList({ chapters }: SurahListProps) {
 
                         <ChevronRight className={cn(
                             "h-5 w-5 md:hidden",
-                            isDaylight ? "text-slate-400" : "text-slate-500"
+                            "text-[rgb(var(--color-text-muted))]"
                         )} />
                     </div>
                 </Link>
@@ -304,13 +295,11 @@ export default function SurahList({ chapters }: SurahListProps) {
                     <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl" />
                     <div className={cn(
                         "relative border rounded-2xl flex items-center px-4 py-2.5 shadow-lg transition-all h-[44px]",
-                        isDaylight
-                            ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] focus-within:border-[rgb(var(--color-primary))] focus-within:ring-[rgb(var(--color-primary-light))]"
-                            : "bg-[#0f172a]/60 backdrop-blur-xl border-white/10 focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/30"
+                        "bg-transparent border-[rgb(var(--color-border))] focus-within:border-[rgb(var(--color-primary))] focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/30"
                     )}>
                         <Search className={cn(
                             "w-4 h-4 transition-colors",
-                            isDaylight ? "text-[rgb(var(--color-text-muted))] group-focus-within:text-[rgb(var(--color-primary-strong))]" : "text-slate-400 group-focus-within:text-[rgb(var(--color-primary))]"
+                            "text-[rgb(var(--color-text-muted))] group-focus-within:text-[rgb(var(--color-primary-strong))]"
                         )} />
                         <Input
                             placeholder={t.quranSearchPlaceholder}
@@ -319,8 +308,8 @@ export default function SurahList({ chapters }: SurahListProps) {
                             autoCapitalize="none"
                             autoCorrect="off"
                             className={cn(
-                                "border-none bg-transparent text-[16px] sm:text-sm focus-visible:ring-0 px-3 h-auto py-1",
-                                isDaylight ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-slate-500"
+                                "!border-none !bg-transparent !shadow-none text-[16px] sm:text-sm focus-visible:ring-0 px-3 h-auto py-1",
+                                "text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))]"
                             )}
                         />
                     </div>
@@ -332,11 +321,11 @@ export default function SurahList({ chapters }: SurahListProps) {
             <div className="flex items-center justify-between px-2 pt-1">
                 <h2 className={cn(
                     "text-xl font-bold",
-                    isDaylight ? "text-slate-900" : "text-white"
+                    "text-[rgb(var(--color-text-strong))]"
                 )}>{t.quranSurahList}</h2>
                 <span className={cn(
                     "text-xs font-medium uppercase tracking-wider",
-                    isDaylight ? "text-slate-500" : "text-white/70"
+                    "text-[rgb(var(--color-text-muted))]"
                 )}>
                     {filteredChapters.length} {t.quranSurahCount}
                 </span>
@@ -364,13 +353,9 @@ export default function SurahList({ chapters }: SurahListProps) {
                             }}
                             className={cn(
                                 "group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 gap-3 cursor-pointer",
-                                isLastRead
-                                    ? isDaylight
-                                        ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary-light))]/55 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-light))]/70"
-                                        : "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/30 shadow-[0_0_30px_rgba(var(--color-primary),0.25)] hover:bg-[rgb(var(--color-primary))]/40"
-                                    : isDaylight
-                                        ? "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary-light))] hover:bg-[rgb(var(--color-primary-light))]/20 hover:shadow-[var(--shadow-card)]"
-                                        : "border-white/10 bg-white/5 hover:border-[rgb(var(--color-primary))]/40 hover:bg-white/10"
+                                    isLastRead
+                                    ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/15 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/25"
+                                    : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 hover:shadow-[var(--shadow-card)]"
                             )}
                         >
                             {/* Bookmark Badge - Compact Icon Only */}
@@ -378,13 +363,11 @@ export default function SurahList({ chapters }: SurahListProps) {
                                 <div className="absolute top-0 right-0 z-10 pointer-events-none">
                                     <div className={cn(
                                         "flex h-6 w-6 items-center justify-center rounded-bl-xl border-b border-l backdrop-blur-sm",
-                                        isDaylight
-                                            ? "bg-[rgb(var(--color-primary-light))]/55 border-[rgb(var(--color-primary-light))]"
-                                            : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/30"
+                                        "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25"
                                     )}>
                                         <Bookmark className={cn(
                                             "h-3 w-3 fill-current",
-                                            isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary))]"
+                                            "text-[rgb(var(--color-primary-strong))]"
                                         )} />
                                     </div>
                                 </div>
@@ -395,13 +378,9 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     {/* Surah Number Circle */}
                                     <div className={cn(
                                         "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1 transition-all",
-                                        isLastRead
-                                            ? isDaylight
-                                                ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))] ring-[rgb(var(--color-primary-light))] group-hover:bg-[rgb(var(--color-primary-dark))]"
-                                                : "bg-[rgb(var(--color-primary))] text-white ring-[rgb(var(--color-primary))]/30"
-                                            : isDaylight
-                                                ? "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] ring-[rgb(var(--color-border))] group-hover:bg-[rgb(var(--color-primary-light))]/25 group-hover:text-[rgb(var(--color-primary-strong))]"
-                                                : "bg-white/5 text-slate-400 ring-white/10 group-hover:text-[rgb(var(--color-primary-light))]"
+                                            isLastRead
+                                            ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] ring-[rgb(var(--color-primary))]/30 group-hover:bg-[rgb(var(--color-primary-strong))]"
+                                            : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] ring-[rgb(var(--color-border))] group-hover:bg-[rgb(var(--color-primary))]/10 group-hover:text-[rgb(var(--color-primary-strong))]"
                                     )}>
                                         {chapter.id}
                                     </div>
@@ -409,16 +388,16 @@ export default function SurahList({ chapters }: SurahListProps) {
                                         <span className={cn(
                                             "font-bold text-sm truncate transition-colors",
                                             isLastRead
-                                                ? isDaylight ? "text-slate-900" : "text-white"
-                                                : isDaylight ? "text-slate-800" : "text-slate-300"
+                                                ? "text-[rgb(var(--color-text-strong))]"
+                                                : "text-[rgb(var(--color-text))]"
                                         )}>
                                             {chapter.name_simple}
                                         </span>
                                         <span className={cn(
                                             "text-[10px] truncate transition-colors",
                                             isLastRead
-                                                ? isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
-                                                : isDaylight ? "text-slate-500" : "text-slate-500"
+                                                ? "text-[rgb(var(--color-primary-strong))]"
+                                                : "text-[rgb(var(--color-text-muted))]"
                                         )}>
                                             {locale === 'en' && chapter.translated_name_en ? chapter.translated_name_en : chapter.translated_name.name}
                                         </span>
@@ -429,14 +408,14 @@ export default function SurahList({ chapters }: SurahListProps) {
                             <div className="flex items-end justify-between w-full pointer-events-none">
                                 <p className={cn(
                                     "text-[9px] font-medium uppercase tracking-wider transition-colors",
-                                    isDaylight ? "text-slate-500" : "text-white/70"
+                                    "text-[rgb(var(--color-text-muted))]"
                                 )}>
-                                    {chapter.verses_count} {t.quranVerseCount} • {chapter.revelation_place === "makkah" ? t.quranMakkah : t.quranMadinah}
+                                    {chapter.verses_count} {t.quranVerseCount}, {chapter.revelation_place === "makkah" ? t.quranMakkah : t.quranMadinah}
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className={cn(
                                         "font-amiri text-lg transition-colors",
-                                        isDaylight ? "text-slate-900" : "text-white/95"
+                                        "text-[rgb(var(--color-text-strong))]"
                                     )}>
                                         {chapter.name_arabic}
                                     </span>
@@ -449,9 +428,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                         }}
                                         className={cn(
                                             "pointer-events-auto relative z-10 h-7 w-7 flex items-center justify-center rounded-full transition-all cursor-pointer border",
-                                            isDaylight
-                                                ? "bg-[rgb(var(--color-primary-light))]/35 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-text-strong))] hover:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
-                                                : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))] hover:text-white"
+                                            "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-foreground))] hover:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                                         )}
                                     >
                                         <Play className="h-3 w-3 fill-current ml-0.5" />

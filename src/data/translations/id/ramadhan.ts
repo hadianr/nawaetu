@@ -23,9 +23,9 @@ export const ramadhanID = {
     ramadhanDay1: "Hari 1",
     ramadhanDay30: "Hari 30",
     ramadhanCompleted: "selesai",
-    ramadhanPeriod1: "🌟 10 Hari Pertama — Penuh Rahmat",
-    ramadhanPeriod2: "🙏 10 Hari Kedua — Penuh Ampunan",
-    ramadhanPeriod3: "✨ 10 Hari Terakhir — Bebas dari Api Neraka",
+    ramadhanPeriod1: "10 Hari Pertama — Penuh Rahmat",
+    ramadhanPeriod2: "10 Hari Kedua — Penuh Ampunan",
+    ramadhanPeriod3: "10 Hari Terakhir - Bebas dari Api Neraka",
 
     // Hero Card
     heroRamadhanLabel: "Ramadhan",
@@ -33,9 +33,9 @@ export const ramadhanID = {
     heroDay1: "Hari 1",
     heroDay30: "Hari 30",
     heroCompleted: "selesai",
-    heroPeriod1: "🌟 10 Hari Pertama — Penuh Rahmat",
-    heroPeriod2: "🙏 10 Hari Kedua — Penuh Ampunan",
-    heroPeriod3: "✨ 10 Hari Terakhir — Bebas dari Api Neraka",
+    heroPeriod1: "10 Hari Pertama — Penuh Rahmat",
+    heroPeriod2: "10 Hari Kedua — Penuh Ampunan",
+    heroPeriod3: "10 Hari Terakhir - Bebas dari Api Neraka",
 
     // Schedule Card
     scheduleTodayTitle: "Jadwal Hari Ini",
@@ -43,7 +43,7 @@ export const ramadhanID = {
     scheduleFajrIn: "Subuh dalam",
     scheduleIftarIn: "Buka puasa dalam",
     scheduleMaghribIn: "Maghrib dalam",
-    scheduleAlreadyIftar: "Alhamdulillah, sudah buka puasa 🌙",
+    scheduleAlreadyIftar: "Alhamdulillah, sudah buka puasa",
     scheduleImsak: "Imsak",
     scheduleFajr: "Subuh",
     scheduleMaghrib: "Maghrib",
@@ -64,18 +64,18 @@ export const ramadhanID = {
     // Khataman Progress
     khatamanTitle: "Khataman Quran",
     khatamanOf30Juz: "/ 30 Juz",
-    khatamanOnTrack: "✓ On track",
-    khatamanCatchUp: "⚡ Kejar!",
+    khatamanOnTrack: "On track",
+    khatamanCatchUp: "Kejar!",
     khatamanCompleted: "selesai",
     khatamanCurrentJuz: "Juz saat ini",
-    khatamanEstimateFinish: "📅 Estimasi khatam: hari ke-{day} Ramadhan",
-    khatamanAlhamdulillah: "🎉 Alhamdulillah, Khatam!",
+    khatamanEstimateFinish: "Estimasi khatam: hari ke-{day} Ramadhan",
+    khatamanAlhamdulillah: "Alhamdulillah, Khatam!",
 
     // Lailatul Qadr Card
     lailatulQadrTitle: "Lailatul Qadr",
-    lailatulQadrTonightPossibility: "⭐ Malam ini mungkin Lailatul Qadr!",
-    lailatulQadrActiveTonight: "🌟 Malam ini malam ke-{night}!",
-    lailatulQadrAllPassed: "Semoga amal ibadah kita diterima di sisi Allah SWT 🤲",
+    lailatulQadrTonightPossibility: "Malam ini mungkin Lailatul Qadr!",
+    lailatulQadrActiveTonight: "Malam ini malam ke-{night}!",
+    lailatulQadrAllPassed: "Semoga amal ibadah kita diterima di sisi Allah SWT",
     lailatulQadrTonightMessage: "Perbanyak doa, dzikir, dan ibadah malam ini!",
     lailatulQadrVerse: "\"Lebih baik dari 1000 bulan\" \u2014 QS. Al-Qadr: 3",
     lailatulQadrNightsLeft: "malam lagi",
@@ -95,7 +95,7 @@ export const ramadhanID = {
     // Practices List
     practicesTitle: "Amalan Ramadhan",
     practicesTapHint: "Tap untuk lihat niat & dalil",
-    practicesTipsLabel: "💡 Tips Amalan",
+    practicesTipsLabel: "Tips Amalan",
 
     // Guide Card
     guideTitle: "Panduan Puasa Ramadhan",
@@ -114,7 +114,7 @@ export const ramadhanID = {
     faqModalTitle: "FAQ Puasa",
     faqModalSubtitle: "Pertanyaan yang sering ditanyakan seputar puasa",
     faqEvidenceLabel: "Dalil",
-    faqDisclaimerTitle: "⚠️ Catatan Penting",
+    faqDisclaimerTitle: "Catatan Penting",
     faqDisclaimer: "Untuk masalah fiqih yang kompleks atau kondisi khusus, silakan konsultasi dengan ustadz atau ulama terpercaya di daerah Anda.",
 
     // Intention Card
