@@ -249,7 +249,14 @@ export default function NotificationSettings() {
                             }),
                         });
                         if (!response.ok) {
-                            throw new Error("Subscription registration failed");
+                            let detail = "";
+                            try {
+                                const body = await response.json() as { error?: unknown };
+                                if (typeof body.error === "string") detail = `: ${body.error}`;
+                            } catch {
+                                // Keep the HTTP status when the server did not return JSON.
+                            }
+                            throw new Error(`Subscription registration failed (${response.status})${detail}`);
                         }
                         setSubscriptionHealthy(true);
                         return locale === 'id' ? "Notifikasi berhasil diaktifkan" : "Notifications enabled successfully";
