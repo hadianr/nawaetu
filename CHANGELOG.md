@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.0] - 2026-09-19
+
+### Added
+- **Feat(theme): implement glass surface effect for navigation and components**
+- **Feat: add favicon route and refactor home component entry**
+
+### Improved
+- **Refactor(ui): consolidate design system**
+- **Refactor(theme): unify semantic design system**
+- **Refactor: update FCMHandler logic and remove unused component**
+- **Refactor: simplify font loading and improve PWA handling**
+
+### Fixed
+- **Fix(missions): improve dark theme contrast**
+- **Fix(onboarding): persist completion reliably**
+- **Fix: issue streak reset**
+- **Fix: push notif prayer redirect not found**
+
+
 ## [1.14.1] - 2026-09-10
 
 ### Improved
