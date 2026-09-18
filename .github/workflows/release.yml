@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Existing release tag (vX.Y.Z)
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -23,20 +29,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.version || github.ref }}
           fetch-depth: 0
 
       - name: Get version from tag
         id: tag_name
+        env:
+          REQUESTED_VERSION: ${{ inputs.version || github.ref_name }}
         run: |
-          echo "current_version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: Validate version format
-        run: |
-          VERSION=${{ steps.tag_name.outputs.current_version }}
-          if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Error: Version $VERSION does not match vX.Y.Z format"
+          if [[ ! "$REQUESTED_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version $REQUESTED_VERSION does not match vX.Y.Z format"
             exit 1
           fi
+          printf 'current_version=%s\n' "$REQUESTED_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Validate repository version
         run: |
@@ -63,7 +68,11 @@ jobs:
           VERSION_NUM=${VERSION#v}
           
           # Extract section from CHANGELOG.md between version header and next version
-          CHANGELOG_ENTRY=$(awk "/^\## \[$VERSION_NUM\]/,/^\## \[/" CHANGELOG.md | head -n -1 | tail -n +2)
+          CHANGELOG_ENTRY=$(awk -v version="$VERSION_NUM" '
+            $0 ~ "^## \\[" version "\\]" { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md)
           
           # If not found, use generic message
           if [ -z "$CHANGELOG_ENTRY" ]; then
@@ -81,6 +90,7 @@ jobs:
             CHANGELOG.md
             README.md
           body_path: /tmp/release_notes.txt
+          tag_name: ${{ steps.tag_name.outputs.current_version }}
           draft: false
           prerelease: ${{ contains(steps.tag_name.outputs.current_version, '-') }}
           name: ${{ steps.tag_name.outputs.current_version }}
