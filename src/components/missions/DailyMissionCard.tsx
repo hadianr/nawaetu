@@ -142,12 +142,12 @@ export default function DailyMissionCard({
                             "text-xs font-semibold truncate pr-2",
                             isCompleted
                                 ? "text-[rgb(var(--color-primary-light))] line-through"
-                                : isSpecial ? "text-[rgb(var(--color-accent-foreground))]" : "text-[rgb(var(--color-text-strong))]"
+                                : isSpecial ? "text-[rgb(var(--color-accent))]" : "text-[rgb(var(--color-text-strong))]"
                         )}>
                             {mission.title}
                         </p>
                         {isSpecial && !isCompleted && !isLocked && (
-                            <span className="text-[8px] px-1 rounded bg-[rgb(var(--color-accent))]/15 text-[rgb(var(--color-accent-foreground))] border border-[rgb(var(--color-accent))]/30">
+                            <span className="text-[8px] px-1 rounded bg-[rgb(var(--color-accent))]/15 text-[rgb(var(--color-accent))] border border-[rgb(var(--color-accent))]/30">
                                 {t.home_mission_special}
                             </span>
                         )}
