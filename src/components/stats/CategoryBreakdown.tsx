@@ -3,10 +3,11 @@
 import React from 'react';
 import { InsightKey } from "@/hooks/useStatsInsights";
 import type { TranslationTree } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface CategoryBreakdownProps {
     t: TranslationTree;
-    categoryStats: Record<string, { count: number; label: string; icon: string; color: string }>;
+    categoryStats: Record<string, { count: number; label: string; icon: import("@/lib/icon-names").AppIconName; color: string }>;
     maxCatCount: number;
     setActiveInsight: (val: InsightKey | null) => void;
 }
@@ -24,9 +25,9 @@ export function CategoryBreakdown({
     if (activeStats.length === 0) return null;
 
     return (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5">
             <h2 className="font-bold text-sm mb-5 flex items-center gap-2">
-                <span className="text-base">🎯</span>
+                <AppIcon name="target" size="sm" tone="primary" label={t.stats.missions.title} />
                 {t.stats.missions.title}
             </h2>
             <div className="space-y-4">
@@ -42,12 +43,12 @@ export function CategoryBreakdown({
                     >
                         <div className="flex items-center justify-between mb-1.5">
                             <div className="flex items-center gap-2">
-                                <span className="text-sm grayscale group-hover:grayscale-0 transition-all">{cat.icon}</span>
-                                <span className="text-[11px] font-bold text-white/70 group-hover:text-white transition-colors uppercase tracking-wider">{cat.label}</span>
+                                <AppIcon name={cat.icon} size="sm" tone="primary" />
+                                <span className="text-[11px] font-bold text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))] transition-colors uppercase tracking-wider">{cat.label}</span>
                             </div>
-                            <span className="text-xs font-black text-white">{cat.count}</span>
+                            <span className="text-xs font-black text-[rgb(var(--color-text-strong))]">{cat.count}</span>
                         </div>
-                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-[rgb(var(--color-surface))] rounded-full overflow-hidden">
                             <div
                                 className="h-full rounded-full transition-all duration-1000 shadow-sm"
                                 style={{

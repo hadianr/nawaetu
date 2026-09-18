@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Clock, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AppIcon } from '@/components/ui/AppIcon';
 import { useTranslations } from '@/context/LocaleContext';
 
 interface QuranStatsCardProps {
@@ -37,42 +38,42 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
 
     const stats = [
         {
-            icon: <BookOpen className="w-4 h-4 text-blue-400" />,
+            icon: <BookOpen className="w-4 h-4 text-[rgb(var(--color-info))]" />,
             label: t.tilawahTotalAyat,
             value: totalQuranAyat > 0 ? totalQuranAyat.toLocaleString() : '—',
             sub: totalQuranAyat > 0 ? t.tilawahTotalAyatSub : t.tilawahTotalAyatEmpty,
-            gradient: 'from-blue-500/10',
-            color: 'text-blue-400',
+            gradient: 'from-[rgb(var(--color-info))]/10',
+            color: 'text-[rgb(var(--color-info))]',
         },
         {
-            icon: <Clock className="w-4 h-4 text-emerald-400" />,
+            icon: <Clock className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />,
             label: t.tilawahDurationToday,
             value: todayReadSeconds > 0 ? formatDuration(todayReadSeconds) : '—',
             sub: todayReadSeconds > 0 ? t.tilawahTodaySub : t.tilawahNoSessionToday,
-            gradient: 'from-emerald-500/10',
-            color: 'text-emerald-400',
+            gradient: 'from-[rgb(var(--color-primary))]/10',
+            color: 'text-[rgb(var(--color-primary-light))]',
         },
         {
-            icon: <Flame className="w-4 h-4 text-orange-400" />,
+            icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent))]" />,
             label: t.tilawahTotalDuration,
             value: totalQuranReadSeconds > 0 ? formatDuration(totalQuranReadSeconds) : '—',
             sub: t.tilawahTotalDurationSub,
-            gradient: 'from-orange-500/10',
-            color: 'text-orange-400',
+            gradient: 'from-[rgb(var(--color-accent))]/10',
+            color: 'text-[rgb(var(--color-accent))]',
         },
     ];
 
-    if (!mounted) return <div className="h-48 rounded-2xl border border-white/10 bg-white/[0.02] animate-pulse" />;
+    if (!mounted) return <div className="h-48 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] animate-pulse" />;
 
     return (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5">
             <h2 className="font-bold text-sm mb-4 flex items-center gap-2">
-                <span className="text-base">📖</span>
+                <AppIcon name="book" size="sm" tone="primary" label={t.tilawahStatsTitle} />
                 {t.tilawahStatsTitle}
             </h2>
 
             {!hasAnyData && (
-                <p className="text-xs text-white/30 italic text-center py-2 mb-3">
+                <p className="text-xs text-[rgb(var(--color-text-muted))] italic text-center py-2 mb-3">
                     {t.tilawahStatsHelp}
                 </p>
             )}
@@ -82,16 +83,16 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
                     <div
                         key={i}
                         className={cn(
-                            'relative overflow-hidden rounded-2xl border border-white/8 bg-gradient-to-br to-transparent p-3',
+                            'relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br to-transparent p-3',
                             stat.gradient
                         )}
                     >
                         <div className="flex items-center gap-1.5 mb-2">
                             {stat.icon}
                         </div>
-                        <p className="text-[9px] text-white/40 leading-tight mb-1 line-clamp-2">{stat.label}</p>
+                        <p className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mb-1 line-clamp-2">{stat.label}</p>
                         <p className={cn('text-base font-black', stat.color)}>{stat.value}</p>
-                        <p className="text-[9px] text-white/30 mt-0.5 line-clamp-1">{stat.sub}</p>
+                        <p className="text-[9px] text-[rgb(var(--color-text-muted))] mt-0.5 line-clamp-1">{stat.sub}</p>
                     </div>
                 ))}
             </div>

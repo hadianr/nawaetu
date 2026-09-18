@@ -20,26 +20,16 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-const QiblaCompass = dynamic(() => import("@/components/QiblaCompass"), { ssr: false, loading: () => <div className="animate-pulse w-32 h-32 rounded-full border-4 border-primary/20" /> });
+const QiblaCompass = dynamic(() => import("@/components/QiblaCompass"), { ssr: false, loading: () => <div className="animate-pulse w-32 h-32 rounded-full border-4 border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface-subtle))]" /> });
 import { trackKiblatView } from "@/lib/analytics/analytics";
-import { THEMES, useTheme } from "@/context/ThemeContext";
-import { cn } from "@/lib/utils";
 
 export default function QiblaPage() {
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
-
     useEffect(() => {
         trackKiblatView();
     }, []);
 
     return (
-        <div className={cn(
-            "flex h-[100dvh] w-screen flex-col items-center justify-center font-sans overflow-hidden fixed inset-0 transition-colors duration-500",
-            isDaylight
-                ? "bg-[#f8fafc] text-slate-900 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.1),transparent)]"
-                : "bg-[#0a0a0a] text-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),transparent)]"
-        )}>
+        <div className="flex h-[100dvh] w-full max-w-full flex-col items-center justify-center font-sans overflow-hidden fixed inset-0 transition-colors duration-500 bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),transparent)]">
             {/* Main Content - Centered & Full Width */}
             <div className="w-full h-full flex items-center justify-center relative">
                 <QiblaCompass />

@@ -132,27 +132,27 @@ export async function POST(req: NextRequest) {
         });
 
         // 7. Format Telegram Notification Content
-        const emoji = type === "bug" ? "🐛 [BUG REPORT]" : "💡 [FEATURE REQUEST]";
+        const reportTitle = type === "bug" ? "[BUG REPORT]" : "[FEATURE REQUEST]";
         const parseMode = "HTML";
         
         // Build rich HTML message (safe tags: <b>, <i>, <code>, <a>)
         const captionText = [
-            `<b>${emoji}</b>`,
+            `<b>${reportTitle}</b>`,
             `----------------------------------------`,
-            `<b>👤 Pengirim:</b>`,
-            `• Nama: ${userName}`,
-            `• Email: ${userEmail}`,
-            `• User ID: <code>${userId}</code>`,
+            `<b>Pengirim:</b>`,
+            `Nama: ${userName}`,
+            `Email: ${userEmail}`,
+            `User ID: <code>${userId}</code>`,
             ``,
-            `<b>📝 Pesan:</b>`,
+            `<b>Pesan:</b>`,
             `<i>"${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}"</i>`,
             ``,
-            `<b>📱 Detail Perangkat:</b>`,
-            `• Versi App: <code>${deviceInfo.appVersion || "N/A"}</code>`,
-            `• OS: <code>${deviceInfo.os || "N/A"}</code>`,
-            `• Browser: <code>${deviceInfo.browser || "N/A"}</code>`,
-            `• Ukuran Layar: <code>${deviceInfo.screenSize || "N/A"}</code>`,
-            `• User Agent: <code>${deviceInfo.userAgent || "N/A"}</code>`,
+            `<b>Detail Perangkat:</b>`,
+            `Versi App: <code>${deviceInfo.appVersion || "N/A"}</code>`,
+            `OS: <code>${deviceInfo.os || "N/A"}</code>`,
+            `Browser: <code>${deviceInfo.browser || "N/A"}</code>`,
+            `Ukuran Layar: <code>${deviceInfo.screenSize || "N/A"}</code>`,
+            `User Agent: <code>${deviceInfo.userAgent || "N/A"}</code>`,
         ].join("\n");
 
         // 8. Forward to Telegram (if credentials are set)

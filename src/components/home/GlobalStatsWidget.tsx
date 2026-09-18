@@ -22,6 +22,7 @@ import { motion } from "framer-motion";
 import { Users, Globe2, HeartHandshake } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 export default function GlobalStatsWidget() {
     const { t } = useLocale();
@@ -38,32 +39,32 @@ export default function GlobalStatsWidget() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-black/20 to-transparent p-4 mb-4"
+            className="w-full relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-[rgb(var(--color-surface-subtle))] to-transparent p-4 mb-4"
         >
             <div className="absolute top-0 right-0 w-32 h-32 bg-[rgb(var(--color-primary))]/5 rounded-full blur-[40px] pointer-events-none" />
 
             <div className="flex items-center gap-2 mb-4">
                 <Globe2 className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
-                <h2 className="font-bold text-sm text-white">{t.globalImpactTitle}</h2>
+                <h2 className="font-bold text-sm text-[rgb(var(--color-text-strong))]">{t.globalImpactTitle}</h2>
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white/5 border border-white/5">
-                    <HeartHandshake className="w-5 h-5 text-rose-400 mb-1" />
-                    <span className="text-lg font-black text-white">{stats.missionsCompleted.toLocaleString()}</span>
-                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactMissions}</span>
+                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                    <HeartHandshake className="w-5 h-5 text-[rgb(var(--color-accent))] mb-1" />
+                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))]">{stats.missionsCompleted.toLocaleString()}</span>
+                    <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactMissions}</span>
                 </div>
 
-                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white/5 border border-white/5">
-                    <span className="text-xl mb-1">🕌</span>
-                    <span className="text-lg font-black text-white">{stats.activeWorshipDays.toLocaleString()}</span>
-                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactStreakDays}</span>
+                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                    <AppIcon name="landmark" size="md" tone="primary" className="mb-1" />
+                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))]">{stats.activeWorshipDays.toLocaleString()}</span>
+                    <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactStreakDays}</span>
                 </div>
 
-                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white/5 border border-white/5">
-                    <Users className="w-5 h-5 text-blue-400 mb-1" />
-                    <span className="text-lg font-black text-white">{stats.users.toLocaleString()}</span>
-                    <span className="text-[9px] text-white/50 leading-tight mt-0.5">{t.globalImpactUsers}</span>
+                <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
+                    <Users className="w-5 h-5 text-[rgb(var(--color-info))] mb-1" />
+                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))]">{stats.users.toLocaleString()}</span>
+                    <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactUsers}</span>
                 </div>
             </div>
 

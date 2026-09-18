@@ -30,7 +30,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import dynamic from "next/dynamic";
 import { Chapter } from "@/components/quran/SurahList";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 const VerseShareDialog = dynamic(() => import("./VerseShareDialog"), { ssr: false });
 const BookmarkEditDialog = dynamic(() => import("./BookmarkEditDialog"), { ssr: false });
@@ -91,8 +91,6 @@ interface VerseListProps {
 
 export default function VerseList({ chapter, verses, currentPage, totalPages, currentReciterId, currentLocale = "id" }: VerseListProps) {
     const { t, locale: contextLocale } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     // --- State ---
     // Local reciter ID — updates immediately on change (without waiting for router.refresh())
@@ -485,8 +483,8 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         return (
             <div className="relative min-h-screen pb-16 w-full max-w-4xl mx-auto flex items-center justify-center">
                 <div className="text-center space-y-4 px-4">
-                    <h2 className="text-lg font-bold text-red-500">⚠️ No Verses Found</h2>
-                    <p className="text-slate-400 text-sm">Verses data is empty. This might be a loading error.</p>
+                    <h2 className="text-lg font-bold text-[rgb(var(--color-danger))] flex items-center gap-2"><AppIcon name="warning" size="sm" tone="danger" /> No Verses Found</h2>
+                    <p className="text-[rgb(var(--color-text-muted))] text-sm">Verses data is empty. This might be a loading error.</p>
                     <Link href="/quran" className="inline-block rounded-lg bg-[rgb(var(--color-primary))] px-6 py-2 font-semibold text-[rgb(var(--color-text-strong))] transition-colors hover:bg-[rgb(var(--color-primary-light))]">
                         Kembali ke Daftar Surah
                     </Link>
@@ -501,24 +499,24 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
 
                 {/* --- Sticky Header --- */}
                 <div className="sticky top-0 z-30 -mx-4 md:mx-0">
-                    <div className={cn("absolute inset-0 backdrop-blur-xl border-b", isDaylight ? "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]" : "bg-[#0F172A]/80 border-white/5")} />
+                    <div className="absolute inset-0 backdrop-blur-xl border-b bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))]" />
                     <div className="relative px-4 h-16 flex items-center justify-between gap-4">
                         {/* Left: Back & Title */}
                         <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Link href="/quran" className={cn("flex items-center justify-center h-9 w-9 -ml-2 rounded-full transition-colors shrink-0 p-0", isDaylight ? "hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]" : "hover:bg-white/10 text-slate-300 hover:text-white")}>
+                                    <Link href="/quran" className="flex items-center justify-center h-9 w-9 -ml-2 rounded-full transition-colors shrink-0 p-0 hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]">
                                         <ChevronLeft className="h-6 w-6" />
                                     </Link>
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">{t.quranBack}</TooltipContent>
                             </Tooltip>
                             <div className="flex flex-col min-w-0">
-                                <h1 className={cn("text-base md:text-lg font-bold truncate leading-tight", isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-white")}>
+                                <h1 className="text-base md:text-lg font-bold truncate leading-tight text-[rgb(var(--color-text-strong))]">
                                     {chapter.name_simple}
                                 </h1>
                                 <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
-                                    {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah} • {chapter.verses_count} {t.quranVerseCount}
+                                    {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah}, {chapter.verses_count} {t.quranVerseCount}
                                 </p>
                             </div>
                         </div>
@@ -594,7 +592,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         <div key="tajweed-legend-mushaf" className={scriptType === 'tajweed' ? '' : 'hidden'}>
                             <TajweedLegend />
                         </div>
-                        <div className={cn("text-right", getVerseFontClass(scriptType, fontSize), isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-slate-200")} dir="rtl">
+                        <div className={cn("text-right text-[rgb(var(--color-text-strong))]", getVerseFontClass(scriptType, fontSize))} dir="rtl">
                             {displayedVerses.map((verse) => (
                                 <span key={`mushaf-${verse.verse_key}`} className="inline relative" id={`verse-${parseInt(verse.verse_key.split(':')[1])}`}>
                                     <span className={cn(
@@ -621,13 +619,13 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                         <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--color-primary))]" />
                                     </div>
                                 ) : (
-                                    <div className="w-full h-10 border-t border-white/5" />
+                                    <div className="w-full h-10 border-t border-[rgb(var(--color-border))]/60" />
                                 )}
                             </div>
                         )}
                         {/* End of chapter indicator */}
                         {currentPage >= totalPages && totalPages > 0 && (
-                            <div className="text-center py-8 border-t border-white/5 mx-4 md:mx-0">
+                            <div className="text-center py-8 border-t border-[rgb(var(--color-border))]/60 mx-4 md:mx-0">
                                 <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] opacity-80 decoration-double">
                                     صَدَقَ اللهُ العَظِيم
                                 </span>
@@ -658,7 +656,6 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                         isPlayingVerse={playingVerseKey === verse.verse_key}
                                         isPlaying={isPlaying}
                                         isBookmarked={checkIsBookmarked(verse.verse_key)}
-                                        isDaylight={isDaylight}
                                         scriptType={scriptType}
                                         fontSize={fontSize}
                                         showTransliteration={showTransliteration}
@@ -685,16 +682,16 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                 );
                             } catch (error) {
                                 return (
-                                    <div key={`verse-error-${verse.verse_key}`} className="px-4 md:px-6 py-6 border-b border-white/5 bg-red-900/10 rounded-lg border border-red-500/30">
-                                        <p className="text-red-400 text-sm font-semibold">Error rendering verse {verse.verse_key}</p>
-                                        <p className="text-red-300/70 text-xs mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
+                                    <div key={`verse-error-${verse.verse_key}`} className="px-4 md:px-6 py-6 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-danger))]/10 rounded-lg border border-[rgb(var(--color-danger))]/30">
+                                        <p className="text-[rgb(var(--color-danger))] text-sm font-semibold">Error rendering verse {verse.verse_key}</p>
+                                        <p className="text-[rgb(var(--color-danger))]/70 text-xs mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
                                     </div>
                                 );
                             }
                         })}
                         {/* Infinite Scroll Trigger (List Mode) */}
                         {currentPage < totalPages && (
-                            <div ref={loadMoreRef} className="flex justify-center items-center py-8 border-t border-white/5">
+                            <div ref={loadMoreRef} className="flex justify-center items-center py-8 border-t border-[rgb(var(--color-border))]">
                                 {isPending ? (
                                     <div className="flex flex-col items-center gap-2">
                                         <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--color-primary))]" />
@@ -706,7 +703,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         )}
                         {/* End of chapter indicator */}
                         {currentPage >= totalPages && totalPages > 0 && (
-                            <div className="text-center py-8 border-t border-white/5 mx-4 md:mx-0">
+                            <div className="text-center py-8 border-t border-[rgb(var(--color-border))] mx-4 md:mx-0">
                                 <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] opacity-80 decoration-double">
                                     صَدَقَ اللهُ العَظِيم
                                 </span>
@@ -725,7 +722,6 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                     loopMode={loopMode}
                     currentPlayingIndex={currentPlayingIndex}
                     totalVerses={accumulatedVerses.length}
-                    isDaylight={isDaylight}
                     locale={locale}
                     onLoopModeChange={setLoopMode}
                     onPrev={handlePreviousVerse}

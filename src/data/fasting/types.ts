@@ -14,15 +14,15 @@
  */
 
 export type FastingStatus =
-    | "fasting"       // ✅ Puasa penuh
-    | "not_fasting"   // ❌ Tidak puasa (sengaja/tanpa uzur)
-    | "sick"          // 🤒 Sakit
-    | "traveling"     // ✈️ Safar
-    | "menstruation"  // 🌸 Haid
-    | "postpartum"    // 🌺 Nifas
-    | "pregnant"      // 🤰 Hamil
-    | "breastfeeding" // 🤱 Menyusui
-    | "elderly";      // 👴 Lansia/sakit permanen
+    | "fasting"       // Puasa penuh
+    | "not_fasting"   // Tidak puasa (sengaja/tanpa uzur)
+    | "sick"          // Sakit
+    | "traveling"     // Safar
+    | "menstruation"  // Haid
+    | "postpartum"    // Nifas
+    | "pregnant"      // Hamil
+    | "breastfeeding" // Menyusui
+    | "elderly";      // Lansia/sakit permanen
 
 export type FastingConsequence = "none" | "qadha" | "fidyah" | "choice";
 

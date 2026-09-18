@@ -38,10 +38,10 @@ const InfoIcon = ({ className }: { className?: string }) => (
 );
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 // Lazy load dialog for better initial load
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -61,8 +61,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export default function RamadhanCountdown({ initialDays = 0 }: Props) {
-    const { currentTheme } = useTheme();
-    const isLight = THEMES[currentTheme].mode === "light";
     const router = useRouter();
     const { t } = useLocale();
     const { data: prayerData } = usePrayerTimesContext();
@@ -229,43 +227,20 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
     // Dynamic Intensity Logic
     const getIntensityStyles = (days: number) => {
-        if (isLight) {
-            return {
-                bg: "from-[rgb(var(--color-primary-light))]/60 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary-light))]/30",
-                border: "border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]",
-                text: "text-[rgb(var(--color-primary-strong))]",
-                icon: "fill-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-strong))]",
-                glow: "bg-[rgb(var(--color-primary-light))]/50",
-                animate: ""
-            };
-        }
-        if (isRamadhan) {
-            // Use CSS Variables for Dynamic Theme Integration
-            return {
-                bg: "from-[rgb(var(--color-primary-dark))]/60 via-[rgb(var(--color-primary))]/20 to-black/60",
-                border: "border-[rgb(var(--color-primary))]/50 shadow-[0_0_30px_-5px_rgba(var(--color-primary),0.3)]",
-                text: "text-[rgb(var(--color-primary-light))]",
-                icon: "fill-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary))]",
-                glow: "bg-[rgb(var(--color-primary))]/40",
-                animate: ""
-            };
-        }
-
-        // Prep Phase
         if (days <= 10) {
             return {
-                bg: "from-amber-600/40 via-yellow-500/20 to-emerald-900/60",
-                border: "border-amber-500/50 shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)]",
-                text: "text-amber-400",
-                icon: "fill-amber-400 text-amber-200",
-                glow: "bg-amber-500/30",
+                bg: "from-[rgb(var(--color-accent))]/30 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/20",
+                border: "border-[rgb(var(--color-accent))]/50 shadow-[var(--shadow-card)]",
+                text: "text-[rgb(var(--color-accent-foreground))]",
+                icon: "fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))]",
+                glow: "bg-[rgb(var(--color-accent))]/25",
                 animate: "animate-pulse"
             };
         }
         if (days <= 40) {
             return {
-                bg: "from-[rgb(var(--color-primary-dark))]/40 via-amber-700/20 to-black/60",
-                border: "border-[rgb(var(--color-primary))]/30 shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.2)]",
+                bg: "from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/10",
+                border: "border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]",
                 text: "text-[rgb(var(--color-primary-light))]",
                 icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]",
                 glow: "bg-[rgb(var(--color-primary))]/20",
@@ -273,11 +248,11 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             };
         }
         return {
-            bg: "from-slate-900 via-[rgb(var(--color-primary-dark))]/40 to-black/80",
-            border: "border-white/10",
-            text: "text-slate-400",
-            icon: "fill-white/10 text-slate-500",
-            glow: "bg-white/5",
+            bg: "from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))]",
+            border: "border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]",
+            text: "text-[rgb(var(--color-text-muted))]",
+            icon: "fill-[rgb(var(--color-text-muted))]/10 text-[rgb(var(--color-text-muted))]",
+            glow: "bg-[rgb(var(--color-text-muted))]/5",
             animate: ""
         };
     };
@@ -301,7 +276,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 {/* Optimized Background */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl -z-10 opacity-80`} />
 
-                <div className={`relative w-full bg-white/40 dark:bg-black/40 backdrop-blur-md border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
+                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 backdrop-blur-md border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
 
                     {/* Simple decorative glow */}
                     <div className={`absolute -right-10 -top-10 w-32 h-32 ${styles.glow} rounded-full blur-2xl pointer-events-none`} />
@@ -317,12 +292,12 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                     </span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-3xl font-bold font-serif text-slate-800 dark:text-white leading-none tracking-tight filter drop-shadow-md pb-1">
+                                    <span className="text-3xl font-bold font-serif text-[rgb(var(--color-text-strong))] leading-none tracking-tight pb-1">
                                         Hari ke-{displayDays}
                                     </span>
                                     {/* Next Prayer Time (Imsak / Maghrib) */}
-                                    <span className="text-sm font-medium text-slate-600 dark:text-white/70 mt-1 flex items-center gap-1.5">
-                                        ⏱️ {
+                                    <span className="text-sm font-medium text-[rgb(var(--color-text-muted))] mt-1 flex items-center gap-1.5">
+                                        <AppIcon name="calendar" size="xs" tone="muted" /> {
                                             !isMounted ? "..." : (() => {
                                                 const now = new Date();
                                                 const imsak = prayerData?.prayerTimes?.["Imsak"];
@@ -346,15 +321,15 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                                 return "Lihat Jadwal";
                                             })()
                                         }
-                                        <span className="opacity-50">•</span>
-                                        <span className="underline decoration-dotted underline-offset-2">Buka Dashboard →</span>
+                                        <span className="opacity-50">|</span>
+                                        <span className="underline decoration-dotted underline-offset-2 inline-flex items-center gap-1">Buka Dashboard <AppIcon name="target" size="xs" tone="muted" /></span>
                                     </span>
                                 </div>
                             </div>
 
                             {/* Visual Icon */}
                             <div className="text-5xl opacity-80 grayscale-[30%] group-hover:grayscale-0 transition-all duration-500 scale-110">
-                                🌙
+                                <AppIcon name="moon" size="display" tone="primary" />
                             </div>
                         </div>
                     ) : (
@@ -369,10 +344,10 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                     </span>
                                 </div>
                                 <div className="flex items-baseline gap-2.5">
-                                    <span className="text-4xl font-bold font-serif text-slate-800 dark:text-white leading-none tracking-tight filter drop-shadow-sm" suppressHydrationWarning>
+                                    <span className="text-4xl font-bold font-serif text-[rgb(var(--color-text-strong))] leading-none tracking-tight" suppressHydrationWarning>
                                         {displayDays}
                                     </span>
-                                    <span className="text-sm font-medium text-slate-600 dark:text-white/80">{t.ramadhanDaysLeft}</span>
+                                    <span className="text-sm font-medium text-[rgb(var(--color-text-muted))]">{t.ramadhanDaysLeft}</span>
                                 </div>
                             </div>
 
@@ -382,9 +357,9 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                     {getLevelTitle(progress)}
                                 </div>
                                 {/* Minimalist Bar */}
-                                <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                <div className="w-28 h-1.5 bg-[rgb(var(--color-surface-subtle))] rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
+                                        className={`h-full bg-[rgb(var(--color-primary))] transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>
@@ -392,10 +367,10 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                     e.stopPropagation();
                                     setShowInfo(true);
                                 }}>
-                                    <div className="text-[9px] text-white/60 font-medium cursor-pointer hover:text-white/80 transition-colors">
+                                    <div className="text-[9px] text-[rgb(var(--color-text-muted))] font-medium cursor-pointer hover:text-[rgb(var(--color-text))] transition-colors">
                                         {`${progress}% ${t.ramadhanPreparationLabel}`}
                                     </div>
-                                    <InfoIcon className="w-3 h-3 text-white/40 hover:text-white/80 cursor-pointer" />
+                                    <InfoIcon className="w-3 h-3 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] cursor-pointer" />
                                 </div>
                             </div>
                         </>
@@ -405,25 +380,25 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
             {/* Info Dialog */}
             <Dialog open={showInfo} onOpenChange={setShowInfo}>
-                <DialogContent className="bg-black/80 backdrop-blur-xl border border-white/10 text-white w-[90%] rounded-2xl">
+                <DialogContent className="bg-[rgb(var(--color-surface))] backdrop-blur-xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] w-[90%] rounded-2xl shadow-[var(--shadow-floating)]">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2">
                             <MoonIcon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> {t.ramadhanInfoTitle}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 pt-2">
-                        <p className="text-sm text-white/70 leading-relaxed">
+                        <p className="text-sm text-[rgb(var(--color-text-muted))] leading-relaxed">
                             {t.ramadhanInfoDesc}
                         </p>
-                        <div className="bg-[rgb(var(--color-primary-dark))]/20 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
+                        <div className="bg-[rgb(var(--color-primary))]/10 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
                             <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] mb-1">{t.ramadhanImproveTitle}</p>
-                            <ul className="list-disc list-inside text-xs text-[rgb(var(--color-primary))]/70 space-y-1">
+                            <ul className="list-disc list-inside text-xs text-[rgb(var(--color-text-muted))] space-y-1">
                                 <li>{t.ramadhanImproveItem1}</li>
                                 <li>{t.ramadhanImproveItem2}</li>
                                 <li>{t.ramadhanImproveItem3}</li>
                             </ul>
                         </div>
-                        <Button onClick={() => setShowInfo(false)} className="w-full bg-white/10 hover:bg-white/20 text-white">
+                        <Button onClick={() => setShowInfo(false)} className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-foreground))]">
                             {t.ramadhanUnderstand}
                         </Button>
                     </div>

@@ -24,6 +24,8 @@ import FastingCalendar from "./FastingCalendar";
 import FastingStats from "./FastingStats";
 import QadhaTracker from "./QadhaTracker";
 import type { FastingStatus, Madzhab } from "@/data/fasting/types";
+import { AppIcon } from "@/components/ui/AppIcon";
+import type { AppIconName } from "@/lib/icon-names";
 
 function buildYearRange(currentYear: number): number[] {
     const years: number[] = [];
@@ -67,36 +69,30 @@ export default function FastingTrackerWidget() {
     };
 
     // Short labels — won't wrap on iPhone SE
-    const tabs: Array<{ id: TabId; icon: string; label: string; badge?: number }> = [
-        { id: "calendar", icon: "📅", label: t.fastingTabCalendar || "Calendar" },
-        { id: "stats", icon: "📊", label: t.fastingTabStats || "Summary" },
+    const tabs: Array<{ id: TabId; icon: AppIconName; label: string; badge?: number }> = [
+        { id: "calendar", icon: "calendar", label: t.fastingTabCalendar || "Calendar" },
+        { id: "stats", icon: "target", label: t.fastingTabStats || "Summary" },
         {
-            id: "qadha", icon: "⌛", label: t.fastingTabQadha || "Qadha",
+            id: "qadha", icon: "calendar", label: t.fastingTabQadha || "Qadha",
             badge: pendingQadha.length > 0 ? pendingQadha.length : undefined
         },
     ];
 
     return (
-        <div className="rounded-3xl border border-white/10 overflow-hidden" style={{ background: "rgb(13,13,20)" }}>
+        <div className="rounded-3xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] overflow-hidden">
 
             {/* ── Header ── */}
-            <div className="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-white/8">
-                <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
-                    style={{
-                        background: "linear-gradient(135deg, rgba(var(--color-primary), 0.25), rgba(var(--color-primary), 0.08))",
-                        border: "1px solid rgba(var(--color-primary), 0.25)",
-                    }}
-                >
-                    🌙
+            <div className="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-[rgb(var(--color-border))]">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0 bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30">
+                    <AppIcon name="moon" size="md" tone="primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white text-[15px] leading-tight">{t.fastingTitle}</h3>
-                    <p className="text-[11px] text-white/40 mt-0.5">{t.fastingSubtitle}</p>
+                    <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-[15px] leading-tight">{t.fastingTitle}</h3>
+                    <p className="text-[11px] text-[rgb(var(--color-text-muted))] mt-0.5">{t.fastingSubtitle}</p>
                 </div>
                 {/* Stats pill — quick year context */}
                 <div className="text-right shrink-0">
-                    <p className="text-[10px] text-white/30">{stats.totalFasting}/30</p>
+                    <p className="text-[10px] text-[rgb(var(--color-text-muted))]">{stats.totalFasting}/30</p>
                     <p className="text-[10px] font-semibold text-[rgb(var(--color-primary-light,var(--color-primary)))]">
                         {Math.round((stats.totalFasting / 30) * 100)}%
                     </p>
@@ -111,21 +107,13 @@ export default function FastingTrackerWidget() {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`relative flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-semibold transition-all duration-200 ${isActive ? "text-white" : "text-white/35 hover:text-white/60"
+                            className={`relative flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-semibold transition-all duration-200 ${isActive ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]" : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                 }`}
-                            style={
-                                isActive
-                                    ? {
-                                        background: "rgba(var(--color-primary), 0.18)",
-                                        boxShadow: "0 1px 0 0 rgb(var(--color-primary)) inset",
-                                    }
-                                    : undefined
-                            }
                         >
-                            <span className="text-base leading-none">{tab.icon}</span>
+                            <AppIcon name={tab.icon} size="sm" tone={isActive ? "default" : "muted"} />
                             <span className="truncate">{tab.label}</span>
                             {tab.badge !== undefined && (
-                                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-500 text-white text-[8px] font-black flex items-center justify-center leading-none">
+                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-[rgb(var(--color-warning))] text-[rgb(var(--color-accent-foreground))] text-[8px] font-black flex items-center justify-center leading-none">
                                     {tab.badge}
                                 </span>
                             )}

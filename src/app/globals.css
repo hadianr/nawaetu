@@ -7,25 +7,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Keep legacy stats utility classes readable in the active Daylight theme. */
-[data-theme="daylight"] .stats-page [class~="text-white"] { color: rgb(15 23 42) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/90"] { color: rgb(15 23 42 / 0.9) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/80"] { color: rgb(15 23 42 / 0.8) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/70"] { color: rgb(15 23 42 / 0.7) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/60"] { color: rgb(15 23 42 / 0.6) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/50"] { color: rgb(15 23 42 / 0.5) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/40"] { color: rgb(15 23 42 / 0.55) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/30"] { color: rgb(15 23 42 / 0.45) !important; }
-[data-theme="daylight"] .stats-page [class~="text-white/20"] { color: rgb(15 23 42 / 0.35) !important; }
-[data-theme="daylight"] .stats-page [class~="bg-white/5"] { background-color: rgb(15 23 42 / 0.05) !important; }
-[data-theme="daylight"] .stats-page [class~="bg-white/[0.03]"] { background-color: rgb(15 23 42 / 0.03) !important; }
-[data-theme="daylight"] .stats-page [class~="bg-white/[0.02]"] { background-color: rgb(15 23 42 / 0.02) !important; }
-[data-theme="daylight"] .stats-page [class~="border-white/10"] { border-color: rgb(15 23 42 / 0.12) !important; }
-[data-theme="daylight"] .stats-page [class~="border-white/5"] { border-color: rgb(15 23 42 / 0.08) !important; }
-[data-theme="daylight"] .stats-page [class~="border-white/8"] { border-color: rgb(15 23 42 / 0.1) !important; }
-[data-theme="daylight"] .stats-page [class~="bg-[rgb(var(--color-primary))]"] { color: white !important; }
-
 /* ─── Sirah reader prose utilities ─────────────────────────────────────────── */
+.quran-reading-text {
+  font-family: var(--font-reading);
+  line-height: var(--reader-line-height);
+}
+
+.prayer-date-input {
+  color-scheme: dark;
+}
+
+[data-color-mode="light"] .prayer-date-input {
+  color-scheme: light;
+}
+
 
 /* Dialog quotes and hadith narration spans */
 .sirah-quote {
@@ -266,114 +261,6 @@
   --ring: rgb(var(--color-ring));
 }
 
-/* Hadith library: replace legacy emerald accents with the active light-theme palette. */
-[data-color-mode="light"] .hadith-page :is([class~="bg-emerald-50"], [class~="bg-emerald-100"], [class~="bg-emerald-100/80"], [class~="bg-emerald-500"], [class~="bg-emerald-500/15"], [class~="bg-emerald-50/60"], [class~="bg-emerald-50/90"]) {
-  background-color: rgb(var(--color-primary-light) / 0.35) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="bg-emerald-500"], [class~="bg-emerald-500/15"], [class~="bg-emerald-100/80"]).text-white {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"], [class~="text-emerald-800"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="border-emerald-100"], [class~="border-emerald-200"], [class~="border-emerald-400"], [class~="border-emerald-500/20"], [class~="border-emerald-500/30"], [class~="border-emerald-600"]) {
-  border-color: rgb(var(--color-primary) / 0.35) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="hover:bg-emerald-50"], [class~="hover:bg-emerald-100"]):hover {
-  background-color: rgb(var(--color-primary-light) / 0.45) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="hover:border-emerald-200"], [class~="hover:border-emerald-500/30"]):hover {
-  border-color: rgb(var(--color-primary) / 0.45) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="text-blue-400"], [class~="text-blue-500"], [class~="text-blue-600"], [class~="text-blue-700"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="bg-blue-500/10"], [class~="bg-blue-500/15"], [class~="bg-blue-100"], [class~="bg-blue-50"]) {
-  background-color: rgb(var(--color-primary-light) / 0.35) !important;
-}
-[data-color-mode="light"] .hadith-page :is([class~="border-blue-500/20"], [class~="border-blue-500/30"], [class~="border-blue-200"]) {
-  border-color: rgb(var(--color-primary) / 0.35) !important;
-}
-[data-color-mode="light"] .hadith-page [class~="bg-emerald-500"] {
-  background-color: rgb(var(--color-primary-light)) !important;
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .hadith-page ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-primary) / 0.45);
-}
-[data-color-mode="light"] .hadith-page ::-webkit-scrollbar-track {
-  background: rgb(var(--color-surface-subtle));
-}
-/* Dua library: keep amber/emerald legacy utilities inside the active theme. */
-[data-color-mode="light"] :is(.hadith-page, .dua-page) :is([class~="bg-slate-100/70"], [class~="hover:bg-slate-200/50"]) {
-  background-color: rgb(var(--color-surface-subtle)) !important;
-}
-[data-color-mode="light"] :is(.hadith-page, .dua-page) :is([class~="border-slate-200/60"]) {
-  border-color: rgb(var(--color-border)) !important;
-}
-[data-color-mode="light"] :is(.hadith-page, .dua-page) :is([class~="text-slate-600"], [class~="hover:text-slate-900"]) {
-  color: rgb(var(--color-text-muted)) !important;
-}
-[data-color-mode="light"] .dua-page :is([class*="bg-amber-"], [class*="bg-emerald-"]) {
-  background-color: rgb(var(--color-primary-light) / 0.35) !important;
-}
-[data-color-mode="light"] .mission-list-modal :is([class*="bg-blue-"], [class*="bg-purple-"], [class*="bg-indigo-"], [class*="bg-teal-"], [class*="bg-emerald-"]) {
-  background-color: rgb(var(--color-primary-light) / 0.45) !important;
-}
-[data-color-mode="light"] .mission-list-modal :is([class*="text-blue-"], [class*="text-purple-"], [class*="text-indigo-"], [class*="text-teal-"], [class*="text-emerald-"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .mission-list-modal :is([class*="border-blue-"], [class*="border-purple-"], [class*="border-indigo-"], [class*="border-teal-"], [class*="border-emerald-"]) {
-  border-color: rgb(var(--color-primary) / 0.35) !important;
-}
-[data-color-mode="light"] .prayer-checkin-widget :is([class*="bg-emerald-"]) {
-  background-color: rgb(var(--color-primary-light) / 0.4) !important;
-}
-[data-color-mode="light"] .prayer-checkin-widget :is([class*="text-emerald-"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .prayer-checkin-widget :is([class*="border-emerald-"]) {
-  border-color: rgb(var(--color-primary) / 0.35) !important;
-}
-[data-color-mode="light"] :is(.bookmarks-page, .sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="bg-emerald-"], [class*="bg-teal-"]) {
-  background-color: rgb(var(--color-primary-light) / 0.4) !important;
-}
-[data-color-mode="light"] :is(.bookmarks-page, .sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="text-emerald-"], [class*="text-teal-"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] :is(.bookmarks-page, .sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="border-emerald-"], [class*="border-teal-"]) {
-  border-color: rgb(var(--color-primary) / 0.35) !important;
-}
-[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="hover:bg-emerald-"], [class*="hover:bg-teal-"]):hover {
-  background-color: rgb(var(--color-primary-light) / 0.5) !important;
-}
-[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="hover:text-emerald-"], [class*="hover:text-teal-"]):hover {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="hover:border-emerald-"], [class*="hover:border-teal-"]):hover {
-  border-color: rgb(var(--color-primary) / 0.45) !important;
-}
-[data-color-mode="light"] :is(.sirah-page, .sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="focus:border-emerald-"], [class*="focus:ring-emerald-"]):focus {
-  border-color: rgb(var(--color-primary)) !important;
-  --tw-ring-color: rgb(var(--color-primary) / 0.25) !important;
-}
-[data-color-mode="light"] :is(.sirah-detail-page, .sirah-reader-page, .sirah-quiz-page, .sirah-quran-bridge-modal) :is([class*="shadow-emerald-"], [class*="shadow-teal-"]) {
-  --tw-shadow-color: rgb(var(--color-primary) / 0.2) !important;
-}
-[data-color-mode="light"] .dua-page :is([class*="text-amber-"], [class*="text-emerald-"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .dua-page :is([class*="border-amber-"], [class*="border-emerald-"]) {
-  border-color: rgb(var(--color-primary) / 0.35) !important;
-}
-[data-color-mode="light"] .dua-page :is([class*="bg-amber-"], [class*="bg-emerald-"]).text-white {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] .dua-page [class~="bg-amber-500"] {
-  background-color: rgb(var(--color-primary-light)) !important;
-  color: rgb(var(--color-primary-strong)) !important;
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -389,7 +276,7 @@
      DAYLIGHT THEME — Light Glassmorphism Design System
      Background: #f0f4f8 (biru-abu muda)
      Surface: white/65 frosted glass
-     Text: multi-level hierarchy (dark → muted → placeholder)
+     Text: multi-level hierarchy (dark, muted, placeholder)
      Primary accent: Emerald (tetap sama seperti dark mode)
      ===================================================================== */
 
@@ -416,7 +303,7 @@
     -webkit-backdrop-filter: blur(12px) !important;
   }
 
-  /* White-opacity utility backgrounds → frost cards */
+  /* White-opacity utility backgrounds for frost cards */
   [data-theme="daylight"] [class*="bg-white/"] {
     background-color: rgba(255, 255, 255, 0.6) !important;
   }
@@ -546,7 +433,7 @@
     color: #94a3b8 !important;
   }
 
-  /* Primary accent text (Emerald) → keep but darker */
+  /* Primary accent text (Emerald), kept darker for contrast */
   [data-theme="daylight"] [class*="text-[rgb(var(--color-primary)"] {
     color: #059669 !important;
   }
@@ -927,82 +814,6 @@
   }
 }
 
-/* Quran Settings — Daylight Theme Refinements (Soft Glassmorphism) */
-[data-theme="daylight"] .quran-settings-modal {
-  background-color: rgba(255, 255, 255, 0.75) !important;
-  backdrop-filter: blur(20px) saturate(1.8) !important;
-}
-
-[data-theme="daylight"] :is(.quran-tab-active, .quran-tajweed-active) {
-  color: #059669 !important;
-}
-
-[data-theme="daylight"] .quran-tab-active {
-  background-color: rgba(16, 185, 129, 0.12) !important;
-  border: 1px solid rgba(16, 185, 129, 0.15) !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.08) !important;
-}
-
-/* Toggle Switch Overrides */
-[data-theme="daylight"] .quran-settings-modal .quran-toggle[data-state="checked"] {
-  background-color: rgba(16, 185, 129, 0.12) !important;
-  border: 1px solid rgba(16, 185, 129, 0.2) !important;
-}
-
-[data-theme="daylight"] .quran-settings-modal .quran-toggle[data-state="unchecked"] {
-  background-color: rgba(15, 23, 42, 0.05) !important;
-  border: 1px solid rgba(15, 23, 42, 0.05) !important;
-}
-
-[data-theme="daylight"] .quran-settings-modal .quran-toggle span[data-state] {
-  background-color: #ffffff !important;
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.1) !important;
-}
-
-/* Home — Intention Journal Widget (Daylight Theme) */
-[data-theme="daylight"] .intention-widget {
-  background-color: rgba(255, 255, 255, 0.45) !important;
-  backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 0 8px 32px -4px rgba(15, 23, 42, 0.04) !important;
-}
-
-[data-theme="daylight"] .intention-widget h3 {
-  color: #1e293b !important;
-}
-
-[data-theme="daylight"] .intention-widget p {
-  color: #64748b !important;
-}
-
-[data-theme="daylight"] .intention-widget .intention-label {
-  opacity: 0.6 !important;
-  filter: grayscale(0) !important;
-}
-
-[data-theme="daylight"] .intention-widget .intention-label svg,
-[data-theme="daylight"] .intention-widget .intention-label span {
-  color: #059669 !important;
-}
-
-/* Soft Green Action Button */
-[data-theme="daylight"] .intention-widget .btn-set-niat {
-  background-color: rgba(16, 185, 129, 0.12) !important;
-  color: #059669 !important;
-  border: 1px solid rgba(16, 185, 129, 0.2) !important;
-  box-shadow: none !important;
-}
-
-[data-theme="daylight"] .intention-widget .btn-history {
-  background-color: rgba(15, 23, 42, 0.05) !important;
-  border-color: rgba(15, 23, 42, 0.05) !important;
-}
-
-[data-theme="daylight"] .intention-widget .btn-history svg {
-  color: #64748b !important;
-}
-
 /* Home — Spiritual Feed Widgets (Daylight Theme) */
 [data-theme="daylight"] .spiritual-card {
   background-color: rgba(255, 255, 255, 0.45) !important;
@@ -1022,15 +833,6 @@
 
 [data-theme="daylight"] .spiritual-card .text-slate-100\/90 {
   color: #1e293b !important;
-}
-
-[data-theme="daylight"] .quote-card {
-  background-color: rgba(255, 255, 255, 0.35) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-}
-
-[data-theme="daylight"] .quote-card p {
-  color: #334155 !important;
 }
 
 /* Mission Items in Modal */
@@ -1140,42 +942,6 @@ nav {
   textarea {
     font-size: 16px !important;
   }
-}
-
-/* =====================================================================
-   LIGHT MODE COMPATIBILITY BRIDGE
-   A few older screens still use dark-mode white/black utility classes.
-   Keep those screens readable for every light theme (not only Daylight)
-   while preserving white labels on colored action surfaces.
-   ===================================================================== */
-[data-color-mode="light"] [class*="bg-white/"] {
-  background-color: rgb(var(--color-surface) / 0.82) !important;
-}
-
-[data-color-mode="light"] [class*="bg-black/"] {
-  background-color: rgb(var(--color-text-strong) / 0.06) !important;
-}
-
-/* Prevent legacy slate canvases from becoming accidental dark cards in light mode. */
-[data-color-mode="light"] :is([class~="bg-slate-900"], [class~="bg-slate-950"]) {
-  background-color: rgb(var(--color-surface)) !important;
-  color: rgb(var(--color-text-strong)) !important;
-}
-[data-color-mode="light"] :is([class*="bg-[#0a0a0a]"], [class*="bg-[#0A0A0A]"]) {
-  background-color: rgb(var(--color-canvas)) !important;
-}
-[data-color-mode="light"] :is([class*="bg-[#0f172a]"], [class*="bg-[#0F172A]"]) {
-  background-color: rgb(var(--color-surface)) !important;
-}
-[data-color-mode="light"] :is(button, a, [role="button"])[class~="bg-slate-900"] {
-  background-color: rgb(var(--color-primary)) !important;
-}
-[data-color-mode="light"] :is(button, a, [role="button"])[class~="hover:bg-slate-800"]:hover {
-  background-color: rgb(var(--color-primary-light)) !important;
-}
-
-[data-color-mode="light"] [class*="fixed"][class*="inset-0"][class*="bg-black/"] {
-  background-color: rgb(var(--color-text-strong) / 0.3) !important;
 }
 
 [data-color-mode="light"] [class*="bg-[rgb(var(--color-primary))]"]:not([class*="hover:bg-"]):is(
@@ -1326,26 +1092,6 @@ nav {
 }
 [data-color-mode="light"] .settings-page :is([class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-white/40"], [class*="bg-white/60"]) {
   background-color: rgb(var(--color-surface)) !important;
-}
-
-/* Stats uses legacy dark utility classes; normalize its cards in any light theme. */
-[data-color-mode="light"] .stats-page {
-  color: rgb(var(--color-text-strong)) !important;
-}
-[data-color-mode="light"] .stats-page :is([class*="bg-black/"], [class*="bg-white/"]) {
-  background-color: rgb(var(--color-surface)) !important;
-}
-[data-color-mode="light"] .stats-page :is([class*="from-[rgb(var(--color-primary))"], [class*="bg-gradient-"]) {
-  background-image: linear-gradient(135deg, rgb(var(--color-surface-subtle)), rgb(var(--color-surface))) !important;
-}
-[data-color-mode="light"] .stats-page [class~="text-white"] {
-  color: rgb(var(--color-text-strong)) !important;
-}
-[data-color-mode="light"] .stats-page [class*="text-white/"] {
-  color: rgb(var(--color-text-muted)) !important;
-}
-[data-color-mode="light"] .stats-page :is([class*="border-white/"], [class*="border-slate-"]) {
-  border-color: rgb(var(--color-border)) !important;
 }
 
 /* Soft, low-noise switch states for light themes. */

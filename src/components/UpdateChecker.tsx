@@ -34,7 +34,7 @@ interface UpdateCheckerProps {
  * PWA Update Best Practices:
  * ═══════════════════════════════════════════════════════════════════════
  *
- * 🔄 PWA Update Lifecycle:
+ * PWA Update Lifecycle:
  * 1. Browser detects new service-worker.js on server
  * 2. New SW installs in background (parallel to old SW)
  * 3. New SW enters "waiting" state (won't activate until old tabs close)
@@ -51,19 +51,19 @@ interface UpdateCheckerProps {
  * - Clear caches to force fresh assets
  * - Reload page (SW will serve new content)
  *
- * ❌ Common Mistakes:
+ * Common Mistakes:
  * - Unregistering SW before reload (leaves no SW to serve content!)
  * - Not waiting for controllerchange (timing issues)
  * - Redirecting instead of reloading (loses SW context)
  * - Not clearing caches (serves stale content)
  *
- * 📱 Why PWA ≠ Native App Install:
+ * Why PWA differs from native app install:
  * - PWAs are web apps cached aggressively by browser
  * - Updates happen automatically like web apps (NO app store needed!)
  * - User doesn't need to "reinstall" or "update from store"
  * - Just reload the page to get latest version
  *
- * 🎯 Key Insight:
+ * Key Insight:
  * The service worker's job is to CACHE the app, not BE the app.
  * When we update, we need the NEW SW to serve the NEW cached content.
  * If we unregister SW, browser falls back to network (bypassing PWA benefits).
@@ -84,7 +84,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
             const justUpdated = params.has('updated');
 
             if (justUpdated) {
-                addLog('[UpdateChecker] 🎉 Just completed update, skipping check for 5s...');
+                addLog('[UpdateChecker] Just completed update, skipping check for 5s...');
                 // Skip check for 5 seconds after update reload
                 await new Promise(resolve => setTimeout(resolve, 5000));
             }
@@ -108,7 +108,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
 
         // Listen for SW controller change (new SW activated)
         const handleControllerChange = () => {
-            addLog('[UpdateChecker] 🎉 New Service Worker took control!');
+            addLog('[UpdateChecker] New Service Worker took control!');
         };
         navigator.serviceWorker?.addEventListener('controllerchange', handleControllerChange);
 
@@ -149,7 +149,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
 
         try {
             if (!serverVersion) {
-                addLog('[Update] ❌ No server version!');
+                addLog('[Update] No server version!');
                 toast.error('Gagal mendapatkan versi server.');
                 setChecking(false);
                 return;
@@ -162,7 +162,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
             addLog(`[Update] Stored: ${verified}, Expected: ${serverVersion}, Match: ${verified === serverVersion}`);
 
             if (verified !== serverVersion) {
-                addLog('[Update] ❌ localStorage write failed!');
+                addLog('[Update] localStorage write failed!');
                 toast.error('Gagal menyimpan versi. Storage penuh?');
                 setChecking(false);
                 return;
@@ -195,12 +195,12 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
                     reg.waiting.postMessage({ type: 'SKIP_WAITING' });
                     // Workbox standard message
                     reg.waiting.postMessage({ type: 'WINDOW_SKIP_WAITING' });
-                    addLog('[Update] ✓ SKIP_WAITING message sent to new SW');
+                    addLog('[Update] SKIP_WAITING message sent to new SW');
                 } else if (reg?.active) {
                     addLog('[Update] Only active SW found, sending fallback SKIP_WAITING...');
                     reg.active.postMessage({ type: 'SKIP_WAITING' });
                 } else {
-                    addLog('[Update] ⚠️  No SW registration found...');
+                addLog('[Update] No SW registration found...');
                 }
             } catch (swErr) {
                 addLog(`[Update] SW error: ${swErr}`);
@@ -218,7 +218,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
             window.location.replace(`/?v=${serverVersion}&updated=${Date.now()}`);
 
         } catch (e) {
-            addLog(`[Update] ❌ ERROR: ${e}`);
+            addLog(`[Update] ERROR: ${e}`);
             toast.error(`Update gagal: ${e}`);
             setChecking(false);
         }

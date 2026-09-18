@@ -29,7 +29,6 @@ import { dhikrMilestones } from "@/data/dhikrMilestones";
 import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 import { DhikrPreset } from "./dhikr/types";
@@ -54,8 +53,6 @@ const playTick = (ctx: AudioContext) => {
 
 export default function DhikrCounter() {
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const dhikrPresets = useMemo<DhikrPreset[]>(
         () => [
@@ -261,11 +258,10 @@ export default function DhikrCounter() {
             />
 
             {/* Tap Area Overlay */}
-            <div className="absolute inset-0 z-0 cursor-pointer active:bg-white/5 transition-colors" onClick={handleIncrement} />
+            <div className="absolute inset-0 z-0 cursor-pointer active:bg-[rgb(var(--color-primary))]/5 transition-colors" onClick={handleIncrement} />
 
             <DhikrDisplay
                 t={t}
-                isDaylight={isDaylight}
                 activeSequence={activeSequence}
                 sequenceIndex={sequenceIndex}
                 activeDhikr={activeDhikr}
@@ -282,7 +278,6 @@ export default function DhikrCounter() {
                     isMilestoneModalOpen={isMilestoneModalOpen}
                     setIsMilestoneModalOpen={setIsMilestoneModalOpen}
                     t={t}
-                    isDaylight={isDaylight}
                     dailyCount={dailyCount}
                     streak={streak}
                     lifetimeCount={lifetimeCount || 0}
@@ -293,7 +288,6 @@ export default function DhikrCounter() {
 
                 <DhikrControls
                     t={t}
-                    isDaylight={isDaylight}
                     handleReset={handleReset}
                     setIsZenMode={setIsZenMode}
                     feedbackMode={feedbackMode}
@@ -304,7 +298,6 @@ export default function DhikrCounter() {
                         isDialogOpen={isDialogOpen}
                         setIsDialogOpen={setIsDialogOpen}
                         t={t}
-                        isDaylight={isDaylight}
                         expandedCategory={expandedCategory}
                         setExpandedCategory={setExpandedCategory}
                         handleSequenceSelect={handleSequenceSelect}
@@ -320,9 +313,7 @@ export default function DhikrCounter() {
             <Dialog open={showReward} onOpenChange={setShowReward}>
                 <DialogContent className={cn(
                     "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-[32px] border backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-2xl",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
-                        : "bg-neutral-900/95 border-[rgb(var(--color-primary)/0.2)] text-white"
+                    "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                 )}>
                     <DialogHeader className="flex flex-col items-center">
                         <div className="w-14 h-14 rounded-full bg-[rgb(var(--color-primary)/0.1)] flex items-center justify-center mb-4 border border-[rgb(var(--color-primary)/0.2)]">
@@ -330,7 +321,7 @@ export default function DhikrCounter() {
                         </div>
                         <DialogTitle className="text-xl font-bold mb-1">{t.tasbihComplete}</DialogTitle>
                     </DialogHeader>
-                    <p className={cn("text-[13px] mb-6 px-2 leading-relaxed", isDaylight ? "text-[rgb(var(--color-text-muted))]" : "text-white/40")}>{t.tasbihCompleteMessage}</p>
+                    <p className="text-[13px] mb-6 px-2 leading-relaxed text-[rgb(var(--color-text-muted))]">{t.tasbihCompleteMessage}</p>
 
                     <div className="flex flex-row items-stretch gap-2.5 w-full">
                         {(() => {
@@ -348,7 +339,7 @@ export default function DhikrCounter() {
                                                     handlePresetSelect(nextZikir as DhikrPreset);
                                                     setShowReward(false);
                                                 }}
-                                                className="flex-[1.5] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold h-11 rounded-xl flex flex-col items-center justify-center p-0"
+                                                className="flex-[1.5] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] font-bold h-11 rounded-xl flex flex-col items-center justify-center p-0"
                                             >
                                                 <span className="text-[7px] opacity-70 uppercase tracking-widest mb-0.5">{t.tasbihNextUp}</span>
                                                 <span className="text-xs">{nextZikir.label}</span>
@@ -370,7 +361,7 @@ export default function DhikrCounter() {
                                                     }
                                                     setShowReward(false);
                                                 }}
-                                                className="flex-1 bg-white/5 hover:bg-white/10 text-white/50 border border-white/10 h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3"
+                                                className="flex-1 bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))] h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3"
                                             >
                                                 <RotateCcw className="h-3 w-3 opacity-70" />
                                                 <span className="text-[9px] font-bold uppercase tracking-wider">{t.tasbihRepeat}</span>
@@ -393,7 +384,7 @@ export default function DhikrCounter() {
                                                 }
                                                 setShowReward(false);
                                             }}
-                                            className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white font-bold h-11 rounded-xl w-full"
+                                            className="bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] font-bold h-11 rounded-xl w-full"
                                         >
                                             {t.tasbihRepeatReading}
                                         </Button>

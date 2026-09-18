@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 import { X, MapPin, Tent, Building2, Car } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
 interface MosqueFinderModalProps {
@@ -32,8 +31,6 @@ interface MosqueFinderModalProps {
 
 export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModalProps) {
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -48,32 +45,32 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
             label: t?.mosqueFinderOptionNearby ?? "Masjid Terdekat",
             icon: MapPin,
             query: "masjid+terdekat",
-            color: "from-blue-500/20 to-blue-600/20",
-            iconColor: "text-blue-400"
+            color: "bg-[rgb(var(--color-info))]/10",
+            iconColor: "text-[rgb(var(--color-info))]"
         },
         {
             id: "musholla",
             label: t?.mosqueFinderOptionMusholla ?? "Musholla",
             icon: Tent,
             query: "musholla+terdekat",
-            color: "from-emerald-500/20 to-emerald-600/20",
-            iconColor: "text-emerald-400"
+            color: "bg-[rgb(var(--color-success))]/10",
+            iconColor: "text-[rgb(var(--color-success))]"
         },
         {
             id: "grand",
             label: t?.mosqueFinderOptionGrand ?? "Masjid Raya",
             icon: Building2,
             query: "masjid+raya+terdekat",
-            color: "from-amber-500/20 to-amber-600/20",
-            iconColor: "text-amber-400"
+            color: "bg-[rgb(var(--color-warning))]/10",
+            iconColor: "text-[rgb(var(--color-warning))]"
         },
         {
             id: "restarea",
             label: t?.mosqueFinderOptionRestArea ?? "Rest Area",
             icon: Car,
             query: "rest+area+masjid+terdekat",
-            color: "from-violet-500/20 to-violet-600/20",
-            iconColor: "text-violet-400"
+            color: "bg-[rgb(var(--color-primary))]/10",
+            iconColor: "text-[rgb(var(--color-primary-light))]"
         }
     ];
 
@@ -88,25 +85,21 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
             <DialogContent
                 showCloseButton={false}
                 className={cn(
-                    "max-w-xs sm:max-w-sm border-white/10 p-0 overflow-hidden gap-0 mosque-finder-modal",
-                    isDaylight ? "bg-white text-slate-900" : "bg-[#0a0f1c] text-white"
+                    "max-w-xs sm:max-w-sm border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 mosque-finder-modal"
                 )}
             >
 
                 {/* Header with decorative background */}
                 <div className={cn(
-                    "relative p-6 pb-2 text-center bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent",
-                    isDaylight ? "border-b border-slate-100" : ""
+                    "relative p-6 pb-2 text-center bg-gradient-to-b from-[rgb(var(--color-primary))]/20 to-transparent border-b border-[rgb(var(--color-border))]"
                 )}>
                     <DialogTitle className={cn(
-                        "text-xl font-bold relative z-10",
-                        isDaylight ? "text-slate-900" : "text-white"
+                        "text-xl font-bold relative z-10 text-[rgb(var(--color-text-strong))]"
                     )}>
                         {t?.mosqueFinderTitle ?? "Mau Sholat di Mana?"}
                     </DialogTitle>
                     <p className={cn(
-                        "text-sm mt-1 relative z-10",
-                        isDaylight ? "text-slate-500" : "text-white/60"
+                        "text-sm mt-1 relative z-10 text-[rgb(var(--color-text-muted))]"
                     )}>
                         {t?.mosqueFinderDesc ?? "Pilih jenis tempat sholat yang kamu butuhkan:"}
                     </p>
@@ -115,11 +108,10 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                     <button
                         onClick={onClose}
                         className={cn(
-                            "absolute right-4 top-4 p-2 rounded-full transition-colors z-20",
-                            isDaylight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/5 hover:bg-white/10"
+                            "absolute right-4 top-4 p-2 rounded-full transition-colors z-20 bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))]"
                         )}
                     >
-                        <X className={cn("w-4 h-4", isDaylight ? "text-slate-500" : "text-white/70")} />
+                        <X className="w-4 h-4 text-[rgb(var(--color-text-muted))]" />
                     </button>
                 </div>
 
@@ -130,21 +122,18 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
                             key={option.id}
                             onClick={() => handleSearch(option.query)}
                             className={cn(
-                                `flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-br ${option.color} transition-all group`,
-                                isDaylight
-                                    ? "border-slate-100/50 hover:border-emerald-200 hover:bg-white shadow-sm"
-                                    : "border-white/5 hover:border-white/20 hover:scale-[1.02] active:scale-[0.98]"
+                                `flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border border-[rgb(var(--color-border))] ${option.color} transition-all group hover:bg-[rgb(var(--color-surface-subtle))] hover:scale-[1.02] active:scale-[0.98]`
                             )}
                         >
                             <div className={cn(
                                 `p-3 rounded-full group-hover:scale-110 transition-transform ${option.iconColor}`,
-                                isDaylight ? "bg-white" : "bg-black/20"
+                                "bg-[rgb(var(--color-surface))]"
                             )}>
                                 <option.icon className="w-6 h-6" strokeWidth={2} />
                             </div>
                             <span className={cn(
                                 "text-xs font-bold text-center",
-                                isDaylight ? "text-slate-700" : "text-white/90"
+                                "text-[rgb(var(--color-text))]"
                             )}>
                                 {option.label}
                             </span>
@@ -154,12 +143,10 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
 
                 {/* Footer Tip */}
                 <div className={cn(
-                    "p-3 text-center border-t",
-                    isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5"
+                    "p-3 text-center border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]"
                 )}>
                     <p className={cn(
-                        "text-[10px]",
-                        isDaylight ? "text-slate-400" : "text-white/40"
+                        "text-[10px] text-[rgb(var(--color-text-muted))]"
                     )}>
                         {t.mosqueFinderButton}
                     </p>

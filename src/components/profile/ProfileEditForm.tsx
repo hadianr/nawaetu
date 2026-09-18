@@ -21,9 +21,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface ProfileEditFormProps {
-    isDaylight: boolean;
     editName: string;
     setEditName: (name: string) => void;
     editGender: "male" | "female" | null;
@@ -34,7 +34,6 @@ interface ProfileEditFormProps {
 }
 
 export function ProfileEditForm({
-    isDaylight,
     editName,
     setEditName,
     editGender,
@@ -49,68 +48,56 @@ export function ProfileEditForm({
     return (
         <div className="space-y-4 mb-2 pr-2">
             <div className="space-y-1.5">
-                <Label className="text-[10px] uppercase tracking-wider text-slate-500">{translations.profileNameLabel}</Label>
+                <Label className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{translations.profileNameLabel}</Label>
                 <Input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     className={cn(
                         "h-10 transition-all",
-                        isDaylight
-                            ? "bg-slate-50 border-slate-200 text-slate-900 focus:border-emerald-500/50 focus:ring-emerald-500/20"
-                            : "bg-white/5 border-white/10 text-white focus:border-[rgb(var(--color-primary))]/50"
+                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] focus:border-[rgb(var(--color-primary))]/50 focus:ring-[rgb(var(--color-primary))]/20"
                     )}
                 />
             </div>
 
             <div className="space-y-1.5">
-                <Label className="text-[10px] uppercase tracking-wider text-slate-500">{translations.profileGenderLabel}</Label>
+                <Label className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{translations.profileGenderLabel}</Label>
                 <div className="grid grid-cols-2 gap-2">
                     <button
                         onClick={() => setEditGender('male')}
                         className={cn(
                             "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
                             editGender === 'male'
-                                ? isDaylight
-                                    ? "bg-emerald-500 text-white border-emerald-500"
-                                    : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))] text-white"
-                                : isDaylight
-                                    ? "bg-slate-50 border-slate-100 hover:bg-slate-100 text-slate-600"
-                                    : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
+                                : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
                         )}
                     >
-                        <span>👨</span> {translations.onboardingMaleLabel}
+                        <AppIcon name="hands" size="sm" tone="info" /> {translations.onboardingMaleLabel}
                     </button>
                     <button
                         onClick={() => setEditGender('female')}
                         className={cn(
                             "flex items-center justify-center gap-2 h-10 rounded-xl border transition-all text-xs font-medium",
                             editGender === 'female'
-                                ? isDaylight
-                                    ? "bg-emerald-500 text-white border-emerald-500"
-                                    : "bg-[rgb(var(--color-secondary))]/30 border-[rgb(var(--color-secondary))] text-white"
-                                : isDaylight
-                                    ? "bg-slate-50 border-slate-100 hover:bg-slate-100 text-slate-600"
-                                    : "bg-white/5 border-white/5 hover:bg-white/10 text-slate-400"
+                                ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
+                                : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))]"
                         )}
                     >
-                        <span>👩</span> {translations.onboardingFemaleLabel}
+                        <AppIcon name="heart-handshake" size="sm" tone="primary" /> {translations.onboardingFemaleLabel}
                     </button>
                 </div>
             </div>
 
             <div className={cn(
                 "flex gap-2 pt-2 sticky bottom-0 pb-2 transition-all",
-                isDaylight ? "bg-white" : "bg-[#0F172A]"
+                "bg-[rgb(var(--color-surface))]"
             )}>
                 <Button
                     onClick={handleSaveProfile}
                     disabled={isUpdating}
                     className={cn(
                         "flex-1 h-9 font-bold transition-all shadow-lg active:scale-[0.98]",
-                        isDaylight
-                            ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/10"
-                            : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-white"
+                        "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                     )}
                 >
                     {isUpdating ? translations.locationUpdating : translations.bookmarksSave}
@@ -120,7 +107,7 @@ export function ProfileEditForm({
                     onClick={() => setIsEditing(false)}
                     className={cn(
                         "h-9 text-xs transition-colors",
-                        isDaylight ? "text-slate-400 hover:text-slate-600 hover:bg-slate-50" : "text-slate-400 hover:text-white"
+                        "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                     )}
                 >
                     {translations.tasbihBack}

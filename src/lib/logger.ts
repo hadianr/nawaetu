@@ -104,7 +104,7 @@ class Logger {
   }
 
   /**
-   * Log expected anomalies or fallback activations (e.g. Gemini → Groq failover).
+   * Log expected anomalies or fallback activations (for example, Gemini to Groq failover).
    */
   warn(message: string, context?: LogContext): void {
     try {

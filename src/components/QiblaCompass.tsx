@@ -23,7 +23,6 @@ import { Button } from "@/components/ui/button";
 import { calculateQiblaDirection, calculateDistanceToKaaba } from "@/lib/qibla";
 import { Compass } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import CompassDisplay from "./QiblaCompassDisplay";
 import { QiblaPermissionPrompt } from "./QiblaPermissionPrompt";
@@ -77,8 +76,6 @@ function QiblaCompass() {
     const lastUpdateRef = useRef<number>(0);
 
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
 
     const applyHeading = useCallback((rawHeading: number) => {
         const now = performance.now();
@@ -371,18 +368,18 @@ function QiblaCompass() {
 
     if (!isClient || loading) return <div className={cn(
         "animate-pulse text-center mt-20 transition-colors",
-        isDaylight ? "text-slate-400" : "text-white/60"
+        "text-[rgb(var(--color-text-muted))]"
     )}>{t.qiblaSearching}</div>;
 
     // No Sensor Fallback UI
     if (noSensor) {
         return (
             <div className="flex flex-col items-center justify-center p-6 text-center max-w-sm mx-auto z-50">
-                <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/20">
-                    <Compass className="w-8 h-8 text-red-400 opacity-50" />
+                <div className="w-16 h-16 bg-[rgb(var(--color-danger))]/10 rounded-full flex items-center justify-center mb-4 border border-[rgb(var(--color-danger))]/20">
+                    <Compass className="w-8 h-8 text-[rgb(var(--color-danger))] opacity-50" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Sensor Tidak Ditemukan</h3>
-                <p className="text-white/60 text-sm mb-6">
+                <h3 className="text-xl font-bold text-[rgb(var(--color-text-strong))] mb-2">Sensor Tidak Ditemukan</h3>
+                <p className="text-[rgb(var(--color-text-muted))] text-sm mb-6">
                     HP Anda sepertinya tidak memiliki sensor kompas (magnetometer). Fitur ini tidak dapat berjalan.
                 </p>
                 <Button
@@ -390,7 +387,7 @@ function QiblaCompass() {
                     variant="outline"
                     className={cn(
                         "transition-all",
-                        isDaylight ? "border-slate-200 text-slate-600 hover:bg-slate-50" : "border-white/10 text-white hover:bg-white/10"
+                        "border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-surface-subtle))]"
                     )}
                 >
                     Coba Lagi
@@ -404,7 +401,7 @@ function QiblaCompass() {
             {error && (
                 <div className={cn(
                     "border p-4 rounded-lg text-sm text-center max-w-xs mx-auto mb-8 z-50",
-                    isDaylight ? "bg-red-50 border-red-100 text-red-600" : "bg-red-500/10 border-red-500/20 text-red-200"
+                    "bg-[rgb(var(--color-danger))]/10 border-[rgb(var(--color-danger))]/20 text-[rgb(var(--color-danger))]"
                 )}>
                     {error}
                 </div>
@@ -415,7 +412,6 @@ function QiblaCompass() {
                 permissionGranted={permissionGranted}
                 error={error}
                 showSessionNote={showSessionNote}
-                isDaylight={isDaylight}
                 t={t}
                 requestCompassPermission={requestCompassPermission}
             />
@@ -426,7 +422,6 @@ function QiblaCompass() {
                     qiblaRelativeRotate={qiblaRelativeRotate}
                     aligned={aligned}
                     distance={distance}
-                    isDaylight={isDaylight}
                     t={t}
                 />
             )}

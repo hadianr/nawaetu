@@ -12,6 +12,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { useTranslations } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface RamadhanStats {
     hijriYear: number;
@@ -57,15 +58,15 @@ function MiniBar({ left, right, leftLabel, rightLabel, leftColor, rightColor }: 
     const rightPct = 100 - leftPct;
     return (
         <div className="w-full">
-            <div className="flex justify-between text-[9px] text-white/40 mb-1 font-medium">
-                <span>{leftLabel} <span className="text-white/60">{left}</span></span>
-                <span className="text-white/60">{right}</span><span>{rightLabel}</span>
+            <div className="flex justify-between text-[9px] text-[rgb(var(--color-text-muted))] mb-1 font-medium">
+                <span>{leftLabel} <span className="text-[rgb(var(--color-text))]">{left}</span></span>
+                <span className="text-[rgb(var(--color-text))]">{right}</span><span>{rightLabel}</span>
             </div>
             <div className="flex h-2 rounded-full overflow-hidden gap-px">
                 <div className={`${leftColor} transition-all duration-500`} style={{ width: `${leftPct}%` }} />
                 <div className={`${rightColor} transition-all duration-500`} style={{ width: `${rightPct}%` }} />
             </div>
-            <div className="flex justify-between text-[8px] text-white/30 mt-0.5">
+            <div className="flex justify-between text-[8px] text-[rgb(var(--color-text-muted))] mt-0.5">
                 <span>{leftPct}%</span>
                 <span>{rightPct}%</span>
             </div>
@@ -192,9 +193,9 @@ export default function RamadhanWrappedCard() {
 
     if (loading) {
         return (
-            <div className="w-full flex items-center justify-center p-6 border border-white/10 rounded-2xl bg-black/40 backdrop-blur-sm">
+            <div className="w-full flex items-center justify-center p-6 border border-[rgb(var(--color-border))] rounded-2xl bg-[rgb(var(--color-surface))] backdrop-blur-sm">
                 <Loader2 className="w-5 h-5 mr-3 animate-spin text-[rgb(var(--color-primary))]" />
-                <span className="text-sm text-white/50 animate-pulse">{t.wrappedLoading || "Menghimpun Amal Ramadhan..."}</span>
+                <span className="text-sm text-[rgb(var(--color-text-muted))] animate-pulse">{t.wrappedLoading || "Menghimpun Amal Ramadhan..."}</span>
             </div>
         );
     }
@@ -208,24 +209,24 @@ export default function RamadhanWrappedCard() {
             className="relative overflow-hidden rounded-[28px] flex flex-col w-full"
             style={{
                 aspectRatio: "9/16",
-                background: "linear-gradient(160deg, #0a0e1a 0%, #0d1530 40%, #060810 100%)",
+                background: "linear-gradient(160deg, rgb(var(--color-canvas)) 0%, rgb(var(--color-surface)) 40%, rgb(var(--color-canvas)) 100%)",
                 padding: "6%",
             }}
         >
             {/* Decorative blobs */}
             <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full opacity-20" style={{ background: "rgb(var(--color-primary))", filter: "blur(70px)" }} />
-            <div className="absolute -bottom-24 -left-24 w-56 h-56 rounded-full opacity-10" style={{ background: "#f59e0b", filter: "blur(70px)" }} />
+            <div className="absolute -bottom-24 -left-24 w-56 h-56 rounded-full opacity-10" style={{ background: "rgb(var(--color-accent))", filter: "blur(70px)" }} />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full opacity-5" style={{ background: "rgb(var(--color-primary-light))", filter: "blur(60px)" }} />
 
             {/* ── Header ── */}
             <div className="z-10 text-center mb-4">
                 <p className="text-[9px] font-bold uppercase tracking-[0.35em] mb-1" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>
-                    ✦ {t.wrappedTitleLabel || "Nawaetu Wrapped"} ✦
+                    <span className="inline-flex items-center gap-1"><AppIcon name="sparkles" size="xs" tone="primary" /> {t.wrappedTitleLabel || "Nawaetu Wrapped"} <AppIcon name="sparkles" size="xs" tone="primary" /></span>
                 </p>
-                <h2 className="text-[22px] font-serif font-bold text-white leading-tight">
+                <h2 className="text-[22px] font-serif font-bold text-[rgb(var(--color-text-strong))] leading-tight">
                     {t.wrappedTitle?.replace("{year}", stats.hijriYear?.toString() || "") || `Rapor Ramadhan ${stats.hijriYear}H`}
                 </h2>
-                <p className="text-xs text-white/50 mt-0.5">{t.wrappedGreeting?.replace("{name}", userName) || `Alhamdulillah, ${userName}`}</p>
+                <p className="text-xs text-[rgb(var(--color-text-muted))] mt-0.5">{t.wrappedGreeting?.replace("{name}", userName) || `Alhamdulillah, ${userName}`}</p>
             </div>
 
             {/* ── Divider ── */}
@@ -234,22 +235,22 @@ export default function RamadhanWrappedCard() {
             {/* ── Core Stats Row ── */}
             <div className="z-10 grid grid-cols-3 gap-2 mb-3">
                 {/* Puasa */}
-                <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgba(251,191,36,0.08)", borderColor: "rgba(251,191,36,0.2)" }}>
-                    <span className="text-base mb-0.5">🌙</span>
-                    <span className="text-xl font-black text-white leading-none">{stats.fastingCount}</span>
-                    <span className="text-[8px] text-amber-400/70 uppercase tracking-wider mt-0.5">{t.wrappedFasting || "Puasa"}</span>
+                <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-accent) / 0.08)", borderColor: "rgb(var(--color-accent) / 0.2)" }}>
+                    <AppIcon name="moon" size="sm" tone="primary" className="mb-0.5" />
+                    <span className="text-xl font-black text-[rgb(var(--color-text-strong))] leading-none">{stats.fastingCount}</span>
+                    <span className="text-[8px] text-[rgb(var(--color-accent))]/70 uppercase tracking-wider mt-0.5">{t.wrappedFasting || "Puasa"}</span>
                 </div>
                 {/* Tarawih */}
-                <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgba(var(--color-primary),0.08)", borderColor: "rgba(var(--color-primary),0.25)" }}>
-                    <span className="text-base mb-0.5">✨</span>
-                    <span className="text-xl font-black text-white leading-none">{stats.tarawehCount}</span>
+                <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-primary) / 0.08)", borderColor: "rgb(var(--color-primary) / 0.25)" }}>
+                    <AppIcon name="sparkles" size="sm" tone="primary" className="mb-0.5" />
+                    <span className="text-xl font-black text-[rgb(var(--color-text-strong))] leading-none">{stats.tarawehCount}</span>
                     <span className="text-[8px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
                 </div>
                 {/* Tilawah */}
-                <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgba(52,211,153,0.08)", borderColor: "rgba(52,211,153,0.2)" }}>
-                    <span className="text-base mb-0.5">📖</span>
-                    <span className="text-lg font-black text-white leading-none">{formatDuration(stats.totalQuranSeconds)}</span>
-                    <span className="text-[8px] text-emerald-400/70 uppercase tracking-wider mt-0.5">{t.wrappedQuran || "Tilawah"}</span>
+                <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
+                    <AppIcon name="book" size="sm" tone="primary" className="mb-0.5" />
+                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))] leading-none">{formatDuration(stats.totalQuranSeconds)}</span>
+                    <span className="text-[8px] text-[rgb(var(--color-success))]/70 uppercase tracking-wider mt-0.5">{t.wrappedQuran || "Tilawah"}</span>
                 </div>
             </div>
 
@@ -258,59 +259,59 @@ export default function RamadhanWrappedCard() {
                 {/* Row 1: Qiyamul Lail + Dzikir + Sholat Sunnah */}
                 <div className="grid grid-cols-3 gap-1.5">
                     {/* Qiyamul Lail */}
-                    <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgba(99,102,241,0.08)", borderColor: "rgba(99,102,241,0.2)" }}>
-                        <span className="text-base mb-0.5">🤲</span>
-                        <div className="text-white font-black text-sm leading-none">{stats.qiyamulLailCount}</div>
-                        <div className="text-[7px] text-indigo-400/70 uppercase tracking-wider mt-0.5 text-center">Qiyamul Lail</div>
+                    <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-info) / 0.08)", borderColor: "rgb(var(--color-info) / 0.2)" }}>
+                    <AppIcon name="hands" size="sm" tone="primary" className="mb-0.5" />
+                        <div className="text-[rgb(var(--color-text-strong))] font-black text-sm leading-none">{stats.qiyamulLailCount}</div>
+                        <div className="text-[7px] text-[rgb(var(--color-info))]/70 uppercase tracking-wider mt-0.5 text-center">Qiyamul Lail</div>
                     </div>
                     {/* Dzikir */}
-                    <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgba(168,85,247,0.08)", borderColor: "rgba(168,85,247,0.2)" }}>
-                        <span className="text-base mb-0.5">📿</span>
-                        <div className="text-white font-black text-sm leading-none">
+                    <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-primary-light) / 0.08)", borderColor: "rgb(var(--color-primary-light) / 0.2)" }}>
+                    <AppIcon name="hands" size="sm" tone="primary" className="mb-0.5" />
+                        <div className="text-[rgb(var(--color-text-strong))] font-black text-sm leading-none">
                             {stats.totalTasbih > 999
                                 ? `${Math.floor(stats.totalTasbih / 1000)}k`
                                 : stats.totalTasbih}
                         </div>
-                        <div className="text-[7px] text-purple-400/70 uppercase tracking-wider mt-0.5 text-center">Dzikir</div>
+                        <div className="text-[7px] text-[rgb(var(--color-primary-light))]/70 uppercase tracking-wider mt-0.5 text-center">Dzikir</div>
                     </div>
                     {/* Sholat Sunnah */}
-                    <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgba(34,197,94,0.08)", borderColor: "rgba(34,197,94,0.2)" }}>
-                        <span className="text-base mb-0.5">☀️</span>
-                        <div className="text-white font-black text-sm leading-none">{stats.totalSunnahAll}</div>
-                        <div className="text-[7px] text-green-400/70 uppercase tracking-wider mt-0.5 text-center">Sholat Sunnah</div>
+                    <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
+                    <AppIcon name="sun" size="sm" tone="primary" className="mb-0.5" />
+                        <div className="text-[rgb(var(--color-text-strong))] font-black text-sm leading-none">{stats.totalSunnahAll}</div>
+                        <div className="text-[7px] text-[rgb(var(--color-success))]/70 uppercase tracking-wider mt-0.5 text-center">Sholat Sunnah</div>
                     </div>
                 </div>
 
                 {/* Lokasi Sholat Wajib bar */}
                 {(stats.fardhuMasjidDays + stats.fardhuRumahDays + stats.fardhuKeduanyaDays) > 0 && (
-                    <div className="rounded-xl p-3 border" style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}>
+                    <div className="rounded-xl p-3 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]">
                         <div className="flex items-center gap-1.5 mb-2">
-                            <span className="text-xs">🕌</span>
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/50">Lokasi Sholat Wajib</span>
+                            <AppIcon name="landmark" size="xs" tone="primary" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">Lokasi Sholat Wajib</span>
                         </div>
                         <MiniBar
                             left={stats.fardhuMasjidDays}
                             right={stats.fardhuRumahDays}
-                            leftLabel="🕌 Masjid"
-                            rightLabel="Rumah 🏠"
+                            leftLabel="Masjid"
+                            rightLabel="Rumah"
                             leftColor="bg-[rgba(var(--color-primary),0.7)]"
-                            rightColor="bg-amber-500/60"
+                            rightColor="bg-[rgb(var(--color-warning))]/60"
                         />
                     </div>
                 )}
 
                 {/* Lokasi Sholat Tarawih bar */}
                 {(stats.masjidCount + stats.rumahCount) > 0 && (
-                    <div className="rounded-xl p-3 border" style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}>
+                    <div className="rounded-xl p-3 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]">
                         <div className="flex items-center gap-1.5 mb-2">
-                            <span className="text-xs">📍</span>
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/50">Lokasi Sholat Tarawih</span>
+                            <AppIcon name="landmark" size="xs" tone="primary" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">Lokasi Sholat Tarawih</span>
                         </div>
                         <MiniBar
                             left={stats.masjidCount} right={stats.rumahCount}
-                            leftLabel="🕌 Masjid" rightLabel="Rumah 🏠"
+                            leftLabel="Masjid" rightLabel="Rumah"
                             leftColor="bg-[rgba(var(--color-primary),0.7)]"
-                            rightColor="bg-amber-500/60"
+                            rightColor="bg-[rgb(var(--color-warning))]/60"
                         />
                     </div>
                 )}
@@ -326,11 +327,11 @@ export default function RamadhanWrappedCard() {
                 </div>
                 {insightLoading ? (
                     <div className="flex items-center gap-2">
-                        <Loader2 className="w-3 h-3 animate-spin text-white/30 shrink-0" />
-                        <span className="text-[10px] text-white/30 italic animate-pulse">{t.wrappedAILoading || "Merangkum perjalananmu..."}</span>
+                        <Loader2 className="w-3 h-3 animate-spin text-[rgb(var(--color-text-muted))] shrink-0" />
+                        <span className="text-[10px] text-[rgb(var(--color-text-muted))] italic animate-pulse">{t.wrappedAILoading || "Merangkum perjalananmu..."}</span>
                     </div>
                 ) : (
-                    <p className="text-[10px] leading-relaxed text-white/70 italic">
+                    <p className="text-[10px] leading-relaxed text-[rgb(var(--color-text))] italic">
                         {insight || "MasyaAllah, setiap langkah ibadahmu di bulan suci ini adalah cahaya yang menerangi jalan menuju ridha Allah. Semoga amal-amal kebaikanmu diterima dan menjadi bekal di akhirat kelak. Taqabbalallahu minna wa minkum."}
                     </p>
                 )}
@@ -342,7 +343,7 @@ export default function RamadhanWrappedCard() {
             {/* ── Footer ── */}
             <div className="z-10 mt-2 text-center flex items-center justify-center gap-1.5">
                 <Image src="/icons/icon-192x192.png" width={12} height={12} className="opacity-40 contrast-200 grayscale" alt="Nawaetu" />
-                <span className="text-[8px] text-white/25 font-bold uppercase tracking-widest">nawaetu.com</span>
+                <span className="text-[8px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-widest">nawaetu.com</span>
             </div>
         </div>
     );
@@ -351,14 +352,14 @@ export default function RamadhanWrappedCard() {
     const triggerWidget = (
         <button
             onClick={() => setIsOpen(true)}
-            className="w-full flex items-center gap-3 rounded-2xl border border-white/8 bg-white/5 px-4 py-3 text-left transition-all hover:bg-white/8 hover:-translate-y-0.5 active:scale-[0.98] group"
+            className="w-full flex items-center gap-3 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-3 text-left transition-all hover:bg-[rgb(var(--color-surface))] hover:-translate-y-0.5 active:scale-[0.98] group"
         >
             <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-xl text-2xl" style={{ background: "rgba(var(--color-primary),0.15)" }}>
-                🏆
+                <AppIcon name="trophy" size="lg" tone="primary" />
             </div>
             <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white">{t.wrappedTriggerTitle || "Rapor Ramadhanmu"}</p>
-                <p className="text-[10px] text-white/40 mt-0.5">{t.wrappedTriggerSubtitle || "Puasa, Tarawih, Tilawah & AI Insight"}</p>
+                <p className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.wrappedTriggerTitle || "Rapor Ramadhanmu"}</p>
+                <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5">{t.wrappedTriggerSubtitle || "Puasa, Tarawih, Tilawah & AI Insight"}</p>
             </div>
             <div className="shrink-0 flex items-center gap-1">
                 <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "rgba(var(--color-primary),0.15)", color: "rgb(var(--color-primary-light))" }}>
@@ -370,10 +371,10 @@ export default function RamadhanWrappedCard() {
 
     // ─── Fullscreen modal ───────────────────────────────────────────────────
     const wrappedModal = (
-        <div className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md overflow-y-auto grid place-items-center p-4 pb-12 pt-16">
+        <div className="fixed inset-0 z-[9999] bg-[rgb(var(--color-text-strong))]/90 backdrop-blur-md overflow-y-auto grid place-items-center p-4 pb-12 pt-16">
             <button
                 onClick={() => setIsOpen(false)}
-                className="fixed top-4 right-4 z-[100] p-3 rounded-full hover:bg-white/20 bg-black/40 text-white transition-colors border border-white/10 backdrop-blur-md"
+                className="fixed top-4 right-4 z-[100] p-3 rounded-full hover:bg-[rgb(var(--color-surface))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] transition-colors border border-[rgb(var(--color-border))] backdrop-blur-md"
             >
                 <X className="w-5 h-5" />
             </button>
@@ -388,8 +389,8 @@ export default function RamadhanWrappedCard() {
                         className={cn(
                             "flex-1 rounded-2xl h-12 transition-all",
                             downloaded
-                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 shadow-none cursor-default"
-                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                                ? "bg-[rgb(var(--color-success))]/20 text-[rgb(var(--color-success))] border border-[rgb(var(--color-success))]/30 hover:bg-[rgb(var(--color-success))]/20 shadow-none cursor-default"
+                                : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         )}
                     >
                         {generating ? (
@@ -404,7 +405,7 @@ export default function RamadhanWrappedCard() {
                     {typeof navigator !== "undefined" && navigator.share && (
                         <Button
                             variant="outline"
-                            className="flex-shrink-0 w-12 h-12 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white"
+                            className="flex-shrink-0 w-12 h-12 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))]"
                             onClick={async () => {
                                 if (!cardRef.current) return;
                                 setGenerating(true);

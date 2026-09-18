@@ -11,6 +11,8 @@
 import { useTranslations } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import type { FastingYearStats } from "@/data/fasting/types";
+import { AppIcon } from "@/components/ui/AppIcon";
+import type { AppIconName } from "@/lib/icon-names";
 
 interface FastingStatsProps {
     stats: FastingYearStats;
@@ -29,28 +31,28 @@ export default function FastingStats({ stats, hijriYear, onViewDetail }: Fasting
             label: t.fastingStatsTotalFasting,
             color: "text-[rgb(var(--color-primary-light,var(--color-primary)))]",
             bg: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20",
-            icon: "✅",
+            icon: "shield-check" as const,
         },
         {
             value: stats.totalLogged,
             label: t.fastingStatsLogged,
-            color: "text-white/70",
-            bg: "bg-white/5 border-white/10",
-            icon: "📋",
+            color: "text-[rgb(var(--color-text))]",
+            bg: "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]",
+            icon: "scroll" as const,
         },
         {
             value: stats.pendingQadha,
             label: t.fastingStatsPendingQadha,
-            color: stats.pendingQadha > 0 ? "text-amber-400" : "text-green-400",
-            bg: stats.pendingQadha > 0 ? "bg-amber-500/10 border-amber-500/25" : "bg-green-500/10 border-green-500/25",
-            icon: stats.pendingQadha > 0 ? "⏳" : "✓",
+            color: stats.pendingQadha > 0 ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-success))]",
+            bg: stats.pendingQadha > 0 ? "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25" : "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/25",
+            icon: (stats.pendingQadha > 0 ? "calendar" : "shield-check") as AppIconName,
         },
         {
             value: stats.pendingFidyah,
             label: t.fastingStatsPendingFidyah,
-            color: stats.pendingFidyah > 0 ? "text-orange-400" : "text-green-400",
-            bg: stats.pendingFidyah > 0 ? "bg-orange-500/10 border-orange-500/25" : "bg-green-500/10 border-green-500/25",
-            icon: stats.pendingFidyah > 0 ? "💰" : "✓",
+            color: stats.pendingFidyah > 0 ? "text-[rgb(var(--color-accent))]" : "text-[rgb(var(--color-success))]",
+            bg: stats.pendingFidyah > 0 ? "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25" : "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/25",
+            icon: (stats.pendingFidyah > 0 ? "star" : "shield-check") as AppIconName,
         },
     ];
 
@@ -58,11 +60,11 @@ export default function FastingStats({ stats, hijriYear, onViewDetail }: Fasting
         <div className="space-y-3">
             <div className="flex items-center justify-between">
                 <div>
-                    <h4 className="font-semibold text-white text-sm">{t.fastingStatsTitle}</h4>
-                    <p className="text-xs text-white/40">{yearLabel}</p>
+                    <h4 className="font-semibold text-[rgb(var(--color-text-strong))] text-sm">{t.fastingStatsTitle}</h4>
+                    <p className="text-xs text-[rgb(var(--color-text-muted))]">{yearLabel}</p>
                 </div>
                 {totalObligations === 0 && stats.totalLogged > 0 && (
-                    <span className="text-xs text-green-400 font-medium">{t.fastingStatsAllClear}</span>
+                    <span className="text-xs text-[rgb(var(--color-success))] font-medium">{t.fastingStatsAllClear}</span>
                 )}
             </div>
 
@@ -71,21 +73,21 @@ export default function FastingStats({ stats, hijriYear, onViewDetail }: Fasting
                 {statCards.map((card, i) => (
                     <div key={i} className={`rounded-xl border px-3 py-2.5 ${card.bg}`}>
                         <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className="text-base">{card.icon}</span>
+                            <AppIcon name={card.icon} size="sm" tone="primary" />
                             <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
                         </div>
-                        <p className="text-[10px] text-white/40 leading-tight">{card.label}</p>
+                        <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-tight">{card.label}</p>
                     </div>
                 ))}
             </div>
 
             {/* Progress bar: fasting/30 */}
             <div>
-                <div className="flex justify-between text-[10px] text-white/30 mb-1">
+                <div className="flex justify-between text-[10px] text-[rgb(var(--color-text-muted))] mb-1">
                     <span>{stats.totalFasting} / 30</span>
                     <span>{Math.round((stats.totalFasting / 30) * 100)}%</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-1.5 rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
                     <div
                         className="h-full rounded-full transition-all duration-700"
                         style={{

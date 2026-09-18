@@ -109,7 +109,9 @@ const createTheme = (input: ThemeInput): Theme => {
             text: isLight ? "51 65 85" : "226 232 240",
             textMuted: isLight ? "71 85 105" : "148 163 184",
             primary: colors.primary,
-            primaryStrong: colors.primaryDark,
+            // Dark themes need a luminous accent for text and controls; light
+            // themes use the darker shade for contrast on pale surfaces.
+            primaryStrong: isLight ? colors.primaryDark : colors.primaryLight,
             primaryForeground: "255 255 255",
             accent: colors.accent,
             accentForeground: isLight ? "63 39 51" : "15 23 42",
@@ -118,7 +120,8 @@ const createTheme = (input: ThemeInput): Theme => {
             warning: "251 191 36",
             danger: "248 113 113",
             dangerForeground: "255 255 255",
-            border: isLight ? "226 232 240" : "255 255 255",
+            // Keep dark-theme borders quiet; components may add opacity on top.
+            border: isLight ? "226 232 240" : "51 65 85",
             ring: colors.primaryLight,
             shadowCard: isLight ? "0 4px 20px rgb(15 23 42 / 0.08)" : "0 4px 20px rgb(0 0 0 / 0.24)",
             shadowFloating: isLight ? "0 12px 32px rgb(15 23 42 / 0.16)" : "0 12px 32px rgb(0 0 0 / 0.4)",
@@ -152,14 +155,13 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "10 10 10", // near black
             surface: "15 23 42", // slate-900
         },
-        tokens: { primaryStrong: "4 120 87" },
     }),
     daylight: createTheme({
         id: "daylight",
         mode: "light",
         nameKey: "themeDaylightName",
         descriptionKey: "themeDaylightDescription",
-        name: "Daylight ☀️",
+        name: "Daylight",
         description: "Cerah, ringan, dan nyaman untuk siang hari",
         isPremium: false,
         colors: {
@@ -192,7 +194,6 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "3 7 18", // very dark blue
             surface: "30 41 59", // slate-800 with blue tint
         },
-        tokens: { primaryStrong: "194 65 12" },
     }),
     sunset: createTheme({
         id: "sunset",
@@ -214,7 +215,6 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "12 10 9", // warm black
             surface: "41 37 36", // stone-800
         },
-        tokens: { primaryStrong: "109 40 217" },
     }),
     lavender: createTheme({
         id: "lavender",
@@ -236,7 +236,6 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "10 8 15", // dark purple-black
             surface: "46 16 101", // purple-900
         },
-        tokens: { primaryStrong: "15 118 110" },
     }),
     ocean: createTheme({
         id: "ocean",
@@ -258,7 +257,6 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "4 12 12", // dark teal-black
             surface: "19 78 74", // teal-900
         },
-        tokens: { primaryStrong: "159 18 57" },
     }),
     royal: createTheme({
         id: "royal",
@@ -280,7 +278,6 @@ export const THEMES: Record<ThemeId, Theme> = {
             background: "12 7 9", // dark rose-black
             surface: "76 5 25", // rose-950
         },
-        tokens: { primaryStrong: "159 18 57" },
     }),
     blossom: createTheme({
         id: "blossom",

@@ -24,14 +24,14 @@ export const DUA_LIBRARY: DuaItem[] = [
 ];
 
 export const DUA_OCCASIONS: DuaCategoryDefinition[] = [
-    { key: "morning",      labelId: "☀️ Dzikir Pagi",      labelEn: "☀️ Morning" },
-    { key: "evening",      labelId: "🌙 Dzikir Petang",    labelEn: "🌙 Evening" },
-    { key: "after_prayer", labelId: "🤲 Setelah Sholat",   labelEn: "🤲 After Prayer" },
-    { key: "sleeping",     labelId: "😴 Sebelum Tidur",   labelEn: "😴 Sleep" },
-    { key: "protection",   labelId: "🛡️ Perlindungan",    labelEn: "🛡️ Protection" },
-    { key: "gratitude",    labelId: "🙏 Syukur",           labelEn: "🙏 Gratitude" },
-    { key: "general",      labelId: "📖 Sehari-hari",      labelEn: "📖 Daily Life" },
-    { key: "social",       labelId: "🤝 Sosial & Akhlak",  labelEn: "🤝 Social & Ethics" },
+    { key: "morning",      labelId: "Dzikir Pagi",      labelEn: "Morning" },
+    { key: "evening",      labelId: "Dzikir Petang",    labelEn: "Evening" },
+    { key: "after_prayer", labelId: "Setelah Sholat",   labelEn: "After Prayer" },
+    { key: "sleeping",     labelId: "Sebelum Tidur",   labelEn: "Sleep" },
+    { key: "protection",   labelId: "Perlindungan",    labelEn: "Protection" },
+    { key: "gratitude",    labelId: "Syukur",           labelEn: "Gratitude" },
+    { key: "general",      labelId: "Sehari-hari",      labelEn: "Daily Life" },
+    { key: "social",       labelId: "Sosial & Akhlak",  labelEn: "Social & Ethics" },
 ];
 
 export function getDuaById(id: string): DuaItem | undefined {

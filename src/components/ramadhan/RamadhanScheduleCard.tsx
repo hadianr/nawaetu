@@ -26,6 +26,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { useTranslations } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 function parseTimeToDate(timeStr: string): Date | null {
     if (!timeStr) return null;
@@ -50,9 +51,10 @@ function formatCountdown(ms: number): string {
 export default function RamadhanScheduleCard() {
     const { data } = usePrayerTimesContext();
     const t = useTranslations();
-    const [now, setNow] = useState(new Date());
+    const [now, setNow] = useState<Date | null>(null);
 
     useEffect(() => {
+        queueMicrotask(() => setNow(new Date()));
         const timer = setInterval(() => setNow(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
@@ -63,8 +65,8 @@ export default function RamadhanScheduleCard() {
     const maghribTime = prayers["Maghrib"] ?? "";
     const ishaTime = prayers["Isha"] ?? "";
 
-    const imsakDate = parseTimeToDate(imsakTime);
-    const maghribDate = parseTimeToDate(maghribTime);
+    const imsakDate = now ? parseTimeToDate(imsakTime) : null;
+    const maghribDate = now ? parseTimeToDate(maghribTime) : null;
 
     let countdownLabel = "";
     let countdownMs = 0;
@@ -72,11 +74,11 @@ export default function RamadhanScheduleCard() {
 
     const isRamadhan = data?.hijriMonth?.toLowerCase().includes("ramadan") || false;
 
-    if (imsakDate && now < imsakDate) {
+    if (now && imsakDate && now < imsakDate) {
         countdownLabel = isRamadhan ? t.scheduleImsakIn : t.scheduleFajrIn;
         countdownMs = imsakDate.getTime() - now.getTime();
         countdownStyle = { color: `rgb(var(--color-primary-light))` };
-    } else if (maghribDate && now < maghribDate) {
+    } else if (now && maghribDate && now < maghribDate) {
         countdownLabel = isRamadhan ? t.scheduleIftarIn : t.scheduleMaghribIn;
         countdownMs = maghribDate.getTime() - now.getTime();
         countdownStyle = { color: `rgba(var(--color-primary-light), 0.9)` };
@@ -86,33 +88,33 @@ export default function RamadhanScheduleCard() {
     }
 
     const scheduleItems = [
-        { label: t.scheduleImsak, time: imsakTime || "--:--", icon: "🌙", colorStyle: { color: `rgb(var(--color-primary-light))` } },
-        { label: t.scheduleFajr, time: fajrTime || "--:--", icon: "🌅", colorStyle: { color: "rgb(147 197 253)" } },
-        { label: isRamadhan ? t.scheduleMaghribIftar : t.scheduleMaghrib, time: maghribTime || "--:--", icon: "🌇", colorStyle: { color: `rgba(var(--color-primary-light), 0.85)` } },
-        { label: t.scheduleIsha, time: ishaTime || "--:--", icon: "⭐", colorStyle: { color: "rgb(216 180 254)" } },
+        { label: t.scheduleImsak, time: imsakTime || "--:--", icon: "moon" as const, colorStyle: { color: `rgb(var(--color-primary-light))` } },
+        { label: t.scheduleFajr, time: fajrTime || "--:--", icon: "sun" as const, colorStyle: { color: "rgb(var(--color-info))" } },
+        { label: isRamadhan ? t.scheduleMaghribIftar : t.scheduleMaghrib, time: maghribTime || "--:--", icon: "sun" as const, colorStyle: { color: `rgba(var(--color-primary-light), 0.85)` } },
+        { label: t.scheduleIsha, time: ishaTime || "--:--", icon: "star" as const, colorStyle: { color: "rgb(var(--color-primary-light))" } },
     ];
 
     return (
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.03] to-transparent backdrop-blur-lg shadow-xl shadow-black/5">
+        <div className="relative overflow-hidden rounded-3xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-lg shadow-[var(--shadow-card)]">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4">
                 <div className="flex items-center gap-2">
-                    <span className="text-lg">⏰</span>
-                    <h3 className="font-bold text-white text-base">{t.scheduleTodayTitle}</h3>
+                    <AppIcon name="calendar" size="sm" tone="primary" />
+                    <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-base">{t.scheduleTodayTitle}</h3>
                 </div>
                 <DalilBadge dalil={FASTING_SCHEDULE_EVIDENCE} variant="pill" />
             </div>
 
             {/* Countdown */}
             {countdownMs > 0 ? (
-                <div className="mx-3 mb-2 rounded-2xl bg-black/30 border border-white/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center backdrop-blur-md shadow-lg">
-                    <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white/30 mb-1.5 sm:mb-2">{countdownLabel}</p>
+                <div className="mx-3 mb-2 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                    <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))] mb-1.5 sm:mb-2">{countdownLabel}</p>
                     <p className="text-2xl sm:text-3xl font-mono font-black tracking-widest" style={countdownStyle}>
                         {formatCountdown(countdownMs)}
                     </p>
                 </div>
             ) : (
-                <div className="mx-3 mb-2 rounded-2xl border border-white/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-2.5 text-center backdrop-blur-md shadow-lg" style={{ background: "rgba(var(--color-primary), 0.1)" }}>
+                <div className="mx-3 mb-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-2.5 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
                     <p className="text-sm font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{countdownLabel}</p>
                 </div>
             )}
@@ -122,11 +124,11 @@ export default function RamadhanScheduleCard() {
                 {scheduleItems.map((item) => (
                     <div
                         key={item.label}
-                        className="rounded-xl bg-black/20 border border-white/5 px-2 py-1.5 sm:px-3 sm:py-2.5 flex items-center gap-1.5 sm:gap-2 backdrop-blur-sm shadow-md hover:bg-black/30 hover:border-white/10 transition-all"
+                        className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-2 py-1.5 sm:px-3 sm:py-2.5 flex items-center gap-1.5 sm:gap-2 backdrop-blur-sm shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-surface))] transition-all"
                     >
-                        <span className="text-sm sm:text-base">{item.icon}</span>
+                        <AppIcon name={item.icon} size="sm" tone="primary" />
                         <div>
-                            <p className="text-[10px] sm:text-xs text-white/40">{item.label}</p>
+                            <p className="text-[10px] sm:text-xs text-[rgb(var(--color-text-muted))]">{item.label}</p>
                             <p className="text-xs sm:text-sm font-bold font-mono" style={item.colorStyle}>{item.time}</p>
                         </div>
                     </div>
@@ -134,14 +136,14 @@ export default function RamadhanScheduleCard() {
             </div>
 
             {/* Doa shortcuts - Compact */}
-            <div className="border-t border-white/5 px-3 py-2 sm:px-4 sm:py-2.5">
+            <div className="border-t border-[rgb(var(--color-border))] px-3 py-2 sm:px-4 sm:py-2.5">
                 <div className="space-y-2">
                     <div>
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.scheduleSuhoorDua}</p>
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1">{t.scheduleSuhoorDua}</p>
                         <IntentionCard intention={SUHOOR_PRAYER} variant="pill" />
                     </div>
                     <div>
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 mb-1">{t.scheduleIftarDua}</p>
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1">{t.scheduleIftarDua}</p>
                         <div className="space-y-1">
                             <IntentionCard intention={IFTAR_PRAYER} variant="pill" />
                             <IntentionCard intention={IFTAR_PRAYER_2} variant="pill" />
@@ -152,8 +154,8 @@ export default function RamadhanScheduleCard() {
             </div>
 
             {/* Calendar Link */}
-            <div className="bg-white/[0.02] border-t border-white/5 px-4 py-2 flex justify-center">
-                <Link href="/hijri-calendar?view=ramadan" className="flex min-h-11 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
+            <div className="bg-[rgb(var(--color-surface-subtle))] border-t border-[rgb(var(--color-border))] px-4 py-2 flex justify-center">
+                <Link href="/hijri-calendar?view=ramadan" className="flex min-h-11 items-center gap-2 rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] px-4 py-2 text-xs font-medium text-[rgb(var(--color-text))] transition-colors hover:bg-[rgb(var(--color-surface-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
                     <CalendarDays className="h-3.5 w-3.5" />
                     <span>{t.hijriCalendarOpen}</span>
                 </Link>

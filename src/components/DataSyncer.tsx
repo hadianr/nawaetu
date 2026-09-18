@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { useDataSync } from "@/hooks/useDataSync";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 export default function DataSyncer() {
     const { data: session, status } = useSession();
@@ -40,7 +41,7 @@ export default function DataSyncer() {
                 const welcomeKey = `nawaetu_login_welcome_${session.user.id || session.user.email}`;
                 if (!storage.getOptional(welcomeKey)) {
                     toast.success(`Ahlan wa Sahlan, ${session.user.name?.split(' ')[0] || 'Sobat'}!`, {
-                        icon: "👋",
+                        icon: <AppIcon name="hands" size="sm" tone="primary" />,
                         description: "Login berhasil. Selamat datang kembali.",
                         duration: 4000
                     });

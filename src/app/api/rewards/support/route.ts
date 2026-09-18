@@ -88,15 +88,15 @@ export async function POST(request: NextRequest) {
     }
 
     const message = [
-        "<b>🎁 [REWARDS SUPPORT OFFER]</b>",
+        "<b>[REWARDS SUPPORT OFFER]</b>",
         "----------------------------------------",
-        `<b>👤 Name / organization:</b> ${escapeHtml(name)}`,
-        `<b>📧 Email:</b> ${escapeHtml(email)}`,
-        `<b>🤝 Support type:</b> ${escapeHtml(supportType)}`,
-        `<b>📍 Location:</b> ${escapeHtml(location || "Not provided")}`,
-        `<b>📦 Fulfillment:</b> ${escapeHtml(fulfillment || "Not provided")}`,
+        `<b>Name / organization:</b> ${escapeHtml(name)}`,
+        `<b>Email:</b> ${escapeHtml(email)}`,
+        `<b>Support type:</b> ${escapeHtml(supportType)}`,
+        `<b>Location:</b> ${escapeHtml(location || "Not provided")}`,
+        `<b>Fulfillment:</b> ${escapeHtml(fulfillment || "Not provided")}`,
         "",
-        `<b>📝 Description:</b>\n${escapeHtml(description)}`,
+        `<b>Description:</b>\n${escapeHtml(description)}`,
     ].join("\n");
 
     let telegram: Response;

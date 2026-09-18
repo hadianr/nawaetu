@@ -22,10 +22,10 @@ import { useSyncExternalStore, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, BookOpen, Scroll, Settings, Fingerprint } from "lucide-react";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 
 // Enhanced Moon icon for Ramadhan with crescent and star
 const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: boolean }) => (
@@ -52,8 +52,6 @@ const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: 
 const BottomNav = memo(function BottomNav() {
     const pathname = usePathname();
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const mounted = useSyncExternalStore(
         () => () => {},
         () => true,
@@ -88,8 +86,7 @@ const BottomNav = memo(function BottomNav() {
         <nav
             aria-label="Navigasi utama"
             className={cn(
-                "fixed bottom-0 left-0 z-50 w-full border-t backdrop-blur-xl pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.05)]",
-                isDaylight ? "bg-white/90 border-slate-200/60" : "bg-black/80 border-white/10"
+                "fixed bottom-0 left-0 z-50 w-full border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/90 backdrop-blur-xl pb-safe shadow-[var(--shadow-floating)]"
             )}
         >
             <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2 relative">
@@ -116,67 +113,26 @@ const BottomNav = memo(function BottomNav() {
                                                 isActive
                                                     ? "blur-lg opacity-70 animate-pulse-glow"
                                                     : "blur-md opacity-40",
-                                                isDaylight && isActive ? "bg-[rgb(var(--color-primary-light))]" : ""
+                                                isActive ? "bg-[rgb(var(--color-primary-light))]" : "bg-[rgb(var(--color-primary))]"
                                             )}
-                                            style={!isDaylight ? {
-                                                transform: "scale(1.4)",
-                                                backgroundColor: isActive
-                                                    ? "rgb(var(--color-primary-light))"
-                                                    : "rgba(var(--color-primary), 0.8)"
-                                            } : {
-                                                transform: "scale(1.4)",
-                                                backgroundColor: isActive
-                                                    ? "rgb(var(--color-primary-light) / 0.24)"
-                                                    : "rgb(var(--color-primary) / 0.18)"
-                                            }}
+                                            style={{ transform: "scale(1.4)" }}
                                         />
 
                                         {/* Small decorative stars around the circle */}
                                         {isActive && (
                                             <>
-                                                <span className="absolute -top-1 -right-1 text-[8px] animate-pulse" style={{ animationDelay: "0s" }}>✨</span>
-                                                <span className="absolute -bottom-1 -left-1 text-[8px] animate-pulse" style={{ animationDelay: "0.5s" }}>✨</span>
-                                                <span className="absolute top-0 -left-2 text-[6px] animate-pulse" style={{ animationDelay: "1s" }}>⭐</span>
+                                                <AppIcon name="sparkles" size="xs" tone="primary" className="absolute -top-1 -right-1 animate-pulse" />
+                                                <AppIcon name="sparkles" size="xs" tone="primary" className="absolute -bottom-1 -left-1 animate-pulse" />
+                                                <AppIcon name="star" size="xs" tone="warning" className="absolute top-0 -left-2 animate-pulse" />
                                             </>
                                         )}
 
                                         {/* Button pill */}
                                         <span
                                             className={cn(
-                                                "relative flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all duration-300",
-                                                isActive && "scale-105 shadow-xl shadow-[rgb(var(--color-primary))]/20"
+                                                "relative flex h-12 w-12 items-center justify-center rounded-full border-2 border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/20 transition-all duration-300 shadow-[var(--shadow-floating)]",
+                                                isActive && "scale-105 bg-[rgb(var(--color-primary))]"
                                             )}
-                                            style={isActive ? (isDaylight ? {
-                                                borderColor: "rgb(var(--color-primary-light))",
-                                                background: `radial-gradient(circle at 30% 30%, rgb(var(--color-primary-light) / 0.7), rgb(var(--color-primary) / 0.45))`,
-                                                boxShadow: `
-                                                    0 0 0 1px rgb(var(--color-primary) / 0.3),
-                                                    0 4px 15px rgb(var(--color-primary) / 0.2),
-                                                    inset 0 1px 2px rgba(255, 255, 255, 0.4)
-                                                `
-                                            } : {
-                                                borderColor: "rgb(var(--color-primary-light))",
-                                                background: `radial-gradient(circle at 30% 30%, rgb(var(--color-primary-light)), rgb(var(--color-primary)), rgb(var(--color-primary-dark)))`,
-                                                boxShadow: `
-                                                    0 0 0 1px rgba(var(--color-primary-light), 0.5),
-                                                    0 4px 20px rgba(var(--color-primary), 0.5),
-                                                    0 8px 40px rgba(var(--color-primary-light), 0.3),
-                                                    inset 0 1px 2px rgba(255, 255, 255, 0.3)
-                                                `
-                                            }) : (isDaylight ? {
-                                                borderColor: "rgb(var(--color-primary) / 0.2)",
-                                                background: `radial-gradient(circle at 30% 30%, rgb(var(--color-surface)), rgb(var(--color-primary-light) / 0.28))`,
-                                                boxShadow: `
-                                                    0 2px 8px rgb(var(--color-primary) / 0.08)
-                                                `
-                                            } : {
-                                                borderColor: "rgba(var(--color-primary), 0.5)",
-                                                background: `radial-gradient(circle at 30% 30%, rgba(var(--color-primary), 0.9), rgba(var(--color-primary-dark), 0.8))`,
-                                                boxShadow: `
-                                                    0 0 0 1px rgba(var(--color-primary), 0.3),
-                                                    0 4px 16px rgba(var(--color-primary), 0.3)
-                                                `
-                                            })}
                                         >
                                             {/* Inner highlight for depth */}
                                             <span
@@ -191,10 +147,8 @@ const BottomNav = memo(function BottomNav() {
                                                 className={cn(
                                                     "relative h-6 w-6 transition-all duration-300",
                                                     isActive
-                                                        ? isDaylight
-                                                            ? "text-[rgb(var(--color-primary-strong))]"
-                                                            : "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]"
-                                                        : isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-white/90"
+                                                        ? "text-[rgb(var(--color-primary-foreground))]"
+                                                        : "text-[rgb(var(--color-primary-strong))]"
                                                 )}
                                             />
                                         </span>
@@ -202,13 +156,9 @@ const BottomNav = memo(function BottomNav() {
                                     <span
                                         className={cn(
                                             "text-[10px] font-extrabold tracking-tight transition-all duration-300",
-                                            isActive && (isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "drop-shadow-[0_0_4px_rgba(var(--color-primary-light),0.8)]")
+                                            isActive && "text-[rgb(var(--color-primary-strong))]"
                                         )}
-                                        style={{
-                                            color: isActive
-                                                ? isDaylight ? "" : `rgb(var(--color-primary-light))`
-                                                : isDaylight ? "rgb(var(--color-primary-strong) / 0.72)" : `rgba(var(--color-primary-light), 0.7)`
-                                        }}
+                                        style={{ color: isActive ? "rgb(var(--color-primary-light))" : "rgb(var(--color-text-muted))" }}
                                     >
                                         {label}
                                     </span>
@@ -224,18 +174,14 @@ const BottomNav = memo(function BottomNav() {
                                 className={cn(
                                     "flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
                                     isActive
-                                        ? isDaylight
-                                            ? "text-[rgb(var(--color-primary-strong))]"
-                                            : "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]"
-                                        : isDaylight
-                                            ? "text-slate-400 hover:text-slate-600"
-                                            : "text-slate-400 hover:text-white/90"
+                                        ? "text-[rgb(var(--color-primary-strong))]"
+                                        : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                                 )}
                                 prefetch={false}
                             >
                                 <Icon className={cn(
                                     "h-6 w-6 transition-transform duration-300",
-                                    isActive && (isDaylight ? "fill-[rgb(var(--color-primary))]/10 scale-110" : "fill-[rgb(var(--color-primary-light))]/20 scale-110")
+                                    isActive && "fill-[rgb(var(--color-primary))]/10 scale-110"
                                 )} />
                                 <span className={cn(
                                     "text-[10px] transition-all",

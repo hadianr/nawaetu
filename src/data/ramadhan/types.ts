@@ -21,6 +21,7 @@
  * Niat, dalil, and amalan content for the Ramadhan Hub feature
  * All content based on Al-Quran and authenticated Hadits
  */
+import type { AppIconName } from '@/lib/icon-names';
 
 export interface IntentionData {
     id: string;
@@ -50,7 +51,7 @@ export interface SunnahFood {
     id: string;
     name: string;
     name_en?: string;
-    icon: string;
+    iconKey: AppIconName;
     description: string;
     description_en?: string;
     dalil: EvidenceData;
@@ -62,7 +63,7 @@ export interface RamadhanPracticeData {
     title_en?: string;
     description: string;
     description_en?: string;
-    icon: string;
+    iconKey: AppIconName;
     intention?: IntentionData;
     dalil: EvidenceData;
     tips?: string[];

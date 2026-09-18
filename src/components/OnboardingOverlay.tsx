@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
@@ -257,7 +258,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     <div className="absolute inset-0 bg-repeat opacity-10 mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")` }}></div>
                     <div className="relative z-10 w-full space-y-6">
                         <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 rounded-2xl flex items-center justify-center mx-auto shadow-[var(--shadow-card)]">
-                            <span className="text-3xl">👋</span>
+                            <AppIcon name="hands" size="xl" tone="primary" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{translations.onboardingNameTitle}</h2>
@@ -298,7 +299,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                     gender === 'male' ? "bg-[rgb(var(--color-info))]/20 border-[rgb(var(--color-info))] text-[rgb(var(--color-text-strong))]" : "bg-[rgb(var(--color-surface-subtle))]/50 border-[rgb(var(--color-border))]/15 hover:bg-[rgb(var(--color-surface-subtle))]"
                                 )}
                             >
-                                <span className="text-3xl">👨</span>
+                                <AppIcon name="hands" size="xl" tone="info" />
                                 <div>
                                     <span className="font-bold block text-sm">{translations.onboardingMaleLabel}</span>
                                     <span className="text-[10px] opacity-70">{translations.onboardingMaleSub}</span>
@@ -313,7 +314,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                                     gender === 'female' ? "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]" : "bg-[rgb(var(--color-surface-subtle))]/50 border-[rgb(var(--color-border))]/15 hover:bg-[rgb(var(--color-surface-subtle))]"
                                 )}
                             >
-                                <span className="text-3xl">👩</span>
+                                <AppIcon name="heart-handshake" size="xl" tone="primary" />
                                 <div>
                                     <span className="font-bold block text-sm">{translations.onboardingFemaleLabel}</span>
                                     <span className="text-[10px] opacity-70">{translations.onboardingFemaleSub}</span>

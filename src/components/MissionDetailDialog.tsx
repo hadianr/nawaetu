@@ -34,10 +34,10 @@ import { Mission } from "@/data/missions";
 import { getLocalizedMissionContent } from "@/data/missions";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
 import { resolveReferenceByText, resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
+import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
 
 interface MissionDetailDialogProps {
     mission: Mission;
@@ -67,8 +67,8 @@ export default function MissionDetailDialog({
     customContent,
 }: MissionDetailDialogProps) {
     const { t, locale } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
+    const surface = "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))]";
+    const muted = "text-[rgb(var(--color-text-muted))]";
     const content = getLocalizedMissionContent(mission.id, locale);
     const [readingIndex, setReadingIndex] = useState(0);
     const [isConfirmingReset, setIsConfirmingReset] = useState(false); // Add this
@@ -93,7 +93,8 @@ export default function MissionDetailDialog({
                 showCloseButton={false}
                 className={cn(
                     "max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl transition-colors duration-500",
-                    isDaylight ? "bg-white border-slate-200 text-slate-900" : "bg-[rgb(var(--color-background))]/90 backdrop-blur-3xl border-white/10 text-white"
+                    surface,
+                    "backdrop-blur-3xl"
                 )}
             >
                 <DialogHeader className="p-6 pb-2 relative">
@@ -102,37 +103,35 @@ export default function MissionDetailDialog({
                         onClick={onClose}
                         className={cn(
                             "absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full transition-colors z-20",
-                            isDaylight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/5 hover:bg-white/10"
+                            "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10"
                         )}
                     >
-                        <X className={cn("w-4 h-4", isDaylight ? "text-slate-400" : "text-white/70")} />
+                        <X className={cn("w-4 h-4", muted)} />
                     </button>
                     <div className="flex items-center gap-3">
                         <div className={cn(
                             "text-3xl w-12 h-12 rounded-xl flex items-center justify-center border transition-colors",
-                            isDaylight ? "bg-emerald-50/50 border-emerald-100" : "bg-white/5 border-white/10"
+                            "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))]"
                         )}>
-                            {mission.icon}
+                            <AppIcon name={mission.iconKey ?? resolveAppIconName(mission.icon)} size="xl" tone="primary" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <DialogTitle className={cn("text-xl font-bold font-sans", isDaylight ? "text-slate-900" : "text-white")}>{mission.title}</DialogTitle>
+                                <DialogTitle className="text-xl font-bold font-sans">{mission.title}</DialogTitle>
                                 <span className={cn(
                                     "text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-widest shrink-0 border",
-                                    isDaylight
-                                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                        : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30"
+                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30"
                                 )}>
                                     {getRulingLabel(mission.ruling, t)}
                                 </span>
                             </div>
-                            <p className={cn("text-xs mt-1", isDaylight ? "text-slate-500 font-medium" : "text-white/50")}>{mission.description}</p>
+                            <p className={cn("text-xs mt-1 font-medium", muted)}>{mission.description}</p>
                         </div>
                         <div className={cn(
                             "ml-auto flex items-center gap-1 px-2 py-1 rounded-full border transition-colors",
-                            isDaylight ? "bg-orange-50 border-orange-100" : "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
+                            "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                         )}>
-                            <span className={cn("text-xs font-black", isDaylight ? "text-orange-600" : "text-[rgb(var(--color-accent)) ]")}>+{mission.hasanahReward} Hasanah</span>
+                            <span className="text-xs font-black text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
                         </div>
                     </div>
                 </DialogHeader>
@@ -146,16 +145,14 @@ export default function MissionDetailDialog({
                         <Tabs defaultValue="guide" className="flex-1 flex flex-col">
                             <div className={cn(
                                 "px-6 border-b",
-                                isDaylight ? "border-slate-100 bg-slate-50/50" : "border-white/10"
+                                "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/50"
                             )}>
                                 <TabsList variant="line" className="w-full bg-transparent p-0 h-12 justify-start gap-8 border-none">
                                     <TabsTrigger
                                         value="guide"
                                         className={cn(
                                             "bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 focus-visible:ring-0 focus-visible:outline-none",
-                                            isDaylight
-                                                ? "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary-strong))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
-                                                : "text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
+                                            `${muted} hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100`
                                         )}
                                     >
                                         {t.mission_dialog_guide}
@@ -164,9 +161,7 @@ export default function MissionDetailDialog({
                                         value="info"
                                         className={cn(
                                             "bg-transparent h-full px-0 rounded-none border-none shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 focus-visible:ring-0 focus-visible:outline-none",
-                                            isDaylight
-                                                ? "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary-strong))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
-                                                : "text-white/50 hover:text-white data-[state=active]:text-[rgb(var(--color-primary-light))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100"
+                                            `${muted} hover:text-[rgb(var(--color-text-strong))] data-[state=active]:text-[rgb(var(--color-primary))] after:bg-[rgb(var(--color-primary))] after:opacity-0 data-[state=active]:after:opacity-100`
                                         )}
                                     >
                                         {t.mission_dialog_info}
@@ -180,7 +175,7 @@ export default function MissionDetailDialog({
                                         {content.intro && (
                                             <p className={cn(
                                                 "text-sm italic p-3 rounded-lg border transition-colors",
-                                                isDaylight ? "bg-slate-50 border-slate-100 text-slate-600" : "text-white/70 bg-white/5 border-white/10"
+                                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]"
                                             )}>
                             &quot;{content.intro}&quot;
                                             </p>
@@ -189,8 +184,8 @@ export default function MissionDetailDialog({
                                         {/* LAFADZ NIAT IMPLEMENTATION */}
                                         {content.niat && (
                                             <div className="space-y-3">
-                                                <h3 className={cn("text-sm font-bold flex items-center gap-2", isDaylight ? "text-slate-800" : "text-white")}>
-                                                    <span className={cn("w-1.5 h-1.5 rounded-full transition-colors", isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]")} />
+                                                <h3 className="text-sm font-bold flex items-center gap-2">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
                                                     {mission.category === 'prayer' ? t.mission_dialog_intention_sholat : mission.category === 'fasting' ? t.mission_dialog_intention_puasa : t.mission_dialog_intention_general}
                                                 </h3>
 
@@ -199,33 +194,29 @@ export default function MissionDetailDialog({
                                                     <Tabs defaultValue="sendiri" className="w-full">
                                                         <TabsList className={cn(
                                                             "border w-full justify-start h-8 p-1 mb-2",
-                                                            isDaylight ? "bg-slate-100 border-slate-200" : "bg-white/5 border-white/10"
+                                                            "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                                         )}>
                                                             <TabsTrigger value="sendiri" className={cn(
                                                                 "text-xs h-6 px-3 transition-colors",
-                                                                isDaylight
-                                                                    ? "data-[state=active]:bg-white data-[state=active]:text-emerald-700 text-slate-500"
-                                                                    : "data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50"
+                                                                "data-[state=active]:bg-[rgb(var(--color-surface))] data-[state=active]:text-[rgb(var(--color-primary))] text-[rgb(var(--color-text-muted))]"
                                                             )}>{t.mission_dialog_sholat_sendiri}</TabsTrigger>
                                                             <TabsTrigger value="makmum" className={cn(
                                                                 "text-xs h-6 px-3 transition-colors",
-                                                                isDaylight
-                                                                    ? "data-[state=active]:bg-white data-[state=active]:text-emerald-700 text-slate-500"
-                                                                    : "data-[state=active]:bg-white/10 data-[state=active]:text-[rgb(var(--color-primary-light))] text-white/50"
+                                                                "data-[state=active]:bg-[rgb(var(--color-surface))] data-[state=active]:text-[rgb(var(--color-primary))] text-[rgb(var(--color-text-muted))]"
                                                             )}>{t.mission_dialog_sholat_makmum}</TabsTrigger>
                                                         </TabsList>
                                                         <TabsContent value="sendiri" className="mt-0">
                                                             <div className={cn(
                                                                 "p-3 rounded-lg border transition-colors",
-                                                                isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-primary-dark))]/10 border border-[rgb(var(--color-primary))]/10"
+                                                                "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                                                             )}>
-                                                                <p className={cn("text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed transition-colors", isDaylight ? "text-slate-900" : "text-white")}>
+                                                                <p className="text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed">
                                                                     {content.niat.munfarid.arabic}
                                                                 </p>
-                                                                <p className={cn("text-[11px] md:text-xs italic mb-1 transition-colors", isDaylight ? "text-emerald-700/80 font-medium" : "text-[rgb(var(--color-primary-light))]/70")}>
+                                                                <p className="text-[11px] md:text-xs italic mb-1 text-[rgb(var(--color-primary))] font-medium">
                                                                     {content.niat.munfarid.latin}
                                                                 </p>
-                                                                <p className={cn("text-[9px] md:text-[10px] transition-colors leading-tight", isDaylight ? "text-slate-500" : "text-white/50")}>
+                                                                <p className="text-[9px] md:text-[10px] leading-tight text-[rgb(var(--color-text-muted))]">
                                                                     {content.niat.munfarid.translation}
                                                                 </p>
                                                             </div>
@@ -233,15 +224,15 @@ export default function MissionDetailDialog({
                                                         <TabsContent value="makmum" className="mt-0">
                                                             <div className={cn(
                                                                 "p-3 rounded-lg border transition-colors",
-                                                                isDaylight ? "bg-blue-50 border-blue-100" : "bg-emerald-900/10 border border-emerald-500/10"
+                                                                "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                                                             )}>
-                                                                <p className={cn("text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed", isDaylight ? "text-slate-900" : "text-white")}>
+                                                                <p className="text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed">
                                                                     {content.niat.makmum.arabic}
                                                                 </p>
-                                                                <p className={cn("text-[11px] md:text-xs italic mb-1", isDaylight ? "text-blue-700/80 font-medium" : "text-emerald-100/70")}>
+                                                                <p className="text-[11px] md:text-xs italic mb-1 text-[rgb(var(--color-accent))] font-medium">
                                                                     {content.niat.makmum.latin}
                                                                 </p>
-                                                                <p className={cn("text-[9px] md:text-[10px] leading-tight", isDaylight ? "text-slate-500" : "text-white/50")}>
+                                                                <p className="text-[9px] md:text-[10px] leading-tight text-[rgb(var(--color-text-muted))]">
                                                                     {content.niat.makmum.translation}
                                                                 </p>
                                                             </div>
@@ -251,15 +242,15 @@ export default function MissionDetailDialog({
                                                     // SINGLE VIEW (No Tabs) - For Puasa/General
                                                     <div className={cn(
                                                         "p-4 rounded-xl border transition-colors",
-                                                        isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-emerald-900/10 border border-emerald-500/10"
+                                                        "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                                                     )}>
-                                                        <p className={cn("text-lg md:text-xl font-serif text-right mb-2 leading-relaxed", isDaylight ? "text-slate-900" : "text-white")}>
+                                                        <p className="text-lg md:text-xl font-serif text-right mb-2 leading-relaxed">
                                                             {content.niat.munfarid.arabic}
                                                         </p>
-                                                        <p className={cn("text-xs italic mb-1", isDaylight ? "text-emerald-700/80 font-medium" : "text-emerald-100/70")}>
+                                                        <p className="text-xs italic mb-1 text-[rgb(var(--color-primary))] font-medium">
                                                             {content.niat.munfarid.latin}
                                                         </p>
-                                                        <p className={cn("text-[10px]", isDaylight ? "text-slate-500" : "text-white/50")}>
+                                                        <p className="text-[10px] text-[rgb(var(--color-text-muted))]">
                                                             {content.niat.munfarid.translation}
                                                         </p>
                                                     </div>
@@ -270,30 +261,30 @@ export default function MissionDetailDialog({
                                         {/* If Readings Exist (Dzikir/Doa) */}
                                         {content.readings && content.readings.length > 0 && (
                                             <div className="space-y-4">
-                                                <div className={cn("flex items-center justify-between text-xs uppercase tracking-widest font-black", isDaylight ? "text-slate-400" : "text-white/40")}>
+                                                <div className="flex items-center justify-between text-xs uppercase tracking-widest font-black text-[rgb(var(--color-text-muted))]">
                                                     <span>{(t as TranslationTree).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
                                                     {currentReading?.note && (
-                                                        <span className={cn("font-bold transition-colors", isDaylight ? "text-emerald-600" : "text-emerald-400")}>{currentReading.note}</span>
+                                                        <span className="font-bold text-[rgb(var(--color-primary))]">{currentReading.note}</span>
                                                     )}
                                                 </div>
 
                                                 <div className={cn(
                                                     "rounded-2xl p-5 border space-y-4 relative min-h-[220px] flex flex-col justify-center transition-colors",
-                                                    isDaylight ? "bg-slate-50/50 border-slate-100 shadow-sm" : "bg-white/5 border-white/10"
+                                                    "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-sm"
                                                 )}>
                                                     <div>
                                                         {currentReading?.title && (
-                                                            <h4 className={cn("text-sm font-bold mb-2 transition-colors", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>{currentReading.title}</h4>
+                                                            <h4 className="text-sm font-bold mb-2 text-[rgb(var(--color-primary))]">{currentReading.title}</h4>
                                                         )}
-                                                        <p className={cn("text-xl md:text-2xl font-serif leading-[1.8] text-right transition-colors", isDaylight ? "text-slate-900" : "text-white")}>
+                                                        <p className="text-xl md:text-2xl font-serif leading-[1.8] text-right">
                                                             {currentReading?.arabic}
                                                         </p>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <p className={cn("text-sm italic transition-colors", isDaylight ? "text-emerald-700/80 font-medium" : "text-emerald-100/70")}>
+                                                        <p className="text-sm italic text-[rgb(var(--color-primary))] font-medium">
                                                             {currentReading?.latin}
                                                         </p>
-                                                        <p className={cn("text-xs transition-colors", isDaylight ? "text-slate-500" : "text-white/50")}>
+                                                        <p className="text-xs text-[rgb(var(--color-text-muted))]">
                                                             {currentReading?.translation}
                                                         </p>
                                                     </div>
@@ -305,7 +296,7 @@ export default function MissionDetailDialog({
                                                         size="sm"
                                                         onClick={handlePrevReading}
                                                         disabled={readingIndex === 0}
-                                                        className={cn("transition-colors", isDaylight ? "text-slate-400 hover:text-slate-600 hover:bg-slate-50" : "text-white/60 hover:text-white hover:bg-white/10")}
+                                                        className="text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10 transition-colors"
                                                     >
                                                         <ChevronLeft className="w-4 h-4 mr-1" /> {t.mission_dialog_prev}
                                                     </Button>
@@ -316,9 +307,7 @@ export default function MissionDetailDialog({
                                                         disabled={readingIndex === (content.readings.length - 1)}
                                                         className={cn(
                                                             "transition-colors shadow-sm",
-                                                            isDaylight
-                                                                ? "bg-white hover:bg-emerald-50 text-emerald-700 border-emerald-100"
-                                                                : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
+                                                            "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border border-[rgb(var(--color-border))]"
                                                         )}
                                                     >
                                                         {t.mission_dialog_next} <ChevronRight className="w-4 h-4 ml-1" />
@@ -330,19 +319,17 @@ export default function MissionDetailDialog({
                                         {/* If Steps/Guides Exist (Sholat) */}
                                         {content.guides && (
                                             <div className="space-y-3">
-                                                <h3 className={cn("text-sm font-bold mb-2 transition-colors", isDaylight ? "text-slate-800" : "text-white")}>{t.mission_dialog_steps}</h3>
+                                                <h3 className="text-sm font-bold mb-2">{t.mission_dialog_steps}</h3>
                                                 <div className="space-y-3">
                                                     {content.guides.map((step: string, idx: number) => (
                                                         <div key={idx} className="flex gap-3 text-sm">
                                                             <div className={cn(
                                                                 "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors border",
-                                                                isDaylight
-                                                                    ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                                                                    : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30"
+                                                                "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))]"
                                                             )}>
                                                                 {idx + 1}
                                                             </div>
-                                                            <p className={cn("pt-0.5 transition-colors", isDaylight ? "text-slate-600 font-medium" : "text-white/80")}>{step}</p>
+                                                            <p className="pt-0.5 text-[rgb(var(--color-text-muted))] font-medium">{step}</p>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -357,16 +344,16 @@ export default function MissionDetailDialog({
                                     <div className="p-6 space-y-6">
                                         {content.fadhilah && (
                                             <div className="space-y-3">
-                                                <h3 className={cn("flex items-center gap-2 text-sm font-bold transition-colors", isDaylight ? "text-orange-600" : "text-[rgb(var(--color-accent))]")}>
+                                                <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-accent))]">
                                                     <SparklesIcon className="w-4 h-4" /> {t.mission_dialog_fadhilah}
                                                 </h3>
                                                 <ul className="space-y-2">
                                                     {content.fadhilah.map((item: string, idx: number) => (
                                                         <li key={idx} className={cn(
                                                             "flex gap-2 text-sm p-3 rounded-lg border transition-colors",
-                                                            isDaylight ? "bg-orange-50/50 border-orange-100 text-slate-600" : "text-white/80 bg-white/5 border-white/5"
+                                                            "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-text-muted))]"
                                                         )}>
-                                                            <span className={isDaylight ? "text-orange-500" : "text-[rgb(var(--color-accent))] "}>•</span>
+                                                            <span className="text-[rgb(var(--color-accent))]">|</span>
                                                             {item}
                                                         </li>
                                                     ))}
@@ -384,12 +371,12 @@ export default function MissionDetailDialog({
 
                                             return (
                                                 <div className="space-y-2">
-                                                    <h3 className={cn("flex items-center gap-2 text-sm font-bold transition-colors", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>
+                                                    <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-primary))]">
                                                         <BookOpen className="w-4 h-4" /> {t.mission_dialog_dalil_source}
                                                     </h3>
                                                     <div className={cn(
                                                         "p-3 px-3.5 rounded-lg border transition-colors space-y-2.5",
-                                                        isDaylight ? "bg-slate-50 border-slate-200/70" : "bg-[rgb(var(--color-primary-dark))]/30 border border-[rgb(var(--color-primary))]/20"
+                                                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                                     )}>
                                                         {dalilTokens.map((token, idx) => {
                                                             const parsedQuran = parseQuranReference(token);
@@ -409,18 +396,16 @@ export default function MissionDetailDialog({
                                                                     className={cn(
                                                                         "flex items-center gap-2.5 min-h-[24px]",
                                                                         idx > 0 && "pt-2 border-t",
-                                                                        idx > 0 && (isDaylight ? "border-slate-200/60" : "border-white/10")
+                                                                        idx > 0 && "border-[rgb(var(--color-border))]"
                                                                     )}
                                                                 >
                                                                     <span className={cn(
                                                                         "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shrink-0 transition-colors inline-flex items-center justify-center leading-none",
                                                                         isQuran
-                                                                            ? (isDaylight ? "bg-emerald-100 text-emerald-800" : "bg-emerald-500/20 text-emerald-300")
+                                                                            ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]"
                                                                             : isHadith
-                                                                            ? (isDaylight ? "bg-amber-100 text-amber-800" : "bg-amber-500/20 text-amber-300")
-                                                                            : isDua
-                                                                            ? (isDaylight ? "bg-blue-100 text-blue-800" : "bg-blue-500/20 text-blue-300")
-                                                                            : (isDaylight ? "bg-sky-100 text-sky-800" : "bg-sky-500/20 text-sky-300")
+                                                                            ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent))]"
+                                                                            : "bg-[rgb(var(--color-info))]/10 text-[rgb(var(--color-info))]"
                                                                     )}>
                                                                         {isQuran
                                                                             ? (locale === 'en' ? 'Quran' : 'Al-Qur\'an')
@@ -438,17 +423,17 @@ export default function MissionDetailDialog({
                                                                             className={cn(
                                                                                 "inline-flex items-center gap-1.5 text-xs font-semibold leading-none transition-all hover:underline group",
                                                                                 isQuran
-                                                                                    ? (isDaylight ? "text-emerald-700 hover:text-emerald-800" : "text-emerald-400 hover:text-emerald-300")
+                                                                                    ? "text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
                                                                                     : isHadith
-                                                                                    ? (isDaylight ? "text-amber-700 hover:text-amber-800" : "text-amber-300 hover:text-amber-200")
-                                                                                    : (isDaylight ? "text-blue-700 hover:text-blue-800" : "text-blue-300 hover:text-blue-200")
+                                                                                    ? "text-[rgb(var(--color-accent))] hover:text-[rgb(var(--color-accent))]"
+                                                                                    : "text-[rgb(var(--color-info))] hover:text-[rgb(var(--color-info))]"
                                                                             )}
                                                                         >
                                                                             <span className="leading-none">{token}</span>
                                                                             <ExternalLink className="w-3 h-3 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                                                         </Link>
                                                                     ) : (
-                                                                        <p className={cn("text-xs font-semibold leading-none transition-colors inline-flex items-center", isDaylight ? "text-slate-700" : "text-white/90")}>
+                                                                        <p className="text-xs font-semibold leading-none inline-flex items-center text-[rgb(var(--color-text))]">
                                                                             {token}
                                                                         </p>
                                                                     )}
@@ -466,8 +451,8 @@ export default function MissionDetailDialog({
                     ) : (
                         // Fallback purely for missions without extended content
                         <div className="p-6 flex flex-col items-center justify-center flex-1 text-center space-y-4">
-                            <Info className={cn("w-12 h-12", isDaylight ? "text-slate-200" : "text-white/20")} />
-                            <p className={cn("text-sm max-w-[200px]", isDaylight ? "text-slate-400" : "text-white/60")}>
+                            <Info className="w-12 h-12 text-[rgb(var(--color-text-muted))]" />
+                            <p className="text-sm max-w-[200px] text-[rgb(var(--color-text-muted))]">
                                 {t.mission_dialog_no_content}
                             </p>
                             {mission.dalil && (() => {
@@ -476,23 +461,23 @@ export default function MissionDetailDialog({
                                 return (
                                     <div className={cn(
                                         "mt-4 p-4 rounded-xl border w-full text-center",
-                                        isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+                                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                     )}>
-                                        <p className={cn("text-xs font-bold mb-1", isDaylight ? "text-emerald-600" : "text-emerald-400")}>{t.mission_dialog_dalil_label}</p>
+                                        <p className="text-xs font-bold mb-1 text-[rgb(var(--color-primary))]">{t.mission_dialog_dalil_label}</p>
                                         {targetUrl ? (
                                             <Link
                                                 href={targetUrl}
                                                 onClick={() => onClose()}
                                                 className={cn(
                                                     "inline-flex items-center justify-center gap-1.5 text-sm italic font-semibold leading-none transition-all hover:underline group",
-                                                    isDaylight ? "text-emerald-700 hover:text-emerald-800" : "text-emerald-300 hover:text-emerald-200"
+                                                    "text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
                                                 )}
                                             >
                                                 <span>{mission.dalil}</span>
                                                 <ExternalLink className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                             </Link>
                                         ) : (
-                                            <p className={cn("text-sm italic", isDaylight ? "text-slate-600" : "text-white/80")}>{mission.dalil}</p>
+                                            <p className="text-sm italic text-[rgb(var(--color-text-muted))]">{mission.dalil}</p>
                                         )}
                                     </div>
                                 );
@@ -504,22 +489,22 @@ export default function MissionDetailDialog({
                 {(!customContent || isCompleted) && (
                     <div className={cn(
                         "p-4 border-t transition-colors",
-                        isDaylight ? "border-slate-100 bg-slate-50/50" : "border-white/10 bg-[#0F0F0F]"
+                        "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/50"
                     )}>
                         {/* LATE WARNING (Lalai) - Only for Fardhu Sholat (Punya afterPrayer config) */}
                         {isLate && !isCompleted && !isLocked && mission.category === 'prayer' && mission.validationConfig?.afterPrayer && (
                             <div className={cn(
                                 "mb-3 px-3 py-2 rounded-lg border transition-colors",
-                                isDaylight ? "bg-red-50 border-red-100" : "bg-red-500/10 border-red-500/20"
+                                "bg-[rgb(var(--color-danger))]/10 border-[rgb(var(--color-danger))]/20"
                             )}>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <AlertCircle className={cn("w-4 h-4 shrink-0", isDaylight ? "text-red-500" : "text-red-500")} />
-                                    <p className={cn("text-xs font-bold", isDaylight ? "text-red-700" : "text-red-400")}>{t.home_mission_late_prayer_title}</p>
+                                    <AlertCircle className="w-4 h-4 shrink-0 text-[rgb(var(--color-danger))]" />
+                                    <p className="text-xs font-bold text-[rgb(var(--color-danger))]">{t.home_mission_late_prayer_title}</p>
                                 </div>
-                                <p className={cn("text-[10px] leading-tight italic", isDaylight ? "text-red-600/80" : "text-red-200/80")}>
+                                <p className="text-[10px] leading-tight italic text-[rgb(var(--color-danger))]/80">
                                     {t.home_mission_late_warning_quote}
                                 </p>
-                                <p className={cn("text-[10px] mt-1 font-medium", isDaylight ? "text-red-400" : "text-zinc-400")}>
+                                <p className="text-[10px] mt-1 font-medium text-[rgb(var(--color-text-muted))]">
                                     {t.home_mission_late_warning_desc}
                                 </p>
                             </div>
@@ -529,10 +514,10 @@ export default function MissionDetailDialog({
                         {isLate && !isCompleted && !isLocked && (mission.category !== 'prayer' || !mission.validationConfig?.afterPrayer) && (
                             <div className={cn(
                                 "mb-3 px-3 py-2 rounded-lg flex items-center gap-2 border transition-colors",
-                                isDaylight ? "bg-orange-50 border-orange-100" : "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
+                                "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                             )}>
-                                <AlertCircle className={cn("w-4 h-4 shrink-0", isDaylight ? "text-orange-500" : "text-[rgb(var(--color-accent))]")} />
-                                <p className={cn("text-[10px] leading-tight font-medium", isDaylight ? "text-orange-700" : "text-[rgb(var(--color-accent))]/80")}>
+                                <AlertCircle className="w-4 h-4 shrink-0 text-[rgb(var(--color-accent))]" />
+                                <p className="text-[10px] leading-tight font-medium text-[rgb(var(--color-accent))]/80">
                                     {t.home_mission_late_notice}
                                 </p>
                             </div>
@@ -542,13 +527,13 @@ export default function MissionDetailDialog({
                         {isEarly && !isCompleted && !isLocked && mission.category === 'prayer' && (
                             <div className={cn(
                                 "mb-3 px-3 py-2 rounded-lg border transition-colors",
-                                isDaylight ? "bg-emerald-50 border-emerald-100" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                                "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Sparkles className={cn("w-4 h-4 shrink-0", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
-                                    <p className={cn("text-xs font-bold", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]")}>{t.home_mission_early_prayer_title}</p>
+                                    <Sparkles className="w-4 h-4 shrink-0 text-[rgb(var(--color-primary))]" />
+                                    <p className="text-xs font-bold text-[rgb(var(--color-primary))]">{t.home_mission_early_prayer_title}</p>
                                 </div>
-                                <p className={cn("text-[10px] leading-tight italic font-medium", isDaylight ? "text-emerald-600/80" : "text-[rgb(var(--color-primary-light))]/80")}>
+                                <p className="text-[10px] leading-tight italic font-medium text-[rgb(var(--color-primary))]/80">
                                     {t.home_mission_early_praise_quote}
                                 </p>
                             </div>
@@ -558,9 +543,7 @@ export default function MissionDetailDialog({
                             <div className="flex flex-col gap-2">
                                 <Button className={cn(
                                     "w-full border cursor-default transition-all shadow-sm",
-                                    isDaylight
-                                        ? "bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-50"
-                                        : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20"
+                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20"
                                 )} disabled>
                                     <Check className="w-4 h-4 mr-2" /> {t.home_mission_completed_label}
                                 </Button>
@@ -571,7 +554,7 @@ export default function MissionDetailDialog({
                                             variant="destructive"
                                             className={cn(
                                                 "flex-1 py-5 text-xs font-black uppercase tracking-wider transition-all",
-                                                isDaylight ? "bg-red-500 hover:bg-red-400 text-white shadow-sm" : ""
+                                                "bg-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/90 text-[rgb(var(--color-primary-foreground))] shadow-sm"
                                             )}
                                             onClick={() => {
                                                 onReset();
@@ -584,7 +567,7 @@ export default function MissionDetailDialog({
                                             variant="ghost"
                                             className={cn(
                                                 "flex-1 py-5 text-xs font-bold transition-colors",
-                                                isDaylight ? "text-slate-400 hover:text-slate-600 hover:bg-slate-50" : "text-white/60"
+                                                "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
                                             )}
                                             onClick={() => setIsConfirmingReset(false)}
                                         >
@@ -596,7 +579,7 @@ export default function MissionDetailDialog({
                                         variant="ghost"
                                         className={cn(
                                             "w-full text-[10px] mt-1 transition-colors",
-                                            isDaylight ? "text-slate-300 hover:text-red-500 hover:bg-red-50" : "text-white/30 hover:text-red-400 hover:bg-red-400/10"
+                                            "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/10"
                                         )}
                                         onClick={() => setIsConfirmingReset(true)}
                                     >
@@ -607,7 +590,7 @@ export default function MissionDetailDialog({
                         ) : isLocked ? (
                             <Button className={cn(
                                 "w-full border transition-colors",
-                                isDaylight ? "bg-slate-50 border-slate-100 text-slate-400 hover:bg-slate-50" : "bg-white/5 text-white/40 hover:bg-white/5 border border-white/10"
+                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10"
                             )} disabled>
                                 <Lock className="w-4 h-4 mr-2" /> {lockReason || t.home_mission_locked_fallback}
                             </Button>
@@ -621,12 +604,8 @@ export default function MissionDetailDialog({
                                             className={cn(
                                                 "flex-1 font-black py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-md transition-all",
                                                 isHighReward
-                                                    ? isDaylight
-                                                        ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-200"
-                                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white"
-                                                    : isDaylight
-                                                        ? "bg-slate-100/80 hover:bg-slate-200 text-slate-600 border border-slate-200"
-                                                        : "bg-white/10 hover:bg-white/20 text-white/80"
+                                                    ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
+                                                    : "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text))] border border-[rgb(var(--color-border))]"
                                             )}
                                             onClick={() => onComplete(option.hasanahReward)}
                                         >
@@ -637,10 +616,10 @@ export default function MissionDetailDialog({
 
                                             <div className="flex flex-col items-center gap-0.5 z-10">
                                                 <span className="flex items-center gap-1.5 uppercase tracking-wide">
-                                                    {option.icon && <span>{option.icon}</span>}
+                                                    {option.iconKey && <AppIcon name={option.iconKey} size="sm" tone={isHighReward ? "default" : "primary"} />}
                                                     {option.label}
                                                 </span>
-                                                <span className={cn("text-[10px] font-bold opacity-80", isHighReward ? (isDaylight ? "text-emerald-100" : "text-[rgb(var(--color-primary-light))]") : (isDaylight ? "text-slate-400" : "text-white/40"))}>+{option.hasanahReward} Hasanah</span>
+                                                <span className="text-[10px] font-bold opacity-80 text-[rgb(var(--color-primary-foreground))]">+{option.hasanahReward} Hasanah</span>
                                             </div>
                                         </Button>
                                     );
@@ -651,12 +630,8 @@ export default function MissionDetailDialog({
                                 className={cn(
                                     "w-full font-black py-4 md:py-5 text-xs md:text-sm transition-all shadow-lg",
                                     isLate
-                                        ? isDaylight
-                                            ? "bg-orange-600 hover:bg-orange-500 text-white shadow-orange-200"
-                                            : "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))] text-white"
-                                        : isDaylight
-                                            ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-200"
-                                            : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-white"
+                                        ? "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))]/90 text-[rgb(var(--color-primary-foreground))]"
+                                        : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                                 )}
                                 onClick={() => onComplete(mission.hasanahReward)}
                             >

@@ -346,19 +346,19 @@ export function GuestSyncManager() {
                 if (hasServerProgress) {
                     // Scenario: User has existing account data (HYDRATE)
                     // ACTION: Auto-Hydrate (Restore data).
-                    toast.info(translations.syncHydrateLoading || "📂 Sedang mengambil data lama kamu dari server...", { duration: 2000 });
+                    toast.info(translations.syncHydrateLoading || "Sedang mengambil data lama kamu dari server...", { duration: 2000 });
                     await hydrateFromServer(serverData, storage, userId);
 
                     // Success and Info Feedback
                     toast.success(translations.syncHydrateSuccess || "✅ Sip! Data akun lamamu sudah kembali. Yuk lanjut ibadah!");
                     setTimeout(() => {
-                        toast.info(translations.syncHydrateInfo || "⚠️ Data tamu di HP ini telah kami ganti dengan data akun utamamu.", { duration: 4000 });
+                        toast.info(translations.syncHydrateInfo || "Data tamu di perangkat ini telah kami ganti dengan data akun utama.", { duration: 4000 });
                     }, 500);
                     sendGAEvent("sync_recovery_outcome", { outcome: "success" });
 
                 } else if (hasLocalData && serverData.profile?.guestSyncEligible === true) {
                     // Only a server-marked, brand-new account may import guest activity.
-                    toast.info(translations.syncUploadLoading || "🚀 Sedang memindahkan data tamu kamu ke akun baru...", { duration: 2000 });
+                    toast.info(translations.syncUploadLoading || "Sedang memindahkan data tamu kamu ke akun baru...", { duration: 2000 });
                     await handleSyncToNewAccount(storage, userId, translations);
                 } else if (hasLocalData) {
                     // Do not import or delete guest activity when the account has

@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { PlayerStats, RankKey } from "@/lib/habits/leveling";
 import type { TranslationTree } from "@/context/LocaleContext";
+import type { AppIconName } from "@/lib/icon-names";
 
 export const PRAYER_SUFFIXES = ["subuh", "dzuhur", "ashar", "maghrib", "isya"] as const;
 
@@ -43,13 +44,13 @@ export function useStatsInsights({
     t
 }: UseStatsInsightsProps) {
     const categoryStats = useMemo(() => {
-        const stats: Record<string, { count: number; label: string; icon: string; color: string }> = {
-            prayer: { count: 0, label: t.stats.missions.categories.prayer, icon: "🕌", color: "rgb(var(--color-primary))" },
-            sunnah: { count: 0, label: t.stats.missions.categories.sunnah, icon: "✨", color: "#fbbf24" },
-            worship: { count: 0, label: t.stats.missions.categories.worship, icon: "🤲", color: "#f59e0b" },
-            quran: { count: 0, label: t.stats.missions.categories.quran, icon: "📖", color: "#3b82f6" },
-            dhikr: { count: 0, label: t.stats.missions.categories.dhikr, icon: "📿", color: "#8b5cf6" },
-            fasting: { count: 0, label: t.stats.missions.categories.fasting, icon: "🌙", color: "#06b6d4" },
+        const stats: Record<string, { count: number; label: string; icon: AppIconName; color: string }> = {
+            prayer: { count: 0, label: t.stats.missions.categories.prayer, icon: "landmark", color: "rgb(var(--color-primary))" },
+            sunnah: { count: 0, label: t.stats.missions.categories.sunnah, icon: "sparkles", color: "#fbbf24" },
+            worship: { count: 0, label: t.stats.missions.categories.worship, icon: "hands", color: "#f59e0b" },
+            quran: { count: 0, label: t.stats.missions.categories.quran, icon: "book", color: "#3b82f6" },
+            dhikr: { count: 0, label: t.stats.missions.categories.dhikr, icon: "hands", color: "#8b5cf6" },
+            fasting: { count: 0, label: t.stats.missions.categories.fasting, icon: "moon", color: "#06b6d4" },
         };
 
         completedMissions.forEach((m) => {

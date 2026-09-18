@@ -24,7 +24,6 @@ import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 interface ProfileHeaderProps {
     isAuthenticated: boolean;
     isMuhsinin: boolean;
-    isDaylight: boolean;
     userImage: string;
     onClose: () => void;
 }
@@ -32,7 +31,6 @@ interface ProfileHeaderProps {
 export function ProfileHeader({
     isAuthenticated,
     isMuhsinin,
-    isDaylight,
     userImage,
     onClose
 }: ProfileHeaderProps) {
@@ -60,8 +58,8 @@ export function ProfileHeader({
             {/* Top Actions */}
             <div className="relative z-20 flex justify-between items-center p-4">
                 {!isAuthenticated ? (
-                    <div className="px-3 py-1 bg-black/20 backdrop-blur-md rounded-full border border-white/10 text-[10px] items-center flex gap-1 text-white">
-                        <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                    <div className="px-3 py-1 bg-[rgb(var(--color-background))]/30 backdrop-blur-md rounded-full border border-[rgb(var(--color-primary-foreground))]/20 text-[10px] items-center flex gap-1 text-[rgb(var(--color-primary-foreground))]">
+                        <span className="w-2 h-2 rounded-full bg-[rgb(var(--color-text-muted))]"></span>
                         {translations.profileGuestMode}
                     </div>
                 ) : (
@@ -70,9 +68,9 @@ export function ProfileHeader({
 
                 <button
                     onClick={onClose}
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgb(var(--color-background))]/30 backdrop-blur-md border border-[rgb(var(--color-primary-foreground))]/20 hover:bg-[rgb(var(--color-primary-foreground))]/10 transition-colors"
                 >
-                    <X className="w-4 h-4 text-white" />
+                    <X className="w-4 h-4 text-[rgb(var(--color-primary-foreground))]" />
                 </button>
             </div>
 
@@ -81,12 +79,12 @@ export function ProfileHeader({
                 <div className="relative">
                     <div className={cn(
                         "w-20 h-20 rounded-full p-1 transition-all",
-                        isDaylight ? "bg-white shadow-sm" : "bg-[#0F172A]",
+                        "bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]",
                         isMuhsinin
-                            ? isDaylight ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-white" : "ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0F172A]"
-                            : isDaylight ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-white" : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[#0F172A]"
+                            ? "ring-2 ring-[rgb(var(--color-accent))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
+                            : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
                     )}>
-                        <Avatar className="w-full h-full rounded-full border border-white/10">
+                        <Avatar className="w-full h-full rounded-full border border-[rgb(var(--color-border))]">
                             <AvatarImage src={userImage} className="object-cover" />
                             <AvatarFallback>NA</AvatarFallback>
                         </Avatar>
@@ -94,12 +92,9 @@ export function ProfileHeader({
                     {isMuhsinin && (
                         <div className="absolute -top-3 -right-3">
                             <span className={cn(
-                                "flex h-8 w-8 items-center justify-center rounded-full shadow-lg text-white transition-all",
-                                isDaylight
-                                    ? "bg-gradient-to-br from-emerald-400 to-emerald-600"
-                                    : "bg-gradient-to-br from-amber-300 to-orange-500"
+                                "flex h-8 w-8 items-center justify-center rounded-full shadow-[var(--shadow-floating)] text-[rgb(var(--color-accent-foreground))] transition-all bg-[rgb(var(--color-accent))]"
                             )}>
-                                <Crown className="w-4 h-4 fill-white" />
+                                <Crown className="w-4 h-4 fill-current" />
                             </span>
                         </div>
                     )}

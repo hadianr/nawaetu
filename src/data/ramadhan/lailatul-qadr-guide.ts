@@ -1,4 +1,5 @@
 import { EvidenceData } from "./types";
+import type { AppIconName } from "@/lib/icon-names";
 
 // 1. Dzikir & Doa Lailatul Qadar
 // 2. Panduan I'tikaf
@@ -17,7 +18,7 @@ export type GuideItem = {
     title_en?: string;
     description?: string;
     description_en?: string;
-    icon?: string;
+    iconKey?: AppIconName;
     arabic?: string;
     latin?: string;
     translation?: string;
@@ -35,7 +36,7 @@ export const ITIKAF_GUIDE_ITEMS: GuideItem[] = [
         id: "itikaf_niat",
         title: "Niat I'tikaf",
         title_en: "Intention for I'tikaf",
-        icon: "🕌",
+        iconKey: "landmark",
         description: "Dibaca saat mulai memasuki masjid dengan niat berdiam diri untuk beribadah.",
         description_en: "Read upon entering the mosque with the intention of staying to worship.",
         arabic: "نَوَيْتُ الاِعْتِكَافَ فِي هَذَا المَسْجِدِ لِلّهِ تَعَالَى",
@@ -53,7 +54,7 @@ export const ITIKAF_GUIDE_ITEMS: GuideItem[] = [
         id: "itikaf_persiapan",
         title: "Persiapan Sebelum I'tikaf",
         title_en: "Preparation Before I'tikaf",
-        icon: "🎒",
+        iconKey: "library",
         description: "Hal-hal yang perlu disiapkan sebelum memulai i'tikaf agar berjalan lancar dan khusyuk.",
         description_en: "Things to prepare before starting i'tikaf for it to run smoothly and with devotion.",
         steps: [
@@ -79,7 +80,7 @@ export const ITIKAF_GUIDE_ITEMS: GuideItem[] = [
         id: "itikaf_adab",
         title: "Adab dan Aturan I'tikaf",
         title_en: "Etiquette and Rules of I'tikaf",
-        icon: "📜",
+        iconKey: "scroll",
         steps: [
             "Memperbarui niat ikhlas semata-mata karena Allah.",
             "Berada di dalam masjid. Boleh keluar sebentar hanya untuk hajat mendesak (buang air, wudhu, makan jika tidak ada yang mengantar).",
@@ -105,7 +106,7 @@ export const ITIKAF_GUIDE_ITEMS: GuideItem[] = [
         id: "itikaf_jadwal",
         title: "Jadwal Amalan Harian I'tikaf",
         title_en: "Daily I'tikaf Schedule",
-        icon: "🗓️",
+        iconKey: "calendar",
         description: "Susunan amalan yang bisa menjadi panduan selama beri'tikaf agar ibadah lebih terstruktur dan produktif.",
         description_en: "A suggested daily schedule during i'tikaf so your worship is more structured and productive.",
         steps: [
@@ -122,7 +123,7 @@ export const ITIKAF_GUIDE_ITEMS: GuideItem[] = [
         id: "itikaf_pembatal",
         title: "Hal yang Membatalkan I'tikaf",
         title_en: "Actions that Nullify I'tikaf",
-        icon: "⚠️",
+        iconKey: "warning",
         description: "Penting diketahui agar i'tikaf yang kita jalankan sah di sisi Allah.",
         description_en: "Important to know so that our i'tikaf is valid before Allah.",
         steps: [
@@ -152,7 +153,7 @@ export const ITIKAF_GUIDE_ITEMS: GuideItem[] = [
         id: "itikaf_niat_keluar",
         title: "Niat Keluar & Kembali I'tikaf",
         title_en: "Intention to Exit & Return I'tikaf",
-        icon: "🚶",
+        iconKey: "compass",
         description: "Jika terpaksa keluar masjid dengan alasan yang dibenarkan syariat, baca niat ini saat akan kembali.",
         description_en: "If forced to leave the mosque for a valid reason, read this intention upon returning.",
         arabic: "نَوَيْتُ الرُّجُوعَ إِلَى الاِعْتِكَافِ لِلَّهِ تَعَالَى",
@@ -171,7 +172,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Doa Utama Lailatul Qadar",
         title_en: "Primary Lailatul Qadar Supplication",
         description: "Doa yang diajarkan Rasulullah SAW kepada Aisyah RA jika bertemu Lailatul Qadar.",
-        icon: "✨",
+        iconKey: "sparkles",
         arabic: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
         latin: "Allahumma innaka 'afuwwun tuhibbul 'afwa fa'fu 'anni",
         translation: "Ya Allah, Engkau Maha Pemaaf dan Engkau mencintai orang yang meminta maaf, karenanya maafkanlah aku.",
@@ -188,7 +189,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Sayyidul Istighfar",
         title_en: "The Chief of Prayers for Forgiveness",
         description: "Rajanya istighfar, sangat dianjurkan dibaca di waktu malam.",
-        icon: "🤲",
+        iconKey: "hands",
         arabic: "اللَّهُمَّ أَنْتَ رَبِّيْ لاَ إِلَـهَ إِلاَّ أَنْتَ، خَلَقْتَنِيْ وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوْذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوْءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوْءُ بِذَنْبِيْ فَاغْفِرْ لِيْ فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوْبَ إِلاَّ أَنْتَ",
         latin: "Allahumma anta rabbii laa ilaaha illaa anta, khalaqtanii wa anaa 'abduka wa anaa 'alaa 'ahdika wa wa'dika mas-tatha'tu. a'uudzu bika min syarri maa shana'tu. abuu-u laka bini'matika 'alayya wa abuu-u bidzanbii fagh-firlii fa-innahu laa yaghfirudz dzunuuba illa anta.",
         translation: "Ya Allah, Engkau adalah Tuhanku, tiada tuhan selain Engkau. Engkau yang menciptakanku dan aku adalah hamba-Mu. Aku berada dalam janji-Mu semampuku. Aku berlindung kepada-Mu dari keburukan yang aku perbuat. Aku mengakui nikmat-Mu kepadaku dan aku mengakui dosaku, maka ampunilah aku. Sesungguhnya tiada yang dapat mengampuni dosa selain Engkau.",
@@ -204,7 +205,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Doa Khatam Al-Quran",
         title_en: "Dua for Completing Quran Recitation",
         description: "Doa yang dianjurkan dibaca setelah khatam membaca Al-Quran.",
-        icon: "📖",
+        iconKey: "book",
         arabic: "اللَّهُمَّ ارْحَمْنِي بِالْقُرآنِ وَاجْعَلْهُ لِي إِمَامًا وَنُورًا وَهُدًى وَرَحْمَةً",
         latin: "Allahummarhamnii bil qur'aani waj'alhu lii imaaman wa nuuran wa hudan wa rahmah",
         translation: "Ya Allah, rahmatilah aku dengan Al-Quran. Jadikanlah ia bagiku sebagai pemimpin, cahaya, petunjuk, dan rahmat.",
@@ -215,7 +216,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Dzikir Pagi & Petang",
         title_en: "Morning & Evening Remembrance",
         description: "Penjaga hati dan jiwa di 10 malam terakhir — jangan sampai terlewat.",
-        icon: "🌅",
+        iconKey: "sun",
         steps: [
             "Ayat Kursi (1x): 'Allahu laa ilaaha illaa huwal hayyul qayyum...' — penjaga dari gangguan setan.",
             "Al-Ikhlas, Al-Falaq, An-Naas (masing-masing 3x): dibaca di pagi dan petang serta sebelum tidur.",
@@ -247,7 +248,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         id: "dzikir_malam",
         title: "Dzikir Malam 10 Terakhir",
         title_en: "Nightly Dhikr for Last 10 Nights",
-        icon: "📿",
+        iconKey: "hands",
         steps: [
             "Membaca Istighfar 100x: Astaghfirullahal 'adzim alladzi laa ilaaha illa huwal hayyul qayyum wa atuubu ilaih",
             "Membaca Tasbih 100x: Subhanallah wa bihamdihi, subhanallahil 'adzim",
@@ -269,7 +270,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Doa-Doa Rabbana Pilihan",
         title_en: "Chosen Rabbana Supplications",
         description: "Kumpulan doa pilihan dari Al-Quran yang sangat dianjurkan diperbanyak di 10 malam terakhir.",
-        icon: "📚",
+        iconKey: "library",
         steps: [
             "Rabbana atina fid dunya hasanah wa fil aakhirati hasanah wa qina 'adzabannar. (Al-Baqarah: 201)",
             "Rabbana innana asmainaa munadiyan yunaadii lil iimaan... (Ali Imran: 193)",
@@ -292,7 +293,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Doa Mohon Surga & Dijauhkan Neraka",
         title_en: "Dua for Paradise & Protection from Hellfire",
         description: "Doa yang paling sering Nabi ﷺ baca — ringkas namun penuh makna.",
-        icon: "🌿",
+        iconKey: "sparkles",
         arabic: "اَللَّهُمَّ إِنِّيْ أَسْأَلُكَ الْجَنَّةَ وَأَعُوْذُ بِكَ مِنَ النَّارِ",
         latin: "Allahumma innii as'alukal jannata wa a'uudzubika minan naar",
         translation: "Ya Allah, sesungguhnya aku memohon kepada-Mu surga dan aku berlindung kepada-Mu dari neraka.",
@@ -309,7 +310,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         title: "Doa untuk Kedua Orangtua",
         title_en: "Dua for Parents",
         description: "Doa terbaik yang bisa dikirim seorang anak kepada orang tuanya, hidup maupun yang telah wafat.",
-        icon: "💝",
+        iconKey: "heart-handshake",
         arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
         latin: "Rabbighfir lii waliwaalidayya warhamhumaa kamaa rabbayaanii shaghiiraa",
         translation: "Ya Tuhanku, ampunilah aku dan kedua orang tuaku, dan kasihilah mereka sebagaimana mereka mengasihiku di waktu kecil.",
@@ -332,7 +333,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Sholat Tahajjud",
         title_en: "Tahajjud Prayer",
         description: "Sholat malam yang dikerjakan setelah bangun tidur (walaupun tidur sejenak).",
-        icon: "🌌",
+        iconKey: "moon",
         arabic: "أُصَلِّيْ سُنَّةَ التَّهَجُّدِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
         latin: "Ushalli sunnatat-tahajjudi rak'ataini lillahi ta'aalaa",
         translation: "Aku niat sholat sunnah Tahajjud dua rakaat karena Allah ta'ala.",
@@ -355,7 +356,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Doa Setelah Sholat Tahajjud",
         title_en: "Dua After Tahajjud",
         description: "Doa khusus yang dianjurkan dibaca setelah selesai sholat Tahajjud.",
-        icon: "🤲",
+        iconKey: "hands",
         arabic: "اَللّٰهُمَّ لَكَ الْحَمْدُ اَنْتَ قَيِّمُ السَّمَوَاتِ وَاْلاَرْضِ وَمَنْ فِيْهِنَّ، وَلَكَ الْحَمْدُ اَنْتَ مَلِكُ السَّمَوَاتِ وَاْلاَرْضِ وَمَنْ فِيْهِنَّ...",
         latin: "Allahumma lakal hamdu anta qayyimus samawaati wal ardhi wa man fiihinna, wa lakal hamdu anta malikus samawaati wal ardhi wa man fiihinna...",
         translation: "Ya Allah, bagi-Mu segala puji, Engkau-lah penegak langit dan bumi serta segala yang ada di dalamnya...",
@@ -371,7 +372,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Sholat Taubat",
         title_en: "Prayer of Repentance",
         description: "Sholat untuk memohon ampunan Allah atas dosa-dosa yang telah lalu.",
-        icon: "💧",
+        iconKey: "droplets",
         arabic: "أُصَلِّيْ سُنَّةَ التَّوْبَةِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
         latin: "Ushalli sunnatat-taubati rak'ataini lillahi ta'aalaa",
         translation: "Aku niat sholat sunnah Taubat dua rakaat karena Allah ta'ala.",
@@ -395,7 +396,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Doa Setelah Sholat Taubat",
         title_en: "Dua After Repentance Prayer",
         description: "Membaca Sayyidul Istighfar dan doa mohon ampunan total.",
-        icon: "🤲",
+        iconKey: "hands",
         arabic: "أَسْتَغْفِرُ اللهَ الْعَظِيْمَ الَّذِي لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّوْمُ وَأَتُوْبُ إِلَيْهِ",
         latin: "Astaghfirullahal 'adziim alladzii laa ilaaha illaa huwal hayyul qayyuumu wa atuubu ilaih.",
         translation: "Aku memohon ampun kepada Allah Yang Maha Agung, tiada tuhan selain Dia Yang Maha Hidup lagi Maha Berdiri Sendiri, dan aku bertaubat kepada-Nya.",
@@ -409,7 +410,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Sholat Hajat",
         title_en: "Prayer of Need",
         description: "Sholat ketika memiliki keinginan atau hajat khusus kepada Allah.",
-        icon: "🎯",
+        iconKey: "target",
         arabic: "أُصَلِّيْ سُنَّةَ الْحَاجَةِ رَكْعَتَيْنِ لِلَّهِ تَعَالَى",
         latin: "Ushalli sunnatal-haajati rak'ataini lillahi ta'aalaa",
         translation: "Aku niat sholat sunnah Hajat dua rakaat karena Allah ta'ala.",
@@ -433,7 +434,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Doa Setelah Sholat Hajat",
         title_en: "Dua After Hajat Prayer",
         description: "Doa khusus yang dianjurkan dibaca sebelum menyebutkan hajat pribadi.",
-        icon: "🤲",
+        iconKey: "hands",
         arabic: "لاَ إِلَهَ إِلاَّ اللهُ الْحَلِيْمُ الْكَرِيْمُ، سُبْحَانَ اللهِ رَبِّ الْعَرْشِ الْعَظِيْمِ، الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِيْنَ...",
         latin: "Laa ilaaha illallaahul haliimul kariim, subhaanallaahi rabbil 'arsyil 'adziim, alhamdulillaahi rabbil 'aalamiin...",
         translation: "Tiada Tuhan selain Allah Yang Maha Penyantun lagi Maha Mulia, Mahasuci Allah pengeran 'Arsy yang agung...",
@@ -443,7 +444,7 @@ export const SUNNAH_PRAYERS_GUIDE: GuideItem[] = [
         title: "Sholat Tasbih",
         title_en: "Prayer of Tasbih",
         description: "Sholat yang di dalamnya terdapat bacaan tasbih sebanyak 300 kali, sangat dianjurkan untuk menggugurkan dosa.",
-        icon: "📿",
+        iconKey: "hands",
         arabic: "أُصَلِّيْ سُنَّةَ التَّسْبِيْحِ أَرْبَعَ رَكَعَاتٍ لِلَّهِ تَعَالَى",
         latin: "Ushalli sunnatat-tasbiihi (arba'a raka'aatin / rak'ataini) lillahi ta'aalaa",
         translation: "Aku niat sholat sunnah Tasbih (empat rakaat / dua rakaat) karena Allah ta'ala.",

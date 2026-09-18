@@ -29,6 +29,7 @@ import { Minus, Plus } from "lucide-react";
 import { useTranslations, type TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { toast } from "sonner";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface KhatamanLog {
     currentJuz: number;
@@ -75,7 +76,7 @@ export default function KhatamanProgress() {
             toast.success(translations.khatamanTitle || "Tadarus", {
                 description: `Masya Allah! +${xpEarned} ${translations.gamificationXpName || "Hasanah"}`,
                 duration: 3000,
-                icon: "📖"
+                icon: <AppIcon name="book" size="sm" tone="primary" />
             });
         }
 
@@ -101,12 +102,12 @@ export default function KhatamanProgress() {
         : null;
 
     return (
-        <div className="rounded-3xl border border-white/20 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl shadow-2xl shadow-black/10 overflow-hidden transition-all duration-300">
+        <div className="rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl shadow-[var(--shadow-card)] overflow-hidden transition-all duration-300">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">
-                    <span className="text-lg">📖</span>
-                    <h3 className="font-bold text-white text-base">{t.khatamanTitle}</h3>
+                    <AppIcon name="book" size="sm" tone="primary" />
+                    <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-base">{t.khatamanTitle}</h3>
                 </div>
                 <DalilBadge dalil={QURAN_RECITATION_EVIDENCE} variant="pill" />
             </div>
@@ -116,18 +117,18 @@ export default function KhatamanProgress() {
                 <div className="flex items-end justify-between mb-2">
                     <div>
                         <span className="text-3xl font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{currentJuz}</span>
-                        <span className="text-sm text-white/40 ml-1">{t.khatamanOf30Juz}</span>
+                        <span className="text-sm text-[rgb(var(--color-text-muted))] ml-1">{t.khatamanOf30Juz}</span>
                     </div>
                     <div className="text-right">
-                        <span className="text-sm font-semibold" style={{ color: onTrack ? "rgb(var(--color-primary-light))" : "rgb(251 146 60)" }}>
+                        <span className="text-sm font-semibold" style={{ color: onTrack ? "rgb(var(--color-primary-light))" : "rgb(var(--color-warning))" }}>
                             {onTrack ? t.khatamanOnTrack : t.khatamanCatchUp}
                         </span>
-                        <p className="text-xs text-white/40">{progressPct}% {t.khatamanCompleted}</p>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{progressPct}% {t.khatamanCompleted}</p>
                     </div>
                 </div>
 
                 {/* Progress bar */}
-                <div className="h-3 w-full rounded-full bg-white/10 overflow-hidden shadow-inner backdrop-blur-sm">
+                <div className="h-3 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden shadow-inner backdrop-blur-sm">
                     <div
                         className="h-full rounded-full transition-all duration-500 shadow-lg"
                         style={{
@@ -141,7 +142,7 @@ export default function KhatamanProgress() {
                 {/* Juz markers */}
                 <div className="flex justify-between mt-1">
                     {[0, 10, 20, 30].map((n) => (
-                        <span key={n} className="text-xs text-white/40">{n}</span>
+                        <span key={n} className="text-xs text-[rgb(var(--color-text-muted))]">{n}</span>
                     ))}
                 </div>
             </div>
@@ -151,22 +152,18 @@ export default function KhatamanProgress() {
                 <button
                     onClick={() => adjustJuz(-1)}
                     disabled={currentJuz <= 0}
-                    className="rounded-full bg-black/20 border border-white/10 p-2.5 text-white/40 hover:bg-black/30 hover:border-white/15 disabled:opacity-30 transition-all active:scale-90 backdrop-blur-sm shadow-md"
+                    className="rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] p-2.5 text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40 disabled:opacity-30 transition-all active:scale-90 backdrop-blur-sm shadow-[var(--shadow-card)]"
                 >
                     <Minus className="h-4 w-4" />
                 </button>
                 <div className="text-center">
-                    <p className="text-xs text-white/40 mb-0.5">{t.khatamanCurrentJuz}</p>
-                    <p className="text-xl font-bold text-white">Juz {currentJuz}</p>
+                    <p className="text-xs text-[rgb(var(--color-text-muted))] mb-0.5">{t.khatamanCurrentJuz}</p>
+                    <p className="text-xl font-bold text-[rgb(var(--color-text-strong))]">Juz {currentJuz}</p>
                 </div>
                 <button
                     onClick={() => adjustJuz(1)}
                     disabled={currentJuz >= 30}
-                    className="rounded-full p-2.5 hover:opacity-80 disabled:opacity-30 transition-all active:scale-90 border border-white/10 backdrop-blur-sm shadow-md"
-                    style={{
-                        background: "rgba(var(--color-primary), 0.15)",
-                        color: "rgb(var(--color-primary-light))",
-                    }}
+                    className="rounded-full p-2.5 hover:opacity-80 disabled:opacity-30 transition-all active:scale-90 border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))] backdrop-blur-sm shadow-[var(--shadow-card)]"
                 >
                     <Plus className="h-4 w-4" />
                 </button>
@@ -174,21 +171,15 @@ export default function KhatamanProgress() {
 
             {/* Estimate */}
             {estimatedFinishDay && estimatedFinishDay <= 30 && (
-                <div className="mx-3 mb-2 rounded-xl border px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-md" style={{
-                    background: "rgba(var(--color-primary), 0.1)",
-                    borderColor: "rgba(var(--color-primary), 0.2)"
-                }}>
-                    <p className="text-xs" style={{ color: "rgb(var(--color-primary-light))" }}>
+                <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                    <p className="text-xs text-[rgb(var(--color-primary-light))]">
                         {t.khatamanEstimateFinish.replace("{day}", String(estimatedFinishDay))}
                     </p>
                 </div>
             )}
             {currentJuz >= 30 && (
-                <div className="mx-3 mb-2 rounded-xl border px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-lg" style={{
-                    background: "rgba(var(--color-primary), 0.15)",
-                    borderColor: "rgba(var(--color-primary), 0.3)"
-                }}>
-                    <p className="text-sm font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{t.khatamanAlhamdulillah}</p>
+                <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
+                    <p className="text-sm font-bold text-[rgb(var(--color-primary-light))]">{t.khatamanAlhamdulillah}</p>
                 </div>
             )}
 

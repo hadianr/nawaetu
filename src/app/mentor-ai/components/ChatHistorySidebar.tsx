@@ -25,7 +25,6 @@ import { ChatSession } from "@/lib/chat-storage";
 interface ChatHistorySidebarProps {
     showHistory: boolean;
     setShowHistory: (show: boolean) => void;
-    isDaylight: boolean;
     sessions: ChatSession[];
     activeSessionId: string | null;
     handleSwitchSession: (id: string) => void;
@@ -36,7 +35,6 @@ interface ChatHistorySidebarProps {
 export function ChatHistorySidebar({
     showHistory,
     setShowHistory,
-    isDaylight,
     sessions,
     activeSessionId,
     handleSwitchSession,
@@ -49,28 +47,28 @@ export function ChatHistorySidebar({
         <div className="fixed inset-0 z-50 flex justify-end">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+                className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70 backdrop-blur-sm animate-in fade-in duration-300"
                 onClick={() => setShowHistory(false)}
             />
 
             {/* Drawer Content */}
             <div className={cn(
                 "relative w-[300px] h-full border-l shadow-2xl p-4 flex flex-col animate-in slide-in-from-right duration-300",
-                isDaylight ? "bg-white border-slate-200" : "bg-slate-950 border-white/10"
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
             )}>
                 <div className="flex items-center justify-between mb-6 pt-2">
                     <h2 className={cn(
                         "text-lg font-bold",
-                        isDaylight ? "text-slate-900" : "text-white"
+                        "text-[rgb(var(--color-text-strong))]"
                     )}>Riwayat Chat</h2>
                     <button
                         onClick={() => setShowHistory(false)}
                         className={cn(
                             "p-1.5 rounded-full",
-                            isDaylight ? "hover:bg-slate-100" : "hover:bg-white/10"
+                            "hover:bg-[rgb(var(--color-primary))]/10"
                         )}
                     >
-                        <X className={cn("w-5 h-5", isDaylight ? "text-slate-400" : "text-white/50")} />
+                        <X className="w-5 h-5 text-[rgb(var(--color-text-muted))]" />
                     </button>
                 </div>
 
@@ -78,7 +76,7 @@ export function ChatHistorySidebar({
                     {sessions.length === 0 ? (
                         <div className={cn(
                             "text-center py-10 text-sm",
-                            isDaylight ? "text-slate-400" : "text-white/30"
+                            "text-[rgb(var(--color-text-muted))]"
                         )}>
                             Belum ada riwayat percakapan.
                         </div>
@@ -89,34 +87,30 @@ export function ChatHistorySidebar({
                                 onClick={() => handleSwitchSession(session.id)}
                                 className={cn(
                                     "group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer",
-                                    activeSessionId === session.id
-                                        ? isDaylight
-                                            ? "bg-emerald-50 border-emerald-200/60 shadow-sm"
-                                            : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30"
-                                        : isDaylight
-                                            ? "bg-slate-50 border-slate-100 hover:bg-white hover:border-slate-200"
-                                            : "bg-white/5 border-white/5 hover:bg-white/10"
+                                        activeSessionId === session.id
+                                            ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-sm"
+                                            : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
                                 <div className="flex items-center gap-3 min-w-0">
                                     <MessageSquare className={cn(
                                         "w-4 h-4 shrink-0",
                                         activeSessionId === session.id
-                                            ? isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary))]"
-                                            : isDaylight ? "text-slate-300" : "text-white/30"
+                                            ? "text-[rgb(var(--color-primary))]"
+                                            : "text-[rgb(var(--color-text-muted))]"
                                     )} />
                                     <div className="min-w-0">
                                         <p className={cn(
                                             "text-sm font-medium truncate",
                                             activeSessionId === session.id
-                                                ? isDaylight ? "text-slate-900" : "text-white"
-                                                : isDaylight ? "text-slate-600" : "text-white/70"
+                                                ? "text-[rgb(var(--color-text-strong))]"
+                                                : "text-[rgb(var(--color-text))]"
                                         )}>
                                             {session.title || "Percakapan Baru"}
                                         </p>
                                         <p className={cn(
                                             "text-[10px]",
-                                            isDaylight ? "text-slate-400" : "text-white/30"
+                                            "text-[rgb(var(--color-text-muted))]"
                                         )}>
                                             {new Date(session.updatedAt).toLocaleDateString()}
                                         </p>
@@ -127,9 +121,7 @@ export function ChatHistorySidebar({
                                     onClick={(e) => handleDeleteSession(e, session.id)}
                                     className={cn(
                                         "p-1.5 rounded-full transition-colors",
-                                        isDaylight
-                                            ? "text-slate-0 group-hover:text-slate-300 hover:text-red-500 hover:bg-red-50"
-                                            : "hover:bg-red-500/20 text-white/0 group-hover:text-white/30 hover:text-red-400"
+                                        "text-[rgb(var(--color-text-muted))] opacity-0 group-hover:opacity-100 hover:text-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/10"
                                     )}
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -141,11 +133,11 @@ export function ChatHistorySidebar({
 
                 <div className={cn(
                     "pt-4 mt-4 border-t",
-                    isDaylight ? "border-slate-100" : "border-white/10"
+                    "border-[rgb(var(--color-border))]"
                 )}>
                     <button
                         onClick={handleNewChat}
-                        className="w-full py-3 rounded-xl bg-[rgb(var(--color-primary))] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[rgb(var(--color-primary-dark))] transition-colors shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                        className="w-full py-3 rounded-xl bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] font-bold text-sm flex items-center justify-center gap-2 hover:bg-[rgb(var(--color-primary-strong))] transition-colors shadow-[var(--shadow-card)]"
                     >
                         <Plus className="w-4 h-4" />
                         Chat Baru

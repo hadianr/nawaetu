@@ -27,7 +27,6 @@ import type { Bookmark } from "@/lib/quran/bookmark-storage";
 import { removeBookmark } from "@/lib/quran/bookmark-storage";
 import { useState, useEffect } from "react";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 
@@ -41,12 +40,10 @@ const storage = getStorageService();
 export default function BookmarksPage() {
     const { bookmarks, refresh } = useBookmarks();
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
 
     useEffect(() => {
         trackFeatureUse("bookmarks_view");
     }, []);
-const isDaylight = THEMES[currentTheme].mode === "light";
     const [mounted, setMounted] = useState(false);
 
     const [lastRead, setLastRead] = useState<{ surahId: number; verseId: number } | null>(null);
@@ -87,7 +84,7 @@ const isDaylight = THEMES[currentTheme].mode === "light";
         setLastRead(lastReadData);
 
         // Show feedback
-        toast.success(t.bookmarksMarkedAsLastRead || "Ditandai sebagai Terakhir Baca 📖");
+        toast.success(t.bookmarksMarkedAsLastRead || "Ditandai sebagai Terakhir Baca");
     };
 
     if (!mounted) return null;
@@ -95,16 +92,14 @@ const isDaylight = THEMES[currentTheme].mode === "light";
     return (
         <div className={cn(
             "bookmarks-page flex min-h-screen flex-col items-center px-4 pt-8 pb-nav font-sans sm:px-6 transition-colors",
-            isDaylight
-                ? "bg-[rgb(var(--color-background))]"
-                : "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] text-white"
+            "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(var(--color-background),0))] text-[rgb(var(--color-text))]"
         )}>
             <div className="w-full max-w-2xl space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild className={cn(
                         "rounded-full transition-colors",
-                        isDaylight ? "text-slate-400 hover:bg-slate-100" : "text-white/70 hover:bg-white/10 hover:text-white"
+                        "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]"
                     )}>
                         <Link href="/quran">
                             <ChevronLeft className="h-6 w-6" />
@@ -113,9 +108,9 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                     <div>
                         <h1 className={cn(
                             "text-3xl font-bold tracking-tight",
-                            isDaylight ? "text-slate-900" : "text-[rgb(var(--color-primary-light))]"
+                            "text-[rgb(var(--color-text-strong))]"
                         )}>{t.bookmarksTitle}</h1>
-                        <p className={cn("text-sm", isDaylight ? "text-slate-500" : "text-white/60")}>{t.bookmarksSubtitle}</p>
+                        <p className="text-sm text-[rgb(var(--color-text-muted))]">{t.bookmarksSubtitle}</p>
                     </div>
                 </div>
 
@@ -124,23 +119,21 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                     {bookmarks.length === 0 ? (
                         <div className={cn(
                             "text-center py-24 rounded-[2.5rem] border transition-all",
-                            isDaylight ? "bg-white border-slate-100 shadow-sm" : "bg-white/5 border-white/5"
+                            "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
                         )}>
                             <div className={cn(
                                 "w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 transition-all",
-                                isDaylight ? "bg-emerald-50 text-emerald-500" : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]"
+                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]"
                             )}>
                                 <BookmarkIcon className="w-10 h-10" />
                             </div>
-                            <h3 className={cn("text-xl font-bold mb-2", isDaylight ? "text-slate-900" : "text-white")}>{t.bookmarksEmptyTitle}</h3>
-                            <p className={cn("max-w-xs mx-auto mb-8 leading-relaxed", isDaylight ? "text-slate-500" : "text-white/40")}>
+                            <h3 className="text-xl font-bold mb-2 text-[rgb(var(--color-text-strong))]">{t.bookmarksEmptyTitle}</h3>
+                            <p className="max-w-xs mx-auto mb-8 leading-relaxed text-[rgb(var(--color-text-muted))]">
                                 {t.bookmarksEmptyDesc}
                             </p>
                             <Button asChild className={cn(
                                 "h-12 px-8 rounded-full font-semibold shadow-xl transition-all",
-                                isDaylight
-                                    ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-200"
-                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/90 text-[rgb(var(--color-primary-foreground))] shadow-[rgb(var(--color-primary))]/20"
+                                "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             )}>
                                 <Link href="/quran">{t.bookmarksStartReading}</Link>
                             </Button>
@@ -158,19 +151,15 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                                     className={cn(
                                         "block group relative overflow-hidden rounded-[2rem] border transition-all duration-500",
                                         isCurrentLastRead
-                                            ? isDaylight
-                                                ? "bg-emerald-50 border-emerald-200 shadow-xl shadow-emerald-500/10 hover:border-emerald-300 hover:bg-emerald-100/50"
-                                                : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/50 hover:border-[rgb(var(--color-primary))] shadow-[0_0_20px_rgba(var(--color-primary),0.1)]"
-                                            : isDaylight
-                                                ? "bg-white border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/50 shadow-sm hover:shadow-md transition-shadow"
-                                                : "bg-[#0f172a]/40 border-white/5 hover:border-white/10 hover:bg-[#0f172a]/60"
+                                            ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/50 hover:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
+                                            : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 shadow-[var(--shadow-card)]"
                                     )}
                                 >
                                     {/* Active Indicator Strip */}
                                     {isCurrentLastRead && (
                                         <div className={cn(
                                             "absolute left-0 top-0 bottom-0 w-1.5 transition-colors",
-                                            isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]"
+                                            "bg-[rgb(var(--color-primary))]"
                                         )} />
                                     )}
 
@@ -180,12 +169,8 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                                                 <div className={cn(
                                                     "h-10 px-4 rounded-full flex items-center justify-center text-xs font-bold tracking-wide transition-all border",
                                                     isCurrentLastRead
-                                                        ? isDaylight
-                                                            ? "bg-emerald-50 border-emerald-200 text-emerald-600"
-                                                            : "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-transparent"
-                                                        : isDaylight
-                                                            ? "bg-slate-50 text-slate-400 border-slate-100 group-hover:bg-white group-hover:border-slate-200"
-                                                            : "bg-white/5 text-slate-400 border-white/5"
+                                                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-transparent"
+                                                        : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))] group-hover:bg-[rgb(var(--color-surface))]"
                                                 )}>
                                                     QS. {bookmark.surahName} : {bookmark.verseId}
                                                 </div>
@@ -196,7 +181,7 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-1.5 text-[10px] font-medium text-slate-500 bg-black/20 px-2.5 py-1.5 rounded-lg border border-white/5">
+                                            <div className="flex items-center gap-1.5 text-[10px] font-medium text-[rgb(var(--color-text-muted))] bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
                                                 <Calendar className="w-3.5 h-3.5" />
                                                 {new Date(bookmark.updatedAt || bookmark.createdAt || getCurrentTimestamp()).toLocaleString('id-ID', {
                                                     day: 'numeric',
@@ -210,7 +195,7 @@ const isDaylight = THEMES[currentTheme].mode === "light";
 
                                         <p className={cn(
                                             "font-amiri text-2xl sm:text-3xl leading-[2.2] text-right dir-rtl mb-4 transition-colors",
-                                            isDaylight ? "text-slate-900" : "text-white/95"
+                                            "text-[rgb(var(--color-text-strong))]"
                                         )}>
                                             {bookmark.verseText}
                                         </p>
@@ -218,9 +203,7 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                                         {bookmark.translationText && (
                                             <p className={cn(
                                                 "text-sm leading-relaxed mb-6 line-clamp-3 transition-colors",
-                                                isDaylight
-                                                    ? "text-slate-600 border-l-2 border-emerald-200 pl-4"
-                                                    : "text-slate-400 border-l-2 border-[rgb(var(--color-primary))]/30 pl-4"
+                                                "text-[rgb(var(--color-text-muted))] border-l-2 border-[rgb(var(--color-primary))]/30 pl-4"
                                             )}>
                                                 {bookmark.translationText}
                                             </p>
@@ -229,13 +212,13 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                                         {bookmark.note ? (
                                             <div className={cn(
                                                 "relative rounded-2xl p-4 border transition-all",
-                                                isDaylight ? "bg-slate-50 border-slate-100" : "bg-black/20 border-white/5"
+                                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                             )}>
                                                 <FileText className={cn(
                                                     "absolute top-4 left-4 w-4 h-4 transition-colors",
-                                                    isDaylight ? "text-emerald-500/60" : "text-[rgb(var(--color-primary))]/60"
+                                                    "text-[rgb(var(--color-primary))]/60"
                                                 )} />
-                                                <p className={cn("text-sm pl-7 italic leading-relaxed", isDaylight ? "text-slate-600" : "text-slate-300")}>
+                                                <p className="text-sm pl-7 italic leading-relaxed text-[rgb(var(--color-text-muted))]">
                                                     &quot;{bookmark.note}&quot;
                                                 </p>
                                             </div>
@@ -245,7 +228,7 @@ const isDaylight = THEMES[currentTheme].mode === "light";
 
                                         <div className={cn(
                                             "flex items-center justify-between mt-6 pt-6 border-t",
-                                            isDaylight ? "border-slate-100" : "border-white/5"
+                                            "border-[rgb(var(--color-border))]"
                                         )}>
                                             <button
                                                 onClick={(e) => handleSetLastRead(bookmark, e)}
@@ -253,12 +236,8 @@ const isDaylight = THEMES[currentTheme].mode === "light";
                                                 className={cn(
                                                     "text-xs font-bold px-4 py-2 rounded-xl transition-all border",
                                                     isCurrentLastRead
-                                                        ? isDaylight
-                                                            ? "bg-emerald-50 border-emerald-100 text-emerald-600 cursor-default"
-                                                            : "text-[rgb(var(--color-primary-light))] border-transparent opacity-50 cursor-default"
-                                                        : isDaylight
-                                                            ? "bg-white border-slate-200 text-slate-600 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white shadow-sm"
-                                                            : "bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-[rgb(var(--color-primary))]/20 hover:border-[rgb(var(--color-primary))]/30"
+                                                        ? "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/25 text-[rgb(var(--color-success))] cursor-default"
+                                                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))] hover:border-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                                                 )}
                                             >
                                                 {isCurrentLastRead ? t.bookmarksCurrentlyReading : t.bookmarksSetLastRead}
@@ -266,7 +245,7 @@ const isDaylight = THEMES[currentTheme].mode === "light";
 
                                             <button
                                                 onClick={(e) => handleDelete(bookmark.id, e)}
-                                                className="group/del flex items-center gap-2 px-4 py-2 rounded-full text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                                className="group/del flex items-center gap-2 px-4 py-2 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/10 transition-colors"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                                 <span className="text-xs group-hover/del:underline">{t.bookmarksDelete}</span>

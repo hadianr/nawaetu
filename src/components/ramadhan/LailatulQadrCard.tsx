@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { BookOpen, ChevronRight } from "lucide-react";
 import {
@@ -33,6 +33,7 @@ import { useTranslations } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import LailatulQadrGuideModal from "./LailatulQadrGuideModal";
 import { useTarawehTracker } from "@/hooks/useTarawehTracker";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { toast } from "sonner";
 import { addHasanah } from "@/lib/habits/leveling";
 
@@ -42,14 +43,17 @@ export default function LailatulQadrCard() {
     const { data } = usePrayerTimesContext();
     const t = useTranslations() as LailatulTranslations;
     const [guideOpen, setGuideOpen] = useState(false);
+    const [now, setNow] = useState<Date | null>(null);
+    useEffect(() => {
+        queueMicrotask(() => setNow(new Date()));
+    }, []);
 
     const hijriYear = parseInt(data?.hijriDate?.split(" ").pop()?.replace("H", "") ?? "1447", 10);
     const { log, updateDay } = useTarawehTracker(hijriYear);
 
     // In Islam, night precedes the day. Advance the Hijri day after Maghrib.
     let baseHijriDay = data?.hijriDay ?? 1;
-    const now = new Date();
-    const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+    const currentTime = now ? `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}` : "00:00";
     const maghribTime = data?.prayerTimes?.Maghrib || "18:00";
     if (currentTime >= maghribTime) baseHijriDay += 1;
     const effectiveHijriDay = Math.min(baseHijriDay, 30);
@@ -69,18 +73,18 @@ export default function LailatulQadrCard() {
         ODD_NIGHTS.includes(night as (typeof ODD_NIGHTS)[number]);
 
     return (
-        <div className="rounded-2xl border border-white/5 bg-black/20 backdrop-blur-md shadow-lg overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-md shadow-[var(--shadow-card)] overflow-hidden">
 
             {/* Header */}
             <div className="flex items-center justify-between px-4 pt-4 pb-3">
                 <div className="flex items-center gap-2.5">
-                    <span className={`text-xl ${isTonight ? "animate-pulse" : ""}`}>✨</span>
+                    <AppIcon name="sparkles" size="lg" tone="primary" className={isTonight ? "animate-pulse" : undefined} />
                     <div>
-                        <h3 className="font-bold text-white text-sm sm:text-base leading-tight">
+                        <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm sm:text-base leading-tight">
                             {t.lailatulQadrTitle}
                         </h3>
-                        <p className="text-[10px] font-medium mt-0.5" style={{ color: "rgba(var(--color-primary-light), 0.7)" }}>
-                            Lebih baik dari 1.000 bulan · QS. Al-Qadr: 3
+                        <p className="text-[10px] font-medium mt-0.5 text-[rgb(var(--color-primary-light))]/70">
+                            Lebih baik dari 1.000 bulan, QS. Al-Qadr: 3
                         </p>
                     </div>
                 </div>
@@ -90,8 +94,8 @@ export default function LailatulQadrCard() {
             {/* Status Banner */}
             <div className="px-4 mb-3">
                 {allPassed ? (
-                    <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-center">
-                        <p className="text-xs text-white/50">{t.lailatulQadrAllPassed}</p>
+                    <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2.5 text-center">
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.lailatulQadrAllPassed}</p>
                     </div>
                 ) : isTonight ? (
                     <div
@@ -105,15 +109,15 @@ export default function LailatulQadrCard() {
                             className="text-xs font-bold uppercase tracking-widest mb-1"
                             style={{ color: "rgb(var(--color-primary-light))" }}
                         >
-                            ⭐ {t.lailatulQadrTonightPossibility}
+                            <AppIcon name="star" size="sm" tone="primary" /> {t.lailatulQadrTonightPossibility}
                         </p>
-                        <p className="text-[11px] text-white/55">
+                        <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
                             {t.lailatulQadrTonightMessage}
                         </p>
                     </div>
                 ) : daysUntilNext !== null ? (
-                    <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-center">
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">
+                    <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 text-center">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
                             {t.lailatulQadrIn.replace("{night}", String(nextNight))}
                         </p>
                         <p
@@ -128,7 +132,7 @@ export default function LailatulQadrCard() {
 
             {/* Night Grid */}
             <div className="px-4 mb-3">
-                <p className="text-[9px] font-bold uppercase tracking-wider text-white/30 text-center mb-2">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
                     {t.lailatulQadrSectionLabel}
                 </p>
 
@@ -152,10 +156,10 @@ export default function LailatulQadrCard() {
                             
                             if (newStatus) {
                                 addHasanah(50);
-                                toast.success(t.gamificationQiyamulLailSuccess || "Qiyamul Lail Tercatat ✨", {
+                                toast.success(t.gamificationQiyamulLailSuccess || "Qiyamul Lail Tercatat", {
                                     description: t.gamificationQiyamulLailDesc || `Masya Allah! +50 ${t.gamificationXpName || "Hasanah"}`,
                                     duration: 3500,
-                                    icon: "🤲"
+                                    icon: <AppIcon name="hands" size="sm" tone="primary" />
                                 });
                             }
                         };
@@ -177,14 +181,14 @@ export default function LailatulQadrCard() {
                                             ? "rgba(var(--color-primary), 0.5)"
                                             : isOdd
                                                 ? "rgba(var(--color-primary-light), 0.12)"
-                                                : "rgba(255,255,255,0.04)",
+                                                : "rgba(var(--color-border), 0.04)",
                                     background: isDone
                                         ? "rgba(var(--color-primary), 0.25)"
                                         : isActive
                                             ? "rgba(var(--color-primary), 0.15)"
                                             : isOdd
                                                 ? "rgba(var(--color-primary), 0.05)"
-                                                : "rgba(255,255,255,0.02)",
+                                                : "rgba(var(--color-border), 0.02)",
                                     transform: isActive && !isDone ? "scale(1.06)" : undefined,
                                 }}
                             >
@@ -199,38 +203,32 @@ export default function LailatulQadrCard() {
                                 {/* Completed Checkmark */}
                                 {isDone && (
                                     <span
-                                        className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 shadow-md ring-2 ring-black"
+                                        className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[rgb(var(--color-success))] shadow-[var(--shadow-card)] ring-2 ring-[rgb(var(--color-surface))]"
                                     >
-                                        <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                        <svg className="h-2.5 w-2.5 text-[rgb(var(--color-surface))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </span>
                                 )}
 
                                 {/* Icon */}
-                                <span className={`${isOdd ? "text-base" : "text-sm"} leading-none ${isDone ? "opacity-100 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]" : ""}`}>
-                                    {isDone 
-                                        ? "🤲" 
-                                        : isActive && isOdd
-                                            ? "⭐"
-                                            : isPast
-                                                ? "✓"
-                                                : isOdd
-                                                    ? "✨"
-                                                    : "🌙"}
-                                </span>
+                                <AppIcon
+                                    name={isDone ? "hands" : isActive && isOdd ? "star" : isPast ? "shield-check" : isOdd ? "sparkles" : "moon"}
+                                    size={isOdd ? "sm" : "xs"}
+                                    tone={isDone ? "success" : isActive ? "primary" : "muted"}
+                                />
 
                                 {/* Night number */}
                                 <span
                                     className={`mt-1 leading-none ${isOdd ? "text-xs font-bold" : "text-[10px] font-medium"}`}
                                     style={{
                                         color: isDone 
-                                            ? "white"
+                                        ? "rgb(var(--color-text-strong))"
                                             : isActive
                                                 ? "rgb(var(--color-primary-light))"
                                                 : isOdd
                                                     ? "rgba(var(--color-primary-light), 0.7)"
-                                                    : "rgba(255,255,255,0.28)",
+                                                    : "rgba(var(--color-border), 0.28)",
                                     }}
                                 >
                                     {night}
@@ -241,21 +239,21 @@ export default function LailatulQadrCard() {
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center justify-center gap-4 mt-2 text-[9px] text-white/30">
+                <div className="flex items-center justify-center gap-4 mt-2 text-[9px] text-[rgb(var(--color-text-muted))]">
                     <span className="flex items-center gap-1">
-                        <span>✨</span>{t.lailatulQadrOddNights}
+                        <AppIcon name="sparkles" size="sm" tone="primary" />{t.lailatulQadrOddNights}
                     </span>
                     <span className="flex items-center gap-1">
-                        <span>🌙</span>{t.lailatulQadrEvenNights}
+                        <AppIcon name="moon" size="sm" tone="primary" />{t.lailatulQadrEvenNights}
                     </span>
                 </div>
             </div>
 
             {/* Guide CTA */}
-            <div className="border-t border-white/5 px-4 py-3">
+            <div className="border-t border-[rgb(var(--color-border))] px-4 py-3">
                 <button
                     onClick={() => setGuideOpen(true)}
-                    className="w-full flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 px-3.5 py-3 text-left transition-all duration-200 hover:bg-white/8 hover:-translate-y-0.5 active:scale-[0.98] group"
+                    className="w-full flex items-center gap-3 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-3.5 py-3 text-left transition-all duration-200 hover:bg-[rgb(var(--color-surface))] hover:-translate-y-0.5 active:scale-[0.98] group"
                 >
                     <div
                         className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg"
@@ -264,14 +262,14 @@ export default function LailatulQadrCard() {
                         <BookOpen className="h-4 w-4" style={{ color: "rgb(var(--color-primary-light))" }} />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white leading-snug">
+                        <p className="text-sm font-semibold text-[rgb(var(--color-text-strong))] leading-snug">
                             Panduan 10 Malam Terakhir
                         </p>
-                        <p className="text-[10px] text-white/40 mt-0.5">
+                        <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5">
                         I&apos;tikaf, Doa, Dzikir & Dalil Sahih
                         </p>
                     </div>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-white/25 group-hover:text-white/60 transition-colors" />
+                    <ChevronRight className="h-4 w-4 shrink-0 text-[rgb(var(--color-text-muted))] transition-colors" />
                 </button>
             </div>
 

@@ -23,6 +23,7 @@ import { SUNNAH_FOODS_SUHOOR, SUNNAH_FOODS_IFTAR } from "@/data/ramadhan";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
 import { Moon, Sun } from "lucide-react";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 export default function SunnahFoodsWidget() {
     const [activeTab, setActiveTab] = useState<"sahur" | "iftar">("iftar");
@@ -31,35 +32,35 @@ export default function SunnahFoodsWidget() {
     const currentFoods = activeTab === "iftar" ? SUNNAH_FOODS_IFTAR : SUNNAH_FOODS_SUHOOR;
 
     return (
-        <div className="w-full rounded-xl overflow-hidden shadow-xl backdrop-blur-md border border-white/5 bg-white/5"
+        <div className="w-full rounded-xl overflow-hidden border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)] backdrop-blur-md"
             style={{
                 boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)"
             }}
         >
             {/* Header section with tabs */}
-            <div className="p-2 sm:p-2.5 border-b border-white/5 bg-white/5">
+            <div className="p-2 sm:p-2.5 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
                 {/* Tabs */}
-                <div className="flex p-1 bg-black/60 rounded-full w-full max-w-[280px] mx-auto">
+                <div className="flex p-1 bg-[rgb(var(--color-surface-subtle))] rounded-full w-full max-w-[280px] mx-auto">
                     <button
                         type="button"
                         onClick={() => setActiveTab("iftar")}
                         className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all ${activeTab === "iftar"
-                            ? "bg-white text-black shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-                            : "text-white/50 hover:text-white/80"
+                            ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
+                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                             }`}
                     >
-                        <Moon className={`w-3.5 h-3.5 ${activeTab === "iftar" ? "text-black" : "text-white/50"}`} />
+                        <Moon className={`w-3.5 h-3.5 ${activeTab === "iftar" ? "text-[rgb(var(--color-primary-foreground))]" : "text-[rgb(var(--color-text-muted))]"}`} />
                         {locale === "en" ? "Iftar" : "Berbuka"}
                     </button>
                     <button
                         type="button"
                         onClick={() => setActiveTab("sahur")}
                         className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all ${activeTab === "sahur"
-                            ? "bg-white text-black shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-                            : "text-white/50 hover:text-white/80"
+                            ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
+                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"
                             }`}
                     >
-                        <Sun className={`w-3.5 h-3.5 ${activeTab === "sahur" ? "text-black" : "text-white/50"}`} />
+                        <Sun className={`w-3.5 h-3.5 ${activeTab === "sahur" ? "text-[rgb(var(--color-primary-foreground))]" : "text-[rgb(var(--color-text-muted))]"}`} />
                         {locale === "en" ? "Suhoor" : "Sahur"}
                     </button>
                 </div>
@@ -71,18 +72,18 @@ export default function SunnahFoodsWidget() {
                     {currentFoods.map((food) => (
                         <div
                             key={food.id}
-                            className="snap-start shrink-0 w-[180px] sm:w-[200px] bg-white/10 rounded-xl p-3 sm:p-4 border border-white/10 flex flex-col"
+                            className="snap-start shrink-0 w-[180px] sm:w-[200px] bg-[rgb(var(--color-surface))] rounded-xl p-3 sm:p-4 border border-[rgb(var(--color-border))] flex flex-col"
                         >
                             <div className="flex items-center justify-between mb-3">
                                 <div className="text-2xl sm:text-3xl filter drop-shadow">
-                                    {food.icon}
+                                    <AppIcon name={food.iconKey} size="lg" tone="primary" />
                                 </div>
                                 <DalilBadge dalil={food.dalil} variant="pill" />
                             </div>
-                            <h3 className="text-xs sm:text-sm font-bold text-white leading-tight mb-1.5">
+                            <h3 className="text-xs sm:text-sm font-bold text-[rgb(var(--color-text-strong))] leading-tight mb-1.5">
                                 {locale === "en" && food.name_en ? food.name_en : food.name}
                             </h3>
-                            <p className="text-[10px] sm:text-[11px] text-white/70 leading-relaxed font-medium">
+                            <p className="text-[10px] sm:text-[11px] text-[rgb(var(--color-text-muted))] leading-relaxed font-medium">
                                 {locale === "en" && food.description_en ? food.description_en : food.description}
                             </p>
                         </div>

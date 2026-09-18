@@ -334,7 +334,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                             <div
                                                 key={idx}
                                                 className={cn(
-                                                    "relative border rounded-xl overflow-hidden aspect-video bg-black/20 group p-1 flex items-center justify-center",
+                                                    "relative border rounded-xl overflow-hidden aspect-video bg-[rgb(var(--color-surface-subtle))] group p-1 flex items-center justify-center",
                                                     "border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]"
                                                 )}
                                             >

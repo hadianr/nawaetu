@@ -64,14 +64,14 @@ export const fastingTrackerID = {
     fastingStatsLogged: "Hari Tercatat",
     fastingStatsPendingQadha: "Qadha Tersisa",
     fastingStatsPendingFidyah: "Fidyah Tersisa",
-    fastingStatsAllClear: "✅ Semua kewajiban terpenuhi!",
-    fastingStatsViewDetail: "Lihat Detail Qadha →",
+    fastingStatsAllClear: "Semua kewajiban terpenuhi!",
+    fastingStatsViewDetail: "Lihat Detail Qadha",
 
     // ── Qadha Tracker ─────────────────────────────────────────────────────────
     fastingQadhaTitle: "Tracker Hutang Puasa",
     fastingQadhaSubtitle: "Pantau hutang puasa (qadha) Anda",
-    fastingQadhaEmpty: "Tidak ada qadha tersisa. Alhamdulillah! 🎉",
-    fastingQadhaMarkDone: "Sudah ✓",
+    fastingQadhaEmpty: "Tidak ada qadha tersisa. Alhamdulillah!",
+    fastingQadhaMarkDone: "Sudah",
     fastingQadhaMarkDoneToast: "Alhamdulillah! Qadha tercatat sudah ditunaikan.",
     fastingQadhaPendingBadge: "{n} hari tersisa",
     fastingQadhaConsequenceQadha: "Qadha",
@@ -82,7 +82,7 @@ export const fastingTrackerID = {
 
     // ── General ──────────────────────────────────────────────────────────────
     fastingFiqhDisclaimer: "Hukum yang ditampilkan berdasarkan ijma' ulama dan pendapat-pendapat terkemuka dari empat madzhab utama. Untuk kondisi personal yang kompleks, konsultasikan dengan ulama terpercaya.",
-    fastingToastSaved: "Tersimpan! Jazakallah khair 🌙",
+    fastingToastSaved: "Tersimpan! Jazakallah khair",
     fastingFemaleOnlyNote: "Status ini khusus untuk wanita",
     fastingNoDataForYear: "Belum ada catatan puasa untuk tahun {year}H",
 } as const;

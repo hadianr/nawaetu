@@ -196,31 +196,31 @@ export default function NotificationDebugPage() {
 
             {/* Error Log Display */}
             {errorLog.length > 0 && (
-                <div className="p-4 bg-red-900/30 border border-red-500 rounded-lg">
+                <div className="p-4 bg-[rgb(var(--color-danger))]/10 border border-[rgb(var(--color-danger))]/40 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-red-300">📋 Console Logs</h3>
+                        <h3 className="font-bold text-[rgb(var(--color-danger))]">Console Logs</h3>
                         <button
                             onClick={() => setErrorLog([])}
-                            className="text-xs bg-red-800 px-2 py-1 rounded"
+                            className="text-xs bg-[rgb(var(--color-danger))] text-[rgb(var(--color-danger-foreground))] px-2 py-1 rounded"
                         >
                             Clear
                         </button>
                     </div>
-                    <pre className="text-[10px] overflow-auto max-h-60 bg-black/50 p-2 rounded whitespace-pre-wrap">
+                    <pre className="text-[10px] overflow-auto max-h-60 bg-[rgb(var(--color-background))]/70 p-2 rounded whitespace-pre-wrap">
                         {errorLog.join('\n')}
                     </pre>
                 </div>
             )}
 
-            <div className="p-4 bg-gray-900 rounded-lg space-y-2">
+            <div className="p-4 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] rounded-lg space-y-2">
                 <p>
                     <strong>Permission:</strong>
-                    <span className={permission === 'granted' ? 'text-green-500' : permission === 'denied' ? 'text-red-500' : 'text-yellow-500'}>
+                    <span className={permission === 'granted' ? 'text-[rgb(var(--color-success))]' : permission === 'denied' ? 'text-[rgb(var(--color-danger))]' : 'text-[rgb(var(--color-warning))]'}>
                         {` ${permission.toUpperCase()}`}
                     </span>
                 </p>
                 {permission === 'denied' && (
-                    <div className="text-[11px] bg-red-900/40 p-2 rounded border border-red-800 text-red-200 mt-2">
+                    <div className="text-[11px] bg-[rgb(var(--color-danger))]/10 p-2 rounded border border-[rgb(var(--color-danger))]/30 text-[rgb(var(--color-danger))] mt-2">
                         <strong>Cara Memperbaiki:</strong><br />
                         1. Buka <b>Settings</b> iPhone.<br />
                         2. Pilih <b>Notifications</b>.<br />
@@ -230,13 +230,13 @@ export default function NotificationDebugPage() {
                 )}
                 <div className="break-all">
                     <strong>Token:</strong>
-                    <p className="font-mono text-xs mt-1 text-gray-400">
+                    <p className="font-mono text-xs mt-1 text-[rgb(var(--color-text-muted))]">
                         {token || "No token found"}
                     </p>
                 </div>
                 <button
                     onClick={handleGetToken}
-                    className="bg-blue-600 px-4 py-2 rounded text-sm text-white mt-2 w-full"
+                    className="bg-[rgb(var(--color-info))] px-4 py-2 rounded text-sm text-[rgb(var(--color-primary-foreground))] mt-2 w-full"
                     disabled={loading}
                 >
                     Request Permission & Get Token
@@ -262,27 +262,27 @@ export default function NotificationDebugPage() {
                             window.location.reload();
                         }
                     }}
-                    className="bg-red-900/50 border border-red-800 text-red-200 px-4 py-2 rounded text-sm mt-2 w-full"
+                    className="bg-[rgb(var(--color-danger))]/10 border border-[rgb(var(--color-danger))]/30 text-[rgb(var(--color-danger))] px-4 py-2 rounded text-sm mt-2 w-full"
                     disabled={loading}
                 >
-                    ⚠️ Reset / Delete Token (Fix Stuck State)
+                    Reset / Delete Token (Fix Stuck State)
                 </button>
             </div>
 
             {/* Last Message Log */}
             {lastMessage && (
-                <div className="p-4 bg-indigo-900/50 border border-indigo-500 rounded-lg">
-                    <h3 className="font-bold text-indigo-300 mb-2">🔔 Incoming Message Detected!</h3>
-                    <pre className="text-[10px] overflow-auto max-h-40 bg-black/50 p-2 rounded">
+                <div className="p-4 bg-[rgb(var(--color-info))]/10 border border-[rgb(var(--color-info))]/40 rounded-lg">
+                    <h3 className="font-bold text-[rgb(var(--color-info))] mb-2">Incoming Message Detected</h3>
+                    <pre className="text-[10px] overflow-auto max-h-40 bg-[rgb(var(--color-background))]/70 p-2 rounded">
                         {JSON.stringify(lastMessage, null, 2)}
                     </pre>
                 </div>
             )}
 
             <div className="space-y-4">
-                <div className="border p-4 rounded-lg border-gray-700">
+                <div className="border p-4 rounded-lg border-[rgb(var(--color-border))]">
                     <h2 className="font-semibold mb-2">1. OS-Level Check (Crucial)</h2>
-                    <p className="text-sm text-gray-400 mb-2">
+                    <p className="text-sm text-[rgb(var(--color-text-muted))] mb-2">
                         Tests if the OS allows ANY notification from this PWA.
                     </p>
                     <button
@@ -298,7 +298,7 @@ export default function NotificationDebugPage() {
                             try {
                                 const title = "Test Lokal OS";
                                 const options = {
-                                    body: "Jika Anda melihat tab ini, berarti Izin OS OK! 📲",
+                                    body: "Jika Anda melihat tab ini, berarti izin OS aktif.",
                                     icon: "/icon.png"
                                 };
 
@@ -320,42 +320,42 @@ export default function NotificationDebugPage() {
                                 alert("Error triggering native notif: " + (error instanceof Error ? error.message : String(error)));
                             }
                         }}
-                        className="bg-yellow-600 px-4 py-2 rounded text-sm text-white font-bold w-full"
+                        className="bg-[rgb(var(--color-warning))] px-4 py-2 rounded text-sm text-[rgb(var(--color-text-strong))] font-bold w-full"
                     >
                         Force Local Notification (No FCM)
                     </button>
-                    <p className="text-[10px] text-gray-500 mt-2">
+                    <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-2">
                         *If this fails, check iOS Settings &rarr; Notifications &rarr; Nawaetu.
                     </p>
                 </div>
 
-                <div className="border p-4 rounded-lg border-gray-700">
+                <div className="border p-4 rounded-lg border-[rgb(var(--color-border))]">
                     <h2 className="font-semibold mb-2">2. Check DB Status</h2>
                     <button
                         onClick={checkDbStatus}
-                        className="bg-green-600 px-4 py-2 rounded text-sm text-white disabled:opacity-50"
+                        className="bg-[rgb(var(--color-success))] px-4 py-2 rounded text-sm text-[rgb(var(--color-primary-foreground))] disabled:opacity-50"
                         disabled={!token || loading}
                     >
                         Check Token in DB
                     </button>
                     {dbStatus && (
-                        <pre className="mt-2 text-xs bg-black p-2 rounded overflow-auto">
+                        <pre className="mt-2 text-xs bg-[rgb(var(--color-background))] p-2 rounded overflow-auto">
                             {JSON.stringify(dbStatus, null, 2)}
                         </pre>
                     )}
                 </div>
 
-                <div className="border p-4 rounded-lg border-gray-700">
+                <div className="border p-4 rounded-lg border-[rgb(var(--color-border))]">
                     <h2 className="font-semibold mb-2">3. Force Test Notification</h2>
-                    <p className="text-sm text-gray-400 mb-2">
+                    <p className="text-sm text-[rgb(var(--color-text-muted))] mb-2">
                         Sends an immediate high-priority notification to a specific token.
                     </p>
 
                     <div className="mb-2">
-                        <label className="text-xs text-gray-400 block mb-1">Target Token (Optional - Paste from Phone):</label>
+                        <label className="text-xs text-[rgb(var(--color-text-muted))] block mb-1">Target Token (Optional - Paste from Phone):</label>
                         <input
                             type="text"
-                            className="w-full bg-black/50 border border-gray-600 rounded px-2 py-1 text-xs font-mono text-white mb-2"
+                            className="w-full bg-[rgb(var(--color-background))]/70 border border-[rgb(var(--color-border))] rounded px-2 py-1 text-xs font-mono text-[rgb(var(--color-text))] mb-2"
                             placeholder="Paste FCM token here to test another device..."
                             value={manualToken}
                             onChange={(e) => setManualToken(e.target.value)}
@@ -364,20 +364,20 @@ export default function NotificationDebugPage() {
 
                     <button
                         onClick={sendTestNotification}
-                        className="bg-red-600 px-4 py-2 rounded text-sm text-white disabled:opacity-50 w-full"
+                        className="bg-[rgb(var(--color-danger))] px-4 py-2 rounded text-sm text-[rgb(var(--color-danger-foreground))] disabled:opacity-50 w-full"
                         disabled={(!token && !manualToken) || loading}
                     >
                         {manualToken ? "Send to Manual Token" : "Send to This Device"}
                     </button>
                     {sendResult && (
-                        <pre className="mt-2 text-xs bg-black p-2 rounded overflow-auto">
+                        <pre className="mt-2 text-xs bg-[rgb(var(--color-background))] p-2 rounded overflow-auto">
                             {JSON.stringify(sendResult, null, 2)}
                         </pre>
                     )}
                 </div>
             </div>
 
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-[rgb(var(--color-text-muted))]">
                 <p>Note for iOS: Ensure you have added the app to Home Screen and opened it from there.</p>
             </div>
         </div>

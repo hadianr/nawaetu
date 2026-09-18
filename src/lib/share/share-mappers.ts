@@ -138,7 +138,7 @@ export function mapStreakAchievementToShareData(
         achievement.milestoneLabel,
         achievement.hasanahEarned ? `+${achievement.hasanahEarned} Hasanah` : undefined,
         achievement.level ? `Level ${achievement.level}` : undefined,
-    ].filter(Boolean).join(" • ");
+    ].filter(Boolean).join(" - ");
 
     return {
         kind: "achievement",
@@ -151,7 +151,7 @@ export function mapStreakAchievementToShareData(
             ? `${achievement.currentStreak} days of staying consistent in daily worship`
             : `${achievement.currentStreak} hari istiqamah dalam ibadah harian`,
         explanation: detail || (isEnglish ? `Longest streak: ${achievement.longestStreak} days` : `Streak terpanjang: ${achievement.longestStreak} hari`),
-        sourceText: isEnglish ? "Nawaetu • Istiqamah Streak" : "Nawaetu • Jejak Istiqamah",
+        sourceText: isEnglish ? "Nawaetu - Istiqamah Streak" : "Nawaetu - Jejak Istiqamah",
         displayName: achievement.displayName,
     };
 }

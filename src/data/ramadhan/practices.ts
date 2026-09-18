@@ -179,7 +179,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         id: 'iftar_ruthab',
         name: 'Kurma Basah (Ruthab)',
         name_en: 'Fresh Dates (Ruthab)',
-        icon: '🌴',
+        iconKey: 'sparkles',
         description: 'Sunnah utama Nabi SAW. Sangat cepat mengembalikan kadar gula darah yang turun setelah berpuasa.',
         description_en: 'The primary Sunnah. Rapidly restores blood sugar levels after fasting.',
         dalil: DATES_IFTAR_EVIDENCE
@@ -188,7 +188,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         id: 'iftar_tamr',
         name: 'Kurma Kering (Tamr)',
         name_en: 'Dried Dates (Tamr)',
-        icon: '🟤',
+        iconKey: 'star',
         description: 'Alternatif utama jika tidak ada Ruthab. Disunnahkan memakannya dalam jumlah ganjil (1, 3, atau 5).',
         description_en: 'Primary alternative to fresh dates. Recommended to eat an odd number (1, 3, or 5).',
         dalil: DATES_IFTAR_EVIDENCE
@@ -197,7 +197,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         id: 'iftar_water',
         name: 'Air Putih',
         name_en: 'Plain Water',
-        icon: '💧',
+        iconKey: 'droplets',
         description: 'Pelepas dahaga yang paling murni dan sehat jika tidak menemukan kurma sama sekali.',
         description_en: 'The purest thirst quencher if dates are completely unavailable.',
         dalil: WATER_IFTAR_EVIDENCE
@@ -206,7 +206,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         id: 'iftar_milk',
         name: 'Susu',
         name_en: 'Milk',
-        icon: '🥛',
+        iconKey: 'droplets',
         description: 'Minuman yang mengenyangkan sekaligus menghilangkan dahaga, sering dikonsumsi Nabi SAW.',
         description_en: 'A filling drink that quenches thirst, often consumed by the Prophet SAW.',
         dalil: MILK_HONEY_EVIDENCE
@@ -218,7 +218,7 @@ export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
         id: 'sahur_tamr',
         name: 'Kurma (Tamr)',
         name_en: 'Dates',
-        icon: '🟤',
+        iconKey: 'star',
         description: 'Sebaik-baik makanan sahur. Memberikan serat dan energi lambat (slow-release) agar kenyang lebih lama.',
         description_en: 'The best suhoor food. Provides fiber and slow-release energy to stay full longer.',
         dalil: DATES_SUHOOR_EVIDENCE
@@ -227,7 +227,7 @@ export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
         id: 'sahur_water',
         name: 'Air Putih',
         name_en: 'Water',
-        icon: '💧',
+        iconKey: 'droplets',
         description: 'Penting untuk hidrasi. Nabi SAW tetap sahur meskipun hanya dengan seteguk air untuk mengejar berkah.',
         description_en: 'Essential for hydration. The Prophet (ﷺ) kept suhoor even with only a sip of water for the sake of blessing.',
         dalil: WATER_SUHOOR_EVIDENCE
@@ -236,7 +236,7 @@ export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
         id: 'sahur_honey',
         name: 'Madu murni',
         name_en: 'Pure Honey',
-        icon: '🍯',
+        iconKey: 'heart-handshake',
         description: 'Sumber penyembuh dan energi instan. Baik dicampur dengan air hangat saat sahur.',
         description_en: 'A source of healing and instant energy. Great when mixed with warm water for suhoor.',
         dalil: MILK_HONEY_EVIDENCE
@@ -245,7 +245,7 @@ export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
         id: 'sahur_milk',
         name: 'Susu',
         name_en: 'Milk',
-        icon: '🥛',
+        iconKey: 'droplets',
         description: 'Memberikan rasa kenyang lebih lama dan kalsium yang baik untuk energi saat berpuasa.',
         description_en: 'Provides long-lasting satiety and calcium for energy during fasting.',
         dalil: MILK_HONEY_EVIDENCE
@@ -353,7 +353,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: 'Ramadhan Fasting',
         description: 'Menahan makan, minum, dan hal yang membatalkan dari fajar hingga maghrib',
         description_en: 'Abstaining from food, drink, and things that invalidate fasting from dawn to dusk',
-        icon: '🌙',
+        iconKey: 'moon',
         intention: RAMADHAN_FASTING_INTENTION,
         dalil: FASTING_EVIDENCE,
         tips: [
@@ -373,7 +373,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: 'Tarawih Prayer',
         description: 'Sholat sunnah malam Ramadhan, 8 atau 20 rakaat',
         description_en: 'Sunnah night prayer during Ramadhan, 8 or 20 units (rak\'ahs)',
-        icon: '🕌',
+        iconKey: 'landmark',
         intention: TARAWEH_INTENTION,
         dalil: TARAWEH_EVIDENCE,
         tips: [
@@ -393,7 +393,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: 'Quran Recitation',
         description: 'Membaca dan mempelajari Al-Quran, target khatam 30 juz',
         description_en: 'Reciting and studying the Quran, aiming to finish all 30 parts (juz)',
-        icon: '📖',
+        iconKey: 'book',
         intention: QURAN_RECITATION_INTENTION,
         dalil: QURAN_RECITATION_EVIDENCE,
         tips: [
@@ -413,7 +413,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: 'Abundant Charity',
         description: 'Sedekah di bulan Ramadhan pahalanya berlipat ganda',
         description_en: 'Giving charity in Ramadhan yields manifold rewards',
-        icon: '💝',
+        iconKey: 'heart-handshake',
         dalil: RAMADHAN_CHARITY_EVIDENCE,
         tips: [
             'Niatkan setiap malam sebelum tidur',
@@ -432,7 +432,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: "I'tikaf in the Mosque",
         description: "Berdiam diri di masjid untuk beribadah, terutama di 10 malam terakhir",
         description_en: "Staying in the mosque for worship, especially in the last 10 nights",
-        icon: '🕌',
+        iconKey: 'landmark',
         intention: ITIKAF_INTENTION,
         dalil: ITIKAF_10_NIGHTS_EVIDENCE,
         tips: [
@@ -452,7 +452,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         title_en: 'Seeking Lailatul Qadar',
         description: 'Malam yang lebih baik dari 1000 bulan',
         description_en: 'A night better than 1000 months',
-        icon: '✨',
+        iconKey: 'sparkles',
         intention: LAILATUL_QADR_INTENTION,
         dalil: ODD_NIGHTS_EVIDENCE,
         tips: [

@@ -12,11 +12,12 @@
  */
 
 import type { FastingConsequence, FastingStatus, Madzhab } from "./types";
+import type { AppIconName } from "@/lib/icon-names";
 
 // ─── Status Metadata ────────────────────────────────────────────────────────
 
 export interface FastingStatusMeta {
-    icon: string;
+    iconKey: AppIconName;
     color: string; // CSS class fragment
     // which madzhabs show this status as requiring madzhab selection
     requiresMadzhab: boolean;
@@ -28,7 +29,7 @@ export interface FastingStatusMeta {
 
 export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
     fasting: {
-        icon: "✅",
+        iconKey: "shield-check",
         color: "primary",
         requiresMadzhab: false,
         femaleOnly: false,
@@ -36,7 +37,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "O you who have believed, decreed upon you is fasting as it was decreed upon those before you that you may become righteous.",
     },
     not_fasting: {
-        icon: "❌",
+        iconKey: "warning",
         color: "destructive",
         requiresMadzhab: false,
         femaleOnly: false,
@@ -44,7 +45,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Fasting has been obligated upon every Muslim who is able. Deliberately breaking the fast without a valid excuse incurs sin and requires making it up (qadha).",
     },
     sick: {
-        icon: "🤒",
+        iconKey: "help",
         color: "amber",
         requiresMadzhab: false,
         femaleOnly: false,
@@ -52,7 +53,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "And whoever is ill or on a journey — then an equal number of days [are to be made up]. Allah intends for you ease and does not intend for you hardship.",
     },
     traveling: {
-        icon: "✈️",
+        iconKey: "compass",
         color: "blue",
         requiresMadzhab: false,
         femaleOnly: false,
@@ -60,7 +61,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "And whoever is ill or on a journey — then an equal number of days [are to be made up]. Allah intends for you ease and does not intend for you hardship.",
     },
     menstruation: {
-        icon: "🌸",
+        iconKey: "sparkles",
         color: "rose",
         requiresMadzhab: false,
         femaleOnly: true,
@@ -68,7 +69,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Is it not the case that a woman, when she is menstruating, does not pray and does not fast? That is the deficiency in her religion. (The Prophet ﷺ said this explaining it as a dispensation, not a deficiency in her person.)",
     },
     postpartum: {
-        icon: "🌺",
+        iconKey: "sparkles",
         color: "pink",
         requiresMadzhab: false,
         femaleOnly: true,
@@ -76,7 +77,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Scholars are unanimous that a woman in postpartum bleeding (nifas) is treated the same as a menstruating woman: she does not fast during that period and must make up the days she missed.",
     },
     pregnant: {
-        icon: "🤰",
+        iconKey: "hands",
         color: "purple",
         requiresMadzhab: true,
         femaleOnly: true,
@@ -84,7 +85,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Allah has lifted from the traveller half the prayer, and from the pregnant woman and the nursing mother the fast. (This hadith provides the basis for the dispensation; scholars differ on whether qadha, fidyah, or both are required.)",
     },
     breastfeeding: {
-        icon: "🤱",
+        iconKey: "hands",
         color: "violet",
         requiresMadzhab: true,
         femaleOnly: true,
@@ -92,7 +93,7 @@ export const FASTING_STATUS_META: Record<FastingStatus, FastingStatusMeta> = {
         dalilTranslation: "Allah has lifted from the traveller half the prayer, and from the pregnant woman and the nursing mother the fast. (This hadith provides the basis for the dispensation; scholars differ on whether qadha, fidyah, or both are required.)",
     },
     elderly: {
-        icon: "👴",
+        iconKey: "help",
         color: "slate",
         requiresMadzhab: false,
         femaleOnly: false,

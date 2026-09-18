@@ -27,7 +27,6 @@ interface ChatInputAreaProps {
     setInput: (val: string) => void;
     handleSend: (val?: string) => void;
     isTyping: boolean;
-    isDaylight: boolean;
     dailyCount: number;
     DAILY_LIMIT: number;
     setShowLimitBlocking: (show: boolean) => void;
@@ -40,7 +39,6 @@ export function ChatInputArea({
     setInput,
     handleSend,
     isTyping,
-    isDaylight,
     dailyCount,
     DAILY_LIMIT,
     setShowLimitBlocking,
@@ -49,33 +47,33 @@ export function ChatInputArea({
     return (
         <div className={cn(
             "fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t pb-6 md:pb-8 pt-4 z-30",
-            isDaylight ? "bg-white/95 border-slate-200" : "bg-black/95 border-white/10"
+            "bg-[rgb(var(--color-canvas))]/95 border-[rgb(var(--color-border))]"
         )}>
             <div className="max-w-md mx-auto px-4 space-y-3">
                 {/* Limit Reached Card */}
                 {(dailyCount >= DAILY_LIMIT) ? (
                     <div className={cn(
                         "backdrop-blur-md rounded-2xl p-4 border flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-2",
-                        isDaylight ? "bg-white border-slate-200 shadow-sm" : "bg-slate-800/90 border-red-500/10"
+                        "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-danger))]/20 shadow-[var(--shadow-card)]"
                     )}>
                         {/* Icon & Text */}
                         <div className="flex items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
                             <div className={cn(
                                 "w-10 h-10 rounded-full flex items-center justify-center shrink-0 border",
-                                isDaylight ? "bg-red-50 border-red-100" : "bg-red-500/10 border-red-500/20"
+                                "bg-[rgb(var(--color-danger))]/10 border-[rgb(var(--color-danger))]/20"
                             )}>
-                                <Lock size={16} className="text-red-500" />
+                                <Lock size={16} className="text-[rgb(var(--color-danger))]" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className={cn(
                                     "text-sm font-semibold truncate",
-                                    isDaylight ? "text-slate-900" : "text-white"
+                                    "text-[rgb(var(--color-text-strong))]"
                                 )}>
                                     {t.tanyaLimitReached || "Kuota Habis"}
                                 </p>
                                 <p className={cn(
                                     "text-xs leading-tight",
-                                    isDaylight ? "text-slate-500" : "text-slate-400"
+                                    "text-[rgb(var(--color-text-muted))]"
                                 )}>
                                     {t.tanyaUpgradeHint || "Tunggu besok atau Infaq untuk 5x kuota."}
                                 </p>
@@ -86,13 +84,10 @@ export function ChatInputArea({
                         <button
                             onClick={() => setShowLimitBlocking(true)}
                             className={cn(
-                                "text-white text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0",
-                                isDaylight
-                                    ? "bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20"
-                                    : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                                "text-[rgb(var(--color-primary-foreground))] text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
                             )}
                         >
-                            <Sparkles size={14} className="text-yellow-200" />
+                            <Sparkles size={14} className="text-[rgb(var(--color-accent-foreground))]" />
                             {t.tanyaInfaqButton || "Berinfaq"}
                         </button>
                     </div>
@@ -101,9 +96,7 @@ export function ChatInputArea({
                         onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                         className={cn(
                             "flex items-end gap-2 border rounded-3xl p-1.5 pl-4 transition-all",
-                            isDaylight
-                                ? "bg-slate-50 border-slate-200 focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/50"
-                                : "bg-white/5 border-white/10 focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/50"
+                            "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] focus-within:border-[rgb(var(--color-primary))]/50 focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/50"
                         )}
                     >
                         <input
@@ -115,7 +108,7 @@ export function ChatInputArea({
                             autoCorrect="off"
                             className={cn(
                                 "flex-1 bg-transparent border-none outline-none text-[16px] sm:text-sm py-2.5 min-h-[44px]",
-                                isDaylight ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-white/30"
+                                "text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))]"
                             )}
                             disabled={isTyping}
                         />
@@ -123,10 +116,7 @@ export function ChatInputArea({
                             type="submit"
                             disabled={!input.trim() || isTyping}
                             className={cn(
-                                "w-10 h-10 rounded-full text-white flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all",
-                                isDaylight
-                                    ? "bg-emerald-500 shadow-md shadow-emerald-500/20"
-                                    : "bg-[rgb(var(--color-primary))] shadow-lg shadow-[rgb(var(--color-primary))]/20"
+                                "w-10 h-10 rounded-full text-[rgb(var(--color-primary-foreground))] flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                             )}
                         >
                             <Send className="w-4 h-4 ml-0.5" />

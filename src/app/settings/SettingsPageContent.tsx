@@ -68,7 +68,6 @@ export default function SettingsPageContent() {
     const { data: session, status, update } = useSession(); // Add update
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimesContext();
     const { currentTheme, setTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
@@ -279,7 +278,6 @@ export default function SettingsPageContent() {
                     status={status}
                     session={session}
                     hasCachedProfile={hasCachedProfile}
-                    isDaylight={isDaylight}
                     isMuhsinin={isMuhsinin}
                     userAvatar={userAvatar}
                     userName={userName}
@@ -290,10 +288,7 @@ export default function SettingsPageContent() {
 
                 {/* Statistics & Analytics Access Card */}
                 <div className={cn(
-                    "border rounded-2xl p-4 transition-all",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/30 shadow-[var(--shadow-card)]"
-                        : "bg-[rgb(var(--color-surface))]/70 border-[rgb(var(--color-border))]/20 hover:border-[rgb(var(--color-primary))]/30"
+                    "border rounded-2xl p-4 transition-all bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] hover:border-[rgb(var(--color-primary))]/30"
                 )}>
                     <Link
                         href="/stats"
@@ -302,9 +297,7 @@ export default function SettingsPageContent() {
                         <div className="flex items-center gap-3">
                             <div className={cn(
                                 "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shrink-0",
-                                isDaylight
-                                    ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-dark))]"
-                                    : "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))]"
+                                "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
                             )}>
                                 <BarChart3 className="w-5 h-5" />
                             </div>
@@ -460,7 +453,6 @@ export default function SettingsPageContent() {
                 {/* Audio Configuration Card */}
                 <AudioCard
                     t={t}
-                    isDaylight={isDaylight}
                     muadzin={muadzin}
                     onMuadzinChange={handleMuadzinChange}
                 />
@@ -486,10 +478,7 @@ export default function SettingsPageContent() {
                 {/* Support Card (Persistent) - Swapped Back Up */}
 
                 <div className={cn(
-                    "border rounded-2xl p-4 flex items-center justify-between transition-all",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
-                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                    "border rounded-2xl p-4 flex items-center justify-between transition-all bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
                 )}>
                     <div>
                         <div className="flex items-center gap-2 mb-1">

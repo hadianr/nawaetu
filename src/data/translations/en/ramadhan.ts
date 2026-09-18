@@ -23,9 +23,9 @@ export const ramadhanEN = {
     ramadhanDay1: "Day 1",
     ramadhanDay30: "Day 30",
     ramadhanCompleted: "completed",
-    ramadhanPeriod1: "🌟 First 10 Days — Full of Mercy",
-    ramadhanPeriod2: "🙏 Second 10 Days — Full of Forgiveness",
-    ramadhanPeriod3: "✨ Last 10 Days — Freedom from Hellfire",
+    ramadhanPeriod1: "First 10 Days — Full of Mercy",
+    ramadhanPeriod2: "Second 10 Days — Full of Forgiveness",
+    ramadhanPeriod3: "Last 10 Days - Freedom from Hellfire",
 
     // Hero Card
     heroRamadhanLabel: "Ramadhan",
@@ -33,9 +33,9 @@ export const ramadhanEN = {
     heroDay1: "Day 1",
     heroDay30: "Day 30",
     heroCompleted: "completed",
-    heroPeriod1: "🌟 First 10 Days — Full of Mercy",
-    heroPeriod2: "🙏 Second 10 Days — Full of Forgiveness",
-    heroPeriod3: "✨ Last 10 Days — Freedom from Hellfire",
+    heroPeriod1: "First 10 Days — Full of Mercy",
+    heroPeriod2: "Second 10 Days — Full of Forgiveness",
+    heroPeriod3: "Last 10 Days - Freedom from Hellfire",
 
     // Schedule Card
     scheduleTodayTitle: "Today's Schedule",
@@ -43,7 +43,7 @@ export const ramadhanEN = {
     scheduleFajrIn: "Fajr in",
     scheduleIftarIn: "Iftar in",
     scheduleMaghribIn: "Maghrib in",
-    scheduleAlreadyIftar: "Alhamdulillah, already broken fast 🌙",
+    scheduleAlreadyIftar: "Alhamdulillah, already broken fast",
     scheduleImsak: "Imsak",
     scheduleFajr: "Fajr",
     scheduleMaghrib: "Maghrib",
@@ -64,18 +64,18 @@ export const ramadhanEN = {
     // Khataman Progress
     khatamanTitle: "Quran Completion",
     khatamanOf30Juz: "/ 30 Juz",
-    khatamanOnTrack: "✓ On track",
-    khatamanCatchUp: "⚡ Catch up!",
+    khatamanOnTrack: "On track",
+    khatamanCatchUp: "Catch up!",
     khatamanCompleted: "completed",
     khatamanCurrentJuz: "Current Juz",
-    khatamanEstimateFinish: "📅 Estimated completion: day {day} of Ramadhan",
-    khatamanAlhamdulillah: "🎉 Alhamdulillah, Completed!",
+    khatamanEstimateFinish: "Estimated completion: day {day} of Ramadhan",
+    khatamanAlhamdulillah: "Alhamdulillah, Completed!",
 
     // Lailatul Qadr Card
     lailatulQadrTitle: "Lailatul Qadr",
-    lailatulQadrTonightPossibility: "⭐ Tonight might be Lailatul Qadr!",
-    lailatulQadrActiveTonight: "🌟 Tonight is night {night}!",
-    lailatulQadrAllPassed: "May our worship be accepted by Allah SWT 🤲",
+    lailatulQadrTonightPossibility: "Tonight might be Lailatul Qadr!",
+    lailatulQadrActiveTonight: "Tonight is night {night}!",
+    lailatulQadrAllPassed: "May our worship be accepted by Allah SWT",
     lailatulQadrTonightMessage: "Increase your prayers, dhikr, and worship tonight!",
     lailatulQadrVerse: "\"Better than 1000 months\" \u2014 QS. Al-Qadr: 3",
     lailatulQadrNightsLeft: "nights left",
@@ -95,7 +95,7 @@ export const ramadhanEN = {
     // Practices List
     practicesTitle: "Ramadhan Deeds",
     practicesTapHint: "Tap to view intention & evidence",
-    practicesTipsLabel: "💡 Deed Tips",
+    practicesTipsLabel: "Deed Tips",
 
     // Guide Card
     guideTitle: "Ramadhan Fasting Guide",
@@ -114,7 +114,7 @@ export const ramadhanEN = {
     faqModalTitle: "Fasting FAQ",
     faqModalSubtitle: "Frequently asked questions about fasting",
     faqEvidenceLabel: "Evidence",
-    faqDisclaimerTitle: "⚠️ Important Note",
+    faqDisclaimerTitle: "Important Note",
     faqDisclaimer: "For complex fiqh issues or special conditions, please consult with a trusted scholar or imam in your area.",
 
     // Intention Card

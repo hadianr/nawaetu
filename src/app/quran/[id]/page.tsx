@@ -25,7 +25,7 @@ import VerseListSkeleton from "@/components/skeleton/VerseListSkeleton";
 export const revalidate = 604800;
 
 export async function generateStaticParams() {
-    // Pre-build all 114 surahs at build time → zero CPU cost per request
+    // Pre-build all 114 surahs at build time for zero CPU cost per request
     return Array.from({ length: 114 }, (_, i) => ({ id: String(i + 1) }));
 }
 

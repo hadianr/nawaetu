@@ -31,7 +31,6 @@ interface AudioPlayerBarProps {
     loopMode: LoopMode;
     currentPlayingIndex: number;
     totalVerses: number;
-    isDaylight: boolean;
     locale: string;
     onLoopModeChange: (mode: LoopMode) => void;
     onPrev: () => void;
@@ -46,7 +45,6 @@ export default function AudioPlayerBar({
     loopMode,
     currentPlayingIndex,
     totalVerses,
-    isDaylight,
     onLoopModeChange,
     onPrev,
     onNext,
@@ -59,16 +57,16 @@ export default function AudioPlayerBar({
 
     return (
         <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none flex flex-col items-center gap-3 px-4">
-            <div className="pointer-events-auto bg-[#0f172a]/95 backdrop-blur-xl border border-white/10 rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-2xl animate-in slide-in-from-bottom-5">
+            <div className="pointer-events-auto bg-[rgb(var(--color-surface))]/95 backdrop-blur-xl border border-[rgb(var(--color-border))] rounded-full p-2 pl-6 pr-2 flex items-center gap-4 shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-5">
                 <div className="flex flex-col">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                    <span className="text-[10px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
                         {t.quranNowPlaying || 'Now Playing'}
                     </span>
-                    <span className="text-xs font-bold text-white">
+                    <span className="text-xs font-bold text-[rgb(var(--color-text-strong))]">
                         {t.quranVerse || 'Verse'} {toArabicNumber(parseInt((playingVerseKey || '1:1').split(':')[1]))}
                     </span>
                 </div>
-                <div className="h-8 w-px bg-white/10" />
+                <div className="h-8 w-px bg-[rgb(var(--color-border))]" />
                 <div className="flex items-center gap-1">
                     {onScrollToPlaying && (
                         <Tooltip>
@@ -77,7 +75,7 @@ export default function AudioPlayerBar({
                                     onClick={onScrollToPlaying}
                                     size="icon"
                                     variant="ghost"
-                                    className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 mr-1"
+                                    className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10 mr-1"
                                 >
                                     <Target className="h-4 w-4" />
                                 </Button>
@@ -97,7 +95,7 @@ export default function AudioPlayerBar({
                                 }}
                                 size="icon"
                                 variant="ghost"
-                                className={`h-8 w-8 rounded-full hover:bg-white/10 ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10' : 'text-slate-400'}`}
+                                className={`h-8 w-8 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] ${loopMode !== 'off' ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10' : 'text-[rgb(var(--color-text-muted))]'}`}
                             >
                                 {loopMode === 'infinity' ? <InfinityIcon className="h-4 w-4" /> :
                                     loopMode === 'off' ? <Repeat className="h-4 w-4" /> :
@@ -113,7 +111,7 @@ export default function AudioPlayerBar({
                     <div className="flex items-center gap-1">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button variant="ghost" size="icon" onClick={onPrev} disabled={currentPlayingIndex <= 0} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
+                                <Button variant="ghost" size="icon" onClick={onPrev} disabled={currentPlayingIndex <= 0} className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))] disabled:opacity-30">
                                     <ChevronLeft className="h-4 w-4" />
                                 </Button>
                             </TooltipTrigger>
@@ -130,9 +128,7 @@ export default function AudioPlayerBar({
                                     onClick={onPlayPause}
                                     className={cn(
                                         "h-10 w-10 rounded-full transition-all flex items-center justify-center",
-                                        isDaylight
-                                            ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-200"
-                                            : "bg-[rgb(var(--color-primary))] text-white hover:bg-[rgb(var(--color-primary-light))] shadow-lg shadow-[rgb(var(--color-primary))]/30"
+                                        "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
                                     )}
                                 >
                                     {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
@@ -145,7 +141,7 @@ export default function AudioPlayerBar({
 
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button variant="ghost" size="icon" onClick={onNext} disabled={currentPlayingIndex >= totalVerses - 1} className="h-8 w-8 rounded-full text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-30">
+                                <Button variant="ghost" size="icon" onClick={onNext} disabled={currentPlayingIndex >= totalVerses - 1} className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))] disabled:opacity-30">
                                     <ChevronRight className="h-4 w-4" />
                                 </Button>
                             </TooltipTrigger>

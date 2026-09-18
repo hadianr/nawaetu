@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { getHijriEvents, type HijriEventId } from "@/data/hijri-events";
 import {
     useHijriCalendar,
@@ -45,9 +44,7 @@ const EVENT_LABELS: Record<HijriEventId, string> = {
 
 export default function HijriCalendarPageContent({ initialView = "month" }: HijriCalendarPageContentProps) {
     const { locale, t } = useLocale();
-    const { currentTheme } = useTheme();
     const { data: prayerData } = usePrayerTimesContext();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [selectedDay, setSelectedDay] = useState<HijriCalendarDay | null>(null);
     const {
         calendarData,
@@ -100,14 +97,12 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
         ? calendarData[0].gregorianWeekday
         : 0;
     const showRamadanView = initialView === "ramadan" || prayerData?.hijriMonthNumber === 9;
-    const surface = isDaylight
-        ? "border-slate-200 bg-white text-slate-900"
-        : "border-white/10 bg-white/5 text-white";
+    const surface = "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))] shadow-[var(--shadow-card)]";
 
     return (
         <div className={cn(
             "min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans sm:px-6 sm:py-6",
-            isDaylight ? "text-slate-900" : "text-white",
+            "text-[rgb(var(--color-text))]",
         )}>
             <main className="mx-auto w-full max-w-5xl">
                 <header className="mb-4 grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-2 sm:flex sm:items-start sm:gap-4">
@@ -116,7 +111,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         aria-label={t.hijriCalendarBackHome}
                         className={cn(
                             "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                            isDaylight ? "border-slate-200 bg-white hover:bg-slate-50" : "border-white/10 bg-white/5 hover:bg-white/10",
+                            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <ArrowLeft className="h-5 w-5" />
@@ -131,7 +126,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                 </span>
                             )}
                         </div>
-                        <p className={cn("mt-0.5 flex items-center gap-1 truncate text-[11px] sm:mt-1 sm:text-xs", isDaylight ? "text-slate-500" : "text-white/50")}>
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-[11px] text-[rgb(var(--color-text-muted))] sm:mt-1 sm:text-xs">
                             <MapPin className="h-3 w-3 shrink-0" />
                             {prayerData?.locationName || t.hijriCalendarYourLocation}
                         </p>
@@ -141,7 +136,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         aria-label={t.hijriCalendarAdjustDate}
                         className={cn(
                             "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-[rgb(var(--color-primary))] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:w-auto sm:border-transparent sm:px-2 sm:text-xs sm:font-semibold sm:hover:underline",
-                            isDaylight ? "border-slate-200 bg-white hover:bg-slate-50" : "border-white/10 bg-white/5 hover:bg-white/10 sm:bg-transparent",
+                            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 sm:border-transparent sm:bg-transparent",
                         )}
                     >
                         <Settings2 className="h-4 w-4 sm:hidden" />
@@ -156,7 +151,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                             onClick={() => handleView("month")}
                             className={cn(
                                 "min-h-11 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                                viewMode === "month" ? "bg-[rgb(var(--color-primary))] text-white" : isDaylight ? "text-slate-500 hover:bg-slate-100" : "text-white/50 hover:bg-white/5",
+                                viewMode === "month" ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]" : "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10",
                             )}
                         >
                             {t.hijriCalendarMonthView}
@@ -166,7 +161,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                             onClick={() => handleView("ramadan")}
                             className={cn(
                                 "flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                                viewMode === "ramadan" ? "bg-[rgb(var(--color-primary))] text-white" : isDaylight ? "text-slate-500 hover:bg-slate-100" : "text-white/50 hover:bg-white/5",
+                                viewMode === "ramadan" ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]" : "text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10",
                             )}
                         >
                             <Moon className="h-3.5 w-3.5" />
@@ -178,12 +173,12 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                 {loading ? (
                     <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-3xl border", surface)}>
                         <Loader2 className="h-8 w-8 animate-spin text-[rgb(var(--color-primary))]" />
-                        <p className={cn("text-sm", isDaylight ? "text-slate-500" : "text-white/50")}>{t.hijriCalendarLoading}</p>
+                        <p className="text-sm text-[rgb(var(--color-text-muted))]">{t.hijriCalendarLoading}</p>
                     </div>
                 ) : error ? (
                     <div className={cn("flex min-h-96 flex-col items-center justify-center gap-3 rounded-3xl border px-6 text-center", surface)}>
-                        <AlertTriangle className="h-7 w-7 text-amber-500" />
-                        <p className={cn("text-sm", isDaylight ? "text-slate-600" : "text-white/60")}>
+                        <AlertTriangle className="h-7 w-7 text-[rgb(var(--color-warning))]" />
+                        <p className="text-sm text-[rgb(var(--color-text-muted))]">
                             {error === "location_required" ? t.hijriCalendarLocationRequired : t.hijriCalendarLoadFailed}
                         </p>
                         <button type="button" onClick={() => void fetchCalendar(viewMode)} className="min-h-11 text-sm font-semibold text-[rgb(var(--color-primary))] underline">
@@ -194,16 +189,16 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                     <div className="grid gap-4 md:grid-cols-[minmax(0,1.6fr)_minmax(260px,1fr)] md:items-start">
                         <section className={cn("rounded-3xl border p-3 sm:p-5", surface)}>
                             <div className="mb-3 flex items-center justify-between">
-                                <button type="button" onClick={() => void navigateMonth(-1)} aria-label={t.hijriCalendarPreviousMonth} className={cn("flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]", isDaylight ? "hover:bg-slate-100" : "hover:bg-white/10")}>
+                                <button type="button" onClick={() => void navigateMonth(-1)} aria-label={t.hijriCalendarPreviousMonth} className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-[rgb(var(--color-primary))]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
                                     <ChevronLeft className="h-5 w-5" />
                                 </button>
                                 <strong className="text-sm sm:text-base">{monthTitle}</strong>
-                                <button type="button" onClick={() => void navigateMonth(1)} aria-label={t.hijriCalendarNextMonth} className={cn("flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]", isDaylight ? "hover:bg-slate-100" : "hover:bg-white/10")}>
+                                <button type="button" onClick={() => void navigateMonth(1)} aria-label={t.hijriCalendarNextMonth} className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-[rgb(var(--color-primary))]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
                                     <ChevronRight className="h-5 w-5" />
                                 </button>
                             </div>
                             <div className="grid grid-cols-7 gap-1" role="grid" aria-label={monthTitle}>
-                                {weekdays.map(day => <div key={day} className={cn("py-1 text-center text-[9px] font-bold uppercase sm:text-[10px]", isDaylight ? "text-slate-400" : "text-white/35")}>{day}</div>)}
+                                {weekdays.map(day => <div key={day} className="py-1 text-center text-[9px] font-bold uppercase text-[rgb(var(--color-text-muted))] sm:text-[10px]">{day}</div>)}
                                 {Array.from({ length: firstWeekday }, (_, index) => <div key={`empty-${index}`} />)}
                                 {calendarData.map(day => {
                                     const events = getHijriEvents({ hijriDay: day.hijriDay, hijriMonth: day.hijriMonthNumber, gregorianWeekday: day.gregorianWeekday });
@@ -220,40 +215,40 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                                             aria-current={day.isToday ? "date" : undefined}
                                             className={cn(
                                                 "relative flex min-h-14 flex-col items-center justify-center rounded-xl border text-center transition-colors focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                                                selected ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-white" : day.isToday ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10" : isDaylight ? "border-slate-100 hover:bg-slate-50" : "border-white/5 hover:bg-white/5",
+                                                selected ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]" : day.isToday ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10" : "border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10",
                                             )}
                                         >
                                             <span className="text-sm font-bold">{day.hijriDay}</span>
-                                            <span className={cn("text-[9px]", selected ? "text-white/75" : isDaylight ? "text-slate-400" : "text-white/35")}>{day.gregorianDay}</span>
-                                            {events.length > 0 && <span className={cn("absolute bottom-1 h-1.5 w-1.5 rounded-full", prohibited ? "bg-red-500" : selected ? "bg-white" : "bg-[rgb(var(--color-accent))]")} />}
+                                            <span className={cn("text-[9px]", selected ? "text-[rgb(var(--color-primary-foreground))]/75" : "text-[rgb(var(--color-text-muted))]")}>{day.gregorianDay}</span>
+                                            {events.length > 0 && <span className={cn("absolute bottom-1 h-1.5 w-1.5 rounded-full", prohibited ? "bg-[rgb(var(--color-danger))]" : selected ? "bg-[rgb(var(--color-primary-foreground))]" : "bg-[rgb(var(--color-accent))]")} />}
                                         </button>
                                     );
                                 })}
                             </div>
-                            <div className={cn("mt-3 flex flex-wrap gap-3 text-[10px]", isDaylight ? "text-slate-500" : "text-white/45")}>
+                            <div className="mt-3 flex flex-wrap gap-3 text-[10px] text-[rgb(var(--color-text-muted))]">
                                 <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--color-accent))]" />{t.hijriCalendarRecommended}</span>
-                                <span className="flex items-center gap-1.5"><AlertTriangle className="h-3 w-3 text-red-500" />{t.hijriCalendarProhibited}</span>
+                                <span className="flex items-center gap-1.5"><AlertTriangle className="h-3 w-3 text-[rgb(var(--color-danger))]" />{t.hijriCalendarProhibited}</span>
                             </div>
                         </section>
 
                         {selectedDay && (
                             <section className={cn("rounded-3xl border p-4 md:sticky md:top-4", surface)} aria-live="polite">
-                                <p className={cn("text-[10px] font-bold uppercase tracking-wider", isDaylight ? "text-slate-400" : "text-white/35")}>{t.hijriCalendarSelectedDate}</p>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.hijriCalendarSelectedDate}</p>
                                 <p className="mt-1 text-base font-bold">
                                     {selectedDay.hijriDay} {getHijriMonthName(selectedDay.hijriMonthNumber, locale)} {selectedDay.hijriYear}H
                                     {selectedDay.isToday && <span className="ml-2 text-xs text-[rgb(var(--color-primary))]">{t.hijriCalendarToday}</span>}
                                 </p>
-                                <p className={cn("text-xs", isDaylight ? "text-slate-500" : "text-white/50")}>{dateFormatter.format(new Date(`${selectedDay.gregorianIso}T12:00:00`))}</p>
+                                <p className="text-xs text-[rgb(var(--color-text-muted))]">{dateFormatter.format(new Date(`${selectedDay.gregorianIso}T12:00:00`))}</p>
                                 <div className="mt-4 space-y-2">
                                     {selectedEvents.length ? selectedEvents.map(event => (
                                         <div key={event.id} className={cn(
                                             "flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-medium",
-                                            event.kind === "prohibited" ? isDaylight ? "bg-red-50 text-red-700" : "bg-red-500/10 text-red-300" : isDaylight ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-dark))]" : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))]",
+                                            event.kind === "prohibited" ? "bg-[rgb(var(--color-danger))]/10 text-[rgb(var(--color-danger))]" : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]",
                                         )}>
                                             {event.kind === "prohibited" ? <AlertTriangle className="h-4 w-4 shrink-0" /> : <Moon className="h-4 w-4 shrink-0" />}
                                             {getTranslationText(t, EVENT_LABELS[event.id], event.id)}
                                         </div>
-                                    )) : <p className={cn("text-xs", isDaylight ? "text-slate-400" : "text-white/35")}>{t.hijriCalendarNoEvents}</p>}
+                                    )) : <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.hijriCalendarNoEvents}</p>}
                                 </div>
                             </section>
                         )}

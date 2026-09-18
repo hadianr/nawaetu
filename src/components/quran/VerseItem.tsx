@@ -22,6 +22,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { Play, Bookmark, EyeOff, Eye, Share2, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { type TafsirContent } from "@/lib/quran/tafsir-api";
 import { useLocale } from "@/context/LocaleContext";
 import {
@@ -38,7 +39,6 @@ interface VerseItemProps {
     isPlayingVerse: boolean;
     isPlaying: boolean;
     isBookmarked: boolean;
-    isDaylight: boolean;
     scriptType: 'tajweed' | 'indopak';
     fontSize: 'small' | 'medium' | 'large';
     showTransliteration: boolean;
@@ -82,7 +82,6 @@ export default function VerseItem({
     isPlayingVerse,
     isPlaying,
     isBookmarked,
-    isDaylight,
     scriptType,
     fontSize,
     showTransliteration,
@@ -106,12 +105,10 @@ export default function VerseItem({
             id={`verse-${verseNum}`}
             data-verse-key={verse.verse_key}
             className={cn(
-                "group relative py-8 px-4 md:px-6 border-b border-white/5 transition-all duration-500",
+                "group relative py-8 px-4 md:px-6 border-b border-[rgb(var(--color-border))] transition-all duration-500",
                 isPlayingVerse
-                    ? isDaylight
-                        ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary-light))] shadow-sm"
-                        : "bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20"
-                    : "hover:bg-white/[0.02]"
+                    ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]"
+                    : "hover:bg-[rgb(var(--color-surface-subtle))]"
             )}
         >
             {/* Action Bar */}
@@ -126,7 +123,7 @@ export default function VerseItem({
                                 onClick={() => setIsMasked(!isMasked)}
                                 className={cn(
                                     "h-8 w-8 md:h-9 md:w-9 rounded-full transition-colors",
-                                    isMasked ? "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20" : "text-slate-400 hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
+                                    isMasked ? "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20" : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
                                 {isMasked ? <Eye className="h-4 w-4 md:h-5 md:w-5" /> : <EyeOff className="h-4 w-4 md:h-5 md:w-5" />}
@@ -147,12 +144,8 @@ export default function VerseItem({
                                     "h-8 w-8 rounded-full transition-all duration-300",
                                     isPlayingVerse && isPlaying ? "opacity-0 scale-50 pointer-events-none" : "opacity-100 scale-100",
                                     isPlayingVerse
-                                        ? isDaylight
-                                            ? "bg-[rgb(var(--color-primary-strong))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
-                                            : "bg-[rgb(var(--color-primary))] text-white shadow-lg shadow-[rgb(var(--color-primary))]/20"
-                                        : isDaylight
-                                            ? "text-slate-400 hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
-                                            : "text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary))]/10"
+                                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
+                                        : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
                                 <Play className="h-4 w-4" />
@@ -173,7 +166,7 @@ export default function VerseItem({
                                     "h-8 w-8 rounded-full transition-colors",
                                     isBookmarked
                                         ? "text-[rgb(var(--color-primary-strong))]"
-                                        : isDaylight ? "text-slate-500 hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10" : "text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                                        : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/10"
                                 )}
                             >
                                 <Bookmark className={cn("h-4 w-4", isBookmarked && "fill-current")} />
@@ -192,7 +185,7 @@ export default function VerseItem({
                                 onMouseEnter={prefetchShareDialog}
                                 onFocus={prefetchShareDialog}
                                 onClick={() => onShareClick(verse)}
-                                className="h-8 w-8 rounded-full text-slate-400 hover:text-[rgb(var(--color-primary))]"
+                                className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary))]"
                             >
                                 <Share2 className="h-4 w-4" />
                             </Button>
@@ -208,7 +201,7 @@ export default function VerseItem({
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => onTafsirToggle(verse.verse_key)}
-                                className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}
+                                className={`h-8 w-8 rounded-full ${activeTafsirVerse === verse.verse_key ? 'text-[rgb(var(--color-warning))]' : 'text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-warning))]'}`}
                             >
                                 <Lightbulb className="h-4 w-4" />
                             </Button>
@@ -225,9 +218,9 @@ export default function VerseItem({
                 dir="rtl"
                 onClick={() => isMasked && setIsMasked(false)}
                 className={cn(
-                    "w-full text-right mb-6 transition-all duration-300 relative",
+                    "quran-reading-text w-full text-right mb-6 transition-all duration-300 relative",
                     getVerseFontClass(scriptType, fontSize),
-                    isMasked ? "blur-md opacity-40 hover:opacity-60 cursor-pointer select-none" : (isDaylight ? "text-[rgb(var(--color-text-strong))]" : "text-slate-200")
+                    isMasked ? "blur-md opacity-40 hover:opacity-60 cursor-pointer select-none" : "text-[rgb(var(--color-text-strong))]"
                 )}
             >
                 {showWordByWord && verse.words && verse.words.length > 0 ? (
@@ -248,9 +241,7 @@ export default function VerseItem({
                                     <span className={cn(
                                         "mb-2 cursor-pointer transition-colors duration-100",
                                         isPlayingVerse && word.position === activeWordIdx
-                                            ? isDaylight
-                                                ? "text-emerald-600 font-bold scale-105"
-                                                : "text-[rgb(var(--color-primary))] font-bold"
+                                            ? "text-[rgb(var(--color-primary))] font-bold scale-105"
                                             : "hover:text-[rgb(var(--color-primary))]"
                                     )}>
                                         {cleanedText}
@@ -262,7 +253,7 @@ export default function VerseItem({
                                             </span>
                                         )}
                                         {word.translation?.text && (
-                                            <span className="text-[9px] md:text-[10px] text-slate-400 text-center leading-tight max-w-[90px] group-hover:text-slate-200 line-clamp-2" title={word.translation.text}>
+                                            <span className="text-[9px] md:text-[10px] text-[rgb(var(--color-text-muted))] text-center leading-tight max-w-[90px] group-hover:text-[rgb(var(--color-text))] line-clamp-2" title={word.translation.text}>
                                                 {word.translation.text}
                                             </span>
                                         )}
@@ -299,27 +290,27 @@ export default function VerseItem({
                             )}
                         >
                             <p
-                                className="text-sm md:text-base leading-relaxed text-slate-400"
+                                className="text-sm md:text-base leading-relaxed text-[rgb(var(--color-text-muted))]"
                                 dangerouslySetInnerHTML={{ __html: cleanTranslation(verse.translations[0]?.text || "") }}
                             />
                         </div>
                     </>
                 )}
 
-                <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-slate-900 border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
+                <div className={activeTafsirVerse === verse.verse_key ? 'mt-6 p-5 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/5 to-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-primary))]/20 animate-in slide-in-from-top-2' : 'hidden'}>
                     <div className="flex items-center gap-2 mb-3">
                         <Lightbulb className="h-4 w-4 text-[rgb(var(--color-primary))]" />
-                        <h3 className="text-sm font-bold text-white">{t.quranBriefTafsir || "Brief Explanation"}</h3>
+                        <h3 className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{t.quranBriefTafsir || "Brief Explanation"}</h3>
                     </div>
 
-                    <div className={`flex items-center gap-2 text-slate-500 py-4 ${isLoadingTafsir ? '' : 'hidden'}`}>
+                    <div className={`flex items-center gap-2 text-[rgb(var(--color-text-muted))] py-4 ${isLoadingTafsir ? '' : 'hidden'}`}>
                         <Loader2 className="h-4 w-4 animate-spin" />
                         <span className="text-xs">{t.quranLoading || "Loading..."}</span>
                     </div>
 
                     <div className={isLoadingTafsir ? 'hidden' : 'space-y-3'}>
                         <div
-                            className="prose prose-invert prose-sm text-slate-300"
+                            className="prose prose-sm text-[rgb(var(--color-text-muted))]"
                             dangerouslySetInnerHTML={{ __html: formatFootnotes(tafsirData?.short || (t.quranTafsirNotAvailable || "Tafsir not available.")) }}
                         />
                         <button
@@ -330,7 +321,7 @@ export default function VerseItem({
                             }}
                             className={`text-xs font-semibold mt-2 transition-colors ${tafsirData?.long && tafsirData?.long !== tafsirData?.short ? 'text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary))]/80' : 'hidden'}`}
                         >
-                            {t.quranReadFullTafsir || "Read Full Explanation →"}
+                            <span className="inline-flex items-center gap-1">{t.quranReadFullTafsir || "Read Full Explanation"} <AppIcon name="target" size="xs" tone="primary" /></span>
                         </button>
                     </div>
                 </div>

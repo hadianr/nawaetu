@@ -27,7 +27,6 @@ export interface DhikrHistoryProps {
     isMilestoneModalOpen: boolean;
     setIsMilestoneModalOpen: (open: boolean) => void;
     t: TranslationTree;
-    isDaylight: boolean;
     dailyCount: number;
     streak: number;
     lifetimeCount: number;
@@ -40,7 +39,6 @@ export function DhikrHistory({
     isMilestoneModalOpen,
     setIsMilestoneModalOpen,
     t,
-    isDaylight,
     dailyCount,
     streak,
     lifetimeCount,
@@ -54,32 +52,32 @@ export function DhikrHistory({
                 <button
                     className={cn(
                         "flex flex-wrap justify-center items-center gap-2 text-[9px] font-bold uppercase tracking-widest mb-4 cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto relative z-50",
-                        isDaylight ? "text-slate-400" : "text-white/30"
+                        "text-[rgb(var(--color-text-muted))]"
                     )}
                 >
                     <div className={cn(
                         "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                        isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
+                            "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                     )}>
                         <CalendarDays className={cn(
                             "h-3.5 w-3.5",
-                            isDaylight ? "text-emerald-600/50" : "text-[rgb(var(--color-primary-light)/0.4)]"
+                            "text-[rgb(var(--color-primary-strong))]/60"
                         )} />
                         <span>
                             {t.tasbihDaily}:{" "}
-                            <span className={isDaylight ? "text-slate-900" : "text-white"}>
+                            <span className="text-[rgb(var(--color-text-strong))]">
                                 {hasHydrated ? (isNaN(dailyCount) ? 0 : dailyCount) : "--"}
                             </span>
                         </span>
                     </div>
                     <div className={cn(
                         "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                        isDaylight ? "bg-slate-100 border-slate-200/60" : "bg-white/5 border-white/5"
+                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                     )}>
-                        <Flame className="h-3.5 w-3.5 text-orange-500/70" />
+                        <Flame className="h-3.5 w-3.5 text-[rgb(var(--color-accent))]/70" />
                         <span>
                             {t.tasbihStreak}:{" "}
-                            <span className={isDaylight ? "text-slate-900" : "text-white"}>
+                            <span className="text-[rgb(var(--color-text-strong))]">
                                 {hasHydrated ? (isNaN(streak) ? 0 : streak) : "--"}
                             </span>{" "}
                             {t.tasbihDays}
@@ -87,19 +85,19 @@ export function DhikrHistory({
                     </div>
                     <div className={cn(
                         "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                        isDaylight ? "bg-amber-100 border-amber-200/60 text-amber-700" : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+                        "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25 text-[rgb(var(--color-accent))]"
                     )}>
                         <Trophy className="h-3.5 w-3.5" />
                         <span>
                             Total:{" "}
-                            <span className={isDaylight ? "text-slate-900 font-black" : "text-white font-black"}>
+                            <span className="text-[rgb(var(--color-text-strong))] font-black">
                                 {hasHydrated ? (lifetimeCount || 0).toLocaleString('id-ID') : "--"}
                             </span>
                         </span>
                     </div>
                 </button>
             </DialogTrigger>
-            <DialogContent className={cn("dhikr-history-dialog w-[90%] max-w-sm rounded-[32px] border backdrop-blur-3xl z-[100]", isDaylight ? "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]" : "border-white/10 bg-neutral-950/98 text-white")}>
+            <DialogContent className="dhikr-history-dialog w-[90%] max-w-sm rounded-[32px] border backdrop-blur-3xl z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
                 <DialogHeader>
                     <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-60">Statistik Zikir</DialogTitle>
                 </DialogHeader>
@@ -115,7 +113,7 @@ export function DhikrHistory({
                                 .map(([id, total], index) => {
                                     const preset = allPresets.find(p => p.id === id);
                                     return (
-                                        <div key={id} className={cn("flex justify-between items-center px-4 py-3 rounded-2xl border", isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/5")}>
+                                        <div key={id} className="flex justify-between items-center px-4 py-3 rounded-2xl border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
                                             <div className="flex items-center gap-3">
                                                 <span className={cn("text-xs font-bold w-4", index === 0 ? "text-[rgb(var(--color-primary))]" : "opacity-30")}>#{index + 1}</span>
                                                 <div className="flex flex-col">
@@ -141,7 +139,7 @@ export function DhikrHistory({
                                 const progress = Math.min(100, ((lifetimeCount || 0) / ms.target) * 100);
 
                                 return (
-                                    <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border", isCompleted ? (isDaylight ? "bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20") : (isDaylight ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white/5 border-white/5 opacity-50"))}>
+                                    <div key={ms.id} className={cn("flex flex-col gap-2 p-4 rounded-2xl border", isCompleted ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20" : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] opacity-60")}>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Medal className={cn("h-4 w-4", isCompleted ? "text-[rgb(var(--color-primary))]" : "opacity-30")} />
@@ -154,7 +152,7 @@ export function DhikrHistory({
                                             )}
                                         </div>
                                         {!isCompleted && (
-                                            <div className="w-full bg-slate-200/50 dark:bg-black/40 rounded-full h-1.5 mt-1 overflow-hidden">
+                                            <div className="w-full bg-[rgb(var(--color-border))]/40 rounded-full h-1.5 mt-1 overflow-hidden">
                                                 <div className="bg-[rgb(var(--color-primary))] h-1.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
                                             </div>
                                         )}

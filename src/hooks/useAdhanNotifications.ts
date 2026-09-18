@@ -97,11 +97,11 @@ export function useAdhanNotifications() {
         };
 
         const title = isRamadhan && prayerKey === "Maghrib"
-            ? "Selamat Berbuka Puasa 🤲"
+            ? "Selamat Berbuka Puasa"
             : isRamadhan && prayerKey === "Imsak"
                 ? "Waktu Imsak Telah Tiba ⏳"
                 : isRamadhan && prayerKey === "Fajr"
-                    ? "Waktu Subuh Telah Tiba 🕌"
+                    ? "Waktu Subuh Telah Tiba"
                     : `Waktu ${labels[prayerKey]}`;
 
         const body = isRamadhan && prayerKey === "Maghrib"

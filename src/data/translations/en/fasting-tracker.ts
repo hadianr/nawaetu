@@ -64,14 +64,14 @@ export const fastingTrackerEN = {
     fastingStatsLogged: "Days Logged",
     fastingStatsPendingQadha: "Pending Qadha",
     fastingStatsPendingFidyah: "Pending Fidyah",
-    fastingStatsAllClear: "✅ All obligations fulfilled!",
-    fastingStatsViewDetail: "View Qadha Details →",
+    fastingStatsAllClear: "All obligations fulfilled!",
+    fastingStatsViewDetail: "View Qadha Details",
 
     // ── Qadha Tracker ─────────────────────────────────────────────────────────
     fastingQadhaTitle: "Qadha Tracker",
     fastingQadhaSubtitle: "Track your fasting debts (hutang puasa)",
-    fastingQadhaEmpty: "No pending qadha. Alhamdulillah! 🎉",
-    fastingQadhaMarkDone: "Done ✓",
+    fastingQadhaEmpty: "No pending qadha. Alhamdulillah!",
+    fastingQadhaMarkDone: "Done",
     fastingQadhaMarkDoneToast: "Alhamdulillah! Qadha recorded as fulfilled.",
     fastingQadhaPendingBadge: "{n} days remaining",
     fastingQadhaConsequenceQadha: "Qadha",
@@ -82,7 +82,7 @@ export const fastingTrackerEN = {
 
     // ── General ──────────────────────────────────────────────────────────────
     fastingFiqhDisclaimer: "Rulings shown are based on scholarly consensus (ijma') and notable ikhtilaf from the four major madzhabs. For complex personal situations, please consult a trusted scholar.",
-    fastingToastSaved: "Recorded! Jazakallah khair 🌙",
+    fastingToastSaved: "Recorded! Jazakallah khair",
     fastingFemaleOnlyNote: "This status applies to women only",
     fastingNoDataForYear: "No fasting records for {year}H yet",
 } as const;

@@ -89,17 +89,17 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center p-8 md:p-12 space-y-4 text-center"
             >
-                <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4">
-                    <Sparkles className="w-10 h-10 text-emerald-400" />
+                <div className="w-20 h-20 bg-[rgb(var(--color-primary))]/10 rounded-full flex items-center justify-center mb-4">
+                    <Sparkles className="w-10 h-10 text-[rgb(var(--color-primary-light))]" />
                 </div>
-                <h3 className="text-2xl font-serif text-white tracking-wide">{t.intention_success_title}</h3>
-                <p className="text-white/60 text-base font-serif italic max-w-xs">{t.intention_success_desc}</p>
+                <h3 className="text-2xl font-serif text-[rgb(var(--color-text-strong))] tracking-wide">{t.intention_success_title}</h3>
+                <p className="text-[rgb(var(--color-text-muted))] text-base font-serif italic max-w-xs">{t.intention_success_desc}</p>
             </motion.div>
         );
     }
 
     return (
-        <div className="flex flex-col h-full bg-[#FAFAF9] dark:bg-[#1A1A1A] rounded-xl overflow-hidden relative">
+        <div className="flex flex-col h-full bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] rounded-xl overflow-hidden relative">
             {/* Journal Texture Overlay */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/rice-paper.png')" }}></div>
 
@@ -108,7 +108,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 {/* Header & Dalil Section */}
                 <div className="space-y-6">
                     <div className="flex justify-center mb-2">
-                        <BookHeart className="w-6 h-6 text-amber-600/80 dark:text-amber-500/80" />
+                        <BookHeart className="w-6 h-6 text-[rgb(var(--color-primary-light))]" />
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -121,14 +121,14 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                                 className="text-center space-y-3 px-2 md:px-4"
                             >
                                 {dalil.arabic && (
-                                    <p className="text-xl md:text-2xl font-arabic text-slate-800 dark:text-slate-200 leading-loose" dir="rtl">
+                                    <p className="text-xl md:text-2xl font-arabic text-[rgb(var(--color-text-strong))] leading-loose" dir="rtl">
                                         {dalil.arabic}
                                     </p>
                                 )}
-                                <p className="text-sm md:text-base font-serif italic text-slate-600 dark:text-slate-400 leading-relaxed">
+                                <p className="text-sm md:text-base font-serif italic text-[rgb(var(--color-text-muted))] leading-relaxed">
                             &quot;{locale === 'id' ? dalil.textId : dalil.textEn}&quot;
                                 </p>
-                                <p className="text-xs font-medium text-amber-600/70 dark:text-amber-500/70 tracking-widest uppercase mt-2">
+                                <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] tracking-widest uppercase mt-2">
                                     — {locale === 'id' ? dalil.sourceId : dalil.sourceEn}
                                 </p>
                             </motion.div>
@@ -139,23 +139,23 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 {/* Input Section */}
                 <div className="space-y-4">
                     <div className="relative group">
-                        <label className="text-sm md:text-base font-serif font-medium text-slate-700 dark:text-slate-300 mb-2 block text-center">
+                        <label className="text-sm md:text-base font-serif font-medium text-[rgb(var(--color-text))] mb-2 block text-center">
                             {t.intention_prompt_question}
                         </label>
                         <Textarea
                             value={intention}
                             onChange={(e) => setIntention(e.target.value)}
                             placeholder={t.intention_placeholder_niat || "Bismillah, niat saya hari ini adalah..."}
-                            className="min-h-[160px] md:min-h-[200px] bg-transparent border-0 border-b-2 border-slate-200 dark:border-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 resize-none rounded-none focus-visible:ring-0 focus-visible:border-amber-500 font-serif text-lg leading-relaxed shadow-none transition-colors px-2 py-4"
+                            className="min-h-[160px] md:min-h-[200px] bg-transparent border-0 border-b-2 border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] resize-none rounded-none focus-visible:ring-0 focus-visible:border-[rgb(var(--color-primary))] font-serif text-lg leading-relaxed shadow-none transition-colors px-2 py-4"
                             style={{
-                                backgroundImage: "linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px)",
+                                backgroundImage: "linear-gradient(transparent, transparent 31px, rgb(var(--color-border) / 0.2) 31px, rgb(var(--color-border) / 0.2) 32px)",
                                 backgroundSize: "100% 32px",
                                 lineHeight: "32px",
                                 paddingTop: "4px"
                             }}
                         />
                     </div>
-                    {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
+                    {error && <p className="text-[rgb(var(--color-danger))] text-sm text-center font-medium">{error}</p>}
                 </div>
 
                 {/* Action Section */}
@@ -163,7 +163,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                     <Button
                         onClick={handleSubmit}
                         disabled={!intention.trim() || isSubmitting}
-                        className="w-full bg-slate-900 border border-slate-900 text-white hover:bg-slate-800 hover:text-white dark:bg-amber-600 dark:border-amber-600 dark:hover:bg-amber-500 font-serif font-medium py-6 rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-light))] font-serif font-medium py-6 rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isSubmitting ? (
                             <>

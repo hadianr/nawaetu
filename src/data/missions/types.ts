@@ -31,13 +31,19 @@ export interface ValidationConfig {
 }
 
 export type IslamicRuling = 'obligatory' | 'sunnah' | 'permissible' | 'disliked' | 'forbidden';
+import { resolveAppIconName, type AppIconName } from '@/lib/icon-names';
+
+const resolveMissionIconKey = resolveAppIconName;
 
 export interface Mission {
     id: string;
     title: string;
     description: string;
     hasanahReward: number;
-    icon: string;
+    /** Legacy presentation field; new missions should use iconKey. */
+    icon?: string;
+    /** Canonical semantic icon; optional while legacy persisted mission objects migrate. */
+    iconKey?: AppIconName;
     gender: Gender;
     dalil?: string;
     hadithId?: string;
@@ -52,6 +58,7 @@ export interface Mission {
         label: string;
         hasanahReward: number;
         icon?: string;
+        iconKey?: AppIconName;
     }[];
 }
 
@@ -77,8 +84,9 @@ export function createMission(config: {
     description: string;
     category: Mission['category'];
     ruling: IslamicRuling;
-    hasanahReward: number;
-    icon: string;
+        hasanahReward: number;
+        icon?: string;
+        iconKey?: AppIconName;
     dalil?: string;
     hadithId?: string;
     duaId?: string;
@@ -97,6 +105,7 @@ export function createMission(config: {
         ruling: config.ruling,
         hasanahReward: config.hasanahReward,
         icon: config.icon,
+        iconKey: config.iconKey ?? resolveMissionIconKey(config.icon),
         gender: config.gender ?? null,
         dalil: config.dalil,
         hadithId: config.hadithId,

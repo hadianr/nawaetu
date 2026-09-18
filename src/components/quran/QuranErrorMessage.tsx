@@ -25,14 +25,14 @@ export default function QuranErrorMessage() {
     
     return (
         <div className="flex flex-col items-center justify-center space-y-4 py-20 text-center">
-            <div className="rounded-full bg-red-500/10 p-4">
+            <div className="rounded-full bg-[rgb(var(--color-danger))]/10 p-4">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-8 w-8 text-red-500"
+                    className="h-8 w-8 text-[rgb(var(--color-danger))]"
                 >
                     <path
                         strokeLinecap="round"
@@ -42,8 +42,8 @@ export default function QuranErrorMessage() {
                 </svg>
             </div>
             <div className="space-y-1">
-                <p className="text-lg font-medium text-white">{t.quranLoadError}</p>
-                <p className="text-sm text-white/50">
+                <p className="text-lg font-medium text-[rgb(var(--color-text-strong))]">{t.quranLoadError}</p>
+                <p className="text-sm text-[rgb(var(--color-text-muted))]">
                     {t.quranLoadErrorDesc}
                 </p>
             </div>

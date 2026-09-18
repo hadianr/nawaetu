@@ -19,11 +19,13 @@
  */
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
+import { useEffect, useState } from "react";
 import { getRamadhanDay, getRamadhanProgress } from "@/data/ramadhan";
 import { RAMADHAN_FASTING_INTENTION, FASTING_EVIDENCE, FIRST_10_DAYS_MERCY_EVIDENCE, MIDDLE_10_DAYS_FORGIVENESS_EVIDENCE, LAST_10_DAYS_FREEDOM_EVIDENCE } from "@/data/ramadhan";
 import IntentionCard from "./IntentionCard";
 import DalilBadge from "./DalilBadge";
 import { useLocale } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 export default function RamadhanHeroCard() {
     const { data } = usePrayerTimesContext();
@@ -34,9 +36,12 @@ export default function RamadhanHeroCard() {
     const ramadhanDay = getRamadhanDay(hijriDay) || 1;
     const progress = getRamadhanProgress(ramadhanDay) || 0;
 
-    const today = new Date();
-    const dayName = today.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { weekday: "long" });
-    const dateStr = today.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" });
+    const [today, setToday] = useState<Date | null>(null);
+    useEffect(() => {
+        queueMicrotask(() => setToday(new Date()));
+    }, []);
+    const dayName = today?.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { weekday: "long" }) ?? "";
+    const dateStr = today?.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" }) ?? "";
 
     // Progressive opacity: semakin mendekati hari ke-30, semakin solid (0.5 to 1.0)
     let progressiveOpacity = 0.5 + (ramadhanDay / 30) * 0.5;
@@ -54,7 +59,7 @@ export default function RamadhanHeroCard() {
 
     return (
         <div
-            className="relative w-full rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl"
+            className="relative w-full rounded-2xl overflow-hidden shadow-[var(--shadow-floating)] backdrop-blur-xl"
             style={{
                 contain: "layout style paint",
                 border: `1px solid color-mix(in srgb, var(--color-primary-light) 30%, transparent)`,
@@ -150,12 +155,12 @@ export default function RamadhanHeroCard() {
                 <div className="flex items-start justify-between mb-2 sm:mb-3">
                     <div>
                         <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
-                            <span className="text-xl sm:text-2xl">🌙</span>
-                            <span className="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider sm:tracking-widest text-white/70">
+                            <AppIcon name="moon" size="md" tone="primary" />
+                            <span className="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider sm:tracking-widest text-[rgb(var(--color-text-muted))]">
                                 {data?.hijriDate ? `${data.hijriDay} ${data.hijriMonth} ${hijriYear}H` : `${t.ramadhanLabel} ${hijriYear}H`}
                             </span>
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-white leading-none">
+                        <h1 className="text-2xl sm:text-3xl font-black text-[rgb(var(--color-text-strong))] leading-none">
                             {t.ramadhanDay}<span style={{ color: "rgb(var(--color-primary-light))" }}>{ramadhanDay}</span>
                         </h1>
                         <p
@@ -174,12 +179,12 @@ export default function RamadhanHeroCard() {
 
                 {/* Progress bar */}
                 <div className="mb-3 sm:mb-4">
-                    <div className="flex justify-between text-[10px] sm:text-xs text-white/40 mb-1">
+                    <div className="flex justify-between text-[10px] sm:text-xs text-[rgb(var(--color-text-muted))] mb-1">
                         <span>{t.ramadhanDay1}</span>
                         <span className="font-medium" style={{ color: "rgba(var(--color-primary-light), 0.8)" }}>{progress}% {t.ramadhanCompleted}</span>
                         <span>{t.ramadhanDay30}</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
                         <div
                             className="h-full rounded-full transition-all duration-700"
                             style={{ width: `${progress}%`, background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary)), rgb(var(--color-primary-light)))` }}
@@ -190,7 +195,7 @@ export default function RamadhanHeroCard() {
                         {Array.from({ length: 30 }, (_, i) => (
                             <div
                                 key={i}
-                                className="flex-1 h-1 rounded-full transition-all bg-white/10"
+                                className="flex-1 h-1 rounded-full transition-all bg-[rgb(var(--color-surface-subtle))]"
                                 style={i < ramadhanDay ? { backgroundColor: "rgba(var(--color-primary-light), 0.6)" } : undefined}
                             />
                         ))}
@@ -198,9 +203,9 @@ export default function RamadhanHeroCard() {
                 </div>
 
                 {/* Motivational text */}
-                <div className="rounded-xl bg-gradient-to-r from-white/10 to-white/5 border border-white/20 px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3 backdrop-blur-md shadow-lg">
+                <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3 backdrop-blur-md shadow-[var(--shadow-card)]">
                     <div className="flex items-center justify-between gap-2">
-                        <p className="text-[10px] sm:text-xs text-white leading-relaxed font-bold drop-shadow-sm">
+                        <p className="text-[10px] sm:text-xs text-[rgb(var(--color-text-strong))] leading-relaxed font-bold">
                             {periodData.text}
                         </p>
                         <DalilBadge dalil={periodData.dalil} variant="pill" />

@@ -300,7 +300,7 @@ export async function renderStoryCardToCanvas(
     if (options.showExplanation && data.explanation) {
         if (!isAchievement) {
             ctx.font = "20px sans-serif";
-            const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
+            const expLines = measureWrappedTextLines(ctx, data.explanation, contentWidth - 40);
             expBlockHeight = expLines * 32 + 50;
         }
     }
@@ -348,7 +348,7 @@ export async function renderStoryCardToCanvas(
         if (options.showExplanation && data.explanation) {
             if (!isAchievement) {
                 ctx.font = "18px sans-serif";
-                const expLines = measureWrappedTextLines(ctx, `💡 ${data.explanation}`, contentWidth - 40);
+                const expLines = measureWrappedTextLines(ctx, data.explanation, contentWidth - 40);
                 expBlockHeight = expLines * 28 + 40;
             }
         }
@@ -456,10 +456,10 @@ export async function renderStoryCardToCanvas(
         const nextMilestone = milestones.find((milestone) => milestone > Number(data.arabic)) || milestones[milestones.length - 1];
         const currentDays = Math.max(0, Number(data.arabic) || 0);
         const progress = Math.min(1, currentDays / nextMilestone);
-        const progressLabel = isEnglish ? `Next milestone · ${nextMilestone} days` : `Milestone berikutnya · ${nextMilestone} hari`;
+        const progressLabel = isEnglish ? `Next milestone - ${nextMilestone} days` : `Milestone berikutnya - ${nextMilestone} hari`;
         const progressHint = isEnglish
-            ? "A little worship, every day · Keep going"
-            : "Sedikit amal, rutin setiap hari · Teruskan";
+            ? "A little worship, every day - Keep going"
+            : "Sedikit amal, rutin setiap hari - Teruskan";
         ctx.font = "bold 22px sans-serif";
         ctx.fillStyle = isDark ? "#a7f3d0" : "#047857";
         ctx.textAlign = "left";
@@ -528,8 +528,8 @@ export async function renderStoryCardToCanvas(
         const expY = currentY;
 
         const explanationText = isAchievement
-            ? `${isEnglish ? "Your progress" : "Progresmu"} · ${data.explanation}`
-            : `💡 ${data.explanation}`;
+            ? `${isEnglish ? "Your progress" : "Progresmu"} - ${data.explanation}`
+            : data.explanation;
         const expLinesCount = measureWrappedTextLines(ctx, explanationText, expW - 40);
         const expBoxH = expLinesCount * 32 + 40;
 

@@ -23,6 +23,7 @@ import { X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import type { EvidenceData } from "@/data/ramadhan";
 import { useLocale } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 interface DalilBadgeProps {
     dalil: EvidenceData;
@@ -47,39 +48,34 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                     className={`
                       flex items-center gap-0.5 sm:gap-1 transition-all duration-300 active:scale-95 group/dalil outline-none
                       ${variant === "pill"
-                            ? "rounded-sm px-1 py-[0.5px] sm:px-2 sm:py-0.5 backdrop-blur-sm hover:brightness-110 active:opacity-80 shadow-sm"
+                            ? "rounded-sm border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-1 py-[0.5px] sm:px-2 sm:py-0.5 backdrop-blur-sm hover:bg-[rgb(var(--color-primary))]/20 active:opacity-80 shadow-[var(--shadow-card)]"
                             : "text-left hover:opacity-80"
                         }
                     `}
-                    style={variant === "pill" ? {
-                        background: "color-mix(in srgb, var(--color-primary-light) 70%, transparent)",
-                        border: "none"
-                    } : undefined}
                     title={t.evidenceViewFull}
                 >
-                    <span className="text-[6.5px] sm:text-[8px] leading-none group-hover/dalil:scale-110 transition-transform">📜</span>
+                    <AppIcon name="scroll" size="xs" tone="primary" className="group-hover/dalil:scale-110 transition-transform" />
                     <span
-                        className={`text-[7px] sm:text-[8px] leading-none font-bold tracking-tight transition-colors ${variant === "pill" ? "text-white group-hover/dalil:text-white" : "underline decoration-dotted underline-offset-2"}`}
-                        style={variant !== "pill" ? { color: "rgb(var(--color-primary-light))" } : undefined}
+                        className={`text-[7px] sm:text-[8px] leading-none font-bold tracking-tight transition-colors ${variant === "pill" ? "text-[rgb(var(--color-primary-strong))] group-hover/dalil:text-[rgb(var(--color-primary))]" : "text-[rgb(var(--color-primary))] underline decoration-dotted underline-offset-2"}`}
                     >
                         {localizedShortRef}
                     </span>
                     {variant === "pill" && (
-                        <span className="text-[6px] sm:text-[8px] leading-none text-white/30 group-hover/dalil:text-white/60 group-hover/dalil:translate-x-0.5 transition-all">→</span>
+                        <AppIcon name="target" size="xs" tone="muted" className="group-hover/dalil:text-[rgb(var(--color-text))] group-hover/dalil:translate-x-0.5 transition-all" />
                     )}
                 </button>
             </DialogTrigger>
 
-            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-black/90 backdrop-blur-2xl border border-white/10 text-white p-0 overflow-hidden gap-0 shadow-2xl rounded-3xl z-[120]">
+            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)] rounded-3xl z-[120]">
                 {/* Combined Header & Handle */}
-                <DialogHeader className="pointer-events-auto sticky top-0 z-[150] bg-black/95 backdrop-blur-md border-b border-white/5 shadow-lg flex flex-row items-center justify-between gap-3 px-6 py-4 space-y-0 text-left">
-                    <DialogTitle className="font-bold text-white text-base tracking-tight leading-tight flex-1">
+                <DialogHeader className="pointer-events-auto sticky top-0 z-[150] bg-[rgb(var(--color-surface))]/95 backdrop-blur-md border-b border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] flex flex-row items-center justify-between gap-3 px-6 py-4 space-y-0 text-left">
+                    <DialogTitle className="font-bold text-[rgb(var(--color-text-strong))] text-base tracking-tight leading-tight flex-1">
                         {localizedShortRef}
                     </DialogTitle>
                     <DialogClose asChild>
                         <button
                             type="button"
-                            className="pointer-events-auto relative z-[200] shrink-0 rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer touch-auto"
+                            className="pointer-events-auto relative z-[200] shrink-0 rounded-full bg-[rgb(var(--color-surface-subtle))] p-3 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface))] transition-all active:scale-95 cursor-pointer touch-auto"
                             aria-label="Close"
                         >
                             <X className="h-6 w-6" />
@@ -92,13 +88,9 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                         {/* Arabic text */}
                         {dalil.arabic && (
                             <div
-                                className="rounded-2xl border p-5 backdrop-blur-md shadow-lg transition-all hover:shadow-xl"
-                                style={{
-                                    background: "rgba(0, 0, 0, 0.3)",
-                                    borderColor: "rgba(255, 255, 255, 0.1)"
-                                }}
+                                className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 backdrop-blur-md shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-floating)]"
                             >
-                            <div className="text-right font-arabic leading-loose text-white drop-shadow-lg"
+                            <div className="text-right font-arabic leading-loose text-[rgb(var(--color-text-strong))] drop-shadow-lg"
                                 style={{
                                     fontFamily: "var(--font-amiri)",
                                     fontSize: "1.5rem",
@@ -117,8 +109,8 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                         {/* Latin */}
                         {dalil.latin && (
                             <div className="relative pl-4 pr-2">
-                                <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-full bg-white/20" />
-                                <p className="text-sm italic text-white/80 leading-relaxed font-normal" style={{
+                                <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-full bg-[rgb(var(--color-border))]" />
+                                <p className="text-sm italic text-[rgb(var(--color-text))] leading-relaxed font-normal" style={{
                                     textShadow: "0 1px 8px rgba(0,0,0,0.4)"
                                 }}>
                                     &ldquo;{dalil.latin}&rdquo;
@@ -126,14 +118,11 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                             </div>
                         )}
 
-                        <div className="rounded-2xl border p-4 backdrop-blur-sm shadow-lg" style={{
-                            background: "rgba(0, 0, 0, 0.2)",
-                            borderColor: "rgba(255, 255, 255, 0.1)"
-                        }}>
-                            <div className="text-[10px] font-bold uppercase tracking-wider mb-2.5 text-white/50">
+                        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-4 backdrop-blur-sm shadow-[var(--shadow-card)]">
+                            <div className="text-[10px] font-bold uppercase tracking-wider mb-2.5 text-[rgb(var(--color-text-muted))]">
                                 {t.evidenceTranslation}
                             </div>
-                            <div className="text-sm text-white leading-relaxed font-normal" style={{
+                            <div className="text-sm text-[rgb(var(--color-text))] leading-relaxed font-normal" style={{
                                 textShadow: "0 1px 8px rgba(0,0,0,0.4)",
                                 lineHeight: "1.7"
                             }}>
@@ -143,8 +132,8 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
 
                         {/* Source */}
                         <div className="flex items-center gap-2 px-1">
-                            <span className="h-1 w-1 rounded-full bg-white/20" />
-                            <div className="text-[10px] font-medium text-white/30 uppercase tracking-widest leading-relaxed">
+                            <span className="h-1 w-1 rounded-full bg-[rgb(var(--color-border))]" />
+                            <div className="text-[10px] font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-widest leading-relaxed">
                                 {localizedSource}
                             </div>
                         </div>

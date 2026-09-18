@@ -23,7 +23,6 @@ import type { TranslationTree } from "@/context/LocaleContext";
 
 export interface DhikrControlsProps {
     t: TranslationTree;
-    isDaylight: boolean;
     handleReset: () => void;
     setIsZenMode: (val: boolean) => void;
     feedbackMode: 'sound' | 'none';
@@ -34,7 +33,6 @@ export interface DhikrControlsProps {
 
 export function DhikrControls({
     t,
-    isDaylight,
     handleReset,
     setIsZenMode,
     feedbackMode,
@@ -51,11 +49,11 @@ export function DhikrControls({
                 onClick={(e) => { e.stopPropagation(); handleReset(); }}
                 className={cn(
                     "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
-                    isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
                 )}
             >
-                <RotateCcw className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
-                <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>{t.tasbihReset}</span>
+                <RotateCcw className="h-4 w-4 text-[rgb(var(--color-text-muted))]" />
+                <span className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">{t.tasbihReset}</span>
             </Button>
 
             {children}
@@ -72,11 +70,11 @@ export function DhikrControls({
                 }}
                 className={cn(
                     "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-colors",
-                    isDaylight ? "bg-white shadow-sm border-slate-200 hover:bg-slate-50" : "bg-white/5 hover:bg-white/10 border-white/5"
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))] shadow-[var(--shadow-card)]"
                 )}
             >
-                <Moon className={cn("h-4 w-4", isDaylight ? "text-slate-400" : "text-white/60")} />
-                <span className={cn("text-[10px] font-medium", isDaylight ? "text-slate-500" : "text-white/40")}>Mode Zen</span>
+                <Moon className="h-4 w-4 text-[rgb(var(--color-text-muted))]" />
+                <span className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">Mode Zen</span>
             </Button>
 
             <Button
@@ -85,12 +83,8 @@ export function DhikrControls({
                 className={cn(
                     "flex flex-col h-auto py-3 gap-1 rounded-2xl border transition-all",
                     feedbackMode !== 'none'
-                        ? isDaylight
-                            ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                            : "bg-[rgb(var(--color-primary)/0.15)] text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary)/0.25)]"
-                        : isDaylight
-                            ? "bg-white border-slate-200 text-slate-300"
-                            : "bg-white/5 text-white/40 border-white/5"
+                        ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
+                        : "bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
                 )}
             >
                 <FeedbackIcon className="h-4 w-4" />

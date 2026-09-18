@@ -22,6 +22,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { CalendarDays, Clock, MapPin, Navigation } from "lucide-react";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { cn } from "@/lib/utils";
 import PrayerTimeCard from "@/components/PrayerTimeCard";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
@@ -31,18 +32,15 @@ import MosqueFinderModal from "@/components/MosqueFinderModal";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 
 const PrayerCheckInWidget = dynamic(() => import("@/components/PrayerCheckInWidget"), {
     ssr: false,
-    loading: () => <div className="h-[88px] w-full animate-pulse rounded-2xl border border-white/10 bg-white/5" />,
+    loading: () => <div className="h-[88px] w-full animate-pulse rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]" />,
 });
 
 export default function PrayerTimesDisplay() {
     const { data, loading, error, refreshLocation } = usePrayerTimesContext();
     const { t } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const [showMosqueFinder, setShowMosqueFinder] = useState(false);
 
     if (loading && !data) {
@@ -56,27 +54,25 @@ export default function PrayerTimesDisplay() {
         return (
             <div className={cn(
                 "relative w-full max-w-md border rounded-3xl p-6 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500",
-                isDaylight
-                    ? "bg-white border-slate-200 shadow-slate-200/50"
-                    : "bg-gradient-to-br from-slate-900 to-slate-950 border-white/10"
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
                 {/* Decorative Background */}
                 <div className={cn(
                     "absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none",
-                    isDaylight ? "bg-[rgb(var(--color-primary-light))]/35" : "bg-[rgb(var(--color-primary))]/5"
+                    "bg-[rgb(var(--color-primary))]/10"
                 )} />
 
                 <div className="relative z-10 flex flex-col items-center space-y-4">
                     <div className={cn(
                         "w-16 h-16 rounded-2xl flex items-center justify-center border shadow-inner mb-2",
-                        isDaylight ? "bg-slate-50 border-slate-100" : "bg-slate-800/50 border-white/5"
+                        "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                     )}>
-                        <MapPin className={cn("w-8 h-8", isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary))]")} />
+                        <MapPin className="w-8 h-8 text-[rgb(var(--color-primary))]" />
                     </div>
 
                     <div className="space-y-2">
-                        <h3 className={cn("text-lg font-bold", isDaylight ? "text-slate-900" : "text-white")}>{t.homeLocationRequiredTitle}</h3>
-                        <p className={cn("text-sm leading-relaxed max-w-[280px] mx-auto", isDaylight ? "text-slate-500" : "text-slate-400")}>
+                        <h3 className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{t.homeLocationRequiredTitle}</h3>
+                        <p className="text-sm leading-relaxed max-w-[280px] mx-auto text-[rgb(var(--color-text-muted))]">
                             {t.homeLocationRequiredDesc}
                         </p>
                     </div>
@@ -85,10 +81,8 @@ export default function PrayerTimesDisplay() {
                         <Button
                             onClick={refreshLocation}
                             className={cn(
-                                "w-full h-12 font-bold rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.5)]",
-                                isDaylight
-                                    ? "bg-amber-500 hover:bg-amber-600 text-white"
-                                    : "bg-amber-500 hover:bg-amber-600 text-slate-900"
+                                "w-full h-12 font-bold rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_20px_rgb(var(--color-accent)/0.5)]",
+                                "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))]/90 text-[rgb(var(--color-accent-foreground))]"
                             )}
                         >
                             <Navigation className="w-4 h-4 fill-current" />
@@ -96,8 +90,8 @@ export default function PrayerTimesDisplay() {
                         </Button>
 
                         {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-xs text-red-300 flex items-center gap-2 text-left">
-                                <div className="shrink-0 w-1 h-8 bg-red-500 rounded-full" />
+                            <div className="bg-[rgb(var(--color-danger))]/10 border border-[rgb(var(--color-danger))]/20 rounded-lg p-3 text-xs text-[rgb(var(--color-danger))] flex items-center gap-2 text-left">
+                                <div className="shrink-0 w-1 h-8 bg-[rgb(var(--color-danger))] rounded-full" />
                                 {error}
                             </div>
                         )}
@@ -122,52 +116,48 @@ export default function PrayerTimesDisplay() {
                 {data.isDefaultLocation && (
                     <div className={cn(
                         "flex items-center gap-3 rounded-2xl p-4 mb-1 animate-in fade-in slide-in-from-top-2 duration-500 border transition-all",
-                        isDaylight
-                            ? "bg-amber-100/90 border-amber-300 shadow-[0_4px_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-400/20"
-                            : "bg-amber-500/20 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.1)]"
+                        "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/30 shadow-[var(--shadow-card)] ring-1 ring-[rgb(var(--color-warning))]/20"
                     )}>
                         <div className={cn(
                             "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors shadow-sm",
-                            isDaylight ? "bg-amber-500 text-white" : "bg-amber-500/20 text-amber-500"
+                            "bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))]"
                         )}>
                             <Navigation className="w-5 h-5 fill-current" />
                         </div>
                         <div className="flex-1">
-                            <p className={cn("text-xs font-black uppercase tracking-wider", isDaylight ? "text-amber-900" : "text-amber-200")}>{t.homeLocationDefaultTitle}</p>
-                            <p className={cn("text-[10px] leading-tight mt-0.5 font-bold", isDaylight ? "text-amber-800/80" : "text-amber-200/60")}>
+                            <p className="text-xs font-black uppercase tracking-wider text-[rgb(var(--color-warning))]">{t.homeLocationDefaultTitle}</p>
+                            <p className="text-[10px] leading-tight mt-0.5 font-bold text-[rgb(var(--color-warning))]/80">
                                 {t.homeLocationDefaultDesc}
                             </p>
                         </div>
                     </div>
                 )}
 
-                <h2 className={cn("px-1 text-sm font-bold", isDaylight ? "text-slate-800" : "text-white/80")}>
+                <h2 className="px-1 text-sm font-bold text-[rgb(var(--color-text-strong))]">
                     {t.homePrayerCheckInTitle}
                 </h2>
 
                 {nextPrayer && nextPrayerTime && (
                     <div className={cn(
                         "flex items-center justify-between gap-4 rounded-2xl border px-4 py-3",
-                            isDaylight
-                                ? "border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary-light))]/35"
-                            : "border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10",
+                            "border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10",
                     )}>
                         <div className="min-w-0">
                             <div className={cn(
                                 "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest",
-                                isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]",
+                                "text-[rgb(var(--color-primary-strong))]",
                             )}>
                                 <Clock className="h-3 w-3" />
                                 {t.homeNextLabel}
                             </div>
-                            <p className={cn("mt-1 truncate text-sm font-bold", isDaylight ? "text-slate-900" : "text-white")}>
+                            <p className="mt-1 truncate text-sm font-bold text-[rgb(var(--color-text-strong))]">
                                 {nextPrayerLabel} <span className="tabular-nums opacity-70">{nextPrayerTime}</span>
                             </p>
                         </div>
                         <div
                             role="timer"
                             aria-label={`${t.homeNextLabel} ${nextPrayerLabel}`}
-                            className={isDaylight ? "text-slate-900" : "text-white"}
+                            className="text-[rgb(var(--color-text-strong))]"
                         >
                             <PrayerCountdown targetTime={nextPrayerTime} prayerName={nextPrayer} compact />
                         </div>
@@ -181,9 +171,9 @@ export default function PrayerTimesDisplay() {
 
             <div className={cn(
                 "flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
-                isDaylight ? "border-slate-200 bg-white/80" : "border-white/10 bg-white/[0.03]",
+                "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]",
             )}>
-                <span className={cn("text-[9px] font-black uppercase tracking-widest", isDaylight ? "text-slate-500" : "text-white/40")}>
+                <span className="text-[9px] font-black uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
                     {t.homeQuickAccessTitle}
                 </span>
                 <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
@@ -191,9 +181,7 @@ export default function PrayerTimesDisplay() {
                         href="/hijri-calendar"
                         className={cn(
                             "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                            isDaylight
-                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <CalendarDays className="h-3.5 w-3.5 shrink-0 text-[rgb(var(--color-primary))]" />
@@ -203,12 +191,10 @@ export default function PrayerTimesDisplay() {
                         href="/qibla"
                         className={cn(
                             "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                            isDaylight
-                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
-                        <span className="text-xs">🧭</span>
+                        <AppIcon name="compass" size="xs" tone="primary" />
                         <span className="text-[9px] font-black uppercase tracking-widest">{t.homeQiblaLabel}</span>
                     </Link>
                     <button
@@ -216,9 +202,7 @@ export default function PrayerTimesDisplay() {
                         aria-label={t.homeFindMosqueAria}
                         className={cn(
                             "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                            isDaylight
-                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
                         <MapPin className="h-3 w-3 text-[rgb(var(--color-primary))]" />
@@ -230,12 +214,10 @@ export default function PrayerTimesDisplay() {
                         aria-label={`${t.homeAiTitle}: ${t.homeAiSubtitle}`}
                         className={cn(
                             "flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
-                            isDaylight
-                                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                                : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10",
+                            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10",
                         )}
                     >
-                        <span className="text-xs" aria-hidden="true">✦</span>
+                        <AppIcon name="sparkles" size="xs" tone="primary" />
                         <span className="truncate text-[9px] font-black uppercase tracking-tight">{t.homeQuickAi}</span>
                     </Link>
                 </div>

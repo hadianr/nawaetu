@@ -22,8 +22,8 @@ describe("mapStreakAchievementToShareData", () => {
       id: "streak-7",
       arabic: "7",
       translation: "7 days of staying consistent in daily worship",
-      explanation: "One Week • +50 Hasanah • Level 3",
-      sourceText: "Nawaetu • Istiqamah Streak",
+      explanation: "One Week - +50 Hasanah - Level 3",
+      sourceText: "Nawaetu - Istiqamah Streak",
     });
     expect(JSON.stringify(card)).not.toMatch(/email|userId/i);
   });
@@ -131,7 +131,7 @@ describe("content share mappers", () => {
     expect(mapStreakAchievementToShareData({ currentStreak: 3, longestStreak: 5 })).toMatchObject({
       title: "Streak 3 hari!",
       explanation: "Streak terpanjang: 5 hari",
-      sourceText: "Nawaetu • Jejak Istiqamah",
+      sourceText: "Nawaetu - Jejak Istiqamah",
     });
   });
 });

@@ -6,12 +6,11 @@ const FOCUS_MODE_KEY = 'nawaetu_focus_mode';
 
 export interface FocusMode {
     isFocusMode: boolean;
-    isLightTheme: boolean;
     enterFocusMode: () => Promise<void>;
     exitFocusMode: () => void;
 }
 
-export function useFocusMode(isLightTheme: boolean): FocusMode {
+export function useFocusMode(): FocusMode {
     const [isFocusMode, setIsFocusMode] = useState(false);
     const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
@@ -92,5 +91,5 @@ export function useFocusMode(isLightTheme: boolean): FocusMode {
         setIsFocusMode(true);
     }, []);
 
-    return { isFocusMode, isLightTheme, enterFocusMode, exitFocusMode };
+    return { isFocusMode, enterFocusMode, exitFocusMode };
 }

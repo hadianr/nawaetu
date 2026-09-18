@@ -32,40 +32,41 @@ import { calculateHasanahReward } from "@/lib/utils/hasanah";
 import { useLocale } from "@/context/LocaleContext";
 import { useSession } from "next-auth/react";
 import { useDataSync } from "@/hooks/useDataSync";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import { APP_EVENTS } from "@/lib/constants/events";
 import { getPrayerMissionId, normalizeMissionId } from "@/lib/mission-resolver";
 import { DateUtils } from "@/lib/utils/date";
 import type { Gender } from "@/data/missions";
 import type { TranslationTree } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
+import type { AppIconName } from "@/lib/icon-names";
 
 // Prayer config: suffix for mission ID, icon, and the prayerTimes keys for time-awareness
-const PRAYERS = [
-    { suffix: "subuh", icon: "🌙", prayerKey: "Fajr", endKey: "Sunrise", i18n: "prayerFajr" },
-    { suffix: "dzuhur", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "prayerDhuhr" },
-    { suffix: "ashar", icon: "🌤️", prayerKey: "Asr", endKey: "Maghrib", i18n: "prayerAsr" },
-    { suffix: "maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "prayerMaghrib" },
-    { suffix: "isya", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "prayerIsha" },
+const PRAYERS: { suffix: string; icon: AppIconName; prayerKey: string; endKey: string | null; i18n: string }[] = [
+    { suffix: "subuh", icon: "moon", prayerKey: "Fajr", endKey: "Sunrise", i18n: "prayerFajr" },
+    { suffix: "dzuhur", icon: "sun", prayerKey: "Dhuhr", endKey: "Asr", i18n: "prayerDhuhr" },
+    { suffix: "ashar", icon: "cloud-sun", prayerKey: "Asr", endKey: "Maghrib", i18n: "prayerAsr" },
+    { suffix: "maghrib", icon: "sun", prayerKey: "Maghrib", endKey: "Isha", i18n: "prayerMaghrib" },
+    { suffix: "isya", icon: "moon", prayerKey: "Isha", endKey: null, i18n: "prayerIsha" },
 ] as const;
 
 const SUNNAH_PRAYERS = [
-    { id: "sunnah_qobliyah_fajr", icon: "✨", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", hasanah: 30 },
-    { id: "sunnah_dhuha", icon: "☀️", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", hasanah: 50 },
-    { id: "sunnah_qobliyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", hasanah: 25 },
-    { id: "sunnah_ba_diyah_dhuhr", icon: "☀️", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", hasanah: 25 },
-    { id: "sunnah_ba_diyah_maghrib", icon: "🌅", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", hasanah: 25 },
-    { id: "sunnah_ba_diyah_isha", icon: "🌃", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", hasanah: 25 },
-    { id: "sunnah_witir", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", hasanah: 40 },
-    { id: "sunnah_tahajjud", icon: "🌙", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", hasanah: 50 },
-    { id: "sunnah_istikharah", icon: "❓", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", hasanah: 30 },
-    { id: "sunnah_hajat", icon: "🤲", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", hasanah: 30 },
-    { id: "sunnah_taubat", icon: "📿", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", hasanah: 30 },
+    { id: "sunnah_qobliyah_fajr", icon: "sparkles", prayerKey: "Fajr", endKey: "Fajr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_fajr_title", hasanah: 30 },
+    { id: "sunnah_dhuha", icon: "sun", prayerKey: "Sunrise", endKey: "Dhuhr", i18n: "mission_sunnah_dhuha_title", hasanah: 50 },
+    { id: "sunnah_qobliyah_dhuhr", icon: "sun", prayerKey: "Dhuhr", endKey: "Dhuhr", isQobliyah: true, i18n: "mission_sunnah_qobliyah_dhuhr_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_dhuhr", icon: "sun", prayerKey: "Dhuhr", endKey: "Asr", i18n: "mission_sunnah_ba_diyah_dhuhr_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_maghrib", icon: "sun", prayerKey: "Maghrib", endKey: "Isha", i18n: "mission_sunnah_ba_diyah_maghrib_title", hasanah: 25 },
+    { id: "sunnah_ba_diyah_isha", icon: "moon", prayerKey: "Isha", endKey: null, i18n: "mission_sunnah_ba_diyah_isha_title", hasanah: 25 },
+    { id: "sunnah_witir", icon: "moon", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_witir_title", hasanah: 40 },
+    { id: "sunnah_tahajjud", icon: "moon", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tahajjud_title", hasanah: 50 },
+    { id: "sunnah_istikharah", icon: "help", prayerKey: null, endKey: null, i18n: "mission_sunnah_istikharah_title", hasanah: 30 },
+    { id: "sunnah_hajat", icon: "hands", prayerKey: null, endKey: null, i18n: "mission_sunnah_hajat_title", hasanah: 30 },
+    { id: "sunnah_taubat", icon: "hands", prayerKey: null, endKey: null, i18n: "mission_sunnah_taubat_title", hasanah: 30 },
     // Seasonal
-    { id: "sunnah_tarawih", icon: "🕌", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", hasanah: 50, visibility: { hijriMonth: 'Ramadan' } },
-    { id: "sunnah_eid_fitri", icon: "🌙", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", hasanah: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
-    { id: "sunnah_eid_adha", icon: "🕋", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", hasanah: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
-    { id: "sunnah_gerhana", icon: "🌑", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", hasanah: 50 },
-    { id: "sunnah_istisqa", icon: "🌧️", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", hasanah: 50 },
+    { id: "sunnah_tarawih", icon: "landmark", prayerKey: "Isha", endKey: "Fajr", i18n: "mission_sunnah_tarawih_title", hasanah: 50, visibility: { hijriMonth: 'Ramadan' } },
+    { id: "sunnah_eid_fitri", icon: "moon", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_fitri_title", hasanah: 100, visibility: { hijriMonth: 'Shawwal', hijriDay: 1 } },
+    { id: "sunnah_eid_adha", icon: "kaaba", prayerKey: null, endKey: null, i18n: "mission_sunnah_eid_adha_title", hasanah: 100, visibility: { hijriMonth: 'Dhu al-Hijjah', hijriDay: 10 } },
+    { id: "sunnah_gerhana", icon: "moon", prayerKey: null, endKey: null, i18n: "mission_sunnah_gerhana_title", hasanah: 50 },
+    { id: "sunnah_istisqa", icon: "cloud-sun", prayerKey: null, endKey: null, i18n: "mission_sunnah_istisqa_title", hasanah: 50 },
 ] as const;
 
 // Bottom-sheet state for male jamaah option
@@ -78,8 +79,6 @@ export default function PrayerCheckInWidget() {
     const { data: session } = useSession();
     const { syncData } = useDataSync();
     const { t, locale } = useLocale();
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const { completedMissions, completeMission, undoCompleteMission } = useMissions();
     const { data: prayerData, loading: prayerDataLoading } = usePrayerTimesContext();
 
@@ -243,7 +242,7 @@ export default function PrayerCheckInWidget() {
         toast.success(t.homePrayerCheckInToastTitle || "Alhamdulillah! ✅", {
             description: (t.homePrayerCheckInToastDesc || "Sholat tercatat (+{hasanah} Hasanah)").replace("{hasanah}", String(finalHasanah)),
             duration: 2500,
-            icon: "🎉",
+            icon: <AppIcon name="sparkles" size="sm" tone="primary" />,
         });
     };
 
@@ -263,7 +262,7 @@ export default function PrayerCheckInWidget() {
 
             toast.info(t.habitUndoTitle || "Habit dibatalkan", {
                 description: t.habitUndoDesc || "Point Hasanah telah dikembalikan.",
-                icon: "↩️",
+                icon: <AppIcon name="refresh" size="sm" tone="primary" />,
             });
             return;
         }
@@ -278,7 +277,7 @@ export default function PrayerCheckInWidget() {
             const label = getTranslation(prayer.i18n);
             toast.error(t.homePrayerCheckInNotYet.replace("{prayer}", label), {
                 description: t.homePrayerCheckInWait,
-                icon: "🔒",
+                icon: <AppIcon name="lock" size="sm" tone="muted" />,
             });
             return;
         }
@@ -298,7 +297,7 @@ export default function PrayerCheckInWidget() {
         return (
             <div className={cn(
                 "w-full h-[88px] animate-pulse rounded-2xl border",
-                isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
             )} />
         );
     }
@@ -309,21 +308,19 @@ export default function PrayerCheckInWidget() {
         <>
             <div className={cn(
                 "prayer-checkin-widget relative overflow-hidden rounded-2xl border backdrop-blur-md px-4 py-3.5 transition-all",
-                isDaylight
-                    ? "bg-white border-slate-200 shadow-sm shadow-slate-200/50"
-                    : "bg-black/20 border-white/10"
+                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
             )}>
                 {/* Soft Glow */}
                 <div className={cn(
                     "absolute top-0 right-0 w-24 h-24 rounded-full blur-[50px] pointer-events-none opacity-40",
-                    isDaylight ? "bg-emerald-200" : "bg-[rgb(var(--color-primary))]/10"
+                    "bg-[rgb(var(--color-primary))]/10"
                 )} />
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
                     <div className="flex min-w-0 items-center gap-1.5">
-                        <span className="shrink-0 text-sm">🕌</span>
-                        <p className={cn("truncate text-[10px] font-black uppercase tracking-tight", isDaylight ? "text-slate-800" : "text-white")}>
+                        <AppIcon name="landmark" size="sm" tone="primary" />
+                        <p className="truncate text-[10px] font-black uppercase tracking-tight">
                             {isBackdated ? t.homePrayerCheckInHistoryTitle : t.homePrayerCheckInSectionTitle}
                         </p>
                     </div>
@@ -340,15 +337,10 @@ export default function PrayerCheckInWidget() {
                                     dateInputRef.current?.focus();
                                 }
                             }}
-                            className="relative min-h-11 min-w-11 shrink-0 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer touch-manipulation group/date"
+                            className="relative min-h-11 min-w-11 shrink-0 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg hover:bg-[rgb(var(--color-primary))]/10 transition-colors cursor-pointer touch-manipulation group/date"
                         >
-                            <Calendar className={cn("w-3 h-3 transition-colors", isDaylight ? "text-slate-400 group-hover/date:text-slate-600" : "text-white/40 group-hover/date:text-white/70")} />
-                            <span className={cn(
-                                "text-[9px] font-bold uppercase transition-colors",
-                                isDaylight
-                                    ? "text-slate-400 group-hover/date:text-slate-600"
-                                    : "text-white/40 group-hover/date:text-white/70"
-                            )}>
+                            <Calendar className="w-3 h-3 text-[rgb(var(--color-text-muted))] transition-colors" />
+                            <span className="text-[9px] font-bold uppercase text-[rgb(var(--color-text-muted))] transition-colors">
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
@@ -370,20 +362,15 @@ export default function PrayerCheckInWidget() {
                                         setSelectedDate(e.target.value);
                                     }
                                 }}
-                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                                style={{ colorScheme: isDaylight ? 'light' : 'dark' }}
+                                className="prayer-date-input absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                             />
                         </div>
 
                         <div className={cn(
                             "text-[9px] px-1.5 py-0.5 rounded-full font-bold border transition-colors whitespace-nowrap",
                             completedCount === 5
-                                ? isDaylight
-                                    ? "bg-emerald-100 border-emerald-200 text-emerald-700"
-                                    : "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 text-[rgb(var(--color-primary-light))]"
-                                : isDaylight
-                                    ? "bg-slate-50 border-slate-100 text-slate-400"
-                                    : "bg-white/5 border-white/10 text-white/40"
+                                ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary))]"
+                                : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]"
                         )}>
                             {completedCount}/5
                         </div>
@@ -409,28 +396,16 @@ export default function PrayerCheckInWidget() {
                                 className={cn(
                                     "flex-1 flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
                                     done
-                                        ? isDaylight
-                                            ? "bg-emerald-50 border-emerald-100 cursor-default"
-                                            : "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 cursor-default"
+                                        ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 cursor-default"
                                         : isLocked
-                                            ? isDaylight
-                                                ? "bg-slate-50 border-slate-100 cursor-not-allowed opacity-40"
-                                                : "bg-white/[0.01] border-white/[0.05] cursor-not-allowed opacity-40 pointer-events-none"
+                                            ? "bg-[rgb(var(--color-surface-subtle))]/20 border-[rgb(var(--color-border))]/40 cursor-not-allowed opacity-40 pointer-events-none"
                                             : isLate
-                                                ? isDaylight
-                                                    ? "bg-orange-50 border-orange-200 active:scale-95"
-                                                    : "bg-amber-500/10 border-amber-500/30 active:scale-95"
+                                                ? "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/30 active:scale-95"
                                                 : isActive
-                                                    ? isDaylight
-                                                        ? "bg-emerald-50 border-emerald-200 shadow-sm active:scale-95"
-                                                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[0_0_10px_rgba(var(--color-primary),0.15)] active:scale-95"
+                                                ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)] active:scale-95"
                                                     : isUpcoming
-                                                        ? isDaylight
-                                                            ? "bg-slate-50/50 border-slate-100 active:scale-95"
-                                                            : "bg-white/[0.04] border-white/10 active:scale-95"
-                                                        : isDaylight
-                                                            ? "bg-white border-slate-50 active:scale-95"
-                                                            : "bg-white/[0.02] border-white/5 active:scale-95"
+                                                        ? "bg-[rgb(var(--color-surface-subtle))]/60 border-[rgb(var(--color-border))] active:scale-95"
+                                                        : "bg-[rgb(var(--color-surface-subtle))]/40 border-[rgb(var(--color-border))]/70 active:scale-95"
                                 )}
                             >
                                 {/* Active pulse for current prayer */}
@@ -441,29 +416,27 @@ export default function PrayerCheckInWidget() {
                                 {done ? (
                                     <div className={cn(
                                         "w-5 h-5 rounded-full flex items-center justify-center",
-                                        isDaylight ? "bg-emerald-500" : "bg-[rgb(var(--color-primary))]"
+                                        "bg-[rgb(var(--color-primary))]"
                                     )}>
-                                        <Check className="w-3 h-3 text-white" />
+                                    <Check className="w-3 h-3 text-[rgb(var(--color-primary-foreground))]" />
                                     </div>
                                 ) : isLate ? (
-                                    <AlertCircle className={cn("w-4 h-4", isDaylight ? "text-orange-500" : "text-amber-400")} />
+                                    <AlertCircle className="w-4 h-4 text-[rgb(var(--color-warning))]" />
                                 ) : (
-                                    <span className="text-[13px] leading-none">
-                                        {prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "🕌" : prayer.icon}
-                                    </span>
+                                    <AppIcon name={prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "landmark" : prayer.icon} size="sm" tone="primary" />
                                 )}
 
                                 <span className={cn(
                                     "text-[9px] font-bold leading-none transition-colors",
-                                    done
-                                        ? isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                                        done
+                                        ? "text-[rgb(var(--color-primary))]"
                                         : isLocked
-                                            ? isDaylight ? "text-slate-300" : "text-white/25"
+                                                    ? "text-[rgb(var(--color-text-muted))]/40"
                                             : isActive
-                                                ? isDaylight ? "text-slate-900" : "text-white"
+                                                ? "text-[rgb(var(--color-text-strong))]"
                                                 : isUpcoming
-                                                    ? isDaylight ? "text-slate-500" : "text-white/70"
-                                                    : isDaylight ? "text-slate-400" : "text-white/50"
+                                                    ? "text-[rgb(var(--color-text-muted))]"
+                                            : "text-[rgb(var(--color-text-muted))]/70"
                                 )}>
                                     {prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? getTranslation("prayerJumuah", "Jumat")
@@ -475,20 +448,20 @@ export default function PrayerCheckInWidget() {
                                     <span className={cn(
                                         "text-[7px] font-black leading-none",
                                         isLate
-                                            ? isDaylight ? "text-orange-600" : "text-amber-400/70"
-                                            : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
+                                            ? "text-[rgb(var(--color-warning))]/80"
+                                            : "text-[rgb(var(--color-primary))]/70"
                                     )}>
                                         +{getHasanahReward(gender !== "female" ? 75 : 25)} Hasanah
                                     </span>
                                 )}
                                 {!done && isUpcoming && !isLocked && (
-                                    <span className="text-[7px] font-medium leading-none text-white/30">
+                                    <span className="text-[7px] font-medium leading-none text-[rgb(var(--color-text-muted))]/70">
                                         {t.homePrayerCheckInUpcoming}
                                     </span>
                                 )}
                                 {isLocked && (
-                                    <span className="text-[7px] font-medium leading-none text-white/20">
-                                        🔒
+                                    <span className="text-[7px] font-medium leading-none text-[rgb(var(--color-text-muted))]/50">
+                                        <AppIcon name="lock" size="xs" tone="muted" />
                                     </span>
                                 )}
                             </button>
@@ -500,24 +473,22 @@ export default function PrayerCheckInWidget() {
                 {completedCount === 5 && (
                     <div className={cn(
                         "mt-2.5 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border relative z-10 transition-colors",
-                        isDaylight
-                            ? "bg-emerald-50 border-emerald-100"
-                            : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
+                        "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                     )}>
-                        <Sparkles className={cn("w-3 h-3", isDaylight ? "text-emerald-500" : "text-[rgb(var(--color-primary-light)) ]")} />
-                        <p className={cn("text-[10px] font-black", isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light)) ] text-center")}>
+                        <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary))]" />
+                        <p className="text-[10px] font-black text-[rgb(var(--color-primary))] text-center">
                             {t.homePrayerCheckInDone}
                         </p>
                     </div>
                 )}
 
                 {/* Sunnah Toggle & Section */}
-                <div className="mt-4 pt-3 border-t border-dashed border-white/10 relative z-10">
+                <div className="mt-4 pt-3 border-t border-dashed border-[rgb(var(--color-border))] relative z-10">
                     <button
                         onClick={() => setShowSunnah(!showSunnah)}
                         className={cn(
                             "w-full flex items-center justify-between py-1 transition-colors group",
-                            isDaylight ? "text-slate-500 hover:text-emerald-600" : "text-white/40 hover:text-[rgb(var(--color-primary-light))]"
+                            "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary))]"
                         )}
                     >
                         <div className="flex items-center gap-1.5">
@@ -528,9 +499,9 @@ export default function PrayerCheckInWidget() {
                         </div>
                         <div className={cn(
                             "text-[9px] font-bold px-2 py-0.5 rounded-full transition-colors",
-                            isDaylight ? "bg-slate-100 group-hover:bg-emerald-50" : "bg-white/5 group-hover:bg-white/10"
+                            "bg-[rgb(var(--color-surface-subtle))] group-hover:bg-[rgb(var(--color-primary))]/10"
                         )}>
-                            {showSunnah ? "↑ Hide" : "↓ Show"}
+                            <span className="inline-flex items-center gap-1"><AppIcon name={showSunnah ? "target" : "sparkles"} size="xs" tone="muted" /> {showSunnah ? "Hide" : "Show"}</span>
                         </div>
                     </button>
 
@@ -565,39 +536,31 @@ export default function PrayerCheckInWidget() {
                                             className={cn(
                                                 "flex flex-col items-center gap-1 py-1.5 rounded-xl border transition-all duration-200 relative overflow-hidden",
                                                 done
-                                                    ? isDaylight
-                                                        ? "bg-emerald-50/50 border-emerald-100 opacity-80"
-                                                        : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 opacity-80"
+                                                    ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 opacity-80"
                                                     : isLocked
-                                                        ? isDaylight
-                                                            ? "bg-slate-50/50 border-slate-50 opacity-30 grayscale"
-                                                            : "bg-white/[0.01] border-white/[0.05] opacity-30 grayscale pointer-events-none"
+                                                        ? "bg-[rgb(var(--color-surface-subtle))]/20 border-[rgb(var(--color-border))]/40 opacity-30 grayscale pointer-events-none"
                                                         : isActive
-                                                            ? isDaylight
-                                                                ? "bg-orange-50 border-orange-200 shadow-sm active:scale-95"
-                                                                : "bg-amber-500/10 border-amber-500/20 shadow-sm active:scale-95"
-                                                            : isDaylight
-                                                                ? "bg-white border-slate-100 active:scale-95"
-                                                                : "bg-white/[0.02] border-white/5 active:scale-95"
+                                                            ? "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25 shadow-[var(--shadow-card)] active:scale-95"
+                                                            : "bg-[rgb(var(--color-surface-subtle))]/40 border-[rgb(var(--color-border))]/70 active:scale-95"
                                             )}
                                         >
                                             <div className={cn(
                                                 "w-6 h-6 rounded-full flex items-center justify-center text-xl",
                                                 done
-                                                    ? isDaylight ? "bg-emerald-500 text-white" : "bg-[rgb(var(--color-primary))] text-white"
+                                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                                     : isLate
-                                                        ? isDaylight ? "bg-orange-100 text-orange-600" : "bg-amber-500/20 text-amber-400"
-                                                        : isDaylight ? "bg-slate-100 text-slate-400" : "bg-white/5 text-white/40"
+                                                        ? "bg-[rgb(var(--color-warning))]/15 text-[rgb(var(--color-warning))]"
+                                                        : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))]"
                                             )}>
-                                                {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : prayer.icon)}
+                                                {done ? <Check className="w-3 h-3" /> : (isLate && !isLocked ? <AlertCircle className="w-3 h-3" /> : <AppIcon name={prayer.icon} size="sm" tone="primary" />)}
                                             </div>
                                             <span className={cn(
                                                 "text-[6.5px] font-black uppercase text-center px-1 leading-[1.1] min-h-[16px] flex items-center justify-center",
                                                 done
-                                                    ? isDaylight ? "text-emerald-700" : "text-[rgb(var(--color-primary-light))]"
+                                                    ? "text-[rgb(var(--color-primary))]"
                                                     : isLate
-                                                        ? isDaylight ? "text-orange-700" : "text-amber-400/80"
-                                                        : isDaylight ? "text-slate-400" : "text-white/40"
+                                                        ? "text-[rgb(var(--color-warning))]/80"
+                                                        : "text-[rgb(var(--color-text-muted))]"
                                             )}>
                                                 {getTranslation(prayer.i18n, prayer.i18n.split("_").pop())}
                                             </span>
@@ -607,8 +570,8 @@ export default function PrayerCheckInWidget() {
                                                 <span className={cn(
                                                     "text-[6px] font-black leading-none mt-0.5",
                                                     isLate
-                                                        ? isDaylight ? "text-orange-600" : "text-amber-400/60"
-                                                        : isDaylight ? "text-emerald-600" : "text-[rgb(var(--color-primary-light))]/60"
+                                                        ? "text-[rgb(var(--color-warning))]/70"
+                                                        : "text-[rgb(var(--color-primary))]/70"
                                                 )}>
                                                     +{getHasanahReward("hasanah" in prayer ? prayer.hasanah : 25)} Hasanah
                                                 </span>
@@ -629,32 +592,32 @@ export default function PrayerCheckInWidget() {
                     onClick={() => setSheet(null)}
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                    <div className="absolute inset-0 bg-[rgb(var(--color-canvas))]/70 backdrop-blur-sm" />
 
                     <div
                         className={cn(
                             "relative w-full max-w-md border rounded-t-3xl p-6 pb-8 shadow-2xl animate-in slide-in-from-bottom-4 duration-300 z-10",
-                            isDaylight ? "bg-white border-slate-200" : "bg-[rgb(var(--color-background))] border-white/10"
+                            "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                         )}
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Handle */}
-                        <div className={cn("w-10 h-1 rounded-full mx-auto mb-5", isDaylight ? "bg-slate-200" : "bg-white/20")} />
+                        <div className="w-10 h-1 rounded-full mx-auto mb-5 bg-[rgb(var(--color-border))]" />
 
                         <div className="flex items-center gap-3 mb-5">
                             <div className={cn(
                                 "w-10 h-10 rounded-xl border flex items-center justify-center text-xl transition-colors",
-                                isDaylight ? "bg-slate-50 border-slate-100" : "bg-white/5 border-white/10"
+                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                             )}>
-                                {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "🕌" : sheet.prayer.icon}
+                                <AppIcon name={sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected ? "landmark" : sheet.prayer.icon} size="lg" tone="primary" />
                             </div>
                             <div>
-                                <p className={cn("text-sm font-black", isDaylight ? "text-slate-900" : "text-white")}>
+                                <p className="text-sm font-black">
                                     {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? t.homePrayerCheckInSheetTitle.replace("{prayer}", getTranslation("prayerJumuah", "Jumat"))
                                         : t.homePrayerCheckInSheetTitle.replace("{prayer}", getTranslation(sheet.prayer.i18n))}
                                 </p>
-                                <p className={cn("text-[10px] font-medium", isDaylight ? "text-slate-400" : "text-white/50")}>
+                                <p className="text-[10px] font-medium text-[rgb(var(--color-text-muted))]">
                                     {sheet.prayer.suffix === "dzuhur" && gender === "male" && isFridaySelected
                                         ? (locale === "id" ? "Sholat Jumat wajib dilaksanakan secara berjamaah di masjid." : "Friday prayer is obligatory in congregation at the mosque.")
                                         : t.homePrayerCheckInSheetSubtitle}
@@ -672,17 +635,15 @@ export default function PrayerCheckInWidget() {
                                     }}
                                     className={cn(
                                         "w-full flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
-                                        isDaylight
-                                            ? "bg-emerald-600 border-emerald-500 shadow-emerald-200/50 hover:bg-emerald-500"
-                                            : "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/20 shadow-[rgb(var(--color-primary))]/20 hover:brightness-110"
+                                        "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-strong))]"
                                     )}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-                                    <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
-                                    <span className="text-xs font-black uppercase tracking-wide text-white relative">
+                                    <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
+                                    <span className="text-xs font-black uppercase tracking-wide text-[rgb(var(--color-primary-foreground))] relative">
                                         {locale === "id" ? "Berjamaah di Masjid" : "Congregation (Mosque)"}
                                     </span>
-                                    <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>
+                                    <span className="text-[10px] font-black text-[rgb(var(--color-primary-foreground))]/80 relative">
                                         +{getHasanahReward(200)} Hasanah
                                     </span>
                                 </button>
@@ -696,14 +657,12 @@ export default function PrayerCheckInWidget() {
                                         }}
                                         className={cn(
                                             "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border group",
-                                            isDaylight
-                                                ? "bg-slate-50 border-slate-100 hover:bg-slate-100"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                            "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-primary))]/10"
                                         )}
                                     >
-                                        <span className="text-2xl group-active:scale-110 transition-transform">🏠</span>
-                                        <span className={cn("text-xs font-black uppercase tracking-wide", isDaylight ? "text-slate-800" : "text-white")}>{t.homePrayerCheckInOptionSolo}</span>
-                                        <span className={cn("text-[10px] font-black", isDaylight ? "text-slate-400" : "text-white/50")}>+{getHasanahReward(25)} Hasanah</span>
+                                        <AppIcon name="home" size="lg" tone="primary" className="group-active:scale-110 transition-transform" />
+                                        <span className="text-xs font-black uppercase tracking-wide">{t.homePrayerCheckInOptionSolo}</span>
+                                        <span className="text-[10px] font-black text-[rgb(var(--color-text-muted))]">+{getHasanahReward(25)} Hasanah</span>
                                     </button>
 
                                     {/* Berjamaah */}
@@ -714,15 +673,13 @@ export default function PrayerCheckInWidget() {
                                         }}
                                         className={cn(
                                             "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
-                                            isDaylight
-                                                ? "bg-emerald-600 border-emerald-500 shadow-emerald-200/50 hover:bg-emerald-500"
-                                                : "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/20 shadow-[rgb(var(--color-primary))]/20 hover:brightness-110"
+                                            "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-strong))]"
                                         )}
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-                                        <span className="text-2xl relative group-active:scale-110 transition-transform">🕌</span>
-                                        <span className="text-xs font-black uppercase tracking-wide text-white relative">{t.homePrayerCheckInOptionJamaah}</span>
-                                        <span className={cn("text-[10px] font-black relative", isDaylight ? "text-emerald-100" : "text-white/80")}>+{getHasanahReward(75)} Hasanah</span>
+                                        <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
+                                        <span className="text-xs font-black uppercase tracking-wide text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
+                                        <span className="text-[10px] font-black text-[rgb(var(--color-primary-foreground))]/80 relative">+{getHasanahReward(75)} Hasanah</span>
                                     </button>
                                 </>
                             )}
@@ -730,11 +687,11 @@ export default function PrayerCheckInWidget() {
 
                         <div className={cn(
                             "mt-4 mb-6 p-4 rounded-xl border relative",
-                            isDaylight ? "bg-emerald-50/50 border-emerald-100/50" : "bg-white/[0.03] border-white/5"
+                            "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             <p className={cn(
                                 "text-[10px] text-center italic leading-relaxed font-bold",
-                                isDaylight ? "text-emerald-800" : "text-white/60"
+                                "text-[rgb(var(--color-text-muted))]"
                             )}>
                                 {t.homePrayerCheckInQuote}
                             </p>
@@ -744,9 +701,7 @@ export default function PrayerCheckInWidget() {
                             onClick={() => setSheet(null)}
                             className={cn(
                                 "w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all border",
-                                isDaylight
-                                    ? "bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-                                    : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 hover:text-[rgb(var(--color-text))]"
                             )}
                         >
                             {getTranslation("buttonCancel", "Batal")}

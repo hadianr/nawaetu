@@ -145,7 +145,7 @@ class UnifiedRateLimiter {
             const { success, remaining } = await this.redisLimiter.limit(token);
             return { success, remaining };
         } catch (err) {
-            // Redis unavailable → degrade gracefully to in-memory
+            // Redis unavailable; degrade gracefully to in-memory
             logger.warn('Redis error, falling back to in-memory', { action: 'rate-limit', error: err instanceof Error ? err.message : String(err) });
             return this.fallback.limit(this.config.requests, token);
         }

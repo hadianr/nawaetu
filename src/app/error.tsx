@@ -42,25 +42,25 @@ export default function Error({
         error.message?.toLowerCase().includes("pool");
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a0a0a] px-6 text-center">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[rgb(var(--color-background))] px-6 text-center">
             <div className="relative mb-8">
-                <div className="absolute inset-0 animate-pulse rounded-full bg-red-500/20 blur-3xl" />
+                <div className="absolute inset-0 animate-pulse rounded-full bg-[rgb(var(--color-danger))]/20 blur-3xl" />
                 {isDatabaseError ? (
-                    <div className="relative rounded-3xl bg-red-500/10 p-6 border border-red-500/20">
-                        <Database className="h-16 w-16 text-red-500" />
+                    <div className="relative rounded-3xl bg-[rgb(var(--color-danger))]/10 p-6 border border-[rgb(var(--color-danger))]/20">
+                        <Database className="h-16 w-16 text-[rgb(var(--color-danger))]" />
                     </div>
                 ) : (
-                    <div className="relative rounded-3xl bg-amber-500/10 p-6 border border-amber-500/20">
-                        <AlertTriangle className="h-16 w-16 text-amber-500" />
+                    <div className="relative rounded-3xl bg-[rgb(var(--color-warning))]/10 p-6 border border-[rgb(var(--color-warning))]/20">
+                        <AlertTriangle className="h-16 w-16 text-[rgb(var(--color-warning))]" />
                     </div>
                 )}
             </div>
 
-            <h1 className="mb-2 text-2xl font-bold text-white">
+            <h1 className="mb-2 text-2xl font-bold text-[rgb(var(--color-text-strong))]">
                 {isDatabaseError ? "Koneksi Bermasalah" : "Terjadi Kesalahan"}
             </h1>
 
-            <p className="mb-8 max-w-sm text-sm text-slate-400 leading-relaxed">
+            <p className="mb-8 max-w-sm text-sm text-[rgb(var(--color-text-muted))] leading-relaxed">
                 {isDatabaseError
                     ? "Kami sedang kesulitan menghubungkan ke database. Mohon tunggu sebentar selagi kami memperbaikinya."
                     : "Waduh, ada sesuatu yang tidak beres. Tim kami sedang meninjau masalah ini."}
@@ -69,7 +69,7 @@ export default function Error({
             <div className="flex flex-col w-full max-w-xs gap-3">
                 <Button
                     onClick={() => reset()}
-                    className="h-12 w-full rounded-2xl bg-white text-black font-bold hover:bg-white/90 transition-all active:scale-95"
+                    className="h-12 w-full rounded-2xl bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] font-bold hover:bg-[rgb(var(--color-primary-light))] transition-all active:scale-95"
                 >
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Coba Lagi
@@ -78,7 +78,7 @@ export default function Error({
                 <Link href="/" className="w-full">
                     <Button
                         variant="ghost"
-                        className="h-12 w-full rounded-2xl border border-white/10 text-white/60 hover:text-white hover:bg-white/5"
+                        className="h-12 w-full rounded-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]"
                     >
                         <Home className="mr-2 h-4 w-4" />
                         Kembali ke Home
@@ -87,9 +87,9 @@ export default function Error({
             </div>
 
             {process.env.NODE_ENV === "development" && (
-                <div className="mt-12 w-full max-w-md overflow-hidden rounded-xl border border-white/5 bg-black/40 p-4 text-left">
-                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-white/30">Debug Info</p>
-                    <pre className="overflow-x-auto text-[10px] text-red-400/80 font-mono leading-relaxed">
+                <div className="mt-12 w-full max-w-md overflow-hidden rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/60 p-4 text-left">
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">Debug Info</p>
+                    <pre className="overflow-x-auto text-[10px] text-[rgb(var(--color-danger))] font-mono leading-relaxed">
                         {error.message}
                         {"\n"}
                         {error.digest && `Digest: ${error.digest}`}

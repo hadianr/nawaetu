@@ -27,7 +27,6 @@ export interface QiblaPermissionPromptProps {
     permissionGranted: boolean;
     error: string | null;
     showSessionNote: boolean;
-    isDaylight: boolean;
     t: TranslationTree;
     requestCompassPermission: () => void;
 }
@@ -36,7 +35,6 @@ export function QiblaPermissionPrompt({
     permissionGranted,
     error,
     showSessionNote,
-    isDaylight,
     t,
     requestCompassPermission
 }: QiblaPermissionPromptProps) {
@@ -45,20 +43,20 @@ export function QiblaPermissionPrompt({
     return (
         <div className={cn(
             "fixed inset-0 z-[100] flex flex-col items-center justify-center p-6 text-center transition-colors duration-500",
-            isDaylight ? "bg-[rgb(var(--color-canvas))]" : "bg-[rgb(var(--color-background))]"
+            "bg-[rgb(var(--color-canvas))]"
         )}>
             <div className={cn(
                 "w-20 h-20 rounded-full flex items-center justify-center mb-6 ring-1 transition-all",
-                isDaylight ? "bg-[rgb(var(--color-primary-light))]/35 ring-[rgb(var(--color-border))]" : "bg-[rgb(var(--color-primary))]/10 ring-[rgb(var(--color-primary))]/20"
+                "bg-[rgb(var(--color-primary))]/10 ring-[rgb(var(--color-primary))]/20"
             )}>
                 <Compass className={cn(
                     "w-10 h-10 animate-[spin_3s_linear_infinite]",
-                    isDaylight ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-primary-light))]"
+                    "text-[rgb(var(--color-primary-light))]"
                 )} />
             </div>
 
-            <h3 className={cn("text-2xl font-bold mb-3 tracking-tight", isDaylight ? "text-slate-900" : "text-white")}>{t.qiblaPermissionTitle}</h3>
-            <p className={cn("max-w-xs mb-4 leading-relaxed", isDaylight ? "text-slate-500" : "text-white/60")}>
+            <h3 className="text-2xl font-bold mb-3 tracking-tight text-[rgb(var(--color-text-strong))]">{t.qiblaPermissionTitle}</h3>
+            <p className="max-w-xs mb-4 leading-relaxed text-[rgb(var(--color-text-muted))]">
                 {t.qiblaPermissionDesc}
             </p>
 
@@ -66,10 +64,10 @@ export function QiblaPermissionPrompt({
             {showSessionNote && (
                 <div className={cn(
                     "mb-8 px-4 py-3 border rounded-lg max-w-sm",
-                    isDaylight ? "bg-amber-50 border-amber-100" : "bg-yellow-500/10 border-yellow-500/20"
+                    "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25"
                 )}>
-                    <p className={cn("text-xs leading-relaxed", isDaylight ? "text-amber-800" : "text-yellow-200/80")}>
-                        <strong className={isDaylight ? "text-amber-900" : "text-yellow-200"}>Penting:</strong> Setelah app di-close, klik tombol ini lagi untuk mengaktifkan kompas. Browser perlu izin ulang untuk akses sensor.
+                    <p className="text-xs leading-relaxed text-[rgb(var(--color-warning))]">
+                        <strong className="text-[rgb(var(--color-warning))]">Penting:</strong> Setelah app di-close, klik tombol ini lagi untuk mengaktifkan kompas. Browser perlu izin ulang untuk akses sensor.
                     </p>
                 </div>
             )}
@@ -78,9 +76,7 @@ export function QiblaPermissionPrompt({
                 onClick={requestCompassPermission}
                 className={cn(
                     "rounded-full px-10 py-7 text-lg font-medium transition-all hover:scale-105 active:scale-95",
-                    isDaylight
-                        ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-dark))] text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-floating)]"
-                        : "bg-[rgb(var(--color-primary-dark))] hover:bg-[rgb(var(--color-primary))] text-white shadow-[0_0_30px_rgba(var(--color-primary),0.25)]"
+                    "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-floating)]"
                 )}
             >
                 {t.qiblaPermissionButton}

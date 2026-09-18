@@ -9,8 +9,8 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
-import { THEMES, useTheme } from "@/context/ThemeContext";
 import type { TranslationTree } from "@/context/LocaleContext";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 type TimeRange = 'today' | '7d' | '30d' | '90d' | '1y';
 type HasanahPoint = { dateLabel: string; hasanah: number };
@@ -30,8 +30,6 @@ export function HasanahTrendChart({
     timeRange,
     setTimeRange
 }: HasanahTrendChartProps) {
-    const { currentTheme } = useTheme();
-    const isDaylight = THEMES[currentTheme].mode === "light";
     const filters: { id: TimeRange; label: string }[] = [
         { id: 'today', label: t.stats.chart.filters.today },
         { id: '7d', label: t.stats.chart.filters.last7d },
@@ -43,17 +41,17 @@ export function HasanahTrendChart({
     return (
         <div className={cn(
             "rounded-2xl border p-5 overflow-hidden",
-            isDaylight ? "border-slate-200 bg-white text-slate-900 shadow-sm" : "border-white/10 bg-white/[0.02]"
+            "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)]"
         )}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <h2 className="font-bold text-sm flex items-center gap-2">
-                    <span className="text-base">📈</span>
+                    <AppIcon name="target" size="sm" tone="primary" label={t.stats.chart.title} />
                     {t.stats.chart.title} ({filters.find(f => f.id === timeRange)?.label})
                 </h2>
 
                 <div className={cn(
                     "grid grid-cols-5 w-full sm:w-auto p-1 rounded-xl border",
-                    isDaylight ? "bg-slate-50 border-slate-200" : "bg-white/5 border-white/5"
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                 )}>
                     {filters.map((f) => (
                         <button
@@ -62,10 +60,8 @@ export function HasanahTrendChart({
                             className={cn(
                                 "px-1 py-1.5 rounded-lg text-[10px] sm:px-3 font-bold transition-all whitespace-nowrap text-center",
                                 timeRange === f.id
-                                    ? "bg-[rgb(var(--color-primary))] text-white shadow-lg shadow-primary/20"
-                                    : isDaylight
-                                        ? "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-                                        : "text-white/40 hover:text-white/60 hover:bg-white/5"
+                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
+                                    : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]"
                             )}
                         >
                             {f.label}
@@ -86,25 +82,25 @@ export function HasanahTrendChart({
                                 <stop offset="95%" stopColor="var(--color-hasanah)" stopOpacity={0.01} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke={isDaylight ? "rgba(15,23,42,0.1)" : "rgba(255,255,255,0.05)"} />
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgb(var(--color-border) / 0.55)" />
                         <XAxis
                             dataKey="dateLabel"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={12}
                             tickFormatter={(value) => value}
-                            tick={{ fill: isDaylight ? 'rgba(71,85,105,0.8)' : 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 700 }}
+                            tick={{ fill: 'rgb(var(--color-text-muted) / 0.8)', fontSize: 9, fontWeight: 700 }}
                             interval={timeRange === 'today' ? 3 : timeRange === '7d' ? 0 : 'preserveStartEnd'}
                         />
                         <ChartTooltip
-                            cursor={{ stroke: isDaylight ? 'rgba(15,23,42,0.15)' : 'rgba(255,255,255,0.1)', strokeWidth: 1 }}
+                            cursor={{ stroke: 'rgb(var(--color-border))', strokeWidth: 1 }}
                             content={
                                 <ChartTooltipContent
                                     hideLabel
                                     indicator="dot"
                                     className={cn(
                                         "backdrop-blur-xl rounded-2xl p-3 shadow-2xl min-w-[100px]",
-                                        isDaylight ? "bg-white/95 border border-slate-200 text-slate-900" : "bg-[#0A0A0B]/95 border border-white/10"
+                                        "bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                                     )}
                                 />
                             }
@@ -122,7 +118,7 @@ export function HasanahTrendChart({
                     </AreaChart>
                 </ChartContainer>
             </div>
-            <p className={cn("text-[10px] text-center mt-3", isDaylight ? "text-slate-500" : "text-white/40")}>
+            <p className="text-[10px] text-center mt-3 text-[rgb(var(--color-text-muted))]">
                 {t.stats.chart.subtitle}
             </p>
         </div>

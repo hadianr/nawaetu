@@ -23,6 +23,7 @@ import { HasanahTrendChart } from '@/components/stats/HasanahTrendChart';
 import { QuranStatsCard } from '@/components/stats/QuranStatsCard';
 import { useStreak } from '@/hooks/useStreak';
 import { DateUtils } from '@/lib/utils/date';
+import { AppIcon, resolveAppIconName } from '@/components/ui/AppIcon';
 import StreakBadge from '@/components/StreakBadge';
 
 export default function StatsPage() {
@@ -228,7 +229,7 @@ export default function StatsPage() {
     }
 
     return (
-            <div className="stats-page min-h-screen bg-[rgb(var(--color-background))] text-white pb-nav">
+            <div className="stats-page min-h-screen bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
 
                 <div className="max-w-2xl mx-auto px-6 pt-5">
@@ -284,41 +285,41 @@ export default function StatsPage() {
 
                     {/* Rank Details Modal */}
                     <Dialog open={isRankModalOpen} onOpenChange={setIsRankModalOpen}>
-                        <DialogContent showCloseButton={false} className="bg-[#0A0A0B]/95 border-white/5 backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-[32px]">
+                        <DialogContent showCloseButton={false} className="bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] backdrop-blur-2xl p-0 overflow-hidden max-w-[360px] rounded-[32px] text-[rgb(var(--color-text-strong))]">
                             <div className="relative p-6">
                                 <DialogHeader className="mb-6">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="w-12 h-12 rounded-[20px] bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-xl">
-                                            {playerRank.icon}
+                                        <div className="w-12 h-12 rounded-[20px] bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] flex items-center justify-center text-2xl shadow-[var(--shadow-card)]">
+                                            <AppIcon name={resolveAppIconName(playerRank.icon)} size="md" tone="primary" />
                                         </div>
                                         <div>
-                                            <DialogTitle className="text-xl font-black text-white">{playerRank.title}</DialogTitle>
-                                            <DialogDescription className="text-xs text-white/50">{t.stats.level.rankLabel}</DialogDescription>
+                                            <DialogTitle className="text-xl font-black text-[rgb(var(--color-text-strong))]">{playerRank.title}</DialogTitle>
+                                            <DialogDescription className="text-xs text-[rgb(var(--color-text-muted))]">{t.stats.level.rankLabel}</DialogDescription>
                                         </div>
                                     </div>
                                 </DialogHeader>
 
                                 <div className="space-y-4">
-                                    <div className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                        <p className="text-xs text-white/70 leading-relaxed italic">
+                                    <div className="p-4 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+                                        <p className="text-xs text-[rgb(var(--color-text))] leading-relaxed italic">
                                             &quot;{playerRank.desc}&quot;
                                         </p>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                            <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.currentHasanah}</p>
-                                            <p className="text-sm font-black text-white">{playerStats.hasanah.toLocaleString()}</p>
+                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+                                            <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase mb-1">{t.stats.level.currentHasanah}</p>
+                                            <p className="text-sm font-black text-[rgb(var(--color-text-strong))]">{playerStats.hasanah.toLocaleString()}</p>
                                         </div>
-                                        <div className="p-3 bg-white/[0.03] border border-white/5 rounded-2xl">
-                                            <p className="text-[10px] font-bold text-white/40 uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
-                                            <p className="text-sm font-black text-white">{playerStats.nextLevelHasanah.toLocaleString()}</p>
+                                        <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
+                                            <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
+                                            <p className="text-sm font-black text-[rgb(var(--color-text-strong))]">{playerStats.nextLevelHasanah.toLocaleString()}</p>
                                         </div>
                                     </div>
 
                                     <Button
                                         onClick={() => setIsRankModalOpen(false)}
-                                        className="w-full h-12 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm border border-white/10 transition-all"
+                                        className="w-full h-12 rounded-2xl bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-strong))] font-bold text-sm border border-[rgb(var(--color-border))] transition-all"
                                     >
                                         {t.stats.level.understand}
                                     </Button>

@@ -30,12 +30,12 @@ const PrayerTimesDisplay = dynamic(() => import("@/components/PrayerTimesDisplay
 
 const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
   ssr: false,
-  loading: () => <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />,
+  loading: () => <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />,
 });
 
 const DailySpiritWidget = dynamic(() => import("@/components/home/DailySpiritWidget"), {
   ssr: false,
-  loading: () => <div className="w-full h-40 bg-white/5 border border-white/10 animate-pulse rounded-[2rem]" />,
+  loading: () => <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-[2rem]" />,
 });
 
 export default function DeferredBelowFold() {
@@ -67,7 +67,7 @@ export default function DeferredBelowFold() {
             {ready ? (
               <MissionsWidget />
             ) : (
-              <div className="w-full h-48 bg-white/5 border border-white/10 animate-pulse rounded-2xl" />
+              <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />
             )}
           </section>
         }
@@ -76,15 +76,15 @@ export default function DeferredBelowFold() {
         {
           <section className="w-full mt-4 space-y-2 animate-in slide-in-from-bottom-6 fade-in duration-1000 delay-400">
             <div className="px-6 flex flex-col">
-              <h2 className="text-sm font-black text-white/90 tracking-tight">{t.spiritualDailyTitle}</h2>
-              <p className="text-[10px] text-white/40 font-medium">{t.spiritualDailySubtitle}</p>
+              <h2 className="text-sm font-black text-[rgb(var(--color-text-strong))] tracking-tight">{t.spiritualDailyTitle}</h2>
+              <p className="text-[10px] text-[rgb(var(--color-text-muted))] font-medium">{t.spiritualDailySubtitle}</p>
             </div>
 
             <div>
               {ready ? (
                 <DailySpiritWidget />
               ) : (
-                <div className="w-full h-40 bg-white/5 border border-white/10 animate-pulse rounded-[2.5rem]" />
+                <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-[2.5rem]" />
               )}
             </div>
           </section>

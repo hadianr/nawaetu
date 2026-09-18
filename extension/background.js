@@ -59,7 +59,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
         chrome.notifications.create({
             type: 'basic',
             iconUrl: 'icons/icon-128.png',
-            title: `🕌 Waktu Adzan – ${label}`,
+            title: `Waktu Adzan – ${label}`,
             message: `Allahu Akbar! Waktu sholat ${label} telah tiba.`,
             priority: 2
         });
@@ -68,8 +68,8 @@ chrome.alarms.onAlarm.addListener(alarm => {
         chrome.notifications.create({
             type: 'basic',
             iconUrl: 'icons/icon-128.png',
-            title: `⏰ Bersiap Sholat ${label}`,
-            message: `Adzan ${label} dalam 10 menit. Bersiap dan ambil wudu. 🕌`,
+            title: `Bersiap Sholat ${label}`,
+            message: `Adzan ${label} dalam 10 menit. Bersiap dan ambil wudu.`,
             priority: 1
         });
     }

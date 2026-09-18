@@ -39,19 +39,19 @@ export const hasanahSourceEnum = pgEnum("hasanah_source", [
 
 // --- Fasting Tracker Enums (v2.0.0) ---
 export const fastingStatusEnum = pgEnum("fasting_status", [
-    "fasting",       // ✅ Puasa penuh
-    "not_fasting",   // ❌ Tidak puasa (sengaja/tanpa uzur)
-    "sick",          // 🤒 Sakit
-    "traveling",     // ✈️ Safar
-    "menstruation",  // 🌸 Haid
-    "postpartum",    // 🌺 Nifas
-    "pregnant",      // 🤰 Hamil
-    "breastfeeding", // 🤱 Menyusui
-    "elderly",       // 👴 Lansia/sakit permanen
+    "fasting",       // Puasa penuh
+    "not_fasting",   // Tidak puasa (sengaja/tanpa uzur)
+    "sick",          // Sakit
+    "traveling",     // Safar
+    "menstruation",  // Haid
+    "postpartum",    // Nifas
+    "pregnant",      // Hamil
+    "breastfeeding", // Menyusui
+    "elderly",       // Lansia/sakit permanen
 ]);
 
 export const fastingConsequenceEnum = pgEnum("fasting_consequence", [
-    "none",   // Puasa → tidak ada kewajiban
+    "none",   // Puasa - tidak ada kewajiban
     "qadha",  // Wajib mengganti puasa
     "fidyah", // Wajib bayar fidyah
     "choice", // Pilihan qadha atau fidyah (ikhtilaf madzhab)
