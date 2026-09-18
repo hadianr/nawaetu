@@ -221,7 +221,7 @@ export default function MissionsWidget() {
     return (
         <div className={cn(
             "relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all",
-            "bg-[rgb(var(--color-surface))] backdrop-blur-md border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
+            "glass-surface border shadow-[var(--shadow-card)]"
         )}>
             <div className={cn(
                 "absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] pointer-events-none opacity-20 transition-colors",

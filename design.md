@@ -96,6 +96,7 @@ Avoid 9–10px for meaningful information. Uppercase tracking is for short metad
 - Controls use the shared control radius; cards use the shared card radius. Pills are for tags and compact status, not every container.
 - Use one quiet border token per surface. Do not mix hardcoded white, slate, emerald, and route-specific borders.
 - Cards use the card shadow; dialogs and floating actions use the floating shadow. Shadows should be soft and theme-aware, never a gray haze on light surfaces.
+- Glass is an optional material for navigation and a small number of foreground panels, using the shared `glass-surface` class with semantic surface and border colors. Keep reading surfaces and nested controls solid. Use enough tint for readable text, modest blur, and a solid fallback when blur is unsupported or the user requests reduced transparency. Do not stack frosted surfaces or add decorative backgrounds merely to make blur visible.
 - Controls transition in roughly 150–220ms; larger surfaces in 250–400ms. Avoid persistent glow, pulse, or decorative motion.
 - `prefers-reduced-motion` removes nonessential movement. A static fallback must remain legible.
 - Patterns are decoration only. They must never sit behind dense Arabic text, controls, dialogs, or status information.
@@ -196,7 +197,7 @@ Before editing, identify the owning component and reuse it. Before adding a toke
 
 Do not:
 
-- invent gradients, glassmorphism, neon glows, oversized hero sections, or decorative blobs without a product need;
+- invent gradients, neon glows, oversized hero sections, or decorative blobs without a product need;
 - introduce arbitrary colors, one-off shadows, random radii, or page-specific breakpoints;
 - duplicate a card, modal, icon map, button, or theme branch;
 - use emoji/symbols as UI chrome;

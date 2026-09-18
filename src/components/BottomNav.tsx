@@ -86,7 +86,7 @@ const BottomNav = memo(function BottomNav() {
         <nav
             aria-label="Navigasi utama"
             className={cn(
-                "fixed bottom-0 left-0 z-50 w-full border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/90 backdrop-blur-xl pb-safe shadow-[var(--shadow-floating)]"
+                "glass-surface fixed bottom-0 left-0 z-50 w-full border-t pb-safe shadow-[var(--shadow-floating)]"
             )}
         >
             <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2 relative">
