@@ -96,6 +96,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [isLocationLoading, setIsLocationLoading] = useState(false);
     const [isLocationSet, setIsLocationSet] = useState(false);
+    const [isFinishing, setIsFinishing] = useState(false);
     const storage = getStorageService();
 
     useEffect(() => {
@@ -119,11 +120,35 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     };
 
     const handleFinish = async () => {
+        if (isFinishing) return;
+        setIsFinishing(true);
+
         // 1. Local Storage Update (Immediate)
         const finalName = name || translations.onboardingDefaultName;
         storage.set(STORAGE_KEYS.USER_NAME, finalName);
         storage.set(STORAGE_KEYS.USER_GENDER, gender);
         storage.set(ONBOARDING_KEY, "v2");
+
+        // Verify the marker: the storage adapter intentionally ignores unavailable
+        // storage, which otherwise makes onboarding appear complete until reload.
+        let markerSaved = false;
+        for (let attempt = 0; attempt < 3 && !markerSaved; attempt++) {
+            try {
+                markerSaved = window.localStorage.getItem(ONBOARDING_KEY) === "v2";
+            } catch {
+                markerSaved = false;
+            }
+            if (!markerSaved && attempt < 2) {
+                await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)));
+                storage.set(ONBOARDING_KEY, "v2");
+            }
+        }
+        if (!markerSaved) {
+            toast.error("Onboarding belum tersimpan. Coba lagi.");
+            setIsFinishing(false);
+            return;
+        }
+
         sendGAEvent("onboarding_completed", { version: "v2" });
 
         // 2. Database Sync (If authenticated)
@@ -447,6 +472,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     <Button
                         onClick={handleNext}
                         disabled={
+                            isFinishing ||
                             (step === 'setup-gender' && !gender) ||
                             (step === 'setup-location' && !isLocationSet)
                         }

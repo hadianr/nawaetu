@@ -74,6 +74,8 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
             }
             if (!completed && status !== "authenticated") {
                 queueMicrotask(() => setShowOnboarding(true));
+            } else {
+                queueMicrotask(() => setShowOnboarding(false));
             }
         } catch (e) {
             console.error("Failed to check onboarding status", e);
