@@ -25,7 +25,9 @@ unsupported licenses.
 GitHub Actions.
 
 ### `release.yml`
-Handles automated releases when a new version tag is pushed.
+Publishes a GitHub Release when a version tag is pushed, or when
+`finalize-release.yml` dispatches it after a release PR merges. The dispatched
+run checks out the existing tag so the package version and changelog match.
 
 To block production merges/deployments until quality passes, configure the
 GitHub `main` branch protection rule with the required check:
