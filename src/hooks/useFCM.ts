@@ -19,8 +19,8 @@
  */
 
 import { useEffect, useState } from "react";
-import { onMessage } from "firebase/messaging";
-import { registerServiceWorkerAndGetToken, messaging } from "@/lib/notifications/fcm-init";
+import type { MessagePayload } from "firebase/messaging";
+import { registerServiceWorkerAndGetToken, subscribeForegroundMessages } from "@/lib/notifications/fcm-init";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export function useFCM() {
@@ -30,6 +30,33 @@ export function useFCM() {
         // Only run on client
         if (typeof window === "undefined") return;
 
+        const handleForegroundMessage = (payload: MessagePayload) => {
+            if ((payload.notification || payload.data) && typeof window !== "undefined" && "Notification" in window) {
+                const title = payload.notification?.title || payload.data?.title;
+                const body = payload.notification?.body || payload.data?.body;
+                const options = { body };
+                const notifTitle = title || "Nawaetu";
+
+                if (navigator.serviceWorker) {
+                    navigator.serviceWorker.ready.then((registration) => {
+                        registration.showNotification(notifTitle, options);
+                    }).catch(() => {
+                        try {
+                            new window.Notification(notifTitle, options);
+                        } catch (e) {
+                            console.error("Notification fallback failed", e);
+                        }
+                    });
+                } else {
+                    try {
+                        new window.Notification(notifTitle, options);
+                    } catch (e) {
+                        console.error("Standard notification failed", e);
+                    }
+                }
+            }
+        };
+
         const initFCM = async () => {
             try {
                 // Use the centralized robust function
@@ -37,7 +64,6 @@ export function useFCM() {
 
                 if (currentToken) {
                     setToken(currentToken);
-
                     // Get current location from storage if available
                     const userLocationKey = "user_location";
                     const storage = localStorage.getItem(userLocationKey);
@@ -97,36 +123,8 @@ export function useFCM() {
             initFCM();
         }
 
-        // Listen for foreground messages
-        if (messaging) {
-            const unsubscribe = onMessage(messaging, (payload) => {
-                if ((payload.notification || payload.data) && typeof window !== "undefined" && "Notification" in window) {
-                    const title = payload.notification?.title || payload.data?.title;
-                    const body = payload.notification?.body || payload.data?.body;
-                    const options = { body };
-                    const notifTitle = title || "Nawaetu";
-
-                    if (navigator.serviceWorker) {
-                        navigator.serviceWorker.ready.then((registration) => {
-                            registration.showNotification(notifTitle, options);
-                        }).catch(() => {
-                            try {
-                                new window.Notification(notifTitle, options);
-                            } catch (e) {
-                                console.error("Notification fallback failed", e);
-                            }
-                        });
-                    } else {
-                        try {
-                            new window.Notification(notifTitle, options);
-                        } catch (e) {
-                            console.error("Standard notification failed", e);
-                        }
-                    }
-                }
-            });
-            return () => unsubscribe();
-        }
+        const unsubscribeForeground = subscribeForegroundMessages(handleForegroundMessage);
+        return () => unsubscribeForeground?.();
     }, []);
 
     return { token };

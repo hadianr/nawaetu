@@ -34,6 +34,16 @@ const firebaseConfig = {
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 let messaging: Messaging | undefined;
+const foregroundCallbacks = new Set<(payload: MessagePayload) => void>();
+let foregroundUnsubscribe: (() => void) | undefined;
+
+function connectForegroundMessages() {
+    if (!messaging || foregroundUnsubscribe) return;
+
+    foregroundUnsubscribe = onMessage(messaging, (payload) => {
+        foregroundCallbacks.forEach((callback) => callback(payload));
+    });
+}
 
 function messageContainsHost(message: string, expectedHost: string): boolean {
     const urlMatches = message.match(/https?:\/\/[^\s"']+/g);
@@ -72,6 +82,7 @@ function getMessagingInstance(): Messaging | undefined {
     // Initialize messaging only when needed
     try {
         messaging = getMessaging(app);
+        connectForegroundMessages();
         return messaging;
     } catch (err) {
         console.error("[FCM] Failed to initialize messaging:", err);
@@ -262,23 +273,21 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
  * Subscribe to foreground messages
  * Only works if messaging is already initialized (user has enabled notifications)
  */
-export function subscribeForegroundMessages(callback: (payload: MessagePayload) => void) {
+export function subscribeForegroundMessages(callback: (payload: MessagePayload) => void): (() => void) | undefined {
     if (typeof window === "undefined") {
-        return;
+        return undefined;
     }
 
-    // Only subscribe if messaging is already initialized
-    // Don't trigger initialization here to avoid permission requests
-    if (!messaging) {
-        return;
-    }
+    foregroundCallbacks.add(callback);
+    connectForegroundMessages();
 
-    try {
-        onMessage(messaging, (payload) => {
-            callback(payload);
-        });
-    } catch {
-    }
+    return () => {
+        foregroundCallbacks.delete(callback);
+        if (foregroundCallbacks.size === 0) {
+            foregroundUnsubscribe?.();
+            foregroundUnsubscribe = undefined;
+        }
+    };
 }
 
 export { app, messaging, onMessage };
