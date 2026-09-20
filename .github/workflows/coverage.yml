@@ -15,6 +15,7 @@ concurrency:
 jobs:
   coverage:
     name: Report Vitest coverage
+    if: ${{ !startsWith(github.head_ref, 'release/v') }}
     runs-on: ubuntu-latest
 
     steps:

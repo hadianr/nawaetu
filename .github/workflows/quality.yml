@@ -38,19 +38,48 @@ jobs:
             ${{ runner.os }}-nextjs-
 
       - name: Install dependencies
+        if: ${{ !startsWith(github.head_ref, 'release/v') }}
         run: npm ci --prefer-offline --no-audit --fund=false
 
       - name: Lint
+        if: ${{ !startsWith(github.head_ref, 'release/v') }}
         run: npm run lint
 
       - name: Typecheck
+        if: ${{ !startsWith(github.head_ref, 'release/v') }}
         run: npm run typecheck
 
       - name: Validate commit messages
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release/v') }}
         run: npx --no-install commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}" --verbose
 
       - name: Production build
+        if: ${{ !startsWith(github.head_ref, 'release/v') }}
         env:
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
         run: npm run build
+
+      - name: Validate release metadata
+        if: ${{ startsWith(github.head_ref, 'release/v') }}
+        env:
+          RELEASE_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${RELEASE_BRANCH#release/}"
+          VERSION_NUMBER="${VERSION#v}"
+
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid release branch: $RELEASE_BRANCH"
+            exit 1
+          fi
+
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          LOCK_VERSION="$(node -p "require('./package-lock.json').packages[''].version")"
+
+          [[ "$PACKAGE_VERSION" == "$VERSION_NUMBER" ]] || { echo "package.json version mismatch"; exit 1; }
+          [[ "$LOCK_VERSION" == "$VERSION_NUMBER" ]] || { echo "package-lock.json version mismatch"; exit 1; }
+          grep -q "version: \"$VERSION_NUMBER\"" src/config/app-config.ts || { echo "app-config.ts version mismatch"; exit 1; }
+          grep -q "## \[$VERSION_NUMBER\]" CHANGELOG.md || { echo "CHANGELOG.md entry missing"; exit 1; }
+
+          npm ci --dry-run --ignore-scripts --prefer-offline --no-audit --fund=false

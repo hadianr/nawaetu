@@ -29,6 +29,11 @@ Publishes a GitHub Release when a version tag is pushed, or when
 `finalize-release.yml` dispatches it after a release PR merges. The dispatched
 run checks out the existing tag so the package version and changelog match.
 
+Release PRs (`release/vX.Y.Z`) keep the existing `Quality Gate` check but run
+only a lightweight metadata and lockfile validation. The normal build, coverage,
+reviewdog, dependency, and CodeQL PR jobs are skipped for release-only changes.
+CodeQL still runs after the merge on pushes to `main`.
+
 To block production merges/deployments until quality passes, configure the
 GitHub `main` branch protection rule with the required check:
 `Quality Gate / Lint, typecheck, and build`. Also require
