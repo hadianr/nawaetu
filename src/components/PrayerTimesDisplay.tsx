@@ -170,13 +170,13 @@ export default function PrayerTimesDisplay() {
             <PrayerCheckInWidget />
 
             <div className={cn(
-                "flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
-                "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]",
+                "glass-surface flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
+                "border-[rgb(var(--color-border))]",
             )}>
                 <span className="text-[9px] font-black uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
                     {t.homeQuickAccessTitle}
                 </span>
-                <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
+                <div className="grid w-full grid-cols-4 gap-1.5 sm:gap-2">
                     <Link
                         href="/hijri-calendar"
                         className={cn(
