@@ -14,6 +14,7 @@ concurrency:
 jobs:
   dependency-review:
     name: Review dependency changes
+    if: ${{ !startsWith(github.head_ref, 'release/v') }}
     runs-on: ubuntu-latest
 
     steps:
