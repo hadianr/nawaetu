@@ -307,8 +307,8 @@ export default function PrayerCheckInWidget() {
     return (
         <>
             <div className={cn(
-                "prayer-checkin-widget relative overflow-hidden rounded-2xl border backdrop-blur-md px-4 py-3.5 transition-all",
-                "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
+                "glass-surface prayer-checkin-widget relative overflow-hidden rounded-2xl border px-4 py-3.5 transition-all",
+                "shadow-[var(--shadow-card)]"
             )}>
                 {/* Soft Glow */}
                 <div className={cn(

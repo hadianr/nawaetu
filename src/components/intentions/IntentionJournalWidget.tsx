@@ -303,8 +303,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     return (
         <div className={cn("relative w-full group", className)}>
             <div className={cn(
-                "relative overflow-hidden rounded-3xl p-3 backdrop-blur-md transition-all duration-300 hover:shadow-lg sm:p-4",
-                "bg-[rgb(var(--color-surface))]/80 border border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
+                "glass-surface relative overflow-hidden rounded-3xl p-3 transition-all duration-300 hover:shadow-lg sm:p-4",
+                "border shadow-[var(--shadow-card)]"
             )}>
                 <div className="flex flex-col gap-2">
                     {/* Compact Label and Date Selector */}

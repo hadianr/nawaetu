@@ -63,6 +63,21 @@ export default function DesignSystemFixture() {
             </CardContent>
           </Card>
 
+          <Card className="glass-surface lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Glass surface</CardTitle>
+              <CardDescription>Frosted layers stay transparent so the active theme backdrop remains visible.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-3">
+              {(["glassBlur", "glassSaturation", "glassBackgroundOpacity", "glassBorderOpacity", "glassRadius", "glassTint"] as const).map((token) => (
+                <div key={token} className="rounded-md border border-border p-2">
+                  <code className="text-xs text-primary">{token}</code>
+                  <div className="mt-1 truncate text-muted-foreground" title={theme.tokens[token]}>{theme.tokens[token]}</div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Primitive states</CardTitle>
