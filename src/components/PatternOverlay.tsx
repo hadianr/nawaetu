@@ -33,18 +33,19 @@ const PatternOverlay = memo(function PatternOverlay() {
     // SVG Pattern Definitions
     const patterns = {
         stars: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
-                <defs>
-                    <pattern id="stars-pattern" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                        <circle cx="10" cy="10" r="1.5" fill="currentColor" opacity="0.4" />
-                        <circle cx="50" cy="30" r="0.8" fill="currentColor" opacity="0.6" />
-                        <circle cx="70" cy="60" r="1.2" fill="currentColor" opacity="0.3" />
-                        <circle cx="30" cy="70" r="0.6" fill="currentColor" opacity="0.5" />
-                        <circle cx="65" cy="15" r="1" fill="currentColor" opacity="0.4" />
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#stars-pattern)" className="text-[rgb(var(--color-primary-light))]" />
-            </svg>
+            <div
+                className="absolute inset-0 bg-[rgb(var(--color-primary-light))]"
+                style={{
+                    opacity,
+                    maskImage: "url('/patterns/midnight.svg')",
+                    WebkitMaskImage: "url('/patterns/midnight.svg')",
+                    maskRepeat: 'repeat',
+                    WebkitMaskRepeat: 'repeat',
+                    maskSize: '420px 420px',
+                    WebkitMaskSize: '420px 420px',
+                    contentVisibility: 'auto',
+                }}
+            />
         ),
         waves: (
             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
@@ -128,28 +129,25 @@ const PatternOverlay = memo(function PatternOverlay() {
             </svg>
         ),
         floral: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none text-[rgb(var(--color-primary-light))]" style={{ opacity: Math.min(0.14, opacity + 0.04), contentVisibility: 'auto' }}>
-                <defs>
-                    <pattern id="floral-pattern" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse">
-                        <g fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.55">
-                            <path d="M26 132 C34 105 45 88 66 72 C83 59 99 42 108 22" />
-                            <path d="M44 102 C31 94 24 83 25 70 C38 73 47 84 44 102 Z" fill="currentColor" opacity="0.22" />
-                            <path d="M65 73 C53 62 51 48 57 36 C69 43 74 57 65 73 Z" fill="currentColor" opacity="0.18" />
-                            <path d="M82 56 C91 46 103 43 114 48 C108 59 96 63 82 56 Z" fill="currentColor" opacity="0.2" />
-                            <circle cx="112" cy="20" r="7" fill="currentColor" opacity="0.16" />
-                            <circle cx="112" cy="20" r="2" fill="currentColor" opacity="0.35" />
-                            <path d="M112 10 L114 16 L120 16 L115 20 L117 26 L112 22 L107 26 L109 20 L104 16 L110 16 Z" fill="currentColor" opacity="0.22" />
-                        </g>
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#floral-pattern)" className="text-[rgb(var(--color-primary-light))]" />
-            </svg>
+            <div
+                className="absolute inset-0 bg-[rgb(var(--color-primary))]"
+                style={{
+                    opacity,
+                    maskImage: "url('/patterns/blossom.svg')",
+                    WebkitMaskImage: "url('/patterns/blossom.svg')",
+                    maskRepeat: 'repeat',
+                    WebkitMaskRepeat: 'repeat',
+                    maskSize: '520px 520px',
+                    WebkitMaskSize: '520px 520px',
+                    contentVisibility: 'auto',
+                }}
+            />
         ),
         none: null,
     };
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{ contentVisibility: 'auto' }}>
+        <div className="pattern-overlay fixed inset-0 pointer-events-none z-[1]" aria-hidden="true" style={{ contentVisibility: 'auto' }}>
             {patterns[type]}
         </div>
     );
