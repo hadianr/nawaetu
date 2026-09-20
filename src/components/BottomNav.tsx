@@ -86,10 +86,11 @@ const BottomNav = memo(function BottomNav() {
         <nav
             aria-label="Navigasi utama"
             className={cn(
-                "glass-surface fixed bottom-0 left-0 z-50 w-full border-t pb-safe shadow-[var(--shadow-floating)]"
+                "bottom-nav glass-surface fixed inset-x-0 bottom-0 z-50 w-full rounded-none border-x-0 border-b-0 border-t pb-safe shadow-[var(--shadow-floating)]"
             )}
+            data-bottom-nav
         >
-            <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2 relative">
+            <div className="mx-auto flex h-16 w-full items-center px-2">
                 {mounted &&
                     navItems.map(({ href, label, icon: Icon, special }) => {
                         const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -102,7 +103,7 @@ const BottomNav = memo(function BottomNav() {
                                     href={href}
                                     prefetch={false}
                                     aria-current={isActive ? "page" : undefined}
-                                    className="relative flex flex-col items-center justify-center gap-1 min-w-[64px]"
+                                    className="relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1"
                                 >
                                     {/* Elevated Button Container */}
                                     <div className="relative -mt-5 mb-1">
@@ -172,7 +173,7 @@ const BottomNav = memo(function BottomNav() {
                                 href={href}
                                 aria-current={isActive ? "page" : undefined}
                                 className={cn(
-                                    "flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
+                                    "flex min-w-0 flex-1 flex-col items-center justify-center gap-1 p-2 transition-all duration-300",
                                     isActive
                                         ? "text-[rgb(var(--color-primary-strong))]"
                                         : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))]"

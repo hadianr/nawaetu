@@ -38,6 +38,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // Keep the framework-only dev badge from competing with the mobile nav.
+  devIndicators: false,
   // Permit the loopback host used by local browsers to connect to HMR.
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
 
