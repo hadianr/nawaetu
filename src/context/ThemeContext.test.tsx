@@ -64,7 +64,19 @@ describe("ThemeContext", () => {
         expect(document.documentElement.style.colorScheme).toBe("light");
         expect(document.documentElement.style.getPropertyValue("--color-primary")).toBe("224 155 178");
         expect(document.documentElement.style.getPropertyValue("--color-primary-strong")).toBe("132 45 75");
+        expect(document.documentElement.style.getPropertyValue("--glass-blur")).toBe("14px");
+        expect(document.documentElement.style.getPropertyValue("--glass-saturation")).toBe("1.25");
+        expect(document.documentElement.style.getPropertyValue("--glass-background-opacity")).toBe("0.54");
+        expect(document.documentElement.style.getPropertyValue("--glass-border-opacity")).toBe("0.44");
+        expect(document.documentElement.style.getPropertyValue("--glass-radius")).toBe("1.25rem");
+        expect(document.documentElement.style.getPropertyValue("--glass-tint")).toBe("255 255 255");
         expect(THEMES.blossom.isPremium).toBe(true);
+
+        applyTheme(THEMES.default);
+        expect(document.documentElement.dataset.colorMode).toBe("dark");
+        expect(document.documentElement.style.getPropertyValue("--glass-blur")).toBe("18px");
+        expect(document.documentElement.style.getPropertyValue("--glass-background-opacity")).toBe("0.48");
+        expect(document.documentElement.style.getPropertyValue("--glass-tint")).toBe("15 23 42");
     });
 
     it("persists a selected theme using the existing storage key", async () => {

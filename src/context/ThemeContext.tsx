@@ -62,7 +62,13 @@ export type ThemeToken =
     | "fontUi"
     | "fontReading"
     | "fontEditorial"
-    | "readerLineHeight";
+    | "readerLineHeight"
+    | "glassBlur"
+    | "glassSaturation"
+    | "glassBackgroundOpacity"
+    | "glassBorderOpacity"
+    | "glassRadius"
+    | "glassTint";
 
 export type ThemeTokens = Record<ThemeToken, string>;
 
@@ -133,6 +139,12 @@ const createTheme = (input: ThemeInput): Theme => {
             fontReading: "Amiri, Lateef, serif",
             fontEditorial: "Lora, Georgia, serif",
             readerLineHeight: "1.9",
+            glassBlur: isLight ? "14px" : "18px",
+            glassSaturation: isLight ? "1.25" : "1.2",
+            glassBackgroundOpacity: isLight ? "0.54" : "0.48",
+            glassBorderOpacity: isLight ? "0.44" : "0.24",
+            glassRadius: "1.25rem",
+            glassTint: isLight ? "255 255 255" : colors.surface,
             ...overrides,
         },
     };
@@ -184,7 +196,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         isPremium: true,
         pattern: {
             type: 'stars',
-            opacity: 0.25,
+            opacity: 0.12,
         },
         colors: {
             primary: "59 130 246", // blue-500
@@ -342,6 +354,12 @@ const THEME_TOKEN_CSS_NAMES: Record<ThemeToken, string> = {
     fontReading: "--font-reading",
     fontEditorial: "--font-editorial",
     readerLineHeight: "--reader-line-height",
+    glassBlur: "--glass-blur",
+    glassSaturation: "--glass-saturation",
+    glassBackgroundOpacity: "--glass-background-opacity",
+    glassBorderOpacity: "--glass-border-opacity",
+    glassRadius: "--glass-radius",
+    glassTint: "--glass-tint",
 };
 
 export const hasCompleteThemeTokens = (theme: Theme): boolean =>
