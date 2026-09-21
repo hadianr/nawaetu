@@ -1259,7 +1259,7 @@ nav {
     var(--shadow-card);
 }
 
-/* The bottom navigation is a full-bleed sheet, not a floating card. */
+/* Keep the navigation full-bleed on mobile; compact it on desktop. */
 nav.bottom-nav {
   position: fixed;
   inset-inline: 0;
@@ -1267,6 +1267,25 @@ nav.bottom-nav {
   z-index: 50;
   width: 100%;
   border-radius: 0;
+}
+@media (min-width: 640px) {
+  nav.bottom-nav {
+    inset-inline: 50%;
+    bottom: 1rem;
+    width: calc(100% - 3rem);
+    border: 1px solid rgb(var(--color-primary) / var(--glass-border-opacity));
+    border-radius: 1.5rem;
+    transform: translateX(-50%);
+  }
+
+  body[data-focus-mode="true"] nav.bottom-nav {
+    transform: translate(-50%, 100%) !important;
+  }
+}
+@media (min-width: 1280px) {
+  nav.bottom-nav {
+    width: min(calc(100% - 2rem), 36rem);
+  }
 }
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass-surface {
