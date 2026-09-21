@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.2] - 2026-09-21
+
+### Improved
+- **Style(pages): widen tablet layouts**
+- **Style(dhikr): widen tablet controls**
+- **Style(home): widen tablet content**
+- **Style(nav): compact desktop navigation**
+- **Refactor(db): switch from Neon to Supabase**
+
+
 ## [1.15.1] - 2026-09-20
 
 ### Added
