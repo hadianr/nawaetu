@@ -16,24 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { drizzle } from "drizzle-orm/neon-http";
-import { drizzle as drizzleServerless } from "drizzle-orm/neon-serverless";
-import { neon, Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 
-const connectionString = process.env.DATABASE_URL || "";
-export const isNeon = true;
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL is not configured");
 
-const sql = neon(connectionString);
+const sql = postgres(connectionString, {
+    max: 1,
+    prepare: false,
+    ssl: "require",
+});
 export const db = drizzle(sql, { schema });
 
-// Neon HTTP is intentionally used for ordinary queries, but it cannot execute
-// transactions. Canonical progression needs a real transaction for its
-// advisory lock and idempotent ledger/day writes.
-const transactionalPool = new Pool({
-    connectionString,
-});
-export const transactionDb = drizzleServerless(transactionalPool, { schema });
+// postgres-js supports both ordinary queries and transactions on Supabase's
+// transaction pooler. Keep this separate export for callers that require a
+// transaction without changing their database dependency.
+export const transactionDb = db;
 
 /**
  * Health check function to verify database connectivity.

@@ -36,7 +36,6 @@
     "@auth/drizzle-adapter": "^1.11.2",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@google/generative-ai": "^0.24.1",
-    "@neondatabase/serverless": "^1.1.0",
     "@radix-ui/react-avatar": "^1.2.3",
     "@radix-ui/react-dialog": "^1.1.20",
     "@radix-ui/react-label": "^2.1.12",
