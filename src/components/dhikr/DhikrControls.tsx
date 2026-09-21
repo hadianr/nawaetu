@@ -43,7 +43,7 @@ export function DhikrControls({
     const FeedbackIcon = { sound: Volume2, none: VolumeX }[feedbackMode] || Volume2;
 
     return (
-        <div className="grid grid-cols-4 gap-2 w-full max-w-[360px] pointer-events-auto px-2">
+        <div className="grid grid-cols-4 gap-2 w-full max-w-none xl:max-w-[360px] pointer-events-auto px-2">
             <Button
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); handleReset(); }}
