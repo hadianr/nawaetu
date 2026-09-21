@@ -379,6 +379,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         handlePreviousVerse, 
         handlePause, 
         handleResume, 
+        handleStop,
         handleAudioEnded 
     } = useQuranAudio({
         accumulatedVerses,
@@ -727,6 +728,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                     onPrev={handlePreviousVerse}
                     onNext={handleNextVerse}
                     onPlayPause={isPlaying ? handlePause : handleResume}
+                    onClose={handleStop}
                     onScrollToPlaying={() => {
                         if (playingVerseKey) {
                             scrollToVerse(parseInt(playingVerseKey.split(':')[1]));

@@ -17,7 +17,7 @@
  */
 
 import { toArabicNumber } from "@/lib/quran/quran-utils";
-import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIcon, Target } from "lucide-react";
+import { Play, Pause, ChevronLeft, ChevronRight, Repeat, Infinity as InfinityIcon, Target, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
@@ -36,6 +36,7 @@ interface AudioPlayerBarProps {
     onPrev: () => void;
     onNext: () => void;
     onPlayPause: () => void;
+    onClose: () => void;
     onScrollToPlaying?: () => void;
 }
 
@@ -49,6 +50,7 @@ export default function AudioPlayerBar({
     onPrev,
     onNext,
     onPlayPause,
+    onClose,
     onScrollToPlaying
 }: AudioPlayerBarProps) {
     const { t } = useLocale();
@@ -150,6 +152,22 @@ export default function AudioPlayerBar({
                             </TooltipContent>
                         </Tooltip>
                     </div>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={onClose}
+                                aria-label={t.quranClose || "Tutup pemutar audio"}
+                                className="h-8 w-8 rounded-full text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-danger))]/10 hover:text-[rgb(var(--color-danger))]"
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            {t.quranClose || "Tutup pemutar audio"}
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             </div>
         </div>
