@@ -53,7 +53,7 @@ export default function PrayerTimesDisplay() {
     if (!data) {
         return (
             <div className={cn(
-                "relative w-full max-w-md border rounded-3xl p-6 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500",
+                "relative w-full max-w-none border rounded-3xl p-6 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500 xl:max-w-md",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
                 {/* Decorative Background */}
@@ -110,7 +110,7 @@ export default function PrayerTimesDisplay() {
         : "";
 
     return (
-        <div className="relative flex w-full max-w-md flex-col gap-2">
+        <div className="relative flex w-full max-w-none flex-col gap-2 xl:max-w-md">
 
             <div className="relative space-y-2">
                 {data.isDefaultLocation && (

@@ -71,7 +71,7 @@ export default function HomeClient() {
             <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-28 h-64 w-64 rounded-full bg-[rgb(var(--color-primary))]/10 blur-3xl" />
             <div aria-hidden="true" className="pointer-events-none absolute -right-28 top-[42%] h-72 w-72 rounded-full bg-[rgb(var(--color-info))]/10 blur-3xl" />
 
-            <main className="relative flex w-full max-w-md flex-col items-center gap-3">
+            <main className="relative flex w-full max-w-none flex-col items-center gap-3 xl:max-w-md">
 
                 {/* 1. Header & Greeting */}
                 <HomeHeader />
