@@ -232,7 +232,7 @@ export default function StatsPage() {
             <div className="stats-page min-h-screen bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] pb-nav">
                 <StatsHeader t={t} playerStats={playerStats} />
 
-                <div className="max-w-2xl mx-auto px-6 pt-5">
+                <div className="w-full max-w-none mx-auto px-6 pt-5 xl:max-w-2xl">
                     <GlobalStatsWidget />
                 </div>
 
@@ -251,7 +251,7 @@ export default function StatsPage() {
                     onStreakClick={() => setIsStreakModalOpen(true)}
                 />
 
-                <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
+                <div className="w-full max-w-none mx-auto px-6 py-6 space-y-5 xl:max-w-2xl">
                     <HasanahTrendChart
                         t={t}
                         chartData={chartData}

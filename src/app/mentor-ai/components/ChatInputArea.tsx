@@ -49,7 +49,7 @@ export function ChatInputArea({
             "fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t pb-6 md:pb-8 pt-4 z-30",
             "bg-[rgb(var(--color-canvas))]/95 border-[rgb(var(--color-border))]"
         )}>
-            <div className="max-w-md mx-auto px-4 space-y-3">
+            <div className="w-full max-w-none mx-auto px-4 space-y-3 xl:max-w-md">
                 {/* Limit Reached Card */}
                 {(dailyCount >= DAILY_LIMIT) ? (
                     <div className={cn(

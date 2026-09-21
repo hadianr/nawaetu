@@ -40,7 +40,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
 
     return (
         <div className={cn(
-            "sirah-detail-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-3xl mx-auto space-y-6 transition-colors",
+            "sirah-detail-page min-h-screen w-full max-w-none pb-24 pt-4 px-4 sm:px-6 mx-auto space-y-6 transition-colors xl:max-w-3xl",
             "text-[rgb(var(--color-text))]"
         )}>
             {/* Header / Back Link */}
