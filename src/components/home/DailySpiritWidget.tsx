@@ -58,7 +58,7 @@ export default function DailySpiritWidget() {
     const localizedContent = getLocalizedContent(item.content, locale);
 
     return (
-        <div className="w-full max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="w-full max-w-none mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 xl:max-w-md">
             <div className="glass-surface relative overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] spiritual-card">
                 {/* Decorative blur blobs */}
                 <div className="absolute -top-8 -right-8 w-28 h-28 bg-[rgb(var(--color-primary))]/10 rounded-full blur-2xl pointer-events-none" />

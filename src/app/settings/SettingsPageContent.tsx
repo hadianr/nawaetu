@@ -264,7 +264,7 @@ export default function SettingsPageContent() {
     return (
         <div className="settings-page flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 py-6 font-sans sm:px-6 pb-nav">
 
-            <div className="w-full max-w-md space-y-6">
+            <div className="w-full max-w-none space-y-6 xl:max-w-md">
                 {/* Header */}
                 <div className="flex items-center gap-4">
                     <Link href="/" className="p-2 -ml-2 rounded-full hover:bg-[rgb(var(--color-surface-subtle))] transition-colors">

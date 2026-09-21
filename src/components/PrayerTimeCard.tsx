@@ -61,7 +61,7 @@ export default function PrayerTimeCard({
     ];
 
     return (
-        <div className="glass-surface w-full max-w-md rounded-2xl border px-3 py-3 shadow-[var(--shadow-card)]">
+        <div className="glass-surface w-full max-w-none rounded-2xl border px-3 py-3 shadow-[var(--shadow-card)] xl:max-w-md">
             <div className="flex flex-col gap-1">
                 {prayers.map(({ key, label, isReference }) => {
                     const isNext = key === nextPrayer;
