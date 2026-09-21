@@ -191,7 +191,7 @@ export default function NotificationDebugPage() {
     };
 
     return (
-        <div className="p-6 max-w-2xl mx-auto space-y-6 pb-24">
+        <div className="w-full max-w-none p-6 mx-auto space-y-6 pb-24 xl:max-w-2xl">
             <h1 className="text-2xl font-bold">Notification Debugger</h1>
 
             {/* Error Log Display */}

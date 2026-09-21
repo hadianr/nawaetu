@@ -66,7 +66,7 @@ export default function SirahDashboardPage() {
 
     return (
         <div className={cn(
-            "sirah-page min-h-screen pb-24 pt-3 px-3.5 sm:px-6 max-w-4xl mx-auto space-y-3.5 sm:space-y-5 transition-colors",
+            "sirah-page min-h-screen w-full max-w-none pb-24 pt-3 px-3.5 sm:px-6 mx-auto space-y-3.5 sm:space-y-5 transition-colors xl:max-w-4xl",
             "text-[rgb(var(--color-text))]"
         )}>
             {/* Header Banner */}

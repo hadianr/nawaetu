@@ -315,7 +315,7 @@ function HadithContent() {
             <div className={cn(
                 "hadith-page flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500 bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgb(var(--color-primary)/0.1),transparent)]"
             )}>
-                <main className="flex w-full max-w-md flex-col pb-nav">
+                <main className="flex w-full max-w-none flex-col pb-nav xl:max-w-md">
                     {/* Header */}
                     <div className="px-2 mb-3">
                         <div className="flex items-center justify-between mb-2">

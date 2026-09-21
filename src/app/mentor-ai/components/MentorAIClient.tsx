@@ -556,7 +556,7 @@ export default function MentorAIClient() {
                 "fixed top-0 left-0 right-0 z-40 backdrop-blur-md border-b",
                 "bg-[rgb(var(--color-surface))]/80 border-[rgb(var(--color-border))]"
             )}>
-                <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
+                <div className="w-full max-w-none mx-auto px-4 h-16 flex items-center justify-between xl:max-w-md">
                     <div className="flex items-center gap-2">
                         {/* Back Button */}
                         <Link href="/" className={cn(
@@ -632,7 +632,7 @@ export default function MentorAIClient() {
             />
 
             {/* Chat Area */}
-            <div className="flex-1 pt-20 pb-24 px-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
+            <div className="flex-1 pt-20 pb-24 px-4 max-w-none mx-auto w-full space-y-4 overflow-y-auto xl:max-w-md">
                 {messages.length === 0 ? (
                     // Empty State / Greeting
                     <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in duration-700 min-h-[calc(100vh-250px)]">

@@ -78,7 +78,7 @@ export default function SirahQuizPage() {
 
     const incorrectQuestions = questions.filter((q, idx) => userAnswers[idx] !== q.correctIndex);    return (
         <div className={cn(
-            "sirah-quiz-page min-h-screen pb-24 pt-4 px-4 sm:px-6 max-w-2xl mx-auto space-y-6 transition-colors",
+            "sirah-quiz-page min-h-screen w-full max-w-none pb-24 pt-4 px-4 sm:px-6 mx-auto space-y-6 transition-colors xl:max-w-2xl",
             "text-[rgb(var(--color-text))]"
         )}>
             {/* Header / Back Link */}

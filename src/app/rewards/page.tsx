@@ -67,7 +67,7 @@ export default function RewardsPage() {
 
     return (
         <main className="min-h-screen px-4 py-8 pb-nav font-sans bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]">
-            <div className="mx-auto w-full max-w-3xl space-y-6">
+            <div className="mx-auto w-full max-w-none space-y-6 xl:max-w-3xl">
                 <Link href="/" className="inline-flex items-center gap-2 text-sm text-[rgb(var(--color-primary-light))]">
                     <ArrowLeft className="h-4 w-4" /> {copy.back}
                 </Link>
