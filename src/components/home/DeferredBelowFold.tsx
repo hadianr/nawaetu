@@ -43,13 +43,12 @@ export default function DeferredBelowFold() {
   const { t } = useLocale();
 
   useEffect(() => {
-    // Reduced from 1500ms to 200ms — components are blocked by this gate.
-    // 200ms gives the browser just enough time to paint the above-the-fold
-    // content before starting dynamic imports for below-fold widgets.
+    // Let the first viewport paint before loading below-fold feature chunks.
+    // The timeout keeps the content available on browsers without idle APIs.
     if ("requestIdleCallback" in window) {
-      (window as Window).requestIdleCallback(() => setReady(true), { timeout: 200 });
+      (window as Window).requestIdleCallback(() => setReady(true), { timeout: 1000 });
     } else {
-      setTimeout(() => setReady(true), 100);
+      setTimeout(() => setReady(true), 500);
     }
   }, []);
 
@@ -58,7 +57,7 @@ export default function DeferredBelowFold() {
       <div className="w-full flex flex-col gap-2">
         {/* Prayer overview: next prayer, schedule, and check-in share one section. */}
         <section className="w-full">
-          <PrayerTimesDisplay />
+          {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
         </section>
 
         {/* 5. Daily Missions */}
