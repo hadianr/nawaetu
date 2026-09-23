@@ -26,6 +26,21 @@ const NotificationWatcher = dynamic(() => import("@/components/NotificationWatch
 const AnalyticsLoader = dynamic(() => import("@/components/AnalyticsLoader"), { ssr: false });
 const DataSyncer = dynamic(() => import("@/components/DataSyncer"), { ssr: false });
 const OfflineIndicator = dynamic(() => import("@/components/OfflineIndicator"), { ssr: false });
+const GuestSyncManager = dynamic(
+    () => import("@/components/auth/GuestSyncManager").then(({ GuestSyncManager }) => ({ default: GuestSyncManager })),
+    { ssr: false },
+);
+const AppOverlays = dynamic(() => import("@/components/AppOverlays"), { ssr: false });
+const DynamicTitle = dynamic(() => import("@/components/DynamicTitle"), { ssr: false });
+const Toploader = dynamic(() => import("@/components/ui/Toploader"), { ssr: false });
+const WebVitals = dynamic(
+    () => import("@/components/WebVitals").then(({ WebVitals }) => ({ default: WebVitals })),
+    { ssr: false },
+);
+const SpeedInsights = dynamic(
+    () => import("@vercel/speed-insights/next").then(({ SpeedInsights }) => ({ default: SpeedInsights })),
+    { ssr: false },
+);
 
 export default function DeferredLayoutComponents() {
     return (
@@ -34,6 +49,12 @@ export default function DeferredLayoutComponents() {
             <AnalyticsLoader />
             <DataSyncer />
             <NotificationWatcher />
+            <GuestSyncManager />
+            <AppOverlays />
+            <DynamicTitle />
+            <Toploader />
+            <WebVitals />
+            <SpeedInsights />
         </Suspense>
     );
 }

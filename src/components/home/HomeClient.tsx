@@ -86,7 +86,7 @@ export default function HomeClient() {
                 )}
 
                 {/* 4. Nawaetu Journal - The core uniqueness */}
-                <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-700">
+                <section className="w-full">
                     <IntentionJournalWidget />
                 </section>
 

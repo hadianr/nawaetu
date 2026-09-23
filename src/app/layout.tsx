@@ -185,16 +185,10 @@ import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { PrayerTimesProvider } from "@/context/PrayerTimesContext";
-import { WebVitals } from "@/components/WebVitals";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
-import { GuestSyncManager } from "@/components/auth/GuestSyncManager";
 import ClientEntryGate from "@/components/ClientEntryGate";
-import AppOverlays from "@/components/AppOverlays";
-import Toploader from "@/components/ui/Toploader";
-import DynamicTitle from "@/components/DynamicTitle";
 import ChunkErrorHandler from "@/components/ChunkErrorHandler";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function RootLayout({
   children,
@@ -224,27 +218,21 @@ export default function RootLayout({
         className="antialiased"
         suppressHydrationWarning
       >
-        <Toploader />
         <ChunkErrorHandler />
-        <WebVitals />
         {/* Structured Data - Multiple Schemas */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchemas) }}
         />
         <LocaleProvider>
-          <DynamicTitle />
           <ThemeProvider>
             <AuthSessionProvider>
               <PrayerTimesProvider>
-                <GuestSyncManager />
-                <AppOverlays />
                 <ClientEntryGate>
                   <InfaqProvider>
                     <PatternOverlay />
                     <DeferredLayoutComponents />
                     {children}
-                    <SpeedInsights />
 
                     <Suspense fallback={null}>
                       <BottomNav />
