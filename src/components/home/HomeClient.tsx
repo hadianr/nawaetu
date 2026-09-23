@@ -68,9 +68,6 @@ export default function HomeClient() {
 
     return (
         <div className="relative flex min-h-screen flex-col items-center overflow-x-hidden bg-transparent bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 py-4 pb-nav font-sans sm:px-6">
-            <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-28 h-64 w-64 rounded-full bg-[rgb(var(--color-primary))]/10 blur-3xl" />
-            <div aria-hidden="true" className="pointer-events-none absolute -right-28 top-[42%] h-72 w-72 rounded-full bg-[rgb(var(--color-info))]/10 blur-3xl" />
-
             <main className="relative flex w-full max-w-none flex-col items-center gap-3 xl:max-w-md">
 
                 {/* 1. Header & Greeting */}
