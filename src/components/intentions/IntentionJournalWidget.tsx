@@ -282,9 +282,9 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
     if (isLoading) {
         return (
-            <div className={cn("relative w-full", className)}>
+            <div className={cn("relative min-h-32 w-full", className)}>
                 <div className={cn(
-                    "relative h-20 rounded-3xl border p-3 animate-pulse",
+                    "relative min-h-32 rounded-3xl border p-3 animate-pulse",
                     "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                 )}>
                     <div className="flex items-center justify-between gap-4">
@@ -300,9 +300,9 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     }
 
     return (
-        <div className={cn("relative w-full group", className)}>
+        <div className={cn("relative min-h-32 w-full group", className)}>
             <div className={cn(
-                "glass-surface relative overflow-hidden rounded-3xl p-3 transition-all duration-300 hover:shadow-lg sm:p-4",
+                "glass-surface relative min-h-32 overflow-hidden rounded-3xl p-3 transition-all duration-300 hover:shadow-lg sm:p-4",
                 "border shadow-[var(--shadow-card)]"
             )}>
                 <div className="flex flex-col gap-2">
