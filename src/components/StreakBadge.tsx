@@ -222,7 +222,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
           setDetailsOpen(true);
         }}
         className={cn(
-          "flex min-h-11 items-center gap-1.5 rounded-full border px-3 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+          "flex min-h-11 min-w-[60px] items-center justify-center gap-1.5 rounded-full border px-3 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
           isActiveToday
             ? "border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
             : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/60 text-[rgb(var(--color-text-muted))]",

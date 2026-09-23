@@ -77,7 +77,7 @@ export default function HomeHeader() {
                     type="button"
                     onClick={refreshLocation}
                     className={cn(
-                        "flex min-h-11 max-w-[130px] shrink-0 items-center gap-2 rounded-full border px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:max-w-[160px]",
+                        "flex min-h-11 w-[130px] shrink-0 items-center gap-2 rounded-full border px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:w-[160px]",
                         data?.isDefaultLocation
                             ? "border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 hover:bg-[rgb(var(--color-warning))]/20"
                             : "border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20",
