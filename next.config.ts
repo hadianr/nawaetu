@@ -67,7 +67,7 @@ const nextConfig: NextConfig = {
       "@google/generative-ai",
       "@sentry/nextjs"
     ],
-    optimizeCss: false, // Disabled to avoid critters dependency and parse errors
+    optimizeCss: true,
     webpackBuildWorker: true,
     scrollRestoration: false,
   },

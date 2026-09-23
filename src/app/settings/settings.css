@@ -1,0 +1,7 @@
+[data-color-mode="light"] .settings-page :is([class~="rounded-2xl"], [class~="rounded-xl"])[class~="border"] {
+  box-shadow: var(--shadow-card) !important;
+}
+
+[data-color-mode="light"] .settings-page :is([class*="bg-slate-50"], [class*="bg-slate-100"], [class*="bg-white/40"], [class*="bg-white/60"]) {
+  background-color: rgb(var(--color-surface)) !important;
+}
