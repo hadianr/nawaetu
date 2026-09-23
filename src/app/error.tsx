@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Database, AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
+import { captureClientException } from "@/instrumentation-client";
 
 export default function Error({
     error,
@@ -31,8 +32,8 @@ export default function Error({
     reset: () => void;
 }) {
     useEffect(() => {
-        // Log the error to an error reporting service
         console.error("Application error:", error);
+        captureClientException(error, { boundary: "app-error", digest: error.digest });
     }, [error]);
 
     const isDatabaseError =

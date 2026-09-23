@@ -21,24 +21,45 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 type SentryClient = typeof import("@sentry/nextjs");
+type PendingError = {
+  error: unknown;
+  context?: Record<string, unknown>;
+};
 
 let sentryModule: Promise<SentryClient> | undefined;
+let sentryInit: Promise<SentryClient | null> | undefined;
+let sentryInitialized = false;
+const pendingErrors: PendingError[] = [];
 
 function loadSentry(): Promise<SentryClient> {
   return sentryModule ??= import("@sentry/nextjs");
 }
 
-// Defer Sentry initialization to idle callback to avoid blocking FCP
-const initSentry = async () => {
-  // Only initialize Sentry in production environment (nawaetu.com)
-  const isProduction = typeof window !== "undefined" &&
+function isProductionBrowser(): boolean {
+  return typeof window !== "undefined" &&
     (window.location.hostname === "nawaetu.com" || window.location.hostname === "www.nawaetu.com");
+}
 
-  if (!isProduction) {
+function capturePendingError(Sentry: SentryClient, pending: PendingError): void {
+  if (!pending.context) {
+    Sentry.captureException(pending.error);
     return;
   }
 
-  try {
+  Sentry.withScope((scope) => {
+    for (const [key, value] of Object.entries(pending.context ?? {})) {
+      scope.setExtra(key, value);
+    }
+    Sentry.captureException(pending.error);
+  });
+}
+
+function initSentry(): Promise<SentryClient | null> {
+  if (sentryInit) return sentryInit;
+
+  const attempt = (async () => {
+    if (!isProductionBrowser()) return null;
+
     const Sentry = await loadSentry();
     Sentry.init({
     dsn: "https://01c92628e40472d65fa8216a0628ddd9@o4510815612960768.ingest.us.sentry.io/4510815614468096",
@@ -77,17 +98,59 @@ const initSentry = async () => {
       /MetaMask extension not found/i,
     ],
     });
-  } catch {
+
+    sentryInitialized = true;
+    for (const pending of pendingErrors.splice(0)) {
+      capturePendingError(Sentry, pending);
+    }
+    return Sentry;
+  })();
+
+  sentryInit = attempt.catch(() => {
     // Observability must never affect application startup.
+    sentryInit = undefined;
+    return null;
+  });
+
+  return sentryInit;
+}
+
+export function captureClientException(error: unknown, context?: Record<string, unknown>): void {
+  if (!isProductionBrowser()) return;
+
+  const pending = { error, context };
+  if (!sentryInitialized) {
+    pendingErrors.push(pending);
+    void initSentry();
+    return;
   }
-};
+
+  void loadSentry().then((Sentry) => capturePendingError(Sentry, pending)).catch(() => undefined);
+}
+
+function captureEarlyBrowserError(error: unknown, context: Record<string, unknown>): void {
+  if (!sentryInitialized) {
+    pendingErrors.push({ error, context });
+    void initSentry();
+  }
+}
 
 // Defer Sentry initialization until idle or interaction
 if (typeof window !== "undefined") {
+  window.addEventListener("error", (event) => {
+    captureEarlyBrowserError(event.error ?? new Error(event.message || "Unhandled browser error"), {
+      source: "window.error",
+      filename: event.filename,
+    });
+  });
+  window.addEventListener("unhandledrejection", (event) => {
+    captureEarlyBrowserError(event.reason, { source: "unhandledrejection" });
+  });
+
   if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(initSentry, { timeout: 5000 });
+    window.requestIdleCallback(() => void initSentry(), { timeout: 5000 });
   } else {
-    setTimeout(initSentry, 2000);
+    setTimeout(() => void initSentry(), 2000);
   }
 }
 
@@ -95,7 +158,7 @@ export function onRouterTransitionStart(
   url: string,
   navigationType: "push" | "replace" | "traverse",
 ): void {
-  void loadSentry()
-    .then(({ captureRouterTransitionStart }) => captureRouterTransitionStart(url, navigationType))
+  void initSentry()
+    .then((Sentry) => Sentry?.captureRouterTransitionStart(url, navigationType))
     .catch(() => undefined);
 }
