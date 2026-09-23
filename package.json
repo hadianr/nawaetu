@@ -20,7 +20,7 @@
     "start:next": "next start",
     "lint": "eslint",
     "prepare": "husky",
-    "analyze": "ANALYZE=true next build",
+    "analyze": "ANALYZE=true next build --webpack && node scripts/analyze-bundle.mjs",
     "test": "VITE_CJS_IGNORE_WARNING=1 vitest",
     "test:run": "VITE_CJS_IGNORE_WARNING=1 vitest run",
     "test:coverage": "VITE_CJS_IGNORE_WARNING=1 vitest run --coverage",
