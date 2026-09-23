@@ -19,8 +19,7 @@
  */
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import * as Sentry from "@sentry/nextjs";
-import { SETTINGS_TRANSLATIONS } from "@/data/translations";
+import { BASE_SETTINGS_EN, BASE_SETTINGS_ID } from "@/data/translations/base";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
@@ -29,16 +28,22 @@ const DEFAULT_LOCALE = "id";
 // Helper to merge all translation objects
 function getMergedTranslations() {
   return {
-    id: { ...SETTINGS_TRANSLATIONS.id },
-    en: { ...SETTINGS_TRANSLATIONS.en },
+    id: { ...BASE_SETTINGS_ID },
+    en: { ...BASE_SETTINGS_EN },
   };
 }
 
-const ALL_TRANSLATIONS = getMergedTranslations();
+type FullTranslations = typeof import("@/data/translations").SETTINGS_TRANSLATIONS;
 
-type SupportedLocale = keyof typeof SETTINGS_TRANSLATIONS;
-type IdTranslations = typeof SETTINGS_TRANSLATIONS.id;
-type EnTranslations = typeof SETTINGS_TRANSLATIONS.en;
+function reportLocaleError(error: unknown): void {
+  void import("@sentry/nextjs")
+    .then(({ captureException }) => captureException(error))
+    .catch(() => undefined);
+}
+
+type SupportedLocale = keyof FullTranslations;
+type IdTranslations = FullTranslations["id"];
+type EnTranslations = FullTranslations["en"];
 type SharedTranslationKeys = keyof IdTranslations & keyof EnTranslations;
 type TranslationValue = string | string[] | Record<string, unknown>;
 type LegacyTranslationKeys = {
@@ -82,14 +87,29 @@ const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState(DEFAULT_LOCALE);
+  const [translations, setTranslations] = useState(getMergedTranslations);
   const [isLoading, setIsLoading] = useState(true);
 
   // Get translations for current locale with fallback
   // Also resolving activeLocale prevents UI locale mismatches
-  const activeLocale: SupportedLocale = locale in ALL_TRANSLATIONS
+  const activeLocale: SupportedLocale = locale in translations
     ? locale as SupportedLocale
     : DEFAULT_LOCALE;
-  const t = ALL_TRANSLATIONS[activeLocale] as unknown as TranslationTree;
+  const t = translations[activeLocale] as unknown as TranslationTree;
+
+  useEffect(() => {
+    void Promise.all([
+      import("@/data/translations/id/missions"),
+      import("@/data/translations/en/missions"),
+    ])
+      .then(([id, en]) => {
+        setTranslations((current) => ({
+          id: { ...current.id, ...id.missionsID },
+          en: { ...current.en, ...en.missionsEN },
+        }));
+      })
+      .catch(reportLocaleError);
+  }, []);
 
   // Initialize from localStorage on client mount
   useEffect(() => {
@@ -109,7 +129,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
       queueMicrotask(() => setLocaleState(savedLocale));
     } catch (error) {
-      Sentry.captureException(error);
+      reportLocaleError(error);
       queueMicrotask(() => setLocaleState(DEFAULT_LOCALE));
     } finally {
       setIsLoading(false);
@@ -149,7 +169,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         new CustomEvent("locale-changed", { detail: { locale: newLocale } })
       );
     } catch (error) {
-      Sentry.captureException(error);
+      reportLocaleError(error);
     }
   };
 
