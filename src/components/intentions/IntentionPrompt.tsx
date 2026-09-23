@@ -163,10 +163,11 @@ export default function IntentionPrompt({
                     <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 relative z-10">
                         {/* Textarea */}
                         <div className="relative group">
-                            <label className="text-xs font-serif font-medium mb-2 block text-center uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
+                            <label htmlFor="intention-prompt-text" className="text-xs font-serif font-medium mb-2 block text-center uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
                                 {t.intention_prompt_question}
                             </label>
                             <textarea
+                                id="intention-prompt-text"
                                 value={intentionText}
                                 onChange={(e) => setIntentionText(e.target.value)}
                                 placeholder={t.intention_placeholder || "Bismillah, niat saya hari ini adalah..."}
