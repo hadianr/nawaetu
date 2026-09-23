@@ -20,7 +20,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { AnimatePresence } from "framer-motion";
 import { ChevronRight, Book, CheckCircle2, Moon, Compass, Edit2, Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -309,7 +308,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 <div className="flex flex-col gap-2">
                     {/* Compact Label and Date Selector */}
                     <div className="flex items-center justify-between gap-1">
-                        <div className="flex items-center gap-1.5 opacity-40 grayscale group-hover:opacity-60 transition-opacity min-w-0">
+                        <div className="flex items-center gap-1.5 text-[rgb(var(--color-text-muted))] grayscale transition-colors group-hover:text-[rgb(var(--color-text))] min-w-0">
                             <Compass className="w-3 h-3 shrink-0 text-[rgb(var(--color-text-strong))]" />
                             <span className="text-[9px] font-bold uppercase tracking-tight truncate text-[rgb(var(--color-text-strong))]">
                                 {selectedDate === DateUtils.today()
@@ -319,7 +318,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         </div>
 
                         {/* Date Selector */}
-                        <div
+                        <label
+                            htmlFor="intention-date"
                             onClick={() => {
                                 try {
                                     dateInputRef.current?.showPicker();
@@ -338,6 +338,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                 })}
                             </span>
                             <input
+                                id="intention-date"
                                 ref={dateInputRef}
                                 type="date"
                                 value={selectedDate}
@@ -353,15 +354,15 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                 }}
                                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                             />
-                        </div>
+                        </label>
                     </div>
 
                     {!todayData?.has_intention ? (
                         <div className="flex flex-col gap-2">
                             <div className="min-w-0">
-                                <h3 className="text-sm font-bold leading-tight tracking-tight text-[rgb(var(--color-text-strong))]">
+                                <h2 className="text-sm font-bold leading-tight tracking-tight text-[rgb(var(--color-text-strong))]">
                                     {t.intention_widget_subtitle}
-                                </h3>
+                                </h2>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2">
@@ -443,7 +444,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 </div>
             </div>
 
-            <AnimatePresence>
+            <>
                 {showIntentionPrompt && (
                     <IntentionPrompt
                         onSubmit={handleSetIntention}
@@ -464,7 +465,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         isBackdated={isBackdated}
                     />
                 )}
-            </AnimatePresence>
+            </>
         </div>
     );
 }
