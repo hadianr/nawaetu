@@ -1,0 +1,74 @@
+[data-color-mode="light"] .dhikr-page {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="bg-emerald-"], [class*="bg-teal-"]) {
+  background-color: rgb(var(--color-primary-light) / 0.4) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="text-emerald-"], [class*="text-teal-"]) {
+  color: rgb(var(--color-primary-strong)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="border-emerald-"], [class*="border-teal-"]) {
+  border-color: rgb(var(--color-primary-light)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="hover:bg-emerald-"], [class*="hover:bg-teal-"]):hover {
+  background-color: rgb(var(--color-primary-light) / 0.55) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="shadow-emerald-"], [class*="shadow-teal-"]) {
+  --tw-shadow-color: rgb(var(--color-primary) / 0.2) !important;
+}
+[data-color-mode="light"] .dhikr-completion-dialog :is([class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-completion-dialog :is([class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-completion-dialog :is([class*="text-white/"], [class~="text-white"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="text-white/"], [class~="text-white"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog :is([class*="hover:bg-white/"]):hover {
+  background-color: rgb(var(--color-primary-light) / 0.35) !important;
+}
+[data-color-mode="light"] .dhikr-preset-dialog [data-slot="button"] {
+  --tw-shadow: 0 2px 10px rgb(var(--color-primary) / 0.06) !important;
+  box-shadow: var(--tw-shadow) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class~="text-slate-900"], [class~="text-slate-800"]) {
+  color: rgb(var(--color-text-strong)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class~="text-slate-500"], [class~="text-slate-400"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="bg-slate-"], [class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-page :is([class*="border-slate-"], [class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class*="bg-slate-"], [class*="bg-white/"]) {
+  background-color: rgb(var(--color-surface-subtle)) !important;
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class*="border-slate-"], [class*="border-white/"]) {
+  border-color: rgb(var(--color-border)) !important;
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class*="text-slate-"]) {
+  color: rgb(var(--color-text-muted)) !important;
+}
+[data-color-mode="light"] body:has(.dhikr-history-dialog) [data-slot="dialog-overlay"],
+[data-color-mode="light"] body:has(.dhikr-preset-dialog) [data-slot="dialog-overlay"],
+[data-color-mode="light"] body:has(.dhikr-completion-dialog) [data-slot="dialog-overlay"] {
+  background-color: rgb(var(--color-primary) / 0.14) !important;
+  backdrop-filter: blur(2px);
+}
+[data-color-mode="light"] .dhikr-history-dialog :is([class~="rounded-2xl"])[class~="border"] {
+  --tw-shadow: 0 2px 10px rgb(var(--color-primary) / 0.045) !important;
+  box-shadow: var(--tw-shadow) !important;
+}

@@ -1,0 +1,22 @@
+.sirah-quote {
+  font-style: italic;
+  color: rgb(var(--color-primary-light));
+}
+
+[data-theme="daylight"] .sirah-quote {
+  color: rgb(var(--color-primary-dark));
+}
+
+.sirah-dropcap::first-letter {
+  font-size: 3rem;
+  font-weight: 700;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.15em;
+  margin-top: 0.08em;
+  color: rgb(var(--color-primary-light));
+}
+
+[data-theme="daylight"] .sirah-dropcap::first-letter {
+  color: rgb(var(--color-primary-dark));
+}
