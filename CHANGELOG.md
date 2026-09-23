@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.4] - 2026-09-23
+
+### Performance
+- **Perf(css): split route styles**
+- **Perf(i18n): defer mission translations**
+- **Perf(observability): defer analytics and Sentry**
+- **Perf(home): trim first paint work**
+
+### Fixed
+- **Fix(a11y): label controls and headings**
+
+
 ## [1.15.3] - 2026-09-23
 
 ### Added
