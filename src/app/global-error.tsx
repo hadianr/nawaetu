@@ -18,9 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/nextjs";
 import NextError from "next/error";
 import { useEffect } from "react";
+import { captureClientException } from "@/instrumentation-client";
 
 export default function GlobalError({
   error,
@@ -28,7 +28,7 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    captureClientException(error, { boundary: "global-error", digest: error.digest });
   }, [error]);
 
   return (
