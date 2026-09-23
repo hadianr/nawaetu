@@ -28,7 +28,8 @@ export default function AnalyticsLoader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Track page views on SPA route changes (App Router navigation)
+  // Track every initial/SPA page view explicitly so lazy loading does not
+  // lose navigation events that happen before gtag is ready.
   useEffect(() => {
     if (!id || process.env.NODE_ENV !== "production") return;
 
@@ -36,11 +37,17 @@ export default function AnalyticsLoader() {
     const fullPath = pathname + (queryString ? `?${queryString}` : "");
 
     const analyticsWindow = window as AnalyticsWindow;
+    const pageView = {
+      page_location: window.location.href,
+      page_path: fullPath,
+      send_to: id,
+    };
+
+    analyticsWindow.dataLayer ??= [];
     if (typeof analyticsWindow.gtag === "function") {
-      analyticsWindow.gtag("event", "page_view", {
-        page_location: window.location.href,
-        page_path: fullPath,
-      });
+      analyticsWindow.gtag("event", "page_view", pageView);
+    } else {
+      analyticsWindow.dataLayer.push(["event", "page_view", pageView]);
     }
   }, [id, pathname, searchParams]);
 
@@ -50,12 +57,12 @@ export default function AnalyticsLoader() {
     <>
       <Script
         id="ga-script"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
       />
       <Script
         id="ga-init"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
@@ -64,7 +71,7 @@ export default function AnalyticsLoader() {
             gtag('config', '${id}', {
               page_location: window.location.href,
               page_path: window.location.pathname + window.location.search,
-              send_page_view: true
+              send_page_view: false
             });
           `,
         }}
