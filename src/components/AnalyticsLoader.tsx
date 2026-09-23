@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 import type { AnalyticsWindow } from "@/lib/analytics/analytics";
@@ -27,6 +27,30 @@ export default function AnalyticsLoader() {
   const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (!id || process.env.NODE_ENV !== "production") return;
+
+    const loadOnInteraction = () => setShouldLoad(true);
+    window.addEventListener("pointerdown", loadOnInteraction, { once: true, passive: true });
+    window.addEventListener("keydown", loadOnInteraction, { once: true });
+
+    if ("requestIdleCallback" in window) {
+      (window as Window).requestIdleCallback(() => setShouldLoad(true), { timeout: 2000 });
+      return () => {
+        window.removeEventListener("pointerdown", loadOnInteraction);
+        window.removeEventListener("keydown", loadOnInteraction);
+      };
+    }
+
+    const timeoutId = setTimeout(() => setShouldLoad(true), 2000);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("pointerdown", loadOnInteraction);
+      window.removeEventListener("keydown", loadOnInteraction);
+    };
+  }, [id]);
 
   // Track every initial/SPA page view explicitly so lazy loading does not
   // lose navigation events that happen before gtag is ready.
@@ -51,7 +75,7 @@ export default function AnalyticsLoader() {
     }
   }, [id, pathname, searchParams]);
 
-  if (!id || process.env.NODE_ENV !== "production") return null;
+  if (!id || process.env.NODE_ENV !== "production" || !shouldLoad) return null;
 
   return (
     <>
