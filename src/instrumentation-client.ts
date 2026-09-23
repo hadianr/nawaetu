@@ -20,10 +20,16 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
+type SentryClient = typeof import("@sentry/nextjs");
+
+let sentryModule: Promise<SentryClient> | undefined;
+
+function loadSentry(): Promise<SentryClient> {
+  return sentryModule ??= import("@sentry/nextjs");
+}
 
 // Defer Sentry initialization to idle callback to avoid blocking FCP
-const initSentry = () => {
+const initSentry = async () => {
   // Only initialize Sentry in production environment (nawaetu.com)
   const isProduction = typeof window !== "undefined" &&
     (window.location.hostname === "nawaetu.com" || window.location.hostname === "www.nawaetu.com");
@@ -32,7 +38,9 @@ const initSentry = () => {
     return;
   }
 
-  Sentry.init({
+  try {
+    const Sentry = await loadSentry();
+    Sentry.init({
     dsn: "https://01c92628e40472d65fa8216a0628ddd9@o4510815612960768.ingest.us.sentry.io/4510815614468096",
 
     // Add optional integrations for additional features
@@ -68,7 +76,10 @@ const initSentry = () => {
       /Failed to connect to MetaMask/i,
       /MetaMask extension not found/i,
     ],
-  });
+    });
+  } catch {
+    // Observability must never affect application startup.
+  }
 };
 
 // Defer Sentry initialization until idle or interaction
@@ -80,4 +91,11 @@ if (typeof window !== "undefined") {
   }
 }
 
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+export function onRouterTransitionStart(
+  url: string,
+  navigationType: "push" | "replace" | "traverse",
+): void {
+  void loadSentry()
+    .then(({ captureRouterTransitionStart }) => captureRouterTransitionStart(url, navigationType))
+    .catch(() => undefined);
+}
