@@ -71,7 +71,7 @@ export default function PrayerTimesDisplay() {
                     </div>
 
                     <div className="space-y-2">
-                        <h3 className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{t.homeLocationRequiredTitle}</h3>
+                        <h2 className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{t.homeLocationRequiredTitle}</h2>
                         <p className="text-sm leading-relaxed max-w-[280px] mx-auto text-[rgb(var(--color-text-muted))]">
                             {t.homeLocationRequiredDesc}
                         </p>

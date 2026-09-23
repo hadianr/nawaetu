@@ -194,10 +194,11 @@ export default function ReflectionPrompt({
 
                         {/* Optional Notes */}
                         <div>
-                            <label className="text-xs font-medium uppercase tracking-wider mb-2 block text-[rgb(var(--color-text-muted))]">
+                            <label htmlFor="reflection-prompt-text" className="text-xs font-medium uppercase tracking-wider mb-2 block text-[rgb(var(--color-text-muted))]">
                                 {t.intention_notes_label}
                             </label>
                             <textarea
+                                id="reflection-prompt-text"
                                 value={reflectionText}
                                 onChange={(e) => setReflectionText(e.target.value)}
                                 placeholder={t.intention_notes_placeholder}

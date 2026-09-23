@@ -327,7 +327,8 @@ export default function PrayerCheckInWidget() {
 
                     <div className="ml-auto flex shrink-0 items-center gap-1.5">
                         {/* Date Selector */}
-                        <div
+                        <label
+                            htmlFor="prayer-checkin-date"
                             onClick={() => {
                                 // Provide native fallback by just allowing target click if showPicker isn't supported
                                 try {
@@ -348,6 +349,7 @@ export default function PrayerCheckInWidget() {
                                 })}
                             </span>
                             <input
+                                id="prayer-checkin-date"
                                 ref={dateInputRef}
                                 type="date"
                                 value={selectedDate}
@@ -364,7 +366,7 @@ export default function PrayerCheckInWidget() {
                                 }}
                                 className="prayer-date-input absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                             />
-                        </div>
+                        </label>
 
                         <div className={cn(
                             "text-[9px] px-1.5 py-0.5 rounded-full font-bold border transition-colors whitespace-nowrap",
