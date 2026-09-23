@@ -268,14 +268,16 @@ export default function NotificationSettings() {
                 } catch (error: unknown) {
                     console.error("[NotificationSettings] Toggle Error:", error);
 
-                    Sentry.captureException(error, {
-                        extra: {
-                            context: "NotificationSettings.toggleNotifications",
-                            fcmTokenExists: !!fcmToken,
-                            permissionStatus,
-                            userAgent: navigator.userAgent
-                        }
-                    });
+                    if (!(error instanceof TypeError && error.message === "Failed to fetch")) {
+                        Sentry.captureException(error, {
+                            extra: {
+                                context: "NotificationSettings.toggleNotifications",
+                                fcmTokenExists: !!fcmToken,
+                                permissionStatus,
+                                userAgent: navigator.userAgent
+                            }
+                        });
+                    }
 
                     const errorMessage = error instanceof Error && error.message
                         ? error.message
