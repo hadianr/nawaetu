@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import PrayerCardSkeleton from "@/components/skeleton/PrayerCardSkeleton";
 import { useLocale } from "@/context/LocaleContext";
@@ -40,6 +40,8 @@ const DailySpiritWidget = dynamic(() => import("@/components/home/DailySpiritWid
 
 export default function DeferredBelowFold() {
   const [ready, setReady] = useState(false);
+  const [secondaryReady, setSecondaryReady] = useState(false);
+  const secondaryRef = useRef<HTMLDivElement>(null);
   const { t } = useLocale();
 
   useEffect(() => {
@@ -52,6 +54,34 @@ export default function DeferredBelowFold() {
     }
   }, []);
 
+  useEffect(() => {
+    const target = secondaryRef.current;
+    if (!target || !("IntersectionObserver" in window)) {
+      const fallback = window.setTimeout(() => setSecondaryReady(true), 2500);
+      return () => window.clearTimeout(fallback);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setSecondaryReady(true);
+        observer.disconnect();
+      },
+      { rootMargin: "200px 0px" },
+    );
+    observer.observe(target);
+
+    const fallback = window.setTimeout(() => {
+      setSecondaryReady(true);
+      observer.disconnect();
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(fallback);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <>
       <div className="w-full flex flex-col gap-2">
@@ -60,19 +90,17 @@ export default function DeferredBelowFold() {
           {ready ? <PrayerTimesDisplay /> : <PrayerCardSkeleton />}
         </section>
 
-        {/* 5. Daily Missions */}
-        {
+        <div ref={secondaryRef}>
+          {/* 5. Daily Missions */}
           <section className="w-full animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-            {ready ? (
+            {secondaryReady ? (
               <MissionsWidget />
             ) : (
               <div className="w-full h-48 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />
             )}
           </section>
-        }
 
-        {/* 6. Unified Spiritual Feed */}
-        {
+          {/* 6. Unified Spiritual Feed */}
           <section className="w-full mt-4 space-y-2 animate-in slide-in-from-bottom-6 fade-in duration-1000 delay-400">
             <div className="px-6 flex flex-col">
               <h2 className="text-sm font-black text-[rgb(var(--color-text-strong))] tracking-tight">{t.spiritualDailyTitle}</h2>
@@ -80,14 +108,14 @@ export default function DeferredBelowFold() {
             </div>
 
             <div>
-              {ready ? (
+              {secondaryReady ? (
                 <DailySpiritWidget />
               ) : (
                 <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-[2.5rem]" />
               )}
             </div>
           </section>
-        }
+        </div>
       </div>
 
     </>
