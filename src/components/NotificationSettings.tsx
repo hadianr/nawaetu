@@ -26,9 +26,9 @@ import { registerServiceWorkerAndGetToken } from "@/lib/notifications/fcm-init";
 import { DEFAULT_PRAYER_PREFERENCES, type PrayerPreferences } from "@/types/notifications";
 import { useLocale } from "@/context/LocaleContext";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import * as Sentry from "@sentry/nextjs";
 import { toast } from "sonner";
 import { getStorageService } from "@/core/infrastructure/storage";
+import { captureClientException } from "@/instrumentation-client";
 
 export default function NotificationSettings() {
     const { locale, t } = useLocale();
@@ -269,13 +269,11 @@ export default function NotificationSettings() {
                     console.error("[NotificationSettings] Toggle Error:", error);
 
                     if (!(error instanceof TypeError && error.message === "Failed to fetch")) {
-                        Sentry.captureException(error, {
-                            extra: {
-                                context: "NotificationSettings.toggleNotifications",
-                                fcmTokenExists: !!fcmToken,
-                                permissionStatus,
-                                userAgent: navigator.userAgent
-                            }
+                        captureClientException(error, {
+                            context: "NotificationSettings.toggleNotifications",
+                            fcmTokenExists: !!fcmToken,
+                            permissionStatus,
+                            userAgent: navigator.userAgent,
                         });
                     }
 
