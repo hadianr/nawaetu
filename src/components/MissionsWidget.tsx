@@ -24,7 +24,7 @@
  */
 
 import { useState, useEffect, useSyncExternalStore } from "react";
-import { AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 import { ChevronRight } from "lucide-react";
 import { Mission } from "@/data/missions";
 import { addHasanah } from "@/lib/habits/leveling";
@@ -38,12 +38,13 @@ import { getRulingLabel } from "@/lib/habits/mission-utils";
 import MissionSkeleton from "@/components/skeleton/MissionSkeleton";
 import { useLocale } from "@/context/LocaleContext";
 import { toast } from "sonner";
-import IntentionInputForm from "./intentions/IntentionInputForm";
-import ReflectionInputForm from "./intentions/ReflectionInputForm";
-import IntentionPrompt from "./intentions/IntentionPrompt";
 import DailyMissionCard from "./missions/DailyMissionCard";
 import { useWidgetMissions } from "@/hooks/useWidgetMissions";
 import { AppIcon } from "@/components/ui/AppIcon";
+
+const IntentionInputForm = dynamic(() => import("./intentions/IntentionInputForm"), { ssr: false });
+const ReflectionInputForm = dynamic(() => import("./intentions/ReflectionInputForm"), { ssr: false });
+const IntentionPrompt = dynamic(() => import("./intentions/IntentionPrompt"), { ssr: false });
 
 export default function MissionsWidget() {
     const { t } = useLocale();
@@ -360,15 +361,13 @@ export default function MissionsWidget() {
                 })()
             )}
 
-            <AnimatePresence>
-                {showIntentionPrompt && (
-                    <IntentionPrompt
-                        onSubmit={handleIntentionSubmit}
-                        currentStreak={0}
-                        onClose={() => setShowIntentionPrompt(false)}
-                    />
-                )}
-            </AnimatePresence>
+            {showIntentionPrompt && (
+                <IntentionPrompt
+                    onSubmit={handleIntentionSubmit}
+                    currentStreak={0}
+                    onClose={() => setShowIntentionPrompt(false)}
+                />
+            )}
         </div >
     );
 }
