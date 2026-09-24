@@ -406,7 +406,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const resolvedTheme = saved && THEMES[saved] ? saved : "default";
         if (resolvedTheme !== currentTheme) setCurrentTheme(resolvedTheme);
         applyTheme(THEMES[resolvedTheme]);
-        document.documentElement.classList.remove("theme-loading");
     }, []);
 
     useIsomorphicLayoutEffect(() => {

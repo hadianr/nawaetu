@@ -180,7 +180,6 @@ const jsonLdSchemas = [
   }
 ];
 
-import PatternOverlay from "@/components/PatternOverlay";
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { LocaleProvider } from "@/context/LocaleContext";
@@ -196,7 +195,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="theme-loading" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <head>
         {/* Resource Hints - Preconnect to critical origins */}
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
@@ -230,7 +229,6 @@ export default function RootLayout({
               <PrayerTimesProvider>
                 <ClientEntryGate>
                   <InfaqProvider>
-                    <PatternOverlay />
                     <DeferredLayoutComponents />
                     {children}
 
