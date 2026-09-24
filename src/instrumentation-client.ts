@@ -135,7 +135,8 @@ function captureEarlyBrowserError(error: unknown, context: Record<string, unknow
   }
 }
 
-// Defer Sentry initialization until idle or interaction
+// Defer idle-only Sentry initialization past the initial performance window.
+// Browser errors, rejected promises, and route transitions still initialize it immediately.
 if (typeof window !== "undefined") {
   window.addEventListener("error", (event) => {
     captureEarlyBrowserError(event.error ?? new Error(event.message || "Unhandled browser error"), {
@@ -148,9 +149,9 @@ if (typeof window !== "undefined") {
   });
 
   if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(() => void initSentry(), { timeout: 5000 });
+    window.requestIdleCallback(() => void initSentry(), { timeout: 10000 });
   } else {
-    setTimeout(() => void initSentry(), 2000);
+    setTimeout(() => void initSentry(), 10000);
   }
 }
 

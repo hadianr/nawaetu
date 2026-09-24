@@ -10,7 +10,7 @@ const { mockGetOptional, mockSet, mockCaptureException, mockFetchWithTimeout } =
     mockFetchWithTimeout: vi.fn(),
 }));
 
-vi.mock("@sentry/nextjs", () => ({ captureException: mockCaptureException }));
+vi.mock("@/instrumentation-client", () => ({ captureClientException: mockCaptureException }));
 vi.mock("@/core/infrastructure/storage", () => ({
     getStorageService: () => ({ getOptional: mockGetOptional, set: mockSet }),
 }));
@@ -45,7 +45,7 @@ describe("useHijriCalendar", () => {
 
         await waitFor(() => expect(result.current.error).toBe("calendar_load_failed"));
         expect(result.current.loading).toBe(false);
-        expect(mockCaptureException).toHaveBeenCalledWith(expect.any(Error));
+        expect(mockCaptureException).toHaveBeenCalledWith(expect.any(Error), { source: "hijri-calendar" });
     });
 
     it("coalesces concurrent monthly requests", async () => {

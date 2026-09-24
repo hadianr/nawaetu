@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as Sentry from "@sentry/nextjs";
 import { API_CONFIG } from "@/config/apis";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { captureClientException } from "@/instrumentation-client";
 import {
     getAdjustedCalendarHijriDate,
     parseHijriAdjustment,
@@ -183,7 +183,7 @@ export function useHijriCalendar(initialView: HijriCalendarViewMode = "month") {
             setAllDays(parsed);
             showMonth(parsed, key, mode);
         } catch (caught) {
-            Sentry.captureException(caught);
+            captureClientException(caught, { source: "hijri-calendar" });
             setError("calendar_load_failed");
         } finally {
             setLoading(false);
