@@ -159,8 +159,35 @@ const isProd = process.env.NODE_ENV === "production";
 const hasSentryAuthToken = Boolean(process.env.SENTRY_AUTH_TOKEN);
 const baseConfig = withPWA(nextConfig);
 
+// SWUpdatePrompt registers the generated worker with the native browser API.
+// Avoid shipping next-pwa's unused Workbox client bootstrap in the initial bundle.
+const configWithoutPwaClientEntry: NextConfig = {
+  ...baseConfig,
+  webpack(config, options) {
+    const configured = baseConfig.webpack ? baseConfig.webpack(config, options) : config;
+
+    if (options.isServer || typeof configured.entry !== "function") return configured;
+
+    const originalEntry = configured.entry;
+    configured.entry = async () => {
+      const entries = await originalEntry();
+
+      for (const key of ["main.js", "main-app"]) {
+        const entry = entries[key];
+        if (Array.isArray(entry)) {
+          entries[key] = entry.filter((item) => !String(item).endsWith("/sw-entry.js"));
+        }
+      }
+
+      return entries;
+    };
+
+    return configured;
+  },
+};
+
 export default isProd && hasSentryAuthToken
-  ? withSentryConfig(baseConfig, {
+  ? withSentryConfig(configWithoutPwaClientEntry, {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
@@ -191,4 +218,4 @@ export default isProd && hasSentryAuthToken
     // Disabling generic "enabled" flag isn't native to withSentryConfig options object usually, 
     // but wrapping conditionally is safer.
   })
-  : baseConfig;
+  : configWithoutPwaClientEntry;
