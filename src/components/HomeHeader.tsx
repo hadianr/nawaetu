@@ -7,7 +7,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { cn } from "@/lib/utils";
-import StreakBadge from "@/components/StreakBadge";
+import StreakBadgeSummary from "@/components/StreakBadgeSummary";
 
 const NavigationIcon = ({ className }: { className?: string }) => (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +72,7 @@ export default function HomeHeader() {
                 </h1>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-                <StreakBadge />
+                <StreakBadgeSummary />
                 <button
                     type="button"
                     onClick={refreshLocation}
