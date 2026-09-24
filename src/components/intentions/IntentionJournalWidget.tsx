@@ -18,18 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState, useRef } from "react";
+import { lazy, Suspense, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { ChevronRight, Book, CheckCircle2, Moon, Compass, Edit2, Calendar } from "lucide-react";
-import dynamic from "next/dynamic";
 
-const IntentionPrompt = dynamic(() => import("./IntentionPrompt"), {
-    ssr: false,
-});
-
-const ReflectionPrompt = dynamic(() => import("./ReflectionPrompt"), {
-    ssr: false,
-});
+const IntentionPrompt = lazy(() => import("./IntentionPrompt"));
+const ReflectionPrompt = lazy(() => import("./ReflectionPrompt"));
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -379,6 +373,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                 </button>
                                 <Link
                                     href="/journal"
+                                    prefetch={false}
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
@@ -430,6 +425,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                 )}
                                 <Link
                                     href="/journal"
+                                    prefetch={false}
                                     className={cn(
                                         "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] sm:flex-none",
                                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-primary))]/10"
@@ -444,7 +440,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 </div>
             </div>
 
-            <>
+            <Suspense fallback={null}>
                 {showIntentionPrompt && (
                     <IntentionPrompt
                         onSubmit={handleSetIntention}
@@ -465,7 +461,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                         isBackdated={isBackdated}
                     />
                 )}
-            </>
+            </Suspense>
         </div>
     );
 }
