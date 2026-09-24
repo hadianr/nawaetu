@@ -70,17 +70,21 @@ export default function DeferredLayoutComponents() {
 
     return (
         <Suspense fallback={null}>
-            <OfflineIndicator />
             <AnalyticsLoader />
             <DataSyncer />
-            <NotificationWatcher />
-            <GuestSyncManager />
             <AppOverlays />
-            <DynamicTitle />
-            <Toploader />
             <WebVitals />
             <ThemePatternOverlay />
-            {deferredReady && <SpeedInsights />}
+            {deferredReady && (
+                <>
+                    <OfflineIndicator />
+                    <NotificationWatcher />
+                    <GuestSyncManager />
+                    <DynamicTitle />
+                    <Toploader />
+                    <SpeedInsights />
+                </>
+            )}
         </Suspense>
     );
 }
