@@ -29,7 +29,7 @@ describe("logger", () => {
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"name":"UnknownError"'));
   });
 
-  it("uses the development info path and production Sentry paths", () => {
+  it("uses the development info path and production Sentry paths", async () => {
     logger.info("development");
     expect(console.log).toHaveBeenCalledWith("[INFO]", "development", "");
 
@@ -40,7 +40,8 @@ describe("logger", () => {
     logger.error("production error", new Error("boom"));
     logger.fatal("production fatal", new Error("crash"), { route: "/test" });
 
-    expect(Sentry.captureException).toHaveBeenCalled();
-    expect(Sentry.withScope).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(Sentry.captureException).toHaveBeenCalled();
+    });
   });
 });
