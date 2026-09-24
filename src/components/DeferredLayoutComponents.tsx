@@ -22,6 +22,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { WebVitals } from "@/components/WebVitals";
+import { useTheme } from "@/context/ThemeContext";
 
 // Progressively load non-visual global elements
 const NotificationWatcher = dynamic(() => import("@/components/NotificationWatcher"), { ssr: false });
@@ -39,6 +40,14 @@ const SpeedInsights = dynamic(
     () => import("@vercel/speed-insights/next").then(({ SpeedInsights }) => ({ default: SpeedInsights })),
     { ssr: false },
 );
+const PatternOverlay = dynamic(() => import("@/components/PatternOverlay"), { ssr: false });
+
+function ThemePatternOverlay() {
+    const { theme } = useTheme();
+
+    if (!theme.pattern || theme.pattern.type === "none") return null;
+    return <PatternOverlay />;
+}
 
 export default function DeferredLayoutComponents() {
     const [deferredReady, setDeferredReady] = useState(false);
@@ -70,6 +79,7 @@ export default function DeferredLayoutComponents() {
             <DynamicTitle />
             <Toploader />
             <WebVitals />
+            <ThemePatternOverlay />
             {deferredReady && <SpeedInsights />}
         </Suspense>
     );
