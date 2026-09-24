@@ -71,12 +71,12 @@ export default function DeferredLayoutComponents() {
     return (
         <Suspense fallback={null}>
             <AnalyticsLoader />
-            <DataSyncer />
             <AppOverlays />
             <WebVitals />
             <ThemePatternOverlay />
             {deferredReady && (
                 <>
+                    <DataSyncer />
                     <OfflineIndicator />
                     <NotificationWatcher />
                     <GuestSyncManager />
