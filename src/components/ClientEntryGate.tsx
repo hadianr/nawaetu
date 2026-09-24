@@ -24,11 +24,23 @@ import { useSession } from "next-auth/react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 
-const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), { ssr: false });
+const EntryShell = () => (
+    <main
+        aria-busy="true"
+        className="min-h-screen bg-[rgb(var(--color-canvas))]"
+    />
+);
+
+const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), {
+    ssr: false,
+    loading: EntryShell,
+});
 
 interface ClientEntryGateProps {
     children: React.ReactNode;
 }
+
+type EntryState = "resolving" | "onboarding" | "app";
 
 /** Legacy boolean, current versions, and unknown truthy markers all mean done. */
 export function hasCompletedOnboarding(marker: string | null): boolean {
@@ -43,7 +55,7 @@ function markerFamily(marker: string | null): "missing" | "legacy_boolean" | "cu
 }
 
 export default function ClientEntryGate({ children }: ClientEntryGateProps) {
-    const [showOnboarding, setShowOnboarding] = useState(false);
+    const [entryState, setEntryState] = useState<EntryState>("resolving");
     const { status } = useSession();
 
     useEffect(() => {
@@ -75,25 +87,26 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
                 sendGAEvent("onboarding_returning_user_bypass", { reason: "session" });
             }
             if (!completed && status !== "authenticated") {
-                queueMicrotask(() => setShowOnboarding(true));
+                queueMicrotask(() => setEntryState("onboarding"));
             } else {
-                queueMicrotask(() => setShowOnboarding(false));
+                queueMicrotask(() => setEntryState("app"));
             }
         } catch (e) {
             console.error("Failed to check onboarding status", e);
+            queueMicrotask(() => setEntryState("app"));
         }
     }, [status]);
 
     const handleOnboardingComplete = () => {
-        setShowOnboarding(false);
-        // Optionally reload or just state change
-        // State change is smoother
+        setEntryState("app");
     };
 
+    if (entryState === "resolving") return <EntryShell />;
+    if (entryState === "onboarding") {
+        return <OnboardingOverlay onComplete={handleOnboardingComplete} />;
+    }
+
     return (
-        <>
-            {children}
-            {showOnboarding && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
-        </>
+        <>{children}</>
     );
 }

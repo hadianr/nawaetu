@@ -30,19 +30,20 @@ describe("ClientEntryGate", () => {
         expect(hasCompletedOnboarding(null)).toBe(false);
     });
 
-    it("keeps the application visible while resolving onboarding", async () => {
+    it("shows onboarding without mounting the application for a new guest", async () => {
         render(<ClientEntryGate><main>Home</main></ClientEntryGate>);
 
-        expect(screen.getByText("Home")).toBeTruthy();
+        expect(screen.queryByText("Home")).toBeNull();
         await waitFor(() => expect(screen.getByText("Onboarding")).toBeTruthy());
+        expect(screen.queryByText("Home")).toBeNull();
     });
 
-    it("does not show onboarding after completion", () => {
+    it("does not show onboarding after completion", async () => {
         window.localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, "true");
 
         render(<ClientEntryGate><main>Home</main></ClientEntryGate>);
 
-        expect(screen.getByText("Home")).toBeTruthy();
+        await waitFor(() => expect(screen.getByText("Home")).toBeTruthy());
         expect(screen.queryByText("Onboarding")).toBeNull();
     });
 
@@ -55,7 +56,7 @@ describe("ClientEntryGate", () => {
         expect(screen.queryByText("Onboarding")).toBeNull();
     });
 
-    it("does not block the application when storage is unavailable", () => {
+    it("does not block the application when storage is unavailable", async () => {
         vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
             throw new DOMException("Denied", "SecurityError");
         });
@@ -63,7 +64,7 @@ describe("ClientEntryGate", () => {
 
         render(<ClientEntryGate><main>Home</main></ClientEntryGate>);
 
-        expect(screen.getByText("Home")).toBeTruthy();
+        await waitFor(() => expect(screen.getByText("Home")).toBeTruthy());
         expect(screen.queryByText("Onboarding")).toBeNull();
     });
 });
