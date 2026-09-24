@@ -21,6 +21,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
+import { WebVitals } from "@/components/WebVitals";
 
 // Progressively load non-visual global elements
 const NotificationWatcher = dynamic(() => import("@/components/NotificationWatcher"), { ssr: false });
@@ -34,10 +35,6 @@ const GuestSyncManager = dynamic(
 const AppOverlays = dynamic(() => import("@/components/AppOverlays"), { ssr: false });
 const DynamicTitle = dynamic(() => import("@/components/DynamicTitle"), { ssr: false });
 const Toploader = dynamic(() => import("@/components/ui/Toploader"), { ssr: false });
-const WebVitals = dynamic(
-    () => import("@/components/WebVitals").then(({ WebVitals }) => ({ default: WebVitals })),
-    { ssr: false },
-);
 const SpeedInsights = dynamic(
     () => import("@vercel/speed-insights/next").then(({ SpeedInsights }) => ({ default: SpeedInsights })),
     { ssr: false },

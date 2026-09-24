@@ -19,14 +19,9 @@
  */
 
 import { useReportWebVitals } from 'next/web-vitals';
-import '@/instrumentation-client';
 
 export function WebVitals() {
   useReportWebVitals((metric) => {
-    // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-    }
-
     // Send to analytics in production
     if (process.env.NODE_ENV === 'production') {
       // Create a clean copy of the metric to avoid circular structures (like DOM elements in attribution)

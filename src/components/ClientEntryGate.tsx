@@ -19,10 +19,12 @@
  */
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { sendGAEvent } from "@/lib/analytics/analytics";
+
+const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), { ssr: false });
 
 interface ClientEntryGateProps {
     children: React.ReactNode;
