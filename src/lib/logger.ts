@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/nextjs";
-
 export type LogLevel = "info" | "warn" | "error" | "fatal";
 
 export interface LogContext {
@@ -40,6 +38,29 @@ export interface StandardLogPayload {
     message: string;
     stack?: string;
   };
+}
+
+function captureServerException(
+  level: "error" | "fatal",
+  error: unknown,
+  message: string,
+  context?: LogContext,
+): void {
+  void import("@sentry/nextjs").then((Sentry) => {
+    if (level === "fatal") {
+      Sentry.captureException(error || new Error(message), {
+        level: "fatal",
+        tags: { critical_crash: "true" },
+        extra: { message, ...context },
+      });
+      return;
+    }
+
+    Sentry.captureException(error || new Error(message), {
+      level: "error",
+      extra: { message, ...context },
+    });
+  }).catch(() => undefined);
 }
 
 class Logger {
@@ -125,10 +146,7 @@ class Logger {
       console.error(this.serialize(payload));
 
       if (process.env.NODE_ENV === "production") {
-        Sentry.captureException(error || new Error(message), {
-          level: "error",
-          extra: { message, ...context },
-        });
+        captureServerException("error", error, message, context);
       }
     } catch {
       // Fail-safe
@@ -145,13 +163,7 @@ class Logger {
       console.error(this.serialize(payload));
 
       if (process.env.NODE_ENV === "production") {
-        Sentry.withScope((scope) => {
-          scope.setLevel("fatal");
-          scope.setTag("critical_crash", "true");
-          Sentry.captureException(error || new Error(message), {
-            extra: { message, ...context },
-          });
-        });
+        captureServerException("fatal", error, message, context);
       }
     } catch {
       // Fail-safe
