@@ -20,6 +20,7 @@
 
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { useEffect, useState } from "react";
 
 // Progressively load non-visual global elements
 const NotificationWatcher = dynamic(() => import("@/components/NotificationWatcher"), { ssr: false });
@@ -43,6 +44,24 @@ const SpeedInsights = dynamic(
 );
 
 export default function DeferredLayoutComponents() {
+    const [deferredReady, setDeferredReady] = useState(false);
+
+    useEffect(() => {
+        const loadDeferredComponents = () => setDeferredReady(true);
+        const idleWindow = window as Window & {
+            requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+            cancelIdleCallback?: (handle: number) => void;
+        };
+
+        if (idleWindow.requestIdleCallback) {
+            const idleId = idleWindow.requestIdleCallback(loadDeferredComponents, { timeout: 3000 });
+            return () => idleWindow.cancelIdleCallback?.(idleId);
+        }
+
+        const timeoutId = window.setTimeout(loadDeferredComponents, 3000);
+        return () => window.clearTimeout(timeoutId);
+    }, []);
+
     return (
         <Suspense fallback={null}>
             <OfflineIndicator />
@@ -54,7 +73,7 @@ export default function DeferredLayoutComponents() {
             <DynamicTitle />
             <Toploader />
             <WebVitals />
-            <SpeedInsights />
+            {deferredReady && <SpeedInsights />}
         </Suspense>
     );
 }

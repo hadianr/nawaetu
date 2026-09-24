@@ -135,8 +135,8 @@ function captureEarlyBrowserError(error: unknown, context: Record<string, unknow
   }
 }
 
-// Defer idle-only Sentry initialization past the initial performance window.
-// Browser errors, rejected promises, and route transitions still initialize it immediately.
+// Load Sentry only when an error or route transition needs it. This keeps the
+// monitoring hooks active without downloading the SDK on every page visit.
 if (typeof window !== "undefined") {
   window.addEventListener("error", (event) => {
     captureEarlyBrowserError(event.error ?? new Error(event.message || "Unhandled browser error"), {
@@ -148,11 +148,6 @@ if (typeof window !== "undefined") {
     captureEarlyBrowserError(event.reason, { source: "unhandledrejection" });
   });
 
-  if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(() => void initSentry(), { timeout: 10000 });
-  } else {
-    setTimeout(() => void initSentry(), 10000);
-  }
 }
 
 export function onRouterTransitionStart(
