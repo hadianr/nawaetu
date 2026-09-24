@@ -67,6 +67,7 @@ const nextConfig: NextConfig = {
       "@google/generative-ai",
       "@sentry/nextjs"
     ],
+    webVitalsAttribution: ["CLS", "LCP"],
     optimizeCss: true,
     webpackBuildWorker: true,
     scrollRestoration: false,
