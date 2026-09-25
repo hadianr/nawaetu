@@ -55,7 +55,7 @@
     "drizzle-orm": "^0.45.3",
     "firebase": "^12.19.0",
     "firebase-admin": "^14.4.0",
-    "framer-motion": "^12.42.2",
+    "framer-motion": "^13.4.0",
     "html-to-image": "^1.11.13",
     "isomorphic-dompurify": "^4.3.0",
     "lucide-react": "^1.47.0",
