@@ -1,83 +1,101 @@
-/**
- * Nawaetu - Islamic Habit Tracker
- * Copyright (C) 2026 Hadian Rahmat
- */
+import type { Metadata } from "next";
+import Link from "next/link";
 
-import { Metadata } from "next";
-
-export const revalidate = 604800; // Cache for 7 days
+export const revalidate = 604800;
 
 export const metadata: Metadata = {
     title: "Privacy Policy - Nawaetu",
-    description: "Privacy Policy for Nawaetu, the Islamic Habit Tracker app.",
-    alternates: {
-        canonical: "https://nawaetu.com/privacy",
-    },
+    description: "How Nawaetu collects, uses, and shares personal data.",
+    alternates: { canonical: "https://nawaetu.com/privacy" },
 };
+
+const sections = [
+    {
+        title: "1. Who we are",
+        text: "Nawaetu is an Islamic worship and habit-tracking service operated by NawaetuLabs (Hadian Rahmat). This policy applies to nawaetu.com and the Nawaetu Android app, including the app experience that opens nawaetu.com.",
+    },
+    {
+        title: "2. Data we collect",
+        bullets: [
+            "Account details: your name, email address, profile image, and Google account identifiers when you sign in with Google.",
+            "Information you add or create: settings, bookmarks, Quran reading progress, worship and habit activity, intentions and reflections, Ramadan fasting and prayer logs, and donation/support status. Some of these entries may reveal sensitive religious or health-related information.",
+            "Location: if you enable location-based features, Nawaetu uses your device location to calculate prayer times and Qibla direction, resolve a city name, and support prayer notifications. Notification subscriptions may store coordinates, city, country, time zone, device type, notification token, and your prayer notification choices. You can also enter or select a location manually.",
+            "AI mentor content: the questions, conversation context, and related account activity you submit. Signed-in chat history is saved to your account so you can reopen it.",
+            "Technical and usage data: app and page activity, feature events, device/browser information, network identifiers processed by hosting and security services, diagnostic errors, and performance data. Depending on the feature, analytics events can include feature names, Quran surah names, prayer names, or a shortened Hadith search query. Our error-monitoring tool can collect sampled session-replay and interaction data to diagnose errors.",
+            "Support and payment details: information you provide when contacting us, and donation transaction details such as amount, status, name, email, and payment-provider identifiers.",
+        ],
+    },
+    {
+        title: "3. How we use data",
+        bullets: [
+            "To provide sign-in, sync your account and progress, and operate Nawaetu features.",
+            "To calculate prayer times and Qibla direction, set prayer reminders, and deliver notifications you enable.",
+            "To answer AI mentor requests and keep your chat history when you are signed in.",
+            "To process donations, respond to support requests, protect the service, fix errors, and understand performance and feature usage.",
+        ],
+    },
+    {
+        title: "4. When data is shared",
+        text: "We do not sell personal data. We share only the data needed with service providers that help operate Nawaetu:",
+        bullets: [
+            "Google provides account sign-in, Google Analytics measurement, and Firebase Cloud Messaging (push delivery).",
+            "Google Gemini, Groq, or OpenRouter may receive your AI prompt, relevant conversation history, and context needed to generate an answer. Nawaetu may use another listed provider when its primary AI provider is unavailable or rate-limited. Their handling is governed by their own terms and privacy policies.",
+            "Aladhan provides prayer-time calculations. BigDataCloud or OpenStreetMap Nominatim may receive coordinates for reverse geocoding when Nawaetu resolves a location name.",
+            "Mayar processes donations and payment links. Payment details may be shared with it to complete and reconcile a transaction.",
+            "Vercel hosts the service and provides performance measurement; Supabase provides the PostgreSQL database; and Sentry provides error monitoring. These providers process data to run, secure, and maintain Nawaetu.",
+        ],
+    },
+    {
+        title: "5. Storage and retention",
+        text: "Account data and synced activity are stored in Nawaetu’s database. Some app preferences and activity may also remain in browser or device storage. We keep account data while the account is active and handle deletion requests as described below. Certain transaction or security records may need to be retained where required for legitimate operational or legal reasons. Backups and provider logs may take time to expire under the providers’ retention schedules.",
+    },
+    {
+        title: "6. Your choices and account deletion",
+        text: "You can control location permission and push notification permission in your device or browser settings, and you can stop using AI features at any time. To request deletion of your Nawaetu account and associated personal data, use the instructions on our account deletion page. We may ask for information needed to verify that you control the account. Some records may be retained where required for legal, security, or transaction purposes.",
+    },
+    {
+        title: "7. Changes and contact",
+        text: "We may update this policy as the service changes. The effective date below shows the latest revision. For privacy questions or account deletion requests, email hadian.rahmat@gmail.com.",
+    },
+];
 
 export default function PrivacyPolicyPage() {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
-            <div className="w-full max-w-none space-y-8 mb-12 xl:max-w-4xl">
-                <div className="text-center space-y-4">
-                    <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-secondary))] bg-clip-text text-transparent pb-2">
-                        Privacy Policy
-                    </h1>
-                    <p className="text-lg text-[rgb(var(--color-text-muted))]">
-                        Effective Date: March 27, 2026
+        <main className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] px-4 pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
+            <article className="mb-12 w-full max-w-4xl space-y-8">
+                <header className="space-y-3 text-center">
+                    <h1 className="text-4xl font-bold sm:text-5xl">Privacy Policy</h1>
+                    <p className="text-[rgb(var(--color-text-muted))]">Effective date: September 26, 2026</p>
+                </header>
+
+                <div className="space-y-7 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8">
+                    {sections.map((section) => (
+                        <section className="space-y-3" key={section.title}>
+                            <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{section.title}</h2>
+                            {section.text && <p>{section.text}</p>}
+                            {section.bullets && (
+                                <ul className="list-disc space-y-2 pl-5">
+                                    {section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+                                </ul>
+                            )}
+                        </section>
+                    ))}
+
+                    <section className="space-y-3 border-t border-[rgb(var(--color-border))] pt-6">
+                        <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">Kebijakan Privasi (Bahasa Indonesia)</h2>
+                        <p>Kebijakan ini berlaku untuk nawaetu.com dan aplikasi Android Nawaetu yang membuka layanan nawaetu.com. Nawaetu dioperasikan oleh NawaetuLabs (Hadian Rahmat).</p>
+                        <p>Kami memproses data akun Google (nama, email, foto profil, dan ID akun); data yang Anda simpan seperti pengaturan, bookmark, progres Al-Qur’an, aktivitas ibadah, niat dan refleksi, catatan Ramadan, serta status dukungan/donasi. Sebagian catatan dapat mengungkap informasi sensitif terkait agama atau kesehatan.</p>
+                        <p>Jika Anda mengaktifkan fitur berbasis lokasi, lokasi digunakan untuk waktu salat, arah kiblat, nama kota, dan notifikasi. Token notifikasi, koordinat, kota/negara, zona waktu, jenis perangkat, serta pilihan notifikasi dapat disimpan untuk mengirim pengingat.</p>
+                        <p>Pertanyaan dan konteks yang Anda kirim ke mentor AI dapat diproses oleh Google Gemini, Groq, atau OpenRouter; riwayat percakapan akun tersimpan agar dapat dibuka kembali. Aladhan digunakan untuk waktu salat; BigDataCloud atau OpenStreetMap Nominatim untuk pencarian nama lokasi; Google untuk login, analitik, dan Firebase Cloud Messaging; Mayar untuk pembayaran/donasi; Vercel untuk hosting dan pengukuran performa; Supabase untuk basis data; serta Sentry untuk pemantauan error.</p>
+                        <p>Kami tidak menjual data pribadi. Data akun disimpan selama akun aktif. Untuk meminta penghapusan akun dan data pribadi terkait, ikuti petunjuk di <Link className="underline" href="/delete-account">halaman penghapusan akun</Link> atau hubungi <a className="underline" href="mailto:hadian.rahmat@gmail.com">hadian.rahmat@gmail.com</a>. Kami dapat meminta verifikasi kepemilikan akun dan dapat menyimpan catatan tertentu bila diperlukan untuk kewajiban hukum, keamanan, atau transaksi. Data pada cadangan dan log penyedia dapat memerlukan waktu untuk terhapus sesuai jadwal retensi mereka.</p>
+                        <p>Anda dapat menonaktifkan izin lokasi dan notifikasi melalui pengaturan perangkat/browser, serta berhenti menggunakan fitur AI kapan saja. Kebijakan ini terakhir diperbarui pada 26 September 2026.</p>
+                    </section>
+
+                    <p className="border-t border-[rgb(var(--color-border))] pt-6">
+                        <Link className="underline" href="/delete-account">Request account deletion</Link>
                     </p>
                 </div>
-
-                <div className="bg-[rgb(var(--color-surface))]/70 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-[rgb(var(--color-border))] space-y-6 text-[rgb(var(--color-text-muted))] leading-relaxed font-light">
-                    <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">1. Introduction</h2>
-                        <p>
-                            Welcome to <strong>Nawaetu</strong> (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your personal information and your right to privacy. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our web application located at nawaetu.com and any related services.
-                        </p>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">2. Information We Collect</h2>
-                        <ul className="list-disc pl-5 space-y-2">
-                            <li><strong>Personal Information:</strong> When you register an account via third-party providers (like Google), we receive basic profile information such as your name, email address, and profile picture.</li>
-                            <li><strong>Usage Data:</strong> We may collect data regarding your interaction with the app, such as habit tracking progress, reading logs (Tilawah), and intentions set within the app to provide a personalized experience.</li>
-                            <li><strong>Device Information:</strong> We may collect non-identifiable information about your device, browser type, and operating system to improve app stability and performance.</li>
-                        </ul>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">3. How We Use Your Information</h2>
-                        <p>We use the collected information for various purposes, including:</p>
-                        <ul className="list-disc pl-5 space-y-2">
-                            <li>To provide, operate, and maintain Nawaetu&apos;s features.</li>
-                            <li>To manage your account and synchronize your data across devices.</li>
-                            <li>To personalize user experience and provide AI-driven spiritual mentorship.</li>
-                            <li>To send you important notifications related to prayer times and updates.</li>
-                        </ul>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">4. Third-Party Services & APIs</h2>
-                        <p>
-                            Nawaetu integrates with trusted third-party services to provide certain features (e.g., Quran Foundation API for Quranic texts, Aladhan API for prayer times, and AI providers for the mentor feature). These services may have their own privacy policies governing their use of data. We do not sell your personal data to any third party.
-                        </p>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">5. Data Security</h2>
-                        <p>
-                            We implement appropriate technical and organizational security measures designed to protect the security of any personal information we process. However, please also remember that we cannot guarantee that the internet itself is 100% secure.
-                        </p>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">6. Contact Us</h2>
-                        <p>
-                            If you have any questions or concerns about this Privacy Policy, please contact us at <strong>hadian.rahmat@gmail.com</strong>.
-                        </p>
-                    </section>
-                </div>
-            </div>
-        </div>
+            </article>
+        </main>
     );
 }
