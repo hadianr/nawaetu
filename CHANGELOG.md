@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.6] - 2026-09-26
+
+### Performance
+- **Perf(pwa): defer workbox client bootstrap**
+- **Perf(layout): defer background data sync**
+- **Perf(onboarding): gate first entry before home**
+- **Perf(home): defer non-critical client work**
+- **Perf(home): unblock initial paint**
+- **Perf(web): trim initial client bundle**
+- **Perf(home): defer journal motion chunk**
+- **Perf(home): lazy load mission dialogs**
+- **Perf(telemetry): defer noncritical SDKs**
+- **Perf(sentry): lazy load server logger**
+- **Perf(sentry): defer client runtime**
+- **Perf(home): defer offscreen widgets**
+
+### Improved
+- **Chore(deps): bump framer-motion from 12.43.0 to 13.4.0 (#163)**
+- **Chore(deps): bump lucide-react from 0.563.0 to 1.47.0 (#164)**
+- **Chore(deps): bump the production-dependencies group across 1 directory with 12 updates (#192)**
+- **Chore(deps-dev): bump the development-dependencies group across 1 directory with 8 updates (#177)**
+- **Chore(deps): bump reviewdog/action-eslint**
+
+### Fixed
+- **Fix(perf): stabilize homepage layout shifts**
+
+
 ## [1.15.5] - 2026-09-23
 
 ### Performance
