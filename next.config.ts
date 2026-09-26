@@ -205,7 +205,7 @@ const configWithoutPwaClientEntry: NextConfig = {
   },
 };
 
-export default isProd && hasSentryAuthToken
+export default isProd && hasSentryAuthToken && !isVercelPreview
   ? withSentryConfig(configWithoutPwaClientEntry, {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
