@@ -46,11 +46,12 @@ function captureServerException(
   message: string,
   context?: LogContext,
 ): void {
+  const routeTag = context?.route ? { route: context.route } : undefined;
   void import("@sentry/nextjs").then((Sentry) => {
     if (level === "fatal") {
       Sentry.captureException(error || new Error(message), {
         level: "fatal",
-        tags: { critical_crash: "true" },
+        tags: { critical_crash: "true", ...routeTag },
         extra: { message, ...context },
       });
       return;
@@ -58,6 +59,7 @@ function captureServerException(
 
     Sentry.captureException(error || new Error(message), {
       level: "error",
+      tags: routeTag,
       extra: { message, ...context },
     });
   }).catch(() => undefined);

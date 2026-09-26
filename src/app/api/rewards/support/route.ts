@@ -3,6 +3,7 @@ import { transactionDb, checkConnection } from "@/db";
 import { userFeedback } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { and, eq, gte, sql } from "drizzle-orm";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 const SUPPORT_TYPES = new Set(["physical-product", "digital-reward", "discount", "charity", "operations", "other"]);
 const MAX_SUPPORT_PER_HOUR = 5;
@@ -101,11 +102,11 @@ export async function POST(request: NextRequest) {
 
     let telegram: Response;
     try {
-        telegram = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        telegram = await fetchWithTimeout(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "HTML" }),
-        });
+        }, { timeoutMs: 10000 });
     } catch {
         return NextResponse.json({ error: "Telegram is temporarily unavailable." }, { status: 502 });
     }

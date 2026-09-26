@@ -22,6 +22,7 @@ import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logger } from "@/lib/logger";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 export async function POST(req: NextRequest) {
     try {
@@ -58,14 +59,14 @@ export async function POST(req: NextRequest) {
             failureRedirectUrl: `${process.env.NEXTAUTH_URL}/settings?payment=failed`
         };
 
-        const mayarRes = await fetch(mayarUrl, {
+        const mayarRes = await fetchWithTimeout(mayarUrl, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
-        });
+        }, { timeoutMs: 10_000 });
 
         const mayarData = await mayarRes.json();
 

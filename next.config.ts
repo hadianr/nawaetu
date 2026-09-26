@@ -1,4 +1,4 @@
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
 
@@ -45,10 +45,10 @@ const nextConfig: NextConfig = {
 
   // Transpile packages that use @babel/runtime to prevent chunk loading issues
   transpilePackages: ['framer-motion'],
-  serverExternalPackages: ["isomorphic-dompurify"],
-  // Generate browser source maps only when Sentry can upload them.
-  // This keeps CI/Preview builds smaller without changing runtime monitoring.
-  productionBrowserSourceMaps: Boolean(process.env.SENTRY_AUTH_TOKEN),
+  // Generate browser source maps only when Sentry can upload them for a
+  // production deployment; preview builds keep runtime monitoring without
+  // uploading the larger browser map set.
+  productionBrowserSourceMaps: Boolean(process.env.SENTRY_AUTH_TOKEN) && process.env.VERCEL_ENV !== "preview",
 
   // Performance optimizations
   compress: true,
@@ -72,7 +72,6 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true,
     scrollRestoration: false,
   },
-
   // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
@@ -86,6 +85,18 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000,
     deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
+  },
+
+  // Keep one indexable host and preserve the requested path and query string.
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.nawaetu.com' }],
+        destination: 'https://nawaetu.com/:path*',
+        permanent: true,
+      },
+    ];
   },
 
   // Force SW to not cache + Static security headers (moved from middleware for zero per-request CPU cost)
@@ -157,6 +168,7 @@ const nextConfig: NextConfig = {
 // Runtime Sentry initialization remains handled by the instrumentation files.
 const isProd = process.env.NODE_ENV === "production";
 const hasSentryAuthToken = Boolean(process.env.SENTRY_AUTH_TOKEN);
+const isVercelPreview = process.env.VERCEL_ENV === "preview";
 const baseConfig = withPWA(nextConfig);
 
 // SWUpdatePrompt registers the generated worker with the native browser API.
@@ -165,6 +177,13 @@ const configWithoutPwaClientEntry: NextConfig = {
   ...baseConfig,
   webpack(config, options) {
     const configured = baseConfig.webpack ? baseConfig.webpack(config, options) : config;
+
+    // Vercel's persistent Webpack filesystem cache grew beyond 3 GB locally and
+    // exhausted the build volume. Keep the per-build cache in memory on Vercel;
+    // local builds retain Next's normal filesystem cache.
+    if (process.env.VERCEL && !options.dev && configured.cache) {
+      configured.cache = { type: "memory" };
+    }
 
     if (options.isServer || typeof configured.entry !== "function") return configured;
 
@@ -207,7 +226,7 @@ export default isProd && hasSentryAuthToken
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
     // Upload a larger set of source maps for prettier stack traces (increases build time)
-    widenClientFileUpload: true,
+    widenClientFileUpload: !isVercelPreview,
 
     // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
     // This can increase your server load as well as your hosting bill.

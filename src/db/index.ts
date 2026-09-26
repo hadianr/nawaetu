@@ -25,6 +25,13 @@ if (!connectionString) throw new Error("DATABASE_URL is not configured");
 
 const sql = postgres(connectionString, {
     max: 1,
+    // Fail fast during Supabase cold starts or network/provider outages instead
+    // of holding a Vercel function until its 300-second platform limit.
+    connect_timeout: 10,
+    connection: {
+        statement_timeout: 30_000,
+        lock_timeout: 5_000,
+    },
     prepare: false,
     ssl: "require",
 });

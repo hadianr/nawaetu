@@ -141,11 +141,11 @@ Dibangun dengan teknologi bleeding-edge untuk performa dan keandalan maksimal:
 
 ### Backend & Database
 *   **Drizzle ORM 0.45** - Type-safe SQL database query
-*   **PostgreSQL (NeonDB)** - Database serverless auto-scaling
+*   **PostgreSQL (Supabase)** - Database serverless melalui transaction pooler
 *   **NextAuth v5** - Sesi autentikasi aman
 *   **Upstash Redis & Rate Limiting** - Proteksi dan pembatasan rate API terdistribusi
 *   **Firebase Admin SDK** - Infrastruktur push notification
-*   **Vercel Cron** - Tugas latar belakang terjadwal
+*   **cron-job.org** - Penjadwalan prayer-alert dan streak reminder
 
 ### AI & External APIs
 *   **Google Gemini 2.5 Flash-Lite** (`@google/generative-ai`)

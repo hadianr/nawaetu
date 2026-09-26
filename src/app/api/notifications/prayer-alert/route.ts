@@ -22,14 +22,15 @@ import { pushSubscriptions, users } from "@/db/schema";
 import { eq, and, inArray, isNotNull } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
 
 /**
  * Enhanced Hybrid Prayer Notification API
  * 
  * Supports two modes:
- * 1. mode=sync  - Daily token validation (Vercel Cron, once per day)
- * 2. mode=alert - Prayer time notifications (GitHub Actions, targeted schedules)
+ * 1. mode=sync  - Optional daily token validation and cleanup
+ * 2. mode=alert - Prayer time notifications (cron-job.org, every minute)
  */
 
 // In-memory cache for prayer times to avoid repeated API calls in the same request
@@ -87,7 +88,7 @@ async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, metho
             : "";
         url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
 
-        const response = await fetch(url);
+        const response = await fetchWithTimeout(url, {}, { timeoutMs: 8_000 });
         if (!response.ok) return null;
 
         const result = await response.json();
@@ -140,7 +141,11 @@ export async function POST(req: NextRequest) {
         const authHeader = req.headers.get("authorization");
         const cronSecret = process.env.CRON_SECRET;
 
-        if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+        if (!cronSecret) {
+            return NextResponse.json({ error: "Prayer alert scheduler is not configured" }, { status: 503 });
+        }
+
+        if (authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

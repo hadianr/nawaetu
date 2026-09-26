@@ -64,10 +64,14 @@ function mockDatabase(subscriptions: unknown[], userRows: unknown[] = []) {
     }));
 }
 
+function authorizedRequest(url: string) {
+    return new Request(url, { headers: { authorization: 'Bearer test-secret' } }) as unknown as NextRequest;
+}
+
 describe('POST /api/notifications/prayer-alert', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        delete process.env.CRON_SECRET;
+        process.env.CRON_SECRET = 'test-secret';
         mocks.getMessaging.mockResolvedValue({ send: mocks.messagingSend });
         mocks.messagingSend.mockResolvedValue('msg-id-123');
         global.fetch = vi.fn().mockResolvedValue({
@@ -107,7 +111,7 @@ describe('POST /api/notifications/prayer-alert', () => {
             })
         });
 
-        const req = new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
+        const req = authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
         const res = await POST(req);
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
@@ -137,7 +141,7 @@ describe('POST /api/notifications/prayer-alert', () => {
             })
         });
 
-        const req = new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
+        const req = authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
         const res = await POST(req);
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
@@ -157,9 +161,24 @@ describe('POST /api/notifications/prayer-alert', () => {
         expect(db.select).not.toHaveBeenCalled();
     });
 
+    it('returns 503 when the cron secret is not configured', async () => {
+        delete process.env.CRON_SECRET;
+        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+        expect(res.status).toBe(503);
+        expect(db.select).not.toHaveBeenCalled();
+    });
+
+    it('accepts a valid cron authorization header', async () => {
+        mockDatabase([]);
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+        expect(res.status).toBe(200);
+    });
+
     it('returns an empty result when no active subscriptions exist', async () => {
         mockDatabase([]);
-        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);
@@ -171,7 +190,7 @@ describe('POST /api/notifications/prayer-alert', () => {
         mockDatabase([{ id: 'sub-3', userId: 'user-1', token: 'token-3', active: 1 }]);
         mocks.getMessaging.mockResolvedValueOnce(null);
 
-        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
         expect(res.status).toBe(500);
     });
 
@@ -184,7 +203,7 @@ describe('POST /api/notifications/prayer-alert', () => {
             .mockResolvedValueOnce('sent')
             .mockRejectedValueOnce({ code: 'messaging/registration-token-not-registered' });
 
-        const res = await POST(new Request('http://localhost/api/notifications/prayer-alert?mode=sync') as unknown as NextRequest);
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=sync'));
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);
@@ -195,7 +214,7 @@ describe('POST /api/notifications/prayer-alert', () => {
 
     it('rejects unsupported notification modes', async () => {
         mockDatabase([{ id: 'sub-unknown', userId: 'user-1', token: 'token-unknown', active: 1 }]);
-        const res = await POST(new Request('http://localhost/api/notifications/prayer-alert?mode=unknown') as unknown as NextRequest);
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=unknown'));
         expect(res.status).toBe(400);
         expect((res as unknown as { body: { error: string } }).body.error).toBe('Invalid mode');
     });
@@ -203,7 +222,7 @@ describe('POST /api/notifications/prayer-alert', () => {
     it('skips subscriptions without location without calling Firebase', async () => {
         mockDatabase([{ id: 'sub-6', userId: 'user-1', token: 'token-6', active: 1, latitude: null, longitude: null }]);
 
-        const res = await POST(new NextRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);
@@ -230,7 +249,7 @@ describe('POST /api/notifications/prayer-alert', () => {
             .mockResolvedValueOnce('sent')
             .mockRejectedValueOnce({ code: 'messaging/invalid-registration-token' });
 
-        const res = await POST(new Request('http://localhost/api/notifications/prayer-alert?mode=alert') as unknown as NextRequest);
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);

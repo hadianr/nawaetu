@@ -67,10 +67,10 @@ export async function isUserValid(userId: string): Promise<boolean> {
 
         return isValid;
     } catch (e) {
-        // Safe fallback: if DB query fails (e.g. Neon DB cold start or transient connection error),
-        // default to true so an active valid JWT session is not abruptly broken.
-        logger.error("Failed to validate user in DB, falling back to valid", e, { userId });
-        return true;
+        // Fail closed: a database outage must not turn an unverified JWT into
+        // an authorized session.
+        logger.error("Failed to validate user in DB; rejecting session", e, { userId });
+        return false;
     }
 }
 
@@ -155,7 +155,10 @@ export const authOptions: NextAuthConfig = {
                     session.user.image = (token.picture as string) ?? null;
                 }
             } catch (error) {
-                logger.error("Error in session callback, preserving token session", error);
+                // Validation errors must not preserve authorization on an
+                // unknown database state.
+                logger.error("Error in session callback; rejecting session", error);
+                return null as never;
             }
             return session;
         },
