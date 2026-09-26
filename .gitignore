@@ -20,6 +20,15 @@
 # production
 /build
 
+# Bubblewrap Android project outputs and signing key
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/local.properties
+/android/android.keystore
+/android/*.apk
+/android/*.aab
+
 # misc
 .DS_Store
 *.pem
