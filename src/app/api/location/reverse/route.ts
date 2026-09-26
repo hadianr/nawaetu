@@ -19,6 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API_CONFIG } from "@/config/apis";
 import { logger } from "@/lib/logger";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 // Next.js API route to proxy reverse geocoding requests
 // By performing the fetch server-side, we bypass Safari iOS Safari Incognito ITP
@@ -62,9 +63,9 @@ export async function GET(req: NextRequest) {
 
         try {
             const bdcUrl = `${API_CONFIG.LOCATION.BIGDATA_CLOUD}?latitude=${parsedLat}&longitude=${parsedLng}&localityLanguage=id`;
-            const bdcRes = await fetch(bdcUrl, {
+            const bdcRes = await fetchWithTimeout(bdcUrl, {
                 next: { revalidate: 86400 }, // Cache on Vercel Edge for 24h
-            });
+            }, { timeoutMs: 8000 });
 
             if (bdcRes.ok) {
                 const bdcData = await bdcRes.json();
@@ -85,10 +86,10 @@ export async function GET(req: NextRequest) {
                 const nomUrl = `${API_CONFIG.LOCATION.NOMINATIM}?format=jsonv2&lat=${parsedLat}&lon=${parsedLng}&accept-language=id&email=nawaetu.app@gmail.com`;
 
                 // IMPORTANT: We MUST set a User-Agent server-side, otherwise Nominatim blocks it.
-                const nomRes = await fetch(nomUrl, {
+                const nomRes = await fetchWithTimeout(nomUrl, {
                     headers: { "User-Agent": "NawaetuApp/1.0 (NextJS Server Proxy)" },
                     next: { revalidate: 86400 },
-                });
+                }, { timeoutMs: 8000 });
 
                 if (nomRes.ok) {
                     const locData = await nomRes.json();

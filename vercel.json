@@ -1,8 +1,5 @@
 {
-    "crons": [
-        {
-            "path": "/api/notifications/prayer-alert?mode=sync",
-            "schedule": "0 4 * * *"
-        }
-    ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "HUSKY=0 npm ci --no-audit --fund=false",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)*.md' ':(exclude)docs/**'"
 }

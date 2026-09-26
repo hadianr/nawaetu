@@ -11,7 +11,7 @@ Sumber utama: [README.md](README.md), [README.id.md](README.id.md)
 ## 2) Stack & Platform
 - Next.js App Router + React 19 + TypeScript strict.
 - Tailwind CSS v4 + shadcn/ui + Framer Motion.
-- Drizzle ORM + PostgreSQL (NeonDB).
+- Drizzle ORM + PostgreSQL (Supabase transaction pooler).
 - Firebase Admin untuk push notifications.
 - PWA via next-pwa + service worker.
 
@@ -58,13 +58,12 @@ Aturan:
 - Dokumen terkait:
   - [docs/HYBRID_NOTIFICATION_APPROACH.md](docs/HYBRID_NOTIFICATION_APPROACH.md)
   - [docs/IOS_NOTIFICATION_SETUP.md](docs/IOS_NOTIFICATION_SETUP.md)
-  - [docs/VERCEL_CRON_WORKAROUND.md](docs/VERCEL_CRON_WORKAROUND.md)
   - [docs/EXTERNAL_CRON_SETUP.md](docs/EXTERNAL_CRON_SETUP.md)
 
 Ringkasan:
-- Cron harian untuk token sync.
+- cron-job.org menjalankan notifikasi prayer-alert dan streak reminder.
 - Notifikasi real-time via client ketika app terbuka.
-- External cron opsional untuk presisi tinggi.
+- Mode `prayer-alert?mode=sync` bersifat opsional dan saat ini tidak dijadwalkan setelah cron Vercel dihapus.
 
 ## 8) Release & Deployment
 - Release workflow otomatis: [docs/RELEASE_WORKFLOW.md](docs/RELEASE_WORKFLOW.md).

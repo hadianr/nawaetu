@@ -21,6 +21,7 @@ import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 export async function GET(req: NextRequest) {
     void req;
@@ -67,13 +68,13 @@ export async function GET(req: NextRequest) {
 
         if (latestTx.mayarId) {
             const mayarUrl = `https://api.mayar.id/hl/v1/payment/check/${latestTx.mayarId}`;
-            const mayarRes = await fetch(mayarUrl, {
+            const mayarRes = await fetchWithTimeout(mayarUrl, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${apiKey}`,
                     "Content-Type": "application/json"
                 }
-            });
+            }, { timeoutMs: 10000 });
 
             if (mayarRes.ok) {
                 const mayarData = await mayarRes.json();
@@ -84,13 +85,13 @@ export async function GET(req: NextRequest) {
 
         if ((status as string) !== "PAID" && (status as string) !== "SETTLEMENT") {
             const listUrl = `https://api.mayar.id/hl/v1/transactions?email=${encodeURIComponent(session.user.email)}&limit=5`;
-            const listRes = await fetch(listUrl, {
+            const listRes = await fetchWithTimeout(listUrl, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${apiKey}`,
                     "Content-Type": "application/json"
                 }
-            });
+            }, { timeoutMs: 10000 });
 
             if (listRes.ok) {
                 const listData = await listRes.json();

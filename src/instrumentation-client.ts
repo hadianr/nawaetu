@@ -63,6 +63,7 @@ function initSentry(): Promise<SentryClient | null> {
     const Sentry = await loadSentry();
     Sentry.init({
     dsn: "https://01c92628e40472d65fa8216a0628ddd9@o4510815612960768.ingest.us.sentry.io/4510815614468096",
+    environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? process.env.NODE_ENV,
 
     // Add optional integrations for additional features
     integrations: [Sentry.replayIntegration()],

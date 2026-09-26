@@ -20,6 +20,7 @@ import 'server-only';
 import { ChatMessage, LLMProvider, ProviderError, UserContext } from './provider-interface';
 import { sanitizeUserContext } from './utils';
 import { SYSTEM_INSTRUCTION } from './system-instruction';
+import { fetchWithTimeout } from '@/lib/utils/fetch';
 
 type ChatCompletionMessage = { role: "system" | "user" | "assistant"; content: string };
 type ProviderErrorLike = { status?: number; code?: string; message?: string };
@@ -55,7 +56,7 @@ export class GroqProvider implements LLMProvider {
                 }
             ];
 
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            const res = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${this.apiKey}`,
@@ -68,7 +69,7 @@ export class GroqProvider implements LLMProvider {
                     max_tokens: 1024,
                     top_p: 1,
                 }),
-            });
+            }, { timeoutMs: 15000 });
 
             if (!res.ok) {
                 if (res.status === 429) {

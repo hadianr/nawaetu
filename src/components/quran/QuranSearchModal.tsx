@@ -10,7 +10,7 @@ import { searchQuranAction } from "@/app/actions/quran";
 import type { SearchResponse } from "@/lib/quran/kemenag-api";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import DOMPurify from "isomorphic-dompurify";
+import { sanitizeRichText } from "@/lib/sanitize";
 
 export default function QuranSearchModal() {
     const { t, locale } = useLocale();
@@ -109,7 +109,7 @@ export default function QuranSearchModal() {
                                     </p>
                                     <p
                                         className="text-sm text-[rgb(var(--color-text-muted))] leading-relaxed group-hover:text-[rgb(var(--color-text))] transition-colors"
-                                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(verse.translation) }}
+                                        dangerouslySetInnerHTML={{ __html: sanitizeRichText(verse.translation) }}
                                     />
                                 </Link>
                             ))}

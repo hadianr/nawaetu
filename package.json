@@ -3,7 +3,7 @@
   "version": "1.15.6",
   "private": true,
   "engines": {
-    "node": ">=24.15.0"
+    "node": "24.x"
   },
   "browserslist": [
     "chrome >= 100",
@@ -47,6 +47,7 @@
     "@radix-ui/react-tabs": "^1.1.18",
     "@radix-ui/react-tooltip": "^1.2.13",
     "@sentry/nextjs": "^10.75.1",
+    "@types/sanitize-html": "^2.16.1",
     "@upstash/ratelimit": "^2.1.0",
     "@upstash/redis": "^1.39.0",
     "@vercel/speed-insights": "^2.0.0",
@@ -57,7 +58,6 @@
     "firebase-admin": "^14.4.0",
     "framer-motion": "^13.4.0",
     "html-to-image": "^1.11.13",
-    "isomorphic-dompurify": "^4.3.0",
     "lucide-react": "^1.47.0",
     "next": "^16.3.5",
     "next-auth": "^5.0.0-beta.31",
@@ -66,6 +66,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "recharts": "3.10.1",
+    "sanitize-html": "^2.17.7",
     "server-only": "^0.0.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.7.0",
@@ -90,6 +91,15 @@
     "workbox-build": "^7.4.1",
     "workbox-webpack-plugin": "^7.4.1"
   },
+  "allowScripts": {
+    "@firebase/util@1.15.3": true,
+    "@sentry/cli@2.58.6": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "fsevents": false,
+    "protobufjs": false,
+    "unrs-resolver@1.12.2": true
+  },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.2",
@@ -105,7 +115,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "16.3.5",
     "husky": "^9.1.7",
-    "jsdom": "^30.1.0",
+    "jsdom": "30.1.1",
     "tailwindcss": "^4.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.9.3",

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from "@/lib/logger";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { z } from "zod";
 
 const insightStatsSchema = z.object({
@@ -31,7 +32,7 @@ async function generateWithGroq(prompt: string): Promise<string> {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error('GROQ_API_KEY not set');
 
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetchWithTimeout('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -46,7 +47,7 @@ async function generateWithGroq(prompt: string): Promise<string> {
             temperature: 0.8,
             max_tokens: 150,
         }),
-    });
+    }, { timeoutMs: 15000 });
 
     if (!res.ok) {
         throw Object.assign(new Error(`Groq error ${res.status}`), { status: res.status });
@@ -106,7 +107,7 @@ async function generateWithGemini(prompt: string): Promise<string> {
     const model = genAI.getGenerativeModel({
         model: 'gemini-flash-lite-latest',
         generationConfig: { temperature: 0.8, maxOutputTokens: 150 },
-    });
+    }, { timeout: 15000 });
 
     const result = await model.generateContent(prompt);
     const text = result.response.text().trim();
@@ -120,7 +121,7 @@ async function generateWithOpenRouter(prompt: string): Promise<string> {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) throw new Error('OPENROUTER_API_KEY not set');
 
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const res = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -137,7 +138,7 @@ async function generateWithOpenRouter(prompt: string): Promise<string> {
             max_tokens: 150,
             temperature: 0.8,
         }),
-    });
+    }, { timeoutMs: 15000 });
 
     if (!res.ok) throw Object.assign(new Error(`OpenRouter error ${res.status}`), { status: res.status });
     const data = await res.json();

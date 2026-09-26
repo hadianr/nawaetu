@@ -97,11 +97,11 @@ Built with bleeding-edge technology for maximum performance and reliability:
 
 ### Backend & Database
 *   **Drizzle ORM 0.45** - Type-safe SQL database queries
-*   **PostgreSQL (NeonDB)** - Serverless auto-scaling database
+*   **PostgreSQL (Supabase)** - Serverless database via the transaction pooler
 *   **NextAuth v5** - Secure authentication layer
 *   **Upstash Redis & Rate Limiting** - Distributed API protection
 *   **Firebase Admin SDK** - Push notification infrastructure
-*   **Vercel Cron** - Scheduled background tasks
+*   **cron-job.org** - Scheduled prayer-alert and streak notifications
 
 ### AI & External APIs
 *   **Google Gemini 2.5 Flash-Lite** (`@google/generative-ai`)

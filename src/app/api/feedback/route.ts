@@ -22,6 +22,7 @@ import { userFeedback } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { logger } from "@/lib/logger";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 const MAX_FEEDBACK_PER_HOUR = 5;
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -163,7 +164,7 @@ export async function POST(req: NextRequest) {
             try {
                 if (screenshots.length === 0) {
                     // Send text message only
-                    const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    const tgRes = await fetchWithTimeout(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -173,7 +174,7 @@ export async function POST(req: NextRequest) {
                             text: captionText,
                             parse_mode: parseMode,
                         }),
-                    });
+                    }, { timeoutMs: 10_000 });
 
                     if (!tgRes.ok) {
                         const errText = await tgRes.text();
@@ -190,10 +191,10 @@ export async function POST(req: NextRequest) {
                     tgFormData.append("caption", captionText);
                     tgFormData.append("parse_mode", parseMode);
 
-                    const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                    const tgRes = await fetchWithTimeout(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
                         method: "POST",
                         body: tgFormData,
-                    });
+                    }, { timeoutMs: 10_000 });
 
                     if (!tgRes.ok) {
                         const errText = await tgRes.text();
@@ -220,10 +221,10 @@ export async function POST(req: NextRequest) {
                         tgFormData.append(`photo_${i}`, blob, file.name);
                     }
 
-                    const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMediaGroup`, {
+                    const tgRes = await fetchWithTimeout(`https://api.telegram.org/bot${botToken}/sendMediaGroup`, {
                         method: "POST",
                         body: tgFormData,
-                    });
+                    }, { timeoutMs: 10_000 });
 
                     if (!tgRes.ok) {
                         const errText = await tgRes.text();

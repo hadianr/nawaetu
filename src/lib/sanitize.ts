@@ -16,20 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 
 const RICH_TEXT_TAGS = ['p', 'h3', 'ul', 'ol', 'li', 'strong', 'em', 'sup', 'br'];
 
 export const sanitizeRichText = (htmlText: string) =>
-    DOMPurify.sanitize(htmlText, {
-        ALLOWED_TAGS: RICH_TEXT_TAGS,
-        ALLOWED_ATTR: []
+    sanitizeHtml(htmlText, {
+        allowedTags: RICH_TEXT_TAGS,
+        allowedAttributes: {}
     });
 
 export const sanitizePlainText = (htmlText: string) =>
-    DOMPurify.sanitize(htmlText, {
-        ALLOWED_TAGS: [],
-        ALLOWED_ATTR: []
+    sanitizeHtml(htmlText, {
+        allowedTags: [],
+        allowedAttributes: {}
     });
 
 export const cleanTajweedText = (htmlText: string) => {
@@ -38,9 +38,13 @@ export const cleanTajweedText = (htmlText: string) => {
     // Sanitize HTML
     // We allow 'span' for verse markers, 'tajweed' for tajweed rules, and 'waqf' for pause marks.
     // We allow 'class' attribute for styling.
-    const sanitized = DOMPurify.sanitize(htmlText, {
-        ALLOWED_TAGS: ['span', 'tajweed', 'waqf'],
-        ALLOWED_ATTR: ['class']
+    const sanitized = sanitizeHtml(htmlText, {
+        allowedTags: ['span', 'tajweed', 'waqf'],
+        allowedAttributes: {
+            span: ['class'],
+            tajweed: ['class'],
+            waqf: ['class']
+        }
     });
 
     // Remove verse number spans at the end and trailing numbers

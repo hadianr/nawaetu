@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Style(dhikr): widen tablet controls**
 - **Style(home): widen tablet content**
 - **Style(nav): compact desktop navigation**
-- **Refactor(db): switch from Neon to Supabase**
+- **Refactor(db): switch database provider to Supabase**
 
 
 ## [1.15.1] - 2026-09-20
@@ -315,7 +315,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 - **Style(typography): make Sirah reader prose utilities theme-aware**
 - **Refactor(storage): streamline local-storage adapter implementation**
-- **Refactor(db): standardize on neon http serverless driver with full type safety**
+- **Refactor(db): standardize on the HTTP serverless database driver with full type safety**
 
 ### Fixed
 - **Fix(ui): prevent mobile viewport auto-zoom on input focus**
@@ -537,7 +537,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Feat: Add EidCard component to display Eid al-Fitr greetings and Sunnah practices, along with new translations.**
 - **Feat: Add Ramadhan daily and Taraweh log tables, including new enums, foreign key constraints, and indexes.**
 - **Feat: implement comprehensive Ramadhan daily log, summary, and tracking features with new API routes, UI components, and data schema.**
-- **Feat: Implement dynamic database driver selection for Neon and PostgresJS connections.**
+- **Feat: Implement dynamic database driver selection for supported Postgres connections.**
 - **Feat: Implement Tilawah/Focus Mode with session tracking, stats, and i18n support across Quran components.**
 
 ### Improved
