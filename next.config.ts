@@ -156,7 +156,11 @@ const nextConfig: NextConfig = {
       // Setting it manually here triggers a build warning in Next.js 16+.
       // Disallow robots from user-specific authored pages
       {
-        source: '/(bookmarks|settings|stats|journal|hadith)(.*)',
+        source: '/(bookmarks|settings|stats|journal)(.*)',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
+        source: '/sirah/quiz(.*)',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
     ];

@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import HijriCalendarPageContent from "@/components/HijriCalendarPageContent";
 
-export const metadata: Metadata = {
-    title: "Hijri Calendar | Nawaetu",
-    description: "Hijri dates, Sunnah fasting days, and Ramadan prayer times.",
-};
+export const metadata = pageMetadata(
+    "Kalender Hijriah dan Hari Puasa Sunnah",
+    "Lihat tanggal Hijriah, hari puasa sunnah, dan jadwal Ramadhan di kalender Nawaetu.",
+    "/hijri-calendar",
+);
 
 export default async function HijriCalendarPage({
     searchParams,

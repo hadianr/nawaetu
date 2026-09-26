@@ -19,19 +19,16 @@
 import { Suspense } from "react";
 import DhikrCounter from "@/components/DhikrCounter";
 import { Loader2 } from "lucide-react";
-import { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 // ISR: Page shell is static, state is client-side — cache for 1 hour
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-    title: "Tasbih Digital Online - Counter Dzikir Gratis | Nawaetu",
-    description: "Tasbih digital online untuk dzikir harian. Counter tasbih gratis dengan fitur simpan otomatis, target dzikir, dan riwayat. Praktis untuk Subhanallah, Alhamdulillah, Allahu Akbar.",
-    keywords: ["Tasbih Digital", "Counter Dzikir", "Tasbih Online", "Dzikir Counter", "Tasbih Gratis", "Subhanallah Counter"],
-    alternates: {
-        canonical: "https://nawaetu.com/dhikr",
-    },
-};
+export const metadata = pageMetadata(
+    "Tasbih Digital Online dan Penghitung Dzikir",
+    "Gunakan tasbih digital online untuk dzikir harian, target bacaan, dan riwayat hitungan di Nawaetu.",
+    "/dhikr",
+);
 
 export default function DhikrPage() {
     return (

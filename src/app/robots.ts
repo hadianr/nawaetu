@@ -31,7 +31,6 @@ export default function robots(): MetadataRoute.Robots {
                 '/settings',
                 '/stats',
                 '/journal',
-                '/hadith',
                 '/notification-debug',
             ],
         },
