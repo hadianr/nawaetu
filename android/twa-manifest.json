@@ -1,0 +1,66 @@
+{
+  "packageId": "com.nawaetu.app",
+  "host": "nawaetu.com",
+  "name": "Nawaetu — Worship with Intention",
+  "launcherName": "Nawaetu",
+  "display": "standalone",
+  "themeColor": "#0A0A0A",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#000000",
+  "enableNotifications": true,
+  "startUrl": "/?v=1.15.6",
+  "iconUrl": "https://nawaetu.com/icon-512x512.png",
+  "maskableIconUrl": "https://nawaetu.com/icon-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.15.6",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Baca Al-Quran",
+      "shortName": "Quran",
+      "url": "https://nawaetu.com/quran",
+      "chosenIconUrl": "https://nawaetu.com/icon-192x192.png"
+    },
+    {
+      "name": "Tasbih Digital",
+      "shortName": "Tasbih",
+      "url": "https://nawaetu.com/dhikr",
+      "chosenIconUrl": "https://nawaetu.com/icon-192x192.png"
+    },
+    {
+      "name": "Arah Kiblat",
+      "shortName": "Kiblat",
+      "url": "https://nawaetu.com/qibla",
+      "chosenIconUrl": "https://nawaetu.com/icon-192x192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://nawaetu.com/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://nawaetu.com/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "1.15.6"
+}
