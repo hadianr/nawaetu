@@ -22,6 +22,9 @@ import { Suspense } from "react";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 
+const siteDescription = "Aplikasi Muslim Nawaetu untuk ibadah harian: Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi, dan Tanya Nawaetu.";
+const appFeatureDescription = "Aplikasi Muslim Nawaetu mencakup Al-Qur'an dengan terjemahan, audio, tajwid, tafsir, pencarian, dan penanda bacaan; jadwal sholat dan pengingat; kompas kiblat; dzikir dengan target dan riwayat; hadits dengan perawi, referensi, dan keterangan kualitas; doa bersumber; Sirah Nabawiyah per bab dan kuis; kalender Hijriah dan hari puasa sunnah; panduan Ramadhan, puasa, qadha, khatam Al-Qur'an, Tarawih, makanan sunnah, dan zakat fitrah; jurnal niat dan refleksi; misi, streak, statistik; serta Tanya Nawaetu.";
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -29,37 +32,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: {
-    default: "Nawaetu - Aplikasi Muslim Lengkap | Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital",
-    template: "%s | Nawaetu - Aplikasi Muslim #NiatAjaDulu"
-  },
-  description: "Nawaetu - Aplikasi Muslim lengkap dengan Habit Tracker Ibadah, Jadwal Sholat Akurat, Al Quran Online & Terjemahan, Arah Kiblat, Tasbih Digital, dan Asisten AI. Gamifikasi seru: Daily Missions, Streak System, Hasanah & Leveling. Gratis! #NiatAjaDulu",
-  keywords: [
-    // Brand
-    "Nawaetu", "NiatAjaDulu", "#NiatAjaDulu",
-    // Primary Keywords (Indonesian)
-    "aplikasi muslim", "aplikasi muslim terbaik", "aplikasi muslim lengkap",
-    "aplikasi ibadah", "aplikasi sholat", "aplikasi al quran",
-    // Features
-    "jadwal sholat", "jadwal sholat akurat", "waktu sholat", "adzan otomatis",
-    "al quran online", "baca quran online", "quran digital", "quran terjemahan",
-    "arah kiblat", "kiblat online", "compass kiblat", "qibla direction",
-    "tasbih digital", "dzikir counter", "tasbih online",
-    // Gamification
-    "habit tracker ibadah", "gamifikasi ibadah", "daily missions islam",
-    "streak ibadah", "motivasi ibadah", "konsisten ibadah",
-    // AI
-    "asisten muslim ai", "chatbot islam", "tanya ustadz online",
-    // General
-    "aplikasi ramadan", "aplikasi puasa", "panduan muslim"
-  ],
+  title: "Nawaetu | Aplikasi Muslim Ibadah dengan Niat dan Ilmu",
+  description: siteDescription,
   authors: [{ name: "Nawaetu Team" }],
   creator: "Hadian R",
   publisher: "Nawaetu",
   metadataBase: new URL("https://nawaetu.com"),
-  alternates: {
-    canonical: "/",
-  },
   // Favicon configuration
   icons: {
     icon: [
@@ -72,8 +50,8 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Nawaetu - Aplikasi Muslim Lengkap #NiatAjaDulu",
-    description: "Aplikasi Muslim lengkap: Jadwal Sholat Akurat, Al Quran Online, Arah Kiblat, Tasbih Digital, Habit Tracker Ibadah dengan Gamifikasi. Gratis!",
+    title: "Nawaetu | Aplikasi Muslim Ibadah dengan Niat dan Ilmu",
+    description: siteDescription,
     url: "https://nawaetu.com",
     siteName: "Nawaetu",
     locale: "id_ID",
@@ -83,14 +61,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Nawaetu - Habit Tracker Ibadah dengan Gamifikasi",
+        alt: "Nawaetu — aplikasi Muslim untuk ibadah harian",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nawaetu - Aplikasi Muslim Lengkap #NiatAjaDulu",
-    description: "Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital, Habit Tracker Ibadah. Gamifikasi seru: Daily Missions, Streak, Hasanah. Gratis!",
+    title: "Nawaetu | Aplikasi Muslim Ibadah dengan Niat dan Ilmu",
+    description: siteDescription,
     creator: "@nawaetuapp",
     images: ["/og-image.png"],
   },
@@ -130,12 +108,7 @@ const jsonLdSchemas = [
       "price": "0",
       "priceCurrency": "IDR"
     },
-    "description": "Aplikasi Muslim lengkap dengan Jadwal Sholat, Al Quran Online, Arah Kiblat, Tasbih Digital, dan Habit Tracker Ibadah dengan gamifikasi.",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1024"
-    },
+    "description": appFeatureDescription,
     "screenshot": "https://nawaetu.com/icon-512x512.png",
     "softwareVersion": APP_CONFIG.version,
     "author": {
@@ -150,7 +123,7 @@ const jsonLdSchemas = [
     "name": "Nawaetu",
     "url": "https://nawaetu.com",
     "logo": "https://nawaetu.com/icon-512x512.png",
-    "description": "Platform aplikasi Muslim lengkap untuk membantu umat Islam dalam beribadah sehari-hari.",
+    "description": "Aplikasi Muslim untuk menghubungkan niat, panduan bersumber, dan amalan sehari-hari.",
     "sameAs": [
       "https://twitter.com/nawaetuapp",
       "https://instagram.com/nawaetuapp"
@@ -167,7 +140,7 @@ const jsonLdSchemas = [
     "@type": "WebSite",
     "name": "Nawaetu",
     "url": "https://nawaetu.com",
-    "description": "Aplikasi Muslim lengkap: Jadwal Sholat, Al Quran, Kiblat, Tasbih Digital, Habit Tracker Ibadah.",
+    "description": appFeatureDescription,
     "potentialAction": {
       "@type": "SearchAction",
       "target": {

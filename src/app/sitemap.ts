@@ -17,6 +17,7 @@
  */
 
 import { MetadataRoute } from 'next'
+import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from '@/data/sirah'
 
 // ISR: Sitemap is static \u2014 revalidate once per day so bots don't trigger
 // re-generation on every crawl
@@ -29,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Public static pages — bot-accessible
     const staticPages: MetadataRoute.Sitemap = [
         {
-            url: baseUrl,
+            url: `${baseUrl}/`,
             lastModified: currentDate,
             changeFrequency: 'daily',
             priority: 1,
@@ -64,9 +65,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'monthly',
             priority: 0.7,
         },
-        // NOTE: /bookmarks, /settings, /stats, /missions are intentionally excluded
-        // — they require authentication and contain user-specific data.
-        // They are also blocked by X-Robots-Tag: noindex in next.config.ts
+        { url: `${baseUrl}/hadith`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.7 },
+        { url: `${baseUrl}/dua`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.7 },
+        { url: `${baseUrl}/hijri-calendar`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/ramadhan`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/sirah`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.8 },
+        { url: `${baseUrl}/rewards`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.5 },
     ]
 
     // Generate all 114 Surah pages dynamically
@@ -78,6 +82,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.7,
     }))
 
-    return [...staticPages, ...surahPages]
-}
+    const sirahPages: MetadataRoute.Sitemap = [
+        ...SIRAH_CHAPTERS.map((chapter) => ({
+            url: `${baseUrl}/sirah/${chapter.slug}`,
+            lastModified: currentDate,
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+        })),
+        ...SIRAH_SECTIONS.map((section) => ({
+            url: `${baseUrl}/sirah/${section.chapterSlug}/${section.id}`,
+            lastModified: currentDate,
+            changeFrequency: 'monthly' as const,
+            priority: 0.5,
+        })),
+    ]
 
+    // Personal progress and settings remain excluded from search discovery.
+    return [...staticPages, ...surahPages, ...sirahPages]
+}

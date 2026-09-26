@@ -16,31 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 // Client component entry point
 import HomeEntry from "@/components/home/HomeEntry";
 
-export const metadata: Metadata = {
-  title: "Nawaetu - #NiatAjaDulu | Habit Tracker Ibadah dengan Gamifikasi",
-  description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak System, Hasanah & Leveling. Lengkap dengan Asisten Muslim AI, Al Quran, dan Jadwal Sholat.",
-  alternates: {
-    canonical: "https://nawaetu.com",
-  },
-  openGraph: {
-    title: "Nawaetu - #NiatAjaDulu",
-    description: "Build ibadah habits dengan gamifikasi: Daily Missions, Streak, Hasanah. Luruskan niat, konsisten beramal.",
-    url: "https://nawaetu.com",
-    siteName: "Nawaetu",
-    locale: "id_ID",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Nawaetu - #NiatAjaDulu",
-    description: "Habit tracker ibadah dengan gamifikasi! Daily Missions, Streak System, Al Quran, & Jadwal Sholat.",
-  },
-};
+export const metadata: Metadata = pageMetadata(
+  "Aplikasi Muslim untuk Ibadah Harian",
+  "Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi harian, dan Tanya Nawaetu.",
+  "/",
+);
 
 export default function Home() {
   return <HomeEntry />;

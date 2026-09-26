@@ -17,8 +17,11 @@
  */
 
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import VerseBrowser from "@/components/quran/VerseBrowser";
 import VerseListSkeleton from "@/components/skeleton/VerseListSkeleton";
+import { pageMetadata } from "@/lib/seo";
+import { surahNames } from "@/lib/quran/surahData";
 
 // ISR: Quran content is static — build once, serve forever
 // Pre-generate all 114 surahs at build time. Cache for 7 days.
@@ -34,7 +37,27 @@ interface PageProps {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+function getSurahName(id: string) {
+    const number = Number(id);
+    return Number.isInteger(number) && String(number) === id ? surahNames[number] : undefined;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+    const { id } = await params;
+    const surahName = getSurahName(id);
+    if (!surahName) notFound();
+
+    return pageMetadata(
+        `Surah ${surahName} - Al-Qur'an Online`,
+        `Baca Surah ${surahName} dengan teks Al-Qur'an, terjemahan Bahasa Indonesia, tafsir, dan audio di Nawaetu.`,
+        `/quran/${id}`,
+    );
+}
+
 export default async function SurahDetailPage(props: PageProps) {
+    const { id } = await props.params;
+    if (!getSurahName(id)) notFound();
+
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-canvas))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgb(var(--color-primary)/0.15),transparent)] px-4 pt-0 md:pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
             <Suspense fallback={<VerseListSkeleton />}>

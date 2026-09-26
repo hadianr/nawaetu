@@ -21,18 +21,16 @@ import QuranBrowser from "@/components/quran/QuranBrowser";
 import SurahListSkeleton from "@/components/skeleton/SurahListSkeleton";
 import QuranPageClient from "@/components/quran/QuranPageClient";
 
-import { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 // ISR: List surah tidak pernah berubah — cache 24 jam
 export const revalidate = 86400;
 
-export const metadata: Metadata = {
-    title: "Baca Al Quran Online & Terjemahan - Nawaetu",
-    description: "Baca Al Quran digital 30 Juz lengkap dengan terjemahan Bahasa Indonesia, tafsir, dan audio. Gratis dan tanpa iklan.",
-    alternates: {
-        canonical: "https://nawaetu.com/quran",
-    },
-};
+export const metadata = pageMetadata(
+    "Baca Al-Qur'an Online dan Terjemahan",
+    "Baca Al-Qur'an 30 juz dengan terjemahan Bahasa Indonesia, tafsir, dan audio di Nawaetu.",
+    "/quran",
+);
 
 export default function QuranPage() {
     return (
