@@ -541,6 +541,15 @@ export default function SettingsPageContent() {
                     </button>
                 </div>
 
+                <div className="flex justify-center gap-4 pb-2 text-xs text-[rgb(var(--color-text-muted))]">
+                    <Link className="min-h-11 inline-flex items-center underline" href="/privacy">
+                        {locale === "id" ? "Kebijakan Privasi" : "Privacy Policy"}
+                    </Link>
+                    <Link className="min-h-11 inline-flex items-center underline" href="/delete-account">
+                        {locale === "id" ? "Hapus akun" : "Delete account"}
+                    </Link>
+                </div>
+
                 {/* Update Available Banner - New Feature v1.5.5 */}
                 {isClient && (
                     <UpdateChecker currentVersion={APP_CONFIG.version} />
