@@ -68,7 +68,6 @@ const nextConfig: NextConfig = {
       "@sentry/nextjs"
     ],
     webVitalsAttribution: ["CLS", "LCP"],
-    optimizeCss: true,
     webpackBuildWorker: true,
     scrollRestoration: false,
   },
