@@ -27,5 +27,5 @@ export const APP_CONFIG = {
     status: "Production",
     lastUpdated: "2026-09-26",
     hashtag: "#StartWithIntention",
-    description: "Islamic habit tracker with gamification: Daily Missions, Streak, Hasanah. Complete with Muslim AI Assistant, Quran, and Prayer Times.",
+    description: "A Muslim worship app with Quran, prayer times, qibla, dhikr, sourced Hadith and duas, Sirah, Hijri calendar, Ramadan tools, intention journaling, daily missions, and AI guidance.",
 };

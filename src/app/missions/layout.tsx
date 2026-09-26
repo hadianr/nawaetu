@@ -16,17 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Metadata } from "next";
 import { Children } from "react";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-    title: "Daily Missions - Misi Ibadah Harian | Nawaetu",
-    description: "Selesaikan misi ibadah harian, kumpulkan XP, naik level, dan jaga streak. Gamifikasi ibadah yang membuat konsistensi lebih mudah dan menyenangkan.",
-    keywords: ["Daily Missions", "Misi Harian", "Habit Tracker Ibadah", "Gamifikasi Islam", "Streak Ibadah", "XP Leveling"],
-    alternates: {
-        canonical: "https://nawaetu.com/missions",
-    },
-};
+export const metadata = pageMetadata(
+    "Misi Harian dan Konsistensi Ibadah",
+    "Aplikasi Muslim Nawaetu membantu menjaga rutinitas dengan misi harian, streak, XP, dan level. Progres aplikasi mendukung kebiasaan, bukan mengukur nilai amal.",
+    "/missions",
+);
 
 export default function MissionsLayout({
     children,

@@ -25,7 +25,7 @@ export type NawaetuManifest = {
 
 export function buildManifest(): NawaetuManifest {
   return {
-    name: "Nawaetu - #StartWithIntention | Muslim Habit Tracker",
+    name: "Nawaetu — Worship with Intention",
     short_name: "Nawaetu",
     description: APP_CONFIG.description,
     gcm_sender_id: "567398306395",
