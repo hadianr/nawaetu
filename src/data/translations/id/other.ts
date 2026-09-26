@@ -101,8 +101,8 @@ export const otherID = {
 
     // About Section
     aboutAppName: "Nawaetu",
-    aboutTagline: "Luruskan Niat, Sempurnakan Ibadah",
-    aboutDescription: "Teman ibadah digital yang menjaga setiap langkahmu tetap sesuai tuntunan Al-Qur'an & Sunnah.",
+    aboutTagline: "Mulai dengan niat. Jalani dengan ilmu.",
+    aboutDescription: "Teman ibadah harian dengan panduan yang merujuk pada Al-Qur'an, Sunnah, dan hadits yang jelas sumbernya.",
     aboutHashtag: "#LuruskanNiat",
     aboutVersion: `v${APP_CONFIG.version} ${APP_CONFIG.status}`,
     aboutTapForInfo: "Ketuk untuk info lengkap",

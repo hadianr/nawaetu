@@ -101,8 +101,8 @@ export const otherEN = {
 
     // About Section
     aboutAppName: "Nawaetu",
-    aboutTagline: "#NiatAjaDulu",
-    aboutDescription: "Your digital worship companion for consistent habits based on Quran & Sunnah.",
+    aboutTagline: "Begin with intention. Practice with knowledge.",
+    aboutDescription: "A daily worship companion with guidance grounded in clear Quran, Sunnah, and Hadith references.",
     aboutHashtag: "#PerfectYourIntention",
     aboutVersion: `v${APP_CONFIG.version} ${APP_CONFIG.status}`,
     aboutTapForInfo: "Tap for more info",
