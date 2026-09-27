@@ -22,7 +22,7 @@ const sections = [
             "Location: if you enable location-based features, Nawaetu uses your device location to calculate prayer times and Qibla direction, resolve a city name, and support prayer notifications. Notification subscriptions may store coordinates, city, country, time zone, device type, notification token, and your prayer notification choices. You can also enter or select a location manually.",
             "AI mentor content: the questions, conversation context, and related account activity you submit. Signed-in chat history is saved to your account so you can reopen it.",
             "Technical and usage data: app and page activity, feature events, device/browser information, network identifiers processed by hosting and security services, diagnostic errors, and performance data. Depending on the feature, analytics events can include feature names, Quran surah names, prayer names, or a shortened Hadith search query. Our error-monitoring tool can collect sampled session-replay and interaction data to diagnose errors.",
-            "Support and payment details: information you provide when contacting us, and donation transaction details such as amount, status, name, email, and payment-provider identifiers.",
+            "Support and payment details: feedback messages, your name, email address, account ID, device/browser details, and any screenshots you choose to attach. Feedback text and device details are stored in Nawaetu’s database. Donation transaction details may include amount, status, name, email, and payment-provider identifiers.",
         ],
     },
     {
@@ -36,13 +36,14 @@ const sections = [
     },
     {
         title: "4. When data is shared",
-        text: "We do not sell personal data. We share only the data needed with service providers that help operate Nawaetu:",
+        text: "We do not sell personal data. We share only the data needed with services that help operate Nawaetu:",
         bullets: [
             "Google provides account sign-in, Google Analytics measurement, and Firebase Cloud Messaging (push delivery).",
             "Google Gemini, Groq, or OpenRouter may receive your AI prompt, relevant conversation history, and context needed to generate an answer. Nawaetu may use another listed provider when its primary AI provider is unavailable or rate-limited. Their handling is governed by their own terms and privacy policies.",
             "Aladhan provides prayer-time calculations. BigDataCloud or OpenStreetMap Nominatim may receive coordinates for reverse geocoding when Nawaetu resolves a location name.",
             "Mayar processes donations and payment links. Payment details may be shared with it to complete and reconcile a transaction.",
             "Vercel hosts the service and provides performance measurement; Supabase provides the PostgreSQL database; and Sentry provides error monitoring. These providers process data to run, secure, and maintain Nawaetu.",
+            "When Telegram feedback notifications are enabled, feedback messages, your name, email address, account ID, device/browser details, and any screenshots you attach are forwarded to Nawaetu’s designated Telegram support chat for review. Feedback remains stored in Nawaetu’s database if Telegram delivery is unavailable.",
         ],
     },
     {
@@ -65,7 +66,7 @@ export default function PrivacyPolicyPage() {
             <article className="mb-12 w-full max-w-4xl space-y-8">
                 <header className="space-y-3 text-center">
                     <h1 className="text-4xl font-bold sm:text-5xl">Privacy Policy</h1>
-                    <p className="text-[rgb(var(--color-text-muted))]">Effective date: September 26, 2026</p>
+                    <p className="text-[rgb(var(--color-text-muted))]">Effective date: September 27, 2026</p>
                 </header>
 
                 <div className="space-y-7 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8">
@@ -84,11 +85,11 @@ export default function PrivacyPolicyPage() {
                     <section className="space-y-3 border-t border-[rgb(var(--color-border))] pt-6">
                         <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">Kebijakan Privasi (Bahasa Indonesia)</h2>
                         <p>Kebijakan ini berlaku untuk nawaetu.com dan aplikasi Android Nawaetu yang membuka layanan nawaetu.com. Nawaetu dioperasikan oleh NawaetuLabs (Hadian Rahmat).</p>
-                        <p>Kami memproses data akun Google (nama, email, foto profil, dan ID akun); data yang Anda simpan seperti pengaturan, bookmark, progres Al-Qur’an, aktivitas ibadah, niat dan refleksi, catatan Ramadan, serta status dukungan/donasi. Sebagian catatan dapat mengungkap informasi sensitif terkait agama atau kesehatan.</p>
+                        <p>Kami memproses data akun Google (nama, email, foto profil, dan ID akun); data yang Anda simpan seperti pengaturan, bookmark, progres Al-Qur’an, aktivitas ibadah, niat dan refleksi, catatan Ramadan, serta status dukungan/donasi. Masukan yang Anda kirim dapat mencakup pesan, nama, email, ID akun, detail perangkat/browser, dan screenshot yang Anda lampirkan. Teks masukan dan detail perangkat disimpan di basis data Nawaetu. Sebagian catatan dapat mengungkap informasi sensitif terkait agama atau kesehatan.</p>
                         <p>Jika Anda mengaktifkan fitur berbasis lokasi, lokasi digunakan untuk waktu salat, arah kiblat, nama kota, dan notifikasi. Token notifikasi, koordinat, kota/negara, zona waktu, jenis perangkat, serta pilihan notifikasi dapat disimpan untuk mengirim pengingat.</p>
-                        <p>Pertanyaan dan konteks yang Anda kirim ke mentor AI dapat diproses oleh Google Gemini, Groq, atau OpenRouter; riwayat percakapan akun tersimpan agar dapat dibuka kembali. Aladhan digunakan untuk waktu salat; BigDataCloud atau OpenStreetMap Nominatim untuk pencarian nama lokasi; Google untuk login, analitik, dan Firebase Cloud Messaging; Mayar untuk pembayaran/donasi; Vercel untuk hosting dan pengukuran performa; Supabase untuk basis data; serta Sentry untuk pemantauan error.</p>
+                        <p>Pertanyaan dan konteks yang Anda kirim ke mentor AI dapat diproses oleh Google Gemini, Groq, atau OpenRouter; riwayat percakapan akun tersimpan agar dapat dibuka kembali. Jika notifikasi masukan melalui Telegram diaktifkan, pesan masukan, nama, email, ID akun, detail perangkat/browser, dan screenshot yang dilampirkan akan diteruskan ke chat dukungan Telegram Nawaetu yang ditentukan untuk ditinjau. Masukan tetap tersimpan di basis data Nawaetu jika pengiriman ke Telegram tidak tersedia. Aladhan digunakan untuk waktu salat; BigDataCloud atau OpenStreetMap Nominatim untuk pencarian nama lokasi; Google untuk login, analitik, dan Firebase Cloud Messaging; Mayar untuk pembayaran/donasi; Vercel untuk hosting dan pengukuran performa; Supabase untuk basis data; serta Sentry untuk pemantauan error.</p>
                         <p>Kami tidak menjual data pribadi. Data akun disimpan selama akun aktif. Untuk meminta penghapusan akun dan data pribadi terkait, ikuti petunjuk di <Link className="underline" href="/delete-account">halaman penghapusan akun</Link> atau hubungi <a className="underline" href="mailto:hadian.rahmat@gmail.com">hadian.rahmat@gmail.com</a>. Kami dapat meminta verifikasi kepemilikan akun dan dapat menyimpan catatan tertentu bila diperlukan untuk kewajiban hukum, keamanan, atau transaksi. Data pada cadangan dan log penyedia dapat memerlukan waktu untuk terhapus sesuai jadwal retensi mereka.</p>
-                        <p>Anda dapat menonaktifkan izin lokasi dan notifikasi melalui pengaturan perangkat/browser, serta berhenti menggunakan fitur AI kapan saja. Kebijakan ini terakhir diperbarui pada 26 September 2026.</p>
+                        <p>Anda dapat menonaktifkan izin lokasi dan notifikasi melalui pengaturan perangkat/browser, serta berhenti menggunakan fitur AI kapan saja. Kebijakan ini terakhir diperbarui pada 27 September 2026.</p>
                     </section>
 
                     <p className="border-t border-[rgb(var(--color-border))] pt-6">
