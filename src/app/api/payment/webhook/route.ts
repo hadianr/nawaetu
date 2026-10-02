@@ -22,6 +22,7 @@ import { transactions, users } from "@/db/schema";
 import { eq, and, desc, or, ne } from "drizzle-orm";
 import crypto from "crypto";
 import { logger } from "@/lib/logger";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 export async function POST(req: NextRequest) {
     try {
@@ -82,10 +83,10 @@ export async function POST(req: NextRequest) {
         }
 
         // 4. Data Extraction
-        const data = body.data || body;
+        let data = body.data || body;
         const status = data.status;
-        const mayarId = data.transactionId || data.id; // Corrected: Transaction ID is in data.transactionId
-        const linkId = data.link_id || data.paymentLinkId;
+        const mayarId = data.transactionId || data.id;
+        let linkId = data.link_id || data.paymentLinkId;
         const productId = data.productId; // Should match our paymentLinkId
 
         if (!mayarId) {
@@ -101,6 +102,24 @@ export async function POST(req: NextRequest) {
         let transaction = await db.query.transactions.findFirst({
             where: or(...conditions)
         });
+
+        // V2 webhooks can omit customer and payment-link fields; hydrate them from the signed transaction ID.
+        if (!transaction && process.env.MAYAR_API_KEY) {
+            const mayarRes = await fetchWithTimeout(`https://api.mayar.id/hl/v2/transactions/${encodeURIComponent(mayarId)}`, {
+                headers: { Authorization: `Bearer ${process.env.MAYAR_API_KEY}` }
+            }, { timeoutMs: 10_000 });
+
+            if (mayarRes.ok) {
+                const mayarData = await mayarRes.json();
+                data = { ...mayarData.data, ...data, customer: data.customer || mayarData.data?.customer };
+                linkId = linkId || mayarData.data?.paymentLink?.id;
+
+                const hydratedConditions = [eq(transactions.mayarId, mayarId)];
+                if (linkId) hydratedConditions.push(eq(transactions.paymentLinkId, linkId));
+                if (productId) hydratedConditions.push(eq(transactions.paymentLinkId, productId));
+                transaction = await db.query.transactions.findFirst({ where: or(...hydratedConditions) });
+            }
+        }
 
         // 6. Fallback Lookup (Email & Amount)
         if (!transaction) {
