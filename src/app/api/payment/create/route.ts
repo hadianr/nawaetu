@@ -39,9 +39,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Minimum donation is Rp 5.000" }, { status: 400 });
         }
 
-        // 1. Call Mayar API to create Single Payment Link (SPL)
-        // Docs: https://docs.mayar.id/reference/create-payment
-        const mayarUrl = "https://api.mayar.id/hl/v1/payment/create";
+        // 1. Create a single payment request (Mayar API v2)
+        const mayarUrl = "https://api.mayar.id/hl/v2/payments/create";
         const apiKey = process.env.MAYAR_API_KEY;
 
         if (!apiKey) {
@@ -50,13 +49,10 @@ export async function POST(req: NextRequest) {
 
         const body = {
             amount: amount,
-            type: "ONETIME",
+            name: `Infaq Nawaetu - ${session.user.name || "Hamba Allah"}`,
             description: `Infaq Pengembangan Nawaetu - Amal Jariyah atas nama ${session.user.name || "Hamba Allah"}`,
-            name: session.user.name || "Hamba Allah",
             email: session.user.email,
-            mobile: "081234567890",
-            redirectUrl: `${process.env.NEXTAUTH_URL}/settings?payment=success`,
-            failureRedirectUrl: `${process.env.NEXTAUTH_URL}/settings?payment=failed`
+            redirectUrl: `${process.env.NEXTAUTH_URL}/settings?payment=success`
         };
 
         const mayarRes = await fetchWithTimeout(mayarUrl, {
@@ -85,8 +81,13 @@ export async function POST(req: NextRequest) {
             }, { status: 500 });
         }
 
-        const paymentLink = mayarData.data.link;
-        const mayarId = mayarData.data.id;
+        const paymentLink = mayarData.data?.link;
+        const paymentLinkId = mayarData.data?.id;
+        const mayarId = mayarData.data?.transactionId;
+        if (!paymentLink || !paymentLinkId || !mayarId) {
+            logger.error("Mayar payment creation returned an invalid response", undefined, { route: "/api/payment/create" });
+            return NextResponse.json({ error: "Invalid response from Mayar" }, { status: 502 });
+        }
 
         // 2. Save Transaction to DB
         const user = await db.query.users.findFirst({
@@ -98,8 +99,8 @@ export async function POST(req: NextRequest) {
                 userId: user.id,
                 amount: amount,
                 status: "pending",
-                paymentLinkId: mayarId, // Store Link ID here
-                mayarId: null, // Actual Transaction ID will come from webhook
+                paymentLinkId,
+                mayarId,
                 paymentUrl: paymentLink,
                 customerName: session.user.name,
                 customerEmail: session.user.email

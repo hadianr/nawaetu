@@ -63,11 +63,11 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "Mayar API Key not configured" }, { status: 500 });
         }
 
-        let status = latestTx.status;
+        let status: string = latestTx.status;
         let method = "none";
 
         if (latestTx.mayarId) {
-            const mayarUrl = `https://api.mayar.id/hl/v1/payment/check/${latestTx.mayarId}`;
+            const mayarUrl = `https://api.mayar.id/hl/v2/transactions/${latestTx.mayarId}`;
             const mayarRes = await fetchWithTimeout(mayarUrl, {
                 method: "GET",
                 headers: {
@@ -83,8 +83,8 @@ export async function GET(req: NextRequest) {
             }
         }
 
-        if ((status as string) !== "PAID" && (status as string) !== "SETTLEMENT") {
-            const listUrl = `https://api.mayar.id/hl/v1/transactions?email=${encodeURIComponent(session.user.email)}&limit=5`;
+        if (!latestTx.mayarId && latestTx.paymentLinkId) {
+            const listUrl = `https://api.mayar.id/hl/v2/transactions/unpaid?paymentLinkId=${encodeURIComponent(latestTx.paymentLinkId)}&limit=50`;
             const listRes = await fetchWithTimeout(listUrl, {
                 method: "GET",
                 headers: {
@@ -95,13 +95,8 @@ export async function GET(req: NextRequest) {
 
             if (listRes.ok) {
                 const listData = await listRes.json();
-                const transactionsList = listData.data || [];
-
-                // Find matching transaction (Link ID or Amount + recent)
-                const matchedTx = transactionsList.find((tx: { link_id?: string; amount?: number; status?: string; id?: string }) =>
-                    (latestTx.paymentLinkId && tx.link_id === latestTx.paymentLinkId) ||
-                    (tx.amount === latestTx.amount &&
-                        (tx.status === "PAID" || tx.status === "SETTLEMENT"))
+                const matchedTx = (listData.data || []).find((tx: { amount?: number; status?: string; id?: string }) =>
+                    tx.amount === latestTx.amount
                 );
 
                 if (matchedTx) {
@@ -109,23 +104,20 @@ export async function GET(req: NextRequest) {
                     await db.update(transactions)
                         .set({
                             mayarId: matchedTx.id,
-                            status: (matchedTx.status?.toLowerCase() === "paid" ? "settlement" : matchedTx.status?.toLowerCase() || "pending") as "pending" | "settlement" | "failed"
+                            status: matchedTx.status?.toLowerCase() === "expired" ? "expired" : "pending"
                         })
                         .where(eq(transactions.id, latestTx.id));
 
-                    status = matchedTx.status;
+                    status = matchedTx.status?.toLowerCase() === "expired" ? "expired" : "pending";
                     method = "fallback_list";
                 }
             }
         }
 
-        // 3. Update if PAID/SETTLEMENT
-        if ((status as string) === "PAID" || (status as string) === "SETTLEMENT") {
-            // Update Transaction
-            let validStatus = status.toLowerCase();
-            if (validStatus === 'paid') validStatus = 'settlement';
+        // Mayar v2 transaction statuses are lowercase: paid, unpaid, created, expired.
+        if (status.toLowerCase() === "paid" || status.toLowerCase() === "settled" || status.toLowerCase() === "settlement") {
             await db.update(transactions)
-                .set({ status: validStatus as "pending" | "settlement" | "failed" })
+                .set({ status: "settlement" })
                 .where(eq(transactions.id, latestTx.id));
 
             // Update User
@@ -145,7 +137,7 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({
-            status: status.toLowerCase(),
+            status: status.toLowerCase() === "unpaid" || status.toLowerCase() === "created" ? "pending" : status.toLowerCase(),
             isMuhsinin: user.isMuhsinin
         });
 
