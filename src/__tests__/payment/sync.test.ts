@@ -68,7 +68,7 @@ describe('Payment Sync', () => {
         (global.fetch as Mock).mockResolvedValue({
             ok: true,
             json: async () => ({
-                data: { status: 'SETTLEMENT' }
+                data: { status: 'paid' }
             })
         });
 
@@ -80,7 +80,7 @@ describe('Payment Sync', () => {
         expect(res.status).toBe(200);
     });
 
-    it('should fallback to List Search and match via paymentLinkId if mayarId is missing', async () => {
+    it('should fallback to v2 unpaid transactions when mayarId is missing', async () => {
         (getServerSession as Mock).mockResolvedValue({ user: { email: 'user@test.com' } });
 
         // Mock DB: User
@@ -90,12 +90,12 @@ describe('Payment Sync', () => {
         const mockTx = { id: 'tx-2', mayarId: null, paymentLinkId: 'link-999', status: 'pending', amount: 25000, userId: 'user-2' };
         (db.query.transactions.findFirst as Mock).mockResolvedValue(mockTx);
 
-        // Mayar API: List Transactions
+        // Mayar v2: unpaid transactions are queried by payment link ID.
         (global.fetch as Mock).mockResolvedValue({
             ok: true,
             json: async () => ({
                 data: [
-                    { id: 'real-tx-999', link_id: 'link-999', status: 'PAID', amount: 25000 }
+                    { id: 'real-tx-999', paymentLinkId: 'link-999', status: 'active', amount: 25000 }
                 ]
             })
         });
@@ -103,10 +103,14 @@ describe('Payment Sync', () => {
         const req = {} as unknown as NextRequest;
         await GET(req);
 
-        // Assert: Found via link_id in list and updated locally
+        // Assert: Found via v2 unpaid list and retained as pending.
         expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({
             mayarId: 'real-tx-999',
-            status: 'settlement'
+            status: 'pending'
         }));
+        expect(global.fetch).toHaveBeenCalledWith(
+            'https://api.mayar.id/hl/v2/transactions/unpaid?paymentLinkId=link-999&limit=50',
+            expect.any(Object)
+        );
     });
 });

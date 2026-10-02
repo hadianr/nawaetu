@@ -65,9 +65,11 @@ describe('Payment Webhook', () => {
 
         process.env = { ...originalEnv };
         process.env.MAYAR_WEBHOOK_SECRET = SECRET;
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     });
 
     afterEach(() => {
+        vi.unstubAllGlobals();
         process.env = originalEnv;
     });
 
@@ -176,6 +178,37 @@ describe('Payment Webhook', () => {
         }));
 
         expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({ isMuhsinin: true }));
+    });
+
+    it('should hydrate missing webhook fields from the Mayar v2 transaction', async () => {
+        const mockTransaction = { id: 'tx-hydrated', userId: 'user-4', paymentLinkId: 'link-v2', amount: 15000, status: 'pending' };
+        (db.query.transactions.findFirst as Mock)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(mockTransaction);
+        (global.fetch as Mock).mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                data: {
+                    status: 'paid',
+                    amount: 15000,
+                    paymentLink: { id: 'link-v2' },
+                    customer: { email: 'test@user.com' }
+                }
+            })
+        });
+
+        const req = createSignedRequest({ transactionId: 'mayar-tx-v2', status: 'paid' });
+        const res = await POST(req);
+
+        expect(res.status).toBe(200);
+        expect(global.fetch).toHaveBeenCalledWith(
+            'https://api.mayar.id/hl/v2/transactions/mayar-tx-v2',
+            expect.objectContaining({ headers: { Authorization: 'Bearer test-key' } })
+        );
+        expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({
+            status: 'settlement',
+            mayarId: 'mayar-tx-v2'
+        }));
     });
 
     it('should return 404 if transaction truly not found', async () => {
