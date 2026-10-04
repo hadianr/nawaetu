@@ -25,7 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useLocale } from "@/context/LocaleContext";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { Bug, Lightbulb, Upload, X, ShieldAlert, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -235,7 +236,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
                                 </p>
                             </div>
                             <Button
-                                onClick={() => signIn("google")}
+                                onClick={() => void signInWithGoogle()}
                                 className="w-full font-bold rounded-xl shadow-[var(--shadow-card)] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                             >
                                 {t.feedbackLoginButton}

@@ -34,7 +34,7 @@ const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_R
  * Checks whether a userId exists in DB, leveraging Upstash Redis caching for 0ms DB queries on hit.
  * Includes graceful exception handling so database spin-ups/transient drops never throw JWTSessionError.
  */
-export async function isUserValid(userId: string): Promise<boolean> {
+export async function isUserValid(userId: string): Promise<boolean | null> {
     if (!userId) return false;
 
     const cacheKey = `user:valid:${userId}`;
@@ -67,10 +67,14 @@ export async function isUserValid(userId: string): Promise<boolean> {
 
         return isValid;
     } catch (e) {
-        // Fail closed: a database outage must not turn an unverified JWT into
-        // an authorized session.
-        logger.error("Failed to validate user in DB; rejecting session", e, { userId });
-        return false;
+        // The signed JWT was issued only after the adapter returned this user.
+        // Preserve that session during a transient DB outage; reject it when
+        // the lookup succeeds and confirms the user no longer exists.
+        logger.warn("Failed to validate user in DB; retaining verified JWT session", {
+            userId,
+            error: e instanceof Error ? e.message : String(e),
+        });
+        return null;
     }
 }
 
@@ -145,7 +149,7 @@ export const authOptions: NextAuthConfig = {
             try {
                 if (session.user && token.id) {
                     const isValid = await isUserValid(token.id as string);
-                    if (!isValid) {
+                    if (isValid === false) {
                         return null as never;
                     }
 

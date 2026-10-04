@@ -24,7 +24,8 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { useProfile } from "@/hooks/useProfile";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -139,7 +140,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         return () => window.removeEventListener('profile_updated', handleRefresh);
     }, []);
 
-    const handleLogin = () => signIn("google");
+    const handleLogin = () => signInWithGoogle();
 
     const handleLogout = async () => {
         const storage = getStorageService();

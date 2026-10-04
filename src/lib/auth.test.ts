@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
     select: vi.fn(),
     loggerError: vi.fn(),
+    loggerWarn: vi.fn(),
 }));
 
 vi.mock("@/db", () => ({
@@ -25,7 +26,7 @@ vi.mock("@/db/schema", () => ({
 
 vi.mock("drizzle-orm", () => ({ eq: vi.fn() }));
 vi.mock("@auth/drizzle-adapter", () => ({ DrizzleAdapter: vi.fn(() => ({})) }));
-vi.mock("@/lib/logger", () => ({ logger: { error: mocks.loggerError } }));
+vi.mock("@/lib/logger", () => ({ logger: { error: mocks.loggerError, warn: mocks.loggerWarn } }));
 vi.mock("next-auth", () => ({
     default: (options: unknown) => ({ auth: vi.fn(), handlers: {}, options }),
 }));
@@ -58,18 +59,13 @@ describe("authentication user validation", () => {
         await expect(isUserValid("unknown-user")).resolves.toBe(false);
     });
 
-    it("rejects when the database lookup fails", async () => {
+    it("marks the user as unverified when the database lookup fails", async () => {
         const where = vi.fn(() => ({
             limit: vi.fn().mockRejectedValue(new Error("database unavailable")),
         }));
         mocks.select.mockReturnValue({ from: vi.fn(() => ({ where })) });
 
-        await expect(isUserValid("user-1")).resolves.toBe(false);
-        expect(mocks.loggerError).toHaveBeenCalledWith(
-            "Failed to validate user in DB; rejecting session",
-            expect.any(Error),
-            { userId: "user-1" },
-        );
+        await expect(isUserValid("user-1")).resolves.toBeNull();
     });
 
     it("accepts a session for an existing user", async () => {
@@ -84,6 +80,21 @@ describe("authentication user validation", () => {
         });
     });
 
+    it("retains a previously verified session when the database is unavailable", async () => {
+        const where = vi.fn(() => ({
+            limit: vi.fn().mockRejectedValue(new Error("database unavailable")),
+        }));
+        mocks.select.mockReturnValue({ from: vi.fn(() => ({ where })) });
+
+        const sessionCallback = authOptions.callbacks?.session;
+        const session = { user: {} };
+        const token = { id: "user-1" };
+
+        await expect(sessionCallback!({ session, token } as never)).resolves.toEqual({
+            user: { id: "user-1", isMuhsinin: false, gender: null, image: null },
+        });
+    });
+
     it("rejects a session for an unknown user", async () => {
         mockUserLookup([]);
 
@@ -94,7 +105,7 @@ describe("authentication user validation", () => {
         await expect(sessionCallback!({ session, token } as never)).resolves.toBeNull();
     });
 
-    it("rejects the session when validation throws unexpectedly", async () => {
+    it("retains a signed session when the database client fails unexpectedly", async () => {
         const sessionCallback = authOptions.callbacks?.session;
         expect(sessionCallback).toBeTypeOf("function");
 
@@ -104,6 +115,8 @@ describe("authentication user validation", () => {
             throw new Error("unexpected database failure");
         });
 
-        await expect(sessionCallback!({ session, token } as never)).resolves.toBeNull();
+        await expect(sessionCallback!({ session, token } as never)).resolves.toEqual({
+            user: { id: "user-1", isMuhsinin: false, gender: null, image: null },
+        });
     });
 });
