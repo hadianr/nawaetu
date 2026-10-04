@@ -25,7 +25,8 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useInfaq } from "@/context/InfaqContext";
 import { toast } from "sonner";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { AppIcon } from "@/components/ui/AppIcon";
 
 interface DonationModalProps {
@@ -62,7 +63,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
 
         if (!session) {
             toast.error("Silakan login terlebih dahulu untuk mencatat infaq.");
-            signIn('google');
+            void signInWithGoogle();
             return;
         }
 
@@ -152,7 +153,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 </p>
                             </div>
                             <Button
-                                onClick={() => signIn('google')}
+                                onClick={() => void signInWithGoogle()}
                                 className={cn(
                                     "w-full h-12 font-bold rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-md hover:shadow-lg",
                                     "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]/80"

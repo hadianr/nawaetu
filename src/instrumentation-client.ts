@@ -31,6 +31,10 @@ let sentryInit: Promise<SentryClient | null> | undefined;
 let sentryInitialized = false;
 const pendingErrors: PendingError[] = [];
 
+function isNetworkFetchError(error: unknown): boolean {
+  return error instanceof TypeError && /^(?:Failed to fetch|Load failed|NetworkError when attempting to fetch resource\.)$/i.test(error.message);
+}
+
 function loadSentry(): Promise<SentryClient> {
   return sentryModule ??= import("@sentry/nextjs");
 }
@@ -97,6 +101,7 @@ function initSentry(): Promise<SentryClient | null> {
       // Ignore browser extension and Web3 errors
       /Failed to connect to MetaMask/i,
       /MetaMask extension not found/i,
+      /undefined is not an object \(evaluating 'r\["@context"\]\.toLowerCase'\)/i,
     ],
     });
 
@@ -117,7 +122,7 @@ function initSentry(): Promise<SentryClient | null> {
 }
 
 export function captureClientException(error: unknown, context?: Record<string, unknown>): void {
-  if (!isProductionBrowser()) return;
+  if (!isProductionBrowser() || isNetworkFetchError(error)) return;
 
   const pending = { error, context };
   if (!sentryInitialized) {
@@ -130,6 +135,8 @@ export function captureClientException(error: unknown, context?: Record<string, 
 }
 
 function captureEarlyBrowserError(error: unknown, context: Record<string, unknown>): void {
+  if (isNetworkFetchError(error)) return;
+
   if (!sentryInitialized) {
     pendingErrors.push({ error, context });
     void initSentry();

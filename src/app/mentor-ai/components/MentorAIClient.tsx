@@ -34,7 +34,8 @@ import type { TranslationTree } from "@/context/LocaleContext";
 import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth-client";
 
 import { ChatHistorySidebar } from "./ChatHistorySidebar";
 import { ChatInputArea } from "./ChatInputArea";
@@ -515,7 +516,7 @@ export default function MentorAIClient() {
 
                     <div className="space-y-4">
                         <button
-                            onClick={() => signIn('google')}
+                            onClick={() => void signInWithGoogle()}
                             className={cn(
                                 "w-full h-12 font-bold rounded-xl transition-all flex items-center justify-center gap-3 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-sm hover:bg-[rgb(var(--color-surface-subtle))]"
                             )}

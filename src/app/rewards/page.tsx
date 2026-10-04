@@ -4,7 +4,8 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Gift, Heart, Mail, Send, Sparkles } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth-client";
 
 const SUPPORT_EMAIL = "hadian.rahmat@gmail.com";
 
@@ -110,7 +111,7 @@ export default function RewardsPage() {
 
                     {!isAuthenticated && <div className="mb-4 rounded-xl border border-[rgb(var(--color-warning))]/25 bg-[rgb(var(--color-warning))]/10 p-4 text-sm text-[rgb(var(--color-warning))]">
                         <p>{copy.loginRequired}</p>
-                        <button type="button" onClick={() => signIn("google")} className="mt-3 rounded-lg bg-[rgb(var(--color-primary))] px-4 py-2 font-bold text-[rgb(var(--color-primary-foreground))]">{copy.loginButton}</button>
+                        <button type="button" onClick={() => void signInWithGoogle()} className="mt-3 rounded-lg bg-[rgb(var(--color-primary))] px-4 py-2 font-bold text-[rgb(var(--color-primary-foreground))]">{copy.loginButton}</button>
                     </div>}
                     <fieldset disabled={!isAuthenticated}>
                     <form onSubmit={submitSupportOffer} className="space-y-4">
