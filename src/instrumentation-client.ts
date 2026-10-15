@@ -75,7 +75,7 @@ function initSentry(): Promise<SentryClient | null> {
     // Reduce sample rate - only capture 10% of traces in production
     tracesSampleRate: 0.1, // Changed from 1 to 0.1
     // Disable logs to reduce bundle size
-    enableLogs: false,
+    _experiments: { enableLogs: false },
 
     // Define how likely Replay events are sampled.
     // Reduced from 1 to 0.05 to minimize payload
@@ -85,7 +85,22 @@ function initSentry(): Promise<SentryClient | null> {
     replaysOnErrorSampleRate: 0.5,
 
     // Disable sending user PII to reduce processing
-    sendDefaultPii: false,
+    // Sentry v11 replaces sendDefaultPii with dataCollection. Keep the v10
+    // privacy baseline explicit: no cookies, no user info, no HTTP bodies.
+    dataCollection: {
+      userInfo: false,
+      cookies: false,
+      httpHeaders: {
+        request: { deny: ["forwarded", "-ip", "remote-", "via", "-user"] },
+        response: { deny: ["forwarded", "-ip", "remote-", "via", "-user"] },
+      },
+      httpBodies: [],
+      urlQueryParams: { deny: ["forwarded", "-ip", "remote-", "via", "-user"] },
+      genAI: { inputs: false, outputs: false },
+      databaseQueryData: false,
+      graphQL: { document: false, variables: false },
+    },
+
 
     // Ignore known React 19 and browser noise errors.
     // The Circular JSON TypeError occurs when Sentry Replay or Breadcrumbs tries to deeply serialize a clicked DOM element containing React's internal `__reactFiber` property which holds circular references.
