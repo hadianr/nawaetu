@@ -106,3 +106,5 @@ Kriteria selesai: opsi tema muncul, tersimpan di storage, tampil konsisten
 - Hindari hardcoded string UI tanpa i18n.
 - Hindari hardcoded colors tanpa token.
 - Jangan menulis storage key di luar single source.
+
+<!-- agent PR pipeline test -->
