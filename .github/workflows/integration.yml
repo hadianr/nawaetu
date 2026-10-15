@@ -1,0 +1,68 @@
+name: Integration
+
+# Runs database-backed tests against a throwaway Postgres in this job only.
+# Non-blocking: the branch has no required checks, and a red result is a signal,
+# not a merge gate, until the suite is proven stable.
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "LICENSE"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: integration-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    name: Integration tests (Postgres)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci -d ci"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --fund=false
+
+      - name: Apply migrations
+        run: |
+          set -euo pipefail
+          for f in $(ls drizzle/*.sql | sort); do
+            echo "Applying $f"
+            PGPASSWORD=ci psql -h localhost -U ci -d ci -v ON_ERROR_STOP=1 -q -f "$f"
+          done
+
+      - name: Run integration tests
+        run: npx vitest run --passWithNoTests '\.integration\.test\.ts$'
