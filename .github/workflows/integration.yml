@@ -1,6 +1,7 @@
 name: Integration
 
 # Runs database-backed tests against a throwaway Postgres in this job only.
+# Migrations are NEVER run here. Schema changes are applied manually by the owner.
 # Non-blocking: the branch has no required checks, and a red result is a signal,
 # not a merge gate, until the suite is proven stable.
 
@@ -55,14 +56,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --fund=false
-
-      - name: Apply migrations
-        run: |
-          set -euo pipefail
-          for f in $(ls drizzle/*.sql | sort); do
-            echo "Applying $f"
-            PGPASSWORD=ci psql -h localhost -U ci -d ci -v ON_ERROR_STOP=1 -q -f "$f"
-          done
 
       - name: Run integration tests
         run: npx vitest run --passWithNoTests '\.integration\.test\.ts$'
