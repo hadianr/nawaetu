@@ -199,7 +199,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     window.localStorage.setItem(cacheKey, JSON.stringify(finalData));
                 } catch { }
 
-                // Add XP locally
+                // Add Hasanah locally
                 if (data.data.intention_points_earned > 0) {
                     addHasanah(data.data.intention_points_earned, selectedDate);
                 }
@@ -255,7 +255,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
                 setTodayData(finalData);
 
-                // Add XP locally
+                // Add Hasanah locally
                 addHasanah(xpAmount, selectedDate);
                 window.dispatchEvent(new CustomEvent("hasanah_updated"));
 

@@ -51,7 +51,7 @@ export function StatsOverview({
 }: StatsOverviewProps) {
     return (
         <div className="space-y-4 max-w-2xl mx-auto px-6">
-            {/* Level & XP Card - Compact Version */}
+            {/* Level & Hasanah Card - Compact Version */}
             <button
                 onClick={() => setIsRankModalOpen(true)}
                 className="w-full text-left relative overflow-hidden rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))] p-4 active:scale-[0.98] transition-all group mt-4 shadow-[var(--shadow-card)]"

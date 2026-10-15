@@ -567,7 +567,7 @@ export default function PrayerCheckInWidget() {
                                                 {getTranslation(prayer.i18n, prayer.i18n.split("_").pop())}
                                             </span>
 
-                                            {/* Sunnah XP Preview */}
+                                            {/* Sunnah Hasanah Preview */}
                                             {!done && !isLocked && (isActive || isLate) && (
                                                 <span className={cn(
                                                     "text-[6px] font-black leading-none mt-0.5",

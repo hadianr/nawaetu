@@ -21,7 +21,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata(
     "Misi Harian dan Konsistensi Ibadah",
-    "Aplikasi Muslim Nawaetu membantu menjaga rutinitas dengan misi harian, streak, XP, dan level. Progres aplikasi mendukung kebiasaan, bukan mengukur nilai amal.",
+    "Aplikasi Muslim Nawaetu membantu menjaga rutinitas dengan misi harian, streak, Hasanah, dan level. Progres aplikasi mendukung kebiasaan, bukan mengukur nilai amal.",
     "/missions",
 );
 
