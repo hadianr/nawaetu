@@ -26,7 +26,7 @@ This roadmap outlines our vision for making Nawaetu the **most meaningful Islami
 - **Digital Quran** - Verse-by-verse audio, Tajweed support, Mushaf mode
 - **Qibla Compass** - Precise direction finder
 - **AI Mentor** - Islamic guidance with chat rate limiting (Gemini & Groq)
-- **Gamification Core** - Daily missions, streaks, Hasanah (XP) ledger, rewards
+- **Gamification Core** - Daily missions, streaks, Hasanah ledger, rewards
 - **Intention Journal (base)** - Daily intention and evening reflection with rating
 - **Sirah Module** - Chapters, quiz, bookmarks, and reading progress
 - **Ramadhan Tracking** - Fasting, daily, and Taraweh logs
@@ -97,7 +97,7 @@ AI: I understand. Let's try something small:
 
 The Hasanah ledger, streaks, and rewards already exist. Pending:
 
-- **Terminology**: rename XP to Niat Points (NP) in the UI, keeping the existing ledger.
+- **Terminology**: keep Hasanah as the user-facing name. The Niat Points (NP) rename is dropped; wording is already Hasanah in the app.
 - **Islamic milestones**: level bands with titles (Mubtadi, Mutaqin, Muhsinin, Siddiqin). Current level is already tracked, so this is a presentation change plus copy review.
 - **New badges**: "Sahur Champion" (30-day Ramadhan streak), "Night Warrior" (100 Qiyamul Lail), "Pure Intention" (40-day Niat Streak). Depends on the Niat Streak above.
 
