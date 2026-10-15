@@ -3,6 +3,12 @@ name: Quality Gate
 on:
   pull_request:
     branches: [main]
+    # Docs-only changes skip this gate. Anything touching code, config,
+    # dependencies, or workflows still runs it.
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "LICENSE"
 
 permissions:
   contents: read
