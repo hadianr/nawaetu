@@ -14,104 +14,103 @@ This roadmap outlines our vision for making Nawaetu the **most meaningful Islami
 
 ---
 
-## 📍 Where We Are Now (v1.6.0)
+## 📍 Where We Are Now (v1.15.6)
 
-### ✅ Foundation Complete
+**Status key:** ✅ Shipped · 🔨 In progress · 📋 Planned · 💡 Concept · 🧪 Experimental
+
+> Verified against the codebase on 15 Oct 2026 (`main`, commit `28b7cb1`). Items marked ✅ exist in code; "In progress" items have partial code.
+
+### ✅ Shipped
 
 - **Prayer Times & Notifications** - Accurate, reliable, iOS-optimized
 - **Digital Quran** - Verse-by-verse audio, Tajweed support, Mushaf mode
 - **Qibla Compass** - Precise direction finder
-- **AI Assistant** - 24/7 Islamic guidance powered by Gemini & Groq
-- **Basic Gamification** - Daily missions, streaks, XP system
-- **Multi-language** - Full English & Indonesian support
-- **Infaq & Muhsinin Status** - Support the mission, earn special badge
-- **Dual Licensing** - Sustainable open-source business model
+- **AI Mentor** - Islamic guidance with chat rate limiting (Gemini & Groq)
+- **Gamification Core** - Daily missions, streaks, Hasanah (XP) ledger, rewards
+- **Intention Journal (base)** - Daily intention and evening reflection with rating
+- **Sirah Module** - Chapters, quiz, bookmarks, and reading progress
+- **Ramadhan Tracking** - Fasting, daily, and Taraweh logs
+- **Multi-language** - English & Indonesian
+- **Infaq & Muhsinin Status** - Support the mission, earn the Muhsinin badge
+- **Browser Extension v1.9.4** - Chrome/Edge wrapper (see Expansion section)
+- **Dual Licensing** - AGPLv3 Community Edition + Commercial License
 
-**Current Users:** Growing community of Muslims building better habits
-**Tech Stack:** Next.js 16, React 19, Firebase, PostgreSQL, Vercel
+**Current Users:** 257 registered accounts (Oct 2026)
+**Tech Stack:** Next.js 16, React 19, PostgreSQL (Supabase) with Drizzle ORM, Vercel
 
 ---
 
 ## 🚀 What's Next
 
-### Q2 2026: The Intention Revolution
+### Q4 2026: The Intention Revolution (Refocused)
 
-**Theme:** *Making Nawaetu the ONLY app that tracks your niat*
+**Theme:** *Making Nawaetu the app that helps you keep your niat*
 
-#### 🆕 Intention Journal (MVP)
-**Status:** 🔨 In Development
+> The previous Q2 2026 plan was not completed on schedule. The items below are re-scoped against the current code.
 
-The feature that makes Nawaetu truly unique.
+#### 🆕 Intention Journal - Completion
+**Status:** 🔨 In progress (base shipped)
 
-**What it does:**
-- Set your daily intention every morning (Fajr time)
-- Evening reflection: "How did you honor your niat today?"
-- Track your "Niat Streak" - consecutive days of intentional living
-- Private by default, shareable if you choose
+The journal, daily intention, and evening reflection already exist. What remains:
 
-**Why it matters:**
-> "I used to just check off prayers mechanically. Now I start each day asking *why* I'm doing this. It's changed everything." - Beta tester
+- **Niat Streak**: a dedicated streak for consecutive days of intentional reflection. The database has a streak system, but the niat-specific streak is not yet visible in the UI.
+- **Private by default**: confirm that reflections are private end-to-end, then document it in the privacy policy.
+- **Fajr-time reminder**: morning intention reminder aligned with local Fajr time.
 
-**Impact:** This is our **category-defining feature**. No other Islamic app does this.
+**Definition of done:** a user can complete a morning intention and evening reflection, see their Niat Streak, and no reflection is visible to anyone else.
+
+**Impact:** This is our **category-defining feature**. No other Islamic app combines a niat journal with habit tracking.
 
 ---
 
-#### 🤖 AI Niat Coach v2.0
-**Status:** 📋 Planned
+#### 🤖 AI Mentor → Proactive Coach
+**Status:** 📋 Planned (reactive AI Mentor is shipped)
 
-Upgrade from reactive Q&A bot to proactive spiritual mentor.
+Upgrade the existing reactive AI Mentor into a proactive coach. There is no proactive messaging, scheduled check-in, or personalized insight pipeline in the code yet.
 
-**New capabilities:**
-- **Daily check-ins:** "How's your Fajr habit going this week?"
-- **Personalized insights:** "You pray better when you sleep before 11pm"
-- **Behavioral coaching:** Combines Islamic wisdom + habit science
-- **Accountability:** Gentle reminders aligned with your goals
+**Scope, in order:**
+1. Weekly summary generated from the user's own habit data (scheduled job, no chat required).
+2. Opt-in gentle check-in (push notification, max 1 per day, user can disable).
+3. Personalized insight (for example, "you pray Fajr more consistently after sleeping before 11pm"), shown only after enough data.
+
+**Principles:** opt-in only, Islamic guidance from sources the team can cite, never shame the user for missed prayers.
 
 **Example interaction:**
 ```
-AI: Assalamu'alaikum! I noticed you've missed Fajr 3 times this week. 
+AI: Assalamu'alaikum! I noticed you've missed Fajr 3 times this week.
     Want to talk about what's blocking you?
 
 You: I just can't wake up...
 
-AI: I understand. 87% of Muslims struggle with this. Let's try something:
+AI: I understand. Let's try something small:
     1. Set your niat tonight: "Ya Allah, help me wake for Fajr"
-    2. Sleep 15 min earlier (just 15!)
+    2. Sleep 15 minutes earlier
     3. Put your phone across the room
-    
+
     Can you commit to trying this for 3 days?
 ```
 
 ---
 
 #### 🎮 Gamification Refresh
-**Status:** 📋 Planned
+**Status:** 🔨 In progress (core shipped; terminology and badges pending)
 
-Make points and levels actually *mean* something.
+The Hasanah ledger, streaks, and rewards already exist. Pending:
 
-**Changes:**
-- **XP → Niat Points (NP)** - Every action starts with intention
-- **Islamic Milestones:**
-  - Level 1-10: **Mubtadi** (Beginner)
-  - Level 11-20: **Mutaqin** (The Pious)
-  - Level 21-30: **Muhsinin** (The Excellent)
-  - Level 31+: **Siddiqin** (The Truthful)
-  
-- **Meaningful Badges:**
-  - 🌅 "Sahur Champion" - 30-day Ramadan streak
-  - 🌙 "Night Warrior" - 100 Qiyamul Lail prayers
-  - 💎 "Pure Intention" - 40-day niat streak
+- **Terminology**: rename XP to Niat Points (NP) in the UI, keeping the existing ledger.
+- **Islamic milestones**: level bands with titles (Mubtadi, Mutaqin, Muhsinin, Siddiqin). Current level is already tracked, so this is a presentation change plus copy review.
+- **New badges**: "Sahur Champion" (30-day Ramadhan streak), "Night Warrior" (100 Qiyamul Lail), "Pure Intention" (40-day Niat Streak). Depends on the Niat Streak above.
 
 **Why:** Gamification should inspire spiritual growth, not just dopamine hits.
 
 ---
 
-### Q3 2026: Community & Connection
+### Q1 2027: Community & Connection
 
 **Theme:** *You don't have to build habits alone*
 
 #### 👥 Accountability Partners
-**Status:** 💡 Concept
+**Status:** 💡 Concept (no code yet)
 
 Find your intention buddy.
 
@@ -123,54 +122,54 @@ Find your intention buddy.
 
 **Privacy-first:** All sharing is opt-in. Your niat stays private unless you choose.
 
+**Prerequisite:** Niat Streak and privacy controls must be shipped first.
+
 ---
 
 #### 📖 Nawaetu Stories
-**Status:** 💡 Concept
+**Status:** 💡 Concept (no code yet)
 
-Real stories from real Muslims.
+Real stories from real Muslims, published with the user's consent.
 
 **Content:**
 - "How I Finally Conquered Fajr" - User testimonials
 - "From 0 to 100 Quran Pages" - Journey highlights
-- "My Ramadan Transformation" - Seasonal inspiration
+- "My Ramadhan Transformation" - Seasonal inspiration
 
 **Why:** Seeing others succeed makes you believe you can too.
-
----
 
 ---
 
 ### 🌐 Expansion & Accessibility
 
 #### 🧩 Nawaetu Browser Extension (Chrome/Edge)
-**Status:** 🏗️ POC (Proof of Concept)
+**Status:** 🧪 Experimental (v1.9.4 in repository; store publication status to be confirmed)
 
-We're bringing the Nawaetu experience to your desktop browser.
+Sidebar wrapper around the live web app.
 
 **Features:**
 - **Sidebar Companion:** Read Quran & check prayer times without leaving your current tab.
-- **Focus Mode:** Block distracting sites during prayer times (optional).
-- **Instant Niat:** Set intention for browsing sessions ("Study", "Work", "Research").
+- **Focus Mode:** Block distracting sites during prayer times (optional). *Not yet implemented.*
+- **Instant Niat:** Set intention for browsing sessions ("Study", "Work", "Research"). *Not yet implemented.*
 
 **Technical Strategy:**
-- **Single Codebase**: We use a hybrid build system to deploy the same code to Web (PWA) and Extension.
-- **Privacy First**: No tracking, runs entirely offline.
-- [View Architecture Doc](docs/EXTENSION_ARCH.md)
+- **Single codebase:** Same web app is embedded in the extension (iframe to nawaetu.com).
+- **Privacy first:** No tracking. Offline behaviour depends on the web app's cache and is not guaranteed.
+- Architecture notes: `extension/README.md`
 
 ---
 
-### Q4 2026: Premium & Sustainability
+### Q1 2027: Premium & Sustainability
 
 **Theme:** *Making Nawaetu sustainable for the long run*
 
 #### 💎 Muhsinin Premium ($4.99/mo)
-**Status:** 💡 Concept
+**Status:** 💡 Concept (no payment integration in code yet; Muhsinin badge already ships through Infaq)
 
 Support the mission, unlock advanced features.
 
-**Premium perks:**
-- ✨ **Unlimited AI Coaching** (Free: 5 chats/day)
+**Premium perks (proposed):**
+- ✨ **Expanded AI Mentor usage** (free tier has a daily chat limit; exact limit to be confirmed in code before publishing)
 - 📊 **Advanced Analytics** - "Your best prayer time is 6:15am"
 - 🎨 **Custom Themes** - Personalize your experience
 - 🎯 **Habit Templates** - Pre-built routines from scholars
@@ -180,7 +179,7 @@ Support the mission, unlock advanced features.
 **Why Premium?**
 - Server costs (AI, database, hosting) are real
 - Premium users fund free features for everyone
-- 100% transparent: See where your money goes
+- Transparent: costs are published in the Support section
 
 **Free Forever Promise:**
 - Core features (prayer times, Quran, basic AI) stay free
@@ -241,13 +240,16 @@ Support the mission, unlock advanced features.
 
 We measure success by **impact**, not just downloads.
 
-| Metric | Current | Q2 2026 Goal | Q4 2026 Goal |
-|--------|---------|--------------|--------------|
-| **Weekly Niat Setters** | - | 1,000 | 10,000 |
-| **7-Day Streak Retention** | 15% | 30% | 40% |
-| **AI Coach Engagement** | 25% | 40% | 50% |
-| **Premium Conversion** | - | 3% | 5% |
-| **Community Contributors** | 5 | 20 | 50 |
+| Metric | Current (Oct 2026) | Q4 2026 Goal | Q1 2027 Goal |
+|--------|--------------------|--------------|--------------|
+| **Registered users** | 257 | - | - |
+| **Weekly Niat Setters** | Not yet tracked | Baseline set | +50% vs baseline |
+| **7-Day Streak Retention** | To be re-measured | Baseline set | Set after baseline |
+| **AI Mentor Engagement** | To be re-measured | Baseline set | Set after baseline |
+| **Premium Conversion** | Not started | - | 3% (after launch) |
+| **Community Contributors** | To be confirmed | - | - |
+
+Previous targets were set before baselines were measured. They are replaced by baseline-first targets, to be set once the metrics are tracked.
 
 **Transparency:** We'll share quarterly updates on progress.
 
@@ -257,7 +259,7 @@ We measure success by **impact**, not just downloads.
 
 Building Nawaetu is a labor of love, but servers aren't free. Your support helps us:
 
-- 💰 **Cover costs:** AI API, database, hosting (~$500/month)
+- 💰 **Cover costs:** AI API, database, hosting
 - ⚡ **Move faster:** Hire part-time developers
 - 🌍 **Reach more Muslims:** Marketing and outreach
 - 📚 **Create content:** Educational materials and guides
@@ -300,5 +302,5 @@ Let's build something meaningful together. 🌙✨
 
 ---
 
-*Last updated: February 9, 2026*
+*Last updated: October 15, 2026 (audited against `main` @ 28b7cb1)*
 *Questions? Email: roadmap@nawaetu.com*
