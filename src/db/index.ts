@@ -33,7 +33,8 @@ const sql = postgres(connectionString, {
         lock_timeout: 5_000,
     },
     prepare: false,
-    ssl: "require",
+    // Local Postgres (integration tests) has no TLS; remote databases require it.
+    ssl: /@(localhost|127\.0\.0\.1)[:/]/.test(connectionString) ? false : "require",
 });
 export const db = drizzle(sql, { schema });
 
