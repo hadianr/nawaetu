@@ -23,9 +23,9 @@
 
 export const APP_CONFIG = {
     name: "Nawaetu",
-    version: "1.15.6", // Updated automatically by release script
+    version: "1.15.7", // Updated automatically by release script
     status: "Production",
-    lastUpdated: "2026-09-26",
+    lastUpdated: "2026-10-16",
     hashtag: "#StartWithIntention",
     description: "A Muslim worship app with Quran, prayer times, qibla, dhikr, sourced Hadith and duas, Sirah, Hijri calendar, Ramadan tools, intention journaling, daily missions, and AI guidance.",
 };

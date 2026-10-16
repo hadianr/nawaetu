@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.7] - 2026-10-16
+
+### Added
+- **Feat(payment): enhance webhook handling with V2 transaction hydration**
+- **Feat(payment): update Mayar API endpoints to v2 and adjust transaction handling**
+- **Feat(privacy): update support and payment details, and revise effective date**
+- **Feat(android): add Nawaetu TWA project**
+- **Feat(seo): add dhikr landing copy**
+- **Feat(brand): center niat and sourced guidance**
+- **Feat(seo): add feature metadata and sitemap routes**
+
+### Performance
+- **Perf(sentry): narrow production source maps**
+- **Perf(vercel): skip Sentry upload in previews**
+
+### Improved
+- **Chore(nwt-9): add integration test guard and first journal tests**
+- **Chore(deps): upgrade eslint to 10.12.0**
+- **Chore(deps): upgrade @sentry/nextjs to 11.6.0**
+- **Chore(deps): bump fast-uri from 3.1.7 to 3.1.8**
+- **Chore(deps-dev): bump the development-dependencies group across 1 directory with 5 updates**
+- **Chore(deps): bump the production-dependencies group across 1 directory with 17 updates**
+- **Chore(deps): bump brace-expansion**
+- **Chore(deps): bump reviewdog/action-eslint**
+- **Chore(deps): bump @fastify/busboy from 3.2.0 to 3.2.2**
+- **Chore(deps): bump sharp from 0.35.4 to 0.35.5**
+- **Chore(deps): bump source-map-js from 1.2.1 to 1.2.2**
+- **Chore(build): clean up Vercel warnings**
+
+### Fixed
+- **Fix: use Hasanah wording instead of XP in remaining UI copy and comments**
+- **Fix(sentry): handle reported client failures**
+- **Fix(infra): harden Vercel runtime setup**
+
+
 ## [1.15.6] - 2026-09-26
 
 ### Performance
