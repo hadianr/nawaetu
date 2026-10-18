@@ -22,7 +22,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 
-const siteDescription = "Aplikasi Muslim Nawaetu untuk ibadah harian: Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi, dan Tanya Nawaetu.";
+const siteDescription = "Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi harian, dan Tanya Nawaetu. Habit tracker ibadah dengan gamifikasi.";
 const appFeatureDescription = "Aplikasi Muslim Nawaetu mencakup Al-Qur'an dengan terjemahan, audio, tajwid, tafsir, pencarian, dan penanda bacaan; jadwal sholat dan pengingat; kompas kiblat; dzikir dengan target dan riwayat; hadits dengan perawi, referensi, dan keterangan kualitas; doa bersumber; Sirah Nabawiyah per bab dan kuis; kalender Hijriah dan hari puasa sunnah; panduan Ramadhan, puasa, qadha, khatam Al-Qur'an, Tarawih, makanan sunnah, dan zakat fitrah; jurnal niat dan refleksi; misi, streak, statistik; serta Tanya Nawaetu.";
 
 export const viewport: Viewport = {
@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Nawaetu | Aplikasi Muslim Ibadah dengan Niat dan Ilmu",
+  title: "Aplikasi Muslim untuk Ibadah Harian | Nawaetu",
   description: siteDescription,
   authors: [{ name: "Nawaetu Team" }],
   creator: "Hadian R",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Nawaetu | Aplikasi Muslim Ibadah dengan Niat dan Ilmu",
+    title: "Aplikasi Muslim untuk Ibadah Harian | Nawaetu",
     description: siteDescription,
     url: "https://nawaetu.com",
     siteName: "Nawaetu",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nawaetu | Aplikasi Muslim Ibadah dengan Niat dan Ilmu",
+    title: "Aplikasi Muslim untuk Ibadah Harian | Nawaetu",
     description: siteDescription,
     creator: "@nawaetuapp",
     images: ["/og-image.png"],
