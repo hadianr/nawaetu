@@ -59,7 +59,7 @@
     "drizzle-orm": "^0.45.4",
     "firebase": "^12.19.0",
     "firebase-admin": "^14.5.0",
-    "framer-motion": "^13.4.0",
+    "framer-motion": "^14.3.0",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.55.0",
     "next": "^16.4.0",
