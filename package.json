@@ -82,6 +82,7 @@
     "@auth/core": {
       "cookie": ">=0.7.0"
     },
+    "@grpc/grpc-js": "^1.13.6",
     "minimatch@3.1.5": {
       "brace-expansion": "^2.0.1"
     },
