@@ -45,6 +45,27 @@ export const sendGAEvent = (eventName: string, params?: Record<string, string | 
     }
 };
 
+// Referrer hosts of AI assistants that send human visitors.
+const AI_REFERRERS = [
+    'chatgpt.com', 'chat.openai.com', 'perplexity.ai', 'gemini.google.com',
+    'claude.ai', 'copilot.microsoft.com', 'you.com', 'kagi.com', 'phind.com',
+];
+
+export const getAiReferrer = (referrer: string): string | null => {
+    try {
+        const host = new URL(referrer).hostname;
+        return AI_REFERRERS.find((r) => host === r || host.endsWith(`.${r}`)) ?? null;
+    } catch {
+        return null;
+    }
+};
+
+/** Fires once per landing when the visit came from an AI assistant. */
+export const trackAiReferral = (referrer: string, landingPath: string) => {
+    const source = getAiReferrer(referrer);
+    if (source) sendGAEvent('ai_referral', { source, landing_path: landingPath });
+};
+
 // Standardized Feature Tracking Functions
 
 /**
