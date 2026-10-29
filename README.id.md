@@ -95,47 +95,16 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 
 ---
 
-## ⚡ Performance & Optimization
+## ⚡ Performa
 
-**PageSpeed Insights Score: 88-93/100** 🚀
+Ibadah tidak boleh terganggu lag, jadi performa dijaga lewat:
 
-Kami obsessed sama performa karena ibadah gak boleh distracted sama lag:
-
-### 🎨 Core Web Vitals (Audit 2026-03-05)
-- ⚡ **First Contentful Paint**: 1.8s (Improved!)
-- 🖼️ **Largest Contentful Paint**: 2.9s (Improved!)
-- 📊 **Cumulative Layout Shift**: 0.042 (Excellent!)
-- ⏱️ **Total Blocking Time**: 40ms (Improved!)
-
-### 🛠️ Technical Optimizations
-- ✅ **Fully Static / ISR**: Halaman Surat Al-Qur'an (114 surah) sekarang fully static via `generateStaticParams`.
-- ✅ **Zero Runtime Middleware CPU**: Header keamanan (CSP, HSTS, dll) dipindahkan ke konfigurasi statis Next.js.
-- ✅ **JWT Session Strategy**: Menghilangkan lookup database per-request untuk validasi sesi.
-- ✅ **Advanced Code Splitting**: Main chunk dioptimasi, unused code di-tree-shake secara agresif.
-- ✅ **Image Optimization**: AVIF/WebP dengan lazy loading dan minimum TTL 1 tahun.
-- ✅ **Crawl Efficiency**: Sitemap & Robots dioptimasi untuk melewatkan halaman private.
-
-### 📱 Accessibility: 100/100
-- ✅ **WCAG 2.1 AA Compliant**
-- ✅ **Keyboard Navigation**: Full keyboard support
-- ✅ **Screen Reader Friendly**: Semantic HTML & ARIA labels
-- ✅ **Color Contrast**: All text meets contrast ratio requirements
-- ✅ **Focus Management**: Clear focus indicators
-
-### 🔒 Best Practices: 100/100
-- ✅ **HTTPS Everywhere**
-- ✅ **No Console Errors**
-- ✅ **Modern Image Formats**
-- ✅ **Secure Dependencies**
-- ✅ **CSP Headers**
-
-### 🔍 SEO: 100/100
-- ✅ **Meta Tags Optimized**
-- ✅ **Semantic HTML5**
-- ✅ **Open Graph & Twitter Cards**
-- ✅ **Sitemap & Robots.txt**
-- ✅ **Structured Data (JSON-LD)**
-- ✅ **Mobile-Friendly**
+- ✅ **Fully Static / ISR**: 114 halaman surah dibangun statis lewat `generateStaticParams`.
+- ✅ **Header keamanan statis**: CSP, HSTS, dan lainnya didefinisikan di konfigurasi Next.js, bukan dijalankan per request.
+- ✅ **Strategi sesi JWT**: tidak ada lookup database per request untuk validasi sesi.
+- ✅ **Code splitting**: kode yang tidak dipakai di-tree-shake.
+- ✅ **Optimasi gambar**: AVIF/WebP dengan lazy loading dan minimum TTL 1 tahun.
+- ✅ **Efisiensi crawl**: sitemap dan robots melewatkan halaman private.
 
 ---
 
@@ -195,6 +164,49 @@ Versi dikunci di [`package.json`](package.json).
 
 ---
 
+## 🚀 Memulai
+
+### Untuk Pengguna
+1. Buka [nawaetu.com](https://nawaetu.com)
+2. Izinkan akses lokasi untuk jadwal sholat
+3. Mulai isi niat harian dan selesaikan misi
+4. Opsional: pasang sebagai PWA (tambahkan ke layar utama)
+
+### Untuk Developer
+
+**Prasyarat:**
+- Node.js 24.x
+- npm (repositori memakai `package-lock.json`)
+- Git
+
+**Instalasi:**
+```bash
+# Clone repository
+git clone https://github.com/hadianr/nawaetu.git
+cd nawaetu
+
+# Install dependencies
+npm ci
+
+# Salin environment variables lalu isi sesuai kebutuhan
+cp .env.example .env.local
+
+# Jalankan development server
+npm run dev
+# Buka http://localhost:3000
+```
+
+**Skrip yang tersedia:**
+```bash
+npm run dev          # Development server
+npm run build        # Build produksi (webpack)
+npm run start        # Jalankan server produksi
+npm run lint         # ESLint
+npm run typecheck    # Validasi TypeScript
+npm run test:run     # Seluruh test (Vitest)
+npm run analyze      # Analisis ukuran bundle
+```
+
 ## 🚀 Deployment
 
 ### Live Demo
@@ -246,52 +258,6 @@ Gunakan untuk testing sebelum merge!
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ (Recommended: 20.x)
-- npm/yarn/pnpm
-
-### Installation
-
-```bash
-# Clone repo
-git clone https://github.com/hadianr/nawaetu.git
-cd nawaetu
-
-# Install dependencies
-npm ci
-
-# Copy environment variables
-cp .env.example .env.local
-
-# Fill in your API keys in .env.local
-# - GEMINI_API_KEY
-# - GROQ_API_KEY
-# - SENTRY_AUTH_TOKEN (optional)
-# - NEXT_PUBLIC_GA_MEASUREMENT_ID (optional)
-
-# Run development server
-npm run dev
-
-# Open http://localhost:3000
-```
-
-### Build for Production
-
-```bash
-# Create optimized production build
-npm run build
-
-# Start production server
-npm start
-
-# Or deploy to Vercel (recommended)
-vercel deploy
-```
-
----
-
 ## 📱 PWA Installation
 
 Nawaetu bisa diinstall kayak native app:
@@ -307,10 +273,6 @@ Nawaetu bisa diinstall kayak native app:
 3. Done! Launch dari home screen
 
 ---
-
-## 🤝 Contributing
-
-Kami sangat menyambut kontribusi dari seluruh komunitas global! Baik berupa perbaikan bug, fitur baru, dokumentasi, maupun terjemahan.
 
 ## 🤝 Kontribusi
 
@@ -328,13 +290,6 @@ Untuk melaporkan bug atau mengajukan ide fitur baru, silakan gunakan [GitHub Iss
 
 ---
 
-## 📄 License
-
-Open Source untuk tujuan dakwah & edukasi.
-Developed with ❤️ by **Antigravity** for the ummah.
-
----
-
 ## 🎨 Brand Assets
 
 ### Hashtags
@@ -348,92 +303,15 @@ Developed with ❤️ by **Antigravity** for the ummah.
 
 ---
 
-## 🚀 Getting Started
-
-### For Users
-1. Visit [nawaetu.com](https://nawaetu.com)
-2. Allow location permission untuk fitur jadwal sholat
-3. Mulai complete daily missions!
-4. Optional: Install as PWA (add to home screen)
-
-### For Developers
-
-**Prerequisites:**
-- Node.js 24.x
-- npm (repositori memakai `package-lock.json`)
-- Git
-
-**Installation:**
-```bash
-# Clone repository
-git clone https://github.com/hadianr/nawaetu.git
-cd nawaetu
-
-# Install dependencies
-npm ci
-
-# Setup environment variables
-cp .env.example .env.local
-# Edit .env.local dengan konfigurasi Anda
-
-# Run development server
-npm run dev
-
-# Open browser
-# http://localhost:3000
-```
-
-**Available Scripts:**
-```bash
-npm run dev          # Start dev server with hot reload
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run analyze      # Analyze bundle size
-```
-
 ## 📦 Alur Rilis (Release Workflow)
 
 Maintainer dapat melakukan rilis versi baru menggunakan script otomatis:
 ```bash
 ./scripts/release.sh v1.X.Y
 ```
-Script ini akan secara otomatis memperbarui versi pada `package.json`, `package-lock.json`, `src/config/app-config.ts`, badge `README.md`, serta memperbarui `CHANGELOG.md`.
+Script ini akan secara otomatis memperbarui versi pada `package.json`, `package-lock.json`, `src/config/app-config.ts`, badge `README.md` dan `README.id.md`, serta memperbarui `CHANGELOG.md`.
 
 Untuk panduan lengkap dan troubleshooting, baca [Panduan Alur Rilis](docs/RELEASE_WORKFLOW.md).
-
----
-
-**Note:** Vercel handles all build & test automation. GitHub Actions hanya untuk release management.
-
----
-
-## 🤝 Contributing
-
-Contributions adalah welcome! Berikut cara contribute:
-
-1. **Fork** repository ini
-2. **Create feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit changes** (`git commit -m 'feat: add amazing feature'`)
-4. **Push to branch** (`git push origin feature/amazing-feature`)
-5. **Open Pull Request**
-
-**Commit Message Convention:**
-```
-feat: add new feature
-fix: fix bug
-docs: update documentation
-style: formatting changes
-refactor: code restructuring
-test: add tests
-chore: maintenance tasks
-```
-
-**Code Standards:**
-- TypeScript strict mode
-- ESLint configuration
-- Prettier formatting
-- React best practices
 
 ---
 
