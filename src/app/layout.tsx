@@ -160,6 +160,7 @@ import { PrayerTimesProvider } from "@/context/PrayerTimesContext";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 import DeferredLayoutComponents from "@/components/DeferredLayoutComponents";
 import ClientEntryGate from "@/components/ClientEntryGate";
+import HomeSeoIntro from "@/components/home/HomeSeoIntro";
 import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 
 export default function RootLayout({
@@ -200,7 +201,7 @@ export default function RootLayout({
           <ThemeProvider>
             <AuthSessionProvider>
               <PrayerTimesProvider>
-                <ClientEntryGate>
+                <ClientEntryGate homeIntro={<HomeSeoIntro />}>
                   <InfaqProvider>
                     <DeferredLayoutComponents />
                     {children}
