@@ -50,13 +50,36 @@ const FAQ = [
     },
 ]
 
+const FAQ_EN = [
+    {
+        q: "What is Nawaetu?",
+        a: "Nawaetu is a Muslim app that connects intention with daily worship: Quran, prayer times, qibla, dhikr, sourced hadith and duas, Sirah, Hijri calendar, Ramadan, an intention journal, missions, and Ask Nawaetu.",
+    },
+    {
+        q: "Is Nawaetu free?",
+        a: "Yes, Nawaetu is free to use.",
+    },
+    {
+        q: "Can I use Nawaetu without internet?",
+        a: "Some features are available without an internet connection.",
+    },
+    {
+        q: "How does Ask Nawaetu answer religious questions?",
+        a: "Ask Nawaetu is designed to include references in its religious answers and to acknowledge its limits when a source cannot be confirmed.",
+    },
+]
+
 const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({
+    mainEntity: [
+        ...FAQ.map((f) => ({ ...f, lang: "id" })),
+        ...FAQ_EN.map((f) => ({ ...f, lang: "en" })),
+    ].map(({ q, a, lang }) => ({
         "@type": "Question",
         name: q,
-        acceptedAnswer: { "@type": "Answer", text: a },
+        inLanguage: lang,
+        acceptedAnswer: { "@type": "Answer", text: a, inLanguage: lang },
     })),
 }
 
@@ -231,6 +254,17 @@ export default function AboutPage() {
                             </div>
                         ))}
                     </dl>
+                    <div lang="en" className="space-y-4 pt-4">
+                        <h2 className="text-center text-2xl font-bold sm:text-3xl">Frequently Asked Questions</h2>
+                        <dl className="space-y-4">
+                            {FAQ_EN.map(({ q, a }) => (
+                                <div key={q} className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5">
+                                    <dt className="mb-2 font-bold">{q}</dt>
+                                    <dd className="text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">{a}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </div>
                     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
                 </section>
 
