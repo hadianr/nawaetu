@@ -113,10 +113,10 @@ CURRENT_DATE=$(date +%Y-%m-%d)
 npm version "$VERSION_NUMBER" --no-git-tag-version --allow-same-version > /dev/null
 sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-config.ts
 sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
-sed -i '' "s/Version-v[0-9]*\.[0-9]*\.[0-9]*-blue/Version-$VERSION-blue/" README.md
+sed -i '' "s/Version-v[0-9]*\.[0-9]*\.[0-9]*-blue/Version-$VERSION-blue/" README.md README.id.md
 echo -e "${GREEN}✅ package.json & package-lock.json → $VERSION_NUMBER${NC}"
 echo -e "${GREEN}✅ app-config.ts → $VERSION_NUMBER (updated: $CURRENT_DATE)${NC}"
-echo -e "${GREEN}✅ README.md badge → $VERSION${NC}"
+echo -e "${GREEN}✅ README.md & README.id.md badges → $VERSION${NC}"
 
 # Update CHANGELOG.md if entry doesn't exist
 if ! grep -q "## \[$VERSION_NUMBER\]" CHANGELOG.md; then
@@ -262,10 +262,10 @@ if ! git diff-index --quiet HEAD --; then
     
     echo -e "${BLUE}📝 Committing version bump changes...${NC}"
 
-    git add package.json package-lock.json src/config/app-config.ts README.md CHANGELOG.md
+    git add package.json package-lock.json src/config/app-config.ts README.md README.id.md CHANGELOG.md
     git commit -m "chore: release $VERSION" -m "- Update package.json & package-lock.json
 - Update app-config.ts
-- Update README.md badge
+- Update README badges
 - Update CHANGELOG.md"
     echo -e "${GREEN}✅ Changes committed${NC}"
     echo ""

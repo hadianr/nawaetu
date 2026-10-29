@@ -19,7 +19,7 @@ Execute the release script with your target version:
 ./scripts/release.sh v1.X.Y
 ```
 
-> **Note**: Always use `./scripts/release.sh v1.X.Y` directly. Do not use generic npm tools alone, because `release.sh` handles cross-file version synchronization across `package.json`, `package-lock.json`, `src/config/app-config.ts`, `README.md` badges, and `CHANGELOG.md`.
+> **Note**: Always use `./scripts/release.sh v1.X.Y` directly. Do not use generic npm tools alone, because `release.sh` handles cross-file version synchronization across `package.json`, `package-lock.json`, `src/config/app-config.ts`, `README.md` and `README.id.md` badges, and `CHANGELOG.md`.
 
 ---
 
@@ -29,7 +29,7 @@ Execute the release script with your target version:
 2. **File Version Synchronization**:
    - Updates version in `package.json` & `package-lock.json`
    - Updates `version` and `lastUpdated` date in `src/config/app-config.ts`
-   - Updates release version badge in `README.md`
+   - Updates release version badge in `README.md` and `README.id.md`
 3. **Changelog Generation**: Auto-generates structured `CHANGELOG.md` entries from git commit messages since the last release tag.
 4. **Release PR**: Creates `release/vX.Y.Z`, commits the release changes, pushes the branch, and opens a PR into protected `main`.
 5. **Automatic Tagging**: After the PR is merged, GitHub Actions creates the annotated tag on the merged `main` commit.
