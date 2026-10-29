@@ -31,6 +31,35 @@ export const metadata = pageMetadata(
     "/about",
 );
 
+const FAQ = [
+    {
+        q: "Apa itu Nawaetu?",
+        a: "Nawaetu adalah aplikasi Muslim yang menghubungkan niat dengan amalan harian: Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi, dan Tanya Nawaetu.",
+    },
+    {
+        q: "Apakah Nawaetu gratis?",
+        a: "Ya, Nawaetu dapat digunakan secara gratis.",
+    },
+    {
+        q: "Apakah Nawaetu bisa dipakai tanpa internet?",
+        a: "Beberapa fitur dapat diakses tanpa koneksi internet.",
+    },
+    {
+        q: "Bagaimana Tanya Nawaetu menjawab pertanyaan agama?",
+        a: "Tanya Nawaetu dirancang untuk menyertakan rujukan pada jawaban agama dan mengakui batasnya saat sumber belum dapat dipastikan.",
+    },
+]
+
+const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map(({ q, a }) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+}
+
 export default function AboutPage() {
     return (
         <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
@@ -189,6 +218,20 @@ export default function AboutPage() {
                             </div>
                         </div>
                     </div>
+                </section>
+
+                {/* FAQ */}
+                <section className="space-y-4">
+                    <h2 className="text-center text-2xl font-bold sm:text-3xl">Pertanyaan Umum</h2>
+                    <dl className="space-y-4">
+                        {FAQ.map(({ q, a }) => (
+                            <div key={q} className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5">
+                                <dt className="mb-2 font-bold">{q}</dt>
+                                <dd className="text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">{a}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
                 </section>
 
                 {/* CTA */}
