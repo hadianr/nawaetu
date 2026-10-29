@@ -1,4 +1,4 @@
-# Nawaetu 🌙✨
+# Nawaetu: Islamic Habit Tracker 🌙
 
 [![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
@@ -10,42 +10,54 @@
 
 ---
 
-### 🎯 Track Your Niat, Build Your Legacy
-**Nawaetu** (derived from "Niat" or Intention) is the **world's first Intention-First Islamic habit tracker**. While most apps focus on the ritual mechanics (calculating times, counter digits), Nawaetu focuses on the **spiritual heart** of worship: **The Intention.**
+**Nawaetu** is a free Islamic habit tracker that starts from intention (*niat*). It combines a daily intention journal with prayer times, Qibla, a digital Quran with tajweed, hadith and dua with source references, Sirah, fasting and Ramadan tools, dhikr, and an AI assistant (**Tanya Nawaetu**) designed to cite its sources. It runs as a web app at [nawaetu.com](https://nawaetu.com), installable as a PWA with an Android wrapper in this repository, in English and Indonesian.
 
-[**🚀 Explore Live Demo**](https://nawaetu.com) | [**📖 Baca dalam Bahasa Indonesia 🇮🇩**](README.id.md)
+[**Open Nawaetu**](https://nawaetu.com) | [**Baca dalam Bahasa Indonesia**](README.id.md)
+
+## Quick Facts
+
+| | |
+| :--- | :--- |
+| **Name** | From *niat*, the Arabic and Indonesian word for intention |
+| **Price** | Free |
+| **Languages** | English, Indonesian |
+| **Platforms** | Web (installable PWA), Android wrapper |
+| **License** | AGPLv3, with a commercial license available |
+| **Website** | [nawaetu.com](https://nawaetu.com) |
+
+**Explore:** [Quran](https://nawaetu.com/quran) · [Hadith](https://nawaetu.com/hadith) · [Dua](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Qibla](https://nawaetu.com/qibla) · [Hijri calendar](https://nawaetu.com/hijri-calendar) · [Ramadan guide](https://nawaetu.com/ramadhan) · [About](https://nawaetu.com/about)
 
 ---
 
-## 📑 Table of Contents
-- [🎯 What Makes Nawaetu Different?](#-what-makes-nawaetu-different)
-- [✨ Visual Showcase](#-visual-showcase)
-- [🌟 Core Pillars & Features](#-core-pillars--features)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [🚀 Getting Started](#-getting-started)
-- [📄 License](#-license)
-- [🤝 Contributing](#-contributing)
+## Table of Contents
+- [What Makes Nawaetu Different?](#what-makes-nawaetu-different)
+- [Visual Showcase](#-visual-showcase)
+- [Core Pillars & Features](#-core-pillars--features)
+- [FAQ](#faq)
+- [Tech Stack](#️-tech-stack)
+- [Getting Started](#-getting-started)
+- [Contributing](#-contributing)
+- [Support the Mission](#-support-the-mission)
+- [License](#-license)
 
 > [!IMPORTANT]
-> **Nawaetu is Dual Licensed.** Free for Open Source under **AGPLv3**, but requires a **Commercial License** for proprietary or closed-source use. See [License Section](#-license) for details.
+> **Nawaetu is dual licensed.** Free for open source under **AGPLv3**, with a **Commercial License** for proprietary or closed-source use. See the [License section](#-license).
 
 ---
 
-## 🎯 What Makes Nawaetu Different?
+## What Makes Nawaetu Different?
 
-Most Islamic apps (such as Muslim Pro or Muslim Muna) focus primarily on **mechanical utilities**—calculating prayer schedules, counting tasbih digits, or displaying banner ads. **Nawaetu is built around the spiritual heart of worship: The Intention (Niat).**
+Many Islamic apps centre on utilities such as prayer schedules and tasbih counters. Nawaetu keeps those tools and builds around the intention behind each act of worship. If you are looking for a Muslim Pro alternative focused on intention and daily reflection, this is how it differs:
 
-### ⚔️ Nawaetu vs. Mainstream Islamic Apps (e.g. Muslim Pro)
-
-| Feature / Aspect | 🕌 Mainstream Apps (Muslim Pro, etc.) | 🌙 Nawaetu.com |
+| Aspect | Utility-first apps (e.g. Muslim Pro) | Nawaetu |
 | :--- | :--- | :--- |
-| **Core Philosophy** | **Utility-First**: Mechanical counters & static schedules | **Intention-First**: Focuses on the *why* behind your worship |
-| **User Experience & Ads** | Cluttered with pop-up ads, paywalls & heavy tracking | **100% Ad-Free**, clean, distraction-free & privacy-respecting |
-| **Spiritual Growth** | Basic counter numbers & passive reminders | **Muhasabah Journal**: Morning intentions + Evening reflections |
-| **Islamic Q&A & Support** | Static articles or basic text search | **Tanya Nawaetu**: 24/7 AI mentor grounded in Quran & authentic Hadith |
-| **Gamification** | Generic numbers or simple counters | **Hasanah System**: Rank progression (Mubtadi → Muhsinin) & Istiqamah Streaks |
-| **Tilawah & Dhikr** | Standard audio & basic counter | **Focus Mode**: Screen wake lock, Basmallah anchor, OLED Zen Tasbih |
-| **Openness & Licensing** | Closed-source, proprietary app | **Open Source (AGPLv3)** + Commercial License options |
+| **Core focus** | Prayer times, counters, reminders | **Intention first**: the reason behind your worship |
+| **Reflection** | Counters and passive reminders | **Muhasabah journal**: morning intention, evening reflection |
+| **Islamic Q&A** | Articles and text search | **Tanya Nawaetu**: AI assistant designed to cite Quran and hadith references and to say when a source cannot be confirmed |
+| **Motivation** | Counters and streaks | **Hasanah system**: rank progression (Mubtadi to Muhsinin) and Istiqamah streaks |
+| **Quran and dhikr** | Standard audio and counter | **Focus mode**: screen wake lock, Basmalah anchor, OLED Zen tasbih |
+| **Ads** | Varies by app and plan | No advertising |
+| **Source code** | Typically closed | Open source (AGPLv3) |
 
 ---
 
@@ -61,7 +73,7 @@ Most Islamic apps (such as Muslim Pro or Muslim Muna) focus primarily on **mecha
 
 ### 1. 🎯 Intention-First Cultivation
 *   **Intention Journal**: Set your "Niat" every morning and reflect in the evening (Soul-Muhasabah).
-*   **Tanya Nawaetu**: Your 24/7 Islamic assistant providing answers based on the Quran, Sunnah, and Hadith—not just AI opinions.
+*   **Tanya Nawaetu**: An Islamic assistant designed to ground answers in the Quran, Sunnah, and Hadith with references, and to acknowledge its limits when a source cannot be confirmed.
 *   **Gamified Growth**: Earn Niat Points through intention-based missions.
 
 ### 2. 📖 Spiritual Content Engine
@@ -86,38 +98,57 @@ Most Islamic apps (such as Muslim Pro or Muslim Muna) focus primarily on **mecha
 
 ---
 
+## FAQ
+
+**What is Nawaetu?**
+A free Islamic habit tracker that starts from intention (*niat*), with a Quran, prayer tools, hadith and dua with sources, Sirah, fasting and Ramadan tools, dhikr, and an AI assistant.
+
+**Is Nawaetu free?**
+Yes. The app is free to use, and the source code is open under AGPLv3.
+
+**Does it work offline?**
+Some features are available without an internet connection.
+
+**How does Tanya Nawaetu answer religious questions?**
+It is designed to include references in religious answers and to acknowledge its limits when a source cannot be confirmed. It does not replace a qualified scholar.
+
+**Which languages are supported?**
+English and Indonesian.
+
+---
+
 ## 🛠️ Tech Stack
 
-Built with bleeding-edge technology for maximum performance and reliability:
+Versions are pinned in [`package.json`](package.json).
 
 ### Core Framework
-*   **Next.js 16.2** (App Router + Turbopack)
-*   **TypeScript 5.9** - Strict type-safe architecture
-*   **React 19.2** - Latest concurrent features & Server Components
+*   **Next.js** (App Router)
+*   **TypeScript** - Strict type-safe architecture
+*   **React** - Server Components and concurrent features
 
 ### Backend & Database
-*   **Drizzle ORM 0.45** - Type-safe SQL database queries
+*   **Drizzle ORM** - Type-safe SQL database queries
 *   **PostgreSQL (Supabase)** - Serverless database via the transaction pooler
-*   **NextAuth v5** - Secure authentication layer
+*   **NextAuth v5** - Authentication layer
 *   **Upstash Redis & Rate Limiting** - Distributed API protection
 *   **Firebase Admin SDK** - Push notification infrastructure
 *   **cron-job.org** - Scheduled prayer-alert and streak notifications
 
 ### AI & External APIs
-*   **Google Gemini 2.5 Flash-Lite** (`@google/generative-ai`)
-*   **Groq Llama 3.3 70B** - High-speed LLM inference
+*   **Google Gemini** (`@google/generative-ai`)
+*   **Groq (Llama)** - High-speed LLM inference
 *   **Aladhan API** (GPS Prayer Times)
 *   **Quran.com API** (Uthmani Mushaf & Audio Recitations)
 
 ### UI, Styling & Experience
 *   **Tailwind CSS v4** & **Shadcn UI** (Radix UI primitives)
-*   **Framer Motion 12** - Smooth animations & micro-interactions
-*   **Recharts 3.7** - Dynamic analytics & Hasanah trends
+*   **Framer Motion** - Animations & micro-interactions
+*   **Recharts** - Analytics & Hasanah trends
 *   **Lucide React** & **Sonner** - Iconography & toast notifications
 *   **Next PWA (`@ducanh2912/next-pwa`)** - Installable Progressive Web App
 
 ### Monitoring & Quality
-*   **Sentry 10** - Real-time error tracking & performance monitoring
+*   **Sentry** - Error tracking & performance monitoring
 *   **Vercel Speed Insights** - Real User Performance Monitoring
 *   **Vitest** - Unit and integration testing
 
@@ -126,8 +157,8 @@ Built with bleeding-edge technology for maximum performance and reliability:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 24.15.0+
-- npm / yarn / pnpm
+- Node.js 24.x
+- npm (the repository uses `package-lock.json`)
 
 ### Installation
 
@@ -137,7 +168,7 @@ git clone https://github.com/hadianr/nawaetu.git
 cd nawaetu
 
 # Install dependencies
-npm install
+npm ci
 
 # Setup environment variables
 cp .env.example .env.local
@@ -172,9 +203,6 @@ To report bugs or suggest new features, please submit an issue using our [Issue 
 5. **Open Pull Request**
 
 > 💡 **AI Assistant Note**: This repository supports local rules, workflows, and skills for AI coding assistants (Google Antigravity, Cursor, Claude Code) under `.agents/`.
-
-
-
 
 
 ## ☕ Support the Mission
