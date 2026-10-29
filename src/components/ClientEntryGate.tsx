@@ -20,6 +20,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { sendGAEvent } from "@/lib/analytics/analytics";
@@ -40,6 +41,14 @@ interface ClientEntryGateProps {
     children: React.ReactNode;
 }
 
+// Content routes render on first paint so crawlers that skip JS get the page;
+// onboarding shows on top. Home and app routes stay gated (see ed90ddf).
+const PUBLIC_CONTENT_PREFIXES = ["/about", "/quran", "/hadith", "/dua", "/sirah", "/privacy", "/terms"];
+
+export function isPublicContentPath(pathname: string | null): boolean {
+    return !!pathname && PUBLIC_CONTENT_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
 type EntryState = "resolving" | "onboarding" | "app";
 
 /** Legacy boolean, current versions, and unknown truthy markers all mean done. */
@@ -57,6 +66,7 @@ function markerFamily(marker: string | null): "missing" | "legacy_boolean" | "cu
 export default function ClientEntryGate({ children }: ClientEntryGateProps) {
     const [entryState, setEntryState] = useState<EntryState>("resolving");
     const { status } = useSession();
+    const isPublicContent = isPublicContentPath(usePathname());
 
     useEffect(() => {
         if (status === "loading") return;
@@ -101,6 +111,15 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
         setEntryState("app");
     };
 
+    if (isPublicContent && entryState !== "onboarding") return <>{children}</>;
+    if (isPublicContent) {
+        return (
+            <>
+                {children}
+                <OnboardingOverlay onComplete={handleOnboardingComplete} />
+            </>
+        );
+    }
     if (entryState === "resolving") return <EntryShell />;
     if (entryState === "onboarding") {
         return <OnboardingOverlay onComplete={handleOnboardingComplete} />;
