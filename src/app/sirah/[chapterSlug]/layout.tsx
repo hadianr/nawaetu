@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getSirahChapterBySlug } from "@/data/sirah";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd, breadcrumbList, article } from "@/components/seo/JsonLd";
 
 export async function generateMetadata({
   params,
@@ -18,6 +19,27 @@ export async function generateMetadata({
   );
 }
 
-export default function SirahChapterLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default async function SirahChapterLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ chapterSlug: string }>;
+}) {
+  const { chapterSlug } = await params;
+  const chapter = getSirahChapterBySlug(chapterSlug);
+  if (!chapter) notFound();
+  const path = `/sirah/${chapter.slug}`;
+
+  return (
+    <>
+      <JsonLd data={breadcrumbList([
+        { name: "Nawaetu", path: "/" },
+        { name: "Sirah", path: "/sirah" },
+        { name: chapter.title, path },
+      ])} />
+      <JsonLd data={article(`${chapter.title} - Sirah Nabawiyah`, chapter.summary, path)} />
+      {children}
+    </>
+  );
 }
