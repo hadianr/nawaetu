@@ -18,7 +18,7 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach, type Mock } from 'vitest';
 import { NextRequest, NextResponse } from 'next/server';
-import { middleware } from '../../middleware';
+import { proxy } from '../proxy';
 
 // Shared state for the mock
 const headersMap = new Map<string, string>();
@@ -68,7 +68,7 @@ describe('Middleware Debug Route Blocking', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const request = new NextRequest('https://nawaetu.com/api/debug');
 
-    middleware(request);
+    proxy(request);
 
     // Check if rewrite was called with /404
     expect(NextResponse.rewrite).toHaveBeenCalled();
@@ -80,7 +80,7 @@ describe('Middleware Debug Route Blocking', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const request = new NextRequest('https://nawaetu.com/api/notifications/debug');
 
-    middleware(request);
+    proxy(request);
 
     expect(NextResponse.rewrite).toHaveBeenCalled();
     const rewriteCall = (NextResponse.rewrite as Mock).mock.calls[0];
@@ -91,7 +91,7 @@ describe('Middleware Debug Route Blocking', () => {
     vi.stubEnv('NODE_ENV', 'development');
     const request = new NextRequest('https://nawaetu.com/api/debug');
 
-    middleware(request);
+    proxy(request);
 
     expect(NextResponse.rewrite).not.toHaveBeenCalled();
     expect(NextResponse.next).toHaveBeenCalled();

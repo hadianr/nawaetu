@@ -39,12 +39,20 @@ vi.mock('next/server', () => {
   };
 });
 
-import { config } from '../../middleware';
+import { config } from '../proxy';
 
 describe('Middleware Security', () => {
   it('should NOT exclude API routes in the configuration (vulnerability fixed)', () => {
     const matcher = config.matcher[0];
     // The pattern should NOT contain '?!api' or any exclusion of api
     expect(matcher).not.toContain('?!api');
+  });
+
+  it('should cover every blocked debug route and nothing else', () => {
+    expect(config.matcher).toEqual([
+      '/notification-debug/:path*',
+      '/api/debug/:path*',
+      '/api/notifications/debug/:path*',
+    ]);
   });
 });
