@@ -3,6 +3,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   sendGAEvent,
+  getAiReferrer,
+  trackAiReferral,
   trackAIQuery,
   trackAppError,
   trackDuaView,
@@ -81,5 +83,22 @@ describe("client analytics", () => {
     expect(requestIdleCallback).toHaveBeenCalled();
     expect(gtag).toHaveBeenCalledWith("event", "quran_read", { surah_name: "Al-Baqarah", ayah_count: 255 });
     expect(gtag).toHaveBeenCalledWith("event", "hasanah_gained", { amount: 25, source: "mission" });
+  });
+
+  it("recognises AI assistant referrers and ignores look-alikes", () => {
+    expect(getAiReferrer("https://chatgpt.com/")).toBe("chatgpt.com");
+    expect(getAiReferrer("https://www.perplexity.ai/search?q=x")).toBe("perplexity.ai");
+    expect(getAiReferrer("https://notchatgpt.com/")).toBeNull();
+    expect(getAiReferrer("")).toBeNull();
+  });
+
+  it("sends ai_referral only for AI referrers", () => {
+    trackAiReferral("https://google.com/", "/quran/1");
+    trackAiReferral("https://chatgpt.com/", "/quran/1");
+    vi.runAllTimers();
+
+    expect(analyticsWindow().dataLayer).toEqual([
+      ["event", "ai_referral", { source: "chatgpt.com", landing_path: "/quran/1" }],
+    ]);
   });
 });
