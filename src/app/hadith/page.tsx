@@ -8,7 +8,7 @@
  */
 
 import { useState, useMemo, useEffect, Suspense, memo } from "react";
-import { useSearchParams } from "next/navigation";
+import TargetIdReader from "@/components/TargetIdReader";
 import dynamic from "next/dynamic";
 import { BookOpen, Quote, Sparkles, Copy, Check, ChevronDown, ChevronUp, ShieldCheck, User, Share2, ChevronDown as MoreIcon } from "lucide-react";
 import { HADITH_LIBRARY, HadithItem, HADITH_TOPIC_DEFINITIONS, HadithTopic } from "@/data/hadiths";
@@ -272,9 +272,7 @@ const HadithCard = memo(function HadithCard({
 
 function HadithContent() {
     const { t, locale } = useLocale();
-    const searchParams = useSearchParams();
-
-    const targetId = searchParams?.get("id") || searchParams?.get("highlight") || "";
+    const [targetId, setTargetId] = useState("");
 
     const [shareItem, setShareItem] = useState<HadithItem | null>(null);
 
@@ -312,6 +310,9 @@ function HadithContent() {
 
     return (
         <>
+            <Suspense fallback={null}>
+                <TargetIdReader onChange={setTargetId} />
+            </Suspense>
             <div className={cn(
                 "hadith-page flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500 bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgb(var(--color-primary)/0.1),transparent)]"
             )}>
@@ -408,8 +409,6 @@ function HadithContent() {
 
 export default function HadithPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-[rgb(var(--color-text-muted))] text-sm">Loading...</div>}>
-            <HadithContent />
-        </Suspense>
+        <HadithContent />
     );
 }
