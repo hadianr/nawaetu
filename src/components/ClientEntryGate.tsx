@@ -25,20 +25,24 @@ import { useSession } from "next-auth/react";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 
-const EntryShell = () => (
+const EntryShell = ({ intro }: { intro?: React.ReactNode }) => (
     <main
         aria-busy="true"
         className="min-h-screen bg-[rgb(var(--color-canvas))]"
-    />
+    >
+        {intro}
+    </main>
 );
 
 const OnboardingOverlay = dynamic(() => import("@/components/OnboardingOverlay"), {
     ssr: false,
-    loading: EntryShell,
+    loading: () => <EntryShell />,
 });
 
 interface ClientEntryGateProps {
     children: React.ReactNode;
+    /** Server-rendered text for crawlers; shown in the home shell only. */
+    homeIntro?: React.ReactNode;
 }
 
 // Content routes render on first paint so crawlers that skip JS get the page;
@@ -63,10 +67,11 @@ function markerFamily(marker: string | null): "missing" | "legacy_boolean" | "cu
     return "legacy_unknown";
 }
 
-export default function ClientEntryGate({ children }: ClientEntryGateProps) {
+export default function ClientEntryGate({ children, homeIntro }: ClientEntryGateProps) {
     const [entryState, setEntryState] = useState<EntryState>("resolving");
     const { status } = useSession();
-    const isPublicContent = isPublicContentPath(usePathname());
+    const pathname = usePathname();
+    const isPublicContent = isPublicContentPath(pathname);
 
     useEffect(() => {
         if (status === "loading") return;
@@ -120,7 +125,7 @@ export default function ClientEntryGate({ children }: ClientEntryGateProps) {
             </>
         );
     }
-    if (entryState === "resolving") return <EntryShell />;
+    if (entryState === "resolving") return <EntryShell intro={pathname === "/" ? homeIntro : undefined} />;
     if (entryState === "onboarding") {
         return <OnboardingOverlay onComplete={handleOnboardingComplete} />;
     }
