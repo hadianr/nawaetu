@@ -47,7 +47,7 @@ interface ClientEntryGateProps {
 
 // Content routes render on first paint so crawlers that skip JS get the page;
 // onboarding shows on top. Home and app routes stay gated (see ed90ddf).
-const PUBLIC_CONTENT_PREFIXES = ["/about", "/quran", "/hadith", "/dua", "/sirah", "/privacy", "/terms"];
+const PUBLIC_CONTENT_PREFIXES = ["/about", "/quran", "/hadith", "/dua", "/sirah", "/privacy", "/terms", "/hijri-calendar"];
 
 export function isPublicContentPath(pathname: string | null): boolean {
     return !!pathname && PUBLIC_CONTENT_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
