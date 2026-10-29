@@ -1,4 +1,4 @@
-# Nawaetu 🌙✨
+# Nawaetu: Aplikasi Pelacak Kebiasaan Islami 🌙
 
 [![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
@@ -6,46 +6,55 @@
 [![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
 [![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.9.5-blue)](https://github.com/hadianr/nawaetu/releases)
+[![Version](https://img.shields.io/badge/Version-v1.15.7-blue)](https://github.com/hadianr/nawaetu/releases)
 
 ---
 
-### 🎯 Luruskan Niat, Bangun Kontribusi Nyata
-**Nawaetu** (diambil dari kata "Niat") adalah **aplikasi tracker habit Islami pertama di dunia yang berbasis Intention-First**. Jika aplikasi lain fokus pada mekanik ritual (hitung jadwal, jumlah tasbih), Nawaetu fokus pada **inti spiritual** ibadah: **Niat.**
+**Nawaetu** adalah aplikasi pelacak kebiasaan Islami gratis yang berangkat dari niat. Aplikasi ini menggabungkan jurnal niat harian dengan jadwal sholat, kiblat, Al-Qur'an digital dengan tajwid, hadits dan doa bersumber, Sirah, alat puasa dan Ramadhan, dzikir, serta asisten AI (**Tanya Nawaetu**) yang dirancang untuk menyertakan rujukan. Berjalan sebagai aplikasi web di [nawaetu.com](https://nawaetu.com), dapat dipasang sebagai PWA dengan Android wrapper di repositori ini, dalam bahasa Indonesia dan Inggris.
 
-[**🚀 Coba Live Demo**](https://nawaetu.com) | [**📖 Read in English 🇬🇧**](README.md)
+[**Buka Nawaetu**](https://nawaetu.com) | [**Read in English**](README.md)
+
+## Fakta Singkat
+
+| | |
+| :--- | :--- |
+| **Nama** | Dari kata *niat* |
+| **Harga** | Gratis |
+| **Bahasa** | Indonesia, Inggris |
+| **Platform** | Web (PWA yang dapat dipasang), Android wrapper |
+| **Lisensi** | AGPLv3, dengan lisensi komersial tersedia |
+| **Situs** | [nawaetu.com](https://nawaetu.com) |
+
+**Jelajahi:** [Al-Qur'an](https://nawaetu.com/quran) · [Hadits](https://nawaetu.com/hadith) · [Doa](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Kiblat](https://nawaetu.com/qibla) · [Kalender Hijriah](https://nawaetu.com/hijri-calendar) · [Panduan Ramadhan](https://nawaetu.com/ramadhan) · [Tentang](https://nawaetu.com/about)
 
 ---
 
 ## 📑 Daftar Isi
-- [🎯 Apa yang Membuat Nawaetu Berbeda?](#-apa-yang-membuat-nawaetu-berbeda)
-- [✨ Galeri Visual](#-galeri-visual)
-- [🌟 Pilar Utama & Fitur](#-pilar-utama--fitur)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [🚀 Memulai (Getting Started)](#-memulai-getting-started)
-- [📄 Lisensi](#-lisensi)
-- [🤝 Kontribusi](#-kontribusi)
+- [Apa yang Membuat Nawaetu Berbeda?](#apa-yang-membuat-nawaetu-berbeda)
+- [Galeri Visual](#-galeri-visual)
+- [Pilar Utama & Fitur](#-pilar-utama--fitur)
+- [FAQ](#faq)
+- [Tech Stack](#️-tech-stack)
+- [Lisensi](#-lisensi-dual-licensing)
 
 > [!IMPORTANT]
-> **Nawaetu menggunakan Dual Licensing.** Gratis untuk Open Source (AGPLv3), namun memerlukan **Lisensi Komersial** untuk penggunaan komersial/proprietary. Lihat [Seksi Lisensi](#-lisensi) untuk detail.
+> **Nawaetu menggunakan dual licensing.** Gratis untuk open source (AGPLv3), dengan **Lisensi Komersial** untuk penggunaan proprietary atau closed-source. Lihat bagian [Lisensi](#-lisensi-dual-licensing).
 
 ---
 
-## 🎯 Apa yang Membuat Nawaetu Berbeda?
+## Apa yang Membuat Nawaetu Berbeda?
 
-Sebagian besar aplikasi Islam (seperti Muslim Pro atau Muslim Muna) berfokus pada **utilitas mekanis**—menghitung jadwal sholat, angka tasbih, atau menampilkan iklan banner. **Nawaetu dirancang di sekitar inti spiritual ibadah: Niat.**
+Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitung tasbih. Nawaetu mempertahankan alat-alat itu dan membangun di sekitar niat di balik setiap ibadah. Jika Anda mencari alternatif Muslim Pro yang berfokus pada niat dan refleksi harian, beginilah perbedaannya:
 
-### ⚔️ Perbandingan Nawaetu vs. Aplikasi Islam Populer (cth. Muslim Pro)
-
-| Fitur / Aspek | 🕌 Aplikasi Populer (Muslim Pro, dll) | 🌙 Nawaetu.com |
+| Aspek | Aplikasi utilitas (cth. Muslim Pro) | Nawaetu |
 | :--- | :--- | :--- |
-| **Filosofi Utama** | **Utility-First**: Penghitung mekanis & jadwal statis | **Intention-First**: Berfokus pada *alasan (why)* di balik ibadahmu |
-| **Pengalaman Pengguna & Iklan** | Penuh iklan banner, pop-up, paywall & komersialisasi data | **100% Bebas Iklan**, bersih, tanpa distraksi & menjaga privasi |
-| **Pertumbuhan Spiritual** | Angka penghitung biasa & pengingat pasif | **Jurnal Muhasabah**: Niat pagi hari + Refleksi malam hari |
-| **Tanya Jawab Islami** | Artikel statis atau pencarian teks biasa | **Tanya Nawaetu**: Asisten AI 24/7 berbasis Al-Qur'an & Hadits Shahih |
-| **Gamifikasi** | Angka statistik generik | **Sistem Hasanah**: Progres Rank (Mubtadi → Muhsinin) & Streak Istiqamah |
-| **Tilawah & Dzikir** | Audio standar & tasbih biasa | **Mode Fokus**: Screen wake lock, Jangkar Basmallah, Mode Zen OLED |
-| **Lisensi & Transparansi** | Closed-source / proprietary | **Open Source (AGPLv3)** + Opsi Lisensi Komersial |
+| **Fokus utama** | Jadwal sholat, penghitung, pengingat | **Niat lebih dulu**: alasan di balik ibadahmu |
+| **Refleksi** | Penghitung dan pengingat pasif | **Jurnal Muhasabah**: niat pagi, refleksi malam |
+| **Tanya jawab Islami** | Artikel dan pencarian teks | **Tanya Nawaetu**: asisten AI yang dirancang menyertakan rujukan Al-Qur'an dan hadits, dan menyatakan bila sumber belum dapat dipastikan |
+| **Motivasi** | Penghitung dan streak | **Sistem Hasanah**: progres rank (Mubtadi → Muhsinin) dan streak Istiqamah |
+| **Al-Qur'an dan dzikir** | Audio standar dan tasbih biasa | **Mode Fokus**: screen wake lock, jangkar Basmalah, tasbih Zen OLED |
+| **Iklan** | Bervariasi menurut aplikasi dan paket | Tanpa iklan |
+| **Kode sumber** | Umumnya closed-source | Open source (AGPLv3) |
 
 ---
 
@@ -61,7 +70,7 @@ Sebagian besar aplikasi Islam (seperti Muslim Pro atau Muslim Muna) berfokus pad
 
 ### 1. 🎯 Pembinaan Berbasis Niat
 *   **Jurnal Niat**: Tetapkan "Niat" setiap pagi dan refleksi di malam hari (Muhasabah Jiwa).
-*   **Tanya Nawaetu**: Asisten Islami 24/7 yang memberikan jawaban berdasarkan Al-Qur'an, Sunnah, dan Hadits yang dapat dipertanggungjawabkan.
+*   **Tanya Nawaetu**: Asisten Islami yang dirancang mendasarkan jawaban pada Al-Qur'an, Sunnah, dan Hadits beserta rujukan, serta mengakui batasnya bila sumber belum dapat dipastikan.
 *   **Gamifikasi Ibadah**: Kumpulkan Niat Points melalui misi harian yang bermakna.
 
 ### 2. 📖 Konten Spiritual Terpadu
@@ -130,17 +139,36 @@ Kami obsessed sama performa karena ibadah gak boleh distracted sama lag:
 
 ---
 
+## FAQ
+
+**Apa itu Nawaetu?**
+Aplikasi pelacak kebiasaan Islami gratis yang berangkat dari niat, dengan Al-Qur'an, alat ibadah, hadits dan doa bersumber, Sirah, alat puasa dan Ramadhan, dzikir, serta asisten AI.
+
+**Apakah Nawaetu gratis?**
+Ya. Aplikasi dapat digunakan gratis, dan kode sumbernya terbuka di bawah AGPLv3.
+
+**Apakah bisa dipakai tanpa internet?**
+Beberapa fitur dapat diakses tanpa koneksi internet.
+
+**Bagaimana Tanya Nawaetu menjawab pertanyaan agama?**
+Dirancang untuk menyertakan rujukan pada jawaban agama dan mengakui batasnya bila sumber belum dapat dipastikan. Ini tidak menggantikan ulama yang kompeten.
+
+**Bahasa apa yang didukung?**
+Indonesia dan Inggris.
+
+---
+
 ## 🛠️ Tech Stack
 
-Dibangun dengan teknologi bleeding-edge untuk performa dan keandalan maksimal:
+Versi dikunci di [`package.json`](package.json).
 
 ### Core Framework
-*   **Next.js 16.2** (App Router + Turbopack) - Meta-framework React utama
-*   **TypeScript 5.9** - Arsitektur type-safe yang ketat
-*   **React 19.2** - Fitur concurrent & Server Components terbaru
+*   **Next.js** (App Router) - Meta-framework React utama
+*   **TypeScript** - Arsitektur type-safe yang ketat
+*   **React** - Fitur concurrent & Server Components terbaru
 
 ### Backend & Database
-*   **Drizzle ORM 0.45** - Type-safe SQL database query
+*   **Drizzle ORM** - Type-safe SQL database query
 *   **PostgreSQL (Supabase)** - Database serverless melalui transaction pooler
 *   **NextAuth v5** - Sesi autentikasi aman
 *   **Upstash Redis & Rate Limiting** - Proteksi dan pembatasan rate API terdistribusi
@@ -148,20 +176,20 @@ Dibangun dengan teknologi bleeding-edge untuk performa dan keandalan maksimal:
 *   **cron-job.org** - Penjadwalan prayer-alert dan streak reminder
 
 ### AI & External APIs
-*   **Google Gemini 2.5 Flash-Lite** (`@google/generative-ai`)
-*   **Groq Llama 3.3 70B** - Inferensi LLM kecepatan tinggi
+*   **Google Gemini** (`@google/generative-ai`)
+*   **Groq (Llama)** - Inferensi LLM kecepatan tinggi
 *   **Aladhan API** (Jadwal Sholat GPS)
 *   **Quran.com API** (Mushaf Uthmani & Audio Murottal)
 
 ### UI, Styling & Experience
 *   **Tailwind CSS v4** & **Shadcn UI** (Primitif Radix UI)
-*   **Framer Motion 12** - Animasi mulus & mikro-interaksi
-*   **Recharts 3.7** - Analitik dinamis & grafik tren Hasanah
+*   **Framer Motion** - Animasi mulus & mikro-interaksi
+*   **Recharts** - Analitik dinamis & grafik tren Hasanah
 *   **Lucide React** & **Sonner** - Ikonografi & notifikasi toast
 *   **Next PWA (`@ducanh2912/next-pwa`)** - Progressive Web App yang dapat diinstal
 
 ### Monitoring & Kualitas
-*   **Sentry 10** - Pelacakan error real-time & pemantauan performa
+*   **Sentry** - Pelacakan error real-time & pemantauan performa
 *   **Vercel Speed Insights** - Real User Performance Monitoring
 *   **Vitest** - Pengujian unit dan integrasi
 
@@ -232,7 +260,7 @@ git clone https://github.com/hadianr/nawaetu.git
 cd nawaetu
 
 # Install dependencies
-npm install
+npm ci
 
 # Copy environment variables
 cp .env.example .env.local
@@ -331,8 +359,8 @@ Developed with ❤️ by **Antigravity** for the ummah.
 ### For Developers
 
 **Prerequisites:**
-- Node.js 20+
-- npm atau yarn
+- Node.js 24.x
+- npm (repositori memakai `package-lock.json`)
 - Git
 
 **Installation:**
@@ -342,7 +370,7 @@ git clone https://github.com/hadianr/nawaetu.git
 cd nawaetu
 
 # Install dependencies
-npm install
+npm ci
 
 # Setup environment variables
 cp .env.example .env.local
