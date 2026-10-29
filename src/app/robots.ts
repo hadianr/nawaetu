@@ -18,22 +18,37 @@
 
 import { MetadataRoute } from 'next'
 
+const disallow = [
+    '/api/',
+    '/admin/',
+    // User-specific pages — require login, cannot be meaningfully crawled
+    '/bookmarks',
+    '/settings',
+    '/stats',
+    '/journal',
+    '/notification-debug',
+]
+
+// AI search/assistant crawlers are named explicitly so the policy is deliberate.
+// Training-only bots (GPTBot, CCBot) are left to the '*' rule.
+const aiCrawlers = [
+    'OAI-SearchBot',
+    'ChatGPT-User',
+    'PerplexityBot',
+    'Perplexity-User',
+    'ClaudeBot',
+    'Claude-SearchBot',
+    'Claude-User',
+    'Google-Extended',
+    'Applebot-Extended',
+]
+
 export default function robots(): MetadataRoute.Robots {
     return {
-        rules: {
-            userAgent: '*',
-            allow: '/',
-            disallow: [
-                '/api/',
-                '/admin/',
-                // User-specific pages — require login, cannot be meaningfully crawled
-                '/bookmarks',
-                '/settings',
-                '/stats',
-                '/journal',
-                '/notification-debug',
-            ],
-        },
+        rules: [
+            { userAgent: '*', allow: '/', disallow },
+            { userAgent: aiCrawlers, allow: '/', disallow },
+        ],
         sitemap: 'https://nawaetu.com/sitemap.xml',
     }
 }
