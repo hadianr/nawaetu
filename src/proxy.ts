@@ -20,7 +20,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Ultra-lightweight middleware.
+ * Ultra-lightweight proxy (formerly middleware).
  *
  * Security headers (CSP, HSTS, etc.) are now defined statically in
  * next.config.ts → headers(), which is compiled into the CDN config and
@@ -29,7 +29,7 @@ import type { NextRequest } from 'next/server';
  * This middleware only handles:
  *   1. Blocking debug/test routes in production.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Block debug/testing routes in production
   if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production') {
     const path = request.nextUrl.pathname;
@@ -47,11 +47,9 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Only run on non-static request paths.
-     * Excludes: _next/static, _next/image, public assets, favicons.
-     * This is intentionally narrow — security headers are in next.config.ts.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|public|.*\\.(?:js|css|json|png|jpg|jpeg|webp|svg|woff2?|webmanifest|ico)).*)',
+    // Only the blocked debug routes, so normal page requests never invoke middleware.
+    '/notification-debug/:path*',
+    '/api/debug/:path*',
+    '/api/notifications/debug/:path*',
   ],
 };
