@@ -25,59 +25,51 @@ export const revalidate = 86400;
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = 'https://nawaetu.com'
-    const currentDate = new Date()
 
     // Public static pages — bot-accessible
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: `${baseUrl}/`,
-            lastModified: currentDate,
             changeFrequency: 'daily',
             priority: 1,
         },
         {
             url: `${baseUrl}/quran`,
-            lastModified: currentDate,
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/qibla`,
-            lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.8,
         },
         {
             url: `${baseUrl}/mentor-ai`,
-            lastModified: currentDate,
             changeFrequency: 'daily',
             priority: 0.8,
         },
         {
             url: `${baseUrl}/about`,
-            lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.8,
         },
         {
             url: `${baseUrl}/dhikr`,
-            lastModified: currentDate,
             changeFrequency: 'monthly',
             priority: 0.7,
         },
-        { url: `${baseUrl}/hadith`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.7 },
-        { url: `${baseUrl}/dua`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.7 },
-        { url: `${baseUrl}/hijri-calendar`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.7 },
-        { url: `${baseUrl}/ramadhan`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.7 },
-        { url: `${baseUrl}/sirah`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.8 },
-        { url: `${baseUrl}/rewards`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.5 },
+        { url: `${baseUrl}/hadith`, changeFrequency: 'weekly', priority: 0.7 },
+        { url: `${baseUrl}/dua`, changeFrequency: 'weekly', priority: 0.7 },
+        { url: `${baseUrl}/hijri-calendar`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/ramadhan`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/sirah`, changeFrequency: 'weekly', priority: 0.8 },
+        { url: `${baseUrl}/rewards`, changeFrequency: 'monthly', priority: 0.5 },
     ]
 
     // Generate all 114 Surah pages dynamically
     // These are now statically pre-built via generateStaticParams; bot crawls serve from cache
     const surahPages: MetadataRoute.Sitemap = Array.from({ length: 114 }, (_, i) => ({
         url: `${baseUrl}/quran/${i + 1}`,
-        lastModified: currentDate,
         changeFrequency: 'monthly' as const,
         priority: 0.7,
     }))
@@ -85,13 +77,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const sirahPages: MetadataRoute.Sitemap = [
         ...SIRAH_CHAPTERS.map((chapter) => ({
             url: `${baseUrl}/sirah/${chapter.slug}`,
-            lastModified: currentDate,
             changeFrequency: 'monthly' as const,
             priority: 0.6,
         })),
         ...SIRAH_SECTIONS.map((section) => ({
             url: `${baseUrl}/sirah/${section.chapterSlug}/${section.id}`,
-            lastModified: currentDate,
             changeFrequency: 'monthly' as const,
             priority: 0.5,
         })),
