@@ -21,7 +21,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
-import type { AnalyticsWindow } from "@/lib/analytics/analytics";
+import { trackAiReferral, type AnalyticsWindow } from "@/lib/analytics/analytics";
 
 export default function AnalyticsLoader() {
   const id = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
@@ -50,6 +50,12 @@ export default function AnalyticsLoader() {
       window.removeEventListener("pointerdown", loadOnInteraction);
       window.removeEventListener("keydown", loadOnInteraction);
     };
+  }, [id]);
+
+  // The referrer only describes the first landing, so report it once on mount.
+  useEffect(() => {
+    if (!id || process.env.NODE_ENV !== "production") return;
+    trackAiReferral(document.referrer, window.location.pathname);
   }, [id]);
 
   // Track every initial/SPA page view explicitly so lazy loading does not
