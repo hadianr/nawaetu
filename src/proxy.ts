@@ -38,7 +38,8 @@ export function proxy(request: NextRequest) {
       path.startsWith('/api/debug') ||
       path.startsWith('/api/notifications/debug')
     ) {
-      return NextResponse.rewrite(new URL('/404', request.url));
+      // status: Vercel serves the static /404 page as 200 (soft 404) without it.
+      return NextResponse.rewrite(new URL('/404', request.url), { status: 404 });
     }
   }
 

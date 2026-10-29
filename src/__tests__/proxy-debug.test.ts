@@ -74,6 +74,7 @@ describe('Middleware Debug Route Blocking', () => {
     expect(NextResponse.rewrite).toHaveBeenCalled();
     const rewriteCall = (NextResponse.rewrite as Mock).mock.calls[0];
     expect(rewriteCall[0].pathname).toBe('/404');
+    expect(rewriteCall[1]).toEqual({ status: 404 });
   });
 
   it('should block /api/notifications/debug in production', () => {
