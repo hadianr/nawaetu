@@ -118,7 +118,7 @@ export const SIRAH_QUIZ_BANK: SirahQuizItem[] = [
         options: ["Gua Hira", "Gua Tsur", "Gua Uhud", "Gua Kahfi"],
         correctIndex: 1,
         explanation: "Gua Tsur menjadi tempat perlindungan rahasia Nabi SAW dan Abu Bakar RA saat dikejar oleh para pemburu hadiah Quraisy.",
-        targetChapterSlug: "rasulullah-صلى-الله-عليه-وسلم-hijrah",
+        targetChapterSlug: "rasulullah-saw-hijrah",
         targetChapterTitle: "Rasulullah SAW Hijrah",
     },
 
@@ -165,7 +165,7 @@ export const SIRAH_QUIZ_BANK: SirahQuizItem[] = [
         options: ["Abu Ayyub Al-Anshari RA", "Sa'd bin Mu'adz RA", "As'ad bin Zurarah RA", "Ubay bin Ka'b RA"],
         correctIndex: 0,
         explanation: "Unta Rasulullah (Qashwa') berhenti di depan rumah Abu Ayyub Al-Anshari RA dan Nabi tinggal di sana hingga pembangunan Masjid Nabawi selesai.",
-        targetChapterSlug: "rasulullah-صلى-الله-عليه-وسلم-hijrah",
+        targetChapterSlug: "rasulullah-saw-hijrah",
         targetChapterTitle: "Rasulullah SAW Hijrah",
     },
     {
@@ -346,8 +346,8 @@ export const SIRAH_QUIZ_BANK: SirahQuizItem[] = [
         ],
         correctIndex: 1,
         explanation: "Para Nabi dimakamkan di tempat mereka diwafatkan, sehingga Rasulullah dimakamkan di dalam kamar ibunda Aisyah RA yang kini berdampingan dengan Masjid Nabawi.",
-        targetChapterSlug: "detik-detik-terakhir-kehidupan-rasulullah",
-        targetChapterTitle: "Detik-Detik Terakhir Kehidupan Rasulullah",
+        targetChapterSlug: "kembali-ke-haribaan-ilahi",
+        targetChapterTitle: "Kembali ke Haribaan Ilahi",
     },
     {
         id: "q-leg-03",
@@ -361,8 +361,8 @@ export const SIRAH_QUIZ_BANK: SirahQuizItem[] = [
         ],
         correctIndex: 1,
         explanation: "Nabi Muhammad SAW menatap ke atas dan menghembuskan napas terakhir dengan mengucapkan 'Allahumma ar-Rafiqal A'la' (Ya Allah, persandingkanlah dengan Teman Yang Maha Tinggi).",
-        targetChapterSlug: "detik-detik-terakhir-kehidupan-rasulullah",
-        targetChapterTitle: "Detik-Detik Terakhir Kehidupan Rasulullah",
+        targetChapterSlug: "kembali-ke-haribaan-ilahi",
+        targetChapterTitle: "Kembali ke Haribaan Ilahi",
     },
     {
         id: "q-leg-04",
@@ -371,8 +371,8 @@ export const SIRAH_QUIZ_BANK: SirahQuizItem[] = [
         options: ["Abu Bakar As-Siddiq RA", "Umar bin Khattab RA", "Ali bin Abi Thalib RA", "Utsman bin Affan RA"],
         correctIndex: 0,
         explanation: "Abu Bakar As-Siddiq RA menenangkan umat dengan berkata: 'Barangsiapa menyembah Muhammad, Muhammad telah wafat. Barangsiapa menyembah Allah, Allah Maha Hidup tak akan pernah mati'.",
-        targetChapterSlug: "detik-detik-terakhir-kehidupan-rasulullah",
-        targetChapterTitle: "Detik-Detik Terakhir Kehidupan Rasulullah",
+        targetChapterSlug: "kembali-ke-haribaan-ilahi",
+        targetChapterTitle: "Kembali ke Haribaan Ilahi",
     },
     {
         id: "q-leg-05",
