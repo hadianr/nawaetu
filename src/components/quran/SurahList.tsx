@@ -156,7 +156,25 @@ export default function SurahList({ chapters }: SurahListProps) {
 
     // Keep the server and first client render identical. Locale, theme, and
     // persisted Quran state are resolved after hydration.
-    if (!mounted) return <div className="min-h-[520px]" aria-hidden="true" />;
+    // Real links in the pre-mount HTML so crawlers that skip JS can reach every surah.
+    if (!mounted) {
+        return (
+            <div className="min-h-[520px]">
+                <h1 className="sr-only">Al-Qur&apos;an Online: 114 Surah dengan Terjemahan</h1>
+                <nav aria-label="Daftar surah" className="sr-only">
+                    <ul>
+                        {chapters.map((chapter) => (
+                            <li key={chapter.id}>
+                                <Link href={`/quran/${chapter.id}`} prefetch={false}>
+                                    {chapter.id}. {chapter.name_simple}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full max-w-4xl space-y-6">
@@ -339,18 +357,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                     return (
                         <div
                             key={chapter.id}
-                            role="link"
-                            tabIndex={0}
-                            aria-label={`Buka detail surah ${chapter.name_simple}`}
-                            onClick={() => router.push(`/quran/${chapter.id}`)}
                             onMouseEnter={() => prefetchSurah(chapter.id)}
-                            onFocus={() => prefetchSurah(chapter.id)}
-                            onKeyDown={(event) => {
-                                if (event.key === "Enter" || event.key === " ") {
-                                    event.preventDefault();
-                                    router.push(`/quran/${chapter.id}`);
-                                }
-                            }}
                             className={cn(
                                 "group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 gap-3 cursor-pointer",
                                     isLastRead
@@ -384,15 +391,23 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     )}>
                                         {chapter.id}
                                     </div>
-                                    <div className="flex flex-col min-w-0 relative z-0">
-                                        <span className={cn(
-                                            "font-bold text-sm truncate transition-colors",
-                                            isLastRead
-                                                ? "text-[rgb(var(--color-text-strong))]"
-                                                : "text-[rgb(var(--color-text))]"
-                                        )}>
+                                    <div className="flex flex-col min-w-0">
+                                        <Link
+                                            href={`/quran/${chapter.id}`}
+                                            prefetch={false}
+                                            onFocus={() => prefetchSurah(chapter.id)}
+                                            aria-label={`Buka detail surah ${chapter.name_simple}`}
+                                            className={cn(
+                                                "font-bold text-sm truncate transition-colors outline-none",
+                                                "after:absolute after:inset-0 after:rounded-xl after:content-['']",
+                                                "focus-visible:after:ring-2 focus-visible:after:ring-[rgb(var(--color-primary))]",
+                                                isLastRead
+                                                    ? "text-[rgb(var(--color-text-strong))]"
+                                                    : "text-[rgb(var(--color-text))]"
+                                            )}
+                                        >
                                             {chapter.name_simple}
-                                        </span>
+                                        </Link>
                                         <span className={cn(
                                             "text-[10px] truncate transition-colors",
                                             isLastRead
