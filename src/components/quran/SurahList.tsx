@@ -425,7 +425,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                     "text-[9px] font-medium uppercase tracking-wider transition-colors",
                                     "text-[rgb(var(--color-text-muted))]"
                                 )}>
-                                    {chapter.verses_count} {t.quranVerseCount}, {chapter.revelation_place === "makkah" ? t.quranMakkah : t.quranMadinah}
+                                    {chapter.verses_count} {t.quranVerseCount}, {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah}
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className={cn(
