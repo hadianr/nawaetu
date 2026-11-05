@@ -95,9 +95,7 @@ export default function MentorAIClient() {
     const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq();
 
     // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)
-    const FREE_LIMIT = 3;
-    const MUHSININ_LIMIT = 15;
-    const DAILY_LIMIT = isMuhsinin ? MUHSININ_LIMIT : FREE_LIMIT;
+    const DAILY_LIMIT = 10;
     const [dailyCount, setDailyCount] = useState(0);
     const [lastResetDate, setLastResetDate] = useState("");
     const [showLimitBlocking, setShowLimitBlocking] = useState(false);
@@ -114,7 +112,7 @@ export default function MentorAIClient() {
         if (isInfaqLoading) return; // Don't check limits while loading tier status
 
         let timer: ReturnType<typeof setTimeout> | undefined;
-        if (dailyCount >= DAILY_LIMIT && status === "authenticated" && !isMuhsinin) {
+        if (dailyCount >= DAILY_LIMIT && status === "authenticated") {
             // Auto-refresh immediately and then again in 5 seconds if still blocked
             refreshStatus();
 
@@ -574,7 +572,6 @@ export default function MentorAIClient() {
                                 "text-[rgb(var(--color-text-strong))]"
                             )}>
                                 Tanya Nawaetu
-                                {isMuhsinin && <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary))]" />}
                             </h1>
                             <div className="flex items-center gap-2">
                                 <p className="text-[10px] text-[rgb(var(--color-primary-light))] flex items-center gap-1">
@@ -721,10 +718,8 @@ export default function MentorAIClient() {
             <DonationModal
                 isOpen={showLimitBlocking}
                 onClose={() => setShowLimitBlocking(false)}
-                headerTitle={isMuhsinin ? translations.tanyaDailyLimit : translations.tanyaUnlockPremium}
-                headerDescription={isMuhsinin
-                    ? translations.tanyaLimitReached + " " + translations.tanyaLimitReset
-                    : translations.tanyaLimitReached + " " + translations.tanyaUpgradeHint}
+                headerTitle={translations.tanyaDailyLimit}
+                headerDescription={translations.tanyaLimitReached + " " + translations.tanyaLimitReset}
             />
         </div>
     );

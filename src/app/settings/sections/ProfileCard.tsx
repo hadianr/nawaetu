@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Crown, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserProfileDialog from "@/components/UserProfileDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,7 +38,6 @@ export default function ProfileCard({
     status,
     session,
     hasCachedProfile,
-    isMuhsinin,
     userAvatar,
     userName,
     userTitle,
@@ -75,14 +74,6 @@ export default function ProfileCard({
                             </AvatarFallback>
                         </Avatar>
                     </div>
-                    {(isMuhsinin || session?.user?.isMuhsinin) && (
-                        <div className={cn(
-                            "absolute -top-1 -right-1 rounded-full p-0.5 border-2 z-10 shadow-lg transition-all",
-                            "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-surface))]"
-                        )}>
-                            <Crown className="w-2.5 h-2.5 text-[rgb(var(--color-primary-foreground))] fill-[rgb(var(--color-primary-foreground))]" />
-                        </div>
-                    )}
                 </div>
                 <div className="flex-1 min-w-0">
                     <h3 className="text-base font-bold text-[rgb(var(--color-text-strong))] truncate group-hover:text-[rgb(var(--color-primary))] transition-colors">{userName}</h3>
