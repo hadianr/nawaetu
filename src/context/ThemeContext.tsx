@@ -193,7 +193,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeMidnightDescription",
         name: "Midnight",
         description: "Biru gelap malam dengan bintang berkilauan",
-        isPremium: true,
+        isPremium: false,
         pattern: {
             type: 'stars',
             opacity: 0.12,
@@ -214,7 +214,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeSunsetDescription",
         name: "Sunset",
         description: "Kehangatan senja dengan gelombang lembut",
-        isPremium: true,
+        isPremium: false,
         pattern: {
             type: 'waves',
             opacity: 0.12,
@@ -235,7 +235,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeLavenderDescription",
         name: "Lavender",
         description: "Ungu spiritual dengan motif geometric islami",
-        isPremium: true,
+        isPremium: false,
         pattern: {
             type: 'geometric',
             opacity: 0.10,
@@ -256,7 +256,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeOceanDescription",
         name: "Ocean",
         description: "Teal segar dengan riak air yang menenangkan",
-        isPremium: true,
+        isPremium: false,
         pattern: {
             type: 'organic',
             opacity: 0.18,
@@ -277,7 +277,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeRoyalDescription",
         name: "Royal",
         description: "Merah burgundy elegan dengan motif damask",
-        isPremium: true,
+        isPremium: false,
         pattern: {
             type: 'damask',
             opacity: 0.10,
@@ -298,7 +298,7 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeBlossomDescription",
         name: "Blossom",
         description: "Merah muda lembut dengan sentuhan bunga yang elegan",
-        isPremium: true,
+        isPremium: false,
         pattern: {
             type: "floral",
             opacity: 0.08,

@@ -17,7 +17,7 @@
  */
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Crown, X } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
@@ -30,7 +30,6 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({
     isAuthenticated,
-    isMuhsinin,
     userImage,
     onClose
 }: ProfileHeaderProps) {
@@ -80,24 +79,13 @@ export function ProfileHeader({
                     <div className={cn(
                         "w-20 h-20 rounded-full p-1 transition-all",
                         "bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]",
-                        isMuhsinin
-                            ? "ring-2 ring-[rgb(var(--color-accent))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
-                            : "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
+                        "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]"
                     )}>
                         <Avatar className="w-full h-full rounded-full border border-[rgb(var(--color-border))]">
                             <AvatarImage src={userImage} className="object-cover" />
                             <AvatarFallback>NA</AvatarFallback>
                         </Avatar>
                     </div>
-                    {isMuhsinin && (
-                        <div className="absolute -top-3 -right-3">
-                            <span className={cn(
-                                "flex h-8 w-8 items-center justify-center rounded-full shadow-[var(--shadow-floating)] text-[rgb(var(--color-accent-foreground))] transition-all bg-[rgb(var(--color-accent))]"
-                            )}>
-                                <Crown className="w-4 h-4 fill-current" />
-                            </span>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

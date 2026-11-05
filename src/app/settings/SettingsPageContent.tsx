@@ -495,9 +495,7 @@ export default function SettingsPageContent() {
                             "text-[10px] max-w-[200px] leading-relaxed",
                             "text-[rgb(var(--color-text-muted))]"
                         )}>
-                            {isMuhsinin
-                                ? t.supportPremiumText
-                                : t.supportText}
+                            {t.supportText}
                         </p>
                     </div>
                     <Button
@@ -508,7 +506,7 @@ export default function SettingsPageContent() {
                             "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         )}
                     >
-                        {isMuhsinin ? t.infaqButtonPremium : t.infaqButton}
+                        {t.infaqButton}
                     </Button>
                 </div>
 

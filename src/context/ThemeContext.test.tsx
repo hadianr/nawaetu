@@ -70,7 +70,7 @@ describe("ThemeContext", () => {
         expect(document.documentElement.style.getPropertyValue("--glass-border-opacity")).toBe("0.44");
         expect(document.documentElement.style.getPropertyValue("--glass-radius")).toBe("1.25rem");
         expect(document.documentElement.style.getPropertyValue("--glass-tint")).toBe("255 255 255");
-        expect(THEMES.blossom.isPremium).toBe(true);
+        expect(THEMES.blossom.isPremium).toBe(false);
 
         applyTheme(THEMES.default);
         expect(document.documentElement.dataset.colorMode).toBe("dark");
