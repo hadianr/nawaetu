@@ -14,6 +14,7 @@ import { mapStreakAchievementToShareData } from "@/lib/share/share-mappers";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
+import LottieMoment from "@/components/ui/LottieMoment";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 import {
   Dialog,
@@ -47,6 +48,19 @@ interface CanonicalProgression {
     lastStreakDate?: string | null;
     days?: Array<{ localDate: string; status?: string }>;
   };
+}
+
+/** Lottie flame for earned streak moments; shows the plain icon when motion is reduced. */
+function StreakFlame({ className, fallbackClassName, label }: { className: string; fallbackClassName: string; label?: string }) {
+  return (
+    <span role={label ? "img" : undefined} aria-label={label} className="inline-flex">
+      <LottieMoment
+        src="/lottie/flame.lottie"
+        className={className}
+        fallback={<Flame className={cn("fill-current", fallbackClassName)} aria-hidden="true" />}
+      />
+    </span>
+  );
 }
 
 export default function StreakBadge({ showLabel = false, modalOnly = false, open, onOpenChange, celebrate = true }: StreakBadgeProps) {
@@ -180,7 +194,10 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
           "text-[rgb(var(--color-text-strong))]",
         )} closeLabel={t.streakClose}>
           <div className="bg-gradient-to-br from-[rgb(var(--color-primary))] via-[rgb(var(--color-primary-light))] to-[rgb(var(--color-accent))] px-6 py-7 text-center text-[rgb(var(--color-primary-foreground))]">
-            <Flame className="mx-auto h-14 w-14 fill-current text-[rgb(var(--color-primary-foreground))]/85 motion-reduce:animate-none" aria-hidden="true" />
+            {/* Dark backing keeps the yellow flame readable on every theme's gradient. */}
+            <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-black/35">
+              <StreakFlame className="size-24" fallbackClassName="h-12 w-12 text-[rgb(var(--color-primary-foreground))]/85" />
+            </div>
             <p className="mt-2 text-5xl font-black tabular-nums">{currentStreak}</p>
             <p className="text-sm font-bold">{t.streakDayCount}</p>
           </div>
@@ -207,7 +224,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
                   )}>
                     {day.protected
                       ? <Snowflake className="h-3.5 w-3.5" aria-label={t.streakProtectedDay} />
-                      : day.active ? <Flame className="h-3.5 w-3.5 fill-current text-[rgb(var(--color-primary-foreground))]" aria-label={t.streakCompleted} /> : <AppIcon name="target" size="xs" tone="muted" />}
+                      : day.active ? <StreakFlame className="size-8" fallbackClassName="h-3.5 w-3.5 text-[rgb(var(--color-primary-foreground))]" label={t.streakCompleted} /> : <AppIcon name="target" size="xs" tone="muted" />}
                   </span>
                 </div>
               ))}
