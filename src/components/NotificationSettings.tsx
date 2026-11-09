@@ -268,12 +268,15 @@ export default function NotificationSettings() {
                 } catch (error: unknown) {
                     console.error("[NotificationSettings] Toggle Error:", error);
 
-                    captureClientException(error, {
-                        context: "NotificationSettings.toggleNotifications",
-                        fcmTokenExists: !!fcmToken,
-                        permissionStatus,
-                        userAgent: navigator.userAgent,
-                    });
+                    // Transient gateway timeouts (502-504) are not actionable; the user sees the toast and can retry.
+                    if (!/registration failed \((502|503|504)\)/.test(error instanceof Error ? error.message : "")) {
+                        captureClientException(error, {
+                            context: "NotificationSettings.toggleNotifications",
+                            fcmTokenExists: !!fcmToken,
+                            permissionStatus,
+                            userAgent: navigator.userAgent,
+                        });
+                    }
 
                     const errorMessage = error instanceof Error && error.message
                         ? error.message
