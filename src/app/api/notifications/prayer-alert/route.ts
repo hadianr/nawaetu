@@ -158,11 +158,16 @@ export async function POST(req: NextRequest) {
             .from(pushSubscriptions)
             .where(and(eq(pushSubscriptions.active, 1), isNotNull(pushSubscriptions.userId)));
 
-        const userIds = [...new Set(subscriptions.map((sub) => sub.userId).filter((id): id is string => Boolean(id)))];
-        const userRows = userIds.length
-            ? await db.select({ id: users.id, settings: users.settings }).from(users).where(inArray(users.id, userIds))
-            : [];
-        const localeByUser = new Map(userRows.map((user) => [user.id, (user.settings as Record<string, unknown> | null)?.locale]));
+        // Lazy: this cron fires every minute and most runs send nothing, so only
+        // query users once a prayer is actually due (and never in sync mode).
+        let localeByUserPromise: Promise<Map<string, unknown>> | null = null;
+        const getLocaleByUser = () => (localeByUserPromise ??= (async () => {
+            const userIds = [...new Set(subscriptions.map((sub) => sub.userId).filter((id): id is string => Boolean(id)))];
+            const userRows = userIds.length
+                ? await db.select({ id: users.id, settings: users.settings }).from(users).where(inArray(users.id, userIds))
+                : [];
+            return new Map(userRows.map((user) => [user.id, (user.settings as Record<string, unknown> | null)?.locale]));
+        })());
 
         if (subscriptions.length === 0) {
             return NextResponse.json({
@@ -331,7 +336,7 @@ export async function POST(req: NextRequest) {
                             }
 
                             // 7. Send Notification
-                            const { title, body } = getPrayerNotificationCopy(localeByUser.get(sub.userId ?? ""), activePrayer);
+                            const { title, body } = getPrayerNotificationCopy((await getLocaleByUser()).get(sub.userId ?? ""), activePrayer);
 
                              await messagingAdmin!.send({
                                 token: sub.token,
