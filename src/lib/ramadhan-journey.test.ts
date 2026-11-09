@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getRamadhanJourney, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
+import { getRamadhanJourney, getRecentDays, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 
 const at = (iso: string) => new Date(`${iso}T10:00:00`);
 
@@ -39,5 +39,23 @@ describe("getRamadhanJourney", () => {
         expect(phaseWithDaysLeft(90)).toBe("reset");
         expect(phaseWithDaysLeft(60)).toBe("build");
         expect(phaseWithDaysLeft(20)).toBe("sharpen");
+    });
+});
+
+describe("getRecentDays", () => {
+    it("returns the last 7 local days, oldest first, with today last", () => {
+        const days = getRecentDays(at("2026-11-09"), ["2026-11-09", "2026-11-07", "2026-10-01"]);
+        expect(days.map(day => day.date)).toEqual([
+            "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08", "2026-11-09",
+        ]);
+        expect(days.map(day => day.done)).toEqual([false, false, false, false, true, false, true]);
+        expect(days.filter(day => day.isToday)).toHaveLength(1);
+        expect(days[6].isToday).toBe(true);
+    });
+
+    it("crosses month and year boundaries", () => {
+        expect(getRecentDays(at("2027-01-02"), [], 4).map(day => day.date)).toEqual([
+            "2026-12-30", "2026-12-31", "2027-01-01", "2027-01-02",
+        ]);
     });
 });
