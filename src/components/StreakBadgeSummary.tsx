@@ -13,6 +13,7 @@ import {
 } from "@/core/repositories/streak.repository";
 import { useStreak } from "@/hooks/useStreak";
 import { AppIcon } from "@/components/ui/AppIcon";
+import LottieMoment from "@/components/ui/LottieMoment";
 import { cn } from "@/lib/utils";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 import { toast } from "sonner";
@@ -56,7 +57,15 @@ export default function StreakBadgeSummary() {
           description: milestone
             ? t.streakCelebrationReward.replace("{hasanah}", String(milestone.xp))
             : t.streakCelebrationKeepGoing,
-          icon: <AppIcon name={milestone?.iconKey ?? "sparkles"} size="sm" tone="primary" />,
+          icon: milestone
+            ? <AppIcon name={milestone.iconKey ?? "sparkles"} size="sm" tone="primary" />
+            : (
+              <LottieMoment
+                src="/lottie/flame.lottie"
+                className="size-7"
+                fallback={<AppIcon name="sparkles" size="sm" tone="primary" />}
+              />
+            ),
           action: {
             label: t.streakCelebrationView,
             onClick: () => setDetailsOpen(true),

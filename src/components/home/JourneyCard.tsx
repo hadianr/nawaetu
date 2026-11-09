@@ -8,6 +8,7 @@ import LottieMoment from "@/components/ui/LottieMoment";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { getStreakRepository } from "@/core/repositories/streak.repository";
+import { useStreakDates } from "@/hooks/useStreakDates";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { parseHijriAdjustment } from "@/lib/hijri-date";
 import { getRamadhanJourney, getRecentDays, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
@@ -63,7 +64,9 @@ export default function JourneyCard() {
     }, []);
 
     const journey = useMemo(() => getRamadhanJourney(new Date(), adjustment), [adjustment]);
-    const strip = useMemo(() => getRecentDays(new Date(), doneDates), [doneDates]);
+    // The strip is the streak itself (any habit counts), so it always agrees with the streak badge.
+    const { activeDates } = useStreakDates();
+    const strip = useMemo(() => getRecentDays(new Date(), [...activeDates]), [activeDates]);
     if (!journey.active || !journey.phase) return null;
 
     const today = DateUtils.today();
