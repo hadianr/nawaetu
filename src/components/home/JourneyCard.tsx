@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
 import JourneyMilestoneDialog from "@/components/home/JourneyMilestoneDialog";
+import AnimatedCheck from "@/components/ui/AnimatedCheck";
 import { Button } from "@/components/ui/button";
 import LottieMoment from "@/components/ui/LottieMoment";
 import { useLocale } from "@/context/LocaleContext";
@@ -33,14 +34,6 @@ const PHASE_LONG = {
 
 const fill = (template: unknown, values: Record<string, number>) =>
     Object.entries(values).reduce((text, [key, value]) => text.replace(`{${key}}`, String(value)), String(template));
-
-function CheckIcon({ className }: { className?: string }) {
-    return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <motion.path d="M5 12.5l4.5 4.5L19 7.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.3 }} />
-        </svg>
-    );
-}
 
 export default function JourneyCard() {
     const { t, locale } = useLocale();
@@ -146,7 +139,7 @@ export default function JourneyCard() {
                             <LottieMoment
                                 src="/lottie/flame.lottie"
                                 className="size-9 shrink-0"
-                                fallback={<CheckIcon className="size-5 shrink-0 text-[rgb(var(--color-primary))]" />}
+                                fallback={<AnimatedCheck className="size-5 shrink-0 text-[rgb(var(--color-primary))]" />}
                             />
                             {String(t.journeyDone)}
                         </motion.div>

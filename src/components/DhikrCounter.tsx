@@ -19,7 +19,9 @@
  */
 
 import { useState, useEffect, useMemo } from "react";
-import { Check, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
+import AnimatedCheck from "@/components/ui/AnimatedCheck";
+import LottieMoment from "@/components/ui/LottieMoment";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
@@ -316,8 +318,10 @@ export default function DhikrCounter() {
                     "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                 )}>
                     <DialogHeader className="flex flex-col items-center">
-                        <div className="w-14 h-14 rounded-full bg-[rgb(var(--color-primary)/0.1)] flex items-center justify-center mb-4 border border-[rgb(var(--color-primary)/0.2)]">
-                            <Check className="w-7 h-7 text-[rgb(var(--color-primary-light))]" />
+                        <div className="relative w-14 h-14 rounded-full bg-[rgb(var(--color-primary)/0.1)] flex items-center justify-center mb-4 border border-[rgb(var(--color-primary)/0.2)]">
+                            {/* Soft sparkles, played once and never a loop: a calm moment, not a celebration. */}
+                            <LottieMoment src="/lottie/stars.lottie" hideOnComplete className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-52 -translate-x-1/2 -translate-y-1/2" />
+                            <AnimatedCheck className="relative w-7 h-7 text-[rgb(var(--color-primary-light))]" />
                         </div>
                         <DialogTitle className="text-xl font-bold mb-1">{t.tasbihComplete}</DialogTitle>
                     </DialogHeader>
