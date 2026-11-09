@@ -7,18 +7,13 @@ import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } f
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";
+import { useStreakCelebration } from "@/hooks/useStreakCelebration";
 import { useStreakDates } from "@/hooks/useStreakDates";
 import { usePlayerStats } from "@/lib/habits/leveling";
 import { mapStreakAchievementToShareData } from "@/lib/share/share-mappers";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import {
-  STREAK_ACHIEVEMENT_EVENT,
-  type StreakAchievementEventDetail,
-} from "@/core/repositories/streak.repository";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
-import LottieMoment from "@/components/ui/LottieMoment";
-import { toast } from "sonner";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 import {
   Dialog,
@@ -38,6 +33,8 @@ interface StreakBadgeProps {
   modalOnly?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Set false when a parent already shows streak toasts, so they are not doubled. */
+  celebrate?: boolean;
 }
 
 interface CanonicalProgression {
@@ -52,12 +49,13 @@ interface CanonicalProgression {
   };
 }
 
-export default function StreakBadge({ showLabel = false, modalOnly = false, open, onOpenChange }: StreakBadgeProps) {
+export default function StreakBadge({ showLabel = false, modalOnly = false, open, onOpenChange, celebrate = true }: StreakBadgeProps) {
   const { locale, t } = useLocale();
   const { data: session, status } = useSession();
   const { streak, display, milestones } = useStreak();
   const player = usePlayerStats();
   const [detailsOpen, setDetailsOpen] = useState(false);
+  useStreakCelebration(() => setDetailsOpen(true), celebrate);
   const [shareOpen, setShareOpen] = useState(false);
   const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
   const lossTrackedRef = useRef(false);
@@ -66,44 +64,6 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   useEffect(() => {
     if (open !== undefined) queueMicrotask(() => setDetailsOpen(open));
   }, [open]);
-  useEffect(() => {
-    const celebrate = (event: Event) => {
-      const { streak: achievement, milestone } = (event as CustomEvent<StreakAchievementEventDetail>).detail;
-      const localizedMilestone = milestone ? getTranslationText(t, `streakMilestone${milestone.days}`) : null;
-
-      toast.success(
-        localizedMilestone
-          ? t.streakCelebrationMilestone.replace("{milestone}", localizedMilestone)
-          : t.streakCelebrationExtended.replace("{count}", String(achievement.currentStreak)),
-        {
-          description: milestone
-            ? t.streakCelebrationReward.replace("{hasanah}", String(milestone.xp))
-            : t.streakCelebrationKeepGoing,
-          icon: milestone
-            ? <AppIcon name={milestone.iconKey ?? "sparkles"} size="sm" tone="primary" />
-            : (
-              <LottieMoment
-                src="/lottie/flame.lottie"
-                className="size-7"
-                fallback={<AppIcon name="sparkles" size="sm" tone="primary" />}
-              />
-            ),
-          action: {
-            label: t.streakCelebrationView,
-            onClick: () => setDetailsOpen(true),
-          },
-        },
-      );
-      trackStreakEvent(milestone ? "milestone_reached" : "streak_extended", {
-        userMode: status === "authenticated" ? "logged_in" : "guest",
-        syncState: status === "authenticated" ? "canonical" : "local",
-        streakDays: achievement.currentStreak,
-      });
-    };
-
-    window.addEventListener(STREAK_ACHIEVEMENT_EVENT, celebrate);
-    return () => window.removeEventListener(STREAK_ACHIEVEMENT_EVENT, celebrate);
-  }, [status, t]);
   const isLoggedIn = status === "authenticated";
   const cachedProgression = isLoggedIn
     ? getStorageService().getOptional<CanonicalProgression>(STORAGE_KEYS.CANONICAL_PROGRESSION)
