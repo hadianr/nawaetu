@@ -111,7 +111,7 @@ const nextConfig: NextConfig = {
         key: 'Content-Security-Policy',
         value: [
           "default-src 'self'",
-          `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ""} https://*.googletagmanager.com https://*.google-analytics.com https://va.vercel-scripts.com https://vercel.live https://www.gstatic.com`,
+          `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ""} https://*.googletagmanager.com https://*.google-analytics.com https://va.vercel-scripts.com https://vercel.live https://www.gstatic.com`,
           "worker-src 'self' blob:",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "img-src 'self' data: https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://avatar.vercel.sh https://lh3.googleusercontent.com https://cdn.islamic.network",

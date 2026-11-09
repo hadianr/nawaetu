@@ -35,4 +35,11 @@ export const journeyEN = {
     journeyDayDone: "done",
     journeyDayNotDone: "not done",
     journeyDayToday: "today",
+    journeyMilestoneClose: "Keep going",
+    journeyMilestone100: "100 days to Ramadan. Not about being perfect, just getting ready. Let's go.",
+    journeyMilestone75: "75 days left, and you're still here. That's the whole game.",
+    journeyMilestone50: "50 days to go. Small habits are quietly adding up.",
+    journeyMilestone30: "30 days left. Time to start rehearsing Ramadan.",
+    journeyMilestone10: "10 days left. Finish strong, not perfect.",
+    journeyMilestone1: "Ramadan is almost here. May Allah make it easy for you.",
 } as const;
