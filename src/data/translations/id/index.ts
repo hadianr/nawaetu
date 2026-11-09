@@ -28,6 +28,7 @@ import { sunnahPrayerID } from './sunnah-prayer';
 import { fastingTrackerID } from './fasting-tracker';
 import { hijriCalendarID } from './hijri-calendar';
 import { rewardsID } from './rewards';
+import { journeyID } from './journey';
 
 export const SETTINGS_ID = {
   ...missionsID,
@@ -42,4 +43,5 @@ export const SETTINGS_ID = {
   ...fastingTrackerID,
   ...hijriCalendarID,
   ...rewardsID,
+  ...journeyID,
 };

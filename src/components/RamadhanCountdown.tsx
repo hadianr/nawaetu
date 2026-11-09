@@ -21,6 +21,7 @@
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { SYABAN_MISSIONS } from "@/data/missions";
+import { getRamadhanJourney } from "@/lib/ramadhan-journey";
 
 // Inline critical icons to avoid lucide overhead on LCP
 const MoonIcon = ({ className }: { className?: string }) => (
@@ -53,8 +54,6 @@ interface Props {
 interface HijriAdjustmentEventDetail {
     adjustment?: string | number;
 }
-
-const BASE_TARGET_DATE = new Date("2026-02-18T00:00:00+07:00");
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null;
@@ -99,13 +98,9 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         // Countdown Logic - optimized to not block render
         const calculateTimeLeft = () => {
             const now = new Date();
-            // Adjust the target date based on user preference
-            // If adjustment is +1 (My Hijri date is ahead), Ramadhan comes SOONER.
-            // So we SUBTRACT days from the Target Date.
-            // Example: Adj +1. Original Target Feb 18. New Target Feb 17.
-            // Example: Adj -1. Original Target Feb 18. New Target Feb 19.
-            // Formula: Base - (Adjustment * Days)
-            const adjustedTarget = new Date(BASE_TARGET_DATE.getTime() - (adjustment * 24 * 60 * 60 * 1000));
+            // Next 1 Ramadhan on the user's adjusted Hijri calendar (+1 = Hijri date ahead = sooner).
+            const { daysLeft } = getRamadhanJourney(now, adjustment);
+            const adjustedTarget = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysLeft);
 
             const difference = adjustedTarget.getTime() - now.getTime();
 

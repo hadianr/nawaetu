@@ -9,6 +9,7 @@ import { sunnahPrayerEN } from "./en/sunnah-prayer";
 import { fastingTrackerEN } from "./en/fasting-tracker";
 import { hijriCalendarEN } from "./en/hijri-calendar";
 import { rewardsEN } from "./en/rewards";
+import { journeyEN } from "./en/journey";
 import { uiID } from "./id/ui";
 import { settingsID } from "./id/settings";
 import { otherID } from "./id/other";
@@ -20,6 +21,7 @@ import { sunnahPrayerID } from "./id/sunnah-prayer";
 import { fastingTrackerID } from "./id/fasting-tracker";
 import { hijriCalendarID } from "./id/hijri-calendar";
 import { rewardsID } from "./id/rewards";
+import { journeyID } from "./id/journey";
 
 export const BASE_SETTINGS_EN = {
   ...uiEN,
@@ -33,6 +35,7 @@ export const BASE_SETTINGS_EN = {
   ...fastingTrackerEN,
   ...hijriCalendarEN,
   ...rewardsEN,
+  ...journeyEN,
 };
 
 export const BASE_SETTINGS_ID = {
@@ -47,4 +50,5 @@ export const BASE_SETTINGS_ID = {
   ...fastingTrackerID,
   ...hijriCalendarID,
   ...rewardsID,
+  ...journeyID,
 };

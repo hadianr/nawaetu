@@ -24,9 +24,14 @@ import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import IntentionJournalWidget from "@/components/intentions/IntentionJournalWidget";
 import DeferredBelowFold from "@/components/home/DeferredBelowFold";
 import HomeHeader from "@/components/HomeHeader";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { parseHijriAdjustment } from "@/lib/hijri-date";
+import { getRamadhanJourney } from "@/lib/ramadhan-journey";
 
 const RamadhanCountdown = dynamic(() => import("@/components/RamadhanCountdown"), { ssr: false });
 const EidCard = dynamic(() => import("@/components/ramadhan/EidCard"), { ssr: false });
+const JourneyCard = dynamic(() => import("@/components/home/JourneyCard"), { ssr: false });
 
 export default function HomeClient() {
     const { data } = usePrayerTimesContext();
@@ -42,17 +47,13 @@ export default function HomeClient() {
     );
 
     useEffect(() => {
-        const RAMADHAN_START_MS = new Date("2026-02-18T00:00:00+07:00").getTime();
-        const RAMADHAN_END_MS = new Date("2026-03-20T23:59:59+07:00").getTime();
-        const now = Date.now();
-
-        const isSeason = now >= RAMADHAN_START_MS && now <= RAMADHAN_END_MS;
+        const adjustment = parseHijriAdjustment(
+            getStorageService().getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT),
+        );
+        const journey = getRamadhanJourney(new Date(), adjustment);
         queueMicrotask(() => {
-            setIsRamadhanSeason(isSeason);
-            if (!isSeason) {
-                const days = Math.max(0, Math.floor((RAMADHAN_START_MS - now) / 86400000));
-                setInitialDaysLeft(days);
-            }
+            setIsRamadhanSeason(journey.inRamadan);
+            if (!journey.inRamadan) setInitialDaysLeft(journey.daysLeft);
         });
     }, []);
 
@@ -81,6 +82,9 @@ export default function HomeClient() {
                         </section>
                     )
                 )}
+
+                {/* 3. 100 Days to Ramadan journey (renders nothing outside the window) */}
+                {!showSeasonalCard && <JourneyCard />}
 
                 {/* 4. Nawaetu Journal - The core uniqueness */}
                 <section className="w-full">
