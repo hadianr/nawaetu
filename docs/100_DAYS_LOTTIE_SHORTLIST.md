@@ -27,6 +27,28 @@ Every animation below showed "Free to use under the Lottie Simple License" on it
 - **Flame** matches the flame icon already in the streak chip, so it feels native instead of pasted on.
 - All picks are non-figurative (lanterns, flame, confetti, moon, book). I skipped animations of people praying or reading to stay safe on tone. If you want people, say so and I'll shortlist some.
 
+## Reuse in existing features
+
+The same files, loaded through one shared lazy component (for example `LottieMoment`), can lift moments the app already has. Places found in the code, in rough order of payoff:
+
+| Existing feature | Where | Animation |
+| --- | --- | --- |
+| Streak toast ("Your streak is now N days! MashaAllah...") | `streakCelebrationKeepGoing` copy, `src/components/StreakBadge.tsx`, `src/core/repositories/streak.repository.ts` milestones | Flame - Streak |
+| Intention streak milestones (7, 30, 100 days) | `src/components/intentions/IntentionStreak.tsx` | Confetti on reaching a milestone, Badge for 100 |
+| Dhikr / tasbih milestones | `src/components/DhikrCounter.tsx`, `src/data/dhikrMilestones.ts` | Confetti or Badge when a target is reached |
+| Lailatul Qadr card and guide | `src/components/ramadhan/LailatulQadrCard.tsx` | Lights (fits the last ten nights) |
+| Eid card | `src/components/ramadhan/EidCard.tsx` | Lights plus Confetti |
+| Ramadan hero card and Wrapped | `RamadhanHeroCard.tsx`, `RamadhanWrappedCard.tsx` | Lights as a header, Badge on the summary |
+| Khatam (Quran completion) progress | `src/components/ramadhan/KhatamanProgress.tsx` | Badge and Confetti on completion |
+| Mission completion | `src/components/MissionsWidget.tsx` | Keep light: a small burst only for the first mission of the day |
+
+Rules so this stays good for users, not noisy:
+
+1. **Earned moments only.** Animate milestones and completions, never routine screens. One animation per moment.
+2. **Never block the task.** Dismissible, under about 3 seconds, no sound.
+3. **Same rules everywhere:** lazy-loaded, reduced-motion fallback, themed check, credit file entry.
+4. **Respect the religious tone.** No celebration around acts of worship that could read as showing off, so keep celebrations about the user's own progress and keep them private (no share pop-ups by default).
+
 ## Not needed
 
 - **Habit tap check:** the card already draws a check with `framer-motion` (0 KB extra). A Lottie check is only worth it if you want a bigger burst. Smallest options if so: **successful check circle** (0.89 KB, 0035_Phan Thị Thu Hằng) or **checkmark** (1.4 KB, Jenny Seong).
