@@ -30,6 +30,7 @@ import { toast } from "sonner";
 
 import { addHasanah } from "@/lib/habits/leveling";
 import { DateUtils } from "@/lib/utils/date";
+import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 interface IntentionJournalWidgetProps {
     className?: string;
@@ -127,7 +128,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         const checkTodayStatus = async () => {
             try {
                 // Background fetch
-                const response = await fetch(`/api/intentions/today?date=${selectedDate}`, {
+                // Time out so a stalled server can never leave the skeleton on screen forever.
+                const response = await fetchWithTimeout(`/api/intentions/today?date=${selectedDate}`, {
                     // Cache busting or ensure next.js doesn't hard cache this for real-time widgets
                     headers: {
                         'Cache-Control': 'no-cache',
@@ -150,7 +152,10 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     }
                 }
             } catch (error) {
-                console.error("Failed to sync intention status", error);
+                // A timeout is expected when the network or server stalls; the cached or empty state is shown.
+                if (!(error instanceof DOMException && error.name === "TimeoutError")) {
+                    console.error("Failed to sync intention status", error);
+                }
             } finally {
                 // Ensure loading is off whether it failed or succeeded
                 setIsLoading(false);
