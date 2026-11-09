@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 
             return NextResponse.json({
                 error: typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage
-            }, { status: 500 });
+            }, { status: 502 }); // upstream (Mayar) failure, not ours
         }
 
         const paymentLink = mayarData.data?.link;
