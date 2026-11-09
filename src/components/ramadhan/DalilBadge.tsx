@@ -27,10 +27,13 @@ import { AppIcon } from "@/components/ui/AppIcon";
 
 interface DalilBadgeProps {
     dalil: EvidenceData;
-    variant?: "inline" | "pill";
+    /** "link" is a readable, tappable text link (44px target) for places where the tiny pill is too small. */
+    variant?: "inline" | "pill" | "link";
+    /** Overrides the visible text of the "link" variant. */
+    label?: string;
 }
 
-export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProps) {
+export default function DalilBadge({ dalil, variant = "inline", label }: DalilBadgeProps) {
     const [showDetail, setShowDetail] = useState(false);
     const { t, locale } = useLocale();
 
@@ -43,6 +46,18 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
         <Dialog open={showDetail} onOpenChange={setShowDetail}>
             {/* Badge trigger */}
             <DialogTrigger asChild>
+                {variant === "link" ? (
+                    <button
+                        type="button"
+                        className="inline-flex min-h-11 items-center gap-1.5 rounded-md text-left outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
+                        title={t.evidenceViewFull}
+                    >
+                        <AppIcon name="scroll" size="sm" tone="primary" />
+                        <span className="text-xs font-medium text-[rgb(var(--color-primary-strong))] underline decoration-dotted underline-offset-4">
+                            {label ?? localizedShortRef}
+                        </span>
+                    </button>
+                ) : (
                 <button
                     type="button"
                     className={`
@@ -64,6 +79,7 @@ export default function DalilBadge({ dalil, variant = "inline" }: DalilBadgeProp
                         <AppIcon name="target" size="xs" tone="muted" className="group-hover/dalil:text-[rgb(var(--color-text))] group-hover/dalil:translate-x-0.5 transition-all" />
                     )}
                 </button>
+                )}
             </DialogTrigger>
 
             <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)] rounded-3xl z-[120]">

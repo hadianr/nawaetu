@@ -2,20 +2,23 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
+import { Info } from "lucide-react";
+import JourneyAboutDialog from "@/components/home/JourneyAboutDialog";
 import JourneyMilestoneDialog from "@/components/home/JourneyMilestoneDialog";
+import DalilBadge from "@/components/ramadhan/DalilBadge";
 import AnimatedCheck from "@/components/ui/AnimatedCheck";
 import { Button } from "@/components/ui/button";
 import LottieMoment from "@/components/ui/LottieMoment";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { getStreakRepository } from "@/core/repositories/streak.repository";
+import { dalilRef, getJourneyHabit } from "@/data/ramadhan-journey";
 import { useStreakDates } from "@/hooks/useStreakDates";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { parseHijriAdjustment } from "@/lib/hijri-date";
 import { getRamadhanJourney, getRecentDays, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 import { DateUtils } from "@/lib/utils/date";
 
-const HABIT_COUNT = 14;
 const HISTORY_LIMIT = 30;
 const RING_RADIUS = 30;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
@@ -42,6 +45,7 @@ export default function JourneyCard() {
     const [adjustment, setAdjustment] = useState(() =>
         parseHijriAdjustment(storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT)),
     );
+    const [aboutOpen, setAboutOpen] = useState(false);
     const [doneDates, setDoneDates] = useState<string[]>(() => {
         const saved = storage.getOptional<string[]>(STORAGE_KEYS.JOURNEY_DONE_DATES);
         return Array.isArray(saved) ? saved : [];
@@ -65,7 +69,7 @@ export default function JourneyCard() {
     const today = DateUtils.today();
     const doneToday = doneDates.includes(today);
     const doneInStrip = strip.filter(day => day.done).length;
-    const habit = t[`journeyHabit${(journey.dayNumber % HABIT_COUNT) + 1}`];
+    const { copyKey, evidence } = getJourneyHabit(journey.phase, journey.dayNumber);
     const lateJoin = journey.dayNumber > 7 && doneDates.length === 0;
     const finalStretch = journey.daysLeft <= 10;
     const weekday = new Intl.DateTimeFormat(locale, { weekday: "long" });
@@ -85,13 +89,24 @@ export default function JourneyCard() {
                 aria-describedby="journey-phase-desc"
                 className="w-full rounded-2xl border border-[rgb(var(--color-border))]/15 bg-[rgb(var(--color-surface))] p-4 shadow-[var(--shadow-card)]"
             >
-                <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-[11px] font-semibold uppercase tracking-wider text-[rgb(var(--color-text))]">
-                        {String(t.journeyTitle)}
-                    </h2>
-                    <span className="rounded-full bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1 text-xs font-medium text-[rgb(var(--color-text))]">
-                        {String(t[PHASE_SHORT[journey.phase]])}
-                    </span>
+                <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                        <h2 className="text-[11px] font-semibold uppercase tracking-wider text-[rgb(var(--color-text))]">
+                            {String(t.journeyTitle)}
+                        </h2>
+                        {/* Plain text, not a pill: it names the phase; it is not a button. */}
+                        <p className="mt-0.5 text-sm font-medium text-[rgb(var(--color-text-strong))]">
+                            {String(t[PHASE_SHORT[journey.phase]])}
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setAboutOpen(true)}
+                        aria-label={String(t.journeyAboutOpen)}
+                        className="-mr-2 -mt-2 flex size-11 shrink-0 items-center justify-center rounded-full text-[rgb(var(--color-text))] outline-none transition-colors hover:bg-[rgb(var(--color-surface-subtle))] focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
+                    >
+                        <Info className="size-5" aria-hidden="true" />
+                    </button>
                 </div>
                 <p id="journey-phase-desc" className="sr-only">{String(t[PHASE_LONG[journey.phase]])}</p>
 
@@ -125,7 +140,14 @@ export default function JourneyCard() {
 
                     <div className="min-w-0">
                         <p className="text-xs text-[rgb(var(--color-text))]">{String(t.journeyTodayLabel)}</p>
-                        <p className="mt-1 text-[15px] leading-snug text-[rgb(var(--color-text))]">{String(habit)}</p>
+                        <p className="mt-1 text-[15px] leading-snug text-[rgb(var(--color-text))]">{String(t[copyKey])}</p>
+                        {evidence && (
+                            <DalilBadge
+                                dalil={evidence}
+                                variant="link"
+                                label={`${String(t.journeyDalilPrefix)}: ${dalilRef(evidence, locale)}`}
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -190,6 +212,7 @@ export default function JourneyCard() {
                     </span>
                 </div>
             </section>
+            <JourneyAboutDialog open={aboutOpen} onOpenChange={setAboutOpen} phase={journey.phase} dayNumber={journey.dayNumber} />
             <JourneyMilestoneDialog daysLeft={journey.daysLeft} dayNumber={journey.dayNumber} />
         </MotionConfig>
     );

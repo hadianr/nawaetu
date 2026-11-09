@@ -12,16 +12,30 @@ import { getJourneyMilestone, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 export default function JourneyMilestoneDialog({ daysLeft, dayNumber }: { daysLeft: number; dayNumber: number }) {
     const { t } = useLocale();
     const storage = getStorageService();
-    const [milestone, setMilestone] = useState(() =>
-        getJourneyMilestone(daysLeft, storage.getOptional<number[]>(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN) ?? []),
-    );
-    if (milestone === null) return null;
+    const [mode, setMode] = useState<"milestone" | "welcome" | null>(() => {
+        const seen = storage.getOptional<number[]>(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN) ?? [];
+        if (getJourneyMilestone(daysLeft, seen) !== null) return "milestone";
+        // People who already used the journey don't need a welcome.
+        const doneBefore = (storage.getOptional<string[]>(STORAGE_KEYS.JOURNEY_DONE_DATES) ?? []).length > 0;
+        const welcomed = storage.getOptional<boolean>(STORAGE_KEYS.JOURNEY_WELCOME_SEEN) === true;
+        return welcomed || doneBefore || seen.length > 0 ? null : "welcome";
+    });
+    if (mode === null) return null;
 
     const close = () => {
-        const seen = storage.getOptional<number[]>(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN) ?? [];
-        storage.set(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN, [...seen, milestone]);
-        setMilestone(null);
+        if (mode === "milestone") {
+            const seen = storage.getOptional<number[]>(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN) ?? [];
+            storage.set(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN, [...seen, daysLeft]);
+        }
+        storage.set(STORAGE_KEYS.JOURNEY_WELCOME_SEEN, true);
+        setMode(null);
     };
+
+    const title = mode === "welcome"
+        ? String(t.journeyWelcomeTitle).replace("{day}", String(dayNumber))
+        : String(t.journeyDayOf).replace("{day}", String(dayNumber)).replace("{total}", String(JOURNEY_DAYS));
+    const message = mode === "welcome" ? String(t.journeyWelcomeBody) : String(t[`journeyMilestone${daysLeft}`]);
+    const action = mode === "welcome" ? String(t.journeyWelcomeStart) : String(t.journeyMilestoneClose);
 
     return (
         <Dialog open onOpenChange={open => { if (!open) close(); }}>
@@ -31,14 +45,10 @@ export default function JourneyMilestoneDialog({ daysLeft, dayNumber }: { daysLe
                     className="mx-auto h-40 w-full"
                     fallback={<div className="h-40 w-full" />}
                 />
-                <DialogTitle className="text-xl text-[rgb(var(--color-text-strong))]">
-                    {String(t.journeyDayOf).replace("{day}", String(dayNumber)).replace("{total}", String(JOURNEY_DAYS))}
-                </DialogTitle>
-                <DialogDescription className="text-[15px] text-[rgb(var(--color-text))]">
-                    {String(t[`journeyMilestone${milestone}`])}
-                </DialogDescription>
+                <DialogTitle className="text-xl text-[rgb(var(--color-text-strong))]">{title}</DialogTitle>
+                <DialogDescription className="text-[15px] text-[rgb(var(--color-text))]">{message}</DialogDescription>
                 <Button size="lg" className="w-full rounded-xl text-[rgb(var(--color-accent-foreground))]" onClick={close}>
-                    {String(t.journeyMilestoneClose)}
+                    {action}
                 </Button>
             </DialogContent>
         </Dialog>
