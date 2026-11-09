@@ -35,4 +35,11 @@ export const journeyID = {
     journeyDayDone: "selesai",
     journeyDayNotDone: "belum",
     journeyDayToday: "hari ini",
+    journeyMilestoneClose: "Lanjut",
+    journeyMilestone100: "100 hari menuju Ramadan. Bukan buat jadi sempurna, tapi buat siap. Yuk mulai.",
+    journeyMilestone75: "Tersisa 75 hari, dan kamu masih di sini. Itu intinya.",
+    journeyMilestone50: "50 hari lagi. Kebiasaan kecil diam-diam menumpuk.",
+    journeyMilestone30: "30 hari lagi. Saatnya mulai latihan Ramadan.",
+    journeyMilestone10: "10 hari lagi. Selesaikan dengan kuat, bukan sempurna.",
+    journeyMilestone1: "Ramadan hampir tiba. Semoga Allah mudahkan untukmu.",
 } as const;

@@ -47,6 +47,8 @@ export const STORAGE_KEYS = {
 
   // Ramadan journey (local dates, YYYY-MM-DD, on which the day's habit was done)
   JOURNEY_DONE_DATES: 'journey_done_dates',
+  // Journey milestones (days-left values) already celebrated
+  JOURNEY_MILESTONES_SEEN: 'journey_milestones_seen',
 
   // Quran
   QURAN_LAST_READ: 'quran_last_read',

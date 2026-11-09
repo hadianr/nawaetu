@@ -76,3 +76,11 @@ export function getRecentDays(now: Date, doneDates: string[], count = 7): Journe
         return { date, done: done.has(date), isToday: index === count - 1 };
     });
 }
+
+/** Days-left values that earn a celebration. */
+export const JOURNEY_MILESTONES = [100, 75, 50, 30, 10, 1] as const;
+
+/** The milestone to celebrate today, or null if none or already seen. Joining after the day passes skips it. */
+export function getJourneyMilestone(daysLeft: number, seen: number[]): number | null {
+    return (JOURNEY_MILESTONES as readonly number[]).includes(daysLeft) && !seen.includes(daysLeft) ? daysLeft : null;
+}

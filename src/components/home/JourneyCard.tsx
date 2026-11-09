@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
+import JourneyMilestoneDialog from "@/components/home/JourneyMilestoneDialog";
 import { Button } from "@/components/ui/button";
+import LottieMoment from "@/components/ui/LottieMoment";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { getStreakRepository } from "@/core/repositories/streak.repository";
@@ -133,14 +135,18 @@ export default function JourneyCard() {
 
                 <div className="mt-4">
                     {doneToday ? (
-                        <motion.p
+                        <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
                             role="status"
                             className="flex min-h-12 items-center gap-2 rounded-xl bg-[rgb(var(--color-primary))]/15 px-4 text-sm text-[rgb(var(--color-text))]"
                         >
-                            <CheckIcon className="size-5 shrink-0 text-[rgb(var(--color-primary))]" />
+                            <LottieMoment
+                                src="/lottie/flame.lottie"
+                                className="size-9 shrink-0"
+                                fallback={<CheckIcon className="size-5 shrink-0 text-[rgb(var(--color-primary))]" />}
+                            />
                             {String(t.journeyDone)}
-                        </motion.p>
+                        </motion.div>
                     ) : (
                         <>
                             <Button size="lg" className="w-full rounded-xl text-[rgb(var(--color-accent-foreground))]" onClick={markDone}>
@@ -188,6 +194,7 @@ export default function JourneyCard() {
                     </span>
                 </div>
             </section>
+            <JourneyMilestoneDialog daysLeft={journey.daysLeft} dayNumber={journey.dayNumber} />
         </MotionConfig>
     );
 }

@@ -14,6 +14,7 @@ vi.mock("@/context/LocaleContext", () => ({ useLocale: () => ({ t: BASE_SETTINGS
 vi.mock("@/core/infrastructure/storage", () => ({
     getStorageService: () => ({ getOptional: mockGetOptional, set: mockSet }),
 }));
+vi.mock("@/components/ui/LottieMoment", () => ({ default: ({ fallback }: { fallback?: React.ReactNode }) => <>{fallback}</> }));
 vi.mock("@/core/repositories/streak.repository", () => ({
     getStreakRepository: () => ({ updateStreak: mockUpdateStreak }),
 }));

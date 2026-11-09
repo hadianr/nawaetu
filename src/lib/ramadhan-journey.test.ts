@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getRamadhanJourney, getRecentDays, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
+import { getJourneyMilestone, getRamadhanJourney, getRecentDays, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 
 const at = (iso: string) => new Date(`${iso}T10:00:00`);
 
@@ -57,5 +57,18 @@ describe("getRecentDays", () => {
         expect(getRecentDays(at("2027-01-02"), [], 4).map(day => day.date)).toEqual([
             "2026-12-30", "2026-12-31", "2027-01-01", "2027-01-02",
         ]);
+    });
+});
+
+describe("getJourneyMilestone", () => {
+    it("celebrates a milestone day once", () => {
+        expect(getJourneyMilestone(75, [])).toBe(75);
+        expect(getJourneyMilestone(75, [75])).toBeNull();
+        expect(getJourneyMilestone(1, [100, 75])).toBe(1);
+    });
+
+    it("ignores ordinary days", () => {
+        expect(getJourneyMilestone(74, [])).toBeNull();
+        expect(getJourneyMilestone(0, [])).toBeNull();
     });
 });
