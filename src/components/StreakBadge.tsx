@@ -7,6 +7,7 @@ import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } f
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useStreak } from "@/hooks/useStreak";
+import { useStreakDates } from "@/hooks/useStreakDates";
 import { usePlayerStats } from "@/lib/habits/leveling";
 import { mapStreakAchievementToShareData } from "@/lib/share/share-mappers";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -16,6 +17,7 @@ import {
 } from "@/core/repositories/streak.repository";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
+import LottieMoment from "@/components/ui/LottieMoment";
 import { toast } from "sonner";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 import {
@@ -50,19 +52,6 @@ interface CanonicalProgression {
   };
 }
 
-function consecutiveDates(lastDate: string, count: number): Set<string> {
-  const result = new Set<string>();
-  const end = new Date(`${lastDate}T00:00:00Z`);
-  if (Number.isNaN(end.getTime())) return result;
-
-  for (let offset = 0; offset < count; offset++) {
-    const date = new Date(end);
-    date.setUTCDate(end.getUTCDate() - offset);
-    result.add(date.toISOString().slice(0, 10));
-  }
-  return result;
-}
-
 export default function StreakBadge({ showLabel = false, modalOnly = false, open, onOpenChange }: StreakBadgeProps) {
   const { locale, t } = useLocale();
   const { data: session, status } = useSession();
@@ -90,7 +79,15 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
           description: milestone
             ? t.streakCelebrationReward.replace("{hasanah}", String(milestone.xp))
             : t.streakCelebrationKeepGoing,
-          icon: <AppIcon name={milestone?.iconKey ?? "sparkles"} size="sm" tone="primary" />,
+          icon: milestone
+            ? <AppIcon name={milestone.iconKey ?? "sparkles"} size="sm" tone="primary" />
+            : (
+              <LottieMoment
+                src="/lottie/flame.lottie"
+                className="size-7"
+                fallback={<AppIcon name="sparkles" size="sm" tone="primary" />}
+              />
+            ),
           action: {
             label: t.streakCelebrationView,
             onClick: () => setDetailsOpen(true),
@@ -114,7 +111,6 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
   const canonical = cachedProgression && session?.user?.id && cachedProgression.userId === session.user.id
     ? cachedProgression
     : null;
-  const canonicalDays = canonical?.streak?.days;
   const currentStreak = mounted ? display.streak : 0;
   const isActiveToday = mounted && display.isActiveToday;
   const isLost = mounted && display.isLost;
@@ -123,26 +119,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
     ? Math.min(100, Math.round((currentStreak / nextMilestone.days) * 100))
     : 100;
 
-  const activeDates = useMemo(() => {
-    if (canonicalDays) {
-      return new Set(
-        canonicalDays
-          .filter((day) => day.status !== "frozen")
-          .map((day) => day.localDate.slice(0, 10)),
-      );
-    }
-    return consecutiveDates(streak.lastActiveDate, streak.currentStreak);
-  }, [canonicalDays, streak.currentStreak, streak.lastActiveDate]);
-  const protectedDates = useMemo(() => {
-    if (canonicalDays) {
-      return new Set(
-        canonicalDays
-          .filter((day) => day.status === "frozen")
-          .map((day) => day.localDate.slice(0, 10)),
-      );
-    }
-    return new Set(streak.protectedDates);
-  }, [canonicalDays, streak.protectedDates]);
+  const { activeDates, protectedDates } = useStreakDates();
   const week = useMemo(() => {
     const today = new Date();
     return Array.from({ length: 7 }, (_, index) => {
