@@ -1,22 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Flame } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { getTranslationText, useLocale } from "@/context/LocaleContext";
+import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import {
-  STREAK_ACHIEVEMENT_EVENT,
-  type StreakAchievementEventDetail,
-} from "@/core/repositories/streak.repository";
 import { useStreak } from "@/hooks/useStreak";
-import { AppIcon } from "@/components/ui/AppIcon";
-import LottieMoment from "@/components/ui/LottieMoment";
 import { cn } from "@/lib/utils";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
-import { toast } from "sonner";
+import { useStreakCelebration } from "@/hooks/useStreakCelebration";
 
 const StreakBadgeDetails = dynamic(() => import("@/components/StreakBadge"), {
   ssr: false,
@@ -33,6 +27,7 @@ export default function StreakBadgeSummary() {
   const { data: session, status } = useSession();
   const { display } = useStreak();
   const [detailsOpen, setDetailsOpen] = useState(false);
+  useStreakCelebration(() => setDetailsOpen(true));
   const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
   const isLoggedIn = status === "authenticated";
   const currentStreak = mounted ? display.streak : 0;
@@ -44,44 +39,6 @@ export default function StreakBadgeSummary() {
     cachedProgression?.userId && session?.user?.id && cachedProgression.userId === session.user.id,
   );
 
-  useEffect(() => {
-    const celebrate = (event: Event) => {
-      const { streak, milestone } = (event as CustomEvent<StreakAchievementEventDetail>).detail;
-      const localizedMilestone = milestone ? getTranslationText(t, `streakMilestone${milestone.days}`) : null;
-
-      toast.success(
-        localizedMilestone
-          ? t.streakCelebrationMilestone.replace("{milestone}", localizedMilestone)
-          : t.streakCelebrationExtended.replace("{count}", String(streak.currentStreak)),
-        {
-          description: milestone
-            ? t.streakCelebrationReward.replace("{hasanah}", String(milestone.xp))
-            : t.streakCelebrationKeepGoing,
-          icon: milestone
-            ? <AppIcon name={milestone.iconKey ?? "sparkles"} size="sm" tone="primary" />
-            : (
-              <LottieMoment
-                src="/lottie/flame.lottie"
-                className="size-7"
-                fallback={<AppIcon name="sparkles" size="sm" tone="primary" />}
-              />
-            ),
-          action: {
-            label: t.streakCelebrationView,
-            onClick: () => setDetailsOpen(true),
-          },
-        },
-      );
-      trackStreakEvent(milestone ? "milestone_reached" : "streak_extended", {
-        userMode: isLoggedIn ? "logged_in" : "guest",
-        syncState: hasCanonicalProgression ? "canonical" : "local",
-        streakDays: streak.currentStreak,
-      });
-    };
-
-    window.addEventListener(STREAK_ACHIEVEMENT_EVENT, celebrate);
-    return () => window.removeEventListener(STREAK_ACHIEVEMENT_EVENT, celebrate);
-  }, [hasCanonicalProgression, isLoggedIn, t]);
 
   return (
     <>
@@ -110,6 +67,7 @@ export default function StreakBadgeSummary() {
       {detailsOpen && (
         <StreakBadgeDetails
           modalOnly
+          celebrate={false}
           open
           onOpenChange={setDetailsOpen}
         />
