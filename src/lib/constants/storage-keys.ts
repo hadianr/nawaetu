@@ -45,6 +45,9 @@ export const STORAGE_KEYS = {
   // Missions
   COMPLETED_MISSIONS: 'completed_missions',
 
+  // Ramadan journey (last local date the day's habit was done)
+  JOURNEY_LAST_DONE: 'journey_last_done',
+
   // Quran
   QURAN_LAST_READ: 'quran_last_read',
   QURAN_BOOKMARKS: 'nawaetu_bookmarks',
