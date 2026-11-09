@@ -12,10 +12,17 @@ vi.mock("@/core/infrastructure/storage", () => ({
 }));
 vi.mock("@/components/ui/LottieMoment", () => ({ default: () => <span data-testid="lottie" /> }));
 
+const store = (values: { seen?: number[]; done?: string[]; welcomed?: boolean }) =>
+    mockGetOptional.mockImplementation((key: string) => ({
+        journey_milestones_seen: values.seen ?? null,
+        journey_done_dates: values.done ?? null,
+        journey_welcome_seen: values.welcomed ?? null,
+    } as Record<string, unknown>)[key] ?? null);
+
 describe("JourneyMilestoneDialog", () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockGetOptional.mockReturnValue(null);
+        store({});
     });
 
     it("celebrates a milestone day with its message", () => {
@@ -25,18 +32,37 @@ describe("JourneyMilestoneDialog", () => {
         expect(screen.getByText(/75 days left/)).toBeTruthy();
     });
 
-    it("remembers it was seen when closed, so it never shows twice", () => {
+    it("remembers a milestone was seen, so it never shows twice, and counts as welcomed", () => {
         render(<JourneyMilestoneDialog daysLeft={75} dayNumber={26} />);
         fireEvent.click(screen.getByRole("button", { name: "Keep going" }));
         expect(mockSet).toHaveBeenCalledWith("journey_milestones_seen", [75]);
+        expect(mockSet).toHaveBeenCalledWith("journey_welcome_seen", true);
         expect(screen.queryByRole("dialog")).toBeNull();
     });
 
-    it("stays closed on ordinary days and on already-seen milestones", () => {
-        const { rerender } = render(<JourneyMilestoneDialog daysLeft={74} dayNumber={27} />);
+    it("welcomes someone starting mid-way, once, with their real day number", () => {
+        render(<JourneyMilestoneDialog daysLeft={61} dayNumber={40} />);
+        expect(screen.getByText("You're starting on day 40")).toBeTruthy();
+        expect(screen.getByText(/no need to catch up/)).toBeTruthy();
+        fireEvent.click(screen.getByRole("button", { name: "Start today" }));
+        expect(mockSet).toHaveBeenCalledWith("journey_welcome_seen", true);
+        expect(mockSet).not.toHaveBeenCalledWith("journey_milestones_seen", expect.anything());
         expect(screen.queryByRole("dialog")).toBeNull();
-        mockGetOptional.mockReturnValue([75]);
-        rerender(<JourneyMilestoneDialog daysLeft={75} dayNumber={26} />);
+    });
+
+    it("stays closed for people who were already welcomed or already using the journey", () => {
+        const cases = [{ welcomed: true }, { done: ["2026-11-08"] }, { seen: [100] }];
+        for (const values of cases) {
+            store(values);
+            const { unmount } = render(<JourneyMilestoneDialog daysLeft={61} dayNumber={40} />);
+            expect(screen.queryByRole("dialog"), JSON.stringify(values)).toBeNull();
+            unmount();
+        }
+    });
+
+    it("stays closed on an already-seen milestone", () => {
+        store({ seen: [75], welcomed: true });
+        render(<JourneyMilestoneDialog daysLeft={75} dayNumber={26} />);
         expect(screen.queryByRole("dialog")).toBeNull();
     });
 });

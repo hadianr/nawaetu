@@ -49,6 +49,8 @@ export const STORAGE_KEYS = {
   JOURNEY_DONE_DATES: 'journey_done_dates',
   // Journey milestones (days-left values) already celebrated
   JOURNEY_MILESTONES_SEEN: 'journey_milestones_seen',
+  // Journey: the one-time welcome for people who start mid-way has been shown
+  JOURNEY_WELCOME_SEEN: 'journey_welcome_seen',
 
   // Quran
   QURAN_LAST_READ: 'quran_last_read',

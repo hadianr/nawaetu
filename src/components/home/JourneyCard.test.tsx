@@ -28,7 +28,8 @@ describe("JourneyCard", () => {
         vi.clearAllMocks();
         vi.useFakeTimers();
         vi.setSystemTime(new Date("2026-11-09T10:00:00"));
-        mockGetOptional.mockReturnValue(null);
+        // Welcomed already, so the one-time welcome dialog doesn't cover the card.
+        mockGetOptional.mockImplementation((key: string) => (key === "journey_welcome_seen" ? true : null));
         mockActiveDates = new Set();
     });
     afterEach(() => vi.useRealTimers());
@@ -66,5 +67,29 @@ describe("JourneyCard", () => {
         vi.setSystemTime(new Date("2026-04-01T10:00:00"));
         const { container } = render(<JourneyCard />);
         expect(container.firstChild).toBeNull();
+    });
+
+    it("names the phase in plain words and never shows a bare 'Reset'", () => {
+        render(<JourneyCard />);
+        expect(screen.getByText("Phase 1 · Set Your Intention")).toBeTruthy();
+        expect(screen.queryByText("Reset")).toBeNull();
+    });
+
+    it("shows today's habit with its source, opening the full dalil", () => {
+        render(<JourneyCard />);
+        const link = screen.getByRole("button", { name: /^Source: / });
+        expect(link.textContent).toMatch(/Source: (Bukhari|Muslim|Tirmidzi|Abu Dawud|Ahmad|Ibn Majah|Nasa'i) No\./);
+        fireEvent.click(link);
+        expect(screen.getByRole("dialog")).toBeTruthy();
+    });
+
+    it("explains the program, phases and sources from the info button", () => {
+        render(<JourneyCard />);
+        fireEvent.click(screen.getByRole("button", { name: "About the 100-day program" }));
+        expect(screen.getByText("About 100 Days to Ramadan")).toBeTruthy();
+        expect(screen.getByText(/not an obligation/)).toBeTruthy();
+        expect(screen.getByText(/no need to catch up/)).toBeTruthy();
+        expect(screen.getByText("Phase 2 · Build Habits")).toBeTruthy();
+        expect(screen.getByRole("button", { name: "Source: Quran 2:183" })).toBeTruthy();
     });
 });
