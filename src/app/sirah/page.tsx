@@ -34,6 +34,7 @@ export default function SirahDashboardPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
     const [isQuizDoneToday, setIsQuizDoneToday] = useState(false);
+    const [dailyHighlight, setDailyHighlight] = useState<ReturnType<typeof getDailySirahHighlight> | null>(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -44,11 +45,11 @@ export default function SirahDashboardPage() {
             queueMicrotask(() => {
                 setCompletedSectionIds(completed);
                 setIsQuizDoneToday(lastClaimed === todayStr);
+                // Date-dependent: compute after mount so SSR (UTC) and client day can't mismatch.
+                setDailyHighlight(getDailySirahHighlight());
             });
         }
     }, []);
-
-    const dailyHighlight = useMemo(() => getDailySirahHighlight(), []);
 
     const filteredChapters = useMemo(() => {
         return SIRAH_CHAPTERS.filter((chap) => {
