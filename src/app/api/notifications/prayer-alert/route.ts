@@ -75,7 +75,7 @@ function isTimeInWindow(currentTime: string, rawPrayerTime: string): boolean {
 // base calculation. Setting Maghrib tune to 0 — do NOT add extra correction here.
 // Other prayers (Fajr, Dhuhr, Asr, Isha, Imsak) use standard ikhtiyath offsets.
 async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<Record<string, string> | null> {
-    const cacheKey = `${lat.toFixed(2)}_${lng.toFixed(2)}_${dateStr}_${method}`;
+    const cacheKey = `${lat.toFixed(1)}_${lng.toFixed(1)}_${dateStr}_${method}`;
 
     if (prayerTimesCache.has(cacheKey)) {
         return prayerTimesCache.get(cacheKey) ?? null;
@@ -242,7 +242,8 @@ export async function POST(req: NextRequest) {
                 const timezone = inferTimezoneFromCoords(lat, lng, sub.timezone);
 
                 // Key based on rounded location and timezone
-                const key = `${lat.toFixed(2)}_${lng.toFixed(2)}_${timezone}`;
+                // shortcut: 0.1° (~11km) cells share one Aladhan call (<~15s timing drift); tighten if accuracy complaints
+                const key = `${lat.toFixed(1)}_${lng.toFixed(1)}_${timezone}`;
 
                 if (!groups.has(key)) {
                     groups.set(key, { lat, lng, timezone, subs: [] });
