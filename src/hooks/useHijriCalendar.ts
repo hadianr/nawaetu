@@ -183,7 +183,10 @@ export function useHijriCalendar(initialView: HijriCalendarViewMode = "month") {
             setAllDays(parsed);
             showMonth(parsed, key, mode);
         } catch (caught) {
-            captureClientException(caught, { source: "hijri-calendar" });
+            // A slow network hitting our fetch timeout is not actionable; the UI already shows the error state.
+            if (!(caught instanceof DOMException && caught.name === "TimeoutError")) {
+                captureClientException(caught, { source: "hijri-calendar" });
+            }
             setError("calendar_load_failed");
         } finally {
             setLoading(false);
