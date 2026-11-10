@@ -24,6 +24,8 @@ import { logger } from "@/lib/logger";
  * Analytics API endpoint for Web Vitals metrics
  * Receives performance metrics from client and logs them
  */
+export const maxDuration = 30;
+
 export async function POST(request: NextRequest) {
     try {
         const metric = await request.json() as WebVitalMetric;

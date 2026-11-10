@@ -39,6 +39,8 @@ const chatHistorySchema = z.object({
 });
 
 // GET: Fetch all chat sessions for the user
+export const maxDuration = 30;
+
 export async function GET() {
     try {
         const session = await getServerSession();

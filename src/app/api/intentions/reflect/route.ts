@@ -30,6 +30,8 @@ import { getServerSession } from "@/lib/auth";
  * 
  * Body: { user_token: string, intention_id: string, reflection_rating: number, reflection_text?: string }
  */
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();

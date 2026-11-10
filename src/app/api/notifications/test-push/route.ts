@@ -19,6 +19,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 
+// Seconds. FCM sends.
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
     try {
         const { token, title, body } = await req.json();

@@ -11,6 +11,9 @@ function parseMap(value: unknown): Record<string, string> {
   try { return JSON.parse(String(value)); } catch { return {}; }
 }
 
+// Seconds. FCM sends.
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) {

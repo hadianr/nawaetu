@@ -23,6 +23,8 @@ import { pushSubscriptions, users } from "@/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 
+export const maxDuration = 30;
+
 export async function GET(req: NextRequest) {
     const session = await getServerSession();
     if (!session?.user?.id) {

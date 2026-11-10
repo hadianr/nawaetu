@@ -24,6 +24,8 @@ import pkg from "../../../../package.json";
  * Enhanced API Health Check
  * Verifies both app server, database connectivity, and system resources
  */
+export const maxDuration = 30;
+
 export async function GET() {
     const startTime = Date.now();
     const dbStatus = await checkConnection();

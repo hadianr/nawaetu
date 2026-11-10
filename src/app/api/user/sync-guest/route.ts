@@ -90,6 +90,8 @@ const syncSchema = z.object({
     }).optional(),
 });
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession();

@@ -23,6 +23,8 @@ import { chatSessions } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 
+export const maxDuration = 30;
+
 export async function DELETE(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> } // Next.js 15+ param is promise

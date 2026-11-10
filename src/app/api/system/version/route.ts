@@ -20,6 +20,8 @@ import { NextResponse } from "next/server";
 import { APP_CONFIG } from "@/config/app-config";
 
 // Version is fixed per-deploy — cache at CDN for 1 hour
+export const maxDuration = 30;
+
 export const revalidate = 3600;
 
 export async function GET() {

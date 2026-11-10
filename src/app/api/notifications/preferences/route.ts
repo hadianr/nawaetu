@@ -21,6 +21,8 @@ import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
     try {
         const { token, prayerPreferences, userLocation, timezone } = await req.json();

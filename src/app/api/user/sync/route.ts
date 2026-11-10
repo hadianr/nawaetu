@@ -173,6 +173,9 @@ function convertLegacyBodyToEntries(value: unknown): SyncQueueEntry[] {
     return entries;
 }
 
+// Seconds. up to 200 entries, written one at a time.
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse | { error: string }>> {
     try {
         const dbStatus = await checkConnection();

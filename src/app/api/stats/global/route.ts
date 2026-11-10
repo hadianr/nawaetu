@@ -3,6 +3,8 @@ import { db } from "@/db";
 import { userCompletedMissions, userStreakDays, users } from "@/db/schema";
 import { sql } from "drizzle-orm";
 
+export const maxDuration = 30;
+
 export async function GET() {
   try {
     // One query on purpose: several concurrent queries on our single pooled connection can wedge it.

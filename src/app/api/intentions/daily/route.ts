@@ -34,6 +34,8 @@ import { logger } from "@/lib/logger";
  * 
  * Body: { user_token: string, niat_text: string, niat_date?: string, is_private?: boolean }
  */
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
     try {
         // Health check

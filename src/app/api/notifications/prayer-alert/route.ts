@@ -136,6 +136,9 @@ function inferTimezoneFromCoords(lat: number, lng: number, rawTz?: string | null
     return rawTz || "UTC";
 }
 
+// Seconds. FCM sends; the cron runs every minute, so a longer run overlaps the next one anyway.
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
     try {
         const authHeader = req.headers.get("authorization");

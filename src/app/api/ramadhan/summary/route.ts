@@ -5,6 +5,8 @@ import { ramadhanFastingLog, dailyActivities, ramadhanTarawehLog, ramadhanDailyL
 import { eq, and, gte, lte } from 'drizzle-orm';
 import { logger } from "@/lib/logger";
 
+export const maxDuration = 30;
+
 export async function GET(request: Request) {
     try {
         const session = await getServerSession();

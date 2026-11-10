@@ -23,6 +23,9 @@ import { transactions, users } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 
+// Seconds. two Mayar calls in a row, 10 s each.
+export const maxDuration = 60;
+
 export async function GET(req: NextRequest) {
     void req;
     try {
