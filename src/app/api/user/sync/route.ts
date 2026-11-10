@@ -31,6 +31,9 @@ interface SyncResponse {
     message: string;
 }
 
+// Twice the client queue size (100), so honest clients never hit it.
+const MAX_SYNC_ENTRIES = 200;
+
 async function processSyncEntry(repo: DbSyncRepository, entry: SyncQueueEntry) {
     const parsed = SyncEntrySchema.safeParse(entry);
     if (!parsed.success) throw new Error("Invalid sync entry format");
@@ -245,13 +248,18 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             : convertLegacyBodyToEntries(remainingPayload);
 
         if (rawEntries.length > 0) {
-            const results = await Promise.allSettled(rawEntries.map((entry: SyncQueueEntry) => processSyncEntry(repo, entry)));
-
-            results.forEach((res, i) => {
-                const entry = rawEntries[i];
-                if (res.status === "fulfilled") synced.push(res.value);
-                else failed.push({ id: entry.id, error: res.reason?.message || "Sync failed" });
-            });
+            // One at a time: overlapping queries on our single pooled connection can wedge it.
+            // The client queue holds at most 100 entries; the rest are reported as failed so they are retried.
+            for (const entry of rawEntries.slice(0, MAX_SYNC_ENTRIES)) {
+                try {
+                    synced.push(await processSyncEntry(repo, entry));
+                } catch (error) {
+                    failed.push({ id: entry.id, error: error instanceof Error && error.message ? error.message : "Sync failed" });
+                }
+            }
+            for (const entry of rawEntries.slice(MAX_SYNC_ENTRIES)) {
+                failed.push({ id: entry.id, error: "Too many entries in one request; retry the rest" });
+            }
 
             return NextResponse.json({ success: true, synced, failed, message: "Sync complete" });
         }
