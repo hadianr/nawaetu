@@ -29,6 +29,11 @@ function hijriDayAndMonth(utcMs: number): { day: number; month: number } {
     return { day: get("day"), month: get("month") };
 }
 
+/** The user's Hijri day and month today, with the same offset as the countdown. */
+export function getHijriToday(now: Date, adjustment = 0): { day: number; month: number } {
+    return hijriDayAndMonth(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 12) + adjustment * DAY_MS);
+}
+
 /**
  * @param now current moment (local calendar date is used)
  * @param adjustment same Hijri offset as Settings: +1 means the user's Hijri date is a day ahead.
@@ -57,6 +62,14 @@ export function getRamadhanJourney(now: Date, adjustment = 0): RamadhanJourney {
         dayNumber: active ? JOURNEY_DAYS - daysLeft + 1 : 0,
         phase: !active ? null : daysLeft > 70 ? "reset" : daysLeft > 30 ? "build" : "sharpen",
     };
+}
+
+const PHASE_RANGES: Record<JourneyPhase, [from: number, to: number]> = { reset: [100, 71], build: [70, 31], sharpen: [30, 1] };
+
+/** Which day of its phase the user is on, e.g. day 10 of 30. Same ranges as the About dialog. */
+export function getPhaseProgress(phase: JourneyPhase, daysLeft: number): { day: number; total: number } {
+    const [from, to] = PHASE_RANGES[phase];
+    return { day: from - daysLeft + 1, total: from - to + 1 };
 }
 
 /** Days-left values that earn a celebration. */
