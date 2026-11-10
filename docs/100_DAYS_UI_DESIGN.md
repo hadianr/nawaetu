@@ -135,3 +135,20 @@ Also checked: no horizontal overflow at 320px, button height 48px.
 1. Should the card appear above or below the Intention Journal? (v1: above; the journal is the core feature, so test below.)
 2. Should the ring show days left or days done as its centre number? (Design uses days left because it is the user's question.)
 3. Final 10 days: accent colour only, or also a short sentence?
+
+## 10. Who owns what on Home (no overlap rule)
+
+Each thing lives in one card. The 100-day card links to the owner and never keeps a second copy.
+
+| Topic | Owner | The 100-day card does |
+| --- | --- | --- |
+| Niat | Jurnal Niat Harian | Nothing. No niat habit (removed: it duplicated the journal) |
+| Five prayers | Check-in Sholat | Nothing. No prayer habit (removed). The phase goal only says "pray on time" |
+| Streak count | Header badge and streak dialog | Shows the week in the details and opens the same dialog. Never keeps its own record |
+| Quran and dhikr | Quran and Tasbih screens, Fokus Harian missions | The habit sends the user there and ticks from the same stored numbers |
+| Owed fasts, Mon/Thu, Ayyamul Bidh, Sha'ban fasts | The card's fasting row (follows the user's madhhab) | Owns it. The Sya'ban missions `qadha_puasa` and `syaban_fasting` were removed from Fokus Harian for this reason |
+| Phases and countdown | The 100-day card | Owns it |
+
+Habits left in the card are the ones no other card covers: gratitude, speaking well, sadaqah, family ties, sleep, dua, phone-free time, suhoor practice, plus the Quran and dhikr nudges above.
+
+Open item: with habits 4 and 11 gone, the Build and Sharpen phases rotate through only four habits each (it repeats every four days). New habits need a library hadith and reviewer approval first.
