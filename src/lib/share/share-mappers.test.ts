@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   mapDailySpiritToShareData,
   mapDuaToShareData,
+  mapEvidenceToShareData,
   mapHadithToShareData,
   mapQuranVerseToShareData,
   mapStreakAchievementToShareData,
@@ -134,4 +135,33 @@ describe("content share mappers", () => {
       sourceText: "Nawaetu - Jejak Istiqamah",
     });
   });
+});
+
+describe("mapEvidenceToShareData", () => {
+    const evidence = {
+        id: "e1",
+        shortRef: "HR. Bukhari No. 6465",
+        shortRef_en: "Bukhari No. 6465",
+        arabic: "أَحَبُّ",
+        latin: "Ahabbu",
+        translation: "Amalan yang dicintai",
+        translation_en: "The most beloved deeds",
+        source: "HR. Bukhari No. 6465 — Aisyah RA",
+        source_en: "Bukhari No. 6465 — Aisha RA",
+    };
+
+    it("uses the reference as the title, in the user's language", () => {
+        expect(mapEvidenceToShareData(evidence, "id")).toEqual({
+            id: "e1", title: "HR. Bukhari No. 6465", arabic: "أَحَبُّ", latin: "Ahabbu",
+            translation: "Amalan yang dicintai", sourceText: "HR. Bukhari No. 6465 — Aisyah RA",
+        });
+        expect(mapEvidenceToShareData(evidence, "en")).toMatchObject({
+            title: "Bukhari No. 6465", translation: "The most beloved deeds", sourceText: "Bukhari No. 6465 — Aisha RA",
+        });
+    });
+
+    it("falls back to Indonesian text when there is no English, and to empty Arabic", () => {
+        const data = mapEvidenceToShareData({ id: "e2", shortRef: "QS. Al-Baqarah: 183", translation: "t", source: "s" }, "en");
+        expect(data).toMatchObject({ title: "QS. Al-Baqarah: 183", translation: "t", sourceText: "s", arabic: "" });
+    });
 });

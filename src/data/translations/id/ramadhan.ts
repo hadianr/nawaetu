@@ -128,6 +128,13 @@ export const ramadhanID = {
     // Evidence Badge
     evidenceModalTitle: "Dalil",
     evidenceViewFull: "Lihat dalil lengkap",
+    evidenceClose: "Tutup",
+    evidenceShareStory: "Bagikan ke story",
+    evidenceCopy: "Salin",
+    evidenceCopied: "Tersalin",
+    evidenceCopyFailed: "Gagal menyalin",
+    evidenceKindQuran: "Al-Qur'an",
+    evidenceKindHadith: "Hadits",
     evidenceTranslation: "Terjemahan",
 
     // Common Button

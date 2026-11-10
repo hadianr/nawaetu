@@ -19,11 +19,19 @@
  */
 
 import { useState } from "react";
-import { X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import dynamic from "next/dynamic";
+import { Copy, Share2 } from "lucide-react";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import type { EvidenceData } from "@/data/ramadhan";
 import { useLocale } from "@/context/LocaleContext";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { mapEvidenceToShareData } from "@/lib/share/share-mappers";
+
+const StoryShareModal = dynamic(
+    () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
+    { ssr: false },
+);
 
 interface DalilBadgeProps {
     dalil: EvidenceData;
@@ -35,6 +43,7 @@ interface DalilBadgeProps {
 
 export default function DalilBadge({ dalil, variant = "inline", label }: DalilBadgeProps) {
     const [showDetail, setShowDetail] = useState(false);
+    const [shareOpen, setShareOpen] = useState(false);
     const { t, locale } = useLocale();
 
     // Localized fields with fallback
@@ -42,7 +51,24 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
     const localizedTranslation = locale === 'en' && dalil.translation_en ? dalil.translation_en : dalil.translation;
     const localizedSource = locale === 'en' && dalil.source_en ? dalil.source_en : dalil.source;
 
+    const copy = async () => {
+        const text = [dalil.arabic, localizedTranslation, localizedSource].filter(Boolean).join("\n\n");
+        try {
+            await navigator.clipboard.writeText(text);
+            toast.success(String(t.evidenceCopied));
+        } catch {
+            toast.error(String(t.evidenceCopyFailed));
+        }
+    };
+
+    // The story modal is not a Radix layer, so close the dalil dialog first (as the streak dialog does) and bring it back after.
+    const share = () => {
+        setShowDetail(false);
+        setShareOpen(true);
+    };
+
     return (
+        <>
         <Dialog open={showDetail} onOpenChange={setShowDetail}>
             {/* Badge trigger */}
             <DialogTrigger asChild>
@@ -82,80 +108,87 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                 )}
             </DialogTrigger>
 
-            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)] rounded-3xl z-[120]">
-                {/* Combined Header & Handle */}
-                <DialogHeader className="pointer-events-auto sticky top-0 z-[150] bg-[rgb(var(--color-surface))]/95 backdrop-blur-md border-b border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] flex flex-row items-center justify-between gap-3 px-6 py-4 space-y-0 text-left">
-                    <DialogTitle className="font-bold text-[rgb(var(--color-text-strong))] text-base tracking-tight leading-tight flex-1">
-                        {localizedShortRef}
-                    </DialogTitle>
-                    <DialogClose asChild>
-                        <button
-                            type="button"
-                            className="pointer-events-auto relative z-[200] shrink-0 rounded-full bg-[rgb(var(--color-surface-subtle))] p-3 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface))] transition-all active:scale-95 cursor-pointer touch-auto"
-                            aria-label="Close"
-                        >
-                            <X className="h-6 w-6" />
-                        </button>
-                    </DialogClose>
+            {/* Theme tokens only (no fixed shadows or blurs), so it reads on every theme, light or dark. */}
+            <DialogContent
+                closeLabel={String(t.evidenceClose)}
+                className="z-[120] max-h-[calc(100dvh-7rem)] max-w-[min(28rem,calc(100%-2rem))] grid-rows-[auto_minmax(0,1fr)] gap-0 overflow-hidden rounded-2xl border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface))] p-0 text-[rgb(var(--color-text-strong))] motion-reduce:animate-none"
+            >
+                <DialogHeader className="flex-row items-center gap-3 border-b border-[rgb(var(--color-border))]/20 py-3 pl-5 pr-16 text-left">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/10">
+                        <AppIcon name="scroll" size="sm" tone="primary" />
+                    </span>
+                    <div className="min-w-0">
+                        <DialogTitle className="truncate text-base font-bold leading-tight">{localizedShortRef}</DialogTitle>
+                        <p className="text-xs text-[rgb(var(--color-text-muted))]">
+                            {String(/^QS\./.test(dalil.shortRef) ? t.evidenceKindQuran : t.evidenceKindHadith)}
+                        </p>
+                    </div>
                 </DialogHeader>
 
-                <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide max-h-[80vh]">
-                    <div className="space-y-6 pb-28">
-                        {/* Arabic text */}
-                        {dalil.arabic && (
-                            <div
-                                className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 backdrop-blur-md shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-floating)]"
-                            >
-                            <div className="text-right font-arabic leading-loose text-[rgb(var(--color-text-strong))] drop-shadow-lg"
-                                style={{
-                                    fontFamily: "var(--font-amiri)",
-                                    fontSize: "1.5rem",
-                                    fontWeight: "600",
-                                    textShadow: "0 2px 12px rgba(0,0,0,0.6)",
-                                    lineHeight: "2"
-                                }}
+                <div className="space-y-3 overflow-y-auto p-5">
+                    {dalil.arabic && (
+                        <div className="rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-primary))]/5 p-4">
+                            <p
+                                className="text-right text-2xl font-semibold leading-[2] text-[rgb(var(--color-text-strong))]"
+                                style={{ fontFamily: "var(--font-amiri)" }}
                                 dir="rtl"
                                 lang="ar"
                             >
                                 {dalil.arabic}
-                            </div>
-                            </div>
-                        )}
-
-                        {/* Latin */}
-                        {dalil.latin && (
-                            <div className="relative pl-4 pr-2">
-                                <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-full bg-[rgb(var(--color-border))]" />
-                                <p className="text-sm italic text-[rgb(var(--color-text))] leading-relaxed font-normal" style={{
-                                    textShadow: "0 1px 8px rgba(0,0,0,0.4)"
-                                }}>
-                                    &ldquo;{dalil.latin}&rdquo;
-                                </p>
-                            </div>
-                        )}
-
-                        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-4 backdrop-blur-sm shadow-[var(--shadow-card)]">
-                            <div className="text-[10px] font-bold uppercase tracking-wider mb-2.5 text-[rgb(var(--color-text-muted))]">
-                                {t.evidenceTranslation}
-                            </div>
-                            <div className="text-sm text-[rgb(var(--color-text))] leading-relaxed font-normal" style={{
-                                textShadow: "0 1px 8px rgba(0,0,0,0.4)",
-                                lineHeight: "1.7"
-                            }}>
-                                &ldquo;{localizedTranslation}&rdquo;
-                            </div>
+                            </p>
                         </div>
+                    )}
 
-                        {/* Source */}
-                        <div className="flex items-center gap-2 px-1">
-                            <span className="h-1 w-1 rounded-full bg-[rgb(var(--color-border))]" />
-                            <div className="text-[10px] font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-widest leading-relaxed">
-                                {localizedSource}
-                            </div>
-                        </div>
+                    {dalil.latin && (
+                        <p className="border-l-2 border-[rgb(var(--color-primary))]/30 pl-3 text-sm italic leading-relaxed text-[rgb(var(--color-text))]">
+                            &ldquo;{dalil.latin}&rdquo;
+                        </p>
+                    )}
+
+                    <div className="rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-4">
+                        <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{String(t.evidenceTranslation)}</p>
+                        <DialogDescription className="text-[15px] leading-relaxed text-[rgb(var(--color-text))]">
+                            &ldquo;{localizedTranslation}&rdquo;
+                        </DialogDescription>
+                    </div>
+
+                    <p className="text-[11px] font-medium uppercase leading-relaxed tracking-wider text-[rgb(var(--color-text-muted))]">
+                        {localizedSource}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            onClick={copy}
+                            className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 px-3 text-sm font-medium text-[rgb(var(--color-text-strong))] outline-none transition-colors hover:bg-[rgb(var(--color-primary))]/10 focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] motion-reduce:transition-none"
+                        >
+                            <Copy className="size-4" aria-hidden="true" />
+                            {String(t.evidenceCopy)}
+                        </button>
+                        {/* The story card draws the Arabic text, so a dalil without it is not offered for sharing. */}
+                        {dalil.arabic && (
+                            <button
+                                type="button"
+                                onClick={share}
+                                className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-[rgb(var(--color-primary))] px-3 text-sm font-semibold text-[rgb(var(--color-primary-foreground))] outline-none transition-colors hover:bg-[rgb(var(--color-primary-light))] focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--color-surface))] motion-reduce:transition-none"
+                            >
+                                <Share2 className="size-4" aria-hidden="true" />
+                                {String(t.evidenceShareStory)}
+                            </button>
+                        )}
                     </div>
                 </div>
             </DialogContent>
         </Dialog>
+        {shareOpen && (
+            <StoryShareModal
+                item={mapEvidenceToShareData(dalil, locale)}
+                onClose={() => {
+                    setShareOpen(false);
+                    setShowDetail(true);
+                }}
+            />
+        )}
+        </>
     );
 }
