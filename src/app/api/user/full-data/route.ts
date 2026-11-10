@@ -19,6 +19,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
+import { inSequence } from "@/lib/db-sequential";
 import { logger } from "@/lib/logger";
 import {
     bookmarks,
@@ -55,7 +56,7 @@ export async function GET() {
             progressState,
             streakState,
             streakDays,
-        ] = await Promise.all([
+        ] = await inSequence([
             // 1. Profile & Settings
             db.query.users.findFirst({
                 where: eq(users.id, userId),
