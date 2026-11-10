@@ -160,37 +160,8 @@ export const RAMADHAN_MISSIONS: Mission[] = [
     }
 ];
 
+// Fasting in Sya'ban (qadha, voluntary fasts) is owned by the 100-day card's fasting row, which follows the user's madhhab.
 export const SYABAN_MISSIONS: Mission[] = [
-    {
-        id: 'qadha_puasa',
-        title: "Lunasi Qadha Puasa",
-        description: 'Segera lunasi hutang puasa sebelum Ramadhan',
-        category: 'fasting',
-        hasanahReward: 100,
-        iconKey: 'calendar',
-        ruling: 'obligatory',
-        type: 'tracker',
-        validationType: 'manual',
-        phase: 'ramadhan_prep',
-        gender: null,
-        dalil: 'HR. Bukhari no. 1950',
-        hadithId: 'hadith_ramadhan_diampuni'
-    },
-    {
-        id: 'syaban_fasting',
-        title: "Puasa Sunnah Sya'ban",
-        description: 'Perbanyak puasa sunnah di bulan Sya\'ban',
-        category: 'fasting',
-        hasanahReward: 50,
-        iconKey: 'moon',
-        ruling: 'sunnah',
-        type: 'daily',
-        validationType: 'manual',
-        phase: 'ramadhan_prep',
-        gender: null,
-        dalil: 'HR. Bukhari no. 1969',
-        hadithId: 'hadith_syaban_puasa'
-    },
     {
         id: 'syaban_quran',
         title: "Bulan Para Qurra'",
