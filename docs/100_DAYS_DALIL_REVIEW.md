@@ -10,7 +10,7 @@
 | # | Kebiasaan (ringkas) | Fase | Dalil (id di pustaka) | Catatan untuk peninjau |
 | --- | --- | --- | --- | --- |
 | 1 | 1 halaman Quran sudah cukup | 2, 3 | Bukhari 6465, amal yang terus-menerus walau sedikit (`hadith_istiqomah_sedikit`) | Cocok |
-| 2 | Tukar scroll dengan 5 ayat | 1 | Tirmidzi 2317, meninggalkan yang tidak bermanfaat (`hadith_meninggalkan_hal_unuse`, Hasan) | Cocok secara makna umum |
+| 2 | Baca beberapa ayat, sedikit pun cukup (dulu: "Tukar scroll dengan 5 ayat") | 1 | Bukhari 6465, amal yang terus-menerus walau sedikit (`hadith_istiqomah_sedikit`) | Angka "5 ayat" dan kata "scroll" dihapus: tidak ada dalil yang menyebutnya. Pertimbangkan QS. Al-Muzzammil: 20 (membaca yang mudah) setelah teksnya diverifikasi dan masuk pustaka |
 | 3 | Dzikir 1 menit | 1 | Muslim 2731, kalimat yang paling dicintai Allah (`hadith_dzikir`) | Cocok |
 | 4 | Satu sholat tepat waktu | 2, 3 | Bukhari 527 / Muslim 85 (`hadith_sholat_awal_waktu`) | Cocok |
 | 5 | Syukuri satu hal | 1 | Ahmad 18449, syukur atas yang sedikit (`hadith_syukur_nikmat_kecil`, Hasan) | **Cek derajat** |
@@ -44,3 +44,10 @@
 4. Penjelasan program menyebut jelas bahwa "100 hari" adalah program persiapan buatan Nawaetu, bukan kewajiban dan
    bukan amalan khusus dengan keutamaan tertentu.
 5. Fase 1 menyebut mencicil utang puasa, tetapi kartu belum terhubung ke pelacak qadha.
+
+## Pembaruan: kebiasaan yang dihapus agar tidak tumpang tindih dengan kartu lain
+
+- Kebiasaan 4 (sholat tepat waktu) dihapus dari kartu: sholat dimiliki kartu Check-in Sholat.
+- Kebiasaan 11 (luruskan niat untuk besok) dihapus: niat dimiliki Jurnal Niat Harian.
+- Hadits Bukhari 527 / Muslim 85 dan Bukhari 1 tidak dipakai lagi sebagai dalil kebiasaan harian. Bukhari 1 tetap menjadi dalil Fase 1.
+- Tersisa 4 kebiasaan untuk Fase 2 dan 3, jadi berulang tiap 4 hari. Kebiasaan baru perlu hadits terverifikasi.
