@@ -128,6 +128,13 @@ export const ramadhanEN = {
     // Evidence Badge
     evidenceModalTitle: "Evidence",
     evidenceViewFull: "View full evidence",
+    evidenceClose: "Close",
+    evidenceShareStory: "Share as story",
+    evidenceCopy: "Copy",
+    evidenceCopied: "Copied",
+    evidenceCopyFailed: "Couldn't copy",
+    evidenceKindQuran: "Quran",
+    evidenceKindHadith: "Hadith",
     evidenceTranslation: "Translation",
 
     // Common Buttons

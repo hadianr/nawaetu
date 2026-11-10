@@ -63,6 +63,33 @@ export function mapHadithToShareData(item: HadithLike, locale: string = "id"): S
     };
 }
 
+export interface EvidenceLike {
+    id: string;
+    shortRef: string;
+    shortRef_en?: string;
+    arabic?: string;
+    latin?: string;
+    translation: string;
+    translation_en?: string;
+    source: string;
+    source_en?: string;
+}
+
+/**
+ * Maps a dalil (ayah or hadith evidence) to ShareableCardData. The reference is the card title.
+ */
+export function mapEvidenceToShareData(item: EvidenceLike, locale: string = "id"): ShareableCardData {
+    const isEn = locale === "en";
+    return {
+        id: item.id,
+        title: isEn && item.shortRef_en ? item.shortRef_en : item.shortRef,
+        arabic: item.arabic ?? "",
+        latin: item.latin,
+        translation: isEn && item.translation_en ? item.translation_en : item.translation,
+        sourceText: isEn && item.source_en ? item.source_en : item.source,
+    };
+}
+
 /**
  * Maps Dua data structure to ShareableCardData
  */
