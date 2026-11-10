@@ -29,6 +29,8 @@ import { logger } from "@/lib/logger";
  * 
  * Supports both guest and authenticated users
  */
+export const maxDuration = 30;
+
 export async function GET(req: NextRequest) {
     const startTime = Date.now();
     const authHeader = req.headers.get("authorization");

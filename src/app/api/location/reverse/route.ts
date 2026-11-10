@@ -25,6 +25,8 @@ import { fetchWithTimeout } from "@/lib/utils/fetch";
 // By performing the fetch server-side, we bypass Safari iOS Safari Incognito ITP
 // and strict CORS rules that drop Nominatim/BigDataCloud requests.
 
+export const maxDuration = 30;
+
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);

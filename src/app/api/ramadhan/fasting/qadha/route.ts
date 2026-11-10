@@ -12,6 +12,8 @@ import { db } from "@/db";
 import { ramadhanFastingLog } from "@/db/schema";
 import { eq, and, ne } from "drizzle-orm";
 
+export const maxDuration = 30;
+
 export async function GET(req: NextRequest) {
     const session = await getServerSession();
     if (!session?.user?.id) {

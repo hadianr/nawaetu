@@ -24,6 +24,9 @@ import crypto from "crypto";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 
+// Seconds. Mayar call; the provider retries a failed webhook.
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
     try {
         const webhookSecret = process.env.MAYAR_WEBHOOK_SECRET;

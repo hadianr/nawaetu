@@ -155,6 +155,9 @@ function isRateLimitError(error: unknown): boolean {
     return status === 429 || message.includes('429') || message.includes('rate limit');
 }
 
+// Seconds. LLM call, 15 s timeout per attempt.
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession();

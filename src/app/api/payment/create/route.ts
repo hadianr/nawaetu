@@ -24,6 +24,9 @@ import { eq } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 
+// Seconds. Mayar call; failing early on a money flow does more harm than waiting.
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession();

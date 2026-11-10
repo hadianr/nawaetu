@@ -35,6 +35,8 @@ import {
 import { eq, desc } from "drizzle-orm";
 import { calculatePlayerStats } from "@/lib/habits/progression";
 
+export const maxDuration = 30;
+
 export async function GET() {
     try {
         const session = await getServerSession();

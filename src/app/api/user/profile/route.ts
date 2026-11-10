@@ -23,6 +23,8 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 
+export const maxDuration = 30;
+
 export async function PATCH(req: NextRequest) {
     try {
         const session = await getServerSession();

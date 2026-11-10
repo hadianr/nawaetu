@@ -23,6 +23,8 @@ import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, desc, sql, and } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 
+export const maxDuration = 30;
+
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);

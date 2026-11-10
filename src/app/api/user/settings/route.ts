@@ -23,6 +23,8 @@ import { inSequence } from "@/lib/db-sequential";
 import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+export const maxDuration = 30;
+
 export async function GET() {
     try {
         const session = await getServerSession();

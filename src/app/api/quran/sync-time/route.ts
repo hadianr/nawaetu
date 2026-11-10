@@ -12,6 +12,8 @@ function getLocalDateString() {
     return today.toISOString().split('T')[0];
 }
 
+export const maxDuration = 30;
+
 export async function GET() {
     try {
         const session = await getServerSession();

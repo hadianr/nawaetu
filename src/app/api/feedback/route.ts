@@ -28,6 +28,8 @@ const MAX_FEEDBACK_PER_HOUR = 5;
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const MAX_IMAGES_COUNT = 3;
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
     try {
         // 1. Health check

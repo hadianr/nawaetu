@@ -18,6 +18,8 @@ function escapeHtml(value: string) {
     return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+export const maxDuration = 30;
+
 export async function POST(request: NextRequest) {
     const session = await getServerSession();
     if (!session?.user?.id) return NextResponse.json({ error: "Please sign in before submitting support." }, { status: 401 });
