@@ -31,6 +31,14 @@ describe("JourneyMilestoneDialog", () => {
         expect(screen.getByText(/75 days left/)).toBeTruthy();
     });
 
+    it("shares the About dialog's hero and shows progress as a bar, without repeating the day count", () => {
+        render(<JourneyMilestoneDialog daysLeft={75} dayNumber={26} />);
+        expect(screen.getByTestId("lottie")).toBeTruthy();
+        expect(screen.getByText("75 days to go")).toBeTruthy();
+        expect(screen.getByRole("progressbar", { name: "Day 26 of 100" })).toBeTruthy();
+        expect(screen.getAllByText("Day 26 of 100")).toHaveLength(1);
+    });
+
     it("remembers a milestone was seen, so it never shows twice, and counts as welcomed", () => {
         render(<JourneyMilestoneDialog daysLeft={75} dayNumber={26} />);
         fireEvent.click(screen.getByRole("button", { name: "Keep going" }));
@@ -47,6 +55,14 @@ describe("JourneyMilestoneDialog", () => {
         expect(mockSet).toHaveBeenCalledWith("journey_welcome_seen", true);
         expect(mockSet).not.toHaveBeenCalledWith("journey_milestones_seen", expect.anything());
         expect(screen.queryByRole("dialog")).toBeNull();
+    });
+
+    it("lets a new user who owes fasts jump to the fasting tracker from the welcome", () => {
+        render(<JourneyMilestoneDialog daysLeft={61} dayNumber={40} />);
+        const link = screen.getByRole("link", { name: "I owe fasts from before" });
+        expect(link.getAttribute("href")).toBe("/ramadhan");
+        fireEvent.click(link);
+        expect(mockSet).toHaveBeenCalledWith("journey_welcome_seen", true);
     });
 
     it("stays closed for people who were already welcomed or already using the journey", () => {

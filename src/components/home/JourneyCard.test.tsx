@@ -24,14 +24,20 @@ vi.mock("@/hooks/useStreakDates", () => ({
 vi.mock("@/hooks/useStreak", () => ({
     useStreak: () => ({ streak: { longestStreak: mockActiveDates.size }, display: mockDisplay }),
 }));
+vi.mock("@/hooks/useFastingTracker", () => ({
+    useFastingTracker: () => ({ allLogs: {}, defaultMadzhab: null, markQadhaDone: vi.fn(), getPendingQadha: () => [] }),
+}));
 vi.mock("@/components/StreakBadge", () => ({ default: () => <div role="dialog">streak details</div> }));
 vi.mock("@/core/repositories/streak.repository", () => ({
     getStreakRepository: () => ({ updateStreak: mockUpdateStreak }),
 }));
 
+const expand = () => fireEvent.click(screen.getByRole("button", { name: "Show details" }));
+
 describe("JourneyCard", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        localStorage.clear();
         vi.useFakeTimers();
         vi.setSystemTime(new Date("2026-11-09T10:00:00"));
         // Welcomed already, so the one-time welcome dialog doesn't cover the card.
@@ -76,6 +82,7 @@ describe("JourneyCard", () => {
         mockActiveDates = new Set(["2026-11-08", "2026-11-07"]);
         mockProtectedDates = new Set(["2026-11-06"]);
         render(<JourneyCard />);
+        expand();
         const items = screen.getAllByRole("listitem");
         expect(items).toHaveLength(7);
         expect(items[3].textContent).toContain("Day protected by a Streak Freeze");
@@ -87,6 +94,7 @@ describe("JourneyCard", () => {
     it("shows the streak count and a calm status, then opens the streak details", async () => {
         mockDisplay = { streak: 5, isActiveToday: false, isLost: false };
         render(<JourneyCard />);
+        expand();
         vi.useRealTimers(); // the details load through a dynamic import, which fake timers stall
         const row = screen.getByRole("button", { name: "Open streak details: 5 days" });
         expect(row.textContent).toContain("5 day streak");
@@ -98,8 +106,66 @@ describe("JourneyCard", () => {
     it("uses the restart copy after a lost streak, never a failure message", () => {
         mockDisplay = { streak: 0, isActiveToday: false, isLost: true };
         render(<JourneyCard />);
+        expand();
         expect(screen.getByRole("button", { name: "Open streak details: 0 days" }).textContent)
             .toContain(String(BASE_SETTINGS_EN.streakLostRestart));
+    });
+
+    it("is compact by default: countdown, phase, habit and one action, with details behind a toggle", () => {
+        render(<JourneyCard />);
+        const toggle = screen.getByRole("button", { name: "Show details" });
+        expect(toggle.getAttribute("aria-expanded")).toBe("false");
+        expect(screen.getByRole("button", { name: "I did it" })).toBeTruthy();
+        expect(screen.getByText("Phase 1 · Set Your Intention")).toBeTruthy();
+        // Hidden until opened: the streak row, the dalil link and the phase goal.
+        expect(screen.queryByRole("button", { name: /^Open streak details/ })).toBeNull();
+        expect(screen.queryByRole("button", { name: /^Source: / })).toBeNull();
+        fireEvent.click(toggle);
+        expect(screen.getByRole("button", { name: "Hide details" }).getAttribute("aria-expanded")).toBe("true");
+        expect(screen.getByRole("button", { name: /^Open streak details/ })).toBeTruthy();
+        expect(screen.getByText(/in this phase\. Goal: /)).toBeTruthy();
+    });
+
+    describe("habits Nawaetu can see", () => {
+        // 10 Nov 2026 is the Quran habit and 11 Nov the Tasbih habit (habits rotate by day number).
+        it("sends the user to Quran, and offers a manual 'I did it' only in the details", () => {
+            vi.setSystemTime(new Date("2026-11-10T10:00:00"));
+            render(<JourneyCard />);
+            expect(screen.getByRole("link", { name: "Open Quran" }).getAttribute("href")).toBe("/quran");
+            expect(screen.queryByRole("button", { name: "I did it" })).toBeNull();
+            expand();
+            fireEvent.click(screen.getByRole("button", { name: "I did it" }));
+            expect(mockUpdateStreak).toHaveBeenCalledTimes(1);
+        });
+
+        it("ticks by itself after a minute of reading, and counts the day once", () => {
+            vi.setSystemTime(new Date("2026-11-10T10:00:00"));
+            localStorage.setItem("nawaetu_quran_daily_total_2026-11-10", "90");
+            const { rerender } = render(<JourneyCard />);
+            expect(screen.getByRole("status")).toBeTruthy();
+            expect(screen.queryByRole("link", { name: "Open Quran" })).toBeNull();
+            rerender(<JourneyCard />);
+            expect(mockUpdateStreak).toHaveBeenCalledTimes(1);
+        });
+
+        it("does not count the day again when the streak already has it", () => {
+            vi.setSystemTime(new Date("2026-11-10T10:00:00"));
+            localStorage.setItem("nawaetu_quran_daily_total_2026-11-10", "90");
+            mockActiveDates = new Set(["2026-11-10"]);
+            render(<JourneyCard />);
+            expect(mockUpdateStreak).not.toHaveBeenCalled();
+        });
+
+        it("points to Tasbih for the dhikr habit and ticks from today's count", () => {
+            vi.setSystemTime(new Date("2026-11-11T10:00:00"));
+            const { unmount } = render(<JourneyCard />);
+            expect(screen.getByRole("link", { name: "Open Tasbih" }).getAttribute("href")).toBe("/dhikr");
+            unmount();
+            localStorage.setItem("nawaetu_dhikr_last_date", new Date().toISOString().split("T")[0]);
+            localStorage.setItem("nawaetu_dhikr_daily_count", "40");
+            render(<JourneyCard />);
+            expect(screen.getByRole("status")).toBeTruthy();
+        });
     });
 
     it("renders nothing outside the 100-day window", () => {
@@ -116,6 +182,7 @@ describe("JourneyCard", () => {
 
     it("shows today's habit with its source, opening the full dalil", () => {
         render(<JourneyCard />);
+        expand();
         const link = screen.getByRole("button", { name: /^Source: / });
         expect(link.textContent).toMatch(/Source: (Bukhari|Muslim|Tirmidzi|Abu Dawud|Ahmad|Ibn Majah|Nasa'i) No\./);
         fireEvent.click(link);
@@ -124,6 +191,7 @@ describe("JourneyCard", () => {
 
     it("explains the program, phases and sources from the info button", () => {
         render(<JourneyCard />);
+        expand();
         fireEvent.click(screen.getByRole("button", { name: "About the 100-day program" }));
         expect(screen.getByText("About 100 Days to Ramadan")).toBeTruthy();
         expect(screen.getByText(/not an obligation/)).toBeTruthy();
