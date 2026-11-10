@@ -1,4 +1,5 @@
 import { transactionDb } from "@/db";
+import { inSequence } from "@/lib/db-sequential";
 import {
   hasanahLedger,
   userProgressState,
@@ -46,7 +47,7 @@ export async function processProgressionEvidence(userId: string, evidence: Progr
       .onConflictDoNothing()
       .returning({ id: hasanahLedger.id });
 
-    const [currentProgress, currentStreak] = await Promise.all([
+    const [currentProgress, currentStreak] = await inSequence([
       tx.query.userProgressState.findFirst({ where: eq(userProgressState.userId, userId) }),
       tx.query.userStreakState.findFirst({ where: eq(userStreakState.userId, userId) }),
     ]);

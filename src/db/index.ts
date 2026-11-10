@@ -23,6 +23,9 @@ import * as schema from "./schema";
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) throw new Error("DATABASE_URL is not configured");
 
+// Keep queries sequential (await them in order, or use inSequence from @/lib/db-sequential).
+// Several queries in flight at once on this single connection can wedge it behind Supabase's
+// transaction pooler, and then every database route hangs until the process restarts.
 const sql = postgres(connectionString, {
     max: 1,
     // Fail fast during Supabase cold starts or network/provider outages instead

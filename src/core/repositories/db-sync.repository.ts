@@ -346,14 +346,18 @@ export class DbSyncRepository {
             .onConflictDoNothing()
             .returning({ id: userCompletedMissions.id });
 
-        await Promise.all(values.map(row => processProgressionEvidence(this.userId, {
-            source: 'mission',
-            sourceId: `${row.missionId}:${row.completedDate}`,
-            hasanah: row.hasanahEarned,
-            localDate: row.completedDate,
-            occurredAt: row.completedAt,
-            timezone: 'UTC',
-        })));
+        // One at a time: each call is a transaction that already serializes per user, and overlapping
+        // queries on our single pooled connection can wedge it.
+        for (const row of values) {
+            await processProgressionEvidence(this.userId, {
+                source: 'mission',
+                sourceId: `${row.missionId}:${row.completedDate}`,
+                hasanah: row.hasanahEarned,
+                localDate: row.completedDate,
+                occurredAt: row.completedAt,
+                timezone: 'UTC',
+            });
+        }
 
         return inserted.map(row => row.id);
     }

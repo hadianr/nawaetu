@@ -19,6 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db, transactionDb } from "@/db";
+import { inSequence } from "@/lib/db-sequential";
 import { users, bookmarks, intentions, pushSubscriptions, userReadingState } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -35,7 +36,7 @@ export async function GET() {
             userBookmarks,
             userIntentions,
             subscriptions
-        ] = await Promise.all([
+        ] = await inSequence([
             // 1. Fetch user settings
             db.query.users.findFirst({
                 where: eq(users.id, session.user.id),

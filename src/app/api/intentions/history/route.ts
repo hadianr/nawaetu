@@ -18,6 +18,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
+import { inSequence } from "@/lib/db-sequential";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
 import { eq, desc, sql, and } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
@@ -115,8 +116,8 @@ export async function GET(req: NextRequest) {
             .limit(limit)
             .offset(offset);
 
-        // Count total intentions and reflections in parallel for better performance
-        const [[countResult], [totalReflectedResult]] = await Promise.all([
+        // Count total intentions and reflections, one query at a time (see inSequence)
+        const [[countResult], [totalReflectedResult]] = await inSequence([
             db.select({ count: sql<number>`count(*)` }).from(intentions).where(eq(intentions.userId, userId)),
             db.select({ count: sql<number>`count(*)` }).from(intentions).where(
                 and(
