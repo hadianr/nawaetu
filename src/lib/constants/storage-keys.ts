@@ -45,7 +45,7 @@ export const STORAGE_KEYS = {
   // Missions
   COMPLETED_MISSIONS: 'completed_missions',
 
-  // Ramadan journey (local dates, YYYY-MM-DD, on which the day's habit was done)
+  // Deprecated: nothing reads or writes it now (the streak is the record). Delete in a later release.
   JOURNEY_DONE_DATES: 'journey_done_dates',
   // Journey milestones (days-left values) already celebrated
   JOURNEY_MILESTONES_SEEN: 'journey_milestones_seen',

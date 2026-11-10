@@ -12,10 +12,9 @@ vi.mock("@/core/infrastructure/storage", () => ({
 }));
 vi.mock("@/components/ui/LottieMoment", () => ({ default: () => <span data-testid="lottie" /> }));
 
-const store = (values: { seen?: number[]; done?: string[]; welcomed?: boolean }) =>
+const store = (values: { seen?: number[]; welcomed?: boolean }) =>
     mockGetOptional.mockImplementation((key: string) => ({
         journey_milestones_seen: values.seen ?? null,
-        journey_done_dates: values.done ?? null,
         journey_welcome_seen: values.welcomed ?? null,
     } as Record<string, unknown>)[key] ?? null);
 
@@ -51,11 +50,11 @@ describe("JourneyMilestoneDialog", () => {
     });
 
     it("stays closed for people who were already welcomed or already using the journey", () => {
-        const cases = [{ welcomed: true }, { done: ["2026-11-08"] }, { seen: [100] }];
-        for (const values of cases) {
+        const cases = [{ values: { welcomed: true }, hadStreak: false }, { values: {}, hadStreak: true }, { values: { seen: [100] }, hadStreak: false }];
+        for (const { values, hadStreak } of cases) {
             store(values);
-            const { unmount } = render(<JourneyMilestoneDialog daysLeft={61} dayNumber={40} />);
-            expect(screen.queryByRole("dialog"), JSON.stringify(values)).toBeNull();
+            const { unmount } = render(<JourneyMilestoneDialog daysLeft={61} dayNumber={40} hadStreak={hadStreak} />);
+            expect(screen.queryByRole("dialog"), JSON.stringify({ values, hadStreak })).toBeNull();
             unmount();
         }
     });
