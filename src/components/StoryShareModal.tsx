@@ -9,14 +9,17 @@
  * Includes Font Size Scaling, Show/Hide Arabic Toggle & Obligatory nawaetu.com Watermark
  */
 
-import { useState, useEffect, useRef, useSyncExternalStore } from "react";
+import { useState, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { X, Share2, Download, Copy, Check, Sparkles, Moon, Sun } from "lucide-react";
+import { X, Share2, Download, Copy, Check, Sparkles } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
+import { THEMES, type ThemeId } from "@/context/ThemeContext";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { buildStoryPalette } from "@/lib/share/story-palette";
 import { cn } from "@/lib/utils";
 import {
     ShareableCardData,
-    StoryTheme,
     FontSizeScale,
     renderStoryCardToCanvas,
     exportStoryCardBlob,
@@ -30,7 +33,15 @@ interface StoryShareModalProps {
 export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
     const { t, locale } = useLocale();
     const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
-    const [theme, setTheme] = useState<StoryTheme>("dark");
+    // Starts on the theme the user already has; the swatches offer the other app themes.
+    const [themeId, setThemeId] = useState<ThemeId>(() => {
+        const saved = getStorageService().getOptional<string>(STORAGE_KEYS.SETTINGS_THEME) as ThemeId | null;
+        return saved && THEMES[saved] ? saved : "default";
+    });
+    const palette = useMemo(() => {
+        const { mode, tokens } = THEMES[themeId];
+        return buildStoryPalette({ mode, ...tokens });
+    }, [themeId]);
     const [fontSizeScale, setFontSizeScale] = useState<FontSizeScale>("normal");
     const [showArabic, setShowArabic] = useState(true);
     const [showLatin, setShowLatin] = useState(true);
@@ -49,7 +60,8 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
         async function updatePreview() {
             try {
                 const canvas = await renderStoryCardToCanvas(item, {
-                    theme,
+                    theme: palette.mode,
+                    palette,
                     fontSizeScale,
                     showArabic,
                     showLatin,
@@ -76,7 +88,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
         return () => {
             isMounted = false;
         };
-    }, [mounted, item, theme, fontSizeScale, showArabic, showLatin, showExplanation]);
+    }, [mounted, item, palette, fontSizeScale, showArabic, showLatin, showExplanation]);
 
     // Handle Direct Instagram / Mobile Web Share API
     const handleNativeShare = async () => {
@@ -84,7 +96,8 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
         setStatusMessage(null);
         try {
             const { blob, mimeType, fileName } = await exportStoryCardBlob(item, {
-                theme,
+                theme: palette.mode,
+                palette,
                 fontSizeScale,
                 showArabic,
                 showLatin,
@@ -124,7 +137,8 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
         setIsExporting(true);
         try {
             const { blob, fileName } = await exportStoryCardBlob(item, {
-                theme,
+                theme: palette.mode,
+                palette,
                 fontSizeScale,
                 showArabic,
                 showLatin,
@@ -149,7 +163,8 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
             const { blob, fileName } = await exportStoryCardBlob(
                 item,
                 {
-                    theme,
+                    theme: palette.mode,
+                    palette,
                     fontSizeScale,
                     showArabic,
                     showLatin,
@@ -179,7 +194,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
             try {
                 const { blob, fileName } = await exportStoryCardBlob(
                     item,
-                    { theme, fontSizeScale, showArabic, showLatin, showExplanation },
+                    { theme: palette.mode, palette, fontSizeScale, showArabic, showLatin, showExplanation },
                     "png"
                 );
                 handleDownloadBlob(blob, fileName);
@@ -207,7 +222,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
     if (!mounted) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 backdrop-blur-md animate-in fade-in duration-150">
+        <div className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[rgb(var(--color-text-strong))]/75 backdrop-blur-md animate-in fade-in duration-150">
             {/* Backdrop click to close */}
             <div className="absolute inset-0" onClick={onClose} />
 
@@ -263,51 +278,53 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
 
                     {/* Consolidated Compact Options Bar */}
                     <div className="space-y-1.5 pt-0.5">
-                        {/* Row 1: Theme Switcher & Font Scaling Combined */}
-                        <div className="flex items-center gap-1.5 text-[11px]">
-                            {/* Theme Pills */}
-                            <div className={cn(
-                                "flex items-center gap-0.5 p-0.5 rounded-xl border flex-1",
-                                "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-primary))]/20"
-                            )}>
-                                <button
-                                    type="button"
-                                    onClick={() => setTheme("dark")}
-                                    className={cn(
-                                        "flex-1 py-1 px-2 rounded-lg font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
-                                        theme === "dark"
-                                            ? "border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-background))] text-[rgb(var(--color-primary-light))] shadow-xs"
-                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
-                                    )}
-                                >
-                                    <Moon className="w-3 h-3" />
-                                    <span>{t.storyShareDark}</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setTheme("light")}
-                                    className={cn(
-                                        "flex-1 py-1 px-2 rounded-lg font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
-                                        theme === "light"
-                                            ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
-                                            : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
-                                    )}
-                                >
-                                    <Sun className="w-3 h-3" />
-                                    <span>{t.storyShareLight}</span>
-                                </button>
-                            </div>
+                        {/* The card follows the app's themes: pick any of the 8, starting from the active one. */}
+                        <div
+                            role="radiogroup"
+                            aria-label={t.storyShareThemeLabel}
+                            className="flex items-center justify-between rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-surface-subtle))] px-1"
+                        >
+                            {Object.values(THEMES).map(option => {
+                                const selected = option.id === themeId;
+                                const name = String(t[option.nameKey] ?? option.name);
+                                return (
+                                    <button
+                                        key={option.id}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={selected}
+                                        aria-label={name}
+                                        title={name}
+                                        onClick={() => setThemeId(option.id)}
+                                        className="flex size-10 cursor-pointer items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
+                                    >
+                                        <span
+                                            aria-hidden="true"
+                                            className={cn(
+                                                "size-6 rounded-full border transition-transform motion-reduce:transition-none",
+                                                selected
+                                                    ? "scale-110 border-[rgb(var(--color-text-strong))] ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface-subtle))]"
+                                                    : "border-[rgb(var(--color-border))]",
+                                            )}
+                                            style={{ background: `linear-gradient(135deg, rgb(${option.tokens.canvas}) 50%, rgb(${option.tokens.primary}) 50%)` }}
+                                        />
+                                    </button>
+                                );
+                            })}
+                        </div>
 
+                        {/* Row 1: Font Scaling */}
+                        <div className="flex items-center gap-1.5 text-[11px]">
                             {/* Font Size Pills */}
                             <div className={cn(
-                                "flex items-center gap-0.5 p-0.5 rounded-xl border",
+                                "flex flex-1 items-center gap-0.5 p-0.5 rounded-xl border",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-primary))]/20"
                             )}>
                                 <button
                                     type="button"
                                     onClick={() => setFontSizeScale("normal")}
                                     className={cn(
-                                        "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
+                                        "flex-1 px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "normal"
                                             ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
@@ -320,7 +337,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                     type="button"
                                     onClick={() => setFontSizeScale("large")}
                                     className={cn(
-                                        "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
+                                        "flex-1 px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "large"
                                             ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
@@ -333,7 +350,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                     type="button"
                                     onClick={() => setFontSizeScale("xlarge")}
                                     className={cn(
-                                        "px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
+                                        "flex-1 px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "xlarge"
                                             ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"

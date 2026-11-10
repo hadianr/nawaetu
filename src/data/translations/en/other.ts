@@ -740,6 +740,7 @@ export const otherEN = {
     storyShareArabic: "Arabic",
     storyShareLatin: "Latin",
     storyShareExplanation: "Reflection",
+    storyShareThemeLabel: "Card theme",
     storyShareDark: "Dark",
     storyShareLight: "Light",
     storyShareNormalSize: "Normal size",

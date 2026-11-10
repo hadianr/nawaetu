@@ -7,14 +7,16 @@
  * - Perfectly Centered Content Layout (Mathematical Vertical & Horizontal Alignment)
  * - Optional Arabic Text Display (Can hide Arabic to show translation only)
  * - Consistent Quote Symbol Formatting ("...")
- * - 2 Minimalist Themes: Dark Emerald & Light Ceramic
+ * - Palettes built from the app themes (any of the 8), plus the original Dark Emerald & Light Ceramic defaults
  * - Nawaetu Signature Islamic Geometric Watermark Pattern (Vector Canvas)
  * - Dynamic Adaptive Layout & Manual Font Size Controls (Normal / Besar / Extra Besar)
  * - Obligatory nawaetu.com Branding Watermark
  * - High-Efficiency WebP Image Compression (~150KB - 250KB)
  */
 
-export type StoryTheme = "dark" | "light";
+import { DARK_PALETTE, LIGHT_PALETTE, type StoryPalette, type StoryTheme } from "./story-palette";
+
+export type { StoryPalette, StoryTheme } from "./story-palette";
 export type FontSizeScale = "normal" | "large" | "xlarge";
 
 export interface ShareableCardData {
@@ -31,6 +33,8 @@ export interface ShareableCardData {
 
 export interface StoryRenderOptions {
     theme: StoryTheme;
+    /** Overrides the built-in dark/light look, e.g. from buildStoryPalette(). */
+    palette?: StoryPalette;
     fontSizeScale?: FontSizeScale;
     showArabic?: boolean;
     showLatin?: boolean;
@@ -187,37 +191,32 @@ export async function renderStoryCardToCanvas(
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2D context not available");
 
-    const isDark = options.theme === "dark";
+    const palette = options.palette ?? (options.theme === "dark" ? DARK_PALETTE : LIGHT_PALETTE);
+    const isDark = palette.mode === "dark";
     const isAchievement = data.kind === "achievement";
     const isEnglish = isAchievement && data.translation.includes("daily worship");
     const showArabic = options.showArabic !== false && !isAchievement; // Achievements use their own milestone layout
 
-    // 1. Background Fill with Nawaetu Primary Emerald Green Blend for Dark Mode
-    if (isDark) {
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-        bgGrad.addColorStop(0, "#042017"); // Deep Nawaetu Emerald Dark
-        bgGrad.addColorStop(0.5, "#083324"); // Midnight Emerald
-        bgGrad.addColorStop(1, "#02120d"); // Deepest Emerald Shadow
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, W, H);
+    // 1. Background: a vertical gradient from the palette, a soft glow behind the content, then the signature pattern
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+    bgGrad.addColorStop(0, palette.bg[0]);
+    bgGrad.addColorStop(0.5, palette.bg[1]);
+    bgGrad.addColorStop(1, palette.bg[2]);
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
 
-        // Nawaetu Signature Pattern (Emerald Gold pendar)
-        drawIslamicPattern(ctx, W, H, "#34d399", 0.055);
-    } else {
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-        bgGrad.addColorStop(0, "#f8fafc"); // Off-white ceramic
-        bgGrad.addColorStop(0.5, "#f1f5f9");
-        bgGrad.addColorStop(1, "#e2e8f0");
-        ctx.fillStyle = bgGrad;
+    if (palette.glow) {
+        const glow = ctx.createRadialGradient(W / 2, H * 0.4, 0, W / 2, H * 0.4, 900);
+        glow.addColorStop(0, palette.glow);
+        glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = glow;
         ctx.fillRect(0, 0, W, H);
-
-        // Nawaetu Signature Pattern (Emerald Green accent)
-        drawIslamicPattern(ctx, W, H, "#10b981", 0.045);
     }
+    drawIslamicPattern(ctx, W, H, palette.pattern, palette.patternAlpha);
 
     // 2. Subtle Inner Frame Border
     const padding = 60;
-    ctx.strokeStyle = isDark ? "rgba(52, 211, 153, 0.25)" : "rgba(16, 185, 129, 0.2)";
+    ctx.strokeStyle = palette.frame;
     ctx.lineWidth = 2;
     ctx.strokeRect(padding, padding, W - padding * 2, H - padding * 2);
 
@@ -232,8 +231,8 @@ export async function renderStoryCardToCanvas(
     const badgeX = (W - badgeW) / 2;
 
     // Pill background
-    ctx.fillStyle = isDark ? "rgba(6, 40, 28, 0.95)" : "rgba(241, 245, 249, 0.95)";
-    ctx.strokeStyle = isDark ? "#34d399" : "#10b981";
+    ctx.fillStyle = palette.pillBg;
+    ctx.strokeStyle = palette.pillBorder;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -242,7 +241,7 @@ export async function renderStoryCardToCanvas(
     ctx.stroke();
 
     // Pill text
-    ctx.fillStyle = isDark ? "#6ee7b7" : "#047857";
+    ctx.fillStyle = palette.pillText;
     ctx.fillText(badgeText, W / 2, badgeY);
 
     // 4. Content Analysis & Dynamic Adaptive Sizing (Enlarged for Maximum Readability)
@@ -365,19 +364,6 @@ export async function renderStoryCardToCanvas(
     let startY = topBoundary + (availableArea - totalContentHeight) / 2;
     if (startY < topBoundary) startY = topBoundary; // Safety limit for long content
 
-    // 6. Optional Quote Accent Icon for Short Content
-    if (!isAchievement && isShort && options.fontSizeScale !== "xlarge" && startY > 440) {
-        ctx.fillStyle = isDark ? "rgba(52, 211, 153, 0.15)" : "rgba(16, 185, 129, 0.15)";
-        ctx.beginPath();
-        ctx.arc(W / 2, startY - 80, 44, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.font = "bold 48px serif";
-        ctx.fillStyle = isDark ? "#34d399" : "#10b981";
-        ctx.textAlign = "center";
-        ctx.fillText("“", W / 2, startY - 65);
-    }
-
     let currentY = startY;
 
     // 7. Render Arabic Calligraphy Text (Optional & Center Alignment)
@@ -398,12 +384,12 @@ export async function renderStoryCardToCanvas(
         currentY += achievementBlockHeight;
 
         ctx.font = `bold ${Math.round(34 * scaleMultiplier)}px sans-serif`;
-        ctx.fillStyle = isDark ? "#d1fae5" : "#065f46";
+        ctx.fillStyle = palette.heading;
         drawWrappedText(ctx, data.title, W / 2, currentY - 30, contentWidth, 46, "center");
         currentY += 35;
     } else if (showArabic) {
         ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
-        ctx.fillStyle = isDark ? "#6ee7b7" : "#065f46";
+        ctx.fillStyle = palette.arabic;
         ctx.direction = "rtl";
         const drawnArabicH = drawWrappedText(
             ctx,
@@ -421,7 +407,7 @@ export async function renderStoryCardToCanvas(
     // 8. Render Transliteration Text (Center Alignment)
     if (options.showLatin && data.latin) {
         ctx.font = `italic ${latinFontSize}px Georgia, serif`;
-        ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.7)" : "#64748b";
+        ctx.fillStyle = palette.muted;
         const drawnLatinH = drawWrappedText(
             ctx,
             data.latin,
@@ -437,7 +423,7 @@ export async function renderStoryCardToCanvas(
     // 9. Render Translation Text (Center Alignment with Uniform Quote Marks "")
     if (!isAchievement) {
         ctx.font = `500 ${transFontSize}px sans-serif`;
-        ctx.fillStyle = isDark ? "#f8fafc" : "#1e293b";
+        ctx.fillStyle = palette.body;
         const drawnTransH = drawWrappedText(
             ctx,
             transTextFormatted,
@@ -461,11 +447,11 @@ export async function renderStoryCardToCanvas(
             ? "A little worship, every day - Keep going"
             : "Sedikit amal, rutin setiap hari - Teruskan";
         ctx.font = "bold 22px sans-serif";
-        ctx.fillStyle = isDark ? "#a7f3d0" : "#047857";
+        ctx.fillStyle = palette.label;
         ctx.textAlign = "left";
         ctx.fillText(progressLabel, 100, currentY + 8);
         ctx.textAlign = "right";
-        ctx.fillStyle = isDark ? "#f8fafc" : "#1e293b";
+        ctx.fillStyle = palette.body;
         ctx.fillText(`${currentDays}/${nextMilestone}`, W - 100, currentY + 8);
 
         const barX = 100;
@@ -498,7 +484,7 @@ export async function renderStoryCardToCanvas(
         const verseX = (W - contentWidth) / 2;
         const verseY = currentY;
         const verseH = 150;
-        ctx.fillStyle = isDark ? "rgba(6, 40, 28, 0.78)" : "rgba(255, 247, 237, 0.88)";
+        ctx.fillStyle = palette.cardBg;
         ctx.strokeStyle = isDark ? "rgba(251, 146, 60, 0.45)" : "rgba(249, 115, 22, 0.32)";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -511,7 +497,7 @@ export async function renderStoryCardToCanvas(
         ctx.textAlign = "left";
         ctx.fillText(hadithTitle, verseX + 28, verseY + 34);
         ctx.font = "500 22px sans-serif";
-        ctx.fillStyle = isDark ? "#f8fafc" : "#334155";
+        ctx.fillStyle = isDark ? palette.body : palette.panelText;
         drawWrappedText(ctx, hadithText, W / 2, verseY + 72, contentWidth - 56, 30, "center");
         ctx.font = "italic 18px sans-serif";
         ctx.fillStyle = isDark ? "#fdba74" : "#9a3412";
@@ -533,8 +519,8 @@ export async function renderStoryCardToCanvas(
         const expLinesCount = measureWrappedTextLines(ctx, explanationText, expW - 40);
         const expBoxH = expLinesCount * 32 + 40;
 
-        ctx.fillStyle = isDark ? "rgba(6, 40, 28, 0.6)" : "rgba(16, 185, 129, 0.08)";
-        ctx.strokeStyle = isDark ? "rgba(52, 211, 153, 0.4)" : "rgba(16, 185, 129, 0.3)";
+        ctx.fillStyle = palette.panelBg;
+        ctx.strokeStyle = palette.panelBorder;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.roundRect(expX, expY, expW, expBoxH, 16);
@@ -542,7 +528,7 @@ export async function renderStoryCardToCanvas(
         ctx.stroke();
 
         // Render Tadabbur text centered inside box
-        ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.9)" : "#334155";
+        ctx.fillStyle = palette.panelText;
         drawWrappedText(
             ctx,
             explanationText,
@@ -567,7 +553,7 @@ export async function renderStoryCardToCanvas(
 
     // 11. OBLIGATORY Branding Watermark Footer (nawaetu.com text is ALWAYS rendered in Center Alignment)
     ctx.font = "600 24px monospace";
-    ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.5)" : "rgba(15, 23, 42, 0.5)";
+    ctx.fillStyle = palette.watermark;
     ctx.textAlign = "center";
     ctx.fillText("nawaetu.com", W / 2, H - 100);
 

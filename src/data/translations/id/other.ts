@@ -740,6 +740,7 @@ export const otherID = {
     storyShareArabic: "Arab",
     storyShareLatin: "Latin",
     storyShareExplanation: "Tadabbur",
+    storyShareThemeLabel: "Tema kartu",
     storyShareDark: "Gelap",
     storyShareLight: "Terang",
     storyShareNormalSize: "Ukuran normal",
