@@ -9,16 +9,15 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getJourneyMilestone, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 
-export default function JourneyMilestoneDialog({ daysLeft, dayNumber }: { daysLeft: number; dayNumber: number }) {
+export default function JourneyMilestoneDialog({ daysLeft, dayNumber, hadStreak = false }: { daysLeft: number; dayNumber: number; hadStreak?: boolean }) {
     const { t } = useLocale();
     const storage = getStorageService();
     const [mode, setMode] = useState<"milestone" | "welcome" | null>(() => {
         const seen = storage.getOptional<number[]>(STORAGE_KEYS.JOURNEY_MILESTONES_SEEN) ?? [];
         if (getJourneyMilestone(daysLeft, seen) !== null) return "milestone";
-        // People who already used the journey don't need a welcome.
-        const doneBefore = (storage.getOptional<string[]>(STORAGE_KEYS.JOURNEY_DONE_DATES) ?? []).length > 0;
         const welcomed = storage.getOptional<boolean>(STORAGE_KEYS.JOURNEY_WELCOME_SEEN) === true;
-        return welcomed || doneBefore || seen.length > 0 ? null : "welcome";
+        // People who already have a streak don't need a welcome.
+        return welcomed || hadStreak || seen.length > 0 ? null : "welcome";
     });
     if (mode === null) return null;
 

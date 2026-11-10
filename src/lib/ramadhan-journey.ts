@@ -1,5 +1,3 @@
-import { toLocalDate } from "@/lib/utils/date";
-
 export const JOURNEY_DAYS = 100;
 
 export type JourneyPhase = "reset" | "build" | "sharpen";
@@ -59,22 +57,6 @@ export function getRamadhanJourney(now: Date, adjustment = 0): RamadhanJourney {
         dayNumber: active ? JOURNEY_DAYS - daysLeft + 1 : 0,
         phase: !active ? null : daysLeft > 70 ? "reset" : daysLeft > 30 ? "build" : "sharpen",
     };
-}
-
-export interface JourneyStripDay {
-    date: string;
-    done: boolean;
-    isToday: boolean;
-}
-
-/** Last `count` local days ending today, oldest first. */
-export function getRecentDays(now: Date, doneDates: string[], count = 7): JourneyStripDay[] {
-    const done = new Set(doneDates);
-    return Array.from({ length: count }, (_, index) => {
-        const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (count - 1 - index));
-        const date = toLocalDate(day);
-        return { date, done: done.has(date), isToday: index === count - 1 };
-    });
 }
 
 /** Days-left values that earn a celebration. */

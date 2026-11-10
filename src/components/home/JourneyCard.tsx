@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
-import { Info } from "lucide-react";
+import dynamic from "next/dynamic";
+import { ChevronRight, Flame, Info } from "lucide-react";
 import JourneyAboutDialog from "@/components/home/JourneyAboutDialog";
 import JourneyMilestoneDialog from "@/components/home/JourneyMilestoneDialog";
 import DalilBadge from "@/components/ramadhan/DalilBadge";
@@ -13,13 +14,16 @@ import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { getStreakRepository } from "@/core/repositories/streak.repository";
 import { dalilRef, getJourneyHabit } from "@/data/ramadhan-journey";
+import StreakWeek from "@/components/streak/StreakWeek";
+import { useStreak } from "@/hooks/useStreak";
 import { useStreakDates } from "@/hooks/useStreakDates";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { parseHijriAdjustment } from "@/lib/hijri-date";
-import { getRamadhanJourney, getRecentDays, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
+import { getRamadhanJourney, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 import { DateUtils } from "@/lib/utils/date";
 
-const HISTORY_LIMIT = 30;
+const StreakDetails = dynamic(() => import("@/components/StreakBadge"), { ssr: false });
+
 const RING_RADIUS = 30;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
@@ -46,10 +50,9 @@ export default function JourneyCard() {
         parseHijriAdjustment(storage.getOptional<string>(STORAGE_KEYS.SETTINGS_HIJRI_ADJUSTMENT)),
     );
     const [aboutOpen, setAboutOpen] = useState(false);
-    const [doneDates, setDoneDates] = useState<string[]>(() => {
-        const saved = storage.getOptional<string[]>(STORAGE_KEYS.JOURNEY_DONE_DATES);
-        return Array.isArray(saved) ? saved : [];
-    });
+    const [streakOpen, setStreakOpen] = useState(false);
+    // Logged-in streaks refresh after a sync, so the press shows at once; a reload trusts only the streak.
+    const [pressed, setPressed] = useState(false);
 
     useEffect(() => {
         const onChange = (event: Event) => {
@@ -61,23 +64,20 @@ export default function JourneyCard() {
     }, []);
 
     const journey = useMemo(() => getRamadhanJourney(new Date(), adjustment), [adjustment]);
-    // The strip is the streak itself (any habit counts), so it always agrees with the streak badge.
+    // The streak is the only record of a counted day, so the card never disagrees with the streak badge.
     const { activeDates } = useStreakDates();
-    const strip = useMemo(() => getRecentDays(new Date(), [...activeDates]), [activeDates]);
+    const { streak, display } = useStreak();
     if (!journey.active || !journey.phase) return null;
 
     const today = DateUtils.today();
-    const doneToday = doneDates.includes(today);
-    const doneInStrip = strip.filter(day => day.done).length;
+    const doneToday = pressed || activeDates.has(today);
+    const hasHistory = activeDates.size > 0 || streak.longestStreak > 0;
     const { copyKey, evidence } = getJourneyHabit(journey.phase, journey.dayNumber);
-    const lateJoin = journey.dayNumber > 7 && doneDates.length === 0;
+    const lateJoin = journey.dayNumber > 7 && !hasHistory;
     const finalStretch = journey.daysLeft <= 10;
-    const weekday = new Intl.DateTimeFormat(locale, { weekday: "long" });
 
     const markDone = () => {
-        const next = [...doneDates, today].slice(-HISTORY_LIMIT);
-        storage.set(STORAGE_KEYS.JOURNEY_DONE_DATES, next);
-        setDoneDates(next);
+        setPressed(true);
         // One streak, one set of freezes: the journey counts as a qualifying day like any mission.
         getStreakRepository().updateStreak();
     };
@@ -177,43 +177,33 @@ export default function JourneyCard() {
                     )}
                 </div>
 
-                <div className="mt-3 flex items-center justify-between gap-3">
-                    <ul className="flex items-center gap-2" aria-label={String(t.journeyStripLabel)}>
-                        {strip.map(day => (
-                            <li key={day.date} className="flex size-4 items-center justify-center">
-                                <span className="sr-only">
-                                    {day.isToday
-                                        ? String(t.journeyDayToday)
-                                        : weekday.format(new Date(`${day.date}T12:00:00`))}
-                                    {": "}
-                                    {String(day.done ? t.journeyDayDone : t.journeyDayNotDone)}
-                                </span>
-                                <span
-                                    aria-hidden="true"
-                                    className={[
-                                        "flex size-3.5 items-center justify-center rounded-full border",
-                                        day.done
-                                            ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-accent-foreground))]"
-                                            : "border-[rgb(var(--color-text-muted))]/60",
-                                        day.isToday ? "outline outline-2 outline-offset-2 outline-[rgb(var(--color-text-muted))]" : "",
-                                    ].join(" ")}
-                                >
-                                    {day.done && (
-                                        <svg viewBox="0 0 24 24" className="size-2.5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M5 12.5l4.5 4.5L19 7.5" />
-                                        </svg>
-                                    )}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                    <span className="text-xs text-[rgb(var(--color-text))]">
-                        {fill(t.journeyStripSummary, { done: doneInStrip })}
+                <button
+                    type="button"
+                    onClick={() => setStreakOpen(true)}
+                    aria-label={String(t.streakOpenDetails).replace("{count}", String(display.streak))}
+                    className="mt-3 flex min-h-11 w-full items-center gap-3 rounded-xl text-left outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
+                >
+                    <Flame
+                        className={`size-5 shrink-0 ${doneToday ? "fill-current text-[rgb(var(--color-primary))]" : "text-[rgb(var(--color-text-muted))]"}`}
+                        aria-hidden="true"
+                    />
+                    <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold tabular-nums text-[rgb(var(--color-text-strong))]">
+                            {display.streak} {String(t.streakDayCount)}
+                        </span>
+                        {!doneToday && (
+                            <span className="block text-xs text-[rgb(var(--color-text))]">
+                                {String(display.streak > 0 ? t.streakAtRisk : display.isLost ? t.streakLostRestart : t.streakStart)}
+                            </span>
+                        )}
                     </span>
-                </div>
+                    <StreakWeek compact />
+                    <ChevronRight className="size-4 shrink-0 text-[rgb(var(--color-text-muted))]" aria-hidden="true" />
+                </button>
             </section>
             <JourneyAboutDialog open={aboutOpen} onOpenChange={setAboutOpen} phase={journey.phase} dayNumber={journey.dayNumber} />
-            <JourneyMilestoneDialog daysLeft={journey.daysLeft} dayNumber={journey.dayNumber} />
+            <JourneyMilestoneDialog daysLeft={journey.daysLeft} dayNumber={journey.dayNumber} hadStreak={hasHistory} />
+            {streakOpen && <StreakDetails modalOnly celebrate={false} open onOpenChange={setStreakOpen} />}
         </MotionConfig>
     );
 }

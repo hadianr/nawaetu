@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useSession } from "next-auth/react";
 import { CalendarDays, Flame, LockKeyhole, Share2, Snowflake, Target, Trophy } from "lucide-react";
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
@@ -13,8 +13,8 @@ import { usePlayerStats } from "@/lib/habits/leveling";
 import { mapStreakAchievementToShareData } from "@/lib/share/share-mappers";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { cn } from "@/lib/utils";
-import { AppIcon } from "@/components/ui/AppIcon";
-import LottieMoment from "@/components/ui/LottieMoment";
+import StreakFlame from "@/components/streak/StreakFlame";
+import StreakWeek from "@/components/streak/StreakWeek";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 import {
   Dialog,
@@ -50,19 +50,6 @@ interface CanonicalProgression {
   };
 }
 
-/** Lottie flame for earned streak moments; shows the plain icon when motion is reduced. */
-function StreakFlame({ className, fallbackClassName, label }: { className: string; fallbackClassName: string; label?: string }) {
-  return (
-    <span role={label ? "img" : undefined} aria-label={label} className="inline-flex">
-      <LottieMoment
-        src="/lottie/flame.lottie"
-        className={className}
-        fallback={<Flame className={cn("fill-current", fallbackClassName)} aria-hidden="true" />}
-      />
-    </span>
-  );
-}
-
 export default function StreakBadge({ showLabel = false, modalOnly = false, open, onOpenChange, celebrate = true }: StreakBadgeProps) {
   const { locale, t } = useLocale();
   const { data: session, status } = useSession();
@@ -93,22 +80,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
     ? Math.min(100, Math.round((currentStreak / nextMilestone.days) * 100))
     : 100;
 
-  const { activeDates, protectedDates } = useStreakDates();
-  const week = useMemo(() => {
-    const today = new Date();
-    return Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(today);
-      date.setDate(today.getDate() - (6 - index));
-      const key = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
-      return {
-        key,
-        label: new Intl.DateTimeFormat(locale, { weekday: "narrow" }).format(date),
-        active: activeDates.has(key),
-        protected: protectedDates.has(key),
-        today: index === 6,
-      };
-    });
-  }, [activeDates, locale, protectedDates]);
+  const { protectedDates } = useStreakDates();
 
   const shareStreak = currentStreak;
   const shareLongest = streak.longestStreak;
@@ -208,27 +180,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
               <DialogDescription className="text-[rgb(var(--color-text-muted))]">{statusText}</DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-7 gap-2" aria-label={t.streakLastSevenDays}>
-              {week.map((day) => (
-                <div key={day.key} className="space-y-1 text-center">
-                  <span className="text-[10px] font-semibold text-[rgb(var(--color-text-muted))]">{day.label}</span>
-                  <span className={cn(
-                    "flex aspect-square items-center justify-center rounded-full border text-xs",
-                    day.protected
-                      ? "border-sky-400/60 bg-sky-500/15 text-sky-400"
-                      : day.active
-                      ? "border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
-                      : day.today
-                        ? "border-[rgb(var(--color-accent))]"
-                      : "border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]",
-                  )}>
-                    {day.protected
-                      ? <Snowflake className="h-3.5 w-3.5" aria-label={t.streakProtectedDay} />
-                      : day.active ? <StreakFlame className="size-8" fallbackClassName="h-3.5 w-3.5 text-[rgb(var(--color-primary-foreground))]" label={t.streakCompleted} /> : <AppIcon name="target" size="xs" tone="muted" />}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <StreakWeek />
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3">
