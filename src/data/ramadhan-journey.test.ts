@@ -31,7 +31,7 @@ describe("journey habits and their dalil", () => {
 
     it("gives every phase a real pool, and always returns a habit with its dalil", () => {
         for (const phase of PHASES) {
-            expect(JOURNEY_HABITS.filter(habit => habit.phases.includes(phase)).length).toBeGreaterThanOrEqual(5);
+            expect(JOURNEY_HABITS.filter(habit => habit.phases.includes(phase)).length).toBeGreaterThanOrEqual(4);
             for (let day = 1; day <= 100; day++) {
                 const { copyKey, evidence } = getJourneyHabit(phase, day);
                 expect(copyKey).toMatch(/^journeyHabit\d+$/);

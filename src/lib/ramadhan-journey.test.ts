@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getJourneyMilestone, getRamadhanJourney, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
+import { getJourneyMilestone, getPhaseProgress, getRamadhanJourney, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 
 const at = (iso: string) => new Date(`${iso}T10:00:00`);
 
@@ -52,5 +52,15 @@ describe("getJourneyMilestone", () => {
     it("ignores ordinary days", () => {
         expect(getJourneyMilestone(74, [])).toBeNull();
         expect(getJourneyMilestone(0, [])).toBeNull();
+    });
+});
+
+describe("getPhaseProgress", () => {
+    it("counts the day inside its phase, matching the phase ranges", () => {
+        expect(getPhaseProgress("reset", 100)).toEqual({ day: 1, total: 30 });
+        expect(getPhaseProgress("reset", 90)).toEqual({ day: 11, total: 30 });
+        expect(getPhaseProgress("reset", 71)).toEqual({ day: 30, total: 30 });
+        expect(getPhaseProgress("build", 70)).toEqual({ day: 1, total: 40 });
+        expect(getPhaseProgress("sharpen", 1)).toEqual({ day: 30, total: 30 });
     });
 });
