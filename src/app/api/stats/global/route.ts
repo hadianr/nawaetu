@@ -5,15 +5,18 @@ import { sql } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const [missionsCompleted, qualifiedDays, registeredUsers] = await Promise.all([
-      db.select({ count: sql<number>`count(*)` }).from(userCompletedMissions),
-      db.select({ count: sql<number>`count(*)` }).from(userStreakDays),
-      db.select({ count: sql<number>`count(*)` }).from(users),
-    ]);
+    // One query on purpose: several concurrent queries on our single pooled connection can wedge it.
+    // count(*) comes back as a string (bigint) from postgres-js.
+    const [row] = await db.execute<{ missions: string; days: string; users: string }>(sql`
+      select
+        (select count(*) from ${userCompletedMissions}) as missions,
+        (select count(*) from ${userStreakDays}) as days,
+        (select count(*) from ${users}) as users
+    `);
     return NextResponse.json({
-      missionsCompleted: Number(missionsCompleted[0]?.count ?? 0),
-      activeWorshipDays: Number(qualifiedDays[0]?.count ?? 0),
-      users: Number(registeredUsers[0]?.count ?? 0),
+      missionsCompleted: Number(row?.missions ?? 0),
+      activeWorshipDays: Number(row?.days ?? 0),
+      users: Number(row?.users ?? 0),
     }, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
