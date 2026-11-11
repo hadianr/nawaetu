@@ -56,14 +56,20 @@ export function useStreak() {
       const rebuilt = canonicalDays.length
         ? rebuildStreakState(canonicalDays, canonical.streak.freezesAvailable ?? 0)
         : null;
-      const currentStreak = rebuilt?.currentDays ?? canonical.streak.currentDays ?? 0;
-      const lastActiveDate = rebuilt?.lastStreakDate ?? canonical.streak.lastStreakDate ?? '';
+      // The server sends only the last 30 days, so a rebuild can never exceed 30: trust its own count.
+      // A local streak that is ahead of the cached server state is activity made since the last sync.
+      const canonicalLast = canonical.streak.lastStreakDate ?? rebuilt?.lastStreakDate ?? '';
+      const localAhead = local.lastActiveDate > canonicalLast;
+      const currentStreak = localAhead
+        ? local.currentStreak
+        : (canonical.streak.currentDays ?? rebuilt?.currentDays ?? 0);
+      const lastActiveDate = localAhead ? local.lastActiveDate : canonicalLast;
       return {
         streak: {
           ...local,
           currentStreak,
-          longestStreak: Math.max(canonical.streak.longestDays ?? 0, rebuilt?.longestDays ?? 0),
-          lastActiveDate: rebuilt?.lastStreakDate ?? lastActiveDate,
+          longestStreak: Math.max(canonical.streak.longestDays ?? 0, rebuilt?.longestDays ?? 0, local.longestStreak),
+          lastActiveDate,
           freezesAvailable: canonical.streak.freezesAvailable ?? 0,
           protectedDates: (canonical.streak.days ?? [])
             .filter((day: { status?: string }) => day.status === 'frozen')
