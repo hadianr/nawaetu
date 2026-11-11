@@ -257,4 +257,24 @@ describe('POST /api/notifications/prayer-alert', () => {
         expect(mocks.messagingSend).toHaveBeenCalledTimes(2);
         expect(db.update).toHaveBeenCalledTimes(2);
     });
+
+    it('sends the prayer alert to a guest subscription that has no owner', async () => {
+        const localTime = new Date().toLocaleTimeString('en-US', {
+            timeZone: 'Asia/Jakarta', hourCycle: 'h23', hour: '2-digit', minute: '2-digit',
+        });
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ data: { timings: { Fajr: localTime } } }),
+        } as Response);
+        mockDatabase([
+            { id: 'guest-1', userId: null, token: 'guest-token', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta' },
+        ]);
+        mocks.messagingSend.mockResolvedValueOnce('sent');
+
+        const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+        const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+        expect(body.results).toMatchObject({ total: 1, sent: 1 });
+        expect(mocks.messagingSend).toHaveBeenCalledWith(expect.objectContaining({ token: 'guest-token' }));
+    });
 });

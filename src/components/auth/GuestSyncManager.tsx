@@ -29,6 +29,7 @@ import type { TranslationTree } from "@/context/LocaleContext";
 import { getStorageService, type StorageService } from "@/core/infrastructure/storage";
 import { mergeSyncRecords } from "@/lib/sync/merge-sync-data";
 import { sendGAEvent } from "@/lib/analytics/analytics";
+import { DateUtils } from "@/lib/utils/date";
 
 interface GuestActivityTracker {
     quranAyat?: number;
@@ -160,7 +161,11 @@ async function handleSyncToNewAccount(
                 quranLastRead: storage.getOptional(STORAGE_KEYS.QURAN_LAST_READ) ? storage.getOptional<unknown>(STORAGE_KEYS.QURAN_LAST_READ) : null,
             },
             bookmarks: storage.getOptional(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
-            completedMissions: storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS) || [],
+            completedMissions: (storage.getOptional<Array<{ completedAt?: string }>>(STORAGE_KEYS.COMPLETED_MISSIONS) || []).map((mission) => ({
+                ...mission,
+                completedDate: mission.completedAt ? DateUtils.toLocalDate(mission.completedAt) : undefined,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            })),
             intentions: storage.getOptional(STORAGE_KEYS.INTENTION_JOURNAL) || [],
             activity: {
                 date: new Date().toISOString().split('T')[0],

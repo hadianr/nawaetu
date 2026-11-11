@@ -23,7 +23,6 @@ import { logger } from "@/lib/logger";
 import {
     bookmarks,
     intentions,
-    userCompletedMissions,
     dailyActivities,
     users,
     userReadingState,
@@ -31,6 +30,7 @@ import {
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { DbSyncRepository } from "@/core/repositories/db-sync.repository";
 
 // Schema validation for request body
 const quranLastReadSchema = z.object({
@@ -62,6 +62,8 @@ const syncSchema = z.object({
         hasanahEarned: z.number().optional(),
         xpEarned: z.number().optional(),
         completedAt: z.string(),
+        completedDate: z.string().optional(),
+        timezone: z.string().optional(),
     })).max(1000).optional(),
     intentions: z.array(z.object({
         intentionText: z.string().optional(),
@@ -133,6 +135,19 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: true, message: "Guest sync eligibility consumed" });
         }
 
+        // Missions go through the same path as normal sync (canonical reward, local day, Hasanah and
+        // streak ledger). They are idempotent, so a failure here leaves eligibility unconsumed and the
+        // whole import can be retried.
+        if (data.completedMissions && data.completedMissions.length > 0) {
+            await new DbSyncRepository(userId).syncMissionsBatch(data.completedMissions.map((mission) => ({
+                id: mission.id,
+                completedAt: mission.completedAt,
+                completedDate: mission.completedDate,
+                hasanahEarned: mission.hasanahEarned ?? mission.xpEarned,
+                timezone: mission.timezone,
+            })));
+        }
+
         await db.transaction(async (tx) => {
             // 1. Sync Profile (Priority: Guest > Google Default)
             if (data.profile) {
@@ -167,9 +182,10 @@ export async function POST(req: NextRequest) {
                     }
                 }
 
+                // Merge, so keys written before the import (for example theme) are not wiped.
                 await tx.update(users)
                     .set({
-                        settings: sanitizedSettings,
+                        settings: sql`COALESCE(${users.settings}, '{}'::jsonb) || ${JSON.stringify(sanitizedSettings)}::jsonb`,
                         updatedAt: new Date(),
                     })
                     .where(eq(users.id, userId));
@@ -201,18 +217,6 @@ export async function POST(req: NextRequest) {
                             updatedAt: new Date(),
                         }
                     });
-            }
-
-            // 4. Sync Completed Missions
-            if (data.completedMissions && data.completedMissions.length > 0) {
-                await tx.insert(userCompletedMissions)
-                    .values(data.completedMissions.map(m => ({
-                        userId,
-                        missionId: m.id,
-                        hasanahEarned: m.hasanahEarned,
-                        completedAt: new Date(m.completedAt),
-                    })))
-                    .onConflictDoNothing(); // If already completed, skip
             }
 
             // 5. Sync Intentions (Journal) - Optimized with Batch lookup
