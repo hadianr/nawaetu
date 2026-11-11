@@ -268,3 +268,19 @@ If usage still approaches the cap, the next steps are a longer memory cache for 
 **Redis baseline from the Upstash dashboard (11 Nov 2026, before this branch is deployed).** 457 commands this month (44 writes, 413 reads), about 10 to 135 a day over the last five days, against a budget of roughly 16,600 a day. Storage 476 bytes, 4 to 5 keys (the fifth appears and expires, which matches the 5-minute session-check entry), no connections held, latency well under a millisecond. Top commands are GET and SET, which is the session check; EXISTS, ACL, SCAN and SEARCH.LISTINDEXES come from using the Upstash console. There is no EVAL or EVALSHA, so the Redis-backed limiters (AI chat, payment, anonymous accounts) have not been exercised yet.
 
 This puts the earlier worry in proportion: at today's traffic the free tier has about a hundredfold headroom, and the changes above are a precaution for when the sync engine and more users arrive. To check it after release: watch Commands per day on the Usage tab, expect GET to stay the largest, expect EVALSHA to appear once the AI mentor or a payment link is used (keys with prefix `rl:`), and confirm no `rl:sync` or `rl:intention` keys appear at all, since those now count in memory.
+
+## 16. Bundle size of the home page (11 Nov 2026)
+
+Measured with `scripts/analyze-bundle.mjs` and gzip on production builds of `main` and this branch, built with the same environment. The initial JavaScript of the home route:
+
+| | Files | Raw | Gzip | Brotli |
+| --- | --- | --- | --- | --- |
+| `main` | 18 | 910,454 B | 291,778 B | 245,072 B |
+| This branch | 19 | 929,104 B | 299,746 B | 251,854 B |
+| Difference | +1 | +18,650 B (+2.0%) | +7,968 B (+2.7%) | +6,782 B |
+
+CSS is unchanged (228,581 B to 228,629 B raw). The home page's own chunk got smaller (31,101 B to 28,326 B raw).
+
+This is about 3 KB gzip over the 5 KB budget in `ONBOARDING_AND_MOTION_REVAMP_PLAN.md` section 7.4. That budget was written for the animation work alone; this branch adds a whole sync system. The growth is spread over many small chunks and matches the roughly 800 lines of client code added (queue, award helpers, account clean-up, intention retry, sync warnings, the changed fasting and Quran timer hooks, and about 20 locale strings in both languages). The engine itself (tracker, drain, pull, merge, claim) is not in the initial JavaScript: the markers for those modules are absent from every initial chunk. It is loaded after login, from `lib/sync/engine.ts`.
+
+If the combined release has to stay inside the 5 KB budget, the cheapest places to look are the locale strings (load the sync messages only on demand) and the always-loaded pieces of `sync-queue.ts`. Neither was changed, because the total is explained and small next to the 128 KB-per-edit upload it replaced.

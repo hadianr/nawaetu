@@ -28,20 +28,6 @@ import { AppIcon } from "@/components/ui/AppIcon";
 import { useLocale } from "@/context/LocaleContext";
 import { getSyncWarning } from "@/lib/sync-warning";
 import { DateUtils } from "@/lib/utils/date";
-import { syncQueue } from "@/lib/sync-queue";
-import { getSyncUserId } from "@/lib/sync/award";
-import { pullAndApply, pullBookmarksIfChanged } from "@/lib/sync/pull";
-import { seedQueueFromLocal, startSyncTracker } from "@/lib/sync/tracker";
-import { claimGuestIntentions } from "@/lib/sync/claim";
-
-/** Wait this long after the last change before sending, so a burst of taps is one request. */
-const SEND_DELAY_MS = 2000;
-/** But never wait longer than this while changes keep coming (continuous dhikr counting). */
-const SEND_MAX_WAIT_MS = 15000;
-/** Do not ask the server for other devices' changes more often than this. */
-const PULL_INTERVAL_MS = 60000;
-/** A forced pull (login, reconnect) still waits this long after the last one: a flapping connection fires many "online" events. */
-const FORCED_PULL_GAP_MS = 5000;
 
 export default function DataSyncer() {
     const { data: session, status } = useSession();
@@ -89,86 +75,22 @@ export default function DataSyncer() {
         }
     }, [status, session, storage, t]);
 
-    // The sync engine: queue every change as it happens, send it soon after, and pick up other devices'
-    // changes when the app comes back into view or the connection returns.
+    // The sync engine (tracker, queue, pull, merge) is loaded after the page is interactive instead of being
+    // part of the first download: it is only needed once a change is made or the app returns to view.
     useEffect(() => {
         if (status !== "authenticated" || !userId) return;
 
-        let stopTracker: (() => void) | null = null;
-        let sendTimer: ReturnType<typeof setTimeout> | undefined;
-        let firstQueuedAt = 0;
-        let lastPullAt = 0;
-        let pulling = false;
+        let stop: (() => void) | undefined;
         let cancelled = false;
-
-        const send = () => {
-            clearTimeout(sendTimer);
-            firstQueuedAt = 0;
-            // Nothing queued means nothing to send: skip the work and the re-render.
-            if (syncQueue.getPendingEntries(userId).length > 0) void syncDataRef.current({ silent: true });
-        };
-
-        const scheduleSend = () => {
-            const now = Date.now();
-            if (!firstQueuedAt) firstQueuedAt = now;
-            clearTimeout(sendTimer);
-            // Trailing debounce with a ceiling: the timer restarts on each change but never past the max wait.
-            sendTimer = setTimeout(send, Math.max(0, Math.min(SEND_DELAY_MS, firstQueuedAt + SEND_MAX_WAIT_MS - now)));
-        };
-
-        const onQueued = () => {
-            // Remember when unsynced work began, so the user can be warned before it ages out.
-            if (!storage.getOptional(STORAGE_KEYS.UNSYNCED_SINCE)) storage.set(STORAGE_KEYS.UNSYNCED_SINCE, Date.now());
-            scheduleSend();
-        };
-
-        const pullIfDue = async (force = false) => {
-            if (pulling || document.visibilityState !== "visible" || !navigator.onLine) return;
-            if (Date.now() - lastPullAt < (force ? FORCED_PULL_GAP_MS : PULL_INTERVAL_MS)) return;
-            pulling = true;
-            lastPullAt = Date.now();
-            try {
-                // Send our own changes first, so the server's answer already includes them.
-                const sent = await syncDataRef.current({ silent: true });
-                if (!sent.success) return;
-                await pullAndApply(userId, ["progress", "missions", "activity", "profile", "fasting"]);
-                await pullBookmarksIfChanged(userId);
-            } finally {
-                pulling = false;
-            }
-        };
-
-        const start = () => {
-            if (cancelled || stopTracker || getSyncUserId() !== userId) return;
-            // Entries saved for another account on this device are never sent for this one.
-            syncQueue.discardOtherAccounts(userId);
-            seedQueueFromLocal(userId);
-            stopTracker = startSyncTracker(userId, onQueued);
-            if (syncQueue.getPendingEntries(userId).length > 0) onQueued();
-            void claimGuestIntentions(userId);
-            void pullIfDue(true);
-        };
-
-        // GuestSyncManager decides hydrate-or-import at login; the engine starts once it has finished.
-        if (getSyncUserId() === userId) start();
-        else window.addEventListener("sync_login_settled", start, { once: true });
-
-        const onVisible = () => { if (document.visibilityState === "visible") { send(); void pullIfDue(); } };
-        const onOnline = () => { send(); void pullIfDue(true); };
-        window.addEventListener("sync_queue_changed", onQueued);
-        window.addEventListener("online", onOnline);
-        document.addEventListener("visibilitychange", onVisible);
+        void import("@/lib/sync/engine").then(({ startSyncEngine }) => {
+            if (!cancelled) stop = startSyncEngine({ userId, sync: () => syncDataRef.current({ silent: true }) });
+        });
 
         return () => {
             cancelled = true;
-            clearTimeout(sendTimer);
-            stopTracker?.();
-            window.removeEventListener("sync_login_settled", start);
-            window.removeEventListener("sync_queue_changed", onQueued);
-            window.removeEventListener("online", onOnline);
-            document.removeEventListener("visibilitychange", onVisible);
+            stop?.();
         };
-    }, [status, userId, storage]);
+    }, [status, userId]);
 
     return null; // Invisible component
 }

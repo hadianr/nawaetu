@@ -49,6 +49,10 @@ async function runSync(): Promise<void> {
         await Promise.resolve();
         await Promise.resolve();
         await Promise.resolve();
+        // The sync tracker is loaded on demand when data is restored.
+        await vi.dynamicImportSettled();
+        await Promise.resolve();
+        await Promise.resolve();
     });
 }
 

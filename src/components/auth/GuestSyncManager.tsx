@@ -31,7 +31,6 @@ import { mergeSyncRecords } from "@/lib/sync/merge-sync-data";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 import { DateUtils } from "@/lib/utils/date";
 import { clearAccountData } from "@/lib/account-data";
-import { resetTrackerSnapshot, withoutTracking } from "@/lib/sync/tracker";
 
 interface GuestActivityTracker {
     quranAyat?: number;
@@ -366,6 +365,7 @@ export function GuestSyncManager() {
                     // ACTION: Auto-Hydrate (Restore data).
                     toast.info(translations.syncHydrateLoading || "Sedang mengambil data lama kamu dari server...", { duration: 2000 });
                     // The server's data written below is not the user's own change, so it must not be queued for upload.
+                    const { resetTrackerSnapshot, withoutTracking } = await import("@/lib/sync/tracker");
                     await withoutTracking(() => hydrateFromServer(serverData, storage, userId));
                     resetTrackerSnapshot();
 
