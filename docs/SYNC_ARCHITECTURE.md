@@ -40,7 +40,7 @@ screen edits storage ──▶ tracker ──▶ queue (localStorage) ──▶ 
 | `api/user/sync/route.ts` | Accepts queue entries. Mission completions and bookmark saves are written as batches, everything else one at a time. Limited to 200 entries and 30 requests a minute per account (memory only) |
 | `api/user/pull/route.ts` | Returns only the parts asked for: `progress`, `missions`, `activity`, `bookmarks` (or a fingerprint), `profile`, `fasting` |
 | `core/repositories/db-sync.repository.ts` | One method per entity. Applies the sync window, prices prayers by gender, validates points events |
-| `core/repositories/progression.repository.ts` | The ledger. `processProgressionEvidenceBatch` records many awards in one transaction; `reverseProgressionEvidence` takes one back; `raiseProgressionEvidence` grows an award during the day |
+| `core/repositories/progression.repository.ts` | The ledger and streak days (qualified, and frozen where a freeze protected a missed day). `processProgressionEvidenceBatch` records many awards in one transaction; `reverseProgressionEvidence` takes one back; `raiseProgressionEvidence` grows an award during the day |
 | `lib/hasanah-events.ts` | The server's price list for points that do not come from a mission. A client reports what happened, never the amount |
 | `api/user/sync-guest/route.ts` | One-time import of a guest's data into a new account |
 
@@ -93,5 +93,5 @@ accounts. The sync limiters stay in memory on purpose.
 ## Known gaps
 
 See "Still open" in `SYNC_AND_ACCOUNT_ACTION_PLAN.md`. The ones that matter when you change this code: the legacy
-full-state upload is still accepted by `api/user/sync/route.ts` for cached older clients, frozen streak days are not stored,
-and guest push subscriptions have no stored language.
+full-state upload is still accepted by `api/user/sync/route.ts` for cached older clients, and guest push subscriptions
+have no stored language.
