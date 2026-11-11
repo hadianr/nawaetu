@@ -102,6 +102,7 @@ accounts. The sync limiters stay in memory on purpose.
 
 ## Known gaps
 
-See "Still open" in `SYNC_AND_ACCOUNT_ACTION_PLAN.md`. The ones that matter when you change this code: the legacy
-full-state upload is still accepted by `api/user/sync/route.ts` for cached older clients, and guest push subscriptions
-have no stored language.
+See "Still open" in `SYNC_AND_ACCOUNT_ACTION_PLAN.md`.
+
+The old full-state upload (the whole local state in one body) is gone. `api/user/sync/route.ts` answers it with 410
+`outdated_client`; the app reloads itself onto the new version and the data on the device is untouched.

@@ -112,7 +112,7 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | 3.3 **Done** | Pull on app focus and merge into local storage: missions, bookmarks, today's activity, fasting, taraweh | A prayer checked on the phone appears on the laptop | `GuestSyncManager.tsx` or a new pull hook, `/api/user/full-data` |
 | 3.4 **Done, see limit** | Merge daily activity on the server: union for prayers, highest value for counters | A second device can no longer erase the first device's prayers and tasbih | `syncDailyActivity` |
 | 3.5 **Done for fasting, taraweh and daily log** | Move fasting, taraweh and the Ramadan daily log onto the same queue | One retry path for every tracker instead of four fire-and-forget requests | `useFastingTracker.ts`, `useTarawehTracker.ts`, `useRamadhanDailyLog.ts` |
-| 3.6 **Left in place for one release on purpose** | Remove the full-state legacy upload once all clients send entries | Less code; the second sync fired by the prayer widget is gone | `src/app/api/user/sync/route.ts`, `useDataSync.ts` |
+| 3.6 **Done (12 Nov 2026, at the owner's request)**: the route answers the old body with 410 `outdated_client` and writes nothing | Remove the full-state legacy upload once all clients send entries | Less code; the second sync fired by the prayer widget is gone | `src/app/api/user/sync/route.ts`, `useDataSync.ts` |
 
 **Order inside the phase:** 3.4 first (small, server only), then 3.1 with 3.2, then 3.3, then 3.5, then 3.6 after one release so old cached clients keep working.
 

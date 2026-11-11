@@ -208,45 +208,31 @@ describe("POST /api/user/sync", () => {
         });
     });
 
-    describe("older payload shapes", () => {
-        it("syncs legacy mission and intention lists as batches", async () => {
-            const { body } = await result({ completedMissions: [{ id: "m1" }, { id: "m2" }], intentions: [{ intentionText: "be kind" }] });
-            expect(called("syncMissionsBatch")).toHaveLength(1);
-            expect(called("syncIntentionsBatch")).toHaveLength(1);
-            expect(body.synced.map(item => item.id)).toEqual(["legacy-mission-0", "legacy-mission-1", "legacy-intention-0"]);
+    describe("the old full-state body", () => {
+        const legacyBodies: Array<[string, Record<string, unknown>]> = [
+            ["missions and intentions", { completedMissions: [{ id: "m1" }], intentions: [{ intentionText: "be kind" }] }],
+            ["bookmarks, settings and streaks", { bookmarks: [{ name: "b1" }], settings: { theme: "dark" }, streaks: { current: 3 } }],
+            ["the Ramadan log", { ramadhan: { tarawehLog: {} } }],
+            ["extra entries without an entries list", { extraEntries: [{ id: "x1", type: "sirah_progress", data: {} }] }],
+        ];
+
+        it.each(legacyBodies)("is refused with 410 and says why (%s), and writes nothing", async (_name, payload) => {
+            const result_ = await result(payload);
+
+            expect(result_.status).toBe(410);
+            expect((result_.body as unknown as { error: string }).error).toBe("outdated_client");
+            expect(h.calls).toHaveLength(0);
         });
 
-        it("reports a failed legacy batch and keeps going", async () => {
-            h.failBatches = true;
-            const { body } = await result({ completedMissions: [{ id: "m1" }], intentions: [{ intentionText: "x" }] });
-            expect(body.failed).toEqual([
-                { id: "legacy-missions", error: "mission batch failed" },
-                { id: "legacy-intentions", error: "intention batch failed" },
-            ]);
+        it("does not mistake the current format for it", async () => {
+            const { status } = await result({ entries: [{ id: "c1", type: "mission", action: "create", data: { id: "tasbih_99" } }] });
+            expect(status).toBe(200);
         });
 
-        it("turns legacy lists and objects into entries", async () => {
-            const { body } = await result({
-                bookmarks: [{ name: "b1" }],
-                settings: { theme: "dark" },
-                readingState: { surahId: 2 },
-                streaks: { current: 3 },
-                dailyActivity: { date: "2026-11-10" },
-                extraEntries: [{ id: "x1", type: "sirah_progress", data: { chapter: 1 } }, { nope: true }],
-            });
-            expect(body.failed).toEqual([]);
-            expect(called("syncBookmarksBatch")).toHaveLength(1);
-            expect(body.synced.map(item => item.id).sort()).toEqual(["legacy-bookmark-0", "legacy-daily_activity", "legacy-reading_state", "legacy-setting", "legacy-streak", "x1"]);
-            expect(called("syncSirahProgress")).toHaveLength(1);
-        });
-
-        it("reads the legacy taraweh log by year and day, skipping invalid choices", async () => {
-            await result({ ramadhan: { tarawehLog: { "1447": { "1447-09-05": { choice: "8" }, "1447-09-06": { choice: "99" }, "1447-09-07": 20 } } } });
-            const sent = called("syncRamadhanTaraweh").map(call => call.args[0]);
-            expect(sent).toEqual([
-                { hijriYear: 1447, hijriDay: 5, choice: "8" },
-                { hijriYear: 1447, hijriDay: 7, choice: "20" },
-            ]);
+        it("still treats an empty body as nothing to sync", async () => {
+            const { status, body } = await result({});
+            expect(status).toBe(200);
+            expect(body.synced).toEqual([]);
         });
     });
 });
