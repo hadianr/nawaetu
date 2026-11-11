@@ -12,7 +12,7 @@ import {
     sirahUserProgress,
     sirahBookmarks,
 } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
 import { processProgressionEvidence } from "@/core/repositories/progression.repository";
@@ -441,12 +441,16 @@ export class DbSyncRepository {
                 })
                 .onConflictDoUpdate({
                     target: [dailyActivities.userId, dailyActivities.date],
+                    // Merge instead of overwrite: a second device that has seen less of the day must not
+                    // erase what the first one recorded. Counters keep the higher value and prayers are a union.
                     set: {
-                        quranAyat: data.quranAyat !== undefined ? data.quranAyat : undefined,
-                        quranReadingSeconds: data.quranReadingSeconds !== undefined ? data.quranReadingSeconds : undefined,
+                        quranAyat: data.quranAyat !== undefined ? sql`GREATEST(COALESCE(${dailyActivities.quranAyat}, 0), ${data.quranAyat})` : undefined,
+                        quranReadingSeconds: data.quranReadingSeconds !== undefined ? sql`GREATEST(COALESCE(${dailyActivities.quranReadingSeconds}, 0), ${data.quranReadingSeconds})` : undefined,
                         hasanahGained: data.hasanahGained !== undefined ? data.hasanahGained : undefined,
-                        tasbihCount: data.tasbihCount !== undefined ? data.tasbihCount : undefined,
-                        prayersLogged: data.prayersLogged !== undefined ? data.prayersLogged : undefined,
+                        tasbihCount: data.tasbihCount !== undefined ? sql`GREATEST(COALESCE(${dailyActivities.tasbihCount}, 0), ${data.tasbihCount})` : undefined,
+                        prayersLogged: data.prayersLogged !== undefined
+                            ? sql`(SELECT COALESCE(jsonb_agg(DISTINCT prayer), '[]'::jsonb) FROM jsonb_array_elements_text(COALESCE(${dailyActivities.prayersLogged}, '[]'::jsonb) || ${JSON.stringify(data.prayersLogged)}::jsonb) AS prayer)`
+                            : undefined,
                         lastUpdatedAt: new Date(),
                     },
                 });

@@ -85,3 +85,26 @@ describe('DbSyncRepository sync window', () => {
         expect(repo.rejected).toBe(3);
     });
 });
+
+describe('DbSyncRepository daily activity merge', () => {
+    it('merges counters with GREATEST and prayers as a union instead of overwriting', async () => {
+        const { sql } = await import('drizzle-orm');
+        const sqlMock = vi.mocked(sql);
+        sqlMock.mockClear();
+
+        const { db } = await import('@/db');
+        const upsert = { values: vi.fn().mockReturnThis(), onConflictDoUpdate: vi.fn().mockResolvedValue(undefined) };
+        (db as unknown as { insert: () => typeof upsert }).insert = () => upsert;
+
+        await new DbSyncRepository('u1').syncDailyActivity(
+            { date: '2026-11-11', quranAyat: 3, tasbihCount: 33, prayersLogged: ['fajr'] },
+            'update',
+        );
+
+        const fragments = sqlMock.mock.calls.map((call) => (call[0] as unknown as string[]).join('?'));
+        expect(fragments.some((text) => text.includes('GREATEST') && text.includes('?'))).toBe(true);
+        expect(fragments.some((text) => text.includes('jsonb_agg(DISTINCT prayer)'))).toBe(true);
+        const merged = upsert.onConflictDoUpdate.mock.calls[0][0].set;
+        expect(merged).not.toHaveProperty('prayersLogged', ['fajr']);
+    });
+});
