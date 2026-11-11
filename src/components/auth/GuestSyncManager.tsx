@@ -30,6 +30,7 @@ import { getStorageService, type StorageService } from "@/core/infrastructure/st
 import { mergeSyncRecords } from "@/lib/sync/merge-sync-data";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 import { DateUtils } from "@/lib/utils/date";
+import { clearAccountData } from "@/lib/account-data";
 import { resetTrackerSnapshot, withoutTracking } from "@/lib/sync/tracker";
 
 interface GuestActivityTracker {
@@ -334,6 +335,10 @@ export function GuestSyncManager() {
             // Prevent re-syncing if we've already synced this user in this session
             const lastSyncedId = storage.getOptional<string>(STORAGE_KEYS.LAST_SYNC_USER_ID);
             if (lastSyncedId === session.user.id) return;
+
+            // A different account was signed in here before (for example its session expired instead of
+            // logging out): its data must not be shown to, or uploaded for, this one.
+            if (lastSyncedId && lastSyncedId !== session.user.id) clearAccountData(storage);
 
             // Start Sync Process
             try {

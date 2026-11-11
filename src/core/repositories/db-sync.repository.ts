@@ -28,6 +28,19 @@ function missionLocalDate(item: MissionSyncPayload, completedAt: Date): string {
     return localDateIn(completedAt, item.timezone);
 }
 
+const DAILY_PRAYER_IDS = new Set(['fajr_prayer', 'dhuhr_prayer', 'asr_prayer', 'maghrib_prayer', 'isha_prayer']);
+
+/**
+ * A woman earns the full prayer reward whether she prays at home or at the mosque, so the server never
+ * accepts the lower "alone" amounts for her, whichever device or app version sent them. The late (half)
+ * amounts keep the same relation. Anyone else keeps what they reported.
+ */
+export function genderAdjustedReward(missionId: string, amount: number, gender: string | null): number {
+    if (gender !== 'female' || !DAILY_PRAYER_IDS.has(missionId)) return amount;
+    if (amount === 75 || amount === 37) return amount;
+    return amount <= 12 ? 37 : 75;
+}
+
 function canonicalMissionReward(missionId: string, requested: unknown): number | null {
     const mission = findMissionDefinition(normalizeMissionId(missionId));
     if (!mission) return null;
@@ -144,7 +157,26 @@ export class DbSyncRepository {
     /** Mission records refused because their day is outside the sync window; the client keeps them on the device. */
     rejected = 0;
 
+    private genderLookup: Promise<string | null> | null = null;
+
     constructor(private userId: string) {}
+
+    /** Looked up at most once per request, and only if a prayer needs it. */
+    private gender(): Promise<string | null> {
+        this.genderLookup ??= (async () => {
+            try {
+                const user = await db.query.users.findFirst({ where: eq(users.id, this.userId), columns: { gender: true } });
+                return user?.gender ?? null;
+            } catch {
+                return null;
+            }
+        })();
+        return this.genderLookup;
+    }
+
+    private async rewardFor(missionId: string, amount: number): Promise<number> {
+        return DAILY_PRAYER_IDS.has(missionId) ? genderAdjustedReward(missionId, amount, await this.gender()) : amount;
+    }
 
     private outsideWindow(localDate: string, timezone: unknown): boolean {
         const outside = !isInSyncWindow(localDate, localDateIn(new Date(), timezone));
@@ -303,7 +335,8 @@ export class DbSyncRepository {
             const completedAt = data.completedAt ? new Date(data.completedAt) : new Date();
             const completedDate = missionLocalDate(data, completedAt);
             const missionId = normalizeMissionId(data.id || data.missionId || '');
-            const hasanahEarned = canonicalMissionReward(missionId, data.hasanahEarned ?? data.xpEarned);
+            const canonical = canonicalMissionReward(missionId, data.hasanahEarned ?? data.xpEarned);
+            const hasanahEarned = canonical === null ? null : await this.rewardFor(missionId, canonical);
 
             // Legacy clients can retain mission IDs no longer present in the
             // catalog. Ignore those records without blocking valid evidence.
@@ -376,8 +409,9 @@ export class DbSyncRepository {
             if (Number.isNaN(completedAt.getTime())) continue;
             const completedDate = missionLocalDate(item, completedAt);
             const missionId = normalizeMissionId(item.id || item.missionId || '');
-            const hasanahEarned = canonicalMissionReward(missionId, item.hasanahEarned ?? item.xpEarned);
-            if (hasanahEarned === null) continue;
+            const canonical = canonicalMissionReward(missionId, item.hasanahEarned ?? item.xpEarned);
+            if (canonical === null) continue;
+            const hasanahEarned = await this.rewardFor(missionId, canonical);
             if (this.outsideWindow(completedDate, item.timezone)) continue;
             rows.set(`${missionId}:${completedDate}`, {
                 userId: this.userId,

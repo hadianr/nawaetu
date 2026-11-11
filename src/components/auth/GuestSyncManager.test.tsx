@@ -208,6 +208,23 @@ describe("GuestSyncManager sync branches", () => {
         expect(mocks.sendGAEvent).toHaveBeenCalledWith("sync_recovery_outcome", { outcome: "deferred" });
     });
 
+    it("clears the previous account's data when a different account signs in on the same device", async () => {
+        mocks.storageValues.set(STORAGE_KEYS.LAST_SYNC_USER_ID, "someone-else");
+        mocks.storageValues.set(STORAGE_KEYS.COMPLETED_MISSIONS, [{ id: "fajr_prayer", completedAt: "2026-11-11" }]);
+        mocks.fetch.mockResolvedValueOnce(jsonResponse({ profile: {}, progression: { hasanah: 0, streak: { days: [] } } }));
+
+        await runSync();
+
+        expect(mocks.storage.remove).toHaveBeenCalledWith(STORAGE_KEYS.COMPLETED_MISSIONS);
+        expect(mocks.storage.remove).toHaveBeenCalledWith(STORAGE_KEYS.USER_HASANAH);
+    });
+
+    it("keeps local data when the same account signs in again", async () => {
+        mocks.storageValues.set(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
+        await runSync();
+        expect(mocks.storage.remove).not.toHaveBeenCalledWith(STORAGE_KEYS.COMPLETED_MISSIONS);
+    });
+
     it("does not sync an account already processed in this session", async () => {
         mocks.storageValues.set(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
 

@@ -1,3 +1,4 @@
+import { queueSyncEntry } from "@/lib/sync/award";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { getStorageService } from "@/core/infrastructure/storage";
@@ -136,14 +137,9 @@ export function useRamadhanDailyLog(hijriYear: number) {
             return next;
         });
 
-        if (status === "authenticated") {
-            fetch("/api/ramadhan/daily-log", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ hijriYear, hijriDay: day, ...finalEntry }),
-            }).catch(e => console.error("[useRamadhanDailyLog] POST failed", e));
-        }
-    }, [hijriYear, status]);
+        // Queued rather than sent at once: an edit made offline is kept and sent when the connection returns.
+        queueSyncEntry("ramadhan_daily", "update", { hijriYear, hijriDay: day, ...finalEntry });
+    }, [hijriYear]);
 
     return { log, updateDay };
 }

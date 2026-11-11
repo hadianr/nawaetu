@@ -113,7 +113,8 @@ export function InfaqProvider({ children }: { children: React.ReactNode }) {
 
     const refreshStatus = useCallback(async (): Promise<boolean> => {
         try {
-            const res = await fetch("/api/user/full-data");
+            // Only the two fields this needs, not the whole account.
+            const res = await fetch("/api/user/pull?parts=profile", { cache: "no-store" });
             if (res.ok) {
                 const data = await res.json();
                 if (data.profile) {
