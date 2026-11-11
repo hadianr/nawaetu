@@ -226,7 +226,7 @@ Measured or counted on branch `fix/sync-account-hardening`. Counts of database s
 - **Atomic donation (1.9):** the webhook still credits the user in a second step.
 - **Frozen streak days (2.3)** are still not stored on the server.
 - **5.6 answered:** prayer alerts and streak reminders are scheduled by cron-job.org (README and `docs/LLM_KB.md`), which is why nothing in the repo calls them.
-- **5.7:** the AI mentor's daily limit of 10 is checked in the client (`MentorAIClient.tsx`); the server only limits 10 per minute. A second device or cleared storage gets a fresh allowance.
+- **5.7 done:** the server now also limits the AI mentor to 20 messages per rolling 24 hours per account, twice the app's own limit of 10, so a second device or cleared storage no longer gives a fresh allowance and only abuse reaches it.
 - **Non-mission points in the ledger use `mission`, `dhikr`, `quran` and `streak_milestone` sources with prefixed ids.** Proper source values would need a migration of the enum.
 
 ## 15. Browser validation with Anoa
@@ -248,3 +248,5 @@ Measured or counted on branch `fix/sync-account-hardening`. Counts of database s
 - next-auth ignores a visibility change when the client already knows it has no session; a sign-in in an open tab arrives on its broadcast channel.
 
 **Measured in the browser** (1,000 missions and 100 bookmarks on the device): one change sent as a 235-byte request where the local state is 112,186 bytes; tracking that change took 0.7 ms.
+
+**Also done late:** bookmark saves in a sync request are written in one upsert instead of one round trip each.
