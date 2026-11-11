@@ -10,7 +10,7 @@ import {
   LEVEL_RULES_VERSION,
   ProgressionStreakState,
   calculatePlayerStats,
-  rebuildStreakState,
+  rebuildStreakFromHistory,
 } from "@/lib/habits/progression";
 import { and, asc, eq, sql } from "drizzle-orm";
 
@@ -95,10 +95,7 @@ export async function processProgressionEvidence(userId: string, evidence: Progr
         orderBy: [asc(userStreakDays.localDate)],
         columns: { localDate: true },
       });
-      const rebuilt: ProgressionStreakState = rebuildStreakState(
-        qualifiedDays.map((day) => day.localDate),
-        currentStreak?.freezesAvailable ?? 0,
-      );
+      const rebuilt: ProgressionStreakState = rebuildStreakFromHistory(qualifiedDays.map((day) => day.localDate));
       [streak] = await tx
         .insert(userStreakState)
         .values({ userId, ...rebuilt, timezone: evidence.timezone })
