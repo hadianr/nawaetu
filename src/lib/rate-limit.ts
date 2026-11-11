@@ -167,6 +167,19 @@ export const chatRateLimiter = new UnifiedRateLimiter({
 });
 
 /**
+ * AI chat per day, per account: an abuse guard behind the app's own limit of 10 a day. The app counts
+ * that on the device, so clearing storage or using a second device gave a fresh allowance. The server
+ * allows twice as many over a rolling 24 hours so a heavy user whose days overlap is never blocked early.
+ */
+export const chatDailyRateLimiter = new UnifiedRateLimiter({
+    prefix: 'rl:chat-day',
+    requests: 20,
+    window: '1 d',
+    inMemoryInterval: 24 * 60 * 60 * 1000,
+    inMemoryMaxTokens: 2000,
+});
+
+/**
  * AI greeting: 5 requests per hour per user.
  * Usage: const { success } = await greetingRateLimiter.check(`greet:${userId}`);
  */

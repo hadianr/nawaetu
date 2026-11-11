@@ -19,7 +19,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { askMentor } from './ai-action';
-import { chatRateLimiter } from '@/lib/rate-limit';
+import { chatRateLimiter, chatDailyRateLimiter } from '@/lib/rate-limit';
 import { getServerSession } from '@/lib/auth';
 
 const { mockChat } = vi.hoisted(() => ({ mockChat: vi.fn() }));
@@ -32,6 +32,9 @@ vi.mock('@/lib/auth', () => ({
 vi.mock('@/lib/rate-limit', () => ({
     chatRateLimiter: {
         check: vi.fn().mockResolvedValue({ success: true, remaining: 9 })
+    },
+    chatDailyRateLimiter: {
+        check: vi.fn().mockResolvedValue({ success: true, remaining: 19 })
     }
 }));
 
@@ -71,6 +74,21 @@ describe('askMentor', () => {
         // BEFORE FIX: This will fail because it uses `chat:Alice`
         // AFTER FIX: This should pass because it uses `chat:user-123`
         expect(chatRateLimiter.check).toHaveBeenCalledWith(`chat:${mockUserId}`);
+    });
+
+    it('stops at the daily limit on the server, before any model is called', async () => {
+        vi.mocked(getServerSession).mockResolvedValue({
+            expires: new Date(Date.now() + 60_000).toISOString(),
+            user: { id: 'user-123', isMuhsinin: false },
+        });
+        vi.mocked(chatDailyRateLimiter.check).mockResolvedValueOnce({ success: false, remaining: 0 });
+        mockChat.mockClear();
+
+        const reply = await askMentor('Apa itu sabar?', { name: 'Alice', prayerStreak: 1, lastPrayer: 'Fajr' });
+
+        expect(chatDailyRateLimiter.check).toHaveBeenCalledWith('chatday:user-123');
+        expect(reply).toMatch(/harian/i);
+        expect(mockChat).not.toHaveBeenCalled();
     });
 
     it.each([

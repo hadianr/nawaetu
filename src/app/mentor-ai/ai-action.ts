@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { chatRateLimiter } from '@/lib/rate-limit';
+import { chatRateLimiter, chatDailyRateLimiter } from '@/lib/rate-limit';
 import { getServerSession } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
@@ -43,6 +43,7 @@ const USER_MESSAGES = {
         tooLong: "Pesan terlalu panjang. Coba dipersingkat, maksimal 500 karakter.",
         login: "Maaf, kamu harus login dulu untuk menggunakan fitur ini.",
         rateLimit: "Terlalu banyak pesan. Tunggu sebentar, lalu coba lagi dalam 1 menit.",
+        dailyLimit: "Batas pesan harian sudah tercapai. Coba lagi besok ya.",
         busy: "Sistem sedang sibuk. Coba lagi dalam beberapa menit.",
         updated: "Sistem sedang diperbarui. Coba lagi nanti.",
         auth: "Maaf, ada kendala sistem. Tim kami akan segera memperbaikinya.",
@@ -54,6 +55,7 @@ const USER_MESSAGES = {
         tooLong: "Your message is too long. Please keep it under 500 characters.",
         login: "Sorry, please log in to use this feature.",
         rateLimit: "Too many messages. Please wait a minute before asking again.",
+        dailyLimit: "You have reached today's message limit. Please try again tomorrow.",
         busy: "Sorry, the system is busy. Please try again in a few minutes.",
         updated: "Sorry, the system is being updated. Please try again later.",
         auth: "Sorry, the system is having trouble. Our team will fix it soon.",
@@ -156,6 +158,11 @@ export async function askMentor(
 
     if (!rateLimit.success) {
         return USER_MESSAGES[locale].rateLimit;
+    }
+
+    // The daily allowance is enforced here too, not only on the device.
+    if (!(await chatDailyRateLimiter.check(`chatday:${session.user.id}`)).success) {
+        return USER_MESSAGES[locale].dailyLimit;
     }
 
     try {
