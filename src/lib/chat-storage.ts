@@ -17,6 +17,7 @@
  */
 
 // Utility for chat history management using StorageService
+import { parseStored } from "@/lib/utils/stored-json";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "./constants/storage-keys";
 
@@ -48,9 +49,8 @@ export interface ChatSession {
 export function getAllSessions(): ChatSession[] {
     try {
         // 1. Check for new session storage
-        const storedSessions = storage.getOptional<string>(CHAT_SESSIONS_KEY);
-        if (storedSessions) {
-            const sessions = JSON.parse(storedSessions) as ChatSession[];
+        const sessions = parseStored<ChatSession[]>(storage.getOptional<unknown>(CHAT_SESSIONS_KEY));
+        if (Array.isArray(sessions)) {
             return sessions.sort((a, b) => b.updatedAt - a.updatedAt);
         }
 

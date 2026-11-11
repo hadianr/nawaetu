@@ -20,6 +20,7 @@
 
 import { lazy, Suspense, useEffect, useState, useRef } from "react";
 import { flushPendingIntention, savePendingIntention } from "@/lib/intention-pending";
+import { queueHasanahEvent } from "@/lib/sync/award";
 import Link from "next/link";
 import { ChevronRight, Book, CheckCircle2, Moon, Compass, Edit2, Calendar } from "lucide-react";
 
@@ -281,6 +282,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
                 // Add Hasanah locally
                 addHasanah(xpAmount, selectedDate);
+                queueHasanahEvent("reflection", "daily", xpAmount, selectedDate);
                 window.dispatchEvent(new CustomEvent("hasanah_updated"));
 
                 // Update Cache

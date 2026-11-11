@@ -18,12 +18,12 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { transactions, users } from "@/db/schema";
+import { transactions } from "@/db/schema";
 import { eq, and, desc, or, ne } from "drizzle-orm";
 import crypto from "crypto";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
-import { normalizeMayarStatus } from "@/lib/payments";
+import { normalizeMayarStatus, settleDonation } from "@/lib/payments";
 
 // Seconds. Mayar call; the provider retries a failed webhook.
 export const maxDuration = 60;
@@ -169,7 +169,16 @@ export async function POST(req: NextRequest) {
         // 9. Status Normalization
         const normalizedStatus = normalizeMayarStatus(status);
 
-        // 10. Update Transaction
+        // 10. A paid donation is settled and credited in one database transaction
+        if (normalizedStatus === 'settlement') {
+            const settled = await settleDonation(transaction, mayarId);
+            if (!settled) {
+                return NextResponse.json({ status: "ok", message: "Transaction update skipped (race condition)" });
+            }
+            return NextResponse.json({ status: "ok", data: { ...transaction, status: "settlement", mayarId } });
+        }
+
+        // 10b. Any other status only updates the transaction
         const updatedTransactions = await db.update(transactions)
             .set({
                 status: normalizedStatus as "pending" | "settlement" | "expired",
@@ -185,24 +194,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ status: "ok", message: "Transaction update skipped (race condition)" });
         }
 
-        const updatedTx = updatedTransactions[0];
-
-        // 11. Grant Muhsinin Status
-        if (updatedTx.status === "settlement" && transaction.userId) {
-            const { sql } = await import("drizzle-orm");
-            await db.update(users)
-                .set({
-                    isMuhsinin: true,
-                    muhsininSince: new Date(),
-                    totalInfaq: sql`${users.totalInfaq} + ${transaction.amount}`
-                })
-                .where(eq(users.id, transaction.userId));
-        }
-
-        return NextResponse.json({ status: "ok", data: updatedTx });
+        return NextResponse.json({ status: "ok", data: updatedTransactions[0] });
 
     } catch (e: unknown) {
         logger.error("Mayar webhook internal error", e, { route: "/api/payment/webhook" });
-        return NextResponse.json({ error: "Internal Server Error", details: e instanceof Error ? e.message : String(e) }, { status: 500 });
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

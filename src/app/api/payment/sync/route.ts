@@ -20,8 +20,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
-import { eq, desc, and, sql, ne } from "drizzle-orm";
-import { normalizeMayarStatus } from "@/lib/payments";
+import { eq, desc, and } from "drizzle-orm";
+import { normalizeMayarStatus, settleDonation } from "@/lib/payments";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 // Seconds. two Mayar calls in a row, 10 s each.
@@ -123,20 +123,7 @@ export async function GET(req: NextRequest) {
         if (normalized === "settlement") {
             // Claim the settlement first: the webhook may have credited this donation already,
             // and only the caller that flips the status may add the amount.
-            const claimed = await db.update(transactions)
-                .set({ status: "settlement" })
-                .where(and(eq(transactions.id, latestTx.id), ne(transactions.status, "settlement")))
-                .returning({ id: transactions.id });
-
-            if (claimed.length > 0) {
-                await db.update(users)
-                    .set({
-                        isMuhsinin: true,
-                        muhsininSince: new Date(),
-                        totalInfaq: sql`${users.totalInfaq} + ${latestTx.amount}`
-                    })
-                    .where(eq(users.id, user.id));
-            }
+            await settleDonation(latestTx);
 
             return NextResponse.json({
                 status: "verified",

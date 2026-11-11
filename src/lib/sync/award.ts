@@ -25,7 +25,7 @@ export function queueSyncEntry(type: SyncEntityType, action: SyncActionType, dat
 
 export type HasanahEventKind =
     | "taraweh" | "fasting" | "lailatul" | "khatamah" | "sirah_quiz"
-    | "dhikr_completion" | "dhikr_milestone" | "quran_time" | "streak_milestone";
+    | "reflection" | "dhikr_completion" | "dhikr_milestone" | "quran_time" | "streak_milestone";
 
 /**
  * Tells the server about points earned outside the missions list. The local total is already updated by

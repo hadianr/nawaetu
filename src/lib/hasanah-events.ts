@@ -40,6 +40,8 @@ export function validateHasanahEvent(input: HasanahEventInput): ValidatedHasanah
         case "lailatul": return daily("mission", YEAR_DAY.test(key) && amount === 50);
         case "khatamah": return daily("mission", /^\d{4}-(?:[1-9]|[12]\d|30)$/.test(key) && amount > 0 && amount % 20 === 0 && amount <= 600);
         case "sirah_quiz": return daily("mission", key === "daily" && amount > 0 && amount % 10 === 0 && amount <= 200);
+        // Reflection on the day's intention: 50 on the day itself, 25 when written for an earlier day.
+        case "reflection": return daily("mission", key === "daily" && (amount === 25 || amount === 50));
         case "dhikr_completion": return daily("dhikr", /^(?:[1-9]|1\d|20)$/.test(key) && amount === 50);
         case "quran_time": return daily("quran", key === "time" && amount <= 600, "raise");
         case "dhikr_milestone": {

@@ -5,29 +5,21 @@ import { act, renderHook } from "@testing-library/react";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
-const mocks = vi.hoisted(() => ({ values: new Map<string, unknown>(), fetch: vi.fn() }));
+const mocks = vi.hoisted(() => ({ fetch: vi.fn() }));
 
 vi.mock("next-auth/react", () => ({
     useSession: () => ({ status: "authenticated", data: { user: { id: "user-1" } } }),
 }));
-vi.mock("@/core/infrastructure/storage", () => {
-    const service = {
-        get: (key: string, fallback: unknown) => mocks.values.get(key) ?? fallback,
-        getOptional: (key: string) => mocks.values.get(key) ?? null,
-        set: (key: string, value: unknown) => { mocks.values.set(key, value); },
-        remove: (key: string) => { mocks.values.delete(key); },
-    };
-    return { getStorageService: () => service };
-});
+// The real storage layer is used on purpose: it parses JSON text when reading, which a hand-made mock hid.
 
 import { useFastingTracker } from "./useFastingTracker";
 
 const flush = async () => { await act(async () => { for (let i = 0; i < 10; i++) await Promise.resolve(); }); };
-const pending = () => mocks.values.get(STORAGE_KEYS.RAMADHAN_FASTING_PENDING) as string[] | undefined;
+const pending = () => { const raw = localStorage.getItem(STORAGE_KEYS.RAMADHAN_FASTING_PENDING); return raw ? (JSON.parse(raw) as string[]) : undefined; };
 
 describe("useFastingTracker offline edits", () => {
     beforeEach(() => {
-        mocks.values.clear();
+        localStorage.clear();
         mocks.fetch.mockReset();
         vi.stubGlobal("fetch", mocks.fetch);
         vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -63,10 +55,10 @@ describe("useFastingTracker offline edits", () => {
     });
 
     it("sends edits that were still pending when the app was reloaded", async () => {
-        mocks.values.set(STORAGE_KEYS.RAMADHAN_FASTING_LOG, JSON.stringify({
+        localStorage.setItem(STORAGE_KEYS.RAMADHAN_FASTING_LOG, JSON.stringify({
             "1447": { "05": { status: "fasting", consequence: "none", qadhaDone: false } },
         }));
-        mocks.values.set(STORAGE_KEYS.RAMADHAN_FASTING_PENDING, ["1447-5"]);
+        localStorage.setItem(STORAGE_KEYS.RAMADHAN_FASTING_PENDING, JSON.stringify(["1447-5"]));
         mocks.fetch.mockResolvedValue({ ok: true, status: 200 } as Response);
 
         renderHook(() => useFastingTracker());
@@ -74,5 +66,32 @@ describe("useFastingTracker offline edits", () => {
 
         expect(mocks.fetch).toHaveBeenCalledWith("/api/ramadhan/fasting", expect.objectContaining({ method: "POST" }));
         expect(pending()).toEqual([]);
+    });
+});
+
+describe("useFastingTracker storage", () => {
+    beforeEach(() => {
+        localStorage.clear();
+        mocks.fetch.mockReset();
+        mocks.fetch.mockResolvedValue({ ok: true, status: 200 } as Response);
+        vi.stubGlobal("fetch", mocks.fetch);
+    });
+    afterEach(() => vi.unstubAllGlobals());
+
+    it("keeps earlier days when a new day is logged after a reload", async () => {
+        localStorage.setItem(STORAGE_KEYS.RAMADHAN_FASTING_LOG, JSON.stringify({
+            "1447": { "01": { status: "fasting", consequence: "none", qadhaDone: false } },
+        }));
+        const { result } = renderHook(() => useFastingTracker());
+        await flush();
+
+        // The history written before the reload is shown...
+        expect(result.current.getDayLog(1447, 1)?.status).toBe("fasting");
+
+        // ...and logging another day adds to it instead of replacing it.
+        act(() => result.current.logDay(1447, 2, "sick"));
+        await flush();
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.RAMADHAN_FASTING_LOG) as string);
+        expect(Object.keys(stored["1447"]).sort()).toEqual(["01", "02"]);
     });
 });

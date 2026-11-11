@@ -29,6 +29,7 @@ import { Minus, Plus } from "lucide-react";
 import { useTranslations, type TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
 import { queueHasanahEvent } from "@/lib/sync/award";
+import { parseStored } from "@/lib/utils/stored-json";
 import { toast } from "sonner";
 import { AppIcon } from "@/components/ui/AppIcon";
 
@@ -51,14 +52,8 @@ export default function KhatamanProgress() {
 
     useEffect(() => {
         const storage = getStorageService();
-        const saved = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG);
-        if (saved) {
-            try {
-                queueMicrotask(() => setKhatamanData(JSON.parse(saved)));
-            } catch {
-                queueMicrotask(() => setKhatamanData(DEFAULT_LOG));
-            }
-        }
+        const saved = parseStored<KhatamanLog>(storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG));
+        if (saved) queueMicrotask(() => setKhatamanData(saved));
     }, []);
 
     const save = useCallback((updated: KhatamanLog) => {

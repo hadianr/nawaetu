@@ -66,7 +66,8 @@ export default function JournalPage() {
             }
 
             const response = await fetch(
-                `/api/intentions/history?user_token=${token}&limit=20&offset=${pageNum * 20}`
+                `/api/intentions/history?limit=20&offset=${pageNum * 20}`,
+                { headers: { "x-user-token": token } },
             );
             const data = await response.json();
 

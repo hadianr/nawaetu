@@ -37,6 +37,8 @@ const updateChain = {
 
 vi.mock('@/db', () => ({
     db: {
+        // A database transaction runs its steps on the same (mocked) connection.
+        transaction: async function (this: unknown, run: (trx: unknown) => unknown) { return run(this); },
         query: {
             transactions: { findFirst: vi.fn() },
             users: { findFirst: vi.fn() }
