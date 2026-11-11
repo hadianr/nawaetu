@@ -59,6 +59,13 @@ vi.mock('@/db', () => ({
     }
 }));
 
+const syncMissionsBatch = vi.hoisted(() => vi.fn().mockResolvedValue([]));
+vi.mock('@/core/repositories/db-sync.repository', () => ({
+    DbSyncRepository: class {
+        syncMissionsBatch = syncMissionsBatch;
+    },
+}));
+
 // Mock Schema
 vi.mock('@/db/schema', () => ({
     intentions: { name: 'intentions' },
@@ -94,6 +101,7 @@ describe('POST /api/user/sync-guest', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        syncMissionsBatch.mockResolvedValue([]);
 
         // Setup transaction mock
         txMock = createTransactionMock();
@@ -128,40 +136,32 @@ describe('POST /api/user/sync-guest', () => {
         expect(insertCalls.length).toBe(1);
     });
 
-    it('should use bulk insert (1 call) for multiple completed missions', async () => {
+    it('imports guest missions through the shared mission path, not a raw insert', async () => {
         const payload = {
             completedMissions: [
-                { id: 'm1', hasanahEarned: 10, completedAt: '2023-01-01' },
-                { id: 'm2', hasanahEarned: 20, completedAt: '2023-01-02' },
-                { id: 'm3', hasanahEarned: 30, completedAt: '2023-01-03' },
+                { id: 'tasbih_99', hasanahEarned: 50, completedAt: '2026-11-11T21:30:00.000Z', completedDate: '2026-11-12', timezone: 'Asia/Jakarta' },
+                { id: 'tasbih_33', hasanahEarned: 30, completedAt: '2026-11-12' },
             ]
         };
 
-        const req = {
-            json: async () => payload,
-            headers: new Headers(),
-        };
+        const response = await POST({ json: async () => payload, headers: new Headers() } as Parameters<typeof POST>[0]);
 
-        await POST(req as Parameters<typeof POST>[0]);
+        expect(response.status).toBe(200);
+        expect(syncMissionsBatch).toHaveBeenCalledWith([
+            expect.objectContaining({ id: 'tasbih_99', completedDate: '2026-11-12', timezone: 'Asia/Jakarta', hasanahEarned: 50 }),
+            expect.objectContaining({ id: 'tasbih_33', completedAt: '2026-11-12', hasanahEarned: 30 }),
+        ]);
+        expect(txMock.insert.mock.calls.filter((call: unknown[]) => call[0] === userCompletedMissions)).toHaveLength(0);
+    });
 
-        // Filter calls for userCompletedMissions table
-        const insertCalls = txMock.insert.mock.calls.filter((call: unknown[]) => call[0] === userCompletedMissions);
+    it('leaves eligibility unconsumed when the mission import fails so the import can be retried', async () => {
+        syncMissionsBatch.mockRejectedValueOnce(new Error('db down'));
+        const payload = { completedMissions: [{ id: 'tasbih_99', hasanahEarned: 50, completedAt: '2026-11-12' }] };
 
-        // Expecting 1 call (bulk insert)
-        expect(insertCalls.length).toBe(1);
+        const response = await POST({ json: async () => payload, headers: new Headers() } as Parameters<typeof POST>[0]);
 
-        // Verify values passed to the single insert call
-        const bulkInsertValuesCall = txMock.values.mock.calls.find((args: unknown[]) => Array.isArray(args[0]) && args[0].length === 3);
-        expect(bulkInsertValuesCall).toBeDefined();
-        if (!bulkInsertValuesCall) throw new Error('Expected one bulk values call');
-
-        // Verify content of the first item
-        const firstItem = bulkInsertValuesCall[0][0];
-        expect(firstItem).toMatchObject({
-            userId: 'test-user-id',
-            missionId: 'm1',
-            hasanahEarned: 10,
-        });
+        expect(response.status).toBe(500);
+        expect(db.transaction).not.toHaveBeenCalled();
     });
 
     it('rejects unauthenticated, malformed, and invalid payloads', async () => {

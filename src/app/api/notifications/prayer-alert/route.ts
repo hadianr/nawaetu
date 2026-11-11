@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions, users } from "@/db/schema";
-import { eq, and, inArray, isNotNull } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
@@ -159,7 +159,8 @@ export async function POST(req: NextRequest) {
         const subscriptions = await db
             .select()
             .from(pushSubscriptions)
-            .where(and(eq(pushSubscriptions.active, 1), isNotNull(pushSubscriptions.userId)));
+            // Guests are included: prayer alerts are a core feature, not an account feature.
+            .where(eq(pushSubscriptions.active, 1));
 
         // Lazy: this cron fires every minute and most runs send nothing, so only
         // query users once a prayer is actually due (and never in sync mode).
