@@ -102,11 +102,12 @@ describe('User Sync API', () => {
         (db.query.users.findFirst as Mock).mockResolvedValue({ settings: {} });
 
         // Create a large payload of missions
-        const missionCount = 100;
+        // One mission per day, all inside the 30-day sync window.
+        const missionCount = 30;
         const missions = Array.from({ length: missionCount }, (_, i) => ({
             id: 'fajr_prayer',
             hasanahEarned: 10,
-            completedAt: new Date(Date.UTC(2024, 0, i + 1)).toISOString(),
+            completedAt: new Date(Date.now() - i * 86_400_000).toISOString(),
         }));
 
         const body = {

@@ -16,7 +16,7 @@ import { eq, and } from "drizzle-orm";
 import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
 import { processProgressionEvidence } from "@/core/repositories/progression.repository";
-import { localDateIn, validTimezone } from "@/lib/utils/timezone";
+import { isInSyncWindow, localDateIn, validTimezone } from "@/lib/utils/timezone";
 import { sanitizeSyncedSettings } from "@/lib/validations/sync";
 
 /** The user's own calendar day: an explicit date wins, then a date-only value, then the instant in the user's timezone. */
@@ -140,7 +140,16 @@ function intentionType(value: string | undefined): 'daily' | 'prayer' | 'custom'
 }
 
 export class DbSyncRepository {
+    /** Mission records refused because their day is outside the sync window; the client keeps them on the device. */
+    rejected = 0;
+
     constructor(private userId: string) {}
+
+    private outsideWindow(localDate: string, timezone: unknown): boolean {
+        const outside = !isInSyncWindow(localDate, localDateIn(new Date(), timezone));
+        if (outside) this.rejected++;
+        return outside;
+    }
 
     async syncBookmarkAsync(data: BookmarkSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
@@ -274,6 +283,7 @@ export class DbSyncRepository {
             // catalog. Ignore those records without blocking valid evidence.
             if (hasanahEarned === null) return undefined;
             if (Number.isNaN(completedAt.getTime())) throw new Error("Invalid mission completion date");
+            if (this.outsideWindow(completedDate, data.timezone)) return undefined;
 
             const existing = await db.query.userCompletedMissions.findFirst({
                 where: (ucm, { eq, and }) =>
@@ -326,6 +336,7 @@ export class DbSyncRepository {
             const missionId = normalizeMissionId(item.id || item.missionId || '');
             const hasanahEarned = canonicalMissionReward(missionId, item.hasanahEarned ?? item.xpEarned);
             if (hasanahEarned === null) continue;
+            if (this.outsideWindow(completedDate, item.timezone)) continue;
             rows.set(`${missionId}:${completedDate}`, {
                 userId: this.userId,
                 missionId,

@@ -25,10 +25,14 @@ import { useDataSync } from "@/hooks/useDataSync";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { useLocale } from "@/context/LocaleContext";
+import { getSyncWarning } from "@/lib/sync-warning";
+import { DateUtils } from "@/lib/utils/date";
 
 export default function DataSyncer() {
     const { data: session, status } = useSession();
     const { syncData } = useDataSync();
+    const { t } = useLocale();
     const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const storage = getStorageService();
 
@@ -61,6 +65,21 @@ export default function DataSyncer() {
 
         handleAuthSync();
 
+        // Warn once a day when changes have waited a week, and again close to the 30-day limit.
+        if (status === "authenticated") {
+            const warning = getSyncWarning(storage.getOptional(STORAGE_KEYS.UNSYNCED_SINCE));
+            const marker = `${warning.level}:${DateUtils.today()}`;
+            if (warning.level > 0 && storage.getOptional(STORAGE_KEYS.SYNC_WARNED_LEVEL) !== marker) {
+                storage.set(STORAGE_KEYS.SYNC_WARNED_LEVEL, marker);
+                const since = new Date(Date.now() - warning.ageDays * 86_400_000).toLocaleDateString();
+                const tree = t as unknown as Record<string, string>;
+                const text = (warning.level === 2 ? tree.syncUnsyncedUrgent : tree.syncUnsyncedNotice)
+                    .replace("{date}", since)
+                    .replace("{days}", String(warning.daysLeft));
+                (warning.level === 2 ? toast.warning : toast.info)(text, { duration: 10000 });
+            }
+        }
+
         // 3. Listen for local storage changes (Same Tab) to trigger auto-sync
         // We only listen for specific keys that need syncing
         const handleStorageChange = (e: Event) => {
@@ -88,6 +107,9 @@ export default function DataSyncer() {
             ];
 
             if (syncableKeys.includes(key)) {
+                // Remember when unsynced work started, so the user can be warned before it ages out.
+                if (!storage.getOptional(STORAGE_KEYS.UNSYNCED_SINCE)) storage.set(STORAGE_KEYS.UNSYNCED_SINCE, Date.now());
+
                 // Debounce Sync
                 if (syncTimeoutRef.current) {
                     clearTimeout(syncTimeoutRef.current);
@@ -106,7 +128,7 @@ export default function DataSyncer() {
             if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
         };
 
-    }, [status, session, storage, syncData]);
+    }, [status, session, storage, syncData, t]);
 
     return null; // Invisible component
 }

@@ -107,6 +107,8 @@ export const STORAGE_KEYS = {
   ONBOARDING_COMPLETED: 'onboarding_completed',
   APP_VERSION: 'app_version',
   LAST_SYNC_USER_ID: 'last_sync_user_id',
+  UNSYNCED_SINCE: 'nawaetu_unsynced_since',   // ms timestamp of the first local change the server has not accepted yet
+  SYNC_WARNED_LEVEL: 'nawaetu_sync_warned',   // "<level>:<YYYY-MM-DD>" so each warning shows at most once a day
   IS_MUHSININ: 'is_muhsinin',
 
   // Ramadhan Hub (Seasonal)

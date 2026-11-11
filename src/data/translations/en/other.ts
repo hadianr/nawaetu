@@ -142,6 +142,9 @@ export const otherEN = {
     syncHydrateLoading: "Retrieving your old data from the server...",
     syncHydrateSuccess: "Great! Your old account data is back. Let's continue worship!",
     syncHydrateInfo: "Guest data on this device has been replaced with your main account data.",
+    syncUnsyncedNotice: "Your activity since {date} has not synced to your account. Open the app while online so it is not lost.",
+    syncUnsyncedUrgent: "Sync soon! Activity since {date} can only be saved to your account for {days} more days. Open the app while online.",
+    syncOldDataKept: "Activity older than 30 days cannot be synced, but it stays saved on this device.",
 
     profileAuthTitle: "Save Your Worship Progress",
     profileAuthDesc: "Login to save your streak data, bookmarks, and donor status permanently in the cloud.",

@@ -15,3 +15,20 @@ describe("timezone helpers", () => {
         expect(localDateIn(instant, "Not/AZone")).toBe("2026-11-10");
     });
 });
+
+import { addDays, isInSyncWindow } from "./timezone";
+
+describe("sync window", () => {
+    it("accepts 30 days back and 1 day forward, nothing outside", () => {
+        expect(isInSyncWindow("2026-10-12", "2026-11-11")).toBe(true);   // exactly 30 days back
+        expect(isInSyncWindow("2026-10-11", "2026-11-11")).toBe(false);  // 31 days back
+        expect(isInSyncWindow("2026-11-12", "2026-11-11")).toBe(true);   // tomorrow (timezone skew)
+        expect(isInSyncWindow("2026-11-13", "2026-11-11")).toBe(false);
+        expect(isInSyncWindow("2027-11-11", "2026-11-11")).toBe(false);  // a year ahead
+    });
+
+    it("adds days across month and year ends", () => {
+        expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
+        expect(addDays("2026-03-01", -1)).toBe("2026-02-28");
+    });
+});

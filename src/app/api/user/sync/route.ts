@@ -30,6 +30,8 @@ interface SyncResponse {
     synced: Array<{ id: string; cloudId?: string }>;
     failed: Array<{ id: string; error: string }>;
     message: string;
+    /** Records outside the sync window. They are not errors: the client keeps them on the device. */
+    rejected?: number;
 }
 
 // Twice the client queue size (100), so honest clients never hit it.
@@ -269,7 +271,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
                 failed.push({ id: entry.id, error: "Too many entries in one request; retry the rest" });
             }
 
-            return NextResponse.json({ success: true, synced, failed, message: "Sync complete" });
+            return NextResponse.json({ success: true, synced, failed, message: "Sync complete", ...(repo.rejected > 0 ? { rejected: repo.rejected } : {}) });
         }
 
         return NextResponse.json({
@@ -277,6 +279,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             synced,
             failed,
             message: synced.length > 0 || failed.length > 0 ? "Sync complete" : "No entries to sync",
+            ...(repo.rejected > 0 ? { rejected: repo.rejected } : {}),
         });
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "Internal Server Error";

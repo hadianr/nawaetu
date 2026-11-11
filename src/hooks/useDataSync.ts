@@ -23,6 +23,7 @@ import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 import { DateUtils } from "@/lib/utils/date";
+import { useLocale } from "@/context/LocaleContext";
 
 interface SyncResult {
     success: boolean;
@@ -46,8 +47,12 @@ interface LocalActivityData {
 
 const storage = getStorageService();
 
+// Tell the user once per page load, not on every sync.
+let notifiedRejected = false;
+
 export function useDataSync() {
     const { data: session } = useSession();
+    const { t } = useLocale();
     const userId = session?.user?.id;
     const [isSyncing, setIsSyncing] = useState(false);
 
@@ -135,6 +140,7 @@ export function useDataSync() {
 
             if (!hasBookmarks && !hasIntentions && !hasMissions && !hasActivity && !hasStreak && !hasSettings && !hasReadingState && !hasSirah) {
                 storage.set("nawaetu_synced_v1", "true");
+                storage.remove(STORAGE_KEYS.UNSYNCED_SINCE);
                 if (toastId) toast.dismiss(toastId);
                 return { success: true, message: "Tidak ada data lokal untuk disinkronkan" };
             }
@@ -148,6 +154,11 @@ export function useDataSync() {
 
             if (!res.ok) throw new Error("Gagal menyimpan ke server");
             const syncResult = await res.json();
+            if (syncResult.rejected > 0 && !notifiedRejected) {
+                // Older than the sync window: not an error, and still on this device.
+                notifiedRejected = true;
+                toast.info((t as unknown as Record<string, string>).syncOldDataKept, { duration: 8000 });
+            }
             if (syncResult.failed?.length) {
                 console.warn("Partial sync failure", syncResult.failed);
                 throw new Error(`${syncResult.failed.length} sync item(s) failed; retry required`);
@@ -188,6 +199,8 @@ export function useDataSync() {
 
             // 3. Mark as Synced
             storage.set("nawaetu_synced_v1", "true");
+            storage.remove(STORAGE_KEYS.UNSYNCED_SINCE);
+            storage.remove(STORAGE_KEYS.SYNC_WARNED_LEVEL);
 
             if (toastId) toast.success("Data berhasil disinkronkan!", { id: toastId });
             return { success: true };
@@ -198,7 +211,7 @@ export function useDataSync() {
         } finally {
             setIsSyncing(false);
         }
-    }, [userId]);
+    }, [userId, t]);
 
     return {
         isSyncing,
