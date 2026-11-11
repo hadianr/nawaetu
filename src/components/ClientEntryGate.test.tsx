@@ -14,6 +14,7 @@ const pathnameMock = vi.hoisted(() => vi.fn<() => string | null>(() => "/"));
 vi.mock("next-auth/react", () => ({ useSession: useSessionMock }));
 vi.mock("next/navigation", () => ({ usePathname: pathnameMock }));
 
+vi.mock("@/components/ui/LottiePlayer", () => ({ default: () => null }));
 vi.mock("@/components/OnboardingOverlay", () => ({
     default: () => <div>Onboarding</div>,
 }));
