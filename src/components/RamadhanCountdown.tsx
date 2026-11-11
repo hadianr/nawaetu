@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { SYABAN_MISSIONS } from "@/data/missions";
@@ -259,7 +260,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
         <>
             <button
                 onClick={() => {
-                    if (isRamadhan) {
+                    if (isRamadhan && RAMADHAN_PAGE_ENABLED) {
                         // Portal to Ramadhan Hub
                         router.push("/ramadhan");
                     } else {
