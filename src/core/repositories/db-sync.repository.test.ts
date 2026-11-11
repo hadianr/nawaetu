@@ -42,3 +42,18 @@ describe('DbSyncRepository mission day', () => {
         expect(captured.rows[0]).toMatchObject({ completedDate: '2026-11-11' });
     });
 });
+
+describe('sanitizeSyncedSettings', () => {
+    it('drops server-owned and unknown keys and oversized values', async () => {
+        const { sanitizeSyncedSettings } = await import('@/lib/validations/sync');
+        expect(sanitizeSyncedSettings({
+            theme: 'blossom',
+            calculationMethod: 20,
+            guestSyncEligible: true,
+            streakReminderEnabled: false,
+            reciter: 'x'.repeat(600),
+            adhanPreferences: { fajr: true },
+            locale: { nested: true },
+        })).toEqual({ theme: 'blossom', calculationMethod: 20, adhanPreferences: { fajr: true } });
+    });
+});

@@ -20,6 +20,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { getServerSession } from "@/lib/auth";
 
 export const maxDuration = 30;
 
@@ -37,6 +38,16 @@ export async function POST(req: NextRequest) {
             .from(pushSubscriptions)
             .where(eq(pushSubscriptions.token, token))
             .limit(1);
+
+        // A subscription that belongs to an account can only be changed by that account.
+        // A guest subscription (no owner) stays editable with its token, so guests keep prayer alerts.
+        const owner = existing[0]?.userId;
+        if (owner) {
+            const session = await getServerSession();
+            if (session?.user?.id !== owner) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+        }
 
         if (existing.length > 0) {
             await db

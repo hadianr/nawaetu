@@ -17,6 +17,7 @@ import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
 import { processProgressionEvidence } from "@/core/repositories/progression.repository";
 import { localDateIn, validTimezone } from "@/lib/utils/timezone";
+import { sanitizeSyncedSettings } from "@/lib/validations/sync";
 
 /** The user's own calendar day: an explicit date wins, then a date-only value, then the instant in the user's timezone. */
 function missionLocalDate(item: MissionSyncPayload, completedAt: Date): string {
@@ -466,7 +467,8 @@ export class DbSyncRepository {
         });
 
         const currentSettings = (user?.settings || {}) as Record<string, unknown>;
-        const newSettings = { ...currentSettings, ...data };
+        // Only user preferences: the client must not write server-owned keys such as guestSyncEligible.
+        const newSettings = { ...currentSettings, ...sanitizeSyncedSettings(data) };
 
         await db
             .update(users)
