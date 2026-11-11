@@ -18,6 +18,12 @@ describe("validateHasanahEvent", () => {
         expect(ok("sirah_quiz", "daily", 5000)).toBeNull();
     });
 
+    it("accepts a reflection only at the two amounts the app pays", () => {
+        expect(ok("reflection", "daily", 50)).toMatchObject({ sourceId: "reflection:daily:2026-11-11", countsForStreak: true });
+        expect(ok("reflection", "daily", 25)).not.toBeNull();
+        expect(ok("reflection", "daily", 500)).toBeNull();
+    });
+
     it("rejects unknown kinds, malformed keys, bad dates and fractions", () => {
         expect(ok("jackpot", "x", 100)).toBeNull();
         expect(ok("taraweh", "1447-31", 15)).toBeNull();

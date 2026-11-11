@@ -12,7 +12,9 @@ const withPWA = withPWAInit({
   // undefined registration during client-side Quran navigation.
   cacheOnFrontEndNav: false,
   aggressiveFrontEndNavCaching: false,
-  reloadOnOnline: true,
+  // A reload on reconnect throws away text being typed. The sync engine already pulls fresh data when
+  // the connection returns, so the page does not need to be reloaded for that.
+  reloadOnOnline: false,
   disable: process.env.NODE_ENV === "development",
   // Keep the default caching rules and add ours in front of them.
   extendDefaultRuntimeCaching: true,

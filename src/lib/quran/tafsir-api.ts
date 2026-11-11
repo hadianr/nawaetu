@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { parseStored } from "@/lib/utils/stored-json";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 import { API_CONFIG } from "@/config/apis";
@@ -55,16 +56,16 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
 
     try {
         // 1. Check storage cache
-        const cached = storage.getOptional<string>(cacheKey);
+        const cached = storage.getOptional<unknown>(cacheKey);
         if (cached) {
             try {
-                const parsed = JSON.parse(cached) as TafsirContent | TafsirCacheEntry;
+                const parsed = parseStored<TafsirContent | TafsirCacheEntry>(cached);
                 if (parsed && typeof parsed === "object" && "data" in parsed && "ts" in parsed) {
                     const entry = parsed as TafsirCacheEntry;
                     if (entry.v === TAFSIR_CACHE_VERSION && Date.now() - entry.ts <= TAFSIR_CACHE_TTL_MS) {
                         return entry.data;
                     }
-                } else {
+                } else if (parsed) {
                     return parsed as TafsirContent;
                 }
             } catch {

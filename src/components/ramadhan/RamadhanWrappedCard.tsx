@@ -1,5 +1,6 @@
 "use client";
 
+import { parseStored } from "@/lib/utils/stored-json";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
@@ -100,12 +101,12 @@ export default function RamadhanWrappedCard() {
                 const res = await fetch(`/api/ramadhan/summary?hijriYear=${activeHijriYear}`);
                 const apiData = await res.json();
 
-                const savedFastingLog = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_LOG);
+                const savedFastingLog = storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_FASTING_LOG);
                 let localFastingCount = 0;
                 const safeHijriYear = apiData?.hijriYear || activeHijriYear;
                 if (savedFastingLog) {
                     try {
-                        const parsed = JSON.parse(savedFastingLog) as Record<string, Record<string, FastingLogEntry>>;
+                        const parsed = (parseStored<Record<string, Record<string, FastingLogEntry>>>(savedFastingLog) ?? {});
                         const yr = parsed[safeHijriYear] || parsed[safeHijriYear.toString()] || {};
                         localFastingCount = Object.values(yr).filter(v => v.status === "fasting").length;
                     } catch { /* ignore */ }

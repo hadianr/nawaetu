@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { parseStored } from "@/lib/utils/stored-json";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { DateUtils } from "@/lib/utils/date";
@@ -130,14 +131,8 @@ export function getTodayActivity(): DailyActivity {
 export function getDailyActivityHistory(): DailyActivity[] {
     if (typeof window === "undefined") return [];
 
-    const stored = storage.getOptional<string>(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY);
-    if (!stored) return [];
-
-    try {
-        return JSON.parse(stored);
-    } catch {
-        return [];
-    }
+    const history = parseStored<DailyActivity[]>(storage.getOptional<unknown>(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY));
+    return Array.isArray(history) ? history : [];
 }
 
 /**

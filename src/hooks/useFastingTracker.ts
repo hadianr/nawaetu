@@ -32,9 +32,10 @@ import { makeDayKey, makeYearKey } from "@/data/fasting/types";
 function loadFromStorage(): AllFastingLogs {
     try {
         const storage = getStorageService();
-        const raw = storage.getOptional<string>(STORAGE_KEYS.RAMADHAN_FASTING_LOG);
+        // The storage layer parses JSON text it reads back, so this is usually already an object.
+        const raw = storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_FASTING_LOG);
         if (!raw) return {};
-        return JSON.parse(raw) as AllFastingLogs;
+        return (typeof raw === "string" ? JSON.parse(raw) : raw) as AllFastingLogs;
     } catch {
         return {};
     }
