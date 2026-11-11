@@ -283,7 +283,7 @@ async function runChecks() {
         anoa(["press", "Escape"], { allowFail: true }); // the journey intro dialog may be open
         await sleep(800);
         anoa(["click", refByText("Tasbih 99x")]);
-        await waitFor("the mission dialog", "document.body.innerText.includes('Complete Mission')", 8000);
+        await waitFor("the mission dialog", "/complete mission/i.test(document.body.innerText)", 8000);
         anoa(["click", refByText("Complete Mission")]);
 
         await waitFor("the completion to be sent", "window.__fake.log.some(r => r.path === '/api/user/sync' && r.ok)", 10_000);
