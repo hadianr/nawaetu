@@ -31,6 +31,7 @@ import {
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { sanitizeSyncedSettings } from "@/lib/validations/sync";
+import { syncRateLimiter } from "@/lib/rate-limit";
 import { DbSyncRepository } from "@/core/repositories/db-sync.repository";
 
 // Schema validation for request body
@@ -105,6 +106,9 @@ export async function POST(req: NextRequest) {
         }
 
         const userId = session.user.id;
+        if (!(await syncRateLimiter.check(`sync-guest:${userId}`)).success) {
+            return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+        }
 
         let body: unknown = null;
         try {

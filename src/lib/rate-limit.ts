@@ -177,3 +177,30 @@ export const greetingRateLimiter = new UnifiedRateLimiter({
     inMemoryInterval: 60 * 60 * 1000,
     inMemoryMaxTokens: 500,
 });
+
+/** Sync and account-data routes: one database connection is shared, so cap each user. */
+export const syncRateLimiter = new UnifiedRateLimiter({
+    prefix: 'rl:sync',
+    requests: 30,
+    window: '1 m',
+    inMemoryInterval: 60 * 1000,
+    inMemoryMaxTokens: 1000,
+});
+
+/** Creating payment links: 5 per 10 minutes per user. */
+export const paymentRateLimiter = new UnifiedRateLimiter({
+    prefix: 'rl:payment',
+    requests: 5,
+    window: '10 m',
+    inMemoryInterval: 10 * 60 * 1000,
+    inMemoryMaxTokens: 500,
+});
+
+/** Intention writes by a device token (no account): 20 per minute per token or user. */
+export const intentionRateLimiter = new UnifiedRateLimiter({
+    prefix: 'rl:intention',
+    requests: 20,
+    window: '1 m',
+    inMemoryInterval: 60 * 1000,
+    inMemoryMaxTokens: 1000,
+});

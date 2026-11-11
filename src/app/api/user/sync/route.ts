@@ -23,6 +23,7 @@ import { logger } from "@/lib/logger";
 import { type SyncQueueEntry, type SyncEntityType } from "@/lib/sync-queue";
 import { DbSyncRepository, type IntentionSyncPayload, type MissionSyncPayload } from "@/core/repositories/db-sync.repository";
 import { SyncEntrySchema } from "@/lib/validations/sync";
+import { syncRateLimiter } from "@/lib/rate-limit";
 
 interface SyncResponse {
     success: boolean;
@@ -210,6 +211,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         }
 
         const userId = session.user.id;
+        if (!(await syncRateLimiter.check(`sync:${userId}`)).success) {
+            return NextResponse.json({ success: false, synced: [], failed: [], error: "Too many sync requests", message: "Please wait a moment and try again" }, { status: 429 });
+        }
         const repo = new DbSyncRepository(userId);
 
         const payload = asRecord(body) ?? {};

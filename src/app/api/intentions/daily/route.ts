@@ -17,6 +17,7 @@
  */
 
 import { localDateIn } from "@/lib/utils/timezone";
+import { intentionRateLimiter } from "@/lib/rate-limit";
 import { NextRequest, NextResponse } from "next/server";
 import { db, checkConnection } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
@@ -56,6 +57,10 @@ export async function POST(req: NextRequest) {
         // Try both session and token
         const session = await getServerSession();
         const user_token = session?.user?.id || providedToken;
+
+        if (user_token && !(await intentionRateLimiter.check(`intention:${user_token}`)).success) {
+            return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
+        }
 
         // Token-based auth (FCM token or anonymous ID)
         if (!user_token) {
