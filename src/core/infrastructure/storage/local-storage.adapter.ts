@@ -45,12 +45,18 @@ export class LocalStorageAdapter implements StorageAdapter {
     }
   }
 
+  // Probing writes and removes a key, and this runs before every read and write. Once storage has
+  // worked it keeps working, so remember that; an unavailable store is probed again next time.
+  private available = false;
+
   private isAvailable(): boolean {
     if (typeof window === 'undefined') return false;
+    if (this.available) return true;
     try {
       const test = '__storage_test__';
       window.localStorage.setItem(test, test);
       window.localStorage.removeItem(test);
+      this.available = true;
       return true;
     } catch {
       return false;

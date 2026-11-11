@@ -40,10 +40,25 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
     // Safety sync flag
     const isTrackingRef = useRef<boolean>(false);
 
+    // Seconds counted since the last write to storage. Writing every second made two synchronous
+    // localStorage writes per tick for the whole reading session; now they happen every few seconds.
+    const dailyTotalRef = useRef<number>(0);
+    const unsavedSecondsRef = useRef<number>(0);
+
+    const flushLocal = useCallback(() => {
+        const unsaved = unsavedSecondsRef.current;
+        if (unsaved <= 0) return;
+        unsavedSecondsRef.current = 0;
+        const buffer = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10) || 0;
+        localStorage.setItem(STORAGE_KEY, (buffer + unsaved).toString());
+        localStorage.setItem(`nawaetu_quran_daily_total_${getLocalDateString()}`, dailyTotalRef.current.toString());
+    }, []);
+
     // Fetch initial daily total on mount
     useEffect(() => {
         const dateString = getLocalDateString();
         const storedDaily = parseInt(localStorage.getItem(`nawaetu_quran_daily_total_${dateString}`) || '0', 10);
+        dailyTotalRef.current = storedDaily;
         queueMicrotask(() => setDailyTotalSeconds(storedDaily));
         
         if (status === 'authenticated') {
@@ -51,11 +66,10 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
                 .then(res => res.json())
                 .then(data => {
                     if (data.success && typeof data.totalTodaySeconds === 'number') {
-                        setDailyTotalSeconds(prev => {
-                            const newValue = Math.max(prev, data.totalTodaySeconds);
-                            localStorage.setItem(`nawaetu_quran_daily_total_${dateString}`, newValue.toString());
-                            return newValue;
-                        });
+                        const newValue = Math.max(dailyTotalRef.current, data.totalTodaySeconds);
+                        dailyTotalRef.current = newValue;
+                        localStorage.setItem(`nawaetu_quran_daily_total_${dateString}`, newValue.toString());
+                        setDailyTotalSeconds(newValue);
                     }
                 })
                 .catch(err => console.error("Failed to fetch initial total time", err));
@@ -67,6 +81,7 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
     const syncTimeToServer = useCallback(async () => {
         if (status !== 'authenticated') return;
 
+        flushLocal(); // seconds still in memory belong in the buffer we are about to send
         const storedBuffer = localStorage.getItem(STORAGE_KEY);
         if (!storedBuffer) return;
 
@@ -97,11 +112,10 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
                 
                 if (data.totalTodaySeconds) {
                     const dateString = getLocalDateString();
-                    setDailyTotalSeconds(prev => {
-                         const newValue = Math.max(prev, data.totalTodaySeconds);
-                         localStorage.setItem(`nawaetu_quran_daily_total_${dateString}`, newValue.toString());
-                         return newValue;
-                    });
+                    const newValue = Math.max(dailyTotalRef.current, data.totalTodaySeconds);
+                    dailyTotalRef.current = newValue;
+                    localStorage.setItem(`nawaetu_quran_daily_total_${dateString}`, newValue.toString());
+                    setDailyTotalSeconds(newValue);
                 }
             }
         } catch (error) {
@@ -109,7 +123,7 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
         } finally {
             setIsSyncing(false);
         }
-    }, [status]);
+    }, [status, flushLocal]);
 
     // Manual controls
     const startTracking = useCallback(() => {
@@ -150,26 +164,17 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
     useEffect(() => {
         if (isTracking) {
              trackingIntervalRef.current = setInterval(() => {
-                // 1. Update local UI session state
+                // The screen updates every second; storage is written every 10 seconds and on stop.
                 setSessionSeconds((prev) => prev + 1);
 
-                // 2. Update daily total
-                const dateString = getLocalDateString();
-                setDailyTotalSeconds((prev) => {
-                    const newValue = prev + 1;
-                    localStorage.setItem(`nawaetu_quran_daily_total_${dateString}`, newValue.toString());
-                    
-                    // 4. Award Hasanah (1 point per minute)
-                    if (newValue % 60 === 0 && newValue > 0) {
-                        addHasanah(1);
-                    }
-                    
-                    return newValue;
-                });
+                dailyTotalRef.current += 1;
+                unsavedSecondsRef.current += 1;
+                setDailyTotalSeconds(dailyTotalRef.current);
 
-                // 3. Update localStorage buffer (sync queue)
-                const currentBuffer = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
-                localStorage.setItem(STORAGE_KEY, (currentBuffer + 1).toString());
+                // Award Hasanah (1 point per minute), outside any state updater so it cannot run twice
+                if (dailyTotalRef.current % 60 === 0) addHasanah(1);
+
+                if (unsavedSecondsRef.current >= 10) flushLocal();
              }, 1000);
         } else {
             if (trackingIntervalRef.current) clearInterval(trackingIntervalRef.current);
@@ -177,8 +182,9 @@ export function useQuranTimeTracker(): QuranTimeTrackerResult {
 
         return () => {
             if (trackingIntervalRef.current) clearInterval(trackingIntervalRef.current);
+            flushLocal();
         };
-    }, [isTracking]);
+    }, [isTracking, flushLocal]);
 
     // Setup Background Sync Interval
     useEffect(() => {
