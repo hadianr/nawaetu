@@ -84,6 +84,9 @@ vi.mock('@/db/schema', () => ({
 }));
 
 
+const mocks = vi.hoisted(() => ({ processProgressionEvidence: vi.fn().mockResolvedValue({}) }));
+vi.mock('@/core/repositories/progression.repository', () => ({ processProgressionEvidence: mocks.processProgressionEvidence }));
+
 import { POST } from './route';
 import { pushSubscriptions } from '@/db/schema';
 
@@ -192,6 +195,9 @@ describe('POST /api/intentions/daily', () => {
       const data = (response as unknown as { body: { data: { intention_points_earned: number; current_streak: number } } }).body;
 
       expect(data.data.intention_points_earned).toBe(10);
+      expect(mocks.processProgressionEvidence).toHaveBeenCalledWith('user-1', expect.objectContaining({
+        source: 'intention', sourceId: 'intention:2026-11-11', hasanah: 10, localDate: '2026-11-11', timezone: 'Asia/Jakarta',
+      }));
       expect(data.data.current_streak).toBe(1);
     } finally {
       vi.useRealTimers();
