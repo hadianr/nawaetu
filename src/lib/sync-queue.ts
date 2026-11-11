@@ -16,20 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Sync Queue Manager for Offline-First Architecture
- * Manages pending data changes that need to be synced to cloud
- * 
- * Best Practices Applied:
- * - Type-safe queue entries with strict validation
- * - localStorage persistence with error handling
- * - UUID-based tracking for reliability
- * - Retry count tracking for exponential backoff
- * - Status lifecycle: pending to synced or failed
- */
-
-
-
 export type SyncEntityType =
   | 'bookmark'
   | 'setting'
@@ -88,82 +74,128 @@ export interface SyncQueueEntry {
 
   /** Error message if status is 'failed' (optional) */
   error?: string;
+
+  /** The thing this entry changes. A newer entry for the same thing replaces an older unsent one. */
+  key?: string;
+
+  /** Account the change belongs to; an entry is never sent for a different account. */
+  userId?: string;
 }
 
 /**
- * In-memory and persistent sync queue manager
- * Single instance pattern for app-wide use
+ * Sync outbox for the offline-first app: every change that still has to reach the server.
+ *
+ * - Changes to the same thing collapse into one entry, so the queue stays small however often something
+ *   changes (a dhikr count tapped 500 times is one entry) and a request carries only what changed.
+ * - It is saved to localStorage, so a closed tab or a reload cannot lose a change.
+ * - Nothing is dropped silently: a full queue only discards entries that already failed for good.
  */
-class SyncQueueManager {
-  private static instance: SyncQueueManager;
-  private readonly STORAGE_KEY = 'nawaetu_sync_queue';
-  private readonly MAX_QUEUE_SIZE = 100;
-  private readonly MAX_RETRY_COUNT = 5;
+
+import { normalizeMissionId } from '@/lib/mission-resolver';
+import { DateUtils } from '@/lib/utils/date';
+
+const STORAGE_KEY = 'nawaetu_sync_queue';
+const MAX_QUEUE_SIZE = 1000;
+const MAX_RETRY_COUNT = 5;
+
+/** What an entry changes, so a newer change can replace an older unsent one. */
+export function entityKey(type: SyncEntityType, data: Record<string, unknown>): string {
+  const str = (value: unknown) => (value === undefined || value === null ? '' : String(value));
+  switch (type) {
+    case 'mission':
+    case 'mission_progress': {
+      const date = typeof data.completedDate === 'string' && data.completedDate
+        ? data.completedDate
+        : data.completedAt ? DateUtils.toLocalDate(str(data.completedAt)) : '';
+      return `m:${normalizeMissionId(str(data.id ?? data.missionId))}:${date}`;
+    }
+    case 'bookmark': return `b:${str(data.key) || `${str(data.surahId)}:${str(data.verseId)}`}`;
+    case 'daily_activity': return `a:${str(data.date)}`;
+    case 'dhikr_stats': return 'dhikr_stats';
+    case 'setting': return 'setting';
+    case 'reading_state': return 'reading';
+    case 'hasanah_event': return `h:${str(data.kind)}:${str(data.key)}:${str(data.localDate)}`;
+    case 'sirah_progress': return `sp:${str(data.sectionId ?? data.id)}`;
+    case 'sirah_bookmark': return `sb:${str(data.sectionId ?? data.id)}`;
+    case 'ramadhan_taraweh': return `rt:${str(data.hijriYear)}-${str(data.hijriDay)}`;
+    case 'ramadhan_daily': return `rd:${str(data.hijriYear)}-${str(data.hijriDay)}`;
+    case 'ramadhan_fasting': return `rf:${str(data.hijriYear)}-${str(data.hijriDay)}`;
+    default: return `${type}:${crypto.randomUUID()}`;
+  }
+}
+
+export class SyncQueueManager {
   private queue: SyncQueueEntry[] = [];
 
-  private constructor() {
-    this.loadFromStorage();
+  constructor(private readonly storageKey: string = STORAGE_KEY) {
+    this.load();
   }
 
-  /**
-   * Get singleton instance
-   */
-  static getInstance(): SyncQueueManager {
-    if (!SyncQueueManager.instance) {
-      SyncQueueManager.instance = new SyncQueueManager();
-    }
-    return SyncQueueManager.instance;
-  }
-
-  /**
-   * Load queue from localStorage on initialization
-   */
-  private loadFromStorage(): void {
+  private load(): void {
     try {
       if (typeof window === 'undefined') return;
-
-      const stored = window.localStorage?.getItem(this.STORAGE_KEY);
-      if (stored) {
-        this.queue = JSON.parse(stored);
-      }
+      const stored = window.localStorage?.getItem(this.storageKey);
+      const parsed = stored ? JSON.parse(stored) : [];
+      this.queue = Array.isArray(parsed)
+        ? parsed.filter((entry): entry is SyncQueueEntry => Boolean(entry && typeof entry.id === 'string' && entry.type && entry.data))
+        : [];
+      // Entries saved by an older version have no key; give them one so they can be replaced.
+      for (const entry of this.queue) entry.key ??= entityKey(entry.type, entry.data);
     } catch {
       this.queue = [];
     }
   }
 
-  /**
-   * Persist queue to localStorage
-   */
-  private saveToStorage(): void {
+  private persist(): void {
     try {
       if (typeof window === 'undefined') return;
-
-      window.localStorage?.setItem(this.STORAGE_KEY, JSON.stringify(this.queue));
+      window.localStorage?.setItem(this.storageKey, JSON.stringify(this.queue));
     } catch {
+      // Storage full or blocked: the in-memory queue still works for this session.
     }
   }
 
-  /**
-   * Add entry to sync queue
-   * 
-   * @param type - Entity type (bookmark, setting, etc.)
-   * @param action - Operation type (create, update, delete)
-   * @param data - Data to sync
-   * @returns Queue entry ID
-   */
-  addToQueue(
-    type: SyncEntityType,
-    action: SyncActionType,
-    data: Record<string, unknown>
-  ): string {
-    // Validation
+  /** Adds a change. Returns the id of the entry that now represents it (empty when it cancelled out). */
+  addToQueue(type: SyncEntityType, action: SyncActionType, data: Record<string, unknown>, userId?: string): string {
     if (!type || !action || !data) {
       throw new Error('[SyncQueue] Missing required parameters: type, action, data');
     }
+    const id = this.apply(type, action, data, userId);
+    this.persist();
+    return id;
+  }
 
-    // Check queue size limit
-    if (this.queue.length >= this.MAX_QUEUE_SIZE) {
-      this.queue.shift();
+  /** Adds several changes with one write to storage. */
+  addMany(changes: Array<{ type: SyncEntityType; action: SyncActionType; data: Record<string, unknown> }>, userId?: string): void {
+    for (const change of changes) this.apply(change.type, change.action, change.data, userId);
+    this.persist();
+  }
+
+  private apply(type: SyncEntityType, action: SyncActionType, data: Record<string, unknown>, userId?: string): string {
+    const key = entityKey(type, data);
+    const index = this.queue.findIndex((entry) => entry.key === key && entry.status !== 'synced' && entry.userId === userId);
+
+    if (index !== -1) {
+      const older = this.queue[index];
+      // Created and removed again before anything was sent: nothing ever reached the server.
+      if (older.action === 'create' && action === 'delete' && older.lastAttemptAt === undefined) {
+        this.queue.splice(index, 1);
+        return '';
+      }
+      // Otherwise the newest change wins; "create" then "update" stays a create with the latest data.
+      older.data = action === 'delete' ? data : { ...older.data, ...data };
+      older.action = action === 'update' && older.action === 'create' ? 'create' : action;
+      older.status = 'pending';
+      older.retryCount = 0;
+      older.error = undefined;
+      older.createdAt = Date.now();
+      return older.id;
+    }
+
+    if (this.queue.length >= MAX_QUEUE_SIZE) {
+      // Make room only by dropping what already failed for good, never unsent work.
+      const failed = this.queue.findIndex((entry) => entry.status === 'failed');
+      if (failed !== -1) this.queue.splice(failed, 1);
     }
 
     const entry: SyncQueueEntry = {
@@ -174,109 +206,78 @@ class SyncQueueManager {
       status: 'pending',
       retryCount: 0,
       createdAt: Date.now(),
+      key,
+      userId,
     };
-
     this.queue.push(entry);
-    this.saveToStorage();
-
     return entry.id;
   }
 
-  /**
-   * Get all entries from queue
-   */
   getQueue(): SyncQueueEntry[] {
     return [...this.queue];
   }
 
-  /**
-   * Get all pending entries
-   */
-  getPendingEntries(): SyncQueueEntry[] {
-    return this.queue.filter(entry => entry.status === 'pending');
+  getPendingEntries(userId?: string): SyncQueueEntry[] {
+    // An entry without an owner was saved by an older version; it belongs to whoever is signed in.
+    return this.queue.filter((entry) => entry.status === 'pending'
+      && (userId === undefined || entry.userId === undefined || entry.userId === userId));
   }
 
-  /**
-   * Mark entry as successfully synced
-   */
-  markAsSynced(id: string): void {
-    const entry = this.queue.find(e => e.id === id);
-    if (entry) {
-      entry.status = 'synced';
-      entry.lastAttemptAt = Date.now();
-      this.saveToStorage();
+  /** The next entries to send for this account, oldest first. */
+  nextBatch(limit: number, userId?: string): SyncQueueEntry[] {
+    return this.getPendingEntries(userId).slice(0, limit);
+  }
+
+  /** What is waiting, by entity key, so a pull from the server does not undo an unsent change. */
+  pendingKeys(userId?: string): { upserts: Set<string>; deletes: Set<string> } {
+    const upserts = new Set<string>();
+    const deletes = new Set<string>();
+    for (const entry of this.getPendingEntries(userId)) {
+      (entry.action === 'delete' ? deletes : upserts).add(entry.key as string);
     }
+    return { upserts, deletes };
   }
 
-  /**
-   * Mark entry as failed with error message
-   */
-  markAsFailed(id: string, error: string): void {
-    const entry = this.queue.find(e => e.id === id);
-    if (entry) {
-      entry.status = 'failed';
-      entry.error = error;
-      entry.lastAttemptAt = Date.now();
-      this.saveToStorage();
+  /** Entries the server accepted leave the queue. */
+  acknowledge(ids: string[]): void {
+    if (ids.length === 0) return;
+    const accepted = new Set(ids);
+    this.queue = this.queue.filter((entry) => !accepted.has(entry.id));
+    this.persist();
+  }
+
+  /** The server refused an entry: retry a few times, then keep it as failed for inspection. */
+  recordFailure(id: string, error: string): void {
+    const entry = this.queue.find((item) => item.id === id);
+    if (!entry) return;
+    entry.retryCount++;
+    entry.lastAttemptAt = Date.now();
+    entry.error = error;
+    if (entry.retryCount > MAX_RETRY_COUNT) entry.status = 'failed';
+    this.persist();
+  }
+
+  /** The request itself did not get through (offline): leave the entries pending. */
+  recordAttempt(ids: string[]): void {
+    const attempted = new Set(ids);
+    for (const entry of this.queue) {
+      if (attempted.has(entry.id)) entry.lastAttemptAt = Date.now();
     }
+    this.persist();
   }
 
-  /**
-   * Increment retry count for entry
-   */
-  incrementRetry(id: string): boolean {
-    const entry = this.queue.find(e => e.id === id);
-    if (entry) {
-      entry.retryCount++;
-      entry.lastAttemptAt = Date.now();
-
-      if (entry.retryCount > this.MAX_RETRY_COUNT) {
-        entry.status = 'failed';
-        entry.error = `Max retry count (${this.MAX_RETRY_COUNT}) exceeded`;
-      }
-
-      this.saveToStorage();
-      return entry.status === 'pending';
-    }
-    return false;
-  }
-
-  /**
-   * Remove entry from queue (call after successful sync confirmation)
-   */
-  removeFromQueue(id: string): void {
-    const index = this.queue.findIndex(e => e.id === id);
-    if (index !== -1) {
-      this.queue.splice(index, 1);
-      this.saveToStorage();
-    }
-  }
-
-  /**
-   * Clear all synced entries
-   */
-  clearSyncedEntries(): number {
+  /** Removes every entry that belongs to another account (called when the signed-in account changes). */
+  discardOtherAccounts(userId: string): number {
     const before = this.queue.length;
-    this.queue = this.queue.filter(e => e.status !== 'synced');
-    const removed = before - this.queue.length;
-
-    if (removed > 0) {
-      this.saveToStorage();
-    }
-
-    return removed;
+    this.queue = this.queue.filter((entry) => entry.userId === undefined || entry.userId === userId);
+    if (this.queue.length !== before) this.persist();
+    return before - this.queue.length;
   }
 
-  /**
-   * Clear entire queue
-   */
   clearAll(): void {
     this.queue = [];
-    this.saveToStorage();
+    this.persist();
   }
 }
 
-/**
- * Export singleton instance for use throughout app
- */
-export const syncQueue = SyncQueueManager.getInstance();
+export const syncQueue = new SyncQueueManager();

@@ -15,6 +15,7 @@ import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTranslations } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
+import { queueHasanahEvent } from "@/lib/sync/award";
 import { toast } from "sonner";
 import { MapPin, Home, X } from "lucide-react";
 import { useTarawehTracker, type TarawehChoice, type TarawehLocation } from "@/hooks/useTarawehTracker";
@@ -59,6 +60,7 @@ export default function TarawehTracker() {
         if (isFuture) return;
         if (choice !== null && todayChoice === null) {
             addHasanah(15);
+            queueHasanahEvent("taraweh", dayKey, 15);
             toast.success(t.tarawehTitle || "Taraweh", {
                 description: t.toastRamadhanTarawehReward || `Alhamdulillah! +15 ${t.gamificationXpName || "Hasanah"}`,
                 duration: 3000,

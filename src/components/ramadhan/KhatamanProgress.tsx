@@ -28,6 +28,7 @@ import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { Minus, Plus } from "lucide-react";
 import { useTranslations, type TranslationTree } from "@/context/LocaleContext";
 import { addHasanah } from "@/lib/habits/leveling";
+import { queueHasanahEvent } from "@/lib/sync/award";
 import { toast } from "sonner";
 import { AppIcon } from "@/components/ui/AppIcon";
 
@@ -72,6 +73,7 @@ export default function KhatamanProgress() {
         if (delta > 0 && newJuz > khatamanData.currentJuz) {
             const xpEarned = 20 * (newJuz - khatamanData.currentJuz);
             addHasanah(xpEarned);
+            queueHasanahEvent("khatamah", `${new Date().getFullYear()}-${newJuz}`, xpEarned);
             const translations = t as TranslationTree;
             toast.success(translations.khatamanTitle || "Tadarus", {
                 description: `Masya Allah! +${xpEarned} ${translations.gamificationXpName || "Hasanah"}`,

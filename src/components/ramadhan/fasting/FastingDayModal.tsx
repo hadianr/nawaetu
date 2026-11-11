@@ -18,6 +18,7 @@ import { AppIcon } from "@/components/ui/AppIcon";
 import { X } from "lucide-react";
 import type { FastingDayLog, FastingStatus, Madzhab } from "@/data/fasting/types";
 import { addHasanah } from "@/lib/habits/leveling";
+import { queueHasanahEvent } from "@/lib/sync/award";
 import { toast } from "sonner";
 
 // ─── Consequence label helper ─────────────────────────────────────────────────
@@ -102,6 +103,7 @@ export default function FastingDayModal({
         // Award Hasanah only when marking fasting for the first time on this day
         if (isFasting && !wasAlreadyFasting) {
             addHasanah(HASANAH_FASTING);
+            queueHasanahEvent("fasting", `${hijriYear}-${hijriDay}`, HASANAH_FASTING);
             toast.success(t.fastingTitle || "Puasa", {
                 description: `Alhamdulillah! +${HASANAH_FASTING} ${t.gamificationXpName || "Hasanah"}`,
                 icon: <AppIcon name="shield-check" size="sm" tone="success" />,

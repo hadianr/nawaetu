@@ -107,6 +107,8 @@ export const STORAGE_KEYS = {
   ONBOARDING_COMPLETED: 'onboarding_completed',
   APP_VERSION: 'app_version',
   LAST_SYNC_USER_ID: 'last_sync_user_id',
+  BOOKMARKS_FINGERPRINT: 'nawaetu_bookmarks_fingerprint', // "<count>:<latest update ms>" of the server's bookmarks at the last pull
+  OUTBOX_SEEDED: 'nawaetu_outbox_seeded',       // user id the queue was last filled for, once, from older unsynced local data
   UNSYNCED_SINCE: 'nawaetu_unsynced_since',   // ms timestamp of the first local change the server has not accepted yet
   SYNC_WARNED_LEVEL: 'nawaetu_sync_warned',   // "<level>:<YYYY-MM-DD>" so each warning shows at most once a day
   IS_MUHSININ: 'is_muhsinin',
