@@ -126,11 +126,11 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | 4.2 **Done** | Stamp local data with the owner's user id; do not merge data owned by another account | A second Google account on a shared device does not inherit the first one's data | storage layer, `GuestSyncManager.tsx` |
 | 4.3 **Done** | On sign-in, move a guest's intentions from the hidden token account to the real account | The journal is not empty after sign-up | `src/app/api/intentions/*`, `sync-guest/route.ts` |
 | 4.4 **Done** | Save an intention locally first and queue it; show "saved" only when that is true | Intentions work offline, like the rest of the app | `IntentionJournalWidget.tsx`, `syncQueue` |
-| 4.5 **Open** | Return fasting and qadha data in `/api/user/full-data` and hydrate it | Qadha history appears on a second device | `full-data/route.ts`, `useFastingTracker.ts` |
+| 4.5 **Done** (as a pull part, not `full-data`) | Return fasting and qadha data in `/api/user/full-data` and hydrate it | Qadha history appears on a second device | `full-data/route.ts`, `useFastingTracker.ts` |
 | 4.6 **Done** | Push subscription: set the owner when a user logs in, clear it at logout. Today the upsert never updates `userId` | A user who enabled notifications as a guest starts receiving prayer alerts after login. Streak reminders stop going to the previous account's device | `src/app/api/notifications/subscribe/route.ts`, `fcm-init.ts` |
-| 4.7 **Open** | Taraweh: store the qiyam flag on the server or stop sending it; let "unselect" reach other devices; do not let the server copy overwrite an unsent local edit | The qiyam mark stops disappearing after a reload; a cleared night stays cleared | `src/app/api/ramadhan/taraweh/route.ts`, `useTarawehTracker.ts` |
+| 4.7 **Dropped by the owner** | Taraweh: store the qiyam flag on the server or stop sending it; let "unselect" reach other devices; do not let the server copy overwrite an unsent local edit | The qiyam mark stops disappearing after a reload; a cleared night stays cleared | `src/app/api/ramadhan/taraweh/route.ts`, `useTarawehTracker.ts` |
 | 4.8 **Done** | Refresh Muhsinin status from the server on app focus | A donation made on the phone unlocks premium themes on the laptop without logging in again | `InfaqContext.tsx`, session update |
-| 4.9 **Left as is, see section 14** | Turn off reload-on-reconnect, or skip it while there is unsent input | Text being typed and unsent edits are not lost when the connection returns | `next.config.ts` |
+| 4.9 **Done** (reload on reconnect is off; the engine pulls instead) | Turn off reload-on-reconnect, or skip it while there is unsent input | Text being typed and unsent edits are not lost when the connection returns | `next.config.ts` |
 
 4.3 and 4.4 depend on 1.4 and 3.1. 4.7 is covered by 3.5 if that ships first.
 
@@ -140,13 +140,13 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 
 | # | Work | Impact when done |
 | --- | --- | --- |
-| 5.1 | Fix the onboarding plan: sections 4.3, 7.2 and 7.3 contradict 7.0 on loading; record the baseline numbers; correct "no stored data or API changes" in 7.5 | The plan matches what was built, and the release gate can be checked |
-| 5.2 | Rework uzur mode before G3: prayer pushes are sent by the server and the streak is server-owned, so "device only" cannot work as written | G3 has a design that can be built |
+| 5.1 **Done** (baseline numbers still to be recorded) | Fix the onboarding plan: sections 4.3, 7.2 and 7.3 contradict 7.0 on loading; record the baseline numbers; correct "no stored data or API changes" in 7.5 | The plan matches what was built, and the release gate can be checked |
+| 5.2 **Done in the onboarding plan** (section 9.2); the rework itself waits for uzur mode | Rework uzur mode before G3: prayer pushes are sent by the server and the streak is server-owned, so "device only" cannot work as written | G3 has a design that can be built |
 | 5.3 **Done** | Prayer reward is decided by the server from the user's gender and where the prayer was done (decision 3) | The same prayer has one value on every device |
 | 5.4 **Done for the sync messages** | Move hard-coded Indonesian toasts in `DataSyncer.tsx`, `useDataSync.ts` and `GuestSyncManager.tsx` to the locale files | English users see English |
-| 5.5 | Confirm Redis is configured in production for the session check | Authenticated requests do not each add a database lookup |
-| 5.6 | Confirm where the push cron jobs are scheduled. Nothing in `vercel.json` or `.github/workflows/` calls them | A known owner for prayer alerts and streak reminders |
-| 5.7 | Confirm the AI mentor's daily limit is enforced on the server. The audit found a per-minute server limit and a daily count kept on the device | The free tier cannot be exceeded by clearing storage or using a second device |
+| 5.5 **Owner check:** cannot be seen from the repo | Confirm Redis is configured in production for the session check | Authenticated requests do not each add a database lookup |
+| 5.6 **Answered:** cron-job.org schedules them | Confirm where the push cron jobs are scheduled. Nothing in `vercel.json` or `.github/workflows/` calls them | A known owner for prayer alerts and streak reminders |
+| 5.7 **Done** | Confirm the AI mentor's daily limit is enforced on the server. The audit found a per-minute server limit and a daily count kept on the device | The free tier cannot be exceeded by clearing storage or using a second device |
 
 **Detail for 5.3.** The client sends the place (alone or congregation); the server reads `users.gender` and sets the amount:
 
