@@ -16,7 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { localDateIn } from "@/lib/utils/timezone";
+import { localDateIn, validTimezone } from "@/lib/utils/timezone";
+import { processProgressionEvidence } from "@/core/repositories/progression.repository";
 import { intentionRateLimiter, anonymousUserRateLimiter } from "@/lib/rate-limit";
 import { NextRequest, NextResponse } from "next/server";
 import { db, checkConnection } from "@/db";
@@ -188,6 +189,23 @@ export async function POST(req: NextRequest) {
         }
 
         // Calculate and update streak based on actual today, not the intention date
+        // Record the points and the streak day in the ledger, which is what survives a sync. The ledger
+        // ignores a repeat for the same day, and a failure must not lose the intention itself.
+        if (!existingIntention) {
+            try {
+                await processProgressionEvidence(userId, {
+                    source: "intention",
+                    sourceId: `intention:${todayStr}`,
+                    hasanah: todayStr === actualTodayStr ? 10 : 5,
+                    localDate: todayStr,
+                    occurredAt: intentionDateValue,
+                    timezone: validTimezone(timezone),
+                });
+            } catch (ledgerError) {
+                logger.error("Failed to record intention in the ledger", ledgerError, { route: "/api/intentions/daily" });
+            }
+        }
+
         const streakData = await calculateStreak(userId, actualTodayStr);
 
         // Get current user to check longest streak
