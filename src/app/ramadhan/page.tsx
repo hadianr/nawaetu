@@ -35,10 +35,6 @@ const SunnahFoodsWidget = dynamic(() => import("@/components/ramadhan/SunnahFood
     ssr: false,
     loading: () => <div className="h-48 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
-const TarawehTracker = dynamic(() => import("@/components/ramadhan/TarawehTracker"), {
-    ssr: false,
-    loading: () => <div className="h-40 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
-});
 const DailyPrayerTracker = dynamic(() => import("@/components/ramadhan/DailyPrayerTracker"), {
     ssr: false,
     loading: () => <div className="h-56 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
@@ -119,12 +115,9 @@ export default function RamadhanPage() {
                     </Suspense>
                 </section>
 
-                {/* Taraweh Tracker */}
-                <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "200ms" }}>
-                    <Suspense fallback={<div className="h-40 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
-                        <TarawehTracker />
-                    </Suspense>
-                </section>
+                {/* Taraweh tracker: taken out for now (11 Nov 2026). Ramadan has not started and it is not part
+                    of the fasting worship yet. The component and its sync stay in the code; put the section back
+                    here (with the dynamic import of components/ramadhan/TarawehTracker) to bring it back. */}
 
                 {/* Daily Prayer & Sunnah Tracker */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "230ms" }}>
