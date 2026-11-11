@@ -84,6 +84,16 @@ accounts. The sync limiters stay in memory on purpose.
 ## Tests
 
 - `npm run test:run`: unit tests. Read `src/lib/sync/engine.test.ts` first; it drives the tracker, queue, drain and pull together.
+- Integration tests against real Postgres (`src/__tests__/sync-progression.integration.test.ts`): the unit tests mock the
+  database, so the SQL itself (upserts, `GREATEST`, jsonb union, the frozen-day conversion, cascades) is only proven here.
+  They are skipped unless `INTEGRATION_DB=1`, and refuse any host that is not localhost. Run them on a throwaway database:
+
+  ```bash
+  docker run -d --name nawaetu-it-pg -e POSTGRES_USER=ci -e POSTGRES_PASSWORD=ci -e POSTGRES_DB=ci -p 127.0.0.1:55432:5432 postgres:16
+  for f in drizzle/*.sql; do docker exec -i nawaetu-it-pg psql -U ci -d ci -q < "$f"; done
+  DATABASE_URL=postgresql://ci:ci@127.0.0.1:55432/ci INTEGRATION_DB=1 npx vitest run src/__tests__/sync-progression.integration.test.ts
+  docker rm -f nawaetu-it-pg
+  ```
 - `npm run test:anoa`: the real client in a headless browser against the production build, with the backend faked inside the
   page. See `scripts/anoa/README.md`. Run it after changing anything in `lib/sync/`, `DataSyncer`, `GuestSyncManager` or the
   storage layer.

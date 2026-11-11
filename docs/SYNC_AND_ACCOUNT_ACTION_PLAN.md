@@ -284,3 +284,19 @@ CSS is unchanged (228,581 B to 228,629 B raw). The home page's own chunk got sma
 This is about 3 KB gzip over the 5 KB budget in `ONBOARDING_AND_MOTION_REVAMP_PLAN.md` section 7.4. That budget was written for the animation work alone; this branch adds a whole sync system. The growth is spread over many small chunks and matches the roughly 800 lines of client code added (queue, award helpers, account clean-up, intention retry, sync warnings, the changed fasting and Quran timer hooks, and about 20 locale strings in both languages). The engine itself (tracker, drain, pull, merge, claim) is not in the initial JavaScript: the markers for those modules are absent from every initial chunk. It is loaded after login, from `lib/sync/engine.ts`.
 
 If the combined release has to stay inside the 5 KB budget, the cheapest places to look are the locale strings (load the sync messages only on demand) and the always-loaded pieces of `sync-queue.ts`. Neither was changed, because the total is explained and small next to the 128 KB-per-edit upload it replaced.
+
+## 17. Verified against real Postgres (12 Nov 2026)
+
+`src/__tests__/sync-progression.integration.test.ts` runs the ledger, streak, frozen-day, activity-merge, batch and donation code against a throwaway Postgres 16 container (schema from `drizzle/*.sql`, bound to localhost only, removed afterwards). Nine checks pass:
+
+- a batch is recorded once, a replay adds nothing, and a day counts once;
+- the streak continues in order, an award can be reversed without losing a day that has other activity, and the last award of a day takes the day with it;
+- an award can grow during the day (reading time);
+- a frozen day is stored and then becomes a real day when its evidence arrives late;
+- two devices syncing the same day keep the higher counters and the union of prayers (`GREATEST` and the jsonb union);
+- a woman's prayer is priced in full by the server, written to the ledger, and taken back on undo;
+- a day outside the sync window is refused and counted;
+- many bookmarks are upserted in one statement and the existing one is updated;
+- a donation is settled and credited once.
+
+A mutation check confirmed the frozen-day test has teeth: with the late-day upsert replaced by `DO NOTHING`, the test fails because the late evidence is silently lost.
