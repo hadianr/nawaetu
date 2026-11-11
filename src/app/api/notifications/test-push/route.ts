@@ -23,6 +23,15 @@ import { getMessaging } from "@/lib/notifications/firebase-admin";
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
+    // Same gate as the cron routes: without it anyone could push arbitrary text to any device token.
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) {
+        return NextResponse.json({ error: "Test push is not configured" }, { status: 503 });
+    }
+    if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     try {
         const { token, title, body } = await req.json();
 

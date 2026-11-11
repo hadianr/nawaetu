@@ -30,6 +30,7 @@ import {
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { sanitizeSyncedSettings } from "@/lib/validations/sync";
 import { DbSyncRepository } from "@/core/repositories/db-sync.repository";
 
 // Schema validation for request body
@@ -162,25 +163,7 @@ export async function POST(req: NextRequest) {
 
             // 2. Sync Settings
             if (data.settings) {
-                // --- Server-Side Sanitization ---
-                const allowedSettings = ['theme', 'reciter', 'muadzin', 'calculationMethod', 'locale', 'hijriAdjustment', 'adhanPreferences'];
-                const sanitizedSettings: Record<string, unknown> = {};
-
-                for (const key of allowedSettings) {
-                    if (key in data.settings) {
-                        const val = data.settings[key];
-                        // Primitive validation
-                        if (typeof val === 'string' || typeof val === 'number') {
-                            if (val.toString().length < 500) {
-                                sanitizedSettings[key] = val;
-                            }
-                        } else if (key === 'adhanPreferences' && typeof val === 'object' && val !== null) {
-                            if (Object.keys(val).length < 20) {
-                                sanitizedSettings[key] = val;
-                            }
-                        }
-                    }
-                }
+                const sanitizedSettings = sanitizeSyncedSettings(data.settings);
 
                 // Merge, so keys written before the import (for example theme) are not wiped.
                 await tx.update(users)
