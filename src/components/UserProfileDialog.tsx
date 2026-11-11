@@ -28,7 +28,7 @@ import { useSession, signOut } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
 import { useProfile } from "@/hooks/useProfile";
 import { useDataSync } from "@/hooks/useDataSync";
-import { clearAccountData } from "@/lib/account-data";
+import { performLogout } from "@/lib/logout";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";
@@ -146,28 +146,13 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const handleLogin = () => signInWithGoogle();
 
     const handleLogout = async () => {
-        const storage = getStorageService();
-
-        // Send unsent work first: the clean-up below removes it from this device. If it cannot be sent,
-        // let the user decide instead of deleting it silently.
-        const result = await syncData({ silent: true });
-        if (!result.success && !window.confirm((t as unknown as Record<string, string>).logoutUnsyncedConfirm)) return;
-
-        // The device keeps its prayer alerts as a guest, but no longer belongs to this account.
-        const pushToken = localStorage.getItem("fcm_token");
-        if (pushToken) {
-            await fetch(`/api/notifications/subscribe?token=${encodeURIComponent(pushToken)}`, { method: "DELETE" }).catch(() => undefined);
-        }
-
-        // Everything that belongs to this account, including its unsent queue and premium status
-        clearAccountData(storage);
-
-        resetInfaq();
-        // Cached API responses (including the session) belong to this account.
-        if (typeof caches !== "undefined") {
-            await Promise.all(["apis", "next-data", "pages-rsc"].map((name) => caches.delete(name).catch(() => false)));
-        }
-        await signOut({ callbackUrl: "/" });
+        await performLogout({
+            sync: () => syncData({ silent: true }),
+            unsyncedMessage: (t as unknown as Record<string, string>).logoutUnsyncedConfirm,
+            storage: getStorageService(),
+            resetInfaq,
+            signOut,
+        });
     };
 
     const handleSaveProfile = async () => {
