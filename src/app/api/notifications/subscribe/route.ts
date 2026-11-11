@@ -128,7 +128,9 @@ export async function POST(req: NextRequest) {
             })
             .onConflictDoUpdate({
                 target: pushSubscriptions.token,
-                set: data,
+                // A guest subscription becomes the account's when the guest logs in. Without a session
+                // the owner is left untouched.
+                set: validUserId ? { ...data, userId: validUserId } : data,
             });
 
         logger.info("FCM subscription stored", {
@@ -143,4 +145,24 @@ export async function POST(req: NextRequest) {
         logger.error("Subscribe API error", error, { route: "/api/notifications/subscribe" });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
+}
+
+// Called at logout: the device keeps its prayer alerts as a guest, but streak reminders and the
+// account's identity no longer follow the device.
+export async function DELETE(req: NextRequest) {
+    const session = await getServerSession();
+    if (!session?.user?.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = new URL(req.url, "http://localhost").searchParams.get("token");
+    if (!token) {
+        return NextResponse.json({ error: "Token is required" }, { status: 400 });
+    }
+
+    await db.update(pushSubscriptions)
+        .set({ userId: null, updatedAt: new Date() })
+        .where(and(eq(pushSubscriptions.token, token), eq(pushSubscriptions.userId, session.user.id)));
+
+    return NextResponse.json({ success: true });
 }

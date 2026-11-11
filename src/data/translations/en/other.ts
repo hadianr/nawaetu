@@ -144,6 +144,7 @@ export const otherEN = {
     syncHydrateInfo: "Guest data on this device has been replaced with your main account data.",
     syncUnsyncedNotice: "Your activity since {date} has not synced to your account. Open the app while online so it is not lost.",
     syncUnsyncedUrgent: "Sync soon! Activity since {date} can only be saved to your account for {days} more days. Open the app while online.",
+    logoutUnsyncedConfirm: "Some activity has not synced and could be lost if you log out now. Log out anyway?",
     syncOldDataKept: "Activity older than 30 days cannot be synced, but it stays saved on this device.",
 
     profileAuthTitle: "Save Your Worship Progress",

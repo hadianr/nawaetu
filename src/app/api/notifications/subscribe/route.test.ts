@@ -17,7 +17,7 @@
  */
 
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { POST } from './route';
+import { POST, DELETE } from './route';
 import { db } from '@/db';
 import { pushSubscriptions } from '@/db/schema';
 import { NextRequest } from 'next/server';
@@ -129,6 +129,30 @@ describe('POST /api/notifications/subscribe', () => {
                 active: 1
             })
         }));
+    });
+
+    it('gives a guest subscription to the account that logs in on the device', async () => {
+        const onConflictDoUpdate = vi.fn().mockResolvedValue({});
+        (db.insert as unknown as { mockImplementation: (fn: unknown) => void }).mockImplementation(
+            () => ({ values: vi.fn().mockReturnValue({ onConflictDoUpdate }) }),
+        );
+
+        await POST(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ token: 'guest-token' }) }));
+
+        expect(onConflictDoUpdate).toHaveBeenCalledWith(expect.objectContaining({
+            set: expect.objectContaining({ userId: 'test-user-id' }),
+        }));
+    });
+
+    it('releases the subscription at logout without deleting it', async () => {
+        const where = vi.fn().mockResolvedValue({});
+        const set = vi.fn().mockReturnValue({ where });
+        (db.update as unknown as { mockReturnValue: (value: unknown) => void }).mockReturnValue({ set });
+
+        const res = await DELETE({ url: 'http://localhost/api/notifications/subscribe?token=device-token' } as NextRequest);
+
+        expect(res.status).toBe(200);
+        expect(set).toHaveBeenCalledWith(expect.objectContaining({ userId: null }));
     });
 
     it('should handle missing prayerPreferences correctly in upsert', async () => {

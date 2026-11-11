@@ -27,6 +27,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { useSession, signOut } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
 import { useProfile } from "@/hooks/useProfile";
+import { useDataSync } from "@/hooks/useDataSync";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";
@@ -54,6 +55,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const { isMuhsinin: contextIsMuhsinin, resetInfaq } = useInfaq();
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
+    const { syncData } = useDataSync();
 
     const isAuthenticated = status === "authenticated";
     const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
@@ -145,6 +147,17 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
     const handleLogout = async () => {
         const storage = getStorageService();
 
+        // Send unsent work first: the clean-up below removes it from this device. If it cannot be sent,
+        // let the user decide instead of deleting it silently.
+        const result = await syncData({ silent: true });
+        if (!result.success && !window.confirm((t as unknown as Record<string, string>).logoutUnsyncedConfirm)) return;
+
+        // The device keeps its prayer alerts as a guest, but no longer belongs to this account.
+        const pushToken = localStorage.getItem("fcm_token");
+        if (pushToken) {
+            await fetch(`/api/notifications/subscribe?token=${encodeURIComponent(pushToken)}`, { method: "DELETE" }).catch(() => undefined);
+        }
+
         // Profile
         storage.remove(STORAGE_KEYS.USER_NAME);
         storage.remove(STORAGE_KEYS.USER_AVATAR);
@@ -186,6 +199,17 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         storage.remove(STORAGE_KEYS.AI_CHAT_SESSIONS);
         storage.remove(STORAGE_KEYS.AI_CHAT_HISTORY_OLD);
         storage.remove(STORAGE_KEYS.AI_USAGE);
+
+        // Trackers, sync bookkeeping and premium status belong to the account too
+        for (const key of [
+            STORAGE_KEYS.SIRAH_COMPLETED, STORAGE_KEYS.SIRAH_BOOKMARKS, STORAGE_KEYS.SIRAH_QUIZ_LAST_CLAIMED,
+            STORAGE_KEYS.RAMADHAN_TARAWEH_LOG, STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG, STORAGE_KEYS.RAMADHAN_FASTING_LOG,
+            STORAGE_KEYS.RAMADHAN_FASTING_PENDING, STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB, STORAGE_KEYS.RAMADHAN_DAILY_LOG,
+            STORAGE_KEYS.RAMADHAN_INSIGHT_CACHE, STORAGE_KEYS.IS_MUHSININ, STORAGE_KEYS.UNSYNCED_SINCE,
+            STORAGE_KEYS.SYNC_WARNED_LEVEL, "nawaetu_sync_queue",
+        ]) {
+            storage.remove(key);
+        }
 
         // Sync Flags
         localStorage.removeItem("nawaetu_synced_v1");
