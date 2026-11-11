@@ -385,7 +385,7 @@ export function GuestSyncManager() {
                     // no server progress yet. Keeping it is recoverable; clearing
                     // it here would make a transient/empty response destructive.
                     storage.set(STORAGE_KEYS.LAST_SYNC_USER_ID, userId);
-                    toast.info(translations.syncHydrateInfo || "Data lokal kamu tetap aman; belum ada data akun untuk dipulihkan.", { duration: 4000 });
+                    toast.info(translations.syncLocalPreserved || "Data lokal kamu tetap aman; belum ada data akun untuk dipulihkan.", { duration: 4000 });
                     sendGAEvent("sync_recovery_outcome", { outcome: "preserved_local" });
                 } else {
                     // Scenario: Clean slate on both ends.

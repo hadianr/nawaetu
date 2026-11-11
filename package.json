@@ -33,7 +33,8 @@
     "db:verify:progression": "node scripts/verify-progression-migration.mjs",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "build:extension": "cd extension && zip -r ../nawaetu-extension.zip *"
+    "build:extension": "cd extension && zip -r ../nawaetu-extension.zip *",
+    "test:anoa": "node scripts/anoa/validate.mjs"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",
