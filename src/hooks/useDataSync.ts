@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
+import { DateUtils } from "@/lib/utils/date";
 
 interface SyncResult {
     success: boolean;
@@ -67,7 +68,12 @@ export function useDataSync() {
             const localData = {
                 bookmarks: storage.getOptional<unknown[]>(STORAGE_KEYS.QURAN_BOOKMARKS) || [],
                 intentions: storage.getOptional<unknown[]>(STORAGE_KEYS.INTENTION_JOURNAL) || [],
-                completedMissions: storage.getOptional<unknown[]>(STORAGE_KEYS.COMPLETED_MISSIONS) || [],
+                // The server must not guess the user's day from a UTC timestamp.
+                completedMissions: (storage.getOptional<Array<{ completedAt?: string }>>(STORAGE_KEYS.COMPLETED_MISSIONS) || []).map((mission) => ({
+                    ...mission,
+                    completedDate: mission.completedAt ? DateUtils.toLocalDate(mission.completedAt) : undefined,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                })),
                 dailyActivity: {
                     date: activityTracker.date || new Date().toISOString().split('T')[0],
                     quranAyat: activityTracker.quranAyat || 0,

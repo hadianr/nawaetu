@@ -69,6 +69,7 @@ function toMissionPayload(value: Record<string, unknown>): MissionSyncPayload {
         id: typeof value.id === "string" ? value.id : undefined,
         missionId: typeof value.missionId === "string" ? value.missionId : undefined,
         completedAt: typeof value.completedAt === "string" ? value.completedAt : undefined,
+        completedDate: typeof value.completedDate === "string" ? value.completedDate : undefined,
         hasanahEarned: typeof value.hasanahEarned === "number" ? value.hasanahEarned : undefined,
         xpEarned: typeof value.xpEarned === "number" ? value.xpEarned : undefined,
         timezone: typeof value.timezone === "string" ? value.timezone : undefined,

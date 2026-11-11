@@ -16,15 +16,14 @@ import { eq, and } from "drizzle-orm";
 import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
 import { processProgressionEvidence } from "@/core/repositories/progression.repository";
+import { localDateIn, validTimezone } from "@/lib/utils/timezone";
 
-function validTimezone(value: unknown): string {
-    if (typeof value !== "string" || value.length > 100) return "UTC";
-    try {
-        new Intl.DateTimeFormat("en-US", { timeZone: value }).format();
-        return value;
-    } catch {
-        return "UTC";
-    }
+/** The user's own calendar day: an explicit date wins, then a date-only value, then the instant in the user's timezone. */
+function missionLocalDate(item: MissionSyncPayload, completedAt: Date): string {
+    const isDate = (value?: string) => /^\d{4}-\d{2}-\d{2}$/.test(value ?? '');
+    if (isDate(item.completedDate)) return item.completedDate as string;
+    if (isDate(item.completedAt)) return item.completedAt as string;
+    return localDateIn(completedAt, item.timezone);
 }
 
 function canonicalMissionReward(missionId: string, requested: unknown): number | null {
@@ -126,6 +125,8 @@ export interface IntentionSyncPayload {
 
 export interface MissionSyncPayload {
     completedAt?: string;
+    /** The user's local YYYY-MM-DD, sent by the client so the server never guesses the day. */
+    completedDate?: string;
     id?: string;
     missionId?: string;
     hasanahEarned?: number;
@@ -264,9 +265,7 @@ export class DbSyncRepository {
     async syncMission(data: MissionSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const completedAt = data.completedAt ? new Date(data.completedAt) : new Date();
-            const completedDate = /^\d{4}-\d{2}-\d{2}$/.test(data.completedAt ?? '')
-                ? data.completedAt ?? ''
-                : completedAt.toISOString().split('T')[0];
+            const completedDate = missionLocalDate(data, completedAt);
             const missionId = normalizeMissionId(data.id || data.missionId || '');
             const hasanahEarned = canonicalMissionReward(missionId, data.hasanahEarned ?? data.xpEarned);
 
@@ -316,14 +315,13 @@ export class DbSyncRepository {
             hasanahEarned: number;
             completedAt: Date;
             completedDate: string;
+            timezone: string;
         }>();
 
         for (const item of data) {
             const completedAt = item.completedAt ? new Date(item.completedAt) : new Date();
             if (Number.isNaN(completedAt.getTime())) continue;
-            const completedDate = /^\d{4}-\d{2}-\d{2}$/.test(item.completedAt ?? '')
-                ? item.completedAt ?? ''
-                : completedAt.toISOString().split('T')[0];
+            const completedDate = missionLocalDate(item, completedAt);
             const missionId = normalizeMissionId(item.id || item.missionId || '');
             const hasanahEarned = canonicalMissionReward(missionId, item.hasanahEarned ?? item.xpEarned);
             if (hasanahEarned === null) continue;
@@ -333,11 +331,13 @@ export class DbSyncRepository {
                 hasanahEarned,
                 completedAt,
                 completedDate,
+                timezone: validTimezone(item.timezone),
             });
         }
 
-        const values = [...rows.values()];
-        if (values.length === 0) return [];
+        const evidenceRows = [...rows.values()];
+        if (evidenceRows.length === 0) return [];
+        const values = evidenceRows.map(({ timezone, ...row }) => { void timezone; return row; });
 
         const inserted = await db
             .insert(userCompletedMissions)
@@ -347,14 +347,14 @@ export class DbSyncRepository {
 
         // One at a time: each call is a transaction that already serializes per user, and overlapping
         // queries on our single pooled connection can wedge it.
-        for (const row of values) {
+        for (const row of evidenceRows) {
             await processProgressionEvidence(this.userId, {
                 source: 'mission',
                 sourceId: `${row.missionId}:${row.completedDate}`,
                 hasanah: row.hasanahEarned,
                 localDate: row.completedDate,
                 occurredAt: row.completedAt,
-                timezone: 'UTC',
+                timezone: row.timezone,
             });
         }
 

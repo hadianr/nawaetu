@@ -62,6 +62,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 body: JSON.stringify({
                     user_token: userToken,
                     intention_text: intention,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 }),
             });
 
