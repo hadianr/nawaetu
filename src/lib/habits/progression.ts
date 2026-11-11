@@ -97,7 +97,18 @@ export function rebuildStreakState(dates: string[], freezesAvailable = 0): Progr
  * a stored count: seeding with today's count would spend a freeze earned later on a gap from long ago.
  */
 export function rebuildStreakFromHistory(dates: string[]): ProgressionStreakState {
-  return rebuildStreakState(dates, 0);
+  return rebuildStreakDetailed(dates).state;
+}
+
+/** The same rebuild, also reporting which missed days a freeze protected along the way. */
+export function rebuildStreakDetailed(dates: string[]): { state: ProgressionStreakState; frozenDates: string[] } {
+  const frozenDates: string[] = [];
+  const state = [...new Set(dates)].sort().reduce<ProgressionStreakState>((current, localDate) => {
+    const step = advanceStreak(current, localDate);
+    if (step.frozenDate) frozenDates.push(step.frozenDate);
+    return step.state;
+  }, { currentDays: 0, longestDays: 0, lastStreakDate: null, freezesAvailable: 0 });
+  return { state, frozenDates };
 }
 
 export function getRankKey(level: number): RankKey {

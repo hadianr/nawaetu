@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
+import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, rebuildStreakDetailed, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
 
 describe("calculatePlayerStats", () => {
   it("handles level boundaries and progress", () => {
@@ -97,5 +97,29 @@ describe("rebuildStreakFromHistory", () => {
     // Active 1 Jan, missed 2 Jan, active 3-10 Jan: the gap came before any freeze existed.
     const dates = [1, 3, 4, 5, 6, 7, 8, 9, 10].map(day);
     expect(rebuildStreakFromHistory(dates).currentDays).toBe(8);
+  });
+});
+
+describe("rebuildStreakDetailed", () => {
+  const day = (n: number) => `2026-01-${String(n).padStart(2, "0")}`;
+
+  it("reports the missed day a freeze protected, and matches the plain rebuild", () => {
+    // 1-7 Jan earns a freeze, 8 Jan is missed, 9 Jan continues the streak.
+    const dates = [1, 2, 3, 4, 5, 6, 7, 9].map(day);
+    const detailed = rebuildStreakDetailed(dates);
+
+    expect(detailed.frozenDates).toEqual([day(8)]);
+    expect(detailed.state).toEqual(rebuildStreakFromHistory(dates));
+    expect(detailed.state.currentDays).toBe(9);
+  });
+
+  it("reports nothing when no freeze was available or no day was missed", () => {
+    expect(rebuildStreakDetailed([1, 3].map(day)).frozenDates).toEqual([]);
+    expect(rebuildStreakDetailed([1, 2, 3, 4].map(day)).frozenDates).toEqual([]);
+  });
+
+  it("does not report a day that later turned out to have evidence", () => {
+    const withLateDay = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(day);
+    expect(rebuildStreakDetailed(withLateDay).frozenDates).toEqual([]);
   });
 });

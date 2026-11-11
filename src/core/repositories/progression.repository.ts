@@ -11,9 +11,9 @@ import {
   ProgressionStreakState,
   calculatePlayerStats,
   advanceStreak,
-  rebuildStreakFromHistory,
+  rebuildStreakDetailed,
 } from "@/lib/habits/progression";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 
 export type ProgressionSource = "mission" | "prayer" | "quran" | "dhikr" | "intention" | "streak_milestone";
 
@@ -27,6 +27,45 @@ export interface ProgressionEvidence {
   origin?: "server" | "guest_import" | "backfill";
   /** False for awards that are not a day of activity themselves, such as a streak milestone. */
   countsForStreak?: boolean;
+}
+
+type Tx = Parameters<Parameters<typeof transactionDb.transaction>[0]>[0];
+
+/**
+ * Makes the stored "frozen" days equal to the days the streak rules say a freeze protected. A frozen day
+ * is a missed day with no evidence behind it, so it is derived from the qualified days and can change when
+ * an older day arrives late or an award is undone.
+ */
+async function reconcileFrozenDays(tx: Tx, userId: string, frozenDates: string[], timezone: string) {
+  const existing = await tx.query.userStreakDays.findMany({
+    where: and(eq(userStreakDays.userId, userId), eq(userStreakDays.status, "frozen")),
+    columns: { localDate: true },
+  });
+  const have = new Set(existing.map((row) => row.localDate));
+  const want = new Set(frozenDates);
+
+  const stale = [...have].filter((date) => !want.has(date));
+  if (stale.length > 0) {
+    await tx.delete(userStreakDays).where(and(
+      eq(userStreakDays.userId, userId),
+      eq(userStreakDays.status, "frozen"),
+      inArray(userStreakDays.localDate, stale),
+    ));
+  }
+
+  const missing = frozenDates.filter((date) => !have.has(date));
+  if (missing.length > 0) {
+    await tx.insert(userStreakDays).values(missing.map((date) => ({
+      userId,
+      localDate: date,
+      status: "frozen" as const,
+      source: "adjustment" as const,
+      sourceId: `freeze:${date}`,
+      occurredAt: new Date(`${date}T12:00:00Z`),
+      timezone,
+      origin: "server" as const,
+    }))).onConflictDoNothing();
+  }
 }
 
 /**
@@ -83,7 +122,20 @@ export async function processProgressionEvidenceBatch(userId: string, evidences:
         timezone: item.timezone,
         origin: item.origin ?? "server",
       })))
-      .onConflictDoNothing()
+      // A day a freeze protected can still turn out to have evidence (it arrived late): that day becomes
+      // a real one. A day that is already qualified is left as it is.
+      .onConflictDoUpdate({
+        target: [userStreakDays.userId, userStreakDays.localDate],
+        set: {
+          status: "qualified",
+          source: sql`excluded.source`,
+          sourceId: sql`excluded.source_id`,
+          occurredAt: sql`excluded.occurred_at`,
+          timezone: sql`excluded.timezone`,
+          origin: sql`excluded.origin`,
+        },
+        setWhere: eq(userStreakDays.status, "frozen"),
+      })
       .returning({ localDate: userStreakDays.localDate });
 
     let progress = currentProgress ?? null;
@@ -111,12 +163,29 @@ export async function processProgressionEvidenceBatch(userId: string, evidences:
       let next: ProgressionStreakState;
       if (currentStreak && inOrder) {
         // Normal case: the new days come after the last one, so continue from the stored state.
-        next = newDates.reduce<ProgressionStreakState>((state, date) => advanceStreak(state, date).state, {
+        const newlyFrozen: string[] = [];
+        next = newDates.reduce<ProgressionStreakState>((state, date) => {
+          const step = advanceStreak(state, date);
+          if (step.frozenDate) newlyFrozen.push(step.frozenDate);
+          return step.state;
+        }, {
           currentDays: currentStreak.currentDays,
           longestDays: currentStreak.longestDays,
           lastStreakDate: currentStreak.lastStreakDate,
           freezesAvailable: currentStreak.freezesAvailable,
         });
+        if (newlyFrozen.length > 0) {
+          await tx.insert(userStreakDays).values(newlyFrozen.map((date) => ({
+            userId,
+            localDate: date,
+            status: "frozen" as const,
+            source: "adjustment" as const,
+            sourceId: `freeze:${date}`,
+            occurredAt: new Date(`${date}T12:00:00Z`),
+            timezone,
+            origin: "server" as const,
+          }))).onConflictDoNothing();
+        }
       } else {
         // Out-of-order sync (an older day arrived late): rebuild from the ordered history so it cannot reset.
         const qualifiedDays = await tx.query.userStreakDays.findMany({
@@ -124,7 +193,9 @@ export async function processProgressionEvidenceBatch(userId: string, evidences:
           orderBy: [asc(userStreakDays.localDate)],
           columns: { localDate: true },
         });
-        next = rebuildStreakFromHistory(qualifiedDays.map((day) => day.localDate));
+        const rebuilt = rebuildStreakDetailed(qualifiedDays.map((day) => day.localDate));
+        next = rebuilt.state;
+        await reconcileFrozenDays(tx, userId, rebuilt.frozenDates, timezone);
       }
 
       [streak] = await tx
@@ -195,11 +266,12 @@ export async function reverseProgressionEvidence(
           orderBy: [asc(userStreakDays.localDate)],
           columns: { localDate: true },
         });
-        const rebuilt = rebuildStreakFromHistory(days.map((day) => day.localDate));
+        const rebuilt = rebuildStreakDetailed(days.map((day) => day.localDate));
         await tx
           .update(userStreakState)
-          .set({ ...rebuilt, updatedAt: new Date() })
+          .set({ ...rebuilt.state, updatedAt: new Date() })
           .where(eq(userStreakState.userId, userId));
+        await reconcileFrozenDays(tx, userId, rebuilt.frozenDates, "UTC");
       }
     }
 
