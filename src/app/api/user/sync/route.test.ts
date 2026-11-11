@@ -20,7 +20,7 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { POST } from '@/app/api/user/sync/route';
 import { db } from '@/db';
-import { userCompletedMissions, intentions } from '@/db/schema';
+import { userCompletedMissions } from '@/db/schema';
 import { NextRequest } from 'next/server';
 import { getServerSession } from '@/lib/auth';
 
@@ -94,7 +94,7 @@ describe('User Sync API', () => {
         insertChain.onConflictDoNothing.mockClear();
     });
 
-    it('should use bulk insert for syncing legacy missions (N+1 optimization)', async () => {
+    it('should use bulk insert for syncing mission completions (N+1 optimization)', async () => {
         // Mock Session
         (getServerSession as Mock).mockResolvedValue({ user: { id: 'test-user-id', isMuhsinin: false } });
 
@@ -111,7 +111,7 @@ describe('User Sync API', () => {
         }));
 
         const body = {
-            completedMissions: missions,
+            entries: missions.map((mission, i) => ({ id: `e${i}`, type: 'mission', action: 'create', data: mission })),
         };
 
         const req = {
@@ -137,44 +137,6 @@ describe('User Sync API', () => {
         const args = insertChain.values.mock.calls[0][0];
         expect(args).toHaveLength(missionCount);
         expect(args[0]).toHaveProperty('missionId', 'fajr_prayer');
-    });
-
-    it('should use bulk insert for syncing legacy intentions (N+1 optimization)', async () => {
-        // Mock Session
-        (getServerSession as Mock).mockResolvedValue({ user: { id: 'test-user-id', isMuhsinin: false } });
-        (db.query.users.findFirst as Mock).mockResolvedValue({ settings: {} });
-
-        const count = 50;
-        const localIntentions = Array.from({ length: count }, (_, i) => ({
-            intentionText: `Intention ${i}`,
-            intentionType: 'daily',
-            intentionDate: `2024-01-0${i % 9 + 1}`,
-            reflectionText: 'Good',
-            reflectionRating: 5,
-            isPrivate: true,
-            createdAt: new Date().toISOString(),
-        }));
-
-        const body = {
-            intentions: localIntentions,
-        };
-
-        const req = {
-            json: async () => body,
-        } as unknown as NextRequest;
-
-        await POST(req);
-
-        // Check how many times db.insert was called for intentions
-        const intentionInsertCalls = (db.insert as Mock).mock.calls.filter(call => call[0] === intentions);
-
-        expect(intentionInsertCalls.length).toBe(1);
-
-        // Verify values
-        expect(insertChain.values).toHaveBeenCalledTimes(1);
-        const args = insertChain.values.mock.calls[0][0];
-        expect(args).toHaveLength(9);
-        expect(args[0]).toHaveProperty('intentionText', 'Intention 45');
     });
 
     it('should handle empty request body gracefully', async () => {

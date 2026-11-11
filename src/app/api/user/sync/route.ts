@@ -20,8 +20,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { checkConnection } from "@/db";
 import { logger } from "@/lib/logger";
-import { type SyncQueueEntry, type SyncEntityType } from "@/lib/sync-queue";
-import { DbSyncRepository, type IntentionSyncPayload, type MissionSyncPayload } from "@/core/repositories/db-sync.repository";
+import { type SyncQueueEntry } from "@/lib/sync-queue";
+import { DbSyncRepository, type MissionSyncPayload } from "@/core/repositories/db-sync.repository";
 import { SyncEntrySchema } from "@/lib/validations/sync";
 import { syncRateLimiter } from "@/lib/rate-limit";
 
@@ -80,105 +80,15 @@ function toMissionPayload(value: Record<string, unknown>): MissionSyncPayload {
     };
 }
 
-function toIntentionPayload(value: Record<string, unknown>): IntentionSyncPayload {
-    return {
-        intentionDate: typeof value.intentionDate === "string" || typeof value.intentionDate === "number" ? value.intentionDate : undefined,
-        niatDate: typeof value.niatDate === "string" || typeof value.niatDate === "number" ? value.niatDate : undefined,
-        intentionText: typeof value.intentionText === "string" ? value.intentionText : undefined,
-        niatText: typeof value.niatText === "string" ? value.niatText : undefined,
-        intentionType: typeof value.intentionType === "string" ? value.intentionType : undefined,
-        niatType: typeof value.niatType === "string" ? value.niatType : undefined,
-        reflectionText: typeof value.reflectionText === "string" ? value.reflectionText : null,
-        reflectionRating: typeof value.reflectionRating === "number" ? value.reflectionRating : null,
-        isPrivate: typeof value.isPrivate === "boolean" ? value.isPrivate : undefined,
-        createdAt: typeof value.createdAt === "string" || typeof value.createdAt === "number" ? value.createdAt : undefined,
-        timezone: typeof value.timezone === "string" ? value.timezone : undefined,
-    };
-}
-
 function isSyncQueueEntry(value: unknown): value is SyncQueueEntry {
     const record = asRecord(value);
     return Boolean(record && typeof record.id === "string" && typeof record.type === "string" && typeof record.action === "string" && asRecord(record.data));
 }
 
-function convertLegacyBodyToEntries(value: unknown): SyncQueueEntry[] {
-    const entries: SyncQueueEntry[] = [];
-    const body = asRecord(value);
-    if (!body) return entries;
+/** Keys the old client sent in one full-state body. Entries replaced that format. */
+const LEGACY_BODY_KEYS = ["completedMissions", "intentions", "bookmarks", "dailyActivity", "settings", "readingState", "streaks", "ramadhan", "extraEntries"];
 
-    const arrayMappers: Record<string, SyncEntityType> = {
-        bookmarks: 'bookmark',
-        intentions: 'intention',
-        completedMissions: 'mission_progress',
-    };
-
-    for (const [key, type] of Object.entries(arrayMappers)) {
-        if (Array.isArray(body[key])) {
-            body[key].forEach((data: unknown, i: number) => {
-                entries.push({ id: `legacy-${type}-${i}`, type, action: 'create', data: asRecord(data) ?? {}, status: 'pending', retryCount: 0, createdAt: Date.now() });
-            });
-        }
-    }
-
-    const objectMappers: Record<string, SyncEntityType> = {
-        dailyActivity: 'daily_activity',
-        settings: 'setting',
-        readingState: 'reading_state',
-        streaks: 'streak',
-    };
-
-    for (const [key, type] of Object.entries(objectMappers)) {
-        if (body[key] && typeof body[key] === "object") {
-            entries.push({ id: `legacy-${type}`, type, action: 'create', data: asRecord(body[key]) ?? {}, status: 'pending', retryCount: 0, createdAt: Date.now() });
-        }
-    }
-
-    const ramadhan = asRecord(body.ramadhan);
-    const tarawehLog = asRecord(ramadhan?.tarawehLog);
-    if (tarawehLog) {
-        let i = 0;
-        for (const [yearOrDate, value] of Object.entries(tarawehLog)) {
-            const year = /^\d{4}$/.test(yearOrDate) ? Number(yearOrDate) : 1447;
-            const days = /^\d{4}$/.test(yearOrDate) && value && typeof value === "object"
-                ? Object.entries(value as Record<string, unknown>)
-                : [[yearOrDate, value] as [string, unknown]];
-            for (const [dateOrDay, entry] of days) {
-                const choice = asRecord(entry)?.choice ?? entry;
-                if (choice !== "8" && choice !== "20" && choice !== 8 && choice !== 20) continue;
-                const dayNum = parseInt(dateOrDay.split('-').pop() || '1', 10);
-                entries.push({
-                    id: `legacy-taraweh-${i++}`,
-                    type: 'ramadhan_taraweh',
-                    action: 'create',
-                    data: { hijriYear: year, hijriDay: isNaN(dayNum) ? 1 : dayNum, choice: String(choice) },
-                    status: 'pending',
-                    retryCount: 0,
-                    createdAt: Date.now()
-                });
-            }
-        }
-    }
-
-    if (Array.isArray(body.extraEntries)) {
-        body.extraEntries.forEach((extra: unknown, i: number) => {
-            const extraRecord = asRecord(extra);
-            if (!extraRecord || typeof extraRecord.type !== "string") return;
-            entries.push({
-                id: typeof extraRecord.id === "string" ? extraRecord.id : `legacy-extra-${i}`,
-                type: extraRecord.type as SyncEntityType,
-                action: extraRecord.action === "update" || extraRecord.action === "delete" ? extraRecord.action : 'create',
-                data: asRecord(extraRecord.data) ?? {},
-                status: 'pending',
-                retryCount: 0,
-                createdAt: Date.now()
-            });
-        });
-    }
-
-    return entries;
-}
-
-// Seconds. up to 200 entries, written one at a time.
+// Seconds. Up to 200 entries; missions and bookmarks are written as batches, the rest one at a time.
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse | { error: string }>> {
@@ -222,41 +132,18 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         const payload = asRecord(body) ?? {};
         const synced: Array<{ id: string; cloudId?: string }> = [];
         const failed: Array<{ id: string; error: string }> = [];
-        const remainingPayload = { ...payload };
 
-        if (!Array.isArray(payload.entries)) {
-            const missionRecords = Array.isArray(payload.completedMissions)
-                ? payload.completedMissions.map(asRecord).filter((value): value is Record<string, unknown> => value !== null)
-                : [];
-            const intentionRecords = Array.isArray(payload.intentions)
-                ? payload.intentions.map(asRecord).filter((value): value is Record<string, unknown> => value !== null)
-                : [];
-
-            delete remainingPayload.completedMissions;
-            delete remainingPayload.intentions;
-
-            if (missionRecords.length > 0) {
-                try {
-                    await repo.syncMissionsBatch(missionRecords.map(toMissionPayload));
-                    missionRecords.forEach((_, index) => synced.push({ id: `legacy-mission-${index}` }));
-                } catch (error) {
-                    failed.push({ id: 'legacy-missions', error: error instanceof Error ? error.message : 'Mission sync failed' });
-                }
-            }
-
-            if (intentionRecords.length > 0) {
-                try {
-                    await repo.syncIntentionsBatch(intentionRecords.map(toIntentionPayload));
-                    intentionRecords.forEach((_, index) => synced.push({ id: `legacy-intention-${index}` }));
-                } catch (error) {
-                    failed.push({ id: 'legacy-intentions', error: error instanceof Error ? error.message : 'Intention sync failed' });
-                }
-            }
+        // The old client uploaded its whole local state in one body. That format is gone: it cost more with
+        // every day of history and could not carry an undo. Say so plainly instead of dropping the data
+        // silently; the app updates itself on the next load and the data on the device is untouched.
+        if (!Array.isArray(payload.entries) && LEGACY_BODY_KEYS.some((key) => key in payload)) {
+            return NextResponse.json(
+                { success: false, synced: [], failed: [], error: "outdated_client", message: "This version of the app is out of date. Reload it to update." },
+                { status: 410 },
+            );
         }
 
-        const rawEntries: SyncQueueEntry[] = Array.isArray(payload.entries)
-            ? payload.entries.filter(isSyncQueueEntry)
-            : convertLegacyBodyToEntries(remainingPayload);
+        const rawEntries: SyncQueueEntry[] = Array.isArray(payload.entries) ? payload.entries.filter(isSyncQueueEntry) : [];
 
         if (rawEntries.length > 0) {
             // One at a time: overlapping queries on our single pooled connection can wedge it.

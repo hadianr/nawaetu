@@ -149,10 +149,6 @@ export interface MissionSyncPayload {
     timezone?: string;
 }
 
-function intentionType(value: string | undefined): 'daily' | 'prayer' | 'custom' {
-    return value === 'prayer' || value === 'custom' ? value : 'daily';
-}
-
 export class DbSyncRepository {
     /** Mission records refused because their day is outside the sync window; the client keeps them on the device. */
     rejected = 0;
@@ -486,58 +482,6 @@ export class DbSyncRepository {
             timezone: row.timezone,
         })));
 
-        return inserted.map(row => row.id);
-    }
-
-    async syncIntentionsBatch(data: IntentionSyncPayload[]): Promise<string[]> {
-        const latestByDate = new Map<string, IntentionSyncPayload>();
-        for (const item of data) {
-            const date = new Date(item.intentionDate || item.niatDate || Date.now());
-            if (!Number.isNaN(date.getTime())) latestByDate.set(date.toISOString().slice(0, 10), item);
-        }
-
-        const existing = await db.query.intentions.findMany({
-            where: (table, { eq }) => eq(table.userId, this.userId),
-        });
-        const existingByDate = new Map(existing.map(item => [item.intentionDate.toISOString().slice(0, 10), item]));
-        const inserts = [];
-
-        for (const [dateKey, item] of latestByDate) {
-            const intentionDate = new Date(item.intentionDate || item.niatDate || Date.now());
-            const values = {
-                userId: this.userId,
-                intentionText: item.intentionText || item.niatText || '',
-                intentionType: intentionType(item.intentionType || item.niatType),
-                intentionDate,
-                reflectionText: item.reflectionText,
-                reflectionRating: item.reflectionRating,
-                isPrivate: item.isPrivate ?? true,
-                createdAt: new Date(item.createdAt || Date.now()),
-            };
-            const current = existingByDate.get(dateKey);
-            if (current) {
-                await db.update(intentions).set({
-                    intentionText: values.intentionText,
-                    reflectionText: values.reflectionText,
-                    reflectionRating: values.reflectionRating,
-                    updatedAt: new Date(),
-                }).where(eq(intentions.id, current.id));
-            } else {
-                inserts.push(values);
-            }
-
-            await processProgressionEvidence(this.userId, {
-                source: 'intention',
-                sourceId: `intention:${dateKey}`,
-                hasanah: 0,
-                localDate: dateKey,
-                occurredAt: intentionDate,
-                timezone: validTimezone(item.timezone),
-            });
-        }
-
-        if (inserts.length === 0) return [];
-        const inserted = await db.insert(intentions).values(inserts).returning({ id: intentions.id });
         return inserted.map(row => row.id);
     }
 
