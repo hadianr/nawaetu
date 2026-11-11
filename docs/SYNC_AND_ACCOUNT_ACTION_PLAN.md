@@ -252,3 +252,5 @@ Measured or counted on branch `fix/sync-account-hardening`. Counts of database s
 **Also done late:** bookmark saves in a sync request are written in one upsert instead of one round trip each.
 
 **Taken out by the owner (11 Nov 2026):** the taraweh tracker is no longer shown on the Ramadan page, because Ramadan has not started and it is not part of the fasting worship yet. The component, its queue entries and its server route stay in the code. To bring it back, restore the section and the dynamic import in `src/app/ramadhan/page.tsx`.
+
+**Taken out by the owner (11 Nov 2026):** the Ramadan hub page (`/ramadhan`). It answers 404, is out of the sitemap and `llms.txt`, and the seasonal bottom-navigation tab falls back to the normal one. The 100-day journey, the countdown and the seasonal home cards stay, because they already appear only in their season. One switch, `RAMADHAN_PAGE_ENABLED` in `src/lib/features.ts`, brings it all back.
