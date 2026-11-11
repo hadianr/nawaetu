@@ -40,3 +40,23 @@ describe("LocalStorageAdapter", () => {
   });
 
 });
+
+describe('LocalStorageAdapter availability probe', () => {
+  it('probes storage once, not before every read and write', () => {
+    const adapter = new LocalStorageAdapter();
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    setItem.mockClear();
+
+    adapter.setItem('probe-a', 'x');
+    adapter.getItem('probe-a');
+    adapter.setItem('probe-b', 'y');
+    adapter.getItem('probe-b');
+
+    // Only the two real writes remain; the probe key was written at most once for all four calls.
+    const probeWrites = setItem.mock.calls.filter(([key]) => key === '__storage_test__').length;
+    expect(probeWrites).toBeLessThanOrEqual(1);
+    setItem.mockRestore();
+    localStorage.removeItem('probe-a');
+    localStorage.removeItem('probe-b');
+  });
+});
