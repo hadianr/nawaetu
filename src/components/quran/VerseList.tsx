@@ -22,7 +22,6 @@ import TajweedLegend from "./TajweedLegend";
 import { useState, useRef, useEffect, useMemo, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useQuranAudio } from "@/hooks/useQuranAudio";
 import { Play, ChevronLeft, Loader2 } from "lucide-react";
 import { getVerseTafsir, type TafsirContent } from '@/lib/quran/tafsir-api';
@@ -47,7 +46,6 @@ import { type Bookmark as BookmarkType } from "@/lib/quran/bookmark-storage";
 import { cn } from "@/lib/utils";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { syncQueue } from "@/lib/sync-queue";
 import { cleanTajweedText } from "@/lib/sanitize";
 import { incrementDailyActivity } from "@/lib/analytics/analytics-utils";
 import { toast } from "sonner";
@@ -130,7 +128,6 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
         }
     }, [locale, currentLocale, router]);
 
-    const { data: session } = useSession();
     const searchParams = useSearchParams();
     const autoplay = searchParams.get('autoplay') === 'true';
 
@@ -760,7 +757,6 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                     }}
                     bookmark={activeBookmark}
                     onSave={(bookmark) => {
-                        const action = editingBookmarkDraft ? 'create' : 'update';
                         setEditingBookmarkKey(null);
                         setEditingBookmarkDraft(null);
                         if (!bookmark) return;
@@ -769,17 +765,6 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                             // Always save locally first
                             getBookmarkRepository().saveBookmark(bookmark);
 
-                            // Only add to sync queue if logged in
-                            if (session?.user?.id) {
-                                syncQueue.addToQueue('bookmark', action, {
-                                    surahId: bookmark.surahId,
-                                    surahName: bookmark.surahName,
-                                    verseId: bookmark.verseId,
-                                    verseText: bookmark.verseText,
-                                    note: bookmark.note,
-                                    tags: bookmark.tags,
-                                });
-                            }
                             toast.success((t as unknown as Record<string, string>).bookmarksSaved || "Tanda baca berhasil disimpan ✨");
                         } catch {
                         }
@@ -793,13 +778,6 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                             // Always remove locally first
                             getBookmarkRepository().removeBookmark(bookmark.id);
 
-                            // Only add to sync queue if logged in
-                            if (session?.user?.id && !editingBookmarkDraft) {
-                                syncQueue.addToQueue('bookmark', 'delete', {
-                                    surahId: bookmark.surahId,
-                                    verseId: bookmark.verseId,
-                                });
-                            }
                             toast.success((t as unknown as Record<string, string>).bookmarksDeleted || "Tanda baca berhasil dihapus");
                         } catch {
                         }

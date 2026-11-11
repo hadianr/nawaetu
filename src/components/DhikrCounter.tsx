@@ -26,9 +26,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { dhikrCategories, dhikrSequences } from "@/data/dhikrLibrary";
 import { addHasanah } from "@/lib/habits/leveling";
+import { nextDhikrCompletionKey, queueHasanahEvent } from "@/lib/sync/award";
 import { trackDhikrSession } from "@/lib/analytics/analytics";
 import { dhikrMilestones } from "@/data/dhikrMilestones";
-import { syncQueue } from "@/lib/sync-queue";
 import { useLocale } from "@/context/LocaleContext";
 import { useDhikrPersistence } from "@/hooks/useDhikrPersistence";
 import { cn } from "@/lib/utils";
@@ -127,6 +127,7 @@ export default function DhikrCounter() {
             // Normal completion or end of sequence
             setTimeout(() => {
                 addHasanah(50);
+                queueHasanahEvent("dhikr_completion", nextDhikrCompletionKey(), 50);
                 setShowReward(true);
             }, 100);
         }
@@ -172,15 +173,7 @@ export default function DhikrCounter() {
         if (nextMilestoneIdx > currentMilestoneIdx && nextMilestoneIdx >= 0) {
             const milestone = dhikrMilestones[nextMilestoneIdx];
             addHasanah(milestone.reward);
-        }
-
-        // Debounce sync queue (sync every 10 counts roughly)
-        if (newLifetimeCount % 10 === 0) {
-            syncQueue.addToQueue('dhikr_stats', 'update', {
-                lifetimeCount: newLifetimeCount,
-                dhikrHistory: newDhikrHistory,
-                timestamp: Date.now()
-            });
+            queueHasanahEvent("dhikr_milestone", String(milestone.target), milestone.reward);
         }
 
         // Calculate new count and save immediately

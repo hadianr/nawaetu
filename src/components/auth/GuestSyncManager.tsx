@@ -30,6 +30,7 @@ import { getStorageService, type StorageService } from "@/core/infrastructure/st
 import { mergeSyncRecords } from "@/lib/sync/merge-sync-data";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 import { DateUtils } from "@/lib/utils/date";
+import { resetTrackerSnapshot, withoutTracking } from "@/lib/sync/tracker";
 
 interface GuestActivityTracker {
     quranAyat?: number;
@@ -359,7 +360,9 @@ export function GuestSyncManager() {
                     // Scenario: User has existing account data (HYDRATE)
                     // ACTION: Auto-Hydrate (Restore data).
                     toast.info(translations.syncHydrateLoading || "Sedang mengambil data lama kamu dari server...", { duration: 2000 });
-                    await hydrateFromServer(serverData, storage, userId);
+                    // The server's data written below is not the user's own change, so it must not be queued for upload.
+                    await withoutTracking(() => hydrateFromServer(serverData, storage, userId));
+                    resetTrackerSnapshot();
 
                     // Success and Info Feedback
                     toast.success(translations.syncHydrateSuccess || "✅ Sip! Data akun lamamu sudah kembali. Yuk lanjut ibadah!");
@@ -397,6 +400,8 @@ export function GuestSyncManager() {
                 sendGAEvent("sync_recovery_outcome", { outcome: "error" });
                 // Fail silently or toast error? Silent is better for auto-sync unless critical.
             } finally {
+                // The sync engine waits for this: it starts tracking changes only after login is settled.
+                window.dispatchEvent(new Event("sync_login_settled"));
             }
         };
 

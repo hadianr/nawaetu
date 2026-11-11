@@ -10,6 +10,7 @@ import Link from "next/link";
 import { ArrowLeft, Award, CheckCircle2, XCircle, Sparkles, BookOpen, Home } from "lucide-react";
 import { getRandomSirahQuestions, type SirahQuizItem } from "@/data/sirah/quiz-questions";
 import { addHasanah } from "@/lib/habits/leveling";
+import { queueHasanahEvent } from "@/lib/sync/award";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { AppIcon } from "@/components/ui/AppIcon";
@@ -66,6 +67,7 @@ export default function SirahQuizPage() {
                 if (typeof window !== "undefined") {
                     localStorage.setItem("nawaetu_sirah_quiz_last_claimed", todayStr);
                     addHasanah(pointsEarned);
+                    queueHasanahEvent("sirah_quiz", "daily", pointsEarned);
                     window.dispatchEvent(new CustomEvent("hasanah_updated"));
                 }
                 setHasClaimedToday(true);

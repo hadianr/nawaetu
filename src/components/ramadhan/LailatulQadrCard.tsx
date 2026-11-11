@@ -36,6 +36,7 @@ import { useTarawehTracker } from "@/hooks/useTarawehTracker";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { toast } from "sonner";
 import { addHasanah } from "@/lib/habits/leveling";
+import { queueHasanahEvent } from "@/lib/sync/award";
 
 type LailatulTranslations = TranslationTree & Partial<Record<"gamificationQiyamulLailSuccess" | "gamificationQiyamulLailDesc", string>>;
 
@@ -156,6 +157,7 @@ export default function LailatulQadrCard() {
                             
                             if (newStatus) {
                                 addHasanah(50);
+                                queueHasanahEvent("lailatul", `${hijriYear}-${night}`, 50);
                                 toast.success(t.gamificationQiyamulLailSuccess || "Qiyamul Lail Tercatat", {
                                     description: t.gamificationQiyamulLailDesc || `Masya Allah! +50 ${t.gamificationXpName || "Hasanah"}`,
                                     duration: 3500,

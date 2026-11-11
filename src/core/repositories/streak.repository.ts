@@ -20,6 +20,7 @@ import { getStorageService } from '@/core/infrastructure/storage';
 import { STORAGE_KEYS } from '@/lib/constants/storage-keys';
 import { DateUtils } from '@/lib/utils/date';
 import { addHasanah } from '@/lib/habits/leveling';
+import { queueHasanahEvent } from '@/lib/sync/award';
 import { advanceStreak } from '@/lib/habits/progression';
 import type { StreakMilestone } from '@/data/streak-milestones';
 export type { StreakMilestone };
@@ -126,6 +127,7 @@ export class LocalStreakRepository implements StreakRepository {
       if (newStreak >= milestone.days && !milestones.includes(milestone.days)) {
         milestones.push(milestone.days);
         addHasanah(milestone.xp);
+        queueHasanahEvent('streak_milestone', String(milestone.days), milestone.xp);
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('hasanah_updated'));
         }
