@@ -41,6 +41,12 @@ export function findMissionDefinition(missionId: string): Mission | undefined {
     return MISSION_CATALOG.find((mission) => mission.id === missionId);
 }
 
+/** Every reward a mission can pay. Prayers pay differently by gender, and the catalog holds only the base version. */
+export function missionRewardOptions(mission: Mission): number[] {
+    return [mission, resolveRitualForGender(mission, 'male'), resolveRitualForGender(mission, 'female')]
+        .flatMap((variant) => [variant.hasanahReward, ...(variant.completionOptions?.map((option) => option.hasanahReward) ?? [])]);
+}
+
 /**
  * Returns missions filtered and polymorphically adapted by gender, Hijri date, and active days.
  */

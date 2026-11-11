@@ -13,7 +13,7 @@ import {
     sirahBookmarks,
 } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { findMissionDefinition } from "@/data/missions";
+import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
 import { processProgressionEvidence } from "@/core/repositories/progression.repository";
 
@@ -31,8 +31,7 @@ function canonicalMissionReward(missionId: string, requested: unknown): number |
     const mission = findMissionDefinition(normalizeMissionId(missionId));
     if (!mission) return null;
 
-    const fullRewards = [mission.hasanahReward, ...(mission.completionOptions?.map((option) => option.hasanahReward) ?? [])];
-    const validRewards = new Set(fullRewards.flatMap((reward) => [reward, Math.floor(reward * 0.5)]));
+    const validRewards = new Set(missionRewardOptions(mission).flatMap((reward) => [reward, Math.floor(reward * 0.5)]));
     const amount = Number(requested);
     return Number.isInteger(amount) && validRewards.has(amount) ? amount : mission.hasanahReward;
 }
