@@ -23,6 +23,7 @@ import { eq, and, desc, or, ne } from "drizzle-orm";
 import crypto from "crypto";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { normalizeMayarStatus } from "@/lib/payments";
 
 // Seconds. Mayar call; the provider retries a failed webhook.
 export const maxDuration = 60;
@@ -157,10 +158,7 @@ export async function POST(req: NextRequest) {
         // 7. Final Transaction Check
         if (!transaction) {
             logger.error("Mayar webhook transaction not found", undefined, { route: "/api/payment/webhook", mayarId, productId, linkId });
-            return NextResponse.json({
-                error: "Transaction not found",
-                debug: { mayarId, productId, linkId, email: data.customerEmail, amount: data.amount }
-            }, { status: 404 });
+            return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
         }
 
         // 8. Idempotency Check
@@ -169,19 +167,7 @@ export async function POST(req: NextRequest) {
         }
 
         // 9. Status Normalization
-        let normalizedStatus = 'failed';
-        if (typeof status === 'boolean') {
-            normalizedStatus = status ? 'settlement' : 'failed';
-        } else if (typeof status === 'string') {
-            const lowerStatus = status.toLowerCase();
-            if (lowerStatus === 'paid' || lowerStatus === 'success' || lowerStatus === 'settlement') {
-                normalizedStatus = 'settlement';
-            } else if (lowerStatus === 'pending' || lowerStatus === 'created') {
-                normalizedStatus = 'pending';
-            } else if (lowerStatus === 'expired') {
-                normalizedStatus = 'expired';
-            }
-        }
+        const normalizedStatus = normalizeMayarStatus(status);
 
         // 10. Update Transaction
         const updatedTransactions = await db.update(transactions)

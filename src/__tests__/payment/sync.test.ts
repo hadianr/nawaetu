@@ -20,7 +20,7 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { GET } from '@/app/api/payment/sync/route';
 import { db } from '@/db';
-import { transactions } from '@/db/schema';
+import { transactions, users } from '@/db/schema';
 import { NextRequest } from 'next/server';
 import { getServerSession } from '@/lib/auth';
 
@@ -32,6 +32,7 @@ vi.mock('@/lib/auth', () => ({
 const updateChain = {
     set: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
+    returning: vi.fn().mockResolvedValue([{ id: 'tx-1' }]),
 };
 
 vi.mock('@/db', () => ({
@@ -51,6 +52,7 @@ describe('Payment Sync', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         updateChain.set.mockClear();
+        updateChain.returning.mockResolvedValue([{ id: 'tx-1' }]);
     });
 
     it('should sync transaction status via direct mayarId lookup', async () => {
@@ -78,6 +80,21 @@ describe('Payment Sync', () => {
         expect(db.update).toHaveBeenCalledWith(transactions);
         expect(updateChain.set).toHaveBeenCalledWith(expect.objectContaining({ status: 'settlement' }));
         expect(res.status).toBe(200);
+    });
+
+    it('does not credit the donation again when the webhook already settled it', async () => {
+        (getServerSession as Mock).mockResolvedValue({ user: { email: 'user@test.com' } });
+        (db.query.users.findFirst as Mock).mockResolvedValue({ id: 'user-1', email: 'user@test.com', isMuhsinin: true });
+        (db.query.transactions.findFirst as Mock).mockResolvedValue({ id: 'tx-1', mayarId: 'm-1', status: 'pending', amount: 10000, userId: 'user-1' });
+        (global.fetch as Mock).mockResolvedValue({ ok: true, json: async () => ({ data: { status: 'paid' } }) });
+        // The settlement claim finds nothing to flip: another request got there first.
+        updateChain.returning.mockResolvedValueOnce([]);
+
+        const res = await GET({} as unknown as NextRequest);
+
+        expect(res.status).toBe(200);
+        expect(db.update).toHaveBeenCalledTimes(1);
+        expect(db.update).not.toHaveBeenCalledWith(users);
     });
 
     it('should fallback to v2 unpaid transactions when mayarId is missing', async () => {

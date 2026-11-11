@@ -20,7 +20,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { db } from "@/db";
 import { transactions, users } from "@/db/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, ne } from "drizzle-orm";
+import { normalizeMayarStatus } from "@/lib/payments";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
 
 // Seconds. two Mayar calls in a row, 10 s each.
@@ -118,19 +119,24 @@ export async function GET(req: NextRequest) {
         }
 
         // Mayar v2 transaction statuses are lowercase: paid, unpaid, created, expired.
-        if (status.toLowerCase() === "paid" || status.toLowerCase() === "settled" || status.toLowerCase() === "settlement") {
-            await db.update(transactions)
+        const normalized = normalizeMayarStatus(status);
+        if (normalized === "settlement") {
+            // Claim the settlement first: the webhook may have credited this donation already,
+            // and only the caller that flips the status may add the amount.
+            const claimed = await db.update(transactions)
                 .set({ status: "settlement" })
-                .where(eq(transactions.id, latestTx.id));
+                .where(and(eq(transactions.id, latestTx.id), ne(transactions.status, "settlement")))
+                .returning({ id: transactions.id });
 
-            // Update User
-            await db.update(users)
-                .set({
-                    isMuhsinin: true,
-                    muhsininSince: new Date(),
-                    totalInfaq: sql`${users.totalInfaq} + ${latestTx.amount}`
-                })
-                .where(eq(users.id, user.id));
+            if (claimed.length > 0) {
+                await db.update(users)
+                    .set({
+                        isMuhsinin: true,
+                        muhsininSince: new Date(),
+                        totalInfaq: sql`${users.totalInfaq} + ${latestTx.amount}`
+                    })
+                    .where(eq(users.id, user.id));
+            }
 
             return NextResponse.json({
                 status: "verified",
@@ -140,7 +146,7 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({
-            status: status.toLowerCase() === "unpaid" || status.toLowerCase() === "created" ? "pending" : status.toLowerCase(),
+            status: normalized === "pending" ? "pending" : status.toLowerCase(),
             isMuhsinin: user.isMuhsinin
         });
 
