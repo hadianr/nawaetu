@@ -15,7 +15,7 @@ import {
 import { eq, and, sql } from "drizzle-orm";
 import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
-import { processProgressionEvidence } from "@/core/repositories/progression.repository";
+import { processProgressionEvidence, processProgressionEvidenceBatch, reverseProgressionEvidence } from "@/core/repositories/progression.repository";
 import { isInSyncWindow, localDateIn, validTimezone } from "@/lib/utils/timezone";
 import { sanitizeSyncedSettings } from "@/lib/validations/sync";
 
@@ -316,6 +316,22 @@ export class DbSyncRepository {
 
             return resultId;
         }
+
+        if (action === 'delete') {
+            // An undone prayer or mission: remove the record and take its Hasanah and streak day back.
+            const missionId = normalizeMissionId(data.id || data.missionId || '');
+            const completedAt = data.completedAt ? new Date(data.completedAt) : new Date();
+            const completedDate = missionLocalDate(data, Number.isNaN(completedAt.getTime()) ? new Date() : completedAt);
+            if (!findMissionDefinition(missionId) || this.outsideWindow(completedDate, data.timezone)) return undefined;
+
+            await db.delete(userCompletedMissions).where(and(
+                eq(userCompletedMissions.userId, this.userId),
+                eq(userCompletedMissions.missionId, missionId),
+                eq(userCompletedMissions.completedDate, completedDate),
+            ));
+            await reverseProgressionEvidence(this.userId, { source: 'mission', sourceId: `${missionId}:${completedDate}`, localDate: completedDate });
+            return undefined;
+        }
         return undefined;
     }
 
@@ -357,18 +373,15 @@ export class DbSyncRepository {
             .onConflictDoNothing()
             .returning({ id: userCompletedMissions.id });
 
-        // One at a time: each call is a transaction that already serializes per user, and overlapping
-        // queries on our single pooled connection can wedge it.
-        for (const row of evidenceRows) {
-            await processProgressionEvidence(this.userId, {
-                source: 'mission',
-                sourceId: `${row.missionId}:${row.completedDate}`,
-                hasanah: row.hasanahEarned,
-                localDate: row.completedDate,
-                occurredAt: row.completedAt,
-                timezone: row.timezone,
-            });
-        }
+        // One transaction for the whole batch (one lock, one bulk insert, one streak update).
+        await processProgressionEvidenceBatch(this.userId, evidenceRows.map((row) => ({
+            source: 'mission' as const,
+            sourceId: `${row.missionId}:${row.completedDate}`,
+            hasanah: row.hasanahEarned,
+            localDate: row.completedDate,
+            occurredAt: row.completedAt,
+            timezone: row.timezone,
+        })));
 
         return inserted.map(row => row.id);
     }
