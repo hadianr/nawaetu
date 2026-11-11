@@ -17,7 +17,8 @@ export const SyncEntrySchema = z.object({
     "ramadhan_daily",
     "sirah_progress",
     "sirah_bookmark",
-    "streak"
+    "streak",
+    "hasanah_event"
   ]),
   action: z.enum(["create", "update", "delete"]),
   data: z.any().optional(),

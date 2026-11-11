@@ -15,7 +15,8 @@ import {
 import { eq, and, sql } from "drizzle-orm";
 import { findMissionDefinition, missionRewardOptions } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
-import { processProgressionEvidence, processProgressionEvidenceBatch, reverseProgressionEvidence } from "@/core/repositories/progression.repository";
+import { processProgressionEvidence, processProgressionEvidenceBatch, raiseProgressionEvidence, reverseProgressionEvidence } from "@/core/repositories/progression.repository";
+import { validateHasanahEvent } from "@/lib/hasanah-events";
 import { isInSyncWindow, localDateIn, validTimezone } from "@/lib/utils/timezone";
 import { sanitizeSyncedSettings } from "@/lib/validations/sync";
 
@@ -270,6 +271,31 @@ export class DbSyncRepository {
         }
 
         throw new Error(`Unknown action: ${action}`);
+    }
+
+    /** Points from sources other than missions. The server prices each kind; the client only reports it. */
+    async syncHasanahEvent(data: Record<string, unknown>, action: 'create' | 'update' | 'delete'): Promise<void> {
+        if (action === 'delete') return; // awards are never taken back by an event
+        const event = validateHasanahEvent({
+            kind: String(data.kind),
+            key: String(data.key),
+            amount: Number(data.amount),
+            localDate: String(data.localDate),
+        });
+        if (!event) throw new Error('invalid hasanah event');
+        if (this.outsideWindow(event.localDate, data.timezone)) return;
+
+        const evidence = {
+            source: event.source,
+            sourceId: event.sourceId,
+            hasanah: event.hasanah,
+            localDate: event.localDate,
+            occurredAt: new Date(`${event.localDate}T12:00:00Z`),
+            timezone: validTimezone(data.timezone),
+            countsForStreak: event.countsForStreak,
+        };
+        if (event.mode === 'raise') await raiseProgressionEvidence(this.userId, evidence);
+        else await processProgressionEvidenceBatch(this.userId, [evidence]);
     }
 
     async syncMission(data: MissionSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {

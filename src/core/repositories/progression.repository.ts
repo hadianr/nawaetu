@@ -206,3 +206,36 @@ export async function reverseProgressionEvidence(
     return { reversed: true };
   });
 }
+
+/**
+ * For awards that grow during the day (reading time): raise the stored amount and the total by the
+ * difference. If nothing is recorded yet this is an ordinary first award.
+ */
+export async function raiseProgressionEvidence(userId: string, evidence: ProgressionEvidence) {
+  const raised = await transactionDb.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${userId}))`);
+    const [existing] = await tx
+      .select({ id: hasanahLedger.id, amount: hasanahLedger.amount })
+      .from(hasanahLedger)
+      .where(and(eq(hasanahLedger.userId, userId), eq(hasanahLedger.source, evidence.source), eq(hasanahLedger.sourceId, evidence.sourceId)))
+      .limit(1);
+    if (!existing) return null;
+    const difference = evidence.hasanah - existing.amount;
+    if (difference <= 0) return { changed: false };
+
+    await tx.update(hasanahLedger).set({ amount: evidence.hasanah }).where(eq(hasanahLedger.id, existing.id));
+    const progress = await tx.query.userProgressState.findFirst({ where: eq(userProgressState.userId, userId) });
+    const next = (progress?.hasanahTotal ?? 0) + difference;
+    await tx
+      .insert(userProgressState)
+      .values({ userId, hasanahTotal: next, level: calculatePlayerStats(next, progress?.level ?? 1).level, levelRuleVersion: LEVEL_RULES_VERSION })
+      .onConflictDoUpdate({
+        target: userProgressState.userId,
+        set: { hasanahTotal: next, level: calculatePlayerStats(next, progress?.level ?? 1).level, updatedAt: new Date() },
+      });
+    return { changed: true };
+  });
+
+  if (raised === null) await processProgressionEvidenceBatch(userId, [evidence]);
+  return raised ?? { changed: true };
+}

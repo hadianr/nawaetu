@@ -44,6 +44,7 @@ vi.mock("@/core/repositories/db-sync.repository", () => {
             syncRamadhanDaily = record("syncRamadhanDaily");
             syncSirahProgress = record("syncSirahProgress");
             syncSirahBookmark = record("syncSirahBookmark");
+            syncHasanahEvent = record("syncHasanahEvent");
             async syncMissionsBatch(...args: unknown[]) {
                 h.calls.push({ method: "syncMissionsBatch", args });
                 if (h.failBatches) throw new Error("mission batch failed");
@@ -142,7 +143,7 @@ describe("POST /api/user/sync", () => {
         it("sends each type to its own repository method", async () => {
             const types: [string, string][] = [
                 ["intention", "syncIntention"], ["journal", "syncIntention"],
-                ["mission", "syncMission"], ["mission_progress", "syncMission"],
+                ["hasanah_event", "syncHasanahEvent"],
                 ["daily_activity", "syncDailyActivity"], ["dhikr_stats", "syncDailyActivity"],
                 ["setting", "syncSetting"], ["reading_state", "syncReadingState"], ["streak", "syncStreak"],
                 ["ramadhan_fasting", "syncRamadhanFasting"], ["ramadhan_taraweh", "syncRamadhanTaraweh"], ["ramadhan_daily", "syncRamadhanDaily"],
@@ -154,6 +155,31 @@ describe("POST /api/user/sync", () => {
             types.forEach(([, method], i) => {
                 expect(h.calls.some(call => call.method === method && (call.args[0] as { n: number }).n === i), `${types[i][0]} -> ${method}`).toBe(true);
             });
+        });
+    });
+
+    describe("mission entries", () => {
+        it("writes completions as one batch and sends an undo on its own", async () => {
+            const { body } = await result({ entries: [
+                { id: "c1", type: "mission", action: "create", data: { id: "tasbih_99", completedDate: "2026-11-11" } },
+                { id: "c2", type: "mission_progress", action: "update", data: { id: "tasbih_33", completedDate: "2026-11-11" } },
+                { id: "u1", type: "mission", action: "delete", data: { id: "fajr_prayer", completedDate: "2026-11-11" } },
+            ] });
+
+            expect(called("syncMissionsBatch")).toHaveLength(1);
+            expect(called("syncMissionsBatch")[0].args[0]).toHaveLength(2);
+            expect(called("syncMission").map((call) => call.args[1])).toEqual(["delete"]);
+            expect(body.synced.map((item) => item.id).sort()).toEqual(["c1", "c2", "u1"]);
+            expect(body.failed).toEqual([]);
+        });
+
+        it("fails the whole batch together when the write fails, so the client retries it", async () => {
+            h.failBatches = true;
+            const { body } = await result({ entries: [
+                { id: "c1", type: "mission", action: "create", data: { id: "tasbih_99" } },
+                { id: "c2", type: "mission", action: "create", data: { id: "tasbih_33" } },
+            ] });
+            expect(body.failed.map((item) => item.id)).toEqual(["c1", "c2"]);
         });
     });
 
