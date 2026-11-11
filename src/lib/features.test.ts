@@ -23,4 +23,12 @@ describe("Ramadan page switch", () => {
         expect(text).not.toContain("/ramadhan");
         expect(text).toContain("/hijri-calendar");
     });
+
+    it("leaves no link to the hidden page on the home page text", async () => {
+        const { renderToStaticMarkup } = await import("react-dom/server");
+        const { default: HomeSeoIntro } = await import("@/components/home/HomeSeoIntro");
+        const html = renderToStaticMarkup(HomeSeoIntro());
+        expect(html).not.toContain('href="/ramadhan"');
+        expect(html).toContain('href="/hijri-calendar"');
+    });
 });

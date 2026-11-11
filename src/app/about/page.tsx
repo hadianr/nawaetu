@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import Link from "next/link";
 import { Zap, Heart } from "lucide-react";
 import RewardsSupportCard from "@/components/RewardsSupportCard";
@@ -129,9 +130,9 @@ export default function AboutPage() {
                             </p>
                         </article>
                         <article className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5">
-                            <h3 className="mb-2 text-lg font-bold">Kalender dan panduan Ramadhan</h3>
+                            <h3 className="mb-2 text-lg font-bold">{RAMADHAN_PAGE_ENABLED ? "Kalender dan panduan Ramadhan" : "Kalender Hijriah"}</h3>
                             <p className="text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">
-                                <Link href="/hijri-calendar" className="underline underline-offset-4">Kalender Hijriah</Link> untuk melihat tanggal Islam dan puasa sunnah, serta <Link href="/ramadhan" className="underline underline-offset-4">panduan Ramadhan</Link> dengan pencatatan puasa dan qadha, progres khatam Al-Qur&apos;an, panduan Tarawih, makanan sunnah, dan kalkulator zakat fitrah.
+                                <Link href="/hijri-calendar" className="underline underline-offset-4">Kalender Hijriah</Link> untuk melihat tanggal Islam dan puasa sunnah{RAMADHAN_PAGE_ENABLED && <>, serta <Link href="/ramadhan" className="underline underline-offset-4">panduan Ramadhan</Link> dengan pencatatan puasa dan qadha, progres khatam Al-Qur&apos;an</>}, panduan Tarawih, makanan sunnah, dan kalkulator zakat fitrah.
                             </p>
                         </article>
                         <article className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5">
