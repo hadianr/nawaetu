@@ -19,6 +19,7 @@
  */
 
 import { lazy, Suspense, useEffect, useState, useRef } from "react";
+import { flushPendingIntention, savePendingIntention } from "@/lib/intention-pending";
 import Link from "next/link";
 import { ChevronRight, Book, CheckCircle2, Moon, Compass, Edit2, Calendar } from "lucide-react";
 
@@ -166,6 +167,20 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         checkTodayStatus();
     }, [userToken, selectedDate]);
 
+    // Send an intention that was written offline, when the app opens and when the connection returns.
+    useEffect(() => {
+        const flush = async () => {
+            const result = await flushPendingIntention();
+            if (result.sent && result.points > 0) {
+                addHasanah(result.points, result.date);
+                window.dispatchEvent(new CustomEvent("hasanah_updated"));
+            }
+        };
+        void flush();
+        window.addEventListener("online", flush);
+        return () => window.removeEventListener("online", flush);
+    }, []);
+
     const handleSetIntention = async (intentionText: string) => {
         if (!userToken) return;
 
@@ -216,9 +231,12 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 toast.error(data.error || (locale === 'id' ? 'Gagal menyimpan niat' : 'Failed to save intention'));
             }
         } catch {
-            setTodayData(todayData);
-            setShowIntentionPrompt(true);
-            toast.error(locale === 'id' ? 'Terjadi kesalahan' : 'An error occurred');
+            // The request did not get through (offline). Keep what the user wrote and send it when the
+            // connection returns, instead of throwing it away after having said it was saved.
+            savePendingIntention({ userToken, text: intentionText, date: selectedDate });
+            toast.info(locale === 'id'
+                ? 'Niat tersimpan di perangkat dan akan dikirim saat online'
+                : 'Intention saved on this device and will be sent when you are online');
         }
     };
 

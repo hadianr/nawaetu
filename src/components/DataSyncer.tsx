@@ -32,6 +32,7 @@ import { syncQueue } from "@/lib/sync-queue";
 import { getSyncUserId } from "@/lib/sync/award";
 import { pullAndApply, pullBookmarksIfChanged } from "@/lib/sync/pull";
 import { seedQueueFromLocal, startSyncTracker } from "@/lib/sync/tracker";
+import { claimGuestIntentions } from "@/lib/sync/claim";
 
 /** Wait this long after the last change before sending, so a burst of taps is one request. */
 const SEND_DELAY_MS = 2000;
@@ -136,6 +137,7 @@ export default function DataSyncer() {
             seedQueueFromLocal(userId);
             stopTracker = startSyncTracker(userId, onQueued);
             if (syncQueue.getPendingEntries(userId).length > 0) onQueued();
+            void claimGuestIntentions(userId);
             void pullIfDue(true);
         };
 
