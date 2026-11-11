@@ -17,10 +17,10 @@
  */
 
 import { localDateIn } from "@/lib/utils/timezone";
-import { intentionRateLimiter } from "@/lib/rate-limit";
+import { intentionRateLimiter, anonymousUserRateLimiter } from "@/lib/rate-limit";
 import { NextRequest, NextResponse } from "next/server";
 import { db, checkConnection } from "@/db";
-import { intentions, users, pushSubscriptions } from "@/db/schema";
+import { intentions, users } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 import { logger } from "@/lib/logger";
@@ -106,20 +106,8 @@ export async function POST(req: NextRequest) {
         }
 
         async function getUserIdFromToken(token: string): Promise<string> {
-            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token);
-
-            // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
-            if (!isUuid) {
-                const [subscription] = await db
-                    .select()
-                    .from(pushSubscriptions)
-                    .where(eq(pushSubscriptions.token, token))
-                    .limit(1);
-
-                if (subscription && subscription.userId) {
-                    return subscription.userId;
-                }
-            }
+            // Identity is the session or the anonymous account for this device token. A push token is never
+            // resolved to a real account: it outlives logout, so doing so exposed the account to the device.
 
             // Anonymous user
             const anonymousEmail = `${token}@nawaetu.local`;
@@ -134,6 +122,11 @@ export async function POST(req: NextRequest) {
             }
 
             // Create new anonymous user
+            const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+            if (!(await anonymousUserRateLimiter.check(`anon-user:${ip}`)).success) {
+                throw new Error("ANON_LIMIT");
+            }
+
             const [newUser] = await db
                 .insert(users)
                 .values({
@@ -237,6 +230,9 @@ export async function POST(req: NextRequest) {
             },
         });
     } catch (error: unknown) {
+        if (error instanceof Error && error.message === "ANON_LIMIT") {
+            return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
+        }
         logger.error("Error in POST /api/intentions/daily", error, { route: "/api/intentions/daily" });
 
         return NextResponse.json(
