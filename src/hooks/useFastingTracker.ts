@@ -12,7 +12,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -43,6 +43,26 @@ function loadFromStorage(): AllFastingLogs {
 function saveToStorage(logs: AllFastingLogs): void {
     const storage = getStorageService();
     storage.set(STORAGE_KEYS.RAMADHAN_FASTING_LOG, JSON.stringify(logs));
+}
+
+// Edits the server has not accepted yet. Kept in storage so a reload or a closed tab cannot lose them.
+function loadPending(): Set<string> {
+    try {
+        const raw = getStorageService().getOptional<unknown>(STORAGE_KEYS.RAMADHAN_FASTING_PENDING);
+        const list = typeof raw === "string" ? JSON.parse(raw) : raw;
+        return new Set(Array.isArray(list) ? list.filter((item): item is string => typeof item === "string") : []);
+    } catch {
+        return new Set();
+    }
+}
+
+function savePending(pending: Set<string>): void {
+    getStorageService().set(STORAGE_KEYS.RAMADHAN_FASTING_PENDING, [...pending]);
+}
+
+async function postOrThrow(url: string, method: "POST" | "PATCH", body: unknown): Promise<void> {
+    const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!res.ok) throw new Error(`${method} ${url} failed with ${res.status}`);
 }
 
 function loadMadzhabPref(): Madzhab | null {
@@ -95,13 +115,44 @@ function computeStats(yearLog: FastingYearLog): FastingYearStats {
     return stats;
 }
 
+let flushing = false;
+
+async function flushPending() {
+    if (flushing) return;
+    flushing = true;
+    try {
+        for (const key of [...loadPending()]) {
+            const isQadha = key.startsWith("qadha:");
+            const [yr, dy] = key.replace("qadha:", "").split("-").map(Number);
+            const dayLog = loadFromStorage()[makeYearKey(yr)]?.[makeDayKey(dy)];
+            try {
+                if (dayLog) {
+                    if (isQadha) await postOrThrow("/api/ramadhan/fasting/qadha", "PATCH", { hijriYear: yr, hijriDay: dy });
+                    else await postOrThrow("/api/ramadhan/fasting", "POST", {
+                        hijriYear: yr, hijriDay: dy, status: dayLog.status, consequence: dayLog.consequence,
+                        madzhab: dayLog.madzhab, note: dayLog.note,
+                    });
+                }
+            } catch (error) {
+                // Offline or a server error: keep it pending and stop; the next flush retries in order.
+                console.error(error);
+                return;
+            }
+            const remaining = loadPending();
+            remaining.delete(key);
+            savePending(remaining);
+        }
+    } finally {
+        flushing = false;
+    }
+}
+
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useFastingTracker() {
     const { data: session } = useSession();
     const [allLogs, setAllLogs] = useState<AllFastingLogs>({});
     const [defaultMadzhab, setDefaultMadzhab] = useState<Madzhab | null>(null);
-    const pendingSyncRef = useRef<Set<string>>(new Set()); // "hijriYear-hijriDay" keys
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -111,11 +162,13 @@ export function useFastingTracker() {
         });
     }, []);
 
-    // Sync dirty records to server when session becomes available
+    // Send unsent edits when a session exists, and again whenever the connection returns.
     useEffect(() => {
-        if (!session?.user || pendingSyncRef.current.size === 0) return;
-        syncDirtyToServer();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (!session?.user) return;
+        void flushPending();
+        const onOnline = () => { void flushPending(); };
+        window.addEventListener("online", onOnline);
+        return () => window.removeEventListener("online", onOnline);
     }, [session?.user]);
 
     // ── Core actions ────────────────────────────────────────────────────────
@@ -142,25 +195,20 @@ export function useFastingTracker() {
                 qadhaDone: false,
             };
 
-            setAllLogs((prev) => {
-                const next: AllFastingLogs = {
-                    ...prev,
-                    [yearKey]: {
-                        ...(prev[yearKey] ?? {}),
-                        [dayKey]: dayLog,
-                    },
-                };
-                saveToStorage(next);
-                return next;
-            });
+            // Write storage first: the flush below reads the log back from it.
+            const stored = loadFromStorage();
+            const next: AllFastingLogs = {
+                ...stored,
+                [yearKey]: { ...(stored[yearKey] ?? {}), [dayKey]: dayLog },
+            };
+            saveToStorage(next);
+            setAllLogs(next);
 
-            // Mark for server sync
-            pendingSyncRef.current.add(`${hijriYear}-${hijriDay}`);
-            if (session?.user) {
-                // Fire-and-forget sync
-                syncDayToServer(hijriYear, hijriDay, status, consequence, effectiveMadzhab, note).catch(console.error);
-                pendingSyncRef.current.delete(`${hijriYear}-${hijriDay}`);
-            }
+            // Stays pending until the server answers 2xx; the next flush retries it.
+            const pending = loadPending();
+            pending.add(`${hijriYear}-${hijriDay}`);
+            savePending(pending);
+            if (session?.user) void flushPending();
         },
         [defaultMadzhab, session?.user]
     );
@@ -171,28 +219,20 @@ export function useFastingTracker() {
             const yearKey = makeYearKey(hijriYear);
             const dayKey = makeDayKey(hijriDay);
 
-            setAllLogs((prev) => {
-                const existing = prev[yearKey]?.[dayKey];
-                if (!existing) return prev;
-                const next: AllFastingLogs = {
-                    ...prev,
-                    [yearKey]: {
-                        ...(prev[yearKey] ?? {}),
-                        [dayKey]: { ...existing, qadhaDone: true },
-                    },
-                };
-                saveToStorage(next);
-                return next;
-            });
+            const stored = loadFromStorage();
+            const existing = stored[yearKey]?.[dayKey];
+            if (!existing) return;
+            const next: AllFastingLogs = {
+                ...stored,
+                [yearKey]: { ...(stored[yearKey] ?? {}), [dayKey]: { ...existing, qadhaDone: true } },
+            };
+            saveToStorage(next);
+            setAllLogs(next);
 
-            // Sync to server
-            if (session?.user) {
-                fetch("/api/ramadhan/fasting/qadha", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ hijriYear, hijriDay }),
-                }).catch(console.error);
-            }
+            const pending = loadPending();
+            pending.add(`qadha:${hijriYear}-${hijriDay}`);
+            savePending(pending);
+            if (session?.user) void flushPending();
         },
         [session?.user]
     );
@@ -254,32 +294,6 @@ export function useFastingTracker() {
     }, []);
 
     // ── Server sync helpers ──────────────────────────────────────────────────
-
-    async function syncDayToServer(
-        hijriYear: number,
-        hijriDay: number,
-        status: FastingStatus,
-        consequence: string,
-        madzhab?: Madzhab | null,
-        note?: string
-    ) {
-        await fetch("/api/ramadhan/fasting", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ hijriYear, hijriDay, status, consequence, madzhab, note }),
-        });
-    }
-
-    async function syncDirtyToServer() {
-        const dirty = [...pendingSyncRef.current];
-        for (const key of dirty) {
-            const [yr, dy] = key.split("-").map(Number);
-            const dayLog = getDayLog(yr, dy);
-            if (!dayLog) continue;
-            await syncDayToServer(yr, dy, dayLog.status, dayLog.consequence, dayLog.madzhab, dayLog.note);
-            pendingSyncRef.current.delete(key);
-        }
-    }
 
     return {
         allLogs,
