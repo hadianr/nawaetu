@@ -160,6 +160,14 @@ describe("sync engine", () => {
             expect(fetch).toHaveBeenCalledTimes(1);
         });
 
+        it("does not claim everything is sent while an entry has failed for good", async () => {
+            const id = syncQueue.addToQueue("bookmark", "create", { surahId: 1, verseId: 1 }, "u1");
+            for (let attempt = 0; attempt <= 5; attempt++) syncQueue.recordFailure(id, "refused");
+
+            expect(await drainSyncQueue("u1")).toMatchObject({ ok: false, sent: 0 });
+            expect(fetch).not.toHaveBeenCalled();
+        });
+
         it("never sends another account's changes", async () => {
             syncQueue.addToQueue("bookmark", "create", { surahId: 1, verseId: 1 }, "alice");
             await drainSyncQueue("bob");
