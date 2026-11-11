@@ -218,7 +218,7 @@ Measured or counted on branch `fix/sync-account-hardening`. Counts of database s
 **Still open**
 
 - **1.5:** `assetlinks.json` needs the Android signing fingerprint.
-- **4.5 and 4.7:** qadha history in the pull, and the taraweh qiyam flag (the server has no column for it).
+- **4.5 done.** **4.7 dropped by the owner (11 Nov 2026):** the taraweh qiyam flag stays on the device and is not synced; the server has no column for it and none will be added.
 - **4.9:** reload on reconnect is left on. With the queue, no unsent change can be lost by it, but it still discards text being typed.
 - **Reflection points:** the client adds 25 or 50, the server says 5. A decision is needed before it goes into the ledger.
 - **Legacy upload (3.6):** the server still accepts the old full-state body so cached clients keep working. Remove it one release after this ships.
