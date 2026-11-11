@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergeBookmarks, mergeMissions, mergeTodayActivity, missionKey, bookmarkKey } from "./merge";
+import { mergeBookmarks, mergeFasting, mergeMissions, mergeTodayActivity, missionKey, bookmarkKey } from "./merge";
 
 const none = { upserts: new Set<string>(), deletes: new Set<string>() };
 const TODAY = "2026-11-11";
@@ -80,5 +80,29 @@ describe("mergeTodayActivity", () => {
     it("changes nothing when the server has nothing for today", () => {
         const local = { date: TODAY, quranAyat: 1, tasbihCount: 1, prayersLogged: [] };
         expect(mergeTodayActivity(local, [], TODAY)).toBe(local);
+    });
+});
+
+describe("mergeFasting", () => {
+    const row = (day: number, status = "fasting", qadhaDone = false) => ({
+        hijriYear: 1447, hijriDay: day, status, consequence: "none", madzhab: null, note: null, qadhaDone,
+    });
+
+    it("brings in days logged on another device and keeps this device's own days", () => {
+        const local = { "1447": { "01": { status: "fasting", consequence: "none", qadhaDone: false } } };
+        const merged = mergeFasting(local, [row(2, "sick")], new Set());
+        expect(Object.keys(merged["1447"]).sort()).toEqual(["01", "02"]);
+        expect(merged["1447"]["02"]).toMatchObject({ status: "sick" });
+    });
+
+    it("does not overwrite a day edited here that is still waiting to be sent", () => {
+        const local = { "1447": { "03": { status: "fasting", consequence: "none", qadhaDone: false } } };
+        expect(mergeFasting(local, [row(3, "sick")], new Set(["1447-3"]))["1447"]["03"].status).toBe("fasting");
+        expect(mergeFasting(local, [row(3, "fasting", true)], new Set(["qadha:1447-3"]))["1447"]["03"].qadhaDone).toBe(false);
+    });
+
+    it("takes qadha completed elsewhere", () => {
+        const local = { "1447": { "04": { status: "not_fasting", consequence: "qadha", qadhaDone: false } } };
+        expect(mergeFasting(local, [row(4, "not_fasting", true)], new Set())["1447"]["04"].qadhaDone).toBe(true);
     });
 });

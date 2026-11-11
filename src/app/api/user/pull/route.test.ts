@@ -13,7 +13,7 @@ vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn() } }));
 vi.mock("@/lib/db-sequential", () => ({ inSequence: async (queries: unknown[]) => Promise.all(queries) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), desc: vi.fn(), eq: vi.fn(), gte: vi.fn(), sql: vi.fn() }));
 vi.mock("@/db/schema", () => ({
-    bookmarks: {}, dailyActivities: {}, userCompletedMissions: {}, userProgressState: {}, userStreakDays: {}, userStreakState: {}, users: {},
+    bookmarks: {}, dailyActivities: {}, userCompletedMissions: {}, userProgressState: {}, userStreakDays: {}, userStreakState: {}, users: {}, ramadhanFastingLog: {},
 }));
 vi.mock("@/db", () => {
     const read = (name: string, value: unknown) => ({ findFirst: async () => { h.reads.push(name); return value; }, findMany: async () => { h.reads.push(name); return value; } });
@@ -26,6 +26,7 @@ vi.mock("@/db", () => {
                 userCompletedMissions: read("missions", [{ missionId: "fajr_prayer", completedDate: "2026-11-11", hasanahEarned: 75 }]),
                 dailyActivities: read("activity", []),
                 bookmarks: read("bookmarks", [{ key: "2:255" }]),
+                ramadhanFastingLog: read("fasting", [{ hijriYear: 1447, hijriDay: 3, status: "fasting" }]),
                 users: read("profile", { isMuhsinin: true, totalInfaq: 50000 }),
             },
             select: () => ({ from: () => ({ where: async () => { h.reads.push("fingerprint"); return [{ count: 3, latest: "2026-11-11T00:00:00Z" }]; } }) }),
@@ -79,6 +80,12 @@ describe("GET /api/user/pull", () => {
         const { body } = await call("?parts=profile");
         expect(h.reads).toEqual(["profile"]);
         expect(body.profile).toEqual({ isMuhsinin: true, totalInfaq: 50000 });
+    });
+
+    it("returns fasting days for the qadha history", async () => {
+        const { body } = await call("?parts=fasting");
+        expect(h.reads).toEqual(["fasting"]);
+        expect(body.fasting).toHaveLength(1);
     });
 
     it("ignores part names it does not know", async () => {

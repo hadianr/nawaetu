@@ -126,7 +126,7 @@ export default function DataSyncer() {
             // Send our own changes first, so the server's answer already includes them.
             const sent = await syncDataRef.current({ silent: true });
             if (!sent.success) return;
-            await pullAndApply(userId, ["progress", "missions", "activity", "profile"]);
+            await pullAndApply(userId, ["progress", "missions", "activity", "profile", "fasting"]);
             await pullBookmarksIfChanged(userId);
         };
 
