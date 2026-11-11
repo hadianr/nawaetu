@@ -110,7 +110,8 @@ describe("rebuildStreakDetailed", () => {
 
     expect(detailed.frozenDates).toEqual([day(8)]);
     expect(detailed.state).toEqual(rebuildStreakFromHistory(dates));
-    expect(detailed.state.currentDays).toBe(9);
+    // The frozen day keeps the streak alive but is not itself a day of activity: 7 days, then the 9th makes 8.
+    expect(detailed.state.currentDays).toBe(8);
   });
 
   it("reports nothing when no freeze was available or no day was missed", () => {
