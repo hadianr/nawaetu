@@ -79,6 +79,7 @@ vi.mock('drizzle-orm', () => ({
     and: vi.fn(),
     or: vi.fn(),
     desc: vi.fn(),
+    ne: vi.fn(),
     sql: vi.fn(),
 }))
 

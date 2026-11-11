@@ -23,6 +23,8 @@ import { transactions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { paymentRateLimiter } from "@/lib/rate-limit";
+import { isValidDonationAmount } from "@/lib/payments";
 
 // Seconds. Mayar call; failing early on a money flow does more harm than waiting.
 export const maxDuration = 60;
@@ -36,10 +38,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        if (!(await paymentRateLimiter.check(`payment:${session.user.email}`)).success) {
+            return NextResponse.json({ error: "Too many payment attempts. Please wait a few minutes." }, { status: 429 });
+        }
+
         const { amount } = await req.json();
 
-        if (!amount || amount < 5000) {
-            return NextResponse.json({ error: "Minimum donation is Rp 5.000" }, { status: 400 });
+        if (!isValidDonationAmount(amount)) {
+            return NextResponse.json({ error: "Donation must be a whole amount from Rp 5.000 to Rp 100.000.000" }, { status: 400 });
         }
 
         // 1. Create a single payment request (Mayar API v2)
