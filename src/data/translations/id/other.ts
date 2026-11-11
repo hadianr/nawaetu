@@ -142,6 +142,9 @@ export const otherID = {
     syncHydrateLoading: "Sedang mengambil data lama kamu dari server...",
     syncHydrateSuccess: "Sip! Data akun lamamu sudah kembali. Yuk lanjut ibadah!",
     syncHydrateInfo: "Data tamu di HP ini telah kami ganti dengan data akun utamamu.",
+    syncUnsyncedNotice: "Aktivitasmu sejak {date} belum tersinkron ke akun. Buka aplikasi saat online agar tidak hilang.",
+    syncUnsyncedUrgent: "Segera sinkronkan! Aktivitas sejak {date} hanya bisa disimpan ke akun {days} hari lagi. Buka aplikasi saat online.",
+    syncOldDataKept: "Aktivitas yang lebih dari 30 hari tidak bisa disinkronkan, tetapi tetap tersimpan di HP ini.",
 
     profileAuthTitle: "Simpan Progress Ibadahmu",
     profileAuthDesc: "Login untuk menyimpan data streak, bookmark, dan status donatur secara permanen di cloud.",

@@ -57,3 +57,31 @@ describe('sanitizeSyncedSettings', () => {
         })).toEqual({ theme: 'blossom', calculationMethod: 20, adhanPreferences: { fajr: true } });
     });
 });
+
+describe('DbSyncRepository sync window', () => {
+    beforeEach(() => {
+        captured.rows = [];
+        captured.evidence = [];
+    });
+
+    it('refuses missions older than 30 days or dated in the future, and counts them', async () => {
+        const today = new Date().toISOString().slice(0, 10);
+        const day = (offset: number) => {
+            const d = new Date(`${today}T00:00:00Z`);
+            d.setUTCDate(d.getUTCDate() + offset);
+            return d.toISOString().slice(0, 10);
+        };
+        const repo = new DbSyncRepository('u1');
+
+        await repo.syncMissionsBatch([
+            { id: 'tasbih_99', completedAt: day(0), hasanahEarned: 30 },
+            { id: 'tasbih_99', completedAt: day(-30), hasanahEarned: 30 },
+            { id: 'tasbih_99', completedAt: day(-31), hasanahEarned: 30 },
+            { id: 'tasbih_99', completedAt: day(5), hasanahEarned: 30 },
+            { id: 'tasbih_99', completedAt: '2030-01-01', hasanahEarned: 30 },
+        ]);
+
+        expect(captured.rows.map((row) => row.completedDate)).toEqual([day(0), day(-30)]);
+        expect(repo.rejected).toBe(3);
+    });
+});

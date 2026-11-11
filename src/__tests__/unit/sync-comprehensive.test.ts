@@ -85,7 +85,7 @@ describe('DbSyncRepository - Full Domain Entity Coverage', () => {
         const missionData = {
             id: 'quran_10_ayat',
             hasanahEarned: 50,
-            completedAt: '2026-08-18T10:00:00.000Z',
+            completedAt: new Date().toISOString(),
         };
 
         const resultId = await repo.syncMission(missionData, 'create');
