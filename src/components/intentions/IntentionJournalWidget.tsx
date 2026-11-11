@@ -57,7 +57,7 @@ function getOrCreateAnonymousId(): string {
         }
     } catch {
         console.warn("localStorage denied in getOrCreateAnonymousId");
-        anonymousId = `anon_mem_${Date.now()}`;
+        anonymousId = `anon_mem_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
     }
     return anonymousId || "";
 }
@@ -88,7 +88,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                 || window.localStorage.getItem("fcm_token")
                 || getOrCreateAnonymousId();
         } catch {
-            return "anon_fallback";
+            // Storage is blocked: a fixed value here would put every such guest in one shared journal.
+            return `anon_mem_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
         }
     });
 

@@ -85,6 +85,7 @@ vi.mock('@/db/schema', () => ({
 
 
 import { POST } from './route';
+import { pushSubscriptions } from '@/db/schema';
 
 describe('POST /api/intentions/daily', () => {
   // Mock environment variables using vi.stubEnv
@@ -118,13 +119,10 @@ describe('POST /api/intentions/daily', () => {
 
     // Mock sequence of DB calls
 
-    // 1. Subscription check (limit) -> [] (No subscription)
-    mockChain.limit.mockResolvedValueOnce([]);
-
-    // 2. User check (limit) -> [{ id: userId }] (Existing anonymous user)
+    // 1. User check (limit) -> [{ id: userId }] (Existing anonymous user)
     mockChain.limit.mockResolvedValueOnce([{ id: userId }]);
 
-    // 3. Intention check (limit) -> [] (No intention for today yet)
+    // 2. Intention check (limit) -> [] (No intention for today yet)
     mockChain.limit.mockResolvedValueOnce([]);
 
     // 4. Insert intention (returning)
@@ -163,6 +161,8 @@ describe('POST /api/intentions/daily', () => {
 
     expect(data.success).toBe(true);
     expect(data.data.current_streak).toBe(3);
+    // A device token must never be looked up as a login: push subscriptions are not consulted.
+    expect(mockChain.from.mock.calls.flat()).not.toContain(pushSubscriptions);
   });
 
   it("counts an intention written at 04:30 WIB as today's, not as backdated", async () => {
@@ -173,7 +173,6 @@ describe('POST /api/intentions/daily', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date('2026-11-10T21:30:00Z'));
     try {
-      mockChain.limit.mockResolvedValueOnce([]);
       mockChain.limit.mockResolvedValueOnce([{ id: 'user-1' }]);
       mockChain.limit.mockResolvedValueOnce([]);
       mockChain.returning.mockResolvedValueOnce([{ id: 'int-1', intentionDate: '2026-11-11', intentionText: 'Test' }]);
@@ -198,6 +197,22 @@ describe('POST /api/intentions/daily', () => {
       vi.useRealTimers();
       if (originalTz === undefined) delete process.env.TZ; else process.env.TZ = originalTz;
     }
+  });
+
+  it('refuses to mint anonymous accounts without limit from one address', async () => {
+    const { anonymousUserRateLimiter } = await import('@/lib/rate-limit');
+    for (let i = 0; i < 10; i++) await anonymousUserRateLimiter.check('anon-user:203.0.113.9');
+    mockChain.limit.mockResolvedValueOnce([]); // no existing anonymous user for this token
+
+    const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
+      method: 'POST',
+      headers: { 'x-forwarded-for': '203.0.113.9' },
+      body: JSON.stringify({ user_token: 'brand-new-token', intention_text: 'Test' }),
+    });
+    const result = (await POST(req)) as unknown as { status: number; body: DailyResponseBody };
+
+    expect(result.status).toBe(429);
+    expect(mockChain.values).not.toHaveBeenCalled();
   });
 
   it('should NOT expose error details in development environment', async () => {

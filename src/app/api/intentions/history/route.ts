@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { inSequence } from "@/lib/db-sequential";
-import { intentions, users, pushSubscriptions } from "@/db/schema";
+import { intentions, users } from "@/db/schema";
 import { eq, desc, sql, and } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 
@@ -43,8 +43,6 @@ export async function GET(req: NextRequest) {
         let streak = 0;
         let longestStreak = 0;
 
-        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
-
         if (session && session.user && session.user.id) {
             userId = session.user.id;
             const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -53,23 +51,8 @@ export async function GET(req: NextRequest) {
                 longestStreak = user.intentionStreakLongest || 0;
             }
         } else {
-            // 1. Try to find in pushSubscriptions (FCM Token) if not UUID format
-            if (!isUuid) {
-                const [subscription] = await db
-                    .select()
-                    .from(pushSubscriptions)
-                    .where(eq(pushSubscriptions.token, user_token))
-                    .limit(1);
-
-                if (subscription && subscription.userId) {
-                    userId = subscription.userId;
-                    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-                    if (user) {
-                        streak = user.intentionStreakCurrent || 0;
-                        longestStreak = user.intentionStreakLongest || 0;
-                    }
-                }
-            }
+            // Identity is the session or the anonymous account for this device token. A push token is never
+            // resolved to a real account: it outlives logout, so doing so exposed the account to the device.
 
             // 2. Try to find anonymous user
             if (!userId) {

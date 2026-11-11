@@ -18,7 +18,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { intentions, users, pushSubscriptions } from "@/db/schema";
+import { intentions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 
@@ -76,19 +76,9 @@ export async function POST(req: NextRequest) {
             userId = session.user.id;
         } else {
             // 1. Try to find in pushSubscriptions (FCM Token)
-            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_token);
 
-            if (!isUuid) {
-                const [subscription] = await db
-                    .select()
-                    .from(pushSubscriptions)
-                    .where(eq(pushSubscriptions.token, user_token))
-                    .limit(1);
-
-                if (subscription && subscription.userId) {
-                    userId = subscription.userId;
-                }
-            }
+            // Identity is the session or the anonymous account for this device token. A push token is never
+            // resolved to a real account: it outlives logout, so doing so exposed the account to the device.
 
             if (!userId) {
                 // 2. Try to find anonymous user

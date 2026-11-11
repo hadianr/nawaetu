@@ -196,6 +196,15 @@ export const paymentRateLimiter = new UnifiedRateLimiter({
     inMemoryMaxTokens: 500,
 });
 
+/** Creating anonymous guest accounts: 10 per hour per IP, so tokens cannot be minted without limit. */
+export const anonymousUserRateLimiter = new UnifiedRateLimiter({
+    prefix: 'rl:anon-user',
+    requests: 10,
+    window: '1 h',
+    inMemoryInterval: 60 * 60 * 1000,
+    inMemoryMaxTokens: 1000,
+});
+
 /** Intention writes by a device token (no account): 20 per minute per token or user. */
 export const intentionRateLimiter = new UnifiedRateLimiter({
     prefix: 'rl:intention',
