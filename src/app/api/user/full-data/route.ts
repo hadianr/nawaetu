@@ -34,6 +34,7 @@ import {
 } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { calculatePlayerStats } from "@/lib/habits/progression";
+import { syncRateLimiter } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
 
@@ -46,6 +47,9 @@ export async function GET() {
         }
 
         const userId = session.user.id;
+        if (!(await syncRateLimiter.check(`full-data:${userId}`)).success) {
+            return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+        }
 
         // Parallel fetch for performance
         const [
