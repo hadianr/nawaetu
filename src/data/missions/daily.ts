@@ -292,6 +292,8 @@ export function resolveRitualForGender(baseMission: Mission, gender: Gender): Mi
     return {
         ...baseMission,
         gender: gender,
+        // For women, praying on time at home is the better prayer (same dalil below), so it pays like congregation does for men.
+        ...(gender === 'female' && { hasanahReward: 75 }),
         description: isMale
             ? `Tunaikan ${baseMission.title} (Utama: Berjamaah)`
             : `Tunaikan ${baseMission.title} tepat waktu`,
