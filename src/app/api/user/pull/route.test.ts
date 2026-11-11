@@ -13,7 +13,7 @@ vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn() } }));
 vi.mock("@/lib/db-sequential", () => ({ inSequence: async (queries: unknown[]) => Promise.all(queries) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), desc: vi.fn(), eq: vi.fn(), gte: vi.fn(), sql: vi.fn() }));
 vi.mock("@/db/schema", () => ({
-    bookmarks: {}, dailyActivities: {}, userCompletedMissions: {}, userProgressState: {}, userStreakDays: {}, userStreakState: {},
+    bookmarks: {}, dailyActivities: {}, userCompletedMissions: {}, userProgressState: {}, userStreakDays: {}, userStreakState: {}, users: {},
 }));
 vi.mock("@/db", () => {
     const read = (name: string, value: unknown) => ({ findFirst: async () => { h.reads.push(name); return value; }, findMany: async () => { h.reads.push(name); return value; } });
@@ -26,6 +26,7 @@ vi.mock("@/db", () => {
                 userCompletedMissions: read("missions", [{ missionId: "fajr_prayer", completedDate: "2026-11-11", hasanahEarned: 75 }]),
                 dailyActivities: read("activity", []),
                 bookmarks: read("bookmarks", [{ key: "2:255" }]),
+                users: read("profile", { isMuhsinin: true, totalInfaq: 50000 }),
             },
             select: () => ({ from: () => ({ where: async () => { h.reads.push("fingerprint"); return [{ count: 3, latest: "2026-11-11T00:00:00Z" }]; } }) }),
         },
@@ -72,6 +73,12 @@ describe("GET /api/user/pull", () => {
         expect(h.reads).toEqual(["fingerprint"]);
         expect(body.bookmarkFingerprint).toMatch(/^3:\d+$/);
         expect(body).not.toHaveProperty("bookmarks");
+    });
+
+    it("returns premium status alone for a cheap refresh after a donation", async () => {
+        const { body } = await call("?parts=profile");
+        expect(h.reads).toEqual(["profile"]);
+        expect(body.profile).toEqual({ isMuhsinin: true, totalInfaq: 50000 });
     });
 
     it("ignores part names it does not know", async () => {

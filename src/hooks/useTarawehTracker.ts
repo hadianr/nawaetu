@@ -1,3 +1,4 @@
+import { queueSyncEntry } from "@/lib/sync/award";
 import { useState, useEffect, useCallback } from "react";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
@@ -159,20 +160,8 @@ export function useTarawehTracker(hijriYear: number) {
         // 2. Background POST — always POST on any explicit user action,
         // including cancel (choice: null), so DB reflects the latest state.
         // This allows the cancel use case to work correctly after refresh.
-        if (status === "authenticated") {
-            fetch("/api/ramadhan/taraweh", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    hijriYear,
-                    hijriDay: day,
-                    choice: finalEntry.choice,
-                    location: finalEntry.location,
-                    isQiyamulLail: finalEntry.isQiyam,
-                }),
-            }).catch(e => console.error("[useTarawehTracker] POST failed", e));
-        }
-    }, [hijriYear, status]);
+        queueSyncEntry("ramadhan_taraweh", "update", { hijriYear, hijriDay: day, choice: finalEntry.choice, location: finalEntry.location });
+    }, [hijriYear]);
 
     return { log, updateDay };
 }

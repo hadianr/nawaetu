@@ -2,8 +2,11 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 const captured: { rows: Array<Record<string, unknown>>; evidence: Array<Record<string, unknown>> } = { rows: [], evidence: [] };
 
+const gender = vi.hoisted(() => ({ value: null as string | null }));
+
 vi.mock('@/db', () => ({
     db: {
+        query: { users: { findFirst: async () => ({ gender: gender.value }) } },
         delete: () => ({ where: async () => undefined }),
         insert: () => ({
             values: (v: Array<Record<string, unknown>>) => {
@@ -20,7 +23,7 @@ vi.mock('@/core/repositories/progression.repository', () => ({
     raiseProgressionEvidence: vi.fn(async () => ({ changed: true })),
 }));
 
-import { DbSyncRepository } from './db-sync.repository';
+import { DbSyncRepository, genderAdjustedReward } from './db-sync.repository';
 import { raiseProgressionEvidence, reverseProgressionEvidence } from '@/core/repositories/progression.repository';
 
 describe('DbSyncRepository mission day', () => {
@@ -99,7 +102,9 @@ describe('DbSyncRepository daily activity merge', () => {
 
         const { db } = await import('@/db');
         const upsert = { values: vi.fn().mockReturnThis(), onConflictDoUpdate: vi.fn().mockResolvedValue(undefined) };
-        (db as unknown as { insert: () => typeof upsert }).insert = () => upsert;
+        const mutableDb = db as unknown as { insert: () => unknown };
+        const originalInsert = mutableDb.insert;
+        mutableDb.insert = () => upsert;
 
         await new DbSyncRepository('u1').syncDailyActivity(
             { date: '2026-11-11', quranAyat: 3, tasbihCount: 33, prayersLogged: ['fajr'] },
@@ -109,6 +114,7 @@ describe('DbSyncRepository daily activity merge', () => {
         const fragments = sqlMock.mock.calls.map((call) => (call[0] as unknown as string[]).join('?'));
         expect(fragments.some((text) => text.includes('GREATEST') && text.includes('?'))).toBe(true);
         expect(fragments.some((text) => text.includes('jsonb_agg(DISTINCT prayer)'))).toBe(true);
+        mutableDb.insert = originalInsert; // the mock is shared with the tests that follow
         const merged = upsert.onConflictDoUpdate.mock.calls[0][0].set;
         expect(merged).not.toHaveProperty('prayersLogged', ['fajr']);
     });
@@ -162,5 +168,36 @@ describe('DbSyncRepository hasanah events', () => {
         await repo.syncHasanahEvent({ kind: 'taraweh', key: '1447-5', amount: 15, localDate: '2020-01-01' }, 'create');
         expect(captured.evidence).toHaveLength(0);
         expect(repo.rejected).toBe(1);
+    });
+});
+
+describe('prayer reward by gender (decided by the server)', () => {
+    beforeEach(() => {
+        captured.rows = [];
+        captured.evidence = [];
+    });
+    const today = () => new Date().toISOString().slice(0, 10);
+
+    it('pays a woman the full amount even when an older app reports the "alone" amount', async () => {
+        gender.value = 'female';
+        await new DbSyncRepository('u1').syncMissionsBatch([{ id: 'fajr_prayer', completedAt: today(), hasanahEarned: 25 }]);
+        expect(captured.rows[0]).toMatchObject({ hasanahEarned: 75 });
+        expect(captured.evidence[0]).toMatchObject({ hasanah: 75 });
+    });
+
+    it('keeps the amount a man reports: alone 25, congregation 75', async () => {
+        gender.value = 'male';
+        await new DbSyncRepository('u1').syncMissionsBatch([
+            { id: 'fajr_prayer', completedAt: today(), hasanahEarned: 25 },
+            { id: 'dhuhr_prayer', completedAt: today(), hasanahEarned: 75 },
+        ]);
+        expect(captured.rows.map((row) => row.hasanahEarned)).toEqual([25, 75]);
+    });
+
+    it('maps the late (half) amounts the same way and leaves other missions alone', () => {
+        expect(genderAdjustedReward('fajr_prayer', 12, 'female')).toBe(37);
+        expect(genderAdjustedReward('fajr_prayer', 37, 'female')).toBe(37);
+        expect(genderAdjustedReward('tasbih_99', 25, 'female')).toBe(25);
+        expect(genderAdjustedReward('fajr_prayer', 25, null)).toBe(25);
     });
 });

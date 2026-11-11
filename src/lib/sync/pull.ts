@@ -9,7 +9,7 @@ import {
 } from "./merge";
 import { resetTrackerSnapshot, withoutTracking } from "./tracker";
 
-export type PullPart = "progress" | "missions" | "activity" | "bookmarks";
+export type PullPart = "progress" | "missions" | "activity" | "bookmarks" | "profile";
 
 interface Progression {
     hasanah?: number;
@@ -26,6 +26,7 @@ interface PullResponse {
     activity?: ServerActivity[];
     bookmarks?: ServerBookmark[];
     bookmarkFingerprint?: string;
+    profile?: { isMuhsinin: boolean; totalInfaq: number };
 }
 
 const timezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -76,6 +77,12 @@ export async function pullAndApply(userId: string, parts: PullPart[]): Promise<b
 
     if (body.progression && syncQueue.getPendingEntries(userId).length === 0) {
         applyProgression(storage, userId, body.progression);
+    }
+
+    if (body.profile) {
+        storage.set(STORAGE_KEYS.IS_MUHSININ, String(body.profile.isMuhsinin));
+        storage.set(STORAGE_KEYS.USER_TOTAL_DONATION, String(body.profile.totalInfaq));
+        window.dispatchEvent(new CustomEvent("infaq_updated", { detail: { isMuhsinin: body.profile.isMuhsinin, total: body.profile.totalInfaq } }));
     }
 
     withoutTracking(() => {

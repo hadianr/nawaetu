@@ -28,6 +28,7 @@ import { useSession, signOut } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
 import { useProfile } from "@/hooks/useProfile";
 import { useDataSync } from "@/hooks/useDataSync";
+import { clearAccountData } from "@/lib/account-data";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";
@@ -158,61 +159,8 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             await fetch(`/api/notifications/subscribe?token=${encodeURIComponent(pushToken)}`, { method: "DELETE" }).catch(() => undefined);
         }
 
-        // Profile
-        storage.remove(STORAGE_KEYS.USER_NAME);
-        storage.remove(STORAGE_KEYS.USER_AVATAR);
-        storage.remove(STORAGE_KEYS.USER_TITLE);
-        storage.remove(STORAGE_KEYS.USER_GENDER);
-        storage.remove(STORAGE_KEYS.USER_ARCHETYPE);
-
-        // Activity & Gamification
-        storage.remove(STORAGE_KEYS.USER_TOTAL_DONATION);
-        storage.remove(STORAGE_KEYS.USER_DONATION_HISTORY);
-        storage.remove(STORAGE_KEYS.QURAN_BOOKMARKS);
-        storage.remove(STORAGE_KEYS.INTENTION_JOURNAL);
-        storage.remove(STORAGE_KEYS.QURAN_LAST_READ);
-        storage.remove(STORAGE_KEYS.USER_STREAK);
-        storage.remove(STORAGE_KEYS.CANONICAL_PROGRESSION);
-        storage.remove(STORAGE_KEYS.USER_LEVEL);
-        storage.remove(STORAGE_KEYS.USER_HASANAH);
-        storage.remove(STORAGE_KEYS.COMPLETED_MISSIONS);
-        storage.remove(STORAGE_KEYS.ACTIVITY_TRACKER);
-        storage.remove(STORAGE_KEYS.DAILY_ACTIVITY_HISTORY);
-
-        // Dhikr
-        storage.remove(STORAGE_KEYS.DHIKR_COUNT);
-        storage.remove(STORAGE_KEYS.DHIKR_TARGET);
-        storage.remove(STORAGE_KEYS.DHIKR_ACTIVE_PRESET);
-        storage.remove(STORAGE_KEYS.DHIKR_STREAK);
-        storage.remove(STORAGE_KEYS.DHIKR_LAST_DATE);
-        storage.remove(STORAGE_KEYS.DHIKR_DAILY_COUNT);
-
-        // Settings
-        storage.remove(STORAGE_KEYS.SETTINGS_THEME);
-        storage.remove(STORAGE_KEYS.SETTINGS_MUADZIN);
-        storage.remove(STORAGE_KEYS.SETTINGS_CALCULATION_METHOD);
-        storage.remove(STORAGE_KEYS.SETTINGS_LOCALE);
-        storage.remove(STORAGE_KEYS.SETTINGS_RECITER);
-
-        // AI Chat
-        storage.remove(STORAGE_KEYS.AI_CHAT_HISTORY);
-        storage.remove(STORAGE_KEYS.AI_CHAT_SESSIONS);
-        storage.remove(STORAGE_KEYS.AI_CHAT_HISTORY_OLD);
-        storage.remove(STORAGE_KEYS.AI_USAGE);
-
-        // Trackers, sync bookkeeping and premium status belong to the account too
-        for (const key of [
-            STORAGE_KEYS.SIRAH_COMPLETED, STORAGE_KEYS.SIRAH_BOOKMARKS, STORAGE_KEYS.SIRAH_QUIZ_LAST_CLAIMED,
-            STORAGE_KEYS.RAMADHAN_TARAWEH_LOG, STORAGE_KEYS.RAMADHAN_KHATAMAN_LOG, STORAGE_KEYS.RAMADHAN_FASTING_LOG,
-            STORAGE_KEYS.RAMADHAN_FASTING_PENDING, STORAGE_KEYS.RAMADHAN_FASTING_MADZHAB, STORAGE_KEYS.RAMADHAN_DAILY_LOG,
-            STORAGE_KEYS.RAMADHAN_INSIGHT_CACHE, STORAGE_KEYS.IS_MUHSININ, STORAGE_KEYS.UNSYNCED_SINCE,
-            STORAGE_KEYS.SYNC_WARNED_LEVEL, "nawaetu_sync_queue",
-        ]) {
-            storage.remove(key);
-        }
-
-        // Sync Flags
-        localStorage.removeItem("nawaetu_synced_v1");
+        // Everything that belongs to this account, including its unsent queue and premium status
+        clearAccountData(storage);
 
         resetInfaq();
         // Cached API responses (including the session) belong to this account.
