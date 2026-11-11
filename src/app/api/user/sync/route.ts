@@ -266,11 +266,24 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
             // Mission completions are written together: one insert and one progression update instead of
             // a locked transaction per mission. Undo and everything else stay one at a time.
             const missionCompletions: SyncQueueEntry[] = [];
+            const bookmarkSaves: SyncQueueEntry[] = [];
             const others: SyncQueueEntry[] = [];
             for (const entry of accepted) {
                 const isMission = entry.type === "mission" || entry.type === "mission_progress";
-                if (isMission && entry.action !== "delete" && SyncEntrySchema.safeParse(entry).success) missionCompletions.push(entry);
+                const valid = SyncEntrySchema.safeParse(entry).success;
+                if (isMission && entry.action !== "delete" && valid) missionCompletions.push(entry);
+                else if (entry.type === "bookmark" && entry.action !== "delete" && valid) bookmarkSaves.push(entry);
                 else others.push(entry);
+            }
+
+            if (bookmarkSaves.length > 0) {
+                try {
+                    await repo.syncBookmarksBatch(bookmarkSaves.map((entry) => asRecord(entry.data) ?? {}));
+                    bookmarkSaves.forEach((entry) => synced.push({ id: entry.id }));
+                } catch (error) {
+                    const message = error instanceof Error && error.message ? error.message : "Sync failed";
+                    bookmarkSaves.forEach((entry) => failed.push({ id: entry.id, error: message }));
+                }
             }
 
             if (missionCompletions.length > 0) {
