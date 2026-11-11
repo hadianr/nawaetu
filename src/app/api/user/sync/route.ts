@@ -54,6 +54,7 @@ async function processSyncEntry(repo: DbSyncRepository, entry: SyncQueueEntry) {
         case "setting": await repo.syncSetting(data, action); return { id: entry.id };
         case "reading_state": await repo.syncReadingState(data, action); return { id: entry.id };
         case "streak": await repo.syncStreak(data); return { id: entry.id };
+        case "hasanah_event": await repo.syncHasanahEvent(data, action); return { id: entry.id };
         case "ramadhan_fasting": return { id: entry.id, cloudId: await repo.syncRamadhanFasting(data, action) };
         case "ramadhan_taraweh": return { id: entry.id, cloudId: await repo.syncRamadhanTaraweh(data, action) };
         case "ramadhan_daily": return { id: entry.id, cloudId: await repo.syncRamadhanDaily(data, action) };
@@ -260,7 +261,29 @@ export async function POST(req: NextRequest): Promise<NextResponse<SyncResponse 
         if (rawEntries.length > 0) {
             // One at a time: overlapping queries on our single pooled connection can wedge it.
             // The client queue holds at most 100 entries; the rest are reported as failed so they are retried.
-            for (const entry of rawEntries.slice(0, MAX_SYNC_ENTRIES)) {
+            const accepted = rawEntries.slice(0, MAX_SYNC_ENTRIES);
+
+            // Mission completions are written together: one insert and one progression update instead of
+            // a locked transaction per mission. Undo and everything else stay one at a time.
+            const missionCompletions: SyncQueueEntry[] = [];
+            const others: SyncQueueEntry[] = [];
+            for (const entry of accepted) {
+                const isMission = entry.type === "mission" || entry.type === "mission_progress";
+                if (isMission && entry.action !== "delete" && SyncEntrySchema.safeParse(entry).success) missionCompletions.push(entry);
+                else others.push(entry);
+            }
+
+            if (missionCompletions.length > 0) {
+                try {
+                    await repo.syncMissionsBatch(missionCompletions.map((entry) => toMissionPayload(asRecord(entry.data) ?? {})));
+                    missionCompletions.forEach((entry) => synced.push({ id: entry.id }));
+                } catch (error) {
+                    const message = error instanceof Error && error.message ? error.message : "Sync failed";
+                    missionCompletions.forEach((entry) => failed.push({ id: entry.id, error: message }));
+                }
+            }
+
+            for (const entry of others) {
                 try {
                     synced.push(await processSyncEntry(repo, entry));
                 } catch (error) {

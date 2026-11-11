@@ -17,10 +17,11 @@ vi.mock('@/core/repositories/progression.repository', () => ({
     processProgressionEvidence: vi.fn(async (_userId: string, evidence: Record<string, unknown>) => { captured.evidence.push(evidence); }),
     processProgressionEvidenceBatch: vi.fn(async (_userId: string, evidences: Array<Record<string, unknown>>) => { captured.evidence.push(...evidences); }),
     reverseProgressionEvidence: vi.fn(async () => ({ reversed: true })),
+    raiseProgressionEvidence: vi.fn(async () => ({ changed: true })),
 }));
 
 import { DbSyncRepository } from './db-sync.repository';
-import { reverseProgressionEvidence } from '@/core/repositories/progression.repository';
+import { raiseProgressionEvidence, reverseProgressionEvidence } from '@/core/repositories/progression.repository';
 
 describe('DbSyncRepository mission day', () => {
     beforeEach(() => {
@@ -130,5 +131,36 @@ describe('DbSyncRepository undo', () => {
         await repo.syncMission({ id: 'tasbih_99', completedDate: '2020-01-01' }, 'delete');
 
         expect(reverseProgressionEvidence).not.toHaveBeenCalled();
+    });
+});
+
+describe('DbSyncRepository hasanah events', () => {
+    beforeEach(() => {
+        captured.evidence = [];
+        vi.mocked(raiseProgressionEvidence).mockClear();
+    });
+    const today = () => new Date().toISOString().slice(0, 10);
+
+    it('prices the award itself and ends the id with the date', async () => {
+        await new DbSyncRepository('u1').syncHasanahEvent({ kind: 'taraweh', key: '1447-5', amount: 15, localDate: today() }, 'create');
+        expect(captured.evidence[0]).toMatchObject({ source: 'mission', sourceId: `taraweh:1447-5:${today()}`, hasanah: 15, countsForStreak: true });
+    });
+
+    it('refuses an amount the client invented, so the entry is reported as failed', async () => {
+        await expect(new DbSyncRepository('u1').syncHasanahEvent({ kind: 'taraweh', key: '1447-5', amount: 9999, localDate: today() }, 'create'))
+            .rejects.toThrow('invalid hasanah event');
+        expect(captured.evidence).toHaveLength(0);
+    });
+
+    it('raises reading time instead of ignoring the second report of the day', async () => {
+        await new DbSyncRepository('u1').syncHasanahEvent({ kind: 'quran_time', key: 'time', amount: 12, localDate: today() }, 'update');
+        expect(raiseProgressionEvidence).toHaveBeenCalledWith('u1', expect.objectContaining({ source: 'quran', hasanah: 12 }));
+    });
+
+    it('skips awards outside the sync window without an error', async () => {
+        const repo = new DbSyncRepository('u1');
+        await repo.syncHasanahEvent({ kind: 'taraweh', key: '1447-5', amount: 15, localDate: '2020-01-01' }, 'create');
+        expect(captured.evidence).toHaveLength(0);
+        expect(repo.rejected).toBe(1);
     });
 });

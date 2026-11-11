@@ -45,7 +45,8 @@ export type SyncEntityType =
   | 'ramadhan_daily'
   | 'sirah_progress'
   | 'sirah_bookmark'
-  | 'streak';
+  | 'streak'
+  | 'hasanah_event';
 
 /**
  * Supported operation types
