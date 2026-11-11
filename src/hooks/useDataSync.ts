@@ -49,7 +49,8 @@ export function useDataSync() {
     const syncData = useCallback(async (options?: { silent?: boolean }): Promise<SyncResult> => {
         if (!userId) return { success: false, message: "Not signed in" };
         setIsSyncing(true);
-        const toastId = options?.silent ? undefined : toast.loading("Sinkronisasi data...");
+        const text = t as unknown as Record<string, string>;
+        const toastId = options?.silent ? undefined : toast.loading(text.syncInProgress);
 
         try {
             const result = await drainSyncQueue(userId);
@@ -57,7 +58,7 @@ export function useDataSync() {
             if (result.rejected > 0 && !notifiedRejected) {
                 // Older than the sync window: not an error, and still on this device.
                 notifiedRejected = true;
-                toast.info((t as unknown as Record<string, string>).syncOldDataKept, { duration: 8000 });
+                toast.info(text.syncOldDataKept, { duration: 8000 });
             }
 
             if (!result.ok) throw new Error("Some changes could not be sent yet");
@@ -72,10 +73,10 @@ export function useDataSync() {
             storage.remove(STORAGE_KEYS.UNSYNCED_SINCE);
             storage.remove(STORAGE_KEYS.SYNC_WARNED_LEVEL);
 
-            if (toastId) toast.success("Data berhasil disinkronkan!", { id: toastId });
+            if (toastId) toast.success(text.syncSuccess, { id: toastId });
             return { success: true };
         } catch {
-            if (toastId) toast.error("Gagal sinkronisasi data", { id: toastId });
+            if (toastId) toast.error(text.syncFailed, { id: toastId });
             return { success: false, message: "Terjadi kesalahan saat sinkronisasi" };
         } finally {
             setIsSyncing(false);

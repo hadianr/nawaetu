@@ -145,6 +145,9 @@ export const otherID = {
     syncUnsyncedNotice: "Aktivitasmu sejak {date} belum tersinkron ke akun. Buka aplikasi saat online agar tidak hilang.",
     syncUnsyncedUrgent: "Segera sinkronkan! Aktivitas sejak {date} hanya bisa disimpan ke akun {days} hari lagi. Buka aplikasi saat online.",
     logoutUnsyncedConfirm: "Sebagian aktivitas belum tersinkron dan bisa hilang jika kamu keluar sekarang. Tetap keluar?",
+    syncInProgress: "Sinkronisasi data...",
+    syncFailed: "Gagal sinkronisasi data",
+    syncWelcomeDesc: "Login berhasil. Selamat datang kembali.",
     syncOldDataKept: "Aktivitas yang lebih dari 30 hari tidak bisa disinkronkan, tetapi tetap tersimpan di HP ini.",
 
     profileAuthTitle: "Simpan Progress Ibadahmu",

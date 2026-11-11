@@ -61,7 +61,7 @@ export default function DataSyncer() {
             if (!storage.getOptional(welcomeKey)) {
                 toast.success(`Ahlan wa Sahlan, ${session.user.name?.split(' ')[0] || 'Sobat'}!`, {
                     icon: <AppIcon name="hands" size="sm" tone="primary" />,
-                    description: "Login berhasil. Selamat datang kembali.",
+                    description: (t as unknown as Record<string, string>).syncWelcomeDesc,
                     duration: 4000
                 });
                 storage.set(welcomeKey, "true");
