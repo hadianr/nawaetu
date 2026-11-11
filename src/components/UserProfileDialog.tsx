@@ -191,6 +191,10 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
         localStorage.removeItem("nawaetu_synced_v1");
 
         resetInfaq();
+        // Cached API responses (including the session) belong to this account.
+        if (typeof caches !== "undefined") {
+            await Promise.all(["apis", "next-data", "pages-rsc"].map((name) => caches.delete(name).catch(() => false)));
+        }
         await signOut({ callbackUrl: "/" });
     };
 

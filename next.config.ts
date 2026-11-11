@@ -14,7 +14,20 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   disable: process.env.NODE_ENV === "development",
+  // Keep the default caching rules and add ours in front of them.
+  extendDefaultRuntimeCaching: true,
   workboxOptions: {
+    runtimeCaching: [
+      {
+        // Account data must never be served from a cache keyed by URL alone: after an account
+        // switch or a slow network the next user would receive the previous user's response.
+        // /api/auth stays cached on purpose so a signed-in user is still signed in offline;
+        // logout clears that cache.
+        urlPattern: ({ url, sameOrigin }: { url: URL; sameOrigin: boolean }) =>
+          sameOrigin && /^\/api\/(user|intentions|ramadhan|payment|mentor-ai|notifications|rewards)\//.test(url.pathname),
+        handler: "NetworkOnly" as const,
+      },
+    ],
     disableDevLogs: true,
     // Keep the Workbox runtime inside /sw.js so deployment cannot leave the
     // worker pointing at a missing /workbox-*.js asset.

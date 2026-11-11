@@ -1,7 +1,7 @@
 # Sync and Account Action Plan
 
 **Prepared:** 11 November 2026
-**Status:** Items 0.1 and 0.2 are built and tested in the working tree (11 November 2026), not yet committed or released. Everything else is proposed. Phase 0 ships item by item. Owner decisions are recorded in section 12.
+**Status (11 November 2026):** Phase 0 is built and tested on branch `fix/sync-account-hardening`, and so are 1.1, 1.3, 1.6, 1.7, 1.8, 1.9 and 1.10 (see the status marks). Nothing is released or pushed. The rest is proposed. Owner decisions are recorded in section 12.
 **Source:** audit of guest mode, logged-in mode, multi-device sync, payments, push notifications, Ramadan trackers, the service worker, and `ONBOARDING_AND_MOTION_REVAMP_PLAN.md`.
 
 ## 1. Summary
@@ -53,12 +53,14 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | --- | --- | --- | --- | --- |
 | 0.1 **Done** | `checkServerProgress` must not count the profile name as progress. Never overwrite local Hasanah or streak with an empty server value | New sign-ups keep their points, streak and chosen name. The guest-import path becomes reachable | `src/components/auth/GuestSyncManager.tsx` | R |
 | 0.2 **Done** | Fix the guest-import mismatches: `activity.hasanahGained` is required but never sent; `quranLastRead: null` and a null name or gender are rejected. Fixed on the server so older cached clients also work | Guest import returns 200 instead of 400 | `src/app/api/user/sync-guest/route.ts` | R |
-| 0.3 | Guest import writes missions through the same path as normal sync (canonical reward, `completedDate`, ledger entry) and merges settings instead of replacing them | Imported missions count at once, with no duplicate rows later; settings written earlier are kept | `sync-guest/route.ts`, `db-sync.repository.ts` | C |
-| 0.4 | Streak display uses the server's `currentDays`, not a count rebuilt from the last 30 days | Streaks over 30 days show correctly | `src/hooks/useStreak.ts`, `StreakBadge.tsx`, `useStreakDates.ts` | R (arithmetic), C (hook) |
-| 0.5 | Use the client's local date for day bucketing: missions, intentions (sync and `/api/intentions/daily`), and today's activity on hydrate | Activity between 00:00 and 07:00 WIB is filed under the right day; intention earns 10, not 5 | `db-sync.repository.ts`, `intentions/daily/route.ts`, `GuestSyncManager.tsx` | R (missions), C (rest) |
-| 0.6 | Fasting log: persist the pending set, clear an entry only after a 2xx response, retry on next load | Offline fasting and qadha edits reach the server | `src/hooks/useFastingTracker.ts` | C |
+| 0.3 **Done** | Guest import writes missions through the same path as normal sync (canonical reward, `completedDate`, ledger entry) and merges settings instead of replacing them | Imported missions count at once, with no duplicate rows later; settings written earlier are kept | `sync-guest/route.ts`, `db-sync.repository.ts` | C |
+| 0.4 **Done** | Streak display uses the server's `currentDays`, not a count rebuilt from the last 30 days | Streaks over 30 days show correctly | `src/hooks/useStreak.ts`, `StreakBadge.tsx`, `useStreakDates.ts` | R (arithmetic), C (hook) |
+| 0.5 **Done** | Use the client's local date for day bucketing: missions, intentions (sync and `/api/intentions/daily`), and today's activity on hydrate | Activity between 00:00 and 07:00 WIB is filed under the right day; intention earns 10, not 5 | `db-sync.repository.ts`, `intentions/daily/route.ts`, `GuestSyncManager.tsx` | R (missions), C (rest) |
+| 0.6 **Done** | Fasting log: persist the pending set, clear an entry only after a 2xx response, retry on next load | Offline fasting and qadha edits reach the server | `src/hooks/useFastingTracker.ts` | C |
 
-| 0.7 | Server prayer alerts also go to guest subscriptions (decision 5). The cron query skips rows without an owner today. Guests have no stored language, so the subscription needs to carry the locale | Guests receive adhan notifications, the core feature of the app | `src/app/api/notifications/prayer-alert/route.ts`, `subscribe/route.ts` | C |
+| 0.7 **Done, see limit below** | Server prayer alerts also go to guest subscriptions (decision 5). The cron query skips rows without an owner today. Guests have no stored language, so the subscription needs to carry the locale | Guests receive adhan notifications, the core feature of the app | `src/app/api/notifications/prayer-alert/route.ts`, `subscribe/route.ts` | C |
+
+**Limit of 0.7:** guest subscriptions have no stored language, so guests get the default notification language until a locale column is added (needs a migration, which needs your approval).
 
 **Known limit of 0.1 until phase 2:** after a guest import, the next regular sync still replaces the local total with the server's mission-only total, so non-mission points drop then instead of at sign-up. Item 2.1 closes this.
 
@@ -68,22 +70,24 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 
 | # | Work | Impact when done | Where | Evidence |
 | --- | --- | --- | --- | --- |
-| 1.1 | Rate-limit `/api/user/sync`, `/sync-guest`, `/full-data`, the intention routes and `/api/payment/create` with the existing `src/lib/rate-limit.ts` | One account can no longer hold the single database connection or spam payment links | the routes above | C |
+| 1.1 **Done** | Rate-limit `/api/user/sync`, `/sync-guest`, `/full-data`, the intention routes and `/api/payment/create` with the existing `src/lib/rate-limit.ts` | One account can no longer hold the single database connection or spam payment links | the routes above | C |
 | 1.2 | Accept completion dates from 30 days back to 1 day forward, and cap missions per request. Warn the user before data ages out (see below) | Hasanah and streaks cannot be farmed with past or future dates, and no user loses data silently | `db-sync.repository.ts`, `src/lib/validations/sync.ts`, a sync status notice | C |
-| 1.3 | Allow-list setting keys in `syncSetting`, reusing the list in `sync-guest` | Clients cannot write arbitrary keys such as `guestSyncEligible` | `db-sync.repository.ts` | C |
+| 1.3 **Done** | Allow-list setting keys in `syncSetting`, reusing the list in `sync-guest` | Clients cannot write arbitrary keys such as `guestSyncEligible` | `db-sync.repository.ts` | C |
 | 1.4 | Intention identity: remove the shared `anon_fallback` and `anon_mem_*` tokens; stop resolving an FCM token to a real account; stop creating a user row for any token without a limit; move the token out of the URL | Guests cannot land in a shared journal; a logged-out device cannot read the previous user's journal; no unbounded user rows | `IntentionJournalWidget.tsx`, `src/app/journal/page.tsx`, `src/app/api/intentions/*` | C |
 | 1.5 | Confirm `assetlinks.json` is served for the Android wrapper. None was found in `public/` or `src/app/` | The Play Store app opens full screen without a browser bar | hosting or `public/.well-known/` | C |
-| 1.6 | `/api/notifications/test-push` accepts any caller, any token, any title and body. Require the cron secret or remove the route | Nobody can send arbitrary notifications through Nawaetu's Firebase project | `src/app/api/notifications/test-push/route.ts`, `src/proxy.ts` | C |
-| 1.7 | `/api/notifications/preferences` has no session check. For a subscription that has an owner, require that owner's session; a guest subscription stays editable by its token, because guests must keep prayer alerts (decision 5) | A stranger with a token cannot change a signed-in user's prayer alerts or location | `src/app/api/notifications/preferences/route.ts` | C |
-| 1.8 | Service worker: do not cache account-specific GETs (`/api/user`, `/api/intentions`, `/api/ramadhan`, `/api/payment`, `/api/mentor-ai`, `/api/notifications`). Clear the `apis` cache at logout | Account B is never served account A's cached data; sync never reads a stale total | `next.config.ts` (`workboxOptions.runtimeCaching`), `UserProfileDialog.tsx` | C |
-| 1.9 | Payments: settle in one guarded step shared by the webhook and `/api/payment/sync` | A donation is counted exactly once | `src/app/api/payment/webhook/route.ts`, `sync/route.ts` | C |
-| 1.10 | Payments: validate `amount` as a whole number with an upper limit; map status names the same way in both routes; stop returning debug details to the caller | No orphaned payment links; a paid donation is not marked failed by one route and paid by the other | `payment/create`, `webhook`, `sync` | C |
+| 1.6 **Done** | `/api/notifications/test-push` accepts any caller, any token, any title and body. Require the cron secret or remove the route | Nobody can send arbitrary notifications through Nawaetu's Firebase project | `src/app/api/notifications/test-push/route.ts`, `src/proxy.ts` | C |
+| 1.7 **Done** | `/api/notifications/preferences` has no session check. For a subscription that has an owner, require that owner's session; a guest subscription stays editable by its token, because guests must keep prayer alerts (decision 5) | A stranger with a token cannot change a signed-in user's prayer alerts or location | `src/app/api/notifications/preferences/route.ts` | C |
+| 1.8 **Done** | Service worker: do not cache account-specific GETs (`/api/user`, `/api/intentions`, `/api/ramadhan`, `/api/payment`, `/api/mentor-ai`, `/api/notifications`). Clear the `apis` cache at logout | Account B is never served account A's cached data; sync never reads a stale total | `next.config.ts` (`workboxOptions.runtimeCaching`), `UserProfileDialog.tsx` | C |
+| 1.9 **Done** | Payments: settle in one guarded step shared by the webhook and `/api/payment/sync` | A donation is counted exactly once | `src/app/api/payment/webhook/route.ts`, `sync/route.ts` | C |
+| 1.10 **Done** | Payments: validate `amount` as a whole number with an upper limit; map status names the same way in both routes; stop returning debug details to the caller | No orphaned payment links; a paid donation is not marked failed by one route and paid by the other | `payment/create`, `webhook`, `sync` | C |
 
 **Detail for 1.2 (decision 2).** The window is 30 days back. To keep the user aware and avoid loss:
 
 - Show an "unsynced since {date}" notice when the device holds unsent activity older than 7 days.
 - Raise it to a warning at 23 days: "sync within 7 days to keep this history".
 - When the server refuses an entry for age, keep it on the device, mark it as local-only, and tell the user once. Never delete it.
+
+**Status of 1.9:** the sync check now claims the settlement before adding the amount, so the webhook and the sync check can no longer both credit one donation. The webhook still marks the transaction and credits the user in two steps; making that one database transaction means reworking four test files and is left open.
 
 **Detail for 1.9.** Today `/api/payment/sync` adds the amount to `totalInfaq` without checking whether the webhook already settled the same transaction, so the two can both count it. The webhook also updates the transaction and the user in two separate steps; if the second fails, the donation is marked paid and never credited.
 
