@@ -163,6 +163,13 @@ export function useFastingTracker() {
         });
     }, []);
 
+    // A pull from the server (another device's fasting days) rewrote the stored log.
+    useEffect(() => {
+        const reload = () => setAllLogs(loadFromStorage());
+        window.addEventListener("fasting_updated", reload);
+        return () => window.removeEventListener("fasting_updated", reload);
+    }, []);
+
     // Send unsent edits when a session exists, and again whenever the connection returns.
     useEffect(() => {
         if (!session?.user) return;

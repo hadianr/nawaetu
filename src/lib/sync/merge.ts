@@ -88,6 +88,39 @@ export function mergeBookmarks(local: LocalBookmark[], server: ServerBookmark[],
     return result;
 }
 
+export interface LocalFastingEntry { status: string; consequence: string; madzhab?: string; note?: string; qadhaDone: boolean }
+export interface ServerFasting {
+    hijriYear: number; hijriDay: number; status: string; consequence: string | null;
+    madzhab: string | null; note: string | null; qadhaDone: boolean | null;
+}
+
+/**
+ * Fasting days are never deleted, so the server's record wins except for a day edited here and not yet
+ * sent (the pending list holds "year-day" and "qadha:year-day").
+ */
+export function mergeFasting(
+    local: Record<string, Record<string, LocalFastingEntry>>,
+    server: ServerFasting[],
+    pending: Set<string>,
+): Record<string, Record<string, LocalFastingEntry>> {
+    const result: Record<string, Record<string, LocalFastingEntry>> = {};
+    for (const [year, days] of Object.entries(local)) result[year] = { ...days };
+
+    for (const row of server) {
+        const id = `${row.hijriYear}-${row.hijriDay}`;
+        if (pending.has(id) || pending.has(`qadha:${id}`)) continue;
+        const year = String(row.hijriYear);
+        (result[year] ??= {})[String(row.hijriDay).padStart(2, "0")] = {
+            status: row.status,
+            consequence: row.consequence ?? "none",
+            madzhab: row.madzhab ?? undefined,
+            note: row.note ?? undefined,
+            qadhaDone: Boolean(row.qadhaDone),
+        };
+    }
+    return result;
+}
+
 export interface LocalActivity {
     date: string; quranAyat: number; tasbihCount: number; prayersLogged: string[]; [field: string]: unknown;
 }

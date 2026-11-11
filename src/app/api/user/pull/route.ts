@@ -19,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { bookmarks, dailyActivities, userCompletedMissions, userProgressState, userStreakDays, userStreakState, users } from "@/db/schema";
+import { bookmarks, dailyActivities, ramadhanFastingLog, userCompletedMissions, userProgressState, userStreakDays, userStreakState, users } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { inSequence } from "@/lib/db-sequential";
 import { logger } from "@/lib/logger";
@@ -29,7 +29,7 @@ import { addDays, localDateIn, SYNC_WINDOW_DAYS_BACK } from "@/lib/utils/timezon
 
 export const maxDuration = 30;
 
-const PARTS = ["progress", "missions", "activity", "bookmarks", "profile"] as const;
+const PARTS = ["progress", "missions", "activity", "bookmarks", "profile", "fasting"] as const;
 type Part = (typeof PARTS)[number];
 
 /**
@@ -84,6 +84,15 @@ export async function GET(req: NextRequest) {
             // Premium status and donations: a donation made on another device shows up without logging in again.
             const profile = await db.query.users.findFirst({ where: eq(users.id, userId), columns: { isMuhsinin: true, totalInfaq: true } });
             body.profile = { isMuhsinin: profile?.isMuhsinin === true, totalInfaq: profile?.totalInfaq ?? 0 };
+        }
+
+        if (wants("fasting")) {
+            // At most 30 days a year; this is how qadha history reaches a second device.
+            body.fasting = await db.query.ramadhanFastingLog.findMany({
+                where: eq(ramadhanFastingLog.userId, userId),
+                columns: { hijriYear: true, hijriDay: true, status: true, consequence: true, madzhab: true, note: true, qadhaDone: true },
+                limit: 300,
+            });
         }
 
         if (wants("missions")) {

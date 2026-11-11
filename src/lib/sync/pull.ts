@@ -3,13 +3,14 @@ import { resetActivityRepository } from "@/core/repositories/activity.repository
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { syncQueue } from "@/lib/sync-queue";
 import { DateUtils } from "@/lib/utils/date";
+import { parseStored } from "@/lib/utils/stored-json";
 import {
-    mergeBookmarks, mergeMissions, mergeTodayActivity,
-    type LocalActivity, type LocalBookmark, type LocalMission, type ServerActivity, type ServerBookmark, type ServerMission,
+    mergeBookmarks, mergeFasting, mergeMissions, mergeTodayActivity,
+    type LocalActivity, type LocalBookmark, type LocalMission, type LocalFastingEntry, type ServerActivity, type ServerBookmark, type ServerFasting, type ServerMission,
 } from "./merge";
 import { resetTrackerSnapshot, withoutTracking } from "./tracker";
 
-export type PullPart = "progress" | "missions" | "activity" | "bookmarks" | "profile";
+export type PullPart = "progress" | "missions" | "activity" | "bookmarks" | "profile" | "fasting";
 
 interface Progression {
     hasanah?: number;
@@ -27,6 +28,7 @@ interface PullResponse {
     bookmarks?: ServerBookmark[];
     bookmarkFingerprint?: string;
     profile?: { isMuhsinin: boolean; totalInfaq: number };
+    fasting?: ServerFasting[];
 }
 
 const timezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -83,6 +85,14 @@ export async function pullAndApply(userId: string, parts: PullPart[]): Promise<b
         storage.set(STORAGE_KEYS.IS_MUHSININ, String(body.profile.isMuhsinin));
         storage.set(STORAGE_KEYS.USER_TOTAL_DONATION, String(body.profile.totalInfaq));
         window.dispatchEvent(new CustomEvent("infaq_updated", { detail: { isMuhsinin: body.profile.isMuhsinin, total: body.profile.totalInfaq } }));
+    }
+
+    if (body.fasting) {
+        const local = parseStored<Record<string, Record<string, LocalFastingEntry>>>(storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_FASTING_LOG)) ?? {};
+        const pendingFasting = new Set(parseStored<string[]>(storage.getOptional<unknown>(STORAGE_KEYS.RAMADHAN_FASTING_PENDING)) ?? []);
+        // Same format the fasting tracker writes, so it reads this back unchanged.
+        storage.set(STORAGE_KEYS.RAMADHAN_FASTING_LOG, JSON.stringify(mergeFasting(local, body.fasting, pendingFasting)));
+        window.dispatchEvent(new Event("fasting_updated"));
     }
 
     withoutTracking(() => {
