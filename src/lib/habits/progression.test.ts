@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, rebuildStreakState } from "./progression";
+import { LEVEL_RULES_VERSION, advanceStreak, calculatePlayerStats, rebuildStreakFromHistory, rebuildStreakState } from "./progression";
 
 describe("calculatePlayerStats", () => {
   it("handles level boundaries and progress", () => {
@@ -69,5 +69,33 @@ describe("advanceStreak", () => {
       longestDays: 3,
       lastStreakDate: "2026-08-31",
     });
+  });
+});
+
+describe("rebuildStreakFromHistory", () => {
+  const day = (n: number) => new Date(Date.UTC(2026, 0, n)).toISOString().slice(0, 10);
+
+  it("gives the streak each day would have produced one at a time, whatever freezes are stored", () => {
+    let seed = 7;
+    const rand = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+
+    for (let trial = 0; trial < 300; trial++) {
+      const days: string[] = [];
+      for (let n = 1; n <= 40; n++) if (rand() > 0.2) days.push(day(n));
+
+      let incremental = { currentDays: 0, longestDays: 0, lastStreakDate: null as string | null, freezesAvailable: 0 };
+      const seen: string[] = [];
+      for (const d of days) {
+        incremental = advanceStreak(incremental, d).state;
+        seen.push(d);
+        expect(rebuildStreakFromHistory(seen)).toEqual(incremental);
+      }
+    }
+  });
+
+  it("does not spend a freeze earned on day 7 on a gap before it", () => {
+    // Active 1 Jan, missed 2 Jan, active 3-10 Jan: the gap came before any freeze existed.
+    const dates = [1, 3, 4, 5, 6, 7, 8, 9, 10].map(day);
+    expect(rebuildStreakFromHistory(dates).currentDays).toBe(8);
   });
 });

@@ -91,6 +91,15 @@ export function rebuildStreakState(dates: string[], freezesAvailable = 0): Progr
   );
 }
 
+/**
+ * The streak a list of qualified days produces, as if each day had arrived in order.
+ * Freezes come only from the history itself (earned at a 7-day streak, spent on a one-day gap), never from
+ * a stored count: seeding with today's count would spend a freeze earned later on a gap from long ago.
+ */
+export function rebuildStreakFromHistory(dates: string[]): ProgressionStreakState {
+  return rebuildStreakState(dates, 0);
+}
+
 export function getRankKey(level: number): RankKey {
   if (level >= 60) return "muhsin";
   if (level >= 40) return "mukhlis";
