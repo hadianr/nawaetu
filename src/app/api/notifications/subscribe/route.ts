@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         const userId = session?.user?.id ?? null;
         const sessionEmail = session?.user?.email ?? null;
 
-        const { token, deviceType, timezone, userLocation, prayerPreferences } = await req.json();
+        const { token, deviceType, timezone, userLocation, prayerPreferences, locale } = await req.json();
 
         if (!token) {
             return NextResponse.json({ error: "Token is required" }, { status: 400 });
@@ -93,6 +93,8 @@ export async function POST(req: NextRequest) {
             country: userLocation?.country || null,
             countryCode: userLocation?.countryCode || null,
             prayerPreferences: prayerPreferences || undefined,
+            // Only a known language is stored, and a request that does not say keeps what is already there.
+            ...(locale === "id" || locale === "en" ? { locale } : {}),
         };
 
         let validUserId: string | null = null;

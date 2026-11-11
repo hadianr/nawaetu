@@ -49,6 +49,12 @@ const mocks = vi.hoisted(() => ({
     getMessaging: vi.fn().mockResolvedValue(null),
 }));
 
+vi.mock('@/lib/notifications/push-copy', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/lib/notifications/push-copy')>()),
+    // Deterministic copy that shows which language was chosen.
+    getPrayerNotificationCopy: vi.fn((locale: unknown, prayer: string) => ({ title: `${String(locale)}|${prayer}`, body: 'b' })),
+}));
+
 vi.mock('@/lib/notifications/firebase-admin', () => ({
     getMessaging: mocks.getMessaging,
 }));
@@ -276,5 +282,32 @@ describe('POST /api/notifications/prayer-alert', () => {
 
         expect(body.results).toMatchObject({ total: 1, sent: 1 });
         expect(mocks.messagingSend).toHaveBeenCalledWith(expect.objectContaining({ token: 'guest-token' }));
+    });
+
+    it('uses the language the guest device chose, and the account language when there is one', async () => {
+        const localTime = new Date().toLocaleTimeString('en-US', {
+            timeZone: 'Asia/Jakarta', hourCycle: 'h23', hour: '2-digit', minute: '2-digit',
+        });
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ data: { timings: { Fajr: localTime } } }),
+        } as Response);
+        const place = { latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta', active: 1 };
+        mockDatabase([
+            { id: 'guest-en', userId: null, token: 'guest-en-token', locale: 'en', ...place },
+            { id: 'user-id', userId: 'user-9', token: 'account-token', locale: 'en', ...place },
+        ], [{ id: 'user-9', settings: { locale: 'id' } }]);
+        mocks.messagingSend.mockResolvedValue('sent');
+
+        await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+        const sent = mocks.messagingSend.mock.calls.map((call) => call[0]);
+        const guest = sent.find((message) => message.token === 'guest-en-token');
+        const account = sent.find((message) => message.token === 'account-token');
+
+        // The copy is picked per language; the stub makes the language visible in the title.
+        expect(guest.notification.title).toBe('en|Fajr');
+        // The account's own setting (Indonesian) wins over what the device said.
+        expect(account.notification.title).toBe('id|Fajr');
     });
 });

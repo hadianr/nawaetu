@@ -144,6 +144,24 @@ describe('POST /api/notifications/subscribe', () => {
         }));
     });
 
+    it('stores the device language so a guest gets notifications in it, and ignores anything else', async () => {
+        const onConflictDoUpdate = vi.fn().mockResolvedValue({});
+        const values = vi.fn().mockReturnValue({ onConflictDoUpdate });
+        (db.insert as unknown as { mockImplementation: (fn: unknown) => void }).mockImplementation(() => ({ values }));
+
+        await POST(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ token: 't1', locale: 'en' }) }));
+        expect(values).toHaveBeenLastCalledWith(expect.objectContaining({ locale: 'en' }));
+        expect(onConflictDoUpdate).toHaveBeenLastCalledWith(expect.objectContaining({ set: expect.objectContaining({ locale: 'en' }) }));
+
+        // An unknown value is not stored.
+        await POST(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ token: 't1', locale: 'xx' }) }));
+        expect(values.mock.calls.at(-1)?.[0]).not.toHaveProperty('locale', 'xx');
+
+        // A request that does not say keeps whatever is stored: the key is absent from the update.
+        await POST(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ token: 't1' }) }));
+        expect(onConflictDoUpdate.mock.calls.at(-1)?.[0].set).not.toHaveProperty('locale');
+    });
+
     it('releases the subscription at logout without deleting it', async () => {
         const where = vi.fn().mockResolvedValue({});
         const set = vi.fn().mockReturnValue({ where });

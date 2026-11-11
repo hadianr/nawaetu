@@ -21,6 +21,7 @@
     { "idx": 16, "version": "7", "when": 1774058316000, "tag": "0016_drop_deprecated_columns", "breakpoints": true },
     { "idx": 17, "version": "7", "when": 1774058317000, "tag": "0017_add_sirah_user_progress_and_bookmarks", "breakpoints": true },
     { "idx": 18, "version": "7", "when": 1788063600000, "tag": "0018_add_canonical_progression", "breakpoints": true },
-    { "idx": 19, "version": "7", "when": 1788063601000, "tag": "0019_remove_archetype", "breakpoints": true }
+    { "idx": 19, "version": "7", "when": 1788063601000, "tag": "0019_remove_archetype", "breakpoints": true },
+    { "idx": 20, "version": "7", "when": 1788063602000, "tag": "0020_add_push_locale", "breakpoints": true }
   ]
 }

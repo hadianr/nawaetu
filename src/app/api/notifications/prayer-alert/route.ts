@@ -341,7 +341,7 @@ export async function POST(req: NextRequest) {
                             }
 
                             // 7. Send Notification
-                            const { title, body } = getPrayerNotificationCopy((await getLocaleByUser()).get(sub.userId ?? ""), activePrayer);
+                            const { title, body } = getPrayerNotificationCopy((await getLocaleByUser()).get(sub.userId ?? "") ?? sub.locale, activePrayer);
 
                              await messagingAdmin!.send({
                                 token: sub.token,
