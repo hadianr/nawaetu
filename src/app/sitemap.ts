@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { MetadataRoute } from 'next'
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from '@/data/sirah'
 
@@ -61,7 +62,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${baseUrl}/hadith`, changeFrequency: 'weekly', priority: 0.7 },
         { url: `${baseUrl}/dua`, changeFrequency: 'weekly', priority: 0.7 },
         { url: `${baseUrl}/hijri-calendar`, changeFrequency: 'monthly', priority: 0.7 },
-        { url: `${baseUrl}/ramadhan`, changeFrequency: 'monthly', priority: 0.7 },
+        ...(RAMADHAN_PAGE_ENABLED ? [{ url: `${baseUrl}/ramadhan`, changeFrequency: 'monthly' as const, priority: 0.7 }] : []),
         { url: `${baseUrl}/sirah`, changeFrequency: 'weekly', priority: 0.8 },
         { url: `${baseUrl}/rewards`, changeFrequency: 'monthly', priority: 0.5 },
     ]

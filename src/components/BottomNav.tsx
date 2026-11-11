@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { useSyncExternalStore, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -64,7 +65,7 @@ const BottomNav = memo(function BottomNav() {
     const isRamadhan = hijriMonth.toLowerCase().includes("ramadan") || hijriMonth.toLowerCase().includes("ramadhan");
 
     // Seasonal nav: during Ramadhan, replace Tasbih (center) with Ramadhan Hub
-    const navItems = isRamadhan
+    const navItems = isRamadhan && RAMADHAN_PAGE_ENABLED
         ? [
             { href: "/", label: t.navHome, icon: Home, special: false },
             { href: "/quran", label: t.navQuran, icon: BookOpen, special: false },

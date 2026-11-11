@@ -1,3 +1,5 @@
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features"
+
 export const dynamic = 'force-static'
 
 const body = `# Nawaetu
@@ -11,7 +13,7 @@ const body = `# Nawaetu
 - [Dhikr](https://nawaetu.com/dhikr): dhikr counter with presets
 - [Hadith](https://nawaetu.com/hadith) and [Dua](https://nawaetu.com/dua): sourced collections
 - [Sirah](https://nawaetu.com/sirah): the life of the Prophet by chapter
-- [Qibla](https://nawaetu.com/qibla), [Hijri calendar](https://nawaetu.com/hijri-calendar), [Ramadhan](https://nawaetu.com/ramadhan)
+- [Qibla](https://nawaetu.com/qibla), [Hijri calendar](https://nawaetu.com/hijri-calendar)${RAMADHAN_PAGE_ENABLED ? ", [Ramadhan](https://nawaetu.com/ramadhan)" : ""}
 
 ## About
 - [About Nawaetu](https://nawaetu.com/about)
