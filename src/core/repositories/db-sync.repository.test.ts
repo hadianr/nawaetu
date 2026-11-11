@@ -4,6 +4,7 @@ const captured: { rows: Array<Record<string, unknown>>; evidence: Array<Record<s
 
 vi.mock('@/db', () => ({
     db: {
+        delete: () => ({ where: async () => undefined }),
         insert: () => ({
             values: (v: Array<Record<string, unknown>>) => {
                 captured.rows.push(...v);
@@ -14,9 +15,12 @@ vi.mock('@/db', () => ({
 }));
 vi.mock('@/core/repositories/progression.repository', () => ({
     processProgressionEvidence: vi.fn(async (_userId: string, evidence: Record<string, unknown>) => { captured.evidence.push(evidence); }),
+    processProgressionEvidenceBatch: vi.fn(async (_userId: string, evidences: Array<Record<string, unknown>>) => { captured.evidence.push(...evidences); }),
+    reverseProgressionEvidence: vi.fn(async () => ({ reversed: true })),
 }));
 
 import { DbSyncRepository } from './db-sync.repository';
+import { reverseProgressionEvidence } from '@/core/repositories/progression.repository';
 
 describe('DbSyncRepository mission day', () => {
     beforeEach(() => {
@@ -106,5 +110,25 @@ describe('DbSyncRepository daily activity merge', () => {
         expect(fragments.some((text) => text.includes('jsonb_agg(DISTINCT prayer)'))).toBe(true);
         const merged = upsert.onConflictDoUpdate.mock.calls[0][0].set;
         expect(merged).not.toHaveProperty('prayersLogged', ['fajr']);
+    });
+});
+
+describe('DbSyncRepository undo', () => {
+    it('takes back the Hasanah and streak day of an undone mission', async () => {
+        const today = new Date().toISOString().slice(0, 10);
+        await new DbSyncRepository('u1').syncMission({ id: 'tasbih_99', completedDate: today }, 'delete');
+
+        expect(reverseProgressionEvidence).toHaveBeenCalledWith('u1', {
+            source: 'mission', sourceId: `tasbih_99:${today}`, localDate: today,
+        });
+    });
+
+    it('ignores an undo for an unknown mission or a day outside the window', async () => {
+        vi.mocked(reverseProgressionEvidence).mockClear();
+        const repo = new DbSyncRepository('u1');
+        await repo.syncMission({ id: 'not_a_mission', completedDate: '2026-01-01' }, 'delete');
+        await repo.syncMission({ id: 'tasbih_99', completedDate: '2020-01-01' }, 'delete');
+
+        expect(reverseProgressionEvidence).not.toHaveBeenCalled();
     });
 });
