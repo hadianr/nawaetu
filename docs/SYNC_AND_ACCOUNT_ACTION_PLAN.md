@@ -300,3 +300,25 @@ If the combined release has to stay inside the 5 KB budget, the cheapest places 
 - a donation is settled and credited once.
 
 A mutation check confirmed the frozen-day test has teeth: with the late-day upsert replaced by `DO NOTHING`, the test fails because the late evidence is silently lost.
+
+## 18. Lighthouse baseline (12 Nov 2026)
+
+Lighthouse 13.6.0, mobile preset (simulated slow 4G, 4x CPU slowdown), headless Chrome, performance category only. Page: `/` on a fresh profile, which is the first-run onboarding screen. Production builds of `main` and this branch, built and served from the same environment. Three runs each; medians shown.
+
+| Metric | `main` | This branch | Runs (main / branch) |
+| --- | --- | --- | --- |
+| Performance score | 100 | 100 | 97, 100, 100 / 99, 100, 100 |
+| First contentful paint | 911 ms | 910 ms | 919, 911, 909 / 915, 910, 909 |
+| Largest contentful paint | 911 ms | 910 ms | 919, 911, 909 / 915, 910, 909 |
+| Total blocking time | 73 ms | 66 ms | 174, 73, 46 / 70, 66, 47 |
+| Cumulative layout shift | 0 | 0 | 0 / 0 |
+| Speed index | 2,457 ms | 2,449 ms | 3,043, 2,457, 2,396 / 2,526, 2,449, 2,385 |
+| Time to interactive | 4,633 ms | 3,488 ms | 4,788, 3,495, 4,633 / 3,503, 3,488, 3,476 |
+| Transferred | 1,008 KB | 1,013 KB | constant |
+| Requests | 37 | 38 | constant |
+
+**Reading it.** No regression: the two builds are the same within run-to-run noise (the spread inside `main` alone is larger than any difference between them), and the extra 5 KB transferred matches the +7,968 B gzip measured in section 16. The page is already at the top of the scale on this machine, so these numbers can only show a regression, not an improvement.
+
+**What this does not measure.** It is the first-run screen, not the returning home screen (a fresh Lighthouse profile always shows onboarding). It is lab data on a fast machine with simulated throttling, not a real budget Android phone. INP needs interaction and is not produced by Lighthouse; total blocking time is only its lab stand-in. There is no field data: real-user LCP, INP and CLS come from `/api/analytics`. The sync engine does its work after login, so the first-run page cannot show its cost; the browser validation (section 15) covers that: one change on a 1,000-mission account is tracked in about 1 ms.
+
+To repeat: build `main` and the branch with the same environment, serve them, and run `npx lighthouse@13.6.0 http://127.0.0.1:<port>/ --only-categories=performance --output=json --chrome-flags="--headless=new --no-sandbox"` three times each.

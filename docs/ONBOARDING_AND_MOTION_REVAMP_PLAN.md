@@ -222,7 +222,7 @@ Measure on the production build, before and after, on the same throttled profile
 | Share of users who saw the onboarding hero play | At least 90% of users without reduced motion |
 | Time from onboarding shown to hero moving, throttled first visit | Under about 2 seconds; instant on later slides |
 
-A phase that misses a speed budget does not ship until it is fixed, following the order of remedies in section 7.0. A phase that hits the speed budgets by not animating also fails. **No baseline is recorded yet** for the home route first-load JS, Lighthouse, or real-user LCP/INP/CLS: only the single throttled onboarding measurement in the table above exists. Record them (`npm run analyze`, Lighthouse mobile, `/api/analytics`) on a build from before this branch and on the release candidate before treating these budgets as a gate. Treat a Lighthouse difference under about 5 points as noise, since single runs vary by that much.
+A phase that misses a speed budget does not ship until it is fixed, following the order of remedies in section 7.0. A phase that hits the speed budgets by not animating also fails. **Baselines recorded 12 Nov 2026** in `docs/SYNC_AND_ACCOUNT_ACTION_PLAN.md` sections 16 and 18: home first-load JS (910,454 B raw, 291,778 B gzip on `main`) and a Lighthouse mobile run of the first-run screen (score 100, LCP 911 ms, TBT 73 ms, CLS 0). Still missing: real-user LCP/INP/CLS from `/api/analytics`, a returning-user home run, and a real budget phone. Record them (`npm run analyze`, Lighthouse mobile, `/api/analytics`) on a build from before this branch and on the release candidate before treating these budgets as a gate. Treat a Lighthouse difference under about 5 points as noise, since single runs vary by that much.
 
 ### 7.5 Rollback
 
