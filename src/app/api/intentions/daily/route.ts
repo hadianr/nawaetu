@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { localDateIn } from "@/lib/utils/timezone";
 import { NextRequest, NextResponse } from "next/server";
 import { db, checkConnection } from "@/db";
 import { intentions, users, pushSubscriptions } from "@/db/schema";
@@ -48,7 +49,9 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { intention_text, intention_date, is_private = true, user_token: providedToken } = body;
+        const { intention_text, intention_date, is_private = true, user_token: providedToken, timezone } = body;
+        // The user's own calendar day; the server clock (UTC) would file early-morning intentions under yesterday.
+        const userToday = localDateIn(new Date(), timezone);
 
         // Try both session and token
         const session = await getServerSession();
@@ -85,8 +88,8 @@ export async function POST(req: NextRequest) {
             intentionDateValue = new Date(intention_date);
             todayStr = intentionDateValue.toISOString().split('T')[0];
         } else {
-            intentionDateValue = new Date();
-            todayStr = intentionDateValue.toISOString().split('T')[0];
+            todayStr = userToday;
+            intentionDateValue = new Date(`${todayStr}T00:00:00Z`);
         }
 
         let userId: string;
@@ -139,8 +142,7 @@ export async function POST(req: NextRequest) {
             return newUser.id;
         }
 
-        const now = new Date();
-        const actualTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const actualTodayStr = userToday;
 
         const startOfToday = new Date(todayStr);
         startOfToday.setUTCHours(0, 0, 0, 0);

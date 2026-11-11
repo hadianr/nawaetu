@@ -165,6 +165,41 @@ describe('POST /api/intentions/daily', () => {
     expect(data.data.current_streak).toBe(3);
   });
 
+  it("counts an intention written at 04:30 WIB as today's, not as backdated", async () => {
+    // 04:30 on 11 Nov in Jakarta is still 10 Nov in UTC, where the server clock runs.
+    // The server runs in UTC; pin it so the test does not depend on the developer's own timezone.
+    const originalTz = process.env.TZ;
+    process.env.TZ = 'UTC';
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-11-10T21:30:00Z'));
+    try {
+      mockChain.limit.mockResolvedValueOnce([]);
+      mockChain.limit.mockResolvedValueOnce([{ id: 'user-1' }]);
+      mockChain.limit.mockResolvedValueOnce([]);
+      mockChain.returning.mockResolvedValueOnce([{ id: 'int-1', intentionDate: '2026-11-11', intentionText: 'Test' }]);
+      mockChain.orderBy.mockResolvedValueOnce([{ intentionDate: new Date('2026-11-11T00:00:00Z') }]);
+      mockChain.limit.mockResolvedValueOnce([{ id: 'user-1', intentionStreakLongest: 0 }]);
+
+      const req = new NextRequest('http://localhost:3000/api/intentions/daily', {
+        method: 'POST',
+        body: JSON.stringify({
+          user_token: 'test-token',
+          intention_text: 'Test',
+          intention_date: '2026-11-11',
+          timezone: 'Asia/Jakarta',
+        }),
+      });
+      const response = await POST(req);
+      const data = (response as unknown as { body: { data: { intention_points_earned: number; current_streak: number } } }).body;
+
+      expect(data.data.intention_points_earned).toBe(10);
+      expect(data.data.current_streak).toBe(1);
+    } finally {
+      vi.useRealTimers();
+      if (originalTz === undefined) delete process.env.TZ; else process.env.TZ = originalTz;
+    }
+  });
+
   it('should NOT expose error details in development environment', async () => {
     vi.stubEnv('NODE_ENV', 'development');
     mockChain.limit.mockRejectedValueOnce(new Error('Database connection failed: confidential info'));

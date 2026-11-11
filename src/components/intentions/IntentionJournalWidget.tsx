@@ -184,7 +184,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_token: userToken, intention_text: intentionText, intention_date: selectedDate }),
+                body: JSON.stringify({ user_token: userToken, intention_text: intentionText, intention_date: selectedDate, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }),
             });
             const data = await response.json();
 
