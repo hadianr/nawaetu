@@ -43,8 +43,9 @@ const quranLastReadSchema = z.object({
 const syncSchema = z.object({
     consumeOnly: z.boolean().optional(),
     profile: z.object({
-        name: z.string().optional(),
-        gender: z.enum(["male", "female"]).optional(),
+        // The client sends null for anything the guest never set.
+        name: z.string().nullish(),
+        gender: z.enum(["male", "female"]).nullish(),
     }).optional(),
     settings: z.record(z.string(), z.any()).optional(),
     bookmarks: z.array(z.object({
@@ -76,7 +77,7 @@ const syncSchema = z.object({
     activity: z.object({
         date: z.string(),
         quranAyat: z.number(),
-        hasanahGained: z.number(),
+        hasanahGained: z.number().optional(),
         tasbihCount: z.number(),
         prayersLogged: z.array(z.string()).max(50),
     }).optional(),
@@ -86,7 +87,7 @@ const syncSchema = z.object({
                 try { return JSON.parse(val); } catch { return val; }
             }
             return val;
-        }, quranLastReadSchema)
+        }, quranLastReadSchema.nullable())
     }).optional(),
 });
 
@@ -283,7 +284,7 @@ export async function POST(req: NextRequest) {
                         userId,
                         date: data.activity.date,
                         quranAyat: data.activity.quranAyat,
-                        hasanahGained: data.activity.hasanahGained,
+                        hasanahGained: data.activity.hasanahGained ?? 0,
                         tasbihCount: data.activity.tasbihCount,
                         prayersLogged: data.activity.prayersLogged,
                     })
@@ -291,7 +292,7 @@ export async function POST(req: NextRequest) {
                         target: [dailyActivities.userId, dailyActivities.date],
                         set: {
                             quranAyat: data.activity.quranAyat,
-                            hasanahGained: data.activity.hasanahGained,
+                            hasanahGained: data.activity.hasanahGained ?? 0,
                             tasbihCount: data.activity.tasbihCount,
                             prayersLogged: data.activity.prayersLogged,
                             lastUpdatedAt: new Date(),
