@@ -127,7 +127,6 @@ function checkServerProgress(data: GuestSyncData): boolean {
     if (data.bookmarks && data.bookmarks.length > 0) return true;
     if (data.completedMissions && data.completedMissions.length > 0) return true;
     if (data.intentions && data.intentions.length > 0) return true;
-    if (data.profile?.name && data.profile.name.toLowerCase() !== "guest") return true;
     if (data.profile?.streaks?.current && data.profile.streaks.current > 0) return true;
     if (data.readingState?.quranLastRead) return true;
     if (data.dailyActivities && data.dailyActivities.length > 0) return true;
@@ -267,7 +266,15 @@ async function hydrateFromServer(
             }
         }
 
-        if (data.progression?.streak) {
+        // An account with no points and no streak days must not wipe what this device already has.
+        const serverHasProgression = Boolean(
+            (data.progression?.hasanah ?? 0) > 0
+            || (data.progression?.streak?.currentDays ?? 0) > 0
+            || (data.progression?.streak?.longestDays ?? 0) > 0
+            || data.progression?.streak?.days?.length
+        );
+
+        if (serverHasProgression && data.progression?.streak) {
             const canonicalStreak = data.progression.streak;
             storage.set(STORAGE_KEYS.USER_STREAK, {
                 currentStreak: canonicalStreak.currentDays || 0,
@@ -282,7 +289,7 @@ async function hydrateFromServer(
             window.dispatchEvent(new Event("streak_updated"));
         }
 
-        if (data.progression) {
+        if (serverHasProgression && data.progression) {
             storage.set(STORAGE_KEYS.CANONICAL_PROGRESSION, {
                 ...data.progression,
                 userId,

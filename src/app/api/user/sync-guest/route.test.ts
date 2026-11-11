@@ -186,6 +186,24 @@ describe('POST /api/user/sync-guest', () => {
         expect(db.transaction).not.toHaveBeenCalled();
     });
 
+    it('accepts the payload the client builds for a guest who never set gender or opened the Quran', async () => {
+        // Mirrors handleSyncToNewAccount: unset values arrive as null and activity has no hasanahGained.
+        const payload = {
+            profile: { name: 'Aisyah', gender: null },
+            settings: { theme: 'blossom', locale: 'id', reciter: null },
+            readingState: { quranLastRead: null },
+            bookmarks: [],
+            completedMissions: [{ id: 'tasbih_99', completedAt: '2026-11-11', hasanahEarned: 30 }],
+            intentions: [],
+            activity: { date: '2026-11-11', quranAyat: 0, tasbihCount: 99, prayersLogged: ['fajr'] },
+        };
+        const req = { json: async () => payload, headers: new Headers() };
+        const response = await POST(req as Parameters<typeof POST>[0]);
+
+        expect(response.status).toBe(200);
+        expect(txMock.values).toHaveBeenCalledWith(expect.objectContaining({ date: '2026-11-11', hasanahGained: 0 }));
+    });
+
     it('syncs profile, settings, bookmarks, activity, and reading state in one transaction', async () => {
         const payload = {
             profile: { name: 'Aisyah', gender: 'female' },

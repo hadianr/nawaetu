@@ -133,6 +133,43 @@ describe("GuestSyncManager sync branches", () => {
         expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.LAST_SYNC_USER_ID, "user-1");
     });
 
+    it("imports guest data into a new Google account that already has a profile name", async () => {
+        mocks.storageValues.set(STORAGE_KEYS.USER_HASANAH, "1250");
+        mocks.storageValues.set(STORAGE_KEYS.USER_STREAK, { currentStreak: 12, longestStreak: 12, lastActiveDate: "2026-11-11" });
+        mocks.storageValues.set(STORAGE_KEYS.COMPLETED_MISSIONS, [{ id: "tasbih_99", completedAt: "2026-11-11", hasanahEarned: 30 }]);
+        // What /api/user/full-data returns right after sign-up: Google's name, no activity.
+        mocks.fetch
+            .mockResolvedValueOnce(jsonResponse({
+                profile: { name: "Aisyah Rahma", gender: null, guestSyncEligible: true, streaks: { current: 0, longest: 0 } },
+                bookmarks: [], completedMissions: [], intentions: [], dailyActivities: [], readingState: null,
+                progression: { hasanah: 0, streak: { currentDays: 0, longestDays: 0, lastStreakDate: null, freezesAvailable: 0, days: [] } },
+            }))
+            .mockResolvedValueOnce(jsonResponse({ success: true }));
+
+        await runSync();
+
+        expect(mocks.fetch).toHaveBeenNthCalledWith(2, "/api/user/sync-guest", expect.objectContaining({ method: "POST" }));
+        expect(mocks.storageValues.get(STORAGE_KEYS.USER_HASANAH)).toBe("1250");
+        expect(mocks.storageValues.get(STORAGE_KEYS.USER_STREAK)).toEqual(expect.objectContaining({ currentStreak: 12 }));
+    });
+
+    it("keeps local points when the account has data but no points or streak yet", async () => {
+        mocks.storageValues.set(STORAGE_KEYS.USER_HASANAH, "1250");
+        mocks.storageValues.set(STORAGE_KEYS.USER_STREAK, { currentStreak: 12, longestStreak: 12, lastActiveDate: "2026-11-11" });
+        mocks.fetch.mockResolvedValueOnce(jsonResponse({
+            profile: { name: "Aisyah Rahma" },
+            bookmarks: [{ id: "2:255" }],
+            progression: { hasanah: 0, streak: { currentDays: 0, longestDays: 0, lastStreakDate: null, freezesAvailable: 0, days: [] } },
+        }));
+
+        await runSync();
+
+        expect(mocks.storage.set).toHaveBeenCalledWith(STORAGE_KEYS.QURAN_BOOKMARKS, [{ id: "2:255" }]);
+        expect(mocks.storageValues.get(STORAGE_KEYS.USER_HASANAH)).toBe("1250");
+        expect(mocks.storageValues.get(STORAGE_KEYS.USER_STREAK)).toEqual(expect.objectContaining({ currentStreak: 12 }));
+        expect(mocks.storageValues.has(STORAGE_KEYS.CANONICAL_PROGRESSION)).toBe(false);
+    });
+
     it("preserves local guest data when the account is not eligible", async () => {
         mocks.storageValues.set(STORAGE_KEYS.USER_NAME, "Aisyah");
         mocks.fetch.mockResolvedValueOnce(jsonResponse({ profile: {} }));
