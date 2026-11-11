@@ -289,7 +289,7 @@ export default function PrayerCheckInWidget() {
         } else if (gender !== "female") {
             setSheet({ prayer: prayer as typeof PRAYERS[number], missionId });
         } else {
-            doComplete(missionId, 25);
+            doComplete(missionId, 75);
         }
     };
 
@@ -453,7 +453,7 @@ export default function PrayerCheckInWidget() {
                                             ? "text-[rgb(var(--color-warning))]/80"
                                             : "text-[rgb(var(--color-primary))]/70"
                                     )}>
-                                        +{getHasanahReward(gender !== "female" ? 75 : 25)} Hasanah
+                                        +{getHasanahReward(75)} Hasanah
                                     </span>
                                 )}
                                 {!done && isUpcoming && !isLocked && (

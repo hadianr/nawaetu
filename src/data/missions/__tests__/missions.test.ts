@@ -4,7 +4,7 @@
 import { describe, it, expect } from "vitest";
 import { createMission } from "../types";
 import { resolveRitualForGender, BASE_PRAYER_MISSIONS, UNIVERSAL_MISSIONS } from "../daily";
-import { getMissionsForGender, getLocalizedMissionContent, getLocalizedMission } from "../index";
+import { getMissionsForGender, getLocalizedMissionContent, getLocalizedMission, findMissionDefinition, missionRewardOptions } from "../index";
 
 describe("Missions Architecture & Filtering Unit Tests", () => {
 
@@ -61,6 +61,7 @@ describe("Missions Architecture & Filtering Unit Tests", () => {
             expect(femaleFajr.description).toContain("tepat waktu");
             expect(femaleFajr.dalil).toContain("HR. Abu Dawud");
             expect(femaleFajr.completionOptions).toBeUndefined();
+            expect(femaleFajr.hasanahReward).toBe(75);
         });
 
         it("returns non-prayer missions unchanged", () => {
@@ -299,6 +300,17 @@ describe("Missions Architecture & Filtering Unit Tests", () => {
             expect(tokens.length).toBeGreaterThanOrEqual(2);
             expect(tokens[0]).toContain("QS.");
             expect(tokens[1]).toContain("HR.");
+        });
+    });
+
+    describe("missionRewardOptions", () => {
+        it("accepts every prayer reward men and women can earn, so the server does not cut them back to 25", () => {
+            const options = missionRewardOptions(findMissionDefinition("dhuhr_prayer")!);
+            expect(options).toEqual(expect.arrayContaining([25, 75]));
+        });
+
+        it("leaves non-prayer missions at their single reward", () => {
+            expect(new Set(missionRewardOptions(findMissionDefinition("daily_intention")!))).toEqual(new Set([50]));
         });
     });
 });
