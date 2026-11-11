@@ -256,3 +256,11 @@ Measured or counted on branch `fix/sync-account-hardening`. Counts of database s
 **Taken out by the owner (11 Nov 2026):** the Ramadan hub page (`/ramadhan`). It answers 404, is out of the sitemap and `llms.txt`, and the seasonal bottom-navigation tab falls back to the normal one. The 100-day journey, the countdown and the seasonal home cards stay, because they already appear only in their season. One switch, `RAMADHAN_PAGE_ENABLED` in `src/lib/features.ts`, brings it all back.
 
 **5.5 detail:** Redis is configured in Production, so the session check, the rate limiters (including the new sync, payment, intention and AI daily limits) and the sirah cache use it there instead of the per-instance in-memory fallback. `CRON_SECRET` is set for Development, Preview and Production. Not verified: that the values are valid and the Upstash database is reachable from the running deployment; that needs a look at the Upstash dashboard or the Vercel runtime logs.
+
+**Redis budget (11 Nov 2026).** Upstash shows the database is on the Free tier (500,000 commands a month, 250 MB, Singapore) with 457 commands used so far, so it is reachable and barely used today. The sync engine would change that, so three things were done to keep it inside the free tier:
+
+- The session check asked Redis on every authenticated request (one command each). A per-instance memory cache of 60 seconds now sits in front of it, for valid users only, so a deleted or unknown account is still checked every time.
+- The sync, pull, full-data and intention limiters count in memory only. They protect each instance's own single database connection, so per-instance counting is the right scope and costs no commands. Redis stays for the limits that must hold across instances: AI chat (per minute and per day), payment links and anonymous-account creation.
+- The limiters no longer ask Redis to record analytics on every check.
+
+If usage still approaches the cap, the next steps are a longer memory cache for the session check, or moving the AI daily limit to the database. When the cap is hit, Upstash errors and the code falls back to memory with a warning, so nothing breaks, but the cross-instance limits weaken until the month resets.

@@ -32,7 +32,7 @@ vi.mock("next-auth", () => ({
 }));
 vi.mock("next-auth/providers/google", () => ({ default: vi.fn(() => ({})) }));
 
-import { authOptions, isUserValid } from "./auth";
+import { authOptions, clearUserValidityCache, isUserValid } from "./auth";
 
 function mockUserLookup(result: unknown) {
     const limit = vi.fn().mockResolvedValue(result);
@@ -45,6 +45,26 @@ describe("authentication user validation", () => {
     beforeEach(() => {
         mocks.select.mockReset();
         mocks.loggerError.mockReset();
+        clearUserValidityCache();
+    });
+
+    it("asks the database once, then remembers a valid user for a minute", async () => {
+        mockUserLookup([{ id: "user-1" }]);
+
+        await expect(isUserValid("user-1")).resolves.toBe(true);
+        await expect(isUserValid("user-1")).resolves.toBe(true);
+        await expect(isUserValid("user-1")).resolves.toBe(true);
+
+        expect(mocks.select).toHaveBeenCalledTimes(1);
+    });
+
+    it("never remembers a missing user, so a deleted or unknown account is checked every time", async () => {
+        mockUserLookup([]);
+
+        await expect(isUserValid("ghost")).resolves.toBe(false);
+        await expect(isUserValid("ghost")).resolves.toBe(false);
+
+        expect(mocks.select).toHaveBeenCalledTimes(2);
     });
 
     it("accepts an existing user", async () => {

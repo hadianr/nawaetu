@@ -30,6 +30,19 @@ const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_R
     ? Redis.fromEnv()
     : null;
 
+// Every authenticated request runs the session callback, which asked Redis whether the user still exists.
+// On Upstash's free tier (500k commands a month) that is the biggest consumer, so a short per-instance
+// memory cache sits in front of it. Only "valid" is remembered, and for a minute: the Redis entry already
+// lives for five, so a deleted account is noticed about as fast as before.
+const VALID_USER_MEMORY_MS = 60_000;
+const VALID_USER_MEMORY_MAX = 5_000;
+const validUsers = new Map<string, number>();
+
+/** For tests. */
+export function clearUserValidityCache(): void {
+    validUsers.clear();
+}
+
 /**
  * Checks whether a userId exists in DB, leveraging Upstash Redis caching for 0ms DB queries on hit.
  * Includes graceful exception handling so database spin-ups/transient drops never throw JWTSessionError.
@@ -37,11 +50,20 @@ const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_R
 export async function isUserValid(userId: string): Promise<boolean | null> {
     if (!userId) return false;
 
+    const rememberedUntil = validUsers.get(userId);
+    if (rememberedUntil !== undefined && rememberedUntil > Date.now()) return true;
+
+    const remember = () => {
+        if (validUsers.size >= VALID_USER_MEMORY_MAX) validUsers.delete(validUsers.keys().next().value as string);
+        validUsers.set(userId, Date.now() + VALID_USER_MEMORY_MS);
+    };
+
     const cacheKey = `user:valid:${userId}`;
     if (redis) {
         try {
             const cachedStatus = await redis.get<number>(cacheKey);
             if (cachedStatus !== null && cachedStatus !== undefined) {
+                if (cachedStatus === 1) remember();
                 return cachedStatus === 1;
             }
         } catch {
@@ -57,6 +79,7 @@ export async function isUserValid(userId: string): Promise<boolean | null> {
             .limit(1);
 
         const isValid = Boolean(userExists);
+        if (isValid) remember();
 
         if (redis) {
             try {
