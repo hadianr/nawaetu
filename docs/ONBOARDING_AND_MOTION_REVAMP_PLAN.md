@@ -84,7 +84,7 @@ Cut the intro from 4 slides to 3 by merging the welcome into the first slide. Ev
 
 ### 4.3 Risks specific to onboarding
 
-- **First-paint cost.** Onboarding is the first screen, so the Lottie player downloads there for every new user. The player's WASM is 1.2 MB (about 480 KB compressed), far larger than the animations themselves. `LottieMoment` shows nothing while it loads. **Fix:** render the current Lucide icon immediately, start loading the player only after the page is idle, and swap the animation in when it is ready. If it never arrives, the icon stays. See section 7.
+- **First-paint cost.** Onboarding is the first screen, so the Lottie player downloads there for every new user. The player's WASM is 1.2 MB (about 480 KB compressed), far larger than the animations themselves. `LottieMoment` shows nothing while it loads. **Fix (as built):** start loading the player at hydration, keep the animation box empty and fixed-size until it is ready, then fade it in (`quietLoad`, section 7.0). The icon is shown only as the final state: reduced motion, a failed player, or a device that cannot run it. Showing the icon first looked like a glitch when the animation replaced it. See section 7.
 - **Offline first run.** The service worker already precaches the WASM and the three shipped `.lottie` files, so repeat visits and offline use are covered. New files in `public/lottie/` should be picked up the same way; confirm in the built `sw.js` after adding them.
 - **Reduced motion.** Every hero falls back to the existing icon. Slides change with no movement.
 
@@ -183,7 +183,7 @@ Ordered by payoff. "Earned" means the animation plays only when the user achieve
 
 | Risk | Why it matters | Guardrail |
 | --- | --- | --- |
-| **Player WASM is 1.2 MB (about 480 KB compressed)** | On a first visit it would compete with the app's own code on a slow phone | Start loading it right after first paint, not during it. The icon shows for that short gap, then the animation plays from its first frame. Once loaded, the player is reused, so slides 2 and 3 and every later moment animate instantly |
+| **Player WASM is 1.2 MB (about 480 KB compressed)** | On a first visit it would compete with the app's own code on a slow phone | Start loading it at hydration (see the measured row below), keep the box empty and the same size until it is ready, then play from the first frame. The icon is not shown in that gap. Once loaded, the player is reused, so slides 2 and 3 and every later moment animate instantly |
 | Measured 11 Nov 2026 (4x CPU slowdown, ~10 Mbps with 150 ms latency, cold cache) | Mosque hero first paint was 2.25 s, with the WASM starting at 1.53 s when the first player mounted | **Fixed:** the entry gate starts the onboarding code and the player at hydration when there is no onboarding marker, and the player calls `DotLottie.preload()` on import. The WASM now starts at about 1.02 s and the hero paints at about 1.76 s (0.6 s after first paint, the WASM transfer itself). Frame rate stayed at 60 with no janks before and after |
 | Animation delays an action | A check-in that waits for an animation feels laggy | State and storage update first, animation plays after, and is never awaited |
 | Several canvases at once | Each Lottie is a live canvas; several on one screen drain battery and drop frames | At most one Lottie playing per screen. Lists never contain a Lottie per row |
@@ -198,8 +198,8 @@ Ordered by payoff. "Earned" means the animation plays only when the user achieve
 
 All of this lives in `LottieMoment`, so every current and future use gets it:
 
-1. Show `fallback` while loading and on error, then cross-fade to the animation once it is ready.
-2. Start the player import right after first paint (`requestIdleCallback`, with a short timeout so it is never postponed for long).
+1. Keep the box empty and fixed-size while loading (`quietLoad`), show `fallback` only on error or reduced motion, and fade the animation in once it is ready.
+2. Start the player import at hydration when there is no onboarding marker, and call `DotLottie.preload()` on import. Elsewhere, start it right after first paint (`requestIdleCallback` with a short timeout).
 3. Pause when off-screen or when the tab is hidden, resume when visible.
 
 Data saver is deliberately **not** a reason to skip animation: the files are tiny and the player is precached anyway, so skipping would cost the motion and save almost nothing.
@@ -222,11 +222,11 @@ Measure on the production build, before and after, on the same throttled profile
 | Share of users who saw the onboarding hero play | At least 90% of users without reduced motion |
 | Time from onboarding shown to hero moving, throttled first visit | Under about 2 seconds; instant on later slides |
 
-A phase that misses a speed budget does not ship until it is fixed, following the order of remedies in section 7.0. A phase that hits the speed budgets by not animating also fails. The baseline is recorded in phase 0, before any change.
+A phase that misses a speed budget does not ship until it is fixed, following the order of remedies in section 7.0. A phase that hits the speed budgets by not animating also fails. **No baseline is recorded yet** for the home route first-load JS, Lighthouse, or real-user LCP/INP/CLS: only the single throttled onboarding measurement in the table above exists. Record them (`npm run analyze`, Lighthouse mobile, `/api/analytics`) on a build from before this branch and on the release candidate before treating these budgets as a gate. Treat a Lighthouse difference under about 5 points as noise, since single runs vary by that much.
 
 ### 7.5 Rollback
 
-Each feature's animation is a leaf component with a static fallback, so removing one is a one-line change that cannot affect data. No stored data or API changes anywhere in this plan.
+Each feature's animation is a leaf component with a static fallback, so removing one is a one-line change that cannot affect data. **Not true for the gender work in section 9:** it changed what the server accepts and pays. Sync validation now accepts every reward a gender can earn (`missionRewardOptions`), and later the server decides the prayer reward from the account's gender (`docs/SYNC_AND_ACCOUNT_ACTION_PLAN.md`, item 5.3). Rolling back a hero animation is still one line; rolling back the reward rules is not, and needs the server rule changed with it.
 
 ## 8. Phases
 
@@ -334,7 +334,7 @@ The most valuable item for female users. Off unless she turns it on.
 - A switch on the prayer widget: "Sedang berhalangan" / "On my period".
 - While on: the five prayers are replaced by a calm card with uzur missions; prayer-time push notifications pause; the streak continues through uzur missions and is never broken by the missing prayers.
 - Turns off by her, or automatically after 15 days (the maximum length of haid in the Syafi'i school), with a reminder about qadha of fasting, not of prayer.
-- **Privacy:** stored on the device only, never synced, never sent to analytics, never shown on share cards or Wrapped. This is health data.
+- **Privacy:** never sent to analytics, never shown on share cards or Wrapped. This is health data. **Needs a rework before it is built:** "stored on the device only" cannot hold as written. Prayer push notifications are sent by the server, so pausing them needs the server to know; the streak is server-owned, so protecting it through haid needs the server to know; and a second device would not see the switch. Either keep a minimal server-side flag (a date range, no reason or label) and say so, or accept that uzur mode is per device and does not pause server pushes or protect the server streak.
 
 **AI mentor**
 
