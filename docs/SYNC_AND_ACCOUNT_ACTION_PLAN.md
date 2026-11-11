@@ -1,7 +1,7 @@
 # Sync and Account Action Plan
 
 **Prepared:** 11 November 2026
-**Status (11 November 2026):** Phase 0 is built and tested on branch `fix/sync-account-hardening`, and so are 1.1, 1.3, 1.6, 1.7, 1.8, 1.9 and 1.10 (see the status marks). Nothing is released or pushed. The rest is proposed. Owner decisions are recorded in section 12.
+**Status (11 November 2026):** On branch `fix/sync-account-hardening`, not pushed or released: all of phase 0; in phase 1 items 1.1 to 1.4 and 1.6 to 1.10; and 2.2, 2.3 (partly), 3.4, 4.1 and 4.6 (see the status marks). Left open: 1.5, 2.1, 3.1 to 3.3, 3.5, 3.6, 4.2 to 4.5, 4.7 to 4.9 and phase 5. Owner decisions are recorded in section 12.
 **Source:** audit of guest mode, logged-in mode, multi-device sync, payments, push notifications, Ramadan trackers, the service worker, and `ONBOARDING_AND_MOTION_REVAMP_PLAN.md`.
 
 ## 1. Summary
@@ -71,9 +71,9 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | # | Work | Impact when done | Where | Evidence |
 | --- | --- | --- | --- | --- |
 | 1.1 **Done** | Rate-limit `/api/user/sync`, `/sync-guest`, `/full-data`, the intention routes and `/api/payment/create` with the existing `src/lib/rate-limit.ts` | One account can no longer hold the single database connection or spam payment links | the routes above | C |
-| 1.2 | Accept completion dates from 30 days back to 1 day forward, and cap missions per request. Warn the user before data ages out (see below) | Hasanah and streaks cannot be farmed with past or future dates, and no user loses data silently | `db-sync.repository.ts`, `src/lib/validations/sync.ts`, a sync status notice | C |
+| 1.2 **Done (server window, warnings, local keep)** | Accept completion dates from 30 days back to 1 day forward, and cap missions per request. Warn the user before data ages out (see below) | Hasanah and streaks cannot be farmed with past or future dates, and no user loses data silently | `db-sync.repository.ts`, `src/lib/validations/sync.ts`, a sync status notice | C |
 | 1.3 **Done** | Allow-list setting keys in `syncSetting`, reusing the list in `sync-guest` | Clients cannot write arbitrary keys such as `guestSyncEligible` | `db-sync.repository.ts` | C |
-| 1.4 | Intention identity: remove the shared `anon_fallback` and `anon_mem_*` tokens; stop resolving an FCM token to a real account; stop creating a user row for any token without a limit; move the token out of the URL | Guests cannot land in a shared journal; a logged-out device cannot read the previous user's journal; no unbounded user rows | `IntentionJournalWidget.tsx`, `src/app/journal/page.tsx`, `src/app/api/intentions/*` | C |
+| 1.4 **Done except the token in the URL** | Intention identity: remove the shared `anon_fallback` and `anon_mem_*` tokens; stop resolving an FCM token to a real account; stop creating a user row for any token without a limit; move the token out of the URL | Guests cannot land in a shared journal; a logged-out device cannot read the previous user's journal; no unbounded user rows | `IntentionJournalWidget.tsx`, `src/app/journal/page.tsx`, `src/app/api/intentions/*` | C |
 | 1.5 | Confirm `assetlinks.json` is served for the Android wrapper. None was found in `public/` or `src/app/` | The Play Store app opens full screen without a browser bar | hosting or `public/.well-known/` | C |
 | 1.6 **Done** | `/api/notifications/test-push` accepts any caller, any token, any title and body. Require the cron secret or remove the route | Nobody can send arbitrary notifications through Nawaetu's Firebase project | `src/app/api/notifications/test-push/route.ts`, `src/proxy.ts` | C |
 | 1.7 **Done** | `/api/notifications/preferences` has no session check. For a subscription that has an owner, require that owner's session; a guest subscription stays editable by its token, because guests must keep prayer alerts (decision 5) | A stranger with a token cannot change a signed-in user's prayer alerts or location | `src/app/api/notifications/preferences/route.ts` | C |
@@ -98,8 +98,8 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | # | Work | Impact when done | Where |
 | --- | --- | --- | --- |
 | 2.1 | Add ledger sources and stable ids for streak milestones, dhikr, Quran reading time, sirah quiz, fasting, taraweh, khataman and Lailatul Qadr | Points no longer drop after a sync; the same total on every device. Toggling a taraweh night on and off no longer pays 15 each time | `progression.repository.ts`, `db-sync.repository.ts`, the components that call `addHasanah` |
-| 2.2 | Intention routes write ledger and streak evidence | An intention-only day counts toward the server streak, and its 10 points survive | `src/app/api/intentions/daily/route.ts`, `reflect/route.ts` |
-| 2.3 | Make the streak rebuild deterministic: do not seed it with the current freeze count; store frozen days | The same history always gives the same streak. Today the server over-counts in about 1 of 5 random histories (R) | `src/lib/habits/progression.ts`, `progression.repository.ts` |
+| 2.2 **Partly done: intention points only** | Intention routes write ledger and streak evidence | An intention-only day counts toward the server streak, and its 10 points survive | `src/app/api/intentions/daily/route.ts`, `reflect/route.ts` |
+| 2.3 **Partly done: deterministic rebuild; frozen days are still not stored** | Make the streak rebuild deterministic: do not seed it with the current freeze count; store frozen days | The same history always gives the same streak. Today the server over-counts in about 1 of 5 random histories (R) | `src/lib/habits/progression.ts`, `progression.repository.ts` |
 
 2.1 may need a migration for the source enum. Applying it to a shared database needs explicit approval.
 
@@ -110,7 +110,7 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | 3.1 | Send changes, not the whole state. Every local change, including delete and undo, goes into the existing `syncQueue`; the queue is drained after a change, when the connection returns, and when the app regains focus | Sync cost stops growing with account age. Offline work is retried without the user editing something. The 200-entry dead end goes away | `src/lib/sync-queue.ts`, `src/hooks/useDataSync.ts`, `DataSyncer.tsx`, `PrayerCheckInWidget.tsx` |
 | 3.2 | Server handles mission undo with a reversing ledger entry, and bookmark delete | An undone prayer stays undone; deleted bookmarks stay deleted | `db-sync.repository.ts`, `progression.repository.ts` |
 | 3.3 | Pull on app focus and merge into local storage: missions, bookmarks, today's activity, fasting, taraweh | A prayer checked on the phone appears on the laptop | `GuestSyncManager.tsx` or a new pull hook, `/api/user/full-data` |
-| 3.4 | Merge daily activity on the server: union for prayers, highest value for counters | A second device can no longer erase the first device's prayers and tasbih | `syncDailyActivity` |
+| 3.4 **Done, see limit** | Merge daily activity on the server: union for prayers, highest value for counters | A second device can no longer erase the first device's prayers and tasbih | `syncDailyActivity` |
 | 3.5 | Move fasting, taraweh and the Ramadan daily log onto the same queue | One retry path for every tracker instead of four fire-and-forget requests | `useFastingTracker.ts`, `useTarawehTracker.ts`, `useRamadhanDailyLog.ts` |
 | 3.6 | Remove the full-state legacy upload once all clients send entries | Less code; the second sync fired by the prayer widget is gone | `src/app/api/user/sync/route.ts`, `useDataSync.ts` |
 
@@ -122,12 +122,12 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 
 | # | Work | Impact when done | Where |
 | --- | --- | --- | --- |
-| 4.1 | Logout syncs first, then clears every user key, including the sync queue, sirah and Ramadan logs, `IS_MUHSININ` and `fcm_token` | No unsynced work lost at logout; nothing left behind for the next user | `UserProfileDialog.tsx` |
+| 4.1 **Done, logout flow has no automated test** | Logout syncs first, then clears every user key, including the sync queue, sirah and Ramadan logs, `IS_MUHSININ` and `fcm_token` | No unsynced work lost at logout; nothing left behind for the next user | `UserProfileDialog.tsx` |
 | 4.2 | Stamp local data with the owner's user id; do not merge data owned by another account | A second Google account on a shared device does not inherit the first one's data | storage layer, `GuestSyncManager.tsx` |
 | 4.3 | On sign-in, move a guest's intentions from the hidden token account to the real account | The journal is not empty after sign-up | `src/app/api/intentions/*`, `sync-guest/route.ts` |
 | 4.4 | Save an intention locally first and queue it; show "saved" only when that is true | Intentions work offline, like the rest of the app | `IntentionJournalWidget.tsx`, `syncQueue` |
 | 4.5 | Return fasting and qadha data in `/api/user/full-data` and hydrate it | Qadha history appears on a second device | `full-data/route.ts`, `useFastingTracker.ts` |
-| 4.6 | Push subscription: set the owner when a user logs in, clear it at logout. Today the upsert never updates `userId` | A user who enabled notifications as a guest starts receiving prayer alerts after login. Streak reminders stop going to the previous account's device | `src/app/api/notifications/subscribe/route.ts`, `fcm-init.ts` |
+| 4.6 **Done** | Push subscription: set the owner when a user logs in, clear it at logout. Today the upsert never updates `userId` | A user who enabled notifications as a guest starts receiving prayer alerts after login. Streak reminders stop going to the previous account's device | `src/app/api/notifications/subscribe/route.ts`, `fcm-init.ts` |
 | 4.7 | Taraweh: store the qiyam flag on the server or stop sending it; let "unselect" reach other devices; do not let the server copy overwrite an unsent local edit | The qiyam mark stops disappearing after a reload; a cleared night stays cleared | `src/app/api/ramadhan/taraweh/route.ts`, `useTarawehTracker.ts` |
 | 4.8 | Refresh Muhsinin status from the server on app focus | A donation made on the phone unlocks premium themes on the laptop without logging in again | `InfaqContext.tsx`, session update |
 | 4.9 | Turn off reload-on-reconnect, or skip it while there is unsent input | Text being typed and unsent edits are not lost when the connection returns | `next.config.ts` |
