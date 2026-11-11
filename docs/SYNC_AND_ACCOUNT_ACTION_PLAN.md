@@ -228,3 +228,23 @@ Measured or counted on branch `fix/sync-account-hardening`. Counts of database s
 - **5.6 answered:** prayer alerts and streak reminders are scheduled by cron-job.org (README and `docs/LLM_KB.md`), which is why nothing in the repo calls them.
 - **5.7:** the AI mentor's daily limit of 10 is checked in the client (`MentorAIClient.tsx`); the server only limits 10 per minute. A second device or cleared storage gets a fresh allowance.
 - **Non-mission points in the ledger use `mission`, `dhikr`, `quran` and `streak_milestone` sources with prefixed ids.** Proper source values would need a migration of the enum.
+
+## 15. Browser validation with Anoa
+
+`npm run test:anoa` (see `scripts/anoa/README.md`) runs the real client in a headless Anoa browser against the production build. The app is started with a database that cannot connect, and a fake backend inside the page answers every `/api` request, so no run can reach real data.
+
+**Bugs the browser and the real storage layer found that unit tests with hand-made mocks had hidden**
+
+| Bug | Effect | Fixed |
+| --- | --- | --- |
+| The storage layer parses JSON text when reading, so values written with `JSON.stringify` came back as objects and `JSON.parse` on them threw into an empty fallback | Fasting log empty after reload and then overwritten by the next edit; khataman progress, the stats history, the Wrapped fasting count and the AI chat sessions reset on reload; the tafsir cache never hit | Yes, with `parseStored` and tests on the real storage layer |
+| Every `online` event started a full pull | A connection that keeps dropping and returning (common on mobile) fired several requests per event | Yes: single flight, 5 s gap for forced pulls, 60 s otherwise |
+| The "your data was kept" case showed "Guest data has been replaced" | Told the user the opposite of what happened | Yes, new message |
+
+**Things to know about Anoa**
+
+- `set offline` flaps `navigator.onLine` between commands, so the sync checks use an offline switch inside the fake backend. The service worker check still uses the real network.
+- The app removes service workers on `localhost` and `127.0.0.1`; the offline-first check uses `nawaetu.localhost`.
+- next-auth ignores a visibility change when the client already knows it has no session; a sign-in in an open tab arrives on its broadcast channel.
+
+**Measured in the browser** (1,000 missions and 100 bookmarks on the device): one change sent as a 235-byte request where the local state is 112,186 bytes; tracking that change took 0.7 ms.

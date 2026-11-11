@@ -40,6 +40,8 @@ const SEND_DELAY_MS = 2000;
 const SEND_MAX_WAIT_MS = 15000;
 /** Do not ask the server for other devices' changes more often than this. */
 const PULL_INTERVAL_MS = 60000;
+/** A forced pull (login, reconnect) still waits this long after the last one: a flapping connection fires many "online" events. */
+const FORCED_PULL_GAP_MS = 5000;
 
 export default function DataSyncer() {
     const { data: session, status } = useSession();
@@ -96,6 +98,7 @@ export default function DataSyncer() {
         let sendTimer: ReturnType<typeof setTimeout> | undefined;
         let firstQueuedAt = 0;
         let lastPullAt = 0;
+        let pulling = false;
         let cancelled = false;
 
         const send = () => {
@@ -120,14 +123,19 @@ export default function DataSyncer() {
         };
 
         const pullIfDue = async (force = false) => {
-            if (document.visibilityState !== "visible" || !navigator.onLine) return;
-            if (!force && Date.now() - lastPullAt < PULL_INTERVAL_MS) return;
+            if (pulling || document.visibilityState !== "visible" || !navigator.onLine) return;
+            if (Date.now() - lastPullAt < (force ? FORCED_PULL_GAP_MS : PULL_INTERVAL_MS)) return;
+            pulling = true;
             lastPullAt = Date.now();
-            // Send our own changes first, so the server's answer already includes them.
-            const sent = await syncDataRef.current({ silent: true });
-            if (!sent.success) return;
-            await pullAndApply(userId, ["progress", "missions", "activity", "profile", "fasting"]);
-            await pullBookmarksIfChanged(userId);
+            try {
+                // Send our own changes first, so the server's answer already includes them.
+                const sent = await syncDataRef.current({ silent: true });
+                if (!sent.success) return;
+                await pullAndApply(userId, ["progress", "missions", "activity", "profile", "fasting"]);
+                await pullBookmarksIfChanged(userId);
+            } finally {
+                pulling = false;
+            }
         };
 
         const start = () => {
