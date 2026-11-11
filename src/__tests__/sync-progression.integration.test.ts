@@ -225,4 +225,24 @@ describe.skipIf(!integrationEnabled)('sync and progression (integration)', () =>
             expect(settled.status).toBe('settlement');
         });
     });
+
+    describe('push subscription language', () => {
+        it('stores the device language for a guest subscription and reads it back with the whole-row select the cron uses', async () => {
+            const token = `it-token-${stamp}`;
+            await db.insert(s.pushSubscriptions).values({ token, userId: null, active: 1, locale: 'en' });
+
+            // The prayer-alert job selects every column; this fails if the column is not in the database.
+            const rows = await db.select().from(s.pushSubscriptions).where(orm.eq(s.pushSubscriptions.token, token));
+            expect(rows).toHaveLength(1);
+            expect(rows[0].userId).toBeNull();
+            expect(rows[0].locale).toBe('en');
+
+            // An update that does not mention the language leaves it alone.
+            await db.update(s.pushSubscriptions).set({ active: 1, updatedAt: new Date() }).where(orm.eq(s.pushSubscriptions.token, token));
+            const [after] = await db.select().from(s.pushSubscriptions).where(orm.eq(s.pushSubscriptions.token, token));
+            expect(after.locale).toBe('en');
+
+            await db.delete(s.pushSubscriptions).where(orm.eq(s.pushSubscriptions.token, token));
+        });
+    });
 });

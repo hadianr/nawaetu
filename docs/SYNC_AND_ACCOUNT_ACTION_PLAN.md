@@ -60,7 +60,7 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 
 | 0.7 **Done, see limit below** | Server prayer alerts also go to guest subscriptions (decision 5). The cron query skips rows without an owner today. Guests have no stored language, so the subscription needs to carry the locale | Guests receive adhan notifications, the core feature of the app | `src/app/api/notifications/prayer-alert/route.ts`, `subscribe/route.ts` | C |
 
-**Limit of 0.7:** guest subscriptions have no stored language, so guests get the default notification language until a locale column is added (needs a migration, which needs your approval).
+**0.7 language (12 Nov 2026):** a guest's device now sends its language when it subscribes and the prayer-alert job uses it when there is no account language. **This needs `drizzle/0020_add_push_locale.sql` applied BEFORE the code is deployed**, because the job selects every column of `push_subscription`. The statement is `ADD COLUMN IF NOT EXISTS`, so it is safe to run twice; it was applied to a throwaway Postgres together with the earlier migrations and the integration suite passes against it. It has not been applied to any shared database.
 
 **Known limit of 0.1 until phase 2:** after a guest import, the next regular sync still replaces the local total with the server's mission-only total, so non-mission points drop then instead of at sign-up. Item 2.1 closes this.
 

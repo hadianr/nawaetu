@@ -123,6 +123,7 @@ export default function NotificationSettings() {
                         prayerPreferences: preferences,
                         userLocation: getCurrentLocation(),
                         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        locale,
                     }),
                 });
                 if (!subscription.ok) throw new Error("Unable to re-register notification device");
@@ -245,7 +246,8 @@ export default function NotificationSettings() {
                                 token,
                                 prayerPreferences: preferences,
                                 userLocation,
-                                timezone
+                                timezone,
+                                locale,
                             }),
                         });
                         if (!response.ok) {

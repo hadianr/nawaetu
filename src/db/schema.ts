@@ -387,6 +387,9 @@ export const pushSubscriptions = pgTable("push_subscription", {
     country: text("country"),
     countryCode: text("country_code"), // ISO 3166-1 alpha-2 e.g., "id", "my", "sg"
 
+    // Notification language chosen on the device ("id" | "en"). Guests have no account settings to read it from.
+    locale: text("locale"),
+
     // Track last sent notification for each prayer to prevent duplicates (JSON: { fajr: "2024-02-11", dhuhr: "2024-02-11" })
     lastNotificationSent: jsonb("last_notification_sent"),
 

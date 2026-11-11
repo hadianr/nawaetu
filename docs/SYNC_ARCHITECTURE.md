@@ -104,5 +104,7 @@ accounts. The sync limiters stay in memory on purpose.
 
 See "Still open" in `SYNC_AND_ACCOUNT_ACTION_PLAN.md`.
 
+Guest push subscriptions store the language the device chose (`push_subscription.locale`, migration 0020); the prayer-alert job uses an account's own language first.
+
 The old full-state upload (the whole local state in one body) is gone. `api/user/sync/route.ts` answers it with 410
 `outdated_client`; the app reloads itself onto the new version and the data on the device is untouched.

@@ -101,6 +101,7 @@ export function useFCM() {
                             token: currentToken,
                             deviceType: "web",
                             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                            locale: localStorage.getItem(STORAGE_KEYS.SETTINGS_LOCALE as string),
                             userLocation,
                             prayerPreferences,
                         }),
