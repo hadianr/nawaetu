@@ -100,7 +100,8 @@ async function buildRedisLimiter(prefix: string, requests: number, window: strin
     return new Ratelimit({
         redis,
         limiter: Ratelimit.slidingWindow(requests, window as Duration),
-        analytics: true,
+        // Analytics wrote extra commands on every check for a dashboard nobody reads; the free tier is 500k a month.
+        analytics: false,
         prefix,
     });
 }
@@ -108,6 +109,8 @@ async function buildRedisLimiter(prefix: string, requests: number, window: strin
 // ─── Unified limiter wrapper ─────────────────────────────────────────────────
 
 interface LimiterConfig {
+    /** Count in this instance's memory only and never call Redis. See the note on the sync limiters below. */
+    memoryOnly?: boolean;
     prefix: string;
     requests: number;          // Max requests per window
     window: string;            // e.g. "1 m", "1 h"
@@ -130,7 +133,7 @@ class UnifiedRateLimiter {
     }
 
     async check(token: string): Promise<RateLimitResult> {
-        if (!isRedisConfigured) {
+        if (this.config.memoryOnly || !isRedisConfigured) {
             return this.fallback.limit(this.config.requests, token);
         }
 
@@ -191,8 +194,15 @@ export const greetingRateLimiter = new UnifiedRateLimiter({
     inMemoryMaxTokens: 500,
 });
 
-/** Sync and account-data routes: one database connection is shared, so cap each user. */
+/**
+ * Sync and account-data routes. The thing being protected is the one database connection each server
+ * instance owns, so counting per instance is exactly right and costs no Redis commands. These routes are
+ * the busiest in the app (every change, every return to the app), and Upstash's free tier allows only 500k
+ * commands a month in total. Redis stays for the limits that must hold across instances: AI chat, payments
+ * and the creation of anonymous accounts.
+ */
 export const syncRateLimiter = new UnifiedRateLimiter({
+    memoryOnly: true,
     prefix: 'rl:sync',
     requests: 30,
     window: '1 m',
@@ -220,6 +230,7 @@ export const anonymousUserRateLimiter = new UnifiedRateLimiter({
 
 /** Intention writes by a device token (no account): 20 per minute per token or user. */
 export const intentionRateLimiter = new UnifiedRateLimiter({
+    memoryOnly: true,
     prefix: 'rl:intention',
     requests: 20,
     window: '1 m',
