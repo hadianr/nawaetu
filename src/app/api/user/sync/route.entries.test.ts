@@ -24,7 +24,7 @@ vi.mock("@/core/repositories/db-sync.repository", () => {
     };
     return {
         DbSyncRepository: class {
-            async syncBookmarkAsync(data: { name: string }) {
+            async syncSirahBookmark(data: { name: string }) {
                 h.tracker.started.push(data.name);
                 h.tracker.inFlight += 1;
                 h.tracker.maxInFlight = Math.max(h.tracker.maxInFlight, h.tracker.inFlight);
@@ -43,8 +43,9 @@ vi.mock("@/core/repositories/db-sync.repository", () => {
             syncRamadhanTaraweh = record("syncRamadhanTaraweh");
             syncRamadhanDaily = record("syncRamadhanDaily");
             syncSirahProgress = record("syncSirahProgress");
-            syncSirahBookmark = record("syncSirahBookmark");
+            syncBookmarksBatch = async (...args: unknown[]) => { h.calls.push({ method: "syncBookmarksBatch", args }); if (h.failBatches) throw new Error("bookmark batch failed"); };
             syncHasanahEvent = record("syncHasanahEvent");
+            syncBookmarkAsync = record("syncBookmarkAsync");
             async syncMissionsBatch(...args: unknown[]) {
                 h.calls.push({ method: "syncMissionsBatch", args });
                 if (h.failBatches) throw new Error("mission batch failed");
@@ -58,7 +59,7 @@ vi.mock("@/core/repositories/db-sync.repository", () => {
 });
 
 type Body = { synced: { id: string; cloudId?: string }[]; failed: { id: string; error: string }[]; message?: string };
-const entries = (count: number) => Array.from({ length: count }, (_, i) => ({ id: `e${i}`, type: "bookmark", action: "create", data: { name: `e${i}` } }));
+const entries = (count: number) => Array.from({ length: count }, (_, i) => ({ id: `e${i}`, type: "sirah_bookmark", action: "create", data: { name: `e${i}` } }));
 const send = (raw: string) => POST(new NextRequest("http://localhost/api/user/sync", { method: "POST", body: raw }));
 // next/server is mocked globally: the response is { body, status }.
 const result = async (body: unknown) => (await send(typeof body === "string" ? body : JSON.stringify(body))) as unknown as { body: Body; status: number };
@@ -129,7 +130,7 @@ describe("POST /api/user/sync", () => {
 
         it("reports an entry that fails validation, and an unknown type", async () => {
             const { body } = await result({ entries: [
-                { id: "bad", type: "bookmark", action: "create", data: { invalid: true } },
+                { id: "bad", type: "sirah_bookmark", action: "create", data: { invalid: true } },
                 { id: "odd", type: "mystery", action: "create", data: {} },
             ] });
             expect(body.failed).toEqual([
@@ -147,7 +148,7 @@ describe("POST /api/user/sync", () => {
                 ["daily_activity", "syncDailyActivity"], ["dhikr_stats", "syncDailyActivity"],
                 ["setting", "syncSetting"], ["reading_state", "syncReadingState"], ["streak", "syncStreak"],
                 ["ramadhan_fasting", "syncRamadhanFasting"], ["ramadhan_taraweh", "syncRamadhanTaraweh"], ["ramadhan_daily", "syncRamadhanDaily"],
-                ["sirah_progress", "syncSirahProgress"], ["sirah_bookmark", "syncSirahBookmark"],
+                ["sirah_progress", "syncSirahProgress"],
             ];
             const { body } = await result({ entries: types.map(([type], i) => ({ id: `t${i}`, type, action: "create", data: { n: i } })) });
             expect(body.failed).toEqual([]);
@@ -155,6 +156,30 @@ describe("POST /api/user/sync", () => {
             types.forEach(([, method], i) => {
                 expect(h.calls.some(call => call.method === method && (call.args[0] as { n: number }).n === i), `${types[i][0]} -> ${method}`).toBe(true);
             });
+        });
+    });
+
+    describe("bookmark entries", () => {
+        it("writes saves as one batch and removals one at a time", async () => {
+            const { body } = await result({ entries: [
+                { id: "b1", type: "bookmark", action: "create", data: { surahId: 2, verseId: 1 } },
+                { id: "b2", type: "bookmark", action: "update", data: { surahId: 2, verseId: 2 } },
+                { id: "b3", type: "bookmark", action: "delete", data: { surahId: 2, verseId: 3 } },
+            ] });
+
+            expect(called("syncBookmarksBatch")).toHaveLength(1);
+            expect(called("syncBookmarksBatch")[0].args[0]).toHaveLength(2);
+            expect(called("syncBookmarkAsync").map((call) => call.args[1])).toEqual(["delete"]);
+            expect(body.synced.map((item) => item.id).sort()).toEqual(["b1", "b2", "b3"]);
+        });
+
+        it("fails the batch together so the client retries it", async () => {
+            h.failBatches = true;
+            const { body } = await result({ entries: [
+                { id: "b1", type: "bookmark", action: "create", data: { surahId: 2, verseId: 1 } },
+                { id: "b2", type: "bookmark", action: "create", data: { surahId: 2, verseId: 2 } },
+            ] });
+            expect(body.failed.map((item) => item.id)).toEqual(["b1", "b2"]);
         });
     });
 
@@ -210,6 +235,7 @@ describe("POST /api/user/sync", () => {
                 extraEntries: [{ id: "x1", type: "sirah_progress", data: { chapter: 1 } }, { nope: true }],
             });
             expect(body.failed).toEqual([]);
+            expect(called("syncBookmarksBatch")).toHaveLength(1);
             expect(body.synced.map(item => item.id).sort()).toEqual(["legacy-bookmark-0", "legacy-daily_activity", "legacy-reading_state", "legacy-setting", "legacy-streak", "x1"]);
             expect(called("syncSirahProgress")).toHaveLength(1);
         });

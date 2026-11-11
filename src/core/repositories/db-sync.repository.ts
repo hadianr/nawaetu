@@ -231,6 +231,49 @@ export class DbSyncRepository {
         throw new Error(`Unknown action: ${action}`);
     }
 
+    /**
+     * Many bookmark saves in one statement. A device that was offline, or a first sync with a long
+     * bookmark list, used to cost one database round trip per bookmark.
+     */
+    async syncBookmarksBatch(items: BookmarkSyncPayload[]): Promise<void> {
+        const rows = new Map<string, typeof bookmarks.$inferInsert>();
+        for (const data of items) {
+            const surahId = Number(data.surahId);
+            const verseId = Number(data.verseId);
+            if (!Number.isInteger(surahId) || !Number.isInteger(verseId) || surahId < 1 || verseId < 1) continue;
+            const key = data.key || `${surahId}:${verseId}`;
+            rows.set(key, {
+                userId: this.userId,
+                surahId,
+                surahName: data.surahName || '',
+                verseId,
+                verseText: data.verseText || '',
+                translationText: data.translationText || null,
+                key,
+                note: data.note || null,
+                tags: Array.isArray(data.tags) ? data.tags : [],
+                createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+                updatedAt: new Date(),
+            });
+        }
+        if (rows.size === 0) return;
+
+        await db
+            .insert(bookmarks)
+            .values([...rows.values()])
+            .onConflictDoUpdate({
+                target: [bookmarks.userId, bookmarks.key],
+                set: {
+                    surahName: sql`excluded.surah_name`,
+                    verseText: sql`excluded.verse_text`,
+                    translationText: sql`excluded.translation_text`,
+                    note: sql`excluded.note`,
+                    tags: sql`excluded.tags`,
+                    updatedAt: new Date(),
+                },
+            });
+    }
+
     async syncIntention(data: IntentionSyncPayload, action: 'create' | 'update' | 'delete'): Promise<string | undefined> {
         if (action === 'create' || action === 'update') {
             const intentionDateValue = new Date(data.intentionDate || data.niatDate || Date.now());

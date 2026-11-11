@@ -201,3 +201,32 @@ describe('prayer reward by gender (decided by the server)', () => {
         expect(genderAdjustedReward('fajr_prayer', 25, null)).toBe(25);
     });
 });
+
+describe('DbSyncRepository bookmark batch', () => {
+    it('writes many bookmarks in one insert, last one wins per verse, and skips bad ones', async () => {
+        const { db } = await import('@/db');
+        const insertValues: unknown[][] = [];
+        const conflict = vi.fn().mockResolvedValue(undefined);
+        const mutableDb = db as unknown as { insert: () => unknown };
+        const originalInsert = mutableDb.insert;
+        mutableDb.insert = () => ({ values: (rows: unknown[]) => { insertValues.push(rows); return { onConflictDoUpdate: conflict }; } });
+
+        await new DbSyncRepository('u1').syncBookmarksBatch([
+            { surahId: 2, verseId: 255, surahName: 'Al-Baqarah', verseText: 'a', note: 'old' },
+            { surahId: 2, verseId: 255, surahName: 'Al-Baqarah', verseText: 'a', note: 'new' },
+            { surahId: 3, verseId: 1, surahName: 'Ali Imran', verseText: 'b' },
+            { surahId: 'x', verseId: 1 },
+            { surahId: 0, verseId: 1 },
+        ]);
+        mutableDb.insert = originalInsert;
+
+        expect(insertValues).toHaveLength(1);
+        expect(insertValues[0]).toHaveLength(2);
+        expect(insertValues[0]).toEqual(expect.arrayContaining([expect.objectContaining({ key: '2:255', note: 'new' })]));
+        expect(conflict).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing for an empty or entirely invalid batch', async () => {
+        await expect(new DbSyncRepository('u1').syncBookmarksBatch([{ surahId: 'x' }])).resolves.toBeUndefined();
+    });
+});
