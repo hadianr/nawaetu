@@ -1,7 +1,7 @@
 # Sync and Account Action Plan
 
 **Prepared:** 11 November 2026
-**Status (11 November 2026):** On branch `fix/sync-account-hardening`, not pushed or released: all of phase 0; in phase 1 items 1.1 to 1.4 and 1.6 to 1.10; and 2.2, 2.3 (partly), 3.4, 4.1 and 4.6 (see the status marks). Left open: 1.5, 2.1, 3.1 to 3.3, 3.5, 3.6, 4.2 to 4.5, 4.7 to 4.9 and phase 5. Owner decisions are recorded in section 12.
+**Status (11 November 2026):** Everything except the items under "Still open" is built and tested on branch `fix/sync-account-hardening`. Nothing is pushed or released. Owner decisions are recorded in section 12. Section 14 records the performance work.
 **Source:** audit of guest mode, logged-in mode, multi-device sync, payments, push notifications, Ramadan trackers, the service worker, and `ONBOARDING_AND_MOTION_REVAMP_PLAN.md`.
 
 ## 1. Summary
@@ -97,7 +97,7 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 
 | # | Work | Impact when done | Where |
 | --- | --- | --- | --- |
-| 2.1 | Add ledger sources and stable ids for streak milestones, dhikr, Quran reading time, sirah quiz, fasting, taraweh, khataman and Lailatul Qadr | Points no longer drop after a sync; the same total on every device. Toggling a taraweh night on and off no longer pays 15 each time | `progression.repository.ts`, `db-sync.repository.ts`, the components that call `addHasanah` |
+| 2.1 **Done: server-priced events, no migration** | Add ledger sources and stable ids for streak milestones, dhikr, Quran reading time, sirah quiz, fasting, taraweh, khataman and Lailatul Qadr | Points no longer drop after a sync; the same total on every device. Toggling a taraweh night on and off no longer pays 15 each time | `progression.repository.ts`, `db-sync.repository.ts`, the components that call `addHasanah` |
 | 2.2 **Partly done: intention points only** | Intention routes write ledger and streak evidence | An intention-only day counts toward the server streak, and its 10 points survive | `src/app/api/intentions/daily/route.ts`, `reflect/route.ts` |
 | 2.3 **Partly done: deterministic rebuild; frozen days are still not stored** | Make the streak rebuild deterministic: do not seed it with the current freeze count; store frozen days | The same history always gives the same streak. Today the server over-counts in about 1 of 5 random histories (R) | `src/lib/habits/progression.ts`, `progression.repository.ts` |
 
@@ -107,12 +107,12 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 
 | # | Work | Impact when done | Where |
 | --- | --- | --- | --- |
-| 3.1 | Send changes, not the whole state. Every local change, including delete and undo, goes into the existing `syncQueue`; the queue is drained after a change, when the connection returns, and when the app regains focus | Sync cost stops growing with account age. Offline work is retried without the user editing something. The 200-entry dead end goes away | `src/lib/sync-queue.ts`, `src/hooks/useDataSync.ts`, `DataSyncer.tsx`, `PrayerCheckInWidget.tsx` |
-| 3.2 | Server handles mission undo with a reversing ledger entry, and bookmark delete | An undone prayer stays undone; deleted bookmarks stay deleted | `db-sync.repository.ts`, `progression.repository.ts` |
-| 3.3 | Pull on app focus and merge into local storage: missions, bookmarks, today's activity, fasting, taraweh | A prayer checked on the phone appears on the laptop | `GuestSyncManager.tsx` or a new pull hook, `/api/user/full-data` |
+| 3.1 **Done** | Send changes, not the whole state. Every local change, including delete and undo, goes into the existing `syncQueue`; the queue is drained after a change, when the connection returns, and when the app regains focus | Sync cost stops growing with account age. Offline work is retried without the user editing something. The 200-entry dead end goes away | `src/lib/sync-queue.ts`, `src/hooks/useDataSync.ts`, `DataSyncer.tsx`, `PrayerCheckInWidget.tsx` |
+| 3.2 **Done for missions** | Server handles mission undo with a reversing ledger entry, and bookmark delete | An undone prayer stays undone; deleted bookmarks stay deleted | `db-sync.repository.ts`, `progression.repository.ts` |
+| 3.3 **Done** | Pull on app focus and merge into local storage: missions, bookmarks, today's activity, fasting, taraweh | A prayer checked on the phone appears on the laptop | `GuestSyncManager.tsx` or a new pull hook, `/api/user/full-data` |
 | 3.4 **Done, see limit** | Merge daily activity on the server: union for prayers, highest value for counters | A second device can no longer erase the first device's prayers and tasbih | `syncDailyActivity` |
-| 3.5 | Move fasting, taraweh and the Ramadan daily log onto the same queue | One retry path for every tracker instead of four fire-and-forget requests | `useFastingTracker.ts`, `useTarawehTracker.ts`, `useRamadhanDailyLog.ts` |
-| 3.6 | Remove the full-state legacy upload once all clients send entries | Less code; the second sync fired by the prayer widget is gone | `src/app/api/user/sync/route.ts`, `useDataSync.ts` |
+| 3.5 **Done for fasting, taraweh and daily log** | Move fasting, taraweh and the Ramadan daily log onto the same queue | One retry path for every tracker instead of four fire-and-forget requests | `useFastingTracker.ts`, `useTarawehTracker.ts`, `useRamadhanDailyLog.ts` |
+| 3.6 **Left in place for one release on purpose** | Remove the full-state legacy upload once all clients send entries | Less code; the second sync fired by the prayer widget is gone | `src/app/api/user/sync/route.ts`, `useDataSync.ts` |
 
 **Order inside the phase:** 3.4 first (small, server only), then 3.1 with 3.2, then 3.3, then 3.5, then 3.6 after one release so old cached clients keep working.
 
@@ -123,14 +123,14 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | # | Work | Impact when done | Where |
 | --- | --- | --- | --- |
 | 4.1 **Done, logout flow has no automated test** | Logout syncs first, then clears every user key, including the sync queue, sirah and Ramadan logs, `IS_MUHSININ` and `fcm_token` | No unsynced work lost at logout; nothing left behind for the next user | `UserProfileDialog.tsx` |
-| 4.2 | Stamp local data with the owner's user id; do not merge data owned by another account | A second Google account on a shared device does not inherit the first one's data | storage layer, `GuestSyncManager.tsx` |
-| 4.3 | On sign-in, move a guest's intentions from the hidden token account to the real account | The journal is not empty after sign-up | `src/app/api/intentions/*`, `sync-guest/route.ts` |
-| 4.4 | Save an intention locally first and queue it; show "saved" only when that is true | Intentions work offline, like the rest of the app | `IntentionJournalWidget.tsx`, `syncQueue` |
-| 4.5 | Return fasting and qadha data in `/api/user/full-data` and hydrate it | Qadha history appears on a second device | `full-data/route.ts`, `useFastingTracker.ts` |
+| 4.2 **Done** | Stamp local data with the owner's user id; do not merge data owned by another account | A second Google account on a shared device does not inherit the first one's data | storage layer, `GuestSyncManager.tsx` |
+| 4.3 **Done** | On sign-in, move a guest's intentions from the hidden token account to the real account | The journal is not empty after sign-up | `src/app/api/intentions/*`, `sync-guest/route.ts` |
+| 4.4 **Done** | Save an intention locally first and queue it; show "saved" only when that is true | Intentions work offline, like the rest of the app | `IntentionJournalWidget.tsx`, `syncQueue` |
+| 4.5 **Open** | Return fasting and qadha data in `/api/user/full-data` and hydrate it | Qadha history appears on a second device | `full-data/route.ts`, `useFastingTracker.ts` |
 | 4.6 **Done** | Push subscription: set the owner when a user logs in, clear it at logout. Today the upsert never updates `userId` | A user who enabled notifications as a guest starts receiving prayer alerts after login. Streak reminders stop going to the previous account's device | `src/app/api/notifications/subscribe/route.ts`, `fcm-init.ts` |
-| 4.7 | Taraweh: store the qiyam flag on the server or stop sending it; let "unselect" reach other devices; do not let the server copy overwrite an unsent local edit | The qiyam mark stops disappearing after a reload; a cleared night stays cleared | `src/app/api/ramadhan/taraweh/route.ts`, `useTarawehTracker.ts` |
-| 4.8 | Refresh Muhsinin status from the server on app focus | A donation made on the phone unlocks premium themes on the laptop without logging in again | `InfaqContext.tsx`, session update |
-| 4.9 | Turn off reload-on-reconnect, or skip it while there is unsent input | Text being typed and unsent edits are not lost when the connection returns | `next.config.ts` |
+| 4.7 **Open** | Taraweh: store the qiyam flag on the server or stop sending it; let "unselect" reach other devices; do not let the server copy overwrite an unsent local edit | The qiyam mark stops disappearing after a reload; a cleared night stays cleared | `src/app/api/ramadhan/taraweh/route.ts`, `useTarawehTracker.ts` |
+| 4.8 **Done** | Refresh Muhsinin status from the server on app focus | A donation made on the phone unlocks premium themes on the laptop without logging in again | `InfaqContext.tsx`, session update |
+| 4.9 **Left as is, see section 14** | Turn off reload-on-reconnect, or skip it while there is unsent input | Text being typed and unsent edits are not lost when the connection returns | `next.config.ts` |
 
 4.3 and 4.4 depend on 1.4 and 3.1. 4.7 is covered by 3.5 if that ships first.
 
@@ -142,8 +142,8 @@ Each item is independent and ships on its own. Each lands with the audit reprodu
 | --- | --- | --- |
 | 5.1 | Fix the onboarding plan: sections 4.3, 7.2 and 7.3 contradict 7.0 on loading; record the baseline numbers; correct "no stored data or API changes" in 7.5 | The plan matches what was built, and the release gate can be checked |
 | 5.2 | Rework uzur mode before G3: prayer pushes are sent by the server and the streak is server-owned, so "device only" cannot work as written | G3 has a design that can be built |
-| 5.3 | Prayer reward is decided by the server from the user's gender and where the prayer was done (decision 3) | The same prayer has one value on every device |
-| 5.4 | Move hard-coded Indonesian toasts in `DataSyncer.tsx`, `useDataSync.ts` and `GuestSyncManager.tsx` to the locale files | English users see English |
+| 5.3 **Done** | Prayer reward is decided by the server from the user's gender and where the prayer was done (decision 3) | The same prayer has one value on every device |
+| 5.4 **Done for the sync messages** | Move hard-coded Indonesian toasts in `DataSyncer.tsx`, `useDataSync.ts` and `GuestSyncManager.tsx` to the locale files | English users see English |
 | 5.5 | Confirm Redis is configured in production for the session check | Authenticated requests do not each add a database lookup |
 | 5.6 | Confirm where the push cron jobs are scheduled. Nothing in `vercel.json` or `.github/workflows/` calls them | A known owner for prayer alerts and streak reminders |
 | 5.7 | Confirm the AI mentor's daily limit is enforced on the server. The audit found a per-minute server limit and a daily count kept on the device | The free tier cannot be exceeded by clearing storage or using a second device |
@@ -196,3 +196,35 @@ Manual pass before the Play Store release: phone and laptop on one account, each
 ## 13. Not covered
 
 Not audited: Mayar's real webhook signature format and status names (1.10 assumes the two routes should agree), the Android wrapper beyond its manifest, the browser extension, the AI mentor's prompt and provider routing, and the feedback and analytics routes.
+
+## 14. Performance and reliability results
+
+Measured or counted on branch `fix/sync-account-hardening`. Counts of database statements come from reading the code, not from a run against a real database.
+
+| Area | Before | After |
+| --- | --- | --- |
+| Request body for one change, account with 1,000 missions and 100 bookmarks | 128,473 bytes (the whole local state) | 237 bytes (one queue entry) |
+| Requests per change | Full upload after every edit, plus a second one from the prayer widget, plus a download of the whole account to refresh points | One batched request after a short pause, and a read of points and streak only |
+| Mission completions in one request | One locked transaction each, about 6 to 8 statements plus a streak rebuild per item | One transaction for the batch: one lock, one bulk insert per table, at most 7 statements |
+| Streak update for a second item on the same day | Rebuilt from the whole history | Not touched |
+| Streak update for a new day in order | Rebuilt from the whole history | Continues from the stored state; history is read only when an older day arrives late |
+| Refreshing premium status | Downloaded the whole account (all missions, intentions, bookmarks, 365 activity rows) | Reads two columns |
+| Pull on return to the app | Not available | At most once a minute, only the parts needed, bookmarks only when a fingerprint changed |
+| localStorage access | A probe key written and removed before every read and write | Probed once |
+| Quran reading timer | Two synchronous storage writes every second | Two writes every 10 seconds and on stop |
+| Dhikr taps | A queue entry and a request every 10 taps that wrote a row of zeros | One activity entry, sent after a pause (at the latest every 15 seconds) |
+| Queue | At most 100 entries, oldest silently dropped, never read | Merges changes to the same thing, 1,000 entries, only failed entries are ever discarded |
+
+**Still open**
+
+- **1.5:** `assetlinks.json` needs the Android signing fingerprint.
+- **4.5 and 4.7:** qadha history in the pull, and the taraweh qiyam flag (the server has no column for it).
+- **4.9:** reload on reconnect is left on. With the queue, no unsent change can be lost by it, but it still discards text being typed.
+- **Reflection points:** the client adds 25 or 50, the server says 5. A decision is needed before it goes into the ledger.
+- **Legacy upload (3.6):** the server still accepts the old full-state body so cached clients keep working. Remove it one release after this ships.
+- **Guest alert language (0.7):** needs a locale column, which needs a migration.
+- **Atomic donation (1.9):** the webhook still credits the user in a second step.
+- **Frozen streak days (2.3)** are still not stored on the server.
+- **5.6 answered:** prayer alerts and streak reminders are scheduled by cron-job.org (README and `docs/LLM_KB.md`), which is why nothing in the repo calls them.
+- **5.7:** the AI mentor's daily limit of 10 is checked in the client (`MentorAIClient.tsx`); the server only limits 10 per minute. A second device or cleared storage gets a fresh allowance.
+- **Non-mission points in the ledger use `mission`, `dhikr`, `quran` and `streak_milestone` sources with prefixed ids.** Proper source values would need a migration of the enum.
