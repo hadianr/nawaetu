@@ -22,8 +22,6 @@ import { toast } from "sonner";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { useLocale } from "@/context/LocaleContext";
-import { drainSyncQueue } from "@/lib/sync/drain";
-import { pullAndApply } from "@/lib/sync/pull";
 import { trackStreakEvent } from "@/lib/analytics/analytics";
 
 interface SyncResult {
@@ -53,6 +51,8 @@ export function useDataSync() {
         const toastId = options?.silent ? undefined : toast.loading(text.syncInProgress);
 
         try {
+            // Loaded when first needed, not with the first page: most visits never sync anything.
+            const [{ drainSyncQueue }, { pullAndApply }] = await Promise.all([import("@/lib/sync/drain"), import("@/lib/sync/pull")]);
             const result = await drainSyncQueue(userId);
 
             if (result.rejected > 0 && !notifiedRejected) {
