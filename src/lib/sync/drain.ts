@@ -36,7 +36,9 @@ async function run(userId: string): Promise<DrainResult> {
 
     for (;;) {
         const batch = syncQueue.nextBatch(BATCH_SIZE, userId);
-        if (batch.length === 0) return { ok: true, sent, rejected };
+        // Entries that failed for good are not retried, but they are not on the server either, so the
+        // account is not "all sent": logout asks before discarding them and the unsynced warning stays.
+        if (batch.length === 0) return { ok: syncQueue.getFailedEntries(userId).length === 0, sent, rejected };
         const ids = batch.map((entry) => entry.id);
 
         let body: SyncResponse | null = null;

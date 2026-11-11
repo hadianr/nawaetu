@@ -232,10 +232,19 @@ export class SyncQueueManager {
   pendingKeys(userId?: string): { upserts: Set<string>; deletes: Set<string> } {
     const upserts = new Set<string>();
     const deletes = new Set<string>();
-    for (const entry of this.getPendingEntries(userId)) {
+    // An entry that failed for good is still a change the server does not have: a pull must not undo it.
+    const unsent = this.queue.filter((entry) => entry.status !== 'synced'
+      && (userId === undefined || entry.userId === undefined || entry.userId === userId));
+    for (const entry of unsent) {
       (entry.action === 'delete' ? deletes : upserts).add(entry.key as string);
     }
     return { upserts, deletes };
+  }
+
+  /** Entries that were refused too many times and are no longer retried. They still hold unsent data. */
+  getFailedEntries(userId?: string): SyncQueueEntry[] {
+    return this.queue.filter((entry) => entry.status === 'failed'
+      && (userId === undefined || entry.userId === undefined || entry.userId === userId));
   }
 
   /** Entries the server accepted leave the queue. */

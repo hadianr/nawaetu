@@ -107,4 +107,13 @@ describe("SyncQueueManager", () => {
         queue.acknowledge([a]);
         expect(queue.getQueue()).toHaveLength(1);
     });
+
+    it("still reports an entry that failed for good as unsent, so a pull cannot undo it", () => {
+        const id = queue.addToQueue("mission", "create", mission("fajr_prayer", "2026-11-11"), "u1");
+        for (let attempt = 0; attempt <= 5; attempt++) queue.recordFailure(id, "refused");
+
+        expect(queue.getPendingEntries("u1")).toHaveLength(0);
+        expect(queue.getFailedEntries("u1")).toHaveLength(1);
+        expect(queue.pendingKeys("u1").upserts.has(entityKey("mission", mission("fajr_prayer", "2026-11-11")))).toBe(true);
+    });
 });
