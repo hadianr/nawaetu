@@ -73,6 +73,16 @@ screen edits storage ──▶ tracker ──▶ queue (localStorage) ──▶ 
 Redis (Upstash free tier, 500k commands a month) is used for the session check cache, AI chat, payment links and anonymous
 accounts. The sync limiters stay in memory on purpose.
 
+## Housekeeping
+
+Guests come and go, and nothing else removes what they leave behind. `POST /api/maintenance/cleanup` (`lib/maintenance/cleanup.ts`)
+deletes push rows that FCM gave up on (`active = 0`, untouched for 30 days) and the hidden accounts (`@nawaetu.local`) of guests
+whose journal has not been written to for 180 days; the journal goes with the account (cascade). It only counts unless called
+with `?apply=1`, works in batches of 500 within a time budget, and is safe to run repeatedly. Schedule it on cron-job.org like
+the push jobs (`Authorization: Bearer $CRON_SECRET`), daily, after a dry run looks right. Active push rows are never deleted
+here: FCM marks a token dead after about 270 days, and the senders already deactivate it. A guest account with no journal row
+is left alone, because it may be one being created.
+
 ## Adding something that syncs
 
 1. Add the type to `SyncEntityType` (`lib/sync-queue.ts`) and `SyncEntrySchema` (`lib/validations/sync.ts`).
