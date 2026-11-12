@@ -100,6 +100,8 @@ import { DateUtils } from '@/lib/utils/date';
 const STORAGE_KEY = 'nawaetu_sync_queue';
 const MAX_QUEUE_SIZE = 1000;
 const MAX_RETRY_COUNT = 5;
+/** How long to remember what was just sent. A pull that started before then can still carry an older answer. */
+const RECENT_ACK_MS = 10 * 60 * 1000;
 
 /** What an entry changes, so a newer change can replace an older unsent one. */
 export function entityKey(type: SyncEntityType, data: Record<string, unknown>): string {
@@ -129,6 +131,8 @@ export function entityKey(type: SyncEntityType, data: Record<string, unknown>): 
 
 export class SyncQueueManager {
   private queue: SyncQueueEntry[] = [];
+  /** What the server accepted lately (this page only): keeps an answer that predates it from undoing it. */
+  private recentlyAcked: Array<{ key: string; action: SyncActionType; userId?: string; at: number }> = [];
 
   constructor(private readonly storageKey: string = STORAGE_KEY) {
     this.load();
@@ -233,7 +237,7 @@ export class SyncQueueManager {
   }
 
   /** What is waiting, by entity key, so a pull from the server does not undo an unsent change. */
-  pendingKeys(userId?: string): { upserts: Set<string>; deletes: Set<string> } {
+  pendingKeys(userId?: string, ackedSince?: number): { upserts: Set<string>; deletes: Set<string> } {
     const upserts = new Set<string>();
     const deletes = new Set<string>();
     // An entry that failed for good is still a change the server does not have: a pull must not undo it.
@@ -242,7 +246,19 @@ export class SyncQueueManager {
     for (const entry of unsent) {
       (entry.action === 'delete' ? deletes : upserts).add(entry.key as string);
     }
+    // A pull that began before these were accepted holds an answer computed without them.
+    if (ackedSince !== undefined) {
+      for (const acked of this.recentlyAcked) {
+        if (acked.at < ackedSince || (userId !== undefined && acked.userId !== undefined && acked.userId !== userId)) continue;
+        (acked.action === 'delete' ? deletes : upserts).add(acked.key);
+      }
+    }
     return { upserts, deletes };
+  }
+
+  /** True when the server accepted something for this account since the given time. */
+  hasAckedSince(userId: string, since: number): boolean {
+    return this.recentlyAcked.some((acked) => acked.at >= since && (acked.userId === undefined || acked.userId === userId));
   }
 
   /** Entries that were refused too many times and are no longer retried. They still hold unsent data. */
@@ -258,7 +274,13 @@ export class SyncQueueManager {
   acknowledge(ids: string[], sentRevs?: Map<string, number>): void {
     if (ids.length === 0) return;
     const accepted = new Set(ids);
-    this.queue = this.queue.filter((entry) => !accepted.has(entry.id) || (sentRevs !== undefined && (entry.rev ?? 0) !== (sentRevs.get(entry.id) ?? 0)));
+    const now = Date.now();
+    this.recentlyAcked = this.recentlyAcked.filter((acked) => now - acked.at < RECENT_ACK_MS);
+    this.queue = this.queue.filter((entry) => {
+      const stays = !accepted.has(entry.id) || (sentRevs !== undefined && (entry.rev ?? 0) !== (sentRevs.get(entry.id) ?? 0));
+      if (!stays && entry.key) this.recentlyAcked.push({ key: entry.key, action: entry.action, userId: entry.userId, at: now });
+      return stays;
+    });
     this.persist();
   }
 

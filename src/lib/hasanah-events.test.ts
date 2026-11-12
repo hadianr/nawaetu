@@ -18,6 +18,15 @@ describe("validateHasanahEvent", () => {
         expect(ok("sirah_quiz", "daily", 5000)).toBeNull();
     });
 
+    it("pays no more than the app can earn: a quiz of five questions, one juz at a time", () => {
+        expect(ok("sirah_quiz", "daily", 50)).not.toBeNull();
+        expect(ok("sirah_quiz", "daily", 60)).toBeNull();
+        expect(ok("sirah_quiz", "daily", 200)).toBeNull();
+        expect(ok("khatamah", "2026-12", 20)).not.toBeNull();
+        expect(ok("khatamah", "2026-12", 600)).toBeNull();
+        expect(ok("khatamah", "2026-12", 40)).toBeNull();
+    });
+
     it("accepts a reflection only at the two amounts the app pays", () => {
         expect(ok("reflection", "daily", 50)).toMatchObject({ sourceId: "reflection:daily:2026-11-11", countsForStreak: true });
         expect(ok("reflection", "daily", 25)).not.toBeNull();
@@ -39,8 +48,9 @@ describe("validateHasanahEvent", () => {
         expect(ok("dhikr_milestone", "1000", 999)).toBeNull();
     });
 
-    it("lets reading time grow during the day up to ten hours", () => {
-        expect(ok("quran_time", "time", 12)).toMatchObject({ source: "quran", mode: "raise" });
-        expect(ok("quran_time", "time", 601)).toBeNull();
+    it("lets reading time grow during the day, and pays at most ten hours instead of refusing more", () => {
+        expect(ok("quran_time", "time", 12)).toMatchObject({ source: "quran", mode: "raise", hasanah: 12 });
+        expect(ok("quran_time", "time", 601)).toMatchObject({ hasanah: 600 });
+        expect(ok("quran_time", "time", 5000)).toMatchObject({ hasanah: 600 });
     });
 });

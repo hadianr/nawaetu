@@ -57,6 +57,9 @@ screen edits storage ──▶ tracker ──▶ queue (localStorage) ──▶ 
 9. **A change made while its entry is on the way is not lost.** Each merge into a queued entry bumps `rev`; the drain remembers what it sent and `acknowledge` keeps an entry whose `rev` moved. The drain also marks entries as attempted before sending, so an undo is never cancelled against a completion that may already have arrived.
 10. **Clearing an account is not the user undoing it.** `clearAccountData` removes records inside `withoutTracking` and empties the queue last.
 11. **Only sendable work holds a pull back.** An entry that failed for good keeps a drain from reporting "all sent", but it cannot be retried and a pull never overwrites it, so the engine still pulls.
+12. **A pull treats what was just sent as unsent.** The queue remembers what the server accepted for ten minutes; `pendingKeys(userId, startedAt)` includes it, and the points total is not replaced, so an answer computed before a change cannot undo it.
+13. **The sync window is defined once** (`syncWindowStart` in `lib/utils/timezone.ts`) and used by the tracker, the merge, the pull route and the server. A day the server refuses must never look "undone elsewhere" to the device.
+14. **Daily activity counters only grow** (`GREATEST` on the server, `Math.max` in the merge), and prayers are a union. That is what lets two devices count the same day without losing either. No screen lowers them today; a feature that resets a counter has to carry its own rule, or a pull will bring the old value back.
 
 ## Numbers
 

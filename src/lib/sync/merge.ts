@@ -1,6 +1,6 @@
 import { findMissionDefinition } from "@/data/missions";
 import { normalizeMissionId } from "@/lib/mission-resolver";
-import { addDays, SYNC_WINDOW_DAYS_BACK } from "@/lib/utils/timezone";
+import { syncWindowStart } from "@/lib/utils/timezone";
 import { DateUtils } from "@/lib/utils/date";
 
 export interface PendingKeys {
@@ -22,7 +22,7 @@ export const missionKey = (id: string, date: string) => `m:${normalizeMissionId(
  * - a mission undone here and still queued stays undone.
  */
 export function mergeMissions(local: LocalMission[], server: ServerMission[], pending: PendingKeys, today: string): LocalMission[] {
-    const windowStart = addDays(today, -(SYNC_WINDOW_DAYS_BACK + 1));
+    const windowStart = syncWindowStart(today);
     const dateOf = (mission: LocalMission) => DateUtils.toLocalDate(mission.completedAt);
 
     const result: LocalMission[] = local.filter((mission) => dateOf(mission) < windowStart);
@@ -30,7 +30,8 @@ export function mergeMissions(local: LocalMission[], server: ServerMission[], pe
     const seen = new Set<string>();
 
     for (const row of server) {
-        if (!row.completedDate) continue;
+        // Older than the window is the device's own history: the local copy was kept above and is not duplicated here.
+        if (!row.completedDate || row.completedDate < windowStart) continue;
         const key = missionKey(row.missionId, row.completedDate);
         if (pending.deletes.has(key) || seen.has(key)) continue;
         seen.add(key);

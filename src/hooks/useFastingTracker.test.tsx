@@ -94,4 +94,25 @@ describe("useFastingTracker storage", () => {
         const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.RAMADHAN_FASTING_LOG) as string);
         expect(Object.keys(stored["1447"]).sort()).toEqual(["01", "02"]);
     });
+
+    it("sends an edit made while the previous one is on its way, instead of marking the day as sent", async () => {
+        let release!: () => void;
+        mocks.fetch.mockImplementationOnce(() => new Promise<Response>((resolve) => { release = () => resolve({ ok: true, status: 200 } as Response); }));
+        mocks.fetch.mockResolvedValue({ ok: true, status: 200 } as Response);
+        const { result } = renderHook(() => useFastingTracker());
+        await flush();
+
+        act(() => result.current.logDay(1447, 3, "fasting"));
+        await flush();
+        expect(mocks.fetch).toHaveBeenCalledTimes(1);
+
+        act(() => result.current.logDay(1447, 3, "not_fasting")); // the user changes their mind while the first is in flight
+        await flush();
+        await act(async () => { release(); });
+        await flush();
+
+        expect(mocks.fetch).toHaveBeenCalledTimes(2);
+        expect(JSON.parse(mocks.fetch.mock.calls[1][1].body as string)).toMatchObject({ hijriDay: 3, status: "not_fasting" });
+        expect(pending()).toEqual([]);
+    });
 });

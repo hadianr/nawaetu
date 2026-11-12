@@ -70,14 +70,16 @@ async function fetchPull(query: string): Promise<PullResponse | null> {
  * user just earned).
  */
 export async function pullAndApply(userId: string, parts: PullPart[]): Promise<boolean> {
+    // Anything sent while this request is on the way is missing from the answer, so it counts as unsent too.
+    const startedAt = Date.now();
     const body = await fetchPull(`parts=${parts.join(",")}`);
     if (!body) return false;
 
     const storage = getStorageService();
-    const pending = syncQueue.pendingKeys(userId);
+    const pending = syncQueue.pendingKeys(userId, startedAt);
     const today = DateUtils.today();
 
-    if (body.progression && syncQueue.getPendingEntries(userId).length === 0) {
+    if (body.progression && syncQueue.getPendingEntries(userId).length === 0 && !syncQueue.hasAckedSince(userId, startedAt)) {
         applyProgression(storage, userId, body.progression);
     }
 
