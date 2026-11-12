@@ -25,13 +25,24 @@ import { logger } from "@/lib/logger";
 
 export const maxDuration = 30;
 
+const DEVICE_TOKEN_HEADER = "x-device-token";
+
+/**
+ * The device token is a credential for the guest side of this app, so it travels in a header and never in a URL
+ * (access logs, proxies and browser history keep URLs). The query form is still read for app versions that are
+ * already installed; remove it once they have updated.
+ */
+function deviceToken(req: NextRequest): string | null {
+    return req.headers?.get(DEVICE_TOKEN_HEADER) || new URL(req.url, "http://localhost").searchParams.get("token");
+}
+
 export async function GET(req: NextRequest) {
     const session = await getServerSession();
     if (!session?.user?.id) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = req.nextUrl.searchParams.get("token");
+    const token = deviceToken(req);
     if (!token) {
         return NextResponse.json({ error: "Token is required" }, { status: 400 });
     }
@@ -157,7 +168,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = new URL(req.url, "http://localhost").searchParams.get("token");
+    const token = deviceToken(req);
     if (!token) {
         return NextResponse.json({ error: "Token is required" }, { status: 400 });
     }

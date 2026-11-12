@@ -24,7 +24,7 @@ import { getServerSession } from "@/lib/auth";
 import { logger } from "@/lib/logger";
 
 /**
- * GET /api/intentions/today?user_token=xxx
+ * GET /api/intentions/today with `Authorization: Bearer <token>` (a guest's token never goes in the URL)
  * Get today's intention status
  * 
  * Supports both guest and authenticated users

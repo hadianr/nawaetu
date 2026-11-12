@@ -75,7 +75,7 @@ export default function NotificationSettings() {
         if (status !== "authenticated" || !fcmToken) return;
 
         const verify = async () => {
-            const health = await fetch(`/api/notifications/subscribe?token=${encodeURIComponent(fcmToken)}`, { cache: "no-store" });
+            const health = await fetch("/api/notifications/subscribe", { cache: "no-store", headers: { "x-device-token": fcmToken } });
             const result = health.ok ? await health.json() : null;
             if (result?.healthy) {
                 setSubscriptionHealthy(true);

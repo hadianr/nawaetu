@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
         // The header keeps the token out of URLs and server logs; the query value stays for cached older clients.
-        const providedToken = req.headers.get("x-user-token") || searchParams.get("user_token");
+        const providedToken = req.headers.get("x-user-token");
         const limit = parseInt(searchParams.get("limit") || "20");
         const offset = parseInt(searchParams.get("offset") || "0");
 

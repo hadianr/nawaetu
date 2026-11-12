@@ -51,7 +51,8 @@ describe("performLogout", () => {
             "cache:apis", "cache:next-data", "cache:pages-rsc",
             "signOut",
         ]);
-        expect(deps.fetchFn).toHaveBeenCalledWith("/api/notifications/subscribe?token=device-token", { method: "DELETE" });
+        // The token travels in a header, never in the URL.
+        expect(deps.fetchFn).toHaveBeenCalledWith("/api/notifications/subscribe", { method: "DELETE", headers: { "x-device-token": "device-token" } });
         expect(deps.signOut).toHaveBeenCalledWith({ callbackUrl: "/" });
     });
 
