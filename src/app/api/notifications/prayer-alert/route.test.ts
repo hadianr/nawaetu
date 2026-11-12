@@ -236,6 +236,34 @@ describe('POST /api/notifications/prayer-alert', () => {
         expect(mocks.messagingSend).not.toHaveBeenCalled();
     });
 
+    it('asks Aladhan once per place per month, not once per place per minute (the Sentry N+1)', async () => {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', { timeZone: 'Asia/Jakarta', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+        // Prayer times far from now, so nothing is sent and only the lookups are counted.
+        const farFromNow = (now.getUTCHours() + 7) % 24 < 12 ? '23:55' : '00:05';
+        global.fetch = vi.fn().mockImplementation(async () => ({
+            ok: true,
+            json: async () => ({ data: [{ date: { gregorian: { date: dateStr } }, timings: { Imsak: farFromNow, Fajr: farFromNow, Dhuhr: farFromNow, Asr: farFromNow, Maghrib: farFromNow, Isha: farFromNow } }] }),
+        }) as Response);
+        // Three subscribers in two 0.1 degree cells.
+        mockDatabase([
+            { id: 'n1-a', token: 't-a', active: 1, latitude: -7.91, longitude: 110.41, timezone: 'Asia/Jakarta' },
+            { id: 'n1-b', token: 't-b', active: 1, latitude: -7.93, longitude: 110.43, timezone: 'Asia/Jakarta' },
+            { id: 'n1-c', token: 't-c', active: 1, latitude: -8.11, longitude: 112.21, timezone: 'Asia/Jakarta' },
+        ]);
+
+        // The cron fires every minute: three runs.
+        for (let minute = 0; minute < 3; minute++) {
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            expect(res.status).toBe(200);
+        }
+
+        // Two cells, one month each: two requests in total, not six.
+        const calls = (global.fetch as Mock).mock.calls.map((call) => String(call[0]));
+        expect(calls).toHaveLength(2);
+        expect(calls.every((url) => url.includes('/calendar/'))).toBe(true);
+    });
+
     it('sends an alert, deduplicates today, respects preferences, and disables invalid tokens', async () => {
         const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
         const localTime = new Date().toLocaleTimeString('en-US', {

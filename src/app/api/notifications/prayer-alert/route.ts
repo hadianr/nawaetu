@@ -22,7 +22,7 @@ import { pushSubscriptions, users } from "@/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
-import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { getPrayerTimings } from "@/lib/notifications/prayer-times";
 import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
 
 /**
@@ -32,9 +32,6 @@ import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
  * 1. mode=sync  - Optional daily token validation and cleanup
  * 2. mode=alert - Prayer time notifications (cron-job.org, every minute)
  */
-
-// In-memory cache for prayer times to avoid repeated API calls in the same request
-const prayerTimesCache = new Map<string, Record<string, string>>();
 
 // === Precision Notification Window ===
 // cron-job.org fires this endpoint every 1 minute.
@@ -67,41 +64,6 @@ function isTimeInWindow(currentTime: string, rawPrayerTime: string): boolean {
     // 2. Within the 3-minute precision window — avoids late/stale notifications
     return diff >= 0 && diff <= PRAYER_NOTIFICATION_WINDOW_MINUTES;
 }
-
-// Helper: Fetch prayer times from Aladhan API, with Kemenag RI tune for method 20
-// tune format: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
-//
-// IMPORTANT: method=20 (Kemenag RI) already includes the Maghrib ikhtiyath in its
-// base calculation. Setting Maghrib tune to 0 — do NOT add extra correction here.
-// Other prayers (Fajr, Dhuhr, Asr, Isha, Imsak) use standard ikhtiyath offsets.
-async function fetchPrayerTimes(lat: number, lng: number, dateStr: string, method: string = "20"): Promise<Record<string, string> | null> {
-    const cacheKey = `${lat.toFixed(1)}_${lng.toFixed(1)}_${dateStr}_${method}`;
-
-    if (prayerTimesCache.has(cacheKey)) {
-        return prayerTimesCache.get(cacheKey) ?? null;
-    }
-
-    let url = "";
-    try {
-        const tuneParam = method === "20"
-            ? `&tune=2,2,0,4,4,0,0,2,0`
-            : "";
-        url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}${tuneParam}`;
-
-        const response = await fetchWithTimeout(url, {}, { timeoutMs: 8_000 });
-        if (!response.ok) return null;
-
-        const result = await response.json();
-        if (result && result.data && result.data.timings) {
-            prayerTimesCache.set(cacheKey, result.data.timings);
-            return result.data.timings;
-        }
-    } catch (e: unknown) {
-        logger.error(`Fetch prayer times error: url=${url}`, e, { route: "/api/notifications/prayer-alert" });
-    }
-    return null;
-}
-
 
 // Helper: Safe JSON parsing for jsonb fields that might be object or stringified JSON
 function parseJsonField<T>(val: unknown): T | null {
@@ -282,7 +244,7 @@ export async function POST(req: NextRequest) {
                         userMethod = "4"; // Makkah / Middle East
                     }
 
-                    const timings = await fetchPrayerTimes(lat, lng, localDateStr, userMethod);
+                    const timings = await getPrayerTimings(lat, lng, localDateStr, userMethod);
                     if (!timings) {
                         results.skipped += subs.length;
                         return;
