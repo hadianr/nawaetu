@@ -54,6 +54,9 @@ screen edits storage ──▶ tracker ──▶ queue (localStorage) ──▶ 
 6. **An entry is never sent for another account.** The queue is stamped; `discardOtherAccounts` runs when the engine starts.
 7. **The server decides amounts.** Missions use the catalogue reward (and the gender rule for prayers); other points go through `hasanah-events.ts`.
 8. **Reading storage back:** use `parseStored` for any value written with `JSON.stringify`.
+9. **A change made while its entry is on the way is not lost.** Each merge into a queued entry bumps `rev`; the drain remembers what it sent and `acknowledge` keeps an entry whose `rev` moved. The drain also marks entries as attempted before sending, so an undo is never cancelled against a completion that may already have arrived.
+10. **Clearing an account is not the user undoing it.** `clearAccountData` removes records inside `withoutTracking` and empties the queue last.
+11. **Only sendable work holds a pull back.** An entry that failed for good keeps a drain from reporting "all sent", but it cannot be retried and a pull never overwrites it, so the engine still pulls.
 
 ## Numbers
 
@@ -103,6 +106,8 @@ accounts. The sync limiters stay in memory on purpose.
 ## Known gaps
 
 See "Still open" in `SYNC_AND_ACCOUNT_ACTION_PLAN.md`.
+
+The engine listens for `sync_login_settled` until it has started, not once: a failed login attempt announces it too.
 
 Guest push subscriptions store the language the device chose (`push_subscription.locale`, migration 0020); the prayer-alert job uses an account's own language first.
 

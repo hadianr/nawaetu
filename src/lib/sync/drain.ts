@@ -40,6 +40,10 @@ async function run(userId: string): Promise<DrainResult> {
         // account is not "all sent": logout asks before discarding them and the unsynced warning stays.
         if (batch.length === 0) return { ok: syncQueue.getFailedEntries(userId).length === 0, sent, rejected };
         const ids = batch.map((entry) => entry.id);
+        // The batch holds the queue's own objects, so remember which version of each one is being sent.
+        const sentRevs = new Map(batch.map((entry) => [entry.id, entry.rev ?? 0]));
+        // From here the server may have it: an undo made meanwhile must be sent, not cancelled against it.
+        syncQueue.recordAttempt(ids);
 
         let body: SyncResponse | null = null;
         try {
@@ -54,12 +58,11 @@ async function run(userId: string): Promise<DrainResult> {
         }
 
         if (!body) {
-            syncQueue.recordAttempt(ids);
             return { ok: false, sent, rejected };
         }
 
         const accepted = (body.synced ?? []).map((item) => item.id);
-        syncQueue.acknowledge(accepted);
+        syncQueue.acknowledge(accepted, sentRevs);
         for (const failure of body.failed ?? []) syncQueue.recordFailure(failure.id, failure.error);
         sent += accepted.length;
         rejected += body.rejected ?? 0;

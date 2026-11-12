@@ -321,6 +321,53 @@ async function runChecks() {
         assert(!sentLeftover, "another account's change was sent");
         assert(queueLength() === 0, "it should have been discarded from this device");
     });
+
+    console.log("\nFound by the independent review");
+    await check("a change made while its request is on the way is still sent afterwards", async () => {
+        await freshGuestPage();
+        await signIn();
+        page("window.__fake.state.syncDelayMs = 1500; return true;");
+        page(`localStorage.setItem('${KEYS.activity}', JSON.stringify({ date: ${localToday}, quranAyat: 0, tasbihCount: 100, prayersLogged: [] })); ${fireStorageChange(KEYS.activity)} return true;`);
+        await waitFor("the first request to leave", "window.__fake.log.some(r => r.path === '/api/user/sync')", 8000);
+        page(`localStorage.setItem('${KEYS.activity}', JSON.stringify({ date: ${localToday}, quranAyat: 0, tasbihCount: 101, prayersLogged: [] })); ${fireStorageChange(KEYS.activity)} return true;`);
+        await waitFor("the newer value to reach the server", "window.__fake.log.some(r => r.path === '/api/user/sync' && r.ok && r.body.entries.some(e => e.data.tasbihCount === 101))", 12_000);
+        await waitFor("the queue to empty", `JSON.parse(localStorage.getItem('${KEYS.queue}') || '[]').length === 0`, 8000);
+    });
+
+    await check("switching accounts clears the old one without sending an undo of its records", async () => {
+        await freshGuestPage();
+        await signIn("u1");
+        page(`${addMission("tasbih_99")} return true;`);
+        await waitFor("the completion to be sent", "window.__fake.log.some(r => r.path === '/api/user/sync' && r.ok)", 8000);
+        page(`window.__fake.log.length = 0; window.__fake.state.user.id = 'u2'; new BroadcastChannel('next-auth').postMessage({ event: 'session', data: { trigger: 'getSession' } }); return true;`);
+        await waitFor("the other account to settle", `localStorage.getItem('${KEYS.syncUser}') === 'u2'`, 15_000);
+        await sleep(4000);
+        const undone = page("return window.__fake.log.filter(r => r.path === '/api/user/sync' && JSON.stringify(r.body).includes('\"delete\"')).length;");
+        assert(undone === 0, `${undone} request(s) carried an undo while the account was being cleared`);
+        assert(page("return window.__fake.state.serverMissions.length") === 1, "the first account's mission was removed on the server");
+        assert(!JSON.stringify(page(`return JSON.parse(localStorage.getItem('${KEYS.queue}') || '[]');`)).includes('"delete"'), "an undo is waiting in the queue");
+    });
+
+    await check("an entry that failed for good does not stop other devices' changes from arriving", async () => {
+        await freshGuestPage(`localStorage.setItem('${KEYS.queue}', JSON.stringify([{ id: 'stuck', type: 'hasanah_event', action: 'create', data: { kind: 'quran_time', key: 'k', localDate: ${localToday}, amount: 999 }, status: 'failed', retryCount: 6, createdAt: Date.now(), key: 'h:quran_time:k:x', userId: 'u1' }]));`);
+        await signIn("u1");
+        page(`window.__fake.state.serverMissions = [{ missionId: 'asr_prayer', completedDate: ${localToday}, hasanahEarned: 75 }]; return true;`);
+        await sleep(5500);
+        page("window.dispatchEvent(new Event('online')); return true;");
+        await waitFor("Asr to arrive from the other device", `JSON.parse(localStorage.getItem('${KEYS.missions}') || '[]').some(m => m.id === 'asr_prayer')`, 12_000);
+    });
+
+    await check("a login that failed once still starts syncing when a later attempt succeeds", async () => {
+        await freshGuestPage();
+        page(`${FAKE}; window.__fake.state.fullDataFails = true; window.__fake.state.user.id = 'u1'; new BroadcastChannel('next-auth').postMessage({ event: 'session', data: { trigger: 'getSession' } }); return true;`);
+        await sleep(4000);
+        assert(page(`return localStorage.getItem('${KEYS.syncUser}')`) === null, "the login should not have settled while the server failed");
+        page("window.__fake.state.fullDataFails = false; new BroadcastChannel('next-auth').postMessage({ event: 'session', data: { trigger: 'getSession' } }); return true;");
+        await waitFor("the login to settle", `localStorage.getItem('${KEYS.syncUser}') === 'u1'`, 15_000);
+        await waitFor("the engine to pull", "window.__fake.log.some(r => r.path === '/api/user/pull')", 15_000);
+        page(`${addMission("tasbih_99")} return true;`);
+        await waitFor("a change to be sent", "window.__fake.log.some(r => r.path === '/api/user/sync' && r.ok)", 10_000);
+    });
 }
 
 // ─── Lifecycle ──────────────────────────────────────────────────────────────

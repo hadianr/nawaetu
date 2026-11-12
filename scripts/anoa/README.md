@@ -32,6 +32,10 @@ Needs the `anoa` CLI on the PATH. It starts the app and a browser itself, and st
 | Undo | Done and undone before sending cancels out; one already sent is undone on the server |
 | Other devices | A mission completed elsewhere appears, one undone elsewhere disappears, and neither is sent back |
 | Accounts | A change queued for another account is never sent for the one that signs in |
+| Review | A change made while its request is on the way is still sent afterwards |
+| Review | Switching accounts clears the old one without sending an undo of its records |
+| Review | An entry that failed for good does not stop other devices' changes from arriving |
+| Review | A login that failed once still starts syncing when a later attempt succeeds |
 
 ## Options
 
