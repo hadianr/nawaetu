@@ -368,6 +368,36 @@ async function runChecks() {
         page(`${addMission("tasbih_99")} return true;`);
         await waitFor("a change to be sent", "window.__fake.log.some(r => r.path === '/api/user/sync' && r.ok)", 10_000);
     });
+
+    console.log("\nInviting guests to sign in");
+    const streakSeed = (days) => `localStorage.setItem('user_streak', JSON.stringify({ currentStreak: ${days}, longestStreak: ${days}, lastActiveDate: ${localToday}, milestones: [], freezesAvailable: 0, protectedDates: [] }));`;
+    const nudgeDialog = "(Array.from(document.querySelectorAll('[role=\"dialog\"]')).find(d => /in a row|whole week/i.test(d.innerText)))";
+
+    await check("a guest with a 3-day streak is invited once, with the animation, and left alone after dismissing", async () => {
+        await freshGuestPage(streakSeed(3));
+        await sleep(2000);
+        anoa(["press", "Escape"], { allowFail: true }); // the journey intro dialog may be open
+        await waitFor("the invitation", nudgeDialog, 15_000);
+        await waitFor("the flame to be drawn", `${nudgeDialog}.querySelector('canvas')`, 10_000);
+        anoa(["click", refByText("Maybe later")]);
+        await waitFor("the invitation to close", `!${nudgeDialog}`, 5000);
+        assert(page("return JSON.parse(localStorage.getItem('nawaetu_login_nudge')).dismissals") === 1, "the dismissal was not remembered");
+
+        anoa(["reload"]); anoa(["wait", "--load"]);
+        await sleep(2000);
+        anoa(["press", "Escape"], { allowFail: true });
+        await sleep(6500);
+        assert(!page(`return Boolean(${nudgeDialog});`), "the invitation came back right after it was dismissed");
+        noPageErrors();
+    });
+
+    await check("a guest with a 1-day streak is not invited", async () => {
+        await freshGuestPage(streakSeed(1));
+        await sleep(2000);
+        anoa(["press", "Escape"], { allowFail: true });
+        await sleep(6500);
+        assert(!page(`return Boolean(${nudgeDialog});`), "a guest with nothing to protect was invited");
+    });
 }
 
 // ─── Lifecycle ──────────────────────────────────────────────────────────────
