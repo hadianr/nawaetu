@@ -2,7 +2,7 @@ import { getStorageService, type StorageService } from "@/core/infrastructure/st
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { syncQueue, type SyncActionType, type SyncEntityType } from "@/lib/sync-queue";
 import { DateUtils } from "@/lib/utils/date";
-import { addDays, SYNC_WINDOW_DAYS_BACK } from "@/lib/utils/timezone";
+import { syncWindowStart } from "@/lib/utils/timezone";
 import { bookmarkKey, missionKey, type LocalBookmark, type LocalMission } from "./merge";
 
 type Change = { type: SyncEntityType; action: SyncActionType; data: Record<string, unknown> };
@@ -43,7 +43,7 @@ let active: { storage: StorageService; snapshot: Snapshot } | null = null;
 
 /** Only the sync window is compared: older records cannot be synced, so they never need a diff. */
 function readMissions(storage: StorageService): Map<string, LocalMission> {
-    const start = addDays(DateUtils.today(), -(SYNC_WINDOW_DAYS_BACK + 1));
+    const start = syncWindowStart(DateUtils.today());
     const map = new Map<string, LocalMission>();
     for (const mission of asArray<LocalMission>(storage.getOptional(STORAGE_KEYS.COMPLETED_MISSIONS))) {
         if (!mission?.id || !mission.completedAt) continue;

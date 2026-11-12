@@ -117,32 +117,50 @@ function computeStats(yearLog: FastingYearLog): FastingYearStats {
 }
 
 let flushing = false;
+let flushAgain = false;
+
+/** One pass over what is pending. False when it stopped early because the server could not be reached. */
+async function flushOnce(): Promise<boolean> {
+    for (const key of [...loadPending()]) {
+        const isQadha = key.startsWith("qadha:");
+        const [yr, dy] = key.replace("qadha:", "").split("-").map(Number);
+        const dayLog = loadFromStorage()[makeYearKey(yr)]?.[makeDayKey(dy)];
+        const sent = JSON.stringify(dayLog ?? null);
+        try {
+            if (dayLog) {
+                if (isQadha) await postOrThrow("/api/ramadhan/fasting/qadha", "PATCH", { hijriYear: yr, hijriDay: dy });
+                else await postOrThrow("/api/ramadhan/fasting", "POST", {
+                    hijriYear: yr, hijriDay: dy, status: dayLog.status, consequence: dayLog.consequence,
+                    madzhab: dayLog.madzhab, note: dayLog.note,
+                });
+            }
+        } catch (error) {
+            // Offline or a server error: keep it pending and stop; the next flush retries in order.
+            console.error(error);
+            return false;
+        }
+        // The day may have been edited while the request was on its way. Then the server has the older
+        // version: leave it pending so the next pass sends the new one.
+        if (JSON.stringify(loadFromStorage()[makeYearKey(yr)]?.[makeDayKey(dy)] ?? null) !== sent) {
+            flushAgain = true;
+            continue;
+        }
+        const remaining = loadPending();
+        remaining.delete(key);
+        savePending(remaining);
+    }
+    return true;
+}
 
 async function flushPending() {
-    if (flushing) return;
+    // A call that arrives mid-flush is not dropped: it is the signal that something changed, so go round again.
+    if (flushing) { flushAgain = true; return; }
     flushing = true;
     try {
-        for (const key of [...loadPending()]) {
-            const isQadha = key.startsWith("qadha:");
-            const [yr, dy] = key.replace("qadha:", "").split("-").map(Number);
-            const dayLog = loadFromStorage()[makeYearKey(yr)]?.[makeDayKey(dy)];
-            try {
-                if (dayLog) {
-                    if (isQadha) await postOrThrow("/api/ramadhan/fasting/qadha", "PATCH", { hijriYear: yr, hijriDay: dy });
-                    else await postOrThrow("/api/ramadhan/fasting", "POST", {
-                        hijriYear: yr, hijriDay: dy, status: dayLog.status, consequence: dayLog.consequence,
-                        madzhab: dayLog.madzhab, note: dayLog.note,
-                    });
-                }
-            } catch (error) {
-                // Offline or a server error: keep it pending and stop; the next flush retries in order.
-                console.error(error);
-                return;
-            }
-            const remaining = loadPending();
-            remaining.delete(key);
-            savePending(remaining);
-        }
+        do {
+            flushAgain = false;
+            if (!(await flushOnce())) return;
+        } while (flushAgain);
     } finally {
         flushing = false;
     }

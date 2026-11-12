@@ -25,6 +25,9 @@ export function addDays(date: string, days: number): string {
 export const SYNC_WINDOW_DAYS_BACK = 30;
 export const SYNC_WINDOW_DAYS_FORWARD = 1;
 
+/** The oldest day sync holds, counted from the user's today. The device and the server must agree on it exactly. */
+export const syncWindowStart = (todayLocal: string): string => addDays(todayLocal, -SYNC_WINDOW_DAYS_BACK);
+
 export function isInSyncWindow(localDate: string, todayLocal: string): boolean {
-    return localDate >= addDays(todayLocal, -SYNC_WINDOW_DAYS_BACK) && localDate <= addDays(todayLocal, SYNC_WINDOW_DAYS_FORWARD);
+    return localDate >= syncWindowStart(todayLocal) && localDate <= addDays(todayLocal, SYNC_WINDOW_DAYS_FORWARD);
 }

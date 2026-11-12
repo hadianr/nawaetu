@@ -32,6 +32,14 @@ describe("mergeMissions", () => {
         expect(mergeMissions([old], [], none, TODAY)).toEqual([old]);
     });
 
+    it("never treats a day the server refuses as undone elsewhere: 31 days back stays, 30 days back is compared", () => {
+        // The server accepts 30 days back, so a day older than that was never stored there and was not undone.
+        const thirtyOne = { id: "fajr_prayer", completedAt: "2026-10-11", hasanahEarned: 75 };
+        const thirty = { id: "fajr_prayer", completedAt: "2026-10-12", hasanahEarned: 75 };
+        expect(mergeMissions([thirtyOne], [], none, TODAY)).toEqual([thirtyOne]);
+        expect(mergeMissions([thirty], [], none, TODAY)).toEqual([]);
+    });
+
     it("keeps a record the server cannot hold, such as an id no longer in the catalogue", () => {
         const legacy = { id: "retired_mission_xyz", completedAt: TODAY, hasanahEarned: 10 };
         expect(mergeMissions([legacy], [], none, TODAY)).toEqual([legacy]);

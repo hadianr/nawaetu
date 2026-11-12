@@ -16,6 +16,7 @@
         holdSync: false,             // answer /api/user/sync with 503 so changes stay queued
         offline: false,              // behave like a dead network (in addition to anoa's own offline switch)
         syncDelayMs: 0,              // hold each /api/user/sync answer for this long (a slow connection)
+        pullDelayMs: 0,              // hold each /api/user/pull answer, computed NOW, for this long (a slow connection)
         fullDataFails: false,        // answer /api/user/full-data with a server error (a login that does not settle)
     };
     const log = [];
@@ -79,6 +80,8 @@
             if (parts.includes("profile")) body.profile = { isMuhsinin: false, totalInfaq: 0 };
             if (parts.includes("fasting")) body.fasting = [];
             if (parts.includes("bookmarks")) body.bookmarkFingerprint = "0:0";
+            // The answer is fixed now; a slow connection delivers it later, after changes made in between.
+            if (state.pullDelayMs) await new Promise((resolve) => setTimeout(resolve, state.pullDelayMs));
             return json(body);
         }
 

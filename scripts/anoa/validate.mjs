@@ -398,6 +398,18 @@ async function runChecks() {
         await sleep(6500);
         assert(!page(`return Boolean(${nudgeDialog});`), "a guest with nothing to protect was invited");
     });
+
+    await check("a mission completed and sent while a slow pull is in flight is not dropped by that pull's older answer", async () => {
+        await freshGuestPage();
+        await signIn();
+        await sleep(5500); // a forced pull waits this long after the login pull
+        page("window.__fake.state.pullDelayMs = 4000; window.__fake.log.length = 0; window.dispatchEvent(new Event('online')); return true;");
+        await waitFor("the pull to start", "window.__fake.log.some(r => r.path === '/api/user/pull')", 5000);
+        page(`${addMission("tasbih_99")} return true;`);
+        await waitFor("the completion to be sent", "window.__fake.log.some(r => r.path === '/api/user/sync' && r.ok)", 8000);
+        await sleep(4500); // the slow pull answers now, with a server state that predates the completion
+        assert(page(`return JSON.parse(localStorage.getItem('${KEYS.missions}') || '[]').some(m => m.id === 'tasbih_99')`), "the pull's older answer removed the mission");
+    });
 }
 
 // ─── Lifecycle ──────────────────────────────────────────────────────────────

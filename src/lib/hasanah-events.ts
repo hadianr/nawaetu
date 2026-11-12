@@ -19,6 +19,7 @@ export interface ValidatedHasanahEvent {
     mode: "once" | "raise";
 }
 
+const MAX_QURAN_MINUTES = 600;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const YEAR_DAY = /^\d{4}-(?:[1-9]|[12]\d|30)$/;
 
@@ -31,19 +32,23 @@ export function validateHasanahEvent(input: HasanahEventInput): ValidatedHasanah
     const { kind, key, amount, localDate } = input;
     if (!DATE.test(localDate) || typeof key !== "string" || key.length > 40 || !Number.isInteger(amount) || amount < 0) return null;
 
-    const daily = (source: ProgressionSource, valid: boolean, mode: "once" | "raise" = "once"): ValidatedHasanahEvent | null =>
-        valid ? { source, sourceId: `${kind}:${key}:${localDate}`, hasanah: amount, localDate, countsForStreak: true, mode } : null;
+    const daily = (source: ProgressionSource, valid: boolean, mode: "once" | "raise" = "once", paid = amount): ValidatedHasanahEvent | null =>
+        valid ? { source, sourceId: `${kind}:${key}:${localDate}`, hasanah: paid, localDate, countsForStreak: true, mode } : null;
 
     switch (kind) {
         case "taraweh": return daily("mission", YEAR_DAY.test(key) && amount === 15);
         case "fasting": return daily("mission", YEAR_DAY.test(key) && amount === 20);
         case "lailatul": return daily("mission", YEAR_DAY.test(key) && amount === 50);
-        case "khatamah": return daily("mission", /^\d{4}-(?:[1-9]|[12]\d|30)$/.test(key) && amount > 0 && amount % 20 === 0 && amount <= 600);
-        case "sirah_quiz": return daily("mission", key === "daily" && amount > 0 && amount % 10 === 0 && amount <= 200);
+        // One juz is one step of the tracker, 20 each, once per juz per year.
+        case "khatamah": return daily("mission", YEAR_DAY.test(key) && amount === 20);
+        // Five questions, 10 each: the most a daily quiz can pay is 50.
+        case "sirah_quiz": return daily("mission", key === "daily" && amount > 0 && amount % 10 === 0 && amount <= 50);
         // Reflection on the day's intention: 50 on the day itself, 25 when written for an earlier day.
         case "reflection": return daily("mission", key === "daily" && (amount === 25 || amount === 50));
         case "dhikr_completion": return daily("dhikr", /^(?:[1-9]|1\d|20)$/.test(key) && amount === 50);
-        case "quran_time": return daily("quran", key === "time" && amount <= 600, "raise");
+        // Reading time is reported by the device and cannot be checked here, so the day is bounded instead: more than
+        // ten hours is paid as ten hours. Refusing it would leave an entry that can never be sent.
+        case "quran_time": return daily("quran", key === "time", "raise", Math.min(amount, MAX_QURAN_MINUTES));
         case "dhikr_milestone": {
             const milestone = dhikrMilestones.find((item) => String(item.target) === key);
             return milestone && amount === milestone.reward

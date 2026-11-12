@@ -25,7 +25,7 @@ import { inSequence } from "@/lib/db-sequential";
 import { logger } from "@/lib/logger";
 import { calculatePlayerStats } from "@/lib/habits/progression";
 import { syncRateLimiter } from "@/lib/rate-limit";
-import { addDays, localDateIn, SYNC_WINDOW_DAYS_BACK } from "@/lib/utils/timezone";
+import { addDays, localDateIn, syncWindowStart } from "@/lib/utils/timezone";
 
 export const maxDuration = 30;
 
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
         const wants = (part: Part) => requested.includes(part);
 
         const today = localDateIn(new Date(), params.get("tz"));
-        const windowStart = addDays(today, -(SYNC_WINDOW_DAYS_BACK + 1));
+        const windowStart = syncWindowStart(today);
         const body: Record<string, unknown> = {};
 
         if (wants("progress")) {
