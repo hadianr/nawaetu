@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from "react";
 import type { MessagePayload } from "firebase/messaging";
-import { registerServiceWorkerAndGetToken, subscribeForegroundMessages } from "@/lib/notifications/fcm-init";
+import { registerServiceWorkerAndGetToken, rotatePushToken, subscribeForegroundMessages } from "@/lib/notifications/fcm-init";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 export function useFCM() {
@@ -57,7 +57,8 @@ export function useFCM() {
             }
         };
 
-        const initFCM = async () => {
+        let rotated = false;
+        const initFCM = async (): Promise<void> => {
             try {
                 // Use the centralized robust function
                 const currentToken = await registerServiceWorkerAndGetToken();
@@ -106,6 +107,11 @@ export function useFCM() {
                             prayerPreferences,
                         }),
                     });
+                    // Another account still holds this token (it was never released): take a fresh one, once.
+                    if (response.status === 409 && !rotated) {
+                        rotated = true;
+                        if (await rotatePushToken()) return initFCM();
+                    }
                     if (!response.ok) {
                         throw new Error(`FCM subscription failed (${response.status})`);
                     }

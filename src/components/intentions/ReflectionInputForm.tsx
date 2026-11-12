@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { guestHeaders } from "@/lib/guest-secret-client";
 
 interface ReflectionInputFormProps {
     onComplete: () => void;
@@ -66,7 +67,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
         try {
             const response = await fetch("/api/intentions/reflect", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...guestHeaders() },
                 body: JSON.stringify({
                     user_token: userToken,
                     intention_id: intentionId,

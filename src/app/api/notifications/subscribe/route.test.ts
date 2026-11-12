@@ -32,6 +32,10 @@ vi.mock('@/db', () => ({
             users: {
                 findFirst: vi.fn().mockResolvedValue({ id: 'test-user-id' }),
             },
+            pushSubscriptions: {
+                // Nobody holds the token unless a test says so.
+                findFirst: vi.fn().mockResolvedValue(undefined),
+            },
         },
     }
 }));
@@ -171,6 +175,35 @@ describe('POST /api/notifications/subscribe', () => {
 
         expect(res.status).toBe(200);
         expect(set).toHaveBeenCalledWith(expect.objectContaining({ userId: null }));
+    });
+
+    describe('a token that another account holds', () => {
+        const holder = (userId: string | null) =>
+            (db.query.pushSubscriptions.findFirst as unknown as { mockResolvedValueOnce: (value: unknown) => void }).mockResolvedValueOnce({ userId });
+        const subscribe = () => POST(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ token: 'shared-token' }) }));
+        const insertCalls = () => {
+            const onConflictDoUpdate = vi.fn().mockResolvedValue({});
+            const insert = vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ onConflictDoUpdate }) });
+            (db.insert as unknown as { mockImplementation: (fn: unknown) => void }).mockImplementation(insert);
+            return onConflictDoUpdate;
+        };
+
+        it('is not taken over: the other account keeps it and the caller is told to get a fresh one', async () => {
+            const write = insertCalls();
+            holder('someone-else');
+            const res = await subscribe();
+            expect(res.status).toBe(409);
+            expect(write).not.toHaveBeenCalled();
+        });
+
+        it('is taken by the same account, and a guest subscription is handed to the account that logs in', async () => {
+            const write = insertCalls();
+            holder('test-user-id');
+            expect((await subscribe()).status).toBe(200);
+            holder(null);
+            expect((await subscribe()).status).toBe(200);
+            expect(write).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe('the device token', () => {

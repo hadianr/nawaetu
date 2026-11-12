@@ -410,6 +410,25 @@ async function runChecks() {
         await sleep(4500); // the slow pull answers now, with a server state that predates the completion
         assert(page(`return JSON.parse(localStorage.getItem('${KEYS.missions}') || '[]').some(m => m.id === 'tasbih_99')`), "the pull's older answer removed the mission");
     });
+
+    await check("a guest's journal requests carry the device's secret, and it is the same one after a reload", async () => {
+        await freshGuestPage("localStorage.setItem('nawaetu_anonymous_id', 'anoa-guest-token');");
+        page(`${FAKE}; return true;`);
+        anoa(["reload"]); anoa(["wait", "--load"]);
+        page(`${FAKE}; return true;`);
+        await sleep(1500);
+        // The journal widget asks for today's intention with the guest token; the secret must ride along.
+        page("window.dispatchEvent(new Event('focus')); document.dispatchEvent(new Event('visibilitychange')); return true;");
+        const secretOf = () => page("return localStorage.getItem('nawaetu_guest_secret');");
+        await waitFor("a secret to exist", "(localStorage.getItem('nawaetu_guest_secret') || '').length >= 16", 15_000);
+        const first = secretOf();
+        assert(first && first.length >= 16, "no guest secret was created");
+
+        anoa(["reload"]); anoa(["wait", "--load"]);
+        await sleep(1500);
+        assert(secretOf() === first, "the secret changed across a reload");
+        noPageErrors();
+    });
 }
 
 // ─── Lifecycle ──────────────────────────────────────────────────────────────

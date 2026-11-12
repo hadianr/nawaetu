@@ -17,6 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { guestMayAct, readGuestSecret } from "@/lib/guest-secret";
 import { db } from "@/db";
 import { intentions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -90,6 +91,9 @@ export async function POST(req: NextRequest) {
                     .limit(1);
 
                 if (user) {
+                    if (!(await guestMayAct(user, readGuestSecret(req)))) {
+                        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+                    }
                     userId = user.id;
                 }
             }

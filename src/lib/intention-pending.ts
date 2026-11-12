@@ -1,3 +1,5 @@
+import { guestHeaders } from "@/lib/guest-secret-client";
+
 const KEY = "nawaetu_intention_pending";
 
 export interface PendingIntention {
@@ -49,7 +51,7 @@ export async function flushPendingIntention(): Promise<FlushResult> {
     try {
         const response = await fetch("/api/intentions/daily", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", ...guestHeaders() },
             body: JSON.stringify({
                 user_token: pending.userToken,
                 intention_text: pending.text,

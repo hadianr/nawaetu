@@ -21,6 +21,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { intentions, users } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
+import { guestMayAct, readGuestSecret } from "@/lib/guest-secret";
 import { logger } from "@/lib/logger";
 import { syncRateLimiter } from "@/lib/rate-limit";
 import { isInSyncWindow, localDateIn } from "@/lib/utils/timezone";
@@ -60,10 +61,13 @@ export async function POST(req: NextRequest) {
                 .map((row) => new Date(row.date).toISOString().slice(0, 10)),
         );
 
+        const secret = readGuestSecret(req);
         let moved = 0;
         for (const token of tokens) {
-            const [guest] = await db.select({ id: users.id }).from(users).where(eq(users.email, `${token}@nawaetu.local`)).limit(1);
+            const [guest] = await db.select({ id: users.id, guestSecretHash: users.guestSecretHash }).from(users).where(eq(users.email, `${token}@nawaetu.local`)).limit(1);
             if (!guest || guest.id === userId) continue;
+            // Knowing a device token is not enough to take a guest's journal: the device's secret must match too.
+            if (!(await guestMayAct(guest, secret))) continue;
 
             const rows = await db
                 .select({ id: intentions.id, date: intentions.intentionDate })

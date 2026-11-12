@@ -130,6 +130,19 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        // A token that another account holds is not taken over: a signed-in user who learned someone's token
+        // could otherwise send that person's alerts to themselves. A device that really changed hands has had
+        // its token released (and retired) at logout; the client answers this by getting a fresh token.
+        if (validUserId) {
+            const holder = await db.query.pushSubscriptions.findFirst({
+                where: eq(pushSubscriptions.token, token),
+                columns: { userId: true },
+            });
+            if (holder?.userId && holder.userId !== validUserId) {
+                return NextResponse.json({ error: "token_owned_by_other_account" }, { status: 409 });
+            }
+        }
+
         // Optimized: Single upsert operation
         await db.insert(pushSubscriptions)
             .values({

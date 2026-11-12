@@ -17,7 +17,7 @@
  */
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getMessaging, getToken, onMessage, Messaging, type MessagePayload } from "firebase/messaging";
+import { deleteToken, getMessaging, getToken, onMessage, Messaging, type MessagePayload } from "firebase/messaging";
 import * as Sentry from "@sentry/browser";
 
 const firebaseConfig = {
@@ -87,6 +87,25 @@ function getMessagingInstance(): Messaging | undefined {
     } catch (err) {
         console.error("[FCM] Failed to initialize messaging:", err);
         throw err;
+    }
+}
+
+/**
+ * Retires this device's push token and forgets it, so the next registration gets a fresh one. The old token stops
+ * working everywhere, which ends any claim an account or a leaked copy had on it. Returns false when there was
+ * nothing to rotate or it could not be done (the caller keeps working with the old token).
+ */
+export async function rotatePushToken(): Promise<boolean> {
+    if (typeof window === "undefined" || !("Notification" in window) || window.Notification.permission !== "granted") return false;
+    try {
+        const messagingInstance = getMessagingInstance();
+        if (!messagingInstance) return false;
+        await deleteToken(messagingInstance);
+        localStorage.removeItem("fcm_token");
+        return true;
+    } catch (error) {
+        console.warn("[FCM] Could not rotate the push token", error);
+        return false;
     }
 }
 

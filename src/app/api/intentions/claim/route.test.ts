@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { POST } from "./route";
 import { getServerSession } from "@/lib/auth";
+import { hashGuestSecret } from "@/lib/guest-secret";
 
 const h = vi.hoisted(() => ({
     selects: [] as unknown[][],
@@ -36,7 +37,7 @@ vi.mock("@/db", () => ({
     },
 }));
 
-const request = (body: unknown) => POST({ json: async () => body } as never) as unknown as Promise<{ body: { moved?: number }; status: number }>;
+const request = (body: unknown, secret?: string) => POST({ json: async () => body, headers: new Headers(secret ? { "x-guest-secret": secret } : {}) } as never) as unknown as Promise<{ body: { moved?: number }; status: number }>;
 const today = new Date().toISOString().slice(0, 10);
 
 describe("POST /api/intentions/claim", () => {
@@ -74,6 +75,34 @@ describe("POST /api/intentions/claim", () => {
         await request({ tokens: ["device-token"] });
 
         expect(h.evidence).toEqual([expect.objectContaining({ source: "intention", sourceId: `intention:${yesterday}`, hasanah: 5 })]);
+    });
+
+    describe("a guest account that a device has bound a secret to", () => {
+        const secret = "s".repeat(30);
+        const bound = { id: "guest-user", guestSecretHash: hashGuestSecret(secret) };
+        const day = [{ id: "i1", date: new Date("2026-01-01T00:00:00Z") }];
+
+        it("is not taken by someone who only knows the device token", async () => {
+            h.selects.push([], [bound]);
+            const { body } = await request({ tokens: ["device-token"] });
+            expect(body.moved).toBe(0);
+            expect(h.updates).toHaveLength(0);
+            expect(h.deletes).toBe(0); // and the guest account is left exactly as it was
+        });
+
+        it("is not taken with a wrong secret either", async () => {
+            h.selects.push([], [bound]);
+            const { body } = await request({ tokens: ["device-token"] }, "w".repeat(30));
+            expect(body.moved).toBe(0);
+            expect(h.deletes).toBe(0);
+        });
+
+        it("is taken by the device that holds the secret", async () => {
+            h.selects.push([], [bound], day);
+            const { body } = await request({ tokens: ["device-token"] }, secret);
+            expect(body.moved).toBe(1);
+            expect(h.deletes).toBe(1);
+        });
     });
 
     it("does nothing for a token that has no placeholder account", async () => {
