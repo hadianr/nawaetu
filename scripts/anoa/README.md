@@ -36,6 +36,7 @@ Needs the `anoa` CLI on the PATH. It starts the app and a browser itself, and st
 | Review | Switching accounts clears the old one without sending an undo of its records |
 | Review | An entry that failed for good does not stop other devices' changes from arriving |
 | Guest | A guest's journal requests create a device secret that stays the same after a reload |
+| Links | The journey welcome offers no link to the Ramadan page while it is switched off |
 | Review | A login that failed once still starts syncing when a later attempt succeeds |
 | Review | A mission completed and sent while a slow pull is in flight is not dropped by that pull's older answer |
 | Invitation | A guest with a 7-day streak is invited once, with the animation drawn, and left alone after dismissing |

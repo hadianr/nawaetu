@@ -13,6 +13,7 @@ import { useFastingTracker } from "@/hooks/useFastingTracker";
 import { countRecommendedDays, getFastingGuide } from "@/lib/fasting-guide";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { DateUtils } from "@/lib/utils/date";
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 
 const fill = (template: unknown, values: Record<string, number>) =>
     Object.entries(values).reduce((text, [key, value]) => text.replace(`{${key}}`, String(value)), String(template));
@@ -141,7 +142,7 @@ export default function JourneyFasting({ adjustment, onVisible }: { adjustment: 
                 </p>
             )}
 
-            {pending.length > 0 && (
+            {pending.length > 0 && RAMADHAN_PAGE_ENABLED && (
                 <Link href="/ramadhan" className="mt-2 inline-flex min-h-11 items-center text-xs font-medium text-[rgb(var(--color-primary-strong))] underline underline-offset-4">
                     {String(t.journeyQadhaOpen)}
                 </Link>

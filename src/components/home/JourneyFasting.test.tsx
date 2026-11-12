@@ -5,7 +5,8 @@ import JourneyFasting from "./JourneyFasting";
 import { BASE_SETTINGS_EN } from "@/data/translations/base";
 import type { AllFastingLogs, Madzhab } from "@/data/fasting/types";
 
-const { mockGetOptional, mockSet, mockUpdateStreak, mockMarkDone } = vi.hoisted(() => ({
+const { mockGetOptional, mockSet, mockUpdateStreak, mockMarkDone, features } = vi.hoisted(() => ({
+    features: { ramadhanPage: true },
     mockGetOptional: vi.fn(),
     mockSet: vi.fn(),
     mockUpdateStreak: vi.fn(),
@@ -17,6 +18,8 @@ let mockMadzhab: Madzhab | null = "syafii";
 vi.mock("@/context/LocaleContext", () => ({ useLocale: () => ({ t: BASE_SETTINGS_EN, locale: "en" }) }));
 vi.mock("@/core/infrastructure/storage", () => ({ getStorageService: () => ({ getOptional: mockGetOptional, set: mockSet }) }));
 vi.mock("@/core/repositories/streak.repository", () => ({ getStreakRepository: () => ({ updateStreak: mockUpdateStreak }) }));
+// The Ramadan page is switched off in production; the link only makes sense while it is on.
+vi.mock("@/lib/features", () => ({ get RAMADHAN_PAGE_ENABLED() { return features.ramadhanPage; } }));
 vi.mock("@/components/ui/LottieMoment", () => ({
     default: ({ src, fallback }: { src: string; fallback?: React.ReactNode }) => <span data-testid="lottie" data-src={src}>{fallback}</span>,
 }));
@@ -43,6 +46,7 @@ const owe = (days: number[], done: number[] = []): AllFastingLogs => ({
 describe("JourneyFasting", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        features.ramadhanPage = true;
         vi.useFakeTimers();
         mockGetOptional.mockReturnValue(null);
         mockLogs = {};
@@ -65,6 +69,16 @@ describe("JourneyFasting", () => {
         expect(screen.getByText("Today suits a make-up fast.")).toBeTruthy();
         expect(screen.getByText(/Days 13-15 of each Hijri month/)).toBeTruthy();
         expect(screen.getByRole("link", { name: "Open fasting tracker" }).getAttribute("href")).toBe("/ramadhan");
+    });
+
+    it("shows owed fasts but no link to the Ramadan page while that page is switched off", () => {
+        features.ramadhanPage = false;
+        vi.setSystemTime(new Date("2027-01-21T10:00:00"));
+        mockLogs = owe([3, 4, 5], [1]);
+        render(<JourneyFasting adjustment={0} />);
+        expect(screen.getByText("Fasts to make up: 3")).toBeTruthy();
+        expect(screen.queryByRole("link", { name: "Open fasting tracker" })).toBeNull();
+        expect(document.querySelector('a[href="/ramadhan"]')).toBeNull();
     });
 
     it("tells the card when it has something to show, so the toggle can hint at it", () => {

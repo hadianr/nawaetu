@@ -4,12 +4,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import JourneyMilestoneDialog from "./JourneyMilestoneDialog";
 import { BASE_SETTINGS_EN } from "@/data/translations/base";
 
-const { mockGetOptional, mockSet } = vi.hoisted(() => ({ mockGetOptional: vi.fn(), mockSet: vi.fn() }));
+const { mockGetOptional, mockSet, features } = vi.hoisted(() => ({ mockGetOptional: vi.fn(), mockSet: vi.fn(), features: { ramadhanPage: true } }));
 
 vi.mock("@/context/LocaleContext", () => ({ useLocale: () => ({ t: BASE_SETTINGS_EN, locale: "en" }) }));
 vi.mock("@/core/infrastructure/storage", () => ({
     getStorageService: () => ({ getOptional: mockGetOptional, set: mockSet }),
 }));
+// The Ramadan page is switched off in production; the link only makes sense while it is on.
+vi.mock("@/lib/features", () => ({ get RAMADHAN_PAGE_ENABLED() { return features.ramadhanPage; } }));
 vi.mock("@/components/ui/LottieMoment", () => ({ default: () => <span data-testid="lottie" /> }));
 
 const store = (values: { seen?: number[]; welcomed?: boolean }) =>
@@ -21,6 +23,7 @@ const store = (values: { seen?: number[]; welcomed?: boolean }) =>
 describe("JourneyMilestoneDialog", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        features.ramadhanPage = true;
         store({});
     });
 
@@ -55,6 +58,14 @@ describe("JourneyMilestoneDialog", () => {
         expect(mockSet).toHaveBeenCalledWith("journey_welcome_seen", true);
         expect(mockSet).not.toHaveBeenCalledWith("journey_milestones_seen", expect.anything());
         expect(screen.queryByRole("dialog")).toBeNull();
+    });
+
+    it("sends no one to the Ramadan page while it is switched off: the welcome offers no make-up link", () => {
+        features.ramadhanPage = false;
+        render(<JourneyMilestoneDialog daysLeft={61} dayNumber={40} />);
+        expect(screen.getByRole("dialog")).toBeTruthy(); // the welcome itself still shows
+        expect(screen.queryByRole("link", { name: "I owe fasts from before" })).toBeNull();
+        expect(document.querySelector('a[href="/ramadhan"]')).toBeNull();
     });
 
     it("lets a new user who owes fasts jump to the fasting tracker from the welcome", () => {

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Progress } from "@/components/ui/progress";
 import { useLocale } from "@/context/LocaleContext";
 import { getStorageService } from "@/core/infrastructure/storage";
+import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getJourneyMilestone, JOURNEY_DAYS } from "@/lib/ramadhan-journey";
 
@@ -59,7 +60,8 @@ export default function JourneyMilestoneDialog({ daysLeft, dayNumber, hadStreak 
                         aria-label={dayOf}
                     />
 
-                    {mode === "welcome" && (
+                    {/* The make-up list lives on the Ramadan page, so there is nowhere to send the user while that page is off. */}
+                    {mode === "welcome" && RAMADHAN_PAGE_ENABLED && (
                         <Link
                             href="/ramadhan"
                             onClick={close}
