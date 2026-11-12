@@ -36,8 +36,8 @@ Needs the `anoa` CLI on the PATH. It starts the app and a browser itself, and st
 | Review | Switching accounts clears the old one without sending an undo of its records |
 | Review | An entry that failed for good does not stop other devices' changes from arriving |
 | Review | A login that failed once still starts syncing when a later attempt succeeds |
-| Invitation | A guest with a 3-day streak is invited once, with the animation drawn, and left alone after dismissing |
-| Invitation | A guest with a 1-day streak is not invited |
+| Invitation | A guest with a 7-day streak is invited once, with the animation drawn, and left alone after dismissing |
+| Invitation | A guest with a 6-day streak is not invited |
 
 ## Options
 
