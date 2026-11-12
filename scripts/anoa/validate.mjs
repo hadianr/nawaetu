@@ -438,6 +438,18 @@ async function runChecks() {
         assert(secretOf() === first, "the secret changed across a reload");
         noPageErrors();
     });
+
+    console.log("\nNo dead ends");
+    await check("the journey welcome offers no link to the Ramadan page while it is switched off", async () => {
+        await freshGuestPage();
+        await waitFor("the journey welcome", "Array.from(document.querySelectorAll('[role=\"dialog\"]')).some(d => /starting on day/i.test(d.innerText))", 20_000);
+        assert(!page("return /owe fasts from before/i.test(document.body.innerText);"), "the make-up link is still offered");
+        assert(page("return document.querySelectorAll('a[href=\"/ramadhan\"]').length") === 0, "a link to /ramadhan is on the screen");
+        anoa(["press", "Escape"], { allowFail: true });
+        await sleep(800);
+        assert(page("return document.querySelectorAll('a[href=\"/ramadhan\"]').length") === 0, "a link to /ramadhan is on the home page");
+        noPageErrors();
+    });
 }
 
 // ─── Lifecycle ──────────────────────────────────────────────────────────────
