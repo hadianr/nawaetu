@@ -405,3 +405,25 @@ once (sending whatever is due, as before) and schedules them.
 - Not changed: the per-minute call itself (cron-job.org) and the 3 minute window. A subscriber can still be alerted up to a minute after
   the prayer time, as before.
 
+## 23. Functions run next to the database
+
+Found while checking the effect of sections 20 to 22 in Sentry: a prayer-alert run took 439 ms and 427 ms of it was one
+`select "push_subscription"` returning a handful of rows. The response header said where the time went:
+`x-vercel-id: sin1::iad1::...`, that is, the request entered at Singapore but the **function ran in iad1 (Virginia)**, while the
+database (Supabase) is in ap-southeast-1. Redis (Upstash) is far from iad1 too: its calls took p50 231 ms, minimum 211 ms.
+
+So every database query and every Redis call paid a round trip across the Pacific (about 230 ms), and the session check on every
+authenticated request pays for both. Sentry's database spans over 24 hours had a floor of about 225 ms on every route and averaged
+550 ms (prayer alerts), 927 ms (today's intention) and 1.7 s (sign-in).
+
+`vercel.json` now sets `"regions": ["sin1"]`. A test guards it. The AI providers (Gemini, Groq, OpenRouter) are global endpoints and
+not region-sensitive.
+
+How to check after the deploy:
+- `curl -sI https://nawaetu.com/api/health | grep -i x-vercel-id` should read `...::sin1::...` (it read `sin1::iad1::` before).
+  If it still says `iad1`, the project setting in the Vercel dashboard (Settings, Functions, Region) is overriding the file.
+- Sentry, spans: database spans should fall from a floor of about 225 ms to a few milliseconds, and the prayer-alert transaction
+  from about 440 ms to roughly 100 ms or less. Redis calls (`*.upstash.io/pipeline`) should fall from about 230 ms the same way.
+- Not measured: how much faster the whole app feels. Each request has as many database and Redis round trips as its code makes;
+  the saving is about 230 ms for each of them.
+
