@@ -322,3 +322,22 @@ Lighthouse 13.6.0, mobile preset (simulated slow 4G, 4x CPU slowdown), headless 
 **What this does not measure.** It is the first-run screen, not the returning home screen (a fresh Lighthouse profile always shows onboarding). It is lab data on a fast machine with simulated throttling, not a real budget Android phone. INP needs interaction and is not produced by Lighthouse; total blocking time is only its lab stand-in. There is no field data: real-user LCP, INP and CLS come from `/api/analytics`. The sync engine does its work after login, so the first-run page cannot show its cost; the browser validation (section 15) covers that: one change on a 1,000-mission account is tracked in about 1 ms.
 
 To repeat: build `main` and the branch with the same environment, serve them, and run `npx lighthouse@13.6.0 http://127.0.0.1:<port>/ --only-categories=performance --output=json --chrome-flags="--headless=new --no-sandbox"` three times each.
+
+## 19. From guest to account
+
+Guests keep every feature; the app never makes login a condition for prayer, Quran or dhikr. The invitation to sign in has to
+earn its place instead (`lib/login-nudge.ts`, `components/auth/LoginNudge.tsx`, mounted lazily on the home page).
+
+- **When:** a guest reaches a 3 or 7 day streak, or level 3. The biggest reason wins and covers the smaller ones, one invitation a
+  day at most.
+- **How it backs off:** dismissed once, wait 3 days; twice, a week; after that a month. Nothing is shown during onboarding, while
+  another dialog is open, or while the app is in the background.
+- **Animation:** the existing `flame.lottie` (streak) and `stars.lottie` (level) through `LottieMoment`: lazy, static under
+  reduced motion, hidden from assistive tech. No new file and no new dependency.
+- **Wording is exact on purpose:** it says "keep it safe", never "your data comes with you". A guest device only imports its data
+  into a brand-new account (`guestSyncEligible`); on an existing account the local data is kept but not imported.
+- **Measuring:** `login_prompt_shown`, `login_prompt_clicked` and `login_prompt_dismissed`, each with the trigger. Compare them with
+  the existing `sync_recovery_outcome` to see which reason converts.
+- **Not done:** an answer preview before the Mentor AI login gate, and a guest hint on the streak-reminder setting (streak
+  reminders go to accounts only, which is a real reason to sign in).
+

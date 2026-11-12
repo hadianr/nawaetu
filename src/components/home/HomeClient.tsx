@@ -31,6 +31,8 @@ import { getRamadhanJourney } from "@/lib/ramadhan-journey";
 
 const RamadhanCountdown = dynamic(() => import("@/components/RamadhanCountdown"), { ssr: false });
 const EidCard = dynamic(() => import("@/components/ramadhan/EidCard"), { ssr: false });
+// Loaded after the first paint: it only matters once a guest has something worth protecting.
+const LoginNudge = dynamic(() => import("@/components/auth/LoginNudge"), { ssr: false });
 const JourneyCard = dynamic(() => import("@/components/home/JourneyCard"), { ssr: false });
 
 export default function HomeClient() {
@@ -95,6 +97,7 @@ export default function HomeClient() {
 
             </main>
 
+            <LoginNudge />
         </div>
     );
 }
