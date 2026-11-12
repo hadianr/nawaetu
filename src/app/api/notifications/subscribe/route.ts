@@ -104,6 +104,9 @@ export async function POST(req: NextRequest) {
             country: userLocation?.country || null,
             countryCode: userLocation?.countryCode || null,
             prayerPreferences: prayerPreferences || undefined,
+            // Location, timezone, preferences or an inactive row coming back all change when the next alert is due:
+            // clearing the stored time makes the prayer-alert job work it out again on its next run.
+            nextAlertAt: null,
             // Only a known language is stored, and a request that does not say keeps what is already there.
             ...(locale === "id" || locale === "en" ? { locale } : {}),
         };

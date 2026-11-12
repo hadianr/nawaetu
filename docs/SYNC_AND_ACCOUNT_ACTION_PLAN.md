@@ -372,6 +372,36 @@ off and does not mark them sent, so the next minute (the 3 minute window) tries 
 - Checked: 1,200 due subscriptions make three `sendEach` calls and three bookkeeping statements; the SQL runs against Postgres,
   including rows stored as a JSON string.
 - Not measured: real FCM latency. The gain is expected from replacing N sequential round trips by a few concurrent batches.
-- Not changed: the job still reads every active subscription each minute. Reading only the subscriptions that are due (a stored
-  `next_alert_at` with an index) is the next step if that read becomes the cost.
+- Not changed there: the job still read every active subscription each minute. Section 22 fixes that.
+
+## 22. Prayer alerts: read only what is due
+
+The job runs every minute (1,440 times a day) but a prayer falls due only six times a day per subscriber (Imsak and the five prayers).
+It used to read every active subscription on every run. Now each row carries `next_alert_at` (UTC, migration 0022, with a partial
+index on `active = 1`), and the job reads only the rows whose time has come or that were never scheduled.
+
+How it works (`lib/notifications/prayer-schedule.ts`, `prayer-send.ts`, the route):
+- A row is **due** when `next_alert_at` is NULL or in the past. `dueSubscriptions` reads at most 2,000 per run, oldest first; the rest
+  stay due and the next minute continues.
+- The job evaluates due rows exactly as before (cell grouping, the 3 minute window, deduplication, preferences, batched send), then
+  stores the next time for those it has **handled**: sent, already alerted, prayer switched off, or nothing due. The next time is the
+  earliest enabled prayer after now in the subscriber's own zone (daylight saving included), today or tomorrow.
+- Rows it has not handled stay due on purpose: a send that failed (retried within the window), and any group whose prayer times could
+  not be had. A token FCM no longer knows is switched off instead.
+- A subscription without a location is looked at again a day later, not every minute.
+- `subscribe` and `preferences` set `next_alert_at` to NULL, so a changed location, timezone or preference (or an inactive row coming
+  back) is worked out again on the next run. New subscriptions start as NULL.
+- `mode=sync` still visits everyone; it is not scheduled.
+
+Order of deployment: **apply migration 0022 first.** The job selects every column of `push_subscription`, so code that expects
+`next_alert_at` fails against a database without it. The first run after the deploy finds every existing row NULL, evaluates them
+once (sending whatever is due, as before) and schedules them.
+
+- Checked: DST and zone arithmetic (London, New York, Jayapura, on the days the clocks change); the due query, its ordering, the limit and
+  the one-statement schedule write against Postgres, including a list longer than one batch; that the query can use the partial index
+  (`EXPLAIN` with sequential scans forbidden).
+- Expected, not measured: rows read per day fall from about (subscribers x 1,440) to about (subscribers x 6). With 63 active that is
+  roughly 90,000 down to 380; with 5,000 it is 7.2 million down to 30,000.
+- Not changed: the per-minute call itself (cron-job.org) and the 3 minute window. A subscriber can still be alerted up to a minute after
+  the prayer time, as before.
 

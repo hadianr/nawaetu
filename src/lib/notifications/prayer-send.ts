@@ -1,4 +1,4 @@
-import { inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import type { Message, Messaging } from "firebase-admin/messaging";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
@@ -93,6 +93,30 @@ export async function markSent(ids: string[], prayer: string, localDate: string)
             lastUsedAt: new Date(),
             lastNotificationSent: sql`(CASE WHEN jsonb_typeof(${pushSubscriptions.lastNotificationSent}) = 'object' THEN ${pushSubscriptions.lastNotificationSent} ELSE '{}'::jsonb END) || jsonb_build_object(${prayer}::text, ${localDate}::text)`,
         }).where(inArray(pushSubscriptions.id, batch));
+    }
+}
+
+/**
+ * The active subscriptions the job has to look at now: those whose stored time has come, and those never scheduled
+ * (new, or location, timezone or preferences just changed). Backed by the partial index `ps_next_alert_idx`.
+ */
+export function dueSubscriptions(now: Date, limit: number) {
+    return db
+        .select()
+        .from(pushSubscriptions)
+        .where(and(eq(pushSubscriptions.active, 1), or(isNull(pushSubscriptions.nextAlertAt), lte(pushSubscriptions.nextAlertAt, now))))
+        .orderBy(asc(pushSubscriptions.nextAlertAt))
+        .limit(limit);
+}
+
+/**
+ * Stores, for each subscription, when the job next needs to look at it. One statement per batch: the (id, time) pairs
+ * are joined as a VALUES list instead of one UPDATE per row.
+ */
+export async function setNextAlerts(entries: Array<{ id: string; at: Date }>): Promise<void> {
+    for (const batch of chunks(entries)) {
+        const values = sql.join(batch.map((entry) => sql`(${entry.id}::uuid, ${entry.at.toISOString()}::timestamp)`), sql`, `);
+        await db.execute(sql`UPDATE push_subscription AS p SET next_alert_at = v.at FROM (VALUES ${values}) AS v(id, at) WHERE p.id = v.id`);
     }
 }
 

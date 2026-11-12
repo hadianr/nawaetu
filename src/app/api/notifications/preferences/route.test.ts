@@ -15,15 +15,17 @@ const request = () =>
         body: JSON.stringify({ token: "device-token", prayerPreferences: { fajr: false } }),
     });
 
+const written: Array<Record<string, unknown>> = [];
+
 function stubSubscription(userId: string | null) {
     vi.mocked(db.select).mockReturnValue({ from: () => ({ where: () => ({ limit: async () => [{ id: "s1", userId }] }) }) } as never);
     const where = vi.fn().mockResolvedValue(undefined);
-    vi.mocked(db.update).mockReturnValue({ set: () => ({ where }) } as never);
+    vi.mocked(db.update).mockReturnValue({ set: (values: Record<string, unknown>) => { written.push(values); return { where }; } } as never);
     return where;
 }
 
 describe("POST /api/notifications/preferences", () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => { vi.clearAllMocks(); written.length = 0; });
 
     it("lets a guest change a guest subscription with its token", async () => {
         const where = stubSubscription(null);
@@ -48,5 +50,13 @@ describe("POST /api/notifications/preferences", () => {
         vi.mocked(getServerSession).mockResolvedValue({ user: { id: "user-1" } } as never);
         expect((await POST(request())).status).toBe(200);
         expect(where).toHaveBeenCalled();
+    });
+
+    it("makes the prayer-alert job work out the next alert again, since location, timezone and preferences decide it", async () => {
+        stubSubscription(null);
+        vi.mocked(getServerSession).mockResolvedValue(null as never);
+        await POST(request());
+        expect(written).toHaveLength(1);
+        expect(written[0]).toHaveProperty("nextAlertAt", null);
     });
 });

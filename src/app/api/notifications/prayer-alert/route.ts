@@ -24,7 +24,8 @@ import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
 import { getPrayerTimings } from "@/lib/notifications/prayer-times";
 import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
-import { buildPrayerMessage, deactivate, markSent, sendAlerts } from "@/lib/notifications/prayer-send";
+import { buildPrayerMessage, deactivate, dueSubscriptions, markSent, sendAlerts, setNextAlerts } from "@/lib/notifications/prayer-send";
+import { ALERT_PRAYERS, nextAlertAt } from "@/lib/notifications/prayer-schedule";
 import type { Message } from "firebase-admin/messaging";
 
 /**
@@ -103,6 +104,17 @@ function inferTimezoneFromCoords(lat: number, lng: number, rawTz?: string | null
 // Seconds. FCM sends; the cron runs every minute, so a longer run overlaps the next one anyway.
 export const maxDuration = 60;
 
+/** One run looks at no more than this many due subscriptions; the rest stay due and the next minute continues. */
+const MAX_DUE_PER_RUN = 2000;
+
+/** Aladhan calculation method for a place. */
+function methodFor(lat: number, lng: number): string {
+    if (lat >= -11 && lat <= 6 && lng >= 95 && lng <= 141) return "20"; // Indonesia
+    if (lng >= -170 && lng <= -50) return "2"; // North America
+    if (lat >= 12 && lat <= 32 && lng >= 34 && lng <= 60) return "4"; // Makkah / Middle East
+    return "3"; // MWL, the global default
+}
+
 export async function POST(req: NextRequest) {
     try {
         const authHeader = req.headers.get("authorization");
@@ -120,11 +132,15 @@ export async function POST(req: NextRequest) {
         const mode = searchParams.get("mode") || req.nextUrl?.searchParams?.get("mode") || "alert";
 
 
-        const subscriptions = await db
-            .select()
-            .from(pushSubscriptions)
-            // Guests are included: prayer alerts are a core feature, not an account feature.
-            .where(eq(pushSubscriptions.active, 1));
+        const now = new Date();
+
+        // Guests are included: prayer alerts are a core feature, not an account feature.
+        // The job runs every minute but a prayer falls due only five times a day, so it reads only the subscriptions whose
+        // time has come, or that have never been scheduled (new, or location / timezone / preferences just changed), and
+        // stores the next time once it has handled them. Sync mode still visits everyone.
+        const subscriptions = mode === "alert"
+            ? await dueSubscriptions(now, MAX_DUE_PER_RUN)
+            : await db.select().from(pushSubscriptions).where(eq(pushSubscriptions.active, 1));
 
         // Lazy: this cron fires every minute and most runs send nothing, so only
         // query users once a prayer is actually due (and never in sync mode).
@@ -161,8 +177,6 @@ export async function POST(req: NextRequest) {
             errors: [] as string[],
         };
 
-        const now = new Date();
-
         if (mode === "sync") {
             const syncMessage = {
                 data: {
@@ -196,6 +210,9 @@ export async function POST(req: NextRequest) {
         if (mode === "alert") {
             // Group subscriptions by location (rounded) to minimize API calls
             const groups = new Map<string, { lat: number, lng: number, timezone: string, subs: typeof subscriptions }>();
+            // Who has been handled this run, and when to look at them next. Anyone not listed stays due and is seen again next minute.
+            const handled: Array<{ id: string; at: Date }> = [];
+            const oneDayOn = new Date(now.getTime() + 86_400_000);
 
             for (const sub of subscriptions) {
                 const lat: number | null = sub.latitude ?? null;
@@ -204,6 +221,9 @@ export async function POST(req: NextRequest) {
                 if (!lat || !lng) {
                     results.noLocation++;
                     results.skipped++;
+                    // Without a location there is nothing to schedule; looking again tomorrow keeps it out of every run. Setting a
+                    // location resets this (subscribe and preferences clear next_alert_at).
+                    handled.push({ id: sub.id, at: oneDayOn });
                     continue;
                 }
 
@@ -236,21 +256,35 @@ export async function POST(req: NextRequest) {
                     });
                     const localDateStr = rawDateStr.replace(/[^\d/]/g, "").split("/").join("-"); // DD-MM-YYYY
 
-                    // Dynamic Calculation Method for Global Users:
-                    let userMethod = "3"; // Default MWL (Global)
-                    if (lat >= -11 && lat <= 6 && lng >= 95 && lng <= 141) {
-                        userMethod = "20"; // Indonesia
-                    } else if (lng >= -170 && lng <= -50) {
-                        userMethod = "2"; // North America
-                    } else if (lat >= 12 && lat <= 32 && lng >= 34 && lng <= 60) {
-                        userMethod = "4"; // Makkah / Middle East
-                    }
+                    const userMethod = methodFor(lat, lng);
+                    const timingsFor = (aladhanDate: string) => getPrayerTimings(lat, lng, aladhanDate, userMethod);
 
-                    const timings = await getPrayerTimings(lat, lng, localDateStr, userMethod);
+                    const timings = await timingsFor(localDateStr);
                     if (!timings) {
                         results.skipped += subs.length;
-                        return;
+                        return; // they stay due: the next minute asks again
                     }
+
+                    // When to look at a subscriber next depends only on which prayers they switched off, so work it out once per kind.
+                    const nextByKind = new Map<string, Promise<Date | null>>();
+                    const nextFor = (sub: (typeof subs)[number]) => {
+                        const prefs = sub.prayerPreferences ? parseJsonField<Record<string, boolean>>(sub.prayerPreferences) : null;
+                        const isEnabled = (prayer: string) => !(prefs && prefs[prayer.toLowerCase()] === false);
+                        const kind = ALERT_PRAYERS.filter(isEnabled).join(",");
+                        let next = nextByKind.get(kind);
+                        if (!next) {
+                            next = nextAlertAt({ now, timeZone: safeTimezone, timingsFor, isEnabled });
+                            nextByKind.set(kind, next);
+                        }
+                        return next;
+                    };
+                    const schedule = async (ids: Set<string>) => {
+                        for (const sub of subs) {
+                            if (!ids.has(sub.id)) continue;
+                            const at = await nextFor(sub);
+                            if (at) handled.push({ id: sub.id, at });
+                        }
+                    };
 
                     // 3. Get current time in that timezone
                     const localTimeStr = now.toLocaleTimeString("en-US", {
@@ -261,10 +295,9 @@ export async function POST(req: NextRequest) {
                     });
 
                     // 4. Check each prayer (including Imsak)
-                    const relevantPrayers = ["Imsak", "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
                     let activePrayer: string | null = null;
 
-                    for (const prayer of relevantPrayers) {
+                    for (const prayer of ALERT_PRAYERS) {
                         if (isTimeInWindow(localTimeStr, timings[prayer])) {
                             activePrayer = prayer;
                             break;
@@ -273,18 +306,21 @@ export async function POST(req: NextRequest) {
 
                     if (!activePrayer) {
                         results.skipped += subs.length;
+                        await schedule(new Set(subs.map((sub) => sub.id)));
                         return;
                     }
 
                     // Decide who is due, then send them all at once. Alerts used to be sent one by one, each followed by its own
                     // database write: slow with a few hundred subscribers in one place, since they all fall due in the same minute.
                     const due: Array<{ id: string; message: Message }> = [];
+                    const settled = new Set<string>(); // nothing more to do for these this prayer: deduplicated or switched off
                     const localeByUser = await getLocaleByUser();
                     for (const sub of subs) {
                         // 5. Deduplication (DB-based for precision)
                         const lastSentMap = parseJsonField<Record<string, string>>(sub.lastNotificationSent) ?? {};
                         if (lastSentMap[activePrayer] === todayStr) {
                             results.skipped++; // already sent today
+                            settled.add(sub.id);
                             continue;
                         }
 
@@ -292,6 +328,7 @@ export async function POST(req: NextRequest) {
                         const prefs = sub.prayerPreferences ? parseJsonField<Record<string, boolean>>(sub.prayerPreferences) : null;
                         if (prefs && prefs[activePrayer.toLowerCase()] === false) {
                             results.skipped++;
+                            settled.add(sub.id);
                             continue;
                         }
 
@@ -299,12 +336,15 @@ export async function POST(req: NextRequest) {
                         const copy = getPrayerNotificationCopy(localeByUser.get(sub.userId ?? "") ?? sub.locale, activePrayer);
                         due.push({ id: sub.id, message: buildPrayerMessage(sub.token, activePrayer, copy, req.url) });
                     }
-                    if (due.length === 0) return;
 
-                    const outcome = await sendAlerts(messagingAdmin, due);
+                    const outcome = due.length > 0 ? await sendAlerts(messagingAdmin, due) : { sent: [], failed: [], invalid: [] };
                     results.sent += outcome.sent.length;
                     results.failed += outcome.failed.length;
                     results.invalidTokens += outcome.invalid.length;
+
+                    // Those that failed (and are not switched off) are NOT scheduled: they stay due and the next minute, still
+                    // inside the 3 minute window, tries again.
+                    await schedule(new Set([...settled, ...outcome.sent]));
 
                     try {
                         await markSent(outcome.sent, activePrayer, todayStr);
@@ -320,6 +360,14 @@ export async function POST(req: NextRequest) {
                     results.skipped += group.subs.length;
                 }
             }));
+
+            try {
+                await setNextAlerts(handled);
+            } catch (e: unknown) {
+                // Nothing is lost: those rows stay due and are looked at again next minute.
+                logger.error("Could not store the next alert times", e, { route: "/api/notifications/prayer-alert" });
+                results.errors.push(`Schedule write error: ${e instanceof Error ? e.message : String(e)}`);
+            }
 
             if (results.sent > 0 || results.failed > 0 || results.invalidTokens > 0 || results.noLocation > 0 || results.errors.length > 0) {
                 logger.info("Prayer alert run completed", {

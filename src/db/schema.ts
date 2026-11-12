@@ -396,6 +396,9 @@ export const pushSubscriptions = pgTable("push_subscription", {
     // Track last sent notification for each prayer to prevent duplicates (JSON: { fajr: "2024-02-11", dhuhr: "2024-02-11" })
     lastNotificationSent: jsonb("last_notification_sent"),
 
+    // When the prayer-alert job next needs to look at this subscription (UTC). NULL = not scheduled yet.
+    nextAlertAt: timestamp("next_alert_at"),
+
     lastUsedAt: timestamp("last_used_at"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
@@ -404,6 +407,8 @@ export const pushSubscriptions = pgTable("push_subscription", {
         userIdIdx: index("push_subscription_user_id_idx").on(table.userId),
         // Index for location-based broadcasting
         cityIdx: index("ps_city_idx").on(table.city),
+        // The prayer-alert job reads only the rows that have come due.
+        nextAlertIdx: index("ps_next_alert_idx").on(table.nextAlertAt).where(sql`${table.active} = 1`),
     };
 });
 
