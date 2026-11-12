@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { THEMES } from "@/context/ThemeContext";
 import ThemeCard from "./ThemeCard";
@@ -7,7 +7,7 @@ import ThemeCard from "./ThemeCard";
 const t = { themeTitle: "App Appearance", themeModeLight: "Light", themeModeDark: "Dark" } as never;
 
 describe("ThemeCard", () => {
-    it("lists every theme once, light and dark apart, and marks only the chosen one", () => {
+    it("lists every theme once in a single row, light themes first, and marks only the chosen one", () => {
         render(<ThemeCard t={t} currentTheme="midnight" handleThemeSelect={vi.fn()} />);
 
         const buttons = screen.getAllByRole("button");
@@ -15,10 +15,14 @@ describe("ThemeCard", () => {
         expect(buttons.filter((button) => button.getAttribute("aria-pressed") === "true")).toHaveLength(1);
         expect(screen.getByRole("button", { name: /^Midnight:/ }).getAttribute("aria-pressed")).toBe("true");
 
-        const light = within(screen.getByRole("region", { name: "Light" }));
-        const dark = within(screen.getByRole("region", { name: "Dark" }));
-        expect(light.getAllByRole("button").length).toBe(Object.values(THEMES).filter((theme) => theme.mode === "light").length);
-        expect(dark.getAllByRole("button").length).toBe(Object.values(THEMES).filter((theme) => theme.mode === "dark").length);
+        // No Light / Dark labels or groups, and the light themes come before the dark ones.
+        expect(screen.queryByRole("region")).toBeNull();
+        expect(screen.queryByText("Light")).toBeNull();
+        expect(screen.queryByText("Dark")).toBeNull();
+        const modes = buttons.map((button) => Object.values(THEMES).find((theme) => button.getAttribute("title") === theme.name)?.mode);
+        expect(modes.join(",")).toBe([...modes].sort((a, b) => (a === "light" ? -1 : 1) - (b === "light" ? -1 : 1)).join(","));
+        expect(modes[0]).toBe("light");
+        expect(modes.at(-1)).toBe("dark");
     });
 
     it("shows the chosen theme's name once, beside the title, instead of a label under every swatch", () => {
@@ -42,7 +46,7 @@ describe("ThemeCard", () => {
     it("carries no premium markers and does not scroll sideways", () => {
         const { container } = render(<ThemeCard t={t} currentTheme="midnight" handleThemeSelect={vi.fn()} />);
         expect(container.querySelector("svg.lucide-lock, svg.lucide-crown")).toBeNull();
-        expect(container.querySelector(".overflow-x-auto, .scrollbar-hide, .snap-x")).toBeNull();
+        expect(container.querySelector(".overflow-x-auto, .scrollbar-hide, .snap-x, .flex-wrap")).toBeNull();
         expect(container.querySelector(".grayscale")).toBeNull(); // no swatch is dimmed as if it were locked
     });
 });

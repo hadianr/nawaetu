@@ -28,15 +28,12 @@ interface ThemeCardProps {
 }
 
 /**
- * Every theme is free, so the picker is just swatches: two rows (light, dark) that wrap instead of scrolling, with the
- * chosen theme's name beside the title. Each swatch keeps a 44px touch target around a 32px circle.
+ * Every theme is free and there are only a handful, so the picker is one row of swatches: light themes first, then dark,
+ * with no labels or dividers. The chosen theme's name sits beside the title. The row is a grid of equal columns so it
+ * never wraps or scrolls; each cell is 44px tall and exactly as wide as its column (about 32 to 41px on a phone, so neighbours never overlap; the app's global 44px minimum width on buttons is overridden here on purpose).
  */
 export default function ThemeCard({ t, currentTheme, handleThemeSelect }: ThemeCardProps) {
-    const themes = Object.values(THEMES);
-    const groups = [
-        { mode: "light" as const, label: t.themeModeLight, items: themes.filter((theme) => theme.mode === "light") },
-        { mode: "dark" as const, label: t.themeModeDark, items: themes.filter((theme) => theme.mode === "dark") },
-    ];
+    const themes = Object.values(THEMES).sort((a, b) => Number(a.mode === "dark") - Number(b.mode === "dark"));
     const nameOf = (theme: (typeof themes)[number]) => {
         const translated = t[theme.nameKey];
         return typeof translated === "string" ? translated : theme.name;
@@ -53,51 +50,44 @@ export default function ThemeCard({ t, currentTheme, handleThemeSelect }: ThemeC
                 {chosen && <span className="text-xs font-medium text-[rgb(var(--color-text-muted))]" data-testid="theme-chosen">{nameOf(chosen)}</span>}
             </div>
 
-            {groups.map((group) => (
-                <section key={group.mode} className="flex items-center gap-3" aria-labelledby={`theme-group-${group.mode}`}>
-                    <h3 id={`theme-group-${group.mode}`} className="w-11 shrink-0 text-[9px] font-black uppercase tracking-[0.16em] text-[rgb(var(--color-text-muted))]">
-                        {group.label}
-                    </h3>
-                    <div className="flex flex-wrap items-center">
-                        {group.items.map((theme) => {
-                            const isSelected = currentTheme === theme.id;
-                            const themeName = nameOf(theme);
-                            const description = t[theme.descriptionKey];
-                            const themeDescription = typeof description === "string" ? description : theme.description;
+            <div className="grid" style={{ gridTemplateColumns: `repeat(${themes.length}, minmax(0, 1fr))` }}>
+                {themes.map((theme) => {
+                    const isSelected = currentTheme === theme.id;
+                    const themeName = nameOf(theme);
+                    const description = t[theme.descriptionKey];
+                    const themeDescription = typeof description === "string" ? description : theme.description;
 
-                            return (
-                                <button
-                                    key={theme.id}
-                                    type="button"
-                                    onClick={() => handleThemeSelect(theme.id)}
-                                    aria-label={`${themeName}: ${themeDescription}`}
-                                    aria-pressed={isSelected}
-                                    title={themeName}
-                                    className="group flex size-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-ring))]"
-                                >
-                                    <span className={cn(
-                                        "relative block size-8 rounded-full transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-110",
-                                        isSelected && "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]",
-                                    )}>
-                                        <span className="absolute inset-0 flex flex-col overflow-hidden rounded-full border border-[rgb(var(--color-border))]/30 bg-[rgb(var(--color-canvas))]">
-                                            <span className="h-1/2 w-full" style={{ backgroundColor: `rgb(${theme.colors.primary})` }} />
-                                            <span className="flex h-1/2 w-full">
-                                                <span className="h-full w-1/2" style={{ backgroundColor: `rgb(${theme.colors.accent})` }} />
-                                                <span className="h-full w-1/2" style={{ backgroundColor: `rgb(${theme.colors.surface})` }} />
-                                            </span>
-                                        </span>
-                                        {isSelected && (
-                                            <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full border-2 border-[rgb(var(--color-surface))] bg-[rgb(var(--color-primary))]">
-                                                <Check className="size-2.5 text-[rgb(var(--color-primary-foreground))]" strokeWidth={4} />
-                                            </span>
-                                        )}
+                    return (
+                        <button
+                            key={theme.id}
+                            type="button"
+                            onClick={() => handleThemeSelect(theme.id)}
+                            aria-label={`${themeName}: ${themeDescription}`}
+                            aria-pressed={isSelected}
+                            title={themeName}
+                            className="group flex h-11 w-full min-w-0 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-ring))]"
+                        >
+                            <span className={cn(
+                                "relative block size-7 rounded-full transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-110 sm:size-8",
+                                isSelected && "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]",
+                            )}>
+                                <span className="absolute inset-0 flex flex-col overflow-hidden rounded-full border border-[rgb(var(--color-border))]/30 bg-[rgb(var(--color-canvas))]">
+                                    <span className="h-1/2 w-full" style={{ backgroundColor: `rgb(${theme.colors.primary})` }} />
+                                    <span className="flex h-1/2 w-full">
+                                        <span className="h-full w-1/2" style={{ backgroundColor: `rgb(${theme.colors.accent})` }} />
+                                        <span className="h-full w-1/2" style={{ backgroundColor: `rgb(${theme.colors.surface})` }} />
                                     </span>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </section>
-            ))}
+                                </span>
+                                {isSelected && (
+                                    <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full border-2 border-[rgb(var(--color-surface))] bg-[rgb(var(--color-primary))]">
+                                        <Check className="size-2.5 text-[rgb(var(--color-primary-foreground))]" strokeWidth={4} />
+                                    </span>
+                                )}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 }
