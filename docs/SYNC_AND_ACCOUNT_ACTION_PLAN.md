@@ -358,3 +358,20 @@ lacks the day. The cell's centre is used instead of whichever subscriber came fi
 - Not checked: Vercel's persistent Data Cache across real invocations. After the deploy the Sentry issue should stop recurring and
   the number of `api.aladhan.com` spans per run should drop to about zero; if it does not, the cache is not holding there.
 
+## 21. Prayer alerts are sent in batches
+
+Everyone in a place falls due in the same minute, and alerts used to go out one by one, each followed by its own database write,
+on one database connection, inside a 60 second function. A few hundred subscribers in one place was enough to approach the limit.
+
+`lib/notifications/prayer-send.ts`: the route first decides who is due (deduplication and preferences, unchanged), then sends with
+FCM `sendEach` in batches of 500 and records the result with one `UPDATE ... WHERE id IN (...)` per batch (the sent prayer is merged into
+`last_notification_sent` with `jsonb_build_object`; a row stored as a JSON string is replaced by an object). Tokens FCM reports as
+unknown are switched off in one statement. A call that fails as a whole counts its messages as failed but does not switch their tokens
+off and does not mark them sent, so the next minute (the 3 minute window) tries again.
+
+- Checked: 1,200 due subscriptions make three `sendEach` calls and three bookkeeping statements; the SQL runs against Postgres,
+  including rows stored as a JSON string.
+- Not measured: real FCM latency. The gain is expected from replacing N sequential round trips by a few concurrent batches.
+- Not changed: the job still reads every active subscription each minute. Reading only the subscriptions that are due (a stored
+  `next_alert_at` with an index) is the next step if that read becomes the cost.
+

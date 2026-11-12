@@ -46,6 +46,7 @@ vi.mock('@/db/schema', async (importOriginal) => {
 
 const mocks = vi.hoisted(() => ({
     messagingSend: vi.fn().mockResolvedValue('msg-id-123'),
+    messagingSendEach: vi.fn(),
     getMessaging: vi.fn().mockResolvedValue(null),
 }));
 
@@ -78,8 +79,12 @@ describe('POST /api/notifications/prayer-alert', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         process.env.CRON_SECRET = 'test-secret';
-        mocks.getMessaging.mockResolvedValue({ send: mocks.messagingSend });
+        mocks.getMessaging.mockResolvedValue({ send: mocks.messagingSend, sendEach: mocks.messagingSendEach });
         mocks.messagingSend.mockResolvedValue('msg-id-123');
+        // Every message succeeds unless a test says otherwise.
+        mocks.messagingSendEach.mockReset().mockImplementation(async (messages: unknown[]) => ({
+            responses: messages.map(() => ({ success: true })), successCount: messages.length, failureCount: 0,
+        }));
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({
@@ -279,16 +284,20 @@ describe('POST /api/notifications/prayer-alert', () => {
             { id: 'sub-9', userId: 'user-1', token: 'token-9', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta', prayerPreferences: { fajr: false } },
             { id: 'sub-10', userId: 'user-1', token: 'token-10', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta' },
         ], [{ id: 'user-1', settings: { locale: 'id' } }]);
-        mocks.messagingSend
-            .mockResolvedValueOnce('sent')
-            .mockRejectedValueOnce({ code: 'messaging/invalid-registration-token' });
+        mocks.messagingSendEach.mockResolvedValueOnce({
+            responses: [{ success: true }, { success: false, error: { code: 'messaging/invalid-registration-token' } }],
+            successCount: 1, failureCount: 1,
+        });
 
         const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(res.status).toBe(200);
         expect(body.results).toMatchObject({ total: 4, sent: 1, failed: 1, invalidTokens: 1, skipped: 2 });
-        expect(mocks.messagingSend).toHaveBeenCalledTimes(2);
+        // The two that are due go out in ONE call, and the bookkeeping is one write for those sent plus one to switch off the dead token.
+        expect(mocks.messagingSendEach).toHaveBeenCalledTimes(1);
+        expect(mocks.messagingSendEach.mock.calls[0][0].map((message: { token: string }) => message.token)).toEqual(['token-7', 'token-10']);
+        expect(mocks.messagingSend).not.toHaveBeenCalled();
         expect(db.update).toHaveBeenCalledTimes(2);
     });
 
@@ -303,13 +312,11 @@ describe('POST /api/notifications/prayer-alert', () => {
         mockDatabase([
             { id: 'guest-1', userId: null, token: 'guest-token', active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta' },
         ]);
-        mocks.messagingSend.mockResolvedValueOnce('sent');
-
         const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
         const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
 
         expect(body.results).toMatchObject({ total: 1, sent: 1 });
-        expect(mocks.messagingSend).toHaveBeenCalledWith(expect.objectContaining({ token: 'guest-token' }));
+        expect(mocks.messagingSendEach).toHaveBeenCalledWith([expect.objectContaining({ token: 'guest-token' })]);
     });
 
     it('uses the language the guest device chose, and the account language when there is one', async () => {
@@ -325,11 +332,9 @@ describe('POST /api/notifications/prayer-alert', () => {
             { id: 'guest-en', userId: null, token: 'guest-en-token', locale: 'en', ...place },
             { id: 'user-id', userId: 'user-9', token: 'account-token', locale: 'en', ...place },
         ], [{ id: 'user-9', settings: { locale: 'id' } }]);
-        mocks.messagingSend.mockResolvedValue('sent');
-
         await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
 
-        const sent = mocks.messagingSend.mock.calls.map((call) => call[0]);
+        const sent = mocks.messagingSendEach.mock.calls.flatMap((call) => call[0]);
         const guest = sent.find((message) => message.token === 'guest-en-token');
         const account = sent.find((message) => message.token === 'account-token');
 
@@ -337,5 +342,66 @@ describe('POST /api/notifications/prayer-alert', () => {
         expect(guest.notification.title).toBe('en|Fajr');
         // The account's own setting (Indonesian) wins over what the device said.
         expect(account.notification.title).toBe('id|Fajr');
+    });
+
+    describe('sending in batches', () => {
+        const dueNow = () => {
+            const localTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta', hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
+            global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { timings: { Fajr: localTime } } }) } as Response);
+        };
+        const crowd = (count: number) => Array.from({ length: count }, (_, i) => ({
+            id: `crowd-${i}`, userId: null, token: `crowd-token-${i}`, active: 1, latitude: -6.2, longitude: 106.8, timezone: 'Asia/Jakarta',
+        }));
+
+        it('sends 1,200 alerts in three calls, not 1,200, and writes the bookkeeping in three statements', async () => {
+            dueNow();
+            mockDatabase(crowd(1200));
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+            expect(body.results).toMatchObject({ total: 1200, sent: 1200, failed: 0 });
+            expect(mocks.messagingSendEach.mock.calls.map((call) => call[0].length)).toEqual([500, 500, 200]);
+            expect(db.update).toHaveBeenCalledTimes(3);
+        });
+
+        it('counts a whole failed call as failed, and neither marks them sent nor switches their tokens off', async () => {
+            dueNow();
+            mockDatabase(crowd(3));
+            mocks.messagingSendEach.mockRejectedValueOnce(new Error('FCM is down'));
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+            expect(res.status).toBe(200);
+            expect(body.results).toMatchObject({ total: 3, sent: 0, failed: 3, invalidTokens: 0 });
+            expect(db.update).not.toHaveBeenCalled(); // they stay due, so the next minute tries again
+        });
+
+        it('keeps going and reports it when the bookkeeping write fails after the alerts went out', async () => {
+            dueNow();
+            mockDatabase(crowd(2));
+            (db.update as Mock).mockImplementation(() => ({ set: vi.fn().mockReturnValue({ where: vi.fn().mockRejectedValue(new Error('db down')) }) }));
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            const body = (res as unknown as { body: PrayerAlertResponseBody & { results: { errors?: string[] } } }).body;
+
+            expect(res.status).toBe(200);
+            expect(body.results.sent).toBe(2);
+            expect(body.results.errors?.some((message) => message.includes('bookkeeping'))).toBe(true);
+        });
+
+        it('sends nothing, and writes nothing, when everyone due was already alerted today', async () => {
+            dueNow();
+            const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+            mockDatabase(crowd(2).map((sub) => ({ ...sub, lastNotificationSent: { Fajr: today } })));
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+            expect(body.results).toMatchObject({ sent: 0, skipped: 2 });
+            expect(mocks.messagingSendEach).not.toHaveBeenCalled();
+            expect(db.update).not.toHaveBeenCalled();
+        });
     });
 });

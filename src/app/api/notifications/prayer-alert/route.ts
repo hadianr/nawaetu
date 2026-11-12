@@ -24,6 +24,8 @@ import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { logger } from "@/lib/logger";
 import { getPrayerTimings } from "@/lib/notifications/prayer-times";
 import { getPrayerNotificationCopy } from "@/lib/notifications/push-copy";
+import { buildPrayerMessage, deactivate, markSent, sendAlerts } from "@/lib/notifications/prayer-send";
+import type { Message } from "firebase-admin/messaging";
 
 /**
  * Enhanced Hybrid Prayer Notification API
@@ -274,118 +276,43 @@ export async function POST(req: NextRequest) {
                         return;
                     }
 
-                    // Process subscriptions in this group
+                    // Decide who is due, then send them all at once. Alerts used to be sent one by one, each followed by its own
+                    // database write: slow with a few hundred subscribers in one place, since they all fall due in the same minute.
+                    const due: Array<{ id: string; message: Message }> = [];
+                    const localeByUser = await getLocaleByUser();
                     for (const sub of subs) {
-                        try {
-                            // 5. Deduplication (DB-based for precision)
-                            let lastSentMap: Record<string, string> = {};
-                            if (sub.lastNotificationSent) {
-                                const parsedMap = parseJsonField<Record<string, string>>(sub.lastNotificationSent);
-                                if (parsedMap) lastSentMap = parsedMap;
-                            }
-
-                            if (lastSentMap[activePrayer] === todayStr) {
-                                // Already sent for today
-                                results.skipped++;
-                                continue;
-                            }
-
-                            // 6. Check preferences
-                            if (sub.prayerPreferences) {
-                                const prefs = parseJsonField<Record<string, boolean>>(sub.prayerPreferences);
-                                if (prefs) {
-                                    const key = activePrayer.toLowerCase();
-                                    if (prefs[key] === false) {
-                                        results.skipped++;
-                                        continue;
-                                    }
-                                }
-                            }
-
-                            // 7. Send Notification
-                            const { title, body } = getPrayerNotificationCopy((await getLocaleByUser()).get(sub.userId ?? "") ?? sub.locale, activePrayer);
-
-                             await messagingAdmin!.send({
-                                token: sub.token,
-                                notification: {
-                                    title: title,
-                                    body: body
-                                },
-                                data: {
-                                    type: "prayer_alert",
-                                    prayer: activePrayer,
-                                    url: "/" // Open the home page
-                                },
-                                // CRITICAL for iOS Safari PWA & macOS
-                                apns: {
-                                    headers: {
-                                        "apns-priority": "10",
-                                        "apns-push-type": "alert"
-                                    },
-                                    payload: {
-                                        aps: {
-                                            alert: {
-                                                title: title,
-                                                body: body
-                                            },
-                                            sound: "default",
-                                            badge: 1
-                                        }
-                                    }
-                                },
-                                // CRITICAL for Cross-Platform WebPush (Chrome, Edge, Firefox, Mobile Safari PWA)
-                                webpush: {
-                                    headers: {
-                                        "Urgency": "high",
-                                        "TTL": "86400"
-                                    },
-                                    notification: {
-                                        title: title,
-                                        body: body,
-                                        icon: "/icon-192x192.png?v=1.5.7",
-                                        badge: "/icon-192x192.png?v=1.5.7",
-                                        tag: `prayer-${activePrayer.toLowerCase()}`,
-                                        requireInteraction: true,
-                                        renotify: true,
-                                        vibrate: [200, 100, 200],
-                                        data: {
-                                            url: "/"
-                                        }
-                                    },
-                                    fcmOptions: {
-                                        link: new URL("/", req.url).toString()
-                                    }
-                                },
-                                android: {
-                                    priority: "high",
-                                    notification: {
-                                        channelId: "prayer-alerts",
-                                        priority: "max",
-                                        visibility: "public",
-                                        defaultSound: true,
-                                        defaultVibrateTimings: true
-                                    }
-                                },
-                            });
-
-                            results.sent++;
-
-                            // Update DB with new "last sent" map
-                            lastSentMap[activePrayer] = todayStr;
-
-                            await db.update(pushSubscriptions).set({
-                                lastUsedAt: new Date(),
-                                lastNotificationSent: lastSentMap
-                            }).where(eq(pushSubscriptions.id, sub.id));
-
-                        } catch (e: unknown) {
-                            results.failed++;
-                            const code = typeof e === "object" && e !== null && "code" in e ? e.code : undefined;
-                            if (code === "messaging/invalid-registration-token" || code === "messaging/registration-token-not-registered") {
-                                results.invalidTokens++;
-                                await db.update(pushSubscriptions).set({ active: 0 }).where(eq(pushSubscriptions.id, sub.id));
-                            }
+                        // 5. Deduplication (DB-based for precision)
+                        const lastSentMap = parseJsonField<Record<string, string>>(sub.lastNotificationSent) ?? {};
+                        if (lastSentMap[activePrayer] === todayStr) {
+                            results.skipped++; // already sent today
+                            continue;
                         }
+
+                        // 6. Check preferences
+                        const prefs = sub.prayerPreferences ? parseJsonField<Record<string, boolean>>(sub.prayerPreferences) : null;
+                        if (prefs && prefs[activePrayer.toLowerCase()] === false) {
+                            results.skipped++;
+                            continue;
+                        }
+
+                        // 7. Prepare the notification
+                        const copy = getPrayerNotificationCopy(localeByUser.get(sub.userId ?? "") ?? sub.locale, activePrayer);
+                        due.push({ id: sub.id, message: buildPrayerMessage(sub.token, activePrayer, copy, req.url) });
+                    }
+                    if (due.length === 0) return;
+
+                    const outcome = await sendAlerts(messagingAdmin, due);
+                    results.sent += outcome.sent.length;
+                    results.failed += outcome.failed.length;
+                    results.invalidTokens += outcome.invalid.length;
+
+                    try {
+                        await markSent(outcome.sent, activePrayer, todayStr);
+                        await deactivate(outcome.invalid);
+                    } catch (e: unknown) {
+                        // The alerts went out. If this write is lost the next minute may send them again, so say so loudly.
+                        logger.error(`Could not record sent alerts for ${group.lat},${group.lng}`, e, { route: "/api/notifications/prayer-alert" });
+                        results.errors.push(`Group ${group.lat},${group.lng} bookkeeping error: ${e instanceof Error ? e.message : String(e)}`);
                     }
                 } catch (e: unknown) {
                     logger.error(`Group processing error for ${group.lat},${group.lng}`, e, { route: "/api/notifications/prayer-alert" });
