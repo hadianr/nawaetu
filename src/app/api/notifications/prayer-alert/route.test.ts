@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-import { vi, describe, it, expect, beforeEach, Mock } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 import { POST } from './route';
 import { db } from '@/db';
 import { NextRequest } from 'next/server';
@@ -90,8 +90,16 @@ function authorizedRequest(url: string) {
     return new Request(url, { headers: { authorization: 'Bearer test-secret' } }) as unknown as NextRequest;
 }
 
+// A fixed clock: 12:00 in Jakarta on 12 November 2026. The job decides what is due from the time of day, so these tests must
+// not depend on when they run (they once failed after noon because "a time far from now" was picked by the real hour).
+const NOW = new Date('2026-11-12T05:00:00Z');
+
 describe('POST /api/notifications/prayer-alert', () => {
+    afterEach(() => { vi.useRealTimers(); });
+
     beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(NOW);
         vi.clearAllMocks();
         process.env.CRON_SECRET = 'test-secret';
         mocks.getMessaging.mockResolvedValue({ send: mocks.messagingSend, sendEach: mocks.messagingSendEach });
@@ -248,13 +256,14 @@ describe('POST /api/notifications/prayer-alert', () => {
     });
 
     it('asks Aladhan once per place per month, not once per place per minute (the Sentry N+1)', async () => {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('en-GB', { timeZone: 'Asia/Jakarta', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
-        // Prayer times far from now, so nothing is sent and only the lookups are counted.
-        const farFromNow = (now.getUTCHours() + 7) % 24 < 12 ? '23:55' : '00:05';
+        const dayString = (offsetDays: number) => new Date(Date.now() + offsetDays * 86_400_000)
+            .toLocaleDateString('en-GB', { timeZone: 'Asia/Jakarta', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+        // Every prayer at 23:55, hours after the fixed 12:00, so nothing is due and only the lookups are counted. The month
+        // holds today and the days after it, as the real calendar does.
+        const timings = { Imsak: '23:55', Fajr: '23:55', Dhuhr: '23:55', Asr: '23:55', Maghrib: '23:55', Isha: '23:55' };
         global.fetch = vi.fn().mockImplementation(async () => ({
             ok: true,
-            json: async () => ({ data: [{ date: { gregorian: { date: dateStr } }, timings: { Imsak: farFromNow, Fajr: farFromNow, Dhuhr: farFromNow, Asr: farFromNow, Maghrib: farFromNow, Isha: farFromNow } }] }),
+            json: async () => ({ data: [0, 1, 2].map((offset) => ({ date: { gregorian: { date: dayString(offset) } }, timings })) }),
         }) as Response);
         // Three subscribers in two 0.1 degree cells.
         mockDatabase([
@@ -419,12 +428,8 @@ describe('POST /api/notifications/prayer-alert', () => {
         const timingsAnswer = (timings: Record<string, string>) => {
             global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { timings } }) } as Response);
         };
-        /** Every prayer a few hours from now, so none is due this minute. */
-        const farAway = () => {
-            const hour = (new Date().getUTCHours() + 7) % 24;
-            const later = `${String((hour + 5) % 24).padStart(2, '0')}:30`;
-            timingsAnswer({ Imsak: later, Fajr: later, Dhuhr: later, Asr: later, Maghrib: later, Isha: later });
-        };
+        /** Every prayer at 23:30, hours after the fixed 12:00, so none is due this minute. */
+        const farAway = () => timingsAnswer({ Imsak: '23:30', Fajr: '23:30', Dhuhr: '23:30', Asr: '23:30', Maghrib: '23:30', Isha: '23:30' });
         const scheduled = () => mocks.setNextAlerts.mock.calls.flatMap((call) => call[0] as Array<{ id: string; at: Date }>);
 
         it('stores a later time for everyone it looked at when nothing is due, and sends nothing', async () => {
