@@ -342,3 +342,19 @@ earn its place instead (`lib/login-nudge.ts`, `components/auth/LoginNudge.tsx`, 
 - **Not done:** an answer preview before the Mentor AI login gate, and a guest hint on the streak-reminder setting (streak
   reminders go to accounts only, which is a real reason to sign in).
 
+## 20. Prayer alerts: one Aladhan call per place per month
+
+Sentry flagged `JAVASCRIPT-NEXTJS-2F` ("N+1 API Call") on `GET /api/notifications/prayer-alert`. The job runs every minute and asked
+Aladhan for each location cell's times on every run, although the times for a place and a day never change. Subscribers are
+already grouped into 0.1 degree cells; each cell cost one call per minute, and the only cache lived inside one warm server instance.
+
+`lib/notifications/prayer-times.ts` now asks for the whole month once per cell (`/v1/calendar/{year}/{month}`) and keeps it in Next's
+server-side fetch cache (24 h) and in memory; the single-day endpoint is only a fallback when the calendar is unavailable or
+lacks the day. The cell's centre is used instead of whichever subscriber came first, so the request is identical every minute
+(drift is within the 3 minute window, as before).
+
+- Checked: the calendar entry equals the single-day answer for the same place and date; with `next start`, four calls through
+  `fetchWithTimeout` with `next.revalidate` made one upstream request.
+- Not checked: Vercel's persistent Data Cache across real invocations. After the deploy the Sentry issue should stop recurring and
+  the number of `api.aladhan.com` spans per run should drop to about zero; if it does not, the cache is not holding there.
+
