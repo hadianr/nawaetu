@@ -450,6 +450,30 @@ async function runChecks() {
         assert(page("return document.querySelectorAll('a[href=\"/ramadhan\"]').length") === 0, "a link to /ramadhan is on the home page");
         noPageErrors();
     });
+
+    console.log("\nSettings");
+    await check("the theme picker fits a small phone: no sideways scrolling, no premium markers, every theme reachable", async () => {
+        await freshGuestPage("localStorage.setItem('user_name', 'Tester');");
+        open("/settings");
+        await waitFor("the theme card", "[...document.querySelectorAll('h3')].some(h => /light/i.test(h.textContent))", 20_000);
+        anoa(["set", "viewport", "320", "700"]);
+        await sleep(800);
+        try {
+            const card = page(`
+                const card = [...document.querySelectorAll('h3')].find(h => /light/i.test(h.textContent)).closest('div.rounded-2xl');
+                const box = card.getBoundingClientRect();
+                return { height: Math.round(box.height), overflowsX: card.scrollWidth > card.clientWidth || document.documentElement.scrollWidth > innerWidth,
+                         swatches: card.querySelectorAll('button').length, premium: card.querySelectorAll('svg.lucide-lock, svg.lucide-crown').length,
+                         smallest: Math.min(...[...card.querySelectorAll('button')].map(b => Math.min(b.getBoundingClientRect().width, b.getBoundingClientRect().height))) };`);
+            assert(!card.overflowsX, "the theme card or the page scrolls sideways at 320 px");
+            assert(card.swatches === 8, `expected 8 themes, found ${card.swatches}`);
+            assert(card.premium === 0, "a lock or crown is still shown");
+            assert(card.smallest >= 44, `a swatch's touch target is ${card.smallest}px, under 44px`);
+            assert(card.height <= 240, `the card is ${card.height}px tall at 320 px`);
+        } finally {
+            anoa(["set", "viewport", "1280", "720"], { allowFail: true });
+        }
+    });
 }
 
 // ─── Lifecycle ──────────────────────────────────────────────────────────────
