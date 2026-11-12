@@ -452,27 +452,31 @@ async function runChecks() {
     });
 
     console.log("\nSettings");
-    await check("the theme picker fits a small phone: no sideways scrolling, no premium markers, every theme reachable", async () => {
+    await check("the theme picker is one row that fits a small phone: no wrapping, no sideways scrolling, no premium markers", async () => {
         await freshGuestPage("localStorage.setItem('user_name', 'Tester');");
         open("/settings");
-        await waitFor("the theme card", "[...document.querySelectorAll('h3')].some(h => /light/i.test(h.textContent))", 20_000);
-        anoa(["set", "viewport", "320", "700"]);
-        await sleep(800);
-        try {
+        await waitFor("the theme card", "document.querySelector('[data-testid=\"theme-chosen\"]')", 20_000);
+        for (const width of [320, 390, 1280]) {
+            anoa(["set", "viewport", String(width), "700"]);
+            await sleep(700);
             const card = page(`
-                const card = [...document.querySelectorAll('h3')].find(h => /light/i.test(h.textContent)).closest('div.rounded-2xl');
-                const box = card.getBoundingClientRect();
-                return { height: Math.round(box.height), overflowsX: card.scrollWidth > card.clientWidth || document.documentElement.scrollWidth > innerWidth,
-                         swatches: card.querySelectorAll('button').length, premium: card.querySelectorAll('svg.lucide-lock, svg.lucide-crown').length,
-                         smallest: Math.min(...[...card.querySelectorAll('button')].map(b => Math.min(b.getBoundingClientRect().width, b.getBoundingClientRect().height))) };`);
-            assert(!card.overflowsX, "the theme card or the page scrolls sideways at 320 px");
+                const chosen = document.querySelector('[data-testid="theme-chosen"]');
+                const card = chosen.closest('div.rounded-2xl');
+                const buttons = [...card.querySelectorAll('button')].map(b => b.getBoundingClientRect());
+                const overlap = Math.max(0, ...buttons.slice(1).map((b, i) => Math.round(buttons[i].right - b.left)));
+                return { height: Math.round(card.getBoundingClientRect().height), overflowsX: card.scrollWidth > card.clientWidth || document.documentElement.scrollWidth > innerWidth,
+                         swatches: buttons.length, rows: new Set(buttons.map(b => Math.round(b.top))).size, premium: card.querySelectorAll('svg.lucide-lock, svg.lucide-crown').length,
+                         overlap, minWidth: Math.round(Math.min(...buttons.map(b => b.width))), minHeight: Math.round(Math.min(...buttons.map(b => b.height))) };`);
+            assert(!card.overflowsX, `the theme card or the page scrolls sideways at ${width} px`);
             assert(card.swatches === 8, `expected 8 themes, found ${card.swatches}`);
+            assert(card.rows === 1, `the swatches are on ${card.rows} rows at ${width} px`);
             assert(card.premium === 0, "a lock or crown is still shown");
-            assert(card.smallest >= 44, `a swatch's touch target is ${card.smallest}px, under 44px`);
-            assert(card.height <= 240, `the card is ${card.height}px tall at 320 px`);
-        } finally {
-            anoa(["set", "viewport", "1280", "720"], { allowFail: true });
+            assert(card.overlap <= 1, `neighbouring swatches overlap by ${card.overlap}px at ${width} px, so a tap can pick the wrong theme`);
+            assert(card.minHeight >= 44, `a swatch is ${card.minHeight}px tall, under 44px`);
+            assert(card.minWidth >= 30, `a swatch is ${card.minWidth}px wide at ${width} px`);
+            assert(card.height <= 130, `the card is ${card.height}px tall at ${width} px`);
         }
+        anoa(["set", "viewport", "1280", "720"], { allowFail: true });
     });
 }
 
