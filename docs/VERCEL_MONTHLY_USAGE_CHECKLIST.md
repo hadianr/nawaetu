@@ -34,6 +34,7 @@ These are team operating thresholds, not Vercel limits:
 - Confirm cron-job.org remains the only active scheduler for prayer alerts and streak reminders.
 - Confirm Preview deployments remain protected by Vercel Authentication Standard Protection.
 - Confirm `vercel.json` still contains the deterministic install and documentation-only `ignoreCommand`.
+- Confirm `vercel.json` sets exactly one function region (`"regions": ["sin1"]`, next to Supabase and Upstash). Hobby allows a single region; more than that fails the deployment before the build. After a deploy, `curl -sI https://nawaetu.com/api/health | grep -i x-vercel-id` should end in `::sin1::`.
 - Confirm Supabase, Upstash, Sentry, and payment secrets are targeted to the narrowest required environments.
 - Record the review date and a link or screenshot of the Usage page in the issue or release notes.
 
