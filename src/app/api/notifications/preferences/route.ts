@@ -58,6 +58,8 @@ export async function POST(req: NextRequest) {
                     longitude: userLocation?.lng || null,
                     city: userLocation?.city || null,
                     timezone: timezone || null,
+                    // The stored time of the next alert depends on all of the above: have the job work it out again.
+                    nextAlertAt: null,
                     updatedAt: new Date(),
                 })
                 .where(eq(pushSubscriptions.token, token));

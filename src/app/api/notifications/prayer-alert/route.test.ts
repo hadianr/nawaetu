@@ -18,6 +18,7 @@ vi.mock('@/db', () => ({
     db: {
         select: vi.fn(),
         update: vi.fn(),
+        execute: vi.fn(),
     }
 }));
 
@@ -39,12 +40,14 @@ vi.mock('@/db/schema', async (importOriginal) => {
             active: { name: 'active' },
             lastUsedAt: { name: 'last_used_at' },
             lastNotificationSent: { name: 'last_notification_sent' },
+            nextAlertAt: { name: 'next_alert_at' },
         },
         users: { id: { name: 'id' }, settings: { name: 'settings' } },
     };
 });
 
 const mocks = vi.hoisted(() => ({
+    setNextAlerts: vi.fn(),
     messagingSend: vi.fn().mockResolvedValue('msg-id-123'),
     messagingSendEach: vi.fn(),
     getMessaging: vi.fn().mockResolvedValue(null),
@@ -56,19 +59,31 @@ vi.mock('@/lib/notifications/push-copy', async (importOriginal) => ({
     getPrayerNotificationCopy: vi.fn((locale: unknown, prayer: string) => ({ title: `${String(locale)}|${prayer}`, body: 'b' })),
 }));
 
+vi.mock('@/lib/notifications/prayer-send', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/lib/notifications/prayer-send')>()),
+    setNextAlerts: mocks.setNextAlerts,
+}));
+
 vi.mock('@/lib/notifications/firebase-admin', () => ({
     getMessaging: mocks.getMessaging,
 }));
 
+/** What `where(...)` returns: awaitable on its own (sync mode, the users query) and chainable as `.orderBy().limit()` (alert mode). */
+const rowsOf = (value: unknown) => Object.assign(Promise.resolve(value), {
+    orderBy: () => ({ limit: async () => value }),
+    limit: async () => value,
+});
+
 function mockDatabase(subscriptions: unknown[], userRows: unknown[] = []) {
     (db.select as Mock).mockImplementation((selection?: unknown) => ({
         from: vi.fn().mockReturnValue({
-            where: vi.fn().mockResolvedValue(selection ? userRows : subscriptions),
+            where: vi.fn().mockReturnValue(rowsOf(selection ? userRows : subscriptions)),
         }),
     }));
     (db.update as Mock).mockImplementation(() => ({
         set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue([]) }),
     }));
+    (db.execute as Mock).mockResolvedValue([]);
 }
 
 function authorizedRequest(url: string) {
@@ -81,6 +96,7 @@ describe('POST /api/notifications/prayer-alert', () => {
         process.env.CRON_SECRET = 'test-secret';
         mocks.getMessaging.mockResolvedValue({ send: mocks.messagingSend, sendEach: mocks.messagingSendEach });
         mocks.messagingSend.mockResolvedValue('msg-id-123');
+        mocks.setNextAlerts.mockReset().mockResolvedValue(undefined);
         // Every message succeeds unless a test says otherwise.
         mocks.messagingSendEach.mockReset().mockImplementation(async (messages: unknown[]) => ({
             responses: messages.map(() => ({ success: true })), successCount: messages.length, failureCount: 0,
@@ -115,12 +131,7 @@ describe('POST /api/notifications/prayer-alert', () => {
             }
         ];
 
-        const selectMock = db.select as unknown as { mockReturnValue: (value: unknown) => void };
-        selectMock.mockReturnValue({
-            from: vi.fn().mockReturnValue({
-                where: vi.fn().mockResolvedValue(mockSubscriptions),
-            })
-        });
+        mockDatabase(mockSubscriptions);
 
         const req = authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
         const res = await POST(req);
@@ -145,12 +156,7 @@ describe('POST /api/notifications/prayer-alert', () => {
             }
         ];
 
-        const selectMock = db.select as unknown as { mockReturnValue: (value: unknown) => void };
-        selectMock.mockReturnValue({
-            from: vi.fn().mockReturnValue({
-                where: vi.fn().mockResolvedValue(mockSubscriptions),
-            })
-        });
+        mockDatabase(mockSubscriptions);
 
         const req = authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert');
         const res = await POST(req);
@@ -402,6 +408,118 @@ describe('POST /api/notifications/prayer-alert', () => {
             expect(body.results).toMatchObject({ sent: 0, skipped: 2 });
             expect(mocks.messagingSendEach).not.toHaveBeenCalled();
             expect(db.update).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('scheduling the next look', () => {
+        // The prayer-times helper keeps what it fetched for the life of the module, so every test uses a cell of its own.
+        let cells = 0;
+        const freshPlace = () => { cells++; return { latitude: -1 - cells * 0.3, longitude: 100 + cells * 0.5, timezone: 'Asia/Jakarta', active: 1 }; };
+        const nowTime = () => new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta', hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
+        const timingsAnswer = (timings: Record<string, string>) => {
+            global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { timings } }) } as Response);
+        };
+        /** Every prayer a few hours from now, so none is due this minute. */
+        const farAway = () => {
+            const hour = (new Date().getUTCHours() + 7) % 24;
+            const later = `${String((hour + 5) % 24).padStart(2, '0')}:30`;
+            timingsAnswer({ Imsak: later, Fajr: later, Dhuhr: later, Asr: later, Maghrib: later, Isha: later });
+        };
+        const scheduled = () => mocks.setNextAlerts.mock.calls.flatMap((call) => call[0] as Array<{ id: string; at: Date }>);
+
+        it('stores a later time for everyone it looked at when nothing is due, and sends nothing', async () => {
+            const place = freshPlace();
+            farAway();
+            mockDatabase([{ id: 's1', token: 't1', ...place }, { id: 's2', token: 't2', ...place }]);
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+            expect(res.status).toBe(200);
+            expect(mocks.messagingSendEach).not.toHaveBeenCalled();
+            expect(scheduled().map((entry) => entry.id).sort()).toEqual(['s1', 's2']);
+            expect(scheduled().every((entry) => entry.at.getTime() > Date.now())).toBe(true);
+        });
+
+        it('schedules those that were sent, and does NOT schedule one whose send failed: it stays due and is retried', async () => {
+            const place = freshPlace();
+            timingsAnswer({ Imsak: '00:01', Fajr: nowTime(), Dhuhr: '23:58', Asr: '23:58', Maghrib: '23:58', Isha: '23:58' });
+            mockDatabase([{ id: 'ok', token: 't-ok', ...place }, { id: 'retry', token: 't-retry', ...place }]);
+            mocks.messagingSendEach.mockResolvedValueOnce({
+                responses: [{ success: true }, { success: false, error: { code: 'messaging/internal-error' } }], successCount: 1, failureCount: 1,
+            });
+
+            await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+            expect(scheduled().map((entry) => entry.id)).toEqual(['ok']);
+        });
+
+        it('does not schedule a token FCM no longer knows: it is switched off instead', async () => {
+            const place = freshPlace();
+            timingsAnswer({ Imsak: '00:01', Fajr: nowTime(), Dhuhr: '23:58', Asr: '23:58', Maghrib: '23:58', Isha: '23:58' });
+            mockDatabase([{ id: 'dead', token: 't-dead', ...place }]);
+            mocks.messagingSendEach.mockResolvedValueOnce({
+                responses: [{ success: false, error: { code: 'messaging/registration-token-not-registered' } }], successCount: 0, failureCount: 1,
+            });
+
+            await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+            expect(scheduled()).toEqual([]);
+            expect(db.update).toHaveBeenCalledTimes(1); // only the switch-off
+        });
+
+        it('schedules someone already alerted today, so they stop being looked at every minute', async () => {
+            const place = freshPlace();
+            const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' });
+            timingsAnswer({ Imsak: '00:01', Fajr: nowTime(), Dhuhr: '23:58', Asr: '23:58', Maghrib: '23:58', Isha: '23:58' });
+            mockDatabase([{ id: 'done', token: 't-done', lastNotificationSent: { Fajr: today }, ...place }]);
+
+            await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+            expect(mocks.messagingSendEach).not.toHaveBeenCalled();
+            expect(scheduled().map((entry) => entry.id)).toEqual(['done']);
+        });
+
+        it('looks at a subscription without a location again a day later, not every minute', async () => {
+            farAway();
+            mockDatabase([{ id: 'nowhere', token: 't-nowhere', active: 1 }]);
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            const body = (res as unknown as { body: PrayerAlertResponseBody }).body;
+
+            expect(body.results).toMatchObject({ noLocation: 1 });
+            const [entry] = scheduled();
+            expect(entry.id).toBe('nowhere');
+            expect(entry.at.getTime() - Date.now()).toBeGreaterThan(23 * 3600_000);
+        });
+
+        it('schedules nobody when the prayer times cannot be had: they stay due and the next minute asks again', async () => {
+            global.fetch = vi.fn().mockRejectedValue(new TypeError('offline'));
+            mockDatabase([{ id: 'wait', token: 't-wait', latitude: -3.3, longitude: 114.6, timezone: 'Asia/Makassar', active: 1 }]);
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+
+            expect(res.status).toBe(200);
+            expect(scheduled()).toEqual([]);
+        });
+
+        it('reports a failed schedule write and still answers 200: the rows simply stay due', async () => {
+            const place = freshPlace();
+            farAway();
+            mockDatabase([{ id: 's9', token: 't9', ...place }]);
+            mocks.setNextAlerts.mockRejectedValueOnce(new Error('db down'));
+
+            const res = await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=alert'));
+            const body = (res as unknown as { body: { results: { errors?: string[] } } }).body;
+
+            expect(res.status).toBe(200);
+            expect(body.results.errors?.some((message) => message.includes('Schedule write'))).toBe(true);
+        });
+
+        it('leaves the schedule alone in sync mode, which still visits everyone', async () => {
+            const place = freshPlace();
+            mockDatabase([{ id: 'sy', token: 't-sy', ...place }]);
+            await POST(authorizedRequest('http://localhost/api/notifications/prayer-alert?mode=sync'));
+            expect(mocks.setNextAlerts).not.toHaveBeenCalled();
         });
     });
 });
