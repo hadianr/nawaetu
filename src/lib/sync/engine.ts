@@ -65,7 +65,9 @@ export function startSyncEngine({ userId, sync }: EngineOptions): () => void {
         try {
             // Send our own changes first, so the server's answer already includes them.
             const sent = await sync();
-            if (!sent.success) return;
+            // An entry that failed for good keeps `success` false, but it cannot be sent again, and a pull never
+            // overwrites it. Only something still waiting to be sent should hold the pull back.
+            if (!sent.success && syncQueue.getPendingEntries(userId).length > 0) return;
             await pullAndApply(userId, ["progress", "missions", "activity", "profile", "fasting"]);
             await pullBookmarksIfChanged(userId);
         } finally {
@@ -75,6 +77,7 @@ export function startSyncEngine({ userId, sync }: EngineOptions): () => void {
 
     const start = () => {
         if (cancelled || stopTracker || getSyncUserId() !== userId) return;
+        window.removeEventListener("sync_login_settled", start);
         // Entries saved for another account on this device are never sent for this one.
         syncQueue.discardOtherAccounts(userId);
         seedQueueFromLocal(userId);
@@ -87,7 +90,7 @@ export function startSyncEngine({ userId, sync }: EngineOptions): () => void {
     // GuestSyncManager decides hydrate-or-import at login; the engine starts once it has finished. It sets
     // the signed-in id before it announces that, so a late-loading engine still finds it already set.
     if (getSyncUserId() === userId) start();
-    else window.addEventListener("sync_login_settled", start, { once: true });
+    else window.addEventListener("sync_login_settled", start); // stays until it starts: a failed attempt announces too
 
     const onVisible = () => { if (document.visibilityState === "visible") { send(); void pullIfDue(); } };
     const onOnline = () => { send(); void pullIfDue(true); };

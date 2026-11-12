@@ -1,6 +1,7 @@
 import type { StorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { syncQueue } from "@/lib/sync-queue";
+import { withoutTracking } from "@/lib/sync/tracker";
 
 /** Everything stored on this device that belongs to one account's data, not to the device. */
 export const ACCOUNT_STORAGE_KEYS: readonly string[] = [
@@ -28,6 +29,8 @@ export const ACCOUNT_STORAGE_KEYS: readonly string[] = [
 
 /** Removes one account's data from this device: at logout, and when a different account signs in. */
 export function clearAccountData(storage: StorageService): void {
+    // Removing the records is not the user undoing them: the tracker must not queue a delete for each one.
+    withoutTracking(() => { for (const key of ACCOUNT_STORAGE_KEYS) storage.remove(key); });
+    // Last, so nothing queued while clearing can survive.
     syncQueue.clearAll();
-    for (const key of ACCOUNT_STORAGE_KEYS) storage.remove(key);
 }

@@ -69,6 +69,9 @@ export interface SyncQueueEntry {
   /** When this entry was created (Unix timestamp) */
   createdAt: number;
 
+  /** Bumped each time a newer change is merged into this entry, so an acknowledgement of an older version can be told apart. */
+  rev?: number;
+
   /** Last sync attempt timestamp (optional) */
   lastAttemptAt?: number;
 
@@ -189,6 +192,7 @@ export class SyncQueueManager {
       older.retryCount = 0;
       older.error = undefined;
       older.createdAt = Date.now();
+      older.rev = (older.rev ?? 0) + 1;
       return older.id;
     }
 
@@ -247,11 +251,14 @@ export class SyncQueueManager {
       && (userId === undefined || entry.userId === undefined || entry.userId === userId));
   }
 
-  /** Entries the server accepted leave the queue. */
-  acknowledge(ids: string[]): void {
+  /**
+   * Entries the server accepted leave the queue. `sentRevs` is what was sent (id -> rev): an entry that
+   * was changed again while the request was on its way stays, because the server has only the older version.
+   */
+  acknowledge(ids: string[], sentRevs?: Map<string, number>): void {
     if (ids.length === 0) return;
     const accepted = new Set(ids);
-    this.queue = this.queue.filter((entry) => !accepted.has(entry.id));
+    this.queue = this.queue.filter((entry) => !accepted.has(entry.id) || (sentRevs !== undefined && (entry.rev ?? 0) !== (sentRevs.get(entry.id) ?? 0)));
     this.persist();
   }
 

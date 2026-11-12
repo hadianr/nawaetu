@@ -15,6 +15,8 @@
         hasanah: 0,
         holdSync: false,             // answer /api/user/sync with 503 so changes stay queued
         offline: false,              // behave like a dead network (in addition to anoa's own offline switch)
+        syncDelayMs: 0,              // hold each /api/user/sync answer for this long (a slow connection)
+        fullDataFails: false,        // answer /api/user/full-data with a server error (a login that does not settle)
     };
     const log = [];
     const realFetch = window.fetch.bind(window);
@@ -38,6 +40,7 @@
         }
 
         if (url.pathname === "/api/user/full-data") {
+            if (state.fullDataFails) return json({ error: "boom" }, 500);
             record.ok = true;
             return json({
                 profile: { name: state.user.name, guestSyncEligible: false, streaks: { current: 0, longest: 0 } },
@@ -48,6 +51,7 @@
 
         if (url.pathname === "/api/user/sync" && method === "POST") {
             if (state.holdSync) return json({ error: "busy" }, 503);
+            if (state.syncDelayMs) await new Promise((resolve) => setTimeout(resolve, state.syncDelayMs));
             record.ok = true;
             const synced = [];
             for (const entry of record.body.entries || []) {
