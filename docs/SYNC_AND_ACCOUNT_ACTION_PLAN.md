@@ -328,11 +328,11 @@ To repeat: build `main` and the branch with the same environment, serve them, an
 Guests keep every feature; the app never makes login a condition for prayer, Quran or dhikr. The invitation to sign in has to
 earn its place instead (`lib/login-nudge.ts`, `components/auth/LoginNudge.tsx`, mounted lazily on the home page).
 
-- **When:** a guest reaches a 3 or 7 day streak, or level 3. The biggest reason wins and covers the smaller ones, one invitation a
-  day at most.
+- **When:** a guest reaches a 7, 14 or 30 day streak. Not earlier: before a week the habit is not formed and the ask is noise. The
+  biggest one wins and covers the smaller ones, one invitation a day at most.
 - **How it backs off:** dismissed once, wait 3 days; twice, a week; after that a month. Nothing is shown during onboarding, while
   another dialog is open, or while the app is in the background.
-- **Animation:** the existing `flame.lottie` (streak) and `stars.lottie` (level) through `LottieMoment`: lazy, static under
+- **Animation:** the existing `flame.lottie` through `LottieMoment`: lazy, static under
   reduced motion, hidden from assistive tech. No new file and no new dependency.
 - **Wording is exact on purpose:** it says "keep it safe", never "your data comes with you". A guest device only imports its data
   into a brand-new account (`guestSyncEligible`); on an existing account the local data is kept but not imported.

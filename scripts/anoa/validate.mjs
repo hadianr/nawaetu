@@ -371,10 +371,10 @@ async function runChecks() {
 
     console.log("\nInviting guests to sign in");
     const streakSeed = (days) => `localStorage.setItem('user_streak', JSON.stringify({ currentStreak: ${days}, longestStreak: ${days}, lastActiveDate: ${localToday}, milestones: [], freezesAvailable: 0, protectedDates: [] }));`;
-    const nudgeDialog = "(Array.from(document.querySelectorAll('[role=\"dialog\"]')).find(d => /in a row|whole week/i.test(d.innerText)))";
+    const nudgeDialog = "(Array.from(document.querySelectorAll('[role=\"dialog\"]')).find(d => /whole week|two weeks|a month/i.test(d.innerText)))";
 
-    await check("a guest with a 3-day streak is invited once, with the animation, and left alone after dismissing", async () => {
-        await freshGuestPage(streakSeed(3));
+    await check("a guest with a 7-day streak is invited once, with the animation, and left alone after dismissing", async () => {
+        await freshGuestPage(streakSeed(7));
         await sleep(2000);
         anoa(["press", "Escape"], { allowFail: true }); // the journey intro dialog may be open
         await waitFor("the invitation", nudgeDialog, 15_000);
@@ -391,8 +391,8 @@ async function runChecks() {
         noPageErrors();
     });
 
-    await check("a guest with a 1-day streak is not invited", async () => {
-        await freshGuestPage(streakSeed(1));
+    await check("a guest with a 6-day streak is not invited", async () => {
+        await freshGuestPage(streakSeed(6));
         await sleep(2000);
         anoa(["press", "Escape"], { allowFail: true });
         await sleep(6500);

@@ -1,16 +1,15 @@
 /**
  * When to invite a guest to sign in. Guests keep every feature, so the invitation has to earn its place: it
- * appears when the guest has something worth protecting (a streak, a level), never before, never twice for the
+ * appears when the guest has something worth protecting (a streak that has become a habit), never before, never twice for the
  * same reason, and it backs off when it is dismissed. All state is on the device; nothing is sent anywhere.
  */
 
 export const NUDGE_STORAGE_KEY = "nawaetu_login_nudge";
 
-export type NudgeId = "streak3" | "streak7" | "level3";
+export type NudgeId = "streak7" | "streak14" | "streak30";
 
 export interface Stakes {
     streakDays: number;
-    level: number;
 }
 
 export interface NudgeState {
@@ -22,11 +21,14 @@ export interface NudgeState {
 
 const DAY_MS = 86_400_000;
 
-/** Most meaningful first: a guest who reached 7 days is asked about that, not about 3. */
+/**
+ * Most meaningful first: a guest who reached 30 days is asked about that, not about 7. Seven days is the first
+ * invitation on purpose: before that the habit is not formed yet and the ask would only be noise.
+ */
 const TRIGGERS: Array<{ id: NudgeId; met: (stakes: Stakes) => boolean; covers: NudgeId[] }> = [
-    { id: "streak7", met: (s) => s.streakDays >= 7, covers: ["streak3"] },
-    { id: "streak3", met: (s) => s.streakDays >= 3, covers: [] },
-    { id: "level3", met: (s) => s.level >= 3, covers: [] },
+    { id: "streak30", met: (s) => s.streakDays >= 30, covers: ["streak14", "streak7"] },
+    { id: "streak14", met: (s) => s.streakDays >= 14, covers: ["streak7"] },
+    { id: "streak7", met: (s) => s.streakDays >= 7, covers: [] },
 ];
 
 export const emptyState = (): NudgeState => ({ shown: [], dismissals: 0, snoozedUntil: 0 });
@@ -55,7 +57,7 @@ export function readNudgeState(): NudgeState {
         const parsed = JSON.parse(localStorage.getItem(NUDGE_STORAGE_KEY) ?? "null");
         if (!parsed || typeof parsed !== "object") return emptyState();
         return {
-            shown: Array.isArray(parsed.shown) ? parsed.shown.filter((id: unknown): id is NudgeId => id === "streak3" || id === "streak7" || id === "level3") : [],
+            shown: Array.isArray(parsed.shown) ? parsed.shown.filter((id: unknown): id is NudgeId => id === "streak7" || id === "streak14" || id === "streak30") : [],
             dismissals: Number.isFinite(parsed.dismissals) ? Number(parsed.dismissals) : 0,
             snoozedUntil: Number.isFinite(parsed.snoozedUntil) ? Number(parsed.snoozedUntil) : 0,
         };
