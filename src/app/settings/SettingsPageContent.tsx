@@ -446,7 +446,6 @@ export default function SettingsPageContent() {
                 <ThemeCard
                     t={t}
                     currentTheme={currentTheme}
-                    isMuhsinin={isMuhsinin}
                     handleThemeSelect={handleThemeSelect}
                 />
 
