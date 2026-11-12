@@ -72,6 +72,9 @@ export const users = pgTable("user", {
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
 
+    // Guests only: SHA-256 of the secret the device holds. NULL until a device binds one.
+    guestSecretHash: text("guest_secret_hash"),
+
     // Intention Streak Tracking
     intentionStreakCurrent: integer("intention_streak_current").default(0),
     intentionStreakLongest: integer("intention_streak_longest").default(0),

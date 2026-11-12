@@ -41,6 +41,7 @@ import { toast } from "sonner";
 import DailyMissionCard from "./missions/DailyMissionCard";
 import { useWidgetMissions } from "@/hooks/useWidgetMissions";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { guestHeaders } from "@/lib/guest-secret-client";
 
 const IntentionInputForm = dynamic(() => import("./intentions/IntentionInputForm"), { ssr: false });
 const ReflectionInputForm = dynamic(() => import("./intentions/ReflectionInputForm"), { ssr: false });
@@ -94,7 +95,7 @@ export default function MissionsWidget() {
         const fetchIntention = async () => {
             try {
                 const res = await fetch(`/api/intentions/today`, {
-                    headers: { 'Authorization': `Bearer ${userToken}` }
+                    headers: { 'Authorization': `Bearer ${userToken}`, ...guestHeaders() }
                 });
                 const data = await res.json();
                 if (data.success && data.data.has_intention) {
@@ -169,7 +170,7 @@ export default function MissionsWidget() {
         try {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...guestHeaders() },
                 body: JSON.stringify({ user_token: userToken, intention_text: text }),
             });
             const data = await response.json();

@@ -1,3 +1,5 @@
+import { guestHeaders } from "@/lib/guest-secret-client";
+
 const TOKEN_KEYS = ["user_token", "fcm_token", "nawaetu_anonymous_id"];
 
 /**
@@ -13,7 +15,7 @@ export async function claimGuestIntentions(userId: string): Promise<void> {
         if (tokens.length > 0) {
             const response = await fetch("/api/intentions/claim", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...guestHeaders() },
                 body: JSON.stringify({ tokens, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }),
             });
             if (!response.ok) return; // try again next time

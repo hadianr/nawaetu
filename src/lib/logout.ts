@@ -12,6 +12,8 @@ export interface LogoutDeps {
     confirm?: (message: string) => boolean;
     fetchFn?: typeof fetch;
     caches?: CacheStorage;
+    /** Retires the device's push token so the next account cannot inherit it. Loaded only when needed. */
+    rotatePushToken?: () => Promise<unknown>;
 }
 
 /**
@@ -19,7 +21,9 @@ export interface LogoutDeps {
  *
  * Order matters:
  *  1. send what is queued, and ask before going on if some of it could not be sent;
- *  2. release the device's push subscription while the session still exists (the server checks it);
+ *  2. release the device's push subscription while the session still exists (the server checks it), then retire
+ *     the token itself: the app registers a new one as a guest, so prayer alerts continue under a token that no
+ *     account has ever held;
  *  3. clear everything that belongs to the account, then the cached API responses;
  *  4. sign out.
  * Declining the question stops at step 1 with nothing changed.
@@ -36,6 +40,9 @@ export async function performLogout(deps: LogoutDeps): Promise<"cancelled" | "si
     const pushToken = localStorage.getItem("fcm_token");
     if (pushToken) {
         await request("/api/notifications/subscribe", { method: "DELETE", headers: { "x-device-token": pushToken } }).catch(() => undefined);
+        // If this fails the device simply keeps its old token as a guest, as before.
+        const rotate = deps.rotatePushToken ?? (() => import("@/lib/notifications/fcm-init").then((module) => module.rotatePushToken()));
+        await rotate().catch(() => undefined);
     }
 
     clearAccountData(deps.storage);

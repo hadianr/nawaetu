@@ -22,6 +22,7 @@ import { intentions, users } from "@/db/schema";
 import { eq, and, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 import { logger } from "@/lib/logger";
+import { guestMayAct, readGuestSecret } from "@/lib/guest-secret";
 
 /**
  * GET /api/intentions/today with `Authorization: Bearer <token>` (a guest's token never goes in the URL)
@@ -70,6 +71,9 @@ export async function GET(req: NextRequest) {
                     .limit(1);
 
                 if (user) {
+                    if (!(await guestMayAct(user, readGuestSecret(req)))) {
+                        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+                    }
                     userId = user.id;
                     userData = user;
                 }

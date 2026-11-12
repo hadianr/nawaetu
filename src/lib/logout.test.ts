@@ -19,6 +19,7 @@ function setup(overrides: Partial<LogoutDeps> = {}) {
         signOut: vi.fn(async () => { order.push("signOut"); }),
         confirm: vi.fn(() => true),
         fetchFn: vi.fn(async (url: RequestInfo | URL) => { order.push(`fetch:${String(url).split("?")[0]}`); return { ok: true } as Response; }) as unknown as typeof fetch,
+        rotatePushToken: vi.fn(async () => { order.push("rotate"); return true; }),
         caches: { delete: vi.fn(async (name: string) => { deletedCaches.push(name); order.push(`cache:${name}`); return true; }) } as unknown as CacheStorage,
         ...overrides,
     };
@@ -47,6 +48,7 @@ describe("performLogout", () => {
         expect(order).toEqual([
             "sync",
             "fetch:/api/notifications/subscribe",
+            "rotate",
             "resetInfaq",
             "cache:apis", "cache:next-data", "cache:pages-rsc",
             "signOut",
@@ -64,8 +66,8 @@ describe("performLogout", () => {
             expect(storage.getOptional(key), key).toBeNull();
         }
         expect(syncQueue.getQueue()).toHaveLength(0);
-        // The device itself keeps its push token, so prayer alerts continue as a guest.
-        expect(localStorage.getItem("fcm_token")).toBe("device-token");
+        // Retiring the token is the push layer's job (stubbed here), so only the device's own bookkeeping is checked.
+        expect(deps.rotatePushToken).toHaveBeenCalledTimes(1);
     });
 
     it("does not ask anything when everything was sent", async () => {
@@ -106,10 +108,23 @@ describe("performLogout", () => {
         expect(storage.getOptional(STORAGE_KEYS.USER_NAME)).toBeNull();
     });
 
+    it("signs out even when retiring the push token fails", async () => {
+        const { deps } = setup({ rotatePushToken: vi.fn(async () => { throw new Error("offline"); }) });
+        expect(await performLogout(deps)).toBe("signed_out");
+        expect(deps.signOut).toHaveBeenCalledTimes(1);
+    });
+
     it("skips the subscription call when the device has no push token", async () => {
         localStorage.removeItem("fcm_token");
         const { deps } = setup();
         await performLogout(deps);
         expect(deps.fetchFn).not.toHaveBeenCalled();
+        expect(deps.rotatePushToken).not.toHaveBeenCalled();
+    });
+
+    it("does not retire the token when the user backs out", async () => {
+        const { deps } = setup({ sync: vi.fn(async () => ({ success: false })), confirm: vi.fn(() => false) });
+        await performLogout(deps);
+        expect(deps.rotatePushToken).not.toHaveBeenCalled();
     });
 });

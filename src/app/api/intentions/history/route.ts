@@ -17,6 +17,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { guestMayAct, readGuestSecret } from "@/lib/guest-secret";
 import { db } from "@/db";
 import { inSequence } from "@/lib/db-sequential";
 import { intentions, users } from "@/db/schema";
@@ -65,6 +66,9 @@ export async function GET(req: NextRequest) {
                     .limit(1);
 
                 if (user) {
+                    if (!(await guestMayAct(user, readGuestSecret(req)))) {
+                        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+                    }
                     userId = user.id;
                     streak = user.intentionStreakCurrent || 0;
                     longestStreak = user.intentionStreakLongest || 0;

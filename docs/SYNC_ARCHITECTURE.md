@@ -76,6 +76,17 @@ screen edits storage ──▶ tracker ──▶ queue (localStorage) ──▶ 
 Redis (Upstash free tier, 500k commands a month) is used for the session check cache, AI chat, payment links and anonymous
 accounts. The sync limiters stay in memory on purpose.
 
+## Guest identity
+
+A guest has no account, but the journal is kept on the server under a hidden account (`<device token>@nawaetu.local`). A token
+alone is not trusted: the device also generates a random secret (`lib/guest-secret-client.ts`, never cleared at logout) and
+sends it as `x-guest-secret` on every journal request (`guestHeaders()`; a test fails if a call site forgets it). The server keeps
+only its hash (`user.guest_secret_hash`, migration 0021) and binds the first secret it sees for an account; after that the
+account refuses any request without it, `intentions/claim` included. An account with no secret yet (from before this) still
+answers an app version that does not send one, until some device binds one. Push tokens: the subscribe route does not take
+over a token that another account holds (409); logout releases the subscription and retires the token (`rotatePushToken`), and
+the app registers a fresh one as a guest, so prayer alerts continue under a token no account ever held.
+
 ## Housekeeping
 
 Guests come and go, and nothing else removes what they leave behind. `POST /api/maintenance/cleanup` (`lib/maintenance/cleanup.ts`)

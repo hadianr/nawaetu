@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles, BookHeart } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IntentionDalil, getRandomDalil } from "@/data/intention-dalils";
+import { guestHeaders } from "@/lib/guest-secret-client";
 
 interface IntentionInputFormProps {
     onComplete: () => void;
@@ -58,7 +59,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
         try {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...guestHeaders() },
                 body: JSON.stringify({
                     user_token: userToken,
                     intention_text: intention,

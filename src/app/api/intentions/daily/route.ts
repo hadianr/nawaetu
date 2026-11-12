@@ -25,6 +25,7 @@ import { intentions, users } from "@/db/schema";
 import { eq, and, sql, gte, lt } from "drizzle-orm";
 import { getServerSession } from "@/lib/auth";
 import { logger } from "@/lib/logger";
+import { guestMayAct, hashGuestSecret, readGuestSecret } from "@/lib/guest-secret";
 
 /**
  * POST /api/intentions/daily
@@ -119,6 +120,7 @@ export async function POST(req: NextRequest) {
                 .limit(1);
 
             if (existingUser) {
+                if (!(await guestMayAct(existingUser, readGuestSecret(req)))) throw new Error("GUEST_FORBIDDEN");
                 return existingUser.id;
             }
 
@@ -133,6 +135,8 @@ export async function POST(req: NextRequest) {
                 .values({
                     email: anonymousEmail,
                     name: "User",
+                    // A new guest account is bound to the device's secret from the start.
+                    guestSecretHash: readGuestSecret(req) ? hashGuestSecret(readGuestSecret(req) as string) : null,
                     intentionStreakCurrent: 0,
                     intentionStreakLongest: 0,
                 })
@@ -248,6 +252,9 @@ export async function POST(req: NextRequest) {
             },
         });
     } catch (error: unknown) {
+        if (error instanceof Error && error.message === "GUEST_FORBIDDEN") {
+            return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+        }
         if (error instanceof Error && error.message === "ANON_LIMIT") {
             return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
         }

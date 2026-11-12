@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { addHasanah } from "@/lib/habits/leveling";
 import { DateUtils } from "@/lib/utils/date";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { guestHeaders } from "@/lib/guest-secret-client";
 
 interface IntentionJournalWidgetProps {
     className?: string;
@@ -136,7 +137,8 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                     // Cache busting or ensure next.js doesn't hard cache this for real-time widgets
                     headers: {
                         'Cache-Control': 'no-cache',
-                        'Authorization': `Bearer ${userToken}`
+                        'Authorization': `Bearer ${userToken}`,
+                        ...guestHeaders(),
                     }
                 });
 
@@ -200,7 +202,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
         try {
             const response = await fetch("/api/intentions/daily", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...guestHeaders() },
                 body: JSON.stringify({ user_token: userToken, intention_text: intentionText, intention_date: selectedDate, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }),
             });
             const data = await response.json();
@@ -261,7 +263,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
 
             const response = await fetch("/api/intentions/reflect", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...guestHeaders() },
                 body: JSON.stringify({
                     user_token: userToken,
                     intention_id: todayData.intention.id,

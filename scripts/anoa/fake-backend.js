@@ -30,7 +30,7 @@
 
         const method = (init && init.method ? init.method : "GET").toUpperCase();
         const text = init && typeof init.body === "string" ? init.body : "";
-        const record = { path: url.pathname, query: url.search, method, bytes: text.length, body: text ? JSON.parse(text) : null, ok: false, at: Date.now(), online: navigator.onLine };
+        const record = { path: url.pathname, query: url.search, method, bytes: text.length, body: text ? JSON.parse(text) : null, ok: false, at: Date.now(), online: navigator.onLine, headers: Object.fromEntries(new Headers((init && init.headers) || {})) };
         log.push(record);
 
         if (state.offline || navigator.onLine === false) throw new TypeError("Failed to fetch");

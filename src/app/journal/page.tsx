@@ -21,6 +21,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { guestHeaders } from "@/lib/guest-secret-client";
 import { ChevronLeft, Book, ScrollText, Star, Calendar } from "lucide-react";
 import IntentionStreak from "@/components/intentions/IntentionStreak";
 import { useLocale } from "@/context/LocaleContext";
@@ -67,7 +68,7 @@ export default function JournalPage() {
 
             const response = await fetch(
                 `/api/intentions/history?limit=20&offset=${pageNum * 20}`,
-                { headers: { "x-user-token": token } },
+                { headers: { "x-user-token": token, ...guestHeaders() } },
             );
             const data = await response.json();
 
