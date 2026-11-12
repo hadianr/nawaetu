@@ -35,7 +35,7 @@ export async function performLogout(deps: LogoutDeps): Promise<"cancelled" | "si
     // The device keeps its prayer alerts as a guest, but no longer belongs to this account.
     const pushToken = localStorage.getItem("fcm_token");
     if (pushToken) {
-        await request(`/api/notifications/subscribe?token=${encodeURIComponent(pushToken)}`, { method: "DELETE" }).catch(() => undefined);
+        await request("/api/notifications/subscribe", { method: "DELETE", headers: { "x-device-token": pushToken } }).catch(() => undefined);
     }
 
     clearAccountData(deps.storage);

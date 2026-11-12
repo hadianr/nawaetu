@@ -173,6 +173,35 @@ describe('POST /api/notifications/subscribe', () => {
         expect(set).toHaveBeenCalledWith(expect.objectContaining({ userId: null }));
     });
 
+    describe('the device token', () => {
+        const releaseMocks = () => {
+            const where = vi.fn().mockResolvedValue({});
+            const set = vi.fn().mockReturnValue({ where });
+            (db.update as unknown as { mockReturnValue: (value: unknown) => void }).mockReturnValue({ set });
+            return { set };
+        };
+
+        it('is read from a header, so it never has to be in a URL', async () => {
+            const { set } = releaseMocks();
+            const res = await DELETE({ url: 'http://localhost/api/notifications/subscribe', headers: new Headers({ 'x-device-token': 'device-token' }) } as unknown as NextRequest);
+            expect(res.status).toBe(200);
+            expect(set).toHaveBeenCalledTimes(1);
+        });
+
+        it('is still read from the query for app versions already installed', async () => {
+            releaseMocks();
+            const res = await DELETE({ url: 'http://localhost/api/notifications/subscribe?token=old-client', headers: new Headers() } as unknown as NextRequest);
+            expect(res.status).toBe(200);
+        });
+
+        it('is required', async () => {
+            const { set } = releaseMocks();
+            const res = await DELETE({ url: 'http://localhost/api/notifications/subscribe', headers: new Headers() } as unknown as NextRequest);
+            expect(res.status).toBe(400);
+            expect(set).not.toHaveBeenCalled();
+        });
+    });
+
     it('should handle missing prayerPreferences correctly in upsert', async () => {
         // Mock insert().values().onConflictDoUpdate() chain
         const mockOnConflictDoUpdate = vi.fn().mockResolvedValue({});
