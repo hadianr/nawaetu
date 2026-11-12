@@ -15,6 +15,9 @@ import LottieMoment from "@/components/ui/LottieMoment";
 
 /** Wait this long after the screen settles, so the invitation never competes with what the user came to do. */
 const SHOW_DELAY_MS = 4000;
+/** If something else is in the way, look again after this long, a few times, then leave it for the next visit. */
+const RETRY_DELAY_MS = 5000;
+const MAX_ATTEMPTS = 5;
 
 const COPY: Record<NudgeId, { title: string; desc: string }> = {
     streak7: { title: "loginNudgeStreak7Title", desc: "loginNudgeStreak7Desc" },
@@ -36,9 +39,19 @@ export default function LoginNudge() {
 
     useEffect(() => {
         if (status !== "unauthenticated" || shownId) return;
-        const timer = window.setTimeout(() => {
-            // Not during onboarding, not while another dialog is open, not while the app is in the background.
-            if (document.visibilityState !== "visible" || document.querySelector('[role="dialog"]')) return;
+        let timer: number | undefined;
+        let attempts = 0;
+
+        const attempt = () => {
+            attempts++;
+            // Not while the app is in the background or another dialog is open. Try again shortly instead of waiting
+            // for the next visit: a dialog that is closing, or one the user dismisses a moment later, should not cost
+            // the invitation. It still never stacks on top of anything.
+            if (document.visibilityState !== "visible" || document.querySelector('[role="dialog"]')) {
+                if (attempts < MAX_ATTEMPTS) timer = window.setTimeout(attempt, RETRY_DELAY_MS);
+                return;
+            }
+            // Not during onboarding: the next visit is the right time.
             if (localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED) === null) return;
             const now = Date.now();
             const state = readNudgeState();
@@ -47,7 +60,9 @@ export default function LoginNudge() {
             writeNudgeState(afterShown(state, pick, now));
             sendGAEvent("login_prompt_shown", { trigger: pick });
             setShownId(pick);
-        }, SHOW_DELAY_MS);
+        };
+
+        timer = window.setTimeout(attempt, SHOW_DELAY_MS);
         return () => window.clearTimeout(timer);
     }, [status, streakDays, shownId]);
 
