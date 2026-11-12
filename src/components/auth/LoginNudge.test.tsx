@@ -79,6 +79,29 @@ describe("LoginNudge", () => {
         document.querySelector('[role="dialog"]')?.remove();
     });
 
+    it("tries again when another dialog was in the way, and shows once it is gone", async () => {
+        document.body.insertAdjacentHTML("beforeend", '<div role="dialog" id="other">other</div>');
+        render(<LoginNudge />);
+        await wait(); // the first look finds the other dialog
+        expect(mocks.track).not.toHaveBeenCalled();
+
+        document.getElementById("other")?.remove();
+        await act(async () => { await vi.advanceTimersByTimeAsync(5100); });
+        expect(screen.getByRole("dialog")).toBeTruthy();
+        expect(mocks.track).toHaveBeenCalledWith("login_prompt_shown", { trigger: "streak7" });
+    });
+
+    it("gives up after a few tries and leaves the invitation for the next visit", async () => {
+        document.body.insertAdjacentHTML("beforeend", '<div role="dialog" id="other">other</div>');
+        render(<LoginNudge />);
+        await act(async () => { await vi.advanceTimersByTimeAsync(4000 + 5 * 5000); });
+
+        document.getElementById("other")?.remove();
+        await act(async () => { await vi.advanceTimersByTimeAsync(30_000); });
+        expect(screen.queryByRole("dialog")).toBeNull();
+        expect(mocks.track).not.toHaveBeenCalled();
+    });
+
     it("starts sign-in from the button and records the click", async () => {
         render(<LoginNudge />);
         await wait();

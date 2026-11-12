@@ -331,7 +331,8 @@ earn its place instead (`lib/login-nudge.ts`, `components/auth/LoginNudge.tsx`, 
 - **When:** a guest reaches a 7, 14 or 30 day streak. Not earlier: before a week the habit is not formed and the ask is noise. The
   biggest one wins and covers the smaller ones, one invitation a day at most.
 - **How it backs off:** dismissed once, wait 3 days; twice, a week; after that a month. Nothing is shown during onboarding, while
-  another dialog is open, or while the app is in the background.
+  another dialog is open, or while the app is in the background. If something is in the way it looks again every 5 seconds, up to
+  5 times, then leaves the invitation for the next visit.
 - **Animation:** the existing `flame.lottie` through `LottieMoment`: lazy, static under
   reduced motion, hidden from assistive tech. No new file and no new dependency.
 - **Wording is exact on purpose:** it says "keep it safe", never "your data comes with you". A guest device only imports its data
