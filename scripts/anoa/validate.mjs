@@ -48,6 +48,12 @@ function anoa(args, { allowFail = false } = {}) {
     return { out: (result.stdout || "").trim(), status: result.status };
 }
 
+/**
+ * A value as a JavaScript expression for the page. It travels base64-encoded, so nothing in it can be read as code;
+ * quoting it with JSON.stringify alone is not enough (U+2028, `</script>`), and code scanning rightly flags that.
+ */
+const lit = (value) => `JSON.parse(atob('${Buffer.from(JSON.stringify(value)).toString("base64")}'))`;
+
 /** Runs the body of an async function in the page and returns what it returned, as data. */
 function page(body) {
     const wrapped = `(async () => JSON.stringify(await (async () => { ${body} })()))()`;
@@ -122,10 +128,10 @@ async function freshGuestPage(seedJs = "") {
  * what to do with the data on the device, and the sync engine starts once it has settled.
  */
 async function signIn(userId = "u1") {
-    page(`${FAKE}; window.__fake.state.user.id = ${JSON.stringify(userId)}; // A tab that was open as a guest learns about a sign-in through next-auth's broadcast channel
+    page(`${FAKE}; window.__fake.state.user.id = ${lit(userId)}; // A tab that was open as a guest learns about a sign-in through next-auth's broadcast channel
         // (a visibility change is ignored once the client knows it has no session).
         new BroadcastChannel('next-auth').postMessage({ event: 'session', data: { trigger: 'getSession' } }); return true;`);
-    await waitFor("login to settle", `localStorage.getItem('${KEYS.syncUser}') === ${JSON.stringify(userId)}`, 15_000);
+    await waitFor("login to settle", `localStorage.getItem('${KEYS.syncUser}') === ${lit(userId)}`, 15_000);
     await waitFor("the first pull", "window.__fake.log.some(r => r.path === '/api/user/pull')", 15_000);
 }
 
