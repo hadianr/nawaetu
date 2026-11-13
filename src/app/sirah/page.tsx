@@ -22,13 +22,13 @@ import { SirahSourceNote } from "@/components/sirah/SirahSourceNote";
 import { useLocale } from "@/context/LocaleContext";
 import type { AppIconName } from "@/lib/icon-names";
 
-const ERA_TABS: { id: SirahEra | "all"; label: string; icon: AppIconName }[] = [
-    { id: "all", label: "Semua Bab", icon: "library" },
-    { id: "makkah", label: "Periode Makkah", icon: "kaaba" },
-    { id: "madinah", label: "Periode Madinah", icon: "landmark" },
-    { id: "ghazwah", label: "Peperangan (Ghazwah)", icon: "shield-check" },
-    { id: "diplomacy", label: "Diplomasi & Surat Raja", icon: "scroll" },
-    { id: "legacy", label: "Akhlak & Wafat", icon: "sparkles" },
+const ERA_TABS: { id: SirahEra | "all"; labelKey: "sirahEraAll" | "sirahEraMakkah" | "sirahEraMadinah" | "sirahEraGhazwah" | "sirahEraDiplomacy" | "sirahEraLegacy"; icon: AppIconName }[] = [
+    { id: "all", labelKey: "sirahEraAll", icon: "library" },
+    { id: "makkah", labelKey: "sirahEraMakkah", icon: "kaaba" },
+    { id: "madinah", labelKey: "sirahEraMadinah", icon: "landmark" },
+    { id: "ghazwah", labelKey: "sirahEraGhazwah", icon: "shield-check" },
+    { id: "diplomacy", labelKey: "sirahEraDiplomacy", icon: "scroll" },
+    { id: "legacy", labelKey: "sirahEraLegacy", icon: "sparkles" },
 ];
 
 export default function SirahDashboardPage() {
@@ -103,7 +103,7 @@ export default function SirahDashboardPage() {
                                 )}
                             >
                                 <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-[rgb(var(--color-success))]" />
-                                <span>Kuis Hari Ini Selesai</span>
+                                <span>{t.sirahQuizDoneToday}</span>
                             </Link>
                         ) : (
                             <Link
@@ -114,7 +114,7 @@ export default function SirahDashboardPage() {
                                 )}
                             >
                                 <Award className="w-2.5 h-2.5 shrink-0 text-[rgb(var(--color-warning))]" />
-                                <span>Kuis Sirah Harian</span>
+                                <span>{t.sirahDailyQuiz}</span>
                             </Link>
                         )}
                     </div>
@@ -132,15 +132,15 @@ export default function SirahDashboardPage() {
                             "text-[rgb(var(--color-text-muted))]"
                         )}
                     >
-                        Teladani perjalanan hidup Rasulullah SAW melalui 50 bab sejarah autentik, petikan Niat harian, dan rujukan ayat Al-Qur&apos;an.
+                        {t.sirahHomeIntro}
                     </p>
 
                     {/* Overall Reading Progress */}
                     <div className="pt-1 space-y-1">
                         <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold">
-                            <span className="text-[rgb(var(--color-text-muted))]">Kemajuan Membaca</span>
+                            <span className="text-[rgb(var(--color-text-muted))]">{t.sirahReadingProgress}</span>
                             <span className="text-[rgb(var(--color-primary-strong))] font-bold">
-                                {completedSectionIds.length} / {totalSections} Subbab ({progressPercent}%)
+                                {t.sirahSectionsProgress.replace("{done}", String(completedSectionIds.length)).replace("{total}", String(totalSections)).replace("{percent}", String(progressPercent))}
                             </span>
                         </div>
                         <div className="w-full h-1.5 sm:h-2 rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
@@ -180,7 +180,7 @@ export default function SirahDashboardPage() {
                             )}
                         >
                             <Sparkles className="w-3.5 h-3.5" />
-                            <span>HIKMAH SIRAH HARI INI</span>
+                            <span>{t.sirahDailyHikmah}</span>
                         </div>
                     </div>
                     <p
@@ -207,7 +207,7 @@ export default function SirahDashboardPage() {
                                 "text-[rgb(var(--color-primary-strong))]"
                             )}
                         >
-                            <span>Baca Subbab</span>
+                            <span>{t.sirahReadSection}</span>
                             <ChevronRight className="w-3.5 h-3.5" />
                         </Link>
                     </div>
@@ -221,7 +221,7 @@ export default function SirahDashboardPage() {
                     <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[rgb(var(--color-text-muted))]" />
                     <input
                         type="text"
-                        placeholder="Cari bab atau peristiwa Sirah..."
+                        placeholder={t.sirahSearchPlaceholder}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         autoCapitalize="none"
@@ -247,7 +247,7 @@ export default function SirahDashboardPage() {
                             )}
                         >
                             <AppIcon name={tab.icon} size="sm" tone={selectedEra === tab.id ? "default" : "muted"} />
-                            <span>{tab.label}</span>
+                            <span>{t[tab.labelKey]}</span>
                         </button>
                     ))}
                 </div>
@@ -256,9 +256,9 @@ export default function SirahDashboardPage() {
             {/* Chapter List Grid */}
             <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold px-0.5">
-                    <span className="text-[rgb(var(--color-text-muted))]">DAFTAR BAB UTAMA ({filteredChapters.length})</span>
+                    <span className="text-[rgb(var(--color-text-muted))]">{t.sirahChapterListTitle.replace("{count}", String(filteredChapters.length))}</span>
                     <span className="text-[rgb(var(--color-primary-strong))]">
-                        {completedSectionIds.length > 0 && `${completedSectionIds.length} Subbab Selesai`}
+                        {completedSectionIds.length > 0 && t.sirahSectionsDone.replace("{count}", String(completedSectionIds.length))}
                     </span>
                 </div>
 
@@ -288,12 +288,12 @@ export default function SirahDashboardPage() {
                                                 "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/25"
                                             )}
                                         >
-                                            Bab {chap.orderIndex}, {formattedEra}
+                                            {t.sirahChapterBadge.replace("{order}", String(chap.orderIndex)).replace("{era}", String(formattedEra))}
                                         </span>
                                         {isAllDone && (
                                             <span className="text-[10px] font-bold flex items-center gap-0.5 text-[rgb(var(--color-success))]">
                                                 <CheckCircle2 className="w-3 h-3" />
-                                                Selesai
+                                                {t.sirahDone}
                                             </span>
                                         )}
                                     </div>
@@ -308,9 +308,9 @@ export default function SirahDashboardPage() {
                                 </div>
 
                                 <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-[rgb(var(--color-border))]">
-                                    <span className="text-[rgb(var(--color-text-muted))]">{chap.totalSections} Subbab</span>
+                                    <span className="text-[rgb(var(--color-text-muted))]">{t.sirahSectionCount.replace("{count}", String(chap.totalSections))}</span>
                                     <div className="flex items-center gap-0.5 font-semibold text-[rgb(var(--color-primary-strong))]">
-                                        <span>Buka Bab</span>
+                                        <span>{t.sirahOpenChapter}</span>
                                         <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                                     </div>
                                 </div>

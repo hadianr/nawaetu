@@ -8,12 +8,14 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, Bookmark } from "lucide-react";
-import { getSirahChapterBySlug, getSirahSectionsByChapterSlug } from "@/data/sirah";
+import { SIRAH_CHAPTERS, getSirahChapterBySlug, getSirahSectionsByChapterSlug } from "@/data/sirah";
+import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 export default function SirahChapterDetailPage({ params }: { params: Promise<{ chapterSlug: string }> }) {
     const { chapterSlug } = use(params);
+    const { t } = useLocale();
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
     const [bookmarkedSectionIds, setBookmarkedSectionIds] = useState<string[]>([]);
 
@@ -56,7 +58,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>Kembali ke Sirah Hub</span>
+                    <span>{t.sirahBackToHub}</span>
                 </Link>
 
                 <span className={cn(
@@ -78,7 +80,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                     "text-xs font-bold uppercase tracking-wider",
                     "text-[rgb(var(--color-primary-strong))]"
                 )}>
-                    Bab {chapter.orderIndex} dari 50
+                    {t.sirahChapterOf.replace("{order}", String(chapter.orderIndex)).replace("{total}", String(SIRAH_CHAPTERS.length))}
                 </span>
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[rgb(var(--color-text-strong))]">
                     {chapter.title}
@@ -90,9 +92,9 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                 {/* Progress Bar */}
                 <div className="pt-2 space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold">
-                        <span className="text-[rgb(var(--color-text-muted))]">Kemajuan Bab Ini</span>
+                        <span className="text-[rgb(var(--color-text-muted))]">{t.sirahChapterProgress}</span>
                         <span className="text-[rgb(var(--color-primary-strong))]">
-                            {doneCount} / {sections.length} Subbab ({progressPercent}%)
+                            {t.sirahSectionsProgress.replace("{done}", String(doneCount)).replace("{total}", String(sections.length)).replace("{percent}", String(progressPercent))}
                         </span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
@@ -110,7 +112,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                     "text-xs font-bold uppercase tracking-wider",
                     "text-[rgb(var(--color-text-muted))]"
                 )}>
-                    Daftar Subbab ({sections.length})
+                    {t.sirahSectionListTitle.replace("{count}", String(sections.length))}
                 </h2>
 
                 <div className="space-y-2.5">
@@ -149,8 +151,8 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                             {sec.subbab}
                                         </h3>
                                         <p className="text-[11px] text-[rgb(var(--color-text-muted))]">
-                                            ⏱️ ~{Math.ceil(sec.content.join(" ").split(" ").length / 150)} min baca
-                                            {sec.pageStart ? `, Hlm ${sec.pageStart}` : ""}
+                                            ⏱️ {t.sirahReaderReadMinutes.replace("{minutes}", String(Math.ceil(sec.content.join(" ").split(" ").length / 150)))}
+                                            {sec.pageStart ? `, ${t.sirahPageShort} ${sec.pageStart}` : ""}
                                         </p>
                                     </div>
                                 </div>

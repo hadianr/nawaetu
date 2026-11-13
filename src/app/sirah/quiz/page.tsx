@@ -14,8 +14,10 @@ import { queueHasanahEvent } from "@/lib/sync/award";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { useLocale } from "@/context/LocaleContext";
 
 export default function SirahQuizPage() {
+    const { t } = useLocale();
 
     const [questions, setQuestions] = useState<SirahQuizItem[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -71,9 +73,9 @@ export default function SirahQuizPage() {
                     window.dispatchEvent(new CustomEvent("hasanah_updated"));
                 }
                 setHasClaimedToday(true);
-                toast.success(`MasyaAllah! +${pointsEarned} Poin Hasanah telah ditambahkan ke akumulasi ibadah Anda! ✨`);
+                toast.success(t.sirahQuizPointsAdded.replace("{points}", String(pointsEarned)));
             } else {
-                toast.info(`Kuis Selesai! Skor Anda: ${score}/5 (${pointsEarned} Poin)`);
+                toast.info(t.sirahQuizFinishedToast.replace("{score}", String(score)).replace("{points}", String(pointsEarned)));
             }
         }
     };
@@ -96,7 +98,7 @@ export default function SirahQuizPage() {
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>Kembali ke Sirah Hub</span>
+                    <span>{t.sirahBackToHub}</span>
                 </Link>
 
                 <div className={cn(
@@ -104,7 +106,7 @@ export default function SirahQuizPage() {
                     "text-[rgb(var(--color-warning))]"
                 )}>
                     <Award className="w-4 h-4" />
-                    <span>Kuis Sirah Nabawiyah</span>
+                    <span>{t.sirahQuizTitle}</span>
                 </div>
             </div>
 
@@ -129,13 +131,13 @@ export default function SirahQuizPage() {
                             "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
                         )}>
                             <Sparkles className="w-3.5 h-3.5" />
-                            <span>Kuis Hari Ini Sudah Selesai Dikerjakan</span>
+                            <span>{t.sirahQuizAlreadyDone}</span>
                         </div>
                         <h2 className="text-xl sm:text-2xl font-extrabold pt-2 text-[rgb(var(--color-text-strong))]">
                             <span className="inline-flex items-center gap-2"><AppIcon name="moon" size="sm" tone="primary" /> Alhamdulillah!</span>
                         </h2>
                         <p className="text-xs leading-relaxed max-w-md mx-auto text-[rgb(var(--color-text-muted))]">
-                            Anda telah menyelesaikan kuis Sirah Nabawiyah untuk hari ini dan Poin Hasanah Anda telah berhasil diakumulasikan. Kuis harian berikutnya akan terbuka kembali esok hari.
+                            {t.sirahQuizAlreadyDoneBody}
                         </p>
                     </div>
 
@@ -147,7 +149,7 @@ export default function SirahQuizPage() {
                             )}
                         >
                             <BookOpen className="w-4 h-4" />
-                            <span>Baca Sirah Nabawiyah</span>
+                            <span>{t.sirahReadSirah}</span>
                         </Link>
                         <Link
                             href="/"
@@ -157,7 +159,7 @@ export default function SirahQuizPage() {
                             )}
                         >
                             <Home className="w-4 h-4" />
-                            <span>Beranda</span>
+                            <span>{t.sirahHome}</span>
                         </Link>
                     </div>
                 </div>
@@ -170,8 +172,8 @@ export default function SirahQuizPage() {
                     )}
                 >
                     <div className="flex items-center justify-between text-xs font-bold text-[rgb(var(--color-text-muted))]">
-                        <span>SOAL {currentIndex + 1} DARI {questions.length}</span>
-                        <span className="text-[rgb(var(--color-primary-strong))]">Skor: {score} Benar (+{score * 10} Poin)</span>
+                        <span>{t.sirahQuizProgress.replace("{current}", String(currentIndex + 1)).replace("{total}", String(questions.length))}</span>
+                        <span className="text-[rgb(var(--color-primary-strong))]">{t.sirahQuizScore.replace("{score}", String(score)).replace("{points}", String(score * 10))}</span>
                     </div>
 
                     <h2 className="text-base sm:text-lg font-extrabold leading-snug text-[rgb(var(--color-text-strong))]">
@@ -221,7 +223,7 @@ export default function SirahQuizPage() {
                             "p-4 rounded-2xl border space-y-1 text-xs animate-in fade-in duration-200",
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25"
                         )}>
-                            <p className="font-bold text-[rgb(var(--color-primary-strong))] flex items-center gap-1.5"><AppIcon name="help" size="sm" tone="primary" /> Penjelasan Singkat:</p>
+                            <p className="font-bold text-[rgb(var(--color-primary-strong))] flex items-center gap-1.5"><AppIcon name="help" size="sm" tone="primary" /> {t.sirahQuizExplanation}</p>
                             <p className="text-[rgb(var(--color-text-muted))]">
                                 {currentQ?.explanation}
                             </p>
@@ -237,7 +239,7 @@ export default function SirahQuizPage() {
                                     "px-6 py-2.5 rounded-xl text-[rgb(var(--color-primary-foreground))] font-bold text-xs transition-all shadow-[var(--shadow-card)] cursor-pointer bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))]"
                                 )}
                             >
-                                {currentIndex < questions.length - 1 ? "Soal Berikutnya ➔" : "Lihat Hasil & Rekomendasi ✨"}
+                                {currentIndex < questions.length - 1 ? t.sirahQuizNext : t.sirahQuizSeeResults}
                             </button>
                         </div>
                     )}
@@ -258,9 +260,9 @@ export default function SirahQuizPage() {
                     </div>
 
                     <div className="space-y-1">
-                        <h2 className="text-2xl font-extrabold text-[rgb(var(--color-text-strong))]">Kuis Selesai!</h2>
+                        <h2 className="text-2xl font-extrabold text-[rgb(var(--color-text-strong))]">{t.sirahQuizFinishedTitle}</h2>
                         <p className="text-xs text-[rgb(var(--color-text-muted))]">
-                            Anda menjawab benar <strong className="font-bold text-[rgb(var(--color-primary-strong))]">{score}</strong> dari {questions.length} soal.
+                            {t.sirahQuizYouAnswered} <strong className="font-bold text-[rgb(var(--color-primary-strong))]">{score}</strong> {t.sirahQuizCorrectOf.replace("{total}", String(questions.length))}
                         </p>
                     </div>
 
@@ -270,7 +272,7 @@ export default function SirahQuizPage() {
                     )}>
                         <div className="flex items-center gap-1.5">
                             <Sparkles className="w-4 h-4 text-[rgb(var(--color-warning))]" />
-                            <span>+{score * 10} Poin Hasanah ({score * 10}/50 Poin)</span>
+                            <span>{t.sirahQuizPointsLine.replace("{points}", String(score * 10))}</span>
                         </div>
                         <span className="text-[10px] opacity-75 font-medium text-[rgb(var(--color-text-muted))]">
                             {hasClaimedToday ? "Hadiah Harian Telah Diklaim. Bebas Berlatih Kapan Saja" : "Klaim Harian Berhasil Dikreditkan!"}
@@ -281,7 +283,7 @@ export default function SirahQuizPage() {
                     {incorrectQuestions.length > 0 && (
                         <div className="space-y-3 text-left pt-2">
                             <div className="flex items-center gap-2 text-xs font-bold text-[rgb(var(--color-warning))]">
-                                <span className="flex items-center gap-1.5"><AppIcon name="book" size="sm" tone="warning" /> Rekomendasi Pelajari Ulang (Trigger Baca):</span>
+                                <span className="flex items-center gap-1.5"><AppIcon name="book" size="sm" tone="warning" /> {t.sirahQuizReview}</span>
                             </div>
 
                             <div className="space-y-3">
@@ -297,7 +299,7 @@ export default function SirahQuizPage() {
                                             <span className="inline-flex items-center gap-1.5"><AppIcon name="warning" size="sm" tone="danger" /> {q.question}</span>
                                         </p>
                                         <p className="font-semibold text-[rgb(var(--color-success))]">
-                                            <span className="inline-flex items-center gap-1.5"><AppIcon name="shield-check" size="sm" tone="success" /> Jawaban Benar: {q.options[q.correctIndex]}</span>
+                                            <span className="inline-flex items-center gap-1.5"><AppIcon name="shield-check" size="sm" tone="success" /> {t.sirahQuizCorrectAnswer} {q.options[q.correctIndex]}</span>
                                         </p>
                                         <p className="text-[rgb(var(--color-text-muted))]">
                                             {q.explanation}
@@ -309,7 +311,7 @@ export default function SirahQuizPage() {
                                                     "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[rgb(var(--color-primary-foreground))] font-bold text-[11px] transition-all shadow-[var(--shadow-card)] cursor-pointer bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))]"
                                                 )}
                                             >
-                                                <span className="flex items-center gap-1.5"><AppIcon name="book" size="sm" tone="default" /> Pendalami di Bab: {q.targetChapterTitle} <AppIcon name="target" size="xs" tone="default" /></span>
+                                                <span className="flex items-center gap-1.5"><AppIcon name="book" size="sm" tone="default" /> {t.sirahQuizStudyChapter} {q.targetChapterTitle} <AppIcon name="target" size="xs" tone="default" /></span>
                                             </Link>
                                         </div>
                                     </div>
@@ -326,7 +328,7 @@ export default function SirahQuizPage() {
                             )}
                         >
                             <BookOpen className="w-4 h-4" />
-                            <span>Kembali ke Sirah Hub</span>
+                            <span>{t.sirahBackToHub}</span>
                         </Link>
                         <Link
                             href="/"
@@ -336,7 +338,7 @@ export default function SirahQuizPage() {
                             )}
                         >
                             <Home className="w-4 h-4" />
-                            <span>Beranda</span>
+                            <span>{t.sirahHome}</span>
                         </Link>
                     </div>
                 </div>

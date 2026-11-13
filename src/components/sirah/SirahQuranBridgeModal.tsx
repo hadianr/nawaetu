@@ -8,6 +8,7 @@
 import { X, BookOpen, ExternalLink } from "lucide-react";
 import { surahNames } from "@/lib/quran/surahData";
 import type { SirahQuranRef } from "@/data/sirah";
+import { useLocale } from "@/context/LocaleContext";
 import Link from "next/link";
 import { AppIcon } from "@/components/ui/AppIcon";
 
@@ -17,6 +18,7 @@ interface SirahQuranBridgeModalProps {
 }
 
 export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModalProps) {
+    const { t } = useLocale();
     if (!refData) return null;
 
     const surahName = surahNames[refData.surah] || `Surah ${refData.surah}`;
@@ -45,8 +47,8 @@ export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModa
 
                 <div className="space-y-4 py-2">
                     <div className="p-4 rounded-xl text-sm leading-relaxed border bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]">
-                        <p className="font-semibold text-xs mb-1 text-[rgb(var(--color-primary-strong))] flex items-center gap-1.5"><AppIcon name="book" size="xs" tone="primary" /> Asbabun Nuzul / Konteks Sejarah:</p>
-                        <p className="text-xs">{refData.label || `Ayat ini diturunkan berkaitan dengan peristiwa sejarah Sirah Nabawiyah yang Anda baca.`}</p>
+                        <p className="font-semibold text-xs mb-1 text-[rgb(var(--color-primary-strong))] flex items-center gap-1.5"><AppIcon name="book" size="xs" tone="primary" /> {t.sirahQuranContextTitle}</p>
+                        <p className="text-xs">{refData.label || t.sirahQuranContextDefault}</p>
                     </div>
 
                     <div className="pt-2 flex items-center justify-end gap-2">
@@ -54,14 +56,14 @@ export function SirahQuranBridgeModal({ refData, onClose }: SirahQuranBridgeModa
                             onClick={onClose}
                             className="px-4 py-2 text-xs font-medium rounded-xl hover:bg-[rgb(var(--color-surface-subtle))] transition-colors cursor-pointer"
                         >
-                            Tutup
+                            {t.sirahClose}
                         </button>
                         <Link
                             href={`/quran/${refData.surah}`}
                             onClick={onClose}
                             className="px-4 py-2 text-xs font-semibold text-[rgb(var(--color-primary-foreground))] rounded-xl transition-all flex items-center gap-1.5 shadow-[var(--shadow-card)] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))]"
                         >
-                            <span>Buka Surah Lengkap</span>
+                            <span>{t.sirahOpenFullSurah}</span>
                             <ExternalLink className="w-3.5 h-3.5" />
                         </Link>
                     </div>
