@@ -121,7 +121,7 @@ export const DATES_IFTAR_EVIDENCE: EvidenceData = {
     arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يُفْطِرُ عَلَى رُطَبَاتٍ قَبْلَ أَنْ يُصَلِّيَ',
     latin: 'Kāna Rasūlullāh shallallāhu \'alaihi wasallam yufthiru \'alā ruthabātin qabla an yushalliya.',
     translation: 'Rasulullah SAW biasanya berbuka puasa dengan kurma basah (ruthab) sebelum menunaikan shalat.',
-    translation_en: 'The Messenger of Allah (ﷺ) used to break his fast with fresh dates before praying.',
+    translation_en: 'The Messenger of Allah SAW used to break his fast with fresh dates before praying.',
     source: 'HR. Abu Dawud No. 2356 — Hadits Hasan, dari Anas bin Malik RA',
     source_en: 'Reported by Abu Dawud No. 2356 — Hasan Hadith, narrated by Anas bin Malik RA'
 };
@@ -159,7 +159,7 @@ export const MILK_HONEY_EVIDENCE: EvidenceData = {
     translation: 'Kesembuhan itu ada pada tiga hal: meminum madu...',
     translation_en: 'Healing is in three things: a gulp of honey...',
     source: 'HR. Bukhari No. 5680. Susu & madu sangat dianjurkan Nabi SAW untuk memulihkan tenaga (Sunnah ammah).',
-    source_en: 'Reported by Bukhari No. 5680. Milk & honey are highly recommended by the Prophet (ﷺ) for strength (General Sunnah).'
+    source_en: 'Reported by Bukhari No. 5680. Milk & honey are highly recommended by the Prophet SAW for strength (General Sunnah).'
 };
 
 export const WATER_SUHOOR_EVIDENCE: EvidenceData = {
@@ -229,7 +229,7 @@ export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
         name_en: 'Water',
         iconKey: 'droplets',
         description: 'Penting untuk hidrasi. Nabi SAW tetap sahur meskipun hanya dengan seteguk air untuk mengejar berkah.',
-        description_en: 'Essential for hydration. The Prophet (ﷺ) kept suhoor even with only a sip of water for the sake of blessing.',
+        description_en: 'Essential for hydration. The Prophet SAW kept suhoor even with only a sip of water for the sake of blessing.',
         dalil: WATER_SUHOOR_EVIDENCE
     },
     {
@@ -338,7 +338,7 @@ export const ITIKAF_10_NIGHTS_EVIDENCE: EvidenceData = {
     arabic: 'كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَعْتَكِفُ الْعَشْرَ الأَوَاخِرَ مِنْ رَمَضَانَ حَتَّى تَوَفَّاهُ اللَّهُ',
     latin: 'Kāna Rasūlullāh shallallāhu \'alaihi wasallam ya\'takiful \'asyral awākhira min Ramadhāna hattā tawaffāhullāh.',
     translation: 'Rasulullah SAW beri\'tikaf di sepuluh malam terakhir bulan Ramadhan hingga Allah mewafatkan beliau.',
-    translation_en: 'The Messenger of Allah (ﷺ) used to practice I\'tikaf during the last ten nights of Ramadhan until he passed away.',
+    translation_en: 'The Messenger of Allah SAW used to practice I\'tikaf during the last ten nights of Ramadhan until he passed away.',
     source: 'HR. Bukhari No. 2026, Muslim No. 1172 — dari Aisyah RA tentang kebiasaan Nabi',
     source_en: 'Reported by Bukhari No. 2026, Muslim No. 1172 — narrated by Aisha RA'
 };
@@ -404,7 +404,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         tips_en: [
             'Target 1 juz per day = finish in 30 days',
             'Recite with measured tone (tartil) and understand the meaning',
-            'Angel Gabriel completed the Quran with the Prophet (ﷺ) every Ramadhan',
+            'Angel Gabriel completed the Quran with the Prophet SAW every Ramadhan',
         ],
     },
     {
@@ -421,7 +421,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
             'Dapatkan pahala melimpah',
         ],
         tips_en: [
-            'The Prophet (ﷺ) was the most generous of people, especially in Ramadhan',
+            'The Prophet SAW was the most generous of people, especially in Ramadhan',
             'Can be as simple as providing iftar for others',
             'Morning charity (Sadaqah Subuh) is highly recommended',
         ],
