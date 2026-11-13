@@ -28,7 +28,6 @@ import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SirahInlineProse } from "./SirahInlineProse";
-import { SirahSourceNote } from "./SirahSourceNote";
 import { SIRAH_SOURCE } from "@/data/sirah/source";
 import { AppIcon } from "@/components/ui/AppIcon";
 
@@ -256,7 +255,6 @@ export function SirahReaderView({
                 <p className="text-xs text-[rgb(var(--color-text-muted))]">
                     <AppIcon name="calendar" size="xs" tone="muted" /> ~{readMinutes} min baca
                 </p>
-                <SirahSourceNote />
             </div>
 
             {/* Related Quran Verses Chips */}
