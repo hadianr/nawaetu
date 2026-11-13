@@ -42,7 +42,7 @@ interface TafsirResponse {
 
 const CACHE_KEY_PREFIX = 'quran_tafsir_';
 const TAFSIR_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-const TAFSIR_CACHE_VERSION = 1;
+const TAFSIR_CACHE_VERSION = 2; // 2: Indonesian tafsir is sanitized before it is cached
 
 type TafsirCacheEntry = {
     data: TafsirContent;
@@ -115,10 +115,11 @@ export async function getVerseTafsir(surahId: number, verseId: number, locale: s
 
             if (!data) return null;
 
+            // Rendered as HTML, so it gets the same allowlist as the English source.
             content = {
                 // Use short version for cleaner display
-                short: data.short,
-                long: data.long
+                short: sanitizeRichText(data.short ?? ""),
+                long: sanitizeRichText(data.long ?? "")
             };
         }
 

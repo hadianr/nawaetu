@@ -46,7 +46,7 @@ describe("getVerseTafsir", () => {
         const cached = {
             data: { short: "cached", long: "cached long" },
             ts: Date.now(),
-            v: 1
+            v: 2
         };
         storageMock.getOptional.mockReturnValueOnce(JSON.stringify(cached));
 
@@ -92,6 +92,18 @@ describe("getVerseTafsir", () => {
 
         expect(result).toEqual({ short: "fresh", long: "fresh long" });
         expect(fetchWithTimeoutMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("sanitizes Indonesian tafsir HTML before returning and caching it", async () => {
+        storageMock.getOptional.mockReturnValueOnce(null);
+        fetchWithTimeoutMock.mockResolvedValueOnce(
+            makeResponse({ data: { tafsir: { id: { short: '<img src=x onerror="alert(1)">Ringkas', long: "Panjang<script>alert(1)</script>" } } } })
+        );
+
+        const result = await getVerseTafsir(1, 1, "id");
+
+        expect(result).toEqual({ short: "Ringkas", long: "Panjang" });
+        expect(storageMock.set.mock.calls[0][1]).not.toContain("onerror");
     });
 
     it("fetches and caches English tafsir previews", async () => {
