@@ -552,10 +552,11 @@ export async function renderStoryCardToCanvas(
     }
 
     // 11. OBLIGATORY Branding Watermark Footer (nawaetu.com text is ALWAYS rendered in Center Alignment)
-    ctx.font = "600 24px monospace";
-    ctx.fillStyle = palette.watermark;
+    // The app's address is the card's brand line: large, bold, in the accent colour.
+    ctx.font = "800 40px sans-serif";
+    ctx.fillStyle = palette.pillText;
     ctx.textAlign = "center";
-    ctx.fillText("nawaetu.com", W / 2, H - 100);
+    ctx.fillText("nawaetu.com", W / 2, H - 96);
 
     return canvas;
 }
