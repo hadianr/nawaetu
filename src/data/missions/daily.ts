@@ -190,6 +190,19 @@ export const UNIVERSAL_MISSIONS: Mission[] = [
         validationConfig: { timeWindow: { start: 15, end: 18 } }
     }),
     createMission({
+        id: 'doa_pemimpin_negeri',
+        title: 'Doakan Pemimpin & Negeri',
+        description: 'Doakan kebaikan untuk pemimpin dan negeri dengan doa yang kamu mampu',
+        hasanahReward: 20,
+        iconKey: 'hands',
+        dalil: 'HR. Muslim no. 1855',
+        hadithId: 'hadith_civic_pemimpin_terbaik',
+        type: 'daily',
+        category: 'dhikr',
+        ruling: 'sunnah',
+        validationType: 'manual',
+    }),
+    createMission({
         id: 'daily_reflection',
         title: 'Muhasabah Harian',
         description: 'Refleksi ibadah di penghujung hari',

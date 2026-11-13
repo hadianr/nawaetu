@@ -314,3 +314,14 @@ describe("Missions Architecture & Filtering Unit Tests", () => {
         });
     });
 });
+
+describe("civic mission", () => {
+    it("asks users to pray for leaders as an optional sunnah habit backed by a library hadith", async () => {
+        const { getHadithById } = await import("@/data/hadiths");
+        const mission = findMissionDefinition("doa_pemimpin_negeri")!;
+        expect(mission.ruling).toBe("sunnah");
+        expect(getHadithById(mission.hadithId!)).toBeDefined();
+        expect(getLocalizedMission(mission, "en").title).toBe("Pray for Leaders & the Country");
+        expect(getLocalizedMission(mission, "id").title).toBe("Doakan Pemimpin & Negeri");
+    });
+});

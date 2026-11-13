@@ -73,6 +73,9 @@ export const missionsEN = {
     mission_daily_intention_desc: "Set your good intention for today",
     mission_daily_reflection_title: "Daily Reflection",
     mission_daily_reflection_desc: "Reflect on your worship at the end of the day",
+    mission_doa_pemimpin_negeri_title: "Pray for Leaders & the Country",
+    mission_doa_pemimpin_negeri_desc: "Pray for good for your leaders and country, in your own words",
+    mission_doa_pemimpin_negeri_dalil: "HR. Muslim no. 1855",
 
     mission_fajr_prayer_title: "Fajr Prayer",
     mission_fajr_prayer_desc: "Perform Fajr prayer on time",
