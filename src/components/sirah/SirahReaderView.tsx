@@ -248,11 +248,11 @@ export function SirahReaderView({
                     {section.subbab}
                 </h1>
                 {section.pageStart && (
-                    <p className="text-xs text-[rgb(var(--color-text-muted))]">
+                    <p className="flex items-center gap-1.5 text-xs text-[rgb(var(--color-text-muted))]">
                         <AppIcon name="book" size="xs" tone="muted" /> Halaman Referensi: {section.pageStart} {section.pageEnd ? `- ${section.pageEnd}` : ""}
                     </p>
                 )}
-                <p className="text-xs text-[rgb(var(--color-text-muted))]">
+                <p className="flex items-center gap-1.5 text-xs text-[rgb(var(--color-text-muted))]">
                     <AppIcon name="calendar" size="xs" tone="muted" /> ~{readMinutes} min baca
                 </p>
             </div>

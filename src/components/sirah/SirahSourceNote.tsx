@@ -30,7 +30,7 @@ export function SirahSourceNote({ className }: { className?: string }) {
 
     return (
         <p className={cn("text-xs leading-relaxed text-[rgb(var(--color-text-muted))]", className)}>
-            <AppIcon name="book" size="xs" tone="muted" />{" "}
+            <AppIcon name="book" size="xs" tone="muted" className="mr-1 inline-block align-[-2px]" />
             <span className="font-semibold">{isEn ? "Source:" : "Sumber:"}</span>{" "}
             <em>{s.book}</em> {isEn ? `by ${s.authorEn} (Indonesian translation).` : `karya ${s.authorId} (terjemahan bahasa Indonesia).`}{" "}
             {isEn ? "Text data and page numbers from the Sirah Nabawiyah dataset" : "Data teks dan nomor halaman dari dataset Sirah Nabawiyah"}{" "}
