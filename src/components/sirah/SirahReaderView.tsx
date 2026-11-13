@@ -44,7 +44,7 @@ export function SirahReaderView({
     nextSectionId,
     chapterSlug,
 }: SirahReaderViewProps) {
-    const { locale } = useLocale();
+    const { locale, t } = useLocale();
     const [fontSize, setFontSize] = useState<"sm" | "base" | "lg" | "xl">("base");
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
@@ -82,10 +82,10 @@ export function SirahReaderView({
         let updated: string[];
         if (isBookmarked) {
             updated = bookmarks.filter((id) => id !== section.id);
-            toast.success("Dihapus dari Markah Sirah");
+            toast.success(t.sirahReaderBookmarkRemoved);
         } else {
             updated = [...bookmarks, section.id];
-            toast.success("Disimpan ke Markah Sirah");
+            toast.success(t.sirahReaderBookmarkSaved);
         }
         localStorage.setItem("nawaetu_sirah_bookmarks", JSON.stringify(updated));
         setIsBookmarked(!isBookmarked);
@@ -98,7 +98,7 @@ export function SirahReaderView({
             updated = completed.filter((id) => id !== section.id);
         } else {
             updated = [...completed, section.id];
-            toast.success("Subbab selesai dibaca! (+15 Poin Hasanah)");
+            toast.success(t.sirahReaderCompletedToast);
         }
         localStorage.setItem("nawaetu_sirah_completed", JSON.stringify(updated));
         setIsCompleted(!isCompleted);
@@ -110,12 +110,12 @@ export function SirahReaderView({
             existingIntentions.push(section.suggestedIntention);
             localStorage.setItem("nawaetu_user_intentions", JSON.stringify(existingIntentions));
         }
-        toast.success("Niat berhasil ditambahkan ke Intention Journal!");
+        toast.success(t.sirahReaderIntentionAdded);
     };
 
     const toggleTTS = () => {
         if (!("speechSynthesis" in window)) {
-            toast.error("Fitur Text-To-Speech tidak didukung di browser ini.");
+            toast.error(t.sirahReaderTtsUnsupported);
             return;
         }
 
@@ -130,7 +130,7 @@ export function SirahReaderView({
             utterance.onerror = () => setIsPlayingAudio(false);
             window.speechSynthesis.speak(utterance);
             setIsPlayingAudio(true);
-            toast.info("Mulai membacakan teks...");
+            toast.info(t.sirahReaderTtsStart);
         }
     };
 
@@ -139,7 +139,7 @@ export function SirahReaderView({
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-        toast.success("Teks Sirah disalin ke clipboard!");
+        toast.success(t.sirahReaderCopied);
     };
 
     const fontSizeClasses = {
@@ -181,7 +181,7 @@ export function SirahReaderView({
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>Daftar Subbab</span>
+                    <span>{t.sirahReaderBackToList}</span>
                 </Link>
 
                 <div className="flex items-center gap-1 sm:gap-2">
@@ -193,7 +193,7 @@ export function SirahReaderView({
                             setFontSize(next);
                         }}
                         className={cn("p-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer", toolBtnClass)}
-                        title="Ubah Ukuran Font"
+                        title={t.sirahReaderFontSize}
                     >
                         <Type className="w-3.5 h-3.5" />
                         <span className="uppercase text-[10px]">{fontSize}</span>
@@ -208,7 +208,7 @@ export function SirahReaderView({
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : toolBtnClass
                         )}
-                        title="Dengarkan Audio"
+                        title={t.sirahReaderListen}
                     >
                         {isPlayingAudio ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                     </button>
@@ -220,7 +220,7 @@ export function SirahReaderView({
                             "p-2 rounded-xl border transition-colors cursor-pointer",
                             isBookmarked ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]" : toolBtnClass
                         )}
-                        title="Simpan Markah"
+                        title={t.sirahReaderBookmark}
                     >
                         <Bookmark className="w-4 h-4 fill-current" />
                     </button>
@@ -229,7 +229,7 @@ export function SirahReaderView({
                     <button
                         onClick={handleCopy}
                         className={cn("p-2 rounded-xl border transition-colors cursor-pointer", toolBtnClass)}
-                        title="Salin Teks"
+                        title={t.sirahReaderCopy}
                     >
                         {copied ? <Check className="w-4 h-4 text-[rgb(var(--color-success))]" /> : <Share2 className="w-4 h-4" />}
                     </button>
@@ -249,11 +249,11 @@ export function SirahReaderView({
                 </h1>
                 {section.pageStart && (
                     <p className="flex items-center gap-1.5 text-xs text-[rgb(var(--color-text-muted))]">
-                        <AppIcon name="book" size="xs" tone="muted" /> Halaman Referensi: {section.pageStart} {section.pageEnd ? `- ${section.pageEnd}` : ""}
+                        <AppIcon name="book" size="xs" tone="muted" /> {t.sirahReaderPageRef}: {section.pageStart} {section.pageEnd ? `- ${section.pageEnd}` : ""}
                     </p>
                 )}
                 <p className="flex items-center gap-1.5 text-xs text-[rgb(var(--color-text-muted))]">
-                    <AppIcon name="calendar" size="xs" tone="muted" /> ~{readMinutes} min baca
+                    <AppIcon name="calendar" size="xs" tone="muted" /> {t.sirahReaderReadMinutes.replace("{minutes}", String(readMinutes))}
                 </p>
             </div>
 
@@ -262,7 +262,7 @@ export function SirahReaderView({
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                     <span className="text-xs font-medium flex items-center gap-1 text-[rgb(var(--color-text-muted))]">
                         <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary))]" />
-                        Rujukan Quran:
+                        {t.sirahReaderQuranRefs}
                     </span>
                     {section.relatedQuranVerses.map((ref, idx) => (
                         <button
@@ -286,14 +286,14 @@ export function SirahReaderView({
                         "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25 text-[rgb(var(--color-warning))]"
                 )}>
                     <p className="leading-relaxed">
-                        <span className="font-bold">Indonesian only.</span>{" "}
-                        This Sirah content is currently available in Bahasa Indonesia.
-                        English translation is coming soon.
+                        <span className="font-bold">{t.sirahReaderIndonesianOnlyTitle}</span>{" "}
+                        {t.sirahReaderIndonesianOnlyBody}{" "}
+                        <Link href="/sirah/history" className="font-semibold underline underline-offset-2">{t.sirahReaderHistoryLink}</Link>.
                     </p>
                     <button
                         onClick={() => setEnNoticeDismissed(true)}
                         className="shrink-0 font-bold opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
-                        title="Dismiss"
+                        title={t.sirahReaderDismiss}
                     >
                         <X className="h-4 w-4" />
                     </button>
@@ -327,7 +327,7 @@ export function SirahReaderView({
             >
                 <div className="flex items-center gap-2 font-bold text-xs text-[rgb(var(--color-primary-strong))]">
                     <Sparkles className="w-4 h-4" />
-                    <span>HIKMAH & NIAT HARIAN</span>
+                    <span>{t.sirahReaderHikmahTitle}</span>
                 </div>
                 <p className="text-sm sm:text-base font-semibold leading-relaxed">
                     &quot;{section.suggestedIntention}&quot;
@@ -341,7 +341,7 @@ export function SirahReaderView({
                         )}
                     >
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>Jadikan Niat Hari Ini</span>
+                        <span>{t.sirahReaderSetIntention}</span>
                     </button>
                 </div>
             </div>
@@ -361,7 +361,7 @@ export function SirahReaderView({
                     )}
                 >
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>{isCompleted ? "Telah Selesai Dibaca" : "Tandai Selesai Dibaca (+15 Poin)"}</span>
+                    <span>{isCompleted ? t.sirahReaderCompleted : t.sirahReaderMarkComplete}</span>
                 </button>
 
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
@@ -371,7 +371,7 @@ export function SirahReaderView({
                             className={cn("px-4 py-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1", toolBtnClass)}
                         >
                             <ChevronLeft className="w-4 h-4" />
-                            <span>Sebelumnya</span>
+                            <span>{t.sirahReaderPrev}</span>
                         </Link>
                     ) : <div />}
 
@@ -380,7 +380,7 @@ export function SirahReaderView({
                             href={`/sirah/${chapterSlug}/${nextSectionId}`}
                             className={cn("px-4 py-2 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-1", toolBtnClass)}
                         >
-                            <span>Selanjutnya</span>
+                            <span>{t.sirahReaderNext}</span>
                             <ChevronRight className="w-4 h-4" />
                         </Link>
                     ) : <div />}
