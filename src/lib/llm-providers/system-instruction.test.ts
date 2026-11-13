@@ -18,4 +18,11 @@ describe('Tanya Nawaetu guardrail', () => {
         expect(SYSTEM_INSTRUCTION).toMatch(/Jangan mendukung, menolak, menilai, atau\s+merekomendasikan partai, calon/i);
         expect(SYSTEM_INSTRUCTION).toMatch(/Jangan mengkafirkan atau menyerukan perlawanan/i);
     });
+
+    it('understands Gen Z political slang without dropping neutrality', () => {
+        for (const term of ['bagi-bagi kue', 'cawe-cawe', 'buzzer', 'pencitraan', 'politik identitas', 'apatis', 'oposisi', 'rezim']) {
+            expect(SYSTEM_INSTRUCTION).toContain(term);
+        }
+        expect(SYSTEM_INSTRUCTION).toMatch(/tetap ikuti aturan nomor 10/i);
+    });
 });
