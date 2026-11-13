@@ -54,3 +54,7 @@ export const cleanTajweedText = (htmlText: string) => {
 
     return cleaned.trim();
 };
+
+/** Escapes text for HTML that a third party parses, such as a Telegram message sent with parse_mode HTML. */
+export const escapeHtml = (value: string): string =>
+    value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
