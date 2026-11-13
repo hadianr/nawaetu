@@ -13,6 +13,7 @@ const body = `# Nawaetu
 - [Dhikr](https://nawaetu.com/dhikr): dhikr counter with presets
 - [Hadith](https://nawaetu.com/hadith) and [Dua](https://nawaetu.com/dua): sourced collections
 - [Sirah](https://nawaetu.com/sirah): the life of the Prophet by chapter
+- [Islamic history](https://nawaetu.com/sirah/history): dated events from the sirah with their hadith and lessons
 - [Qibla](https://nawaetu.com/qibla), [Hijri calendar](https://nawaetu.com/hijri-calendar)${RAMADHAN_PAGE_ENABLED ? ", [Ramadhan](https://nawaetu.com/ramadhan)" : ""}
 
 ## About

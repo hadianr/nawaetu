@@ -282,16 +282,13 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                             {historyEvents.map(event => (
                                 <li key={event.id} className="rounded-2xl bg-[rgb(var(--color-surface-subtle))] p-3">
                                     <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
-                                        {event.hijriDay ? `${event.hijriDay} ` : ""}{getHijriMonthName(event.hijriMonth, locale)} {event.hijriYear} {locale === "en" ? "AH" : "H"}
+                                        {event.hijriDay ? `${event.hijriDay} ` : ""}{getHijriMonthName(event.hijriMonth!, locale)} {event.hijriYear} {locale === "en" ? "AH" : "H"}
                                     </p>
                                     <p className="mt-0.5 text-sm font-semibold">{locale === "en" ? event.titleEn : event.titleId}</p>
-                                    <p className="mt-1 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{locale === "en" ? event.lessonEn : event.lessonId}</p>
-                                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-[rgb(var(--color-primary-strong))]">
-                                        <Link href={`/hadith?id=${event.hadithId}`} className="underline-offset-2 hover:underline">{t.hijriHistoryReadHadith}</Link>
-                                        {event.sirah && (
-                                            <Link href={`/sirah/${event.sirah.chapterSlug}/${event.sirah.sectionId}`} className="underline-offset-2 hover:underline">{t.hijriHistoryReadSirah}</Link>
-                                        )}
-                                    </div>
+                                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{locale === "en" ? event.lessonEn : event.lessonId}</p>
+                                    <Link href={`/sirah/history#${event.id}`} className="mt-2 inline-block text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline-offset-2 hover:underline">
+                                        {t.hijriHistoryReadMore}
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
