@@ -44,7 +44,7 @@ export const hijriCalendarID = {
     hijriHistoryReadSirah: "Baca sirah",
     historyPageTitle: "Sejarah Islam",
     historyBack: "Kembali ke Sirah",
-    historyPageSubtitle: "Kisah perjalanan Nabi ﷺ hingga masa Abu Bakar, bab demi bab, dengan hadits yang bisa kamu cek sumbernya.",
+    historyPageSubtitle: "Kisah perjalanan Nabi SAW hingga masa Abu Bakar, bab demi bab, dengan hadits yang bisa kamu cek sumbernya.",
     historySources: "Sumber: hadits dan terjemahannya dari HadeethEnc.com tanpa diubah; tanggal dari teks Sirah Nabawiyah di Nawaetu, hanya jika disebutkan di sana.",
     historyChapterCount: "{count} hadits",
     historyChapterLabel: "Bab {order}",
