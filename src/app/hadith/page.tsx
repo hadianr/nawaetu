@@ -22,6 +22,9 @@ import { IslamicSubTabBar } from "@/components/islamic-content/IslamicSubTabBar"
 import { IslamicSearchInput } from "@/components/islamic-content/IslamicSearchInput";
 import { IslamicFilterChips } from "@/components/islamic-content/IslamicFilterChips";
 
+const hadeethEncUrl = (id: number, locale: string) =>
+    `https://hadeethenc.com/${locale === "en" ? "en" : "id"}/browse/hadith/${id}`;
+
 const StoryShareModal = dynamic(
     () => import("@/components/StoryShareModal").then(mod => mod.StoryShareModal),
     { ssr: false }
@@ -69,7 +72,8 @@ const HadithCard = memo(function HadithCard({
         const trans = (locale === "en" && item.translationEn) ? item.translationEn : item.translation;
         const sourcePrefix = locale === "en" ? "Source" : "Sumber";
         const narratorPrefix = locale === "en" ? "Narrator" : "Perawi";
-        const text = `${title}\n\n${item.arabic}\n${item.latin}\n\n"${trans}"\n\n${sourcePrefix}: HR. ${item.collection} No. ${item.hadithNumber} (${item.authenticity})${item.narrator ? `\n${narratorPrefix}: ${item.narrator}` : ""}`;
+        const credit = item.hadeethEncId ? `\n${(t.hadithTranslationCredit || "Teks & terjemahan: HadeethEnc.com")} (${hadeethEncUrl(item.hadeethEncId, locale)})` : "";
+        const text = `${title}\n\n${item.arabic}${item.latin ? `\n${item.latin}` : ""}\n\n"${trans}"\n\n${sourcePrefix}: HR. ${item.collection} No. ${item.hadithNumber} (${item.authenticity})${item.narrator ? `\n${narratorPrefix}: ${item.narrator}` : ""}${credit}`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -202,12 +206,25 @@ const HadithCard = memo(function HadithCard({
                             "absolute left-0 top-0 bottom-0 w-0.5 rounded-full",
                             "bg-gradient-to-b from-[rgb(var(--color-primary))] to-transparent"
                         )} />
-                        <p className="text-[11px] italic leading-relaxed font-serif text-[rgb(var(--color-text-muted))]">
-                            {item.latin}
-                        </p>
+                        {item.latin && (
+                            <p className="text-[11px] italic leading-relaxed font-serif text-[rgb(var(--color-text-muted))]">
+                                {item.latin}
+                            </p>
+                        )}
                         <p className="text-xs font-medium leading-relaxed text-[rgb(var(--color-text))]">
                             &quot;{translation}&quot;
                         </p>
+                        {item.hadeethEncId && (
+                            <a
+                                href={hadeethEncUrl(item.hadeethEncId, locale)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-block text-[10px] underline underline-offset-2 text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-primary-strong))]"
+                            >
+                                {t.hadithTranslationCredit || "Teks & terjemahan: HadeethEnc.com"}
+                            </a>
+                        )}
                     </div>
 
                     {/* Tadabbur / Commentary if available */}
@@ -295,7 +312,7 @@ function HadithContent() {
             item.collection,
             item.narrator || "",
             item.arabic,
-            item.latin,
+            item.latin || "",
             ...(item.searchTerms || []),
         ],
         filterMatch: (item: HadithItem, key: string) => item.topics?.includes(key as HadithTopic) ?? false,

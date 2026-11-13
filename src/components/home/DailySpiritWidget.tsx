@@ -44,7 +44,7 @@ export default function DailySpiritWidget() {
 
     const handleCopy = () => {
         if (!item) return;
-        const textToCopy = `${localizedContent.title || item.content.title}\n\n${item.content.arabic}\n${item.content.latin}\n\n"${localizedContent.translation}"\n\n${t.spiritualSource}: ${item.content.source}\n${t.spiritualSharedVia}`;
+        const textToCopy = `${localizedContent.title || item.content.title}\n\n${item.content.arabic}${item.content.latin ? `\n${item.content.latin}` : ""}\n\n"${localizedContent.translation}"\n\n${t.spiritualSource}: ${item.content.source}\n${t.spiritualSharedVia}`;
         navigator.clipboard.writeText(textToCopy);
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);
@@ -122,9 +122,11 @@ export default function DailySpiritWidget() {
                     {/* Transliteration & Translation */}
                     <div className="relative space-y-1.5">
                         <div className="absolute -left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[rgb(var(--color-primary))]/40 to-transparent rounded-full" />
-                        <p className="text-[10px] font-medium italic leading-relaxed pl-3 text-[rgb(var(--color-text-muted))]">
-                            {item.content.latin}
-                        </p>
+                        {item.content.latin && (
+                            <p className="text-[10px] font-medium italic leading-relaxed pl-3 text-[rgb(var(--color-text-muted))]">
+                                {item.content.latin}
+                            </p>
+                        )}
                         <p className="text-sm font-medium leading-relaxed pl-3 text-[rgb(var(--color-text))]">
                             &quot;{localizedContent.translation}&quot;
                         </p>

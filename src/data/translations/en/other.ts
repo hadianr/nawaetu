@@ -798,6 +798,7 @@ export const otherEN = {
     hadithAllNarrators: "All Narrators",
     hadithShowingCount: "Showing {count} hadith(s)",
     hadithTadabburTitle: "Reflection (Tadabbur)",
+    hadithTranslationCredit: "Text & translation: HadeethEnc.com",
     hadithNarratorBy: "From {narrator}",
     hadithTabHadith: "Prophet's Hadith",
     hadithTabDua: "Du'a Collection",

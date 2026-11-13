@@ -798,6 +798,7 @@ export const otherID = {
     hadithAllNarrators: "Semua Perawi",
     hadithShowingCount: "Menampilkan {count} hadits",
     hadithTadabburTitle: "Tadabbur Hadits",
+    hadithTranslationCredit: "Teks & terjemahan: HadeethEnc.com",
     hadithNarratorBy: "Dari {narrator}",
     hadithTabHadith: "Hadits Nabi",
     hadithTabDua: "Kumpulan Doa",

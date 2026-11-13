@@ -36,7 +36,8 @@ export type HadithTopic =
     | "purpose"
     | "worship"
     | "gratitude"
-    | "environment";
+    | "environment"
+    | "civic-life";
 
 export const HADITH_TOPIC_DEFINITIONS: { key: HadithTopic; labelId: string; labelEn: string }[] = [
     { key: "emotional-wellbeing", labelId: "Ketenangan Diri", labelEn: "Emotional Wellbeing" },
@@ -48,6 +49,7 @@ export const HADITH_TOPIC_DEFINITIONS: { key: HadithTopic; labelId: string; labe
     { key: "worship", labelId: "Ibadah", labelEn: "Worship" },
     { key: "gratitude", labelId: "Syukur", labelEn: "Gratitude" },
     { key: "environment", labelId: "Lingkungan", labelEn: "Environment" },
+    { key: "civic-life", labelId: "Amanah & Kepemimpinan", labelEn: "Civic Life & Leadership" },
 ];
 
 export interface HadithItem {
@@ -62,13 +64,14 @@ export interface HadithItem {
     title: string;
     titleEn?: string;
     arabic: string;
-    latin: string;
+    latin?: string;                // Omitted when no reviewed transliteration exists
     translation: string;           // Indonesian translation
     translationEn?: string;        // English translation
     explanation?: string;          // Comprehensive commentary / tadabbur (Indonesian)
     explanationEn?: string;        // Comprehensive commentary / tadabbur (English)
     searchTerms?: string[];        // Modern user language and synonyms; not part of the source text
     topics?: HadithTopic[];         // Daily-life discovery groups; not part of the source text
+    hadeethEncId?: number;         // Arabic and translations copied unchanged from HadeethEnc.com; credit and link required
 }
 
 export const HADITH_COLLECTIONS: HadithCollection[] = [

@@ -12,7 +12,7 @@ export interface Reading {
     title?: string;
     titleEn?: string;
     arabic: string;
-    latin: string;
+    latin?: string;
     translation: string;       // Indonesian
     translationEn?: string;    // English
     source: string;
@@ -53,7 +53,7 @@ function adaptHadith(item: HadithItem): SpiritualItem {
             latin: item.latin,
             translation: item.translation,
             translationEn: item.translationEn,
-            source: `HR. ${item.collection} No. ${item.hadithNumber}`
+            source: `HR. ${item.collection} No. ${item.hadithNumber}${item.hadeethEncId ? " · HadeethEnc.com" : ""}`
         }
     };
 }
