@@ -124,8 +124,10 @@ export default function SettingsPageContent() {
                 })
                 .catch(() => { });
         } else if (paymentStatus === "failed") {
-            toast.error("Maaf, pembayaran Anda tidak berhasil. Silakan coba lagi.");
+            toast.error(t.paymentFailed);
         }
+        // The message only needs the language at redirect time; re-running would re-sync the payment.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams, update]);
 
 

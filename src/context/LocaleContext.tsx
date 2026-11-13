@@ -184,6 +184,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
  * Hook to use locale context
  * Must be used within LocaleProvider
  */
+/** For error boundaries, which must render even when the provider is unavailable. */
+export function useOptionalLocale() {
+  return useContext(LocaleContext);
+}
+
 export function useLocale() {
   const context = useContext(LocaleContext);
   if (!context) {

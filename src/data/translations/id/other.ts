@@ -879,4 +879,13 @@ export const otherID = {
     sirahQuizReview: "Rekomendasi Pelajari Ulang (Trigger Baca):",
     sirahQuizCorrectAnswer: "Jawaban Benar:",
     sirahQuizStudyChapter: "Pendalami di Bab:",
+
+    // Offline banner, profile and payment messages
+    offlineReconnected: "Terhubung kembali",
+    offlineNow: "Anda sedang offline",
+    offlineReload: "Muat Ulang",
+    profileSaving: "Menyimpan profil...",
+    profileUpdated: "Profil berhasil diperbarui!",
+    profileUpdateFailed: "Gagal memperbarui profil",
+    paymentFailed: "Maaf, pembayaran Anda tidak berhasil. Silakan coba lagi.",
 };

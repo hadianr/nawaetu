@@ -21,11 +21,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { useLocale } from "@/context/LocaleContext";
 
 const storage = getStorageService();
 
 export function useProfile() {
     const { data: session, update: updateSession } = useSession();
+    const { t } = useLocale();
     const [isUpdating, setIsUpdating] = useState(false);
 
     const updateProfile = async (data: {
@@ -34,7 +36,7 @@ export function useProfile() {
         gender?: "male" | "female";
     }) => {
         setIsUpdating(true);
-        const toastId = toast.loading("Menyimpan profil...");
+        const toastId = toast.loading(t.profileSaving);
 
         try {
             // Guest path: hanya update localStorage, skip API call
@@ -42,7 +44,7 @@ export function useProfile() {
                 if (data.name) storage.set(STORAGE_KEYS.USER_NAME, data.name);
                 if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
                 if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
-                toast.success("Profil berhasil diperbarui!", { id: toastId });
+                toast.success(t.profileUpdated, { id: toastId });
                 return true;
             }
 
@@ -63,11 +65,11 @@ export function useProfile() {
             if (data.image) storage.set(STORAGE_KEYS.USER_AVATAR, data.image);
             if (data.gender) storage.set(STORAGE_KEYS.USER_GENDER, data.gender);
 
-            toast.success("Profil berhasil diperbarui!", { id: toastId });
+            toast.success(t.profileUpdated, { id: toastId });
             return true;
 
         } catch {
-            toast.error("Gagal memperbarui profil", { id: toastId });
+            toast.error(t.profileUpdateFailed, { id: toastId });
             return false;
         } finally {
             setIsUpdating(false);

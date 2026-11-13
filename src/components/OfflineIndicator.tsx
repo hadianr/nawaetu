@@ -19,11 +19,13 @@
  */
 
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { useLocale } from "@/context/LocaleContext";
 import { useEffect, useState } from "react";
 import { WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function OfflineIndicator() {
+    const { t } = useLocale();
     const isOnline = useOnlineStatus();
     const [visible, setVisible] = useState(false);
 
@@ -55,7 +57,7 @@ export default function OfflineIndicator() {
                 )}
 
                 <span className="text-xs font-medium">
-                    {isOnline ? "Terhubung kembali" : "Anda sedang offline"}
+                    {isOnline ? t.offlineReconnected : t.offlineNow}
                 </span>
 
                 {!isOnline && (
@@ -63,7 +65,7 @@ export default function OfflineIndicator() {
                         onClick={() => window.location.reload()}
                         className="ml-1 text-[10px] px-2 py-0.5 rounded transition-colors bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text-muted))]"
                     >
-                        Muat Ulang
+                        {t.offlineReload}
                     </button>
                 )}
             </div>
