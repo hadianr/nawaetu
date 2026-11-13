@@ -56,13 +56,6 @@ export const reflectionDalils: ReflectionDalil[] = [
         sourceId: "HR. Muslim",
         sourceEn: "Sahih Muslim"
     },
-    {
-        id: "improving-deeds",
-        textId: "Barangsiapa yang hari ini lebih baik dari hari kemarin, maka ia beruntung.",
-        textEn: "Whoever today is better than his yesterday, then he is successful.",
-        sourceId: "Ali bin Abi Thalib",
-        sourceEn: "Ali ibn Abi Talib"
-    },
     // Civic life verses: Arabic and translations copied unchanged from QuranEnc.com
     // (indonesian_affairs v1.0.1, english_saheeh v1.1.2). Update when QuranEnc releases a new version.
     {
