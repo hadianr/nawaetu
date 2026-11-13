@@ -25,7 +25,7 @@
 | **License** | AGPLv3, with a commercial license available |
 | **Website** | [nawaetu.com](https://nawaetu.com) |
 
-**Explore:** [Quran](https://nawaetu.com/quran) · [Hadith](https://nawaetu.com/hadith) · [Dua](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Qibla](https://nawaetu.com/qibla) · [Hijri calendar](https://nawaetu.com/hijri-calendar) · [Ramadan guide](https://nawaetu.com/ramadhan) · [About](https://nawaetu.com/about)
+**Explore:** [Quran](https://nawaetu.com/quran) · [Hadith](https://nawaetu.com/hadith) · [Dua](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Islamic history](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Qibla](https://nawaetu.com/qibla) · [Hijri calendar](https://nawaetu.com/hijri-calendar) · [Ramadan guide](https://nawaetu.com/ramadhan) · [About](https://nawaetu.com/about)
 
 ---
 
@@ -33,6 +33,7 @@
 - [What Makes Nawaetu Different?](#what-makes-nawaetu-different)
 - [Visual Showcase](#-visual-showcase)
 - [Core Pillars & Features](#-core-pillars--features)
+- [Content Sources](#-content-sources)
 - [FAQ](#faq)
 - [Tech Stack](#️-tech-stack)
 - [Getting Started](#-getting-started)
@@ -72,13 +73,18 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 ## 🌟 Core Pillars & Features
 
 ### 1. 🎯 Intention-First Cultivation
-*   **Intention Journal**: Set your "Niat" every morning and reflect in the evening (Soul-Muhasabah).
+*   **Intention Journal**: Set your "Niat" every morning and reflect in the evening (Soul-Muhasabah). The evening reflection includes verses on keeping trusts, justice, checking news before sharing it, and speaking gently (Quran 4:58, 5:8, 49:6, 20:44).
 *   **Tanya Nawaetu**: An Islamic assistant designed to ground answers in the Quran, Sunnah, and Hadith with references, and to acknowledge its limits when a source cannot be confirmed.
-*   **Gamified Growth**: Earn Niat Points through intention-based missions.
+    *   **Civic questions without taking sides**: political questions are answered with Islamic principles (trust, justice, consultation, checking news) and the main scholarly views. It never endorses or rejects a party, candidate, figure, law, or protest.
+    *   **Speaks Gen Z**: understands everyday terms such as *privilege*, *ordal*, *bagi-bagi kue*, *cawe-cawe*, *buzzer*, *pencitraan*, *politik identitas*, *serangan fajar*, *apatis*, *oposisi*, and *rezim*.
+*   **Gamified Growth**: Earn Niat Points through intention-based missions, including an optional daily mission to pray for leaders and the country.
 
 ### 2. 📖 Spiritual Content Engine
 *   **Digital Quran**: Mushaf & List mode with verse-by-verse audio, Tajweed colors, and authentic Kemenag standards.
-*   **Hadith & Dua Hub**: Curated daily content with English and Indonesian translations.
+*   **Hadith & Dua Hub**: Curated daily content with English and Indonesian translations, grouped by everyday topics.
+    *   **Civic Life & Leadership (Amanah & Kepemimpinan)**: authentic hadith on responsibility, justice, speaking up, bribery, and corruption, searchable with the words young people use (for example *cawe-cawe*, *serangan fajar*, *buzzer*).
+*   **Islamic History**: the life of Prophet Muhammad SAW through to the time of Abu Bakr, told in 14 chronological chapters. Each chapter links authentic hadith with short connecting lines, shows each hadith's attribution and grade, and is dated only where the Sirah text states the date.
+*   **Sirah Nabawiyah**: the biography of Prophet Muhammad SAW by chapter, with its source and page references credited.
 *   **Spiritual Feed**: Daily Spirit, Quote of the Day, and Hadith-of-the-day widgets.
 
 ### 3. 🕌 Ritual Precision
@@ -93,8 +99,25 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 
 ### 5. 🗓️ Fasting & Seasonal Companion
 *   **Sunnah & Voluntary Fasting**: Track Monday/Thursday (Senin-Kamis), Ayyamul Bidh, and custom fasting with fiqh-based statuses and Hasanah rewards.
-*   **Seasonal & Hijri Events**: Precision tracking for Islamic calendar milestones, moon sightings, and seasonal spiritual guides.
+*   **Seasonal & Hijri Events**: Precision tracking for Islamic calendar milestones, moon sightings, and seasonal spiritual guides. The Hijri calendar also shows "This Month in Islamic History", such as Badr in Ramadan and Uhud, the Trench, and Hunayn in Shawwal.
 *   **Ramadhan Mode**: Specialized Fiqh guides, Sahur/Iftar Sunnah recommendations, and countdown timers dynamically activated during the Holy Month.
+
+---
+
+## 📚 Content Sources
+
+Religious content should be checkable. Nawaetu shows where each text comes from, and keeps text from other publishers exactly as they published it.
+
+| Content | Source | Notes |
+| :--- | :--- | :--- |
+| Civic Life hadith, Islamic History chapters | [HadeethEnc.com](https://hadeethenc.com) | Arabic, Indonesian, and English text, attribution, and grade shown unchanged, with a link to each hadith |
+| Evening reflection verses | [QuranEnc.com](https://quranenc.com) | Ministry of Religious Affairs (Kemenag) Indonesian translation and Saheeh International, unchanged |
+| Sirah Nabawiyah | Sirah Nabawiyah datasets ([Part 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Part 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Based on *Ar-Rahiq al-Makhtum* by Shaykh Safiur Rahman al-Mubarakpuri (Indonesian translation) |
+| Quran text and audio | [Quran.com](https://quran.com), Kemenag | Murattal by Mishary Rashid Al-Afasy |
+
+Titles, reflections, chapter introductions, and connecting lines are written by Nawaetu, are labelled as such, and only summarise what their sources say. Hadith numbers in the hadith library are pending verification against [Sunnah.com](https://sunnah.com).
+
+Nawaetu's licences (AGPLv3 and the commercial license) cover its own code and writing. Content from the publishers above remains under their own terms.
 
 ---
 
@@ -114,6 +137,12 @@ It is designed to include references in religious answers and to acknowledge its
 
 **Which languages are supported?**
 English and Indonesian.
+
+**Where does the religious content come from?**
+From published sources: hadith from HadeethEnc, Quran translations via QuranEnc, and the Sirah from a credited dataset based on *Ar-Rahiq al-Makhtum*. Each item shows its source. See [Content Sources](#-content-sources).
+
+**Does Nawaetu take political sides?**
+No. The civic content and Tanya Nawaetu teach principles from the Quran and Sunnah and never name or support a party, candidate, or official.
 
 ---
 
@@ -201,6 +230,8 @@ To report bugs or suggest new features, please submit an issue using our [Issue 
 3. **Commit changes** (`git commit -m 'feat: add amazing feature'`)
 4. **Push to branch** (`git push origin feature/AmazingFeature`)
 5. **Open Pull Request**
+
+**Content conventions:** in text Nawaetu writes itself, name the Prophet in full as "Prophet Muhammad SAW" (English) or "Nabi Muhammad SAW" (Indonesian), never the ligature ﷺ or "the Prophet SAW" alone. Text copied from licensed sources such as HadeethEnc and QuranEnc must stay exactly as published. A test (`src/data/honorific.test.ts`) and [AGENTS.md](AGENTS.md) enforce this.
 
 > 💡 **AI Assistant Note**: This repository supports local rules, workflows, and skills for AI coding assistants (Google Antigravity, Cursor, Claude Code) under `.agents/`.
 
