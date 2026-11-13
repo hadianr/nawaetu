@@ -19,6 +19,7 @@ import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra }
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { SirahSourceNote } from "@/components/sirah/SirahSourceNote";
+import { useLocale } from "@/context/LocaleContext";
 import type { AppIconName } from "@/lib/icon-names";
 
 const ERA_TABS: { id: SirahEra | "all"; label: string; icon: AppIconName }[] = [
@@ -31,6 +32,7 @@ const ERA_TABS: { id: SirahEra | "all"; label: string; icon: AppIconName }[] = [
 ];
 
 export default function SirahDashboardPage() {
+    const { t } = useLocale();
     const [selectedEra, setSelectedEra] = useState<SirahEra | "all">("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
@@ -150,6 +152,17 @@ export default function SirahDashboardPage() {
                     </div>
                 </div>
             </div>
+
+            <Link
+                href="/sirah/history"
+                className={cn(
+                    "flex items-center justify-between gap-2 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-semibold transition-colors",
+                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-primary-strong))] hover:border-[rgb(var(--color-primary))]/40"
+                )}
+            >
+                <span className="inline-flex items-center gap-2"><AppIcon name="calendar" size="sm" tone="primary" /> {t.historyOpenTimeline}</span>
+                <ChevronRight className="w-4 h-4" />
+            </Link>
 
             {/* Daily Highlight Widget */}
             {dailyHighlight && (
