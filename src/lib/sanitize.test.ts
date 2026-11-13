@@ -17,7 +17,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { cleanTajweedText, sanitizePlainText, sanitizeRichText } from './sanitize';
+import { cleanTajweedText, escapeHtml, sanitizePlainText, sanitizeRichText } from './sanitize';
 
 describe('generic sanitizers', () => {
     it('keeps only approved rich-text tags', () => {
@@ -71,5 +71,11 @@ describe('cleanTajweedText', () => {
          // .waqf { color: ... }
          const input = 'Some text <span class="waqf">۞</span>';
          expect(cleanTajweedText(input)).toBe('Some text <span class="waqf">۞</span>');
+    });
+});
+
+describe('escapeHtml', () => {
+    it('escapes every character Telegram HTML treats as markup', () => {
+        expect(escapeHtml('</code><a href="https://x">Q&A</a>')).toBe('&lt;/code&gt;&lt;a href=&quot;https://x&quot;&gt;Q&amp;A&lt;/a&gt;');
     });
 });

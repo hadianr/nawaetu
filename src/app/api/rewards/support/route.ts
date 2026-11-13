@@ -4,6 +4,7 @@ import { userFeedback } from "@/db/schema";
 import { getServerSession } from "@/lib/auth";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { escapeHtml } from "@/lib/sanitize";
 
 const SUPPORT_TYPES = new Set(["physical-product", "digital-reward", "discount", "charity", "operations", "other"]);
 const MAX_SUPPORT_PER_HOUR = 5;
@@ -12,10 +13,6 @@ function clean(value: FormDataEntryValue | null, max = 1000) {
     return typeof value === "string"
         ? value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, max)
         : "";
-}
-
-function escapeHtml(value: string) {
-    return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 export const maxDuration = 30;

@@ -23,6 +23,7 @@ import { getServerSession } from "@/lib/auth";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
+import { escapeHtml } from "@/lib/sanitize";
 
 const MAX_FEEDBACK_PER_HOUR = 5;
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -143,19 +144,19 @@ export async function POST(req: NextRequest) {
             `<b>${reportTitle}</b>`,
             `----------------------------------------`,
             `<b>Pengirim:</b>`,
-            `Nama: ${userName}`,
-            `Email: ${userEmail}`,
-            `User ID: <code>${userId}</code>`,
+            `Nama: ${escapeHtml(userName)}`,
+            `Email: ${escapeHtml(userEmail)}`,
+            `User ID: <code>${escapeHtml(userId)}</code>`,
             ``,
             `<b>Pesan:</b>`,
-            `<i>"${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}"</i>`,
+            `<i>"${escapeHtml(message)}"</i>`,
             ``,
             `<b>Detail Perangkat:</b>`,
-            `Versi App: <code>${deviceInfo.appVersion || "N/A"}</code>`,
-            `OS: <code>${deviceInfo.os || "N/A"}</code>`,
-            `Browser: <code>${deviceInfo.browser || "N/A"}</code>`,
-            `Ukuran Layar: <code>${deviceInfo.screenSize || "N/A"}</code>`,
-            `User Agent: <code>${deviceInfo.userAgent || "N/A"}</code>`,
+            `Versi App: <code>${escapeHtml(String(deviceInfo.appVersion || "N/A"))}</code>`,
+            `OS: <code>${escapeHtml(String(deviceInfo.os || "N/A"))}</code>`,
+            `Browser: <code>${escapeHtml(String(deviceInfo.browser || "N/A"))}</code>`,
+            `Ukuran Layar: <code>${escapeHtml(String(deviceInfo.screenSize || "N/A"))}</code>`,
+            `User Agent: <code>${escapeHtml(String(deviceInfo.userAgent || "N/A"))}</code>`,
         ].join("\n");
 
         // 8. Forward to Telegram (if credentials are set)
