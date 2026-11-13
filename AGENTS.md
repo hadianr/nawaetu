@@ -48,6 +48,9 @@ Explicit user instructions take precedence over repository guidance.
   persistence. Handle retries and duplicate requests without losing user data.
 - Maintain both English (`en`) and Indonesian (`id`) text through the existing
   locale mechanisms. Preserve Arabic text and religious source references.
+- In text Nawaetu writes itself, write the Prophet's honorific as "SAW", never
+  the ligature ﷺ. Text copied from licensed sources (HadeethEnc, QuranEnc) stays
+  unchanged, including any ﷺ; `src/data/honorific.test.ts` enforces this.
 - Use existing theme variables and accessible UI primitives. Account for
   supported themes, keyboard access, and mobile layouts when changing UI.
 - Follow nearby code conventions; avoid unrelated formatting or refactoring.
