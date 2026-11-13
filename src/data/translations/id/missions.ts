@@ -547,7 +547,7 @@ export const missionsID = {
     mission_read_surah_al_mulk_fadhilah: [
         "Melindungi pembacanya dari azab dan nikmat kubur",
         "Memberikan syafaat hingga pembacanya diampuni dosanya",
-        "Amalan sunnah yang dirutinkan Nabi SAW sebelum beristirahat malam"
+        "Amalan sunnah yang dirutinkan Nabi Muhammad SAW sebelum beristirahat malam"
     ],
     mission_read_surah_al_mulk_guides: [
         "Disunnahkan dibaca setiap malam menjelang tidur",

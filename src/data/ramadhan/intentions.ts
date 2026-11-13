@@ -66,7 +66,7 @@ export const ITIKAF_INTENTION: IntentionData = {
     latin: 'Nawaitul i\'tikāfa fī hādzal masjidi lillāhi ta\'ālā.',
     translation: "Aku niat beri'tikaf di masjid ini karena Allah Ta'ala.",
     translation_en: "I intend to perform i'tikaf in this mosque for Allah the Most High.",
-    source: "I'tikaf di 10 malam terakhir Ramadhan adalah sunnah Nabi SAW (HR. Bukhari No. 2026)",
+    source: "I'tikaf di 10 malam terakhir Ramadhan adalah sunnah Nabi Muhammad SAW (HR. Bukhari No. 2026)",
     source_en: "I'tikaf in the last 10 nights of Ramadhan is the sunnah of Prophet Muhammad SAW (HR. Bukhari No. 2026)",
 };
 
@@ -94,7 +94,7 @@ export const IFTAR_PRAYER_2: IntentionData = {
     latin: 'Dzahabazh zhamā\', wabtallatil \'urūq, wa tsabatal ajru insyā Allāh.',
     translation: 'Telah hilang dahaga, telah basah kerongkongan, dan telah ditetapkan pahala, insya Allah.',
     translation_en: 'Thirst has gone, the veins are moist, and the reward is confirmed, God willing.',
-    source: 'HR. Abu Dawud No. 2357, Ad-Daruquthni 2/185 — doa yang dibaca Nabi SAW (Sahih — Paling Dianjurkan)',
+    source: 'HR. Abu Dawud No. 2357, Ad-Daruquthni 2/185 — doa yang dibaca Nabi Muhammad SAW (Sahih — Paling Dianjurkan)',
     source_en: 'HR. Abu Dawud No. 2357, Ad-Daruquthni 2/185 — prayer recited by Prophet Muhammad SAW (Sahih — Most Recommended)',
 };
 
@@ -129,6 +129,6 @@ export const LAILATUL_QADR_PRAYER: IntentionData = {
     latin: 'Allāhumma innaka \'afuwwun tuhibbul \'afwa fa\'\'fu \'annī.',
     translation: 'Ya Allah, sesungguhnya Engkau Maha Pemaaf dan menyukai pemaafan, maka maafkanlah aku.',
     translation_en: 'O Allah, You are the Most Forgiving and You love forgiveness, so forgive me.',
-    source: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — doa yang diajarkan Nabi SAW kepada Aisyah RA',
+    source: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — doa yang diajarkan Nabi Muhammad SAW kepada Aisyah RA',
     source_en: 'HR. Tirmidzi No. 3513, Ibnu Majah No. 3850 — prayer taught by Prophet Muhammad SAW to Aisha RA',
 };

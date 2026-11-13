@@ -194,7 +194,7 @@ export const missionsEN = {
     mission_sunnah_qobliyah_fajr_intro: "Two rakaat that are more valuable than the world and everything in it, performed before Fajr prayer.",
     mission_sunnah_qobliyah_fajr_fadhilah: [
         "Better than the world and everything in it",
-        "Following a confirmed Sunnah (Mu'akkadah) never left by the Prophet SAW",
+        "Following a confirmed Sunnah (Mu'akkadah) never left by Prophet Muhammad SAW",
         "Complements any shortcomings in the obligatory Fajr prayer"
     ],
     mission_sunnah_qobliyah_fajr_guides: [
@@ -245,7 +245,7 @@ export const missionsEN = {
     mission_sunnah_ba_diyah_maghrib_intro: "A highly recommended Sunnah prayer (Mu'akkadah) after Maghrib.",
     mission_sunnah_ba_diyah_maghrib_fadhilah: [
         "Complements any shortcomings in Maghrib prayer",
-        "A practice consistently kept by the Prophet SAW"
+        "A practice consistently kept by Prophet Muhammad SAW"
     ],
     mission_sunnah_ba_diyah_maghrib_guides: [
         "Time: After obligatory Maghrib prayer before Isha time enters.",

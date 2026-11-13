@@ -292,7 +292,7 @@ export const DZIKIR_GUIDE_ITEMS: GuideItem[] = [
         id: "doa_mohon_surga",
         title: "Doa Mohon Surga & Dijauhkan Neraka",
         title_en: "Dua for Paradise & Protection from Hellfire",
-        description: "Doa yang paling sering Nabi SAW baca — ringkas namun penuh makna.",
+        description: "Doa yang paling sering Nabi Muhammad SAW baca — ringkas namun penuh makna.",
         iconKey: "sparkles",
         arabic: "اَللَّهُمَّ إِنِّيْ أَسْأَلُكَ الْجَنَّةَ وَأَعُوْذُ بِكَ مِنَ النَّارِ",
         latin: "Allahumma innii as'alukal jannata wa a'uudzubika minan naar",

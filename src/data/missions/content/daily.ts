@@ -416,7 +416,7 @@ export const DAILY_MISSION_CONTENTS: Record<string, MissionContent> = {
         fadhilah: [
             'Melindungi pembacanya dari azab dan nikmat kubur',
             'Memberikan syafaat hingga pembacanya diampuni dosanya',
-            'Amalan sunnah yang dirutinkan Nabi SAW sebelum beristirahat malam'
+            'Amalan sunnah yang dirutinkan Nabi Muhammad SAW sebelum beristirahat malam'
         ],
         guides: [
             'Disunnahkan dibaca setiap malam menjelang tidur',
