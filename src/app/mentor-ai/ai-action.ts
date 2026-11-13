@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { createHash } from 'node:crypto';
 import { chatRateLimiter, chatDailyRateLimiter } from '@/lib/rate-limit';
 import { getServerSession } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
@@ -87,7 +88,14 @@ function sanitizeHistory(history: ChatMessage[]): ChatMessage[] {
 }
 
 // Redis RAG Caching helpers
-async function getCachedSirahResponse(query: string): Promise<string | null> {
+// The cache is shared by every user, so the key covers the whole question and its language: a prefix key let one
+// user's answer (or one they steered) be served for other users' different questions.
+function sirahCacheKey(query: string, locale: AppLocale): string {
+    const normalized = query.toLowerCase().trim().replace(/\s+/g, " ");
+    return `sirah:rag:v2:${createHash("sha256").update(`${locale}:${normalized}`).digest("hex")}`;
+}
+
+async function getCachedSirahResponse(query: string, locale: AppLocale): Promise<string | null> {
     if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
         return null;
     }
@@ -97,7 +105,7 @@ async function getCachedSirahResponse(query: string): Promise<string | null> {
             url: process.env.UPSTASH_REDIS_REST_URL!,
             token: process.env.UPSTASH_REDIS_REST_TOKEN!,
         });
-        const key = `sirah:rag:cache:${Buffer.from(query.toLowerCase().trim()).toString("base64").slice(0, 32)}`;
+        const key = sirahCacheKey(query, locale);
         const cached = await redis.get<string>(key);
         return cached || null;
     } catch {
@@ -105,7 +113,7 @@ async function getCachedSirahResponse(query: string): Promise<string | null> {
     }
 }
 
-async function setCachedSirahResponse(query: string, response: string): Promise<void> {
+async function setCachedSirahResponse(query: string, locale: AppLocale, response: string): Promise<void> {
     if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
         return;
     }
@@ -115,7 +123,7 @@ async function setCachedSirahResponse(query: string, response: string): Promise<
             url: process.env.UPSTASH_REDIS_REST_URL!,
             token: process.env.UPSTASH_REDIS_REST_TOKEN!,
         });
-        const key = `sirah:rag:cache:${Buffer.from(query.toLowerCase().trim()).toString("base64").slice(0, 32)}`;
+        const key = sirahCacheKey(query, locale);
         await redis.set(key, response, { ex: 604800 });
     } catch {
         // Silently continue if Redis cache set fails
@@ -168,8 +176,9 @@ export async function askMentor(
     try {
         // Check Upstash Redis RAG Cache for sub-50ms response
         const isSirahTopic = /sirah|sejarah|rasul|badr|uhud|khandaq|hubaidiyah|hijrah|fath/i.test(message);
-        if (isSirahTopic && safeHistory.length === 0) {
-            const cachedRes = await getCachedSirahResponse(message);
+        const cacheable = isSirahTopic && safeHistory.length === 0;
+        if (cacheable) {
+            const cachedRes = await getCachedSirahResponse(message, locale);
             if (cachedRes) {
                 return cachedRes;
             }
@@ -177,7 +186,8 @@ export async function askMentor(
 
         const { response } = await modelRouter.chat(
             message,
-            { ...context, locale },
+            // A cached answer is served to other users, so it must not be written from this user's name or streak.
+            cacheable ? { ...context, name: "Hamba Allah", prayerStreak: 0, locale } : { ...context, locale },
             safeHistory
         );
 
@@ -189,8 +199,8 @@ export async function askMentor(
             return SCHOLAR_REFERRAL[locale];
         }
 
-        if (isSirahTopic && response && safeHistory.length === 0) {
-            await setCachedSirahResponse(message, response);
+        if (cacheable && response) {
+            await setCachedSirahResponse(message, locale, response);
         }
 
         return response;
