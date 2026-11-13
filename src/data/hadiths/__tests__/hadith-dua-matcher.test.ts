@@ -7,7 +7,7 @@ import { UNIVERSAL_MISSIONS, FEMALE_MISSIONS, MALE_MISSIONS, SUNNAH_PRAYER_MISSI
 
 describe("Hadith & Dua Modular Data Library Tests", () => {
     it("should have complete and authentic data for all Hadiths", () => {
-        expect(HADITH_LIBRARY.length).toBe(100);
+        expect(HADITH_LIBRARY.length).toBe(115);
 
         HADITH_LIBRARY.forEach(item => {
             expect(item.id).toBeTruthy();

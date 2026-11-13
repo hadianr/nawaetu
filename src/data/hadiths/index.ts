@@ -6,6 +6,7 @@
  */
 
 import { HadithItem, HadithTopic } from "./types";
+import { CIVIC_LIFE_HADITHS } from "./civic-life";
 
 export * from "./types";
 
@@ -1007,8 +1008,8 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         translationEn: "A true Muslim is one from whose tongue and hand other Muslims are safe.",
         explanation: "Menjaga ucapan lisan maupun ketikan jemari di ruang digital dari ujaran kebencian, cyberbullying, dan komentar pedas.",
         explanationEn: "Protects online interactions by discouraging hate speech, cyberbullying, and toxic comments across digital channels.",
-        searchTerms: ["cyberbullying", "bullying", "toxic comments", "hate speech", "cancel culture", "online conflict", "perundungan"],
-        topics: ["digital-life", "relationships"]
+        searchTerms: ["cyberbullying", "bullying", "toxic comments", "hate speech", "cancel culture", "online conflict", "perundungan", "buzzer", "pendengung", "doxxing", "serangan siber", "politik identitas", "identity politics"],
+        topics: ["digital-life", "relationships", "civic-life"]
     },
     {
         id: "hadith_nasihat_konten_positif",
@@ -1025,7 +1026,8 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         translationEn: "Religion is sincerity and good counsel to all.",
         explanation: "Dorongan bagi kreator muda untuk memanfaatkan platform publik dalam menyebarkan inspirasi, edukasi, dan nasihat kebaikan.",
         explanationEn: "Encourages young creators to leverage public platforms to share inspiring, educational, and uplifting messages.",
-        topics: ["digital-life", "relationships"]
+        topics: ["digital-life", "relationships", "civic-life"],
+        searchTerms: ["kritik membangun", "constructive criticism", "kritik pemerintah", "aspirasi", "oposisi", "opposition", "speak up"]
     },
     {
         id: "hadith_syiar_kebaikan_viral",
@@ -1147,7 +1149,8 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         translationEn: "Whoever believes in Allah and the Last Day should speak good or remain silent.",
         explanation: "Prinsip penyaringan komunikasi agar setiap kata yang diucapkan atau diketik membawa dampak konstruktif.",
         explanationEn: "Filters daily communication ensuring every spoken or typed word delivers constructive value.",
-        topics: ["relationships", "digital-life"]
+        topics: ["relationships", "digital-life", "civic-life"],
+        searchTerms: ["buzzer", "pendengung", "hoaks", "hoax", "twitwar", "debat kusir", "nyinyir", "julid", "ujaran kebencian", "propaganda"]
     },
     {
         id: "hadith_sabar_menghadapi_cobaan",
@@ -1365,7 +1368,9 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         translation: "Barangsiapa di antara kalian melihat kemungkaran, hendaklah ia mengubahnya dengan tangannya; jika tidak mampu dengan lisannya; dan jika tidak mampu dengan hatinya.",
         translationEn: "Whoever among you sees an evil, let him change it with his hand; if he cannot, with his tongue; if he cannot, with his heart.",
         explanation: "Keberanian bersikap aktif dan bijaksana menolak ketidakadilan serta kebiasaan buruk di lingkungan sosial.",
-        explanationEn: "Empowers constructive agency to address harm wisely through direct action, persuasive speech, or moral conviction."
+        explanationEn: "Empowers constructive agency to address harm wisely through direct action, persuasive speech, or moral conviction.",
+        searchTerms: ["speak up", "aktivis", "activist", "demo", "protest", "no viral no justice", "apatis", "apathy", "cuek politik", "golput", "diam saja"],
+        topics: ["relationships", "civic-life"]
     },
     {
         id: "hadith_istiqomah_sedikit",
@@ -1680,7 +1685,8 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         translationEn: "In Your name, O Allah, I die and I live.",
         explanation: "Menutup hari dengan melepaskan kelelahan mental, memasrahkan urusan kepada Allah, dan istirahat yang berkualitas.",
         explanationEn: "Concludes the day by releasing mental fatigue, surrendering outcomes to Allah, and resting peacefully."
-    }
+    },
+    ...CIVIC_LIFE_HADITHS
 ];
 
 const HADITH_CATEGORY_TOPIC_FALLBACKS: Record<string, HadithTopic[]> = {
