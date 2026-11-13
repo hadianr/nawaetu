@@ -28,7 +28,6 @@ export interface StoryPalette {
     panelBorder: string;
     panelText: string;
     cardBg: string;
-    watermark: string;
 }
 
 /** The original Dark Emerald look. Used when no palette is passed. */
@@ -50,7 +49,6 @@ export const DARK_PALETTE: StoryPalette = {
     panelBorder: "rgba(52, 211, 153, 0.4)",
     panelText: "rgba(255, 255, 255, 0.9)",
     cardBg: "rgba(6, 40, 28, 0.78)",
-    watermark: "rgba(255, 255, 255, 0.5)",
 };
 
 /** The original Light Ceramic look. Used when no palette is passed. */
@@ -72,7 +70,6 @@ export const LIGHT_PALETTE: StoryPalette = {
     panelBorder: "rgba(16, 185, 129, 0.3)",
     panelText: "#334155",
     cardBg: "rgba(255, 247, 237, 0.88)",
-    watermark: "rgba(15, 23, 42, 0.5)",
 };
 
 /** The app theme tokens the card needs; each is an "r g b" string, as in ThemeContext. */
@@ -130,7 +127,6 @@ export function buildStoryPalette(theme: StoryThemeInput): StoryPalette {
             panelBorder: css(strong, 0.4),
             panelText: css(textStrong, 0.9),
             cardBg: css(tint, 0.78),
-            watermark: css(textStrong, 0.5),
         };
     }
     const deep = css(mix(strong, BLACK, 0.3));
@@ -153,6 +149,5 @@ export function buildStoryPalette(theme: StoryThemeInput): StoryPalette {
         panelBorder: css(strong, 0.3),
         panelText: css(text),
         cardBg: css(mix(canvas, WHITE, 0.5), 0.88),
-        watermark: css(textStrong, 0.5),
     };
 }
