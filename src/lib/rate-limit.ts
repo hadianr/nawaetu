@@ -195,6 +195,18 @@ export const greetingRateLimiter = new UnifiedRateLimiter({
 });
 
 /**
+ * Ramadhan insight: 5 per hour per user. The app caches the insight per Hijri year, so this only stops a loop
+ * from spending the Gemini quota the mentor shares.
+ */
+export const insightRateLimiter = new UnifiedRateLimiter({
+    prefix: 'rl:insight',
+    requests: 5,
+    window: '1 h',
+    inMemoryInterval: 60 * 60 * 1000,
+    inMemoryMaxTokens: 500,
+});
+
+/**
  * Sync and account-data routes. The thing being protected is the one database connection each server
  * instance owns, so counting per instance is exactly right and costs no Redis commands. These routes are
  * the busiest in the app (every change, every return to the app), and Upstash's free tier allows only 500k
