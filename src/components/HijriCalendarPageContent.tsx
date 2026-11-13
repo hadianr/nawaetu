@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
     AlertTriangle,
     ArrowLeft,
+    BookOpen,
     CalendarDays,
     ChevronLeft,
     ChevronRight,
@@ -16,6 +17,7 @@ import {
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getHijriEvents, type HijriEventId } from "@/data/hijri-events";
+import { getHistoryEventsForMonth } from "@/data/history-events";
 import {
     useHijriCalendar,
     type HijriCalendarDay,
@@ -88,6 +90,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
         hijriMonth: selectedDay.hijriMonthNumber,
         gregorianWeekday: selectedDay.gregorianWeekday,
     }) : [];
+    const historyEvents = activeHijriMonth ? getHistoryEventsForMonth(activeHijriMonth) : [];
     const dateFormatter = new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
         day: "numeric",
         month: "short",
@@ -266,6 +269,32 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                             ))}
                             {!calendarData.length && <p className="py-12 text-center text-sm opacity-50">{t.hijriCalendarNoData}</p>}
                         </div>
+                    </section>
+                )}
+
+                {historyEvents.length > 0 && (
+                    <section className={cn("mt-4 rounded-3xl border p-4", surface)}>
+                        <h2 className="flex items-center gap-2 text-sm font-bold">
+                            <BookOpen className="h-4 w-4 text-[rgb(var(--color-primary))]" />
+                            {t.hijriHistoryTitle}
+                        </h2>
+                        <ul className="mt-3 space-y-3">
+                            {historyEvents.map(event => (
+                                <li key={event.id} className="rounded-2xl bg-[rgb(var(--color-surface-subtle))] p-3">
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                                        {event.hijriDay ? `${event.hijriDay} ` : ""}{getHijriMonthName(event.hijriMonth, locale)} {event.hijriYear} {locale === "en" ? "AH" : "H"}
+                                    </p>
+                                    <p className="mt-0.5 text-sm font-semibold">{locale === "en" ? event.titleEn : event.titleId}</p>
+                                    <p className="mt-1 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{locale === "en" ? event.lessonEn : event.lessonId}</p>
+                                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-[rgb(var(--color-primary-strong))]">
+                                        <Link href={`/hadith?id=${event.hadithId}`} className="underline-offset-2 hover:underline">{t.hijriHistoryReadHadith}</Link>
+                                        {event.sirah && (
+                                            <Link href={`/sirah/${event.sirah.chapterSlug}/${event.sirah.sectionId}`} className="underline-offset-2 hover:underline">{t.hijriHistoryReadSirah}</Link>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
                     </section>
                 )}
             </main>
