@@ -17,7 +17,7 @@ import {
 import { getTranslationText, useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { getHijriEvents, type HijriEventId } from "@/data/hijri-events";
-import { getHistoryEventsForMonth } from "@/data/history-events";
+import { formatHistoryDate, getHistoryChaptersForMonth } from "@/data/history/chapters";
 import {
     useHijriCalendar,
     type HijriCalendarDay,
@@ -90,7 +90,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
         hijriMonth: selectedDay.hijriMonthNumber,
         gregorianWeekday: selectedDay.gregorianWeekday,
     }) : [];
-    const historyEvents = activeHijriMonth ? getHistoryEventsForMonth(activeHijriMonth) : [];
+    const historyEvents = activeHijriMonth ? getHistoryChaptersForMonth(activeHijriMonth) : [];
     const dateFormatter = new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
         day: "numeric",
         month: "short",
@@ -280,13 +280,13 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                         </h2>
                         <ul className="mt-3 space-y-3">
                             {historyEvents.map(event => (
-                                <li key={event.id} className="rounded-2xl bg-[rgb(var(--color-surface-subtle))] p-3">
+                                <li key={event.slug} className="rounded-2xl bg-[rgb(var(--color-surface-subtle))] p-3">
                                     <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
-                                        {event.hijriDay ? `${event.hijriDay} ` : ""}{getHijriMonthName(event.hijriMonth!, locale)} {event.hijriYear} {locale === "en" ? "AH" : "H"}
+                                        {event.date && formatHistoryDate(event.date, locale)}
                                     </p>
                                     <p className="mt-0.5 text-sm font-semibold">{locale === "en" ? event.titleEn : event.titleId}</p>
-                                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{locale === "en" ? event.lessonEn : event.lessonId}</p>
-                                    <Link href={`/sirah/history#${event.id}`} className="mt-2 inline-block text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline-offset-2 hover:underline">
+                                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{locale === "en" ? event.introEn : event.introId}</p>
+                                    <Link href={`/sirah/history/${event.slug}`} className="mt-2 inline-block text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline-offset-2 hover:underline">
                                         {t.hijriHistoryReadMore}
                                     </Link>
                                 </li>

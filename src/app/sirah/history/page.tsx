@@ -19,78 +19,18 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, BookOpen, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { getHijriMonthName } from "@/lib/hijri-date";
 import { cn } from "@/lib/utils";
-import {
-    DATED_HISTORY_EVENTS,
-    UNDATED_HISTORY_EVENTS,
-    hadeethEncUrl,
-    type HistoryEvent,
-} from "@/data/history-events";
-
-const surface = "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]";
-
-function EventCard({ event }: { event: HistoryEvent }) {
-    const { locale, t } = useLocale();
-    const isEn = locale === "en";
-    const { hadith } = event;
-
-    return (
-        <li id={event.id} className={cn("scroll-mt-4 rounded-2xl border p-4", surface)}>
-            {event.hijriYear !== undefined && event.hijriMonth !== undefined && (
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
-                    {event.hijriDay ? `${event.hijriDay} ` : ""}{getHijriMonthName(event.hijriMonth, locale)} {event.hijriYear} {isEn ? "AH" : "H"}
-                </p>
-            )}
-            <h3 className="mt-0.5 text-base font-bold text-[rgb(var(--color-text-strong))]">{isEn ? event.titleEn : event.titleId}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-[rgb(var(--color-text))]">{isEn ? event.lessonEn : event.lessonId}</p>
-            <p className="mt-1 text-[10px] text-[rgb(var(--color-text-muted))]">{t.historyLessonNote}</p>
-
-            <details className="group mt-3 rounded-xl bg-[rgb(var(--color-surface-subtle))] p-3">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-xs font-semibold text-[rgb(var(--color-primary-strong))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
-                    <span className="flex items-center gap-1.5">
-                        <ShieldCheck className="h-3.5 w-3.5" />
-                        HR. {hadith.collection} No. {hadith.hadithNumber} ({hadith.authenticity})
-                    </span>
-                    <span className="group-open:hidden">{t.historyReadHadith}</span>
-                </summary>
-                <div className="mt-3 space-y-3">
-                    <p dir="rtl" className="text-right font-arabic text-lg leading-[2] text-[rgb(var(--color-text-strong))]">{hadith.arabic}</p>
-                    <p className="whitespace-pre-line text-xs leading-relaxed text-[rgb(var(--color-text))]">
-                        {isEn ? hadith.translationEn : hadith.translation}
-                    </p>
-                    <a
-                        href={hadeethEncUrl(hadith.hadeethEncId, locale)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block text-[10px] text-[rgb(var(--color-text-muted))] underline underline-offset-2 hover:text-[rgb(var(--color-primary-strong))]"
-                    >
-                        {t.hadithTranslationCredit || "Teks & terjemahan: HadeethEnc.com"}
-                    </a>
-                </div>
-            </details>
-
-            {event.sirah && (
-                <Link
-                    href={`/sirah/${event.sirah.chapterSlug}/${event.sirah.sectionId}`}
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline-offset-2 hover:underline"
-                >
-                    <BookOpen className="h-3.5 w-3.5" />
-                    {t.hijriHistoryReadSirah}
-                </Link>
-            )}
-        </li>
-    );
-}
+import { HISTORY_CHAPTERS, formatHistoryDate } from "@/data/history/chapters";
 
 export default function SirahHistoryPage() {
-    const { t } = useLocale();
+    const { locale, t } = useLocale();
+    const isEn = locale === "en";
 
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
-            <main className="mx-auto w-full max-w-2xl space-y-6">
+            <main className="mx-auto w-full max-w-2xl space-y-5">
                 <header className="flex items-start gap-3">
                     <Link
                         href="/sirah"
@@ -105,20 +45,36 @@ export default function SirahHistoryPage() {
                     </div>
                 </header>
 
-                <section>
-                    <h2 className="mb-3 text-sm font-bold">{t.historyTimeline}</h2>
-                    <ol className="space-y-3">
-                        {DATED_HISTORY_EVENTS.map(event => <EventCard key={event.id} event={event} />)}
-                    </ol>
-                </section>
-
-                <section>
-                    <h2 className="text-sm font-bold">{t.historyMore}</h2>
-                    <p className="mb-3 mt-0.5 text-xs text-[rgb(var(--color-text-muted))]">{t.historyMoreNote}</p>
-                    <ul className="space-y-3">
-                        {UNDATED_HISTORY_EVENTS.map(event => <EventCard key={event.id} event={event} />)}
-                    </ul>
-                </section>
+                <ol className="space-y-2.5">
+                    {HISTORY_CHAPTERS.map(chapter => (
+                        <li key={chapter.slug}>
+                            <Link
+                                href={`/sirah/history/${chapter.slug}`}
+                                className={cn(
+                                    "flex items-start gap-3 rounded-2xl border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
+                                    "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)] hover:border-[rgb(var(--color-primary))]/40",
+                                )}
+                            >
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary))]/10 text-xs font-bold text-[rgb(var(--color-primary-strong))]">
+                                    {chapter.order}
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                    {chapter.date && (
+                                        <span className="block text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                                            {formatHistoryDate(chapter.date, locale)}
+                                        </span>
+                                    )}
+                                    <span className="block text-sm font-semibold text-[rgb(var(--color-text-strong))]">{isEn ? chapter.titleEn : chapter.titleId}</span>
+                                    <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">{isEn ? chapter.introEn : chapter.introId}</span>
+                                    <span className="mt-1 block text-[10px] text-[rgb(var(--color-text-muted))]">
+                                        {(t.historyChapterCount || "{count} hadits").replace("{count}", String(chapter.hadithCount))}
+                                    </span>
+                                </span>
+                                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-[rgb(var(--color-text-muted))]" />
+                            </Link>
+                        </li>
+                    ))}
+                </ol>
 
                 <p className="text-[11px] leading-relaxed text-[rgb(var(--color-text-muted))]">{t.historySources}</p>
             </main>

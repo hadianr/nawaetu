@@ -19,6 +19,7 @@
 import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { MetadataRoute } from 'next'
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from '@/data/sirah'
+import { HISTORY_CHAPTERS } from '@/data/history/chapters'
 
 // ISR: Sitemap is static \u2014 revalidate once per day so bots don't trigger
 // re-generation on every crawl
@@ -86,6 +87,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${baseUrl}/sirah/${section.chapterSlug}/${section.id}`,
             changeFrequency: 'monthly' as const,
             priority: 0.5,
+        })),
+        ...HISTORY_CHAPTERS.map((chapter) => ({
+            url: `${baseUrl}/sirah/history/${chapter.slug}`,
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
         })),
     ]
 
