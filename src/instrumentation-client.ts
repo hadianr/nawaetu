@@ -20,6 +20,11 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
+import { installTranslationDomGuard } from "@/lib/translation-dom-guard";
+
+// Runs before React hydrates, so translated pages can't crash the app.
+installTranslationDomGuard();
+
 type SentryClient = typeof import("@sentry/nextjs");
 type PendingError = {
   error: unknown;
