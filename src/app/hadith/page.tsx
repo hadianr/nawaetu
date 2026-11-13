@@ -129,7 +129,7 @@ const HadithCard = memo(function HadithCard({
                             "w-6 h-6 sm:w-7 sm:h-7 rounded-lg border transition-all cursor-pointer flex items-center justify-center flex-shrink-0 active:scale-95",
                             "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface))] hover:text-[rgb(var(--color-text-strong))]"
                         )}
-                        title={expanded ? "Ciutkan Detail" : "Buka Detail"}
+                        title={expanded ? t.collapseDetail : t.expandDetail}
                     >
                         {expanded ? (
                             <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[rgb(var(--color-primary))]" />
@@ -153,7 +153,7 @@ const HadithCard = memo(function HadithCard({
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/20"
                         )}
-                        title={expanded ? "Ciutkan Detail" : "Buka Detail"}
+                        title={expanded ? t.collapseDetail : t.expandDetail}
                     >
                         <Quote className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>

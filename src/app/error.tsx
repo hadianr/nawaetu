@@ -23,6 +23,27 @@ import { Button } from "@/components/ui/button";
 import { Database, AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
 import { captureClientException } from "@/instrumentation-client";
+import { useOptionalLocale } from "@/context/LocaleContext";
+
+// Kept here rather than in the translation files so this page renders even if they fail to load.
+const COPY = {
+    id: {
+        connectionTitle: "Koneksi Bermasalah",
+        genericTitle: "Terjadi Kesalahan",
+        connectionBody: "Kami sedang kesulitan menghubungkan ke database. Mohon tunggu sebentar selagi kami memperbaikinya.",
+        genericBody: "Waduh, ada sesuatu yang tidak beres. Tim kami sedang meninjau masalah ini.",
+        retry: "Coba Lagi",
+        home: "Kembali ke Home",
+    },
+    en: {
+        connectionTitle: "Connection Problem",
+        genericTitle: "Something Went Wrong",
+        connectionBody: "We're having trouble reaching the database. Please wait a moment while we fix it.",
+        genericBody: "Oops, something went wrong. Our team is looking into it.",
+        retry: "Try Again",
+        home: "Back to Home",
+    },
+};
 
 export default function Error({
     error,
@@ -42,6 +63,8 @@ export default function Error({
         error.message?.toLowerCase().includes("connection") ||
         error.message?.toLowerCase().includes("pool");
 
+    const copy = useOptionalLocale()?.locale === "en" ? COPY.en : COPY.id;
+
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-[rgb(var(--color-background))] px-6 text-center">
             <div className="relative mb-8">
@@ -58,13 +81,11 @@ export default function Error({
             </div>
 
             <h1 className="mb-2 text-2xl font-bold text-[rgb(var(--color-text-strong))]">
-                {isDatabaseError ? "Koneksi Bermasalah" : "Terjadi Kesalahan"}
+                {isDatabaseError ? copy.connectionTitle : copy.genericTitle}
             </h1>
 
             <p className="mb-8 max-w-sm text-sm text-[rgb(var(--color-text-muted))] leading-relaxed">
-                {isDatabaseError
-                    ? "Kami sedang kesulitan menghubungkan ke database. Mohon tunggu sebentar selagi kami memperbaikinya."
-                    : "Waduh, ada sesuatu yang tidak beres. Tim kami sedang meninjau masalah ini."}
+                {isDatabaseError ? copy.connectionBody : copy.genericBody}
             </p>
 
             <div className="flex flex-col w-full max-w-xs gap-3">
@@ -73,7 +94,7 @@ export default function Error({
                     className="h-12 w-full rounded-2xl bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] font-bold hover:bg-[rgb(var(--color-primary-light))] transition-all active:scale-95"
                 >
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    Coba Lagi
+                    {copy.retry}
                 </Button>
 
                 <Link href="/" className="w-full">
@@ -82,7 +103,7 @@ export default function Error({
                         className="h-12 w-full rounded-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]"
                     >
                         <Home className="mr-2 h-4 w-4" />
-                        Kembali ke Home
+                        {copy.home}
                     </Button>
                 </Link>
             </div>

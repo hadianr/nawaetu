@@ -879,4 +879,13 @@ export const otherEN = {
     sirahQuizReview: "Recommended to Review:",
     sirahQuizCorrectAnswer: "Correct Answer:",
     sirahQuizStudyChapter: "Study it in Chapter:",
+
+    // Offline banner, profile and payment messages
+    offlineReconnected: "Back online",
+    offlineNow: "You're offline",
+    offlineReload: "Reload",
+    profileSaving: "Saving profile...",
+    profileUpdated: "Profile updated!",
+    profileUpdateFailed: "Couldn't update your profile",
+    paymentFailed: "Sorry, your payment didn't go through. Please try again.",
 };
