@@ -17,12 +17,12 @@ function files(dir: string): string[] {
 }
 
 describe("Prophet's honorific", () => {
-    it("is written as SAW in Nawaetu's own text", () => {
+    it("is written as Nabi/Prophet Muhammad SAW in Nawaetu's own text", () => {
         const offenders: string[] = [];
         for (const file of [...files("src/data"), ...files("src/components"), ...files("src/app")]) {
             const copied = COPIED_FIELDS[file.replaceAll("\\", "/")] ?? [];
             readFileSync(file, "utf8").split("\n").forEach((line, i) => {
-                if (!line.includes("ﷺ")) return;
+                if (!line.includes("ﷺ") && !/\b(Nabi|Prophet) SAW/.test(line)) return;
                 const key = line.match(/^\s*"?([A-Za-z_]+)"?\s*:/)?.[1];
                 if (!key || !copied.includes(key)) offenders.push(`${file}:${i + 1}`);
             });

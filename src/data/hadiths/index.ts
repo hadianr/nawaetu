@@ -464,7 +464,7 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         latin: "Laa yazaalun-naasu bikhoirin maa 'ajjalul-fithro.",
         translation: "Manusia senantiasa dalam kebaikan selama mereka menyegerakan berbuka puasa.",
         translationEn: "The people will remain well off as long as they hasten the breaking of the fast.",
-        explanation: "Sunnah Nabi SAW untuk segera berbuka sewaktu azan Maghrib berkumandang.",
+        explanation: "Sunnah Nabi Muhammad SAW untuk segera berbuka sewaktu azan Maghrib berkumandang.",
         explanationEn: "Prophetic Sunnah to hasten breaking the fast as soon as the Maghrib call to prayer sounds."
     },
     {
@@ -761,7 +761,7 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         latin: "Allahumma inni astakhiiruka bi'ilmika wa astaqdiruka biqudratika wa as-aluka min fadhlikal 'adzim.",
         translation: "Ya Allah, aku memohon petunjuk pilihan-Mu dengan ilmu-Mu dan memohon ketetapan dengan kekuasaan-Mu, serta memohon karunia-Mu yang agung.",
         translationEn: "O Allah, I seek Your guidance through Your knowledge, I seek capability through Your power, and I ask You for Your great bounty.",
-        explanation: "Nabi SAW mengajarkan doa Istikharah untuk memohon petunjuk terbaik saat dihadapkan pada pilihan hidup.",
+        explanation: "Nabi Muhammad SAW mengajarkan doa Istikharah untuk memohon petunjuk terbaik saat dihadapkan pada pilihan hidup.",
         explanationEn: "The Prophet (PBUH) taught the Istikharah supplication to seek divine guidance when facing life decisions."
     },
     {
@@ -855,7 +855,7 @@ const RAW_HADITH_LIBRARY: HadithItem[] = [
         titleEn: "Sunnah Prayer After Maghrib",
         arabic: "حَفِظْتُ مِنَ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عَشْرَ رَكَعَاتٍ: رَكْعَتَيْنِ بَعْدَ الْمَغْرِبِ",
         latin: "Hafizhtu minan-nabiyyi shollallaahu 'alaihi wa sallama 'asyra roka'aatin: rok'ataini ba'dal maghrib.",
-        translation: "Aku menghafal sepuluh rakaat sunnah dari Nabi SAW: dua rakaat sesudah Maghrib di rumah beliau.",
+        translation: "Aku menghafal sepuluh rakaat sunnah dari Nabi Muhammad SAW: dua rakaat sesudah Maghrib di rumah beliau.",
         translationEn: "I learned ten rak'ahs of sunnah from the Prophet (PBUH): two rak'ahs after Maghrib in his house.",
         explanation: "Rutin mendirikan 2 rakaat Ba'diyah Maghrib sebagai penutup sholat fardhu.",
         explanationEn: "Regularly observing two rak'ahs after Maghrib to complete the obligatory prayer."

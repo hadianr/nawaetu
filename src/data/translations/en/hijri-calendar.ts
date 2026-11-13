@@ -44,7 +44,7 @@ export const hijriCalendarEN = {
     hijriHistoryReadSirah: "Read the sirah (Indonesian)",
     historyPageTitle: "Islamic History",
     historyBack: "Back to Sirah",
-    historyPageSubtitle: "The life of the Prophet SAW through to the time of Abu Bakr, chapter by chapter, with hadiths whose sources you can check.",
+    historyPageSubtitle: "The life of Prophet Muhammad SAW through to the time of Abu Bakr, chapter by chapter, with hadiths whose sources you can check.",
     historySources: "Sources: hadiths and their translations from HadeethEnc.com, unchanged; dates from the Sirah Nabawiyah text in Nawaetu, only where it states them.",
     historyChapterCount: "{count} hadiths",
     historyChapterLabel: "Chapter {order}",

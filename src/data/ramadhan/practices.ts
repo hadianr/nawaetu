@@ -158,8 +158,8 @@ export const MILK_HONEY_EVIDENCE: EvidenceData = {
     latin: 'Asy-syifā\'u fī tsalātsatin: syarbati \'asalin...',
     translation: 'Kesembuhan itu ada pada tiga hal: meminum madu...',
     translation_en: 'Healing is in three things: a gulp of honey...',
-    source: 'HR. Bukhari No. 5680. Susu & madu sangat dianjurkan Nabi SAW untuk memulihkan tenaga (Sunnah ammah).',
-    source_en: 'Reported by Bukhari No. 5680. Milk & honey are highly recommended by the Prophet SAW for strength (General Sunnah).'
+    source: 'HR. Bukhari No. 5680. Susu & madu sangat dianjurkan Nabi Muhammad SAW untuk memulihkan tenaga (Sunnah ammah).',
+    source_en: 'Reported by Bukhari No. 5680. Milk & honey are highly recommended by Prophet Muhammad SAW for strength (General Sunnah).'
 };
 
 export const WATER_SUHOOR_EVIDENCE: EvidenceData = {
@@ -180,7 +180,7 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         name: 'Kurma Basah (Ruthab)',
         name_en: 'Fresh Dates (Ruthab)',
         iconKey: 'sparkles',
-        description: 'Sunnah utama Nabi SAW. Sangat cepat mengembalikan kadar gula darah yang turun setelah berpuasa.',
+        description: 'Sunnah utama Nabi Muhammad SAW. Sangat cepat mengembalikan kadar gula darah yang turun setelah berpuasa.',
         description_en: 'The primary Sunnah. Rapidly restores blood sugar levels after fasting.',
         dalil: DATES_IFTAR_EVIDENCE
     },
@@ -207,8 +207,8 @@ export const SUNNAH_FOODS_IFTAR: SunnahFood[] = [
         name: 'Susu',
         name_en: 'Milk',
         iconKey: 'droplets',
-        description: 'Minuman yang mengenyangkan sekaligus menghilangkan dahaga, sering dikonsumsi Nabi SAW.',
-        description_en: 'A filling drink that quenches thirst, often consumed by the Prophet SAW.',
+        description: 'Minuman yang mengenyangkan sekaligus menghilangkan dahaga, sering dikonsumsi Nabi Muhammad SAW.',
+        description_en: 'A filling drink that quenches thirst, often consumed by Prophet Muhammad SAW.',
         dalil: MILK_HONEY_EVIDENCE
     }
 ];
@@ -228,8 +228,8 @@ export const SUNNAH_FOODS_SUHOOR: SunnahFood[] = [
         name: 'Air Putih',
         name_en: 'Water',
         iconKey: 'droplets',
-        description: 'Penting untuk hidrasi. Nabi SAW tetap sahur meskipun hanya dengan seteguk air untuk mengejar berkah.',
-        description_en: 'Essential for hydration. The Prophet SAW kept suhoor even with only a sip of water for the sake of blessing.',
+        description: 'Penting untuk hidrasi. Nabi Muhammad SAW tetap sahur meskipun hanya dengan seteguk air untuk mengejar berkah.',
+        description_en: 'Essential for hydration. Prophet Muhammad SAW kept suhoor even with only a sip of water for the sake of blessing.',
         dalil: WATER_SUHOOR_EVIDENCE
     },
     {
@@ -399,12 +399,12 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
         tips: [
             'Target 1 juz per hari = khatam dalam 30 hari',
             'Baca dengan tartil dan pahami maknanya',
-            'Jibril AS mengkhatamkan Quran bersama Nabi SAW setiap Ramadhan',
+            'Jibril AS mengkhatamkan Quran bersama Nabi Muhammad SAW setiap Ramadhan',
         ],
         tips_en: [
             'Target 1 juz per day = finish in 30 days',
             'Recite with measured tone (tartil) and understand the meaning',
-            'Angel Gabriel completed the Quran with the Prophet SAW every Ramadhan',
+            'Angel Gabriel completed the Quran with Prophet Muhammad SAW every Ramadhan',
         ],
     },
     {
@@ -421,7 +421,7 @@ export const RAMADHAN_PRACTICES: RamadhanPracticeData[] = [
             'Dapatkan pahala melimpah',
         ],
         tips_en: [
-            'The Prophet SAW was the most generous of people, especially in Ramadhan',
+            'Prophet Muhammad SAW was the most generous of people, especially in Ramadhan',
             'Can be as simple as providing iftar for others',
             'Morning charity (Sadaqah Subuh) is highly recommended',
         ],

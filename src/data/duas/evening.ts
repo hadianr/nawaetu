@@ -101,7 +101,7 @@ export const EVENING_DUAS: DuaItem[] = [
         latin: "A'uudzu bikalimaatillaahit-taaammaati min syarri maa khalaq.",
         translation: "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kejahatan semua yang Dia ciptakan.",
         translationEn: "I seek refuge in the perfect words of Allah from the evil of all that He has created.",
-        virtue: "Nabi SAW mengajarkan doa ini kepada cucu-cucunya (Hasan dan Husain) agar terlindungi dari bahaya, penyakit, dan gangguan jin.",
+        virtue: "Nabi Muhammad SAW mengajarkan doa ini kepada cucu-cucunya (Hasan dan Husain) agar terlindungi dari bahaya, penyakit, dan gangguan jin.",
         virtueEn: "The Prophet (PBUH) taught this dua to his grandsons (Hasan and Husain) for protection from harm, illness, and jinn.",
         recommendedCount: 3,
         source: {
@@ -143,7 +143,7 @@ export const EVENING_DUAS: DuaItem[] = [
         latin: "Bismikallaahumma amuutu wa ahyaa.",
         translation: "Dengan nama-Mu ya Allah, aku mati dan aku hidup.",
         translationEn: "In Your name, O Allah, I die and I live.",
-        virtue: "Tidur dimulai dengan mengingat Allah, sebuah kematian kecil yang kita pasrahkan kepada-Nya. Sunah Nabi SAW setiap malam.",
+        virtue: "Tidur dimulai dengan mengingat Allah, sebuah kematian kecil yang kita pasrahkan kepada-Nya. Sunah Nabi Muhammad SAW setiap malam.",
         virtueEn: "Sleep begins with remembrance of Allah — a small death we surrender to Him. A nightly Sunnah of the Prophet (PBUH).",
         recommendedCount: 1,
         source: {
@@ -163,7 +163,7 @@ export const EVENING_DUAS: DuaItem[] = [
         latin: "Qul yaa ayyuhal-kaafiruun. Laa a'budu maa ta'buduun. Wa laa antum 'aabiduuna maa a'bud.",
         translation: "Katakanlah: Hai orang-orang kafir! Aku tidak akan menyembah apa yang kamu sembah. Dan kamu bukan penyembah Tuhan yang aku sembah.",
         translationEn: "Say: O disbelievers! I do not worship what you worship. Nor are you worshippers of what I worship.",
-        virtue: "Nabi SAW membaca Surat Al-Kafirun sebelum tidur sebagai pernyataan berlepas diri dari syirik dan perlindungan selama tidur.",
+        virtue: "Nabi Muhammad SAW membaca Surat Al-Kafirun sebelum tidur sebagai pernyataan berlepas diri dari syirik dan perlindungan selama tidur.",
         virtueEn: "The Prophet (PBUH) recited Surah Al-Kafirun before sleep as a declaration of freedom from polytheism and protection during sleep.",
         recommendedCount: 1,
         source: {

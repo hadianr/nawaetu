@@ -99,7 +99,7 @@ export const AFTER_PRAYER_DUAS: DuaItem[] = [
         latin: "Ya Muqallibal-quluubi tsabbit qalbii 'alaa diinik.",
         translation: "Wahai Dzat yang membolak-balikkan hati, tetapkanlah hatiku di atas agama-Mu.",
         translationEn: "O Turner of the hearts, make my heart steadfast upon Your religion.",
-        virtue: "Doa yang paling sering dibaca oleh Nabi SAW. Sangat dianjurkan dibaca setelah sholat agar iman tidak goyah.",
+        virtue: "Doa yang paling sering dibaca oleh Nabi Muhammad SAW. Sangat dianjurkan dibaca setelah sholat agar iman tidak goyah.",
         virtueEn: "The most frequent supplication of the Prophet (PBUH). Highly recommended after prayer so faith remains unshakeable.",
         recommendedCount: 3,
         source: {
@@ -119,7 +119,7 @@ export const AFTER_PRAYER_DUAS: DuaItem[] = [
         latin: "Allahumma a'innii 'alaa dzikrika wa syukrika wa husni 'ibaadatik.",
         translation: "Ya Allah, tolonglah aku untuk selalu mengingat-Mu, bersyukur kepada-Mu, dan beribadah kepada-Mu dengan baik.",
         translationEn: "O Allah, help me to remember You, to thank You, and to worship You in the best manner.",
-        virtue: "Wasiat Nabi SAW kepada Mu'adz bin Jabal RA: 'Jangan pernah tinggalkan doa ini di akhir setiap sholat.'",
+        virtue: "Wasiat Nabi Muhammad SAW kepada Mu'adz bin Jabal RA: 'Jangan pernah tinggalkan doa ini di akhir setiap sholat.'",
         virtueEn: "The Prophet's (PBUH) advice to Mu'adh ibn Jabal (RA): 'Never forget to recite this at the end of every prayer.'",
         recommendedCount: 1,
         source: {
