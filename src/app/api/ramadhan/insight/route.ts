@@ -1,6 +1,7 @@
 import 'server-only';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "@/lib/auth";
+import { insightRateLimiter } from "@/lib/rate-limit";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from "@/lib/logger";
 import { fetchWithTimeout } from "@/lib/utils/fetch";
@@ -165,8 +166,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        const limited = !(await insightRateLimiter.check(`insight:${session.user.id}`)).success;
         const result = insightRequestSchema.safeParse(await req.json());
-        if (!result.success) {
+        if (limited || !result.success) {
             const fallback = FALLBACK_INSIGHTS[Math.floor(Math.random() * FALLBACK_INSIGHTS.length)];
             return NextResponse.json({ insight: fallback });
         }
