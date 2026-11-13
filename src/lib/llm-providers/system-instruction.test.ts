@@ -12,4 +12,10 @@ describe('Tanya Nawaetu guardrail', () => {
         expect(SYSTEM_INSTRUCTION).toMatch(/sarankan konsultasi ulama/i);
         expect(SYSTEM_INSTRUCTION).toMatch(/perbedaan pendapat ulama secara adil/i);
     });
+
+    it('answers political questions with principles, never partisan picks', () => {
+        expect(SYSTEM_INSTRUCTION).toMatch(/adab bermasyarakat dan bernegara menurut Islam/i);
+        expect(SYSTEM_INSTRUCTION).toMatch(/Jangan mendukung, menolak, menilai, atau\s+merekomendasikan partai, calon/i);
+        expect(SYSTEM_INSTRUCTION).toMatch(/Jangan mengkafirkan atau menyerukan perlawanan/i);
+    });
 });
