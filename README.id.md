@@ -25,7 +25,7 @@
 | **Lisensi** | AGPLv3, dengan lisensi komersial tersedia |
 | **Situs** | [nawaetu.com](https://nawaetu.com) |
 
-**Jelajahi:** [Al-Qur'an](https://nawaetu.com/quran) · [Hadits](https://nawaetu.com/hadith) · [Doa](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Kiblat](https://nawaetu.com/qibla) · [Kalender Hijriah](https://nawaetu.com/hijri-calendar) · [Panduan Ramadhan](https://nawaetu.com/ramadhan) · [Tentang](https://nawaetu.com/about)
+**Jelajahi:** [Al-Qur'an](https://nawaetu.com/quran) · [Hadits](https://nawaetu.com/hadith) · [Doa](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Sejarah Islam](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Kiblat](https://nawaetu.com/qibla) · [Kalender Hijriah](https://nawaetu.com/hijri-calendar) · [Panduan Ramadhan](https://nawaetu.com/ramadhan) · [Tentang](https://nawaetu.com/about)
 
 ---
 
@@ -33,6 +33,7 @@
 - [Apa yang Membuat Nawaetu Berbeda?](#apa-yang-membuat-nawaetu-berbeda)
 - [Galeri Visual](#-galeri-visual)
 - [Pilar Utama & Fitur](#-pilar-utama--fitur)
+- [Sumber Konten](#-sumber-konten)
 - [FAQ](#faq)
 - [Tech Stack](#️-tech-stack)
 - [Lisensi](#-lisensi-dual-licensing)
@@ -69,13 +70,18 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 ## 🌟 Pilar Utama & Fitur
 
 ### 1. 🎯 Pembinaan Berbasis Niat
-*   **Jurnal Niat**: Tetapkan "Niat" setiap pagi dan refleksi di malam hari (Muhasabah Jiwa).
+*   **Jurnal Niat**: Tetapkan "Niat" setiap pagi dan refleksi di malam hari (Muhasabah Jiwa). Refleksi malam memuat ayat tentang menunaikan amanah, berlaku adil, memeriksa berita sebelum membagikannya, dan berbicara lemah lembut (QS 4:58, 5:8, 49:6, 20:44).
 *   **Tanya Nawaetu**: Asisten Islami yang dirancang mendasarkan jawaban pada Al-Qur'an, Sunnah, dan Hadits beserta rujukan, serta mengakui batasnya bila sumber belum dapat dipastikan.
-*   **Gamifikasi Ibadah**: Kumpulkan Niat Points melalui misi harian yang bermakna.
+    *   **Pertanyaan seputar politik tanpa memihak**: dijawab dengan prinsip Islam (amanah, keadilan, syura, tabayyun) dan pendapat-pendapat utama para ulama. Tanya Nawaetu tidak pernah mendukung atau menolak partai, calon, tokoh, undang-undang, atau aksi tertentu.
+    *   **Paham bahasa Gen Z**: mengerti istilah sehari-hari seperti *privilege*, *ordal*, *bagi-bagi kue*, *cawe-cawe*, *buzzer*, *pencitraan*, *politik identitas*, *serangan fajar*, *apatis*, *oposisi*, dan *rezim*.
+*   **Gamifikasi Ibadah**: Kumpulkan Niat Points melalui misi harian yang bermakna, termasuk misi opsional untuk mendoakan pemimpin dan negeri.
 
 ### 2. 📖 Konten Spiritual Terpadu
 *   **Al-Qur'an Digital**: Mode Mushaf & List dengan audio per ayat, pewarnaan Tajwid, dan standar Mushaf Kemenag RI.
-*   **Hub Hadits & Doa**: Konten pilihan harian dengan terjemahan Bahasa Indonesia dan Inggris.
+*   **Hub Hadits & Doa**: Konten pilihan harian dengan terjemahan Bahasa Indonesia dan Inggris, dikelompokkan menurut topik sehari-hari.
+    *   **Amanah & Kepemimpinan**: hadits sahih tentang tanggung jawab, keadilan, menyuarakan kebenaran, suap, dan korupsi, yang bisa dicari dengan kata-kata yang dipakai anak muda (misalnya *cawe-cawe*, *serangan fajar*, *buzzer*).
+*   **Sejarah Islam**: perjalanan hidup Nabi Muhammad SAW hingga masa Abu Bakar dalam 14 bab yang berurutan. Setiap bab merangkai hadits sahih dengan kalimat penghubung singkat, menampilkan perawi dan derajat setiap hadits, dan hanya diberi tanggal bila teks Sirah menyebutkannya.
+*   **Sirah Nabawiyah**: riwayat hidup Nabi Muhammad SAW per bab, dengan sumber dan nomor halaman yang dicantumkan.
 *   **Feed Spiritual**: Widget Daily Spirit, Quote of the Day, dan Hadits harian.
 
 ### 3. 🕌 Presisi Ritual
@@ -90,7 +96,7 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 
 ### 5. 🗓️ Pendamping Puasa & Amalan Musiman
 *   **Puasa Sunnah & Sukarela**: Pelacak puasa Senin-Kamis, Ayyamul Bidh, dan puasa kustom dengan status berbasis fiqih dan reward Hasanah.
-*   **Peristiwa Hijriah & Musiman**: Pelacakan presisi untuk milestone kalender Islam, pengamatan hilal, dan panduan amalan musiman.
+*   **Peristiwa Hijriah & Musiman**: Pelacakan presisi untuk milestone kalender Islam, pengamatan hilal, dan panduan amalan musiman. Kalender Hijriah juga menampilkan "Sejarah di Bulan Ini", misalnya Perang Badar di bulan Ramadhan serta Perang Uhud, Khandaq, dan Hunain di bulan Syawal.
 *   **Mode Ramadhan**: Panduan Fiqh khusus, rekomendasi Sahur & Buka Puasa sesuai Sunnah, serta hitung mundur yang aktif secara dinamis di Bulan Suci.
 
 ---
@@ -105,6 +111,23 @@ Ibadah tidak boleh terganggu lag, jadi performa dijaga lewat:
 - ✅ **Code splitting**: kode yang tidak dipakai di-tree-shake.
 - ✅ **Optimasi gambar**: AVIF/WebP dengan lazy loading dan minimum TTL 1 tahun.
 - ✅ **Efisiensi crawl**: sitemap dan robots melewatkan halaman private.
+
+---
+
+## 📚 Sumber Konten
+
+Konten agama harus bisa dicek. Nawaetu menampilkan asal setiap teks, dan menjaga teks dari penerbit lain persis seperti yang mereka terbitkan.
+
+| Konten | Sumber | Keterangan |
+| :--- | :--- | :--- |
+| Hadits Amanah & Kepemimpinan, bab Sejarah Islam | [HadeethEnc.com](https://hadeethenc.com) | Teks Arab, terjemahan Indonesia dan Inggris, perawi, serta derajat ditampilkan tanpa diubah, dengan tautan ke setiap hadits |
+| Ayat refleksi malam | [QuranEnc.com](https://quranenc.com) | Terjemahan Kementerian Agama RI dan Saheeh International, tanpa diubah |
+| Sirah Nabawiyah | Dataset Sirah Nabawiyah ([Bagian 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Bagian 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Berdasarkan *Ar-Rahiq al-Makhtum* karya Syaikh Shafiyyurrahman al-Mubarakfuri (terjemahan Indonesia) |
+| Teks dan audio Al-Qur'an | [Quran.com](https://quran.com), Kemenag | Murattal oleh Mishary Rashid Al-Afasy |
+
+Judul, tadabbur, pengantar bab, dan kalimat penghubung ditulis oleh Nawaetu, diberi keterangan demikian, dan hanya merangkum isi sumbernya. Nomor hadits di perpustakaan hadits masih menunggu verifikasi dengan [Sunnah.com](https://sunnah.com).
+
+Lisensi Nawaetu (AGPLv3 dan lisensi komersial) mencakup kode dan tulisan Nawaetu sendiri. Konten dari penerbit di atas tetap mengikuti ketentuan masing-masing.
 
 ---
 
@@ -124,6 +147,12 @@ Dirancang untuk menyertakan rujukan pada jawaban agama dan mengakui batasnya bil
 
 **Bahasa apa yang didukung?**
 Indonesia dan Inggris.
+
+**Dari mana konten agamanya berasal?**
+Dari sumber yang diterbitkan: hadits dari HadeethEnc, terjemahan Al-Qur'an melalui QuranEnc, dan Sirah dari dataset yang dicantumkan sumbernya, berdasarkan *Ar-Rahiq al-Makhtum*. Setiap konten menampilkan sumbernya. Lihat [Sumber Konten](#-sumber-konten).
+
+**Apakah Nawaetu memihak dalam politik?**
+Tidak. Konten Amanah & Kepemimpinan dan Tanya Nawaetu mengajarkan prinsip dari Al-Qur'an dan Sunnah, tanpa pernah menyebut atau mendukung partai, calon, maupun pejabat tertentu.
 
 ---
 
@@ -281,6 +310,8 @@ Kami sangat menyambut kontribusi dari seluruh komunitas global! Baik berupa perb
 Harap pelajari [Code of Conduct](CODE_OF_CONDUCT.md) kami sebelum berkontribusi.
 Untuk melaporkan bug atau mengajukan ide fitur baru, silakan gunakan [GitHub Issue Templates](https://github.com/hadianr/nawaetu/issues/new/choose). Panduan kontribusi lengkap dapat dibaca di [CONTRIBUTING.id.md](CONTRIBUTING.id.md) (Bahasa Indonesia) atau [CONTRIBUTING.md](CONTRIBUTING.md) (English).
 
+**Ketentuan konten:** dalam teks yang ditulis Nawaetu sendiri, sebut Nabi secara lengkap sebagai "Nabi Muhammad SAW" (Indonesia) atau "Prophet Muhammad SAW" (Inggris), tidak memakai ligatur ﷺ atau "Nabi SAW" saja. Teks yang disalin dari sumber berlisensi seperti HadeethEnc dan QuranEnc harus tetap persis seperti aslinya. Aturan ini dijaga oleh test (`src/data/honorific.test.ts`) dan [AGENTS.md](AGENTS.md).
+
 **Cara Berkontribusi:**
 1. **Fork** repositori ini
 2. **Buat branch fitur** (`git checkout -b feature/amazing-feature`)
@@ -417,6 +448,8 @@ Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
 - Murattal by Mishary Rashid Al-Afasy
 - Quran API by [Quran.com](https://quran.com)
+- Hadith texts and translations by [HadeethEnc.com](https://hadeethenc.com)
+- Quran translations via [QuranEnc.com](https://quranenc.com)
 - Prayer times calculation by [Aladhan API](https://aladhan.com)
 - Icons by [Lucide Icons](https://lucide.dev)
 - UI Components by [shadcn/ui](https://ui.shadcn.com)
@@ -432,4 +465,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Last updated: March 15, 2026*
+*Terakhir diperbarui: 13 November 2026*
