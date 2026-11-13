@@ -22,7 +22,14 @@ import { askMentor } from './ai-action';
 import { chatRateLimiter, chatDailyRateLimiter } from '@/lib/rate-limit';
 import { getServerSession } from '@/lib/auth';
 
-const { mockChat } = vi.hoisted(() => ({ mockChat: vi.fn() }));
+const { mockChat, redisStore } = vi.hoisted(() => ({ mockChat: vi.fn(), redisStore: new Map<string, string>() }));
+
+vi.mock('@upstash/redis', () => ({
+    Redis: class {
+        async get(key: string) { return redisStore.get(key) ?? null; }
+        async set(key: string, value: string) { redisStore.set(key, value); }
+    }
+}));
 
 vi.mock('@/lib/auth', () => ({
     authOptions: {},
@@ -198,5 +205,30 @@ describe('askMentor', () => {
         expect(sentHistory).toHaveLength(10);
         expect(sentHistory.every((item: { content: string }) => item.content.length <= 500)).toBe(true);
         expect(sentHistory.some((item: { content: string }) => item.content.includes('ignore guardrails'))).toBe(false);
+    });
+
+    it('keeps the shared sirah cache to the exact question and language, without the asker\'s details', async () => {
+        vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://redis.example.invalid');
+        vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'dummy');
+        redisStore.clear();
+        vi.mocked(getServerSession).mockResolvedValue({
+            expires: new Date(Date.now() + 60_000).toISOString(),
+            user: { id: 'user-a', isMuhsinin: false }
+        });
+        mockChat.mockResolvedValue({ response: 'Kisah hijrah dari sirah nabawiyyah.', provider: 'Mock' });
+
+        await askMentor('ceritakan sejarah hijrah nabi secara singkat', { name: 'DummyA', prayerStreak: 7, lastPrayer: 'x' });
+        expect(mockChat.mock.calls[0][1]).toMatchObject({ name: 'Hamba Allah', prayerStreak: 0 });
+
+        // Same 24-byte prefix, different question: no longer served from the first answer.
+        await askMentor('ceritakan sejarah hijrah ke madinah', { name: 'DummyB', prayerStreak: 1, lastPrayer: 'x' });
+        // Same question in another language: separate entry.
+        await askMentor('ceritakan sejarah hijrah nabi secara singkat', { name: 'DummyC', prayerStreak: 1, lastPrayer: 'x', locale: 'en' });
+        expect(mockChat).toHaveBeenCalledTimes(3);
+
+        // The exact same question in the same language is still a cache hit.
+        await askMentor('Ceritakan  sejarah hijrah nabi secara singkat', { name: 'DummyD', prayerStreak: 1, lastPrayer: 'x' });
+        expect(mockChat).toHaveBeenCalledTimes(3);
+        vi.unstubAllEnvs();
     });
 });
