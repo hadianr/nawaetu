@@ -62,6 +62,40 @@ export const reflectionDalils: ReflectionDalil[] = [
         textEn: "Whoever today is better than his yesterday, then he is successful.",
         sourceId: "Ali bin Abi Thalib",
         sourceEn: "Ali ibn Abi Talib"
+    },
+    // Civic life verses: Arabic and translations copied unchanged from QuranEnc.com
+    // (indonesian_affairs v1.0.1, english_saheeh v1.1.2). Update when QuranEnc releases a new version.
+    {
+        id: "quran-4-58-amanah",
+        arabic: "۞ إِنَّ ٱللَّهَ يَأۡمُرُكُمۡ أَن تُؤَدُّواْ ٱلۡأَمَٰنَٰتِ إِلَىٰٓ أَهۡلِهَا وَإِذَا حَكَمۡتُم بَيۡنَ ٱلنَّاسِ أَن تَحۡكُمُواْ بِٱلۡعَدۡلِۚ إِنَّ ٱللَّهَ نِعِمَّا يَعِظُكُم بِهِۦٓۗ إِنَّ ٱللَّهَ كَانَ سَمِيعَۢا بَصِيرٗا",
+        textId: "Sungguh, Allah menyuruhmu menyampaikan amanah kepada yang berhak menerimanya, dan apabila kamu menetapkan hukum di antara manusia hendaknya kamu menetapkannya dengan adil. Sungguh, Allah sebaik-baik yang memberi pengajaran kepadamu. Sungguh, Allah Maha Mendengar, Maha Melihat.",
+        textEn: "Indeed, Allāh commands you to render trusts to whom they are due and when you judge between people to judge with justice. Excellent is that which Allāh instructs you. Indeed, Allāh is ever Hearing and Seeing.",
+        sourceId: "QS. An-Nisa' [4]: 58 · Terjemahan Kemenag (QuranEnc)",
+        sourceEn: "Quran 4:58 · Saheeh International (QuranEnc)"
+    },
+    {
+        id: "quran-49-6-tabayyun",
+        arabic: "يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓاْ إِن جَآءَكُمۡ فَاسِقُۢ بِنَبَإٖ فَتَبَيَّنُوٓاْ أَن تُصِيبُواْ قَوۡمَۢا بِجَهَٰلَةٖ فَتُصۡبِحُواْ عَلَىٰ مَا فَعَلۡتُمۡ نَٰدِمِينَ",
+        textId: "Wahai orang-orang yang beriman! Jika seorang yang fasik datang kepadamu membawa suatu berita, maka telitilah kebenarannya, agar kamu tidak mencelakakan suatu kaum karena kebodohan (kecerobohan), yang akhirnya kamu menyesali perbuatanmu itu.",
+        textEn: "O you who have believed, if there comes to you a disobedient one with information, investigate, lest you harm a people out of ignorance and become, over what you have done, regretful.",
+        sourceId: "QS. Al-Hujurat [49]: 6 · Terjemahan Kemenag (QuranEnc)",
+        sourceEn: "Quran 49:6 · Saheeh International (QuranEnc)"
+    },
+    {
+        id: "quran-5-8-adil",
+        arabic: "يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ كُونُواْ قَوَّٰمِينَ لِلَّهِ شُهَدَآءَ بِٱلۡقِسۡطِۖ وَلَا يَجۡرِمَنَّكُمۡ شَنَـَٔانُ قَوۡمٍ عَلَىٰٓ أَلَّا تَعۡدِلُواْۚ ٱعۡدِلُواْ هُوَ أَقۡرَبُ لِلتَّقۡوَىٰۖ وَٱتَّقُواْ ٱللَّهَۚ إِنَّ ٱللَّهَ خَبِيرُۢ بِمَا تَعۡمَلُونَ",
+        textId: "Wahai orang-orang yang beriman! Jadilah kamu sebagai penegak keadilan karena Allah, (ketika) menjadi saksi dengan adil. Dan janganlah kebencianmu terhadap suatu kaum, mendorong kamu untuk berlaku tidak adil. Berlaku adillah. Karena (adil) itu lebih dekat kepada takwa. Dan bertakwalah kepada Allah, sungguh, Allah Mahateliti atas apa yang kamu kerjakan.",
+        textEn: "O you who have believed, be persistently standing firm for Allāh, witnesses in justice, and do not let the hatred of a people prevent you from being just. Be just; that is nearer to righteousness. And fear Allāh; indeed, Allāh is [fully] Aware of what you do.",
+        sourceId: "QS. Al-Ma'idah [5]: 8 · Terjemahan Kemenag (QuranEnc)",
+        sourceEn: "Quran 5:8 · Saheeh International (QuranEnc)"
+    },
+    {
+        id: "quran-20-44-lemah-lembut",
+        arabic: "فَقُولَا لَهُۥ قَوۡلٗا لَّيِّنٗا لَّعَلَّهُۥ يَتَذَكَّرُ أَوۡ يَخۡشَىٰ",
+        textId: "maka berbicaralah kamu berdua kepadanya (Fir'aun) dengan kata-kata yang lemah lembut, mudah-mudahan dia sadar atau takut.\"",
+        textEn: "And speak to him with gentle speech that perhaps he may be reminded or fear [Allāh].\"",
+        sourceId: "QS. Taha [20]: 44 · Terjemahan Kemenag (QuranEnc)",
+        sourceEn: "Quran 20:44 · Saheeh International (QuranEnc)"
     }
 ];
 
