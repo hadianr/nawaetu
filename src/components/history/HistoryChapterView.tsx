@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
@@ -30,6 +31,31 @@ interface Props {
     hadiths: HistoryHadith[];
     prev?: HistoryChapter;
     next?: HistoryChapter;
+}
+
+// Long narrations start clamped so a chapter reads as a story, not a wall of text.
+const LONG_TEXT = 700;
+
+function HadithText({ text, moreLabel, lessLabel }: { text: string; moreLabel: string; lessLabel: string }) {
+    const [expanded, setExpanded] = useState(false);
+    const long = text.length > LONG_TEXT;
+    return (
+        <div>
+            <blockquote className={cn("whitespace-pre-line border-l-2 border-[rgb(var(--color-primary))] pl-3 text-[13px] leading-relaxed", long && !expanded && "line-clamp-[10]")}>
+                {text}
+            </blockquote>
+            {long && (
+                <button
+                    type="button"
+                    aria-expanded={expanded}
+                    onClick={() => setExpanded(v => !v)}
+                    className="mt-1.5 pl-3 text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
+                >
+                    {expanded ? lessLabel : moreLabel}
+                </button>
+            )}
+        </div>
+    );
 }
 
 const navLink = "flex min-w-0 items-center gap-1 rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] px-3 py-2.5 text-xs font-semibold text-[rgb(var(--color-primary-strong))] transition-colors hover:border-[rgb(var(--color-primary))]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
@@ -66,9 +92,11 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                         <li key={hadith.hadeethEncId} className="space-y-2">
                             <p className="text-sm font-medium leading-relaxed text-[rgb(var(--color-text-strong))]">{isEn ? hadith.bridgeEn : hadith.bridgeId}</p>
                             <figure className={cn("space-y-3 rounded-2xl border p-4", "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)]")}>
-                                <blockquote className="whitespace-pre-line border-l-2 border-[rgb(var(--color-primary))] pl-3 text-[13px] leading-relaxed">
-                                    {isEn ? hadith.translationEn : hadith.translation}
-                                </blockquote>
+                                <HadithText
+                                    text={isEn ? hadith.translationEn : hadith.translation}
+                                    moreLabel={t.hijriHistoryReadMore}
+                                    lessLabel={t.historyShowLess}
+                                />
                                 <details className="group">
                                     <summary className="cursor-pointer list-none text-xs font-semibold text-[rgb(var(--color-primary-strong))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]">
                                         {t.historyShowArabic}

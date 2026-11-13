@@ -50,6 +50,7 @@ export const hijriCalendarEN = {
     historyChapterLabel: "Chapter {order}",
     historyAllChapters: "All chapters",
     historyShowArabic: "Show the Arabic text",
+    historyShowLess: "Show less",
     historyNarrativeNote: "Introductions and connecting lines are written by Nawaetu and only summarise the hadiths in this chapter. Hadith text, attribution and grade are from HadeethEnc.com, unchanged.",
     hijriHistoryReadMore: "Read more",
     historyOpenTimeline: "See the Islamic history timeline",

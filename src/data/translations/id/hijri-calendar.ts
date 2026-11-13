@@ -50,6 +50,7 @@ export const hijriCalendarID = {
     historyChapterLabel: "Bab {order}",
     historyAllChapters: "Semua bab",
     historyShowArabic: "Tampilkan teks Arab",
+    historyShowLess: "Tampilkan lebih sedikit",
     historyNarrativeNote: "Pengantar dan kalimat penghubung ditulis oleh Nawaetu dan hanya merangkum isi hadits di bab ini. Teks hadits, perawi, dan derajatnya dari HadeethEnc.com tanpa diubah.",
     hijriHistoryReadMore: "Baca selengkapnya",
     historyOpenTimeline: "Lihat lini masa sejarah Islam",
