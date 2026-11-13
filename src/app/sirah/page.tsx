@@ -18,6 +18,7 @@ import {
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra } from "@/data/sirah";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
+import { SirahSourceNote } from "@/components/sirah/SirahSourceNote";
 import type { AppIconName } from "@/lib/icon-names";
 
 const ERA_TABS: { id: SirahEra | "all"; label: string; icon: AppIconName }[] = [
@@ -305,6 +306,8 @@ export default function SirahDashboardPage() {
                     })}
                 </div>
             </div>
+
+            <SirahSourceNote className="pt-2" />
         </div>
     );
 }
