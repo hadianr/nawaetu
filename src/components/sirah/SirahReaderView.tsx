@@ -28,6 +28,8 @@ import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SirahInlineProse } from "./SirahInlineProse";
+import { SirahSourceNote } from "./SirahSourceNote";
+import { SIRAH_SOURCE } from "@/data/sirah/source";
 import { AppIcon } from "@/components/ui/AppIcon";
 
 interface SirahReaderViewProps {
@@ -134,7 +136,7 @@ export function SirahReaderView({
     };
 
     const handleCopy = () => {
-        const text = `${section.chapterTitle} - ${section.subbab}\n\n${section.content.join("\n\n")}\n\n[Hikmah & Niat]: ${section.suggestedIntention}\n\n(Dibaca dari Nawaetu.com)`;
+        const text = `${section.chapterTitle} - ${section.subbab}\n\n${section.content.join("\n\n")}\n\n[Hikmah & Niat]: ${section.suggestedIntention}\n\nSumber: ${SIRAH_SOURCE.book}, ${SIRAH_SOURCE.authorId}${section.pageStart ? `, hlm. ${section.pageStart}${section.pageEnd ? `-${section.pageEnd}` : ""}` : ""}\n(Dibaca dari Nawaetu.com)`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -254,6 +256,7 @@ export function SirahReaderView({
                 <p className="text-xs text-[rgb(var(--color-text-muted))]">
                     <AppIcon name="calendar" size="xs" tone="muted" /> ~{readMinutes} min baca
                 </p>
+                <SirahSourceNote />
             </div>
 
             {/* Related Quran Verses Chips */}
