@@ -21,12 +21,15 @@
 import Link from "next/link";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
+import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
 import { HISTORY_CHAPTERS, formatHistoryDate } from "@/data/history/chapters";
 
 export default function SirahHistoryPage() {
     const { locale, t } = useLocale();
-    const isEn = locale === "en";
+    const [contentLang] = useSirahContentLang();
+    const isEn = contentLang === "en";
 
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
@@ -45,7 +48,9 @@ export default function SirahHistoryPage() {
                     </div>
                 </header>
 
-                <ol className="space-y-2.5">
+                <ContentLangToggle />
+
+                <ol lang={contentLang} className="space-y-2.5">
                     {HISTORY_CHAPTERS.map(chapter => (
                         <li key={chapter.slug}>
                             <Link

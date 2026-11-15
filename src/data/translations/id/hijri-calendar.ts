@@ -54,6 +54,7 @@ export const hijriCalendarID = {
     historyNarrativeNote: "Pengantar dan kalimat penghubung ditulis oleh Nawaetu dan hanya merangkum isi hadits di bab ini. Teks hadits, perawi, dan derajatnya dari HadeethEnc.com tanpa diubah.",
     hijriHistoryReadMore: "Baca selengkapnya",
     historyOpenTimeline: "Lihat lini masa sejarah Islam",
+    sirahContentLangLabel: "Bahasa bacaan",
     hijriEventEidFitrProhibited: "Idulfitri — dilarang berpuasa",
     hijriEventEidAdhaProhibited: "Iduladha — dilarang berpuasa",
     hijriEventTashreeqProhibited: "Hari Tasyrik — dilarang berpuasa",
