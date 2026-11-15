@@ -18,12 +18,9 @@
 
 import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
+import { SIRAH_SEO } from "@/data/sirah/seo";
 
-export const metadata = pageMetadata(
-  "Lini Masa Peristiwa",
-  "Peristiwa dari sirah Nabi Muhammad beserta pelajarannya, dengan hadits dan tanggal yang bisa dicek sumbernya.",
-  "/sirah/history",
-);
+export const metadata = pageMetadata(SIRAH_SEO.history.title, SIRAH_SEO.history.description, "/sirah/history");
 
 export default function SirahHistoryLayout({ children }: { children: ReactNode }) {
   return children;

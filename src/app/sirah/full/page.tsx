@@ -14,6 +14,8 @@ import { AppIcon } from "@/components/ui/AppIcon";
 import { SirahSourceNote } from "@/components/sirah/SirahSourceNote";
 import { useLocale } from "@/context/LocaleContext";
 import type { AppIconName } from "@/lib/icon-names";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { fullIndexJsonLd } from "@/data/sirah/seo";
 
 const ERA_TABS: { id: SirahEra | "all"; labelKey: "sirahEraAll" | "sirahEraMakkah" | "sirahEraMadinah" | "sirahEraGhazwah" | "sirahEraDiplomacy" | "sirahEraLegacy"; icon: AppIconName }[] = [
     { id: "all", labelKey: "sirahEraAll", icon: "library" },
@@ -54,6 +56,7 @@ export default function SirahFullPage() {
     return (
         <div className="min-h-screen w-full px-4 pt-4 pb-nav sm:px-6 text-[rgb(var(--color-text))]">
             <main className="mx-auto w-full max-w-4xl space-y-5">
+                {fullIndexJsonLd().map((data, i) => <JsonLd key={i} data={data} />)}
                 <header className="flex items-start gap-3">
                     <Link
                         href="/sirah"

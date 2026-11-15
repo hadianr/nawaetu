@@ -21,6 +21,8 @@ import { HISTORY_CHAPTERS, getHistoryChapter } from "@/data/history/chapters";
 import { HISTORY_CONTENT } from "@/data/history/content";
 import { HistoryChapterView } from "@/components/history/HistoryChapterView";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd, article } from "@/components/seo/JsonLd";
+import { SIRAH_BREADCRUMB, sirahBreadcrumb } from "@/data/sirah/seo";
 
 export function generateStaticParams() {
     return HISTORY_CHAPTERS.map((chapter) => ({ slug: chapter.slug }));
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const chapter = getHistoryChapter(slug);
     if (!chapter) notFound();
-    return pageMetadata(`${chapter.titleId} - Lini Masa Peristiwa`, chapter.introId, `/sirah/history/${slug}`);
+    return pageMetadata(`${chapter.titleId} · Lini Masa Sirah Nabawiyah`, chapter.introId, `/sirah/history/${slug}`);
 }
 
 export default async function HistoryChapterPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -38,13 +40,18 @@ export default async function HistoryChapterPage({ params }: { params: Promise<{
     const chapter = getHistoryChapter(slug);
     if (!chapter) notFound();
 
+    const path = `/sirah/history/${slug}`;
     // Only this chapter's hadiths reach the client.
     return (
+        <>
+        <JsonLd data={sirahBreadcrumb(SIRAH_BREADCRUMB.history, { name: chapter.titleId, path })} />
+        <JsonLd data={article(`${chapter.titleId} · Lini Masa Sirah Nabawiyah`, chapter.introId, path)} />
         <HistoryChapterView
             chapter={chapter}
             hadiths={HISTORY_CONTENT[slug] ?? []}
             prev={HISTORY_CHAPTERS.find((c) => c.order === chapter.order - 1)}
             next={HISTORY_CHAPTERS.find((c) => c.order === chapter.order + 1)}
         />
+        </>
     );
 }
