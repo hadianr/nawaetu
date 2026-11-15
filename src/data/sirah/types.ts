@@ -32,7 +32,6 @@ export interface SirahSection {
     pageEnd?: number;
     content: string[];
     highlights?: string;
-    suggestedIntention: string;
     relatedQuranVerses?: SirahQuranRef[];
     relatedHadithIds?: string[];
 }
