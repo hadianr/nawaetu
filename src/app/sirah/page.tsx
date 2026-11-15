@@ -9,7 +9,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from "@/data/sirah";
-import { CONCISE_READ_KEY, getConciseReadableSections, readingMinutes } from "@/data/sirah/concise";
+import { CONCISE_READ_KEY, getConciseReadableSections, isConciseSectionRead, readingMinutes } from "@/data/sirah/concise";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { useLocale } from "@/context/LocaleContext";
@@ -98,9 +98,9 @@ export default function SirahDashboardPage() {
     const conciseMinutes = useMemo(() => conciseSections.reduce((sum, s) => sum + readingMinutes(s), 0), [conciseSections]);
 
     useEffect(() => {
-        const ids = new Set(conciseSections.map((s) => s.id));
         const full = readList("nawaetu_sirah_completed").length;
-        const concise = readList(CONCISE_READ_KEY).filter((id) => ids.has(id)).length;
+        const readIds = readList(CONCISE_READ_KEY);
+        const concise = conciseSections.filter((s) => isConciseSectionRead(s, readIds)).length;
         queueMicrotask(() => {
             setFullDone(full);
             setConciseDone(concise);

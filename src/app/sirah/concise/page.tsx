@@ -20,12 +20,22 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
-import { CONCISE_READ_KEY, getConciseSectionLabel, getConciseSirah, readingMinutes } from "@/data/sirah/concise";
+import {
+    CONCISE_READ_KEY,
+    getConcisePageLabel,
+    getConcisePageRefs,
+    getConcisePages,
+    getConciseSectionLabel,
+    getConciseSirah,
+    isConcisePageRead,
+    isConciseSectionRead,
+    readingMinutes,
+} from "@/data/sirah/concise";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
 
@@ -46,8 +56,9 @@ export default function ConciseSirahPage() {
 
     const readable = book.sections.filter((s) => s.chapters.length > 0);
     const totalMinutes = readable.reduce((sum, s) => sum + readingMinutes(s), 0);
-    const nextUp = readable.find((s) => !read.includes(s.id)) ?? readable[0];
-    const started = readable.some((s) => read.includes(s.id));
+    const allPages = getConcisePageRefs(lang);
+    const nextUp = allPages.find((r) => !isConcisePageRead(r, read)) ?? allPages[0];
+    const started = allPages.some((r) => isConcisePageRead(r, read));
 
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
@@ -76,7 +87,7 @@ export default function ConciseSirahPage() {
                         {t.sirahPathSections.replace("{count}", String(readable.length))} · {t.sirahMinutes.replace("{count}", String(totalMinutes))}
                     </p>
                     <Link
-                        href={`/sirah/concise/${nextUp.id}`}
+                        href={`/sirah/concise/${nextUp.section.id}/${nextUp.number}`}
                         className={cn("flex min-h-11 items-center justify-center gap-1 rounded-xl bg-[rgb(var(--color-primary))] px-4 text-sm font-bold text-[rgb(var(--color-primary-foreground))] transition-opacity hover:opacity-90", FOCUS)}
                     >
                         {started ? t.conciseSirahContinue : t.conciseSirahStart}
@@ -96,31 +107,48 @@ export default function ConciseSirahPage() {
                                     </li>
                                 );
                             }
-                            const done = read.includes(section.id);
+                            const done = isConciseSectionRead(section, read);
+                            const pages = getConcisePages(section);
+                            const doneCount = pages.filter((pg) => isConcisePageRead(pg, read)).length;
                             return (
                                 <li key={section.id}>
-                                    <Link
-                                        href={`/sirah/concise/${section.id}`}
+                                    <details
                                         className={cn(
-                                            "group flex min-h-11 items-center gap-3 rounded-2xl border p-4 transition-colors",
-                                            FOCUS,
+                                            "group rounded-2xl border transition-colors",
                                             done
                                                 ? "border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/10"
-                                                : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40"
+                                                : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]"
                                         )}
                                     >
-                                        <span className="min-w-0 flex-1">
-                                            <span className="block text-sm font-semibold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]">{label}</span>
-                                            <span className="mt-0.5 block text-xs text-[rgb(var(--color-text-muted))]">
-                                                {section.chapters.length === 1 ? t.conciseSirahTopicCountOne : t.conciseSirahTopicCount.replace("{count}", String(section.chapters.length))} · {t.sirahMinutes.replace("{count}", String(readingMinutes(section)))}
+                                        <summary className={cn("flex min-h-11 cursor-pointer list-none items-center gap-3 rounded-2xl p-4 [&::-webkit-details-marker]:hidden", FOCUS)}>
+                                            <span className="min-w-0 flex-1">
+                                                <span lang={lang} className="block text-sm font-semibold text-[rgb(var(--color-text-strong))]">{label}</span>
+                                                <span className="mt-0.5 block text-xs text-[rgb(var(--color-text-muted))]">
+                                                    {section.chapters.length === 1 ? t.conciseSirahTopicCountOne : t.conciseSirahTopicCount.replace("{count}", String(section.chapters.length))} · {t.sirahMinutes.replace("{count}", String(readingMinutes(section)))}
+                                                    {doneCount > 0 && !done && ` · ${doneCount}/${pages.length}`}
+                                                </span>
                                             </span>
-                                        </span>
-                                        {done ? (
-                                            <CheckCircle2 className="h-5 w-5 shrink-0 text-[rgb(var(--color-success))]" aria-label={t.sirahDone} />
-                                        ) : (
-                                            <ChevronRight className="h-5 w-5 shrink-0 text-[rgb(var(--color-text-muted))]" aria-hidden />
-                                        )}
-                                    </Link>
+                                            {done && <CheckCircle2 className="h-5 w-5 shrink-0 text-[rgb(var(--color-success))]" aria-label={t.sirahDone} />}
+                                            <ChevronDown className="h-5 w-5 shrink-0 text-[rgb(var(--color-text-muted))] transition-transform group-open:rotate-180" aria-hidden />
+                                        </summary>
+                                        <ol lang={lang} className="divide-y divide-[rgb(var(--color-border))] border-t border-[rgb(var(--color-border))] px-2 pb-1">
+                                            {pages.map((pg) => {
+                                                const chapterDone = isConcisePageRead(pg, read);
+                                                return (
+                                                    <li key={pg.id}>
+                                                        <Link
+                                                            href={`/sirah/concise/${section.id}/${pg.number}`}
+                                                            className={cn("flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/5", FOCUS)}
+                                                        >
+                                                            <span className="w-5 shrink-0 text-xs text-[rgb(var(--color-text-muted))]">{pg.number}.</span>
+                                                            <span className="min-w-0 flex-1">{getConcisePageLabel(pg)}</span>
+                                                            {chapterDone && <CheckCircle2 className="h-4 w-4 shrink-0 text-[rgb(var(--color-success))]" aria-label={t.sirahDone} />}
+                                                        </Link>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ol>
+                                    </details>
                                 </li>
                             );
                         })}
