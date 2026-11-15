@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 const COPIED_FIELDS: Record<string, string[]> = {
     "src/data/hadiths/civic-life.ts": ["translation", "translationEn", "arabic"],
     "src/data/history/content.ts": ["translation", "translationEn", "arabic"],
+    "src/data/sirah/concise/notes.ts": ["translation", "translationEn", "textId", "textEn", "footnotesEn"],
 };
 // Whole files copied unchanged; the author's permission requires no edits.
 const COPIED_FILES = ["src/data/sirah/concise/en.json", "src/data/sirah/concise/id.json"];
