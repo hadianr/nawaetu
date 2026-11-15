@@ -13,7 +13,7 @@ const body = `# Nawaetu
 - [Dhikr](https://nawaetu.com/dhikr): dhikr counter with presets
 - [Hadith](https://nawaetu.com/hadith) and [Dua](https://nawaetu.com/dua): sourced collections
 - [Sirah](https://nawaetu.com/sirah): the life of Prophet Muhammad SAW, three ways
-- [Concise Sirah](https://nawaetu.com/sirah/concise): Shaykh Haytham Sarhan's short book in English and Indonesian, unchanged, with the author's permission
+- [Concise Sirah](https://nawaetu.com/sirah/concise): Shaykh Haytham Sarhan's short book in English and Indonesian, unchanged, with the author's permission. Each page ends with a box labelled "Memahami Lebih Dalam" / "Understand More": that context and reflection question are written by Nawaetu and are not part of the book
 - [Complete Sirah](https://nawaetu.com/sirah/full): 50 chapters from Ar-Rahiq al-Makhtum (Indonesian)
 - [Timeline of events](https://nawaetu.com/sirah/history): the Prophet's life up to his passing in chapters, built from sourced hadiths
 - [Qibla](https://nawaetu.com/qibla), [Hijri calendar](https://nawaetu.com/hijri-calendar)${RAMADHAN_PAGE_ENABLED ? ", [Ramadhan](https://nawaetu.com/ramadhan)" : ""}

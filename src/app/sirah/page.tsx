@@ -15,6 +15,8 @@ import { AppIcon } from "@/components/ui/AppIcon";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang } from "@/hooks/useSirahContentLang";
 import type { AppIconName } from "@/lib/icon-names";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { sirahHubJsonLd } from "@/data/sirah/seo";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
 
@@ -113,6 +115,7 @@ export default function SirahDashboardPage() {
     return (
         <div className="sirah-page min-h-screen w-full px-4 pt-4 pb-nav sm:px-6 text-[rgb(var(--color-text))]">
             <main className="mx-auto w-full max-w-2xl space-y-5">
+                {sirahHubJsonLd().map((data, i) => <JsonLd key={i} data={data} />)}
                 <header className="space-y-1.5">
                     <h1 className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-[rgb(var(--color-text-strong))] sm:text-2xl">
                         <AppIcon name="moon" size="sm" tone="primary" /> Sirah Nabawiyah

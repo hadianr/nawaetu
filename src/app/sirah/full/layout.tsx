@@ -18,12 +18,9 @@
 
 import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
+import { SIRAH_SEO } from "@/data/sirah/seo";
 
-export const metadata = pageMetadata(
-  "Sirah Nabawiyah Lengkap per Bab",
-  "50 bab sirah Nabi Muhammad SAW dari Ar-Rahiq al-Makhtum (terjemahan bahasa Indonesia), dengan progres baca dan pencarian.",
-  "/sirah/full",
-);
+export const metadata = pageMetadata(SIRAH_SEO.full.title, SIRAH_SEO.full.description, "/sirah/full");
 
 export default function SirahFullLayout({ children }: { children: ReactNode }) {
   return children;

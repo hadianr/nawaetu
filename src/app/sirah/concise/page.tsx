@@ -36,6 +36,8 @@ import {
     isConciseSectionRead,
     readingMinutes,
 } from "@/data/sirah/concise";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { conciseIndexJsonLd } from "@/data/sirah/seo";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
 
@@ -63,6 +65,7 @@ export default function ConciseSirahPage() {
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
             <main className="mx-auto w-full max-w-2xl space-y-5">
+                {conciseIndexJsonLd().map((data, i) => <JsonLd key={i} data={data} />)}
                 <header className="flex items-start gap-3">
                     <Link
                         href="/sirah"

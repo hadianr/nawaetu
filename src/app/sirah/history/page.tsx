@@ -25,6 +25,8 @@ import { useSirahContentLang } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
 import { HISTORY_CHAPTERS, formatHistoryDate } from "@/data/history/chapters";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { historyIndexJsonLd } from "@/data/sirah/seo";
 
 export default function SirahHistoryPage() {
     const { locale, t } = useLocale();
@@ -34,6 +36,7 @@ export default function SirahHistoryPage() {
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
             <main className="mx-auto w-full max-w-2xl space-y-5">
+                {historyIndexJsonLd().map((data, i) => <JsonLd key={i} data={data} />)}
                 <header className="flex items-start gap-3">
                     <Link
                         href="/sirah"

@@ -18,12 +18,9 @@
 
 import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
+import { SIRAH_SEO } from "@/data/sirah/seo";
 
-export const metadata = pageMetadata(
-  "Catatan Ringkas Sirah Nabi Muhammad SAW",
-  "Sejarah dan kepribadian Nabi Muhammad SAW, karya Syaikh Haitsam Sarhan, dalam bahasa Indonesia dan Inggris tanpa diubah.",
-  "/sirah/concise",
-);
+export const metadata = pageMetadata(SIRAH_SEO.concise.title, SIRAH_SEO.concise.description, "/sirah/concise");
 
 export default function ConciseSirahLayout({ children }: { children: ReactNode }) {
   return children;

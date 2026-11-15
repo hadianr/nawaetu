@@ -18,8 +18,11 @@
 
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { pageMetadata } from "@/lib/seo";
-import { getConcisePage, getConcisePageLabel, getConcisePages, getConciseSection, getConciseSectionLabel } from "@/data/sirah/concise";
+import { pageMetadata, seoTitle } from "@/lib/seo";
+import { JsonLd, chapterPart } from "@/components/seo/JsonLd";
+import { getConcisePages, getConciseSection, getConciseSectionLabel } from "@/data/sirah/concise";
+import { CONCISE_BOOK_INFO, concisePageSeoDescription, concisePageSeoTitle, getConcisePageForSeo } from "@/data/sirah/concise/seo";
+import { SIRAH_BREADCRUMB, sirahBreadcrumb } from "@/data/sirah/seo";
 
 // Editions can split a part into a different number of pages, so a number is valid if either edition has it.
 function maxChapters(sectionId: string): number {
@@ -36,12 +39,12 @@ export function generateStaticParams({ params }: { params: { sectionId: string }
 
 export async function generateMetadata({ params }: { params: Promise<{ sectionId: string; chapter: string }> }) {
   const { sectionId, chapter } = await params;
-  const ref = getConcisePage("id", sectionId, Number(chapter));
+  const ref = getConcisePageForSeo(sectionId, Number(chapter));
   if (!ref) return {};
   return pageMetadata(
-    `${getConcisePageLabel(ref)} - ${getConciseSectionLabel(ref.section)}`,
-    "Bab dari Catatan Penting Seputar Sejarah dan Kepribadian Rasulullah karya Syaikh Haitsam Sarhan, teks tanpa diubah.",
-    `/sirah/concise/${sectionId}/${chapter}`,
+    `${concisePageSeoTitle(ref)} · Ringkasan Sirah`,
+    concisePageSeoDescription(ref),
+    `/sirah/concise/${sectionId}/${ref.number}`,
   );
 }
 
@@ -49,5 +52,19 @@ export default async function ConciseChapterLayout({ children, params }: { child
   const { sectionId, chapter } = await params;
   const n = Number(chapter);
   if (!Number.isInteger(n) || n < 1 || n > maxChapters(sectionId)) notFound();
-  return children;
+  const ref = getConcisePageForSeo(sectionId, n);
+  if (!ref) return children;
+  const path = `/sirah/concise/${sectionId}/${ref.number}`;
+  const title = concisePageSeoTitle(ref);
+  return (
+    <>
+      <JsonLd data={sirahBreadcrumb(
+        SIRAH_BREADCRUMB.concise,
+        { name: seoTitle(getConciseSectionLabel(ref.section)), path: `/sirah/concise/${sectionId}/1` },
+        { name: title, path },
+      )} />
+      <JsonLd data={chapterPart(title, concisePageSeoDescription(ref), path, CONCISE_BOOK_INFO, ref.number)} />
+      {children}
+    </>
+  );
 }
