@@ -22,6 +22,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
+import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
 import { formatHistoryDate, hadeethEncUrl, type HistoryChapter } from "@/data/history/chapters";
 import type { HistoryHadith } from "@/data/history/content";
@@ -62,7 +64,8 @@ const navLink = "flex min-w-0 items-center gap-1 rounded-xl border border-[rgb(v
 
 export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
     const { locale, t } = useLocale();
-    const isEn = locale === "en";
+    const [contentLang] = useSirahContentLang();
+    const isEn = contentLang === "en";
     const title = (c: HistoryChapter) => (isEn ? c.titleEn : c.titleId);
 
     return (
@@ -85,9 +88,11 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                     </div>
                 </header>
 
-                <p className="text-sm leading-relaxed">{isEn ? chapter.introEn : chapter.introId}</p>
+                <ContentLangToggle />
 
-                <ol className="space-y-5">
+                <p lang={contentLang} className="text-sm leading-relaxed">{isEn ? chapter.introEn : chapter.introId}</p>
+
+                <ol lang={contentLang} className="space-y-5">
                     {hadiths.map(hadith => (
                         <li key={hadith.hadeethEncId} className="space-y-2">
                             <p className="text-sm font-medium leading-relaxed text-[rgb(var(--color-text-strong))]">{isEn ? hadith.bridgeEn : hadith.bridgeId}</p>
@@ -109,7 +114,7 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                                         {isEn ? hadith.attributionEn : hadith.attributionId} · {isEn ? hadith.gradeEn : hadith.gradeId}
                                     </span>
                                     <a
-                                        href={hadeethEncUrl(hadith.hadeethEncId, locale)}
+                                        href={hadeethEncUrl(hadith.hadeethEncId, contentLang)}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="underline underline-offset-2 hover:text-[rgb(var(--color-primary-strong))]"

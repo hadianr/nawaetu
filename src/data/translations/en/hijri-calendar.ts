@@ -54,6 +54,7 @@ export const hijriCalendarEN = {
     historyNarrativeNote: "Introductions and connecting lines are written by Nawaetu and only summarise the hadiths in this chapter. Hadith text, attribution and grade are from HadeethEnc.com, unchanged.",
     hijriHistoryReadMore: "Read more",
     historyOpenTimeline: "See the Islamic history timeline",
+    sirahContentLangLabel: "Reading language",
     hijriEventEidFitrProhibited: "Eid al-Fitr — fasting prohibited",
     hijriEventEidAdhaProhibited: "Eid al-Adha — fasting prohibited",
     hijriEventTashreeqProhibited: "Day of Tashreeq — fasting prohibited",
