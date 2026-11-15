@@ -815,7 +815,7 @@ export const otherID = {
     sirahReaderQuranRefs: "Rujukan Quran:",
     sirahReaderIndonesianOnlyTitle: "Hanya Bahasa Indonesia.",
     sirahReaderIndonesianOnlyBody: "Teks Sirah ini tersedia dalam Bahasa Indonesia. Untuk perjalanan hidup Nabi Muhammad SAW dalam bahasa Inggris, baca",
-    sirahReaderHistoryLink: "bab Sejarah Islam",
+    sirahReaderHistoryLink: "bab Lini Masa Peristiwa",
     sirahReaderHikmahTitle: "HIKMAH & NIAT HARIAN",
     sirahReaderSetIntention: "Jadikan Niat Hari Ini",
     sirahReaderCompleted: "Telah Selesai Dibaca",

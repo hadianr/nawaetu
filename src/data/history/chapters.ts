@@ -2,7 +2,7 @@
  * Nawaetu - Islamic Habit Tracker
  * Copyright (C) 2026 Hadian Rahmat
  *
- * Chapters of Islamic history, small enough for client pages (calendar, index).
+ * Chapters of the timeline of events, small enough for client pages (calendar, index).
  * Titles, intros and the connecting lines in content.ts are Nawaetu's own and only restate what the
  * chapter's hadiths and the app's sirah support. A chapter has a date only when the app's sirah text
  * states it (date.sourceSectionId, checked by a test); a day only when that text gives one.
@@ -164,15 +164,6 @@ export const HISTORY_CHAPTERS: HistoryChapter[] = [
         introEn: "During his final illness, Prophet Muhammad SAW asked Abu Bakr to lead the prayer and kept advising people about the prayer. He passed away leaving no wealth behind.",
         sirahChapterSlug: "kembali-ke-haribaan-ilahi",
         hadithCount: 8
-    },
-    {
-        slug: "masa-abu-bakar",
-        order: 14,
-        titleId: "Sepeninggal Nabi Muhammad SAW: Masa Abu Bakar",
-        titleEn: "After Prophet Muhammad SAW: Abu Bakr",
-        introId: "Sepeninggal Nabi Muhammad SAW, Abu Bakar memimpin kaum Muslimin. Ia menunaikan janji-janji Nabi Muhammad SAW dan memulai pengumpulan Al-Qur'an setelah banyak penghafal gugur di Yamamah.",
-        introEn: "After Prophet Muhammad SAW, Abu Bakr led the Muslims. He fulfilled the promises of Prophet Muhammad SAW and began compiling the Quran after many who had memorised it were killed at Yamamah.",
-        hadithCount: 2
     }
 ];
 
