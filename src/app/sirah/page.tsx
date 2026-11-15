@@ -13,7 +13,7 @@ import { CONCISE_READ_KEY, getConciseReadableSections, isConciseSectionRead, rea
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { useLocale } from "@/context/LocaleContext";
-import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { sirahPathPrefix, useSirahContentLang } from "@/hooks/useSirahContentLang";
 import type { AppIconName } from "@/lib/icon-names";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { sirahHubJsonLd } from "@/data/sirah/seo";
@@ -127,7 +127,7 @@ export default function SirahDashboardPage() {
                     <h2 id="sirah-paths" className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{t.sirahPathsTitle}</h2>
                     <ul className="space-y-2.5">
                         <PathCard
-                            href="/sirah/concise"
+                            href={`${sirahPathPrefix(contentLang)}/sirah/concise`}
                             icon="book"
                             badge={t.sirahPathStartHere}
                             title={t.sirahPathConciseTitle}
@@ -152,7 +152,7 @@ export default function SirahDashboardPage() {
                             progress={{ done: fullDone, total: SIRAH_SECTIONS.length, label: fill(t.sirahPathProgress, { done: fullDone, total: SIRAH_SECTIONS.length }) }}
                         />
                         <PathCard
-                            href="/sirah/history"
+                            href={`${sirahPathPrefix(contentLang)}/sirah/history`}
                             icon="calendar"
                             title={t.historyPageTitle}
                             description={t.sirahPathHistoryDesc}

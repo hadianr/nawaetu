@@ -6,6 +6,7 @@
  */
 
 import { useCallback, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/context/LocaleContext";
 
 export type SirahContentLang = "id" | "en";
@@ -33,11 +34,41 @@ function subscribe(onChange: () => void) {
     };
 }
 
-/** The language the reader chose for sirah/history text; defaults to the app language until they pick one. */
+// Pages that exist in both languages: /sirah/concise/... and /sirah/history/... in Indonesian, the same under /en.
+const BILINGUAL_ROUTE = /^\/(en\/)?sirah\/(concise|history)(\/|$)/;
+
+/** The language a bilingual sirah URL is in, or null for pages that aren't split by language (e.g. the hub). */
+export function sirahRouteLang(pathname: string | null): SirahContentLang | null {
+    const m = pathname?.match(BILINGUAL_ROUTE);
+    if (!m) return null;
+    return m[1] ? "en" : "id";
+}
+
+/** The same page in the other language, or null when the page has no language pair. */
+export function sirahCounterpartHref(pathname: string | null, lang: SirahContentLang): string | null {
+    if (!pathname || !sirahRouteLang(pathname)) return null;
+    const base = pathname.replace(/^\/en(?=\/)/, "");
+    return lang === "en" ? `/en${base}` : base;
+}
+
+/** Path prefix for links between sirah pages, so a reader on an English page stays in English. */
+export function sirahPathPrefix(lang: SirahContentLang | null): string {
+    return lang === "en" ? "/en" : "";
+}
+
+export function useSirahPathPrefix(): string {
+    return sirahPathPrefix(sirahRouteLang(usePathname()));
+}
+
+/**
+ * The language of sirah/history text. On a bilingual page the URL decides, so a shared or crawled link always
+ * shows the same text; elsewhere it is the reader's choice, defaulting to the app language until they pick one.
+ */
 export function useSirahContentLang(): [SirahContentLang, (lang: SirahContentLang) => void] {
     const { locale } = useLocale();
+    const routeLang = sirahRouteLang(usePathname());
     const stored = useSyncExternalStore(subscribe, read, () => null);
-    const lang = stored ?? (locale === "en" ? "en" : "id");
+    const lang = routeLang ?? stored ?? (locale === "en" ? "en" : "id");
 
     const setLang = useCallback((next: SirahContentLang) => {
         memory = next;

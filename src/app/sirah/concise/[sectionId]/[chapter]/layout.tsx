@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ sectionId
     `${concisePageSeoTitle(ref)} · Ringkasan Sirah`,
     concisePageSeoDescription(ref),
     `/sirah/concise/${sectionId}/${ref.number}`,
+    { languages: { id: `/sirah/concise/${sectionId}/${ref.number}`, en: `/en/sirah/concise/${sectionId}/${ref.number}` } },
   );
 }
 

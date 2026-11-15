@@ -16,6 +16,7 @@ const body = `# Nawaetu
 - [Concise Sirah](https://nawaetu.com/sirah/concise): Shaykh Haytham Sarhan's short book in English and Indonesian, unchanged, with the author's permission. Each page ends with a box labelled "Memahami Lebih Dalam" / "Understand More": that context and reflection question are written by Nawaetu and are not part of the book
 - [Complete Sirah](https://nawaetu.com/sirah/full): 50 chapters from Ar-Rahiq al-Makhtum (Indonesian)
 - [Timeline of events](https://nawaetu.com/sirah/history): the Prophet's life up to his passing in chapters, built from sourced hadiths
+- English editions: [Concise Sirah in English](https://nawaetu.com/en/sirah/concise) and [Timeline of events in English](https://nawaetu.com/en/sirah/history); every page also exists in Indonesian at the same path without /en
 - [Qibla](https://nawaetu.com/qibla), [Hijri calendar](https://nawaetu.com/hijri-calendar)${RAMADHAN_PAGE_ENABLED ? ", [Ramadhan](https://nawaetu.com/ramadhan)" : ""}
 
 ## About

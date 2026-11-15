@@ -20,7 +20,9 @@ import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
 import { SIRAH_SEO } from "@/data/sirah/seo";
 
-export const metadata = pageMetadata(SIRAH_SEO.history.title, SIRAH_SEO.history.description, "/sirah/history");
+export const metadata = pageMetadata(SIRAH_SEO.history.title, SIRAH_SEO.history.description, "/sirah/history", {
+  languages: { id: "/sirah/history", en: "/en/sirah/history" },
+});
 
 export default function SirahHistoryLayout({ children }: { children: ReactNode }) {
   return children;

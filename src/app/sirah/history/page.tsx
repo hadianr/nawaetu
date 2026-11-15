@@ -21,7 +21,7 @@
 import Link from "next/link";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
 import { HISTORY_CHAPTERS, formatHistoryDate } from "@/data/history/chapters";
@@ -31,12 +31,13 @@ import { historyIndexJsonLd } from "@/data/sirah/seo";
 export default function SirahHistoryPage() {
     const { locale, t } = useLocale();
     const [contentLang] = useSirahContentLang();
+    const prefix = useSirahPathPrefix();
     const isEn = contentLang === "en";
 
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
             <main className="mx-auto w-full max-w-2xl space-y-5">
-                {historyIndexJsonLd().map((data, i) => <JsonLd key={i} data={data} />)}
+                {historyIndexJsonLd(contentLang).map((data, i) => <JsonLd key={i} data={data} />)}
                 <header className="flex items-start gap-3">
                     <Link
                         href="/sirah"
@@ -57,7 +58,7 @@ export default function SirahHistoryPage() {
                     {HISTORY_CHAPTERS.map(chapter => (
                         <li key={chapter.slug}>
                             <Link
-                                href={`/sirah/history/${chapter.slug}`}
+                                href={`${prefix}/sirah/history/${chapter.slug}`}
                                 className={cn(
                                     "flex items-start gap-3 rounded-2xl border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
                                     "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] shadow-[var(--shadow-card)] hover:border-[rgb(var(--color-primary))]/40",

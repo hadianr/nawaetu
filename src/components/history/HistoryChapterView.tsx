@@ -22,7 +22,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
 import { formatHistoryDate, hadeethEncUrl, type HistoryChapter } from "@/data/history/chapters";
@@ -65,6 +65,7 @@ const navLink = "flex min-w-0 items-center gap-1 rounded-xl border border-[rgb(v
 export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
     const { locale, t } = useLocale();
     const [contentLang] = useSirahContentLang();
+    const prefix = useSirahPathPrefix();
     const isEn = contentLang === "en";
     const title = (c: HistoryChapter) => (isEn ? c.titleEn : c.titleId);
 
@@ -73,7 +74,7 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
             <article className="mx-auto w-full max-w-2xl space-y-5">
                 <header className="flex items-start gap-3">
                     <Link
-                        href="/sirah/history"
+                        href={`${prefix}/sirah/history`}
                         aria-label={t.historyAllChapters}
                         className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] transition-colors hover:bg-[rgb(var(--color-primary))]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]"
                     >
@@ -141,12 +142,12 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
 
                 <nav className="grid grid-cols-2 gap-2" aria-label={t.historyAllChapters}>
                     {prev ? (
-                        <Link href={`/sirah/history/${prev.slug}`} className={navLink}>
+                        <Link href={`${prefix}/sirah/history/${prev.slug}`} className={navLink}>
                             <ChevronLeft className="h-4 w-4 shrink-0" /><span className="truncate">{title(prev)}</span>
                         </Link>
                     ) : <span />}
                     {next && (
-                        <Link href={`/sirah/history/${next.slug}`} className={cn(navLink, "justify-end text-right")}>
+                        <Link href={`${prefix}/sirah/history/${next.slug}`} className={cn(navLink, "justify-end text-right")}>
                             <span className="truncate">{title(next)}</span><ChevronRight className="h-4 w-4 shrink-0" />
                         </Link>
                     )}
