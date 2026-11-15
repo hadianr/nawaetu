@@ -42,13 +42,3 @@ export function searchSirah(query: string): SirahSection[] {
             (Array.isArray(s.content) ? s.content.join(" ") : String(s.content)).toLowerCase().includes(q)
     );
 }
-
-export function getDailySirahHighlight(): SirahSection {
-    // Deterministic daily rotation based on day of year
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const diff = now.getTime() - start.getTime();
-    const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const index = dayOfYear % SIRAH_SECTIONS.length;
-    return SIRAH_SECTIONS[index] || SIRAH_SECTIONS[0];
-}
