@@ -20,7 +20,7 @@ import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { MetadataRoute } from 'next'
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from '@/data/sirah'
 import { HISTORY_CHAPTERS } from '@/data/history/chapters'
-import { getConciseReadableSections } from '@/data/sirah/concise'
+import { getConcisePageRefs } from '@/data/sirah/concise'
 
 // ISR: Sitemap is static \u2014 revalidate once per day so bots don't trigger
 // re-generation on every crawl
@@ -96,8 +96,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'monthly' as const,
             priority: 0.6,
         })),
-        ...getConciseReadableSections('id').map((section) => ({
-            url: `${baseUrl}/sirah/concise/${section.id}`,
+        ...getConcisePageRefs('id').map((ref) => ({
+            url: `${baseUrl}/sirah/concise/${ref.section.id}/${ref.number}`,
             changeFrequency: 'monthly' as const,
             priority: 0.6,
         })),
