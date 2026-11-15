@@ -12,8 +12,10 @@ const body = `# Nawaetu
 - [Mentor AI](https://nawaetu.com/mentor-ai): AI mentor for Islamic habit guidance
 - [Dhikr](https://nawaetu.com/dhikr): dhikr counter with presets
 - [Hadith](https://nawaetu.com/hadith) and [Dua](https://nawaetu.com/dua): sourced collections
-- [Sirah](https://nawaetu.com/sirah): the life of the Prophet by chapter
-- [Islamic history](https://nawaetu.com/sirah/history): the Prophet's life to the time of Abu Bakr in chapters, built from sourced hadiths
+- [Sirah](https://nawaetu.com/sirah): the life of Prophet Muhammad SAW, three ways
+- [Concise Sirah](https://nawaetu.com/sirah/concise): Shaykh Haytham Sarhan's short book in English and Indonesian, unchanged, with the author's permission
+- [Complete Sirah](https://nawaetu.com/sirah/full): 50 chapters from Ar-Rahiq al-Makhtum (Indonesian)
+- [Timeline of events](https://nawaetu.com/sirah/history): the Prophet's life up to his passing in chapters, built from sourced hadiths
 - [Qibla](https://nawaetu.com/qibla), [Hijri calendar](https://nawaetu.com/hijri-calendar)${RAMADHAN_PAGE_ENABLED ? ", [Ramadhan](https://nawaetu.com/ramadhan)" : ""}
 
 ## About
