@@ -51,14 +51,14 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                 "border-[rgb(var(--color-border))]"
             )}>
                 <Link
-                    href="/sirah"
+                    href="/sirah/full"
                     className={cn(
                         "inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity",
                         "text-[rgb(var(--color-primary-strong))]"
                     )}
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>{t.sirahBackToHub}</span>
+                    <span>{t.sirahBackToChapters}</span>
                 </Link>
 
                 <span className={cn(

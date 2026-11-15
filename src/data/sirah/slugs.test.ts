@@ -16,3 +16,11 @@ describe("sirah slugs", () => {
         for (const q of SIRAH_QUIZ_BANK) expect(chapterSlugs.has(q.targetChapterSlug)).toBe(true);
     });
 });
+
+describe("sirah static routes", () => {
+    // Static routes under /sirah win over [chapterSlug], so a chapter with one of these slugs would be unreachable.
+    it("don't collide with chapter slugs", () => {
+        const slugs = new Set(SIRAH_CHAPTERS.map((c) => c.slug));
+        for (const reserved of ["full", "concise", "history", "quiz"]) expect(slugs.has(reserved)).toBe(false);
+    });
+});
