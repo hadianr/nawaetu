@@ -1,16 +1,17 @@
 "use client";
 
 /**
- * Nawaetu - one page of the concise sirah, with the book text unchanged
+ * Nawaetu - one chapter of the concise sirah, with Nawaetu's notes around the unchanged book text
  * Copyright (C) 2026 Hadian Rahmat
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Lightbulb, ShieldCheck, Sparkles } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { useSirahContentLang } from "@/hooks/useSirahContentLang";
 import { cn } from "@/lib/utils";
+import { hadeethEncUrl } from "@/data/history/chapters";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import {
     CONCISE_READ_KEY,
@@ -27,8 +28,10 @@ import {
     type ConcisePageRef,
     type ConciseSirahChapter,
 } from "@/data/sirah/concise";
+import { getConciseNote, type ConciseNameOrigin, type ConciseNote, type ConciseNoteHadith } from "@/data/sirah/concise/notes";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
+const NOTE_BOX = "space-y-2 rounded-2xl border border-dashed border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/5 p-4";
 
 function readIds(): string[] {
     try {
@@ -47,6 +50,14 @@ function saveRead(id: string) {
 }
 
 const pageHref = (ref: Pick<ConcisePageRef, "section" | "number">) => `/sirah/concise/${ref.section.id}/${ref.number}`;
+
+function NoteLabel({ children }: { children: React.ReactNode }) {
+    return (
+        <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-[rgb(var(--color-primary-strong))]">
+            {children}
+        </p>
+    );
+}
 
 function ChapterBody({ chapter }: { chapter: ConciseSirahChapter }) {
     const { t } = useLocale();
@@ -117,6 +128,104 @@ function ChapterBody({ chapter }: { chapter: ConciseSirahChapter }) {
     );
 }
 
+function HadithSource({ hadith: h, lang }: { hadith: ConciseNoteHadith; lang: "id" | "en" }) {
+    const { t } = useLocale();
+    const isEn = lang === "en";
+    return (
+        <figure className="m-0 space-y-1.5">
+            <blockquote lang={lang} className="m-0 text-sm leading-relaxed">{isEn ? h.translationEn : h.translation}</blockquote>
+            <figcaption className="flex flex-wrap items-center gap-x-3 text-xs text-[rgb(var(--color-text-muted))]">
+                <span className="font-semibold">
+                    {h.references?.length
+                        ? t.conciseHadithRef.replace("{refs}", h.references.map((r) => `${r.collection} no. ${r.number}`).join(` ${t.conciseAnd} `))
+                        : isEn ? h.attributionEn : h.attributionId}
+                    {" · "}{isEn ? h.gradeEn : h.gradeId}
+                </span>
+                <a href={hadeethEncUrl(h.hadeethEncId, lang)} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-2">
+                    {t.hadithTranslationCredit}
+                </a>
+            </figcaption>
+        </figure>
+    );
+}
+
+function NameOrigins({ origins, lang }: { origins: ConciseNameOrigin[]; lang: "id" | "en" }) {
+    const { t } = useLocale();
+    const isEn = lang === "en";
+    return (
+        <div className="space-y-1.5 pt-1">
+            <p className="text-xs font-bold text-[rgb(var(--color-text-strong))]">{t.conciseNameOrigins}</p>
+            <ul className="divide-y divide-[rgb(var(--color-border))] rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
+                {origins.map((o) => (
+                    <li key={o.fromEn}>
+                        <details className="group">
+                            <summary className={cn("flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 [&::-webkit-details-marker]:hidden", FOCUS)}>
+                                <span className="min-w-0 flex-1">
+                                    <span lang={lang} className="block text-sm font-semibold text-[rgb(var(--color-text-strong))]">{isEn ? o.fromEn : o.fromId}</span>
+                                    <span className="block text-xs text-[rgb(var(--color-text-muted))]">{o.names.join(", ")}</span>
+                                </span>
+                                <ChevronDown className="h-4 w-4 shrink-0 text-[rgb(var(--color-text-muted))] transition-transform group-open:rotate-180" aria-hidden />
+                            </summary>
+                            <div className="flex flex-col gap-3 px-3 pb-3">
+                                <p lang={lang} className="text-sm leading-relaxed">{isEn ? o.detailEn : o.detailId}</p>
+                                {o.sources.map((src, i) => {
+                                    if (src.kind === "hadith") return <HadithSource key={i} hadith={src.hadith} lang={lang} />;
+                                    if (src.kind === "sirah") {
+                                        return (
+                                            <Link key={i} href={src.href} className={cn("inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline underline-offset-2", FOCUS)}>
+                                                {t.conciseReadIn.replace("{label}", isEn ? src.labelEn : src.labelId)}
+                                                <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+                                            </Link>
+                                        );
+                                    }
+                                    return (
+                                        <figure key={i} className="m-0 space-y-1.5">
+                                            <blockquote lang={lang} className="m-0 text-sm leading-relaxed">{isEn ? src.textEn : src.textId}</blockquote>
+                                            {isEn && src.footnotesEn?.map((f) => <p key={f} className="text-xs text-[rgb(var(--color-text-muted))]">{f}</p>)}
+                                            <figcaption className="text-xs font-semibold text-[rgb(var(--color-text-muted))]">{isEn ? src.labelEn : src.labelId}</figcaption>
+                                        </figure>
+                                    );
+                                })}
+                            </div>
+                        </details>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+/** "Memahami Lebih Dalam": Nawaetu's own context, name origins, a reflection and related sources, below the book text. */
+function ChapterNote({ note, lang }: { note: ConciseNote; lang: "id" | "en" }) {
+    const { t } = useLocale();
+    const isEn = lang === "en";
+    const h = note.hadith;
+
+    return (
+        <aside aria-label={t.conciseNoteLabel} className={NOTE_BOX}>
+            <NoteLabel><Sparkles className="h-3.5 w-3.5" aria-hidden />{t.conciseNoteLabel}</NoteLabel>
+            <p lang={lang} className="text-sm leading-relaxed">{isEn ? note.contextEn : note.contextId}</p>
+            {note.origins && <NameOrigins origins={note.origins} lang={lang} />}
+
+            <div className="space-y-1 border-t border-[rgb(var(--color-border))] pt-3">
+                <p className="flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--color-text-strong))]">
+                    <Lightbulb className="h-3.5 w-3.5 text-[rgb(var(--color-primary-strong))]" aria-hidden />{t.conciseReflect}
+                </p>
+                <p lang={lang} className="text-sm font-medium italic leading-relaxed">{isEn ? note.reflectEn : note.reflectId}</p>
+            </div>
+
+            {h && (
+                <div className="flex flex-col gap-2 border-t border-[rgb(var(--color-border))] pt-3">
+                    <p className="flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--color-text-strong))]">
+                        <ShieldCheck className="h-3.5 w-3.5 text-[rgb(var(--color-primary-strong))]" aria-hidden />{t.conciseRelatedHadith}
+                    </p>
+                    <HadithSource hadith={h} lang={lang} />
+                </div>
+            )}
+        </aside>
+    );
+}
+
 export function ConciseChapterReader({ sectionId, number }: { sectionId: string; number: number }) {
     const { t } = useLocale();
     const [lang] = useSirahContentLang();
@@ -135,6 +244,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
     const { prev, next } = getConcisePageNeighbors(lang, ref);
     const total = pages.length;
     const pageOf = t.conciseChapterOf.replace("{n}", String(ref.number)).replace("{total}", String(total));
+    const note = getConciseNote(ref);
     const done = isConcisePageRead(ref, read);
     const markDone = () => {
         saveRead(ref.id);
@@ -216,6 +326,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                     </section>
                 ))}
 
+                {note && <ChapterNote note={note} lang={lang} />}
 
                 <div className="space-y-3 border-t border-[rgb(var(--color-border))] pt-4">
                     {done ? (
@@ -261,6 +372,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                     </nav>
 
                     <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">
+                        {note && <>{t.conciseNoteDisclaimer} </>}
                         {book.author} · {t.conciseSirahTranslatedBy.replace("{names}", book.translators.join(", "))}. {t.conciseSirahSource}{" "}
                         <a href={book.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
                             {new URL(book.sourceUrl).hostname}
