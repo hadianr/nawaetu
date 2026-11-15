@@ -58,3 +58,21 @@ describe("name origins", () => {
         }
     });
 });
+
+describe("note coverage", () => {
+    it("gives every reading page that both editions share a note, except the introduction", () => {
+        const missing: string[] = [];
+        for (const section of ["s03", "s04", "s05", "s06", "s08", "s09", "s10", "s11", "s12"]) {
+            const id = getConcisePages(getConciseSection("id", section)!);
+            const en = getConcisePages(getConciseSection("en", section)!);
+            for (let n = 1; n <= Math.min(id.length, en.length); n++) if (!CONCISE_NOTES[`${section}/${n}`]) missing.push(`${section}/${n}`);
+        }
+        expect(missing).toEqual([]);
+    });
+
+    it.each(Object.entries(CONCISE_NOTES))("%s keeps the context short", (_, note) => {
+        expect(note.contextId.split(/\s+/).length).toBeLessThanOrEqual(60);
+        expect(note.contextEn.split(/\s+/).length).toBeLessThanOrEqual(70);
+    });
+});
+
