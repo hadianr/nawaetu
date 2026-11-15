@@ -815,7 +815,7 @@ export const otherEN = {
     sirahReaderQuranRefs: "Quran references:",
     sirahReaderIndonesianOnlyTitle: "Indonesian only.",
     sirahReaderIndonesianOnlyBody: "This Sirah text is available in Bahasa Indonesia. For the life of Prophet Muhammad SAW in English, read",
-    sirahReaderHistoryLink: "the Islamic History chapters",
+    sirahReaderHistoryLink: "the Timeline of Events chapters",
     sirahReaderHikmahTitle: "DAILY WISDOM & INTENTION",
     sirahReaderSetIntention: "Make It Today's Intention",
     sirahReaderCompleted: "Finished Reading",

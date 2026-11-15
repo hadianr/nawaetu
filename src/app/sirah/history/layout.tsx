@@ -20,7 +20,7 @@ import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata(
-  "Sejarah Islam",
+  "Lini Masa Peristiwa",
   "Peristiwa dari sirah Nabi Muhammad beserta pelajarannya, dengan hadits dan tanggal yang bisa dicek sumbernya.",
   "/sirah/history",
 );
