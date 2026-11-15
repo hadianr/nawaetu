@@ -81,7 +81,7 @@ export function PrayerConsistency({
                 </div>
 
                 {/* Scrollable Data Area */}
-                <div className="flex flex-1 justify-between gap-1.5 overflow-x-auto pb-4 scrollbar-none">
+                <div className="flex flex-1 justify-between gap-1.5 overflow-x-auto pb-4 scrollbar-hide">
                     {displayedDays.slice().reverse().map((dateStr) => {
                         const completedSet = prayerMap[dateStr] || new Set();
                         const d = new Date(dateStr);
