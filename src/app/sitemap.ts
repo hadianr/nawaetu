@@ -20,6 +20,7 @@ import { RAMADHAN_PAGE_ENABLED } from "@/lib/features";
 import { MetadataRoute } from 'next'
 import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from '@/data/sirah'
 import { HISTORY_CHAPTERS } from '@/data/history/chapters'
+import { getConciseReadableSections } from '@/data/sirah/concise'
 
 // ISR: Sitemap is static \u2014 revalidate once per day so bots don't trigger
 // re-generation on every crawl
@@ -66,6 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ...(RAMADHAN_PAGE_ENABLED ? [{ url: `${baseUrl}/ramadhan`, changeFrequency: 'monthly' as const, priority: 0.7 }] : []),
         { url: `${baseUrl}/sirah`, changeFrequency: 'weekly', priority: 0.8 },
         { url: `${baseUrl}/sirah/history`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/sirah/concise`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/rewards`, changeFrequency: 'monthly', priority: 0.5 },
     ]
 
@@ -90,6 +92,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
         })),
         ...HISTORY_CHAPTERS.map((chapter) => ({
             url: `${baseUrl}/sirah/history/${chapter.slug}`,
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+        })),
+        ...getConciseReadableSections('id').map((section) => ({
+            url: `${baseUrl}/sirah/concise/${section.id}`,
             changeFrequency: 'monthly' as const,
             priority: 0.6,
         })),
