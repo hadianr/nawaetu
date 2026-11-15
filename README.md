@@ -25,7 +25,7 @@
 | **License** | AGPLv3, with a commercial license available |
 | **Website** | [nawaetu.com](https://nawaetu.com) |
 
-**Explore:** [Quran](https://nawaetu.com/quran) · [Hadith](https://nawaetu.com/hadith) · [Dua](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Islamic history](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Qibla](https://nawaetu.com/qibla) · [Hijri calendar](https://nawaetu.com/hijri-calendar) · [Ramadan guide](https://nawaetu.com/ramadhan) · [About](https://nawaetu.com/about)
+**Explore:** [Quran](https://nawaetu.com/quran) · [Hadith](https://nawaetu.com/hadith) · [Dua](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Timeline of events](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Qibla](https://nawaetu.com/qibla) · [Hijri calendar](https://nawaetu.com/hijri-calendar) · [Ramadan guide](https://nawaetu.com/ramadhan) · [About](https://nawaetu.com/about)
 
 ---
 
@@ -83,8 +83,10 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 *   **Digital Quran**: Mushaf & List mode with verse-by-verse audio, Tajweed colors, and authentic Kemenag standards.
 *   **Hadith & Dua Hub**: Curated daily content with English and Indonesian translations, grouped by everyday topics.
     *   **Civic Life & Leadership (Amanah & Kepemimpinan)**: authentic hadith on responsibility, justice, speaking up, bribery, and corruption, searchable with the words young people use (for example *cawe-cawe*, *serangan fajar*, *buzzer*).
-*   **Islamic History**: the life of Prophet Muhammad SAW through to the time of Abu Bakr, told in 14 chronological chapters. Each chapter links authentic hadith with short connecting lines, shows each hadith's attribution and grade, and is dated only where the Sirah text states the date.
-*   **Sirah Nabawiyah**: the biography of Prophet Muhammad SAW by chapter, with its source and page references credited.
+*   **Sirah Nabawiyah**: three ways to learn the life of Prophet Muhammad SAW, with a reading language you can set apart from the app language.
+    *   **Concise Sirah**: Shaykh Haytham Sarhan's short book on the life and character of Prophet Muhammad SAW, in English and Indonesian. It is published unchanged with the author's permission and read part by part, with progress saved on the device.
+    *   **Complete Sirah**: 50 chapters from *Ar-Rahiq al-Makhtum* (Indonesian translation), with its source and page references credited.
+    *   **Timeline of Events**: 13 chronological chapters, from before prophethood to his passing. Each chapter links authentic hadith with short connecting lines, shows each hadith's attribution and grade, and is dated only where the Sirah text states the date.
 *   **Spiritual Feed**: Daily Spirit, Quote of the Day, and Hadith-of-the-day widgets.
 
 ### 3. 🕌 Ritual Precision
@@ -99,7 +101,7 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 
 ### 5. 🗓️ Fasting & Seasonal Companion
 *   **Sunnah & Voluntary Fasting**: Track Monday/Thursday (Senin-Kamis), Ayyamul Bidh, and custom fasting with fiqh-based statuses and Hasanah rewards.
-*   **Seasonal & Hijri Events**: Precision tracking for Islamic calendar milestones, moon sightings, and seasonal spiritual guides. The Hijri calendar also shows "This Month in Islamic History", such as Badr in Ramadan and Uhud, the Trench, and Hunayn in Shawwal.
+*   **Seasonal & Hijri Events**: Precision tracking for Islamic calendar milestones, moon sightings, and seasonal spiritual guides. The Hijri calendar also shows "This Month in the Sirah", such as Badr in Ramadan and Uhud, the Trench, and Hunayn in Shawwal.
 *   **Ramadhan Mode**: Specialized Fiqh guides, Sahur/Iftar Sunnah recommendations, and countdown timers dynamically activated during the Holy Month.
 
 ---
@@ -110,9 +112,10 @@ Religious content should be checkable. Nawaetu shows where each text comes from,
 
 | Content | Source | Notes |
 | :--- | :--- | :--- |
-| Civic Life hadith, Islamic History chapters | [HadeethEnc.com](https://hadeethenc.com) | Arabic, Indonesian, and English text, attribution, and grade shown unchanged, with a link to each hadith |
+| Civic Life hadith, Timeline of Events chapters | [HadeethEnc.com](https://hadeethenc.com) | Arabic, Indonesian, and English text, attribution, and grade shown unchanged, with a link to each hadith |
 | Evening reflection verses | [QuranEnc.com](https://quranenc.com) | Ministry of Religious Affairs (Kemenag) Indonesian translation and Saheeh International, unchanged |
-| Sirah Nabawiyah | Sirah Nabawiyah datasets ([Part 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Part 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Based on *Ar-Rahiq al-Makhtum* by Shaykh Safiur Rahman al-Mubarakpuri (Indonesian translation) |
+| Concise Sirah | *A Concise Biography of the Prophet and His Special Traits* by Shaykh Haytham Sarhan ([sarhaan.com](https://sarhaan.com/ab/a-concise-biography-of-the-prophet-peace-be-upon-him-and-his-special-traits/), [IslamHouse](https://islamhouse.com/id/books/2831882)) | English translation by Ibraheem Abu Tameem Al-Mubtasim; Indonesian translation by Abdul Aziz Firdaus and Mufassir Arif. Shown unchanged, with the author's written permission |
+| Complete Sirah | Sirah Nabawiyah datasets ([Part 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Part 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Based on *Ar-Rahiq al-Makhtum* by Shaykh Safiur Rahman al-Mubarakpuri (Indonesian translation) |
 | Quran text and audio | [Quran.com](https://quran.com), Kemenag | Murattal by Mishary Rashid Al-Afasy |
 
 Titles, reflections, chapter introductions, and connecting lines are written by Nawaetu, are labelled as such, and only summarise what their sources say. Hadith numbers in the hadith library are pending verification against [Sunnah.com](https://sunnah.com).
@@ -139,7 +142,7 @@ It is designed to include references in religious answers and to acknowledge its
 English and Indonesian.
 
 **Where does the religious content come from?**
-From published sources: hadith from HadeethEnc, Quran translations via QuranEnc, and the Sirah from a credited dataset based on *Ar-Rahiq al-Makhtum*. Each item shows its source. See [Content Sources](#-content-sources).
+From published sources: hadith from HadeethEnc, Quran translations via QuranEnc, the Concise Sirah from Shaykh Haytham Sarhan's book (with his permission), and the Complete Sirah from a credited dataset based on *Ar-Rahiq al-Makhtum*. Each item shows its source. See [Content Sources](#-content-sources).
 
 **Does Nawaetu take political sides?**
 No. The civic content and Tanya Nawaetu teach principles from the Quran and Sunnah and never name or support a party, candidate, or official.

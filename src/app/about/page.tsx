@@ -28,7 +28,7 @@ export const revalidate = 604800;
 
 export const metadata = pageMetadata(
     "Aplikasi Muslim untuk Ibadah Harian",
-    "Aplikasi Muslim Nawaetu: Al-Qur'an dan tafsir, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah dan kuis, kalender Hijriah, Ramadhan, jurnal niat, misi, statistik, dan Asisten Muslim AI.",
+    "Aplikasi Muslim Nawaetu: Al-Qur'an dan tafsir, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah Nabawiyah, kalender Hijriah, Ramadhan, jurnal niat, misi, statistik, dan Asisten Muslim AI.",
     "/about",
 );
 
@@ -120,7 +120,7 @@ export default function AboutPage() {
                         <article className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5">
                             <h3 className="mb-2 text-lg font-bold">Al-Qur&apos;an dan panduan bersumber</h3>
                             <p className="text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">
-                                <Link href="/quran" className="underline underline-offset-4">Al-Qur&apos;an digital</Link> dengan terjemahan, audio, tajwid, tafsir, pencarian, dan penanda bacaan; <Link href="/hadith" className="underline underline-offset-4">kumpulan hadits</Link> dengan perawi, referensi, dan keterangan kualitas; <Link href="/dua" className="underline underline-offset-4">doa harian</Link> beserta sumber; <Link href="/sirah" className="underline underline-offset-4">Sirah Nabawiyah</Link> per bab dan kuis; serta <Link href="/mentor-ai" className="underline underline-offset-4">Tanya Nawaetu</Link>, asisten Muslim AI untuk pertanyaan Islam dengan rujukan dan batas jawaban yang jelas.
+                                <Link href="/quran" className="underline underline-offset-4">Al-Qur&apos;an digital</Link> dengan terjemahan, audio, tajwid, tafsir, pencarian, dan penanda bacaan; <Link href="/hadith" className="underline underline-offset-4">kumpulan hadits</Link> dengan perawi, referensi, dan keterangan kualitas; <Link href="/dua" className="underline underline-offset-4">doa harian</Link> beserta sumber; <Link href="/sirah" className="underline underline-offset-4">Sirah Nabawiyah</Link> dalam ringkasan, bab lengkap, dan lini masa peristiwa; serta <Link href="/mentor-ai" className="underline underline-offset-4">Tanya Nawaetu</Link>, asisten Muslim AI untuk pertanyaan Islam dengan rujukan dan batas jawaban yang jelas.
                             </p>
                         </article>
                         <article className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-5">

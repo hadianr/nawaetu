@@ -25,7 +25,7 @@
 | **Lisensi** | AGPLv3, dengan lisensi komersial tersedia |
 | **Situs** | [nawaetu.com](https://nawaetu.com) |
 
-**Jelajahi:** [Al-Qur'an](https://nawaetu.com/quran) · [Hadits](https://nawaetu.com/hadith) · [Doa](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Sejarah Islam](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Kiblat](https://nawaetu.com/qibla) · [Kalender Hijriah](https://nawaetu.com/hijri-calendar) · [Panduan Ramadhan](https://nawaetu.com/ramadhan) · [Tentang](https://nawaetu.com/about)
+**Jelajahi:** [Al-Qur'an](https://nawaetu.com/quran) · [Hadits](https://nawaetu.com/hadith) · [Doa](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Lini Masa Peristiwa](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Kiblat](https://nawaetu.com/qibla) · [Kalender Hijriah](https://nawaetu.com/hijri-calendar) · [Panduan Ramadhan](https://nawaetu.com/ramadhan) · [Tentang](https://nawaetu.com/about)
 
 ---
 
@@ -80,8 +80,10 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 *   **Al-Qur'an Digital**: Mode Mushaf & List dengan audio per ayat, pewarnaan Tajwid, dan standar Mushaf Kemenag RI.
 *   **Hub Hadits & Doa**: Konten pilihan harian dengan terjemahan Bahasa Indonesia dan Inggris, dikelompokkan menurut topik sehari-hari.
     *   **Amanah & Kepemimpinan**: hadits sahih tentang tanggung jawab, keadilan, menyuarakan kebenaran, suap, dan korupsi, yang bisa dicari dengan kata-kata yang dipakai anak muda (misalnya *cawe-cawe*, *serangan fajar*, *buzzer*).
-*   **Sejarah Islam**: perjalanan hidup Nabi Muhammad SAW hingga masa Abu Bakar dalam 14 bab yang berurutan. Setiap bab merangkai hadits sahih dengan kalimat penghubung singkat, menampilkan perawi dan derajat setiap hadits, dan hanya diberi tanggal bila teks Sirah menyebutkannya.
-*   **Sirah Nabawiyah**: riwayat hidup Nabi Muhammad SAW per bab, dengan sumber dan nomor halaman yang dicantumkan.
+*   **Sirah Nabawiyah**: tiga cara mempelajari perjalanan hidup Nabi Muhammad SAW, dengan bahasa bacaan yang bisa diatur terpisah dari bahasa aplikasi.
+    *   **Ringkasan Sirah**: buku singkat Syaikh Haitsam Sarhan tentang sejarah dan kepribadian Nabi Muhammad SAW, dalam bahasa Indonesia dan Inggris. Dimuat tanpa diubah dengan izin penulis, dibaca per bagian, dan progresnya tersimpan di perangkat.
+    *   **Sirah Lengkap**: 50 bab dari *Ar-Rahiq al-Makhtum* (terjemahan Indonesia), dengan sumber dan nomor halaman yang dicantumkan.
+    *   **Lini Masa Peristiwa**: 13 bab berurutan, dari sebelum kenabian hingga wafatnya beliau. Setiap bab merangkai hadits sahih dengan kalimat penghubung singkat, menampilkan perawi dan derajat setiap hadits, dan hanya diberi tanggal bila teks Sirah menyebutkannya.
 *   **Feed Spiritual**: Widget Daily Spirit, Quote of the Day, dan Hadits harian.
 
 ### 3. 🕌 Presisi Ritual
@@ -120,9 +122,10 @@ Konten agama harus bisa dicek. Nawaetu menampilkan asal setiap teks, dan menjaga
 
 | Konten | Sumber | Keterangan |
 | :--- | :--- | :--- |
-| Hadits Amanah & Kepemimpinan, bab Sejarah Islam | [HadeethEnc.com](https://hadeethenc.com) | Teks Arab, terjemahan Indonesia dan Inggris, perawi, serta derajat ditampilkan tanpa diubah, dengan tautan ke setiap hadits |
+| Hadits Amanah & Kepemimpinan, bab Lini Masa Peristiwa | [HadeethEnc.com](https://hadeethenc.com) | Teks Arab, terjemahan Indonesia dan Inggris, perawi, serta derajat ditampilkan tanpa diubah, dengan tautan ke setiap hadits |
 | Ayat refleksi malam | [QuranEnc.com](https://quranenc.com) | Terjemahan Kementerian Agama RI dan Saheeh International, tanpa diubah |
-| Sirah Nabawiyah | Dataset Sirah Nabawiyah ([Bagian 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Bagian 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Berdasarkan *Ar-Rahiq al-Makhtum* karya Syaikh Shafiyyurrahman al-Mubarakfuri (terjemahan Indonesia) |
+| Ringkasan Sirah | *Catatan Penting Seputar Sejarah dan Kepribadian Rasulullah* karya Syaikh Haitsam Sarhan ([IslamHouse](https://islamhouse.com/id/books/2831882), [sarhaan.com](https://sarhaan.com/ab/a-concise-biography-of-the-prophet-peace-be-upon-him-and-his-special-traits/)) | Diterjemahkan ke bahasa Indonesia oleh Abdul Aziz Firdaus dan Mufassir Arif, ke bahasa Inggris oleh Ibraheem Abu Tameem Al-Mubtasim. Ditampilkan tanpa diubah, dengan izin tertulis dari penulis |
+| Sirah Lengkap | Dataset Sirah Nabawiyah ([Bagian 1](https://doi.org/10.17632/mwmzf8c2r5.1), [Bagian 2](https://doi.org/10.17632/zvn9cjn8nh.1), CC BY 4.0) | Berdasarkan *Ar-Rahiq al-Makhtum* karya Syaikh Shafiyyurrahman al-Mubarakfuri (terjemahan Indonesia) |
 | Teks dan audio Al-Qur'an | [Quran.com](https://quran.com), Kemenag | Murattal oleh Mishary Rashid Al-Afasy |
 
 Judul, tadabbur, pengantar bab, dan kalimat penghubung ditulis oleh Nawaetu, diberi keterangan demikian, dan hanya merangkum isi sumbernya. Nomor hadits di perpustakaan hadits masih menunggu verifikasi dengan [Sunnah.com](https://sunnah.com).
@@ -149,7 +152,7 @@ Dirancang untuk menyertakan rujukan pada jawaban agama dan mengakui batasnya bil
 Indonesia dan Inggris.
 
 **Dari mana konten agamanya berasal?**
-Dari sumber yang diterbitkan: hadits dari HadeethEnc, terjemahan Al-Qur'an melalui QuranEnc, dan Sirah dari dataset yang dicantumkan sumbernya, berdasarkan *Ar-Rahiq al-Makhtum*. Setiap konten menampilkan sumbernya. Lihat [Sumber Konten](#-sumber-konten).
+Dari sumber yang diterbitkan: hadits dari HadeethEnc, terjemahan Al-Qur'an melalui QuranEnc, Ringkasan Sirah dari buku Syaikh Haitsam Sarhan (dengan izin beliau), dan Sirah Lengkap dari dataset yang dicantumkan sumbernya, berdasarkan *Ar-Rahiq al-Makhtum*. Setiap konten menampilkan sumbernya. Lihat [Sumber Konten](#-sumber-konten).
 
 **Apakah Nawaetu memihak dalam politik?**
 Tidak. Konten Amanah & Kepemimpinan dan Tanya Nawaetu mengajarkan prinsip dari Al-Qur'an dan Sunnah, tanpa pernah menyebut atau mendukung partai, calon, maupun pejabat tertentu.
@@ -449,6 +452,7 @@ Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 - Murattal by Mishary Rashid Al-Afasy
 - Quran API by [Quran.com](https://quran.com)
 - Hadith texts and translations by [HadeethEnc.com](https://hadeethenc.com)
+- Concise Sirah by Shaykh Haytham Sarhan, published with his permission
 - Quran translations via [QuranEnc.com](https://quranenc.com)
 - Prayer times calculation by [Aladhan API](https://aladhan.com)
 - Icons by [Lucide Icons](https://lucide.dev)
@@ -465,4 +469,4 @@ Let's make ibadah easier, one niat at a time. 🚀🌙
 
 ---
 
-*Terakhir diperbarui: 13 November 2026*
+*Terakhir diperbarui: 15 November 2026*
