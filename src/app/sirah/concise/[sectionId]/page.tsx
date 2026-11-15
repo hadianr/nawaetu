@@ -16,13 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-"use client";
+import { permanentRedirect } from "next/navigation";
 
-import { useParams } from "next/navigation";
-import { ConciseChapterReader } from "@/components/sirah/ConciseChapterReader";
-
-// The part's own URL opens its first chapter, so links from before chapters had pages still work.
-export default function ConciseSectionPage() {
-    const { sectionId } = useParams<{ sectionId: string }>();
-    return <ConciseChapterReader sectionId={sectionId} number={1} />;
+// A part's own URL opens its first page; redirecting keeps one indexable URL per page.
+export default async function ConciseSectionPage({ params }: { params: Promise<{ sectionId: string }> }) {
+    const { sectionId } = await params;
+    permanentRedirect(`/sirah/concise/${sectionId}/1`);
 }
