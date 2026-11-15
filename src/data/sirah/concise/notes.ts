@@ -44,6 +44,8 @@ export interface ConciseNameOrigin {
 }
 
 export interface ConciseNote {
+    /** The Indonesian edition's chapter numbers on this page; a test checks they still match the page. */
+    covers: number[];
     contextId: string;
     contextEn: string;
     reflectId: string;
@@ -52,16 +54,18 @@ export interface ConciseNote {
     origins?: ConciseNameOrigin[];
 }
 
-// Keyed "<sectionId>:<first chapter>-<last chapter>" of a reading page ("s03:3" for a one-chapter page), so a page shows one note.
-// Only parts that split into the same pages in both editions get notes (pilot: s03); a test keeps keys and pages in step.
+// Keyed "<sectionId>/<page number>": one note per reading page. Both editions share page breaks (see paginate), and
+// `covers` records the chapters each note was written for, so a test fails if the pages ever shift.
 export const CONCISE_NOTES: Record<string, ConciseNote> = {
-    "s03:1-2": {
+    "s03/1": {
+        covers: [1, 2],
         contextId: "Kisah dibuka dengan silsilah beliau. Bagi orang Arab, nasab adalah identitas dan kehormatan, dan silsilah Nabi Muhammad SAW bersambung sampai Nabi Ismail, putra Nabi Ibrahim. Hadits sesudahnya menegaskan bahwa Allah memilih Bani Hasyim, lalu memilih beliau dari mereka: kemuliaan itu pilihan Allah, bukan hasil usaha manusia.",
         contextEn: "The story opens with his lineage. For the Arabs, lineage was identity and honour, and the lineage of Prophet Muhammad SAW reaches back to Prophet Ismail, son of Prophet Ibrahim. The hadith that follows says Allah chose Banu Hashim and then chose him from among them: that honour was Allah's choice, not something a person could earn.",
         reflectId: "Nasab yang mulia adalah pilihan Allah, sedangkan akhlak adalah pilihan kita. Akhlak seperti apa yang ingin kamu jaga agar nama baik keluargamu terjaga?",
         reflectEn: "A noble lineage is Allah's choice, while character is ours. Which manners do you want to keep so that your family's good name is kept too?",
     },
-    "s03:3": {
+    "s03/2": {
+        covers: [3],
         contextId: "Dari mana nama-nama di atas? Ada yang dipilih keluarga beliau, ada yang disebut Al-Qur'an, ada yang disebut Nabi Muhammad SAW sendiri, dan ada yang diberikan kaumnya. Buka setiap kelompok untuk melihat sumbernya.",
         contextEn: "Where do the names above come from? Some were chosen by his family, some are in the Quran, some he gave himself, and one came from his people. Open each group to see its source.",
         reflectId: "Setiap nama beliau bermakna kebaikan. Sifat baik apa yang ingin kamu tanamkan, sehingga orang mengenalmu karenanya?",
@@ -142,13 +146,15 @@ export const CONCISE_NOTES: Record<string, ConciseNote> = {
             },
         ],
     },
-    "s03:4-5": {
+    "s03/3": {
+        covers: [4, 5],
         contextId: "Dua bab ini menggambarkan beliau dari dalam dan dari luar. Pertama gambaran besarnya, dari ucapan beliau sendiri, ayat Al-Qur'an, dan kesaksian Aisyah RA bahwa akhlak beliau adalah Al-Qur'an. Lalu rupa beliau, yang digambarkan para sahabat dengan sangat rinci, dari wajah sampai keringatnya, karena begitulah mereka menjaga ingatan tentang orang yang paling mereka cintai.",
         contextEn: "These two chapters describe him from within and without. First the big picture, from his own words, a verse of the Quran, and the testimony of Aisyah RA that his character was the Quran. Then his appearance, which the Companions described in fine detail, from his face to his sweat, because that is how they kept the memory of the person they loved most.",
         reflectId: "Aisyah RA menggambarkan akhlak beliau sebagai Al-Qur'an. Ayat apa yang ingin kamu amalkan hari ini, bukan hanya dibaca?",
         reflectEn: "Aisyah RA described his character as the Quran. Which verse do you want to act on today, not only read?",
     },
-    "s03:6": {
+    "s03/4": {
+        covers: [6],
         contextId: "Inilah inti bagian ini: akhlak beliau sehari-hari, kepada Allah, keluarga, pelayan, sahabat, sampai kepada orang yang bersikap kasar. Banyak di antaranya bisa langsung kita praktikkan hari ini.",
         contextEn: "This is the heart of the part: his daily manners towards Allah, his family, those who served him, his Companions, and even people who were rude. Much of it can be practised today.",
         reflectId: "Dari akhlak-akhlak ini, mana yang paling jauh dari kebiasaanmu sekarang?",
@@ -156,13 +162,7 @@ export const CONCISE_NOTES: Record<string, ConciseNote> = {
     },
 };
 
-export function conciseNoteKey(sectionId: string, chapterNumbers: number[]): string {
-    const first = chapterNumbers[0];
-    const last = chapterNumbers[chapterNumbers.length - 1];
-    return `${sectionId}:${first === last ? first : `${first}-${last}`}`;
-}
-
-/** The single note for a reading page, keyed by the chapters on it. */
-export function getConciseNote(page: { section: Pick<ConciseSirahSection, "id">; chapters: { number: number }[] }): ConciseNote | undefined {
-    return CONCISE_NOTES[conciseNoteKey(page.section.id, page.chapters.map((c) => c.number))];
+/** The single note for a reading page. */
+export function getConciseNote(page: { section: Pick<ConciseSirahSection, "id">; number: number }): ConciseNote | undefined {
+    return CONCISE_NOTES[`${page.section.id}/${page.number}`];
 }

@@ -134,3 +134,14 @@ describe("display topics", () => {
     });
 });
 
+describe("shared page breaks", () => {
+    it("splits a part the same way in both editions when it has the same chapters", () => {
+        for (const section of getConciseReadableSections("id")) {
+            const en = getConciseSection("en", section.id)!;
+            if (en.chapters.length !== section.chapters.length) continue;
+            const breaks = (s: typeof section) => getConcisePages(s).map((p) => p.chapters.map((c) => c.number));
+            expect(breaks(en)).toEqual(breaks(section));
+        }
+    });
+});
+

@@ -88,7 +88,7 @@ const PAGE_MAX_WORDS = 500;
 const TINY_PAGE_WORDS = 100;
 const MERGED_MAX_WORDS = 600;
 
-function paginate(section: ConciseSirahSection): ConcisePageRef[] {
+function groupChapters(section: ConciseSirahSection): number[][] {
     const words = section.chapters.map((c) => wordsIn([c]));
     const groups: number[][] = [];
     let current: number[] = [];
@@ -116,7 +116,16 @@ function paginate(section: ConciseSirahSection): ConcisePageRef[] {
         }
     }
 
-    return groups.map((g, p) => ({
+    return groups;
+}
+
+// The Indonesian edition sets the page breaks, and the English edition reuses them whenever a part has the same
+// chapters, so a page shows the same story in both languages and a note fits both. Parts whose chapter count
+// differs (EN s04 and s12) are split on their own.
+function paginate(section: ConciseSirahSection): ConcisePageRef[] {
+    const indonesian = BOOKS.id.sections.find((s) => s.id === section.id);
+    const basis = indonesian && indonesian.chapters.length === section.chapters.length ? indonesian : section;
+    return groupChapters(basis).map((g, p) => ({
         section,
         number: p + 1,
         id: concisePageId(section.id, p + 1),
