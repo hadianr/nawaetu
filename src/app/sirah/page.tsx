@@ -1,326 +1,163 @@
 "use client";
 
 /**
- * Nawaetu - Sirah Nabawiyah Main Hub Dashboard
+ * Nawaetu - Sirah Nabawiyah hub: pick one of three ways to learn
  * Copyright (C) 2026 Hadian Rahmat
  */
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import {
-    BookOpen,
-    Search,
-    Sparkles,
-    CheckCircle2,
-    ChevronRight,
-    Award,
-} from "lucide-react";
-import { SIRAH_CHAPTERS, SIRAH_SECTIONS, getDailySirahHighlight, type SirahEra } from "@/data/sirah";
+import { ChevronRight } from "lucide-react";
+import { SIRAH_CHAPTERS, SIRAH_SECTIONS } from "@/data/sirah";
+import { CONCISE_READ_KEY, getConciseReadableSections, readingMinutes } from "@/data/sirah/concise";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
-import { SirahSourceNote } from "@/components/sirah/SirahSourceNote";
 import { useLocale } from "@/context/LocaleContext";
+import { useSirahContentLang } from "@/hooks/useSirahContentLang";
 import type { AppIconName } from "@/lib/icon-names";
 
-const ERA_TABS: { id: SirahEra | "all"; labelKey: "sirahEraAll" | "sirahEraMakkah" | "sirahEraMadinah" | "sirahEraGhazwah" | "sirahEraDiplomacy" | "sirahEraLegacy"; icon: AppIconName }[] = [
-    { id: "all", labelKey: "sirahEraAll", icon: "library" },
-    { id: "makkah", labelKey: "sirahEraMakkah", icon: "kaaba" },
-    { id: "madinah", labelKey: "sirahEraMadinah", icon: "landmark" },
-    { id: "ghazwah", labelKey: "sirahEraGhazwah", icon: "shield-check" },
-    { id: "diplomacy", labelKey: "sirahEraDiplomacy", icon: "scroll" },
-    { id: "legacy", labelKey: "sirahEraLegacy", icon: "sparkles" },
-];
+const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
+
+function readList(key: string): string[] {
+    try {
+        const v = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(v) ? v : [];
+    } catch {
+        return [];
+    }
+}
+
+interface PathCardProps {
+    href: string;
+    icon: AppIconName;
+    title: string;
+    description: string;
+    meta: string[];
+    badge?: string;
+    progress?: { done: number; total: number; label: string };
+}
+
+function PathCard({ href, icon, title, description, meta, badge, progress }: PathCardProps) {
+    return (
+        <li>
+            <Link
+                href={href}
+                className={cn(
+                    "group flex gap-3 rounded-2xl border p-4 transition-colors",
+                    FOCUS,
+                    badge
+                        ? "border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/5 hover:bg-[rgb(var(--color-primary))]/10"
+                        : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] hover:border-[rgb(var(--color-primary))]/40"
+                )}
+            >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/10">
+                    <AppIcon name={icon} size="md" tone="primary" />
+                </span>
+                <span className="min-w-0 flex-1 space-y-1">
+                    {badge && (
+                        <span className="inline-block rounded-full bg-[rgb(var(--color-primary))] px-2 py-0.5 text-xs font-bold text-[rgb(var(--color-primary-foreground))]">
+                            {badge}
+                        </span>
+                    )}
+                    <span className="block text-base font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]">{title}</span>
+                    <span className="block text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">{description}</span>
+                    <span className="flex flex-wrap gap-1.5 pt-1">
+                        {meta.map((m) => (
+                            <span key={m} className="rounded-md border border-[rgb(var(--color-border))] px-2 py-0.5 text-xs font-medium text-[rgb(var(--color-text-muted))]">{m}</span>
+                        ))}
+                    </span>
+                    {progress && progress.done > 0 && (
+                        <span className="block pt-1.5">
+                            <span className="block text-xs font-semibold text-[rgb(var(--color-primary-strong))]">{progress.label}</span>
+                            <span
+                                role="progressbar"
+                                aria-label={progress.label}
+                                aria-valuemin={0}
+                                aria-valuemax={progress.total}
+                                aria-valuenow={progress.done}
+                                className="mt-1 block h-1.5 w-full overflow-hidden rounded-full bg-[rgb(var(--color-border))]"
+                            >
+                                <span className="block h-full rounded-full bg-[rgb(var(--color-primary))]" style={{ width: `${Math.round((progress.done / progress.total) * 100)}%` }} />
+                            </span>
+                        </span>
+                    )}
+                </span>
+                <ChevronRight className="mt-3 h-5 w-5 shrink-0 text-[rgb(var(--color-text-muted))] transition-transform group-hover:translate-x-0.5" aria-hidden />
+            </Link>
+        </li>
+    );
+}
 
 export default function SirahDashboardPage() {
-    const { t } = useLocale();
-    const [selectedEra, setSelectedEra] = useState<SirahEra | "all">("all");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [completedSectionIds, setCompletedSectionIds] = useState<string[]>([]);
-    const [isQuizDoneToday, setIsQuizDoneToday] = useState(false);
-    const [dailyHighlight, setDailyHighlight] = useState<ReturnType<typeof getDailySirahHighlight> | null>(null);
+    const { t, locale } = useLocale();
+    const [contentLang] = useSirahContentLang();
+    const [fullDone, setFullDone] = useState(0);
+    const [conciseDone, setConciseDone] = useState(0);
+
+    const conciseSections = useMemo(() => getConciseReadableSections(contentLang), [contentLang]);
+    const conciseMinutes = useMemo(() => conciseSections.reduce((sum, s) => sum + readingMinutes(s), 0), [conciseSections]);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const completed = JSON.parse(localStorage.getItem("nawaetu_sirah_completed") || "[]");
-            const todayStr = new Date().toISOString().split("T")[0];
-            const lastClaimed = localStorage.getItem("nawaetu_sirah_quiz_last_claimed");
-
-            queueMicrotask(() => {
-                setCompletedSectionIds(completed);
-                setIsQuizDoneToday(lastClaimed === todayStr);
-                // Date-dependent: compute after mount so SSR (UTC) and client day can't mismatch.
-                setDailyHighlight(getDailySirahHighlight());
-            });
-        }
-    }, []);
-
-    const filteredChapters = useMemo(() => {
-        return SIRAH_CHAPTERS.filter((chap) => {
-            const matchesEra = selectedEra === "all" || chap.era === selectedEra;
-            const matchesSearch =
-                !searchQuery ||
-                chap.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                chap.summary.toLowerCase().includes(searchQuery.toLowerCase());
-            return matchesEra && matchesSearch;
+        const ids = new Set(conciseSections.map((s) => s.id));
+        const full = readList("nawaetu_sirah_completed").length;
+        const concise = readList(CONCISE_READ_KEY).filter((id) => ids.has(id)).length;
+        queueMicrotask(() => {
+            setFullDone(full);
+            setConciseDone(concise);
         });
-    }, [selectedEra, searchQuery]);
+    }, [conciseSections]);
 
-    const totalSections = SIRAH_SECTIONS.length;
-    const progressPercent = Math.round((completedSectionIds.length / totalSections) * 100);
+    const fill = (s: string, vars: Record<string, string | number>) =>
+        Object.entries(vars).reduce((acc, [k, v]) => acc.replace(`{${k}}`, String(v)), s);
 
     return (
-        <div className={cn(
-            "sirah-page min-h-screen w-full max-w-none pb-24 pt-3 px-3.5 sm:px-6 mx-auto space-y-3.5 sm:space-y-5 transition-colors xl:max-w-4xl",
-            "text-[rgb(var(--color-text))]"
-        )}>
-            {/* Header Banner */}
-            <div
-                className={cn(
-                    "p-4 sm:p-6 rounded-2xl sm:rounded-3xl border relative overflow-hidden transition-all shadow-xs",
-                    "bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-[rgb(var(--color-primary))]/5 to-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))]"
-                )}
-            >
-                <div className="space-y-2 sm:space-y-3 relative z-10 max-w-2xl">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                        <Link
-                            href="#"
-                            onClick={(e) => e.preventDefault()}
-                            className={cn(
-                                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 cursor-default",
-                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
-                            )}
-                        >
-                            <BookOpen className="w-2.5 h-2.5 shrink-0" />
-                            <span>Ar-Raheeq Al-Makhtum</span>
-                        </Link>
-                        {isQuizDoneToday ? (
-                            <Link
-                                href="#"
-                                onClick={(e) => e.preventDefault()}
-                                className={cn(
-                                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 cursor-default",
-                                    "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
-                                )}
-                            >
-                                <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-[rgb(var(--color-success))]" />
-                                <span>{t.sirahQuizDoneToday}</span>
-                            </Link>
-                        ) : (
-                            <Link
-                                href="/sirah/quiz"
-                                className={cn(
-                                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 transition-all",
-                                    "bg-[rgb(var(--color-warning))]/10 text-[rgb(var(--color-warning))] border-[rgb(var(--color-warning))]/25 hover:bg-[rgb(var(--color-warning))]/20"
-                                )}
-                            >
-                                <Award className="w-2.5 h-2.5 shrink-0 text-[rgb(var(--color-warning))]" />
-                                <span>{t.sirahDailyQuiz}</span>
-                            </Link>
-                        )}
-                    </div>
-                    <h1
-                        className={cn(
-                            "text-lg sm:text-2xl font-extrabold tracking-tight",
-                            "text-[rgb(var(--color-text-strong))]"
-                        )}
-                    >
-                        <span className="inline-flex items-center gap-2"><AppIcon name="moon" size="sm" tone="primary" /> Sirah Nabawiyah</span>
+        <div className="sirah-page min-h-screen w-full px-4 pt-4 pb-nav sm:px-6 text-[rgb(var(--color-text))]">
+            <main className="mx-auto w-full max-w-2xl space-y-5">
+                <header className="space-y-1.5">
+                    <h1 className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-[rgb(var(--color-text-strong))] sm:text-2xl">
+                        <AppIcon name="moon" size="sm" tone="primary" /> Sirah Nabawiyah
                     </h1>
-                    <p
-                        className={cn(
-                            "text-[11px] sm:text-xs sm:text-sm leading-relaxed font-normal",
-                            "text-[rgb(var(--color-text-muted))]"
-                        )}
-                    >
-                        {t.sirahHomeIntro}
-                    </p>
+                    <p className="text-sm leading-relaxed text-[rgb(var(--color-text-muted))]">{t.sirahHomeIntro}</p>
+                </header>
 
-                    {/* Overall Reading Progress */}
-                    <div className="pt-1 space-y-1">
-                        <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold">
-                            <span className="text-[rgb(var(--color-text-muted))]">{t.sirahReadingProgress}</span>
-                            <span className="text-[rgb(var(--color-primary-strong))] font-bold">
-                                {t.sirahSectionsProgress.replace("{done}", String(completedSectionIds.length)).replace("{total}", String(totalSections)).replace("{percent}", String(progressPercent))}
-                            </span>
-                        </div>
-                        <div className="w-full h-1.5 sm:h-2 rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
-                            <div
-                                className="h-full rounded-full transition-all duration-500 bg-[rgb(var(--color-primary))]"
-                                style={{ width: `${progressPercent}%` }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <Link
-                href="/sirah/history"
-                className={cn(
-                    "flex items-center justify-between gap-2 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-semibold transition-colors",
-                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-primary-strong))] hover:border-[rgb(var(--color-primary))]/40"
-                )}
-            >
-                <span className="inline-flex items-center gap-2"><AppIcon name="calendar" size="sm" tone="primary" /> {t.historyOpenTimeline}</span>
-                <ChevronRight className="w-4 h-4" />
-            </Link>
-
-            {/* Daily Highlight Widget */}
-            {dailyHighlight && (
-                <div
-                    className={cn(
-                        "p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border space-y-1.5 relative overflow-hidden transition-all",
-                        "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40"
-                    )}
-                >
-                    <div className="flex items-center justify-between">
-                        <div
-                            className={cn(
-                                "flex items-center gap-1.5 text-[10px] sm:text-xs font-bold",
-                                "text-[rgb(var(--color-primary-strong))]"
-                            )}
-                        >
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>{t.sirahDailyHikmah}</span>
-                        </div>
-                    </div>
-                    <p
-                        className={cn(
-                            "text-xs sm:text-sm font-semibold leading-relaxed",
-                            "text-[rgb(var(--color-text))]"
-                        )}
-                    >
-                        &quot;{dailyHighlight.suggestedIntention}&quot;
-                    </p>
-                    <div className="pt-0.5 flex items-center justify-between gap-2 text-xs">
-                        <span
-                            className={cn(
-                                "font-medium text-[10px] sm:text-xs truncate min-w-0",
-                                "text-[rgb(var(--color-text-muted))]"
-                            )}
-                        >
-                            <span className="inline-flex items-center gap-1"><AppIcon name="landmark" size="xs" tone="muted" /> {dailyHighlight.chapterTitle}, {dailyHighlight.subbab}</span>
-                        </span>
-                        <Link
-                            href={`/sirah/${dailyHighlight.chapterSlug}/${dailyHighlight.id}`}
-                            className={cn(
-                                "text-xs font-bold hover:underline flex items-center gap-0.5 shrink-0",
-                                "text-[rgb(var(--color-primary-strong))]"
-                            )}
-                        >
-                            <span>{t.sirahReadSection}</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
-                        </Link>
-                    </div>
-                </div>
-            )}
-
-            {/* Search & Era Filter Controls */}
-            <div className="space-y-2">
-                {/* Search Input */}
-                <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[rgb(var(--color-text-muted))]" />
-                    <input
-                        type="text"
-                        placeholder={t.sirahSearchPlaceholder}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        className={cn(
-                            "w-full pl-10 pr-4 py-2 text-[16px] sm:text-sm rounded-xl sm:rounded-2xl border transition-all outline-hidden",
-                            "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-muted))] focus:border-[rgb(var(--color-primary))] focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20"
-                        )}
-                    />
-                </div>
-
-                {/* Era Filter Badges */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                    {ERA_TABS.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setSelectedEra(tab.id)}
-                            className={cn(
-                                "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 cursor-pointer",
-                                selectedEra === tab.id
-                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
-                                    : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10"
-                            )}
-                        >
-                            <AppIcon name={tab.icon} size="sm" tone={selectedEra === tab.id ? "default" : "muted"} />
-                            <span>{t[tab.labelKey]}</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Chapter List Grid */}
-            <div className="space-y-2.5">
-                <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold px-0.5">
-                    <span className="text-[rgb(var(--color-text-muted))]">{t.sirahChapterListTitle.replace("{count}", String(filteredChapters.length))}</span>
-                    <span className="text-[rgb(var(--color-primary-strong))]">
-                        {completedSectionIds.length > 0 && t.sirahSectionsDone.replace("{count}", String(completedSectionIds.length))}
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                    {filteredChapters.map((chap) => {
-                        const chapterSections = SIRAH_SECTIONS.filter((s) => s.chapterSlug === chap.slug);
-                        const doneCount = chapterSections.filter((s) => completedSectionIds.includes(s.id)).length;
-                        const isAllDone = doneCount > 0 && doneCount === chapterSections.length;
-                        const formattedEra = chap.era.charAt(0).toUpperCase() + chap.era.slice(1);
-
-                        return (
-                            <Link
-                                key={chap.id}
-                                href={`/sirah/${chap.slug}`}
-                                className={cn(
-                                    "p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all hover:scale-[1.005] active:scale-[0.99] flex flex-col justify-between gap-2 group",
-                                    isAllDone
-                                        ? "border-[rgb(var(--color-success))]/40 bg-[rgb(var(--color-success))]/10"
-                                        : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5"
-                                )}
-                            >
-                                <div className="space-y-1 sm:space-y-1.5">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span
-                                            className={cn(
-                                                "text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md",
-                                                "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/25"
-                                            )}
-                                        >
-                                            {t.sirahChapterBadge.replace("{order}", String(chap.orderIndex)).replace("{era}", String(formattedEra))}
-                                        </span>
-                                        {isAllDone && (
-                                            <span className="text-[10px] font-bold flex items-center gap-0.5 text-[rgb(var(--color-success))]">
-                                                <CheckCircle2 className="w-3 h-3" />
-                                                {t.sirahDone}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <h3
-                                        className={cn(
-                                            "font-bold text-xs sm:text-sm leading-snug transition-colors",
-                                            "text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary-strong))]"
-                                        )}
-                                    >
-                                        {chap.title}
-                                    </h3>
-                                </div>
-
-                                <div className="flex items-center justify-between text-[10px] sm:text-xs pt-2 border-t border-[rgb(var(--color-border))]">
-                                    <span className="text-[rgb(var(--color-text-muted))]">{t.sirahSectionCount.replace("{count}", String(chap.totalSections))}</span>
-                                    <div className="flex items-center gap-0.5 font-semibold text-[rgb(var(--color-primary-strong))]">
-                                        <span>{t.sirahOpenChapter}</span>
-                                        <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                                    </div>
-                                </div>
-                            </Link>
-                        );
-                    })}
-                </div>
-            </div>
-
-            <SirahSourceNote className="pt-2" />
+                <section aria-labelledby="sirah-paths" className="space-y-2.5">
+                    <h2 id="sirah-paths" className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{t.sirahPathsTitle}</h2>
+                    <ul className="space-y-2.5">
+                        <PathCard
+                            href="/sirah/concise"
+                            icon="book"
+                            badge={t.sirahPathStartHere}
+                            title={t.sirahPathConciseTitle}
+                            description={t.sirahPathConciseDesc}
+                            meta={[
+                                fill(t.sirahPathSections, { count: conciseSections.length }),
+                                fill(t.sirahMinutes, { count: conciseMinutes }),
+                                t.sirahLangIdEn,
+                            ]}
+                            progress={{ done: conciseDone, total: conciseSections.length, label: fill(t.sirahPathProgress, { done: conciseDone, total: conciseSections.length }) }}
+                        />
+                        <PathCard
+                            href="/sirah/full"
+                            icon="library"
+                            title={t.sirahPathFullTitle}
+                            description={t.sirahPathFullDesc}
+                            meta={[
+                                fill(t.sirahPathChapters, { count: SIRAH_CHAPTERS.length }),
+                                fill(t.sirahPathSubsections, { count: SIRAH_SECTIONS.length }),
+                                locale === "en" ? t.sirahIndonesianOnly : t.sirahLangId,
+                            ]}
+                            progress={{ done: fullDone, total: SIRAH_SECTIONS.length, label: fill(t.sirahPathProgress, { done: fullDone, total: SIRAH_SECTIONS.length }) }}
+                        />
+                        <PathCard
+                            href="/sirah/history"
+                            icon="calendar"
+                            title={t.historyPageTitle}
+                            description={t.sirahPathHistoryDesc}
+                            meta={[t.sirahPathHistoryMeta, t.sirahLangIdEn]}
+                        />
+                    </ul>
+                </section>
+            </main>
         </div>
     );
 }

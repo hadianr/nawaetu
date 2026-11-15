@@ -67,6 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ...(RAMADHAN_PAGE_ENABLED ? [{ url: `${baseUrl}/ramadhan`, changeFrequency: 'monthly' as const, priority: 0.7 }] : []),
         { url: `${baseUrl}/sirah`, changeFrequency: 'weekly', priority: 0.8 },
         { url: `${baseUrl}/sirah/history`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/sirah/full`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/sirah/concise`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/rewards`, changeFrequency: 'monthly', priority: 0.5 },
     ]
