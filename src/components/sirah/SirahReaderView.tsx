@@ -13,7 +13,6 @@ import {
     CheckCircle2,
     Volume2,
     VolumeX,
-    Sparkles,
     Type,
     Share2,
     Check,
@@ -104,15 +103,6 @@ export function SirahReaderView({
         setIsCompleted(!isCompleted);
     };
 
-    const handleSetIntention = () => {
-        const existingIntentions: string[] = JSON.parse(localStorage.getItem("nawaetu_user_intentions") || "[]");
-        if (!existingIntentions.includes(section.suggestedIntention)) {
-            existingIntentions.push(section.suggestedIntention);
-            localStorage.setItem("nawaetu_user_intentions", JSON.stringify(existingIntentions));
-        }
-        toast.success(t.sirahReaderIntentionAdded);
-    };
-
     const toggleTTS = () => {
         if (!("speechSynthesis" in window)) {
             toast.error(t.sirahReaderTtsUnsupported);
@@ -135,7 +125,7 @@ export function SirahReaderView({
     };
 
     const handleCopy = () => {
-        const text = `${section.chapterTitle} - ${section.subbab}\n\n${section.content.join("\n\n")}\n\n[Hikmah & Niat]: ${section.suggestedIntention}\n\nSumber: ${SIRAH_SOURCE.book}, ${SIRAH_SOURCE.authorId}${section.pageStart ? `, hlm. ${section.pageStart}${section.pageEnd ? `-${section.pageEnd}` : ""}` : ""}\n(Dibaca dari Nawaetu.com)`;
+        const text = `${section.chapterTitle} - ${section.subbab}\n\n${section.content.join("\n\n")}\n\nSumber: ${SIRAH_SOURCE.book}, ${SIRAH_SOURCE.authorId}${section.pageStart ? `, hlm. ${section.pageStart}${section.pageEnd ? `-${section.pageEnd}` : ""}` : ""}\n(Dibaca dari Nawaetu.com)`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -316,34 +306,6 @@ export function SirahReaderView({
                         <SirahInlineProse text={paragraph} />
                     </p>
                 ))}
-            </div>
-
-            {/* Suggested Intention Card */}
-            <div
-                className={cn(
-                    "p-5 rounded-2xl border space-y-3 relative overflow-hidden transition-all",
-                        "bg-gradient-to-br from-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-text))]"
-                )}
-            >
-                <div className="flex items-center gap-2 font-bold text-xs text-[rgb(var(--color-primary-strong))]">
-                    <Sparkles className="w-4 h-4" />
-                    <span>{t.sirahReaderHikmahTitle}</span>
-                </div>
-                <p className="text-sm sm:text-base font-semibold leading-relaxed">
-                    &quot;{section.suggestedIntention}&quot;
-                </p>
-                <div className="pt-1 flex items-center justify-end">
-                    <button
-                        onClick={handleSetIntention}
-                        className={cn(
-                            "px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer",
-                            "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
-                        )}
-                    >
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>{t.sirahReaderSetIntention}</span>
-                    </button>
-                </div>
             </div>
 
             {/* Completion & Next/Prev Navigation */}
