@@ -5,9 +5,10 @@
  * Copyright (C) 2026 Hadian Rahmat
  */
 
+import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
-import { useSirahContentLang, type SirahContentLang } from "@/hooks/useSirahContentLang";
+import { sirahCounterpartHref, useSirahContentLang, type SirahContentLang } from "@/hooks/useSirahContentLang";
 
 const OPTIONS: { value: SirahContentLang; short: string; name: string }[] = [
     { value: "id", short: "ID", name: "Bahasa Indonesia" },
@@ -17,6 +18,14 @@ const OPTIONS: { value: SirahContentLang; short: string; name: string }[] = [
 export function ContentLangToggle({ className, hideLabel }: { className?: string; hideLabel?: boolean }) {
     const { t } = useLocale();
     const [lang, setLang] = useSirahContentLang();
+    const pathname = usePathname();
+    const router = useRouter();
+    const choose = (next: SirahContentLang) => {
+        setLang(next);
+        // On a page that exists in both languages, open its URL in the chosen language.
+        const href = sirahCounterpartHref(pathname, next);
+        if (href && href !== pathname) router.push(href);
+    };
 
     return (
         <div role="group" aria-label={t.sirahContentLangLabel} className={cn("inline-flex items-center gap-2", className)}>
@@ -31,7 +40,7 @@ export function ContentLangToggle({ className, hideLabel }: { className?: string
                             aria-pressed={active}
                             aria-label={o.name}
                             title={o.name}
-                            onClick={() => setLang(o.value)}
+                            onClick={() => choose(o.value)}
                             className={cn(
                                 "min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]",
                                 active

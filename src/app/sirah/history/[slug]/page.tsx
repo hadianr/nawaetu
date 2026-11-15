@@ -32,7 +32,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const chapter = getHistoryChapter(slug);
     if (!chapter) notFound();
-    return pageMetadata(`${chapter.titleId} · Lini Masa Sirah Nabawiyah`, chapter.introId, `/sirah/history/${slug}`);
+    return pageMetadata(`${chapter.titleId} · Lini Masa Sirah Nabawiyah`, chapter.introId, `/sirah/history/${slug}`, {
+        languages: { id: `/sirah/history/${slug}`, en: `/en/sirah/history/${slug}` },
+    });
 }
 
 export default async function HistoryChapterPage({ params }: { params: Promise<{ slug: string }> }) {

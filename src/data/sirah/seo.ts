@@ -6,7 +6,7 @@
  */
 
 import { book, breadcrumbList, collectionPage } from "@/components/seo/JsonLd";
-import { CONCISE_BOOK_INFO } from "./concise/seo";
+import { CONCISE_BOOK_INFO, type SeoLang } from "./concise/seo";
 
 const SIRAH = { name: "Sirah Nabawiyah", path: "/sirah" };
 const HOME = { name: "Nawaetu", path: "/" };
@@ -28,12 +28,22 @@ export const SIRAH_SEO = {
         title: "Lini Masa Peristiwa Sirah Nabawiyah",
         description: "Peristiwa penting dalam kehidupan Nabi Muhammad SAW secara berurutan, dari sebelum kenabian sampai wafat, dengan hadits sahih dari HadeethEnc dan tanggal yang bisa dicek sumbernya.",
     },
+    conciseEn: {
+        title: "Concise Sirah: The Life and Character of Prophet Muhammad SAW",
+        description: "Shaykh Haytham Sarhan's concise biography of Prophet Muhammad SAW and his special traits, in English and Indonesian, published unchanged with the author's permission and read page by page.",
+    },
+    historyEn: {
+        title: "Timeline of Events in the Sirah",
+        description: "Key events in the life of Prophet Muhammad SAW in order, from before prophethood to his passing, with authentic hadiths from HadeethEnc and dates you can check.",
+    },
 } as const;
 
 export const SIRAH_BREADCRUMB = {
     concise: { name: "Ringkasan Sirah", path: "/sirah/concise" },
     full: { name: "Sirah Lengkap", path: "/sirah/full" },
     history: { name: "Lini Masa Peristiwa", path: "/sirah/history" },
+    conciseEn: { name: "Concise Sirah", path: "/en/sirah/concise" },
+    historyEn: { name: "Timeline of Events", path: "/en/sirah/history" },
 };
 
 export function sirahBreadcrumb(...items: { name: string; path: string }[]) {
@@ -49,6 +59,9 @@ export const sirahHubJsonLd = () => [
     ]),
 ];
 
-export const conciseIndexJsonLd = () => [sirahBreadcrumb(SIRAH_BREADCRUMB.concise), book(CONCISE_BOOK_INFO)];
+export const conciseIndexJsonLd = (lang: SeoLang = "id") => [
+    sirahBreadcrumb(lang === "en" ? SIRAH_BREADCRUMB.conciseEn : SIRAH_BREADCRUMB.concise),
+    book(CONCISE_BOOK_INFO),
+];
 export const fullIndexJsonLd = () => [sirahBreadcrumb(SIRAH_BREADCRUMB.full)];
-export const historyIndexJsonLd = () => [sirahBreadcrumb(SIRAH_BREADCRUMB.history)];
+export const historyIndexJsonLd = (lang: SeoLang = "id") => [sirahBreadcrumb(lang === "en" ? SIRAH_BREADCRUMB.historyEn : SIRAH_BREADCRUMB.history)];

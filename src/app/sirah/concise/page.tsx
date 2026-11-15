@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
 import { cn } from "@/lib/utils";
 import {
@@ -44,6 +44,7 @@ const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:rin
 export default function ConciseSirahPage() {
     const { t } = useLocale();
     const [lang] = useSirahContentLang();
+    const prefix = useSirahPathPrefix();
     const book = getConciseSirah(lang);
     const [read, setRead] = useState<string[]>([]);
 
@@ -65,7 +66,7 @@ export default function ConciseSirahPage() {
     return (
         <div className="min-h-screen bg-[rgb(var(--color-background))] px-4 py-4 pb-nav font-sans text-[rgb(var(--color-text))] sm:px-6 sm:py-6">
             <main className="mx-auto w-full max-w-2xl space-y-5">
-                {conciseIndexJsonLd().map((data, i) => <JsonLd key={i} data={data} />)}
+                {conciseIndexJsonLd(lang).map((data, i) => <JsonLd key={i} data={data} />)}
                 <header className="flex items-start gap-3">
                     <Link
                         href="/sirah"
@@ -90,7 +91,7 @@ export default function ConciseSirahPage() {
                         {t.sirahPathSections.replace("{count}", String(readable.length))} · {t.sirahMinutes.replace("{count}", String(totalMinutes))}
                     </p>
                     <Link
-                        href={`/sirah/concise/${nextUp.section.id}/${nextUp.number}`}
+                        href={`${prefix}/sirah/concise/${nextUp.section.id}/${nextUp.number}`}
                         className={cn("flex min-h-11 items-center justify-center gap-1 rounded-xl bg-[rgb(var(--color-primary))] px-4 text-sm font-bold text-[rgb(var(--color-primary-foreground))] transition-opacity hover:opacity-90", FOCUS)}
                     >
                         {started ? t.conciseSirahContinue : t.conciseSirahStart}
@@ -140,7 +141,7 @@ export default function ConciseSirahPage() {
                                                 return (
                                                     <li key={pg.id}>
                                                         <Link
-                                                            href={`/sirah/concise/${section.id}/${pg.number}`}
+                                                            href={`${prefix}/sirah/concise/${section.id}/${pg.number}`}
                                                             className={cn("flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm text-[rgb(var(--color-primary-strong))] hover:bg-[rgb(var(--color-primary))]/5", FOCUS)}
                                                         >
                                                             <span className="w-5 shrink-0 text-xs text-[rgb(var(--color-text-muted))]">{pg.number}.</span>

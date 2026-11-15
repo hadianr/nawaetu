@@ -83,7 +83,7 @@ describe("ClientEntryGate", () => {
         expect(screen.getByText("Surah")).toBeTruthy();
     });
 
-    it.each([["/about", true], ["/quran/114", true], ["/sirah/full", true], ["/", false], ["/qibla", false], ["/quranx", false], [null, false]])(
+    it.each([["/about", true], ["/quran/114", true], ["/sirah/full", true], ["/en/sirah/concise/s03/1", true], ["/en", false], ["/", false], ["/qibla", false], ["/quranx", false], [null, false]])(
         "isPublicContentPath(%s) is %s",
         (path, expected) => expect(isPublicContentPath(path as string | null)).toBe(expected),
     );

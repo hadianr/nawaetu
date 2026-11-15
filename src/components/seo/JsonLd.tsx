@@ -17,13 +17,13 @@ export function breadcrumbList(items: { name: string; path: string }[]) {
     };
 }
 
-export function article(headline: string, description: string, path: string) {
+export function article(headline: string, description: string, path: string, inLanguage = "id-ID") {
     return {
         "@context": "https://schema.org",
         "@type": "Article",
         headline,
         description,
-        inLanguage: "id-ID",
+        inLanguage,
         mainEntityOfPage: `${SITE_URL}${path}`,
         author: { "@type": "Organization", name: "Nawaetu" },
         publisher: { "@type": "Organization", name: "Nawaetu", logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512x512.png` } },
@@ -58,14 +58,14 @@ export function book(info: BookInfo) {
 }
 
 /** One reading page of a book, as a Chapter that is part of it. */
-export function chapterPart(name: string, description: string, path: string, bookInfo: BookInfo, position: number) {
+export function chapterPart(name: string, description: string, path: string, bookInfo: BookInfo, position: number, inLanguage = "id-ID") {
     return {
         "@context": "https://schema.org",
         "@type": "Chapter",
         name,
         description,
         position,
-        inLanguage: "id-ID",
+        inLanguage,
         url: `${SITE_URL}${path}`,
         isPartOf: { "@type": "Book", name: bookInfo.name, author: { "@type": "Person", name: bookInfo.author }, url: `${SITE_URL}${bookInfo.path}` },
     };

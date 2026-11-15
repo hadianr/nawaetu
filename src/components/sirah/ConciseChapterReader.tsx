@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Lightbulb, ShieldCheck, Sparkles } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { useSirahContentLang } from "@/hooks/useSirahContentLang";
+import { useSirahContentLang, useSirahPathPrefix } from "@/hooks/useSirahContentLang";
 import { cn } from "@/lib/utils";
 import { hadeethEncUrl } from "@/data/history/chapters";
 import { ContentLangToggle } from "@/components/sirah/ContentLangToggle";
@@ -31,6 +31,31 @@ import {
 import { getConciseNote, type ConciseNameOrigin, type ConciseNote, type ConciseNoteHadith } from "@/data/sirah/concise/notes";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-primary))]";
+
+// The note box is content, so its labels follow the reading language (an /en page reads fully in English),
+// not the app language that the buttons and counters use.
+const NOTE_TEXT = {
+    id: {
+        label: "Memahami Lebih Dalam",
+        reflect: "Renungkan",
+        related: "Dalil terkait",
+        origins: "Asal nama-nama ini",
+        readIn: "Baca di {label}",
+        hadithRef: "HR {refs}",
+        and: "dan",
+        disclaimer: "Bagian \u201cMemahami Lebih Dalam\u201d ditulis oleh Nawaetu, bukan bagian dari buku.",
+    },
+    en: {
+        label: "Understand More",
+        reflect: "Reflect",
+        related: "Related hadith",
+        origins: "Where these names come from",
+        readIn: "Read in {label}",
+        hadithRef: "Narrated by {refs}",
+        and: "and",
+        disclaimer: "\u201cUnderstand More\u201d is written by Nawaetu and is not part of the book.",
+    },
+} as const;
 const NOTE_BOX = "space-y-2 rounded-2xl border border-dashed border-[rgb(var(--color-primary))]/40 bg-[rgb(var(--color-primary))]/5 p-4";
 
 function readIds(): string[] {
@@ -49,7 +74,7 @@ function saveRead(id: string) {
     } catch { /* storage blocked: progress just isn't kept */ }
 }
 
-const pageHref = (ref: Pick<ConcisePageRef, "section" | "number">) => `/sirah/concise/${ref.section.id}/${ref.number}`;
+const pageHref = (prefix: string, ref: Pick<ConcisePageRef, "section" | "number">) => `${prefix}/sirah/concise/${ref.section.id}/${ref.number}`;
 
 function NoteLabel({ children }: { children: React.ReactNode }) {
     return (
@@ -137,7 +162,7 @@ function HadithSource({ hadith: h, lang }: { hadith: ConciseNoteHadith; lang: "i
             <figcaption className="flex flex-wrap items-center gap-x-3 text-xs text-[rgb(var(--color-text-muted))]">
                 <span className="font-semibold">
                     {h.references?.length
-                        ? t.conciseHadithRef.replace("{refs}", h.references.map((r) => `${r.collection} no. ${r.number}`).join(` ${t.conciseAnd} `))
+                        ? NOTE_TEXT[lang].hadithRef.replace("{refs}", h.references.map((r) => `${r.collection} no. ${r.number}`).join(` ${NOTE_TEXT[lang].and} `))
                         : isEn ? h.attributionEn : h.attributionId}
                     {" · "}{isEn ? h.gradeEn : h.gradeId}
                 </span>
@@ -150,11 +175,10 @@ function HadithSource({ hadith: h, lang }: { hadith: ConciseNoteHadith; lang: "i
 }
 
 function NameOrigins({ origins, lang }: { origins: ConciseNameOrigin[]; lang: "id" | "en" }) {
-    const { t } = useLocale();
     const isEn = lang === "en";
     return (
         <div className="space-y-1.5 pt-1">
-            <p className="text-xs font-bold text-[rgb(var(--color-text-strong))]">{t.conciseNameOrigins}</p>
+            <p className="text-xs font-bold text-[rgb(var(--color-text-strong))]">{NOTE_TEXT[lang].origins}</p>
             <ul className="divide-y divide-[rgb(var(--color-border))] rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
                 {origins.map((o) => (
                     <li key={o.fromEn}>
@@ -173,7 +197,7 @@ function NameOrigins({ origins, lang }: { origins: ConciseNameOrigin[]; lang: "i
                                     if (src.kind === "sirah") {
                                         return (
                                             <Link key={i} href={src.href} className={cn("inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-[rgb(var(--color-primary-strong))] underline underline-offset-2", FOCUS)}>
-                                                {t.conciseReadIn.replace("{label}", isEn ? src.labelEn : src.labelId)}
+                                                {NOTE_TEXT[lang].readIn.replace("{label}", isEn ? src.labelEn : src.labelId)}
                                                 <ChevronRight className="h-3.5 w-3.5" aria-hidden />
                                             </Link>
                                         );
@@ -197,19 +221,18 @@ function NameOrigins({ origins, lang }: { origins: ConciseNameOrigin[]; lang: "i
 
 /** "Memahami Lebih Dalam": Nawaetu's own context, name origins, a reflection and related sources, below the book text. */
 function ChapterNote({ note, lang }: { note: ConciseNote; lang: "id" | "en" }) {
-    const { t } = useLocale();
     const isEn = lang === "en";
     const h = note.hadith;
 
     return (
-        <aside aria-label={t.conciseNoteLabel} className={NOTE_BOX}>
-            <NoteLabel><Sparkles className="h-3.5 w-3.5" aria-hidden />{t.conciseNoteLabel}</NoteLabel>
+        <aside aria-label={NOTE_TEXT[lang].label} className={NOTE_BOX}>
+            <NoteLabel><Sparkles className="h-3.5 w-3.5" aria-hidden />{NOTE_TEXT[lang].label}</NoteLabel>
             <p lang={lang} className="text-sm leading-relaxed">{isEn ? note.contextEn : note.contextId}</p>
             {note.origins && <NameOrigins origins={note.origins} lang={lang} />}
 
             <div className="space-y-1 border-t border-[rgb(var(--color-border))] pt-3">
                 <p className="flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--color-text-strong))]">
-                    <Lightbulb className="h-3.5 w-3.5 text-[rgb(var(--color-primary-strong))]" aria-hidden />{t.conciseReflect}
+                    <Lightbulb className="h-3.5 w-3.5 text-[rgb(var(--color-primary-strong))]" aria-hidden />{NOTE_TEXT[lang].reflect}
                 </p>
                 <p lang={lang} className="text-sm font-medium italic leading-relaxed">{isEn ? note.reflectEn : note.reflectId}</p>
             </div>
@@ -217,7 +240,7 @@ function ChapterNote({ note, lang }: { note: ConciseNote; lang: "id" | "en" }) {
             {h && (
                 <div className="flex flex-col gap-2 border-t border-[rgb(var(--color-border))] pt-3">
                     <p className="flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--color-text-strong))]">
-                        <ShieldCheck className="h-3.5 w-3.5 text-[rgb(var(--color-primary-strong))]" aria-hidden />{t.conciseRelatedHadith}
+                        <ShieldCheck className="h-3.5 w-3.5 text-[rgb(var(--color-primary-strong))]" aria-hidden />{NOTE_TEXT[lang].related}
                     </p>
                     <HadithSource hadith={h} lang={lang} />
                 </div>
@@ -229,6 +252,7 @@ function ChapterNote({ note, lang }: { note: ConciseNote; lang: "id" | "en" }) {
 export function ConciseChapterReader({ sectionId, number }: { sectionId: string; number: number }) {
     const { t } = useLocale();
     const [lang] = useSirahContentLang();
+    const prefix = useSirahPathPrefix();
     const book = getConciseSirah(lang);
     const ref = getConcisePage(lang, sectionId, number);
     const [read, setRead] = useState<string[]>([]);
@@ -257,7 +281,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
             <main className="mx-auto w-full max-w-2xl space-y-4">
                 <header className="flex items-start gap-3">
                     <Link
-                        href="/sirah/concise"
+                        href={`${prefix}/sirah/concise`}
                         aria-label={t.conciseSirahContents}
                         className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] transition-colors hover:bg-[rgb(var(--color-primary))]/10", FOCUS)}
                     >
@@ -300,7 +324,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                                 return (
                                     <li key={page.id}>
                                         <Link
-                                            href={pageHref(page)}
+                                            href={pageHref(prefix, page)}
                                             aria-current={current ? "page" : undefined}
                                             className={cn("flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm hover:bg-[rgb(var(--color-primary))]/5", current ? "font-bold text-[rgb(var(--color-text-strong))]" : "text-[rgb(var(--color-primary-strong))]", FOCUS)}
                                         >
@@ -345,7 +369,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
 
                     <nav aria-label={t.conciseSirahInThisSection} className="grid grid-cols-2 gap-2">
                         {prev ? (
-                            <Link href={pageHref(prev)} className={cn(navCard, FOCUS)}>
+                            <Link href={pageHref(prefix, prev)} className={cn(navCard, FOCUS)}>
                                 <ChevronLeft className="h-4 w-4 shrink-0" aria-hidden />
                                 <span className="min-w-0">
                                     <span className="block text-xs text-[rgb(var(--color-text-muted))]">{t.conciseSirahPrev}</span>
@@ -354,7 +378,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                             </Link>
                         ) : <span />}
                         {next ? (
-                            <Link href={pageHref(next)} onClick={markDone} className={cn(navCard, "justify-end text-right", FOCUS)}>
+                            <Link href={pageHref(prefix, next)} onClick={markDone} className={cn(navCard, "justify-end text-right", FOCUS)}>
                                 <span className="min-w-0">
                                     <span className="block text-xs text-[rgb(var(--color-text-muted))]">
                                         {next.section.id === ref.section.id ? t.conciseNextChapter : t.conciseNextSection}
@@ -364,7 +388,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                                 <ChevronRight className="h-4 w-4 shrink-0" aria-hidden />
                             </Link>
                         ) : (
-                            <Link href="/sirah/concise" onClick={markDone} className={cn(navCard, "justify-end font-semibold", FOCUS)}>
+                            <Link href={`${prefix}/sirah/concise`} onClick={markDone} className={cn(navCard, "justify-end font-semibold", FOCUS)}>
                                 {t.conciseSirahContents}
                                 <ChevronRight className="h-4 w-4 shrink-0" aria-hidden />
                             </Link>
@@ -372,7 +396,7 @@ export function ConciseChapterReader({ sectionId, number }: { sectionId: string;
                     </nav>
 
                     <p className="text-xs leading-relaxed text-[rgb(var(--color-text-muted))]">
-                        {note && <>{t.conciseNoteDisclaimer} </>}
+                        {note && <>{NOTE_TEXT[lang].disclaimer} </>}
                         {book.author} · {t.conciseSirahTranslatedBy.replace("{names}", book.translators.join(", "))}. {t.conciseSirahSource}{" "}
                         <a href={book.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
                             {new URL(book.sourceUrl).hostname}

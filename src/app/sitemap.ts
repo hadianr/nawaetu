@@ -69,6 +69,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${baseUrl}/sirah/history`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/sirah/full`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/sirah/concise`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/en/sirah/concise`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/en/sirah/history`, changeFrequency: 'monthly', priority: 0.6 },
         { url: `${baseUrl}/rewards`, changeFrequency: 'monthly', priority: 0.5 },
     ]
 
@@ -100,6 +102,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${baseUrl}/sirah/concise/${ref.section.id}/${ref.number}`,
             changeFrequency: 'monthly' as const,
             priority: 0.6,
+        })),
+        ...getConcisePageRefs('en').map((ref) => ({
+            url: `${baseUrl}/en/sirah/concise/${ref.section.id}/${ref.number}`,
+            changeFrequency: 'monthly' as const,
+            priority: 0.5,
+        })),
+        ...HISTORY_CHAPTERS.map((chapter) => ({
+            url: `${baseUrl}/en/sirah/history/${chapter.slug}`,
+            changeFrequency: 'monthly' as const,
+            priority: 0.5,
         })),
     ]
 
