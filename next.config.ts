@@ -110,6 +110,9 @@ const nextConfig: NextConfig = {
         destination: 'https://nawaetu.com/:path*',
         permanent: true,
       },
+      // Pages removed with the Sirah revamp; send links and search results to their closest replacement.
+      { source: '/sirah/quiz', destination: '/sirah', permanent: true },
+      { source: '/sirah/history/masa-abu-bakar', destination: '/sirah/history/hari-hari-terakhir', permanent: true },
     ];
   },
 

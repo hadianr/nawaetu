@@ -18,22 +18,10 @@
 
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { pageMetadata } from "@/lib/seo";
-import { getConciseReadableSections, getConciseSection, getConciseSectionLabel } from "@/data/sirah/concise";
+import { getConciseReadableSections, getConciseSection } from "@/data/sirah/concise";
 
 export function generateStaticParams() {
   return getConciseReadableSections("id").map((s) => ({ sectionId: s.id }));
-}
-
-export async function generateMetadata({ params }: { params: Promise<{ sectionId: string }> }) {
-  const { sectionId } = await params;
-  const section = getConciseSection("id", sectionId);
-  if (!section) return {};
-  return pageMetadata(
-    `${getConciseSectionLabel(section)} - Catatan Ringkas Sirah`,
-    "Bagian dari Catatan Penting Seputar Sejarah dan Kepribadian Rasulullah karya Syaikh Haitsam Sarhan, teks tanpa diubah.",
-    `/sirah/concise/${section.id}`,
-  );
 }
 
 export default async function ConciseSectionLayout({ children, params }: { children: ReactNode; params: Promise<{ sectionId: string }> }) {
