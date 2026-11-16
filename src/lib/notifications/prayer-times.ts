@@ -49,7 +49,8 @@ async function fetchMonth(cell: { lat: number; lng: number }, year: string, mont
         }
         return byDate.size > 0 ? byDate : null;
     } catch (error) {
-        logger.error(`Fetch prayer calendar error: url=${url}`, error, { route: "/api/notifications/prayer-alert" });
+        // Not an error: the caller falls back to the single day, which logs as an error if it fails too.
+        logger.warn(`Fetch prayer calendar error: url=${url}`, { route: "/api/notifications/prayer-alert", error: error instanceof Error ? error.message : String(error) });
         return null;
     }
 }
