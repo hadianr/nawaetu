@@ -85,7 +85,7 @@ Radius: 16px card, 12px button, full for dots and ring.
 | Small screens | Works at 320px; ring 72px, text wraps, no horizontal scroll |
 | Zoom | Layout uses flex-wrap; no fixed heights on text containers (200% zoom stays usable) |
 
-### 4a. Measured contrast (slice 1, all 8 themes, in a real browser)
+### 4a. Measured contrast (slice 1, all 8 themes at the time, in a real browser; Ocean, Royal and Lavender have since been removed)
 
 | Text | Lowest ratio across themes | Needed |
 | --- | --- | --- |

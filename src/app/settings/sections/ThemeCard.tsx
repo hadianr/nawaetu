@@ -30,7 +30,7 @@ interface ThemeCardProps {
 /**
  * Every theme is free and there are only a handful, so the picker is one row of swatches: light themes first, then dark,
  * with no labels or dividers. The chosen theme's name sits beside the title. The row is a grid of equal columns so it
- * never wraps or scrolls; each cell is 44px tall and exactly as wide as its column (about 32 to 41px on a phone, so neighbours never overlap; the app's global 44px minimum width on buttons is overridden here on purpose).
+ * never wraps or scrolls; each cell is 44px tall and exactly as wide as its column (about 55px or more on a phone with five themes, so neighbours never crowd; the app's global 44px minimum width on buttons is overridden here on purpose).
  */
 export default function ThemeCard({ t, currentTheme, handleThemeSelect }: ThemeCardProps) {
     const themes = Object.values(THEMES).sort((a, b) => Number(a.mode === "dark") - Number(b.mode === "dark"));
@@ -68,7 +68,7 @@ export default function ThemeCard({ t, currentTheme, handleThemeSelect }: ThemeC
                             className="group flex h-11 w-full min-w-0 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--color-ring))]"
                         >
                             <span className={cn(
-                                "relative block size-7 rounded-full transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-110 sm:size-8",
+                                "relative block size-8 rounded-full transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-110 sm:size-9",
                                 isSelected && "ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))]",
                             )}>
                                 <span className="absolute inset-0 flex flex-col overflow-hidden rounded-full border border-[rgb(var(--color-border))]/30 bg-[rgb(var(--color-canvas))]">

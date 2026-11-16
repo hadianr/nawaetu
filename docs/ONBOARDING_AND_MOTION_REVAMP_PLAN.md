@@ -293,10 +293,10 @@ Suggested defaults, applied only on first setup and only if the user has not pic
 
 | Gender | Suggested | Alternates shown in settings first |
 | --- | --- | --- |
-| Male | Midnight (blue) | Ocean, Royal, Default |
-| Female | Blossom (pink, light mode) | Lavender, Sunset, Default |
+| Male | Midnight (blue) | Sunset, Default |
+| Female | Blossom (pink, light mode) | Sunset, Default |
 
-Midnight replaced the earlier Ocean proposal: Ocean turned out to be teal, and Midnight is the app's blue theme. Showing a gender's alternates first in settings is not built yet.
+Midnight replaced the earlier Ocean proposal (Ocean, Royal and Lavender have since been removed). Showing a gender's alternates first in settings is not built yet.
 
 No theme is locked to a gender. Settings show the gender's alternates first, then all others.
 

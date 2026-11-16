@@ -23,11 +23,11 @@ describe("StoryShareModal theme swatches", () => {
     });
 
     it("offers every app theme and starts on the active one", async () => {
-        mockGetOptional.mockReturnValue("ocean");
+        mockGetOptional.mockReturnValue("midnight");
         render(<StoryShareModal item={item} onClose={vi.fn()} />);
         const group = screen.getByRole("radiogroup", { name: "Card theme" });
-        expect(group.querySelectorAll("[role=radio]")).toHaveLength(8);
-        expect(screen.getByRole("radio", { name: "Ocean" }).getAttribute("aria-checked")).toBe("true");
+        expect(group.querySelectorAll("[role=radio]")).toHaveLength(5);
+        expect(screen.getByRole("radio", { name: "Midnight" }).getAttribute("aria-checked")).toBe("true");
         await waitFor(() => expect(mockRender).toHaveBeenCalled());
         expect(lastOptions().palette.mode).toBe("dark");
     });
