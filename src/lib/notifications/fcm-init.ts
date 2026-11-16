@@ -17,7 +17,7 @@
  */
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { deleteToken, getMessaging, getToken, onMessage, Messaging, type MessagePayload } from "firebase/messaging";
+import { deleteToken, getMessaging, getToken, isSupported, onMessage, Messaging, type MessagePayload } from "firebase/messaging";
 import * as Sentry from "@sentry/browser";
 
 const firebaseConfig = {
@@ -69,8 +69,13 @@ function messageContainsHost(message: string, expectedHost: string): boolean {
  * Lazy initialize messaging - only when user explicitly enables notifications
  * This prevents premature permission requests on mobile browsers
  */
-function getMessagingInstance(): Messaging | undefined {
+async function getMessagingInstance(): Promise<Messaging | undefined> {
     if (typeof window === "undefined") {
+        return undefined;
+    }
+
+    // getMessaging() on a browser without push (e.g. an iPhone Safari tab) rejects a promise nobody can catch.
+    if (!messaging && !(await isSupported())) {
         return undefined;
     }
 
@@ -98,7 +103,7 @@ function getMessagingInstance(): Messaging | undefined {
 export async function rotatePushToken(): Promise<boolean> {
     if (typeof window === "undefined" || !("Notification" in window) || window.Notification.permission !== "granted") return false;
     try {
-        const messagingInstance = getMessagingInstance();
+        const messagingInstance = await getMessagingInstance();
         if (!messagingInstance) return false;
         await deleteToken(messagingInstance);
         localStorage.removeItem("fcm_token");
@@ -121,7 +126,7 @@ export async function registerServiceWorkerAndGetToken(): Promise<string | null>
     }
 
     // Initialize messaging only when user explicitly enables notifications
-    const messagingInstance = getMessagingInstance();
+    const messagingInstance = await getMessagingInstance();
     if (!messagingInstance) {
         return null;
     }
