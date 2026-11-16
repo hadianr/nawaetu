@@ -38,9 +38,6 @@ Stable theme IDs:
 | `default` | dark | Emerald on near-black |
 | `midnight` | dark | Blue night with stars |
 | `sunset` | dark | Warm orange evening |
-| `lavender` | dark | Violet spiritual geometry |
-| `ocean` | dark | Teal water and organic waves |
-| `royal` | dark | Burgundy damask |
 | `daylight` | light | Clear emerald daylight |
 | `blossom` | light | Soft blush with restrained floral texture |
 

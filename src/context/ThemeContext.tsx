@@ -27,9 +27,6 @@ export type ThemeId =
     | "daylight"
     | "midnight"
     | "sunset"
-    | "lavender"
-    | "ocean"
-    | "royal"
     | "blossom";
 
 export type ThemeMode = "light" | "dark";
@@ -73,7 +70,7 @@ export type ThemeToken =
 export type ThemeTokens = Record<ThemeToken, string>;
 
 export interface ThemePattern {
-    type: 'geometric' | 'organic' | 'stars' | 'waves' | 'damask' | 'floral' | 'none';
+    type: 'stars' | 'waves' | 'floral' | 'none';
     opacity: number;
 }
 
@@ -226,69 +223,6 @@ export const THEMES: Record<ThemeId, Theme> = {
             accent: "251 191 36", // amber-400
             background: "12 10 9", // warm black
             surface: "41 37 36", // stone-800
-        },
-    }),
-    lavender: createTheme({
-        id: "lavender",
-        mode: "dark",
-        nameKey: "themeLavenderName",
-        descriptionKey: "themeLavenderDescription",
-        name: "Lavender",
-        description: "Ungu spiritual dengan motif geometric islami",
-        isPremium: false,
-        pattern: {
-            type: 'geometric',
-            opacity: 0.10,
-        },
-        colors: {
-            primary: "139 92 246", // violet-500
-            primaryLight: "167 139 250", // violet-400
-            primaryDark: "124 58 237", // violet-600
-            accent: "196 181 253", // violet-300
-            background: "10 8 15", // dark purple-black
-            surface: "46 16 101", // purple-900
-        },
-    }),
-    ocean: createTheme({
-        id: "ocean",
-        mode: "dark",
-        nameKey: "themeOceanName",
-        descriptionKey: "themeOceanDescription",
-        name: "Ocean",
-        description: "Teal segar dengan riak air yang menenangkan",
-        isPremium: false,
-        pattern: {
-            type: 'organic',
-            opacity: 0.18,
-        },
-        colors: {
-            primary: "20 184 166", // teal-500
-            primaryLight: "45 212 191", // teal-400
-            primaryDark: "15 118 110", // teal-700
-            accent: "103 232 249", // cyan-300
-            background: "4 12 12", // dark teal-black
-            surface: "19 78 74", // teal-900
-        },
-    }),
-    royal: createTheme({
-        id: "royal",
-        mode: "dark",
-        nameKey: "themeRoyalName",
-        descriptionKey: "themeRoyalDescription",
-        name: "Royal",
-        description: "Merah burgundy elegan dengan motif damask",
-        isPremium: false,
-        pattern: {
-            type: 'damask',
-            opacity: 0.10,
-        },
-        colors: {
-            primary: "225 29 72", // rose-600
-            primaryLight: "251 113 133", // rose-400
-            primaryDark: "159 18 57", // rose-800
-            accent: "244 63 94", // rose-500
-            background: "12 7 9", // dark rose-black
-            surface: "76 5 25", // rose-950
         },
     }),
     blossom: createTheme({
