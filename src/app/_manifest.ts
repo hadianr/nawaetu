@@ -32,7 +32,7 @@ export function buildManifest(): NawaetuManifest {
     start_url: `/?v=${APP_CONFIG.version}`,
     scope: "/",
     display: "standalone",
-    orientation: "portrait",
+    orientation: "any",
     background_color: "#000000",
     theme_color: "#0a0a0a",
     permissions: ["notifications"],

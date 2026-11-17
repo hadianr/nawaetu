@@ -47,7 +47,7 @@ def twaManifest = [
     // 'customtabs' and 'webview'.
     fallbackType: 'customtabs',
     enableSiteSettingsShortcut: 'true',
-    orientation: 'portrait',
+    orientation: 'default',
 ]
 
 android {
