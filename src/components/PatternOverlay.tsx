@@ -43,12 +43,11 @@ const PatternOverlay = memo(function PatternOverlay() {
                     WebkitMaskRepeat: 'repeat',
                     maskSize: '420px 420px',
                     WebkitMaskSize: '420px 420px',
-                    contentVisibility: 'auto',
                 }}
             />
         ),
         waves: (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity, contentVisibility: 'auto' }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity }}>
                 <defs>
                     <pattern id="waves-pattern" x="0" y="0" width="200" height="40" patternUnits="userSpaceOnUse">
                         <path
@@ -81,7 +80,6 @@ const PatternOverlay = memo(function PatternOverlay() {
                     WebkitMaskRepeat: 'repeat',
                     maskSize: '520px 520px',
                     WebkitMaskSize: '520px 520px',
-                    contentVisibility: 'auto',
                 }}
             />
         ),
@@ -89,7 +87,7 @@ const PatternOverlay = memo(function PatternOverlay() {
     };
 
     return (
-        <div className="pattern-overlay fixed inset-0 pointer-events-none z-[1]" aria-hidden="true" style={{ contentVisibility: 'auto' }}>
+        <div className="pattern-overlay fixed inset-0 pointer-events-none z-[1]" aria-hidden="true">
             {patterns[type]}
         </div>
     );
