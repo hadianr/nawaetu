@@ -16,10 +16,26 @@
 <body>
 <div class="fix" id="fix"></div>
 <h1>Rotate the device. Screenshot after each rotation.</h1>
+<p>Try: <a href="?fix=none" style="color:#93c5fd">none</a> |
+<a href="?fix=meta" style="color:#93c5fd">meta</a> |
+<a href="?fix=reload" style="color:#93c5fd">reload</a> &mdash; mode: <b id="mode"></b></p>
 <div class="centre" id="centre">60% box, should stay centred</div>
 <pre id="out"></pre>
 <script>
   var log = [];
+  var mode = new URLSearchParams(location.search).get('fix') || 'none';
+  document.getElementById('mode').textContent = mode;
+  var meta = document.querySelector('meta[name=viewport]');
+  function workaround() {
+    if (mode === 'meta') {
+      // Re-applying the viewport meta makes WebKit recompute the layout viewport.
+      meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1');
+      setTimeout(function () { meta.setAttribute('content', 'width=device-width, initial-scale=1'); }, 150);
+    } else if (mode === 'reload') {
+      setTimeout(function () { location.reload(); }, 300);
+    }
+  }
+  window.addEventListener('orientationchange', workaround);
   function snap(ev) {
     var f = document.getElementById('fix').getBoundingClientRect();
     var c = document.getElementById('centre').getBoundingClientRect();
