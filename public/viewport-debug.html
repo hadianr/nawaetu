@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Viewport debug</title>
+<style>
+  body { margin: 0; padding: 12px; background: #0a0a0a; color: #fff; font: 15px/1.5 ui-monospace, Menlo, monospace; }
+  h1 { font-size: 16px; margin: 0 0 8px; }
+  .fix { position: fixed; inset: 0; border: 4px solid #3b82f6; pointer-events: none; }
+  .centre { width: 60%; margin: 12px auto; padding: 8px; background: #1e3a8a; text-align: center; }
+  pre { white-space: pre-wrap; margin: 0; }
+</style>
+</head>
+<body>
+<div class="fix" id="fix"></div>
+<h1>Rotate the device. Screenshot after each rotation.</h1>
+<div class="centre" id="centre">60% box, should stay centred</div>
+<pre id="out"></pre>
+<script>
+  var log = [];
+  function snap(ev) {
+    var f = document.getElementById('fix').getBoundingClientRect();
+    var c = document.getElementById('centre').getBoundingClientRect();
+    var vv = window.visualViewport;
+    var lines = [
+      'event: ' + ev,
+      'innerWidth x innerHeight: ' + innerWidth + ' x ' + innerHeight,
+      'visualViewport: ' + (vv ? vv.width + ' x ' + vv.height + ' scale ' + vv.scale : 'n/a'),
+      'documentElement client: ' + document.documentElement.clientWidth + ' x ' + document.documentElement.clientHeight,
+      'scrollWidth: ' + document.documentElement.scrollWidth,
+      'screen: ' + screen.width + ' x ' + screen.height,
+      'orientation: ' + (screen.orientation ? screen.orientation.type : 'n/a') + ' / ' + window.orientation,
+      'fixed border box: x' + Math.round(f.x) + ' w' + Math.round(f.width) + ' h' + Math.round(f.height),
+      'centre box: x' + Math.round(c.x) + ' w' + Math.round(c.width),
+      'UA: ' + navigator.userAgent
+    ];
+    log.unshift(lines.join('\n'));
+    document.getElementById('out').textContent = log.slice(0, 4).join('\n\n');
+  }
+  ['load', 'resize', 'orientationchange'].forEach(function (e) {
+    window.addEventListener(e, function () { snap(e); setTimeout(function () { snap(e + ' +500ms'); }, 500); });
+  });
+</script>
+</body>
+</html>
