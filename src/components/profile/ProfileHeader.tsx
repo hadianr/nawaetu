@@ -23,7 +23,6 @@ import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 
 interface ProfileHeaderProps {
     isAuthenticated: boolean;
-    isMuhsinin: boolean;
     userImage: string;
     onClose: () => void;
 }
