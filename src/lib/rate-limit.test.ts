@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { paymentRateLimiter, syncRateLimiter } from "./rate-limit";
+import { chatDailyRateLimiter, paymentRateLimiter, syncRateLimiter } from "./rate-limit";
+import { MENTOR_DAILY_LIMIT } from "@/lib/constants/mentor-limit";
 
 describe("sync and payment rate limiters", () => {
     it("lets a user sync 30 times a minute and refuses the 31st", async () => {
@@ -19,5 +20,16 @@ describe("sync and payment rate limiters", () => {
         const results = [];
         for (let i = 0; i < 6; i++) results.push((await paymentRateLimiter.check("payment:a@example.com")).success);
         expect(results).toEqual([true, true, true, true, true, false]);
+    });
+
+    it("holds the mentor to the app's daily limit and looks without using any", async () => {
+        const key = "chatday:test-user-d";
+        for (let i = 0; i < 5; i++) expect(await chatDailyRateLimiter.hasRoom(key)).toBe(true);
+        for (let i = 0; i < MENTOR_DAILY_LIMIT; i++) {
+            expect(await chatDailyRateLimiter.hasRoom(key)).toBe(true);
+            await chatDailyRateLimiter.check(key);
+        }
+        expect(await chatDailyRateLimiter.hasRoom(key)).toBe(false);
+        expect(MENTOR_DAILY_LIMIT).toBe(10);
     });
 });

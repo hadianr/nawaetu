@@ -41,7 +41,8 @@ vi.mock('@/lib/rate-limit', () => ({
         check: vi.fn().mockResolvedValue({ success: true, remaining: 9 })
     },
     chatDailyRateLimiter: {
-        check: vi.fn().mockResolvedValue({ success: true, remaining: 19 })
+        hasRoom: vi.fn().mockResolvedValue(true),
+        check: vi.fn().mockResolvedValue({ success: true, remaining: 9 })
     }
 }));
 
@@ -88,14 +89,44 @@ describe('askMentor', () => {
             expires: new Date(Date.now() + 60_000).toISOString(),
             user: { id: 'user-123', isMuhsinin: false },
         });
-        vi.mocked(chatDailyRateLimiter.check).mockResolvedValueOnce({ success: false, remaining: 0 });
+        vi.mocked(chatDailyRateLimiter.hasRoom).mockResolvedValueOnce(false);
         mockChat.mockClear();
 
         const reply = await askMentor('Apa itu sabar?', { name: 'Alice', prayerStreak: 1, lastPrayer: 'Fajr' });
 
-        expect(chatDailyRateLimiter.check).toHaveBeenCalledWith('chatday:user-123');
+        expect(chatDailyRateLimiter.hasRoom).toHaveBeenCalledWith('chatday:user-123');
         expect(reply).toMatch(/harian/i);
         expect(mockChat).not.toHaveBeenCalled();
+        expect(chatDailyRateLimiter.check).not.toHaveBeenCalled();
+    });
+
+    it('counts a delivered answer against the daily limit, once', async () => {
+        vi.mocked(getServerSession).mockResolvedValue({
+            expires: new Date(Date.now() + 60_000).toISOString(),
+            user: { id: 'user-123', isMuhsinin: false },
+        });
+
+        const reply = await askMentor('Hello', { name: 'Alice', prayerStreak: 1, lastPrayer: 'Fajr' });
+
+        expect(reply).toBe('AI Response');
+        expect(chatDailyRateLimiter.check).toHaveBeenCalledTimes(1);
+        expect(chatDailyRateLimiter.check).toHaveBeenCalledWith('chatday:user-123');
+    });
+
+    it('does not count a model failure, a refusal or a request that never reached the model', async () => {
+        vi.mocked(getServerSession).mockResolvedValue({
+            expires: new Date(Date.now() + 60_000).toISOString(),
+            user: { id: 'user-123', isMuhsinin: false },
+        });
+        const context = { name: 'Alice', prayerStreak: 1, lastPrayer: 'Fajr' };
+
+        mockChat.mockRejectedValueOnce(new Error('boom'));
+        expect(await askMentor('Hello', context)).toMatch(/kendala teknis/i);
+
+        expect(await askMentor('buatkan JavaScript untuk membuat bintang', context)).toMatch(/hanya membantu/i);
+        expect(await askMentor('x'.repeat(501), context)).toMatch(/terlalu panjang/i);
+
+        expect(chatDailyRateLimiter.check).not.toHaveBeenCalled();
     });
 
     it.each([
