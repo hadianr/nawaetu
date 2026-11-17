@@ -468,7 +468,7 @@ async function runChecks() {
                          swatches: buttons.length, rows: new Set(buttons.map(b => Math.round(b.top))).size, premium: card.querySelectorAll('svg.lucide-lock, svg.lucide-crown').length,
                          overlap, minWidth: Math.round(Math.min(...buttons.map(b => b.width))), minHeight: Math.round(Math.min(...buttons.map(b => b.height))) };`);
             assert(!card.overflowsX, `the theme card or the page scrolls sideways at ${width} px`);
-            assert(card.swatches === 8, `expected 8 themes, found ${card.swatches}`);
+            assert(card.swatches === 5, `expected 5 themes, found ${card.swatches}`);
             assert(card.rows === 1, `the swatches are on ${card.rows} rows at ${width} px`);
             assert(card.premium === 0, "a lock or crown is still shown");
             assert(card.overlap <= 1, `neighbouring swatches overlap by ${card.overlap}px at ${width} px, so a tap can pick the wrong theme`);
