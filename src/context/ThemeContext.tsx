@@ -81,7 +81,6 @@ export interface Theme {
     descriptionKey: string;
     name: string;
     description: string;
-    isPremium: boolean;
     pattern?: ThemePattern;
     tokens: ThemeTokens;
     colors: {
@@ -155,7 +154,6 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeDefaultDescription",
         name: "Default",
         description: "Tema gelap klasik dengan aksen hijau emerald",
-        isPremium: false,
         colors: {
             primary: "16 185 129", // emerald-500
             primaryLight: "52 211 153", // emerald-400
@@ -172,7 +170,6 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeDaylightDescription",
         name: "Daylight",
         description: "Cerah, ringan, dan nyaman untuk siang hari",
-        isPremium: false,
         colors: {
             primary: "16 185 129",     // emerald-500
             primaryLight: "52 211 153",// emerald-400
@@ -190,7 +187,6 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeMidnightDescription",
         name: "Midnight",
         description: "Biru gelap malam dengan bintang berkilauan",
-        isPremium: false,
         pattern: {
             type: 'stars',
             opacity: 0.12,
@@ -211,7 +207,6 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeSunsetDescription",
         name: "Sunset",
         description: "Kehangatan senja dengan gelombang lembut",
-        isPremium: false,
         pattern: {
             type: 'waves',
             opacity: 0.12,
@@ -232,7 +227,6 @@ export const THEMES: Record<ThemeId, Theme> = {
         descriptionKey: "themeBlossomDescription",
         name: "Blossom",
         description: "Merah muda lembut dengan sentuhan bunga yang elegan",
-        isPremium: false,
         pattern: {
             type: "floral",
             opacity: 0.08,

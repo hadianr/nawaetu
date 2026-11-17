@@ -210,12 +210,6 @@ export default function SettingsPageContent() {
             return;
         }
 
-        // Check if theme is premium and user is not premium
-        if (theme.isPremium && !isMuhsinin) {
-            setShowDonationModal(true);
-            return;
-        }
-
         setTheme(themeId);
         // ThemeContext usually saves to localStorage, but we need to explicit or hook into it.
         // Assuming setTheme updates context and local storage, but let's explicit save to cloud for sync
