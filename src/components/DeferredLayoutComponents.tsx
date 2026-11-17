@@ -40,6 +40,7 @@ const SpeedInsights = dynamic(
     () => import("@vercel/speed-insights/next").then(({ SpeedInsights }) => ({ default: SpeedInsights })),
     { ssr: false },
 );
+import OrientationReflow from "@/components/OrientationReflow";
 const PatternOverlay = dynamic(() => import("@/components/PatternOverlay"), { ssr: false });
 
 function ThemePatternOverlay() {
@@ -73,6 +74,7 @@ export default function DeferredLayoutComponents() {
             <AnalyticsLoader />
             <AppOverlays />
             <WebVitals />
+            <OrientationReflow />
             <ThemePatternOverlay />
             {deferredReady && (
                 <>
