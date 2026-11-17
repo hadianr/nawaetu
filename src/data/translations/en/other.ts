@@ -566,8 +566,7 @@ export const otherEN = {
     tanyaSend: "Send",
     tanyaDailyLimit: "Daily Limit",
     tanyaLimitReached: "Oops, you've reached your question limit for today",
-    tanyaLimitReset: "Limit will reset tomorrow at 00:00",
-    tanyaUnlockPremium: "Become Muhsinin for 5x more quota",
+    tanyaLimitReset: "Your quota refills tomorrow.",
     tanyaQuickPrompts: "Quick Prompts",
     tanyaPrompt1: "I feel lazy to pray...",
     tanyaPrompt2: "I'm feeling overwhelmed",
@@ -578,8 +577,6 @@ export const otherEN = {
     tanyaLoginButton: "Login Now",
     tanyaLimitAdvice: "We recommend asking an Ustadz or local Majelis Taklim directly for a more comprehensive explanation.",
     tanyaLimitDalil: "\"So ask the people of the message if you do not know.\" (QS. An-Nahl: 43)",
-    tanyaUpgradeHint: "Wait until tomorrow or Infaq to become Muhsinin & get 5x more quota.",
-    tanyaInfaqButton: "Infaq Now",
 
     // Toast Messages
     toastMissionComplete: "Mission Complete!",

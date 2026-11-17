@@ -566,8 +566,7 @@ export const otherID = {
     tanyaSend: "Kirim",
     tanyaDailyLimit: "Batas Pertanyaan",
     tanyaLimitReached: "Aduh, kuota bertanya kamu sudah habis hari ini",
-    tanyaLimitReset: "Limit akan reset besok jam 00:00",
-    tanyaUnlockPremium: "Jadi Muhsinin untuk 5x kuota harian",
+    tanyaLimitReset: "Kuota akan terisi lagi besok.",
     tanyaQuickPrompts: "Prompt Cepat",
     tanyaPrompt1: "Saya merasa malas sholat...",
     tanyaPrompt2: "Sedang banyak pikiran",
@@ -578,8 +577,6 @@ export const otherID = {
     tanyaLoginButton: "Login Sekarang",
     tanyaLimitAdvice: "Sebaiknya tanyakan langsung kepada Ustadz atau Majelis Taklim terdekat agar mendapatkan penjelasan yang lebih komprehensif.",
     tanyaLimitDalil: "\"Maka bertanyalah kepada orang yang mempunyai pengetahuan jika kamu tidak mengetahui.\" (QS. An-Nahl: 43)",
-    tanyaUpgradeHint: "Tunggu reset besok atau Berinfaq untuk jadi Muhsinin & dapatkan 5x kuota lebih banyak.",
-    tanyaInfaqButton: "Berinfaq Sekarang",
 
     // Toast Messages
     toastMissionComplete: "Misi Selesai!",
