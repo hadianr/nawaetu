@@ -71,4 +71,6 @@ jobs:
           done
 
       - name: Run integration tests
-        run: npx vitest run --passWithNoTests '\.integration\.test\.ts$'
+        # A plain text filter: vitest turns the backslashes of a regex into slashes, so the old pattern matched no
+        # file. With no --passWithNoTests, finding nothing now fails the job instead of passing it.
+        run: npx vitest run integration.test
