@@ -54,7 +54,7 @@
   "isMetaQuest": false,
   "fullScopeUrl": "https://nawaetu.com/",
   "minSdkVersion": 21,
-  "orientation": "portrait",
+  "orientation": "default",
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],

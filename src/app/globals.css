@@ -200,6 +200,9 @@
   body {
     @apply bg-[#0a0a0a] text-white;
     min-height: 100%;
+    /* iOS keeps a stale wide layout after rotation if anything overflows sideways. */
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   /* =====================================================================
