@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Lock, Sparkles, Send } from "lucide-react";
+import { Lock, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TranslationTree } from "@/context/LocaleContext";
 
@@ -29,9 +29,7 @@ interface ChatInputAreaProps {
     isTyping: boolean;
     dailyCount: number;
     DAILY_LIMIT: number;
-    setShowLimitBlocking: (show: boolean) => void;
     t: TranslationTree;
-    isMuhsinin: boolean;
 }
 
 export function ChatInputArea({
@@ -41,7 +39,6 @@ export function ChatInputArea({
     isTyping,
     dailyCount,
     DAILY_LIMIT,
-    setShowLimitBlocking,
     t
 }: ChatInputAreaProps) {
     return (
@@ -75,21 +72,10 @@ export function ChatInputArea({
                                     "text-xs leading-tight",
                                     "text-[rgb(var(--color-text-muted))]"
                                 )}>
-                                    {t.tanyaUpgradeHint || "Tunggu besok atau Infaq untuk 5x kuota."}
+                                    {t.tanyaLimitReset}
                                 </p>
                             </div>
                         </div>
-
-                        {/* Action Button */}
-                        <button
-                            onClick={() => setShowLimitBlocking(true)}
-                            className={cn(
-                                "text-[rgb(var(--color-primary-foreground))] text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0 bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
-                            )}
-                        >
-                            <Sparkles size={14} className="text-[rgb(var(--color-accent-foreground))]" />
-                            {t.tanyaInfaqButton || "Berinfaq"}
-                        </button>
                     </div>
                 ) : (
                     <form

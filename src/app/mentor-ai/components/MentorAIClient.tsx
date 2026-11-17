@@ -25,13 +25,13 @@ import { cn } from "@/lib/utils";
 import { getActivityRepository } from "@/core/repositories/activity.repository";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";
 import { askMentor } from "../ai-action";
+import { isMentorNonAnswer, USER_MESSAGES } from "../mentor-messages";
+import { MENTOR_DAILY_LIMIT } from "@/lib/constants/mentor-limit";
 import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
 
 import { trackAIQuery } from "@/lib/analytics/analytics";
-import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import type { TranslationTree } from "@/context/LocaleContext";
-import DonationModal from "@/components/DonationModal";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { useSession } from "next-auth/react";
@@ -46,7 +46,6 @@ const storage = getStorageService();
 interface AIUsage {
     date: string;
     count: number;
-    tier?: "free" | "muhsinin";
 }
 
 function getTimestamp(): number {
@@ -92,36 +91,10 @@ export default function MentorAIClient() {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const { isMuhsinin, refreshStatus, isLoading: isInfaqLoading } = useInfaq();
-
-    // Rate Limiting Logic (3/Day Free, 15/Day Muhsinin)
-    const DAILY_LIMIT = 10;
+    // The same limit the server holds. Only answers that were delivered count, here and there.
+    const DAILY_LIMIT = MENTOR_DAILY_LIMIT;
     const [dailyCount, setDailyCount] = useState(0);
     const [lastResetDate, setLastResetDate] = useState("");
-    const [showLimitBlocking, setShowLimitBlocking] = useState(false);
-
-    // Eagerly sync infaq status for authenticated users on mount to ensure
-    // new devices or cleared caches don't get stuck on the free tier until limit is reached
-    useEffect(() => {
-        if (status === "authenticated") {
-            refreshStatus();
-        }
-    }, [refreshStatus, status]);
-    // Sync status if reached limit (Check for payment update)
-    useEffect(() => {
-        if (isInfaqLoading) return; // Don't check limits while loading tier status
-
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        if (dailyCount >= DAILY_LIMIT && status === "authenticated") {
-            // Auto-refresh immediately and then again in 5 seconds if still blocked
-            refreshStatus();
-
-            timer = setTimeout(() => {
-                if (!isMuhsinin) refreshStatus();
-            }, 5000);
-        }
-        return () => clearTimeout(timer);
-    }, [dailyCount, DAILY_LIMIT, isInfaqLoading, isMuhsinin, refreshStatus, status]);
 
     // Initialize: Load Sessions (Optimistic & Background Sync)
     useEffect(() => {
@@ -169,11 +142,13 @@ export default function MentorAIClient() {
                             todayStart.setHours(0, 0, 0, 0);
                             const todayTime = todayStart.getTime();
 
+                            // A question counts once it has a real answer; a refusal or an error reply does not.
                             let serverDailyCount = 0;
                             serverSessions.forEach((s: ChatSession) => {
                                 if (s.messages && Array.isArray(s.messages)) {
-                                    s.messages.forEach(m => {
-                                        if (m.role === 'user' && m.timestamp >= todayTime) {
+                                    s.messages.forEach((m, i) => {
+                                        const reply = s.messages[i + 1];
+                                        if (m.role === 'user' && m.timestamp >= todayTime && reply?.role === 'assistant' && !isMentorNonAnswer(reply.content)) {
                                             serverDailyCount++;
                                         }
                                     });
@@ -187,7 +162,6 @@ export default function MentorAIClient() {
                                     storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                                         date: todayStr,
                                         count: serverDailyCount,
-                                        tier: isMuhsinin ? 'muhsinin' : 'free'
                                     }));
                                     return serverDailyCount;
                                 }
@@ -204,16 +178,13 @@ export default function MentorAIClient() {
         if (status !== "loading") {
             initSessions();
         }
-    }, [isInfaqLoading, isMuhsinin, status]);
+    }, [status]);
 
-    // Initialize & Watch: Rate Limit Logic (Run on mount & when isMuhsinin changes)
+    // Initialize & Watch: Rate Limit Logic (Run on mount)
     useEffect(() => {
-        if (isInfaqLoading) return; // Wait for tier to settle
-
         const savedUsage = storage.getOptional<AIUsage | string>(STORAGE_KEYS.AI_USAGE);
         let deferredCountUpdate: ReturnType<typeof setTimeout> | undefined;
         const today = new Date().toDateString();
-        const currentTier = isMuhsinin ? 'muhsinin' : 'free';
         const deferUsageState = (count: number, date: string) => {
             deferredCountUpdate = setTimeout(() => {
                 setDailyCount(count);
@@ -223,35 +194,22 @@ export default function MentorAIClient() {
 
         if (savedUsage) {
             const parsed = typeof savedUsage === 'string' ? JSON.parse(savedUsage) : savedUsage;
-            // Support legacy format (without tier)
-            const { date, count, tier } = parsed;
+            const { date, count } = parsed;
 
             if (date === today) {
-                // Check if user just upgraded (Stored as Free, now is Muhsinin)
-                if ((!tier || tier === 'free') && isMuhsinin) {
-                    // Update tier to muhsinin but keep current usage count
-                    deferUsageState(count, today);
-                    storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
-                        date: today,
-                        count: count,
-                        tier: 'muhsinin'
-                    }));
-                } else {
-                    // Normal Load
-                    deferUsageState(count, date);
-                }
+                deferUsageState(count, date);
             } else {
                 // New Day Reset
                 deferUsageState(0, today);
-                storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
+                storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0 }));
             }
         } else {
             // Initial Start
             deferUsageState(0, today);
-            storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0, tier: currentTier }));
+            storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0 }));
         }
         return () => clearTimeout(deferredCountUpdate);
-    }, [isInfaqLoading, isMuhsinin, status]);
+    }, [status]);
 
     // Auto-scroll
     useEffect(() => {
@@ -324,10 +282,7 @@ export default function MentorAIClient() {
         if (!text.trim()) return;
 
         // CHECK RATE LIMIT
-        if (dailyCount >= DAILY_LIMIT) {
-            setShowLimitBlocking(true);
-            return;
-        }
+        if (dailyCount >= DAILY_LIMIT) return;
 
         // Add User Message
         const userTimestamp = getTimestamp();
@@ -381,7 +336,6 @@ export default function MentorAIClient() {
         storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
             date: lastResetDate,
             count: newCount,
-            tier: isMuhsinin ? 'muhsinin' : 'free'
         }));
 
         try {
@@ -413,19 +367,18 @@ export default function MentorAIClient() {
                 }
             }
 
-            // Revert quota if the response is a known error message
-            const isErrorMsg = response.startsWith("Maaf,") || response.startsWith("Wah,") || response.startsWith("Pesan ");
-
-            if (isErrorMsg) {
+            // The question only counts when it got a real answer. If the server says today's allowance is used up,
+            // the app was behind (another device, cleared storage): catch up so it stops offering credits.
+            const answered = !isMentorNonAnswer(response);
+            if (!answered) {
+                const serverSaysFull = response === USER_MESSAGES.id.dailyLimit || response === USER_MESSAGES.en.dailyLimit;
                 setDailyCount(prev => {
-                    const reverted = Math.max(0, prev - 1);
-                    const todayStr = new Date().toDateString();
+                    const next = serverSaysFull ? DAILY_LIMIT : Math.max(0, prev - 1);
                     storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
-                        date: todayStr,
-                        count: reverted,
-                        tier: isMuhsinin ? 'muhsinin' : 'free'
+                        date: new Date().toDateString(),
+                        count: next,
                     }));
-                    return reverted;
+                    return next;
                 });
             } else {
                 trackAIQuery();
@@ -465,7 +418,6 @@ export default function MentorAIClient() {
                 storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
                     date: todayStr,
                     count: reverted,
-                    tier: isMuhsinin ? 'muhsinin' : 'free'
                 }));
                 return reverted;
             });
@@ -578,21 +530,15 @@ export default function MentorAIClient() {
                                     <span className="w-1 h-1 rounded-full bg-[rgb(var(--color-primary))] animate-pulse" />
                                     Online
                                 </p>
-                                {isInfaqLoading ? (
-                                    <span className="text-[10px] px-2 py-0.5 rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] animate-pulse">
-                                        Loading...
-                                    </span>
-                                ) : (
-                                    <span className={cn(
-                                        "text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1",
-                                        dailyCount >= DAILY_LIMIT
-                                            ? "bg-[rgb(var(--color-danger))]/20 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30"
-                                            : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
-                                    )}>
-                                        <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-[rgb(var(--color-danger))]" : "bg-[rgb(var(--color-primary))]")} />
-                                        {Math.max(0, DAILY_LIMIT - dailyCount)} Credit
-                                    </span>
-                                )}
+                                <span className={cn(
+                                    "text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1",
+                                    dailyCount >= DAILY_LIMIT
+                                        ? "bg-[rgb(var(--color-danger))]/20 text-[rgb(var(--color-danger))] border-[rgb(var(--color-danger))]/30"
+                                        : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"
+                                )}>
+                                    <span className={cn("w-1.5 h-1.5 rounded-full", dailyCount >= DAILY_LIMIT ? "bg-[rgb(var(--color-danger))]" : "bg-[rgb(var(--color-primary))]")} />
+                                    {Math.max(0, DAILY_LIMIT - dailyCount)} Credit
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -710,16 +656,7 @@ export default function MentorAIClient() {
                 isTyping={isTyping}
                 dailyCount={dailyCount}
                 DAILY_LIMIT={DAILY_LIMIT}
-                setShowLimitBlocking={setShowLimitBlocking}
                 t={t}
-                isMuhsinin={isMuhsinin}
-            />
-
-            <DonationModal
-                isOpen={showLimitBlocking}
-                onClose={() => setShowLimitBlocking(false)}
-                headerTitle={translations.tanyaDailyLimit}
-                headerDescription={translations.tanyaLimitReached + " " + translations.tanyaLimitReset}
             />
         </div>
     );
