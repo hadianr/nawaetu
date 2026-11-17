@@ -53,13 +53,12 @@ interface UserProfileDialogProps {
 
 export default function UserProfileDialog({ children, onProfileUpdate }: UserProfileDialogProps) {
     const { data: session, status } = useSession();
-    const { isMuhsinin: contextIsMuhsinin, resetInfaq } = useInfaq();
+    const { resetInfaq } = useInfaq();
     const { t, locale } = useLocale();
     const { updateProfile, isUpdating } = useProfile();
     const { syncData } = useDataSync();
 
     const isAuthenticated = status === "authenticated";
-    const isMuhsinin = isAuthenticated && (session?.user?.isMuhsinin || contextIsMuhsinin || false);
 
     // Keep the first render identical on server and client; storage is loaded below.
     const [userName, setUserName] = useState<string>("Sobat Nawaetu");
@@ -209,7 +208,6 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
 
                 <ProfileHeader
                     isAuthenticated={isAuthenticated}
-                    isMuhsinin={isMuhsinin}
                     userImage={userImage}
                     onClose={() => setIsOpen(false)}
                 />

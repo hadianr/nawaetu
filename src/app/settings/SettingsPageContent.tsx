@@ -39,7 +39,6 @@ import FeedbackModal from "@/components/FeedbackModal";
 
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
 import { useTheme, THEMES, ThemeId } from "@/context/ThemeContext";
-import { useInfaq } from "@/context/InfaqContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useFCM } from "@/hooks/useFCM";
 import {
@@ -68,7 +67,6 @@ export default function SettingsPageContent() {
     const { data: session, status, update } = useSession(); // Add update
     const { data, refreshLocation, loading: locationLoading } = usePrayerTimesContext();
     const { currentTheme, setTheme } = useTheme();
-    const { isMuhsinin: contextIsMuhsinin } = useInfaq();
     const { locale, setLocale, t } = useLocale();
     const { token: fcmToken } = useFCM();
     const [showDonationModal, setShowDonationModal] = useState(false);
@@ -106,9 +104,6 @@ export default function SettingsPageContent() {
     // Determining "Authenticated" for UI purposes:
     const hasCachedProfile = userName !== "Sobat Nawaetu";
     const isAuthenticated = status === "authenticated" || (status === "loading" && hasCachedProfile);
-
-    // FIXED: Only logged in users can be Muhsinin
-    const isMuhsinin = (status === "authenticated" && session?.user?.isMuhsinin) || contextIsMuhsinin;
 
     // Payment Feedback & Sync Status
     useEffect(() => {
@@ -274,7 +269,6 @@ export default function SettingsPageContent() {
                     status={status}
                     session={session}
                     hasCachedProfile={hasCachedProfile}
-                    isMuhsinin={isMuhsinin}
                     userAvatar={userAvatar}
                     userName={userName}
                     userTitle={userTitle}

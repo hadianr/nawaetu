@@ -26,7 +26,6 @@ interface ProfileCardProps {
     status: "authenticated" | "loading" | "unauthenticated";
     session: Session | null;
     hasCachedProfile: boolean;
-    isMuhsinin: boolean;
     userAvatar: string | null;
     userName: string;
     userTitle: string;
