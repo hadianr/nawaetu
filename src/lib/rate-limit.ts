@@ -33,6 +33,7 @@
  */
 
 import { logger } from "@/lib/logger";
+import { MENTOR_DAILY_LIMIT } from "@/lib/constants/mentor-limit";
 
 // ─── Shared result type (same shape for both implementations) ───────────────
 
@@ -56,6 +57,12 @@ class InMemoryRateLimiter {
     constructor(options: InMemoryOptions) {
         this.interval = options.interval;
         this.maxTokens = options.uniqueTokenPerInterval;
+    }
+
+    /** Whether `token` could still take one more, without taking it. */
+    hasRoom(limit: number, token: string): boolean {
+        const now = Date.now();
+        return (this.tokenCache.get(token) ?? []).filter((ts) => now - ts < this.interval).length < limit;
     }
 
     async limit(limit: number, token: string): Promise<RateLimitResult> {
@@ -153,6 +160,32 @@ class UnifiedRateLimiter {
             return this.fallback.limit(this.config.requests, token);
         }
     }
+
+    /**
+     * Whether `token` still has room, without using any. Pair it with `check` after the work succeeded, so only
+     * successful work is counted. Two requests in flight together can both pass this; that overshoots by at most
+     * the per-minute limit, which is far cheaper than counting failures.
+     */
+    async hasRoom(token: string): Promise<boolean> {
+        if (this.config.memoryOnly || !isRedisConfigured) {
+            return this.fallback.hasRoom(this.config.requests, token);
+        }
+
+        try {
+            if (!this.redisLimiter) {
+                this.redisLimiter = await buildRedisLimiter(
+                    this.config.prefix,
+                    this.config.requests,
+                    this.config.window,
+                );
+            }
+            const { remaining } = await this.redisLimiter.getRemaining(token);
+            return remaining > 0;
+        } catch (err) {
+            logger.warn('Redis error, falling back to in-memory', { action: 'rate-limit', error: err instanceof Error ? err.message : String(err) });
+            return this.fallback.hasRoom(this.config.requests, token);
+        }
+    }
 }
 
 // ─── Rate limiters for each use case ────────────────────────────────────────
@@ -170,13 +203,13 @@ export const chatRateLimiter = new UnifiedRateLimiter({
 });
 
 /**
- * AI chat per day, per account: an abuse guard behind the app's own limit of 10 a day. The app counts
- * that on the device, so clearing storage or using a second device gave a fresh allowance. The server
- * allows twice as many over a rolling 24 hours so a heavy user whose days overlap is never blocked early.
+ * AI chat per day, per account, the same number the app shows. The server is the one that holds it, so clearing
+ * storage or using a second device gives no fresh allowance. Only answers that were delivered count: ask
+ * `hasRoom` first and `check` once the answer is ready (see askMentor). The window is a rolling 24 hours.
  */
 export const chatDailyRateLimiter = new UnifiedRateLimiter({
     prefix: 'rl:chat-day',
-    requests: 20,
+    requests: MENTOR_DAILY_LIMIT,
     window: '1 d',
     inMemoryInterval: 24 * 60 * 60 * 1000,
     inMemoryMaxTokens: 2000,

@@ -24,50 +24,15 @@ import { getServerSession } from "@/lib/auth";
 import { ModelRouter } from '@/lib/llm-providers/model-router';
 import { ProviderError } from '@/lib/llm-providers/provider-interface';
 import { logger } from "@/lib/logger";
+import { CODE_REFUSAL, SCHOLAR_REFERRAL, USER_MESSAGES, type AppLocale } from './mentor-messages';
 
 interface ChatMessage {
     role: 'user' | 'assistant';
     content: string;
 }
 
-type AppLocale = 'id' | 'en';
-
 const NON_RELIGIOUS_CODE_REQUEST = /\b(javascript|typescript|python|java|c\+\+|c#|ruby|php|sql|html|css|bash|shell|script|program|programming|kode|coding|code|function|for\s*\(|console\.log|<script|```)/i;
 const CODE_RESPONSE = /```|<script\b|console\.log\s*\(|\bfunction\s+\w+\s*\(|\b(const|let|var)\s+\w+\s*=|\bfor\s*\([^)]*;[^)]*;[^)]*\)/i;
-const CODE_REFUSAL = {
-    id: "Maaf, Tanya Nawaetu hanya membantu pertanyaan seputar Islam dan fitur Nawaetu.",
-    en: "Sorry, Tanya Nawaetu only answers questions about Islam and Nawaetu features.",
-};
-const USER_MESSAGES = {
-    id: {
-        empty: "Pesan tidak boleh kosong ya.",
-        tooLong: "Pesan terlalu panjang. Coba dipersingkat, maksimal 500 karakter.",
-        login: "Maaf, kamu harus login dulu untuk menggunakan fitur ini.",
-        rateLimit: "Terlalu banyak pesan. Tunggu sebentar, lalu coba lagi dalam 1 menit.",
-        dailyLimit: "Batas pesan harian sudah tercapai. Coba lagi besok ya.",
-        busy: "Sistem sedang sibuk. Coba lagi dalam beberapa menit.",
-        updated: "Sistem sedang diperbarui. Coba lagi nanti.",
-        auth: "Maaf, ada kendala sistem. Tim kami akan segera memperbaikinya.",
-        unclear: "Maaf, saya kurang memahami maksudnya. Bisa gunakan kalimat yang lebih jelas?",
-        technical: "Maaf, ada kendala teknis. Coba lagi nanti.",
-    },
-    en: {
-        empty: "Please enter a message.",
-        tooLong: "Your message is too long. Please keep it under 500 characters.",
-        login: "Sorry, please log in to use this feature.",
-        rateLimit: "Too many messages. Please wait a minute before asking again.",
-        dailyLimit: "You have reached today's message limit. Please try again tomorrow.",
-        busy: "Sorry, the system is busy. Please try again in a few minutes.",
-        updated: "Sorry, the system is being updated. Please try again later.",
-        auth: "Sorry, the system is having trouble. Our team will fix it soon.",
-        unclear: "Sorry, I could not understand that. Could you rephrase it?",
-        technical: "Sorry, there is a technical problem. Please try again later.",
-    },
-};
-const SCHOLAR_REFERRAL = {
-    id: "Maaf, saya tidak dapat memastikan jawaban agama tanpa rujukan yang jelas dari Al-Qur'an, Sunnah, hadits shahih, atau sirah nabawiyyah. Untuk perkara yang kompleks, konsultasikan dengan ulama yang terpercaya.",
-    en: "Sorry, I cannot verify a religious answer without a clear reference from the Quran, Sunnah, authentic hadith, or Sirah Nabawiyyah. For complex matters, consult a trusted religious scholar.",
-};
 const RELIGIOUS_TOPIC = /\b(quran|al-qur['’]an|ayat|surat|hadits?|sunnah|sirah|rasul|nabi|sholat|salat|puasa|zakat|wudhu|doa|hukum|halal|haram|wajib)\b/i;
 const REFERENCE_IN_RESPONSE = /(?:\b(?:q\.?s\.?|al-qur['’]an)\b.{0,80}\b(?:ayat|\d{1,3})\b|\b(?:hr\.?|hadits?)\b.{0,80}\b(?:bukhari|muslim|tirmidzi|abu dawud|nasai|ibnu majah)\b|\bsirah nabawiyyah\b)/i;
 const NAWAETU_FEATURE = /\bnawaetu\b|fitur|aplikasi|pengaturan|akun|riwayat chat/i;
@@ -168,8 +133,10 @@ export async function askMentor(
         return USER_MESSAGES[locale].rateLimit;
     }
 
-    // The daily allowance is enforced here too, not only on the device.
-    if (!(await chatDailyRateLimiter.check(`chatday:${session.user.id}`)).success) {
+    // The daily allowance lives here, not on the device. It is only looked at now and used once an answer is
+    // delivered, so a refusal, an error or a retry never costs the user one.
+    const dailyKey = `chatday:${session.user.id}`;
+    if (!(await chatDailyRateLimiter.hasRoom(dailyKey))) {
         return USER_MESSAGES[locale].dailyLimit;
     }
 
@@ -180,6 +147,7 @@ export async function askMentor(
         if (cacheable) {
             const cachedRes = await getCachedSirahResponse(message, locale);
             if (cachedRes) {
+                await chatDailyRateLimiter.check(dailyKey);
                 return cachedRes;
             }
         }
@@ -203,6 +171,7 @@ export async function askMentor(
             await setCachedSirahResponse(message, locale, response);
         }
 
+        await chatDailyRateLimiter.check(dailyKey);
         return response;
 
     } catch (error: unknown) {
