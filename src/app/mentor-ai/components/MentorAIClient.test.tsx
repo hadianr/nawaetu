@@ -7,6 +7,8 @@ import MentorAIClient from "./MentorAIClient";
 import { askMentor } from "../ai-action";
 import { USER_MESSAGES } from "../mentor-messages";
 import { MENTOR_DAILY_LIMIT } from "@/lib/constants/mentor-limit";
+import { getStorageService } from "@/core/infrastructure/storage";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 
 vi.mock("../ai-action", () => ({ askMentor: vi.fn() }));
 vi.mock("next-auth/react", () => ({ useSession: () => ({ status: "authenticated", data: { user: { id: "u1" } } }) }));
@@ -64,5 +66,20 @@ describe("MentorAIClient daily credits", () => {
         await ask("Pertanyaan");
         await waitFor(() => expect(screen.queryByPlaceholderText("Tulis pertanyaan")).toBeNull());
         expect(credits()).toBe(0);
+    });
+
+    it("counts over a rolling 24 hours from storage, not over a clock day", async () => {
+        const hour = 60 * 60 * 1000;
+        // Ten answers 25 hours ago are gone; the same ten one hour ago still fill the limit.
+        getStorageService().set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ answers: Array.from({ length: MENTOR_DAILY_LIMIT }, () => Date.now() - 25 * hour) }));
+        const old = render(<MentorAIClient />);
+        // Let the stored list load first; the screen starts at the full limit before it does.
+        await act(async () => { await new Promise((resolve) => setTimeout(resolve, 20)); });
+        expect(credits()).toBe(MENTOR_DAILY_LIMIT);
+        old.unmount();
+
+        getStorageService().set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ answers: Array.from({ length: MENTOR_DAILY_LIMIT }, () => Date.now() - hour) }));
+        render(<MentorAIClient />);
+        await waitFor(() => expect(credits()).toBe(0));
     });
 });
