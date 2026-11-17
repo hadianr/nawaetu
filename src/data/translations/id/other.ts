@@ -566,7 +566,7 @@ export const otherID = {
     tanyaSend: "Kirim",
     tanyaDailyLimit: "Batas Pertanyaan",
     tanyaLimitReached: "Aduh, kuota bertanya kamu sudah habis hari ini",
-    tanyaLimitReset: "Kuota akan terisi lagi besok.",
+    tanyaLimitReset: "Kuota terisi lagi 24 jam setelah tiap pertanyaan dipakai.",
     tanyaQuickPrompts: "Prompt Cepat",
     tanyaPrompt1: "Saya merasa malas sholat...",
     tanyaPrompt2: "Sedang banyak pikiran",

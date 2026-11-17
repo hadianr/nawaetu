@@ -26,6 +26,7 @@ import { getActivityRepository } from "@/core/repositories/activity.repository";
 import { getDisplayStreak } from "@/lib/habits/streak-utils";
 import { askMentor } from "../ai-action";
 import { isMentorNonAnswer, USER_MESSAGES } from "../mentor-messages";
+import { answersFromSessions, pruneUsage, readUsage, USAGE_WINDOW_MS } from "../mentor-usage";
 import { MENTOR_DAILY_LIMIT } from "@/lib/constants/mentor-limit";
 import { ChatMessage, ChatSession, getAllSessions, saveSession, createNewSession, deleteSession } from "@/lib/chat-storage";
 
@@ -42,11 +43,6 @@ import { ChatInputArea } from "./ChatInputArea";
 import { ChatMessageBubble } from "./ChatMessageBubble";
 
 const storage = getStorageService();
-
-interface AIUsage {
-    date: string;
-    count: number;
-}
 
 function getTimestamp(): number {
     return Date.now();
@@ -93,8 +89,13 @@ export default function MentorAIClient() {
 
     // The same limit the server holds. Only answers that were delivered count, here and there.
     const DAILY_LIMIT = MENTOR_DAILY_LIMIT;
-    const [dailyCount, setDailyCount] = useState(0);
-    const [lastResetDate, setLastResetDate] = useState("");
+    // When each delivered answer was given, inside a rolling 24 hours, the way the server counts them.
+    const [answers, setAnswers] = useState<number[]>([]);
+    const dailyCount = answers.length;
+    const keepAnswers = (next: number[]) => {
+        storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ answers: next }));
+        return next;
+    };
 
     // Initialize: Load Sessions (Optimistic & Background Sync)
     useEffect(() => {
@@ -137,36 +138,10 @@ export default function MentorAIClient() {
                                 });
                             });
 
-                            // Reconstruct today's AI usage count from server sessions
-                            const todayStart = new Date();
-                            todayStart.setHours(0, 0, 0, 0);
-                            const todayTime = todayStart.getTime();
-
-                            // A question counts once it has a real answer; a refusal or an error reply does not.
-                            let serverDailyCount = 0;
-                            serverSessions.forEach((s: ChatSession) => {
-                                if (s.messages && Array.isArray(s.messages)) {
-                                    s.messages.forEach((m, i) => {
-                                        const reply = s.messages[i + 1];
-                                        if (m.role === 'user' && m.timestamp >= todayTime && reply?.role === 'assistant' && !isMentorNonAnswer(reply.content)) {
-                                            serverDailyCount++;
-                                        }
-                                    });
-                                }
-                            });
-
-                            // Update local daily count if server has higher usage
-                            setDailyCount(prev => {
-                                if (serverDailyCount > prev) {
-                                    const todayStr = new Date().toDateString();
-                                    storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
-                                        date: todayStr,
-                                        count: serverDailyCount,
-                                    }));
-                                    return serverDailyCount;
-                                }
-                                return prev;
-                            });
+                            // Rebuild the answers of the last 24 hours from the saved chats, and trust them
+                            // when they show more than this device knows (another device, cleared storage).
+                            const fromServer = answersFromSessions(serverSessions, Date.now());
+                            setAnswers(prev => (fromServer.length > prev.length ? keepAnswers(fromServer) : prev));
                         }
                     }
                 } catch (e) {
@@ -180,36 +155,20 @@ export default function MentorAIClient() {
         }
     }, [status]);
 
-    // Initialize & Watch: Rate Limit Logic (Run on mount)
+    // Load what this device remembers on mount.
     useEffect(() => {
-        const savedUsage = storage.getOptional<AIUsage | string>(STORAGE_KEYS.AI_USAGE);
-        let deferredCountUpdate: ReturnType<typeof setTimeout> | undefined;
-        const today = new Date().toDateString();
-        const deferUsageState = (count: number, date: string) => {
-            deferredCountUpdate = setTimeout(() => {
-                setDailyCount(count);
-                setLastResetDate(date);
-            }, 0);
-        };
-
-        if (savedUsage) {
-            const parsed = typeof savedUsage === 'string' ? JSON.parse(savedUsage) : savedUsage;
-            const { date, count } = parsed;
-
-            if (date === today) {
-                deferUsageState(count, date);
-            } else {
-                // New Day Reset
-                deferUsageState(0, today);
-                storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0 }));
-            }
-        } else {
-            // Initial Start
-            deferUsageState(0, today);
-            storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({ date: today, count: 0 }));
-        }
-        return () => clearTimeout(deferredCountUpdate);
+        const stored = readUsage(storage.getOptional(STORAGE_KEYS.AI_USAGE), Date.now());
+        const load = setTimeout(() => setAnswers(stored), 0);
+        return () => clearTimeout(load);
     }, [status]);
+
+    // Give a credit back as each answer leaves the 24-hour window.
+    useEffect(() => {
+        if (answers.length === 0) return;
+        const wait = Math.min(Math.max(answers[0] + USAGE_WINDOW_MS - Date.now(), 0) + 50, 2 ** 31 - 1);
+        const expire = setTimeout(() => setAnswers(prev => keepAnswers(pruneUsage(prev, Date.now()))), wait);
+        return () => clearTimeout(expire);
+    }, [answers]);
 
     // Auto-scroll
     useEffect(() => {
@@ -330,13 +289,9 @@ export default function MentorAIClient() {
             setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s).sort((a, b) => b.updatedAt - a.updatedAt));
         }
 
-        // INCREMENT COUNT
-        const newCount = dailyCount + 1;
-        setDailyCount(newCount);
-        storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
-            date: lastResetDate,
-            count: newCount,
-        }));
+        // Count the question now; it is taken back below if it gets no real answer.
+        const askedAt = Date.now();
+        setAnswers(prev => keepAnswers([...pruneUsage(prev, askedAt), askedAt]));
 
         try {
             // Get AI Response...
@@ -367,18 +322,17 @@ export default function MentorAIClient() {
                 }
             }
 
-            // The question only counts when it got a real answer. If the server says today's allowance is used up,
+            // The question only counts when it got a real answer. If the server says the allowance is used up,
             // the app was behind (another device, cleared storage): catch up so it stops offering credits.
             const answered = !isMentorNonAnswer(response);
             if (!answered) {
                 const serverSaysFull = response === USER_MESSAGES.id.dailyLimit || response === USER_MESSAGES.en.dailyLimit;
-                setDailyCount(prev => {
-                    const next = serverSaysFull ? DAILY_LIMIT : Math.max(0, prev - 1);
-                    storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
-                        date: new Date().toDateString(),
-                        count: next,
-                    }));
-                    return next;
+                setAnswers(prev => {
+                    const now = Date.now();
+                    const kept = pruneUsage(prev, now).filter(at => at !== askedAt);
+                    // The server knows better than this device: fill the window so the app stops offering credits.
+                    while (serverSaysFull && kept.length < DAILY_LIMIT) kept.push(now);
+                    return keepAnswers(kept);
                 });
             } else {
                 trackAIQuery();
@@ -412,15 +366,7 @@ export default function MentorAIClient() {
 
         } catch {
             // Revert quota on actual exception
-            setDailyCount(prev => {
-                const reverted = Math.max(0, prev - 1);
-                const todayStr = new Date().toDateString();
-                storage.set(STORAGE_KEYS.AI_USAGE, JSON.stringify({
-                    date: todayStr,
-                    count: reverted,
-                }));
-                return reverted;
-            });
+            setAnswers(prev => keepAnswers(prev.filter(at => at !== askedAt)));
 
             const errorTimestamp = getTimestamp();
             const errorMsg: ChatMessage = {

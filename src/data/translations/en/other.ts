@@ -566,7 +566,7 @@ export const otherEN = {
     tanyaSend: "Send",
     tanyaDailyLimit: "Daily Limit",
     tanyaLimitReached: "Oops, you've reached your question limit for today",
-    tanyaLimitReset: "Your quota refills tomorrow.",
+    tanyaLimitReset: "Each question you used comes back 24 hours later.",
     tanyaQuickPrompts: "Quick Prompts",
     tanyaPrompt1: "I feel lazy to pray...",
     tanyaPrompt2: "I'm feeling overwhelmed",
