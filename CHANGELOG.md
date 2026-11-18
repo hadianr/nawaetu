@@ -6,6 +6,186 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.16.0] - 2026-10-16
+
+### Added
+- **Serve the concise sirah and timeline in English at /en**
+- **Name, describe and credit the sirah pages for search and AI**
+- **Add "Memahami Lebih Dalam" notes to every concise sirah part**
+- **Give both editions of the concise sirah the same pages**
+- **Keep the complete sirah a place for reading history**
+- **Add "Memahami Lebih Dalam" notes to the concise sirah's s03**
+- **Read the concise sirah in short pages**
+- **End the timeline at the Prophet's passing and rename it**
+- **Remove the daily sirah quiz and highlight**
+- **Open the sirah as three learning paths**
+- **Add Shaykh Haytham Sarhan's concise sirah in two languages**
+- **Let readers choose the language of sirah text**
+- **Clamp long hadiths in history chapters**
+- **Make nawaetu.com the brand line on story cards**
+- **Drop the HadeethEnc credit from hadith story cards**
+- **Tell Islamic history as chapters built from sourced hadiths**
+- **Add an Islamic history page**
+- **Show events from the sirah for the current month**
+- **Add four sirah hadiths on leadership from HadeethEnc**
+- **Add a daily mission to pray for leaders and the country**
+- **Add civic Quran verses to the daily reflection**
+- **Understand Gen Z political slang**
+- **Add a civic life topic sourced from HadeethEnc**
+- **Answer political questions with principles, not sides**
+- **Credit the book and datasets behind the sirah text**
+- **One row of theme swatches, light first**
+- **Compact theme picker now that every theme is free**
+- **Bind a guest's account to a secret only the device holds**
+- **Invite guests at 7, 14 and 30 day streaks, not at 3**
+- **Invite guests to sign in when they have something to protect**
+- **Clean up the data guests leave behind**
+- **Guests get prayer alerts in their own language**
+- **Remove the old full-state upload**
+- **Store the days a freeze protected**
+- **Take the Ramadan hub page out until the month**
+- **Take the taraweh tracker off the Ramadan page for now**
+- **Fasting days reach a second device through the pull**
+- **Guest journal follows the account; an offline intention is kept**
+- **Server prices prayers by gender, trackers use the queue, accounts do not mix**
+- **Send only what changed, and pick up other devices' changes**
+- **Server prices non-mission awards and writes mission completions in one batch**
+- **Accept 30 days of activity and warn before data ages out**
+- **Rate-limit sync, account-data, payment-link and intention routes**
+- **Animate the first-run flow and personalise it by gender**
+- **Pay women 75 Hasanah for on-time prayer**
+- **Add onboarding animations with licence credits**
+- **Load animations without an icon flash and fall back safely**
+- **Compact Home card with fasting row, and matching dialogs**
+- **Add the fasting guide, auto-ticked habits and clearer phases**
+- **Redesign the dalil popup, with copy and share as story**
+- **Build story cards from the app themes**
+- **Show the streak on the card instead of keeping a second record**
+- **Ground the 100-day journey in dalil and clarify its phases**
+- **Add sparkles and a drawn check to the target-reached dialog**
+- **Use the Lottie flame in the streak dialog**
+- **Share one streak-days source and add the flame to streak toasts**
+- **Add Lottie milestones and streak flame to the journey**
+- **Redesign journey card with ring, 7-day strip and a11y**
+- **Add 100 Days to Ramadan journey card**
+- **Remove infaq perks, unlock themes and set 10 chats/day for all**
+- **Report ai_referral event on landing**
+- **Add AI referral detection helper**
+- **Add English FAQ to about page**
+- **Add English crawler intro to home shell**
+- **Add BreadcrumbList and Article JSON-LD to surah and sirah pages**
+- **Include hijri-calendar in public content routes**
+- **Server-render hadith and dua pages**
+- **Server-render crawler intro in home entry shell**
+- **Add FAQ section with FAQPage JSON-LD to about page**
+- **Render public content routes before onboarding gate**
+- **Add llms.txt route**
+- **Allow AI search crawlers explicitly in robots.txt**
+- **Update link preview title, description and og image**
+
+### Performance
+- **Run Vercel functions in Singapore, next to the database and Redis**
+- **Read only the subscriptions whose alert is due**
+- **Send prayer alerts in batches and record them in one statement**
+- **Ask Aladhan once per place per month, not once per place per minute**
+- **Keep the free tier's 500k commands for the limits that need it**
+- **Write bookmark saves in one statement**
+- **Record evidence in one transaction and undo it on the server**
+- **Stop probing localStorage on every access and write the Quran timer every 10s**
+- **Share Aladhan calls across 0.1° location cells**
+- **Query user locales lazily in prayer-alert**
+
+### Improved
+- **Bump TWA version to 1.16.0 (versionCode 2)**
+- **Try rotation workarounds on the viewport debug page**
+- **Add a static viewport debug page for rotation issues**
+- **Drop the unused isMuhsinin prop from the profile header and card**
+- **One daily limit with the server, drop the Muhsinin quota**
+- **Remove isPremium now that every theme is free**
+- **Remove Royal, Ocean and Lavender themes**
+- **Bump the development-dependencies group across 1 directory with 7 updates**
+- **Bump postgres from 3.4.9 to 4.1.0**
+- **Bump the production-dependencies group across 1 directory with 6 updates**
+- **Bump reviewdog/action-eslint**
+- **Load the sync engine on demand; record the home bundle size**
+- **Declare dotlottie-web as a direct dependency**
+- **Drop the Sya'ban fasting missions the journey card owns**
+- **One streak toast hook instead of two copies**
+- **Keep the README.id.md version badge in sync**
+- **Bump the production-dependencies group with 5 updates**
+- **Bump the development-dependencies group across 1 directory with 7 updates**
+- **Update fast-uri, serialize-javascript, and undici to latest versions**
+- **Update AGENTS.md and modify package dependencies**
+- **Bump firebase from 12.19.0 to 13.0.0**
+- **Bump framer-motion from 13.4.0 to 14.3.0**
+- **Bump the production-dependencies group with 17 updates**
+
+### Fixed
+- **Force a reflow after rotation on iOS**
+- **Drop content-visibility from the fixed pattern overlay**
+- **Update orientation settings to 'default' for better compatibility style(globals): adjust body overflow properties to prevent layout issues on iOS fix(onboarding): ensure proper width and overflow handling in onboarding overlay**
+- **Count the app's answers over a rolling 24 hours like the server**
+- **Hold the server to 10 answers a day and count only delivered ones**
+- **Log a failed prayer calendar fetch as a warning**
+- **Skip Firebase messaging on browsers without push support**
+- **Keep the bottom nav the same height on first launch**
+- **Redirect duplicate and removed sirah URLs**
+- **Hide the prayer consistency scrollbar with the existing class**
+- **Sanitize Indonesian tafsir before rendering it as HTML**
+- **Escape every field in the Telegram HTML message**
+- **Rate limit the AI insight per user**
+- **Key the shared sirah cache on the whole question and language**
+- **Translate the remaining hard-coded Indonesian messages**
+- **Show Sirah screens' labels in the user's language**
+- **Keep reader icons on the same line as their text**
+- **Show the source once on the sirah index, not on every section**
+- **Keep pages working when a browser translates them**
+- **Name the Prophet in full as Nabi Muhammad SAW**
+- **Write the Prophet's honorific as SAW in Nawaetu's own text**
+- **Remove a reflection quote with no traceable source**
+- **Remove Quran links that don't match their sections**
+- **No link to the Ramadan page while it is switched off**
+- **Look again when a dialog is in the way of the sign-in invitation**
+- **Close the open glob, minimatch and fast-xml-parser advisories**
+- **Bound awards, align the window, protect in-flight pulls and fasting edits**
+- **Keep guest device tokens out of URLs**
+- **Keep in-flight changes, clear accounts without queueing undos, pull past failed entries**
+- **No link points at the hidden Ramadan page**
+- **An entry that failed for good still counts as unsent**
+- **Enforce the AI daily allowance on the server**
+- **Read back JSON the storage layer already parsed; settle donations atomically**
+- **Count an intention's points and streak day in the ledger**
+- **Hand a device over cleanly at login and logout**
+- **Never resolve a push token to a real account; cap guest accounts**
+- **Merge daily activity instead of overwriting it**
+- **Derive the server streak from history only**
+- **Stop caching account data by URL**
+- **Credit a donation once and read Mayar statuses one way**
+- **Close open notification routes and restrict synced settings**
+- **Import guest missions through the ledger; send prayer alerts to guests**
+- **Keep fasting edits until the server confirms them**
+- **Show the server's streak beyond 30 days**
+- **File missions and intentions under the user's own day**
+- **Keep guest progress when a new Google account signs in**
+- **Accept every prayer reward a gender can earn**
+- **Center align button content in location refresh button**
+- **Bound function duration to 30 s, or 60 s where a route waits on other services**
+- **Process entries one at a time and cap a request at 200**
+- **Run multi-query routes one query at a time**
+- **Read the global totals with one query instead of three**
+- **Stop the intention widget from loading forever**
+- **Stop reporting fetch timeouts to Sentry**
+- **Return 502 when Mayar rejects payment creation**
+- **Stop reporting transient 5xx subscribe timeouts to Sentry**
+- **Compute daily highlight after mount to avoid hydration mismatch**
+- **Use an ASCII slug for the Hijrah chapter and fix a dead quiz link**
+- **Show the correct revelation place on the surah list**
+- **Use real links for surah rows and render them in server HTML**
+- **Return real 404 status for blocked debug routes**
+- **Activate debug-route blocking by moving middleware to src/proxy.ts**
+- **Drop fake lastModified from sitemap**
+
+
 ## [1.15.7] - 2026-10-16
 
 ### Added
