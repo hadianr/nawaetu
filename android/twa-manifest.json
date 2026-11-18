@@ -20,8 +20,8 @@
     "path": "./android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1.15.6",
-  "appVersionCode": 1,
+  "appVersionName": "1.16.0",
+  "appVersionCode": 2,
   "shortcuts": [
     {
       "name": "Baca Al-Quran",
@@ -62,5 +62,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "1.15.6"
+  "appVersion": "1.16.0"
 }
