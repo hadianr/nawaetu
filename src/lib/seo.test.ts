@@ -36,6 +36,16 @@ describe("pageMetadata social card", () => {
     });
 });
 
+describe("pageMetadata social description", () => {
+    it("gives link previews the short text and keeps the full description for search", () => {
+        const m = pageMetadata("T", "Full description for search results.", "/", { socialDescription: "Short preview." });
+        expect(m.description).toBe("Full description for search results.");
+        expect(m.openGraph?.description).toBe("Short preview.");
+        expect(m.twitter?.description).toBe("Short preview.");
+        expect(pageMetadata("T", "D", "/x").openGraph?.description).toBe("D");
+    });
+});
+
 describe("pageMetadata languages", () => {
     it("links both language versions with x-default on Indonesian", () => {
         const m = pageMetadata("T", "D", "/en/sirah/history", { locale: "en", languages: { id: "/sirah/history", en: "/en/sirah/history" } });

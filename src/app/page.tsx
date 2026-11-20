@@ -26,6 +26,7 @@ export const metadata: Metadata = pageMetadata(
   "Aplikasi Muslim untuk Ibadah Harian",
   "Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi harian, dan Tanya Nawaetu.",
   "/",
+  { socialDescription: "Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, dan jurnal niat dalam satu aplikasi gratis." },
 );
 
 export default function Home() {
