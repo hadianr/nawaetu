@@ -21,8 +21,14 @@ export function pageMetadata(
   title: string,
   description: string,
   path: string,
-  options: { locale?: "id" | "en"; languages?: PageLanguages } = {},
+  options: {
+    locale?: "id" | "en";
+    languages?: PageLanguages;
+    /** Shorter text for link previews, which cut at about 125 characters; search keeps `description`. */
+    socialDescription?: string;
+  } = {},
 ): Metadata {
+  const socialDescription = options.socialDescription ?? description;
   const url = new URL(path, SITE_URL).toString();
   const languages = options.languages && {
     "id-ID": new URL(options.languages.id, SITE_URL).toString(),
@@ -36,7 +42,7 @@ export function pageMetadata(
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
     openGraph: {
       title: `${title} | Nawaetu`,
-      description,
+      description: socialDescription,
       url,
       siteName: "Nawaetu",
       locale: options.locale === "en" ? "en_US" : "id_ID",
@@ -46,7 +52,7 @@ export function pageMetadata(
     twitter: {
       card: "summary_large_image",
       title: `${title} | Nawaetu`,
-      description,
+      description: socialDescription,
       images: [OG_IMAGE],
     },
   };
