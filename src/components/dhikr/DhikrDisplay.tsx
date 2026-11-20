@@ -103,7 +103,7 @@ export function DhikrDisplay({
             {/* Middle: Digital Counter - Responsive Size */}
             <div className="flex-1 flex items-center justify-center w-full pointer-events-none min-h-0 py-0.5 xs:py-10">
                 <div className={cn(
-                    "relative w-44 h-44 xs:w-56 xs:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
+                    "relative aspect-square h-44 xs:h-56 md:h-64 lg:h-80 max-h-full [container-type:size] flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
                     "shadow-[var(--shadow-floating)]"
                 )}>
 
@@ -138,7 +138,7 @@ export function DhikrDisplay({
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                         </span>
                         <span className={cn(
-                            "text-[clamp(4.5rem,15vw,8rem)] tabular-nums font-bold tracking-tighter transition-colors",
+                            "text-[min(clamp(4.5rem,15vw,8rem),40cqh)] leading-none tabular-nums font-bold tracking-tighter transition-colors",
                             "text-[rgb(var(--color-text-strong))]"
                         )}>
                             {hasHydrated ? (
