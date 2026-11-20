@@ -106,7 +106,6 @@ export function DhikrDisplay({
                     "relative w-44 h-44 xs:w-56 xs:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center pointer-events-auto rounded-full transition-all duration-300",
                     "shadow-[var(--shadow-floating)]"
                 )}>
-                    <div className="absolute inset-[-10px] rounded-full blur-3xl bg-[rgb(var(--color-primary)/0.08)] transition-all duration-700" />
 
                     <div className="absolute inset-0 rounded-full border-[6px] md:border-[12px] border-[rgb(var(--color-border))]/60" />
 

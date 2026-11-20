@@ -68,7 +68,6 @@ export default function Error({
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-[rgb(var(--color-background))] px-6 text-center">
             <div className="relative mb-8">
-                <div className="absolute inset-0 animate-pulse rounded-full bg-[rgb(var(--color-danger))]/20 blur-3xl" />
                 {isDatabaseError ? (
                     <div className="relative rounded-3xl bg-[rgb(var(--color-danger))]/10 p-6 border border-[rgb(var(--color-danger))]/20">
                         <Database className="h-16 w-16 text-[rgb(var(--color-danger))]" />

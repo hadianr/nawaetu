@@ -103,25 +103,6 @@ export default function RamadhanHeroCard() {
                 }}
             />
 
-            {/* Decorative moon glow — optimized with transform3d */}
-            <div
-                className="absolute -top-12 -right-12 h-48 w-48 rounded-full blur-3xl pointer-events-none animate-pulse-glow"
-                style={{
-                    willChange: "transform, opacity",
-                    transform: "translate3d(0, 0, 0)",
-                    backgroundColor: `color-mix(in srgb, var(--color-primary-light) ${Math.round(25 * progressiveOpacity)}%, transparent)`
-                }}
-            />
-            <div
-                className="absolute -bottom-8 -left-8 h-40 w-40 rounded-full blur-3xl pointer-events-none animate-pulse-glow-delayed"
-                style={{
-                    willChange: "transform, opacity",
-                    transform: "translate3d(0, 0, 0)",
-                    backgroundColor: `color-mix(in srgb, var(--color-primary) ${Math.round(22 * progressiveOpacity)}%, transparent)`,
-                    animation: "pulse-glow 3s ease-in-out infinite 1.5s"
-                }}
-            />
-
             {/* Top border accent - progressive and GPU accelerated */}
             <div
                 className="absolute top-0 left-0 right-0 h-0.5 pointer-events-none"
