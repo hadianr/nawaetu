@@ -182,12 +182,6 @@
     color: rgb(var(--color-text-strong)) !important;
   }
 
-  /* Bottom Nav specifically */
-  [data-theme="daylight"] nav[class*="backdrop-blur"] {
-    background-color: rgb(var(--color-canvas) / 0.92) !important;
-    border-top-color: rgb(var(--color-text-strong) / 0.08) !important;
-  }
-
   /* [4] Borders: keep primary-colored borders (emerald) visible but slightly muted */
   [data-theme="daylight"] [class*="border-[rgb(var(--color-primary))"] {
     border-color: rgb(var(--color-primary) / 0.3) !important;
@@ -261,12 +255,6 @@
     color: rgb(var(--color-primary-strong)) !important;
   }
 
-  /* [10] CARDS with Box Shadows — Give them depth */
-  [data-theme="daylight"] [class*="shadow-2xl"],
-  [data-theme="daylight"] [class*="shadow-xl"] {
-    box-shadow: 0 4px 24px rgb(var(--color-text-strong) / 0.08), 0 1px 4px rgb(var(--color-text-strong) / 0.04) !important;
-  }
-
   /* ===== END DAYLIGHT THEME ===== */
 
   /* ================================================= */
@@ -336,20 +324,6 @@
   }
 }
 
-@keyframes pulse-glow {
-
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.05) translate3d(0, 0, 0);
-  }
-}
-
 @layer utilities {
 
   /* Animation classes with GPU acceleration */
@@ -362,18 +336,6 @@
   .animate-gradient-shift {
     animation: gradient-shift 4s ease infinite;
     will-change: background-position;
-    transform: translate3d(0, 0, 0);
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-    will-change: transform, opacity;
-    transform: translate3d(0, 0, 0);
-  }
-
-  .animate-pulse-glow-delayed {
-    animation: pulse-glow 3s ease-in-out infinite 1.5s;
-    will-change: transform, opacity;
     transform: translate3d(0, 0, 0);
   }
 

@@ -112,7 +112,7 @@ export function DhikrZenMode({
                     </span>
                 )}
 
-                <div className="mt-16 text-xs md:text-sm animate-pulse font-medium tracking-widest uppercase text-[rgb(var(--color-primary-strong))]">
+                <div className="mt-16 text-xs md:text-sm font-medium tracking-widest uppercase text-[rgb(var(--color-primary-strong))]">
                     {t.tasbihTap || "Ketuk Layar"}
                 </div>
             </div>

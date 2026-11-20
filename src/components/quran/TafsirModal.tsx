@@ -46,7 +46,7 @@ export default function TafsirModal({ open, onOpenChange, content }: TafsirModal
                 <div className="relative bg-gradient-to-r from-[rgb(var(--color-primary))]/10 to-transparent border-b border-[rgb(var(--color-border))] px-4 sm:px-6 py-4 sm:py-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 sm:gap-4">
-                            <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/40 to-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/50 shadow-lg shadow-[rgb(var(--color-primary))]/20">
+                            <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))]/40 to-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/50 shadow-[var(--shadow-card)]">
                                 <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 text-[rgb(var(--color-primary))]" />
                             </div>
                             <div className="flex-1">

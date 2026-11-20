@@ -230,7 +230,7 @@ export default function UpdateChecker({ currentVersion }: UpdateCheckerProps) {
         <div className="fixed bottom-20 left-4 right-4 z-50">
             <div className="bg-[rgb(var(--color-surface))]/95 backdrop-blur-md border border-[rgb(var(--color-border))]/30 p-4 rounded-2xl flex items-center justify-between shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-5 text-[rgb(var(--color-text))]">
                 <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-[rgb(var(--color-primary))]/15 flex items-center justify-center animate-pulse">
+                    <div className="h-10 w-10 rounded-full bg-[rgb(var(--color-primary))]/15 flex items-center justify-center">
                         <Sparkles className="w-5 h-5 text-[rgb(var(--color-primary))]" />
                     </div>
                     <div>

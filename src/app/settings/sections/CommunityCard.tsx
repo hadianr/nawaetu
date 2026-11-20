@@ -54,7 +54,7 @@ export default function CommunityCard({ t, setShowFeedbackModal }: CommunityCard
                 onClick={() => setShowFeedbackModal(true)}
                 size="sm"
                 className={cn(
-                    "font-bold h-8 px-3.5 text-xs rounded-xl shadow-lg transition-all active:scale-[0.98] shrink-0",
+                    "font-bold h-8 px-3.5 text-xs rounded-xl shadow-[var(--shadow-card)] transition-all active:scale-[0.98] shrink-0",
                     "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                 )}
             >

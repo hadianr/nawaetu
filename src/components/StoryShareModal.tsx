@@ -225,7 +225,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
 
             <div
                 className={cn(
-                    "relative w-full max-w-sm min-[390px]:max-w-[420px] sm:max-w-md rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-colors duration-200 z-10",
+                    "relative w-full max-w-sm min-[390px]:max-w-[420px] sm:max-w-md rounded-2xl border shadow-[var(--shadow-floating)] overflow-hidden flex flex-col max-h-[92vh] transition-colors duration-200 z-10",
                         "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]"
                 )}
             >
@@ -252,7 +252,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                 <div className="flex-1 overflow-y-auto p-3 space-y-3 no-scrollbar">
                     {/* Live 9:16 Dynamic Canvas Preview Card (Scales from iPhone SE -> 14 Pro Max -> Desktop) */}
                     <div className="group relative flex w-full justify-center overflow-hidden rounded-xl border border-[rgb(var(--color-primary))]/15 bg-[rgb(var(--color-background))]/60 px-2 py-2 shadow-inner">
-                        <div className="relative h-[260px] min-[390px]:h-[350px] min-[410px]:h-[390px] sm:h-[440px] max-h-[52vh] aspect-[9/16] rounded-xl overflow-hidden shadow-xl border border-[rgb(var(--color-border))] flex items-center justify-center transition-all duration-300">
+                        <div className="relative h-[260px] min-[390px]:h-[350px] min-[410px]:h-[390px] sm:h-[440px] max-h-[52vh] aspect-[9/16] rounded-xl overflow-hidden shadow-[var(--shadow-floating)] border border-[rgb(var(--color-border))] flex items-center justify-center transition-all duration-300">
                             <canvas
                                 ref={previewCanvasRef}
                                 className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.01]"

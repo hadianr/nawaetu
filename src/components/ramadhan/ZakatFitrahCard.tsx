@@ -51,7 +51,7 @@ export default function ZakatFitrahCard() {
                         </div>
                     )}
                     {currentPhase === 3 && (
-                        <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 px-2.5 py-1 backdrop-blur-sm animate-pulse">
+                        <div className="flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-warning))]/30 bg-[rgb(var(--color-warning))]/10 px-2.5 py-1 backdrop-blur-sm">
                             <AlertCircle className="h-3.5 w-3.5 text-[rgb(var(--color-warning))]" />
                             <span className="text-[10px] font-semibold text-[rgb(var(--color-warning))]">Waktu Afdhal</span>
                         </div>

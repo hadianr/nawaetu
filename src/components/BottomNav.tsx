@@ -23,7 +23,6 @@ import { useSyncExternalStore, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, BookOpen, Scroll, Settings, Fingerprint } from "lucide-react";
-import { AppIcon } from "@/components/ui/AppIcon";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { usePrayerTimesContext } from "@/context/PrayerTimesContext";
@@ -45,7 +44,6 @@ const MoonStarIcon = ({ className, isActive }: { className?: string; isActive?: 
         <path
             d="M16 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"
             fill="currentColor"
-            className={isActive ? "animate-pulse" : ""}
         />
     </svg>
 );
@@ -87,7 +85,7 @@ const BottomNav = memo(function BottomNav() {
         <nav
             aria-label="Navigasi utama"
             className={cn(
-                "bottom-nav glass-surface fixed inset-x-0 bottom-0 z-50 w-full rounded-none border-x-0 border-b-0 border-t pb-safe shadow-[var(--shadow-floating)]"
+                "bottom-nav fixed inset-x-0 bottom-0 z-50 w-full border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] pb-safe"
             )}
             data-bottom-nav
         >
@@ -108,27 +106,6 @@ const BottomNav = memo(function BottomNav() {
                                 >
                                     {/* Elevated Button Container */}
                                     <div className="relative -mt-5 mb-1">
-                                        {/* Animated outer glow ring */}
-                                        <span
-                                            className={cn(
-                                                "absolute inset-0 rounded-full transition-all duration-500",
-                                                isActive
-                                                    ? "blur-lg opacity-70 animate-pulse-glow"
-                                                    : "blur-md opacity-40",
-                                                isActive ? "bg-[rgb(var(--color-primary-light))]" : "bg-[rgb(var(--color-primary))]"
-                                            )}
-                                            style={{ transform: "scale(1.4)" }}
-                                        />
-
-                                        {/* Small decorative stars around the circle */}
-                                        {isActive && (
-                                            <>
-                                                <AppIcon name="sparkles" size="xs" tone="primary" className="absolute -top-1 -right-1 animate-pulse" />
-                                                <AppIcon name="sparkles" size="xs" tone="primary" className="absolute -bottom-1 -left-1 animate-pulse" />
-                                                <AppIcon name="star" size="xs" tone="warning" className="absolute top-0 -left-2 animate-pulse" />
-                                            </>
-                                        )}
-
                                         {/* Button pill */}
                                         <span
                                             className={cn(
@@ -136,14 +113,6 @@ const BottomNav = memo(function BottomNav() {
                                                 isActive && "scale-105 bg-[rgb(var(--color-primary))]"
                                             )}
                                         >
-                                            {/* Inner highlight for depth */}
-                                            <span
-                                                className="absolute inset-0 rounded-full opacity-30"
-                                                style={{
-                                                    background: "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 60%)"
-                                                }}
-                                            />
-
                                             <Icon
                                                 isActive={isActive}
                                                 className={cn(

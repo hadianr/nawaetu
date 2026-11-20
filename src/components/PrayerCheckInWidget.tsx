@@ -305,11 +305,6 @@ export default function PrayerCheckInWidget() {
                 "glass-surface prayer-checkin-widget relative overflow-hidden rounded-2xl border px-4 py-3.5 transition-all",
                 "shadow-[var(--shadow-card)]"
             )}>
-                {/* Soft Glow */}
-                <div className={cn(
-                    "absolute top-0 right-0 w-24 h-24 rounded-full blur-[50px] pointer-events-none opacity-40",
-                    "bg-[rgb(var(--color-primary))]/10"
-                )} />
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
@@ -407,7 +402,7 @@ export default function PrayerCheckInWidget() {
                             >
                                 {/* Active pulse for current prayer */}
                                 {isActive && !done && (
-                                    <div className="absolute inset-0 bg-[rgb(var(--color-primary))]/5 animate-pulse pointer-events-none" />
+                                    <div className="absolute inset-0 bg-[rgb(var(--color-primary))]/5 pointer-events-none" />
                                 )}
 
                                 {done ? (
@@ -593,7 +588,7 @@ export default function PrayerCheckInWidget() {
 
                     <div
                         className={cn(
-                            "relative w-full max-w-md border rounded-t-3xl p-6 pb-8 shadow-2xl animate-in slide-in-from-bottom-4 duration-300 z-10",
+                            "relative w-full max-w-md border rounded-t-3xl p-6 pb-8 shadow-[var(--shadow-floating)] animate-in slide-in-from-bottom-4 duration-300 z-10",
                             "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                         )}
                         onClick={(e) => e.stopPropagation()}
@@ -631,7 +626,7 @@ export default function PrayerCheckInWidget() {
                                         setSheet(null);
                                     }}
                                     className={cn(
-                                        "w-full flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
+                                        "w-full flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-[var(--shadow-card)]",
                                         "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-strong))]"
                                     )}
                                 >
@@ -669,7 +664,7 @@ export default function PrayerCheckInWidget() {
                                             setSheet(null);
                                         }}
                                         className={cn(
-                                            "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-lg",
+                                            "flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl transition-all border relative overflow-hidden group shadow-[var(--shadow-card)]",
                                             "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary-strong))]"
                                         )}
                                     >

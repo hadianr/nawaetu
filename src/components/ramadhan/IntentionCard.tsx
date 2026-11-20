@@ -106,7 +106,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                             className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] p-5 backdrop-blur-md shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-floating)]"
                         >
                             <div
-                                className="text-right font-arabic leading-loose text-[rgb(var(--color-text-strong))] drop-shadow-lg"
+                                className="text-right font-arabic leading-loose text-[rgb(var(--color-text-strong))]"
                                 style={{
                                     fontFamily: "var(--font-amiri)",
                                     fontSize: "1.5rem",

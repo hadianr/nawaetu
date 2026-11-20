@@ -60,7 +60,7 @@ export function AuthActions({
                     <Button
                         onClick={handleLogin}
                         className={cn(
-                            "w-full font-bold h-10 flex items-center gap-2 shadow-lg transition-all",
+                            "w-full font-bold h-10 flex items-center gap-2 shadow-[var(--shadow-card)] transition-all",
                             "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] hover:bg-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]"
                         )}
                     >

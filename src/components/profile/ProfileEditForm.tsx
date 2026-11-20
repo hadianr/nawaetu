@@ -96,7 +96,7 @@ export function ProfileEditForm({
                     onClick={handleSaveProfile}
                     disabled={isUpdating}
                     className={cn(
-                        "flex-1 h-9 font-bold transition-all shadow-lg active:scale-[0.98]",
+                        "flex-1 h-9 font-bold transition-all shadow-[var(--shadow-card)] active:scale-[0.98]",
                         "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                     )}
                 >

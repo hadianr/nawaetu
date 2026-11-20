@@ -84,7 +84,7 @@ export function DhikrPresetSelector({
                                         onClick={() => handleSequenceSelect(seq)}
                                         className={cn(
                                             "justify-between h-auto py-3 px-4 w-full border-[rgb(var(--color-primary)/0.2)] bg-[rgb(var(--color-primary)/0.1)] rounded-2xl transition-all text-left shadow-sm",
-                                            activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.25)] border-[rgb(var(--color-primary)/0.5)] shadow-[inset_0_0_15px_rgba(var(--color-primary),0.15)]"
+                                            activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.25)] border-[rgb(var(--color-primary)/0.5)]"
                                         )}
                                     >
                                         <div className="flex flex-col items-start w-full overflow-hidden">
@@ -120,7 +120,7 @@ export function DhikrPresetSelector({
                                             onClick={() => handlePresetSelect(p)}
                                             className={cn(
                                                 "justify-between h-auto py-3 px-4 border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl w-full text-left",
-                                                activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
+                                                activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)]"
                                             )}
                                         >
                                             <div className="flex flex-col items-start w-[80%] overflow-hidden">
@@ -159,7 +159,7 @@ export function DhikrPresetSelector({
                                                 onClick={() => handlePresetSelect(p)}
                                                 className={cn(
                                                 "justify-between h-auto py-3 px-4 border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] rounded-2xl w-full text-left",
-                                                    activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)] shadow-[inset_0_0_12px_rgba(var(--color-primary),0.05)]"
+                                                    activeSequenceId === null && activeDhikr?.id === p.id && "bg-[rgb(var(--color-primary)/0.15)] border-[rgb(var(--color-primary)/0.3)]"
                                                 )}
                                             >
                                                 <div className="flex flex-col items-start w-[80%] overflow-hidden">
@@ -199,7 +199,7 @@ export function DhikrPresetSelector({
                                                 onClick={() => handleSequenceSelect(seq)}
                                                 className={cn(
                                                     "justify-between h-auto py-3 px-4 w-full border-[rgb(var(--color-primary)/0.1)] bg-[rgb(var(--color-primary)/0.05)] rounded-2xl transition-all text-left",
-                                                    activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.2)] border-[rgb(var(--color-primary)/0.4)] shadow-[inset_0_0_15px_rgba(var(--color-primary),0.1)]"
+                                                    activeSequenceId === seq.id && "bg-[rgb(var(--color-primary)/0.2)] border-[rgb(var(--color-primary)/0.4)]"
                                                 )}
                                             >
                                                 <div className="flex flex-col items-start w-full overflow-hidden">

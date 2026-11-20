@@ -25,7 +25,7 @@ export function IslamicSubTabBar({ activeTab, t }: IslamicSubTabBarProps) {
                 className={cn(
                     "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
                     activeTab === "hadith"
-                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-md"
+                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface))]"
                 )}
             >
@@ -37,7 +37,7 @@ export function IslamicSubTabBar({ activeTab, t }: IslamicSubTabBarProps) {
                 className={cn(
                     "py-2 rounded-xl text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5",
                     activeTab === "dua"
-                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-md"
+                        ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface))]"
                 )}
             >

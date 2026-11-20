@@ -168,7 +168,7 @@ export default function AppOverlays() {
                 toastOptions={{
                     classNames: {
                         toast: cn(
-                            "group toast group-[.toaster]:shadow-lg group-[.toaster]:backdrop-blur-xl transition-all border",
+                            "group toast group-[.toaster]:shadow-[var(--shadow-card)] group-[.toaster]:backdrop-blur-xl transition-all border",
                             "group-[.toaster]:bg-[rgb(var(--color-surface))]/95 group-[.toaster]:text-[rgb(var(--color-text))] group-[.toaster]:border-[rgb(var(--color-border))] group-[.toaster]:shadow-[var(--shadow-floating)]"
                         ),
                         description: "group-[.toast]:text-[rgb(var(--color-text-muted))] font-medium",

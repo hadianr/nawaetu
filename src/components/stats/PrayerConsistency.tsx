@@ -114,7 +114,7 @@ export function PrayerConsistency({
                                             <div key={suffix} className="h-6 flex items-center justify-center">
                                                 <div
                                                     className={`w-4 h-4 rounded-full border transition-all duration-500 ${isDone
-                                                        ? "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/30 shadow-[0_0_8px_rgba(var(--color-primary),0.4)]"
+                                                        ? "bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary-light))]/30"
                                                         : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                                                         }`}
                                                     title={suffix}
@@ -139,7 +139,7 @@ export function PrayerConsistency({
                     ))}
                 </div>
                 <div className="flex items-center gap-2 bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))] shadow-[0_0_4px_rgba(var(--color-primary),0.8)]" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
                     <span className="font-bold uppercase tracking-tighter text-[7px] text-[rgb(var(--color-text))]">{t.stats.heatmap.completed}</span>
                 </div>
             </div>

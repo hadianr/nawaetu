@@ -53,7 +53,7 @@ export function ChatHistorySidebar({
 
             {/* Drawer Content */}
             <div className={cn(
-                "relative w-[300px] h-full border-l shadow-2xl p-4 flex flex-col animate-in slide-in-from-right duration-300",
+                "relative w-[300px] h-full border-l shadow-[var(--shadow-floating)] p-4 flex flex-col animate-in slide-in-from-right duration-300",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
             )}>
                 <div className="flex items-center justify-between mb-6 pt-2">

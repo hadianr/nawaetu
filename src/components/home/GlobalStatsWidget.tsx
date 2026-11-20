@@ -41,7 +41,6 @@ export default function GlobalStatsWidget() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="w-full relative overflow-hidden rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-gradient-to-br from-[rgb(var(--color-primary))]/10 via-[rgb(var(--color-surface-subtle))] to-transparent p-4 mb-4"
         >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[rgb(var(--color-primary))]/5 rounded-full blur-[40px] pointer-events-none" />
 
             <div className="flex items-center gap-2 mb-4">
                 <Globe2 className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />

@@ -127,7 +127,7 @@ export function DhikrDisplay({
                     <button
                         onClick={(e) => { e.stopPropagation(); handleIncrement(e); }}
                         className={cn(
-                            "absolute inset-1.5 md:inset-4 rounded-full active:scale-95 transition-all duration-75 flex flex-col items-center justify-center group z-20 shadow-xl border",
+                            "absolute inset-1.5 md:inset-4 rounded-full active:scale-95 transition-all duration-75 flex flex-col items-center justify-center group z-20 shadow-[var(--shadow-floating)] border",
                             "bg-gradient-to-br from-[rgb(var(--color-primary))]/15 to-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
                         )}
                     >
@@ -151,7 +151,7 @@ export function DhikrDisplay({
                             )}
                         </span>
                         <div className={cn(
-                            "mt-1 text-[8px] md:text-sm animate-pulse font-medium",
+                            "mt-1 text-[8px] md:text-sm font-medium",
                             "text-[rgb(var(--color-primary-strong))]/70"
                         )}>
                             {t.tasbihTap}
