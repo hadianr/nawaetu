@@ -58,8 +58,8 @@ try {
         const targetUrl = payload.data.url || '/';
         return self.registration.showNotification(title, {
             body,
-            icon: '/icon-192x192.png?v=1.5.7',
-            badge: '/icon-192x192.png?v=1.5.7',
+            icon: '/icon-192x192.png?v=2',
+            badge: '/badge-96x96.png',
             tag: payload.messageId || 'nawaetu-notification',
             data: { url: targetUrl },
             requireInteraction: true,

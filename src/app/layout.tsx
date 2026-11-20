@@ -52,7 +52,8 @@ export const metadata: Metadata = {
   // Favicon configuration
   icons: {
     icon: [
-      { url: "/icon.png", sizes: "any" },
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
@@ -120,7 +121,7 @@ const jsonLdSchemas = [
       "priceCurrency": "IDR"
     },
     "description": appFeatureDescription,
-    "screenshot": "https://nawaetu.com/icon-512x512.png",
+    "screenshot": "https://nawaetu.com/og-image.png",
     "softwareVersion": APP_CONFIG.version,
     "author": {
       "@type": "Organization",
@@ -194,8 +195,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://api.aladhan.com" />
 
         {/* iOS PWA Support */}
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Nawaetu" />

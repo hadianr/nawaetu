@@ -14,7 +14,7 @@
   "enableNotifications": true,
   "startUrl": "/?v=1.15.6",
   "iconUrl": "https://nawaetu.com/icon-512x512.png",
-  "maskableIconUrl": "https://nawaetu.com/icon-512x512.png",
+  "maskableIconUrl": "https://nawaetu.com/icon-maskable-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "./android.keystore",
