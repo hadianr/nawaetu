@@ -286,16 +286,16 @@ export default function MissionListModal({
 
                 <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col overflow-hidden">
                     <div className={cn(
-                        "px-5 py-4 border-b overflow-x-auto scrollbar-hide mission-tabs-container",
+                        "px-5 py-4 border-b overflow-x-auto scrollbar-hide",
                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                     )}>
-                        <TabsList className="bg-transparent h-auto p-0 gap-3 flex flex-nowrap w-max justify-start items-center border-none shadow-none ring-0 mission-tabs-list">
+                        <TabsList className="bg-transparent h-auto p-0 gap-3 flex flex-nowrap w-max justify-start items-center border-none shadow-none ring-0">
                             {tabs.map(tab => (
                                 <TabsTrigger
                                     key={tab.id}
                                     value={tab.id}
                                     className={cn(
-                                        "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none mission-tab-trigger",
+                                        "rounded-full border text-xs px-4 py-2 h-auto transition-all flex-none",
                                         "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 data-[state=active]:bg-[rgb(var(--color-primary))] data-[state=active]:text-[rgb(var(--color-primary-foreground))] data-[state=active]:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                                     )}
                                 >

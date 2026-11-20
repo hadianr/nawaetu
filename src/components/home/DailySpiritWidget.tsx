@@ -59,7 +59,7 @@ export default function DailySpiritWidget() {
 
     return (
         <div className="w-full max-w-none mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 xl:max-w-md">
-            <div className="glass-surface relative overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] spiritual-card">
+            <div className="glass-surface relative overflow-hidden rounded-2xl border shadow-[var(--shadow-card)]">
 
                 {/* --- Header --- */}
                 <div className="flex items-center justify-between px-4 pt-4 pb-2">

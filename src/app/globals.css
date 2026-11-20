@@ -176,24 +176,9 @@
      Primary accent: Emerald (tetap sama seperti dark mode)
      ===================================================================== */
 
-  /* [1] Base: Body & HTML */
-  [data-theme="daylight"] body,
-  [data-theme="daylight"] html {
-    background-color: rgb(var(--color-canvas)) !important;
-    color: rgb(var(--color-text-strong)) !important;
-  }
-
   /* [4] Borders: keep primary-colored borders (emerald) visible but slightly muted */
   [data-theme="daylight"] [class*="border-[rgb(var(--color-primary))"] {
     border-color: rgb(var(--color-primary) / 0.3) !important;
-  }
-
-  /* [5] TEXT HIERARCHY */
-
-  /* Specific override for SelectTriggers and similar buttons that are surfaces, not primary actions */
-  [data-theme="daylight"] .SelectTrigger,
-  [data-theme="daylight"] [role="combobox"] {
-    color: rgb(var(--color-text-strong)) !important;
   }
 
   /* [7] GRADIENT SURFACES */
@@ -204,49 +189,6 @@
     --tw-gradient-from: rgb(var(--color-primary) / 0.12) !important;
     --tw-gradient-to: rgb(var(--color-primary) / 0.05) !important;
     background: linear-gradient(to bottom right, rgb(var(--color-primary) / 0.12), rgb(var(--color-primary) / 0.05)) !important;
-  }
-
-  /* [8] SWITCH / TOGGLE COMPONENTS */
-  /* OFF state track */
-  [data-theme="daylight"] [role="switch"][data-state="unchecked"],
-  [data-theme="daylight"] [data-state="unchecked"][class*="rounded-full"][class*="border-2"] {
-    background-color: rgb(var(--color-border)) !important;
-    border-color: rgb(var(--color-border)) !important;
-  }
-
-  /* ON state track */
-  [data-theme="daylight"] [role="switch"][data-state="checked"],
-  [data-theme="daylight"] [data-state="checked"][class*="rounded-full"][class*="border-2"] {
-    background-color: rgb(var(--color-primary-strong)) !important;
-    border-color: rgb(var(--color-primary-strong)) !important;
-  }
-
-  /* Thumb (the white dot) */
-  [data-theme="daylight"] [role="switch"] span {
-    background-color: #ffffff !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
-  }
-
-  /* [9] DROPDOWN / SELECT / TOOLTIP (Radix UI) */
-  [data-theme="daylight"] [data-radix-popper-content-wrapper]>div,
-  [data-theme="daylight"] [role="listbox"],
-  [data-theme="daylight"] [role="tooltip"] {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    border-color: rgb(var(--color-text-strong) / 0.1) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    color: rgb(var(--color-text-strong)) !important;
-  }
-
-  [data-theme="daylight"] [role="option"] {
-    color: rgb(var(--color-text)) !important;
-  }
-
-  [data-theme="daylight"] [role="option"]:hover,
-  [data-theme="daylight"] [role="option"][data-highlighted=""] {
-    background-color: rgb(var(--color-primary) / 0.08) !important;
-    color: rgb(var(--color-primary-strong)) !important;
   }
 
   /* ===== END DAYLIGHT THEME ===== */
@@ -464,61 +406,6 @@
   }
 }
 
-/* Home — Spiritual Feed Widgets (Daylight Theme) */
-[data-theme="daylight"] .spiritual-card {
-  background-color: rgba(255, 255, 255, 0.45) !important;
-  backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-}
-
-[data-theme="daylight"] .spiritual-card .font-arabic {
-  color: rgb(var(--color-text-strong)) !important;
-  opacity: 1 !important;
-}
-
-/* Mission Items in Modal */
-[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm {
-  background-color: rgba(255, 255, 255, 0.45) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-}
-
-[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm[class*="opacity-60"] {
-  background-color: rgba(255, 255, 255, 0.25) !important;
-  opacity: 0.7 !important;
-}
-
-/* Missions Modal — Daylight Theme (Soft Theme) */
-html[data-theme="daylight"] .mission-tabs-container {
-  background-color: rgb(var(--color-text-strong) / 0.04) !important;
-  border-bottom: 1px solid rgb(var(--color-text-strong) / 0.08) !important;
-}
-
-html[data-theme="daylight"] .mission-tab-trigger {
-  background-color: rgb(var(--color-text-strong) / 0.05) !important;
-  color: rgb(var(--color-text-muted)) !important;
-  border: 1px solid rgb(var(--color-text-strong) / 0.06) !important;
-  transition: all 0.2s ease !important;
-}
-
-/* ACTIVE STATE - High Contrast Soft Emerald Glassmorphism */
-html[data-theme="daylight"] .mission-tab-trigger[data-state="active"] {
-  background-color: rgb(var(--color-primary) / 0.28) !important;
-  /* Made even more visible */
-  color: rgb(var(--color-primary-strong)) !important;
-  /* emerald-900 for max contrast */
-  border: 1.5px solid rgb(var(--color-primary) / 0.6) !important;
-  font-weight: 800 !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 0 4px 14px rgb(var(--color-primary) / 0.2) !important;
-  opacity: 1 !important;
-}
-
-html[data-theme="daylight"] .mission-tab-trigger[data-state="active"][value="weekly"] {
-  background-color: rgba(168, 85, 247, 0.28) !important;
-  color: #4c1d95 !important;
-  border-color: rgba(168, 85, 247, 0.6) !important;
-}
-
 /* =====================================================================
    QURAN FOCUS MODE
    Applied via body[data-focus-mode="true"]
@@ -577,119 +464,9 @@ nav {
   }
 }
 
-[data-color-mode="light"] [class*="bg-[rgb(var(--color-primary))]"]:not([class*="hover:bg-"]):is(
-  [class~="text-white"],
-  [class*="text-white/"]
-) {
-  background-color: rgb(var(--color-primary)) !important;
-}
-
-[data-color-mode="light"] [class*="border-white/"] {
-  border-color: rgb(var(--color-text-strong) / 0.14) !important;
-}
-
-[data-color-mode="light"] [class~="text-white"] {
-  color: rgb(var(--color-text-strong)) !important;
-}
-
-[data-color-mode="light"] [class*="text-white/"] {
-  color: rgb(var(--color-text-muted)) !important;
-}
-
-[data-color-mode="light"] [class*="text-slate-4"],
-[data-color-mode="light"] [class*="text-slate-3"] {
-  color: rgb(var(--color-text-muted)) !important;
-}
-
-[data-color-mode="light"] [class*="text-[rgb(var(--color-primary))"],
-[data-color-mode="light"] [class*="text-[rgb(var(--color-primary-light))"] {
+/* Primary as text: Blossom's blush primary is 2.2:1 on its surface, so light themes use the deep shade. */
+[data-color-mode="light"] [class*="text-[rgb(var(--color-primary))]"] {
   color: rgb(var(--color-primary-strong)) !important;
-}
-
-[data-color-mode="light"] :is(
-  [class*="bg-[rgb(var(--color-primary))"],
-  [class*="bg-[rgb(var(--color-primary-dark))"],
-  [class*="from-[rgb(var(--color-primary))"],
-  [class*="from-[rgb(var(--color-primary-dark))"],
-  [class*="bg-gradient-"]
-) :is([class~="text-white"], [class*="text-white/"]),
-[data-color-mode="light"] :is(
-  [class*="bg-[rgb(var(--color-primary))"],
-  [class*="bg-[rgb(var(--color-primary-dark))"],
-  [class*="from-[rgb(var(--color-primary))"],
-  [class*="from-[rgb(var(--color-primary-dark))"],
-  [class*="bg-gradient-"]
-):not([class*="hover:bg-"])[class~="text-white"] {
-  color: #fff !important;
-}
-
-/* Blossom replaces legacy Emerald/Teal utilities with its blush scale. */
-[data-theme="blossom"] :is(
-  [class~="text-emerald-400"], [class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"],
-  [class~="text-teal-400"], [class~="text-teal-500"], [class~="text-teal-600"], [class~="text-teal-700"]
-) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-
-[data-theme="blossom"] :is(
-  [class~="bg-emerald-500/10"], [class~="bg-emerald-500/15"], [class~="bg-emerald-500/20"], [class~="bg-emerald-500/30"],
-  [class~="bg-teal-500/10"], [class~="bg-teal-500/15"], [class~="bg-teal-500/20"], [class~="bg-teal-500/30"]
-) {
-  background-color: rgb(var(--color-primary) / 0.14) !important;
-}
-
-[data-theme="blossom"] :is(
-  [class~="bg-emerald-50"], [class~="bg-emerald-100"], [class~="bg-emerald-200"],
-  [class~="bg-teal-50"], [class~="bg-teal-100"], [class~="bg-teal-200"]
-) {
-  background-color: rgb(var(--color-primary-light) / 0.32) !important;
-}
-
-[data-theme="blossom"] :is(
-  [class~="bg-emerald-500"],
-  [class~="bg-emerald-600"],
-  [class~="bg-emerald-700"],
-  [class~="bg-teal-500"],
-  [class~="bg-teal-600"],
-  [class~="bg-teal-700"]
-) {
-  background-color: rgb(var(--color-primary-strong)) !important;
-}
-
-[data-theme="blossom"] :is([class~="border-emerald-100"], [class~="border-emerald-200"], [class~="border-emerald-400"], [class~="border-teal-100"], [class~="border-teal-200"], [class~="border-teal-400"]) {
-  border-color: rgb(var(--color-primary-light)) !important;
-}
-
-[data-theme="blossom"] :is([class~="ring-emerald-100"], [class~="ring-emerald-400"], [class~="ring-emerald-500/20"], [class~="ring-teal-100"], [class~="ring-teal-400"], [class~="ring-teal-500/20"]) {
-  --tw-ring-color: rgb(var(--color-ring)) !important;
-}
-
-[data-theme="blossom"] :is([class~="from-emerald-400"], [class~="from-emerald-500"], [class~="from-teal-400"], [class~="from-teal-500"]) {
-  --tw-gradient-from: rgb(var(--color-primary-light)) !important;
-}
-
-[data-theme="blossom"] :is([class~="to-emerald-400"], [class~="to-emerald-500"], [class~="to-teal-400"], [class~="to-teal-500"]) {
-  --tw-gradient-to: rgb(var(--color-primary)) !important;
-}
-
-/* Legacy accent utilities are aliases, never a second color system. */
-[data-color-mode="light"] :is([class~="text-emerald-400"], [class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"], [class~="text-teal-400"], [class~="text-teal-500"], [class~="text-teal-600"], [class~="text-teal-700"]) {
-  color: rgb(var(--color-primary-strong)) !important;
-}
-[data-color-mode="light"] :is(
-  [class~="bg-emerald-50"], [class~="bg-emerald-100"], [class~="bg-emerald-200"],
-  [class~="bg-teal-50"], [class~="bg-teal-100"], [class~="bg-teal-200"]
-) {
-  background-color: rgb(var(--color-primary-light) / 0.38) !important;
-}
-[data-color-mode="light"] :is([class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"]) {
-  background-color: rgb(var(--color-primary)) !important;
-}
-[data-color-mode="light"] :is([class~="bg-emerald-500/10"], [class~="bg-emerald-500/15"], [class~="bg-emerald-500/20"], [class~="bg-emerald-500/30"], [class~="bg-teal-500/10"], [class~="bg-teal-500/15"], [class~="bg-teal-500/20"], [class~="bg-teal-500/30"]) {
-  background-color: rgb(var(--color-primary) / 0.14) !important;
-}
-[data-color-mode="light"] :is([class~="border-emerald-100"], [class~="border-emerald-200"], [class~="border-emerald-400"], [class~="border-teal-100"], [class~="border-teal-200"], [class~="border-teal-400"]) {
-  border-color: rgb(var(--color-primary-light)) !important;
 }
 
 /* Card elevation is a semantic decision shared by every light surface. */
@@ -697,35 +474,10 @@ nav {
   box-shadow: var(--shadow-card) !important;
 }
 
-/* Keep intentionally dark action surfaces readable in every light theme. */
-[data-color-mode="light"] :is([class~="bg-slate-900"], [class*="bg-black"], [class*="bg-[#0f172a]"], [class*="bg-[#0F172A]"]) :is([class~="text-white"], [class*="text-white/"]),
-[data-color-mode="light"] :is([class~="bg-slate-900"], [class*="bg-black"], [class*="bg-[#0f172a]"], [class*="bg-[#0F172A]"]).text-white {
-  color: #fff !important;
-}
-
-[data-color-mode="light"] :is([class~="bg-[rgb(var(--color-primary-strong))]"], [class~="bg-[rgb(var(--color-primary-dark))]"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"]):is(.text-white, [class*="text-white/"]) {
-  color: #fff !important;
-}
-
 /* Settings and other light-theme cards share one surface and elevation. */
-[data-color-mode="light"] :is([class*="bg-white/[0.02]"], [class*="bg-white/5"], [class*="bg-slate-50"]) {
-  background-color: rgb(var(--color-surface)) !important;
-}
-[data-color-mode="light"] :is([class*="border-white/10"], [class*="border-slate-200"], [class*="border-slate-100"]) {
-  border-color: rgb(var(--color-border)) !important;
-}
 [data-color-mode="light"] :is([class~="shadow-xs"], [class~="shadow-sm"], [class~="shadow-md"], [class~="shadow-lg"]) {
   --tw-shadow: var(--shadow-card) !important;
   box-shadow: var(--shadow-card) !important;
-}
-
-/* Soft, low-noise switch states for light themes. */
-[data-color-mode="light"] [role="switch"][data-state="checked"] {
-  background-color: rgb(var(--color-primary)) !important;
-}
-[data-color-mode="light"] [role="switch"][data-state="unchecked"] {
-  background-color: rgb(var(--color-surface-subtle)) !important;
-  border-color: rgb(var(--color-border)) !important;
 }
 
 [data-color-mode="light"] :is([data-slot="select-content"], select) {
@@ -757,10 +509,6 @@ nav {
   color: rgb(var(--color-text-strong)) !important;
 }
 
-/* Mission dialog copy must remain readable on light modal surfaces. */
-[data-color-mode="light"] [role="dialog"] :is(.text-white, [class*="text-white/"]):not(button):not([class*="bg-"]) {
-  color: rgb(var(--color-text-strong)) !important;
-}
 [data-color-mode="light"] [data-slot="select-item"]:focus,
 [data-color-mode="light"] [data-slot="select-item"][data-highlighted] {
   background-color: rgb(var(--color-primary) / 0.12) !important;
