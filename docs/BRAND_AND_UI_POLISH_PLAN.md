@@ -257,8 +257,8 @@ independent of each other. Phase 5 depends on phases 1–2.
 - [x] Replace `font-mono` used for numbers with `tabular-nums` (31 sites).
   Check each one first, because some may be real code.
 - [x] Replace `font-black` with `font-bold` (81 sites).
-- [ ] Drop decorative `tracking-*`. Moved to Phase 5: it needs a per-screen
-  visual check.
+- [x] Drop decorative `tracking-*`. Moved to Phase 5 and done there
+  (`5e599a8`): uppercase labels share `tracking-wider`.
 - [x] `src/lib/quran/quran-utils.ts:54-61` and `QuranSettingsModal.tsx`: decide
   on Lateef (see open questions).
 - [x] Delete `public/fonts/LPMQ.ttf` (an HTML page, unused).
@@ -383,6 +383,37 @@ design call.
   be visible in light mode.
 - Lighthouse: fonts must not regress LCP by more than about 100ms. Two
   variable fonts plus an Arabic subset come to roughly 120–180KB woff2.
+
+### Post-deploy validation (2026-11-20, nawaetu.com)
+
+Run in the Anoa browser (Chrome 118) and current Chrome 157, after merge.
+
+- [x] First visit (empty storage) paints Daylight on the first frame; a
+  returning Emerald, Blossom or legacy `default` user (onboarded) keeps
+  their theme with no flash.
+- [x] A saved legacy `default` with onboarding **not** finished used to paint
+  Emerald for one frame before onboarding switched to Daylight. Fixed: the
+  pre-paint script treats `default` as unset while `onboarding_completed` is
+  missing, as onboarding does.
+- [x] Desktop (1280×800) for home, Quran, Tasbih, Settings in Daylight and
+  Emerald. The Tasbih counter circle overlapped the description at 800px
+  height; it is now sized by height (`aspect-square max-h-full`) and its
+  number by container height, checked at 1280×800, 1440×900, 390×844, 360×640.
+- [x] Keyboard focus in light themes: the light-mode card and shadow rules set
+  `box-shadow: … !important`, which also erased focus rings (the journal
+  "History" link showed nothing), and other controls only had a 1px 50%
+  outline. Fixed with `:not(:focus-visible)` on those rules and a 2px
+  `:focus-visible` outline in `--color-ring`; 21/21 controls on home now show
+  one in Chrome 157. (Anoa's Chrome 118 cannot render Tailwind v4 rings at
+  all; that is the browser, not the CSS.)
+- [x] Fonts: 2 woff2 preloaded, 49 KB, under the 120–180 KB budget.
+- [ ] Lighthouse mobile, home: score 71, FCP 0.9 s, LCP 5.9 s, CLS 0. LCP is
+  89% render delay; 2.3 s of the 2.9 s script time is the dotLottie player
+  and its wasm (chunk `2328`), which predates this work. Fonts are not the
+  cause. Follow-up: load the Lottie player after first paint, or show a
+  static frame until idle.
+- [ ] Social previews (opengraph.xyz, X, WhatsApp with `?v=`) and the
+  Android TWA rebuild still need a person.
 
 ---
 
