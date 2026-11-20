@@ -180,7 +180,7 @@ export default function RootLayout({
     <html lang="id" className={`${uiFont.variable} ${displayFont.variable} ${arabicFont.variable}`} suppressHydrationWarning>
       <head>
         {/* Applies the saved theme before first paint so no other theme flashes. */}
-        <script dangerouslySetInnerHTML={{ __html: prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME) }} />
+        <script dangerouslySetInnerHTML={{ __html: prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME, STORAGE_KEYS.ONBOARDING_COMPLETED) }} />
         {/* Resource Hints - Preconnect to critical origins */}
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
