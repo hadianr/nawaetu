@@ -26,13 +26,13 @@ def twaManifest = [
     launchUrl: '/?v=1.15.6', // The start path for the TWA. Must be relative to the domain.
     name: 'Nawaetu — Worship with Intention', // The application name.
     launcherName: 'Nawaetu', // The name shown on the Android Launcher.
-    themeColor: '#0A0A0A', // The color used for the status bar.
-    themeColorDark: '#000000', // The color used for the dark status bar.
-    navigationColor: '#000000', // The color used for the navigation bar.
-    navigationColorDark: '#000000', // The color used for the dark navbar.
-    navigationDividerColor: '#000000', // The navbar divider color.
-    navigationDividerColorDark: '#000000', // The dark navbar divider color.
-    backgroundColor: '#000000', // The color used for the splash screen background.
+    themeColor: '#FAF8F3', // The color used for the status bar.
+    themeColorDark: '#0E1311', // The color used for the dark status bar.
+    navigationColor: '#FAF8F3', // The color used for the navigation bar.
+    navigationColorDark: '#0E1311', // The color used for the dark navbar.
+    navigationDividerColor: '#E4DFD3', // The navbar divider color.
+    navigationDividerColorDark: '#2C3631', // The dark navbar divider color.
+    backgroundColor: '#FAF8F3', // The color used for the splash screen background.
     enableNotifications: true, // Set to true to enable notification delegation.
     // Every shortcut must include the following fields:
     // - name: String that will show up in the shortcut.
