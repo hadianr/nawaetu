@@ -13,7 +13,7 @@ export default function JourneyHero({ title, daysLeft, sub }: { title: ReactNode
                 <LottieMoment src="/lottie/lights.lottie" className="h-24 w-full" fallback={<div className="h-24 w-full" />} />
             </div>
             <div className="mt-3 text-xs font-bold uppercase tracking-wider">{title}</div>
-            <p className="mt-1 text-4xl font-black tabular-nums">{daysLeft}</p>
+            <p className="mt-1 text-4xl font-bold tabular-nums">{daysLeft}</p>
             <p className="text-sm font-bold">{days}</p>
             {sub && <p className="mt-0.5 text-xs opacity-90">{sub}</p>}
         </div>

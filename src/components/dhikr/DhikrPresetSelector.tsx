@@ -127,7 +127,7 @@ export function DhikrPresetSelector({
                                                 <span className="font-bold text-sm w-full truncate">{p.label}</span>
                                                 <span className="text-[10px] text-[rgb(var(--color-text-muted))] truncate w-full mt-0.5">{p.latin}</span>
                                             </div>
-                                            <span className="text-[10px] font-mono ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
+                                            <span className="text-[10px] tabular-nums ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
                                         </Button>
                                     ))}
                                 </div>
@@ -166,7 +166,7 @@ export function DhikrPresetSelector({
                                                     <span className="font-bold text-sm w-full truncate">{p.label}</span>
                                                 <span className="text-[10px] text-[rgb(var(--color-text-muted))] truncate w-full mt-0.5">{p.latin}</span>
                                                 </div>
-                                            <span className="text-[10px] font-mono ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
+                                            <span className="text-[10px] tabular-nums ml-2 shrink-0 text-[rgb(var(--color-text-muted))]">{p.target}x</span>
                                             </Button>
                                         ))}
                                     </div>

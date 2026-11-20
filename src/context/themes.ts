@@ -126,9 +126,10 @@ const createTheme = (input: ThemeInput): Theme => {
             radiusCard: "0.75rem",
             spacePage: "1rem",
             spaceSection: "1.5rem",
-            fontUi: "system-ui, -apple-system, \"Segoe UI\", sans-serif",
-            fontReading: "Amiri, Lateef, serif",
-            fontEditorial: "Lora, Georgia, serif",
+            // Families loaded with next/font in layout.tsx; the rest are fallbacks while they load.
+            fontUi: "var(--font-face-ui), system-ui, -apple-system, \"Segoe UI\", sans-serif",
+            fontReading: "var(--font-face-arabic), serif",
+            fontEditorial: "var(--font-face-display), Georgia, serif",
             readerLineHeight: "1.9",
             glassBlur: isLight ? "14px" : "18px",
             glassSaturation: isLight ? "1.25" : "1.2",

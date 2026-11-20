@@ -102,12 +102,12 @@ export function DhikrZenMode({
                     {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                 </span>
 
-                <span className="text-[120px] leading-none xs:text-[140px] md:text-[180px] font-mono font-bold tracking-tighter text-[rgb(var(--color-text-strong))]">
+                <span className="text-[120px] leading-none xs:text-[140px] md:text-[180px] tabular-nums font-bold tracking-tighter text-[rgb(var(--color-text-strong))]">
                     {hasHydrated ? count : "..."}
                 </span>
 
                 {target && (
-                    <span className="text-2xl md:text-3xl font-mono mt-2 text-[rgb(var(--color-text-muted))]">
+                    <span className="text-2xl md:text-3xl tabular-nums mt-2 text-[rgb(var(--color-text-muted))]">
                         / {target}
                     </span>
                 )}

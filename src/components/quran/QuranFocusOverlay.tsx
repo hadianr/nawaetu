@@ -134,7 +134,7 @@ export function QuranFocusBadge({ sessionSeconds, onExit }: FocusBadgeProps) {
                 <span className="text-[10px] font-medium leading-none text-[rgb(var(--color-text-muted))]">
                     {t.tilawahFocusMode}
                 </span>
-                <span className="text-[10px] font-mono font-bold tabular-nums leading-none text-[rgb(var(--color-primary-strong))]">
+                <span className="text-[10px] font-bold tabular-nums leading-none text-[rgb(var(--color-primary-strong))]">
                     {formatTime(sessionSeconds)}
                 </span>
             </div>

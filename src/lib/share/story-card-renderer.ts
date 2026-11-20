@@ -177,6 +177,29 @@ function drawWrappedText(
 /**
  * Pure Canvas 9:16 High-Performance Exporter
  */
+/**
+ * The app's fonts for canvas drawing. next/font serves them under generated family
+ * names, so read them from the theme variables, and load them first: a canvas never
+ * triggers a font download on its own.
+ */
+async function loadCardFonts(): Promise<{ ui: string; display: string; arabic: string }> {
+    const css = getComputedStyle(document.documentElement);
+    const family = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
+    const fonts = {
+        ui: family("--font-ui", "sans-serif"),
+        display: family("--font-editorial", "Georgia, serif"),
+        arabic: family("--font-reading", "serif"),
+    };
+    if (document.fonts) {
+        // A font that fails to load falls back to the next family in the list.
+        await Promise.all(
+            [`500 16px ${fonts.ui}`, `bold 16px ${fonts.ui}`, `italic 16px ${fonts.display}`, `16px ${fonts.arabic}`]
+                .map((font) => document.fonts.load(font).catch(() => [])),
+        );
+    }
+    return fonts;
+}
+
 export async function renderStoryCardToCanvas(
     data: ShareableCardData,
     options: StoryRenderOptions
@@ -190,6 +213,7 @@ export async function renderStoryCardToCanvas(
 
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2D context not available");
+    const fonts = await loadCardFonts();
 
     const palette = options.palette ?? (options.theme === "dark" ? DARK_PALETTE : LIGHT_PALETTE);
     const isDark = palette.mode === "dark";
@@ -222,7 +246,7 @@ export async function renderStoryCardToCanvas(
 
     // 3. Source Pill Badge at Top
     const badgeY = 160;
-    ctx.font = "bold 26px sans-serif";
+    ctx.font = `bold 26px ${fonts.ui}`;
     ctx.textAlign = "center";
     const badgeText = data.sourceText.toUpperCase();
     const textWidth = ctx.measureText(badgeText).width;
@@ -279,26 +303,26 @@ export async function renderStoryCardToCanvas(
         achievementProgressBlockHeight = 190;
     }
     if (showArabic) {
-        ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
+        ctx.font = `${arabicFontSize}px ${fonts.arabic}`;
         const arabicLinesCount = measureWrappedTextLines(ctx, data.arabic, contentWidth);
         arabicBlockHeight = arabicLinesCount * arabicLineHeight + (isShort ? 50 : 35);
     }
 
     let latinBlockHeight = 0;
     if (options.showLatin && data.latin) {
-        ctx.font = `italic ${latinFontSize}px Georgia, serif`;
+        ctx.font = `italic ${latinFontSize}px ${fonts.display}`;
         const latinLines = measureWrappedTextLines(ctx, data.latin, contentWidth);
         latinBlockHeight = latinLines * latinLineHeight + 35;
     }
 
-    ctx.font = `500 ${transFontSize}px sans-serif`;
+    ctx.font = `500 ${transFontSize}px ${fonts.ui}`;
     const transLinesCount = measureWrappedTextLines(ctx, transTextFormatted, contentWidth);
     let transBlockHeight = isAchievement ? 0 : transLinesCount * transLineHeight;
 
     let expBlockHeight = 0;
     if (options.showExplanation && data.explanation) {
         if (!isAchievement) {
-            ctx.font = "20px sans-serif";
+            ctx.font = `20px ${fonts.ui}`;
             const expLines = measureWrappedTextLines(ctx, data.explanation, contentWidth - 40);
             expBlockHeight = expLines * 32 + 50;
         }
@@ -329,24 +353,24 @@ export async function renderStoryCardToCanvas(
 
         // Recalculate component heights with updated auto-scaled sizes
         if (showArabic) {
-            ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
+            ctx.font = `${arabicFontSize}px ${fonts.arabic}`;
             const arabicLinesCount = measureWrappedTextLines(ctx, data.arabic, contentWidth);
             arabicBlockHeight = arabicLinesCount * arabicLineHeight + 25;
         }
 
         if (options.showLatin && data.latin) {
-            ctx.font = `italic ${latinFontSize}px Georgia, serif`;
+            ctx.font = `italic ${latinFontSize}px ${fonts.display}`;
             const latinLines = measureWrappedTextLines(ctx, data.latin, contentWidth);
             latinBlockHeight = latinLines * latinLineHeight + 25;
         }
 
-        ctx.font = `500 ${transFontSize}px sans-serif`;
+        ctx.font = `500 ${transFontSize}px ${fonts.ui}`;
         const transLinesCount = measureWrappedTextLines(ctx, transTextFormatted, contentWidth);
         transBlockHeight = isAchievement ? 0 : transLinesCount * transLineHeight;
 
         if (options.showExplanation && data.explanation) {
             if (!isAchievement) {
-                ctx.font = "18px sans-serif";
+                ctx.font = `18px ${fonts.ui}`;
                 const expLines = measureWrappedTextLines(ctx, data.explanation, contentWidth - 40);
                 expBlockHeight = expLines * 28 + 40;
             }
@@ -372,7 +396,7 @@ export async function renderStoryCardToCanvas(
         const flameColor = isDark ? "#fb923c" : "#f97316";
         const flameAccent = isDark ? "#fde047" : "#fbbf24";
         if (data.displayName) {
-            ctx.font = "italic 700 54px sans-serif";
+            ctx.font = `italic 700 54px ${fonts.ui}`;
             ctx.fillStyle = isDark ? "#fed7aa" : "#c2410c";
             ctx.fillText(data.displayName.slice(0, 32), W / 2, currentY - 200);
         }
@@ -383,12 +407,12 @@ export async function renderStoryCardToCanvas(
         drawFlame(ctx, W / 2, currentY + 10, 210, flameColor, flameAccent);
         currentY += achievementBlockHeight;
 
-        ctx.font = `bold ${Math.round(34 * scaleMultiplier)}px sans-serif`;
+        ctx.font = `bold ${Math.round(34 * scaleMultiplier)}px ${fonts.ui}`;
         ctx.fillStyle = palette.heading;
         drawWrappedText(ctx, data.title, W / 2, currentY - 30, contentWidth, 46, "center");
         currentY += 35;
     } else if (showArabic) {
-        ctx.font = `${arabicFontSize}px "Amiri", "Traditional Arabic", "Scheherazade New", serif`;
+        ctx.font = `${arabicFontSize}px ${fonts.arabic}`;
         ctx.fillStyle = palette.arabic;
         ctx.direction = "rtl";
         const drawnArabicH = drawWrappedText(
@@ -406,7 +430,7 @@ export async function renderStoryCardToCanvas(
 
     // 8. Render Transliteration Text (Center Alignment)
     if (options.showLatin && data.latin) {
-        ctx.font = `italic ${latinFontSize}px Georgia, serif`;
+        ctx.font = `italic ${latinFontSize}px ${fonts.display}`;
         ctx.fillStyle = palette.muted;
         const drawnLatinH = drawWrappedText(
             ctx,
@@ -422,7 +446,7 @@ export async function renderStoryCardToCanvas(
 
     // 9. Render Translation Text (Center Alignment with Uniform Quote Marks "")
     if (!isAchievement) {
-        ctx.font = `500 ${transFontSize}px sans-serif`;
+        ctx.font = `500 ${transFontSize}px ${fonts.ui}`;
         ctx.fillStyle = palette.body;
         const drawnTransH = drawWrappedText(
             ctx,
@@ -446,7 +470,7 @@ export async function renderStoryCardToCanvas(
         const progressHint = isEnglish
             ? "A little worship, every day - Keep going"
             : "Sedikit amal, rutin setiap hari - Teruskan";
-        ctx.font = "bold 22px sans-serif";
+        ctx.font = `bold 22px ${fonts.ui}`;
         ctx.fillStyle = palette.label;
         ctx.textAlign = "left";
         ctx.fillText(progressLabel, 100, currentY + 8);
@@ -470,7 +494,7 @@ export async function renderStoryCardToCanvas(
         ctx.roundRect(barX, barY, Math.max(barH, barW * progress), barH, barH / 2);
         ctx.fill();
 
-        ctx.font = "500 22px sans-serif";
+        ctx.font = `500 22px ${fonts.ui}`;
         ctx.fillStyle = isDark ? "rgba(255,255,255,0.7)" : "#475569";
         ctx.textAlign = "center";
         ctx.fillText(progressHint, W / 2, currentY + 88);
@@ -492,14 +516,14 @@ export async function renderStoryCardToCanvas(
         ctx.fill();
         ctx.stroke();
 
-        ctx.font = "bold 21px sans-serif";
+        ctx.font = `bold 21px ${fonts.ui}`;
         ctx.fillStyle = isDark ? "#fed7aa" : "#c2410c";
         ctx.textAlign = "left";
         ctx.fillText(hadithTitle, verseX + 28, verseY + 34);
-        ctx.font = "500 22px sans-serif";
+        ctx.font = `500 22px ${fonts.ui}`;
         ctx.fillStyle = isDark ? palette.body : palette.panelText;
         drawWrappedText(ctx, hadithText, W / 2, verseY + 72, contentWidth - 56, 30, "center");
-        ctx.font = "italic 18px sans-serif";
+        ctx.font = `italic 18px ${fonts.ui}`;
         ctx.fillStyle = isDark ? "#fdba74" : "#9a3412";
         ctx.textAlign = "right";
         ctx.fillText(hadithSource, verseX + contentWidth - 28, verseY + verseH - 20);
@@ -508,7 +532,7 @@ export async function renderStoryCardToCanvas(
 
     // 10. Render Explanation / Tadabbur Box (Center Alignment)
     if (options.showExplanation && data.explanation && !isAchievement && currentY < H - 250) {
-        ctx.font = "20px sans-serif";
+        ctx.font = `20px ${fonts.ui}`;
         const expW = contentWidth;
         const expX = (W - expW) / 2;
         const expY = currentY;
@@ -541,7 +565,7 @@ export async function renderStoryCardToCanvas(
     }
 
     if (isAchievement) {
-        ctx.font = "600 22px sans-serif";
+        ctx.font = `600 22px ${fonts.ui}`;
         ctx.fillStyle = isDark ? "rgba(253, 186, 116, 0.82)" : "#c2410c";
         ctx.textAlign = "center";
         ctx.fillText(
@@ -553,7 +577,7 @@ export async function renderStoryCardToCanvas(
 
     // 11. OBLIGATORY Branding Watermark Footer (nawaetu.com text is ALWAYS rendered in Center Alignment)
     // The app's address is the card's brand line: large, bold, in the accent colour.
-    ctx.font = "800 40px sans-serif";
+    ctx.font = `800 40px ${fonts.ui}`;
     ctx.fillStyle = palette.pillText;
     ctx.textAlign = "center";
     ctx.fillText("nawaetu.com", W / 2, H - 96);

@@ -17,6 +17,7 @@
  */
 
 import type { Metadata, Viewport } from "next";
+import { Amiri, Lora, Plus_Jakarta_Sans } from "next/font/google";
 import { APP_CONFIG } from "@/config/app-config";
 import { Suspense } from "react";
 import "./globals.css";
@@ -24,6 +25,12 @@ import BottomNav from "@/components/BottomNav";
 
 const siteDescription = "Al-Qur'an, jadwal sholat, kiblat, dzikir, hadits dan doa bersumber, Sirah, kalender Hijriah, Ramadhan, jurnal niat, misi harian, dan Tanya Nawaetu. Habit tracker ibadah dengan gamifikasi.";
 const appFeatureDescription = "Aplikasi Muslim Nawaetu mencakup Al-Qur'an dengan terjemahan, audio, tajwid, tafsir, pencarian, dan penanda bacaan; jadwal sholat dan pengingat; kompas kiblat; dzikir dengan target dan riwayat; hadits dengan perawi, referensi, dan keterangan kualitas; doa bersumber; Sirah Nabawiyah per bab dan kuis; kalender Hijriah dan hari puasa sunnah; panduan Ramadhan, puasa, qadha, khatam Al-Qur'an, Tarawih, makanan sunnah, dan zakat fitrah; jurnal niat dan refleksi; misi, streak, statistik; serta Tanya Nawaetu.";
+
+// The two-font system: Plus Jakarta Sans for UI and body, Lora for display.
+// Amiri covers Arabic script only. Theme tokens read these variables.
+const uiFont = Plus_Jakarta_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-face-ui", display: "swap" });
+const displayFont = Lora({ subsets: ["latin", "latin-ext"], style: ["normal", "italic"], variable: "--font-face-display", display: "swap", preload: false });
+const arabicFont = Amiri({ subsets: ["arabic"], weight: ["400", "700"], variable: "--font-face-arabic", display: "swap", preload: false });
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -175,7 +182,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" className={`${uiFont.variable} ${displayFont.variable} ${arabicFont.variable}`} suppressHydrationWarning>
       <head>
         {/* Applies the saved theme before first paint so no other theme flashes. */}
         <script dangerouslySetInnerHTML={{ __html: prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME) }} />

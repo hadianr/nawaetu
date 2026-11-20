@@ -222,7 +222,7 @@ export default function FastingDayModal({
                     {/* Consequence Preview */}
                     <div className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 ${consequenceBg}`}>
                         <span className="text-[rgb(var(--color-text-muted))] text-[11px] font-medium">{t.fastingDayModalRuling}</span>
-                        <span className={`text-[11px] font-black uppercase tracking-wider ${consequenceColor}`}>
+                        <span className={`text-[11px] font-bold uppercase tracking-wider ${consequenceColor}`}>
                             {consequenceLabel}
                         </span>
                     </div>
@@ -270,7 +270,7 @@ export default function FastingDayModal({
                     </button>
                     <button
                         onClick={handleSave}
-                        className="flex-1 rounded-xl py-4 text-xs font-black text-[rgb(var(--color-primary-foreground))] transition-all active:scale-95 shadow-[var(--shadow-card)] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))]"
+                        className="flex-1 rounded-xl py-4 text-xs font-bold text-[rgb(var(--color-primary-foreground))] transition-all active:scale-95 shadow-[var(--shadow-card)] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))]"
                     >
                         {t.fastingDayModalSave}
                     </button>

@@ -61,7 +61,7 @@ export default function StreakBadgeSummary() {
         aria-label={t.streakOpenDetails.replace("{count}", String(currentStreak))}
       >
         <Flame className={cn("h-5 w-5", isActiveToday && "fill-current")} aria-hidden="true" />
-        <span className="text-sm font-black tabular-nums">{currentStreak}</span>
+        <span className="text-sm font-bold tabular-nums">{currentStreak}</span>
       </button>
 
       {detailsOpen && (

@@ -119,7 +119,7 @@ export default function MissionDetailDialog({
                             <div className="flex items-center gap-2">
                                 <DialogTitle className="text-xl font-bold font-sans">{mission.title}</DialogTitle>
                                 <span className={cn(
-                                    "text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-widest shrink-0 border",
+                                    "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-widest shrink-0 border",
                                     "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]/30"
                                 )}>
                                     {getRulingLabel(mission.ruling, t)}
@@ -131,7 +131,7 @@ export default function MissionDetailDialog({
                             "ml-auto flex items-center gap-1 px-2 py-1 rounded-full border transition-colors",
                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                         )}>
-                            <span className="text-xs font-black text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
+                            <span className="text-xs font-bold text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
                         </div>
                     </div>
                 </DialogHeader>
@@ -261,7 +261,7 @@ export default function MissionDetailDialog({
                                         {/* If Readings Exist (Dzikir/Doa) */}
                                         {content.readings && content.readings.length > 0 && (
                                             <div className="space-y-4">
-                                                <div className="flex items-center justify-between text-xs uppercase tracking-widest font-black text-[rgb(var(--color-text-muted))]">
+                                                <div className="flex items-center justify-between text-xs uppercase tracking-widest font-bold text-[rgb(var(--color-text-muted))]">
                                                     <span>{(t as TranslationTree).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
                                                     {currentReading?.note && (
                                                         <span className="font-bold text-[rgb(var(--color-primary))]">{currentReading.note}</span>
@@ -553,7 +553,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             variant="destructive"
                                             className={cn(
-                                                "flex-1 py-5 text-xs font-black uppercase tracking-wider transition-all",
+                                                "flex-1 py-5 text-xs font-bold uppercase tracking-wider transition-all",
                                                 "bg-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/90 text-[rgb(var(--color-primary-foreground))] shadow-sm"
                                             )}
                                             onClick={() => {
@@ -602,7 +602,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             key={idx}
                                             className={cn(
-                                                "flex-1 font-black py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-md transition-all",
+                                                "flex-1 font-bold py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-md transition-all",
                                                 isHighReward
                                                     ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                                                     : "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text))] border border-[rgb(var(--color-border))]"
@@ -628,7 +628,7 @@ export default function MissionDetailDialog({
                         ) : (
                             <Button
                                 className={cn(
-                                    "w-full font-black py-4 md:py-5 text-xs md:text-sm transition-all shadow-lg",
+                                    "w-full font-bold py-4 md:py-5 text-xs md:text-sm transition-all shadow-lg",
                                     isLate
                                         ? "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))]/90 text-[rgb(var(--color-primary-foreground))]"
                                         : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"

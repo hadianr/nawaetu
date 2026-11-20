@@ -90,7 +90,7 @@ export function DhikrHistory({
                         <Trophy className="h-3.5 w-3.5" />
                         <span>
                             Total:{" "}
-                            <span className="text-[rgb(var(--color-text-strong))] font-black">
+                            <span className="text-[rgb(var(--color-text-strong))] font-bold">
                                 {hasHydrated ? (lifetimeCount || 0).toLocaleString('id-ID') : "--"}
                             </span>
                         </span>
@@ -120,7 +120,7 @@ export function DhikrHistory({
                                                     <span className="font-bold text-sm w-full truncate max-w-[150px]">{preset?.label || "Zikir"}</span>
                                                 </div>
                                             </div>
-                                            <span className="text-xs font-mono font-bold">{total.toLocaleString('id-ID')}x</span>
+                                            <span className="text-xs tabular-nums font-bold">{total.toLocaleString('id-ID')}x</span>
                                         </div>
                                     );
                                 })}
@@ -148,7 +148,7 @@ export function DhikrHistory({
                                             {isCompleted ? (
                                                 <Check className="h-4 w-4 text-[rgb(var(--color-primary))]" />
                                             ) : (
-                                                <span className="text-[10px] font-mono opacity-50">{ms.target.toLocaleString('id-ID')}x</span>
+                                                <span className="text-[10px] tabular-nums opacity-50">{ms.target.toLocaleString('id-ID')}x</span>
                                             )}
                                         </div>
                                         {!isCompleted && (

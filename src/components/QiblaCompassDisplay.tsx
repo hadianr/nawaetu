@@ -222,7 +222,7 @@ const CompassDisplay = memo(({
 
                 <div className="flex flex-col items-center gap-1">
                     <div className={cn(
-                        "text-5xl font-mono font-bold tracking-tighter transition-colors",
+                        "text-5xl tabular-nums font-bold tracking-tighter transition-colors",
                         "text-[rgb(var(--color-text-strong))]"
                     )}>
                         {displayDegrees}°

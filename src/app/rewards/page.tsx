@@ -77,7 +77,7 @@ export default function RewardsPage() {
                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]">
                         <Gift className="h-8 w-8" />
                     </div>
-                    <h1 className="text-3xl font-black sm:text-4xl">{copy.title}</h1>
+                    <h1 className="text-3xl font-bold sm:text-4xl">{copy.title}</h1>
                     <p className="text-[rgb(var(--color-text-muted))]">
                         {copy.subtitle}
                     </p>

@@ -109,7 +109,7 @@ export default function RamadhanScheduleCard() {
             {countdownMs > 0 ? (
                 <div className="mx-3 mb-2 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
                     <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))] mb-1.5 sm:mb-2">{countdownLabel}</p>
-                    <p className="text-2xl sm:text-3xl font-mono font-black tracking-widest" style={countdownStyle}>
+                    <p className="text-2xl sm:text-3xl tabular-nums font-bold tracking-widest" style={countdownStyle}>
                         {formatCountdown(countdownMs)}
                     </p>
                 </div>
@@ -129,7 +129,7 @@ export default function RamadhanScheduleCard() {
                         <AppIcon name={item.icon} size="sm" tone="primary" />
                         <div>
                             <p className="text-[10px] sm:text-xs text-[rgb(var(--color-text-muted))]">{item.label}</p>
-                            <p className="text-xs sm:text-sm font-bold font-mono" style={item.colorStyle}>{item.time}</p>
+                            <p className="text-xs sm:text-sm font-bold tabular-nums" style={item.colorStyle}>{item.time}</p>
                         </div>
                     </div>
                 ))}

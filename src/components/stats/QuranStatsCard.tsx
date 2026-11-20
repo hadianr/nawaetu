@@ -91,7 +91,7 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
                             {stat.icon}
                         </div>
                         <p className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mb-1 line-clamp-2">{stat.label}</p>
-                        <p className={cn('text-base font-black', stat.color)}>{stat.value}</p>
+                        <p className={cn('text-base font-bold', stat.color)}>{stat.value}</p>
                         <p className="text-[9px] text-[rgb(var(--color-text-muted))] mt-0.5 line-clamp-1">{stat.sub}</p>
                     </div>
                 ))}

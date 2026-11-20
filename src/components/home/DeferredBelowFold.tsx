@@ -103,7 +103,7 @@ export default function DeferredBelowFold() {
           {/* 6. Unified Spiritual Feed */}
           <section className="w-full mt-4 space-y-2 animate-in slide-in-from-bottom-6 fade-in duration-1000 delay-400">
             <div className="px-6 flex flex-col">
-              <h2 className="text-sm font-black text-[rgb(var(--color-text-strong))] tracking-tight">{t.spiritualDailyTitle}</h2>
+              <h2 className="text-sm font-bold text-[rgb(var(--color-text-strong))] tracking-tight">{t.spiritualDailyTitle}</h2>
               <p className="text-[10px] text-[rgb(var(--color-text-muted))] font-medium">{t.spiritualDailySubtitle}</p>
             </div>
 

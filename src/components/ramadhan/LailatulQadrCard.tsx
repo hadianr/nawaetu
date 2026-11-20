@@ -122,7 +122,7 @@ export default function LailatulQadrCard() {
                             {t.lailatulQadrIn.replace("{night}", String(nextNight))}
                         </p>
                         <p
-                            className="text-lg font-black mt-0.5"
+                            className="text-lg font-bold mt-0.5"
                             style={{ color: "rgb(var(--color-primary-light))" }}
                         >
                             {daysUntilNext} {t.lailatulQadrNightsLeft}

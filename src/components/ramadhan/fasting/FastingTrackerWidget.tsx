@@ -113,7 +113,7 @@ export default function FastingTrackerWidget() {
                             <AppIcon name={tab.icon} size="sm" tone={isActive ? "default" : "muted"} />
                             <span className="truncate">{tab.label}</span>
                             {tab.badge !== undefined && (
-                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-[rgb(var(--color-warning))] text-[rgb(var(--color-accent-foreground))] text-[8px] font-black flex items-center justify-center leading-none">
+                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-[rgb(var(--color-warning))] text-[rgb(var(--color-accent-foreground))] text-[8px] font-bold flex items-center justify-center leading-none">
                                     {tab.badge}
                                 </span>
                             )}
