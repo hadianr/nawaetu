@@ -389,8 +389,6 @@ export default function MentorAIClient() {
             <div className={cn(
                 "min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden font-sans bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]"
             )}>
-                {/* Background Pattern */}
-                <div className="absolute top-0 left-0 right-0 h-64 blur-3xl pointer-events-none bg-[rgb(var(--color-primary))]/10" />
 
                 <div className="relative z-10 max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-[rgb(var(--color-primary))]/30 rotate-3">

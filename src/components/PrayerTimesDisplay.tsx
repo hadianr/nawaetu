@@ -56,12 +56,6 @@ export default function PrayerTimesDisplay() {
                 "relative w-full max-w-none border rounded-3xl p-6 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500 xl:max-w-md",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
-                {/* Decorative Background */}
-                <div className={cn(
-                    "absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none",
-                    "bg-[rgb(var(--color-primary))]/10"
-                )} />
-
                 <div className="relative z-10 flex flex-col items-center space-y-4">
                     <div className={cn(
                         "w-16 h-16 rounded-2xl flex items-center justify-center border shadow-inner mb-2",

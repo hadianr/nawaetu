@@ -229,7 +229,6 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 border: "border-[rgb(var(--color-accent))]/50 shadow-[var(--shadow-card)]",
                 text: "text-[rgb(var(--color-accent-foreground))]",
                 icon: "fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))]",
-                glow: "bg-[rgb(var(--color-accent))]/25",
                 animate: "animate-pulse"
             };
         }
@@ -239,7 +238,6 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 border: "border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]",
                 text: "text-[rgb(var(--color-primary-light))]",
                 icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]",
-                glow: "bg-[rgb(var(--color-primary))]/20",
                 animate: ""
             };
         }
@@ -248,7 +246,6 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             border: "border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]",
             text: "text-[rgb(var(--color-text-muted))]",
             icon: "fill-[rgb(var(--color-text-muted))]/10 text-[rgb(var(--color-text-muted))]",
-            glow: "bg-[rgb(var(--color-text-muted))]/5",
             animate: ""
         };
     };
@@ -274,8 +271,6 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
                 <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 backdrop-blur-md border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
 
-                    {/* Simple decorative glow */}
-                    <div className={`absolute -right-10 -top-10 w-32 h-32 ${styles.glow} rounded-full blur-2xl pointer-events-none`} />
 
                     {isRamadhan ? (
                         /* RAMADHAN MODE: Portal to Hub */

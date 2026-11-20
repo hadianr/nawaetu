@@ -90,7 +90,7 @@ export default function AboutPage() {
             <div className="w-full max-w-none space-y-8 xl:max-w-4xl">
                 {/* Header */}
                 <div className="text-center space-y-4">
-                    <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-secondary))] bg-clip-text text-transparent">
+                    <h1 className="text-4xl sm:text-5xl font-serif font-semibold text-[rgb(var(--color-text-strong))]">
                         Tentang Nawaetu
                     </h1>
                     <p className="text-lg sm:text-xl text-[rgb(var(--color-text-muted))] max-w-2xl mx-auto">

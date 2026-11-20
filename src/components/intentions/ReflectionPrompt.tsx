@@ -106,8 +106,6 @@ export default function ReflectionPrompt({
                     className="relative w-full max-w-md bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)] rounded-3xl overflow-hidden z-[101]"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    {/* Glow Effect */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-[rgb(var(--color-primary))]/20 blur-3xl rounded-full pointer-events-none" />
 
                     {/* Header */}
                     <div className="relative p-5 sm:p-6 border-b border-[rgb(var(--color-border))]">

@@ -102,8 +102,6 @@ export default function IntentionPrompt({
                     {/* Journal Texture Overlay */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.02]" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/rice-paper.png')" }}></div>
 
-                    {/* Glow Effect */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-[rgb(var(--color-primary))]/20 blur-3xl rounded-full pointer-events-none" />
 
                     {/* Header */}
                     <div className="relative p-5 sm:p-6 border-b border-[rgb(var(--color-border))]">

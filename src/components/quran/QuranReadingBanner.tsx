@@ -88,8 +88,6 @@ export default function QuranReadingBanner() {
 
     return (
         <div className="relative rounded-2xl border border-[rgb(var(--color-border))] p-4 bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-card)]">
-            {/* Background glow - uses negative z so it doesn't interfere with dropdown */}
-            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl pointer-events-none -z-0 bg-[rgb(var(--color-primary))]/10" />
 
             <div className="relative z-10">
                 {/* Header row */}
