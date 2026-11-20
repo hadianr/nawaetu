@@ -100,7 +100,7 @@ export default function RewardsPage() {
 
                 <section className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-6">
                     <div className="mb-5 flex items-start gap-3">
-                        <Heart className="mt-1 h-5 w-5 shrink-0 text-[rgb(var(--color-accent))]" />
+                        <Heart className="mt-1 h-5 w-5 shrink-0 text-[rgb(var(--color-accent-strong))]" />
                         <div>
                             <h2 className="text-xl font-bold">{copy.supportTitle}</h2>
                             <p className="mt-1 text-sm text-[rgb(var(--color-text-muted))]">

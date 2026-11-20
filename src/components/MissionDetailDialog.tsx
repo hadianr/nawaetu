@@ -131,7 +131,7 @@ export default function MissionDetailDialog({
                             "ml-auto flex items-center gap-1 px-2 py-1 rounded-full border transition-colors",
                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                         )}>
-                            <span className="text-xs font-bold text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
+                            <span className="text-xs font-bold text-[rgb(var(--color-accent-strong))]">+{mission.hasanahReward} Hasanah</span>
                         </div>
                     </div>
                 </DialogHeader>
@@ -229,7 +229,7 @@ export default function MissionDetailDialog({
                                                                 <p className="text-base md:text-lg font-serif text-right mb-1.5 leading-relaxed">
                                                                     {content.niat.makmum.arabic}
                                                                 </p>
-                                                                <p className="text-[11px] md:text-xs italic mb-1 text-[rgb(var(--color-accent))] font-medium">
+                                                                <p className="text-[11px] md:text-xs italic mb-1 text-[rgb(var(--color-accent-strong))] font-medium">
                                                                     {content.niat.makmum.latin}
                                                                 </p>
                                                                 <p className="text-[9px] md:text-[10px] leading-tight text-[rgb(var(--color-text-muted))]">
@@ -344,7 +344,7 @@ export default function MissionDetailDialog({
                                     <div className="p-6 space-y-6">
                                         {content.fadhilah && (
                                             <div className="space-y-3">
-                                                <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-accent))]">
+                                                <h3 className="flex items-center gap-2 text-sm font-bold text-[rgb(var(--color-accent-strong))]">
                                                     <SparklesIcon className="w-4 h-4" /> {t.mission_dialog_fadhilah}
                                                 </h3>
                                                 <ul className="space-y-2">
@@ -353,7 +353,7 @@ export default function MissionDetailDialog({
                                                             "flex gap-2 text-sm p-3 rounded-lg border transition-colors",
                                                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-text-muted))]"
                                                         )}>
-                                                            <span className="text-[rgb(var(--color-accent))]">|</span>
+                                                            <span className="text-[rgb(var(--color-accent-strong))]">|</span>
                                                             {item}
                                                         </li>
                                                     ))}
@@ -404,7 +404,7 @@ export default function MissionDetailDialog({
                                                                         isQuran
                                                                             ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))]"
                                                                             : isHadith
-                                                                            ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent))]"
+                                                                            ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))]"
                                                                             : "bg-[rgb(var(--color-info))]/10 text-[rgb(var(--color-info))]"
                                                                     )}>
                                                                         {isQuran
@@ -425,7 +425,7 @@ export default function MissionDetailDialog({
                                                                                 isQuran
                                                                                     ? "text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
                                                                                     : isHadith
-                                                                                    ? "text-[rgb(var(--color-accent))] hover:text-[rgb(var(--color-accent))]"
+                                                                                    ? "text-[rgb(var(--color-accent-strong))] hover:text-[rgb(var(--color-accent-strong))]"
                                                                                     : "text-[rgb(var(--color-info))] hover:text-[rgb(var(--color-info))]"
                                                                             )}
                                                                         >
@@ -516,8 +516,8 @@ export default function MissionDetailDialog({
                                 "mb-3 px-3 py-2 rounded-lg flex items-center gap-2 border transition-colors",
                                 "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                             )}>
-                                <AlertCircle className="w-4 h-4 shrink-0 text-[rgb(var(--color-accent))]" />
-                                <p className="text-[10px] leading-tight font-medium text-[rgb(var(--color-accent))]/80">
+                                <AlertCircle className="w-4 h-4 shrink-0 text-[rgb(var(--color-accent-strong))]" />
+                                <p className="text-[10px] leading-tight font-medium text-[rgb(var(--color-accent-strong))]/80">
                                     {t.home_mission_late_notice}
                                 </p>
                             </div>

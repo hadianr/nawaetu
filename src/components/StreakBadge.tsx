@@ -184,7 +184,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3">
-                <Trophy className="mb-1 h-4 w-4 text-[rgb(var(--color-accent))]" aria-hidden="true" />
+                <Trophy className="mb-1 h-4 w-4 text-[rgb(var(--color-accent-strong))]" aria-hidden="true" />
                 <p className="font-bold">{canonical?.streak?.longestDays ?? streak.longestStreak}</p>
                 <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.streakLongestLabel}</p>
               </div>

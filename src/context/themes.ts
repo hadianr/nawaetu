@@ -37,6 +37,7 @@ export type ThemeToken =
     | "primaryStrong"
     | "primaryForeground"
     | "accent"
+    | "accentStrong"
     | "accentForeground"
     | "info"
     | "success"
@@ -113,6 +114,8 @@ const createTheme = (input: ThemeInput): Theme => {
             // Daylight's deep emerald (and any other dark primary) overrides it with white.
             primaryForeground: isLight ? "255 255 255" : "15 23 42",
             accent: colors.accent,
+            // Accent as text; light themes override it with a deeper shade that passes AA.
+            accentStrong: colors.accent,
             accentForeground: isLight ? "63 39 51" : "15 23 42",
             // Stock 400 shades disappear on pale surfaces, so light themes use the 700 shades (AA on paper).
             info: isLight ? "29 78 216" : "96 165 250",
@@ -194,6 +197,7 @@ export const THEMES: Record<ThemeId, Theme> = {
             text: "52 64 58",
             textMuted: "90 102 95",
             primaryStrong: "14 99 66",
+            accentStrong: "138 99 22",
             accentForeground: "23 33 28",
             border: "228 223 211",
             ring: "21 128 87",
@@ -268,6 +272,7 @@ export const THEMES: Record<ThemeId, Theme> = {
             textMuted: "112 82 97",
             primaryStrong: "132 45 75",
             primaryForeground: "66 40 52",
+            accentStrong: "158 62 98",
             accentForeground: "66 40 52",
             border: "236 203 217",
             ring: "190 88 122",
@@ -286,6 +291,7 @@ const THEME_TOKEN_CSS_NAMES: Record<ThemeToken, string> = {
     primaryStrong: "--color-primary-strong",
     primaryForeground: "--color-primary-foreground",
     accent: "--color-accent",
+    accentStrong: "--color-accent-strong",
     accentForeground: "--color-accent-foreground",
     info: "--color-info",
     success: "--color-success",

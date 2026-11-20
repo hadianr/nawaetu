@@ -54,12 +54,12 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
             color: 'text-[rgb(var(--color-primary-light))]',
         },
         {
-            icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent))]" />,
+            icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent-strong))]" />,
             label: t.tilawahTotalDuration,
             value: totalQuranReadSeconds > 0 ? formatDuration(totalQuranReadSeconds) : '—',
             sub: t.tilawahTotalDurationSub,
             gradient: 'from-[rgb(var(--color-accent))]/10',
-            color: 'text-[rgb(var(--color-accent))]',
+            color: 'text-[rgb(var(--color-accent-strong))]',
         },
     ];
 

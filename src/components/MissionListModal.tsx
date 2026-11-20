@@ -179,7 +179,7 @@ export default function MissionListModal({
                                 <div className="flex items-center justify-between mb-1">
                                     <p className={cn(
                                         "text-sm font-semibold truncate pr-2",
-                                        isCompleted ? "text-[rgb(var(--color-text-muted))] line-through" : isSpecial ? "text-[rgb(var(--color-accent))]" : "text-[rgb(var(--color-text-strong))]"
+                                        isCompleted ? "text-[rgb(var(--color-text-muted))] line-through" : isSpecial ? "text-[rgb(var(--color-accent-strong))]" : "text-[rgb(var(--color-text-strong))]"
                                     )}>
                                         {mission.title}
                                     </p>
@@ -198,7 +198,7 @@ export default function MissionListModal({
                                 <p className="text-xs truncate mb-1 text-[rgb(var(--color-text-muted))]">{mission.description}</p>
 
                                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                    <span className="text-[10px] tabular-nums text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
+                                    <span className="text-[10px] tabular-nums text-[rgb(var(--color-accent-strong))]">+{mission.hasanahReward} Hasanah</span>
 
                                     {mission.dalil && (() => {
                                         const ref = resolveReferenceForMission(mission);

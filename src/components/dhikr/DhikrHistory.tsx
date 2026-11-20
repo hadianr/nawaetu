@@ -74,7 +74,7 @@ export function DhikrHistory({
                         "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
                         "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]"
                     )}>
-                        <Flame className="h-3.5 w-3.5 text-[rgb(var(--color-accent))]/70" />
+                        <Flame className="h-3.5 w-3.5 text-[rgb(var(--color-accent-strong))]/70" />
                         <span>
                             {t.tasbihStreak}:{" "}
                             <span className="text-[rgb(var(--color-text-strong))]">
@@ -85,7 +85,7 @@ export function DhikrHistory({
                     </div>
                     <div className={cn(
                         "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors",
-                        "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25 text-[rgb(var(--color-accent))]"
+                        "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25 text-[rgb(var(--color-accent-strong))]"
                     )}>
                         <Trophy className="h-3.5 w-3.5" />
                         <span>

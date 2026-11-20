@@ -50,7 +50,7 @@ export default function FastingStats({ stats, hijriYear, onViewDetail }: Fasting
         {
             value: stats.pendingFidyah,
             label: t.fastingStatsPendingFidyah,
-            color: stats.pendingFidyah > 0 ? "text-[rgb(var(--color-accent))]" : "text-[rgb(var(--color-success))]",
+            color: stats.pendingFidyah > 0 ? "text-[rgb(var(--color-accent-strong))]" : "text-[rgb(var(--color-success))]",
             bg: stats.pendingFidyah > 0 ? "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25" : "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/25",
             icon: (stats.pendingFidyah > 0 ? "star" : "shield-check") as AppIconName,
         },

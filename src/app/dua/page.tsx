@@ -148,7 +148,7 @@ const DuaCard = memo(function DuaCard({
                         )}
                     >
                         {expanded
-                            ? <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[rgb(var(--color-accent))]" />
+                            ? <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[rgb(var(--color-accent-strong))]" />
                             : <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         }
                     </button>
@@ -236,7 +236,7 @@ const DuaCard = memo(function DuaCard({
                                 "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]/25 hover:bg-[rgb(var(--color-accent))]/20"
                             )}
                         >
-                            <Share2 className="w-3.5 h-3.5 text-[rgb(var(--color-accent))]" />
+                            <Share2 className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />
                             <span>{t.shareToStory || "Bagikan ke Story"}</span>
                         </button>
 
@@ -367,7 +367,7 @@ function DuaContent() {
                                 "p-2 rounded-xl border transition-colors",
                                 "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20"
                             )}>
-                                <BookOpen className="w-5 h-5 text-[rgb(var(--color-accent))]" />
+                                <BookOpen className="w-5 h-5 text-[rgb(var(--color-accent-strong))]" />
                             </div>
                             <div>
                                 <h1 className="text-lg font-bold tracking-tight text-[rgb(var(--color-text-strong))]">
