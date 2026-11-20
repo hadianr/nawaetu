@@ -362,13 +362,14 @@ function scriptJson(value: unknown): string {
 /**
  * Inline <head> script that applies the saved theme before first paint, so returning
  * users never see a flash of the wrong theme. Mirrors applyTheme.
+ * Like OnboardingOverlay, a saved legacy "default" counts as no choice while onboarding is unfinished.
  */
-export function prePaintThemeScript(storageKey: string): string {
+export function prePaintThemeScript(storageKey: string, onboardingKey: string): string {
     const themes = Object.fromEntries(
         Object.values(THEMES).map((theme) => {
             const { mode, variables } = themeCssVariables(theme);
             return [theme.id, { m: mode, v: variables }];
         }),
     );
-    return `(function(){try{var t=${scriptJson(themes)},a=${scriptJson(LEGACY_THEME_IDS)},h=function(o,k){return Object.prototype.hasOwnProperty.call(o,k)},s=null;try{s=localStorage.getItem(${scriptJson(storageKey)})}catch(e){}if(s&&h(a,s))s=a[s];var id=s&&h(t,s)?s:${scriptJson(DEFAULT_THEME_ID)},x=t[id],r=document.documentElement;for(var k in x.v)r.style.setProperty(k,x.v[k]);r.setAttribute("data-theme",id);r.setAttribute("data-color-mode",x.m);r.style.colorScheme=x.m}catch(e){}})();`;
+    return `(function(){try{var t=${scriptJson(themes)},a=${scriptJson(LEGACY_THEME_IDS)},h=function(o,k){return Object.prototype.hasOwnProperty.call(o,k)},s=null;try{s=localStorage.getItem(${scriptJson(storageKey)});var o=localStorage.getItem(${scriptJson(onboardingKey)});if(s==="default"&&!(o&&o.trim()))s=null}catch(e){}if(s&&h(a,s))s=a[s];var id=s&&h(t,s)?s:${scriptJson(DEFAULT_THEME_ID)},x=t[id],r=document.documentElement;for(var k in x.v)r.style.setProperty(k,x.v[k]);r.setAttribute("data-theme",id);r.setAttribute("data-color-mode",x.m);r.style.colorScheme=x.m}catch(e){}})();`;
 }

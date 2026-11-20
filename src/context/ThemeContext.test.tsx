@@ -148,7 +148,7 @@ describe("ThemeContext", () => {
     });
 
     describe("pre-paint script", () => {
-        const runScript = () => new Function(prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME))();
+        const runScript = () => new Function(prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME, STORAGE_KEYS.ONBOARDING_COMPLETED))();
         const appliedStyle = () => document.documentElement.style.cssText;
 
         it("applies the light default when nothing is saved", () => {
@@ -171,17 +171,25 @@ describe("ThemeContext", () => {
             expect(datasetFromScript).toEqual({ ...document.documentElement.dataset });
         });
 
-        it("reads the legacy \"default\" id as Emerald", () => {
+        it("reads the legacy \"default\" id as Emerald for an onboarded user", () => {
             window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, "default");
+            window.localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, "v2");
             runScript();
             expect(document.documentElement.dataset.theme).toBe("emerald");
             expect(document.documentElement.dataset.colorMode).toBe("dark");
         });
 
         it("escapes values so they cannot close the inline script", () => {
-            const script = prePaintThemeScript("</script><script>alert(1)</script>\u2028");
+            const script = prePaintThemeScript("</script><script>alert(1)</script>\u2028", "onboarding");
             expect(script).not.toMatch(/[<>\u2028]/);
             expect(() => new Function(script)).not.toThrow();
+        });
+
+        it("treats a legacy \"default\" as unset while onboarding is unfinished, like onboarding does", () => {
+            window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, "default");
+            runScript();
+            expect(document.documentElement.dataset.theme).toBe(DEFAULT_THEME_ID);
+            expect(document.documentElement.dataset.colorMode).toBe("light");
         });
 
         it("falls back to the default for an unknown saved value", () => {
