@@ -59,6 +59,7 @@ import AudioCard from "./sections/AudioCard";
 import LanguageCard from "./sections/LanguageCard";
 import ShareAppCard from "./sections/ShareAppCard";
 import CommunityCard from "./sections/CommunityCard";
+import BrandIcon from "@/components/BrandIcon";
 
 const storage = getStorageService();
 
@@ -509,12 +510,7 @@ export default function SettingsPageContent() {
                             "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]/20 hover:bg-[rgb(var(--color-surface-subtle))]/80"
                         )}
                     >
-                        <div className={cn(
-                            "w-5 h-5 rounded-md flex items-center justify-center transition-all",
-                            "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
-                        )}>
-                            <span className="text-[10px] font-bold text-[rgb(var(--color-primary-foreground))]">N</span>
-                        </div>
+                        <BrandIcon size={20} />
                         <span className={cn(
                             "text-[10px] font-bold transition-colors",
                             "text-[rgb(var(--color-text-muted))]"

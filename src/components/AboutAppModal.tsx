@@ -22,6 +22,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useLocale } from "@/context/LocaleContext";
 import { Sparkles, BookOpen, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import BrandIcon from "@/components/BrandIcon";
 
 interface AboutAppModalProps {
     open: boolean;
@@ -42,12 +43,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
 
                 <DialogHeader className="px-6 pt-6 pb-2 relative z-10">
                     {/* Compact Logo */}
-                    <div className={cn(
-                        "w-14 h-14 mx-auto rounded-xl flex items-center justify-center shadow-lg mb-3 rotate-3 transition-all",
-                        "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
-                    )}>
-                        <span className="text-3xl font-bold text-white">N</span>
-                    </div>
+                    <BrandIcon size={56} className="mx-auto mb-3" />
 
                     <DialogTitle className="text-xl font-bold text-center">
                         {t.aboutAppName}
