@@ -70,7 +70,7 @@ export default function HomeClient() {
     const showSeasonalCard = isRamadhan || isEidSeason;
 
     return (
-        <div className="relative flex min-h-screen flex-col items-center overflow-x-hidden bg-transparent bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(255,255,255,0))] px-4 py-4 pb-nav font-sans sm:px-6">
+        <div className="relative flex min-h-screen flex-col items-center overflow-x-hidden bg-transparent px-4 py-4 pb-nav font-sans sm:px-6">
             <main className="relative flex w-full max-w-none flex-col items-center gap-3 xl:max-w-md">
 
                 {/* 1. Header & Greeting */}

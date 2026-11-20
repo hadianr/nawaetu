@@ -81,7 +81,7 @@ export default function RamadhanScheduleCard() {
     } else if (now && maghribDate && now < maghribDate) {
         countdownLabel = isRamadhan ? t.scheduleIftarIn : t.scheduleMaghribIn;
         countdownMs = maghribDate.getTime() - now.getTime();
-        countdownStyle = { color: `rgba(var(--color-primary-light), 0.9)` };
+        countdownStyle = { color: `rgb(var(--color-primary-light) / 0.9)` };
     } else {
         countdownLabel = t.scheduleAlreadyIftar;
         countdownMs = 0;
@@ -90,7 +90,7 @@ export default function RamadhanScheduleCard() {
     const scheduleItems = [
         { label: t.scheduleImsak, time: imsakTime || "--:--", icon: "moon" as const, colorStyle: { color: `rgb(var(--color-primary-light))` } },
         { label: t.scheduleFajr, time: fajrTime || "--:--", icon: "sun" as const, colorStyle: { color: "rgb(var(--color-info))" } },
-        { label: isRamadhan ? t.scheduleMaghribIftar : t.scheduleMaghrib, time: maghribTime || "--:--", icon: "sun" as const, colorStyle: { color: `rgba(var(--color-primary-light), 0.85)` } },
+        { label: isRamadhan ? t.scheduleMaghribIftar : t.scheduleMaghrib, time: maghribTime || "--:--", icon: "sun" as const, colorStyle: { color: `rgb(var(--color-primary-light) / 0.85)` } },
         { label: t.scheduleIsha, time: ishaTime || "--:--", icon: "star" as const, colorStyle: { color: "rgb(var(--color-primary-light))" } },
     ];
 

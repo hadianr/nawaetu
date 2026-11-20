@@ -126,7 +126,7 @@ const DuaCard = memo(function DuaCard({
                             "text-[10px] px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]"
-                                : "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]/25"
+                                : "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border-[rgb(var(--color-accent))]/25"
                         )}>
                             {referenceText}
                         </span>
@@ -164,7 +164,7 @@ const DuaCard = memo(function DuaCard({
                             "flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-md flex items-center justify-center border cursor-pointer transition-colors mt-0.5",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]"
-                                : "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-accent-foreground))] hover:bg-[rgb(var(--color-accent))]/20"
+                                : "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-accent-strong))] hover:bg-[rgb(var(--color-accent))]/20"
                         )}
                     >
                         <HeartHandshake className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -217,7 +217,7 @@ const DuaCard = memo(function DuaCard({
                             "p-2.5 rounded-xl text-xs space-y-1 border",
                             "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-text))]"
                         )}>
-                            <p className="font-bold flex items-center gap-1 text-[10px] uppercase tracking-wider text-[rgb(var(--color-accent-foreground))]">
+                            <p className="font-bold flex items-center gap-1 text-[10px] uppercase tracking-wider text-[rgb(var(--color-accent-strong))]">
                                 <Sparkles className="w-3 h-3" />
                                 {t.duaVirtueLabel || "Keutamaan Doa"}
                             </p>
@@ -233,7 +233,7 @@ const DuaCard = memo(function DuaCard({
                             onClick={(e) => { e.stopPropagation(); onShare(item); }}
                             className={cn(
                                 "flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer shadow-xs",
-                                "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-foreground))] border-[rgb(var(--color-accent))]/25 hover:bg-[rgb(var(--color-accent))]/20"
+                                "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border-[rgb(var(--color-accent))]/25 hover:bg-[rgb(var(--color-accent))]/20"
                             )}
                         >
                             <Share2 className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />
@@ -269,7 +269,7 @@ const DuaCard = memo(function DuaCard({
                             onClick={handleLaunchCounter}
                             className={cn(
                                 "w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
-                                "bg-[rgb(var(--color-accent))]/10 hover:bg-[rgb(var(--color-accent))]/20 border-[rgb(var(--color-accent))]/25 text-[rgb(var(--color-accent-foreground))]"
+                                "bg-[rgb(var(--color-accent))]/10 hover:bg-[rgb(var(--color-accent))]/20 border-[rgb(var(--color-accent))]/25 text-[rgb(var(--color-accent-strong))]"
                             )}
                         >
                             <Play className="w-3.5 h-3.5 fill-current" />
@@ -357,7 +357,7 @@ function DuaContent() {
                 <TargetIdReader onChange={setTargetId} />
             </Suspense>
             <div className={cn(
-                "dua-page flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500 bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgb(var(--color-accent)/0.1),transparent)]"
+                "dua-page flex min-h-screen flex-col items-center px-2 sm:px-4 py-4 font-sans transition-colors duration-500 bg-[rgb(var(--color-background))]"
             )}>
                 <main className="flex w-full max-w-none flex-col pb-nav xl:max-w-md">
                     {/* ── Page Header ── */}
@@ -426,7 +426,7 @@ function DuaContent() {
                                 onClick={handleLoadMore}
                                 className={cn(
                                     "px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border inline-flex items-center gap-1.5 shadow-sm cursor-pointer",
-                                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-accent-foreground))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-accent))]/30"
+                                    "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-accent-strong))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-accent))]/30"
                                 )}
                             >
                                 <MoreIcon className="w-3.5 h-3.5" />

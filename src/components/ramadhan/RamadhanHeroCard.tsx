@@ -162,7 +162,7 @@ export default function RamadhanHeroCard() {
                 <div className="mb-3 sm:mb-4">
                     <div className="flex justify-between text-[10px] sm:text-xs text-[rgb(var(--color-text-muted))] mb-1">
                         <span>{t.ramadhanDay1}</span>
-                        <span className="font-medium" style={{ color: "rgba(var(--color-primary-light), 0.8)" }}>{progress}% {t.ramadhanCompleted}</span>
+                        <span className="font-medium" style={{ color: "rgb(var(--color-primary-light) / 0.8)" }}>{progress}% {t.ramadhanCompleted}</span>
                         <span>{t.ramadhanDay30}</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
@@ -177,7 +177,7 @@ export default function RamadhanHeroCard() {
                             <div
                                 key={i}
                                 className="flex-1 h-1 rounded-full transition-all bg-[rgb(var(--color-surface-subtle))]"
-                                style={i < ramadhanDay ? { backgroundColor: "rgba(var(--color-primary-light), 0.6)" } : undefined}
+                                style={i < ramadhanDay ? { backgroundColor: "rgb(var(--color-primary-light) / 0.6)" } : undefined}
                             />
                         ))}
                     </div>

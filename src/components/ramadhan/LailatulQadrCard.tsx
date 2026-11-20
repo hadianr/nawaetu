@@ -102,8 +102,8 @@ export default function LailatulQadrCard() {
                     <div
                         className="rounded-xl border px-4 py-3 text-center"
                         style={{
-                            background: "rgba(var(--color-primary), 0.12)",
-                            borderColor: "rgba(var(--color-primary), 0.25)",
+                            background: "rgb(var(--color-primary) / 0.12)",
+                            borderColor: "rgb(var(--color-primary) / 0.25)",
                         }}
                     >
                         <p
@@ -178,19 +178,19 @@ export default function LailatulQadrCard() {
                                 `}
                                 style={{
                                     borderColor: isDone
-                                        ? "rgba(var(--color-primary), 0.7)"
+                                        ? "rgb(var(--color-primary) / 0.7)"
                                         : isActive
-                                            ? "rgba(var(--color-primary), 0.5)"
+                                            ? "rgb(var(--color-primary) / 0.5)"
                                             : isOdd
-                                                ? "rgba(var(--color-primary-light), 0.12)"
-                                                : "rgba(var(--color-border), 0.04)",
+                                                ? "rgb(var(--color-primary-light) / 0.12)"
+                                                : "rgb(var(--color-border) / 0.04)",
                                     background: isDone
-                                        ? "rgba(var(--color-primary), 0.25)"
+                                        ? "rgb(var(--color-primary) / 0.25)"
                                         : isActive
-                                            ? "rgba(var(--color-primary), 0.15)"
+                                            ? "rgb(var(--color-primary) / 0.15)"
                                             : isOdd
-                                                ? "rgba(var(--color-primary), 0.05)"
-                                                : "rgba(var(--color-border), 0.02)",
+                                                ? "rgb(var(--color-primary) / 0.05)"
+                                                : "rgb(var(--color-border) / 0.02)",
                                     transform: isActive && !isDone ? "scale(1.06)" : undefined,
                                 }}
                             >
@@ -229,8 +229,8 @@ export default function LailatulQadrCard() {
                                             : isActive
                                                 ? "rgb(var(--color-primary-light))"
                                                 : isOdd
-                                                    ? "rgba(var(--color-primary-light), 0.7)"
-                                                    : "rgba(var(--color-border), 0.28)",
+                                                    ? "rgb(var(--color-primary-light) / 0.7)"
+                                                    : "rgb(var(--color-border) / 0.28)",
                                     }}
                                 >
                                     {night}
@@ -259,7 +259,7 @@ export default function LailatulQadrCard() {
                 >
                     <div
                         className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg"
-                        style={{ background: "rgba(var(--color-primary), 0.15)" }}
+                        style={{ background: "rgb(var(--color-primary) / 0.15)" }}
                     >
                         <BookOpen className="h-4 w-4" style={{ color: "rgb(var(--color-primary-light))" }} />
                     </div>

@@ -227,8 +227,8 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             return {
                 bg: "from-[rgb(var(--color-accent))]/30 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/20",
                 border: "border-[rgb(var(--color-accent))]/50 shadow-[var(--shadow-card)]",
-                text: "text-[rgb(var(--color-accent-foreground))]",
-                icon: "fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))]"
+                text: "text-[rgb(var(--color-accent-strong))]",
+                icon: "fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-strong))]"
             };
         }
         if (days <= 40) {

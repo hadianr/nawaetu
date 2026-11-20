@@ -28,15 +28,15 @@ import type { AppIconName } from "@/lib/icon-names";
 // ─── Status colors ─────────────────────────────────────────────────────────────
 
 const STATUS_COLORS: Record<string, { bg: string; border: string }> = {
-    fasting: { bg: "rgba(var(--color-primary), 0.25)", border: "rgba(var(--color-primary), 0.5)" },
-    not_fasting: { bg: "rgba(var(--color-danger),0.22)", border: "rgba(var(--color-danger),0.5)" },
-    sick: { bg: "rgba(var(--color-warning),0.22)", border: "rgba(var(--color-warning),0.5)" },
-    traveling: { bg: "rgba(var(--color-info),0.22)", border: "rgba(var(--color-info),0.5)" },
-    menstruation: { bg: "rgba(var(--color-accent),0.22)", border: "rgba(var(--color-accent),0.5)" },
-    postpartum: { bg: "rgba(var(--color-primary-light),0.22)", border: "rgba(var(--color-primary-light),0.5)" },
-    pregnant: { bg: "rgba(var(--color-primary),0.22)", border: "rgba(var(--color-primary),0.5)" },
-    breastfeeding: { bg: "rgba(var(--color-primary-strong),0.22)", border: "rgba(var(--color-primary-strong),0.5)" },
-    elderly: { bg: "rgba(var(--color-text-muted),0.22)", border: "rgba(var(--color-text-muted),0.5)" },
+    fasting: { bg: "rgb(var(--color-primary) / 0.25)", border: "rgb(var(--color-primary) / 0.5)" },
+    not_fasting: { bg: "rgb(var(--color-danger) / 0.22)", border: "rgb(var(--color-danger) / 0.5)" },
+    sick: { bg: "rgb(var(--color-warning) / 0.22)", border: "rgb(var(--color-warning) / 0.5)" },
+    traveling: { bg: "rgb(var(--color-info) / 0.22)", border: "rgb(var(--color-info) / 0.5)" },
+    menstruation: { bg: "rgb(var(--color-accent) / 0.22)", border: "rgb(var(--color-accent) / 0.5)" },
+    postpartum: { bg: "rgb(var(--color-primary-light) / 0.22)", border: "rgb(var(--color-primary-light) / 0.5)" },
+    pregnant: { bg: "rgb(var(--color-primary) / 0.22)", border: "rgb(var(--color-primary) / 0.5)" },
+    breastfeeding: { bg: "rgb(var(--color-primary-strong) / 0.22)", border: "rgb(var(--color-primary-strong) / 0.5)" },
+    elderly: { bg: "rgb(var(--color-text-muted) / 0.22)", border: "rgb(var(--color-text-muted) / 0.5)" },
 };
 
 const STATUS_ICONS: Record<string, AppIconName> = {
@@ -48,13 +48,13 @@ const STATUS_ICONS: Record<string, AppIconName> = {
 // ─── Legend config (female-only flagged) ───────────────────────────────────────
 
 const LEGEND: Array<{ status: string | null; label?: string; bg: string; border: string; femaleOnly?: boolean }> = [
-    { status: "fasting", bg: "rgba(var(--color-primary),0.35)", border: "rgba(var(--color-primary),0.5)" },
-    { status: "sick", bg: "rgba(var(--color-warning),0.3)", border: "rgba(var(--color-warning),0.5)" },
-    { status: "traveling", bg: "rgba(var(--color-info),0.3)", border: "rgba(var(--color-info),0.5)", },
-    { status: "menstruation", bg: "rgba(var(--color-accent),0.3)", border: "rgba(var(--color-accent),0.5)", femaleOnly: true },
-    { status: "pregnant", bg: "rgba(var(--color-primary),0.3)", border: "rgba(var(--color-primary),0.5)", femaleOnly: true },
-    { status: "elderly", bg: "rgba(var(--color-text-muted),0.3)", border: "rgba(var(--color-text-muted),0.5)" },
-    { status: null, bg: "rgba(var(--color-border),0.05)", border: "rgba(var(--color-border),0.12)" },
+    { status: "fasting", bg: "rgb(var(--color-primary) / 0.35)", border: "rgb(var(--color-primary) / 0.5)" },
+    { status: "sick", bg: "rgb(var(--color-warning) / 0.3)", border: "rgb(var(--color-warning) / 0.5)" },
+    { status: "traveling", bg: "rgb(var(--color-info) / 0.3)", border: "rgb(var(--color-info) / 0.5)", },
+    { status: "menstruation", bg: "rgb(var(--color-accent) / 0.3)", border: "rgb(var(--color-accent) / 0.5)", femaleOnly: true },
+    { status: "pregnant", bg: "rgb(var(--color-primary) / 0.3)", border: "rgb(var(--color-primary) / 0.5)", femaleOnly: true },
+    { status: "elderly", bg: "rgb(var(--color-text-muted) / 0.3)", border: "rgb(var(--color-text-muted) / 0.5)" },
+    { status: null, bg: "rgb(var(--color-border) / 0.05)", border: "rgb(var(--color-border) / 0.12)" },
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -170,14 +170,14 @@ export default function FastingCalendar({
                                 }`}
                             style={{
                                 background: future
-                                    ? "rgba(var(--color-border),0.03)"
-                                    : colors?.bg ?? "rgba(var(--color-border),0.05)",
+                                    ? "rgb(var(--color-border) / 0.03)"
+                                    : colors?.bg ?? "rgb(var(--color-border) / 0.05)",
                                 borderColor: future
-                                    ? "rgba(var(--color-border),0.07)"
-                                    : colors?.border ?? "rgba(var(--color-border),0.12)",
+                                    ? "rgb(var(--color-border) / 0.07)"
+                                    : colors?.border ?? "rgb(var(--color-border) / 0.12)",
                                 // Today gets a ring
                                 boxShadow: isToday && !future
-                                    ? "0 0 0 2px rgb(var(--color-primary)), 0 0 0 3px rgba(var(--color-primary),0.25)"
+                                    ? "0 0 0 2px rgb(var(--color-primary)), 0 0 0 3px rgb(var(--color-primary) / 0.25)"
                                     : undefined,
                             }}
                             aria-label={`Hijri day ${day}${isToday ? " (today)" : ""}${future ? " locked" : ""}`}
@@ -189,8 +189,8 @@ export default function FastingCalendar({
                                     color: isToday
                                         ? "rgb(var(--color-primary-light, var(--color-primary)))"
                                         : future
-                                            ? "rgba(var(--color-text-muted),0.35)"
-                                            : "rgba(var(--color-text),0.7)",
+                                            ? "rgb(var(--color-text-muted) / 0.35)"
+                                            : "rgb(var(--color-text) / 0.7)",
                                 }}
                             >
                                 {day}
@@ -202,7 +202,7 @@ export default function FastingCalendar({
                             ) : (
                                 <span
                                     className="w-2 h-2 rounded-full mt-1"
-                                    style={{ background: future ? "rgba(var(--color-border),0.06)" : "rgba(var(--color-border),0.2)" }}
+                                    style={{ background: future ? "rgb(var(--color-border) / 0.06)" : "rgb(var(--color-border) / 0.2)" }}
                                 />
                             )}
 

@@ -143,11 +143,11 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 )} />
                                 <h3 className={cn(
                                     "text-base font-bold mb-1.5",
-                                    "text-[rgb(var(--color-accent-foreground))]"
+                                    "text-[rgb(var(--color-text-strong))]"
                                 )}>Login Diperlukan</h3>
                                 <p className={cn(
                                     "text-xs mb-0 leading-relaxed font-medium px-2",
-                                    "text-[rgb(var(--color-accent-foreground))]/80"
+                                    "text-[rgb(var(--color-text))]"
                                 )}>
                                     Agar status &quot;Muhsinin&quot; dan riwayat infaq Anda tersimpan permanen di database, mohon login terlebih dahulu.
                                 </p>
