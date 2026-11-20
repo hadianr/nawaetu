@@ -125,7 +125,7 @@ export default function JourneyFasting({ adjustment, onVisible }: { adjustment: 
                     <p className="text-xs text-[rgb(var(--color-text))]">{String(timingCopy)} {String(t.journeyFastEase)}</p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                         {guide.today === "qadha" && (
-                            <Button size="sm" className="rounded-lg text-[rgb(var(--color-accent-foreground))]" onClick={madeUpOne}>
+                            <Button size="sm" className="rounded-lg" onClick={madeUpOne}>
                                 {String(t.journeyQadhaMarkDone)}
                             </Button>
                         )}

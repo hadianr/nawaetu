@@ -195,11 +195,11 @@ export default function JourneyCard() {
                             {String(t.journeyDoneShort)}
                         </motion.div>
                     ) : auto ? (
-                        <Button asChild size="sm" className="min-h-11 shrink-0 rounded-xl text-[rgb(var(--color-accent-foreground))]">
+                        <Button asChild size="sm" className="min-h-11 shrink-0 rounded-xl">
                             <Link href={auto.href}>{String(auto.source === "quran" ? t.journeyOpenQuran : t.journeyOpenDhikr)}</Link>
                         </Button>
                     ) : (
-                        <Button size="sm" className="min-h-11 shrink-0 rounded-xl text-[rgb(var(--color-accent-foreground))]" onClick={markDone}>
+                        <Button size="sm" className="min-h-11 shrink-0 rounded-xl" onClick={markDone}>
                             {String(t.journeyMarkDone)}
                         </Button>
                     )}

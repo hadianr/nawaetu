@@ -141,7 +141,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                         </div>
                     </div>
 
-                    <Button size="lg" className="w-full rounded-xl text-[rgb(var(--color-accent-foreground))]" onClick={() => onOpenChange(false)}>
+                    <Button size="lg" className="w-full rounded-xl" onClick={() => onOpenChange(false)}>
                         {String(t.journeyAboutGotIt)}
                     </Button>
 
