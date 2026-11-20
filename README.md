@@ -1,37 +1,161 @@
-# Nawaetu: Islamic Habit Tracker 🌙
+<p align="center">
+  <img src="public/brand/mark.svg" width="96" alt="Nawaetu logo">
+</p>
 
-[![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
-[![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#license)
-[![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
-[![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.16.0-blue)](https://github.com/hadianr/nawaetu/releases)
+<h1 align="center">Nawaetu</h1>
+
+<p align="center"><b>The Muslim app that starts with intention.</b><br>
+Quran, prayer, hadith and Sirah you can check, and a daily habit built around <i>niat</i>.</p>
+
+<p align="center">
+  <a href="https://nawaetu.com"><b>Open nawaetu.com</b></a> ·
+  <a href="README.id.md">Baca dalam Bahasa Indonesia</a> ·
+  <a href="#pitch-summary">Pitch summary</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/hadianr/nawaetu/releases"><img src="https://img.shields.io/badge/Version-v1.16.0-158057" alt="Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License: AGPL v3"></a>
+  <a href="https://nawaetu.com"><img src="https://img.shields.io/badge/Live-nawaetu.com-158057" alt="Live at nawaetu.com"></a>
+  <img src="https://img.shields.io/badge/Price-Free%2C_no_ads-D6AC56" alt="Free, no ads">
+</p>
+
+<p align="center">
+  <img src="public/og-image.png" width="760" alt="Nawaetu: Aplikasi Muslim untuk Ibadah Harian. Mulai Langkah Baikmu Hari Ini, #NiatAjaDulu">
+</p>
 
 ---
 
-**Nawaetu** is a free Islamic habit tracker that starts from intention (*niat*). It combines a daily intention journal with prayer times, Qibla, a digital Quran with tajweed, hadith and dua with source references, Sirah, fasting and Ramadan tools, dhikr, and an AI assistant (**Tanya Nawaetu**) designed to cite its sources. It runs as a web app at [nawaetu.com](https://nawaetu.com), installable as a PWA with an Android wrapper in this repository, in English and Indonesian.
+<a name="pitch-summary"></a>
+## Pitch Summary
 
-[**Open Nawaetu**](https://nawaetu.com) | [**Baca dalam Bahasa Indonesia**](README.id.md)
-
-## Quick Facts
-
-| | |
+| Topic | Summary |
 | :--- | :--- |
-| **Name** | From *niat*, the Arabic and Indonesian word for intention |
-| **Price** | Free |
-| **Languages** | English, Indonesian |
-| **Platforms** | Web (installable PWA), Android wrapper |
-| **License** | AGPLv3, with a commercial license available |
-| **Website** | [nawaetu.com](https://nawaetu.com) |
+| **One line** | A free, ad-free Muslim app that turns daily worship into a habit that starts with intention (*niat*), with religious content that shows its sources. |
+| **Problem** | Most Muslim apps are toolboxes: a prayer clock here, a counter there. Religious text online is often shared without a source, and general AI chatbots answer religious questions without citing anything. |
+| **Solution** | One app that links intention, worship and learning: a morning intention and evening reflection, prayer times, Qibla, a Quran with tajweed and audio, hadith and duas with attribution and grade, Sirah in three formats, and an AI assistant designed to cite references. |
+| **Why it stands out** | Intention-first design, source-backed content shown exactly as published, an assistant that says when it cannot confirm a source, no ads, and open source. |
+| **Market** | Indonesia alone has about 246 million Muslims (87% of the population). Global Muslim consumer spending was $2.6 trillion in 2024. ([sources](#market)) |
+| **Traction** | Live at nawaetu.com since 2026, 277 registered accounts, 825 missions completed, 90 releases. ([details](#traction)) |
+| **Business model** | Free for users with no ads. Sustained by donations, an infrastructure sponsor (Biznet Gio Cloud), and a commercial license for organisations. |
+| **Founder** | Hadian Rahmat ([@hadianr](https://github.com/hadianr)) |
 
-**Explore:** [Quran](https://nawaetu.com/quran) · [Hadith](https://nawaetu.com/hadith) · [Dua](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Timeline of events](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Qibla](https://nawaetu.com/qibla) · [Hijri calendar](https://nawaetu.com/hijri-calendar) · [Ramadan guide](https://nawaetu.com/ramadhan) · [About](https://nawaetu.com/about)
+---
+
+## At a Glance
+
+<a name="traction"></a>
+Figures as of **20 November 2026**. Usage numbers come from the app's public endpoint [`/api/stats/global`](https://nawaetu.com/api/stats/global), so they can be refreshed for any deck.
+
+| Area | Figure |
+| :--- | :--- |
+| **Registered accounts** | 277 (guests use the app without an account and are not counted) |
+| **Missions completed** | 825 |
+| **Worship days logged** | 69 |
+| **Quran** | All 114 surahs, verse-by-verse audio, tajweed colours, Indonesian and English translations |
+| **Hadith and dua** | 116 selected sahih and hasan hadith and 50 duas, each with attribution and grade |
+| **Sirah** | 3 formats: a 10-part concise book (with the author's permission), a 50-chapter complete Sirah, and a 13-chapter timeline |
+| **Search presence** | 591 indexable pages in the sitemap, with server-rendered content pages and `llms.txt` for AI search |
+| **Delivery** | 90 tagged releases and 1,295 commits since January 2026 |
+| **Quality** | 153 test files (984 tests), an 80% line-coverage gate in CI, CodeQL scanning, and browser checks with Anoa |
+| **Accessibility** | Button text, accent text and status colours meet WCAG AA in all 5 themes (automated test), with visible keyboard focus |
+| **Languages** | English and Indonesian |
+| **Platforms** | Web app (installable PWA) and an Android app wrapper in this repository |
+| **Price** | Free, with no advertising |
+
+---
+
+## The Problem
+
+1. **Worship tools are scattered.** Prayer times, Quran, dhikr and fasting usually live in separate apps or separate corners of one app, with nothing connecting them to a daily habit.
+2. **Religious content often has no source.** Hadith and quotes circulate without attribution or grade, so readers cannot check what they share.
+3. **AI answers without references.** General chatbots answer religious questions confidently, without pointing to the Quran or hadith they rely on.
+4. **Motivation fades.** Counters track numbers, but not *why* someone worships.
+
+## The Solution
+
+Nawaetu builds the day around three ideas.
+
+| Pillar | What it means in the app |
+| :--- | :--- |
+| **Intention (niat)** | Set an intention every morning and reflect every evening. Missions, streaks and the Hasanah rank (Mubtadi to Muhsinin) reward consistency, not just counts. |
+| **Knowledge you can check** | Quran, hadith, duas and Sirah show their source, attribution and grade, and keep other publishers' text exactly as published. Tanya Nawaetu, the AI assistant, is designed to cite references and to say when a source cannot be confirmed. |
+| **Everyday worship** | GPS prayer times with reminders, Qibla compass, Hijri calendar with recommended fasting days, tasbih with sequences and a focus mode, and seasonal Ramadan tools. |
+
+<a name="market"></a>
+## Why Now
+
+| Signal | Figure | Source |
+| :--- | :--- | :--- |
+| Muslims in Indonesia | 245,973,915 people, 87.08% of the population (first half of 2024) | [Databoks, citing Indonesia's civil registry](https://databoks.katadata.co.id/en/demographics/statistics/66b45dd8e5dd0/the-majority-of-indonesias-population-is-muslim-in-the-first-half-of-2024) |
+| Global Muslim consumer spending | $2.6 trillion in 2024, projected $3.56 trillion by 2029 | [State of the Global Islamic Economy 2025/26, DinarStandard](https://www.dinarstandard.com/our-impact/state-of-the-global-islamic-economy-report) |
+| Demand for Muslim apps | Muslim Pro passed 150 million downloads worldwide (2023) | [Bitsmedia press release](https://prnewswire.com/apac/news-releases/singapore-based-bitsmedia-announces-significant-milestone-with-150-million-downloads-for-its-global-lifestyle-app-301853984.html) |
+
+Nawaetu starts with Indonesian and English speakers, the largest Muslim-majority market, and is built to be checkable at a time when more people ask AI about their faith.
+
+---
+
+## Product
+
+Real screenshots of the live app at [nawaetu.com](https://nawaetu.com) (phone size). Five themes are available; Daylight is the default and Emerald is the dark theme.
+
+| Home: intention and prayer times | Quran with audio | Sirah in three formats |
+| :---: | :---: | :---: |
+| <img src="public/images/readme/home.png" width="240" alt="Home with the intention journal and today's prayer times"> | <img src="public/images/readme/quran.png" width="240" alt="Quran reader showing Al-Fatihah with transliteration and translation"> | <img src="public/images/readme/sirah.png" width="240" alt="Sirah hub with concise, complete and timeline formats"> |
+| **Hadith with attribution and grade** | **Hijri calendar and fasting days** | **Tasbih (Emerald dark theme)** |
+| <img src="public/images/readme/hadith.png" width="240" alt="Hadith library with collection numbers and grades"> | <img src="public/images/readme/hijri-calendar.png" width="240" alt="Hijri calendar marking recommended fasting days"> | <img src="public/images/readme/tasbih-emerald.png" width="240" alt="Digital tasbih counter in the dark Emerald theme"> |
+
+---
+
+## What Makes Nawaetu Different?
+
+Many Islamic apps centre on utilities such as prayer schedules and tasbih counters. Nawaetu keeps those tools and builds around the intention behind each act of worship.
+
+| Aspect | Utility-first apps (e.g. Muslim Pro) | Nawaetu |
+| :--- | :--- | :--- |
+| **Core focus** | Prayer times, counters, reminders | **Intention first**: the reason behind your worship |
+| **Reflection** | Counters and passive reminders | **Muhasabah journal**: morning intention, evening reflection |
+| **Religious content** | Varies by app | **Source shown with the text**: attribution, grade and a link, kept exactly as published |
+| **Islamic Q&A** | Articles and text search | **Tanya Nawaetu**: AI assistant designed to cite Quran and hadith references and to say when a source cannot be confirmed |
+| **Motivation** | Counters and streaks | **Hasanah system**: rank progression (Mubtadi to Muhsinin) and Istiqamah streaks |
+| **Ads** | Varies by app and plan | No advertising |
+| **Source code** | Typically closed | Open source (AGPLv3) |
+
+---
+
+## Milestones
+
+| When | Milestone |
+| :--- | :--- |
+| January 2026 | First commit |
+| 2026 | Web app live at nawaetu.com: intention journal, missions, Hasanah ranks, prayer check-in, Quran, hadith and dua, tasbih, fasting and Ramadan tools |
+| October 2026 | Content pages server-rendered for search and AI search (`llms.txt`, structured data) |
+| November 2026 | Sirah in three formats, including Shaykh Haytham Sarhan's concise book published with his written permission |
+| November 2026 | Brand refresh: a flat vector logo and icon set, a light default theme, a two-font system, and WCAG AA contrast in every theme |
+
+## Roadmap
+
+These are next steps already identified in this repository, not commitments with dates.
+
+- **App stores**: publish the Android app (the wrapper is in [`android/`](android/)) and write store listings.
+- **Hadith verification**: check hadith numbers in the library against [Sunnah.com](https://sunnah.com).
+- **Speed**: load the animation player after the first paint to cut mobile load time on the home page.
+- **Ramadan 1448 H**: switch on the Ramadan guide for the season; the 100-days-to-Ramadan journey is already live.
+
+## Business Model and Sustainability
+
+- **Free for users, no ads**: worship tools are not paywalled.
+- **Donations**: GitHub Sponsors, Trakteer, Ko-fi and Buy Me a Coffee ([Support the Mission](#-support-the-mission)).
+- **Infrastructure sponsor**: [Biznet Gio Cloud](https://www.biznetgio.com/) provides the cloud servers behind nawaetu.com.
+- **Dual license**: AGPLv3 for the community, with a commercial license for organisations that need private source or white-labelling ([License](#-license)).
+
+## Team
+
+**Hadian Rahmat**, founder and maintainer. Contact: [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com).
 
 ---
 
 ## Table of Contents
-- [What Makes Nawaetu Different?](#what-makes-nawaetu-different)
-- [Visual Showcase](#-visual-showcase)
 - [Core Pillars & Features](#-core-pillars--features)
 - [Content Sources](#-content-sources)
 - [FAQ](#faq)
@@ -40,35 +164,6 @@
 - [Contributing](#-contributing)
 - [Support the Mission](#-support-the-mission)
 - [License](#-license)
-
-> [!IMPORTANT]
-> **Nawaetu is dual licensed.** Free for open source under **AGPLv3**, with a **Commercial License** for proprietary or closed-source use. See the [License section](#-license).
-
----
-
-## What Makes Nawaetu Different?
-
-Many Islamic apps centre on utilities such as prayer schedules and tasbih counters. Nawaetu keeps those tools and builds around the intention behind each act of worship. If you are looking for a Muslim Pro alternative focused on intention and daily reflection, this is how it differs:
-
-| Aspect | Utility-first apps (e.g. Muslim Pro) | Nawaetu |
-| :--- | :--- | :--- |
-| **Core focus** | Prayer times, counters, reminders | **Intention first**: the reason behind your worship |
-| **Reflection** | Counters and passive reminders | **Muhasabah journal**: morning intention, evening reflection |
-| **Islamic Q&A** | Articles and text search | **Tanya Nawaetu**: AI assistant designed to cite Quran and hadith references and to say when a source cannot be confirmed |
-| **Motivation** | Counters and streaks | **Hasanah system**: rank progression (Mubtadi to Muhsinin) and Istiqamah streaks |
-| **Quran and dhikr** | Standard audio and counter | **Focus mode**: screen wake lock, Basmalah anchor, OLED Zen tasbih |
-| **Ads** | Varies by app and plan | No advertising |
-| **Source code** | Typically closed | Open source (AGPLv3) |
-
----
-
-## ✨ Visual Showcase
-
-| Intention Journal | Tanya Nawaetu | Digital Quran (Mushaf) |
-| :---: | :---: | :---: |
-| ![Intention Journal](./public/images/readme/intention_journal.png) | ![Tanya Nawaetu](./public/images/readme/tanya_nawaetu.png) | ![Digital Quran](./public/images/readme/digital_quran.png) |
-
----
 
 ## 🌟 Core Pillars & Features
 
@@ -173,6 +268,7 @@ Versions are pinned in [`package.json`](package.json).
 *   **Quran.com API** (Uthmani Mushaf & Audio Recitations)
 
 ### UI, Styling & Experience
+*   **Design system**: Lora (display) and Plus Jakarta Sans (UI) via `next/font`, Amiri for Arabic, 5 themes on shared tokens with a WCAG AA contrast test, and every icon generated from one vector mark (`npm run icons`, `npm run og-image`)
 *   **Tailwind CSS v4** & **Shadcn UI** (Radix UI primitives)
 *   **Framer Motion** - Animations & micro-interactions
 *   **Recharts** - Analytics & Hasanah trends

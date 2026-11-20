@@ -1,71 +1,170 @@
-# Nawaetu: Aplikasi Pelacak Kebiasaan Islami 🌙
+<p align="center">
+  <img src="public/brand/mark.svg" width="96" alt="Logo Nawaetu">
+</p>
 
-[![Release](https://github.com/hadianr/nawaetu/actions/workflows/release.yml/badge.svg)](https://github.com/hadianr/nawaetu/releases)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-success?logo=vercel)](https://nawaetu.com)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
-[![Dual Licensed](https://img.shields.io/badge/Dual_Licensed-Commercial_Available-purple.svg)](#lisensi)
-[![GitHub Issues](https://img.shields.io/github/issues/hadianr/nawaetu)](https://github.com/hadianr/nawaetu/issues)
-[![GitHub Stars](https://img.shields.io/github/stars/hadianr/nawaetu)](https://github.com/hadianr/nawaetu)
-[![Version](https://img.shields.io/badge/Version-v1.16.0-blue)](https://github.com/hadianr/nawaetu/releases)
+<h1 align="center">Nawaetu</h1>
+
+<p align="center"><b>Aplikasi Muslim yang dimulai dari niat.</b><br>
+Al-Qur'an, sholat, hadits, dan Sirah yang bisa dicek sumbernya, dalam kebiasaan harian yang berangkat dari <i>niat</i>.</p>
+
+<p align="center">
+  <a href="https://nawaetu.com"><b>Buka nawaetu.com</b></a> ·
+  <a href="README.md">Read in English</a> ·
+  <a href="#ringkasan-pitch">Ringkasan pitch</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/hadianr/nawaetu/releases"><img src="https://img.shields.io/badge/Version-v1.16.0-158057" alt="Versi"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="Lisensi: AGPL v3"></a>
+  <a href="https://nawaetu.com"><img src="https://img.shields.io/badge/Live-nawaetu.com-158057" alt="Live di nawaetu.com"></a>
+  <img src="https://img.shields.io/badge/Harga-Gratis%2C_tanpa_iklan-D6AC56" alt="Gratis, tanpa iklan">
+</p>
+
+<p align="center">
+  <img src="public/og-image.png" width="760" alt="Nawaetu: Aplikasi Muslim untuk Ibadah Harian. Mulai Langkah Baikmu Hari Ini, #NiatAjaDulu">
+</p>
 
 ---
 
-**Nawaetu** adalah aplikasi pelacak kebiasaan Islami gratis yang berangkat dari niat. Aplikasi ini menggabungkan jurnal niat harian dengan jadwal sholat, kiblat, Al-Qur'an digital dengan tajwid, hadits dan doa bersumber, Sirah, alat puasa dan Ramadhan, dzikir, serta asisten AI (**Tanya Nawaetu**) yang dirancang untuk menyertakan rujukan. Berjalan sebagai aplikasi web di [nawaetu.com](https://nawaetu.com), dapat dipasang sebagai PWA dengan Android wrapper di repositori ini, dalam bahasa Indonesia dan Inggris.
+<a name="ringkasan-pitch"></a>
+## Ringkasan Pitch
 
-[**Buka Nawaetu**](https://nawaetu.com) | [**Read in English**](README.md)
-
-## Fakta Singkat
-
-| | |
+| Topik | Ringkasan |
 | :--- | :--- |
-| **Nama** | Dari kata *niat* |
-| **Harga** | Gratis |
-| **Bahasa** | Indonesia, Inggris |
-| **Platform** | Web (PWA yang dapat dipasang), Android wrapper |
-| **Lisensi** | AGPLv3, dengan lisensi komersial tersedia |
-| **Situs** | [nawaetu.com](https://nawaetu.com) |
-
-**Jelajahi:** [Al-Qur'an](https://nawaetu.com/quran) · [Hadits](https://nawaetu.com/hadith) · [Doa](https://nawaetu.com/dua) · [Sirah](https://nawaetu.com/sirah) · [Lini Masa Peristiwa](https://nawaetu.com/sirah/history) · [Tanya Nawaetu (AI)](https://nawaetu.com/mentor-ai) · [Kiblat](https://nawaetu.com/qibla) · [Kalender Hijriah](https://nawaetu.com/hijri-calendar) · [Panduan Ramadhan](https://nawaetu.com/ramadhan) · [Tentang](https://nawaetu.com/about)
+| **Satu kalimat** | Aplikasi Muslim gratis tanpa iklan yang menjadikan ibadah harian sebuah kebiasaan yang dimulai dari niat, dengan konten agama yang menampilkan sumbernya. |
+| **Masalah** | Kebanyakan aplikasi Muslim berupa kotak perkakas: jam sholat di satu tempat, penghitung di tempat lain. Teks agama di internet sering dibagikan tanpa sumber, dan chatbot AI umum menjawab pertanyaan agama tanpa rujukan. |
+| **Solusi** | Satu aplikasi yang menghubungkan niat, ibadah, dan belajar: niat pagi dan refleksi malam, jadwal sholat, kiblat, Al-Qur'an dengan tajwid dan audio, hadits dan doa dengan perawi dan derajat, Sirah dalam tiga format, serta asisten AI yang dirancang menyertakan rujukan. |
+| **Keunggulan** | Desain yang dimulai dari niat, konten bersumber yang ditampilkan persis seperti aslinya, asisten yang menyatakan bila sumber belum dapat dipastikan, tanpa iklan, dan open source. |
+| **Pasar** | Indonesia saja memiliki sekitar 246 juta Muslim (87% penduduk). Belanja konsumen Muslim global mencapai $2,6 triliun pada 2024. ([sumber](#mengapa-sekarang)) |
+| **Traksi** | Live di nawaetu.com sejak 2026, 277 akun terdaftar, 825 misi diselesaikan, 90 rilis. ([detail](#sekilas)) |
+| **Model bisnis** | Gratis bagi pengguna tanpa iklan. Didukung donasi, sponsor infrastruktur (Biznet Gio Cloud), dan lisensi komersial untuk organisasi. |
+| **Founder** | Hadian Rahmat ([@hadianr](https://github.com/hadianr)) |
 
 ---
 
-## 📑 Daftar Isi
-- [Apa yang Membuat Nawaetu Berbeda?](#apa-yang-membuat-nawaetu-berbeda)
-- [Galeri Visual](#-galeri-visual)
-- [Pilar Utama & Fitur](#-pilar-utama--fitur)
-- [Sumber Konten](#-sumber-konten)
-- [FAQ](#faq)
-- [Tech Stack](#️-tech-stack)
-- [Lisensi](#-lisensi-dual-licensing)
+<a name="sekilas"></a>
+## Sekilas Nawaetu
 
-> [!IMPORTANT]
-> **Nawaetu menggunakan dual licensing.** Gratis untuk open source (AGPLv3), dengan **Lisensi Komersial** untuk penggunaan proprietary atau closed-source. Lihat bagian [Lisensi](#-lisensi-dual-licensing).
+Angka per **20 November 2026**. Angka penggunaan diambil dari endpoint publik aplikasi [`/api/stats/global`](https://nawaetu.com/api/stats/global), sehingga bisa diperbarui untuk setiap deck.
+
+| Bidang | Angka |
+| :--- | :--- |
+| **Akun terdaftar** | 277 (tamu memakai aplikasi tanpa akun dan tidak dihitung) |
+| **Misi diselesaikan** | 825 |
+| **Hari ibadah tercatat** | 69 |
+| **Al-Qur'an** | 114 surah, audio per ayat, warna tajwid, terjemahan Indonesia dan Inggris |
+| **Hadits dan doa** | 116 hadits sahih dan hasan pilihan serta 50 doa, masing-masing dengan perawi dan derajat |
+| **Sirah** | 3 format: buku ringkas 10 bagian (dengan izin penulis), Sirah lengkap 50 bab, dan linimasa 13 bab |
+| **Kehadiran di pencarian** | 591 halaman terindeks di sitemap, dengan halaman konten yang dirender di server dan `llms.txt` untuk pencarian AI |
+| **Pengembangan** | 90 rilis bertag dan 1.295 commit sejak Januari 2026 |
+| **Kualitas** | 153 file test (984 test), batas coverage baris 80% di CI, pemindaian CodeQL, dan uji browser dengan Anoa |
+| **Aksesibilitas** | Teks tombol, teks aksen, dan warna status memenuhi WCAG AA di kelima tema (diuji otomatis), dengan fokus keyboard yang terlihat |
+| **Bahasa** | Indonesia dan Inggris |
+| **Platform** | Aplikasi web (PWA yang bisa dipasang) dan Android wrapper di repositori ini |
+| **Harga** | Gratis, tanpa iklan |
+
+---
+
+## Masalah
+
+1. **Alat ibadah tersebar.** Jadwal sholat, Al-Qur'an, dzikir, dan puasa biasanya ada di aplikasi terpisah atau di sudut yang berbeda dalam satu aplikasi, tanpa ada yang menghubungkannya menjadi kebiasaan harian.
+2. **Konten agama sering tanpa sumber.** Hadits dan kutipan beredar tanpa perawi atau derajat, sehingga pembaca tidak bisa mengecek apa yang mereka bagikan.
+3. **AI menjawab tanpa rujukan.** Chatbot umum menjawab pertanyaan agama dengan yakin, tanpa menunjukkan ayat atau hadits yang menjadi dasarnya.
+4. **Semangat mudah pudar.** Penghitung mencatat angka, tetapi tidak mencatat *mengapa* seseorang beribadah.
+
+## Solusi
+
+Nawaetu membangun hari pengguna di atas tiga gagasan.
+
+| Pilar | Wujudnya di aplikasi |
+| :--- | :--- |
+| **Niat** | Menetapkan niat setiap pagi dan berefleksi setiap malam. Misi, streak, dan rank Hasanah (Mubtadi sampai Muhsinin) menghargai konsistensi, bukan sekadar hitungan. |
+| **Ilmu yang bisa dicek** | Al-Qur'an, hadits, doa, dan Sirah menampilkan sumber, perawi, dan derajatnya, serta menjaga teks dari penerbit lain persis seperti aslinya. Tanya Nawaetu, asisten AI-nya, dirancang menyertakan rujukan dan menyatakan bila sumber belum dapat dipastikan. |
+| **Ibadah harian** | Jadwal sholat berbasis GPS dengan pengingat, kompas kiblat, kalender Hijriah dengan hari puasa sunnah, tasbih berantai dengan mode fokus, dan panduan Ramadhan musiman. |
+
+<a name="mengapa-sekarang"></a>
+## Mengapa Sekarang
+
+| Sinyal | Angka | Sumber |
+| :--- | :--- | :--- |
+| Muslim di Indonesia | 245.973.915 orang, 87,08% penduduk (semester I 2024) | [Databoks, mengutip data kependudukan](https://databoks.katadata.co.id/en/demographics/statistics/66b45dd8e5dd0/the-majority-of-indonesias-population-is-muslim-in-the-first-half-of-2024) |
+| Belanja konsumen Muslim global | $2,6 triliun pada 2024, diproyeksikan $3,56 triliun pada 2029 | [State of the Global Islamic Economy 2025/26, DinarStandard](https://www.dinarstandard.com/our-impact/state-of-the-global-islamic-economy-report) |
+| Permintaan aplikasi Muslim | Muslim Pro melewati 150 juta unduhan di seluruh dunia (2023) | [Siaran pers Bitsmedia](https://prnewswire.com/apac/news-releases/singapore-based-bitsmedia-announces-significant-milestone-with-150-million-downloads-for-its-global-lifestyle-app-301853984.html) |
+
+Nawaetu dimulai dari pengguna berbahasa Indonesia dan Inggris, pasar mayoritas Muslim terbesar, dan dibangun agar bisa dicek di saat makin banyak orang bertanya kepada AI tentang agamanya.
+
+---
+
+## ✨ Produk
+
+Tangkapan layar asli dari aplikasi di [nawaetu.com](https://nawaetu.com) (ukuran HP). Tersedia lima tema; Daylight adalah tema bawaan dan Emerald adalah tema gelap.
+
+| Beranda: niat dan jadwal sholat | Al-Qur'an dengan audio | Sirah dalam tiga format |
+| :---: | :---: | :---: |
+| <img src="public/images/readme/home.png" width="240" alt="Beranda dengan jurnal niat dan jadwal sholat hari ini"> | <img src="public/images/readme/quran.png" width="240" alt="Pembaca Al-Qur'an menampilkan Al-Fatihah"> | <img src="public/images/readme/sirah.png" width="240" alt="Halaman Sirah dengan format ringkas, lengkap, dan linimasa"> |
+| **Hadits dengan perawi dan derajat** | **Kalender Hijriah dan hari puasa** | **Tasbih (tema gelap Emerald)** |
+| <img src="public/images/readme/hadith.png" width="240" alt="Perpustakaan hadits dengan nomor dan derajat"> | <img src="public/images/readme/hijri-calendar.png" width="240" alt="Kalender Hijriah dengan penanda puasa sunnah"> | <img src="public/images/readme/tasbih-emerald.png" width="240" alt="Penghitung tasbih digital dengan tema gelap Emerald"> |
 
 ---
 
 ## Apa yang Membuat Nawaetu Berbeda?
 
-Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitung tasbih. Nawaetu mempertahankan alat-alat itu dan membangun di sekitar niat di balik setiap ibadah. Jika Anda mencari alternatif Muslim Pro yang berfokus pada niat dan refleksi harian, beginilah perbedaannya:
+Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitung tasbih. Nawaetu mempertahankan alat-alat itu dan membangun di sekitar niat di balik setiap ibadah.
 
 | Aspek | Aplikasi utilitas (cth. Muslim Pro) | Nawaetu |
 | :--- | :--- | :--- |
 | **Fokus utama** | Jadwal sholat, penghitung, pengingat | **Niat lebih dulu**: alasan di balik ibadahmu |
 | **Refleksi** | Penghitung dan pengingat pasif | **Jurnal Muhasabah**: niat pagi, refleksi malam |
+| **Konten agama** | Bervariasi menurut aplikasi | **Sumber ditampilkan bersama teksnya**: perawi, derajat, dan tautan, persis seperti aslinya |
 | **Tanya jawab Islami** | Artikel dan pencarian teks | **Tanya Nawaetu**: asisten AI yang dirancang menyertakan rujukan Al-Qur'an dan hadits, dan menyatakan bila sumber belum dapat dipastikan |
-| **Motivasi** | Penghitung dan streak | **Sistem Hasanah**: progres rank (Mubtadi → Muhsinin) dan streak Istiqamah |
-| **Al-Qur'an dan dzikir** | Audio standar dan tasbih biasa | **Mode Fokus**: screen wake lock, jangkar Basmalah, tasbih Zen OLED |
+| **Motivasi** | Penghitung dan streak | **Sistem Hasanah**: progres rank (Mubtadi sampai Muhsinin) dan streak Istiqamah |
 | **Iklan** | Bervariasi menurut aplikasi dan paket | Tanpa iklan |
 | **Kode sumber** | Umumnya closed-source | Open source (AGPLv3) |
 
 ---
 
-## ✨ Galeri Visual
+## Milestone
 
-| Jurnal Niat | Tanya Nawaetu | Al-Qur'an (Mushaf) |
-| :---: | :---: | :---: |
-| ![Jurnal Niat](./public/images/readme/intention_journal.png) | ![Tanya Nawaetu](./public/images/readme/tanya_nawaetu.png) | ![Al-Qur'an Mushaf](./public/images/readme/digital_quran.png) |
+| Waktu | Milestone |
+| :--- | :--- |
+| Januari 2026 | Commit pertama |
+| 2026 | Aplikasi web live di nawaetu.com: jurnal niat, misi, rank Hasanah, check-in sholat, Al-Qur'an, hadits dan doa, tasbih, alat puasa dan Ramadhan |
+| Oktober 2026 | Halaman konten dirender di server untuk mesin pencari dan pencarian AI (`llms.txt`, data terstruktur) |
+| November 2026 | Sirah dalam tiga format, termasuk buku ringkas Syaikh Haytham Sarhan yang diterbitkan dengan izin tertulis beliau |
+| November 2026 | Penyegaran brand: logo dan set ikon vektor datar, tema terang sebagai bawaan, sistem dua font, dan kontras WCAG AA di setiap tema |
+
+## Roadmap
+
+Ini langkah berikutnya yang sudah tercatat di repositori ini, bukan komitmen bertanggal.
+
+- **Toko aplikasi**: menerbitkan aplikasi Android (wrapper-nya ada di [`android/`](android/)) dan menulis deskripsi toko.
+- **Verifikasi hadits**: mengecek nomor hadits di perpustakaan terhadap [Sunnah.com](https://sunnah.com).
+- **Kecepatan**: memuat pemutar animasi setelah tampilan pertama agar beranda lebih cepat di HP.
+- **Ramadhan 1448 H**: mengaktifkan panduan Ramadhan untuk musimnya; perjalanan 100 hari menuju Ramadhan sudah berjalan.
+
+## Model Bisnis dan Keberlanjutan
+
+- **Gratis bagi pengguna, tanpa iklan**: alat ibadah tidak dikunci di balik pembayaran.
+- **Donasi**: GitHub Sponsors, Trakteer, Ko-fi, dan Buy Me a Coffee ([Dukung Misi Nawaetu](#-dukung-misi-nawaetu)).
+- **Sponsor infrastruktur**: [Biznet Gio Cloud](https://www.biznetgio.com/) menyediakan server cloud untuk nawaetu.com.
+- **Dual license**: AGPLv3 untuk komunitas, dengan lisensi komersial untuk organisasi yang membutuhkan kode privat atau white-label ([Lisensi](#-lisensi-dual-licensing)).
+
+## Tim
+
+**Hadian Rahmat**, founder dan maintainer. Kontak: [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com).
 
 ---
+
+## 📑 Daftar Isi
+- [Pilar Utama & Fitur](#-pilar-utama--fitur)
+- [Performa](#-performa)
+- [Sumber Konten](#-sumber-konten)
+- [FAQ](#faq)
+- [Tech Stack](#️-tech-stack)
+- [Memulai](#-memulai)
+- [Kontribusi](#-kontribusi)
+- [Dukung Misi Nawaetu](#-dukung-misi-nawaetu)
+- [Lisensi](#-lisensi-dual-licensing)
 
 ## 🌟 Pilar Utama & Fitur
 
@@ -183,6 +282,7 @@ Versi dikunci di [`package.json`](package.json).
 *   **Quran.com API** (Mushaf Uthmani & Audio Murottal)
 
 ### UI, Styling & Experience
+*   **Design system**: Lora (display) dan Plus Jakarta Sans (UI) lewat `next/font`, Amiri untuk teks Arab, 5 tema di atas token bersama dengan test kontras WCAG AA, dan semua ikon dibuat dari satu logo vektor (`npm run icons`, `npm run og-image`)
 *   **Tailwind CSS v4** & **Shadcn UI** (Primitif Radix UI)
 *   **Framer Motion** - Animasi mulus & mikro-interaksi
 *   **Recharts** - Analitik dinamis & grafik tren Hasanah
