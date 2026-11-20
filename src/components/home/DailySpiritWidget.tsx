@@ -75,7 +75,7 @@ export default function DailySpiritWidget() {
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[rgb(var(--color-primary-light))]/70 leading-none">
+                            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[rgb(var(--color-primary-light))]/70 leading-none">
                                 {isHadith ? t.spiritualHadithTitle : t.spiritualDuaTitle}
                             </span>
                             <span className="text-[11px] font-medium mt-0.5 text-[rgb(var(--color-text-muted))]">{localizedCategory}</span>
@@ -137,7 +137,7 @@ export default function DailySpiritWidget() {
                         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgb(var(--color-border))] to-transparent" />
                         <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
                             <Sparkles className="w-2.5 h-2.5 text-[rgb(var(--color-accent))]" />
-                            <span className="text-[9px] font-black uppercase tracking-[0.15em] whitespace-nowrap text-[rgb(var(--color-text-muted))]">
+                            <span className="text-[9px] font-bold uppercase tracking-[0.15em] whitespace-nowrap text-[rgb(var(--color-text-muted))]">
                                 {item.content.source}
                             </span>
                         </div>

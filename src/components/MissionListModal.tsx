@@ -198,7 +198,7 @@ export default function MissionListModal({
                                 <p className="text-xs truncate mb-1 text-[rgb(var(--color-text-muted))]">{mission.description}</p>
 
                                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                    <span className="text-[10px] font-mono text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
+                                    <span className="text-[10px] tabular-nums text-[rgb(var(--color-accent))]">+{mission.hasanahReward} Hasanah</span>
 
                                     {mission.dalil && (() => {
                                         const ref = resolveReferenceForMission(mission);
@@ -212,7 +212,7 @@ export default function MissionListModal({
                                                     }
                                                 }}
                                                 className={cn(
-                                                    "text-[9px] px-1.5 py-0.5 rounded font-mono flex items-center gap-1 border transition-colors cursor-pointer",
+                                                    "text-[9px] px-1.5 py-0.5 rounded tabular-nums flex items-center gap-1 border transition-colors cursor-pointer",
                                                     ref
                                                         ? "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/20 hover:bg-[rgb(var(--color-primary))]/20 hover:underline"
                                                         : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]"

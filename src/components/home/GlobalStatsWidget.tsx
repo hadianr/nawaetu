@@ -51,19 +51,19 @@ export default function GlobalStatsWidget() {
             <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
                     <HeartHandshake className="w-5 h-5 text-[rgb(var(--color-accent))] mb-1" />
-                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))]">{stats.missionsCompleted.toLocaleString()}</span>
+                    <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.missionsCompleted.toLocaleString()}</span>
                     <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactMissions}</span>
                 </div>
 
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
                     <AppIcon name="landmark" size="md" tone="primary" className="mb-1" />
-                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))]">{stats.activeWorshipDays.toLocaleString()}</span>
+                    <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.activeWorshipDays.toLocaleString()}</span>
                     <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactStreakDays}</span>
                 </div>
 
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
                     <Users className="w-5 h-5 text-[rgb(var(--color-info))] mb-1" />
-                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))]">{stats.users.toLocaleString()}</span>
+                    <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.users.toLocaleString()}</span>
                     <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactUsers}</span>
                 </div>
             </div>

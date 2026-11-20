@@ -153,7 +153,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
         aria-label={t.streakOpenDetails.replace("{count}", String(currentStreak))}
       >
         <Flame className={cn("h-5 w-5", isActiveToday && "fill-current")} aria-hidden="true" />
-        <span className="text-sm font-black tabular-nums">{currentStreak}</span>
+        <span className="text-sm font-bold tabular-nums">{currentStreak}</span>
         {showLabel && <span className="hidden text-xs sm:inline">{t.streakDayCount}</span>}
       </button>}
 
@@ -170,7 +170,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
             <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-black/35">
               <StreakFlame className="size-24" fallbackClassName="h-12 w-12 text-[rgb(var(--color-primary-foreground))]/85" />
             </div>
-            <p className="mt-2 text-5xl font-black tabular-nums">{currentStreak}</p>
+            <p className="mt-2 text-5xl font-bold tabular-nums">{currentStreak}</p>
             <p className="text-sm font-bold">{t.streakDayCount}</p>
           </div>
 
@@ -185,12 +185,12 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3">
                 <Trophy className="mb-1 h-4 w-4 text-[rgb(var(--color-accent))]" aria-hidden="true" />
-                <p className="font-black">{canonical?.streak?.longestDays ?? streak.longestStreak}</p>
+                <p className="font-bold">{canonical?.streak?.longestDays ?? streak.longestStreak}</p>
                 <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.streakLongestLabel}</p>
               </div>
               <div className="rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/5 p-3">
                 <Target className="mb-1 h-4 w-4 text-[rgb(var(--color-primary-light))]" aria-hidden="true" />
-                <p className="font-black">{nextMilestone?.days ?? currentStreak}</p>
+                <p className="font-bold">{nextMilestone?.days ?? currentStreak}</p>
                 <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.streakNextMilestoneLabel}</p>
               </div>
             </div>

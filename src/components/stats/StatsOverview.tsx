@@ -66,15 +66,15 @@ export function StatsOverview({
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-1.5 min-w-0">
-                                <h2 className="text-base sm:text-lg font-black text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">
+                                <h2 className="text-base sm:text-lg font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">
                                     {playerRank.title}
                                 </h2>
-                                <span className="text-[7px] sm:text-[8px] font-black tracking-widest uppercase text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
+                                <span className="text-[7px] sm:text-[8px] font-bold tracking-widest uppercase text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
                                     LV. {playerStats.level}
                                 </span>
                             </div>
                             <div className="text-right shrink-0">
-                                <span className="text-[rgb(var(--color-primary-light))] text-[10px] sm:text-xs font-black">{playerStats.hasanah}</span>
+                                <span className="text-[rgb(var(--color-primary-light))] text-[10px] sm:text-xs font-bold">{playerStats.hasanah}</span>
                                 <span className="text-[rgb(var(--color-text-muted))] text-[9px] sm:text-[10px] ml-0.5">/ {playerStats.nextLevelHasanah}</span>
                             </div>
                         </div>
@@ -91,7 +91,7 @@ export function StatsOverview({
                         {nextRank && (
                             <div className="flex items-center justify-between gap-2 text-[9px] sm:text-[10px] bg-[rgb(var(--color-surface-subtle))] rounded-xl px-2.5 py-1 sm:py-1.5 mt-1 border border-[rgb(var(--color-border))]">
                                 <div className="flex items-center gap-1.5 truncate">
-                                    <span className="text-[8px] sm:text-[9px] font-black uppercase text-[rgb(var(--color-text-muted))] tracking-tighter shrink-0 hidden xs:inline">
+                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase text-[rgb(var(--color-text-muted))] tracking-tighter shrink-0 hidden xs:inline">
                                         {t.stats.level.nextRankGoal}
                                     </span>
                                     <div className="flex items-center gap-1 truncate">
@@ -101,7 +101,7 @@ export function StatsOverview({
                                 </div>
                                 <div className="shrink-0 flex items-center gap-1.5">
                                     <div className="w-1 h-1 rounded-full bg-[rgb(var(--color-border))] hidden sm:block" />
-                                    <div className="font-black text-[rgb(var(--color-primary-light))] uppercase tracking-tighter">
+                                    <div className="font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-tighter">
                                         {nextRank.levelsRemaining} {t.stats.level.levelsRemaining}
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@ export function StatsOverview({
                             <span className="text-[10px] text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))] transition-colors line-clamp-1">{stat.label}</span>
                             <Info className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-40 transition-opacity" />
                         </div>
-                        <div className="text-xl md:text-2xl font-black text-[rgb(var(--color-text-strong))]">{stat.value}</div>
+                        <div className="text-xl md:text-2xl font-bold text-[rgb(var(--color-text-strong))]">{stat.value}</div>
                         <div className="text-[9px] text-[rgb(var(--color-text-muted))] mt-0.5">{stat.sub}</div>
                     </button>
                 ))}

@@ -264,7 +264,7 @@ export default function HijriCalendarPageContent({ initialView = "month" }: Hijr
                             </div>
                             {calendarData.map(day => (
                                 <div key={day.gregorianIso} className={cn("grid min-w-[430px] grid-cols-5 py-3 text-center text-xs", day.isToday && "bg-[rgb(var(--color-primary))]/15 font-bold")}>
-                                    <span>{day.hijriDay}</span><span className="opacity-60">{day.gregorianDay}</span><span className="font-mono">{day.timings.Imsak}</span><span className="font-mono">{day.timings.Subuh}</span><span className="font-mono">{day.timings.Maghrib}</span>
+                                    <span>{day.hijriDay}</span><span className="opacity-60">{day.gregorianDay}</span><span className="tabular-nums">{day.timings.Imsak}</span><span className="tabular-nums">{day.timings.Subuh}</span><span className="tabular-nums">{day.timings.Maghrib}</span>
                                 </div>
                             ))}
                             {!calendarData.length && <p className="py-12 text-center text-sm opacity-50">{t.hijriCalendarNoData}</p>}

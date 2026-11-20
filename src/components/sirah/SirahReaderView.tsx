@@ -293,7 +293,7 @@ export function SirahReaderView({
             {/* Main Section Content */}
             <div
                 className={cn(
-                    "px-5 py-6 sm:px-8 sm:py-8 rounded-3xl border transition-all shadow-sm space-y-5 select-text font-[family-name:var(--font-lora)]",
+                    "px-5 py-6 sm:px-8 sm:py-8 rounded-3xl border transition-all shadow-sm space-y-5 select-text font-serif",
                     fontSizeClasses[fontSize],
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                 )}

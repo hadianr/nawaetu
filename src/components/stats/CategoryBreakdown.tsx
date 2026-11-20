@@ -46,7 +46,7 @@ export function CategoryBreakdown({
                                 <AppIcon name={cat.icon} size="sm" tone="primary" />
                                 <span className="text-[11px] font-bold text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))] transition-colors uppercase tracking-wider">{cat.label}</span>
                             </div>
-                            <span className="text-xs font-black text-[rgb(var(--color-text-strong))]">{cat.count}</span>
+                            <span className="text-xs font-bold text-[rgb(var(--color-text-strong))]">{cat.count}</span>
                         </div>
                         <div className="h-1.5 w-full bg-[rgb(var(--color-surface))] rounded-full overflow-hidden">
                             <div

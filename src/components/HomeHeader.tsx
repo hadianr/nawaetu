@@ -85,7 +85,7 @@ export default function HomeHeader() {
                 >
                     <NavigationIcon className={cn("h-3.5 w-3.5 shrink-0", data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary))]")} />
                     <span className={cn(
-                        "truncate text-[10px] font-black uppercase tracking-widest",
+                        "truncate text-[10px] font-bold uppercase tracking-widest",
                         data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary-strong))]",
                     )}>
                         {locationLabel ? data?.isDefaultLocation ? t.homeSetLocationNow : locationLabel : t.hijriCalendarYourLocation}

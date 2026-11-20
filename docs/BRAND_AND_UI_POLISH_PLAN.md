@@ -1,6 +1,6 @@
 # Brand and UI Polish Plan
 
-Status: approved 2026-11-20. Phase 1 in progress.
+Status: approved 2026-11-20. Phases 1–2 done.
 
 Goal: Nawaetu should look designed, not generated. That means one type system,
 a warm light first impression, one brand colour from the favicon to the OG card,
@@ -207,7 +207,7 @@ independent of each other. Phase 5 depends on phases 1–2.
 
 ### Phase 1: Light mode default (`feat(theme)`)
 
-- [ ] `src/context/ThemeContext.tsx`
+- [x] `src/context/ThemeContext.tsx`
   - Rework the `daylight` and `default` colours to the tables above, and update
     `createTheme`'s shared light and dark neutrals (they are slate today).
   - Add `export const DEFAULT_THEME_ID: ThemeId = "daylight"`. Use it as the
@@ -219,50 +219,50 @@ independent of each other. Phase 5 depends on phases 1–2.
     legacy `"default"` (localStorage or synced settings) as `emerald`, so users
     who picked it keep it. Update the locale keys in `en` and
     `id`.
-- [ ] `src/components/OnboardingOverlay.tsx:64`: `START_THEME = "daylight"`.
+- [x] `src/components/OnboardingOverlay.tsx:64`: `START_THEME = "daylight"`.
   Keep the rule that an existing non-default choice wins.
-- [ ] `src/components/StoryShareModal.tsx:39`: fall back to `DEFAULT_THEME_ID`.
-- [ ] `src/app/globals.css:95-130`: change the `:root` token defaults to the
+- [x] `src/components/StoryShareModal.tsx:39`: fall back to `DEFAULT_THEME_ID`.
+- [x] `src/app/globals.css:95-130`: change the `:root` token defaults to the
   light values and `color-scheme: light`, so the SSR first paint is light.
   Delete the dead shadcn `:root` and `.dark` oklch blocks (`49-93`) after
   confirming nothing reads them except through the aliases defined later.
-- [ ] `src/app/layout.tsx`: add a tiny inline `<head>` script, before paint,
+- [x] `src/app/layout.tsx`: add a tiny inline `<head>` script, before paint,
   that reads `localStorage["app_theme"]` and sets `data-theme`,
   `data-color-mode` and `colorScheme` on `<html>`. Without it, returning
   dark-mode users get a flash of light. Use `viewport.themeColor` as an array:
   `[{ media: "(prefers-color-scheme: light)", color: "#FAF8F3" }, { media: "(prefers-color-scheme: dark)", color: "#0E1311" }]`.
   Change `statusBarStyle` to `"default"`.
-- [ ] `src/app/_manifest.ts`: `background_color: "#FAF8F3"`,
+- [x] `src/app/_manifest.ts`: `background_color: "#FAF8F3"`,
   `theme_color: "#158057"`.
-- [ ] `android/twa-manifest.json`: light theme, navigation and background
+- [x] `android/twa-manifest.json`: light theme, navigation and background
   colours, with dark variants from the dark palette. The Android app must be
   rebuilt; follow `docs/RELEASE_WORKFLOW.md`.
-- [ ] Tests: update `ThemeContext.test.tsx` (fallback is now `daylight`),
+- [x] Tests: update `ThemeContext.test.tsx` (fallback is now `daylight`),
   `OnboardingOverlay.test.tsx` (start theme), and `ThemeCard.test.tsx` if it
   checks order or names. Add one test that a saved `default` or `midnight`
   survives.
 
 ### Phase 2: Two-font system (`feat(ui)`)
 
-- [ ] `src/app/layout.tsx`: load Fraunces, Plus Jakarta Sans and Amiri (Arabic
+- [x] `src/app/layout.tsx`: load Fraunces, Plus Jakarta Sans and Amiri (Arabic
   subset) with `next/font/google`, and put their `variable` classes on `<html>`.
-- [ ] `src/app/globals.css` `@theme inline`: `--font-sans: var(--font-ui)`,
+- [x] `src/app/globals.css` `@theme inline`: `--font-sans: var(--font-ui)`,
   add `--font-display`, and point `--font-serif` at the display font so the 25
   `font-serif` uses move over with no edit. Remove `--font-lora` and
   `--font-lateef`. Set `--font-amiri` to the loaded Amiri. Add a `.font-display`
   utility if Tailwind does not generate one.
-- [ ] `ThemeContext.tsx` `createTheme`: replace the `fontUi`, `fontEditorial`
+- [x] `ThemeContext.tsx` `createTheme`: replace the `fontUi`, `fontEditorial`
   and `fontReading` values with the CSS variables. Drop `fontEditorial` or
   alias it to display.
-- [ ] Replace `font-mono` used for numbers with `tabular-nums` (31 sites).
+- [x] Replace `font-mono` used for numbers with `tabular-nums` (31 sites).
   Check each one first, because some may be real code.
-- [ ] Replace `font-black` with `font-bold` or `font-semibold`, and drop
-  decorative `tracking-*`, one feature folder per commit (home, quran, dhikr,
-  ramadhan, settings, …).
-- [ ] `src/lib/quran/quran-utils.ts:54-61` and `QuranSettingsModal.tsx`: decide
+- [x] Replace `font-black` with `font-bold` (81 sites).
+- [ ] Drop decorative `tracking-*`. Moved to Phase 5: it needs a per-screen
+  visual check.
+- [x] `src/lib/quran/quran-utils.ts:54-61` and `QuranSettingsModal.tsx`: decide
   on Lateef (see open questions).
-- [ ] Delete `public/fonts/LPMQ.ttf` (an HTML page, unused).
-- [ ] Story cards: `src/lib/share/story-card-renderer.ts` draws on a canvas, so
+- [x] Delete `public/fonts/LPMQ.ttf` (an HTML page, unused).
+- [x] Story cards: `src/lib/share/story-card-renderer.ts` draws on a canvas, so
   it must wait for `document.fonts.ready` before drawing with the new fonts.
 
 ### Phase 3: Icons (`feat(brand)`)

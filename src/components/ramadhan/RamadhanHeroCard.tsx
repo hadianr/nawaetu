@@ -160,7 +160,7 @@ export default function RamadhanHeroCard() {
                                 {data?.hijriDate ? `${data.hijriDay} ${data.hijriMonth} ${hijriYear}H` : `${t.ramadhanLabel} ${hijriYear}H`}
                             </span>
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-[rgb(var(--color-text-strong))] leading-none">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-[rgb(var(--color-text-strong))] leading-none">
                             {t.ramadhanDay}<span style={{ color: "rgb(var(--color-primary-light))" }}>{ramadhanDay}</span>
                         </h1>
                         <p

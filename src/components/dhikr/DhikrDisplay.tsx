@@ -139,7 +139,7 @@ export function DhikrDisplay({
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}
                         </span>
                         <span className={cn(
-                            "text-[clamp(4.5rem,15vw,8rem)] font-mono font-bold tracking-tighter transition-colors",
+                            "text-[clamp(4.5rem,15vw,8rem)] tabular-nums font-bold tracking-tighter transition-colors",
                             "text-[rgb(var(--color-text-strong))]"
                         )}>
                             {hasHydrated ? (

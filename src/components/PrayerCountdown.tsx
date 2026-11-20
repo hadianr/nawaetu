@@ -62,7 +62,7 @@ export default function PrayerCountdown({ targetTime, prayerName, compact = fals
         return (
             <div className="animate-in fade-in duration-700">
                 <div className={cn(
-                    "font-mono text-2xl font-bold tracking-tight",
+                    "tabular-nums text-2xl font-bold tracking-tight",
                     isNear ? "text-[rgb(var(--color-primary-light))]" : "text-[rgb(var(--color-text-strong))]"
                 )}>
                     {timeLeft}
@@ -77,7 +77,7 @@ export default function PrayerCountdown({ targetTime, prayerName, compact = fals
                 Menuju {prayerName}
             </p>
             <div className={cn(
-                "font-mono text-5xl md:text-6xl font-bold tracking-tighter transition-all duration-500",
+                "tabular-nums text-5xl md:text-6xl font-bold tracking-tighter transition-all duration-500",
                 isNear ? "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_30px_rgb(var(--color-primary)/0.35)]" : "text-[rgb(var(--color-text-strong))] drop-shadow-xl"
             )}>
                 {timeLeft}

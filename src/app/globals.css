@@ -15,11 +15,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Two Latin fonts (Plus Jakarta Sans for UI, Lora for display) plus Amiri
+     for Arabic script. Monospace is only for tokens and debug output. */
+  --font-sans: var(--font-ui);
+  --font-serif: var(--font-editorial);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-amiri: serif;
-  --font-lateef: serif;
-  --font-lora: Georgia, serif;
+  --font-amiri: var(--font-reading);
+  --font-arabic: var(--font-reading);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -76,9 +78,9 @@
   --radius-card: 0.75rem;
   --space-page: 1rem;
   --space-section: 1.5rem;
-  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-reading: Amiri, Lateef, serif;
-  --font-editorial: Lora, Georgia, serif;
+  --font-ui: var(--font-face-ui), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-reading: var(--font-face-arabic), serif;
+  --font-editorial: var(--font-face-display), Georgia, serif;
   --reader-line-height: 1.9;
   --glass-blur: 14px;
   --glass-saturation: 1.25;

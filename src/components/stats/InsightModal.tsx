@@ -82,7 +82,7 @@ export function InsightModal({
                                 {activeInsight === 'dhikr' && <AppIcon name="hands" size="lg" tone="primary" label={t.stats.insights.dhikr.title} />}
                             </div>
                             <div>
-                                <DialogTitle className="text-xl font-black text-[rgb(var(--color-text-strong))]">
+                                <DialogTitle className="text-xl font-bold text-[rgb(var(--color-text-strong))]">
                                     {t.stats.insights[activeInsight].title}
                                 </DialogTitle>
                                 <DialogDescription className="text-xs text-[rgb(var(--color-text-muted))] leading-relaxed mt-1">
@@ -244,7 +244,7 @@ export function InsightRow({ label, value, icon }: { label: string; value: strin
                 </div>
                 <span className="text-xs text-[rgb(var(--color-text-muted))] font-medium">{label}</span>
             </div>
-            <span className="text-sm font-black text-[rgb(var(--color-text-strong))]">{value}</span>
+            <span className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{value}</span>
         </div>
     );
 }

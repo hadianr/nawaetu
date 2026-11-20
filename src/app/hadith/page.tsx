@@ -100,7 +100,7 @@ const HadithCard = memo(function HadithCard({
                     {/* Badges Container (100% Full Top-Left Width) */}
                     <div className="flex items-center gap-1.5 min-w-0 overflow-x-auto no-scrollbar whitespace-nowrap">
                         <span className={cn(
-                            "text-[10px] px-2 py-0.5 rounded-full font-bold font-mono border whitespace-nowrap flex-shrink-0",
+                            "text-[10px] px-2 py-0.5 rounded-full font-bold tabular-nums border whitespace-nowrap flex-shrink-0",
                             isHighlighted
                                 ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-[rgb(var(--color-primary))]"
                                 : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25"
@@ -345,7 +345,7 @@ function HadithContent() {
                                     <BookOpen className="w-5 h-5 text-[rgb(var(--color-primary))]" />
                                 </div>
                                 <div>
-                                    <h1 className="text-lg font-black tracking-tight text-[rgb(var(--color-text-strong))]">
+                                    <h1 className="text-lg font-bold tracking-tight text-[rgb(var(--color-text-strong))]">
                                         {t.hadithLibraryTitle || "Perpustakaan Hadits"}
                                     </h1>
                                     <p className="text-[11px] text-[rgb(var(--color-text-muted))]">

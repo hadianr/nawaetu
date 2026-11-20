@@ -65,7 +65,7 @@ export default function FAQModal({ open, onOpenChange }: FAQModalProps) {
                                     >
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-start gap-3 flex-1">
-                                                <span className="text-xs font-mono text-[rgb(var(--color-text-muted))] mt-0.5 flex-shrink-0">
+                                                <span className="text-xs tabular-nums text-[rgb(var(--color-text-muted))] mt-0.5 flex-shrink-0">
                                                     {String(index + 1).padStart(2, '0')}
                                                 </span>
                                                 <span className="font-semibold text-sm text-[rgb(var(--color-text-strong))] leading-snug">

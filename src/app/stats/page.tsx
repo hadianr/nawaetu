@@ -293,7 +293,7 @@ export default function StatsPage() {
                                             <AppIcon name={resolveAppIconName(playerRank.icon)} size="md" tone="primary" />
                                         </div>
                                         <div>
-                                            <DialogTitle className="text-xl font-black text-[rgb(var(--color-text-strong))]">{playerRank.title}</DialogTitle>
+                                            <DialogTitle className="text-xl font-bold text-[rgb(var(--color-text-strong))]">{playerRank.title}</DialogTitle>
                                             <DialogDescription className="text-xs text-[rgb(var(--color-text-muted))]">{t.stats.level.rankLabel}</DialogDescription>
                                         </div>
                                     </div>
@@ -309,11 +309,11 @@ export default function StatsPage() {
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
                                             <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase mb-1">{t.stats.level.currentHasanah}</p>
-                                            <p className="text-sm font-black text-[rgb(var(--color-text-strong))]">{playerStats.hasanah.toLocaleString()}</p>
+                                            <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.hasanah.toLocaleString()}</p>
                                         </div>
                                         <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
                                             <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
-                                            <p className="text-sm font-black text-[rgb(var(--color-text-strong))]">{playerStats.nextLevelHasanah.toLocaleString()}</p>
+                                            <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.nextLevelHasanah.toLocaleString()}</p>
                                         </div>
                                     </div>
 

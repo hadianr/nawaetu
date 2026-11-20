@@ -238,19 +238,19 @@ export default function RamadhanWrappedCard() {
                 {/* Puasa */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-accent) / 0.08)", borderColor: "rgb(var(--color-accent) / 0.2)" }}>
                     <AppIcon name="moon" size="sm" tone="primary" className="mb-0.5" />
-                    <span className="text-xl font-black text-[rgb(var(--color-text-strong))] leading-none">{stats.fastingCount}</span>
+                    <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] leading-none">{stats.fastingCount}</span>
                     <span className="text-[8px] text-[rgb(var(--color-accent))]/70 uppercase tracking-wider mt-0.5">{t.wrappedFasting || "Puasa"}</span>
                 </div>
                 {/* Tarawih */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-primary) / 0.08)", borderColor: "rgb(var(--color-primary) / 0.25)" }}>
                     <AppIcon name="sparkles" size="sm" tone="primary" className="mb-0.5" />
-                    <span className="text-xl font-black text-[rgb(var(--color-text-strong))] leading-none">{stats.tarawehCount}</span>
+                    <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] leading-none">{stats.tarawehCount}</span>
                     <span className="text-[8px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
                 </div>
                 {/* Tilawah */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
                     <AppIcon name="book" size="sm" tone="primary" className="mb-0.5" />
-                    <span className="text-lg font-black text-[rgb(var(--color-text-strong))] leading-none">{formatDuration(stats.totalQuranSeconds)}</span>
+                    <span className="text-lg font-bold text-[rgb(var(--color-text-strong))] leading-none">{formatDuration(stats.totalQuranSeconds)}</span>
                     <span className="text-[8px] text-[rgb(var(--color-success))]/70 uppercase tracking-wider mt-0.5">{t.wrappedQuran || "Tilawah"}</span>
                 </div>
             </div>
@@ -262,13 +262,13 @@ export default function RamadhanWrappedCard() {
                     {/* Qiyamul Lail */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-info) / 0.08)", borderColor: "rgb(var(--color-info) / 0.2)" }}>
                     <AppIcon name="hands" size="sm" tone="primary" className="mb-0.5" />
-                        <div className="text-[rgb(var(--color-text-strong))] font-black text-sm leading-none">{stats.qiyamulLailCount}</div>
+                        <div className="text-[rgb(var(--color-text-strong))] font-bold text-sm leading-none">{stats.qiyamulLailCount}</div>
                         <div className="text-[7px] text-[rgb(var(--color-info))]/70 uppercase tracking-wider mt-0.5 text-center">Qiyamul Lail</div>
                     </div>
                     {/* Dzikir */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-primary-light) / 0.08)", borderColor: "rgb(var(--color-primary-light) / 0.2)" }}>
                     <AppIcon name="hands" size="sm" tone="primary" className="mb-0.5" />
-                        <div className="text-[rgb(var(--color-text-strong))] font-black text-sm leading-none">
+                        <div className="text-[rgb(var(--color-text-strong))] font-bold text-sm leading-none">
                             {stats.totalTasbih > 999
                                 ? `${Math.floor(stats.totalTasbih / 1000)}k`
                                 : stats.totalTasbih}
@@ -278,7 +278,7 @@ export default function RamadhanWrappedCard() {
                     {/* Sholat Sunnah */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
                     <AppIcon name="sun" size="sm" tone="primary" className="mb-0.5" />
-                        <div className="text-[rgb(var(--color-text-strong))] font-black text-sm leading-none">{stats.totalSunnahAll}</div>
+                        <div className="text-[rgb(var(--color-text-strong))] font-bold text-sm leading-none">{stats.totalSunnahAll}</div>
                         <div className="text-[7px] text-[rgb(var(--color-success))]/70 uppercase tracking-wider mt-0.5 text-center">Sholat Sunnah</div>
                     </div>
                 </div>

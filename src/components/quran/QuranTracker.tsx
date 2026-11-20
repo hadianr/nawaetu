@@ -146,7 +146,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[rgb(var(--color-primary-foreground))]" />
                             </div>
                             {t.tilawahStop}
-                            <span className="opacity-80 ml-1 font-mono text-xs hidden sm:inline-block">
+                            <span className="opacity-80 ml-1 tabular-nums text-xs hidden sm:inline-block">
                                 ({timeString})
                             </span>
                         </button>
@@ -161,7 +161,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                             <BookOpen className="w-4 h-4" />
                             {t.tilawahStart}
                             {dailyTotalSeconds > 0 && (
-                                <span className="opacity-60 ml-1 font-mono text-xs hidden sm:inline-block">
+                                <span className="opacity-60 ml-1 tabular-nums text-xs hidden sm:inline-block">
                                     ({timeString})
                                 </span>
                             )}

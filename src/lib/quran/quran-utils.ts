@@ -49,15 +49,8 @@ export const cleanIndopakText = (text: string) => {
         .trim();
 };
 
-export const getVerseFontClass = (script: string, size: string) => {
-    if (script === 'indopak') {
-        const base = 'font-lateef tracking-wide';
-        // Lateef requires significantly larger sizes to match Amiri's visual weight
-        if (size === 'large') return `${base} text-6xl leading-[2.6]`;
-        if (size === 'small') return `${base} text-4xl leading-[2.3]`;
-        return `${base} text-5xl leading-[2.4]`; // Medium
-    }
-    // Tajweed (Amiri)
+// Both scripts (IndoPak and Tajweed) render in Amiri, the app's only Arabic font.
+export const getVerseFontClass = (_script: string, size: string) => {
     const base = 'font-amiri';
     if (size === 'large') return `${base} text-4xl leading-[2.5]`;
     if (size === 'small') return `${base} text-2xl leading-[2.2]`;

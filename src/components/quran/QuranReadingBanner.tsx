@@ -100,7 +100,7 @@ export default function QuranReadingBanner() {
                         </div>
                         <div className="min-w-0">
                             <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">{t.tilawahBannerTitle}</p>
-                            <p className="text-sm font-black leading-tight truncate text-[rgb(var(--color-text-strong))]">
+                            <p className="text-sm font-bold leading-tight truncate text-[rgb(var(--color-text-strong))]">
                                 {dailyTotalSeconds > 0 ? formatDuration(dailyTotalSeconds) : (
                                     <span className="font-medium text-xs text-[rgb(var(--color-text-muted))]">{t.tilawahBannerNoStart}</span>
                                 )}
@@ -164,7 +164,7 @@ export default function QuranReadingBanner() {
                         )}
                     </div>
                     <span className={cn(
-                        "text-[10px] font-black",
+                        "text-[10px] font-bold",
                         isCompleted ? "text-[rgb(var(--color-success))]" : "text-[rgb(var(--color-text-muted))]"
                     )}>
                         {progress}%

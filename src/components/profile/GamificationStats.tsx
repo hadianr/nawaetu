@@ -160,7 +160,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
                 </div>
                 <div>
                     <div className="flex items-end gap-2">
-                        <span className="text-2xl font-black leading-none text-[rgb(var(--color-text-strong))]">{stats.streak}</span>
+                        <span className="text-2xl font-bold leading-none text-[rgb(var(--color-text-strong))]">{stats.streak}</span>
                         <span className="text-[11px] text-[rgb(var(--color-text-muted))] uppercase tracking-wider font-medium mb-[2px]">{translations.profileDays}</span>
                     </div>
                     <div className="text-[11px] text-[rgb(var(--color-text-muted))] mt-1 leading-snug">{translations.profileStreakDesc}</div>
