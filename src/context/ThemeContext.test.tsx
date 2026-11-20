@@ -178,6 +178,12 @@ describe("ThemeContext", () => {
             expect(document.documentElement.dataset.colorMode).toBe("dark");
         });
 
+        it("escapes values so they cannot close the inline script", () => {
+            const script = prePaintThemeScript("</script><script>alert(1)</script>\u2028");
+            expect(script).not.toMatch(/[<>\u2028]/);
+            expect(() => new Function(script)).not.toThrow();
+        });
+
         it("falls back to the default for an unknown saved value", () => {
             window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, "toString");
             runScript();
