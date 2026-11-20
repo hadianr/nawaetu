@@ -4,5 +4,5 @@
     "sin1"
   ],
   "installCommand": "HUSKY=0 npm ci --no-audit --fund=false",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)*.md' ':(exclude)docs/**'"
+  "ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- . ':(exclude)*.md' ':(exclude)docs/**'"
 }
