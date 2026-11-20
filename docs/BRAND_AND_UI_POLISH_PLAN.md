@@ -1,6 +1,6 @@
 # Brand and UI Polish Plan
 
-Status: approved 2026-11-20. Phases 1–3 done.
+Status: approved 2026-11-20. Phases 1–4 done (post-deploy share checks pending).
 
 Goal: Nawaetu should look designed, not generated. That means one type system,
 a warm light first impression, one brand colour from the favicon to the OG card,
@@ -304,7 +304,7 @@ independent of each other. Phase 5 depends on phases 1–2.
 
 ### Phase 4: OG card (`feat(seo)`)
 
-- [ ] Replace `src/app/opengraph-image.tsx` with a new 1200×630 card built
+- [x] Replace `src/app/opengraph-image.tsx` with a new 1200×630 card built
   with `next/og`:
   - Warm paper background `#FAF8F3` with a single quiet geometric pattern at
     about 4% opacity (`public/patterns/` already exists) on the right third.
@@ -316,14 +316,21 @@ independent of each other. Phase 5 depends on phases 1–2.
     Use no glows, gradients, or pill badges.
   - Load the font files with `fetch(new URL(..., import.meta.url))` and pass
     them to `ImageResponse` `fonts`, because `next/og` cannot use `next/font`.
-- [ ] Delete `src/app/twitter-image.tsx`. When no Twitter image exists, Next
+- [x] Delete `src/app/twitter-image.tsx`. When no Twitter image exists, Next
   reuses the OG image, which removes the duplicate.
-- [ ] Replace `public/og-image.png` with a static 1200×630 PNG export of the
+- [x] Replace `public/og-image.png` with a static 1200×630 PNG export of the
   same card, so every page has a real 16:9 card. Generate it once from the
   route, or with a script, and commit it.
-- [ ] `src/lib/seo.ts:36,42`: give the images entry an object with `url`,
+- [x] `src/lib/seo.ts:36,42`: give the images entry an object with `url`,
   `width: 1200`, `height: 630` and an `alt`. Fix the same in the `layout.tsx`
   `openGraph.images`. Keep `twitter.card: "summary_large_image"`.
+- [x] As built: the card is rendered by `scripts/generate-og-image.mjs`
+  (`npm run og-image`) with `next/og`, Lora 600 and Plus Jakarta Sans fetched
+  from Google Fonts, and committed as `public/og-image.png`. Both
+  `opengraph-image.tsx` and `twitter-image.tsx` were deleted, because every
+  page already pointed at the static PNG (which was 640×640). There's no
+  background pattern; the emerald panel carries the mark. `OG_IMAGE` in
+  `src/lib/seo.ts` is the single image entry.
 - [ ] Optional, as a later follow-up: per-section cards (Quran, Sirah) that use
   the same template with a different title.
 - [ ] Check with the opengraph.xyz preview, the X card validator, and a real

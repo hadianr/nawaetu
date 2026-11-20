@@ -68,21 +68,14 @@ export const metadata: Metadata = {
     siteName: "Nawaetu",
     locale: "id_ID",
     type: "website",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Nawaetu — aplikasi Muslim untuk ibadah harian",
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Aplikasi Muslim untuk Ibadah Harian | Nawaetu",
     description: siteDescription,
     creator: "@nawaetuapp",
-    images: ["/og-image.png"],
+    images: [OG_IMAGE],
   },
   manifest: `/manifest.webmanifest?v=${APP_CONFIG.version}`,
   appleWebApp: {
@@ -169,6 +162,7 @@ import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { prePaintThemeScript } from "@/context/themes";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { OG_IMAGE } from "@/lib/seo";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { PrayerTimesProvider } from "@/context/PrayerTimesContext";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
