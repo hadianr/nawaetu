@@ -113,7 +113,8 @@ CURRENT_DATE=$(date +%Y-%m-%d)
 npm version "$VERSION_NUMBER" --no-git-tag-version --allow-same-version > /dev/null
 sed -i '' "s/version: \".*\"/version: \"$VERSION_NUMBER\"/" src/config/app-config.ts
 sed -i '' "s/lastUpdated: \".*\"/lastUpdated: \"$CURRENT_DATE\"/" src/config/app-config.ts
-sed -i '' "s/Version-v[0-9]*\.[0-9]*\.[0-9]*-blue/Version-$VERSION-blue/" README.md README.id.md
+# Any badge colour: only the version number is replaced.
+sed -i '' "s/Version-v[0-9]*\.[0-9]*\.[0-9]*-/Version-$VERSION-/" README.md README.id.md
 echo -e "${GREEN}✅ package.json & package-lock.json → $VERSION_NUMBER${NC}"
 echo -e "${GREEN}✅ app-config.ts → $VERSION_NUMBER (updated: $CURRENT_DATE)${NC}"
 echo -e "${GREEN}✅ README.md & README.id.md badges → $VERSION${NC}"
