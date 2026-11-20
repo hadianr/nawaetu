@@ -138,7 +138,7 @@ export default function IntentionPrompt({
                         {currentStreak > 0 && (
                             <div className="mt-4 flex items-center justify-center gap-2 backdrop-blur-sm border border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 rounded-full px-4 py-1.5 w-fit mx-auto">
                                 <AppIcon name="sparkles" size="md" tone="primary" />
-                                <span className="text-xs font-semibold text-[rgb(var(--color-accent-foreground))]">
+                                <span className="text-xs font-semibold text-[rgb(var(--color-accent-strong))]">
                                     {currentStreak} {t.intention_streak_label}
                                 </span>
                             </div>

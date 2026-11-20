@@ -55,7 +55,7 @@ const CompassDisplay = memo(({
                     )}
                     style={{
                             background: aligned
-                            ? 'radial-gradient(circle at center, rgba(var(--color-primary),0.35) 0%, rgba(var(--color-primary),0.15) 40%, rgba(var(--color-primary),0.05) 60%, transparent 75%)'
+                            ? 'radial-gradient(circle at center, rgb(var(--color-primary) / 0.35) 0%, rgb(var(--color-primary) / 0.15) 40%, rgb(var(--color-primary) / 0.05) 60%, transparent 75%)'
                             : 'none'
                     }}
                 />
@@ -114,7 +114,7 @@ const CompassDisplay = memo(({
                                 "opacity-30"
                             )}
                             style={{
-                                background: `repeating-conic-gradient(from 0deg, rgba(var(--color-border),0.5) 0deg 0.5deg, transparent 0.5deg 5deg)`,
+                                background: `repeating-conic-gradient(from 0deg, rgb(var(--color-border) / 0.5) 0deg 0.5deg, transparent 0.5deg 5deg)`,
                                 maskImage: 'radial-gradient(transparent 65%, black 70%)',
                                 WebkitMaskImage: 'radial-gradient(transparent 65%, black 70%)'
                             }}

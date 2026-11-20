@@ -221,7 +221,7 @@ export default function RamadhanWrappedCard() {
 
             {/* ── Header ── */}
             <div className="z-10 text-center mb-4">
-                <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>
+                <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: "rgb(var(--color-primary-light) / 0.7)" }}>
                     <span className="inline-flex items-center gap-1"><AppIcon name="sparkles" size="xs" tone="primary" /> {t.wrappedTitleLabel || "Nawaetu Wrapped"} <AppIcon name="sparkles" size="xs" tone="primary" /></span>
                 </p>
                 <h2 className="text-[22px] font-serif font-bold text-[rgb(var(--color-text-strong))] leading-tight">
@@ -231,7 +231,7 @@ export default function RamadhanWrappedCard() {
             </div>
 
             {/* ── Divider ── */}
-            <div className="z-10 h-px w-full mb-3" style={{ background: "linear-gradient(to right, transparent, rgba(var(--color-primary),0.4), transparent)" }} />
+            <div className="z-10 h-px w-full mb-3" style={{ background: "linear-gradient(to right, transparent, rgb(var(--color-primary) / 0.4), transparent)" }} />
 
             {/* ── Core Stats Row ── */}
             <div className="z-10 grid grid-cols-3 gap-2 mb-3">
@@ -245,7 +245,7 @@ export default function RamadhanWrappedCard() {
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-primary) / 0.08)", borderColor: "rgb(var(--color-primary) / 0.25)" }}>
                     <AppIcon name="sparkles" size="sm" tone="primary" className="mb-0.5" />
                     <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] leading-none">{stats.tarawehCount}</span>
-                    <span className="text-[8px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
+                    <span className="text-[8px] uppercase tracking-wider mt-0.5" style={{ color: "rgb(var(--color-primary-light) / 0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
                 </div>
                 {/* Tilawah */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
@@ -295,7 +295,7 @@ export default function RamadhanWrappedCard() {
                             right={stats.fardhuRumahDays}
                             leftLabel="Masjid"
                             rightLabel="Rumah"
-                            leftColor="bg-[rgba(var(--color-primary),0.7)]"
+                            leftColor="bg-[rgb(var(--color-primary) / 0.7)]"
                             rightColor="bg-[rgb(var(--color-warning))]/60"
                         />
                     </div>
@@ -311,7 +311,7 @@ export default function RamadhanWrappedCard() {
                         <MiniBar
                             left={stats.masjidCount} right={stats.rumahCount}
                             leftLabel="Masjid" rightLabel="Rumah"
-                            leftColor="bg-[rgba(var(--color-primary),0.7)]"
+                            leftColor="bg-[rgb(var(--color-primary) / 0.7)]"
                             rightColor="bg-[rgb(var(--color-warning))]/60"
                         />
                     </div>
@@ -319,10 +319,10 @@ export default function RamadhanWrappedCard() {
             </div>
 
             {/* ── AI Insight Box ── */}
-            <div className="z-10 flex-1 rounded-2xl p-3 border flex flex-col justify-center" style={{ background: "rgba(var(--color-primary),0.06)", borderColor: "rgba(var(--color-primary),0.2)" }}>
+            <div className="z-10 flex-1 rounded-2xl p-3 border flex flex-col justify-center" style={{ background: "rgb(var(--color-primary) / 0.06)", borderColor: "rgb(var(--color-primary) / 0.2)" }}>
                 <div className="flex items-center gap-1.5 mb-2">
                     <Sparkles className="w-3 h-3" style={{ color: "rgb(var(--color-primary-light))" }} />
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>
+                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "rgb(var(--color-primary-light) / 0.7)" }}>
                         {t.wrappedAIInsight || "AI Insight"}
                     </span>
                 </div>
@@ -339,7 +339,7 @@ export default function RamadhanWrappedCard() {
             </div>
 
             {/* ── Divider ── */}
-            <div className="z-10 h-px w-full mt-3" style={{ background: "linear-gradient(to right, transparent, rgba(var(--color-primary),0.4), transparent)" }} />
+            <div className="z-10 h-px w-full mt-3" style={{ background: "linear-gradient(to right, transparent, rgb(var(--color-primary) / 0.4), transparent)" }} />
 
             {/* ── Footer ── */}
             <div className="z-10 mt-2 text-center flex items-center justify-center gap-1.5">
@@ -355,7 +355,7 @@ export default function RamadhanWrappedCard() {
             onClick={() => setIsOpen(true)}
             className="w-full flex items-center gap-3 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-3 text-left transition-all hover:bg-[rgb(var(--color-surface))] hover:-translate-y-0.5 active:scale-[0.98] group"
         >
-            <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-xl text-2xl" style={{ background: "rgba(var(--color-primary),0.15)" }}>
+            <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-xl text-2xl" style={{ background: "rgb(var(--color-primary) / 0.15)" }}>
                 <AppIcon name="trophy" size="lg" tone="primary" />
             </div>
             <div className="flex-1 min-w-0">
@@ -363,7 +363,7 @@ export default function RamadhanWrappedCard() {
                 <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5">{t.wrappedTriggerSubtitle || "Puasa, Tarawih, Tilawah & AI Insight"}</p>
             </div>
             <div className="shrink-0 flex items-center gap-1">
-                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "rgba(var(--color-primary),0.15)", color: "rgb(var(--color-primary-light))" }}>
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "rgb(var(--color-primary) / 0.15)", color: "rgb(var(--color-primary-light))" }}>
                     {t.wrappedTriggerCta || "Lihat"}
                 </span>
             </div>

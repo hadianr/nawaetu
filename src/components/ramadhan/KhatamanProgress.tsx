@@ -131,7 +131,6 @@ export default function KhatamanProgress() {
                         style={{
                             width: `${progressPct}%`,
                             background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary-light)))`,
-                            boxShadow: "0 0 20px rgba(var(--color-primary), 0.5)"
                         }}
                     />
                 </div>

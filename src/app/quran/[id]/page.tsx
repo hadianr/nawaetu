@@ -61,7 +61,7 @@ export default async function SurahDetailPage(props: PageProps) {
     if (!surahName) notFound();
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-canvas))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgb(var(--color-primary)/0.15),transparent)] px-4 pt-0 md:pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
+        <div className="flex min-h-screen flex-col items-center bg-[rgb(var(--color-canvas))] px-4 pt-0 md:pt-8 pb-nav text-[rgb(var(--color-text))] font-sans sm:px-6">
             <JsonLd data={breadcrumbList([
                 { name: "Nawaetu", path: "/" },
                 { name: "Al-Qur'an", path: "/quran" },

@@ -92,7 +92,7 @@ export default function BookmarksPage() {
     return (
         <div className={cn(
             "bookmarks-page flex min-h-screen flex-col items-center px-4 pt-8 pb-nav font-sans sm:px-6 transition-colors",
-            "bg-[rgb(var(--color-background))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),rgba(var(--color-background),0))] text-[rgb(var(--color-text))]"
+            "bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))]"
         )}>
             <div className="w-full max-w-none space-y-8 xl:max-w-2xl">
                 {/* Header */}

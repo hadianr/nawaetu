@@ -195,7 +195,6 @@ export default function SurahList({ chapters }: SurahListProps) {
                             )}
                         >
                             {/* Dynamic Background Mesh */}
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--color-primary),0.15),transparent_50%)]" />
                             <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/10 via-transparent to-transparent opacity-50" />
 
                             <div className="relative p-5 md:p-6 flex items-center justify-between gap-4 h-full">

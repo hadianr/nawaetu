@@ -29,7 +29,7 @@ export default function QiblaPage() {
     }, []);
 
     return (
-        <div className="flex h-[100dvh] w-full max-w-full flex-col items-center justify-center font-sans overflow-hidden fixed inset-0 transition-colors duration-500 bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--color-primary),0.15),transparent)]">
+        <div className="flex h-[100dvh] w-full max-w-full flex-col items-center justify-center font-sans overflow-hidden fixed inset-0 transition-colors duration-500 bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]">
             {/* Main Content - Centered & Full Width */}
             <div className="w-full h-full flex items-center justify-center relative">
                 <QiblaCompass />

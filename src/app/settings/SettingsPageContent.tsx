@@ -568,7 +568,7 @@ export default function SettingsPageContent() {
                             type="button"
                             variant="outline"
                             onClick={handleResetOnboarding}
-                            className="w-full border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-foreground))] hover:bg-[rgb(var(--color-accent))]/20"
+                            className="w-full border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] hover:bg-[rgb(var(--color-accent))]/20"
                         >
                             Reset onboarding (QA only)
                         </Button>
