@@ -158,7 +158,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                                 </div>
 
                                 <div className="flex items-center gap-2 shrink-0">
-                                    {isSaved && <Bookmark className="w-4 h-4 fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent))]" />}
+                                    {isSaved && <Bookmark className="w-4 h-4 fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-strong))]" />}
                                     <ChevronRight className="w-4 h-4 text-[rgb(var(--color-text-muted))] group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                             </Link>

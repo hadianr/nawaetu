@@ -47,7 +47,7 @@ export default function ReflectionPrompt({
     const RATING_LABELS = [
         { icon: "warning" as const, label: t.intention_rating_struggled, color: "text-[rgb(var(--color-danger))]" },
         { icon: "help" as const, label: t.intention_rating_difficult, color: "text-[rgb(var(--color-warning))]" },
-        { icon: "target" as const, label: t.intention_rating_okay, color: "text-[rgb(var(--color-accent))]" },
+        { icon: "target" as const, label: t.intention_rating_okay, color: "text-[rgb(var(--color-accent-strong))]" },
         { icon: "heart-handshake" as const, label: t.intention_rating_good, color: "text-[rgb(var(--color-success))]" },
         { icon: "sparkles" as const, label: t.intention_rating_excellent, color: "text-[rgb(var(--color-primary-light))]" },
     ];

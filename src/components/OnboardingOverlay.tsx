@@ -139,7 +139,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             src: "/lottie/flame.lottie",
             loop: true,
             icon: Flame,
-            color: "text-[rgb(var(--color-accent))]",
+            color: "text-[rgb(var(--color-accent-strong))]",
             bg: "bg-[rgb(var(--color-accent))]/10",
             border: "border-[rgb(var(--color-accent))]/20",
             title: translations.onboardingCardIntentionTitle,

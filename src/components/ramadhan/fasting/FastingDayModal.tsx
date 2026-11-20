@@ -27,7 +27,7 @@ function getConsequenceStyle(consequence: string, t: TranslationTree): { label: 
     switch (consequence) {
         case "none": return { label: t.fastingConsequenceNone, color: "text-[rgb(var(--color-success))]", bg: "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/20" };
         case "qadha": return { label: t.fastingConsequenceQadha, color: "text-[rgb(var(--color-warning))]", bg: "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25" };
-        case "fidyah": return { label: t.fastingConsequenceFidyah, color: "text-[rgb(var(--color-accent))]", bg: "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25" };
+        case "fidyah": return { label: t.fastingConsequenceFidyah, color: "text-[rgb(var(--color-accent-strong))]", bg: "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25" };
         case "choice": return { label: t.fastingConsequenceChoice, color: "text-[rgb(var(--color-primary-light))]", bg: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25" };
         default: return { label: consequence, color: "text-[rgb(var(--color-text-muted))]", bg: "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]" };
     }

@@ -186,7 +186,7 @@ export default function BookmarkEditDialog({
                             <p className={cn(
                                 "text-sm font-medium",
                                 isLastRead
-                                    ? 'text-[rgb(var(--color-accent))]'
+                                    ? 'text-[rgb(var(--color-accent-strong))]'
                                     : 'text-[rgb(var(--color-text))]'
                             )}>
                                 {t.bookmarksMarkAsLastRead}

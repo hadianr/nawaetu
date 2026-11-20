@@ -140,7 +140,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
                 href="/rewards"
                 className={cn(
                     "flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-colors",
-                    "border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))]/20"
+                    "border-[rgb(var(--color-accent))]/30 bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] hover:bg-[rgb(var(--color-accent))]/20"
                 )}
             >
                 <Gift className="h-4 w-4" />

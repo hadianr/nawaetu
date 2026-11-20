@@ -74,7 +74,7 @@ export function InsightModal({
                     <DialogHeader className="mb-6">
                         <div className="flex items-center gap-3 mb-2">
                             <div className="p-2.5 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
-                                {activeInsight === 'streak' && <Flame className="w-5 h-5 text-[rgb(var(--color-accent))]" />}
+                                {activeInsight === 'streak' && <Flame className="w-5 h-5 text-[rgb(var(--color-accent-strong))]" />}
                                 {activeInsight === 'prayers' && <AppIcon name="landmark" size="lg" tone="primary" label={t.stats.insights.prayers.title} />}
                                 {activeInsight === 'hasanah' && <ZapIcon className="w-5 h-5 text-[rgb(var(--color-warning))]" />}
                                 {activeInsight === 'consistency' && <Target className="w-5 h-5 text-[rgb(var(--color-info))]" />}
@@ -95,12 +95,12 @@ export function InsightModal({
                     <div className="space-y-4">
                         {activeInsight === 'streak' && (
                             <>
-                                <InsightRow label={t.stats.insights.streak.current} value={data.streakData.currentStreak.toString()} icon={<Flame className="w-3.5 h-3.5 text-[rgb(var(--color-accent))]" />} />
+                                <InsightRow label={t.stats.insights.streak.current} value={data.streakData.currentStreak.toString()} icon={<Flame className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />} />
                                 <InsightRow label={t.stats.insights.streak.longest} value={data.streakData.longestStreak.toString()} icon={<Award className="w-3.5 h-3.5 text-[rgb(var(--color-warning))]" />} />
                                 <div className="p-4 bg-[rgb(var(--color-accent))]/10 border border-[rgb(var(--color-accent))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-accent))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-accent))] uppercase">{t.stats.insights.streak.status}</p>
+                                        <TrendingUp className="w-3.5 h-3.5 text-[rgb(var(--color-accent-strong))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-accent-strong))] uppercase">{t.stats.insights.streak.status}</p>
                                     </div>
                                     <p className="text-xs text-[rgb(var(--color-text))] font-medium leading-relaxed">
                                         {data.streakData.currentStreak >= 40

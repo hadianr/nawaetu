@@ -239,7 +239,7 @@ export default function RamadhanWrappedCard() {
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-accent) / 0.08)", borderColor: "rgb(var(--color-accent) / 0.2)" }}>
                     <AppIcon name="moon" size="sm" tone="primary" className="mb-0.5" />
                     <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] leading-none">{stats.fastingCount}</span>
-                    <span className="text-[8px] text-[rgb(var(--color-accent))]/70 uppercase tracking-wider mt-0.5">{t.wrappedFasting || "Puasa"}</span>
+                    <span className="text-[8px] text-[rgb(var(--color-accent-strong))]/70 uppercase tracking-wider mt-0.5">{t.wrappedFasting || "Puasa"}</span>
                 </div>
                 {/* Tarawih */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-primary) / 0.08)", borderColor: "rgb(var(--color-primary) / 0.25)" }}>

@@ -49,7 +49,7 @@ export default function GlobalStatsWidget() {
 
             <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]">
-                    <HeartHandshake className="w-5 h-5 text-[rgb(var(--color-accent))] mb-1" />
+                    <HeartHandshake className="w-5 h-5 text-[rgb(var(--color-accent-strong))] mb-1" />
                     <span className="text-lg font-bold text-[rgb(var(--color-text-strong))]">{stats.missionsCompleted.toLocaleString()}</span>
                     <span className="text-[9px] text-[rgb(var(--color-text-muted))] leading-tight mt-0.5">{t.globalImpactMissions}</span>
                 </div>

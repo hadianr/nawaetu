@@ -129,7 +129,7 @@ export function StatsOverview({
                 {[
                     {
                         id: 'streak' as const,
-                        icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent))]" />,
+                        icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent-strong))]" />,
                         label: t.stats.quick.currentStreak,
                         value: `${streakData.currentStreak}`,
                         sub: t.stats.quick.longestStreak.replace('{{days}}', streakData.longestStreak.toString()),

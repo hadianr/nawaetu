@@ -185,7 +185,7 @@ export default function MisiPage() {
                             <span className={cn(
                                 "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
                                 mission.ruling === 'obligatory'
-                                    ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent))] border border-[rgb(var(--color-accent))]/30"
+                                    ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30"
                                     : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
                             )}>
                                 {getRulingLabel(mission.ruling, t)}

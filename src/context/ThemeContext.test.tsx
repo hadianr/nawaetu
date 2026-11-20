@@ -49,7 +49,7 @@ describe("ThemeContext", () => {
         });
     });
 
-    it.each(Object.keys(THEMES))("%s: text on primary fills and light-theme status colours pass WCAG AA", (id) => {
+    it.each(Object.keys(THEMES))("%s: text on primary fills, accent text and light-theme status colours pass WCAG AA", (id) => {
         const lum = (rgb: string) => {
             const lin = (c: number) => ((c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
             const [r, g, b] = rgb.split(" ").map(Number);
@@ -62,6 +62,7 @@ describe("ThemeContext", () => {
         const { mode, tokens } = THEMES[id as keyof typeof THEMES];
 
         expect(contrast(tokens.primaryForeground, tokens.primary)).toBeGreaterThanOrEqual(4.5);
+        expect(contrast(tokens.accentStrong, tokens.surface), "accent text").toBeGreaterThanOrEqual(4.5);
         if (mode === "light") {
             for (const status of ["info", "success", "warning", "danger"] as const) {
                 expect(contrast(tokens[status], tokens.canvas), status).toBeGreaterThanOrEqual(4.5);
