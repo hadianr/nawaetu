@@ -92,7 +92,7 @@ export default function MissionDetailDialog({
             <DialogContent
                 showCloseButton={false}
                 className={cn(
-                    "max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-2xl transition-colors duration-500",
+                    "max-w-md max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 shadow-[var(--shadow-floating)] transition-colors duration-500",
                     surface,
                     "backdrop-blur-3xl"
                 )}
@@ -602,7 +602,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             key={idx}
                                             className={cn(
-                                                "flex-1 font-bold py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-md transition-all",
+                                                "flex-1 font-bold py-4 md:py-5 text-[11px] md:text-sm relative overflow-hidden group shadow-[var(--shadow-card)] transition-all",
                                                 isHighReward
                                                     ? "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"
                                                     : "bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-text))] border border-[rgb(var(--color-border))]"
@@ -628,7 +628,7 @@ export default function MissionDetailDialog({
                         ) : (
                             <Button
                                 className={cn(
-                                    "w-full font-bold py-4 md:py-5 text-xs md:text-sm transition-all shadow-lg",
+                                    "w-full font-bold py-4 md:py-5 text-xs md:text-sm transition-all shadow-[var(--shadow-card)]",
                                     isLate
                                         ? "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))]/90 text-[rgb(var(--color-primary-foreground))]"
                                         : "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))]"

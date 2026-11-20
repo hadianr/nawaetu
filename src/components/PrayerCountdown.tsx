@@ -78,12 +78,12 @@ export default function PrayerCountdown({ targetTime, prayerName, compact = fals
             </p>
             <div className={cn(
                 "tabular-nums text-5xl md:text-6xl font-bold tracking-tighter transition-all duration-500",
-                isNear ? "text-[rgb(var(--color-primary-light))] drop-shadow-[0_0_30px_rgb(var(--color-primary)/0.35)]" : "text-[rgb(var(--color-text-strong))] drop-shadow-xl"
+                isNear ? "text-[rgb(var(--color-primary-light))]" : "text-[rgb(var(--color-text-strong))]"
             )}>
                 {timeLeft}
             </div>
             {isNear && (
-                <p className="mt-2 text-xs font-semibold text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-3 py-1 rounded-full animate-pulse border border-[rgb(var(--color-primary))]/20">
+                <p className="mt-2 text-xs font-semibold text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-3 py-1 rounded-full border border-[rgb(var(--color-primary))]/20">
                     Waktu Sholat Segera Tiba
                 </p>
             )}

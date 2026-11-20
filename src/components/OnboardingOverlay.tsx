@@ -329,11 +329,6 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                         </div>
                     </div>
 
-                    {/* Decorative Glow */}
-                    <div className={cn(
-                        "absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-[50px] opacity-30",
-                        slide.bg.replace('/10', '/30')
-                    )} />
                 </div>
             );
         }

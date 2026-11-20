@@ -228,8 +228,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 bg: "from-[rgb(var(--color-accent))]/30 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/20",
                 border: "border-[rgb(var(--color-accent))]/50 shadow-[var(--shadow-card)]",
                 text: "text-[rgb(var(--color-accent-foreground))]",
-                icon: "fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))]",
-                animate: "animate-pulse"
+                icon: "fill-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-foreground))]"
             };
         }
         if (days <= 40) {
@@ -237,16 +236,14 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 bg: "from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/10",
                 border: "border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]",
                 text: "text-[rgb(var(--color-primary-light))]",
-                icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]",
-                animate: ""
+                icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]"
             };
         }
         return {
             bg: "from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))]",
             border: "border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]",
             text: "text-[rgb(var(--color-text-muted))]",
-            icon: "fill-[rgb(var(--color-text-muted))]/10 text-[rgb(var(--color-text-muted))]",
-            animate: ""
+            icon: "fill-[rgb(var(--color-text-muted))]/10 text-[rgb(var(--color-text-muted))]"
         };
     };
 
@@ -350,7 +347,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                                 {/* Minimalist Bar */}
                                 <div className="w-28 h-1.5 bg-[rgb(var(--color-surface-subtle))] rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full bg-[rgb(var(--color-primary))] transition-all duration-1000 ${styles.animate && 'animate-pulse'}`}
+                                        className={`h-full bg-[rgb(var(--color-primary))] transition-all duration-1000`}
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>

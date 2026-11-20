@@ -391,7 +391,7 @@ export default function MentorAIClient() {
             )}>
 
                 <div className="relative z-10 max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-[rgb(var(--color-primary))]/30 rotate-3">
+                    <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-[var(--shadow-floating)] rotate-3">
                         <Lock className="w-10 h-10 text-[rgb(var(--color-primary-foreground))]" />
                     </div>
 
@@ -471,7 +471,7 @@ export default function MentorAIClient() {
                             </h1>
                             <div className="flex items-center gap-2">
                                 <p className="text-[10px] text-[rgb(var(--color-primary-light))] flex items-center gap-1">
-                                    <span className="w-1 h-1 rounded-full bg-[rgb(var(--color-primary))] animate-pulse" />
+                                    <span className="w-1 h-1 rounded-full bg-[rgb(var(--color-primary))]" />
                                     Online
                                 </p>
                                 <span className={cn(
@@ -524,7 +524,7 @@ export default function MentorAIClient() {
                 {messages.length === 0 ? (
                     // Empty State / Greeting
                     <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in duration-700 min-h-[calc(100vh-250px)]">
-                        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-xl shadow-[rgb(var(--color-primary))]/20">
+                        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-[var(--shadow-floating)]">
                             <Sparkles className="w-8 h-8 text-[rgb(var(--color-primary-foreground))]" />
                         </div>
                         <h2 className={cn(

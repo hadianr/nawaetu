@@ -99,7 +99,7 @@ export function HasanahTrendChart({
                                     hideLabel
                                     indicator="dot"
                                     className={cn(
-                                        "backdrop-blur-xl rounded-2xl p-3 shadow-2xl min-w-[100px]",
+                                        "backdrop-blur-xl rounded-2xl p-3 shadow-[var(--shadow-floating)] min-w-[100px]",
                                         "bg-[rgb(var(--color-surface))]/95 border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                                     )}
                                 />

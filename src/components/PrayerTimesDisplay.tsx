@@ -53,7 +53,7 @@ export default function PrayerTimesDisplay() {
     if (!data) {
         return (
             <div className={cn(
-                "relative w-full max-w-none border rounded-3xl p-6 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500 xl:max-w-md",
+                "relative w-full max-w-none border rounded-3xl p-6 text-center shadow-[var(--shadow-floating)] overflow-hidden animate-in fade-in zoom-in-95 duration-500 xl:max-w-md",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
                 <div className="relative z-10 flex flex-col items-center space-y-4">
@@ -75,7 +75,7 @@ export default function PrayerTimesDisplay() {
                         <Button
                             onClick={refreshLocation}
                             className={cn(
-                                "w-full h-12 font-bold rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_20px_rgb(var(--color-accent)/0.5)]",
+                                "w-full h-12 font-bold rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2",
                                 "bg-[rgb(var(--color-accent))] hover:bg-[rgb(var(--color-accent))]/90 text-[rgb(var(--color-accent-foreground))]"
                             )}
                         >

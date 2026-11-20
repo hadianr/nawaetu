@@ -344,7 +344,7 @@ export default function NotificationSettings() {
     if (permissionStatus === "default") {
         return (
             <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-6 text-center space-y-4">
-                <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
+                <div className="w-16 h-16 bg-[rgb(var(--color-primary))]/20 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Bell className="w-8 h-8 text-[rgb(var(--color-primary))]" />
                 </div>
                 <h3 className="text-lg font-bold text-[rgb(var(--color-text-strong))]">

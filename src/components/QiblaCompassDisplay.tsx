@@ -208,7 +208,7 @@ const CompassDisplay = memo(({
                         "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary))]/40 shadow-[var(--shadow-card)]"
                     )}>
                         <div className={cn(
-                            "w-2 h-2 rounded-full animate-pulse shadow-[0_0_8px_rgb(var(--color-primary)/0.7)]",
+                            "w-2 h-2 rounded-full animate-pulse",
                             "bg-[rgb(var(--color-primary-light))]"
                         )} />
                         <span className={cn(

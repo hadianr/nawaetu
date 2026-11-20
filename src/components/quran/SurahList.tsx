@@ -190,7 +190,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                             onMouseEnter={() => router.prefetch(`/quran/${safeLastRead.surahId}`)}
                             onFocus={() => router.prefetch(`/quran/${safeLastRead.surahId}`)}
                             className={cn(
-                                "col-span-2 group relative overflow-hidden rounded-3xl border transition-all duration-500 hover:-translate-y-0.5 shadow-lg",
+                                "col-span-2 group relative overflow-hidden rounded-3xl border transition-all duration-500 hover:-translate-y-0.5 shadow-[var(--shadow-card)]",
                                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/10 hover:border-[rgb(var(--color-primary))]/40"
                             )}
                         >
@@ -202,7 +202,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                                 <div className="flex flex-col justify-center gap-1.5 h-full">
                                     <div className="flex items-center gap-2">
                                         <div className={cn(
-                                            "h-1.5 w-1.5 rounded-full animate-pulse",
+                                            "h-1.5 w-1.5 rounded-full",
                                             "bg-[rgb(var(--color-primary))]"
                                         )} />
                                         <span className={cn(
@@ -262,7 +262,7 @@ export default function SurahList({ chapters }: SurahListProps) {
                     onMouseEnter={() => prefetchRoute("/bookmarks")}
                     onFocus={() => prefetchRoute("/bookmarks")}
                     className={cn(
-                        "col-span-2 md:col-span-1 group relative overflow-hidden rounded-3xl border backdrop-blur-sm p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:shadow-lg",
+                        "col-span-2 md:col-span-1 group relative overflow-hidden rounded-3xl border backdrop-blur-sm p-5 md:p-6 flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 transition-all duration-500 hover:shadow-[var(--shadow-card)]",
                         bookmarkCount > 0
                             ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/35 shadow-[var(--shadow-card)] hover:bg-[rgb(var(--color-primary))]/20"
                             : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-surface-subtle))]"
@@ -310,9 +310,8 @@ export default function SurahList({ chapters }: SurahListProps) {
             {/* Search Input & Deep Search Button */}
             <div className="flex items-center gap-2 pt-1">
                 <div className="relative group flex-1">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-primary))]/20 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl" />
                     <div className={cn(
-                        "relative border rounded-2xl flex items-center px-4 py-2.5 shadow-lg transition-all h-[44px]",
+                        "relative border rounded-2xl flex items-center px-4 py-2.5 shadow-[var(--shadow-card)] transition-all h-[44px]",
                         "bg-transparent border-[rgb(var(--color-border))] focus-within:border-[rgb(var(--color-primary))] focus-within:ring-1 focus-within:ring-[rgb(var(--color-primary))]/30"
                     )}>
                         <Search className={cn(

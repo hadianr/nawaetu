@@ -117,7 +117,7 @@ export default function BookmarkEditDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={cn(
-                "max-w-sm w-[90%] rounded-[2rem] border overflow-hidden shadow-2xl [&>button]:z-50 p-0",
+                "max-w-sm w-[90%] rounded-[2rem] border overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50 p-0",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
             )}>
                 {/* Decorative Header Background */}
@@ -216,7 +216,7 @@ export default function BookmarkEditDialog({
                     <Button
                         onClick={handleSave}
                         className={cn(
-                            "h-12 flex-1 rounded-xl font-semibold shadow-lg transition-all active:scale-[0.98]",
+                            "h-12 flex-1 rounded-xl font-semibold shadow-[var(--shadow-card)] transition-all active:scale-[0.98]",
                             "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         )}
                     >

@@ -492,7 +492,7 @@ export default function SettingsPageContent() {
                         onClick={() => setShowDonationModal(true)}
                         size="sm"
                         className={cn(
-                            "font-bold h-9 px-4 rounded-xl shadow-lg transition-all active:scale-[0.98]",
+                            "font-bold h-9 px-4 rounded-xl shadow-[var(--shadow-card)] transition-all active:scale-[0.98]",
                             "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                         )}
                     >

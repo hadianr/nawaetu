@@ -109,7 +109,7 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className={cn(
-                "max-w-sm sm:max-w-md p-0 rounded-3xl overflow-hidden shadow-2xl transition-all",
+                "max-w-sm sm:max-w-md p-0 rounded-3xl overflow-hidden shadow-[var(--shadow-floating)] transition-all",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))] shadow-[var(--shadow-floating)]"
             )}>
                 <div className="relative flex flex-col items-center justify-center p-8 pt-12 text-center">
@@ -120,13 +120,13 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                     {/* Main Icon */}
                     <div className="relative mb-6">
                         <div className={cn(
-                            "w-24 h-24 rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-500",
+                            "w-24 h-24 rounded-full flex items-center justify-center shadow-[var(--shadow-card)] animate-in zoom-in duration-500",
                             "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                         )}>
                             <Check className="w-12 h-12 text-[rgb(var(--color-primary-foreground))] stroke-[3]" />
                         </div>
                         <div className={cn(
-                            "absolute -bottom-2 -right-2 rounded-full p-2 shadow-md animate-bounce",
+                            "absolute -bottom-2 -right-2 rounded-full p-2 shadow-[var(--shadow-card)] animate-bounce",
                             "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-primary))]"
                         )}>
                             <Heart className="w-4 h-4 fill-[rgb(var(--color-primary))]" />
@@ -146,7 +146,7 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
                         <Button
                             onClick={onClose}
                             className={cn(
-                                "w-full font-bold h-12 rounded-xl shadow-lg transition-all active:scale-[0.98]",
+                                "w-full font-bold h-12 rounded-xl shadow-[var(--shadow-card)] transition-all active:scale-[0.98]",
                                 "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             )}
                         >

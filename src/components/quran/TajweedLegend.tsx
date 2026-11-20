@@ -119,7 +119,7 @@ export default function TajweedLegend() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                         {TAJWEED_RULES.map((rule) => (
                             <div key={rule.name} className="flex items-start gap-3 p-3 rounded-lg border bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]">
-                                <div className={cn("w-3 h-3 rounded-full mt-1.5 shrink-0 shadow-[0_0_8px_rgba(0,0,0,0.5)]", rule.color)} />
+                                <div className={cn("w-3 h-3 rounded-full mt-1.5 shrink-0", rule.color)} />
                                 <div>
                                     <h4 className="text-sm font-bold leading-none mb-1 text-[rgb(var(--color-text-strong))]">{rule.name}</h4>
                                     <p className="text-[10px] font-medium mb-0.5 uppercase tracking-wide text-[rgb(var(--color-text-muted))]">{rule.desc}</p>

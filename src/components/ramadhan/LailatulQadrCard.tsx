@@ -79,7 +79,7 @@ export default function LailatulQadrCard() {
             {/* Header */}
             <div className="flex items-center justify-between px-4 pt-4 pb-3">
                 <div className="flex items-center gap-2.5">
-                    <AppIcon name="sparkles" size="lg" tone="primary" className={isTonight ? "animate-pulse" : undefined} />
+                    <AppIcon name="sparkles" size="lg" tone="primary" />
                     <div>
                         <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm sm:text-base leading-tight">
                             {t.lailatulQadrTitle}
@@ -174,7 +174,7 @@ export default function LailatulQadrCard() {
                                 className={`relative flex flex-col items-center justify-center rounded-xl py-2 border transition-all duration-200 
                                     ${isOdd && !isActive && !isDone ? "hover:-translate-y-0.5" : ""} 
                                     ${status === "upcoming" ? "opacity-40 cursor-not-allowed" : "active:scale-95 cursor-pointer"}
-                                    ${isDone ? "shadow-[0_0_10px_rgba(var(--color-primary),0.2)]" : ""}
+                                    ${isDone ? "" : ""}
                                 `}
                                 style={{
                                     borderColor: isDone

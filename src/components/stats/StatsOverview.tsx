@@ -56,7 +56,6 @@ export function StatsOverview({
                 onClick={() => setIsRankModalOpen(true)}
                 className="w-full text-left relative overflow-hidden rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))] p-4 active:scale-[0.98] transition-all group mt-4 shadow-[var(--shadow-card)]"
             >
-                <div className="absolute top-0 right-0 w-40 h-40 bg-[rgb(var(--color-primary))]/10 rounded-full blur-[60px] pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-4">
                     {/* Rank Badge - Smaller & Compact */}
                     <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] flex items-center justify-center text-2xl sm:text-3xl shadow-[var(--shadow-card)] group-hover:scale-110 transition-transform duration-500">
@@ -82,7 +81,7 @@ export function StatsOverview({
                         {/* Progress Bar - Slimmer */}
                         <div className="h-1 w-full bg-[rgb(var(--color-surface-subtle))] rounded-full overflow-hidden border border-[rgb(var(--color-border))] p-0 mb-2">
                             <div
-                                className="h-full rounded-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] shadow-[0_0_10px_rgba(var(--color-primary),0.5)] transition-all duration-1000"
+                                className="h-full rounded-full bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-light))] transition-all duration-1000"
                                 style={{ width: `${playerStats.progress}%` }}
                             />
                         </div>

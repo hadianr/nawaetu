@@ -31,15 +31,10 @@ export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProp
                 visible ? "opacity-100" : "opacity-0"
             )}
         >
-            {/* Decorative glow */}
-            <div className={cn(
-                "absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-[100px] pointer-events-none",
-                "bg-[rgb(var(--color-primary))]/15"
-            )} />
 
             {/* Icon */}
             <div className={cn(
-                "w-20 h-20 rounded-[28px] mb-6 flex items-center justify-center shadow-2xl border",
+                "w-20 h-20 rounded-[28px] mb-6 flex items-center justify-center shadow-[var(--shadow-floating)] border",
                 "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
                 <BookOpen className="w-9 h-9 text-[rgb(var(--color-primary))]" />
@@ -74,7 +69,7 @@ export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProp
             <button
                 onClick={onConfirm}
                 className={cn(
-                    "w-full max-w-xs py-4 rounded-2xl font-bold text-base mb-3 transition-all active:scale-95 shadow-lg",
+                    "w-full max-w-xs py-4 rounded-2xl font-bold text-base mb-3 transition-all active:scale-95 shadow-[var(--shadow-card)]",
                     "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                 )}
             >
@@ -115,7 +110,7 @@ export function QuranFocusBadge({ sessionSeconds, onExit }: FocusBadgeProps) {
 
     return (
         <div className={cn(
-            "fixed top-3 left-1/2 -translate-x-1/2 z-[200] flex items-center rounded-full border shadow-lg backdrop-blur-xl transition-all overflow-hidden",
+            "fixed top-3 left-1/2 -translate-x-1/2 z-[200] flex items-center rounded-full border shadow-[var(--shadow-card)] backdrop-blur-xl transition-all overflow-hidden",
             "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
         )}>
             {/* Left content: live dot + label + time */}
@@ -174,7 +169,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
                 onClick={onCancel}
             />
             <div className={cn(
-                "relative w-full max-w-sm rounded-3xl border p-6 shadow-2xl",
+                "relative w-full max-w-sm rounded-3xl border p-6 shadow-[var(--shadow-floating)]",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
             )}>
                 <p className="text-sm font-bold mb-1 text-[rgb(var(--color-text-strong))]">

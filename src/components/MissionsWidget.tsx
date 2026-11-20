@@ -225,10 +225,6 @@ export default function MissionsWidget() {
             "relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all",
             "glass-surface border shadow-[var(--shadow-card)]"
         )}>
-            <div className={cn(
-                "absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] pointer-events-none opacity-20 transition-colors",
-                "bg-[rgb(var(--color-primary))]"
-            )} />
 
             <div className="flex items-center justify-between mb-4 relative z-10 w-full">
                 <div className="flex items-center gap-2.5">

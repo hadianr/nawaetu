@@ -246,7 +246,7 @@ export default function MissionListModal({
                             <div className={cn(
                                 "w-6 h-6 rounded-full flex items-center justify-center transition-all",
                                 isCompleted
-                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[0_0_10px_rgb(var(--color-primary)/0.35)]"
+                                    ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                     : "border-2 border-[rgb(var(--color-border))] group-hover:border-[rgb(var(--color-primary))]"
                             )}>
                                 {isCompleted && <Check className="w-4 h-4" />}

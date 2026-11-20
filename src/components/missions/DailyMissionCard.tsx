@@ -170,7 +170,7 @@ export default function DailyMissionCard({
                                 {t.home_mission_locked}
                             </span>
                         ) : validation.isLate ? (
-                            <span className="text-[9px] text-[rgb(var(--color-danger))] bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20 flex items-center gap-1 font-medium ml-auto animate-pulse">
+                            <span className="text-[9px] text-[rgb(var(--color-danger))] bg-[rgb(var(--color-danger))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-danger))]/20 flex items-center gap-1 font-medium ml-auto">
                                 <AlertCircle className="w-2.5 h-2.5" /> {t.home_mission_late}
                             </span>
                         ) : validation.isEarly ? (

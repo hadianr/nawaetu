@@ -83,7 +83,7 @@ export default function EidCard() {
                         </div>
                         <Button 
                             onClick={() => setShowSunnah(false)} 
-                            className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-md transition-all active:scale-95"
+                            className="w-full bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] transition-all active:scale-95"
                         >
                             Tutup
                         </Button>

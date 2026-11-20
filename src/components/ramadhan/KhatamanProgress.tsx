@@ -127,7 +127,7 @@ export default function KhatamanProgress() {
                 {/* Progress bar */}
                 <div className="h-3 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden shadow-inner backdrop-blur-sm">
                     <div
-                        className="h-full rounded-full transition-all duration-500 shadow-lg"
+                        className="h-full rounded-full transition-all duration-500 shadow-[var(--shadow-card)]"
                         style={{
                             width: `${progressPct}%`,
                             background: `linear-gradient(to right, rgb(var(--color-primary-dark)), rgb(var(--color-primary-light)))`,

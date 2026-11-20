@@ -108,7 +108,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
 
                     <div className="relative z-20 flex flex-col items-center animate-in zoom-in duration-500">
                         <div className={cn(
-                            "w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl mb-2 rotate-3 transform hover:rotate-6 transition-transform",
+                            "w-16 h-16 rounded-2xl flex items-center justify-center shadow-[var(--shadow-floating)] mb-2 rotate-3 transform hover:rotate-6 transition-transform",
                             "bg-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                         )}>
                             <Heart className="w-8 h-8 text-[rgb(var(--color-primary-foreground))] fill-[rgb(var(--color-primary-foreground))]" />
@@ -155,7 +155,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                             <Button
                                 onClick={() => void signInWithGoogle()}
                                 className={cn(
-                                    "w-full h-12 font-bold rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-md hover:shadow-lg",
+                                    "w-full h-12 font-bold rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card)]",
                                     "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))]/80"
                                 )}
                             >
@@ -259,7 +259,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
                                 onClick={handlePayment}
                                 disabled={loading}
                                 className={cn(
-                                    "w-full h-12 font-bold rounded-xl shadow-lg flex items-center gap-2 transition-all",
+                                    "w-full h-12 font-bold rounded-xl shadow-[var(--shadow-card)] flex items-center gap-2 transition-all",
                                     "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                                 )}
                             >

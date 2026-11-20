@@ -92,7 +92,7 @@ export default function PrayerTimeCard({
                             className={cn(
                                 "flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-300",
                                 isNext
-                                    ? "bg-[rgb(var(--color-primary))]/20 ring-1 ring-[rgb(var(--color-primary))]/40 shadow-[0_0_12px_rgba(var(--color-primary),0.15)]"
+                                    ? "bg-[rgb(var(--color-primary))]/20 ring-1 ring-[rgb(var(--color-primary))]/40"
                                     : "hover:bg-[rgb(var(--color-primary))]/10"
                             )}
                         >

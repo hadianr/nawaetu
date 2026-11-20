@@ -132,7 +132,7 @@ export default function BookmarksPage() {
                                 {t.bookmarksEmptyDesc}
                             </p>
                             <Button asChild className={cn(
-                                "h-12 px-8 rounded-full font-semibold shadow-xl transition-all",
+                                "h-12 px-8 rounded-full font-semibold shadow-[var(--shadow-floating)] transition-all",
                                 "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)]"
                             )}>
                                 <Link href="/quran">{t.bookmarksStartReading}</Link>

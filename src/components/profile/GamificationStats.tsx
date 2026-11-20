@@ -78,7 +78,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                 )}>
                     <div
-                        className="h-full rounded-full transition-all duration-500 shadow-lg"
+                        className="h-full rounded-full transition-all duration-500 shadow-[var(--shadow-card)]"
                         style={{
                             width: `${stats.progress}%`,
                             background: "rgb(var(--color-primary))",

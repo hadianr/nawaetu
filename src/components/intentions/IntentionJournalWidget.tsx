@@ -324,7 +324,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
     return (
         <div className={cn("relative min-h-32 w-full group", className)}>
             <div className={cn(
-                "glass-surface relative min-h-32 overflow-hidden rounded-3xl p-3 transition-all duration-300 hover:shadow-lg sm:p-4",
+                "glass-surface relative min-h-32 overflow-hidden rounded-3xl p-3 transition-all duration-300 hover:shadow-[var(--shadow-card)] sm:p-4",
                 "border shadow-[var(--shadow-card)]"
             )}>
                 <div className="flex flex-col gap-2">
@@ -392,7 +392,7 @@ export default function IntentionJournalWidget({ className = "" }: IntentionJour
                                     type="button"
                                     onClick={() => setShowIntentionPrompt(true)}
                                     className={cn(
-                                        "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl px-4 py-2 text-xs font-bold shadow-md transition-all active:scale-95 group/btn sm:flex-none",
+                                        "flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl px-4 py-2 text-xs font-bold shadow-[var(--shadow-card)] transition-all active:scale-95 group/btn sm:flex-none",
                                         "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border border-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]"
                                     )}
                                 >

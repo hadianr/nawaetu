@@ -134,7 +134,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                         <button
                             onClick={handleExitRequest}
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-lg transition-all hover:scale-105",
+                                "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-[var(--shadow-card)] transition-all hover:scale-105",
                                 "bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/50 text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] backdrop-blur-md"
                             )}
                         >
@@ -154,7 +154,7 @@ export default function QuranTracker({ name, count }: QuranTrackerProps) {
                         <button
                             onClick={handleStartRequest}
                             className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-lg transition-all hover:scale-105 backdrop-blur-md",
+                                "flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-[var(--shadow-card)] transition-all hover:scale-105 backdrop-blur-md",
                                 "bg-[rgb(var(--color-surface))] hover:bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]"
                             )}
                         >
