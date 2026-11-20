@@ -25,6 +25,7 @@ import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { X, Share, PlusSquare, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BrandIcon from "@/components/BrandIcon";
 
 interface PWAInstallPromptProps {
     shouldShow?: boolean;
@@ -77,9 +78,7 @@ export default function PWAInstallPrompt({ shouldShow = true }: PWAInstallPrompt
                 </button>
 
                 <div className="relative z-10 flex gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                        <span className="text-xl font-bold text-[rgb(var(--color-primary-foreground))]">N</span>
-                    </div>
+                    <BrandIcon size={48} className="shrink-0" />
 
                     <div className="flex-1">
                         <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm">{t.pwaInstallTitle}</h3>

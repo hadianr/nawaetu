@@ -195,49 +195,10 @@
 
   /* [5] TEXT HIERARCHY */
 
-  /* L1: Bold headings & primary labels. Solid primary buttons keep their own
-     (white) text, both on the button and on bold text inside it. */
-  [data-theme="daylight"] h1,
-  [data-theme="daylight"] h2,
-  [data-theme="daylight"] h3,
-  [data-theme="daylight"] h4,
-  [data-theme="daylight"] .font-bold:not([class*="bg-[rgb(var(--color-primary"], [class*="bg-[rgb(var(--color-primary"] *),
-  [data-theme="daylight"] .font-semibold:not([class*="bg-[rgb(var(--color-primary"], [class*="bg-[rgb(var(--color-primary"] *),
-  [data-theme="daylight"] .text-white:not([class*="bg-emerald"], [class*="bg-primary"], [class*="bg-secondary"], [class*="bg-[rgb(var(--color-primary"], .bg-emerald-600, .bg-teal-600) {
-    color: rgb(var(--color-text-strong)) !important;
-  }
-
   /* Specific override for SelectTriggers and similar buttons that are surfaces, not primary actions */
   [data-theme="daylight"] .SelectTrigger,
   [data-theme="daylight"] [role="combobox"] {
     color: rgb(var(--color-text-strong)) !important;
-  }
-
-  /* Force white text back for buttons and primary surfaces */
-  [data-theme="daylight"] button .text-white,
-  [data-theme="daylight"] button.text-white,
-  [data-theme="daylight"] [class*="bg-primary"] .text-white,
-  [data-theme="daylight"] [class*="bg-secondary"] .text-white {
-    color: #ffffff !important;
-  }
-
-  /* Primary accent text (Emerald), kept darker for contrast */
-  [data-theme="daylight"] [class*="text-[rgb(var(--color-primary)"] {
-    color: rgb(var(--color-primary-strong)) !important;
-  }
-
-  /* [6] ICONS — SVG and Lucide React */
-  [data-theme="daylight"] svg {
-    color: inherit;
-  }
-
-  [data-theme="daylight"] svg.text-white {
-    color: rgb(var(--color-text)) !important;
-  }
-
-  /* Primary-colored icons keep brightness, just slightly darker */
-  [data-theme="daylight"] svg[class*="text-[rgb(var(--color-primary"] {
-    color: rgb(var(--color-primary-strong)) !important;
   }
 
   /* [7] GRADIENT SURFACES */
@@ -568,10 +529,6 @@
 [data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm[class*="opacity-60"] {
   background-color: rgba(255, 255, 255, 0.25) !important;
   opacity: 0.7 !important;
-}
-
-[data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm p[class*="text-white"] {
-  color: rgb(var(--color-text)) !important;
 }
 
 /* Missions Modal — Daylight Theme (Soft Theme) */
