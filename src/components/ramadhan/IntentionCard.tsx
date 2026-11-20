@@ -82,7 +82,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                 </button>
             </DialogTrigger>
 
-            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)] rounded-3xl z-[120]">
+            <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-lg md:max-w-xl bg-[rgb(var(--color-surface))]/95 backdrop-blur-2xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] p-0 overflow-hidden gap-0 shadow-[var(--shadow-floating)] rounded-2xl z-[120]">
                 {/* Combined Header & Handle */}
                 <DialogHeader className="pointer-events-auto sticky top-0 z-[150] bg-[rgb(var(--color-surface))]/95 backdrop-blur-md border-b border-[rgb(var(--color-border))] shadow-[var(--shadow-card)] flex flex-row items-center justify-between gap-3 px-6 py-4 space-y-0 text-left">
                     <DialogTitle className="font-bold text-[rgb(var(--color-text-strong))] text-base tracking-tight leading-tight flex-1">
@@ -148,7 +148,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                         {localizedSource && (
                             <div className="flex items-center gap-2 px-1">
                                 <span className="h-1 w-1 rounded-full bg-[rgb(var(--color-border))]" />
-                                <div className="text-[10px] font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-widest leading-relaxed">
+                                <div className="text-[10px] font-medium text-[rgb(var(--color-text-muted))] uppercase tracking-wider leading-relaxed">
                                     {localizedSource}
                                 </div>
                             </div>

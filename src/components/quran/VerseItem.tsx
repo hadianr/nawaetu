@@ -246,7 +246,7 @@ export default function VerseItem({
                                     )}>
                                         {cleanedText}
                                     </span>
-                                    <div className="flex flex-col items-center font-sans tracking-normal">
+                                    <div className="flex flex-col items-center font-sans">
                                         {showTransliteration && word.transliteration?.text && (
                                             <span className="text-[10px] md:text-xs text-[rgb(var(--color-primary-light))] text-center leading-tight mb-1 opacity-80 group-hover:opacity-100">
                                                 {word.transliteration.text}

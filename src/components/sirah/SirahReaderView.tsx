@@ -133,10 +133,10 @@ export function SirahReaderView({
     };
 
     const fontSizeClasses = {
-        sm:   "text-[15px] leading-[1.85] tracking-[0.01em]",
-        base: "text-[16px] leading-[1.9]  tracking-[0.01em] sm:text-[17px]",
-        lg:   "text-[17px] leading-[2.0]  tracking-[0.01em] sm:text-[19px]",
-        xl:   "text-[19px] leading-[2.0]  tracking-[0.01em] sm:text-[21px]",
+        sm:   "text-[15px] leading-[1.85]",
+        base: "text-[16px] leading-[1.9] sm:text-[17px]",
+        lg:   "text-[17px] leading-[2.0] sm:text-[19px]",
+        xl:   "text-[19px] leading-[2.0] sm:text-[21px]",
     };
 
     const toolBtnClass = "border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] hover:bg-[rgb(var(--color-surface-subtle))] hover:border-[rgb(var(--color-primary))]/30";
@@ -293,7 +293,7 @@ export function SirahReaderView({
             {/* Main Section Content */}
             <div
                 className={cn(
-                    "px-5 py-6 sm:px-8 sm:py-8 rounded-3xl border transition-all shadow-sm space-y-5 select-text font-serif",
+                    "px-5 py-6 sm:px-8 sm:py-8 rounded-2xl border transition-all shadow-sm space-y-5 select-text font-serif",
                     fontSizeClasses[fontSize],
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
                 )}

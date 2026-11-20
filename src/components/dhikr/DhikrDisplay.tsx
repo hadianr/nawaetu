@@ -50,7 +50,7 @@ export function DhikrDisplay({
             <div className="w-full text-center z-10 pointer-events-none mt-1 xs:mt-6 shrink-0 relative">
                 {activeSequence && (
                     <div className={cn(
-                        "inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full border text-[10px] font-bold tracking-widest uppercase shadow-sm",
+                        "inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full border text-[10px] font-bold tracking-wider uppercase shadow-sm",
                         "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/25 shadow-[var(--shadow-card)]"
                     )}>
                         {activeSequence.label} ({sequenceIndex + 1}/{activeSequence.items.length})
@@ -62,7 +62,7 @@ export function DhikrDisplay({
                         "text-[rgb(var(--color-text-strong))]"
                     )}>{t.tasbihTitle}</h1>
                     <p className={cn(
-                        "text-[9px] xs:text-[10px] uppercase tracking-[0.2em]",
+                        "text-[9px] xs:text-[10px] uppercase tracking-wider",
                         "text-[rgb(var(--color-text-muted))]"
                     )}>{t.tasbihSubtitle}</p>
                 </div>
@@ -132,7 +132,7 @@ export function DhikrDisplay({
                         )}
                     >
                         <span className={cn(
-                            "text-[7px] md:text-xs font-bold tracking-widest uppercase mb-0.5 xs:mb-1.5",
+                            "text-[7px] md:text-xs font-bold tracking-wider uppercase mb-0.5 xs:mb-1.5",
                             "text-[rgb(var(--color-primary-strong))]/60"
                         )}>
                             {activeDhikr ? activeDhikr.label : t.tasbihCounterLabel}

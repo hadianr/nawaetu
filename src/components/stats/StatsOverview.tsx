@@ -54,7 +54,7 @@ export function StatsOverview({
             {/* Level & Hasanah Card - Compact Version */}
             <button
                 onClick={() => setIsRankModalOpen(true)}
-                className="w-full text-left relative overflow-hidden rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))] p-4 active:scale-[0.98] transition-all group mt-4 shadow-[var(--shadow-card)]"
+                className="w-full text-left relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-surface-subtle))] p-4 active:scale-[0.98] transition-all group mt-4 shadow-[var(--shadow-card)]"
             >
                 <div className="relative z-10 flex items-center gap-4">
                     {/* Rank Badge - Smaller & Compact */}
@@ -68,7 +68,7 @@ export function StatsOverview({
                                 <h2 className="text-base sm:text-lg font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">
                                     {playerRank.title}
                                 </h2>
-                                <span className="text-[7px] sm:text-[8px] font-bold tracking-widest uppercase text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
+                                <span className="text-[7px] sm:text-[8px] font-bold tracking-wider uppercase text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
                                     LV. {playerStats.level}
                                 </span>
                             </div>

@@ -134,7 +134,7 @@ export default function DailyPrayerTracker() {
                 <div className="px-4 pb-4 text-center text-xs text-[rgb(var(--color-text-muted))] py-6">Belum waktunya</div>
             ) : (
                 <div className="px-3 pb-3 sm:px-4 sm:pb-4 space-y-3 border-t border-[rgb(var(--color-border))] pt-3">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))] text-center mb-1">
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-1">
                         HARI KE-{viewDay} — LOKASI SHOLAT WAJIB
                     </p>
 
@@ -181,7 +181,7 @@ export default function DailyPrayerTracker() {
 
                     {/* Sunnah Section */}
                     <div className="border-t border-[rgb(var(--color-border))] pt-3">
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))] text-center mb-2">
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] text-center mb-2">
                             SHOLAT SUNNAH
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">

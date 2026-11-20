@@ -485,7 +485,7 @@ export default function PrayerCheckInWidget() {
                     >
                         <div className="flex items-center gap-1.5">
                             <Sparkles className="w-3 h-3" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">
+                            <span className="text-[10px] font-bold uppercase tracking-wider">
                                 {t.sunnah_prayer_section_title || "Sunnah Prayers"}
                             </span>
                         </div>
@@ -632,7 +632,7 @@ export default function PrayerCheckInWidget() {
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                     <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
-                                    <span className="text-xs font-bold uppercase tracking-wide text-[rgb(var(--color-primary-foreground))] relative">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))] relative">
                                         {locale === "id" ? "Berjamaah di Masjid" : "Congregation (Mosque)"}
                                     </span>
                                     <span className="text-[10px] font-bold text-[rgb(var(--color-primary-foreground))]/80 relative">
@@ -653,7 +653,7 @@ export default function PrayerCheckInWidget() {
                                         )}
                                     >
                                         <AppIcon name="home" size="lg" tone="primary" className="group-active:scale-110 transition-transform" />
-                                        <span className="text-xs font-bold uppercase tracking-wide">{t.homePrayerCheckInOptionSolo}</span>
+                                        <span className="text-xs font-bold uppercase tracking-wider">{t.homePrayerCheckInOptionSolo}</span>
                                         <span className="text-[10px] font-bold text-[rgb(var(--color-text-muted))]">+{getHasanahReward(25)} Hasanah</span>
                                     </button>
 
@@ -670,7 +670,7 @@ export default function PrayerCheckInWidget() {
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                         <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
-                                        <span className="text-xs font-bold uppercase tracking-wide text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
+                                        <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
                                         <span className="text-[10px] font-bold text-[rgb(var(--color-primary-foreground))]/80 relative">+{getHasanahReward(75)} Hasanah</span>
                                     </button>
                                 </>
@@ -692,7 +692,7 @@ export default function PrayerCheckInWidget() {
                         <button
                             onClick={() => setSheet(null)}
                             className={cn(
-                                "w-full py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all border",
+                                "w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border",
                                 "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-primary))]/10 hover:text-[rgb(var(--color-text))]"
                             )}
                         >

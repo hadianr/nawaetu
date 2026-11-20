@@ -307,7 +307,7 @@ export default function DhikrCounter() {
             {/* Achievement Layer */}
             <Dialog open={showReward} onOpenChange={setShowReward}>
                 <DialogContent className={cn(
-                    "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-[32px] border backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-[var(--shadow-floating)]",
+                    "dhikr-completion-dialog w-[85%] max-w-[280px] rounded-2xl border backdrop-blur-2xl flex flex-col items-center p-5 md:p-6 text-center [&>button.absolute]:hidden shadow-[var(--shadow-floating)]",
                     "bg-[rgb(var(--color-surface))]/95 border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
                 )}>
                     <DialogHeader className="flex flex-col items-center">
@@ -338,7 +338,7 @@ export default function DhikrCounter() {
                                                 }}
                                                 className="flex-[1.5] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] font-bold h-11 rounded-xl flex flex-col items-center justify-center p-0"
                                             >
-                                                <span className="text-[7px] opacity-70 uppercase tracking-widest mb-0.5">{t.tasbihNextUp}</span>
+                                                <span className="text-[7px] opacity-70 uppercase tracking-wider mb-0.5">{t.tasbihNextUp}</span>
                                                 <span className="text-xs">{nextZikir.label}</span>
                                             </Button>
                                             <Button

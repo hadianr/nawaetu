@@ -96,7 +96,7 @@ export default function IntentionPrompt({
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                    className="relative w-full max-w-md bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)] rounded-3xl overflow-hidden z-[101]"
+                    className="relative w-full max-w-md bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)] rounded-2xl overflow-hidden z-[101]"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Journal Texture Overlay */}
@@ -126,7 +126,7 @@ export default function IntentionPrompt({
                                         <p className="text-[10px] sm:text-xs md:text-sm font-serif italic leading-relaxed px-4 text-[rgb(var(--color-text-muted))]">
                             &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
-                                        <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-widest uppercase">
+                                        <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-wider uppercase">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}
                                         </p>
                                     </motion.div>
@@ -161,7 +161,7 @@ export default function IntentionPrompt({
                     <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 relative z-10">
                         {/* Textarea */}
                         <div className="relative group">
-                            <label htmlFor="intention-prompt-text" className="text-xs font-serif font-medium mb-2 block text-center uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
+                            <label htmlFor="intention-prompt-text" className="text-xs font-serif font-medium mb-2 block text-center uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
                                 {t.intention_prompt_question}
                             </label>
                             <textarea
@@ -187,7 +187,7 @@ export default function IntentionPrompt({
                         {/* Inspiration Suggestions */}
                         <div className="pt-2">
                             <div className="flex items-center justify-between mb-3 px-1">
-                                <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[rgb(var(--color-text-muted))]">{t.intention_need_inspiration}</label>
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.intention_need_inspiration}</label>
                                 <button
                                     onClick={() => {
                                         const suggestions = t.intention_suggestions as string[];
@@ -196,7 +196,7 @@ export default function IntentionPrompt({
                                         ];
                                         handleSuggestionClick(randomSuggestion);
                                     }}
-                                    className="text-[10px] font-bold flex items-center gap-1 transition-colors uppercase tracking-widest text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-light))]"
+                                    className="text-[10px] font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-light))]"
                                 >
                                     <AppIcon name="sparkles" size="xs" tone="primary" />
                                     {t.intention_random_btn}

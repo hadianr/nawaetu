@@ -197,7 +197,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
             onOpenChange(val);
         }}>
             <DialogContent className={cn(
-                "max-w-md w-[92%] rounded-[2rem] border p-0 overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50",
+                "max-w-md w-[92%] rounded-2xl border p-0 overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))]"
             )}>
                 {/* Gradient Header decor */}

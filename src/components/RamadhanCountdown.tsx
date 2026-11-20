@@ -264,9 +264,9 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 className="w-full relative mb-4 group transition-transform duration-300 hover:scale-[1.01] text-left appearance-none will-change-transform"
             >
                 {/* Optimized Background */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-3xl -z-10 opacity-80`} />
+                <div className={`absolute inset-0 bg-gradient-to-r ${styles.bg} rounded-2xl -z-10 opacity-80`} />
 
-                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 backdrop-blur-md border ${styles.border} rounded-3xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
+                <div className={`relative w-full bg-[rgb(var(--color-surface))]/80 backdrop-blur-md border ${styles.border} rounded-2xl px-6 py-6 flex items-center justify-between overflow-hidden`}>
 
 
                     {isRamadhan ? (
@@ -275,7 +275,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="flex flex-col gap-1 z-10">
                                 <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                                     <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">
                                         Ramadhan Hub
                                     </span>
                                 </div>
@@ -327,7 +327,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="flex flex-col gap-1.5 z-10 w-full">
                                 <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                                     <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">
                                         {t.ramadhanHeading}
                                     </span>
                                 </div>

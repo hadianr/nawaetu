@@ -251,7 +251,7 @@ export default function JournalPage() {
                                                     </div>
                                                     <div className="flex-1">
                                                         <div className="flex items-center justify-between mb-1">
-                                                            <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">{t.intention_reflection_note}</p>
+                                                            <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.intention_reflection_note}</p>
                                                             <p className="text-[9px] font-medium italic text-[rgb(var(--color-text-muted))]">{formatTime(intention.reflected_at)}</p>
                                                         </div>
                                                         <p className="text-sm leading-relaxed font-serif text-[rgb(var(--color-text))]">{intention.reflection_text}</p>

@@ -72,7 +72,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             {/* Chapter Hero Info */}
             <div
                 className={cn(
-                    "p-6 sm:p-8 rounded-3xl border space-y-3 shadow-sm",
+                    "p-6 sm:p-8 rounded-2xl border space-y-3 shadow-sm",
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
                 )}
             >

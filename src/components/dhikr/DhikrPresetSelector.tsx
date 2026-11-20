@@ -65,11 +65,11 @@ export function DhikrPresetSelector({
                 </Button>
             </DialogTrigger>
             <DialogContent className={cn(
-                "dhikr-preset-dialog w-[90%] max-w-sm rounded-[32px] border backdrop-blur-3xl",
+                "dhikr-preset-dialog w-[90%] max-w-sm rounded-2xl border backdrop-blur-3xl",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]"
             )}>
                 <DialogHeader>
-                    <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-40">{t.tasbihListTitle}</DialogTitle>
+                    <DialogTitle className="text-center text-sm font-bold uppercase tracking-wider opacity-40">{t.tasbihListTitle}</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 overflow-x-hidden">
                     <div className="space-y-6 pb-4">
@@ -104,7 +104,7 @@ export function DhikrPresetSelector({
                             >
                                 <div className="flex items-center gap-2 flex-1">
                                     <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
-                                    <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-widest text-left">Harian</h3>
+                                    <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-wider text-left">Harian</h3>
                                     <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
                                 </div>
                                 <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === "harian" ? "rotate-180" : "rotate-0")} />
@@ -143,7 +143,7 @@ export function DhikrPresetSelector({
                                 >
                                     <div className="flex items-center gap-2 flex-1">
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
-                                        <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-widest text-left">{cat.label}</h3>
+                                        <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-wider text-left">{cat.label}</h3>
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
                                     </div>
                                     <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === cat.id ? "rotate-180" : "rotate-0")} />
@@ -183,7 +183,7 @@ export function DhikrPresetSelector({
                                 >
                                     <div className="flex items-center gap-2 flex-1">
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
-                                        <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-widest text-left">Berantai</h3>
+                                        <h3 className="text-[10px] font-bold opacity-70 uppercase tracking-wider text-left">Berantai</h3>
                                         <div className="h-px bg-[rgb(var(--color-border))] flex-1"></div>
                                     </div>
                                     <ChevronDown className={cn("w-3.5 h-3.5 opacity-50 transition-transform duration-200", expandedCategory === "berantai" ? "rotate-180" : "rotate-0")} />

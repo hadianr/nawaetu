@@ -35,7 +35,7 @@ const MissionsWidget = dynamic(() => import("@/components/MissionsWidget"), {
 
 const DailySpiritWidget = dynamic(() => import("@/components/home/DailySpiritWidget"), {
   ssr: false,
-  loading: () => <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-[2rem]" />,
+  loading: () => <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />,
 });
 
 export default function DeferredBelowFold() {
@@ -111,7 +111,7 @@ export default function DeferredBelowFold() {
               {secondaryReady ? (
                 <DailySpiritWidget />
               ) : (
-                <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-[2.5rem]" />
+                <div className="w-full h-40 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] animate-pulse rounded-2xl" />
               )}
             </div>
           </section>

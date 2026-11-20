@@ -391,7 +391,7 @@ export default function MentorAIClient() {
             )}>
 
                 <div className="relative z-10 max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-3xl flex items-center justify-center mx-auto shadow-[var(--shadow-floating)] rotate-3">
+                    <div className="w-20 h-20 bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] rounded-2xl flex items-center justify-center mx-auto shadow-[var(--shadow-floating)] rotate-3">
                         <Lock className="w-10 h-10 text-[rgb(var(--color-primary-foreground))]" />
                     </div>
 
@@ -524,7 +524,7 @@ export default function MentorAIClient() {
                 {messages.length === 0 ? (
                     // Empty State / Greeting
                     <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in duration-700 min-h-[calc(100vh-250px)]">
-                        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-[var(--shadow-floating)]">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[rgb(var(--color-primary))] to-[rgb(var(--color-primary-dark))] flex items-center justify-center mb-6 shadow-[var(--shadow-floating)]">
                             <Sparkles className="w-8 h-8 text-[rgb(var(--color-primary-foreground))]" />
                         </div>
                         <h2 className={cn(

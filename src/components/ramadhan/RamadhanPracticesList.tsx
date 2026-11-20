@@ -88,7 +88,7 @@ export default function RamadhanPracticesList() {
                                     {/* Tips */}
                                     {localizedTips && localizedTips.length > 0 && (
                                         <div className="rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] p-4 shadow-[var(--shadow-card)] backdrop-blur-sm">
-                                            <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-[0.2em] mb-4">
+                                            <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-4">
                                                 {t.practicesTipsLabel}
                                             </p>
                                             <ul className="space-y-1.5">

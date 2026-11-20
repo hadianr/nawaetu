@@ -200,7 +200,7 @@ export default function UserProfileDialog({ children, onProfileUpdate }: UserPro
             <DialogContent
                 showCloseButton={false}
                 className={cn(
-                    "w-[calc(100vw-32px)] sm:w-[380px] max-w-sm max-h-[85vh] p-0 rounded-3xl overflow-hidden flex flex-col transition-all",
+                    "w-[calc(100vw-32px)] sm:w-[380px] max-w-sm max-h-[85vh] p-0 rounded-2xl overflow-hidden flex flex-col transition-all",
                     "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] shadow-[var(--shadow-floating)]"
                 )}
             >

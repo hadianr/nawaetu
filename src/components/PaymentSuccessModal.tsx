@@ -109,7 +109,7 @@ export default function PaymentSuccessModal({ isOpen, onClose }: PaymentSuccessM
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className={cn(
-                "max-w-sm sm:max-w-md p-0 rounded-3xl overflow-hidden shadow-[var(--shadow-floating)] transition-all",
+                "max-w-sm sm:max-w-md p-0 rounded-2xl overflow-hidden shadow-[var(--shadow-floating)] transition-all",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))] shadow-[var(--shadow-floating)]"
             )}>
                 <div className="relative flex flex-col items-center justify-center p-8 pt-12 text-center">

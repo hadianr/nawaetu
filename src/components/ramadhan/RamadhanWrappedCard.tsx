@@ -207,7 +207,7 @@ export default function RamadhanWrappedCard() {
     const WrappedCardContent = (
         <div
             ref={cardRef}
-            className="relative overflow-hidden rounded-[28px] flex flex-col w-full"
+            className="relative overflow-hidden rounded-2xl flex flex-col w-full"
             style={{
                 aspectRatio: "9/16",
                 background: "linear-gradient(160deg, rgb(var(--color-canvas)) 0%, rgb(var(--color-surface)) 40%, rgb(var(--color-canvas)) 100%)",
@@ -221,7 +221,7 @@ export default function RamadhanWrappedCard() {
 
             {/* ── Header ── */}
             <div className="z-10 text-center mb-4">
-                <p className="text-[9px] font-bold uppercase tracking-[0.35em] mb-1" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>
+                <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: "rgba(var(--color-primary-light),0.7)" }}>
                     <span className="inline-flex items-center gap-1"><AppIcon name="sparkles" size="xs" tone="primary" /> {t.wrappedTitleLabel || "Nawaetu Wrapped"} <AppIcon name="sparkles" size="xs" tone="primary" /></span>
                 </p>
                 <h2 className="text-[22px] font-serif font-bold text-[rgb(var(--color-text-strong))] leading-tight">
@@ -344,7 +344,7 @@ export default function RamadhanWrappedCard() {
             {/* ── Footer ── */}
             <div className="z-10 mt-2 text-center flex items-center justify-center gap-1.5">
                 <Image src="/icons/icon-192x192.png" width={12} height={12} className="opacity-40 contrast-200 grayscale" alt="Nawaetu" />
-                <span className="text-[8px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-widest">nawaetu.com</span>
+                <span className="text-[8px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">nawaetu.com</span>
             </div>
         </div>
     );

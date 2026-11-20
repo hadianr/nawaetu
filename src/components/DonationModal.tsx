@@ -92,7 +92,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className={cn(
-                "max-w-sm sm:max-w-md border p-0 rounded-3xl overflow-hidden",
+                "max-w-sm sm:max-w-md border p-0 rounded-2xl overflow-hidden",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))]"
             )}>
                 {/* Header Graphic */}

@@ -36,7 +36,7 @@ export default function TafsirModal({ open, onOpenChange, content }: TafsirModal
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent showCloseButton={false} className="w-[98vw] max-w-lg sm:max-w-xl max-h-[80vh] sm:max-h-[85vh] rounded-2xl sm:rounded-3xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-3xl shadow-[var(--shadow-floating)] p-0 overflow-hidden text-[rgb(var(--color-text))]">
+            <DialogContent showCloseButton={false} className="w-[98vw] max-w-lg sm:max-w-xl max-h-[80vh] sm:max-h-[85vh] rounded-2xl sm:rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] backdrop-blur-3xl shadow-[var(--shadow-floating)] p-0 overflow-hidden text-[rgb(var(--color-text))]">
                 {/* Hidden DialogTitle for accessibility */}
                 <DialogTitle className="sr-only">
                     {t.quranFullExplanation || 'Full Explanation'}
@@ -50,7 +50,7 @@ export default function TafsirModal({ open, onOpenChange, content }: TafsirModal
                                 <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 text-[rgb(var(--color-primary))]" />
                             </div>
                             <div className="flex-1">
-                                <h2 className="text-lg sm:text-xl font-bold text-[rgb(var(--color-text-strong))] tracking-wide">
+                                <h2 className="text-lg sm:text-xl font-bold text-[rgb(var(--color-text-strong))]">
                                     {t.quranTafsir || 'Tafsir'}
                                 </h2>
                                 <p className="text-xs sm:text-sm text-[rgb(var(--color-text-muted))] mt-0.5">

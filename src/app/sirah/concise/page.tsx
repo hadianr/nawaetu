@@ -106,7 +106,7 @@ export default function ConciseSirahPage() {
                             const label = getConciseSectionLabel(section);
                             if (section.chapters.length === 0) {
                                 return (
-                                    <li key={section.id} className="pt-2 text-xs font-bold uppercase tracking-wide text-[rgb(var(--color-text-muted))]">
+                                    <li key={section.id} className="pt-2 text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
                                         {label}
                                     </li>
                                 );

@@ -143,7 +143,7 @@ runtime request to Google, and the files are cacheable for offline/PWA use.
 Type scale (mobile first): 12 / 14 / **16 body** / 18 / 20 / 24 / 30 / 36.
 Body line height 1.5, headings 1.15–1.25. Weights: body 400/500/600, display
 600/700. Retire `font-black` and most `tracking-wide/widest`, keeping
-`tracking-wide` only for small uppercase labels.
+`tracking-wider` (0.05em) only for small uppercase labels.
 
 ### 2.2 Colour
 

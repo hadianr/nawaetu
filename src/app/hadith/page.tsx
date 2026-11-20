@@ -193,7 +193,7 @@ const HadithCard = memo(function HadithCard({
                     <p
                         dir="rtl"
                         className={cn(
-                            "text-right text-xl font-arabic leading-[2.0] tracking-wide py-1",
+                            "text-right text-xl font-arabic leading-[2.0] py-1",
                             "text-[rgb(var(--color-text-strong))]"
                         )}
                     >

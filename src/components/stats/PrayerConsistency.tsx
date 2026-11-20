@@ -29,7 +29,7 @@ export function PrayerConsistency({
     const maxPossible = displayedDays.length * 5;
 
     return (
-        <div className="rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] to-transparent p-5 shadow-[var(--shadow-card)]">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] to-transparent p-5 shadow-[var(--shadow-card)]">
             <div className="flex flex-col gap-4 mb-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -96,7 +96,7 @@ export function PrayerConsistency({
                         return (
                             <div key={dateStr} className={`flex flex-col items-center flex-shrink-0 min-w-[36px] pt-2 pb-1 rounded-2xl transition-all ${isToday ? "bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 ring-1 ring-[rgb(var(--color-primary))]/10" : "bg-[rgb(var(--color-surface-subtle))] border border-transparent"}`}>
                                 <div className="flex flex-col items-center mb-2">
-                                    <span className={`text-[8px] font-bold uppercase tracking-widest ${isToday ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-text-muted))]"}`}>
+                                    <span className={`text-[8px] font-bold uppercase tracking-wider ${isToday ? "text-[rgb(var(--color-primary-strong))]" : "text-[rgb(var(--color-text-muted))]"}`}>
                                         {dayName}
                                     </span>
                                     <span className={`text-[11px] font-bold mt-0.5 ${isToday ? "text-[rgb(var(--color-text-strong))]" : "text-[rgb(var(--color-text-muted))]"}`}>

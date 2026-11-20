@@ -267,7 +267,7 @@ export default function MissionListModal({
             )}
             <DialogContent
                 showCloseButton={false}
-                className="mission-list-modal w-[95%] max-w-md h-auto max-h-[85vh] p-0 gap-0 overflow-hidden rounded-[32px] flex flex-col bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-floating)] backdrop-blur-xl"
+                className="mission-list-modal w-[95%] max-w-md h-auto max-h-[85vh] p-0 gap-0 overflow-hidden rounded-2xl flex flex-col bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))] shadow-[var(--shadow-floating)] backdrop-blur-xl"
                 onOpenAutoFocus={() => {
                     if (initialTab) setActiveTab(initialTab);
                 }}

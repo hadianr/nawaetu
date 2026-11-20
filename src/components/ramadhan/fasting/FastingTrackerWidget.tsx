@@ -79,7 +79,7 @@ export default function FastingTrackerWidget() {
     ];
 
     return (
-        <div className="rounded-3xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] overflow-hidden">
 
             {/* ── Header ── */}
             <div className="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-[rgb(var(--color-border))]">

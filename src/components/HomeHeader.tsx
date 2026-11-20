@@ -62,7 +62,7 @@ export default function HomeHeader() {
         <header className="flex w-full items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
                 <p className={cn(
-                    "text-[11px] font-medium uppercase tracking-widest sm:text-sm",
+                    "text-[11px] font-medium uppercase tracking-wider sm:text-sm",
                     "text-[rgb(var(--color-primary-strong))]",
                 )}>
                     {greeting}
@@ -85,7 +85,7 @@ export default function HomeHeader() {
                 >
                     <NavigationIcon className={cn("h-3.5 w-3.5 shrink-0", data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary))]")} />
                     <span className={cn(
-                        "truncate text-[10px] font-bold uppercase tracking-widest",
+                        "truncate text-[10px] font-bold uppercase tracking-wider",
                         data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary-strong))]",
                     )}>
                         {locationLabel ? data?.isDefaultLocation ? t.homeSetLocationNow : locationLabel : t.hijriCalendarYourLocation}

@@ -159,7 +159,7 @@ export default function FastingDayModal({
 
                     {/* Status Picker — More compact grid */}
                     <div>
-                        <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-widest mb-2">
+                        <p className="text-[10px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
                             {t.fastingDayModalStatusLabel}
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">
@@ -230,7 +230,7 @@ export default function FastingDayModal({
                     {/* Dalil + Translation */}
                     {selectedStatus !== "fasting" && statusMeta && (
                         <div className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-4 space-y-2.5">
-                            <p className="text-[10px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-widest">
+                            <p className="text-[10px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
                                 {t.fastingDayModalDalilLabel}
                             </p>
                             <p className="text-[12px] text-[rgb(var(--color-primary-light,var(--color-primary)))] font-semibold leading-relaxed">
@@ -246,7 +246,7 @@ export default function FastingDayModal({
 
                     {/* Note */}
                     <div>
-                        <p className="text-[11px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-widest mb-2">
+                        <p className="text-[11px] font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
                             {t.fastingDayModalNoteLabel}
                         </p>
                         <textarea

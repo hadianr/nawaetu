@@ -35,7 +35,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={cn(
-                "max-w-sm w-[90%] rounded-[2rem] border p-0 overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50",
+                "max-w-sm w-[90%] rounded-2xl border p-0 overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]/25 text-[rgb(var(--color-text))]"
             )}>
                 {/* Gradient Header - smaller height */}
@@ -51,7 +51,7 @@ export default function AboutAppModal({ open, onOpenChange }: AboutAppModalProps
 
                     <div className="flex justify-center mt-1.5">
                         <span className={cn(
-                            "text-[10px] uppercase tracking-widest font-extrabold px-3 py-1 rounded-full border",
+                            "text-[10px] uppercase tracking-wider font-extrabold px-3 py-1 rounded-full border",
                             "text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20"
                         )}>
                             {t.aboutTagline}

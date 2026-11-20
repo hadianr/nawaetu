@@ -69,11 +69,11 @@ export default function Error({
         <div className="flex min-h-screen flex-col items-center justify-center bg-[rgb(var(--color-background))] px-6 text-center">
             <div className="relative mb-8">
                 {isDatabaseError ? (
-                    <div className="relative rounded-3xl bg-[rgb(var(--color-danger))]/10 p-6 border border-[rgb(var(--color-danger))]/20">
+                    <div className="relative rounded-2xl bg-[rgb(var(--color-danger))]/10 p-6 border border-[rgb(var(--color-danger))]/20">
                         <Database className="h-16 w-16 text-[rgb(var(--color-danger))]" />
                     </div>
                 ) : (
-                    <div className="relative rounded-3xl bg-[rgb(var(--color-warning))]/10 p-6 border border-[rgb(var(--color-warning))]/20">
+                    <div className="relative rounded-2xl bg-[rgb(var(--color-warning))]/10 p-6 border border-[rgb(var(--color-warning))]/20">
                         <AlertTriangle className="h-16 w-16 text-[rgb(var(--color-warning))]" />
                     </div>
                 )}
@@ -109,7 +109,7 @@ export default function Error({
 
             {process.env.NODE_ENV === "development" && (
                 <div className="mt-12 w-full max-w-md overflow-hidden rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))]/60 p-4 text-left">
-                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">Debug Info</p>
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">Debug Info</p>
                     <pre className="overflow-x-auto text-[10px] text-[rgb(var(--color-danger))] font-mono leading-relaxed">
                         {error.message}
                         {"\n"}
