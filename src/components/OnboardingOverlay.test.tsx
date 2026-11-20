@@ -30,6 +30,7 @@ vi.mock("@/context/LocaleContext", async () => {
 vi.mock("@/lib/analytics/analytics", () => ({ sendGAEvent }));
 const theme = vi.hoisted(() => ({ current: "default", setTheme: vi.fn() }));
 vi.mock("@/context/ThemeContext", () => ({
+    DEFAULT_THEME_ID: "daylight",
     useTheme: () => ({ currentTheme: theme.current, setTheme: theme.setTheme, theme: { colors: { primary: "16 185 129" } } }),
 }));
 vi.mock("@/components/PatternOverlay", () => ({
@@ -112,9 +113,9 @@ describe("OnboardingOverlay", () => {
         expect(screen.queryByText(/Bismillah/)).toBeNull();
     });
 
-    it("starts on Midnight, then suggests a theme for the chosen gender", async () => {
+    it("starts on Daylight, then suggests a theme for the chosen gender", async () => {
         render(<OnboardingOverlay />);
-        expect(theme.setTheme).toHaveBeenCalledWith("midnight");
+        expect(theme.setTheme).toHaveBeenCalledWith("daylight");
 
         fireEvent.click(screen.getByRole("button", { name: en.onboardingSkip }));
         await screen.findByText(en.onboardingNameTitle);
@@ -125,7 +126,7 @@ describe("OnboardingOverlay", () => {
         expect(screen.getByTestId("lottie").dataset.src).toBe("/lottie/blossom.lottie");
 
         fireEvent.click(screen.getByRole("button", { name: en.onboardingMaleLabel }));
-        expect(theme.setTheme).toHaveBeenLastCalledWith("midnight");
+        expect(theme.setTheme).toHaveBeenLastCalledWith("daylight");
         expect(screen.getByTestId("lottie").dataset.src).toBe("/lottie/lights.lottie");
     });
 
@@ -150,6 +151,6 @@ describe("OnboardingOverlay", () => {
     it("still suggests a theme when the only saved theme is the default one", async () => {
         getStorageService().set(STORAGE_KEYS.SETTINGS_THEME, "default");
         render(<OnboardingOverlay />);
-        expect(theme.setTheme).toHaveBeenCalledWith("midnight");
+        expect(theme.setTheme).toHaveBeenCalledWith("daylight");
     });
 });

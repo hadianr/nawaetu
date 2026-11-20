@@ -13,7 +13,7 @@ import { useState, useEffect, useMemo, useRef, useSyncExternalStore } from "reac
 import { createPortal } from "react-dom";
 import { X, Share2, Download, Copy, Check, Sparkles } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
-import { THEMES, type ThemeId } from "@/context/ThemeContext";
+import { THEMES, resolveThemeId, type ThemeId } from "@/context/ThemeContext";
 import { getStorageService } from "@/core/infrastructure/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { buildStoryPalette } from "@/lib/share/story-palette";
@@ -34,10 +34,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
     const { t, locale } = useLocale();
     const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
     // Starts on the theme the user already has; the swatches offer the other app themes.
-    const [themeId, setThemeId] = useState<ThemeId>(() => {
-        const saved = getStorageService().getOptional<string>(STORAGE_KEYS.SETTINGS_THEME) as ThemeId | null;
-        return saved && THEMES[saved] ? saved : "default";
-    });
+    const [themeId, setThemeId] = useState<ThemeId>(() => resolveThemeId(getStorageService().getOptional(STORAGE_KEYS.SETTINGS_THEME)));
     const palette = useMemo(() => {
         const { mode, tokens } = THEMES[themeId];
         return buildStoryPalette({ mode, ...tokens });

@@ -33,8 +33,8 @@ export function buildManifest(): NawaetuManifest {
     scope: "/",
     display: "standalone",
     orientation: "any",
-    background_color: "#000000",
-    theme_color: "#0a0a0a",
+    background_color: "#FAF8F3",
+    theme_color: "#158057",
     permissions: ["notifications"],
     categories: ["lifestyle", "productivity", "education"],
     icons: [

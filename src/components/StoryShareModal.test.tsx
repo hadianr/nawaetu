@@ -35,15 +35,15 @@ describe("StoryShareModal theme swatches", () => {
     it("falls back to the default theme when none is saved or the saved one is unknown", () => {
         mockGetOptional.mockReturnValue("not-a-theme");
         render(<StoryShareModal item={item} onClose={vi.fn()} />);
-        expect(screen.getByRole("radio", { name: "Default" }).getAttribute("aria-checked")).toBe("true");
+        expect(screen.getByRole("radio", { name: "Daylight" }).getAttribute("aria-checked")).toBe("true");
     });
 
     it("redraws the card in the chosen theme", async () => {
         render(<StoryShareModal item={item} onClose={vi.fn()} />);
-        fireEvent.click(screen.getByRole("radio", { name: "Daylight" }));
-        expect(screen.getByRole("radio", { name: "Daylight" }).getAttribute("aria-checked")).toBe("true");
-        expect(screen.getByRole("radio", { name: "Default" }).getAttribute("aria-checked")).toBe("false");
-        await waitFor(() => expect(lastOptions().palette.mode).toBe("light"));
-        expect(lastOptions().theme).toBe("light");
+        fireEvent.click(screen.getByRole("radio", { name: "Emerald" }));
+        expect(screen.getByRole("radio", { name: "Emerald" }).getAttribute("aria-checked")).toBe("true");
+        expect(screen.getByRole("radio", { name: "Daylight" }).getAttribute("aria-checked")).toBe("false");
+        await waitFor(() => expect(lastOptions().palette.mode).toBe("dark"));
+        expect(lastOptions().theme).toBe("dark");
     });
 });

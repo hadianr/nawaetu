@@ -28,7 +28,11 @@ const appFeatureDescription = "Aplikasi Muslim Nawaetu mencakup Al-Qur'an dengan
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0a0a0a",
+  // Matches the canvas of the light default and the dark Emerald theme.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FAF8F3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0E1311" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -75,7 +79,7 @@ export const metadata: Metadata = {
   manifest: `/manifest.webmanifest?v=${APP_CONFIG.version}`,
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "Nawaetu",
   },
   formatDetection: {
@@ -155,6 +159,8 @@ const jsonLdSchemas = [
 
 import { InfaqProvider } from "@/context/InfaqContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { prePaintThemeScript } from "@/context/themes";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { PrayerTimesProvider } from "@/context/PrayerTimesContext";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
@@ -171,6 +177,8 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
+        {/* Applies the saved theme before first paint so no other theme flashes. */}
+        <script dangerouslySetInnerHTML={{ __html: prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME) }} />
         {/* Resource Hints - Preconnect to critical origins */}
         {/* DNS Prefetch for analytics/monitoring (non-critical) */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -182,7 +190,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Nawaetu" />
 
       </head>

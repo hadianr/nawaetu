@@ -61,8 +61,8 @@ export const otherID = {
 
     // Theme
     themeTitle: "Tampilan Aplikasi",
-    themeDefaultName: "Default",
-    themeDefaultDescription: "Tema gelap klasik dengan aksen hijau emerald",
+    themeEmeraldName: "Emerald",
+    themeEmeraldDescription: "Tema gelap yang tenang dengan aksen hijau emerald dan emas",
     themeDaylightName: "Daylight",
     themeDaylightDescription: "Cerah, ringan, dan nyaman untuk siang hari",
     themeMidnightName: "Midnight",
@@ -597,7 +597,7 @@ export const otherID = {
     onboardingGenderTitle: "Apa Jenis Kelaminmu?",
     onboardingGenderDesc: "Supaya misi sholat dan panduan fikihnya pas buat kamu. Kami juga kasih saran warna, bisa diganti kapan saja.",
     onboardingMaleLabel: "Laki-laki",
-    onboardingMaleSub: "Misi Jumat · Tema Midnight",
+    onboardingMaleSub: "Misi Jumat · Tema Daylight",
     onboardingFemaleLabel: "Perempuan",
     onboardingFemaleSub: "Misi muslimah · Tema Blossom",
     onboardingLocationTitle: "Atur jadwal sholat",
