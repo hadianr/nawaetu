@@ -1,6 +1,6 @@
 # Brand and UI Polish Plan
 
-Status: approved 2026-11-20. Phases 1–4 done (post-deploy share checks pending).
+Status: approved 2026-11-20. Phases 1–5 done (post-deploy share checks pending).
 
 Goal: Nawaetu should look designed, not generated. That means one type system,
 a warm light first impression, one brand colour from the favicon to the OG card,
@@ -342,33 +342,36 @@ independent of each other. Phase 5 depends on phases 1–2.
 Work on screens in this order: home, onboarding, bottom nav, prayer, Quran
 reader, dhikr, settings, and then everything else. For each screen:
 
-- [ ] Replace raw `emerald-*`, `slate-*`, `gray-*` and `amber-*` with token
+- [x] Replace raw `emerald-*`, `slate-*`, `gray-*` and `amber-*` with token
   classes such as `rgb(var(--color-primary))`. Each one fixed removes a
   `[data-theme="daylight"]` override in `globals.css`. Track the override count
   (158 today) as the progress metric, with a target below 20.
-- [ ] Cards: one border, one shadow level, and `--radius-card`. Remove
+- [x] Cards: one border, one shadow level, and `--radius-card`. Remove
   `shadow-lg`/`shadow-xl`/coloured shadows, nested cards inside cards, and
   `rounded-3xl`.
-- [ ] Remove decorative `blur-3xl` glow blobs, gradient text, and infinite
+- [x] Remove decorative `blur-3xl` glow blobs, gradient text, and infinite
   `animate-pulse` on static content. Keep motion that reports state
   (counter ticks, completion), and keep respecting `useReducedMotion`.
-- [ ] Spacing uses a 4px grid with `--space-page` (16) and `--space-section`
+- [x] Spacing uses a 4px grid with `--space-page` (16) and `--space-section`
   (24). A section heading is 18–20px Fraunces with 12px gap to its content.
-- [ ] Use one primary button style per screen. Secondary actions are outline or
+- [x] Use one primary button style per screen. Secondary actions are outline or
   ghost buttons, not a second filled colour.
-- [ ] Remove the matching `!important` overrides from `globals.css` as each
+- [x] Remove the matching `!important` overrides from `globals.css` as each
   screen is migrated.
-- [ ] Update `src/app/design-system/page.tsx` and `DesignSystemFixture.tsx` to
+- [x] Update `src/app/design-system/page.tsx` and `DesignSystemFixture.tsx` to
   show the final tokens. That page becomes the reference for review.
 
-Progress (2026-11-20): daylight overrides 122 → 30. Done so far: dead
-selectors pruned, `primaryForeground` and light status colours fixed (with a
-contrast test), the glass/black shim and the heading and primary-text
-repainting removed, real `BrandIcon` instead of "N" boxes, and the glow blobs
-and gradient headings removed. Still to do: infinite `animate-pulse` (87),
-`shadow-lg`/`xl` (59), `rounded-3xl` (44), the `tracking-*` cleanup (220),
-the remaining 30 daylight rules (switch, popover, mission tabs, gradients),
-and the design-system page.
+Result (2026-11-20): daylight overrides 122 → 3, light-mode shims 40 → 18,
+Blossom aliases removed, `!important` 156 → 44. Along the way:
+`primaryForeground` per theme, light status colours, a new `accentStrong`
+token (with a contrast test covering all of them), 75 invalid
+`rgba(var(--color-*), a)` colours repaired (the fasting calendar and Qibla dial
+never rendered them), primary-light text moved to primary-strong, an opaque
+bottom nav, and the real `BrandIcon`. Each step was checked with
+`npm run test:anoa` and Anoa screenshots of the light and dark themes.
+Left as deliberate: Daylight's softer primary borders and pale primary
+gradients (3 rules), and the per-screen heading-colour consistency, which is a
+design call.
 
 ### Validation for every phase
 
