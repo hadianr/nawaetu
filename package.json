@@ -19,6 +19,7 @@
     "start": "node .next/standalone/server.js",
     "start:next": "next start",
     "lint": "eslint",
+    "icons": "node scripts/generate-icons.mjs",
     "prepare": "husky",
     "analyze": "ANALYZE=true next build --webpack && node scripts/analyze-bundle.mjs",
     "test": "VITE_CJS_IGNORE_WARNING=1 vitest",

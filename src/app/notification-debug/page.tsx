@@ -299,7 +299,7 @@ export default function NotificationDebugPage() {
                                 const title = "Test Lokal OS";
                                 const options = {
                                     body: "Jika Anda melihat tab ini, berarti izin OS aktif.",
-                                    icon: "/icon.png"
+                                    icon: "/icon-192x192.png"
                                 };
 
                                 if (navigator.serviceWorker) {

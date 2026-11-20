@@ -1,6 +1,6 @@
 # Brand and UI Polish Plan
 
-Status: approved 2026-11-20. Phases 1–2 done.
+Status: approved 2026-11-20. Phases 1–3 done.
 
 Goal: Nawaetu should look designed, not generated. That means one type system,
 a warm light first impression, one brand colour from the favicon to the OG card,
@@ -267,14 +267,14 @@ independent of each other. Phase 5 depends on phases 1–2.
 
 ### Phase 3: Icons (`feat(brand)`)
 
-- [ ] Produce **one flat vector master**, `public/brand/mark.svg`: the existing
+- [x] Produce **one flat vector master**, `public/brand/mark.svg`: the existing
   gold N-and-mosque mark simplified to flat shapes with no bevel, gloss or
   inner glow, on emerald `#158057`. Provide a full-bleed square variant for
   maskable icons, with the mark inside the central 80% safe zone, and a
   transparent variant for the extension. **This needs a designer, or your
   approval of a vector redraw I make from the current PNG.** Everything below
   is generated from the master.
-- [ ] `scripts/generate-icons.mjs` uses the already-installed `sharp` to
+- [x] `scripts/generate-icons.mjs` uses the already-installed `sharp` to
   produce:
   - `public/favicon.ico` (16, 32, 48), plus `public/icon.svg` for modern
     browsers
@@ -285,17 +285,22 @@ independent of each other. Phase 5 depends on phases 1–2.
     (`purpose: "maskable"`)
   - `extension/icons/icon-{16,48,128,192,512}.png`
   - `android/app/src/main/res/mipmap-*/ic_launcher.png` and `ic_maskable.png`
-- [ ] Remove `src/app/icon.png`, `src/app/apple-icon.png` and
+- [x] Remove `src/app/icon.png`, `src/app/apple-icon.png` and
   `src/app/favicon.ico/route.ts`, so the `metadata.icons` list in `layout.tsx`
   is the only source and file conventions no longer silently override it.
-- [ ] `src/app/layout.tsx`: set `icons.icon` to `favicon.ico` (sizes
+- [x] `src/app/layout.tsx`: set `icons.icon` to `favicon.ico` (sizes
   `48x48`), `icon.svg` (`image/svg+xml`) and the 192 and 512 PNGs, and
   `icons.apple` to the 180 PNG. Remove the manual `<link rel="apple-touch-icon">`
   and the 404ing `-precomposed` link from `<head>`.
-- [ ] `src/app/_manifest.ts`: split the `any` and `maskable` icon entries.
-- [ ] `public/firebase-messaging-sw.js:61-62`: update the icon version query.
-- [ ] Update `logo` and `screenshot` in the JSON-LD: logo becomes the 512 PNG,
+- [x] `src/app/_manifest.ts`: split the `any` and `maskable` icon entries.
+- [x] `public/firebase-messaging-sw.js:61-62`: update the icon version query.
+- [x] Update `logo` and `screenshot` in the JSON-LD: logo becomes the 512 PNG,
   and screenshot becomes the new OG card (`layout.tsx`, `JsonLd.tsx:29`).
+
+- [x] Also generated from the master: a white `badge-96x96.png` for
+  notification badges, Android notification, splash and shortcut drawables,
+  and the TWA `maskableIconUrl`. The master was traced from the original PNG
+  with potrace and smoothed. Re-run with `npm run icons`.
 
 ### Phase 4: OG card (`feat(seo)`)
 
