@@ -206,13 +206,6 @@
     background: linear-gradient(to bottom right, rgb(var(--color-primary) / 0.12), rgb(var(--color-primary) / 0.05)) !important;
   }
 
-  /* Specific fix for text with primary-light colors which often lack contrast in light mode */
-  [data-theme="daylight"] [class*="text-[rgb(var(--color-primary-light))"] {
-    color: rgb(var(--color-primary-strong)) !important;
-    /* Deep emerald for readability */
-    opacity: 0.8 !important;
-  }
-
   /* [8] SWITCH / TOGGLE COMPONENTS */
   /* OFF state track */
   [data-theme="daylight"] [role="switch"][data-state="unchecked"],

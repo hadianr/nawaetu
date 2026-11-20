@@ -83,7 +83,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                                                 done
                                                     ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                                     : current
-                                                        ? "border-2 border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-light))]"
+                                                        ? "border-2 border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-strong))]"
                                                         : "border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))]",
                                             )}
                                         >
@@ -92,7 +92,7 @@ export default function JourneyAboutDialog({ open, onOpenChange, phase, dayNumbe
                                         <span className="min-w-0 flex-1">
                                             <span className="block text-sm font-semibold">
                                                 {String(t[item.title])}
-                                                {current && <span className="ml-2 text-xs font-medium text-[rgb(var(--color-primary-light))]">· {String(t.journeyAboutHere)}</span>}
+                                                {current && <span className="ml-2 text-xs font-medium text-[rgb(var(--color-primary-strong))]">· {String(t.journeyAboutHere)}</span>}
                                             </span>
                                             <span className="block text-xs text-[rgb(var(--color-text-muted))]">
                                                 {String(t.journeyPhaseRange).replace("{from}", String(item.from)).replace("{to}", String(item.to))}

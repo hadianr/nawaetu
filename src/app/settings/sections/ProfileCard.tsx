@@ -77,7 +77,7 @@ export default function ProfileCard({
                 <div className="flex-1 min-w-0">
                     <h3 className="text-base font-bold text-[rgb(var(--color-text-strong))] truncate group-hover:text-[rgb(var(--color-primary))] transition-colors">{userName}</h3>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-[rgb(var(--color-primary-light))]/70">{userTitle}</span>
+                        <span className="text-xs text-[rgb(var(--color-primary-strong))]/70">{userTitle}</span>
                         {!isAuthenticated && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/20 text-[rgb(var(--color-text-muted))]">
                                 Guest

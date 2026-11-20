@@ -35,7 +35,7 @@ export default function EidCard() {
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--color-surface))] via-[rgb(var(--color-primary))]/10 to-[rgb(var(--color-surface))] -z-10" />
                 <div className="flex flex-col items-start gap-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-light))] filter drop-shadow-sm">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))] filter drop-shadow-sm">
                         {t.lebaranGreeting}
                     </span>
                     <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] font-serif">
@@ -58,7 +58,7 @@ export default function EidCard() {
                             {t.eidSunnahDesc}
                         </p>
                         <div className="bg-[rgb(var(--color-primary-dark))]/20 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
-                            <ul className="text-sm text-[rgb(var(--color-primary-light))] space-y-3">
+                            <ul className="text-sm text-[rgb(var(--color-primary-strong))] space-y-3">
                                 <li className="flex items-start gap-2">
                                     <AppIcon name="heart-handshake" size="sm" tone="primary" className="mt-0.5" />
                                     <span>{t.eidSunnah1}</span>

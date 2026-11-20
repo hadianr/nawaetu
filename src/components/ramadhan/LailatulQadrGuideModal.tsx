@@ -77,7 +77,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                                 <ul className="space-y-2">
                                     {localizedSteps.map((step, i) => (
                                         <li key={i} className="flex items-start gap-2 text-xs text-[rgb(var(--color-text))] leading-relaxed">
-                                             <span className="shrink-0 mt-0.5 text-[rgb(var(--color-primary-light))]">{i + 1}.</span>
+                                             <span className="shrink-0 mt-0.5 text-[rgb(var(--color-primary-strong))]">{i + 1}.</span>
                                             <span>{step}</span>
                                         </li>
                                     ))}
@@ -120,7 +120,7 @@ export default function LailatulQadrGuideModal({ open, onOpenChange }: LailatulQ
                 <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] relative flex flex-row items-start justify-between">
                     <div className="flex-1 min-w-0 pr-2">
                         <DialogTitle className="text-left flex items-start sm:items-center gap-2 font-bold text-base sm:text-lg">
-                            <Moon className="w-5 h-5 text-[rgb(var(--color-primary-light))] shrink-0 mt-0.5 sm:mt-0" />
+                            <Moon className="w-5 h-5 text-[rgb(var(--color-primary-strong))] shrink-0 mt-0.5 sm:mt-0" />
                             <span className="leading-snug">Panduan 10 Malam Terakhir</span>
                         </DialogTitle>
                         <p className="text-[11px] sm:text-xs text-[rgb(var(--color-text-muted))] mt-1.5 leading-relaxed break-words text-left">

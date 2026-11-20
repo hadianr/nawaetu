@@ -53,7 +53,7 @@ export function AuthActions({
                         "w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 transition-all",
                         "bg-[rgb(var(--color-primary))]/15"
                     )}>
-                        <Settings className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
+                        <Settings className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                     </div>
                     <h3 className="text-sm font-bold mb-1 text-[rgb(var(--color-text-strong))]">{translations.profileAuthTitle}</h3>
                     <p className="text-xs mb-4 leading-relaxed text-[rgb(var(--color-text-muted))]">{translations.profileAuthDesc}</p>
@@ -86,7 +86,7 @@ export function AuthActions({
                             "w-8 h-8 rounded-full flex items-center justify-center transition-all",
                             "bg-[rgb(var(--color-primary))]/10"
                         )}>
-                            <Share2 className="w-4 h-4 transition-colors text-[rgb(var(--color-primary-light))] group-hover:text-[rgb(var(--color-primary))]" />
+                            <Share2 className="w-4 h-4 transition-colors text-[rgb(var(--color-primary-strong))] group-hover:text-[rgb(var(--color-primary))]" />
                         </div>
                         <span className="text-sm font-medium transition-colors text-[rgb(var(--color-text))] group-hover:text-[rgb(var(--color-text-strong))]">{translations.profileShareApp}</span>
                     </div>

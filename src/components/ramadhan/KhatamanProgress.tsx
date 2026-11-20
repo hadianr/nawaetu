@@ -113,7 +113,7 @@ export default function KhatamanProgress() {
             <div className="px-3 mb-2 sm:px-4 sm:mb-3">
                 <div className="flex items-end justify-between mb-2">
                     <div>
-                        <span className="text-3xl font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{currentJuz}</span>
+                        <span className="text-3xl font-bold" style={{ color: "rgb(var(--color-primary-strong))" }}>{currentJuz}</span>
                         <span className="text-sm text-[rgb(var(--color-text-muted))] ml-1">{t.khatamanOf30Juz}</span>
                     </div>
                     <div className="text-right">
@@ -159,7 +159,7 @@ export default function KhatamanProgress() {
                 <button
                     onClick={() => adjustJuz(1)}
                     disabled={currentJuz >= 30}
-                    className="rounded-full p-2.5 hover:opacity-80 disabled:opacity-30 transition-all active:scale-90 border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))] backdrop-blur-sm shadow-[var(--shadow-card)]"
+                    className="rounded-full p-2.5 hover:opacity-80 disabled:opacity-30 transition-all active:scale-90 border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))] backdrop-blur-sm shadow-[var(--shadow-card)]"
                 >
                     <Plus className="h-4 w-4" />
                 </button>
@@ -168,14 +168,14 @@ export default function KhatamanProgress() {
             {/* Estimate */}
             {estimatedFinishDay && estimatedFinishDay <= 30 && (
                 <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
-                    <p className="text-xs text-[rgb(var(--color-primary-light))]">
+                    <p className="text-xs text-[rgb(var(--color-primary-strong))]">
                         {t.khatamanEstimateFinish.replace("{day}", String(estimatedFinishDay))}
                     </p>
                 </div>
             )}
             {currentJuz >= 30 && (
                 <div className="mx-3 mb-2 rounded-xl border border-[rgb(var(--color-primary))]/30 bg-[rgb(var(--color-primary))]/15 px-2 py-1.5 sm:mx-4 sm:mb-3 sm:px-3 sm:py-2 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
-                    <p className="text-sm font-bold text-[rgb(var(--color-primary-light))]">{t.khatamanAlhamdulillah}</p>
+                    <p className="text-sm font-bold text-[rgb(var(--color-primary-strong))]">{t.khatamanAlhamdulillah}</p>
                 </div>
             )}
 

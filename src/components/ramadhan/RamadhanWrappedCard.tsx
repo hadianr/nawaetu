@@ -221,7 +221,7 @@ export default function RamadhanWrappedCard() {
 
             {/* ── Header ── */}
             <div className="z-10 text-center mb-4">
-                <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: "rgb(var(--color-primary-light) / 0.7)" }}>
+                <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: "rgb(var(--color-primary-strong) / 0.7)" }}>
                     <span className="inline-flex items-center gap-1"><AppIcon name="sparkles" size="xs" tone="primary" /> {t.wrappedTitleLabel || "Nawaetu Wrapped"} <AppIcon name="sparkles" size="xs" tone="primary" /></span>
                 </p>
                 <h2 className="text-[22px] font-serif font-bold text-[rgb(var(--color-text-strong))] leading-tight">
@@ -245,7 +245,7 @@ export default function RamadhanWrappedCard() {
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-primary) / 0.08)", borderColor: "rgb(var(--color-primary) / 0.25)" }}>
                     <AppIcon name="sparkles" size="sm" tone="primary" className="mb-0.5" />
                     <span className="text-xl font-bold text-[rgb(var(--color-text-strong))] leading-none">{stats.tarawehCount}</span>
-                    <span className="text-[8px] uppercase tracking-wider mt-0.5" style={{ color: "rgb(var(--color-primary-light) / 0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
+                    <span className="text-[8px] uppercase tracking-wider mt-0.5" style={{ color: "rgb(var(--color-primary-strong) / 0.7)" }}>{t.wrappedTaraweh || "Tarawih"}</span>
                 </div>
                 {/* Tilawah */}
                 <div className="flex flex-col items-center justify-center rounded-2xl py-3 border" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
@@ -273,7 +273,7 @@ export default function RamadhanWrappedCard() {
                                 ? `${Math.floor(stats.totalTasbih / 1000)}k`
                                 : stats.totalTasbih}
                         </div>
-                        <div className="text-[7px] text-[rgb(var(--color-primary-light))]/70 uppercase tracking-wider mt-0.5 text-center">Dzikir</div>
+                        <div className="text-[7px] text-[rgb(var(--color-primary-strong))]/70 uppercase tracking-wider mt-0.5 text-center">Dzikir</div>
                     </div>
                     {/* Sholat Sunnah */}
                     <div className="rounded-xl p-2 border flex flex-col items-center justify-center" style={{ background: "rgb(var(--color-success) / 0.08)", borderColor: "rgb(var(--color-success) / 0.2)" }}>
@@ -321,8 +321,8 @@ export default function RamadhanWrappedCard() {
             {/* ── AI Insight Box ── */}
             <div className="z-10 flex-1 rounded-2xl p-3 border flex flex-col justify-center" style={{ background: "rgb(var(--color-primary) / 0.06)", borderColor: "rgb(var(--color-primary) / 0.2)" }}>
                 <div className="flex items-center gap-1.5 mb-2">
-                    <Sparkles className="w-3 h-3" style={{ color: "rgb(var(--color-primary-light))" }} />
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "rgb(var(--color-primary-light) / 0.7)" }}>
+                    <Sparkles className="w-3 h-3" style={{ color: "rgb(var(--color-primary-strong))" }} />
+                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "rgb(var(--color-primary-strong) / 0.7)" }}>
                         {t.wrappedAIInsight || "AI Insight"}
                     </span>
                 </div>
@@ -363,7 +363,7 @@ export default function RamadhanWrappedCard() {
                 <p className="text-[10px] text-[rgb(var(--color-text-muted))] mt-0.5">{t.wrappedTriggerSubtitle || "Puasa, Tarawih, Tilawah & AI Insight"}</p>
             </div>
             <div className="shrink-0 flex items-center gap-1">
-                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "rgb(var(--color-primary) / 0.15)", color: "rgb(var(--color-primary-light))" }}>
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full" style={{ background: "rgb(var(--color-primary) / 0.15)", color: "rgb(var(--color-primary-strong))" }}>
                     {t.wrappedTriggerCta || "Lihat"}
                 </span>
             </div>

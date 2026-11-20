@@ -92,7 +92,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                         {/* Header (Sticky) */}
                         <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] p-5 sm:p-6 bg-[rgb(var(--color-surface-subtle))] backdrop-blur-xl">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] backdrop-blur-md">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))] backdrop-blur-md">
                                     <Calculator className="h-5 w-5" />
                                 </div>
                                 <DialogPrimitive.Title className="text-lg font-bold text-[rgb(var(--color-text-strong))]">
@@ -113,7 +113,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                     <h3 className="text-sm font-medium text-[rgb(var(--color-text))]">Daftar Tanggungan ({recipients.length} Jiwa)</h3>
                                     <button 
                                         onClick={addRecipient}
-                                        className="flex items-center gap-1 text-xs font-semibold text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 px-2 py-1.5 rounded-lg transition-colors border border-[rgb(var(--color-primary))]/25"
+                                        className="flex items-center gap-1 text-xs font-semibold text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 hover:bg-[rgb(var(--color-primary))]/20 px-2 py-1.5 rounded-lg transition-colors border border-[rgb(var(--color-primary))]/25"
                                     >
                                         <Plus className="h-3.5 w-3.5" /> Tambah Orang
                                     </button>
@@ -169,7 +169,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                                     {!recipient.isPaid && (
                                                         <button 
                                                             onClick={() => setActiveIntentionId(activeIntentionId === recipient.id ? null : recipient.id)}
-                                                            className="text-xs text-[rgb(var(--color-primary-light))] hover:text-[rgb(var(--color-primary-strong))] flex items-center gap-1 transition-colors"
+                                                            className="text-xs text-[rgb(var(--color-primary-strong))] hover:text-[rgb(var(--color-primary-strong))] flex items-center gap-1 transition-colors"
                                                         >
                                                             <BookOpenIcon className="h-3 w-3" /> Lihat Niat Zakat
                                                         </button>
@@ -181,7 +181,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
                                             {activeIntentionId === recipient.id && !recipient.isPaid && (
                                                 <div className="mt-2 rounded-xl bg-[rgb(var(--color-surface))] p-3 pt-4 border border-[rgb(var(--color-border))] text-center relative overflow-hidden">
                                                     <div className="absolute top-0 left-0 w-full h-1 bg-[rgb(var(--color-primary))] opacity-30"></div>
-                                                    <h4 className="text-xs font-semibold text-[rgb(var(--color-primary-light))] mb-2">{getIntentionForType(recipient.type).title}</h4>
+                                                    <h4 className="text-xs font-semibold text-[rgb(var(--color-primary-strong))] mb-2">{getIntentionForType(recipient.type).title}</h4>
                                                     <p className="font-arabic text-xl sm:text-2xl leading-loose text-[rgb(var(--color-text-strong))] mb-3" dir="rtl">
                                                         {getIntentionForType(recipient.type).arabic}
                                                     </p>

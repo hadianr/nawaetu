@@ -69,7 +69,7 @@ export default function IntentionCard({ intention, variant = "pill" }: Intention
                         {(localizedSource?.includes('Sahih') || localizedSource?.includes('Paling Dianjurkan') || localizedSource?.includes('Most Recommended')) && (
                             <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[9px] font-semibold rounded-md" style={{
                                 background: "rgb(var(--color-primary) / 0.2)",
-                                color: "rgb(var(--color-primary-light))",
+                                color: "rgb(var(--color-primary-strong))",
                                 border: "1px solid rgb(var(--color-primary) / 0.3)"
                             }}>
                                 <AppIcon name="star" size="xs" tone="warning" /> {locale === 'en' ? 'Recommended' : 'Dianjurkan'}

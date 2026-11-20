@@ -39,7 +39,7 @@ export function PrayerConsistency({
                         <div>
                             <h2 className="font-bold text-sm text-[rgb(var(--color-text-strong))] tracking-tight leading-none mb-1">{t.stats.heatmap.title.split('(')[0].trim()}</h2>
                             <p className="text-[9px] text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-tighter">
-                                <span className="text-[rgb(var(--color-primary-light))]">{totalCompleted}</span>/{maxPossible} {t.stats.heatmap.total}
+                                <span className="text-[rgb(var(--color-primary-strong))]">{totalCompleted}</span>/{maxPossible} {t.stats.heatmap.total}
                             </p>
                         </div>
                     </div>
@@ -62,7 +62,7 @@ export function PrayerConsistency({
 
                 <div className="flex items-center justify-between px-1">
                     <span className="text-[10px] text-[rgb(var(--color-text-muted))] font-medium">{t.stats.heatmap.activityTrend}</span>
-                    <span className="text-[10px] text-[rgb(var(--color-primary-light))] font-bold bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20 px-2.5 py-1 rounded-lg">
+                    <span className="text-[10px] text-[rgb(var(--color-primary-strong))] font-bold bg-[rgb(var(--color-primary))]/15 border border-[rgb(var(--color-primary))]/20 px-2.5 py-1 rounded-lg">
                         {todayPrayerCount}/5 {t.stats.heatmap.today}
                     </span>
                 </div>
@@ -133,7 +133,7 @@ export function PrayerConsistency({
                 <div className="flex flex-wrap gap-x-3 gap-y-1.5 max-w-[75%]">
                     {PRAYER_SUFFIXES.map((s) => (
                         <div key={s} className="flex items-center gap-1.5 leading-none">
-                            <span className="text-[rgb(var(--color-primary-light))] font-bold text-[9px]">{t.stats.insights.prayers.names[s]?.substring(0, 1)}</span>
+                            <span className="text-[rgb(var(--color-primary-strong))] font-bold text-[9px]">{t.stats.insights.prayers.names[s]?.substring(0, 1)}</span>
                             <span className="font-bold lowercase text-[rgb(var(--color-text-muted))]">{t.stats.insights.prayers.names[s]}</span>
                         </div>
                     ))}

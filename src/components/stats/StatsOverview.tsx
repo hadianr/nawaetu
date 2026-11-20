@@ -68,12 +68,12 @@ export function StatsOverview({
                                 <h2 className="text-base sm:text-lg font-bold text-[rgb(var(--color-text-strong))] group-hover:text-[rgb(var(--color-primary))] transition-colors truncate">
                                     {playerRank.title}
                                 </h2>
-                                <span className="text-[7px] sm:text-[8px] font-bold tracking-wider uppercase text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
+                                <span className="text-[7px] sm:text-[8px] font-bold tracking-wider uppercase text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/20 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/30 shrink-0">
                                     LV. {playerStats.level}
                                 </span>
                             </div>
                             <div className="text-right shrink-0">
-                                <span className="text-[rgb(var(--color-primary-light))] text-[10px] sm:text-xs font-bold">{playerStats.hasanah}</span>
+                                <span className="text-[rgb(var(--color-primary-strong))] text-[10px] sm:text-xs font-bold">{playerStats.hasanah}</span>
                                 <span className="text-[rgb(var(--color-text-muted))] text-[9px] sm:text-[10px] ml-0.5">/ {playerStats.nextLevelHasanah}</span>
                             </div>
                         </div>
@@ -100,7 +100,7 @@ export function StatsOverview({
                                 </div>
                                 <div className="shrink-0 flex items-center gap-1.5">
                                     <div className="w-1 h-1 rounded-full bg-[rgb(var(--color-border))] hidden sm:block" />
-                                    <div className="font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-tighter">
+                                    <div className="font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-tighter">
                                         {nextRank.levelsRemaining} {t.stats.level.levelsRemaining}
                                     </div>
                                 </div>
@@ -194,8 +194,8 @@ export function StatsHeader({ t, playerStats }: { t: TranslationTree; playerStat
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.stats.header.subtitle}</p>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgb(var(--color-primary))]/20 border border-[rgb(var(--color-primary))]/30 rounded-full">
-                    <Star className="w-3 h-3 text-[rgb(var(--color-primary-light))]" />
-                    <span className="text-xs font-bold text-[rgb(var(--color-primary-light))]">Lv {playerStats.level}</span>
+                    <Star className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
+                    <span className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">Lv {playerStats.level}</span>
                 </div>
             </div>
         </div>

@@ -70,28 +70,28 @@ export default function RamadhanScheduleCard() {
 
     let countdownLabel = "";
     let countdownMs = 0;
-    let countdownStyle: React.CSSProperties = { color: `rgb(var(--color-primary-light))` };
+    let countdownStyle: React.CSSProperties = { color: `rgb(var(--color-primary-strong))` };
 
     const isRamadhan = data?.hijriMonth?.toLowerCase().includes("ramadan") || false;
 
     if (now && imsakDate && now < imsakDate) {
         countdownLabel = isRamadhan ? t.scheduleImsakIn : t.scheduleFajrIn;
         countdownMs = imsakDate.getTime() - now.getTime();
-        countdownStyle = { color: `rgb(var(--color-primary-light))` };
+        countdownStyle = { color: `rgb(var(--color-primary-strong))` };
     } else if (now && maghribDate && now < maghribDate) {
         countdownLabel = isRamadhan ? t.scheduleIftarIn : t.scheduleMaghribIn;
         countdownMs = maghribDate.getTime() - now.getTime();
-        countdownStyle = { color: `rgb(var(--color-primary-light) / 0.9)` };
+        countdownStyle = { color: `rgb(var(--color-primary-strong) / 0.9)` };
     } else {
         countdownLabel = t.scheduleAlreadyIftar;
         countdownMs = 0;
     }
 
     const scheduleItems = [
-        { label: t.scheduleImsak, time: imsakTime || "--:--", icon: "moon" as const, colorStyle: { color: `rgb(var(--color-primary-light))` } },
+        { label: t.scheduleImsak, time: imsakTime || "--:--", icon: "moon" as const, colorStyle: { color: `rgb(var(--color-primary-strong))` } },
         { label: t.scheduleFajr, time: fajrTime || "--:--", icon: "sun" as const, colorStyle: { color: "rgb(var(--color-info))" } },
-        { label: isRamadhan ? t.scheduleMaghribIftar : t.scheduleMaghrib, time: maghribTime || "--:--", icon: "sun" as const, colorStyle: { color: `rgb(var(--color-primary-light) / 0.85)` } },
-        { label: t.scheduleIsha, time: ishaTime || "--:--", icon: "star" as const, colorStyle: { color: "rgb(var(--color-primary-light))" } },
+        { label: isRamadhan ? t.scheduleMaghribIftar : t.scheduleMaghrib, time: maghribTime || "--:--", icon: "sun" as const, colorStyle: { color: `rgb(var(--color-primary-strong) / 0.85)` } },
+        { label: t.scheduleIsha, time: ishaTime || "--:--", icon: "star" as const, colorStyle: { color: "rgb(var(--color-primary-strong))" } },
     ];
 
     return (
@@ -115,7 +115,7 @@ export default function RamadhanScheduleCard() {
                 </div>
             ) : (
                 <div className="mx-3 mb-2 rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-2.5 text-center backdrop-blur-md shadow-[var(--shadow-card)]">
-                    <p className="text-sm font-bold" style={{ color: "rgb(var(--color-primary-light))" }}>{countdownLabel}</p>
+                    <p className="text-sm font-bold" style={{ color: "rgb(var(--color-primary-strong))" }}>{countdownLabel}</p>
                 </div>
             )}
 

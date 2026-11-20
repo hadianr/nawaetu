@@ -177,7 +177,7 @@ export default function MisiPage() {
                         <div className="flex items-center gap-1.5 flex-wrap">
                             <p className={cn(
                                 "text-sm font-semibold",
-                                isCompleted ? "text-[rgb(var(--color-primary-light))] line-through" : "text-[rgb(var(--color-text-strong))]"
+                                isCompleted ? "text-[rgb(var(--color-primary-strong))] line-through" : "text-[rgb(var(--color-text-strong))]"
                             )}
                             >
                                 {mission.title}
@@ -186,7 +186,7 @@ export default function MisiPage() {
                                 "text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider",
                                 mission.ruling === 'obligatory'
                                     ? "bg-[rgb(var(--color-accent))]/10 text-[rgb(var(--color-accent-strong))] border border-[rgb(var(--color-accent))]/30"
-                                    : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
+                                    : "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
                             )}>
                                 {getRulingLabel(mission.ruling, t)}
                             </span>
@@ -208,7 +208,7 @@ export default function MisiPage() {
                             <p className="text-[10px] font-medium">{validation.reason}</p>
                         </div>
                     ) : validation.isEarly ? (
-                        <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-primary-light))]">
+                        <div className="flex items-center gap-1 mt-1 text-[rgb(var(--color-primary-strong))]">
                             <Sparkles className="w-3 h-3" />
                             <p className="text-[10px] font-medium">{translations.home_mission_early_bonus}</p>
                         </div>
@@ -219,7 +219,7 @@ export default function MisiPage() {
                 <div className="flex flex-col items-end gap-1">
                     <span className={cn(
                         "text-[10px] font-bold px-2 py-0.5 rounded-full",
-                        "text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10"
+                        "text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10"
                     )}
                     >
                         +{mission.hasanahReward} Hasanah
@@ -249,7 +249,7 @@ export default function MisiPage() {
                         <h1 className="text-2xl font-bold text-[rgb(var(--color-text-strong))]">{t.home_mission_list_title}</h1>
                         <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.home_mission_list_subtitle || "Raih Hasanah dengan menyelesaikan misi"}</p>
                     </div>
-                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))]">
+                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))]">
                         <Trophy className="w-4 h-4" />
                         <span className="text-sm font-bold">
                             {completedCount}/{missions.length}

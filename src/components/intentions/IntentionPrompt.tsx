@@ -196,7 +196,7 @@ export default function IntentionPrompt({
                                         ];
                                         handleSuggestionClick(randomSuggestion);
                                     }}
-                                    className="text-[10px] font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-light))]"
+                                    className="text-[10px] font-bold flex items-center gap-1 transition-colors uppercase tracking-wider text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-strong))]"
                                 >
                                     <AppIcon name="sparkles" size="xs" tone="primary" />
                                     {t.intention_random_btn}

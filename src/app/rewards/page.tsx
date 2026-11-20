@@ -69,12 +69,12 @@ export default function RewardsPage() {
     return (
         <main className="min-h-screen px-4 py-8 pb-nav font-sans bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text))]">
             <div className="mx-auto w-full max-w-none space-y-6 xl:max-w-3xl">
-                <Link href="/" className="inline-flex items-center gap-2 text-sm text-[rgb(var(--color-primary-light))]">
+                <Link href="/" className="inline-flex items-center gap-2 text-sm text-[rgb(var(--color-primary-strong))]">
                     <ArrowLeft className="h-4 w-4" /> {copy.back}
                 </Link>
 
                 <header className="space-y-3 text-center">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))]">
                         <Gift className="h-8 w-8" />
                     </div>
                     <h1 className="text-3xl font-bold sm:text-4xl">{copy.title}</h1>

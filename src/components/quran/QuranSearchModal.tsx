@@ -52,7 +52,7 @@ export default function QuranSearchModal() {
             <DialogContent className="sm:max-w-xl p-0 overflow-hidden flex flex-col max-h-[85vh] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]">
                 <DialogHeader className="p-4 border-b border-[rgb(var(--color-border))] shrink-0 backdrop-blur-xl z-10 bg-[rgb(var(--color-surface))]">
                     <DialogTitle className="text-lg font-bold flex items-center gap-2 text-[rgb(var(--color-text-strong))]">
-                        <Search className="h-5 w-5 text-[rgb(var(--color-primary-light))]" />
+                        <Search className="h-5 w-5 text-[rgb(var(--color-primary-strong))]" />
                         {translations.quranSearchVerses}
                     </DialogTitle>
                 </DialogHeader>
@@ -100,7 +100,7 @@ export default function QuranSearchModal() {
                                     className="block p-4 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))]/30 hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-surface))] transition-all group"
                                 >
                                     <div className="flex justify-between items-start mb-3 gap-4">
-                                        <span className="inline-flex items-center justify-center px-2 py-1 rounded bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] text-xs font-bold shrink-0">
+                                        <span className="inline-flex items-center justify-center px-2 py-1 rounded bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] text-xs font-bold shrink-0">
                                             Surah {verse.verse_key.replace(':', ', Ayat ')}
                                         </span>
                                     </div>

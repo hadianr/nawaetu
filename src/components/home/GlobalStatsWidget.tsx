@@ -43,7 +43,7 @@ export default function GlobalStatsWidget() {
         >
 
             <div className="flex items-center gap-2 mb-4">
-                <Globe2 className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
+                <Globe2 className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                 <h2 className="font-bold text-sm text-[rgb(var(--color-text-strong))]">{t.globalImpactTitle}</h2>
             </div>
 
@@ -68,7 +68,7 @@ export default function GlobalStatsWidget() {
             </div>
 
             <div className="mt-3 text-center">
-                <p className="text-[10px] text-[rgb(var(--color-primary-light))]/80 italic">
+                <p className="text-[10px] text-[rgb(var(--color-primary-strong))]/80 italic">
                     &quot;{t.globalImpactTagline}&quot;
                 </p>
             </div>

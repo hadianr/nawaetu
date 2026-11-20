@@ -51,7 +51,7 @@ export function QiblaPermissionPrompt({
             )}>
                 <Compass className={cn(
                     "w-10 h-10 animate-[spin_3s_linear_infinite]",
-                    "text-[rgb(var(--color-primary-light))]"
+                    "text-[rgb(var(--color-primary-strong))]"
                 )} />
             </div>
 

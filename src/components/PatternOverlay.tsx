@@ -66,7 +66,7 @@ const PatternOverlay = memo(function PatternOverlay() {
                         />
                     </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#waves-pattern)" className="text-[rgb(var(--color-primary-light))]" />
+                <rect width="100%" height="100%" fill="url(#waves-pattern)" className="text-[rgb(var(--color-primary-strong))]" />
             </svg>
         ),
         floral: (

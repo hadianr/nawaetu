@@ -96,10 +96,10 @@ export default function DailyPrayerTracker() {
                 {/* Stats pills */}
                 <div className="flex gap-1.5">
                     <div className="rounded-full px-2 py-0.5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-xs text-[rgb(var(--color-text-muted))]">
-                        <span className="text-[rgb(var(--color-primary-light))]">{totalMasjidDays}</span>x Masjid
+                        <span className="text-[rgb(var(--color-primary-strong))]">{totalMasjidDays}</span>x Masjid
                     </div>
                     <div className="rounded-full px-2 py-0.5 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-xs text-[rgb(var(--color-text-muted))]">
-                        <span className="text-[rgb(var(--color-primary-light))]">{totalSunnahDone}</span> Sunnah
+                        <span className="text-[rgb(var(--color-primary-strong))]">{totalSunnahDone}</span> Sunnah
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@ export default function DailyPrayerTracker() {
                                         onClick={() => handlePrayerLocation(key, true)}
                                         className={`w-full py-1.5 rounded-lg border text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-all active:scale-95 ${
                                             val === true
-                                                ? "border-[rgb(var(--color-primary-light))]/50 bg-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-light))]"
+                                                ? "border-[rgb(var(--color-primary-light))]/50 bg-[rgb(var(--color-primary))]/25 text-[rgb(var(--color-primary-strong))]"
                                                 : "border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                                         }`}
                                     >

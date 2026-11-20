@@ -49,7 +49,7 @@ export default function ReflectionPrompt({
         { icon: "help" as const, label: t.intention_rating_difficult, color: "text-[rgb(var(--color-warning))]" },
         { icon: "target" as const, label: t.intention_rating_okay, color: "text-[rgb(var(--color-accent-strong))]" },
         { icon: "heart-handshake" as const, label: t.intention_rating_good, color: "text-[rgb(var(--color-success))]" },
-        { icon: "sparkles" as const, label: t.intention_rating_excellent, color: "text-[rgb(var(--color-primary-light))]" },
+        { icon: "sparkles" as const, label: t.intention_rating_excellent, color: "text-[rgb(var(--color-primary-strong))]" },
     ];
 
     const [rating, setRating] = useState<number>(initialRating);

@@ -470,7 +470,7 @@ export default function MentorAIClient() {
                                 Tanya Nawaetu
                             </h1>
                             <div className="flex items-center gap-2">
-                                <p className="text-[10px] text-[rgb(var(--color-primary-light))] flex items-center gap-1">
+                                <p className="text-[10px] text-[rgb(var(--color-primary-strong))] flex items-center gap-1">
                                     <span className="w-1 h-1 rounded-full bg-[rgb(var(--color-primary))]" />
                                     Online
                                 </p>
@@ -500,7 +500,7 @@ export default function MentorAIClient() {
                         </button>
                         <button
                             onClick={handleNewChat}
-                            className="p-2 rounded-full hover:bg-[rgb(var(--color-primary))]/20 transition-colors text-[rgb(var(--color-primary-light))]"
+                            className="p-2 rounded-full hover:bg-[rgb(var(--color-primary))]/20 transition-colors text-[rgb(var(--color-primary-strong))]"
                         >
                             <Plus className="w-5 h-5" />
                         </button>
@@ -578,7 +578,7 @@ export default function MentorAIClient() {
                             <div className="flex w-full justify-start animate-fade-in">
                                 <div className="flex gap-2 max-w-[85%]">
                                     <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))]/20 flex items-center justify-center shrink-0 mt-1 border border-[rgb(var(--color-primary))]/30">
-                                        <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                                        <Sparkles className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                                     </div>
                                     <div className="bg-[rgb(var(--color-surface-subtle))] p-3 rounded-2xl rounded-tl-none border border-[rgb(var(--color-border))] flex items-center gap-1 h-10">
                                         <span className="w-1.5 h-1.5 bg-[rgb(var(--color-text-muted))]/60 rounded-full animate-bounce [animation-delay:-0.3s]" />

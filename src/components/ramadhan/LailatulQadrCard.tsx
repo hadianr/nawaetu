@@ -84,7 +84,7 @@ export default function LailatulQadrCard() {
                         <h3 className="font-bold text-[rgb(var(--color-text-strong))] text-sm sm:text-base leading-tight">
                             {t.lailatulQadrTitle}
                         </h3>
-                        <p className="text-[10px] font-medium mt-0.5 text-[rgb(var(--color-primary-light))]/70">
+                        <p className="text-[10px] font-medium mt-0.5 text-[rgb(var(--color-primary-strong))]/70">
                             Lebih baik dari 1.000 bulan, QS. Al-Qadr: 3
                         </p>
                     </div>
@@ -108,7 +108,7 @@ export default function LailatulQadrCard() {
                     >
                         <p
                             className="text-xs font-bold uppercase tracking-wider mb-1"
-                            style={{ color: "rgb(var(--color-primary-light))" }}
+                            style={{ color: "rgb(var(--color-primary-strong))" }}
                         >
                             <AppIcon name="star" size="sm" tone="primary" /> {t.lailatulQadrTonightPossibility}
                         </p>
@@ -123,7 +123,7 @@ export default function LailatulQadrCard() {
                         </p>
                         <p
                             className="text-lg font-bold mt-0.5"
-                            style={{ color: "rgb(var(--color-primary-light))" }}
+                            style={{ color: "rgb(var(--color-primary-strong))" }}
                         >
                             {daysUntilNext} {t.lailatulQadrNightsLeft}
                         </p>
@@ -261,7 +261,7 @@ export default function LailatulQadrCard() {
                         className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg"
                         style={{ background: "rgb(var(--color-primary) / 0.15)" }}
                     >
-                        <BookOpen className="h-4 w-4" style={{ color: "rgb(var(--color-primary-light))" }} />
+                        <BookOpen className="h-4 w-4" style={{ color: "rgb(var(--color-primary-strong))" }} />
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-[rgb(var(--color-text-strong))] leading-snug">
