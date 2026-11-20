@@ -7,6 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import BrandIcon from "@/components/BrandIcon";
+
+const RGB_TOKEN = /^\d+ \d+ \d+$/;
+
+/** Each pair is a fill and the token meant for text on it; the contrast test in ThemeContext.test.tsx checks them. */
+const TEXT_ON_FILL = [
+  { label: "Primary action", fill: "--color-primary", text: "--color-primary-foreground" },
+  { label: "Accent fill", fill: "--color-accent", text: "--color-accent-foreground" },
+  { label: "Danger", fill: "--color-danger", text: "--color-danger-foreground" },
+] as const;
+
+const TEXT_TOKENS = ["--color-text-strong", "--color-text", "--color-text-muted", "--color-primary-strong", "--color-accent-strong", "--color-info", "--color-success", "--color-warning", "--color-danger"] as const;
 
 export default function DesignSystemFixture() {
   const { currentTheme, setTheme, theme } = useTheme();
@@ -16,6 +28,7 @@ export default function DesignSystemFixture() {
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-8">
       <div className="mx-auto flex max-w-5xl flex-col gap-8">
         <header>
+          <BrandIcon size={48} className="mb-3" />
           <p className="text-sm font-medium text-primary">Nawaetu design system</p>
           <h1 className="mt-2 text-3xl font-bold">Foundation fixture</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
@@ -55,11 +68,61 @@ export default function DesignSystemFixture() {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-3 text-sm">
               {Object.entries(theme.tokens).map(([name, value]) => (
-                <div key={name} className="rounded-md border border-border p-2">
-                  <code className="text-xs text-primary">{name}</code>
-                  <div className="mt-1 truncate text-muted-foreground" title={value}>{value}</div>
+                <div key={name} className="flex items-center gap-2 rounded-md border border-border p-2">
+                  {RGB_TOKEN.test(value) && (
+                    <span className="size-6 shrink-0 rounded border border-border" style={{ backgroundColor: `rgb(${value})` }} aria-hidden="true" />
+                  )}
+                  <div className="min-w-0">
+                    <code className="text-xs text-primary">{name}</code>
+                    <div className="truncate text-muted-foreground" title={value}>{value}</div>
+                  </div>
                 </div>
               ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Typography</CardTitle>
+              <CardDescription>Lora for display, Plus Jakarta Sans for everything else, Amiri only for Arabic.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="font-serif text-3xl font-semibold text-[rgb(var(--color-text-strong))]">Mulai dengan niat</p>
+              <p className="text-base text-[rgb(var(--color-text))]">Body text in Plus Jakarta Sans, 16px, for reading and controls.</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">Uppercase label · tracking-wider</p>
+              <p dir="rtl" lang="ar" className="font-arabic text-3xl leading-loose text-[rgb(var(--color-text-strong))]">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Text colours</CardTitle>
+              <CardDescription>Text on fills uses the fill&apos;s foreground token; text on surfaces uses the strong shades.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                {TEXT_ON_FILL.map(({ label, fill, text }) => (
+                  <span key={label} className="rounded-[var(--radius-control)] px-3 py-2 text-sm font-semibold" style={{ backgroundColor: `rgb(var(${fill}))`, color: `rgb(var(${text}))` }}>
+                    {label}
+                  </span>
+                ))}
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                {TEXT_TOKENS.map((token) => (
+                  <span key={token} className="font-medium" style={{ color: `rgb(var(${token}))` }}>{token.replace("--color-", "")}</span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Elevation</CardTitle>
+              <CardDescription>Two levels only: cards, and floating layers (menus, sheets, dialogs).</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-border bg-card p-4 text-sm shadow-[var(--shadow-card)]">Card</div>
+              <div className="rounded-2xl border border-border bg-card p-4 text-sm shadow-[var(--shadow-floating)]">Floating</div>
             </CardContent>
           </Card>
 
