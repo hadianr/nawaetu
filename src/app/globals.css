@@ -159,6 +159,12 @@
     @apply border-border outline-ring/50;
   }
 
+  /* A visible keyboard focus for every control; components that draw their own ring use outline-none. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-ring));
+    outline-offset: 2px;
+  }
+
   html,
   body {
     @apply bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text-strong))];
@@ -470,12 +476,13 @@ nav {
 }
 
 /* Card elevation is a semantic decision shared by every light surface. */
-[data-color-mode="light"] :is([class~="rounded-2xl"], [class~="rounded-xl"])[class~="border"] {
+/* :not(:focus-visible) keeps these from overriding the box-shadow that draws focus rings. */
+[data-color-mode="light"] :is([class~="rounded-2xl"], [class~="rounded-xl"])[class~="border"]:not(:focus-visible) {
   box-shadow: var(--shadow-card) !important;
 }
 
 /* Settings and other light-theme cards share one surface and elevation. */
-[data-color-mode="light"] :is([class~="shadow-xs"], [class~="shadow-sm"], [class~="shadow-md"], [class~="shadow-lg"]) {
+[data-color-mode="light"] :is([class~="shadow-xs"], [class~="shadow-sm"], [class~="shadow-md"], [class~="shadow-lg"]):not(:focus-visible) {
   --tw-shadow: var(--shadow-card) !important;
   box-shadow: var(--shadow-card) !important;
 }
