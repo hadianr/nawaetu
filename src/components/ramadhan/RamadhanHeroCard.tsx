@@ -137,7 +137,7 @@ export default function RamadhanHeroCard() {
                     <div>
                         <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                             <AppIcon name="moon" size="md" tone="primary" />
-                            <span className="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider sm:tracking-widest text-[rgb(var(--color-text-muted))]">
+                            <span className="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider sm:tracking-wider text-[rgb(var(--color-text-muted))]">
                                 {data?.hijriDate ? `${data.hijriDay} ${data.hijriMonth} ${hijriYear}H` : `${t.ramadhanLabel} ${hijriYear}H`}
                             </span>
                         </div>

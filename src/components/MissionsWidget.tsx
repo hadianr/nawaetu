@@ -222,7 +222,7 @@ export default function MissionsWidget() {
 
     return (
         <div className={cn(
-            "relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all",
+            "relative overflow-hidden rounded-2xl p-4 sm:p-5 transition-all",
             "glass-surface border shadow-[var(--shadow-card)]"
         )}>
 

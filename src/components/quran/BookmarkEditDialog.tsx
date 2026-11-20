@@ -117,7 +117,7 @@ export default function BookmarkEditDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={cn(
-                "max-w-sm w-[90%] rounded-[2rem] border overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50 p-0",
+                "max-w-sm w-[90%] rounded-2xl border overflow-hidden shadow-[var(--shadow-floating)] [&>button]:z-50 p-0",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text))]"
             )}>
                 {/* Decorative Header Background */}
@@ -141,7 +141,7 @@ export default function BookmarkEditDialog({
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
                             <div className="h-1 w-1 rounded-full bg-[rgb(var(--color-primary))]" />
-                            <span className="text-xs font-medium tracking-widest text-[rgb(var(--color-primary-light))] uppercase">
+                            <span className="text-xs font-medium tracking-wider text-[rgb(var(--color-primary-light))] uppercase">
                                 QS. {bookmark.surahName}: {bookmark.verseId}
                             </span>
                         </div>

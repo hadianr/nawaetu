@@ -51,7 +51,7 @@ export function DhikrHistory({
             <DialogTrigger asChild>
                 <button
                     className={cn(
-                        "flex flex-wrap justify-center items-center gap-2 text-[9px] font-bold uppercase tracking-widest mb-4 cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto relative z-50",
+                        "flex flex-wrap justify-center items-center gap-2 text-[9px] font-bold uppercase tracking-wider mb-4 cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto relative z-50",
                         "text-[rgb(var(--color-text-muted))]"
                     )}
                 >
@@ -97,15 +97,15 @@ export function DhikrHistory({
                     </div>
                 </button>
             </DialogTrigger>
-            <DialogContent className="dhikr-history-dialog w-[90%] max-w-sm rounded-[32px] border backdrop-blur-3xl z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
+            <DialogContent className="dhikr-history-dialog w-[90%] max-w-sm rounded-2xl border backdrop-blur-3xl z-[100] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-strong))]">
                 <DialogHeader>
-                    <DialogTitle className="text-center text-sm font-bold uppercase tracking-widest opacity-60">Statistik Zikir</DialogTitle>
+                    <DialogTitle className="text-center text-sm font-bold uppercase tracking-wider opacity-60">Statistik Zikir</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col py-2 max-h-[60vh] overflow-y-auto pr-1 space-y-6">
 
                     {/* Top Dhikr Stats */}
                     <div>
-                        <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3">Zikir Terfavorit</h3>
+                        <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-wider mb-3">Zikir Terfavorit</h3>
                         <div className="space-y-2">
                             {Object.entries(dhikrHistory || {})
                                 .sort((a, b) => b[1] - a[1])
@@ -132,7 +132,7 @@ export function DhikrHistory({
 
                     {/* Milestones List */}
                     <div>
-                        <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3">Pencapaian</h3>
+                        <h3 className="text-[10px] font-bold opacity-50 uppercase tracking-wider mb-3">Pencapaian</h3>
                         <div className="space-y-3">
                             {dhikrMilestones.map(ms => {
                                 const isCompleted = (lifetimeCount || 0) >= ms.target;

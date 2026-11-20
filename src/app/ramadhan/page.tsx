@@ -63,12 +63,12 @@ const ZakatFitrahCard = dynamic(() => import("@/components/ramadhan/ZakatFitrahC
 
 const FastingTrackerWidget = dynamic(() => import("@/components/ramadhan/fasting/FastingTrackerWidget"), {
     ssr: false,
-    loading: () => <div className="h-64 rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
+    loading: () => <div className="h-64 rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />,
 });
 
 const RamadhanWrappedCard = dynamic(() => import("@/components/ramadhan/RamadhanWrappedCard"), {
     ssr: false,
-    loading: () => <div className="h-80 w-full rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse border border-[rgb(var(--color-border))]" />,
+    loading: () => <div className="h-80 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse border border-[rgb(var(--color-border))]" />,
 });
 
 export default function RamadhanPage() {
@@ -89,14 +89,14 @@ export default function RamadhanPage() {
 
                 {/* Ramadhan Wrapped / Rapor Ramadhan */}
                 <section className="w-full animate-in slide-in-from-bottom-2 fade-in duration-500" style={{ animationDelay: "50ms" }}>
-                    <Suspense fallback={<div className="h-80 w-full rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
+                    <Suspense fallback={<div className="h-80 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <RamadhanWrappedCard />
                     </Suspense>
                 </section>
 
                 {/* Fasting Tracker */}
                 <section className="w-full animate-in slide-in-from-bottom-3 fade-in duration-500" style={{ animationDelay: "80ms" }}>
-                    <Suspense fallback={<div className="h-64 w-full rounded-3xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
+                    <Suspense fallback={<div className="h-64 w-full rounded-2xl bg-[rgb(var(--color-surface-subtle))] animate-pulse" />}>
                         <FastingTrackerWidget />
                     </Suspense>
                 </section>

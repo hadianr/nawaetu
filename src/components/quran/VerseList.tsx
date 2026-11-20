@@ -624,7 +624,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         {/* End of chapter indicator */}
                         {currentPage >= totalPages && totalPages > 0 && (
                             <div className="text-center py-8 border-t border-[rgb(var(--color-border))]/60 mx-4 md:mx-0">
-                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] opacity-80 decoration-double">
+                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider opacity-80 decoration-double">
                                     صَدَقَ اللهُ العَظِيم
                                 </span>
                             </div>
@@ -702,7 +702,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         {/* End of chapter indicator */}
                         {currentPage >= totalPages && totalPages > 0 && (
                             <div className="text-center py-8 border-t border-[rgb(var(--color-border))] mx-4 md:mx-0">
-                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-[0.2em] opacity-80 decoration-double">
+                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider opacity-80 decoration-double">
                                     صَدَقَ اللهُ العَظِيم
                                 </span>
                             </div>

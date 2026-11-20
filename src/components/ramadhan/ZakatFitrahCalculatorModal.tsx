@@ -87,7 +87,7 @@ export default function ZakatFitrahCalculatorModal({ open, onOpenChange }: Zakat
 
                 {/* Content wrapper */}
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-                    <DialogPrimitive.Content className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-[2rem] border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/95 shadow-[var(--shadow-floating)] backdrop-blur-xl transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 focus:outline-none">
+                    <DialogPrimitive.Content className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/95 shadow-[var(--shadow-floating)] backdrop-blur-xl transition-all duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 focus:outline-none">
                         
                         {/* Header (Sticky) */}
                         <div className="flex items-center justify-between border-b border-[rgb(var(--color-border))] p-5 sm:p-6 bg-[rgb(var(--color-surface-subtle))] backdrop-blur-xl">

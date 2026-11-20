@@ -118,7 +118,7 @@ export default function BookmarksPage() {
                 <div className="space-y-6">
                     {bookmarks.length === 0 ? (
                         <div className={cn(
-                            "text-center py-24 rounded-[2.5rem] border transition-all",
+                            "text-center py-24 rounded-2xl border transition-all",
                             "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-card)]"
                         )}>
                             <div className={cn(
@@ -149,7 +149,7 @@ export default function BookmarksPage() {
                                     href={`/quran/${bookmark.surahId}?page=${targetPage}#verse-${bookmark.verseId}`}
                                     key={bookmarkKey}
                                     className={cn(
-                                        "block group relative overflow-hidden rounded-[2rem] border transition-all duration-500",
+                                        "block group relative overflow-hidden rounded-2xl border transition-all duration-500",
                                         isCurrentLastRead
                                             ? "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/50 hover:border-[rgb(var(--color-primary))] shadow-[var(--shadow-card)]"
                                             : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] hover:border-[rgb(var(--color-primary))]/40 hover:bg-[rgb(var(--color-primary))]/5 shadow-[var(--shadow-card)]"
@@ -167,7 +167,7 @@ export default function BookmarksPage() {
                                         <div className="flex justify-between items-start gap-4 mb-4">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn(
-                                                    "h-10 px-4 rounded-full flex items-center justify-center text-xs font-bold tracking-wide transition-all border",
+                                                    "h-10 px-4 rounded-full flex items-center justify-center text-xs font-bold transition-all border",
                                                     isCurrentLastRead
                                                         ? "bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] border-transparent"
                                                         : "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))] group-hover:bg-[rgb(var(--color-surface))]"
@@ -175,7 +175,7 @@ export default function BookmarksPage() {
                                                     QS. {bookmark.surahName} : {bookmark.verseId}
                                                 </div>
                                                 {isCurrentLastRead && (
-                                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-widest hidden sm:block">
+                                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider hidden sm:block">
                                                         {t.bookmarksLastReadLabel}
                                                     </span>
                                                 )}

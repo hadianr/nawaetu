@@ -190,7 +190,7 @@ const DuaCard = memo(function DuaCard({
                     {/* Arabic */}
                     <p
                         dir="rtl"
-                        className="text-right text-xl font-arabic leading-[2.0] tracking-wide py-1 text-[rgb(var(--color-text-strong))]"
+                        className="text-right text-xl font-arabic leading-[2.0] py-1 text-[rgb(var(--color-text-strong))]"
                     >
                         {item.arabic}
                     </p>

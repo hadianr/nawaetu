@@ -93,7 +93,7 @@ export default function FAQModal({ open, onOpenChange }: FAQModalProps) {
                                                 {/* Dalil if exists */}
                                                 {faq.dalil && (
                                                     <div className="pt-2">
-                                                        <div className="text-xs font-semibold text-[rgb(var(--color-text-muted))] mb-2 uppercase tracking-wide">
+                                                        <div className="text-xs font-semibold text-[rgb(var(--color-text-muted))] mb-2 uppercase tracking-wider">
                                                             {t.faqEvidenceLabel || "Dalil"}
                                                         </div>
                                                         <DalilBadge dalil={faq.dalil} variant="inline" />

@@ -34,7 +34,7 @@ export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProp
 
             {/* Icon */}
             <div className={cn(
-                "w-20 h-20 rounded-[28px] mb-6 flex items-center justify-center shadow-[var(--shadow-floating)] border",
+                "w-20 h-20 rounded-2xl mb-6 flex items-center justify-center shadow-[var(--shadow-floating)] border",
                 "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
                 <BookOpen className="w-9 h-9 text-[rgb(var(--color-primary))]" />
@@ -42,7 +42,7 @@ export function QuranNiyyahScreen({ onConfirm, onCancel }: QuranFocusOverlayProp
 
             {/* Basmallah */}
             <p className={cn(
-                "text-3xl font-arabic mb-2 tracking-wide",
+                "text-3xl font-arabic mb-2",
                 "text-[rgb(var(--color-primary-strong))]"
             )}>
                 بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
@@ -169,7 +169,7 @@ export function QuranFocusExitConfirm({ sessionSeconds, onConfirm, onCancel }: {
                 onClick={onCancel}
             />
             <div className={cn(
-                "relative w-full max-w-sm rounded-3xl border p-6 shadow-[var(--shadow-floating)]",
+                "relative w-full max-w-sm rounded-2xl border p-6 shadow-[var(--shadow-floating)]",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]"
             )}>
                 <p className="text-sm font-bold mb-1 text-[rgb(var(--color-text-strong))]">

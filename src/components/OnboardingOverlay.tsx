@@ -65,7 +65,7 @@ const START_THEME: ThemeId = DEFAULT_THEME_ID;
 const GENDER_THEME: Record<"male" | "female", ThemeId> = { male: "daylight", female: "blossom" };
 const GENDER_LOTTIE = { male: "/lottie/lights.lottie", female: "/lottie/blossom.lottie" };
 
-const CARD = "mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-3xl p-6 shadow-[var(--shadow-floating)] overflow-hidden relative min-h-[380px] flex flex-col text-[rgb(var(--color-text))]";
+const CARD = "mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-2xl p-6 shadow-[var(--shadow-floating)] overflow-hidden relative min-h-[380px] flex flex-col text-[rgb(var(--color-text))]";
 const NOISE = <div className="absolute inset-0 bg-[url('/noise.svg')] bg-repeat opacity-10 mix-blend-overlay" />;
 
 interface OnboardingOverlayProps {

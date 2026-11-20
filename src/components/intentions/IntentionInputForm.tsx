@@ -94,7 +94,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 <div className="w-20 h-20 bg-[rgb(var(--color-primary))]/10 rounded-full flex items-center justify-center mb-4">
                     <Sparkles className="w-10 h-10 text-[rgb(var(--color-primary-light))]" />
                 </div>
-                <h3 className="text-2xl font-serif text-[rgb(var(--color-text-strong))] tracking-wide">{t.intention_success_title}</h3>
+                <h3 className="text-2xl font-serif text-[rgb(var(--color-text-strong))]">{t.intention_success_title}</h3>
                 <p className="text-[rgb(var(--color-text-muted))] text-base font-serif italic max-w-xs">{t.intention_success_desc}</p>
             </motion.div>
         );
@@ -130,7 +130,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                                 <p className="text-sm md:text-base font-serif italic text-[rgb(var(--color-text-muted))] leading-relaxed">
                             &quot;{locale === 'id' ? dalil.textId : dalil.textEn}&quot;
                                 </p>
-                                <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] tracking-widest uppercase mt-2">
+                                <p className="text-xs font-medium text-[rgb(var(--color-primary-strong))] tracking-wider uppercase mt-2">
                                     — {locale === 'id' ? dalil.sourceId : dalil.sourceEn}
                                 </p>
                             </motion.div>
@@ -170,10 +170,10 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-                                <span className="text-base tracking-wide">{t.intention_saving_wait}</span>
+                                <span className="text-base">{t.intention_saving_wait}</span>
                             </>
                         ) : (
-                            <span className="text-base tracking-wide">{(t.intention_save_btn as string).replace('{hasanah}', '50')}</span>
+                            <span className="text-base">{(t.intention_save_btn as string).replace('{hasanah}', '50')}</span>
                         )}
                     </Button>
                 </div>

@@ -32,7 +32,7 @@ export default function RamadhanGuideCard() {
 
     return (
         <>
-            <div className="relative overflow-hidden rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-lg shadow-[var(--shadow-card)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-lg shadow-[var(--shadow-card)]">
                 {/* Header */}
                 <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4">
                     <div className="flex items-center gap-2 mb-1">

@@ -99,7 +99,7 @@ export default function KhatamanProgress() {
         : null;
 
     return (
-        <div className="rounded-3xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl shadow-[var(--shadow-card)] overflow-hidden transition-all duration-300">
+        <div className="rounded-2xl border border-[rgb(var(--color-border))] bg-gradient-to-br from-[rgb(var(--color-surface-subtle))] via-[rgb(var(--color-surface))] to-transparent backdrop-blur-xl shadow-[var(--shadow-card)] overflow-hidden transition-all duration-300">
             {/* Header */}
             <div className="flex items-center justify-between px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
                 <div className="flex items-center gap-2">

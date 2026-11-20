@@ -107,7 +107,7 @@ export default function LailatulQadrCard() {
                         }}
                     >
                         <p
-                            className="text-xs font-bold uppercase tracking-widest mb-1"
+                            className="text-xs font-bold uppercase tracking-wider mb-1"
                             style={{ color: "rgb(var(--color-primary-light))" }}
                         >
                             <AppIcon name="star" size="sm" tone="primary" /> {t.lailatulQadrTonightPossibility}
@@ -118,7 +118,7 @@ export default function LailatulQadrCard() {
                     </div>
                 ) : daysUntilNext !== null ? (
                     <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 text-center">
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
                             {t.lailatulQadrIn.replace("{night}", String(nextNight))}
                         </p>
                         <p

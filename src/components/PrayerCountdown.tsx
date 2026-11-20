@@ -73,7 +73,7 @@ export default function PrayerCountdown({ targetTime, prayerName, compact = fals
 
     return (
         <div className="flex flex-col items-center justify-center py-6 animate-in fade-in zoom-in duration-700">
-            <p className="text-[rgb(var(--color-text-muted))] font-medium text-sm uppercase tracking-widest mb-2">
+            <p className="text-[rgb(var(--color-text-muted))] font-medium text-sm uppercase tracking-wider mb-2">
                 Menuju {prayerName}
             </p>
             <div className={cn(

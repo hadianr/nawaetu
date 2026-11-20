@@ -117,7 +117,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
     return (
         <div className="p-6 space-y-6">
             <div className="bg-[rgb(var(--color-surface-subtle))] p-4 rounded-xl border border-[rgb(var(--color-border))]">
-                <p className="text-xs text-[rgb(var(--color-text-muted))] uppercase tracking-widest font-bold mb-2">{t.intention_todays_label}</p>
+                <p className="text-xs text-[rgb(var(--color-text-muted))] uppercase tracking-wider font-bold mb-2">{t.intention_todays_label}</p>
                         <p className="text-[rgb(var(--color-text))] italic">&quot;{intentionText}&quot;</p>
             </div>
 
@@ -145,7 +145,7 @@ export default function ReflectionInputForm({ onComplete, userToken, intentionId
                                     <AppIcon name={item.icon} size="xl" tone={isSelected ? "primary" : "muted"} />
                                 </span>
                                 <span className={cn(
-                                    "text-[9px] font-bold tracking-wide transition-colors",
+                                    "text-[9px] font-bold transition-colors",
                                     isSelected ? item.color : "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))]"
                                 )}>
                                     {item.label}

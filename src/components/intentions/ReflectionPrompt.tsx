@@ -103,7 +103,7 @@ export default function ReflectionPrompt({
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                    className="relative w-full max-w-md bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)] rounded-3xl overflow-hidden z-[101]"
+                    className="relative w-full max-w-md bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)] rounded-2xl overflow-hidden z-[101]"
                     onClick={(e) => e.stopPropagation()}
                 >
 
@@ -131,7 +131,7 @@ export default function ReflectionPrompt({
                                         <p className="text-[10px] sm:text-xs md:text-sm font-serif italic leading-relaxed px-2 text-[rgb(var(--color-text-muted))]">
                                             &quot;{isId ? dalil.textId : dalil.textEn}&quot;
                                         </p>
-                                        <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-widest uppercase">
+                                        <p className="text-[9px] font-medium text-[rgb(var(--color-primary))] opacity-80 tracking-wider uppercase">
                                             — {isId ? dalil.sourceId : dalil.sourceEn}
                                         </p>
                                     </motion.div>
@@ -179,7 +179,7 @@ export default function ReflectionPrompt({
                                                 }`}
                                         >
                                             <AppIcon name={item.icon} size="xl" tone={isSelected ? "primary" : "muted"} className={`transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`} />
-                                            <span className={`text-[8px] sm:text-[9px] font-bold tracking-wide transition-colors leading-tight ${isSelected ? item.color :
+                                            <span className={`text-[8px] sm:text-[9px] font-bold transition-colors leading-tight ${isSelected ? item.color :
                                                 "text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text))]"
                                                 }`}>
                                                 {item.label}

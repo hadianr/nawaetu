@@ -192,7 +192,7 @@ const CompassDisplay = memo(({
                 {/* 3. FIX: Text Animation (Scale + Glow) */}
                 <div className={`transition-all duration-500 transform ${aligned ? 'scale-105' : 'scale-100'}`}>
                     <h2 className={cn(
-                        "text-xl md:text-2xl lg:text-3xl font-bold tracking-[0.22em] transition-all duration-300 uppercase",
+                        "text-xl md:text-2xl lg:text-3xl font-bold tracking-wider transition-all duration-300 uppercase",
                         aligned
                             ? "text-[rgb(var(--color-primary-light))]"
                             : "text-[rgb(var(--color-text-muted))]"
@@ -212,7 +212,7 @@ const CompassDisplay = memo(({
                             "bg-[rgb(var(--color-primary-light))]"
                         )} />
                         <span className={cn(
-                            "text-sm font-semibold tracking-wide",
+                            "text-sm font-semibold",
                             "text-[rgb(var(--color-primary-light))]"
                         )}>
                             {t.qiblaAlignedBadge}

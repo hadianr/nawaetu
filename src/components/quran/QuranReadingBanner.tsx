@@ -97,7 +97,7 @@ export default function QuranReadingBanner() {
                             <BookOpen className="w-3 h-3 text-[rgb(var(--color-primary-strong))]" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">{t.tilawahBannerTitle}</p>
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.tilawahBannerTitle}</p>
                             <p className="text-sm font-bold leading-tight truncate text-[rgb(var(--color-text-strong))]">
                                 {dailyTotalSeconds > 0 ? formatDuration(dailyTotalSeconds) : (
                                     <span className="font-medium text-xs text-[rgb(var(--color-text-muted))]">{t.tilawahBannerNoStart}</span>

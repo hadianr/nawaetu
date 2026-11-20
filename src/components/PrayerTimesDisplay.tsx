@@ -53,7 +53,7 @@ export default function PrayerTimesDisplay() {
     if (!data) {
         return (
             <div className={cn(
-                "relative w-full max-w-none border rounded-3xl p-6 text-center shadow-[var(--shadow-floating)] overflow-hidden animate-in fade-in zoom-in-95 duration-500 xl:max-w-md",
+                "relative w-full max-w-none border rounded-2xl p-6 text-center shadow-[var(--shadow-floating)] overflow-hidden animate-in fade-in zoom-in-95 duration-500 xl:max-w-md",
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] shadow-[var(--shadow-floating)]"
             )}>
                 <div className="relative z-10 flex flex-col items-center space-y-4">
@@ -138,7 +138,7 @@ export default function PrayerTimesDisplay() {
                     )}>
                         <div className="min-w-0">
                             <div className={cn(
-                                "flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest",
+                                "flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider",
                                 "text-[rgb(var(--color-primary-strong))]",
                             )}>
                                 <Clock className="h-3 w-3" />
@@ -167,7 +167,7 @@ export default function PrayerTimesDisplay() {
                 "glass-surface flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
                 "border-[rgb(var(--color-border))]",
             )}>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-[rgb(var(--color-text-muted))]">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
                     {t.homeQuickAccessTitle}
                 </span>
                 <div className="grid w-full grid-cols-4 gap-1.5 sm:gap-2">
@@ -189,7 +189,7 @@ export default function PrayerTimesDisplay() {
                         )}
                     >
                         <AppIcon name="compass" size="xs" tone="primary" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest">{t.homeQiblaLabel}</span>
+                        <span className="text-[9px] font-bold uppercase tracking-wider">{t.homeQiblaLabel}</span>
                     </Link>
                     <button
                         onClick={() => setShowMosqueFinder(true)}
