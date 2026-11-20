@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 
 const SITE_URL = "https://nawaetu.com";
 
+/** The shared social card; regenerate it with `npm run og-image`. */
+export const OG_IMAGE = {
+  url: "/og-image.png",
+  width: 1200,
+  height: 630,
+  alt: "Nawaetu — Aplikasi Muslim untuk Ibadah Harian",
+};
+
 export interface PageLanguages {
   /** Path of the Indonesian version, also used as x-default. */
   id: string;
@@ -33,13 +41,13 @@ export function pageMetadata(
       siteName: "Nawaetu",
       locale: options.locale === "en" ? "en_US" : "id_ID",
       type: "website",
-      images: ["/og-image.png"],
+      images: [OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | Nawaetu`,
       description,
-      images: ["/og-image.png"],
+      images: [OG_IMAGE],
     },
   };
 }

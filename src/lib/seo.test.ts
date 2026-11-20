@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pageMetadata, seoTitle } from "./seo";
+import { OG_IMAGE, pageMetadata, seoTitle } from "./seo";
 
 describe("seoTitle", () => {
     it("names the Prophet in full instead of a pronoun with the ligature", () => {
@@ -23,6 +23,16 @@ describe("English seoTitle", () => {
         expect(seoTitle("His Family.", "en")).toBe("Prophet Muhammad SAW's Family");
         expect(seoTitle("Description of His ﷺ Creation", "en")).toBe("Description of His Creation");
         expect(seoTitle("Khadijah رضي الله عنها", "en")).toBe("Khadijah RA");
+    });
+});
+
+describe("pageMetadata social card", () => {
+    it("gives Open Graph and X the sized card with alt text", () => {
+        const m = pageMetadata("T", "D", "/quran");
+        expect(m.openGraph?.images).toEqual([OG_IMAGE]);
+        expect(m.twitter?.images).toEqual([OG_IMAGE]);
+        expect((m.twitter as { card?: string }).card).toBe("summary_large_image");
+        expect(OG_IMAGE).toMatchObject({ width: 1200, height: 630 });
     });
 });
 
