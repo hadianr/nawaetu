@@ -49,6 +49,26 @@ describe("ThemeContext", () => {
         });
     });
 
+    it.each(Object.keys(THEMES))("%s: text on primary fills and light-theme status colours pass WCAG AA", (id) => {
+        const lum = (rgb: string) => {
+            const lin = (c: number) => ((c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+            const [r, g, b] = rgb.split(" ").map(Number);
+            return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        };
+        const contrast = (a: string, b: string) => {
+            const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+            return (hi + 0.05) / (lo + 0.05);
+        };
+        const { mode, tokens } = THEMES[id as keyof typeof THEMES];
+
+        expect(contrast(tokens.primaryForeground, tokens.primary)).toBeGreaterThanOrEqual(4.5);
+        if (mode === "light") {
+            for (const status of ["info", "success", "warning", "danger"] as const) {
+                expect(contrast(tokens[status], tokens.canvas), status).toBeGreaterThanOrEqual(4.5);
+            }
+        }
+    });
+
     it("has translated names and descriptions for every theme", () => {
         Object.values(THEMES).forEach((theme) => {
             expect(typeof SETTINGS_EN[theme.nameKey as keyof typeof SETTINGS_EN]).toBe("string");

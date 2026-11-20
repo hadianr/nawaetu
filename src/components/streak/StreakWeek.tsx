@@ -43,7 +43,7 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                                 day.protected
                                     ? "border-sky-400/60 bg-sky-500/15 text-sky-400"
                                     : day.active
-                                        ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-accent-foreground))]"
+                                        ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                         : "border-[rgb(var(--color-text-muted))]/60",
                                 day.today && "outline outline-2 outline-offset-2 outline-[rgb(var(--color-text-muted))]",
                             )}

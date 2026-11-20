@@ -109,13 +109,16 @@ const createTheme = (input: ThemeInput): Theme => {
             // Dark themes need a luminous accent for text and controls; light
             // themes use the darker shade for contrast on pale surfaces.
             primaryStrong: isLight ? colors.primaryDark : colors.primaryLight,
-            primaryForeground: "255 255 255",
+            // Text on a solid primary fill. Dark ink passes AA on the bright primaries;
+            // Daylight's deep emerald (and any other dark primary) overrides it with white.
+            primaryForeground: isLight ? "255 255 255" : "15 23 42",
             accent: colors.accent,
             accentForeground: isLight ? "63 39 51" : "15 23 42",
-            info: "96 165 250",
-            success: "52 211 153",
-            warning: "251 191 36",
-            danger: "248 113 113",
+            // Stock 400 shades disappear on pale surfaces, so light themes use the 700 shades (AA on paper).
+            info: isLight ? "29 78 216" : "96 165 250",
+            success: isLight ? "21 128 61" : "52 211 153",
+            warning: isLight ? "161 98 7" : "251 191 36",
+            danger: isLight ? "185 28 28" : "248 113 113",
             dangerForeground: "255 255 255",
             // Keep dark-theme borders quiet; components may add opacity on top.
             border: isLight ? "226 232 240" : "51 65 85",
@@ -164,6 +167,7 @@ export const THEMES: Record<ThemeId, Theme> = {
             textStrong: "240 237 228",
             text: "208 212 206",
             textMuted: "146 156 150",
+            primaryForeground: "14 19 17",
             accentForeground: "14 19 17",
             border: "44 54 49",
         },
@@ -263,6 +267,7 @@ export const THEMES: Record<ThemeId, Theme> = {
             text: "83 56 69",
             textMuted: "112 82 97",
             primaryStrong: "132 45 75",
+            primaryForeground: "66 40 52",
             accentForeground: "66 40 52",
             border: "236 203 217",
             ring: "190 88 122",

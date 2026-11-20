@@ -167,7 +167,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
         )} closeLabel={t.streakClose}>
           <div className="bg-gradient-to-br from-[rgb(var(--color-primary))] via-[rgb(var(--color-primary-light))] to-[rgb(var(--color-accent))] px-6 py-7 text-center text-[rgb(var(--color-primary-foreground))]">
             {/* Dark backing keeps the yellow flame readable on every theme's gradient. */}
-            <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-black/35">
+            <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-[rgb(var(--color-canvas))]/35">
               <StreakFlame className="size-24" fallbackClassName="h-12 w-12 text-[rgb(var(--color-primary-foreground))]/85" />
             </div>
             <p className="mt-2 text-5xl font-bold tabular-nums">{currentStreak}</p>

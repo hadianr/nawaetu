@@ -9,7 +9,7 @@ export default function JourneyHero({ title, daysLeft, sub }: { title: ReactNode
     return (
         <div className="bg-gradient-to-br from-[rgb(var(--color-primary))] via-[rgb(var(--color-primary-light))] to-[rgb(var(--color-accent))] px-6 pb-5 pt-6 text-center text-[rgb(var(--color-primary-foreground))]">
             {/* Dark backing keeps the gold lanterns readable on every theme's gradient. */}
-            <div className="mx-auto w-48 rounded-2xl bg-black/30">
+            <div className="mx-auto w-48 rounded-2xl bg-[rgb(var(--color-canvas))]/30">
                 <LottieMoment src="/lottie/lights.lottie" className="h-24 w-full" fallback={<div className="h-24 w-full" />} />
             </div>
             <div className="mt-3 text-xs font-bold uppercase tracking-wider">{title}</div>

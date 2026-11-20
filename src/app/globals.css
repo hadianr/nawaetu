@@ -65,10 +65,10 @@
   --color-primary-foreground: 255 255 255;
   --color-accent: 184 137 46;
   --color-accent-foreground: 23 33 28;
-  --color-info: 96 165 250;
-  --color-success: 52 211 153;
-  --color-warning: 251 191 36;
-  --color-danger: 248 113 113;
+  --color-info: 29 78 216;
+  --color-success: 21 128 61;
+  --color-warning: 161 98 7;
+  --color-danger: 185 28 28;
   --color-danger-foreground: 255 255 255;
   --color-border: 228 223 211;
   --color-ring: 21 128 87;
@@ -135,7 +135,7 @@
 /* shadcn primitives inherit the active theme instead of the legacy dark seed. */
 [data-color-mode="light"] {
   --primary: rgb(var(--color-primary));
-  --primary-foreground: rgb(var(--color-text-strong));
+  --primary-foreground: rgb(var(--color-primary-foreground));
   --background: rgb(var(--color-canvas));
   --foreground: rgb(var(--color-text-strong));
   --card: rgb(var(--color-surface));
@@ -182,23 +182,8 @@
     color: rgb(var(--color-text-strong)) !important;
   }
 
-  /* [2] Surface / Card Backgrounds — Light Glassmorphism */
-  [data-theme="daylight"] [class*="bg-black"] {
-    background-color: rgba(255, 255, 255, 0.65) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-  }
-
-  /* [3] Glassmorphism: Backdrop Blur elements */
-  [data-theme="daylight"] [class*="backdrop-blur"] {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(16px) saturate(1.5) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(1.5) !important;
-  }
-
   /* Bottom Nav specifically */
-  [data-theme="daylight"] nav[class*="backdrop-blur"],
-  [data-theme="daylight"] nav[class*="bg-black"] {
+  [data-theme="daylight"] nav[class*="backdrop-blur"] {
     background-color: rgb(var(--color-canvas) / 0.92) !important;
     border-top-color: rgb(var(--color-text-strong) / 0.08) !important;
   }
@@ -223,7 +208,6 @@
   }
 
   /* Specific override for SelectTriggers and similar buttons that are surfaces, not primary actions */
-  [data-theme="daylight"] button[class*="bg-black/"],
   [data-theme="daylight"] .SelectTrigger,
   [data-theme="daylight"] [role="combobox"] {
     color: rgb(var(--color-text-strong)) !important;

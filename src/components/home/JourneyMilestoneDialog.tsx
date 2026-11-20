@@ -72,7 +72,7 @@ export default function JourneyMilestoneDialog({ daysLeft, dayNumber, hadStreak 
                         </Link>
                     )}
 
-                    <Button size="lg" className="w-full rounded-xl text-[rgb(var(--color-accent-foreground))]" onClick={close}>
+                    <Button size="lg" className="w-full rounded-xl" onClick={close}>
                         {action}
                     </Button>
                 </div>
