@@ -361,6 +361,15 @@ reader, dhikr, settings, and then everything else. For each screen:
 - [ ] Update `src/app/design-system/page.tsx` and `DesignSystemFixture.tsx` to
   show the final tokens. That page becomes the reference for review.
 
+Progress (2026-11-20): daylight overrides 122 → 30. Done so far: dead
+selectors pruned, `primaryForeground` and light status colours fixed (with a
+contrast test), the glass/black shim and the heading and primary-text
+repainting removed, real `BrandIcon` instead of "N" boxes, and the glow blobs
+and gradient headings removed. Still to do: infinite `animate-pulse` (87),
+`shadow-lg`/`xl` (59), `rounded-3xl` (44), the `tracking-*` cleanup (220),
+the remaining 30 daylight rules (switch, popover, mission tabs, gradients),
+and the design-system page.
+
 ### Validation for every phase
 
 - `npm run lint`, `npm run typecheck`, `npm run test:run`, `npm run build`
