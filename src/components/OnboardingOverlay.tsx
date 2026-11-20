@@ -38,7 +38,7 @@ import LottieMoment from "@/components/ui/LottieMoment";
 const PatternOverlay = dynamic(() => import("@/components/PatternOverlay"), { ssr: false });
 
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme, type ThemeId } from "@/context/ThemeContext";
+import { DEFAULT_THEME_ID, useTheme, type ThemeId } from "@/context/ThemeContext";
 import type { TranslationTree } from "@/context/LocaleContext";
 import { sendGAEvent } from "@/lib/analytics/analytics";
 
@@ -60,9 +60,9 @@ function readableTextOn(rgb: string): string {
     return onDark > onWhite ? "rgb(15 23 42)" : "rgb(255 255 255)";
 }
 
-// Suggested on first setup only, never locked: Midnight from the first screen, then one per gender.
-const START_THEME: ThemeId = "midnight";
-const GENDER_THEME: Record<"male" | "female", ThemeId> = { male: "midnight", female: "blossom" };
+// Suggested on first setup only, never locked: Daylight from the first screen, then one per gender.
+const START_THEME: ThemeId = DEFAULT_THEME_ID;
+const GENDER_THEME: Record<"male" | "female", ThemeId> = { male: "daylight", female: "blossom" };
 const GENDER_LOTTIE = { male: "/lottie/lights.lottie", female: "/lottie/blossom.lottie" };
 
 const CARD = "mt-8 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))]/20 rounded-3xl p-6 shadow-[var(--shadow-floating)] overflow-hidden relative min-h-[380px] flex flex-col text-[rgb(var(--color-text))]";
@@ -91,13 +91,13 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
     // Text on the Next button follows the theme's button colour, so it stays readable on bright themes too.
     const nextTextColor = readableTextOn(activeTheme.colors.primary);
     // A theme the user already picked is respected; only someone who never picked one (or only has the default) gets suggestions.
-    // "default" is what an app that never chose a theme stores, so it counts as unchosen; any other saved theme is kept.
+    // "default" (the legacy id of Emerald) is what an app that never chose a theme stores, so it counts as unchosen; any other saved theme is kept.
     const [suggestTheme] = useState(() => {
         const saved = getStorageService().getOptional<string>(STORAGE_KEYS.SETTINGS_THEME);
         return !saved || saved === "default";
     });
     const startThemeApplied = useRef(false);
-    // Layout effect: the theme lands before the first paint, so no frame of the default green shows.
+    // Layout effect: the theme lands before the first paint, so no frame of another theme shows.
     useLayoutEffect(() => {
         if (!suggestTheme || startThemeApplied.current) return;
         startThemeApplied.current = true;
@@ -385,7 +385,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
 
         if (step === 'setup-gender') {
             const options = [
-                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "hands", tone: "info", selected: "bg-[rgb(var(--color-info))]/20 border-[rgb(var(--color-info))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-info))]" },
+                { value: 'male', label: translations.onboardingMaleLabel, sub: translations.onboardingMaleSub, icon: "hands", tone: "primary", selected: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary))]" },
                 { value: 'female', label: translations.onboardingFemaleLabel, sub: translations.onboardingFemaleSub, icon: "heart-handshake", tone: "primary", selected: "bg-[rgb(var(--color-primary-light))]/20 border-[rgb(var(--color-primary-light))] text-[rgb(var(--color-text-strong))]", check: "text-[rgb(var(--color-primary-light))]" },
             ] as const;
             const chooseGender = (value: "male" | "female") => {

@@ -46,72 +46,32 @@
   --breakpoint-xs: 389px;
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-}
-
 /* Runtime theme contract. ThemeContext updates the --color-* channels; the
    shadcn aliases below keep utility classes on the same source of truth. */
 :root {
-  --color-canvas: 10 10 10;
-  --color-surface: 15 23 42;
-  --color-surface-subtle: 30 41 59;
-  --color-text-strong: 255 255 255;
-  --color-text: 226 232 240;
-  --color-text-muted: 148 163 184;
-  --color-primary: 16 185 129;
-  --color-primary-strong: 4 120 87;
+  /* Defaults match the Daylight theme (the default for new users). The
+     pre-paint script in layout.tsx overrides them with the saved theme. */
+  --radius: 0.625rem;
+  --color-canvas: 250 248 243;
+  --color-surface: 255 255 255;
+  --color-surface-subtle: 243 240 232;
+  --color-text-strong: 23 33 28;
+  --color-text: 52 64 58;
+  --color-text-muted: 90 102 95;
+  --color-primary: 21 128 87;
+  --color-primary-strong: 14 99 66;
   --color-primary-foreground: 255 255 255;
-  --color-accent: 251 191 36;
-  --color-accent-foreground: 15 23 42;
+  --color-accent: 184 137 46;
+  --color-accent-foreground: 23 33 28;
   --color-info: 96 165 250;
   --color-success: 52 211 153;
   --color-warning: 251 191 36;
   --color-danger: 248 113 113;
   --color-danger-foreground: 255 255 255;
-  --color-border: 255 255 255;
-  --color-ring: 52 211 153;
-  --shadow-card: 0 4px 20px rgb(0 0 0 / 0.24);
-  --shadow-floating: 0 12px 32px rgb(0 0 0 / 0.4);
+  --color-border: 228 223 211;
+  --color-ring: 21 128 87;
+  --shadow-card: 0 1px 2px rgb(23 33 28 / 0.05), 0 1px 1px rgb(23 33 28 / 0.03);
+  --shadow-floating: 0 12px 32px rgb(23 33 28 / 0.12);
   --radius-control: 0.625rem;
   --radius-card: 0.75rem;
   --space-page: 1rem;
@@ -120,13 +80,13 @@
   --font-reading: Amiri, Lateef, serif;
   --font-editorial: Lora, Georgia, serif;
   --reader-line-height: 1.9;
-  --glass-blur: 18px;
-  --glass-saturation: 1.2;
-  --glass-background-opacity: 0.48;
-  --glass-border-opacity: 0.24;
+  --glass-blur: 14px;
+  --glass-saturation: 1.25;
+  --glass-background-opacity: 0.54;
+  --glass-border-opacity: 0.44;
   --glass-radius: 1.25rem;
-  --glass-tint: 15 23 42;
-  color-scheme: dark;
+  --glass-tint: 255 255 255;
+  color-scheme: light;
 
   --background: rgb(var(--color-canvas));
   --foreground: rgb(var(--color-text));
@@ -198,7 +158,7 @@
 
   html,
   body {
-    @apply bg-[#0a0a0a] text-white;
+    @apply bg-[rgb(var(--color-canvas))] text-[rgb(var(--color-text-strong))];
     min-height: 100%;
     /* iOS keeps a stale wide layout after rotation if anything overflows sideways. */
     max-width: 100%;
@@ -207,7 +167,7 @@
 
   /* =====================================================================
      DAYLIGHT THEME — Light Glassmorphism Design System
-     Background: #f0f4f8 (biru-abu muda)
+     Background: --color-canvas (warm paper)
      Surface: white/65 frosted glass
      Text: multi-level hierarchy (dark, muted, placeholder)
      Primary accent: Emerald (tetap sama seperti dark mode)
@@ -216,8 +176,8 @@
   /* [1] Base: Body & HTML */
   [data-theme="daylight"] body,
   [data-theme="daylight"] html {
-    background-color: #f0f4f8 !important;
-    color: #0f172a !important;
+    background-color: rgb(var(--color-canvas)) !important;
+    color: rgb(var(--color-text-strong)) !important;
   }
 
   /* [2] Surface / Card Backgrounds — Light Glassmorphism */
@@ -274,7 +234,7 @@
 
   /* Modal Backdrop (Overlay) */
   [data-theme="daylight"] [class*="fixed inset-0 bg-black/"] {
-    background-color: rgba(15, 23, 42, 0.3) !important;
+    background-color: rgb(var(--color-text-strong) / 0.3) !important;
     /* Slightly darker overlay for focus */
     backdrop-filter: blur(4px) !important;
   }
@@ -282,41 +242,42 @@
   /* Bottom Nav specifically */
   [data-theme="daylight"] nav[class*="backdrop-blur"],
   [data-theme="daylight"] nav[class*="bg-black"] {
-    background-color: rgba(240, 244, 248, 0.92) !important;
-    border-top-color: rgba(15, 23, 42, 0.08) !important;
+    background-color: rgb(var(--color-canvas) / 0.92) !important;
+    border-top-color: rgb(var(--color-text-strong) / 0.08) !important;
   }
 
   /* [4] Borders */
   [data-theme="daylight"] [class*="border-white/"] {
-    border-color: rgba(15, 23, 42, 0.1) !important;
+    border-color: rgb(var(--color-text-strong) / 0.1) !important;
   }
 
   [data-theme="daylight"] [class*="border-slate-"] {
-    border-color: rgba(15, 23, 42, 0.12) !important;
+    border-color: rgb(var(--color-text-strong) / 0.12) !important;
   }
 
   /* Project specific border hex */
   [data-theme="daylight"] [class*="border-[#0F172A]"],
   [data-theme="daylight"] [class*="border-[#0f172a]"] {
-    border-color: rgba(15, 23, 42, 0.1) !important;
+    border-color: rgb(var(--color-text-strong) / 0.1) !important;
   }
 
   /* Keep primary-colored borders (emerald) visible but slightly muted */
   [data-theme="daylight"] [class*="border-[rgb(var(--color-primary))"] {
-    border-color: rgba(16, 185, 129, 0.3) !important;
+    border-color: rgb(var(--color-primary) / 0.3) !important;
   }
 
   /* [5] TEXT HIERARCHY */
 
-  /* L1: Bold headings & primary labels */
+  /* L1: Bold headings & primary labels. Solid primary buttons keep their own
+     (white) text, both on the button and on bold text inside it. */
   [data-theme="daylight"] h1,
   [data-theme="daylight"] h2,
   [data-theme="daylight"] h3,
   [data-theme="daylight"] h4,
-  [data-theme="daylight"] .font-bold,
-  [data-theme="daylight"] .font-semibold,
-  [data-theme="daylight"] .text-white:not([class*="bg-emerald"], [class*="bg-primary"], [class*="bg-secondary"], .bg-emerald-600, .bg-teal-600) {
-    color: #0f172a !important;
+  [data-theme="daylight"] .font-bold:not([class*="bg-[rgb(var(--color-primary"], [class*="bg-[rgb(var(--color-primary"] *),
+  [data-theme="daylight"] .font-semibold:not([class*="bg-[rgb(var(--color-primary"], [class*="bg-[rgb(var(--color-primary"] *),
+  [data-theme="daylight"] .text-white:not([class*="bg-emerald"], [class*="bg-primary"], [class*="bg-secondary"], [class*="bg-[rgb(var(--color-primary"], .bg-emerald-600, .bg-teal-600) {
+    color: rgb(var(--color-text-strong)) !important;
   }
 
   /* Specific override for SelectTriggers and similar buttons that are surfaces, not primary actions */
@@ -324,13 +285,13 @@
   [data-theme="daylight"] button[class*="bg-black/"],
   [data-theme="daylight"] .SelectTrigger,
   [data-theme="daylight"] [role="combobox"] {
-    color: #0f172a !important;
+    color: rgb(var(--color-text-strong)) !important;
   }
 
   [data-theme="daylight"] [class*="text-slate-1"],
   [data-theme="daylight"] [class*="text-slate-5"],
   [data-theme="daylight"] [class*="text-gray-1"] {
-    color: #0f172a !important;
+    color: rgb(var(--color-text-strong)) !important;
   }
 
   /* Force white text back for buttons and primary surfaces */
@@ -348,7 +309,7 @@
   [data-theme="daylight"] [class*="text-white/7"],
   [data-theme="daylight"] [class*="text-slate-2"],
   [data-theme="daylight"] [class*="text-slate-3"] {
-    color: #1e293b !important;
+    color: rgb(var(--color-text)) !important;
   }
 
   /* L3: Secondary / Muted text */
@@ -356,19 +317,19 @@
   [data-theme="daylight"] [class*="text-white/6"],
   [data-theme="daylight"] [class*="text-slate-4"],
   [data-theme="daylight"] [class*="text-gray-4"] {
-    color: #475569 !important;
+    color: rgb(var(--color-text-muted)) !important;
   }
 
   /* L4: Placeholder / Hint */
   [data-theme="daylight"] [class*="text-white/4"],
   [data-theme="daylight"] [class*="text-white/3"],
   [data-theme="daylight"] [class*="text-white/2"] {
-    color: #94a3b8 !important;
+    color: rgb(var(--color-text-muted)) !important;
   }
 
   /* Primary accent text (Emerald), kept darker for contrast */
   [data-theme="daylight"] [class*="text-[rgb(var(--color-primary)"] {
-    color: #059669 !important;
+    color: rgb(var(--color-primary-strong)) !important;
   }
 
   /* [6] ICONS — SVG and Lucide React */
@@ -379,50 +340,50 @@
   [data-theme="daylight"] svg.text-white,
   [data-theme="daylight"] svg.text-slate-400,
   [data-theme="daylight"] svg[class*="text-white/"] {
-    color: #334155 !important;
+    color: rgb(var(--color-text)) !important;
   }
 
   /* Project specific color ring-offsets */
   [data-theme="daylight"] [class*="ring-offset-[#0F172A]"],
   [data-theme="daylight"] [class*="ring-offset-[#0f172a]"] {
-    --tw-ring-offset-color: #f0f4f8 !important;
+    --tw-ring-offset-color: rgb(var(--color-canvas)) !important;
   }
 
   /* Primary-colored icons keep brightness, just slightly darker */
   [data-theme="daylight"] svg[class*="text-[rgb(var(--color-primary"] {
-    color: #059669 !important;
+    color: rgb(var(--color-primary-strong)) !important;
   }
 
   /* [7] GRADIENT SURFACES */
   [data-theme="daylight"] [class*="from-slate-"],
   [data-theme="daylight"] [class*="from-black"],
   [data-theme="daylight"] [class*="from-gray-"] {
-    --tw-gradient-from: #f0f4f8 !important;
+    --tw-gradient-from: rgb(var(--color-canvas)) !important;
   }
 
   [data-theme="daylight"] [class*="to-slate-"],
   [data-theme="daylight"] [class*="to-black"],
   [data-theme="daylight"] [class*="to-gray-"] {
-    --tw-gradient-to: #e2e8f0 !important;
+    --tw-gradient-to: rgb(var(--color-surface-subtle)) !important;
   }
 
   [data-theme="daylight"] [class*="via-slate-"],
   [data-theme="daylight"] [class*="via-black"] {
-    --tw-gradient-via: #eef2f7 !important;
+    --tw-gradient-via: rgb(var(--color-surface-subtle)) !important;
   }
 
   /* Profile card gradient (bg-gradient-to-r from-primary/20) */
   /* We exclude small badges/icons (w-5, h-5, etc) so they stay solid and readable */
   [data-theme="daylight"] [class*="from-[rgb(var(--color-primary))"]:not([class*="w-5"], [class*="h-5"], [class*="w-6"], [class*="h-6"], [class*="w-14"], [class*="h-14"]),
   [data-theme="daylight"] [class*="from-[rgb(var(--color-primary-dark))"]:not([class*="w-5"], [class*="h-5"], [class*="w-6"], [class*="h-6"], [class*="w-14"], [class*="h-14"]) {
-    --tw-gradient-from: rgba(16, 185, 129, 0.12) !important;
-    --tw-gradient-to: rgba(5, 150, 105, 0.05) !important;
-    background: linear-gradient(to bottom right, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.05)) !important;
+    --tw-gradient-from: rgb(var(--color-primary) / 0.12) !important;
+    --tw-gradient-to: rgb(var(--color-primary) / 0.05) !important;
+    background: linear-gradient(to bottom right, rgb(var(--color-primary) / 0.12), rgb(var(--color-primary) / 0.05)) !important;
   }
 
   /* Specific fix for text with primary-light colors which often lack contrast in light mode */
   [data-theme="daylight"] [class*="text-[rgb(var(--color-primary-light))"] {
-    color: #059669 !important;
+    color: rgb(var(--color-primary-strong)) !important;
     /* Deep emerald for readability */
     opacity: 0.8 !important;
   }
@@ -431,15 +392,15 @@
   /* OFF state track */
   [data-theme="daylight"] [role="switch"][data-state="unchecked"],
   [data-theme="daylight"] [data-state="unchecked"][class*="rounded-full"][class*="border-2"] {
-    background-color: #cbd5e1 !important;
-    border-color: #a0aec0 !important;
+    background-color: rgb(var(--color-border)) !important;
+    border-color: rgb(var(--color-border)) !important;
   }
 
   /* ON state track */
   [data-theme="daylight"] [role="switch"][data-state="checked"],
   [data-theme="daylight"] [data-state="checked"][class*="rounded-full"][class*="border-2"] {
-    background-color: #059669 !important;
-    border-color: #047857 !important;
+    background-color: rgb(var(--color-primary-strong)) !important;
+    border-color: rgb(var(--color-primary-strong)) !important;
   }
 
   /* Thumb (the white dot) */
@@ -453,33 +414,33 @@
   [data-theme="daylight"] [role="listbox"],
   [data-theme="daylight"] [role="tooltip"] {
     background-color: rgba(255, 255, 255, 0.95) !important;
-    border-color: rgba(15, 23, 42, 0.1) !important;
+    border-color: rgb(var(--color-text-strong) / 0.1) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    color: #0f172a !important;
+    color: rgb(var(--color-text-strong)) !important;
   }
 
   [data-theme="daylight"] [role="option"] {
-    color: #1e293b !important;
+    color: rgb(var(--color-text)) !important;
   }
 
   [data-theme="daylight"] [role="option"]:hover,
   [data-theme="daylight"] [role="option"][data-highlighted=""] {
-    background-color: rgba(16, 185, 129, 0.08) !important;
-    color: #059669 !important;
+    background-color: rgb(var(--color-primary) / 0.08) !important;
+    color: rgb(var(--color-primary-strong)) !important;
   }
 
   /* Inner cards or progress tracks that use dark colors explicitly */
   [data-theme="daylight"] [class*="bg-black/20"],
   [data-theme="daylight"] [class*="bg-black/40"] {
-    background-color: rgba(15, 23, 42, 0.05) !important;
+    background-color: rgb(var(--color-text-strong) / 0.05) !important;
   }
 
   /* [10] CARDS with Box Shadows — Give them depth */
   [data-theme="daylight"] [class*="shadow-2xl"],
   [data-theme="daylight"] [class*="shadow-xl"] {
-    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+    box-shadow: 0 4px 24px rgb(var(--color-text-strong) / 0.08), 0 1px 4px rgb(var(--color-text-strong) / 0.04) !important;
   }
 
   /* [11] HOVER states for interactive elements */
@@ -494,16 +455,16 @@
   [data-theme="daylight"] [class*="hover:bg-white/1"]:hover,
   [data-theme="daylight"] [class*="hover:bg-white/5"]:hover,
   [data-theme="daylight"] [class*="hover:bg-white/10"]:hover {
-    background-color: rgba(15, 23, 42, 0.06) !important;
+    background-color: rgb(var(--color-text-strong) / 0.06) !important;
   }
 
   [data-theme="daylight"] [class*="hover:bg-white/2"]:hover {
-    background-color: rgba(15, 23, 42, 0.08) !important;
+    background-color: rgb(var(--color-text-strong) / 0.08) !important;
   }
 
   /* Specific fix for Profile dialog list items */
   [data-theme="daylight"] .hover\:bg-white\/5:hover {
-    background-color: rgba(15, 23, 42, 0.05) !important;
+    background-color: rgb(var(--color-text-strong) / 0.05) !important;
   }
 
   /* ===== END DAYLIGHT THEME ===== */
@@ -755,17 +716,17 @@
 }
 
 [data-theme="daylight"] .spiritual-card .font-arabic {
-  color: #0f172a !important;
+  color: rgb(var(--color-text-strong)) !important;
   opacity: 1 !important;
 }
 
 [data-theme="daylight"] .spiritual-card .text-slate-400\/70 {
-  color: #475569 !important;
+  color: rgb(var(--color-text-muted)) !important;
   opacity: 0.8 !important;
 }
 
 [data-theme="daylight"] .spiritual-card .text-slate-100\/90 {
-  color: #1e293b !important;
+  color: rgb(var(--color-text)) !important;
 }
 
 /* Mission Items in Modal */
@@ -780,36 +741,36 @@
 }
 
 [data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm p[class*="text-white"] {
-  color: #1e293b !important;
+  color: rgb(var(--color-text)) !important;
 }
 
 [data-theme="daylight"] [role="dialog"] button.border.backdrop-blur-sm p[class*="text-white/50"] {
-  color: #64748b !important;
+  color: rgb(var(--color-text-muted)) !important;
 }
 
 /* Missions Modal — Daylight Theme (Soft Theme) */
 html[data-theme="daylight"] .mission-tabs-container {
-  background-color: rgba(15, 23, 42, 0.04) !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+  background-color: rgb(var(--color-text-strong) / 0.04) !important;
+  border-bottom: 1px solid rgb(var(--color-text-strong) / 0.08) !important;
 }
 
 html[data-theme="daylight"] .mission-tab-trigger {
-  background-color: rgba(15, 23, 42, 0.05) !important;
-  color: #64748b !important;
-  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+  background-color: rgb(var(--color-text-strong) / 0.05) !important;
+  color: rgb(var(--color-text-muted)) !important;
+  border: 1px solid rgb(var(--color-text-strong) / 0.06) !important;
   transition: all 0.2s ease !important;
 }
 
 /* ACTIVE STATE - High Contrast Soft Emerald Glassmorphism */
 html[data-theme="daylight"] .mission-tab-trigger[data-state="active"] {
-  background-color: rgba(16, 185, 129, 0.28) !important;
+  background-color: rgb(var(--color-primary) / 0.28) !important;
   /* Made even more visible */
-  color: #064e3b !important;
+  color: rgb(var(--color-primary-strong)) !important;
   /* emerald-900 for max contrast */
-  border: 1.5px solid rgba(16, 185, 129, 0.6) !important;
+  border: 1.5px solid rgb(var(--color-primary) / 0.6) !important;
   font-weight: 800 !important;
   backdrop-filter: blur(8px) !important;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2) !important;
+  box-shadow: 0 4px 14px rgb(var(--color-primary) / 0.2) !important;
   opacity: 1 !important;
 }
 

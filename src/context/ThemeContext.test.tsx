@@ -7,11 +7,13 @@ import "@testing-library/jest-dom/vitest";
 
 import {
     applyTheme,
+    DEFAULT_THEME_ID,
     hasCompleteThemeTokens,
     THEMES,
     ThemeProvider,
     useTheme,
 } from "@/context/ThemeContext";
+import { prePaintThemeScript } from "@/context/themes";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { SETTINGS_EN } from "@/data/translations/en";
 import { SETTINGS_ID } from "@/data/translations/id";
@@ -38,7 +40,7 @@ describe("ThemeContext", () => {
 
     it("defines complete tokens for every theme", () => {
         expect(Object.keys(THEMES)).toEqual(expect.arrayContaining([
-            "default",
+            "emerald",
             "daylight",
             "blossom",
         ]));
@@ -71,11 +73,11 @@ describe("ThemeContext", () => {
         expect(document.documentElement.style.getPropertyValue("--glass-radius")).toBe("1.25rem");
         expect(document.documentElement.style.getPropertyValue("--glass-tint")).toBe("255 255 255");
 
-        applyTheme(THEMES.default);
+        applyTheme(THEMES.emerald);
         expect(document.documentElement.dataset.colorMode).toBe("dark");
         expect(document.documentElement.style.getPropertyValue("--glass-blur")).toBe("18px");
         expect(document.documentElement.style.getPropertyValue("--glass-background-opacity")).toBe("0.48");
-        expect(document.documentElement.style.getPropertyValue("--glass-tint")).toBe("15 23 42");
+        expect(document.documentElement.style.getPropertyValue("--glass-tint")).toBe("22 29 26");
     });
 
     it("persists a selected theme using the existing storage key", async () => {
@@ -85,7 +87,7 @@ describe("ThemeContext", () => {
             </ThemeProvider>
         );
 
-        await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent("default"));
+        await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent("daylight"));
         act(() => screen.getByRole("button", { name: "Blossom" }).click());
 
         await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent("blossom"));
@@ -102,7 +104,63 @@ describe("ThemeContext", () => {
             </ThemeProvider>
         );
 
-        await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent("default"));
+        await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent("daylight"));
         expect(window.localStorage.getItem(STORAGE_KEYS.SETTINGS_THEME)).toBe("unknown-theme");
+    });
+
+    it.each([
+        ["emerald", "emerald"],
+        ["default", "emerald"], // legacy id from older versions and synced settings
+        ["midnight", "midnight"],
+        ["sunset", "sunset"],
+    ])("keeps a saved %s theme instead of the light default", async (saved, expected) => {
+        window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, saved);
+
+        render(
+            <ThemeProvider>
+                <ThemeProbe />
+            </ThemeProvider>
+        );
+
+        await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent(expected));
+        expect(document.documentElement.dataset.colorMode).toBe("dark");
+    });
+
+    describe("pre-paint script", () => {
+        const runScript = () => new Function(prePaintThemeScript(STORAGE_KEYS.SETTINGS_THEME))();
+        const appliedStyle = () => document.documentElement.style.cssText;
+
+        it("applies the light default when nothing is saved", () => {
+            runScript();
+            expect(document.documentElement.dataset.theme).toBe(DEFAULT_THEME_ID);
+            expect(document.documentElement.dataset.colorMode).toBe("light");
+            expect(document.documentElement.style.getPropertyValue("--color-canvas")).toBe("250 248 243");
+        });
+
+        it.each(Object.keys(THEMES))("sets exactly what applyTheme sets for a saved %s theme", (id) => {
+            window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, id);
+            runScript();
+            const fromScript = appliedStyle();
+            const datasetFromScript = { ...document.documentElement.dataset };
+
+            document.documentElement.style.cssText = "";
+            applyTheme(THEMES[id as keyof typeof THEMES]);
+
+            expect(fromScript).toBe(appliedStyle());
+            expect(datasetFromScript).toEqual({ ...document.documentElement.dataset });
+        });
+
+        it("reads the legacy \"default\" id as Emerald", () => {
+            window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, "default");
+            runScript();
+            expect(document.documentElement.dataset.theme).toBe("emerald");
+            expect(document.documentElement.dataset.colorMode).toBe("dark");
+        });
+
+        it("falls back to the default for an unknown saved value", () => {
+            window.localStorage.setItem(STORAGE_KEYS.SETTINGS_THEME, "toString");
+            runScript();
+            expect(document.documentElement.dataset.theme).toBe(DEFAULT_THEME_ID);
+        });
     });
 });

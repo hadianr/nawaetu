@@ -61,8 +61,8 @@ export const otherEN = {
 
     // Theme
     themeTitle: "App Appearance",
-    themeDefaultName: "Default",
-    themeDefaultDescription: "Classic dark theme with emerald accents",
+    themeEmeraldName: "Emerald",
+    themeEmeraldDescription: "Calm dark theme with emerald and gold accents",
     themeDaylightName: "Daylight",
     themeDaylightDescription: "Bright, light, and comfortable for daytime",
     themeMidnightName: "Midnight",
@@ -597,7 +597,7 @@ export const otherEN = {
     onboardingGenderTitle: "What is your gender?",
     onboardingGenderDesc: "So your prayer missions and fiqh guidance fit you. We’ll also suggest colours; change them anytime.",
     onboardingMaleLabel: "Male",
-    onboardingMaleSub: "Jumat missions · Midnight theme",
+    onboardingMaleSub: "Jumat missions · Daylight theme",
     onboardingFemaleLabel: "Female",
     onboardingFemaleSub: "Muslimah missions · Blossom theme",
     onboardingLocationTitle: "Set up prayer times",
