@@ -118,8 +118,8 @@ export function InsightModal({
                                 <InsightRow label={t.stats.insights.prayers.sunnah} value={data.sunnahTotal.toString()} icon={<AppIcon name="sparkles" size="sm" tone="primary" />} />
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-light))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase">{t.stats.insights.prayers.insightTitle}</p>
+                                        <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] uppercase">{t.stats.insights.prayers.insightTitle}</p>
                                     </div>
                                     {data.primaryPrayer ? (
                                         <>
@@ -212,8 +212,8 @@ export function InsightModal({
                                 <InsightRow label={t.stats.insights.dhikr.total} value={data.history.reduce((s, d) => s + (d.tasbihCount || 0), 0).toLocaleString()} icon={<AppIcon name="hands" size="sm" tone="primary" />} />
                                 <div className="p-4 bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20 rounded-2xl">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-light))]" />
-                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase">{t.stats.insights.dhikr.benefitTitle}</p>
+                                        <MessageSquare className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
+                                        <p className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] uppercase">{t.stats.insights.dhikr.benefitTitle}</p>
                                     </div>
                                     <p className="text-xs text-[rgb(var(--color-text))] italic">
                                         &quot;{t.stats.insights.dhikr.summary}&quot;

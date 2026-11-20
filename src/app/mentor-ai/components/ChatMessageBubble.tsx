@@ -59,7 +59,7 @@ export function ChatMessageBubble({ msg }: ChatMessageBubbleProps) {
                         return (
                             <div
                                 className={cn(
-                                    "prose prose-sm max-w-none [&_*]:text-[rgb(var(--color-text))] [&_strong]:text-[rgb(var(--color-primary-light))] [&_strong]:font-bold"
+                                    "prose prose-sm max-w-none [&_*]:text-[rgb(var(--color-text))] [&_strong]:text-[rgb(var(--color-primary-strong))] [&_strong]:font-bold"
                                 )}
                                 dangerouslySetInnerHTML={{ __html: formatMarkdown(parsed.mainMessage) }}
                             />

@@ -30,7 +30,7 @@ function getConsequenceBadge(consequence: string, t: TranslationTree): { label: 
     switch (consequence) {
         case "qadha": return { label: t.fastingQadhaConsequenceQadha, color: "bg-[rgb(var(--color-warning))]/20 text-[rgb(var(--color-warning))] border-[rgb(var(--color-warning))]/30" };
         case "fidyah": return { label: t.fastingQadhaConsequenceFidyah, color: "bg-[rgb(var(--color-accent))]/20 text-[rgb(var(--color-accent-strong))] border-[rgb(var(--color-accent))]/30" };
-        case "choice": return { label: t.fastingQadhaConsequenceChoice, color: "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border-[rgb(var(--color-primary))]/30" };
+        case "choice": return { label: t.fastingQadhaConsequenceChoice, color: "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] border-[rgb(var(--color-primary))]/30" };
         default: return { label: consequence, color: "bg-[rgb(var(--color-surface-subtle))] text-[rgb(var(--color-text-muted))] border-[rgb(var(--color-border))]" };
     }
 }

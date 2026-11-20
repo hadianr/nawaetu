@@ -513,7 +513,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                                 <h1 className="text-base md:text-lg font-bold truncate leading-tight text-[rgb(var(--color-text-strong))]">
                                     {chapter.name_simple}
                                 </h1>
-                                <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-light))] font-medium truncate uppercase tracking-wider">
+                                <p className="text-[9px] md:text-[10px] text-[rgb(var(--color-primary-strong))] font-medium truncate uppercase tracking-wider">
                                     {chapter.revelation_place === "Makkah" ? t.quranMakkah : t.quranMadinah}, {chapter.verses_count} {t.quranVerseCount}
                                 </p>
                             </div>
@@ -624,7 +624,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         {/* End of chapter indicator */}
                         {currentPage >= totalPages && totalPages > 0 && (
                             <div className="text-center py-8 border-t border-[rgb(var(--color-border))]/60 mx-4 md:mx-0">
-                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider opacity-80 decoration-double">
+                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider opacity-80 decoration-double">
                                     صَدَقَ اللهُ العَظِيم
                                 </span>
                             </div>
@@ -702,7 +702,7 @@ export default function VerseList({ chapter, verses, currentPage, totalPages, cu
                         {/* End of chapter indicator */}
                         {currentPage >= totalPages && totalPages > 0 && (
                             <div className="text-center py-8 border-t border-[rgb(var(--color-border))] mx-4 md:mx-0">
-                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider opacity-80 decoration-double">
+                                <span className="text-xs md:text-sm font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider opacity-80 decoration-double">
                                     صَدَقَ اللهُ العَظِيم
                                 </span>
                             </div>

@@ -66,13 +66,13 @@ export default function DailySpiritWidget() {
                     <div className="flex items-center gap-2.5">
                         <div className="p-2 rounded-xl bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
                             {isHadith ? (
-                                <Quote className="w-3.5 h-3.5 text-[rgb(var(--color-primary-light))]" />
+                                <Quote className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                             ) : (
-                                <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary-light))]" />
+                                <BookOpen className="w-3.5 h-3.5 text-[rgb(var(--color-primary-strong))]" />
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-light))]/70 leading-none">
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]/70 leading-none">
                                 {isHadith ? t.spiritualHadithTitle : t.spiritualDuaTitle}
                             </span>
                             <span className="text-[11px] font-medium mt-0.5 text-[rgb(var(--color-text-muted))]">{localizedCategory}</span>
@@ -150,7 +150,7 @@ export default function DailySpiritWidget() {
                     <span className="text-[11px] font-semibold transition-colors text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))]">
                         {isHadith ? t.hadithExploreLink : t.hadithExploreLinkDua}
                     </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-light))] group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-3.5 h-3.5 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary-strong))] group-hover:translate-x-0.5 transition-all" />
                 </Link>
 
                 {/* Shine overlay */}

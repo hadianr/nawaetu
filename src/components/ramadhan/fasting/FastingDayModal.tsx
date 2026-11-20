@@ -28,7 +28,7 @@ function getConsequenceStyle(consequence: string, t: TranslationTree): { label: 
         case "none": return { label: t.fastingConsequenceNone, color: "text-[rgb(var(--color-success))]", bg: "bg-[rgb(var(--color-success))]/10 border-[rgb(var(--color-success))]/20" };
         case "qadha": return { label: t.fastingConsequenceQadha, color: "text-[rgb(var(--color-warning))]", bg: "bg-[rgb(var(--color-warning))]/10 border-[rgb(var(--color-warning))]/25" };
         case "fidyah": return { label: t.fastingConsequenceFidyah, color: "text-[rgb(var(--color-accent-strong))]", bg: "bg-[rgb(var(--color-accent))]/10 border-[rgb(var(--color-accent))]/25" };
-        case "choice": return { label: t.fastingConsequenceChoice, color: "text-[rgb(var(--color-primary-light))]", bg: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25" };
+        case "choice": return { label: t.fastingConsequenceChoice, color: "text-[rgb(var(--color-primary-strong))]", bg: "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/25" };
         default: return { label: consequence, color: "text-[rgb(var(--color-text-muted))]", bg: "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))]" };
     }
 }
@@ -190,7 +190,7 @@ export default function FastingDayModal({
                     {requiresMadzhab && (
                         <div className="rounded-2xl border border-[rgb(var(--color-primary))]/25 bg-[rgb(var(--color-primary))]/10 p-4 space-y-3">
                             <div>
-                                <p className="text-[11px] font-bold text-[rgb(var(--color-primary-light))] mb-1">{t.fastingMadzhabTitle}</p>
+                                <p className="text-[11px] font-bold text-[rgb(var(--color-primary-strong))] mb-1">{t.fastingMadzhabTitle}</p>
                                 <p className="text-[10px] text-[rgb(var(--color-text-muted))] leading-relaxed">{t.fastingMadzhabSubtitle}</p>
                             </div>
                             <div className="grid grid-cols-1 gap-2">

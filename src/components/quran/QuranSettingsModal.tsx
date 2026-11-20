@@ -74,7 +74,7 @@ export default function QuranSettingsModal({
                     <div className="space-y-5 py-2">
                         {/* View Mode */}
                         <div className="space-y-3">
-                            <Label className="text-[rgb(var(--color-primary-light))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranModeRead}</Label>
+                            <Label className="text-[rgb(var(--color-primary-strong))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranModeRead}</Label>
                             <div className="grid grid-cols-2 gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
                                 <button onClick={() => setViewMode('list')} className={`flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>
                                     <AlignJustify className="h-4 w-4" /> {t.quranModeList}
@@ -86,7 +86,7 @@ export default function QuranSettingsModal({
                         </div>
                         {/* Script Type Toggle */}
                         <div className="space-y-3">
-                            <Label className="text-[rgb(var(--color-primary-light))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranScriptType}</Label>
+                            <Label className="text-[rgb(var(--color-primary-strong))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranScriptType}</Label>
                             <div className="grid grid-cols-2 gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
                                 <button
                                     onClick={() => setScriptType('indopak')}
@@ -107,7 +107,7 @@ export default function QuranSettingsModal({
 
                         {/* Toggles */}
                         <div className="space-y-3">
-                            <Label className="text-[rgb(var(--color-primary-light))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranOtherDisplay}</Label>
+                            <Label className="text-[rgb(var(--color-primary-strong))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranOtherDisplay}</Label>
                             <div className="flex items-center justify-between p-4 rounded-2xl border border-[rgb(var(--color-primary))]/10 bg-[rgb(var(--color-primary))]/5 shadow-sm">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-[rgb(var(--color-primary))]/10 flex items-center justify-center">
@@ -130,7 +130,7 @@ export default function QuranSettingsModal({
 
                         {/* Font Size */}
                         <div className="space-y-3">
-                            <Label className="text-[rgb(var(--color-primary-light))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranFontSize}</Label>
+                            <Label className="text-[rgb(var(--color-primary-strong))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranFontSize}</Label>
                             <div className="flex items-center gap-2 bg-[rgb(var(--color-primary))]/5 p-1.5 rounded-2xl border border-[rgb(var(--color-primary))]/10">
                                 <button onClick={() => setFontSize('small')} className={`flex-1 h-10 rounded-xl text-sm font-bold transition-all ${fontSize === 'small' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>A-</button>
                                 <button onClick={() => setFontSize('medium')} className={`flex-1 h-10 rounded-xl text-base font-bold transition-all ${fontSize === 'medium' ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))] shadow-[var(--shadow-card)] quran-tab-active' : 'opacity-40 hover:opacity-100'}`}>A</button>
@@ -140,7 +140,7 @@ export default function QuranSettingsModal({
 
                         {/* Qari Selection */}
                         <div className="space-y-3">
-                            <Label className="text-[rgb(var(--color-primary-light))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranSelectQari}</Label>
+                            <Label className="text-[rgb(var(--color-primary-strong))] text-[10px] font-bold uppercase tracking-wider opacity-60 ml-1">{t.quranSelectQari}</Label>
                             <Select value={currentReciterId?.toString()} onValueChange={handleReciterChange} disabled={isPending}>
                                 <SelectTrigger className={`w-full bg-[rgb(var(--color-primary))]/5 border-[rgb(var(--color-primary))]/10 rounded-2xl h-14 md:h-12 shadow-sm ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     <div className="flex items-center gap-3">

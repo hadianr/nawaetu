@@ -90,10 +90,10 @@ export default function DailyMissionCard({
                 if (minsSinceStart <= 60 && minsSinceStart >= 0) {
                     urgencyNode = (
                         <div className="mt-1.5 flex items-start gap-1.5 p-1.5 rounded bg-[rgb(var(--color-primary))]/10 border border-[rgb(var(--color-primary))]/20">
-                            <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-light))] mt-0.5 shrink-0" />
+                            <Sparkles className="w-3 h-3 text-[rgb(var(--color-primary-strong))] mt-0.5 shrink-0" />
                             <div>
-                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] leading-tight">{t.home_mission_early_title}</p>
-                                <p className="text-[9px] text-[rgb(var(--color-primary-light))]/70 leading-tight italic">{t.home_mission_early_quote}</p>
+                                <p className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] leading-tight">{t.home_mission_early_title}</p>
+                                <p className="text-[9px] text-[rgb(var(--color-primary-strong))]/70 leading-tight italic">{t.home_mission_early_quote}</p>
                             </div>
                         </div>
                     );
@@ -141,7 +141,7 @@ export default function DailyMissionCard({
                         <p className={cn(
                             "text-xs font-semibold truncate pr-2",
                             isCompleted
-                                ? "text-[rgb(var(--color-primary-light))] line-through"
+                                ? "text-[rgb(var(--color-primary-strong))] line-through"
                                 : isSpecial ? "text-[rgb(var(--color-accent-strong))]" : "text-[rgb(var(--color-text-strong))]"
                         )}>
                             {mission.title}
@@ -174,7 +174,7 @@ export default function DailyMissionCard({
                                 <AlertCircle className="w-2.5 h-2.5" /> {t.home_mission_late}
                             </span>
                         ) : validation.isEarly ? (
-                            <span className="text-[9px] text-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
+                            <span className="text-[9px] text-[rgb(var(--color-primary-strong))] bg-[rgb(var(--color-primary))]/10 px-1.5 py-0.5 rounded border border-[rgb(var(--color-primary))]/20 flex items-center gap-1 font-medium ml-auto">
                                 <Sparkles className="w-2.5 h-2.5" /> {t.home_mission_early}
                             </span>
                         ) : null}

@@ -51,7 +51,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
                             "w-8 h-8 rounded-full flex items-center justify-center transition-all",
                             "bg-[rgb(var(--color-primary))]/15"
                         )}>
-                            <Crown className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                            <Crown className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                         </div>
                         <div>
                             <div
@@ -96,35 +96,35 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_0_10} (Lvl 1-10)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_0_10} (Lvl 1-10)</span>
                             </div>
                             <p className="text-[9px] leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_0_10}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_11_25} (Lvl 11-25)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_11_25} (Lvl 11-25)</span>
                             </div>
                             <p className="text-[9px] leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_11_25}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_26_50} (Lvl 26-50)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_26_50} (Lvl 26-50)</span>
                             </div>
                             <p className="text-[9px] leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_26_50}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_51_99} (Lvl 51-99)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_51_99} (Lvl 51-99)</span>
                             </div>
                             <p className="text-[9px] leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_51_99}</p>
                         </div>
 
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
-                                <span className="font-bold text-[rgb(var(--color-primary-light))]">{translations.gamificationLevelTitle_100} (Lvl 100+)</span>
+                                <span className="font-bold text-[rgb(var(--color-primary-strong))]">{translations.gamificationLevelTitle_100} (Lvl 100+)</span>
                             </div>
                             <p className="text-[9px] leading-relaxed italic border-l border-[rgb(var(--color-border))] pl-2">{translations.gamificationLevelDesc_100}</p>
                         </div>
@@ -156,7 +156,7 @@ export function GamificationStats({ stats }: GamificationStatsProps) {
                     "w-12 h-12 rounded-full flex flex-shrink-0 items-center justify-center transition-all",
                     "bg-[rgb(var(--color-primary))]/15"
                 )}>
-                    <Flame className="w-6 h-6 text-[rgb(var(--color-primary-light))]" />
+                    <Flame className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                 </div>
                 <div>
                     <div className="flex items-end gap-2">

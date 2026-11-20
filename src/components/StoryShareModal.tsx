@@ -259,7 +259,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                             />
                             {isExporting && (
                                 <div className="absolute inset-0 bg-[rgb(var(--color-text-strong))]/60 backdrop-blur-sm flex items-center justify-center text-[rgb(var(--color-primary-foreground))] text-[11px] font-bold gap-1.5 animate-in fade-in">
-                                    <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-light))]" />
+                                    <Sparkles className="w-3.5 h-3.5 animate-spin text-[rgb(var(--color-primary-strong))]" />
                                     <span>{t.storyShareCompressing || "Mengompres..."}</span>
                                 </div>
                             )}
@@ -268,7 +268,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
 
                     {/* Status Message Notification */}
                     {statusMessage && (
-                        <div className="animate-in slide-in-from-top-1 rounded-lg border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-2 text-center text-[11px] font-medium text-[rgb(var(--color-primary-light))]">
+                        <div className="animate-in slide-in-from-top-1 rounded-lg border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-2 text-center text-[11px] font-medium text-[rgb(var(--color-primary-strong))]">
                             {statusMessage}
                         </div>
                     )}
@@ -323,7 +323,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                     className={cn(
                                         "flex-1 px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "normal"
-                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
+                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
                                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                     title={t.storyShareNormalSize}
@@ -336,7 +336,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                     className={cn(
                                         "flex-1 px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "large"
-                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
+                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
                                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                     title={t.storyShareLargeSize}
@@ -349,7 +349,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                     className={cn(
                                         "flex-1 px-2 py-1 rounded-lg font-bold transition-all cursor-pointer text-center",
                                         fontSizeScale === "xlarge"
-                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-light))] border border-[rgb(var(--color-primary))]/30"
+                                            ? "bg-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-primary-strong))] border border-[rgb(var(--color-primary))]/30"
                                             : "text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text-strong))]"
                                     )}
                                     title={t.storyShareExtraLargeSize}
@@ -368,7 +368,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                 className={cn(
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showArabic
-                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
+                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))] font-bold"
                                         : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] opacity-60"
                                 )}
                             >
@@ -381,7 +381,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                 className={cn(
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showLatin
-                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
+                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))] font-bold"
                                         : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] opacity-60"
                                 )}
                             >
@@ -394,7 +394,7 @@ export function StoryShareModal({ item, onClose }: StoryShareModalProps) {
                                 className={cn(
                                     "py-1 px-1.5 rounded-lg font-semibold border transition-all cursor-pointer text-center",
                                     showExplanation
-                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-light))] font-bold"
+                                        ? "bg-[rgb(var(--color-primary))]/15 border-[rgb(var(--color-primary))]/30 text-[rgb(var(--color-primary-strong))] font-bold"
                                         : "bg-[rgb(var(--color-surface-subtle))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] opacity-60"
                                 )}
                             >

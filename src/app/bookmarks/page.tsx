@@ -175,7 +175,7 @@ export default function BookmarksPage() {
                                                     QS. {bookmark.surahName} : {bookmark.verseId}
                                                 </div>
                                                 {isCurrentLastRead && (
-                                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-light))] uppercase tracking-wider hidden sm:block">
+                                                    <span className="text-[10px] font-bold text-[rgb(var(--color-primary-strong))] uppercase tracking-wider hidden sm:block">
                                                         {t.bookmarksLastReadLabel}
                                                     </span>
                                                 )}

@@ -205,7 +205,7 @@ export default function FeedbackModal({ open, onOpenChange }: FeedbackModalProps
 
                 <DialogHeader className="px-6 pt-6 pb-2 relative z-10">
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-[rgb(var(--color-primary-light))]" />
+                        <Sparkles className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" />
                         {t.feedbackModalTitle}
                     </DialogTitle>
                     <DialogDescription className={cn(

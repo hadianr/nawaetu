@@ -70,7 +70,7 @@ export default function MosqueFinderModal({ isOpen, onClose }: MosqueFinderModal
             icon: Car,
             query: "rest+area+masjid+terdekat",
             color: "bg-[rgb(var(--color-primary))]/10",
-            iconColor: "text-[rgb(var(--color-primary-light))]"
+            iconColor: "text-[rgb(var(--color-primary-strong))]"
         }
     ];
 

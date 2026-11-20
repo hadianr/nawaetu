@@ -248,7 +248,7 @@ export default function VerseItem({
                                     </span>
                                     <div className="flex flex-col items-center font-sans">
                                         {showTransliteration && word.transliteration?.text && (
-                                            <span className="text-[10px] md:text-xs text-[rgb(var(--color-primary-light))] text-center leading-tight mb-1 opacity-80 group-hover:opacity-100">
+                                            <span className="text-[10px] md:text-xs text-[rgb(var(--color-primary-strong))] text-center leading-tight mb-1 opacity-80 group-hover:opacity-100">
                                                 {word.transliteration.text}
                                             </span>
                                         )}
@@ -275,7 +275,7 @@ export default function VerseItem({
                             <p
                                 onClick={() => isMasked && setIsMasked(false)}
                                 className={cn(
-                                    "text-[rgb(var(--color-primary-light))] text-sm md:text-base font-medium leading-relaxed transition-all duration-300",
+                                    "text-[rgb(var(--color-primary-strong))] text-sm md:text-base font-medium leading-relaxed transition-all duration-300",
                                     isMasked && "blur-sm opacity-40 hover:opacity-60 cursor-pointer select-none"
                                 )}
                             >

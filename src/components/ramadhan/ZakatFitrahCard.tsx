@@ -134,7 +134,7 @@ export default function ZakatFitrahCard() {
 
                     {/* Doa Menerima Zakat (Bagi Panitia/Mustahiq) */}
                     <div className="rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 p-3">
-                        <h4 className="font-semibold text-[rgb(var(--color-primary-light))] text-xs mb-2 flex items-center gap-2">
+                        <h4 className="font-semibold text-[rgb(var(--color-primary-strong))] text-xs mb-2 flex items-center gap-2">
                             <ThumbsUp className="h-3.5 w-3.5" /> Doa Menerima Zakat (Mustahiq)
                         </h4>
                         <div className="font-arabic text-right text-lg text-[rgb(var(--color-text-strong))] mb-2 leading-loose" dir="rtl">
@@ -151,7 +151,7 @@ export default function ZakatFitrahCard() {
                     {/* Calculator Button */}
                     <button
                         onClick={() => setCalcModalOpen(true)}
-                        className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 py-3.5 text-sm font-semibold text-[rgb(var(--color-primary-light))] transition-all hover:bg-[rgb(var(--color-primary))]/20 hover:border-[rgb(var(--color-primary))]/40 active:scale-[0.98] shadow-[var(--shadow-card)]"
+                        className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-[rgb(var(--color-primary))]/20 bg-[rgb(var(--color-primary))]/10 py-3.5 text-sm font-semibold text-[rgb(var(--color-primary-strong))] transition-all hover:bg-[rgb(var(--color-primary))]/20 hover:border-[rgb(var(--color-primary))]/40 active:scale-[0.98] shadow-[var(--shadow-card)]"
                     >
                         <Calculator className="h-4 w-4 transition-transform group-hover:rotate-12" />
                         Hitung & Bayar Zakat Fitrah

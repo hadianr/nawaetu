@@ -166,12 +166,12 @@ export default function JournalPage() {
                         {/* 2. Secondary Stats Grid */}
                         <div className="grid grid-cols-2 gap-2">
                             <div className="rounded-2xl border p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-[var(--shadow-card)] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
-                                <ScrollText className="w-4 h-4 mb-1 text-[rgb(var(--color-primary-light))]" />
+                                <ScrollText className="w-4 h-4 mb-1 text-[rgb(var(--color-primary-strong))]" />
                                 <span className="text-lg font-bold mb-0.5 text-[rgb(var(--color-text-strong))]">{stats.total_intentions}</span>
                                 <span className="text-[9px] uppercase tracking-wider font-bold text-[rgb(var(--color-text-muted))]">{t.intention_stat_total}</span>
                             </div>
                             <div className="rounded-2xl border p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-[var(--shadow-card)] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
-                                <Star className="w-4 h-4 mb-1 text-[rgb(var(--color-primary-light))]" />
+                                <Star className="w-4 h-4 mb-1 text-[rgb(var(--color-primary-strong))]" />
                                 <span className="text-lg font-bold mb-0.5 text-[rgb(var(--color-text-strong))]">{stats.reflection_rate}%</span>
                                 <span className="text-[9px] uppercase tracking-wider font-bold text-[rgb(var(--color-text-muted))]">{t.intention_refleksi_btn}</span>
                             </div>

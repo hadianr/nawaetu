@@ -44,7 +44,7 @@ export default function QuranPageClient() {
                     </Link>
                 </Button>
                 <div>
-                    <h1 className="text-xl font-bold tracking-tight text-[rgb(var(--color-primary-light))]">{t.quranTitle}</h1>
+                    <h1 className="text-xl font-bold tracking-tight text-[rgb(var(--color-primary-strong))]">{t.quranTitle}</h1>
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.quranSubtitle}</p>
                 </div>
             </div>

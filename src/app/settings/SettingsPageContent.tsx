@@ -288,13 +288,13 @@ export default function SettingsPageContent() {
                         <div className="flex items-center gap-3">
                             <div className={cn(
                                 "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shrink-0",
-                                "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))]"
+                                "bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))]"
                             )}>
                                 <BarChart3 className="w-5 h-5" />
                             </div>
                             <div>
                                 <h3 className={cn(
-                                    "text-sm font-bold group-hover:text-[rgb(var(--color-primary-light))] transition-colors",
+                                    "text-sm font-bold group-hover:text-[rgb(var(--color-primary-strong))] transition-colors",
                                     "text-[rgb(var(--color-text-strong))]"
                                 )}>
                                     {t.statsLabel}
@@ -323,7 +323,7 @@ export default function SettingsPageContent() {
                     >
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                                <MapPin className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                                 <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.locationLabel}</span>
                             </div>
                             <svg
@@ -346,7 +346,7 @@ export default function SettingsPageContent() {
                         <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none z-0">
                             <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-2">
-                                    <Clock className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                                    <Clock className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                                     <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-muted))] font-bold">{t.methodLabel}</span>
                                 </div>
                                 <ChevronDown className="w-3 h-3 text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
@@ -378,7 +378,7 @@ export default function SettingsPageContent() {
                 {/* Hijri Date Settings Card */}
                 <div id="hijri-date" className="scroll-mt-6 bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4">
                     <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-light))]" />
+                        <Calendar className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />
                         <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.hijriDateTitle}</span>
                     </div>
 
@@ -427,7 +427,7 @@ export default function SettingsPageContent() {
                     </div>
                     <Button asChild variant="outline" className="min-h-11 w-full border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))]/60 text-[rgb(var(--color-text-strong))] hover:bg-[rgb(var(--color-surface-subtle))] hover:text-[rgb(var(--color-text-strong))]">
                         <Link href="/hijri-calendar">
-                            <Calendar className="mr-2 h-4 w-4 text-[rgb(var(--color-primary-light))]" />
+                            <Calendar className="mr-2 h-4 w-4 text-[rgb(var(--color-primary-strong))]" />
                             {t.hijriCalendarOpenFromSettings}
                         </Link>
                     </Button>
@@ -555,7 +555,7 @@ export default function SettingsPageContent() {
                         </div>
                         {fcmToken ? (
                             <div className="p-3 rounded-xl border bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
-                                <p className="text-[10px] font-mono text-[rgb(var(--color-primary-light))]/70 break-all leading-relaxed">
+                                <p className="text-[10px] font-mono text-[rgb(var(--color-primary-strong))]/70 break-all leading-relaxed">
                                     {fcmToken}
                                 </p>
                             </div>

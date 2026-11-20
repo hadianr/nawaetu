@@ -197,7 +197,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
 
     return (
         <div className="bg-[rgb(var(--color-surface))]/70 border border-[rgb(var(--color-border))]/20 rounded-2xl p-4 space-y-4 mb-6">
-            <div className="flex items-center gap-2 text-[rgb(var(--color-primary-light))]">
+            <div className="flex items-center gap-2 text-[rgb(var(--color-primary-strong))]">
                 <Headphones className="w-4 h-4" />
                 <span className="text-sm font-semibold text-[rgb(var(--color-text-strong))]">{t.audioTitle}</span>
             </div>
@@ -214,7 +214,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
                         )}>
                             <Volume2 className={cn(
                                 "w-4 h-4",
-                                "text-[rgb(var(--color-primary-light))]"
+                                "text-[rgb(var(--color-primary-strong))]"
                             )} />
                         </div>
                         <div className="min-w-0">

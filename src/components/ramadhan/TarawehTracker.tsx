@@ -89,11 +89,11 @@ export default function TarawehTracker() {
             {/* Stats row */}
             <div className="flex gap-1.5 px-3 mb-2 sm:gap-2 sm:px-4 sm:mb-3">
                 <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center backdrop-blur-sm shadow-[var(--shadow-card)]">
-                    <p className="text-lg font-bold text-[rgb(var(--color-primary-light))] flex items-center justify-center gap-1">{streak > 0 && <AppIcon name="sparkles" size="sm" tone="primary" />}{streak || "—"}</p>
+                    <p className="text-lg font-bold text-[rgb(var(--color-primary-strong))] flex items-center justify-center gap-1">{streak > 0 && <AppIcon name="sparkles" size="sm" tone="primary" />}{streak || "—"}</p>
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.tarawehStreakNights}</p>
                 </div>
                 <div className="flex-1 rounded-xl bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] px-3 py-2 text-center backdrop-blur-sm shadow-[var(--shadow-card)]">
-                    <p className="text-lg font-bold text-[rgb(var(--color-primary-light))]">{totalNights}</p>
+                    <p className="text-lg font-bold text-[rgb(var(--color-primary-strong))]">{totalNights}</p>
                     <p className="text-xs text-[rgb(var(--color-text-muted))]">{t.tarawehTotalNights}</p>
                 </div>
             </div>
@@ -141,7 +141,7 @@ export default function TarawehTracker() {
                         const activeStyle =
                             choice === 8
                                 ? "border-[rgb(var(--color-info))]/60 bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))] shadow-[var(--shadow-card)]"
-                                : "border-[rgb(var(--color-primary))]/60 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-light))] shadow-[var(--shadow-card)]";
+                                : "border-[rgb(var(--color-primary))]/60 bg-[rgb(var(--color-primary))]/15 text-[rgb(var(--color-primary-strong))] shadow-[var(--shadow-card)]";
 
                         return (
                             <button
@@ -179,7 +179,7 @@ export default function TarawehTracker() {
                             onClick={() => handleLocationSelect("masjid")}
                             className={`flex items-center justify-center gap-1.5 py-2 rounded-lg border text-xs font-medium transition-all ${
                                 todayLocation === "masjid" 
-                                ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary-light))]/40 text-[rgb(var(--color-primary-light))]"
+                                ? "bg-[rgb(var(--color-primary))]/20 border-[rgb(var(--color-primary-light))]/40 text-[rgb(var(--color-primary-strong))]"
                                 : "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] text-[rgb(var(--color-text-muted))] hover:bg-[rgb(var(--color-surface-subtle))]"
                             }`}
                         >

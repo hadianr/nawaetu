@@ -235,7 +235,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
             return {
                 bg: "from-[rgb(var(--color-primary))]/20 via-[rgb(var(--color-surface))] to-[rgb(var(--color-primary))]/10",
                 border: "border-[rgb(var(--color-primary))]/30 shadow-[var(--shadow-card)]",
-                text: "text-[rgb(var(--color-primary-light))]",
+                text: "text-[rgb(var(--color-primary-strong))]",
                 icon: "fill-[rgb(var(--color-primary-light))]/30 text-[rgb(var(--color-primary))]"
             };
         }
@@ -371,7 +371,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                 <DialogContent className="bg-[rgb(var(--color-surface))] backdrop-blur-xl border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] w-[90%] rounded-2xl shadow-[var(--shadow-floating)]">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                            <MoonIcon className="w-5 h-5 text-[rgb(var(--color-primary-light))]" /> {t.ramadhanInfoTitle}
+                            <MoonIcon className="w-5 h-5 text-[rgb(var(--color-primary-strong))]" /> {t.ramadhanInfoTitle}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 pt-2">
@@ -379,7 +379,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             {t.ramadhanInfoDesc}
                         </p>
                         <div className="bg-[rgb(var(--color-primary))]/10 p-4 rounded-xl border border-[rgb(var(--color-primary))]/10">
-                            <p className="text-xs font-bold text-[rgb(var(--color-primary-light))] mb-1">{t.ramadhanImproveTitle}</p>
+                            <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))] mb-1">{t.ramadhanImproveTitle}</p>
                             <ul className="list-disc list-inside text-xs text-[rgb(var(--color-text-muted))] space-y-1">
                                 <li>{t.ramadhanImproveItem1}</li>
                                 <li>{t.ramadhanImproveItem2}</li>

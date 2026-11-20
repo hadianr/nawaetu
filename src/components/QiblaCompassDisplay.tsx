@@ -92,7 +92,7 @@ const CompassDisplay = memo(({
                         {/* Cardinal Points */}
                         <div className={cn(
                             "absolute top-4 left-1/2 -translate-x-1/2 font-bold text-lg md:text-xl transform -translate-y-1 transition-colors",
-                            "text-[rgb(var(--color-primary-light))]"
+                            "text-[rgb(var(--color-primary-strong))]"
                         )}>N</div>
                         <div className={cn(
                             "absolute bottom-4 left-1/2 -translate-x-1/2 font-medium md:text-lg transform translate-y-1",
@@ -153,7 +153,7 @@ const CompassDisplay = memo(({
                                 <KaabaIcon className={cn(
                                     "w-12 h-12 md:w-14 md:h-14 drop-shadow-2xl relative z-10 transition-all duration-300",
                                     aligned
-                                        ? "opacity-100 brightness-110 text-[rgb(var(--color-primary-light))]"
+                                        ? "opacity-100 brightness-110 text-[rgb(var(--color-primary-strong))]"
                                         : "opacity-70 text-[rgb(var(--color-text-muted))]"
                                 )} />
                             </div>
@@ -194,7 +194,7 @@ const CompassDisplay = memo(({
                     <h2 className={cn(
                         "text-xl md:text-2xl lg:text-3xl font-bold tracking-wider transition-all duration-300 uppercase",
                         aligned
-                            ? "text-[rgb(var(--color-primary-light))]"
+                            ? "text-[rgb(var(--color-primary-strong))]"
                             : "text-[rgb(var(--color-text-muted))]"
                     )}>
                         <span className="inline-flex items-center gap-2">{aligned && <AppIcon name="shield-check" size="sm" tone="success" />}{aligned ? t.qiblaAligned : t.qiblaFinding}</span>
@@ -213,7 +213,7 @@ const CompassDisplay = memo(({
                         )} />
                         <span className={cn(
                             "text-sm font-semibold",
-                            "text-[rgb(var(--color-primary-light))]"
+                            "text-[rgb(var(--color-primary-strong))]"
                         )}>
                             {t.qiblaAlignedBadge}
                         </span>

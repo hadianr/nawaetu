@@ -55,7 +55,7 @@ export default function RamadhanGuideCard() {
                     >
                         <div className="relative z-10">
                             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(var(--color-primary-light))]/20 to-[rgb(var(--color-primary-dark))]/20 backdrop-blur-sm">
-                                <BookOpen className="h-5 w-5 text-[rgb(var(--color-primary-light))]" />
+                                <BookOpen className="h-5 w-5 text-[rgb(var(--color-primary-strong))]" />
                             </div>
                             <h4 className="mb-1 font-semibold text-[rgb(var(--color-text-strong))] text-sm">
                                 {t.guideButtonRuling || "Hukum Puasa"}

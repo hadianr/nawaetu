@@ -92,7 +92,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 className="flex flex-col items-center justify-center p-8 md:p-12 space-y-4 text-center"
             >
                 <div className="w-20 h-20 bg-[rgb(var(--color-primary))]/10 rounded-full flex items-center justify-center mb-4">
-                    <Sparkles className="w-10 h-10 text-[rgb(var(--color-primary-light))]" />
+                    <Sparkles className="w-10 h-10 text-[rgb(var(--color-primary-strong))]" />
                 </div>
                 <h3 className="text-2xl font-serif text-[rgb(var(--color-text-strong))]">{t.intention_success_title}</h3>
                 <p className="text-[rgb(var(--color-text-muted))] text-base font-serif italic max-w-xs">{t.intention_success_desc}</p>
@@ -110,7 +110,7 @@ export default function IntentionInputForm({ onComplete, userToken }: IntentionI
                 {/* Header & Dalil Section */}
                 <div className="space-y-6">
                     <div className="flex justify-center mb-2">
-                        <BookHeart className="w-6 h-6 text-[rgb(var(--color-primary-light))]" />
+                        <BookHeart className="w-6 h-6 text-[rgb(var(--color-primary-strong))]" />
                     </div>
 
                     <AnimatePresence mode="wait">

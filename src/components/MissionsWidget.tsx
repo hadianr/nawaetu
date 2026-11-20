@@ -230,7 +230,7 @@ export default function MissionsWidget() {
                 <div className="flex items-center gap-2.5">
                     <div className={cn(
                         "w-8 h-8 rounded-full flex items-center justify-center text-sm ring-1 ring-inset",
-                        "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-light))] ring-[rgb(var(--color-primary))]/20"
+                        "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary-strong))] ring-[rgb(var(--color-primary))]/20"
                     )}>
                         <AppIcon name={gender === 'female' ? "sparkles" : gender === 'male' ? "shield-check" : "sparkles"} size="sm" tone="primary" />
                     </div>
