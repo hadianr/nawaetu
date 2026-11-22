@@ -45,8 +45,6 @@ export const STORAGE_KEYS = {
   // Missions
   COMPLETED_MISSIONS: 'completed_missions',
 
-  // Deprecated: nothing reads or writes it now (the streak is the record). Delete in a later release.
-  JOURNEY_DONE_DATES: 'journey_done_dates',
   // Journey: local date (YYYY-MM-DD) on which the user chose "Not today" for the fasting suggestion
   JOURNEY_FAST_SKIP: 'journey_fast_skip',
   // Journey milestones (days-left values) already celebrated
