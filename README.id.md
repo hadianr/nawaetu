@@ -36,8 +36,8 @@ Al-Qur'an, sholat, hadits, dan Sirah yang bisa dicek sumbernya, dalam kebiasaan 
 | **Solusi** | Satu aplikasi yang menghubungkan niat, ibadah, dan belajar: niat pagi dan refleksi malam, jadwal sholat, kiblat, Al-Qur'an dengan tajwid dan audio, hadits dan doa dengan perawi dan derajat, Sirah dalam tiga format, serta asisten AI yang dirancang menyertakan rujukan. |
 | **Keunggulan** | Desain yang dimulai dari niat, konten bersumber yang ditampilkan persis seperti aslinya, asisten yang menyatakan bila sumber belum dapat dipastikan, tanpa iklan, dan open source. |
 | **Pasar** | Indonesia saja memiliki sekitar 246 juta Muslim (87% penduduk). Belanja konsumen Muslim global mencapai $2,6 triliun pada 2024. ([sumber](#mengapa-sekarang)) |
-| **Traksi** | Live di nawaetu.com sejak 2026, 277 akun terdaftar, 825 misi diselesaikan, 90 rilis. ([detail](#sekilas)) |
-| **Model bisnis** | Gratis bagi pengguna tanpa iklan. Didukung donasi, sponsor infrastruktur (Biznet Gio Cloud), dan lisensi komersial untuk organisasi. |
+| **Traksi** | Live di nawaetu.com sejak 2026, 889 pengguna aktif tahun ini (Google Analytics), 277 akun terdaftar, 825 misi diselesaikan, 90 rilis. ([detail](#sekilas)) |
+| **Model bisnis** | Ibadah tetap gratis, tanpa iklan. Pendapatan dari paket organisasi co-branded (perusahaan, sekolah, pesantren), langganan Plus opsional untuk layanan seperti penggunaan AI lebih banyak, dan program bersponsor, dengan donasi sebagai dukungan komunitas. ([detail](#model-bisnis)) |
 | **Founder** | Hadian Rahmat ([@hadianr](https://github.com/hadianr)) |
 
 ---
@@ -50,6 +50,8 @@ Angka per **20 November 2026**. Angka penggunaan diambil dari endpoint publik ap
 | Bidang | Angka |
 | :--- | :--- |
 | **Akun terdaftar** | 277 (tamu memakai aplikasi tanpa akun dan tidak dihitung) |
+| **Pengguna aktif** | 889 sepanjang 2026, rata-rata 3 menit keterlibatan per pengguna (Google Analytics, 1 Januari sampai 23 November). Pelacakan sempat terblokir sampai pertengahan Agustus 2026, jadi bulan-bulan sebelumnya tercatat lebih rendah |
+| **Asal pengguna** | Sebagian besar kunjungan langsung dan tautan yang dibagikan, lalu pencarian Google, Instagram, dan Threads. Pengguna berada di Indonesia, terbanyak di Bandung dan Jakarta |
 | **Misi diselesaikan** | 825 |
 | **Hari ibadah tercatat** | 69 |
 | **Al-Qur'an** | 114 surah, audio per ayat, warna tajwid, terjemahan Indonesia dan Inggris |
@@ -78,7 +80,7 @@ Nawaetu membangun hari pengguna di atas tiga gagasan.
 
 | Pilar | Wujudnya di aplikasi |
 | :--- | :--- |
-| **Niat** | Menetapkan niat setiap pagi dan berefleksi setiap malam. Misi, streak, dan rank Hasanah (Mubtadi sampai Muhsinin) menghargai konsistensi, bukan sekadar hitungan. |
+| **Niat** | Menetapkan niat setiap pagi dan berefleksi setiap malam. Misi, streak, dan rank Hasanah (Mubtadi sampai Muhsin) menghargai konsistensi, bukan sekadar hitungan. |
 | **Ilmu yang bisa dicek** | Al-Qur'an, hadits, doa, dan Sirah menampilkan sumber, perawi, dan derajatnya, serta menjaga teks dari penerbit lain persis seperti aslinya. Tanya Nawaetu, asisten AI-nya, dirancang menyertakan rujukan dan menyatakan bila sumber belum dapat dipastikan. |
 | **Ibadah harian** | Jadwal sholat berbasis GPS dengan pengingat, kompas kiblat, kalender Hijriah dengan hari puasa sunnah, tasbih berantai dengan mode fokus, dan panduan Ramadhan musiman. |
 
@@ -117,7 +119,7 @@ Banyak aplikasi Islam berfokus pada utilitas seperti jadwal sholat dan penghitun
 | **Refleksi** | Penghitung dan pengingat pasif | **Jurnal Muhasabah**: niat pagi, refleksi malam |
 | **Konten agama** | Bervariasi menurut aplikasi | **Sumber ditampilkan bersama teksnya**: perawi, derajat, dan tautan, persis seperti aslinya |
 | **Tanya jawab Islami** | Artikel dan pencarian teks | **Tanya Nawaetu**: asisten AI yang dirancang menyertakan rujukan Al-Qur'an dan hadits, dan menyatakan bila sumber belum dapat dipastikan |
-| **Motivasi** | Penghitung dan streak | **Sistem Hasanah**: progres rank (Mubtadi sampai Muhsinin) dan streak Istiqamah |
+| **Motivasi** | Penghitung dan streak | **Sistem Hasanah**: progres rank (Mubtadi sampai Muhsin) dan streak Istiqamah |
 | **Iklan** | Bervariasi menurut aplikasi dan paket | Tanpa iklan |
 | **Kode sumber** | Umumnya closed-source | Open source (AGPLv3) |
 
@@ -142,12 +144,43 @@ Ini langkah berikutnya yang sudah tercatat di repositori ini, bukan komitmen ber
 - **Kecepatan**: memuat pemutar animasi setelah tampilan pertama agar beranda lebih cepat di HP.
 - **Ramadhan 1448 H**: mengaktifkan panduan Ramadhan untuk musimnya; perjalanan 100 hari menuju Ramadhan sudah berjalan.
 
+<a name="model-bisnis"></a>
 ## Model Bisnis dan Keberlanjutan
 
-- **Gratis bagi pengguna, tanpa iklan**: alat ibadah tidak dikunci di balik pembayaran.
-- **Donasi**: GitHub Sponsors, Trakteer, Ko-fi, dan Buy Me a Coffee ([Dukung Misi Nawaetu](#-dukung-misi-nawaetu)).
-- **Sponsor infrastruktur**: [Biznet Gio Cloud](https://www.biznetgio.com/) menyediakan server cloud untuk nawaetu.com.
-- **Dual license**: AGPLv3 untuk komunitas, dengan lisensi komersial untuk organisasi yang membutuhkan kode privat atau white-label ([Lisensi](#-lisensi-dual-licensing)).
+**Prinsip: ibadah tetap gratis; Nawaetu hanya menarik biaya atas layanan dan jasa; dukungan tetap sukarela.** Al-Qur'an, hadits, alat sholat, dzikir, Sirah, niat, dan streak gratis untuk semua orang, selamanya. Uang membayar hal yang memang butuh biaya untuk disediakan atau butuh kerja untuk dijalankan, tidak pernah membayar akses ke agama itu sendiri.
+
+### Sumber pendapatan
+
+| Sumber | Siapa yang membayar | Untuk apa | Status |
+| :--- | :--- | :--- | :--- |
+| **Nawaetu untuk Organisasi** | Perusahaan, sekolah Islam, pesantren, lembaga Islam | Program co-branded ("Nawaetu × organisasi Anda"): niat bersama, khatam bersama, tantangan Ramadhan, dashboard admin, dan laporan partisipasi. Harga per anggota | Direncanakan; mencari mitra uji coba |
+| **Nawaetu Plus** | Pengguna perorangan, opsional | Layanan yang punya biaya berjalan atau berupa pendampingan pribadi: Tanya Nawaetu di atas kuota gratis bulanan, paket keluarga, insight jurnal yang lebih dalam. Setiap langganan juga membiayai akun Plus gratis untuk pelajar atau orang yang membutuhkan | Direncanakan |
+| **Program bersponsor** | Brand dan lembaga | Program musiman seperti tantangan khatam Ramadhan, hadiah Hasanah, dan infrastruktur, dengan keterangan "didukung oleh" | Sponsor infrastruktur berjalan ([Biznet Gio Cloud](https://www.biznetgio.com/)) |
+| **Marketplace pengajar** | Peserta belajar | Kelas tahsin, bahasa Arab, dan kajian secara langsung; pengajar menerima upah dan Nawaetu mengambil komisi | Nanti |
+| **Kanal zakat dan infak** | Lembaga amil mitra | Integrasi dengan amil resmi (BAZNAS atau LAZ). Dana langsung masuk ke amil; Nawaetu tidak pernah memegang dana atau memotong dari donatur | Nanti, setelah kajian hukum dan syariah |
+| **Donasi** | Pendukung | Dukungan komunitas untuk biaya operasional ([Dukung Misi Nawaetu](#-dukung-misi-nawaetu)) | Berjalan |
+
+Organisasi adalah jalur pertumbuhan utama: setiap organisasi membawa anggotanya ke aplikasi gratis, dan paket organisasi memberi pendapatan berulang. Langganan perorangan saja masih kecil di pasar yang sensitif harga seperti Indonesia.
+
+### Posisi Nawaetu saat ini
+
+- **Tahap awal**: dengan 889 pengguna aktif dan 277 akun di 2026, langganan perorangan belum akan menghasilkan banyak, jadi Nawaetu Plus ditunda. Langkah komersial pertama adalah satu uji coba organisasi, yang sekaligus membawa satu kelompok pengguna.
+- **Tumbuh lokal dari mulut ke mulut**: sebagian besar pengguna datang langsung, lewat tautan yang dibagikan, atau Instagram, dan terpusat di Bandung dan Jakarta. Ini cocok untuk uji coba pertama dengan perusahaan, kampus, atau pesantren terdekat.
+- **Ukur sebelum pitching**: pendaftaran, niat, dan check-in sholat sudah dilacak, tetapi konversi dan retensi belum punya baseline. Menetapkannya termasuk dalam [roadmap](ROADMAP.id.md#-metrik-sukses-publik).
+
+### Yang tidak akan dilakukan Nawaetu
+
+- Mengunci Al-Qur'an, hadits, jadwal sholat, dzikir, Sirah, niat, atau streak di balik pembayaran.
+- Menjual pahala: tidak ada boost, rank, atau perbaikan streak berbayar.
+- Menampilkan iklan, atau menjual dan membagikan data pengguna untuk penargetan.
+- Menjual versi white-label yang mengganti merek konten kurasi Nawaetu dengan nama lain. Paket organisasi bersifat co-branded, dan kredit sumber selalu tetap ada.
+- Menerima sponsor yang bisnis utamanya riba atau judi.
+- Menghimpun zakat sendiri; zakat hanya melalui amil resmi.
+
+### Mengapa model ini bisa berjalan
+
+- **Kebiasaan harian sudah terbentuk**: lima waktu sholat membuat pengguna kembali beberapa kali sehari, dan Ramadhan menjadi musim puncak setiap tahun.
+- **Kepercayaan sebagai keunggulan**: tanpa iklan, tanpa jual data, dan konten yang sumbernya bisa dicek adalah posisi yang sulit ditiru aplikasi berbasis iklan.
 
 ## Tim
 
@@ -157,14 +190,13 @@ Ini langkah berikutnya yang sudah tercatat di repositori ini, bukan komitmen ber
 
 ## 📑 Daftar Isi
 - [Pilar Utama & Fitur](#-pilar-utama--fitur)
-- [Performa](#-performa)
 - [Sumber Konten](#-sumber-konten)
 - [FAQ](#faq)
 - [Tech Stack](#️-tech-stack)
 - [Memulai](#-memulai)
 - [Kontribusi](#-kontribusi)
 - [Dukung Misi Nawaetu](#-dukung-misi-nawaetu)
-- [Lisensi](#-lisensi-dual-licensing)
+- [Lisensi](#lisensi)
 
 ## 🌟 Pilar Utama & Fitur
 
@@ -202,19 +234,6 @@ Ini langkah berikutnya yang sudah tercatat di repositori ini, bukan komitmen ber
 
 ---
 
-## ⚡ Performa
-
-Ibadah tidak boleh terganggu lag, jadi performa dijaga lewat:
-
-- ✅ **Fully Static / ISR**: 114 halaman surah dibangun statis lewat `generateStaticParams`.
-- ✅ **Header keamanan statis**: CSP, HSTS, dan lainnya didefinisikan di konfigurasi Next.js, bukan dijalankan per request.
-- ✅ **Strategi sesi JWT**: tidak ada lookup database per request untuk validasi sesi.
-- ✅ **Code splitting**: kode yang tidak dipakai di-tree-shake.
-- ✅ **Optimasi gambar**: AVIF/WebP dengan lazy loading dan minimum TTL 1 tahun.
-- ✅ **Efisiensi crawl**: sitemap dan robots melewatkan halaman private.
-
----
-
 ## 📚 Sumber Konten
 
 Konten agama harus bisa dicek. Nawaetu menampilkan asal setiap teks, dan menjaga teks dari penerbit lain persis seperti yang mereka terbitkan.
@@ -229,7 +248,7 @@ Konten agama harus bisa dicek. Nawaetu menampilkan asal setiap teks, dan menjaga
 
 Judul, tadabbur, pengantar bab, dan kalimat penghubung ditulis oleh Nawaetu, diberi keterangan demikian, dan hanya merangkum isi sumbernya. Nomor hadits di perpustakaan hadits masih menunggu verifikasi dengan [Sunnah.com](https://sunnah.com).
 
-Lisensi Nawaetu (AGPLv3 dan lisensi komersial) mencakup kode dan tulisan Nawaetu sendiri. Konten dari penerbit di atas tetap mengikuti ketentuan masing-masing.
+Lisensi Nawaetu (AGPLv3) mencakup kode dan tulisan Nawaetu sendiri. Konten dari penerbit di atas tetap mengikuti ketentuan masing-masing.
 
 ---
 
@@ -239,7 +258,10 @@ Lisensi Nawaetu (AGPLv3 dan lisensi komersial) mencakup kode dan tulisan Nawaetu
 Aplikasi pelacak kebiasaan Islami gratis yang berangkat dari niat, dengan Al-Qur'an, alat ibadah, hadits dan doa bersumber, Sirah, alat puasa dan Ramadhan, dzikir, serta asisten AI.
 
 **Apakah Nawaetu gratis?**
-Ya. Aplikasi dapat digunakan gratis, dan kode sumbernya terbuka di bawah AGPLv3.
+Ya. Alat ibadah dan konten agama gratis dan akan tetap gratis, dan kode sumbernya terbuka di bawah AGPLv3. Opsi berbayar yang direncanakan, seperti penggunaan AI lebih banyak atau paket organisasi, tidak pernah mengunci konten ibadah.
+
+**Bukankah menarik bayaran itu sama dengan "menjual agama"?**
+Nawaetu hanya menarik biaya atas layanan dan jasa, tidak pernah atas akses ke Al-Qur'an, hadits, atau ibadah. Mayoritas ulama membolehkan upah atas pekerjaan yang berkaitan dengan agama, seperti mencetak mushaf atau mengajar Al-Qur'an. Lihat [Model Bisnis](#model-bisnis).
 
 **Apakah bisa dipakai tanpa internet?**
 Beberapa fitur dapat diakses tanpa koneksi internet.
@@ -278,13 +300,14 @@ Versi dikunci di [`package.json`](package.json).
 ### AI & External APIs
 *   **Google Gemini** (`@google/generative-ai`)
 *   **Groq (Llama)** - Inferensi LLM kecepatan tinggi
+*   **OpenRouter** - Routing model cadangan
 *   **Aladhan API** (Jadwal Sholat GPS)
 *   **Quran.com API** (Mushaf Uthmani & Audio Murottal)
 
 ### UI, Styling & Experience
 *   **Design system**: Lora (display) dan Plus Jakarta Sans (UI) lewat `next/font`, Amiri untuk teks Arab, 5 tema di atas token bersama dengan test kontras WCAG AA, dan semua ikon dibuat dari satu logo vektor (`npm run icons`, `npm run og-image`)
 *   **Tailwind CSS v4** & **Shadcn UI** (Primitif Radix UI)
-*   **Framer Motion** - Animasi mulus & mikro-interaksi
+*   **Framer Motion** & **dotLottie** - Animasi & mikro-interaksi
 *   **Recharts** - Analitik dinamis & grafik tren Hasanah
 *   **Lucide React** & **Sonner** - Ikonografi & notifikasi toast
 *   **Next PWA (`@ducanh2912/next-pwa`)** - Progressive Web App yang dapat diinstal
@@ -339,73 +362,6 @@ npm run test:run     # Seluruh test (Vitest)
 npm run analyze      # Analisis ukuran bundle
 ```
 
-## 🚀 Deployment
-
-### Live Demo
-- 🌐 **Production**: [nawaetu.com](https://nawaetu.com)
-- 📊 **Vercel Dashboard**: [Vercel Console](https://vercel.com)
-
-### Auto-Deployment Pipeline
-
-**Trigger Events:**
-```
-Push ke main branch
-    ↓
-Vercel: Auto-Build & Test
-    ↓
-Vercel: Auto-Deploy (production)
-    ↓
-Live pada nawaetu.com ✅
-```
-
-**Deployment Flow:**
-1. Code pushed ke GitHub `main` branch
-2. Vercel automatically triggers build & test
-3. Jika build success ✅
-4. Vercel automatically deploy to production (~2-5 min)
-5. Deploy logs bisa dilihat di Vercel dashboard
-
-### Deployment Status
-
-| Environment | URL | Status |
-|---|---|---|
-| **Production** | https://nawaetu.com | 🟢 Active |
-| **Preview** | Each PR → Vercel preview URL | 🟢 Auto-generated |
-
-### Preview Deployments
-
-Setiap Pull Request otomatis mendapat **preview URL**:
-
-```
-PR #123 → https://nawaetu-pr-123.vercel.app
-
-Gunakan untuk testing sebelum merge!
-```
-
-### Monitoring & Performance
-
-- **Vercel Analytics**: Response time, error tracking, performance metrics
-- **Vercel Build Logs**: Real-time build output dan error tracking
-- **Automatic Rollback**: Jika issue, mudah di-revert via Vercel dashboard
-
----
-
-## 📱 PWA Installation
-
-Nawaetu bisa diinstall kayak native app:
-
-**Android:**
-1. Buka nawaetu.com di Chrome
-2. Tap menu (3 titik) → "Install app"
-3. Done! Icon muncul di home screen
-
-**iOS:**
-1. Buka nawaetu.com di Safari
-2. Tap Share button → "Add to Home Screen"
-3. Done! Launch dari home screen
-
----
-
 ## 🤝 Kontribusi
 
 Kami sangat menyambut kontribusi dari seluruh komunitas global! Baik berupa perbaikan bug, fitur baru, dokumentasi, maupun terjemahan.
@@ -415,25 +371,14 @@ Untuk melaporkan bug atau mengajukan ide fitur baru, silakan gunakan [GitHub Iss
 
 **Ketentuan konten:** dalam teks yang ditulis Nawaetu sendiri, sebut Nabi secara lengkap sebagai "Nabi Muhammad SAW" (Indonesia) atau "Prophet Muhammad SAW" (Inggris), tidak memakai ligatur ﷺ atau "Nabi SAW" saja. Teks yang disalin dari sumber berlisensi seperti HadeethEnc dan QuranEnc harus tetap persis seperti aslinya. Aturan ini dijaga oleh test (`src/data/honorific.test.ts`) dan [AGENTS.md](AGENTS.md).
 
+> 💡 **Asisten AI untuk coding**: konvensi repositori untuk agen ada di [AGENTS.md](AGENTS.md).
+
 **Cara Berkontribusi:**
 1. **Fork** repositori ini
 2. **Buat branch fitur** (`git checkout -b feature/amazing-feature`)
 3. **Commit perubahan** (`git commit -m 'feat: add amazing feature'`)
 4. **Push ke branch** (`git push origin feature/amazing-feature`)
 5. **Buat Pull Request**
-
----
-
-## 🎨 Brand Assets
-
-### Hashtags
-`#NiatAjaDulu` `#Nawaetu` `#BuildHabits` `#IslamicGamification` `#IbadahHabits` `#StreakKeeper` `#DailyMissions` `#LevelUpIman` `#IstiqomahDaily` `#HabitTracker` `#MuslimTech`
-
-### Social Media
-- Website: [nawaetu.com](https://nawaetu.com)
-- Instagram: [@nawaetuapp](https://instagram.com/nawaetuapp) (coming soon)
-- Twitter: [@nawaetuapp](https://twitter.com/nawaetuapp) (coming soon)
-- GitHub: [hadianr/nawaetu](https://github.com/hadianr/nawaetu)
 
 ---
 
@@ -448,40 +393,6 @@ Script ini akan secara otomatis memperbarui versi pada `package.json`, `package-
 Untuk panduan lengkap dan troubleshooting, baca [Panduan Alur Rilis](docs/RELEASE_WORKFLOW.md).
 
 ---
-
-## 📋 Project Structure
-
-```
-nawaetu/
-├── src/
-│   ├── app/              # Next.js app pages
-│   ├── components/       # React components
-│   ├── context/          # React context providers
-│   ├── data/             # Static data & translations
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utility functions & helpers
-│   └── instrumentation.ts
-├── public/               # Static assets
-├── .github/
-│   └── workflows/        # GitHub Actions CI/CD
-├── .env.example          # Environment variables template
-├── CHANGELOG.md          # Version history
-├── package.json
-└── README.md
-```
-
----
-
-## 💬 Support
-
-Punya pertanyaan atau feedback? Reach out:
-- 📧 Email: support@nawaetu.com
-- 💬 In-app: Tanya Nawaetu (Asisten Muslim AI)
-- 🐛 Issues: [GitHub Issues](https://github.com/hadianr/nawaetu/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/hadianr/nawaetu/discussions)
-
----
-
 
 ## ☕ Dukung Misi Nawaetu
 
@@ -502,38 +413,21 @@ Kami sangat berterima kasih atas dukungan dari **[Biznet Gio Cloud](https://www.
 | **Ko-fi** | [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr) |
 | **Buy Me a Coffee** | [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr) |
 
-### 🏢 Lisensi Komersial
-*Untuk kebutuhan bisnis, white-label, atau penggunaan closed-source.*
-
-| Tingkat | Harga | Keuntungan |
-| :--- | :--- | :--- |
-| **Standar** | **$500** / tahun | 1 Produk, Source Code Privat, Update Reguler |
-| **Perpetual** | **$1,500** sekali bayar | Lisensi Selamanya, Whitelabel, Priority Support |
-
-👉 [**Mulai via GitHub Sponsors**](https://github.com/sponsors/hadianr)
+### 🏢 Untuk Organisasi
+Ingin program Nawaetu untuk perusahaan, sekolah, pesantren, atau masjid Anda, seperti tantangan Ramadhan bersama atau khatam bersama? Paket organisasi bersifat co-branded ("Nawaetu × organisasi Anda") dan sedang dikembangkan. Kami mencari mitra uji coba: hubungi [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com). Lihat [Model Bisnis](#model-bisnis).
 
 Semoga Allah membalas kebaikan Anda dengan keberkahan. Jazakumullah Khairan Katsiran! 🤲
 
 ---
 
 <a name="lisensi"></a>
-## 📄 Lisensi (Dual Licensing)
+## 📄 Lisensi
 
-**Nawaetu** menerapkan model **Dual Licensing** untuk menjaga keberlanjutan proyek dan melindungi komunitas:
-
-### 1. Edisi Komunitas (Gratis & Open Source)
-Berlisensi di bawah **AGPLv3 (GNU Affero General Public License v3)**.
+**Nawaetu** berlisensi di bawah **AGPLv3 (GNU Affero General Public License v3)**.
 - ✅ Gratis digunakan, dimodifikasi, dan didistribusikan.
 - ⚠️ Jika Anda memodifikasi dan mendistribusikan (termasuk menjalankannya sebagai layanan SaaS), **Anda WAJIB membuka source code Anda** di bawah lisensi AGPLv3.
-- **Cocok untuk**: Individu, komunitas, belajar, dan kontribusi open source.
-
-### 2. Lisensi Komersial (Berbayar/White Label)
-Untuk perusahaan atau individu yang ingin menggunakan Nawaetu untuk **tujuan komersial**, **white-label**, atau **tanpa membuka source code**.
-- ✅ Source code tetap privat (tidak perlu open source).
-- ✅ Boleh rebranding (White Label).
-- ✅ Priority support & fitur enterprise.
-- 📩 Kontak: **hadian.rahmat@gmail.com** untuk harga dan detail.
-- 📖 Baca ketentuan lengkap: [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md)
+- 🏷️ Lisensi ini mencakup kode, bukan nama dan logo Nawaetu. Fork sebaiknya memakai nama sendiri.
+- 📚 Konten dari penerbit lain tetap mengikuti ketentuan masing-masing, yang mewajibkan kredit sumbernya tetap ada. Lihat [Sumber Konten](#-sumber-konten).
 
 Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
@@ -547,26 +441,6 @@ Lihat file [LICENSE](LICENSE) untuk teks lengkap AGPLv3.
 
 ---
 
-## 🙏 Acknowledgments
+**"Mulai dengan niat, akhiri dengan keberkahan."**
 
-- Murattal by Mishary Rashid Al-Afasy
-- Quran API by [Quran.com](https://quran.com)
-- Hadith texts and translations by [HadeethEnc.com](https://hadeethenc.com)
-- Concise Sirah by Shaykh Haytham Sarhan, published with his permission
-- Quran translations via [QuranEnc.com](https://quranenc.com)
-- Prayer times calculation by [Aladhan API](https://aladhan.com)
-- Icons by [Lucide Icons](https://lucide.dev)
-- UI Components by [shadcn/ui](https://ui.shadcn.com)
-- AI powered by [Google Gemini](https://gemini.google.com) & [Groq](https://groq.com)
-
-----
-
-**"Innama al-a'malu bin-niyyat" - Start with intention, end with blessings.**
-
-**#LuruskanNiat #BuildHabits #IstiqomahDaily #HasanahPoints**
-
-Let's make ibadah easier, one niat at a time. 🚀🌙
-
----
-
-*Terakhir diperbarui: 15 November 2026*
+Mari jadikan ibadah lebih mudah, satu niat setiap kali. 🚀🌙
