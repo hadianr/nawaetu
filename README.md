@@ -36,8 +36,8 @@ Quran, prayer, hadith and Sirah you can check, and a daily habit built around <i
 | **Solution** | One app that links intention, worship and learning: a morning intention and evening reflection, prayer times, Qibla, a Quran with tajweed and audio, hadith and duas with attribution and grade, Sirah in three formats, and an AI assistant designed to cite references. |
 | **Why it stands out** | Intention-first design, source-backed content shown exactly as published, an assistant that says when it cannot confirm a source, no ads, and open source. |
 | **Market** | Indonesia alone has about 246 million Muslims (87% of the population). Global Muslim consumer spending was $2.6 trillion in 2024. ([sources](#market)) |
-| **Traction** | Live at nawaetu.com since 2026, 277 registered accounts, 825 missions completed, 90 releases. ([details](#traction)) |
-| **Business model** | Free for users with no ads. Sustained by donations, an infrastructure sponsor (Biznet Gio Cloud), and a commercial license for organisations. |
+| **Traction** | Live at nawaetu.com since 2026, 889 active users this year (Google Analytics), 277 registered accounts, 825 missions completed, 90 releases. ([details](#traction)) |
+| **Business model** | Worship stays free, with no ads. Revenue comes from co-branded organisation plans (companies, schools, pesantren), an optional Plus subscription for services such as extended AI use, and sponsored programmes, with donations as community support. ([details](#business-model)) |
 | **Founder** | Hadian Rahmat ([@hadianr](https://github.com/hadianr)) |
 
 ---
@@ -50,6 +50,8 @@ Figures as of **20 November 2026**. Usage numbers come from the app's public end
 | Area | Figure |
 | :--- | :--- |
 | **Registered accounts** | 277 (guests use the app without an account and are not counted) |
+| **Active users** | 889 in 2026, averaging 3 minutes of engagement each (Google Analytics, 1 January to 23 November). Tracking was blocked until mid-August 2026, so earlier months are undercounted |
+| **Where users come from** | Mostly direct visits and shared links, then Google search, Instagram and Threads. Users are in Indonesia, led by Bandung and Jakarta |
 | **Missions completed** | 825 |
 | **Worship days logged** | 69 |
 | **Quran** | All 114 surahs, verse-by-verse audio, tajweed colours, Indonesian and English translations |
@@ -78,7 +80,7 @@ Nawaetu builds the day around three ideas.
 
 | Pillar | What it means in the app |
 | :--- | :--- |
-| **Intention (niat)** | Set an intention every morning and reflect every evening. Missions, streaks and the Hasanah rank (Mubtadi to Muhsinin) reward consistency, not just counts. |
+| **Intention (niat)** | Set an intention every morning and reflect every evening. Missions, streaks and the Hasanah rank (Mubtadi to Muhsin) reward consistency, not just counts. |
 | **Knowledge you can check** | Quran, hadith, duas and Sirah show their source, attribution and grade, and keep other publishers' text exactly as published. Tanya Nawaetu, the AI assistant, is designed to cite references and to say when a source cannot be confirmed. |
 | **Everyday worship** | GPS prayer times with reminders, Qibla compass, Hijri calendar with recommended fasting days, tasbih with sequences and a focus mode, and seasonal Ramadan tools. |
 
@@ -117,7 +119,7 @@ Many Islamic apps centre on utilities such as prayer schedules and tasbih counte
 | **Reflection** | Counters and passive reminders | **Muhasabah journal**: morning intention, evening reflection |
 | **Religious content** | Varies by app | **Source shown with the text**: attribution, grade and a link, kept exactly as published |
 | **Islamic Q&A** | Articles and text search | **Tanya Nawaetu**: AI assistant designed to cite Quran and hadith references and to say when a source cannot be confirmed |
-| **Motivation** | Counters and streaks | **Hasanah system**: rank progression (Mubtadi to Muhsinin) and Istiqamah streaks |
+| **Motivation** | Counters and streaks | **Hasanah system**: rank progression (Mubtadi to Muhsin) and Istiqamah streaks |
 | **Ads** | Varies by app and plan | No advertising |
 | **Source code** | Typically closed | Open source (AGPLv3) |
 
@@ -142,12 +144,43 @@ These are next steps already identified in this repository, not commitments with
 - **Speed**: load the animation player after the first paint to cut mobile load time on the home page.
 - **Ramadan 1448 H**: switch on the Ramadan guide for the season; the 100-days-to-Ramadan journey is already live.
 
+<a name="business-model"></a>
 ## Business Model and Sustainability
 
-- **Free for users, no ads**: worship tools are not paywalled.
-- **Donations**: GitHub Sponsors, Trakteer, Ko-fi and Buy Me a Coffee ([Support the Mission](#-support-the-mission)).
-- **Infrastructure sponsor**: [Biznet Gio Cloud](https://www.biznetgio.com/) provides the cloud servers behind nawaetu.com.
-- **Dual license**: AGPLv3 for the community, with a commercial license for organisations that need private source or white-labelling ([License](#-license)).
+**Principle: worship stays free; Nawaetu charges only for services and work; support stays voluntary.** The Quran, hadith, prayer tools, dhikr, Sirah, intentions and streaks are free for everyone, permanently. Money pays for things that cost money to provide or take work to deliver, never for access to the religion itself.
+
+### Revenue streams
+
+| Stream | Who pays | What they pay for | Status |
+| :--- | :--- | :--- | :--- |
+| **Nawaetu for Organisations** | Companies, Islamic schools, pesantren, Islamic institutions | Co-branded programmes ("Nawaetu × your organisation"): group intentions, group khatam, Ramadan challenges, an admin dashboard and participation reports. Priced per member | Planned; looking for pilot partners |
+| **Nawaetu Plus** | Individual users, optional | Services with a running cost or personal coaching: Tanya Nawaetu beyond a free monthly quota, a family plan, deeper journal insights. Each subscription also funds a free Plus account for a student or someone in need | Planned |
+| **Sponsored programmes** | Brands and institutions | Seasonal programmes such as a Ramadan khatam challenge, Hasanah rewards, and infrastructure, credited on a "supported by" basis | Infrastructure sponsor live ([Biznet Gio Cloud](https://www.biznetgio.com/)) |
+| **Teacher marketplace** | Learners | Live tahsin, Arabic and study classes; teachers earn a fee and Nawaetu takes a commission | Later |
+| **Zakat and infaq channel** | Partner amil institutions | Integration with licensed amil (BAZNAS or a LAZ). Payments go straight to the amil; Nawaetu never holds the funds or takes a share from donors | Later, after legal and sharia review |
+| **Donations** | Supporters | Community support for running costs ([Support the Mission](#-support-the-mission)) | Live |
+
+Organisations are the main growth path: each organisation brings its members into the free app, and organisation plans give recurring revenue. Consumer subscriptions alone are small in a price-sensitive market such as Indonesia.
+
+### Where Nawaetu is now
+
+- **Early stage**: with 889 active users and 277 accounts in 2026, consumer subscriptions would earn little, so Nawaetu Plus waits. The first commercial step is one organisation pilot, which also brings a whole group of users at once.
+- **Local, word-of-mouth growth**: most users arrive directly, through shared links or Instagram, and are concentrated in Bandung and Jakarta. That suits a first pilot with a nearby company, campus or pesantren.
+- **Measure before pitching**: sign-ups, intentions and prayer check-ins are tracked, but conversion and retention do not have a baseline yet. Setting them is part of the [roadmap](ROADMAP.md#-success-metrics-public).
+
+### What Nawaetu will not do
+
+- Lock the Quran, hadith, prayer times, dhikr, Sirah, intentions or streaks behind a payment.
+- Sell spiritual reward: no paid boosts, ranks or streak repairs.
+- Show advertising, or sell or share user data for targeting.
+- Sell white-label versions that rebrand Nawaetu's curated content under another name. Organisation plans are co-branded, and source credits always stay.
+- Take sponsors whose core business is riba or gambling.
+- Collect zakat itself; zakat goes only through a licensed amil.
+
+### Why this can work
+
+- **Daily habit built in**: five prayers a day bring users back several times daily, and Ramadan gives a yearly peak season.
+- **Trust as the moat**: no ads, no data sales and content with checkable sources is a position that is hard for ad-funded apps to copy.
 
 ## Team
 
@@ -215,7 +248,7 @@ Religious content should be checkable. Nawaetu shows where each text comes from,
 
 Titles, reflections, chapter introductions, and connecting lines are written by Nawaetu, are labelled as such, and only summarise what their sources say. Hadith numbers in the hadith library are pending verification against [Sunnah.com](https://sunnah.com).
 
-Nawaetu's licences (AGPLv3 and the commercial license) cover its own code and writing. Content from the publishers above remains under their own terms.
+Nawaetu's licence (AGPLv3) covers its own code and writing. Content from the publishers above remains under their own terms.
 
 ---
 
@@ -225,7 +258,10 @@ Nawaetu's licences (AGPLv3 and the commercial license) cover its own code and wr
 A free Islamic habit tracker that starts from intention (*niat*), with a Quran, prayer tools, hadith and dua with sources, Sirah, fasting and Ramadan tools, dhikr, and an AI assistant.
 
 **Is Nawaetu free?**
-Yes. The app is free to use, and the source code is open under AGPLv3.
+Yes. Worship tools and religious content are free and will stay free, and the source code is open under AGPLv3. Planned paid options, such as extended AI use or organisation plans, never lock worship content.
+
+**Isn't charging money "selling religion"?**
+Nawaetu charges only for services and work, never for access to the Quran, hadith or worship. Most scholars permit payment for work connected to religion, such as printing a mushaf or teaching the Quran. See [Business Model](#business-model).
 
 **Does it work offline?**
 Some features are available without an internet connection.
@@ -264,13 +300,14 @@ Versions are pinned in [`package.json`](package.json).
 ### AI & External APIs
 *   **Google Gemini** (`@google/generative-ai`)
 *   **Groq (Llama)** - High-speed LLM inference
+*   **OpenRouter** - Fallback model routing
 *   **Aladhan API** (GPS Prayer Times)
 *   **Quran.com API** (Uthmani Mushaf & Audio Recitations)
 
 ### UI, Styling & Experience
 *   **Design system**: Lora (display) and Plus Jakarta Sans (UI) via `next/font`, Amiri for Arabic, 5 themes on shared tokens with a WCAG AA contrast test, and every icon generated from one vector mark (`npm run icons`, `npm run og-image`)
 *   **Tailwind CSS v4** & **Shadcn UI** (Radix UI primitives)
-*   **Framer Motion** - Animations & micro-interactions
+*   **Framer Motion** & **dotLottie** - Animations & micro-interactions
 *   **Recharts** - Analytics & Hasanah trends
 *   **Lucide React** & **Sonner** - Iconography & toast notifications
 *   **Next PWA (`@ducanh2912/next-pwa`)** - Installable Progressive Web App
@@ -332,7 +369,7 @@ To report bugs or suggest new features, please submit an issue using our [Issue 
 
 **Content conventions:** in text Nawaetu writes itself, name the Prophet in full as "Prophet Muhammad SAW" (English) or "Nabi Muhammad SAW" (Indonesian), never the ligature ﷺ or "the Prophet SAW" alone. Text copied from licensed sources such as HadeethEnc and QuranEnc must stay exactly as published. A test (`src/data/honorific.test.ts`) and [AGENTS.md](AGENTS.md) enforce this.
 
-> 💡 **AI Assistant Note**: This repository supports local rules, workflows, and skills for AI coding assistants (Google Antigravity, Cursor, Claude Code) under `.agents/`.
+> 💡 **AI coding assistants**: repository conventions for agents are in [AGENTS.md](AGENTS.md).
 
 
 ## ☕ Support the Mission
@@ -354,15 +391,8 @@ We are incredibly grateful to be supported by **[Biznet Gio Cloud](https://www.b
 | **Ko-fi** | [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-F16061?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/hadianr) |
 | **Buy Me a Coffee** | [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hadianr) |
 
-### 🏢 Commercial Licensing
-*For businesses, white-labeling, or proprietary use cases.*
-
-| Tier | Pricing | Benefits |
-| :--- | :--- | :--- |
-| **Standard** | **$500** / year | 1 Product, Private Source, Regular Updates |
-| **Perpetual** | **$1,500** once | Lifetime License, Whitelabel, Priority Support |
-
-👉 [**Get Started via GitHub Sponsors**](https://github.com/sponsors/hadianr)
+### 🏢 For Organisations
+Want a Nawaetu programme for your company, school, pesantren or mosque, such as a group Ramadan challenge or a shared khatam? Organisation plans are co-branded ("Nawaetu × your organisation") and are in development. We are looking for pilot partners: reach out to [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com). See [Business Model](#business-model).
 
 May Allah reward your generosity with goodness. Jazakumullah Khairan Katsiran! 🤲
 
@@ -372,21 +402,11 @@ May Allah reward your generosity with goodness. Jazakumullah Khairan Katsiran! �
 <a name="license"></a>
 ## 📄 License
 
-**Nawaetu** adopts a **Dual Licensing** model to ensure sustainability and protect the open-source community:
-
-### 1. Community Edition (Free & Open Source)
-Licensed under **AGPLv3 (GNU Affero General Public License v3)**.
+**Nawaetu** is licensed under **AGPLv3 (GNU Affero General Public License v3)**.
 - ✅ Free to use, modify, and distribute.
-- ⚠️ If you modify and distribute (or run as a service), **you must open-source your code** under AGPLv3.
-- Best for: Individuals, non-profits, and open-source contributions.
-
-### 2. Commercial License (Proprietary)
-For companies or individuals who wish to use Nawaetu for **commercial purposes**, **white-label**, or **without open-sourcing their code**.
-- ✅ Private source code (no open-source requirement).
-- ✅ White labeling allowed.
-- ✅ Priority support & enterprise features.
-- 📩 Contact: **hadian.rahmat@gmail.com** for pricing and details.
-- 📖 Read the full terms: [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md)
+- ⚠️ If you modify and distribute it (or run it as a service), **you must open-source your code** under AGPLv3.
+- 🏷️ The licence covers the code, not the Nawaetu name and logo. Forks should use their own name.
+- 📚 Content from other publishers stays under their own terms, which require their credits to stay in place. See [Content Sources](#-content-sources).
 
 See the [LICENSE](LICENSE) file for the full AGPLv3 text.
 
