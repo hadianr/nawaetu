@@ -7,6 +7,9 @@ import { logger } from "@/lib/logger";
 /** FCM accepts at most 500 messages in one sendEach call, and 500 ids keeps the SQL lists short. */
 export const BATCH_SIZE = 500;
 
+// Tagged so Analytics counts notification opens as push, not direct visits.
+const PRAYER_ALERT_PATH = "/?utm_source=push&utm_medium=notification&utm_campaign=prayer_alert";
+
 const INVALID_TOKEN_CODES = new Set(["messaging/invalid-registration-token", "messaging/registration-token-not-registered"]);
 
 export function buildPrayerMessage(token: string, prayer: string, copy: { title: string; body: string }, origin: string): Message {
@@ -14,7 +17,7 @@ export function buildPrayerMessage(token: string, prayer: string, copy: { title:
     return {
         token,
         notification: { title, body },
-        data: { type: "prayer_alert", prayer, url: "/" }, // open the home page
+        data: { type: "prayer_alert", prayer, url: PRAYER_ALERT_PATH }, // open the home page
         // CRITICAL for iOS Safari PWA & macOS
         apns: {
             headers: { "apns-priority": "10", "apns-push-type": "alert" },
@@ -32,9 +35,9 @@ export function buildPrayerMessage(token: string, prayer: string, copy: { title:
                 requireInteraction: true,
                 renotify: true,
                 vibrate: [200, 100, 200],
-                data: { url: "/" },
+                data: { url: PRAYER_ALERT_PATH },
             } as NonNullable<Message["webpush"]>["notification"],
-            fcmOptions: { link: new URL("/", origin).toString() },
+            fcmOptions: { link: new URL(PRAYER_ALERT_PATH, origin).toString() },
         },
         android: {
             priority: "high",
