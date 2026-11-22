@@ -24,7 +24,7 @@ export default function TermsOfServicePage() {
                         Terms of Service
                     </h1>
                     <p className="text-lg text-[rgb(var(--color-text-muted))]">
-                        Effective Date: March 27, 2026
+                        Effective Date: November 23, 2026
                     </p>
                 </div>
 
@@ -58,9 +58,9 @@ export default function TermsOfServicePage() {
                     </section>
                     
                     <section className="space-y-3">
-                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">5. Open Source and Commercial License</h2>
+                        <h2 className="text-2xl font-bold text-[rgb(var(--color-text-strong))] mb-2">5. Open Source License</h2>
                         <p>
-                            Nawaetu operates under a Dual Licensing model. The public application and its community source code are subject to the AGPLv3 License. Any proprietary, commercial, or white-label use of the software requires a separate Commercial License agreed upon with the author.
+                            Nawaetu&apos;s source code is available under the AGPLv3 License. The license covers the code, not the Nawaetu name and logo. Religious content from other publishers, such as HadeethEnc, QuranEnc and the sirah sources, remains under its publishers&apos; own terms.
                         </p>
                     </section>
 
