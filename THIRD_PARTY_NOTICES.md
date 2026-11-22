@@ -1,6 +1,6 @@
 # Third-Party Asset Notices
 
-This file documents third-party visual assets bundled with Nawaetu.
+This file documents third-party visual assets bundled with Nawaetu. Religious text from other publishers is credited in the README's Content Sources section.
 
 ## `public/patterns/blossom.svg`
 
@@ -17,5 +17,18 @@ Attribution is not required under CC0. Keep future third-party SVG pattern asset
 - **Asset:** Stars Pattern Vector
 - **Source:** [FreeSVG](https://freesvg.org/stars-pattern-vector) (published by OpenClipart)
 - **License:** [Creative Commons Zero (CC0) 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
-- **Usage:** Prepared as a decorative mask for the Midnight theme.
+- **Usage:** Used as a decorative mask for the Midnight theme.
 - **Modification:** Removed the opaque background and reduced the repeated star geometry to reusable mask shapes.
+
+## `public/lottie/*.lottie`
+
+- **Asset:** Animations used in onboarding, streaks and the 100 Days to Ramadan journey
+- **Source:** [LottieFiles](https://lottiefiles.com/)
+- **License:** Lottie Simple License
+- **Credits:** Each file's title, creator, source link and any modification are listed in [`public/lottie/CREDITS.md`](public/lottie/CREDITS.md).
+
+## Fonts
+
+- **Assets:** Plus Jakarta Sans (UI), Lora (display) and Amiri (Arabic)
+- **Source:** Google Fonts, self-hosted at build time through `next/font/google`
+- **License:** [SIL Open Font License 1.1](https://openfontlicense.org/)

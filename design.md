@@ -3,7 +3,7 @@
 > Canonical design reference for Nawaetu and for agentic AI making UI changes.
 
 **Status:** Current implementation reference  
-**Updated:** 18 September 2026  
+**Updated:** 23 November 2026  
 **Scope:** Web app, PWA, browser extension, share surfaces, and future UI
 
 This document describes the design language that already exists in the product. It is a constraint, not a prompt for a visual redesign. New work should look like Nawaetu, reuse its primitives, and improve consistency without inventing another visual language.
@@ -35,10 +35,10 @@ Stable theme IDs:
 
 | ID | Mode | Character |
 | --- | --- | --- |
-| `default` | dark | Emerald on near-black |
+| `emerald` | dark | Emerald on near-black (saved `default` ids are read as `emerald`) |
 | `midnight` | dark | Blue night with stars |
 | `sunset` | dark | Warm orange evening |
-| `daylight` | light | Clear emerald daylight |
+| `daylight` | light | Clear emerald daylight; the default for new users |
 | `blossom` | light | Soft blush with restrained floral texture |
 
 Every theme has the same semantic token set. Palette hue may change; meaning and hierarchy may not.
@@ -83,7 +83,7 @@ Use the existing font roles. Do not add a font for a single screen.
 | Label | UI sans, 12–13px, semibold |
 | Metadata | UI sans, at least 12px, never the main readable content |
 | Numeric display | UI mono or UI sans, 32–72px |
-| Arabic reading | Amiri/Lateef role, generous line height, user adjustable |
+| Arabic reading | Amiri role, generous line height, user adjustable |
 | Editorial prose | Lora/serif role, 16–18px, relaxed line height |
 
 Avoid 9–10px for meaningful information. Uppercase tracking is for short metadata labels only. Arabic text keeps its direction, language, and reading rhythm; translation is visually separated rather than compressed into the same line.
@@ -155,7 +155,7 @@ The counter is the primary task: quiet surface, obvious tap target, stable numbe
 
 ### Settings and themes
 
-Theme previews communicate mode, contrast, and pattern without requiring navigation. Settings sections are grouped by task; avoid repeated card-inside-card wrappers and unnecessary vertical gaps. Premium status may affect access, never readability or semantic token availability.
+Theme previews communicate mode, contrast, and pattern without requiring navigation. Settings sections are grouped by task; avoid repeated card-inside-card wrappers and unnecessary vertical gaps. All themes are free to every user; supporter status never changes access, readability or token availability.
 
 ### Extension
 
