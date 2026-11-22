@@ -5,6 +5,9 @@ import { and, eq, isNotNull } from "drizzle-orm";
 import { getMessaging } from "@/lib/notifications/firebase-admin";
 import { getStreakNotificationCopy } from "@/lib/notifications/push-copy";
 
+// Tagged so Analytics counts notification opens as push, not direct visits.
+const STREAK_REMINDER_PATH = "/?utm_source=push&utm_medium=notification&utm_campaign=streak_reminder";
+
 function parseMap(value: unknown): Record<string, string> {
   if (!value) return {};
   if (typeof value === "object") return value as Record<string, string>;
@@ -60,7 +63,7 @@ export async function POST(request: Request) {
           title: copy.title,
           body: copy.body,
         },
-        data: { type: "streak_reminder", url: "/" },
+        data: { type: "streak_reminder", url: STREAK_REMINDER_PATH },
         webpush: {
           notification: {
             title: copy.title,
@@ -68,7 +71,7 @@ export async function POST(request: Request) {
             icon: "/icon-192x192.png",
             tag: "streak-reminder",
           },
-          fcmOptions: { link: "/" },
+          fcmOptions: { link: STREAK_REMINDER_PATH },
         },
       });
       await db.update(pushSubscriptions).set({
