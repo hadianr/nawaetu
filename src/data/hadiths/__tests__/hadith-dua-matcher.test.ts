@@ -92,10 +92,31 @@ describe("Hadith & Dua Modular Data Library Tests", () => {
             duaId: 'dua_perlindungan'
         });
 
-        const refDoa = resolveReferenceForMission(doaPagiMission);
-        expect(refDoa).toBeDefined();
-        expect(refDoa?.type).toBe("dua");
-        expect(refDoa?.targetUrl).toBe("/dua?id=dua_perlindungan");
+        // The pinned dua is Abu Dawud 5088, not the cited 5074: no link beats a link to a different text.
+        expect(resolveReferenceForMission(doaPagiMission)).toBeUndefined();
+
+        const matchingDua = resolveReferenceForMission({ ...doaPagiMission, dalil: 'HR. Abu Dawud no. 5088' });
+        expect(matchingDua?.type).toBe("dua");
+        expect(matchingDua?.targetUrl).toBe("/dua?id=dua_perlindungan");
+    });
+
+    it("does not link a dalil to a different hadith when the cited one is not in the library", () => {
+        expect(resolveReferenceByText("HR. Muslim no. 804")).toBeUndefined();
+        expect(resolveReferenceByText("QS. Al-Baqarah: 184")).toBeUndefined();
+        expect(resolveReferenceByText("HR. Ibnu Majah no. 224")?.targetUrl).toBe("/hadith?id=hadith_ilmu");
+
+        const khatam = createMission({
+            id: 'khatam',
+            title: 'Khatam',
+            description: 'Khatam',
+            category: 'quran',
+            ruling: 'sunnah',
+            hasanahReward: 10,
+            icon: '📖',
+            dalil: 'HR. Muslim no. 804',
+            hadithId: 'hadith_ilmu'
+        });
+        expect(resolveReferenceForMission(khatam)).toBeUndefined();
     });
 
     it("should resolve HR. Bukhari no. 1166 specifically to hadith_istikharah", () => {
@@ -110,7 +131,7 @@ describe("Hadith & Dua Modular Data Library Tests", () => {
         expect(missionRef?.targetUrl).toBe("/hadith?id=hadith_istikharah");
     });
 
-    it("should ensure ALL missions with Hadith/Dua dalil in the app resolve to valid ?id= targetUrl", () => {
+    it("links every mission dalil only to the hadith or dua it cites", () => {
         const allMissions = [
             ...UNIVERSAL_MISSIONS,
             ...SUNNAH_PRAYER_MISSIONS,
@@ -119,13 +140,16 @@ describe("Hadith & Dua Modular Data Library Tests", () => {
             ...RAMADHAN_MISSIONS,
             ...SYABAN_MISSIONS
         ];
-        
+        const numbers = (text: string): string[] => text.match(/\d+/g) || [];
+
         allMissions.forEach(mission => {
-            if (mission.dalil && (mission.hadithId || mission.duaId || /^hr\./i.test(mission.dalil) || /doa/i.test(mission.dalil))) {
-                const resolved = resolveReferenceForMission(mission);
-                expect(resolved).toBeDefined();
-                expect(resolved?.targetUrl).toContain("?id=");
-            }
+            const resolved = resolveReferenceForMission(mission);
+            if (!resolved) return;
+            const cited = numbers(mission.dalil!);
+            const item = resolved.item as { hadithNumber?: string | number; source?: { referenceText: string } };
+            const itemRef = resolved.type === "hadith" ? String(item.hadithNumber) : item.source!.referenceText;
+            expect(resolved.targetUrl).toContain("?id=");
+            expect(numbers(itemRef).some(n => cited.includes(n)), `${mission.id}: ${mission.dalil} -> ${itemRef}`).toBe(true);
         });
     });
 });
