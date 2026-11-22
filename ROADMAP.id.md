@@ -4,7 +4,7 @@
 
 Roadmap ini menjelaskan visi kami untuk menjadikan Nawaetu sebagai **Islamic habit tracker paling bermakna** di dunia. Kami membangun secara transparan, dan dukungan Anda membantu kami bergerak lebih cepat. 🚀
 
-[🌟 Dukung Misi Kami](README.id.md#dukung-pengembangan) | [📖 Read in English](ROADMAP.md)
+[🌟 Dukung Misi Kami](README.id.md#-dukung-misi-nawaetu) | [💼 Model Bisnis](README.id.md#model-bisnis) | [📖 Read in English](ROADMAP.md)
 
 ---
 
@@ -14,156 +14,171 @@ Roadmap ini menjelaskan visi kami untuk menjadikan Nawaetu sebagai **Islamic hab
 
 ---
 
-## 📍 Posisi Saat Ini (v1.4.0)
+## 📍 Posisi Saat Ini (v1.16.0)
 
-### ✅ Fondasi Selesai
+**Keterangan status:** ✅ Sudah rilis · 🔨 Dalam pengerjaan · 📋 Direncanakan · 💡 Konsep · 🧪 Eksperimental
 
-- **Jadwal Sholat & Notifikasi** - Akurat, reliable, iOS-optimized
+> Dicek terhadap kode pada 23 Nov 2026 (`main`, commit `1ca675f`). Item bertanda ✅ ada di kode; item "Dalam pengerjaan" sudah punya sebagian kode.
+
+### ✅ Sudah Rilis
+
+- **Jadwal Sholat, Kiblat & Notifikasi Push** - Pengingat sholat dan streak, termasuk untuk tamu
 - **Al-Quran Digital** - Audio per ayat, dukungan Tajwid, mode Mushaf
-- **Kompas Kiblat** - Penunjuk arah yang presisi
-- **Asisten AI** - Panduan Islam 24/7 powered by Gemini & Groq
-- **Gamifikasi Dasar** - Daily missions, streaks, sistem XP
-- **Multi-bahasa** - Dukungan penuh Bahasa Indonesia & English
-- **Dual Licensing** - Model bisnis open-source yang sustainable
+- **Jurnal Niat** - Niat pagi, refleksi malam dengan ayat Al-Qur'an, dan Niat Streak; refleksi hanya bisa dilihat pemilik akun
+- **Hadits & Doa** - Perawi dan derajat ditampilkan bersama teksnya, termasuk topik Amanah & Kepemimpinan dari HadeethEnc
+- **Sirah dalam Tiga Format** - Ringkasan Sirah karya Syaikh Haitsam Sarhan (Indonesia dan Inggris, dengan izin tertulis beliau), Sirah Lengkap, dan Lini Masa Peristiwa
+- **Kalender Hijriah** - Hari puasa sunnah dan peristiwa sirah di bulan berjalan
+- **100 Hari Menuju Ramadhan** - Kartu perjalanan dengan panduan puasa, dalil, dan streak
+- **Hasanah & Streak** - Misi harian, tujuh rank dari Mubtadi sampai Muhsin, dan streak freeze gratis setiap 7 hari
+- **Tanya Nawaetu (Asisten AI)** - Dirancang menyertakan rujukan; 10 chat per hari untuk semua pengguna (Gemini, Groq, dan OpenRouter)
+- **Mode Tamu & Sinkronisasi** - Bisa dipakai tanpa akun; data ikut saat masuk akun dan antarperangkat
+- **Lima Tema, Semua Gratis** - Daylight sebagai bawaan, Emerald sebagai tema gelap
+- **Infaq** - Donasi sukarela di dalam aplikasi; tidak membuka fitur apa pun, jadi tidak ada yang dikunci
+- **Pencarian & Pencarian AI** - Halaman konten dirender di server, data terstruktur, dan `llms.txt`
+- **Multi-bahasa** - Bahasa Indonesia & English
 
-**Pengguna Saat Ini:** Komunitas Muslim yang terus berkembang
-**Tech Stack:** Next.js 16, React 19, Firebase, PostgreSQL, Vercel
+**Pengguna Saat Ini:** 277 akun terdaftar (20 Nov 2026)
+**Tech Stack:** Next.js 16, React 19, PostgreSQL dengan Drizzle ORM (lihat [README](README.id.md#️-tech-stack))
+
+---
+
+## 💼 Bagaimana Nawaetu Didanai
+
+Ibadah tetap gratis; Nawaetu hanya menarik biaya atas layanan dan jasa; dukungan tetap sukarela. Model lengkapnya, sumber pendapatannya, dan hal yang tidak akan dilakukan Nawaetu ada di [README](README.id.md#model-bisnis). Singkatnya: tanpa iklan, tanpa jual data, tanpa menjual pahala, dan tanpa versi white-label.
 
 ---
 
 ## 🚀 Apa Selanjutnya?
 
-### Q2 2026: Revolusi Niat
+### Sebelum Ramadhan 1448 H (sekitar Februari 2027)
 
-**Tema:** *Menjadikan Nawaetu satu-satunya app yang track niat kamu*
+**Tema:** *Siap untuk Ramadhan, dan mitra organisasi pertama*
 
-#### 🆕 Intention Journal (MVP)
-**Status:** 🔨 Dalam Pengembangan
+#### 🏢 Nawaetu untuk Organisasi - Uji Coba
+**Status:** 📋 Direncanakan (belum ada fitur grup di kode)
 
-Fitur yang membuat Nawaetu benar-benar unik.
+Program co-branded ("Nawaetu × organisasi Anda") untuk perusahaan, sekolah Islam, dan pesantren. Target pertama adalah **satu mitra uji coba untuk Ramadhan 1448 H**, sebaiknya di Bandung atau Jakarta, tempat sebagian besar pengguna saat ini berada.
 
-**Apa yang dilakukan:**
-- Set niat harian setiap pagi (waktu Subuh)
-- Refleksi malam: "Bagaimana kamu menghormati niatmu hari ini?"
-- Track "Niat Streak" - hari berturut-turut hidup dengan niat
-- Private secara default, bisa dibagikan jika kamu mau
+**Cakupan uji coba:**
+- Ruang grup yang diikuti anggota dengan kode undangan
+- Niat bersama dan khatam bersama
+- Tantangan Ramadhan untuk grup
+- Tampilan admin dengan laporan partisipasi (hanya agregat; refleksi pribadi tetap privat)
 
-**Kenapa penting:**
-> "Dulu saya cuma checklist sholat secara mekanis. Sekarang saya mulai setiap hari dengan bertanya *kenapa* saya melakukan ini. Ini mengubah segalanya." - Beta tester
-
-**Impact:** Ini adalah **fitur pembeda kategori** kami. Tidak ada Islamic app lain yang melakukan ini.
+**Prinsip:** co-branded, tidak pernah white-label. Kredit sumber dan nama Nawaetu selalu tetap ada.
 
 ---
 
-#### 🤖 AI Niat Coach v2.0
+#### 🌙 Ramadhan 1448 H
 **Status:** 📋 Direncanakan
 
-Upgrade dari bot Q&A reaktif menjadi mentor spiritual proaktif.
+- Mengaktifkan kembali halaman Ramadhan untuk bulannya (sempat diturunkan sampai musimnya tiba).
+- Memutuskan apakah pelacak tarawih kembali.
+- Melanjutkan perjalanan 100 Hari Menuju Ramadhan sampai masuk bulannya.
 
-**Kemampuan baru:**
-- **Check-in harian:** "Gimana habit Subuh kamu minggu ini?"
-- **Insight personal:** "Kamu sholat lebih baik kalau tidur sebelum jam 11 malam"
-- **Coaching behavioral:** Kombinasi wisdom Islam + ilmu habit
-- **Akuntabilitas:** Pengingat lembut sesuai tujuan kamu
+---
+
+#### 🛠️ Fondasi
+**Status:** 📋 Direncanakan kecuali disebut lain
+
+- **Toko aplikasi:** menerbitkan aplikasi Android (wrapper-nya ada di [`android/`](android/)) dan menulis deskripsi toko.
+- **Verifikasi hadits:** 🔨 mengecek nomor hadits terhadap [Sunnah.com](https://sunnah.com); menunggu akses API.
+- **Kecepatan:** memuat pemutar animasi setelah tampilan pertama agar beranda lebih cepat di HP ([#299](https://github.com/hadianr/nawaetu/issues/299)).
+- **Pengingat niat waktu Subuh:** pengingat niat pagi yang mengikuti waktu Subuh setempat.
+- **Pengukuran:** tandai pendaftaran, pemasangan niat, dan check-in sholat sebagai key event di Google Analytics, cari asal sesi "general / (not set)" yang tidak bertag, dan tetapkan baseline retensi di bawah.
+
+---
+
+### 2027
+
+**Tema:** *Kamu tidak harus membangun kebiasaan sendirian*
+
+#### 🤖 Tanya Nawaetu → Pendamping Proaktif
+**Status:** 📋 Direncanakan (asisten yang menjawab pertanyaan sudah rilis)
+
+Belum ada pesan proaktif, check-in terjadwal, atau insight personal di kode.
+
+**Cakupan, berurutan:**
+1. Ringkasan mingguan dari data kebiasaan pengguna sendiri (job terjadwal, tanpa perlu chat).
+2. Check-in lembut yang bisa dipilih (notifikasi push, maksimal 1 per hari, bisa dimatikan).
+3. Insight personal (misalnya, "kamu lebih konsisten sholat Subuh kalau tidur sebelum jam 11 malam"), hanya setelah datanya cukup.
+
+**Prinsip:** hanya jika pengguna memilih, panduan Islam dari sumber yang bisa dirujuk tim, tidak pernah mempermalukan pengguna yang terlewat sholat.
 
 **Contoh interaksi:**
 ```
-AI: Assalamu'alaikum! Saya notice kamu miss Subuh 3x minggu ini. 
-    Mau ngobrol tentang apa yang menghalangi?
+AI: Assalamu'alaikum! Aku perhatikan kamu terlewat Subuh 3 kali minggu ini.
+    Mau ngobrol soal apa yang menghalangi?
 
-Kamu: Saya gak bisa bangun...
+Kamu: Aku susah bangun...
 
-AI: Saya paham. 87% Muslim struggle dengan ini. Coba yuk:
-    1. Set niat malam ini: "Ya Allah, bantu aku bangun Subuh"
-    2. Tidur 15 menit lebih awal (cuma 15!)
+AI: Aku paham. Yuk coba langkah kecil:
+    1. Pasang niat malam ini: "Ya Allah, bantu aku bangun Subuh"
+    2. Tidur 15 menit lebih awal
     3. Taruh HP di seberang kamar
-    
-    Bisa commit coba ini 3 hari?
+
+    Bisa coba ini selama 3 hari?
 ```
 
 ---
 
-#### 🎮 Refresh Gamifikasi
-**Status:** 📋 Direncanakan
+#### 🎮 Badge & Hadiah Hasanah
+**Status:** 💡 Konsep (rank dan streak sudah rilis)
 
-Membuat poin dan level benar-benar *bermakna*.
+- **Badge baru:** "Sahur Champion" (streak Ramadhan 30 hari), "Night Warrior" (100x Qiyamul Lail), "Pure Intention" (Niat Streak 40 hari).
+- **Hadiah bersponsor:** mitra menyediakan hadiah yang dicapai pengguna lewat konsistensi ibadah. Lihat [`docs/HASANAH_LEVELS_AND_REWARDS_PLAN.md`](docs/HASANAH_LEVELS_AND_REWARDS_PLAN.md).
 
-**Perubahan:**
-- **XP → Niat Points (NP)** - Setiap aksi dimulai dengan niat
-- **Milestone Islami:**
-  - Level 1-10: **Mubtadi** (Pemula)
-  - Level 11-20: **Mutaqin** (Yang Bertakwa)
-  - Level 21-30: **Muhsinin** (Yang Berbuat Baik)
-  - Level 31+: **Siddiqin** (Yang Jujur)
-  
-- **Badge Bermakna:**
-  - 🌅 "Sahur Champion" - Streak Ramadan 30 hari
-  - 🌙 "Night Warrior" - 100x Qiyamul Lail
-  - 💎 "Pure Intention" - Streak niat 40 hari
-
-**Kenapa:** Gamifikasi harus menginspirasi pertumbuhan spiritual, bukan cuma dopamine hits.
+**Prinsip:** Hasanah, rank, dan streak tidak pernah dijual. Tidak ada boost atau perbaikan streak berbayar.
 
 ---
 
-### Q3 2026: Komunitas & Koneksi
-
-**Tema:** *Kamu tidak harus membangun habit sendirian*
-
 #### 👥 Accountability Partners
-**Status:** 💡 Konsep
+**Status:** 💡 Konsep (belum ada kode)
 
 Temukan teman niat kamu.
 
-**Fitur:**
-- Match dengan Muslim yang punya tujuan serupa
-- Share refleksi (opsional, private by default)
-- Akuntabilitas lembut: "Partner kamu sholat Subuh hari ini. Giliran kamu!"
-- Group challenges: "30 Hari Dhuha bareng 100 orang"
+- Cocokkan dengan Muslim yang punya tujuan serupa
+- Bagikan refleksi (opsional, privat secara bawaan)
+- Akuntabilitas lembut: "Partner kamu sudah sholat Subuh hari ini. Giliran kamu!"
 
-**Privacy-first:** Semua sharing opt-in. Niat kamu tetap private kecuali kamu pilih.
+**Privasi dulu:** semua berbagi bersifat opt-in. Dibangun di atas fitur grup dari uji coba organisasi.
+
+---
+
+#### 💎 Nawaetu Plus
+**Status:** 💡 Konsep (harga belum ditentukan; belum ada kode langganan)
+
+Langganan opsional untuk layanan yang punya biaya berjalan atau berupa pendampingan pribadi. Tidak pernah mengunci konten ibadah.
+
+**Usulan:**
+- ✨ Tanya Nawaetu di atas batas harian gratis
+- 👨‍👩‍👧 Paket keluarga (orang tua mengikuti progres sholat dan Al-Qur'an anak)
+- 📊 Insight jurnal dan kebiasaan yang lebih dalam
+- 🤝 Pay it forward: setiap langganan membiayai akun Plus gratis untuk pelajar atau orang yang membutuhkan
+
+**Selalu gratis:** Al-Qur'an, hadits, alat sholat, dzikir, Sirah, niat, streak, rank, dan tema.
 
 ---
 
 #### 📖 Nawaetu Stories
-**Status:** 💡 Konsep
+**Status:** 💡 Konsep (belum ada kode)
 
-Cerita nyata dari Muslim nyata.
-
-**Konten:**
-- "Bagaimana Saya Akhirnya Taklukkan Subuh" - Testimoni user
-- "Dari 0 ke 100 Halaman Quran" - Journey highlights
-- "Transformasi Ramadan Saya" - Inspirasi musiman
-
-**Kenapa:** Melihat orang lain sukses membuat kamu percaya kamu juga bisa.
+Cerita nyata dari Muslim nyata, diterbitkan dengan persetujuan pengguna: "Bagaimana Saya Akhirnya Taklukkan Subuh", "Dari 0 ke 100 Halaman Quran", "Transformasi Ramadhan Saya".
 
 ---
 
-### Q4 2026: Premium & Keberlanjutan
+### 🌐 Ekspansi & Aksesibilitas
 
-**Tema:** *Membuat Nawaetu sustainable untuk jangka panjang*
+#### 🧩 Ekstensi Browser Nawaetu (Chrome/Edge)
+**Status:** 🧪 Eksperimental (v1.9.4 di repositori; status publikasi di toko belum dipastikan)
 
-#### 💎 Muhsinin Premium (Rp 69.000/bulan)
-**Status:** 💡 Konsep
+Wrapper sidebar untuk aplikasi web yang sedang live.
 
-Dukung misi, unlock fitur advanced.
+- **Pendamping Sidebar:** baca Al-Qur'an dan cek jadwal sholat tanpa meninggalkan tab.
+- **Mode Fokus:** blokir situs yang mengganggu saat waktu sholat (opsional). *Belum dibuat.*
+- **Niat Instan:** pasang niat untuk sesi browsing ("Belajar", "Kerja", "Riset"). *Belum dibuat.*
 
-**Keuntungan Premium:**
-- ✨ **AI Coaching Unlimited** (Free: 5 chat/hari)
-- 📊 **Analytics Advanced** - "Waktu sholat terbaik kamu jam 6:15 pagi"
-- 🎨 **Custom Themes** - Personalisasi pengalaman
-- 🎯 **Habit Templates** - Rutinitas pre-built dari ulama
-- 🚀 **Priority Support** - Kontak langsung ke tim
-- 🌟 **Early Access** - Coba fitur baru duluan
-
-**Kenapa Premium?**
-- Biaya server (AI, database, hosting) itu nyata
-- User premium mendanai fitur gratis untuk semua
-- 100% transparan: Lihat kemana uang kamu pergi
-
-**Janji Free Forever:**
-- Fitur core (jadwal sholat, Quran, AI dasar) tetap gratis
-- Tidak ada iklan, selamanya
-- Premium opsional, bukan wajib
+**Strategi teknis:** aplikasi web yang sama ditanam di ekstensi (iframe ke nawaetu.com). Tanpa pelacakan. Catatan arsitektur: `extension/README.md`.
 
 ---
 
@@ -171,8 +186,13 @@ Dukung misi, unlock fitur advanced.
 
 ### Ide yang Kami Eksplorasi
 
+**🎓 Marketplace Pengajar**
+- Kelas tahsin, bahasa Arab, dan kajian secara langsung; pengajar menerima upah dan Nawaetu mengambil komisi
+
+**🤲 Kanal Zakat & Infak**
+- Bayar zakat dan infak ke amil resmi (BAZNAS atau LAZ) dari dalam aplikasi; dana langsung masuk ke amil. Hanya setelah kajian hukum dan syariah
+
 **🕌 Fitur Komunitas Lokal**
-- Temukan Muslim terdekat untuk sholat berjamaah
 - Check-in masjid dan acara
 - Kelas Islam lokal dan halaqah
 
@@ -184,50 +204,50 @@ Dukung misi, unlock fitur advanced.
 **🎙️ Konten Audio**
 - Refleksi spiritual harian
 - Wawancara ulama
-- Meditasi terpandu (dzikir Islami)
 
 **🌐 Ekspansi Global**
 - Lebih banyak bahasa (Arab, Urdu, Turki, Melayu)
 - Metode kalkulasi sholat regional
-- Integrasi kalender Islam lokal
 
 **🤝 Ekosistem Open Source**
-- Sistem plugin untuk developer
-- Fitur community-built
-- White-label untuk organisasi Islam
+- Fitur yang dibangun komunitas
 
 ---
 
 ## 💬 Suara Anda Penting
 
 **Roadmap ini adalah dokumen hidup.** Kami menyesuaikan berdasarkan:
-- Feedback dan request user
-- Voting komunitas
-- Data penggunaan real-world
-- Panduan scholarship Islam
+- Feedback dan request pengguna
+- Data penggunaan nyata
+- Bimbingan para ulama
 
 ### Cara Mempengaruhi Roadmap
 
-1. **Vote fitur:** [GitHub Discussions](https://github.com/hadianr/nawaetu/discussions)
-2. **Request fitur:** [Buka Issue](https://github.com/hadianr/nawaetu/issues/new)
-3. **Join beta testing:** Akses awal ke fitur baru
-4. **Dukung misi:** [Donasi](README.id.md#dukung-pengembangan) untuk percepat development
+1. **Usulkan atau dukung fitur:** [Buka atau beri reaksi pada Issue](https://github.com/hadianr/nawaetu/issues)
+2. **Ikut beta testing:** Akses awal ke fitur baru
+3. **Dukung misi:** [Donasi](README.id.md#-dukung-misi-nawaetu) untuk mempercepat pengembangan
 
 ---
 
 ## 📊 Metrik Sukses (Publik)
 
-Kami ukur sukses dari **impact**, bukan cuma downloads.
+Kami ukur sukses dari **dampak**, bukan cuma jumlah unduhan.
 
-| Metrik | Saat Ini | Target Q2 2026 | Target Q4 2026 |
-|--------|----------|----------------|----------------|
-| **Weekly Niat Setters** | - | 1,000 | 10,000 |
-| **7-Day Streak Retention** | 15% | 30% | 40% |
-| **AI Coach Engagement** | 25% | 40% | 50% |
-| **Premium Conversion** | - | 3% | 5% |
-| **Community Contributors** | 5 | 20 | 50 |
+| Metrik | Saat ini (Nov 2026) | Target berikutnya |
+|--------|---------------------|-------------------|
+| **Pengguna aktif (Google Analytics)** | 889 sepanjang 2026 (pelacakan andal sejak pertengahan Agustus) | - |
+| **Akun terdaftar** | 277 | - |
+| **Pemasang niat mingguan** | Belum diukur | Baseline ditetapkan |
+| **Retensi (D1 / D7 / D30)** | Belum diukur | Baseline ditetapkan |
+| **Pengguna aktif harian / bulanan** | Belum diukur | Baseline ditetapkan |
+| **Keterlibatan Tanya Nawaetu** | Belum diukur | Baseline ditetapkan |
+| **Uji coba organisasi** | 0 | 1 sebelum Ramadhan 1448 H |
+| **Konversi Plus** | Belum diluncurkan | Ditetapkan setelah peluncuran |
+| **Kontributor komunitas** | Belum dipastikan | - |
 
-**Transparansi:** Kami akan share update kuartalan tentang progress.
+Target ditetapkan setelah baseline terukur.
+
+**Transparansi:** Kami akan membagikan update kuartalan tentang progres.
 
 ---
 
@@ -235,12 +255,12 @@ Kami ukur sukses dari **impact**, bukan cuma downloads.
 
 Membangun Nawaetu adalah labor of love, tapi server tidak gratis. Dukungan Anda membantu kami:
 
-- 💰 **Cover biaya:** AI API, database, hosting (~Rp 7 juta/bulan)
-- ⚡ **Bergerak lebih cepat:** Hire developer part-time
-- 🌍 **Jangkau lebih banyak Muslim:** Marketing dan outreach
-- 📚 **Buat konten:** Materi edukasi dan panduan
+- 💰 **Menutup biaya:** AI API, database, hosting
+- ⚡ **Bergerak lebih cepat:** merekrut developer paruh waktu
+- 🌍 **Menjangkau lebih banyak Muslim:** pemasaran dan outreach
+- 📚 **Membuat konten:** materi edukasi dan panduan
 
-**Setiap kontribusi adalah sadaqah jariyah.** Ketika seseorang mendapat manfaat dari Nawaetu, kamu juga dapat pahalanya. 🤲
+Semoga setiap kontribusi menjadi *sadaqah jariyah*; balasannya milik Allah semata. 🤲
 
 [![Dukung di GitHub](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/hadianr)
 [![Dukung di Trakteer](https://img.shields.io/badge/Trakteer-Traktir-be1e2d?style=for-the-badge)](https://trakteer.id/hadianr)
@@ -249,14 +269,14 @@ Membangun Nawaetu adalah labor of love, tapi server tidak gratis. Dukungan Anda 
 
 ## 🤝 Mau Kontribusi?
 
-Kami welcome developer, designer, writer, dan tester!
+Kami menyambut developer, desainer, penulis, dan tester!
 
 **Cara membantu:**
-- 💻 **Code:** Cek [Good First Issues](https://github.com/hadianr/nawaetu/labels/good%20first%20issue)
-- 🎨 **Design:** Improvement UI/UX
-- 📝 **Konten:** Tulis panduan, translate
-- 🧪 **Test:** Beta test fitur baru
-- 🌍 **Spread the word:** Share ke komunitas kamu
+- 💻 **Kode:** Cek [Good First Issues](https://github.com/hadianr/nawaetu/labels/good%20first%20issue)
+- 🎨 **Desain:** Perbaikan UI/UX
+- 📝 **Konten:** Tulis panduan, terjemahkan
+- 🧪 **Tes:** Beta test fitur baru
+- 🌍 **Sebarkan:** Bagikan ke komunitas kamu
 
 Lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk detail.
 
@@ -264,9 +284,7 @@ Lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk detail.
 
 ## 📜 Lisensi
 
-**Dual Licensed:**
-- **Community Edition:** AGPLv3 (Free & Open Source)
-- **Commercial License:** Untuk bisnis/white-label use
+**AGPLv3** (gratis dan open source). Lisensi ini mencakup kode, bukan nama dan logo Nawaetu. Konten dari penerbit lain tetap mengikuti ketentuan masing-masing.
 
 Lihat [LICENSE](LICENSE) untuk detail.
 
@@ -278,5 +296,5 @@ Mari kita bangun sesuatu yang bermakna bersama. 🌙✨
 
 ---
 
-*Terakhir diupdate: 9 Februari 2026*
+*Terakhir diperbarui: 23 November 2026 (dicek terhadap `main` @ 1ca675f)*
 *Pertanyaan? Email: roadmap@nawaetu.com*
