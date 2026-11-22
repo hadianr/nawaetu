@@ -1,7 +1,7 @@
 # How sync works
 
-For maintainers. The action plan (`SYNC_AND_ACCOUNT_ACTION_PLAN.md`) says what was fixed and why; this says how the
-parts fit now, and what to check when you change them.
+For maintainers: how the parts fit now, and what to check when you change them. The hardening work behind it shipped in
+v1.16.0; git history keeps the original action plan.
 
 ## The idea
 
@@ -71,7 +71,7 @@ screen edits storage ──▶ tracker ──▶ queue (localStorage) ──▶ 
 | Retries before an entry counts as failed | 5 | `sync-queue.ts` |
 | Sync window | 30 days back, 1 day forward | `lib/utils/timezone.ts` |
 | Warnings about unsynced work | notice after 7 days, warning from day 23 | `lib/sync-warning.ts` |
-| Limits | sync and pull 30/min (memory); intention 20/min (memory); payment link 5 per 10 min; anonymous accounts 10/hour/IP; AI chat 10/min and 20 per 24 h | `lib/rate-limit.ts` |
+| Limits | sync and pull 30/min (memory); intention 20/min (memory); payment link 5 per 10 min; anonymous accounts 10/hour/IP; AI chat 10/min and 10 per rolling 24 h; AI greeting 5/hour; Ramadan insight 5/hour | `lib/rate-limit.ts` |
 
 Redis (Upstash free tier, 500k commands a month) is used for the session check cache, AI chat, payment links and anonymous
 accounts. The sync limiters stay in memory on purpose.
@@ -129,7 +129,7 @@ is left alone, because it may be one being created.
 
 ## Known gaps
 
-See "Still open" in `SYNC_AND_ACCOUNT_ACTION_PLAN.md`.
+- `public/.well-known/assetlinks.json` is missing; the Play Store app needs it, with the Android signing fingerprint ([#300](https://github.com/hadianr/nawaetu/issues/300)).
 
 The engine listens for `sync_login_settled` until it has started, not once: a failed login attempt announces it too.
 

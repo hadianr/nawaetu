@@ -1,8 +1,8 @@
 # Onboarding and Motion Revamp Plan
 
 **Prepared:** 11 November 2026
-**Status:** Phases 0 and 1 and gender steps G1 and G2 are implemented on branch `feat/onboarding-motion` (11 November 2026), not yet released. Phases 2 to 4 wait for the two weeks of onboarding measurement described in section 8. Uzur mode (G3) is deferred by the owner; G4 copy is done for the onboarding welcome only.
-**Related:** `docs/100_DAYS_LOTTIE_SHORTLIST.md` (asset rules and earlier picks), `public/lottie/CREDITS.md`.
+**Status:** Phases 0 and 1 and gender steps G1 and G2 shipped in v1.16.0 (18 November 2026). Phases 2 to 4 wait for two weeks of onboarding measurement from that release, described in section 8. Uzur mode (G3) is deferred by the owner; G4 copy is done for the onboarding welcome only.
+**Related:** `public/lottie/CREDITS.md`.
 
 ## 1. Summary
 
@@ -54,7 +54,7 @@ Two things found in onboarding that are not about motion:
 2. **Calm over hype.** Celebration bursts stay short (under 3 seconds, played once) with no forced share prompt. Heroes and illustrations keep moving while on screen. Worship is not a slot machine.
 3. **No baked-in text.** Text in an animation cannot be translated to `en` and `id`, and greeting-card text ("Eid Mubarak") is wrong outside its season.
 4. **One animation per moment.** Never stack a Lottie on top of a toast on top of confetti.
-5. **Feels native.** Recolour to theme variables with dotLottie theming and check all 8 themes in light and dark.
+5. **Feels native.** Recolour to theme variables with dotLottie theming and check all 5 themes in light and dark.
 
 ## 4. Onboarding revamp
 
@@ -103,7 +103,7 @@ Ordered by payoff. "Earned" means the animation plays only when the user achieve
 | Prayer check-in | `src/components/PrayerCheckInWidget.tsx` | Check draws on tap with a light haptic. When all five prayers are logged, one stars burst | `AnimatedCheck`, `stars.lottie` |
 | Mission complete | `src/components/MissionsWidget.tsx`, `missions/DailyMissionCard.tsx` | Check draw on each. A burst only for the first mission of the day | `framer-motion`, `stars.lottie` |
 | Bottom navigation | `src/components/BottomNav.tsx` | Active indicator slides between tabs | `framer-motion` `layoutId` |
-| Qibla aligned | `src/components/QiblaCompass.tsx` | Soft pulse and a haptic when the needle locks on | `framer-motion`, vibration |
+| Qibla aligned | `src/components/QiblaCompass.tsx` | A haptic when the needle locks on (no pulse: decorative pulses were removed in b355eef) | vibration |
 | Mentor AI reply | `src/app/mentor-ai/components/` | Three-dot typing indicator while waiting | CSS |
 
 ### Priority 2: empty and first-use states
@@ -134,7 +134,7 @@ Ordered by payoff. "Earned" means the animation plays only when the user achieve
 
 **Already shipped, reuse first:** `flame.lottie`, `lights.lottie`, `stars.lottie`.
 
-**Already license-checked on 10 Nov 2026 (earlier shortlist), not yet downloaded:** "Quran" by Asish (3.3 KB), "Badge | Achievement Unlocked!" by Parimal Chahande (3.0 KB), "Clear Night Moon" by Akhil Atluri (2.1 KB).
+**Already license-checked on 10 Nov 2026:** "Quran" by Asish (3.3 KB, now in `public/lottie/`). **Not yet downloaded:** "Badge | Achievement Unlocked!" by Parimal Chahande (3.0 KB), "Clear Night Moon" by Akhil Atluri (2.1 KB).
 
 **New, to be sourced.** These came from a search on 11 Nov 2026. I have not opened the pages, watched them play, or confirmed the license of each.
 
@@ -146,7 +146,7 @@ Ordered by payoff. "Earned" means the animation plays only when the user achieve
 
 **License.** LottieFiles states that free animations under the Lottie Simple License may be used in commercial apps, and that credit is encouraged but not required. Some animations carry other terms, so the license is checked per page on the day of download. The earlier shortlist flagged the "Commercial Use Policies" page as ambiguous. On reading the summary again, that page covers LottieFiles' own tools and excludes public animations, but an email to support@lottiefiles.com before launch is still cheap insurance.
 
-**Rules for every file** (unchanged from the shortlist): dotLottie format, about 50 KB or less, self-hosted in `public/lottie/`, a row in `CREDITS.md`, no baked-in text, checked on all 8 themes, static fallback under reduced motion.
+**Rules for every file** (unchanged from the shortlist): dotLottie format, about 50 KB or less, self-hosted in `public/lottie/`, a row in `CREDITS.md`, no baked-in text, checked on all 5 themes, static fallback under reduced motion.
 
 **Budget:** about 10 to 15 KB of new files for onboarding, about 25 KB for the whole plan.
 
@@ -165,7 +165,7 @@ Ordered by payoff. "Earned" means the animation plays only when the user achieve
 | Keep the creator's timing | No speeding up, slowing down, or dropping frames to save work. Original speed and easing |
 | Keep it alive on screen, the way it was drawn | Files drawn as a loop (flame, location pin) repeat for as long as they are visible. Files that build themselves in (mosque, Quran) play once and hold their finished frame, because looping them makes the picture vanish and redraw every two seconds. Celebration bursts (stars, badge) play once |
 | The icon is a stand-in, not the design | Onboarding uses `quietLoad`: the player starts loading immediately, the box stays empty and fixed-size until the animation is ready, then it fades in. No icon is shown first, because icon-then-animation looked like a glitch. The icon is the final state only when the user turned on reduced motion, the player failed, or the device cannot run it. Secondary moments (streak toast, journey card) may still use the icon while loading |
-| Recolour, do not redraw | Theming may change colours to fit the 8 themes. It must not remove layers or change movement. (Two exceptions exist, both for layers that only work on a white page: the glint removed from `stars.lottie` and the white ground bar removed from `mosque.lottie`. Any edit like that is recorded in `CREDITS.md`.) |
+| Recolour, do not redraw | Theming may change colours to fit the 5 themes. It must not remove layers or change movement. (Two exceptions exist, both for layers that only work on a white page: the glint removed from `stars.lottie` and the white ground bar removed from `mosque.lottie`. Any edit like that is recorded in `CREDITS.md`.) |
 | Fix the loading before cutting the motion | If a budget in 7.4 is missed, the order of remedies is: load later, load smaller, simplify the surrounding code. Removing or freezing an animation is the last resort and needs your approval |
 | Measure that it actually played | Phase 1 adds an analytics event when an onboarding hero starts playing, so the share of users who saw motion is known. Target: at least 90% of users without reduced motion |
 
@@ -222,11 +222,11 @@ Measure on the production build, before and after, on the same throttled profile
 | Share of users who saw the onboarding hero play | At least 90% of users without reduced motion |
 | Time from onboarding shown to hero moving, throttled first visit | Under about 2 seconds; instant on later slides |
 
-A phase that misses a speed budget does not ship until it is fixed, following the order of remedies in section 7.0. A phase that hits the speed budgets by not animating also fails. **Baselines recorded 12 Nov 2026** in `docs/SYNC_AND_ACCOUNT_ACTION_PLAN.md` sections 16 and 18: home first-load JS (910,454 B raw, 291,778 B gzip on `main`) and a Lighthouse mobile run of the first-run screen (score 100, LCP 911 ms, TBT 73 ms, CLS 0). Still missing: real-user LCP/INP/CLS from `/api/analytics`, a returning-user home run, and a real budget phone. Record them (`npm run analyze`, Lighthouse mobile, `/api/analytics`) on a build from before this branch and on the release candidate before treating these budgets as a gate. Treat a Lighthouse difference under about 5 points as noise, since single runs vary by that much.
+A phase that misses a speed budget does not ship until it is fixed, following the order of remedies in section 7.0. A phase that hits the speed budgets by not animating also fails. **Baselines recorded 12 Nov 2026**: home first-load JS (910,454 B raw, 291,778 B gzip on `main`) and a Lighthouse mobile run of the first-run screen (score 100, LCP 911 ms, TBT 73 ms, CLS 0). Still missing: real-user LCP/INP/CLS from `/api/analytics`, a returning-user home run, and a real budget phone. Record them (`npm run analyze`, Lighthouse mobile, `/api/analytics`) on a build from before this branch and on the release candidate before treating these budgets as a gate. Treat a Lighthouse difference under about 5 points as noise, since single runs vary by that much.
 
 ### 7.5 Rollback
 
-Each feature's animation is a leaf component with a static fallback, so removing one is a one-line change that cannot affect data. **Not true for the gender work in section 9:** it changed what the server accepts and pays. Sync validation now accepts every reward a gender can earn (`missionRewardOptions`), and later the server decides the prayer reward from the account's gender (`docs/SYNC_AND_ACCOUNT_ACTION_PLAN.md`, item 5.3). Rolling back a hero animation is still one line; rolling back the reward rules is not, and needs the server rule changed with it.
+Each feature's animation is a leaf component with a static fallback, so removing one is a one-line change that cannot affect data. **Not true for the gender work in section 9:** it changed what the server accepts and pays. Sync validation now accepts every reward a gender can earn (`missionRewardOptions`), and later the server decides the prayer reward from the account's gender (sync hardening, shipped in v1.16.0). Rolling back a hero animation is still one line; rolling back the reward rules is not, and needs the server rule changed with it.
 
 ## 8. Phases
 
@@ -240,7 +240,7 @@ Each feature's animation is a leaf component with a static fallback, so removing
 
 Each phase ships on its own. Phase 1 gets two weeks of measurement before phase 2 copies its patterns.
 
-**Validation per phase:** `npm run lint`, `npm run typecheck`, focused tests (`ClientEntryGate.test.tsx`, `LottieMoment.test.tsx`, and a new onboarding test for step order, skip, and finish), coverage kept above the 80% CI threshold, then a manual pass on a phone: all 8 themes, reduced motion on, offline, and both languages. The performance budgets in section 7.4 are a release gate, not a nice-to-have.
+**Validation per phase:** `npm run lint`, `npm run typecheck`, focused tests (`ClientEntryGate.test.tsx`, `LottieMoment.test.tsx`, and a new onboarding test for step order, skip, and finish), coverage kept above the 80% CI threshold, then a manual pass on a phone: all 5 themes, reduced motion on, offline, and both languages. The performance budgets in section 7.4 are a release gate, not a nice-to-have.
 
 ## 9. Gender personalization
 
@@ -284,7 +284,7 @@ Problems found:
 - **Done. Phone check (11 Nov 2026):** 375, 360, 390 and 412 px wide viewports, every onboarding screen. No horizontal overflow, no cut-off text, all primary buttons inside the screen. The Next button text colour now follows the theme (dark on bright themes, white on dark), with contrast 4.85 to 8.08 on Midnight, Default, Ocean and Blossom.
 - **Done. Theme survives Detect My Location (11 Nov 2026).** A saved `default` theme (what an unchosen theme stores) now counts as unchosen, so onboarding suggests Midnight or Blossom and the choice holds after location detection. Before this fix, a browser with a saved default kept the emerald theme through the whole onboarding. Checked in Anoa on the Male path with a saved default: Midnight before and after detection.
 - **Done. Theme follows the active theme, pattern included (11 Nov 2026).** The onboarding applies its start theme in a layout effect, so no frame of the default green shows, and it draws the active theme's pattern above its backdrop on every screen: stars for Midnight, floral for Blossom. A saved theme is never overridden.
-- **Done. Live theme preview:** onboarding starts on Midnight, and selecting an option applies its suggested theme straight away. The theme can be changed later in settings; there is no undo link on this screen (removed at the owner's request, 11 Nov 2026). A theme the user had already saved before onboarding is never overridden.
+- **Done. Live theme preview:** onboarding starts on Daylight (Midnight at the time of this note), and selecting an option applies its suggested theme straight away. The theme can be changed later in settings; there is no undo link on this screen (removed at the owner's request, 11 Nov 2026). A theme the user had already saved before onboarding is never overridden.
 - Haptic tick and spring on select (already in place).
 
 **Theme**
@@ -293,10 +293,10 @@ Suggested defaults, applied only on first setup and only if the user has not pic
 
 | Gender | Suggested | Alternates shown in settings first |
 | --- | --- | --- |
-| Male | Midnight (blue) | Sunset, Default |
-| Female | Blossom (pink, light mode) | Sunset, Default |
+| Male | Daylight | Sunset, Emerald |
+| Female | Blossom (pink, light mode) | Sunset, Emerald |
 
-Midnight replaced the earlier Ocean proposal (Ocean, Royal and Lavender have since been removed). Showing a gender's alternates first in settings is not built yet.
+Daylight replaced Midnight for men, which had replaced the earlier Ocean proposal (Ocean, Royal and Lavender have since been removed). Showing a gender's alternates first in settings is not built yet.
 
 No theme is locked to a gender. Settings show the gender's alternates first, then all others.
 

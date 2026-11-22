@@ -51,3 +51,21 @@
 - Kebiasaan 11 (luruskan niat untuk besok) dihapus: niat dimiliki Jurnal Niat Harian.
 - Hadits Bukhari 527 / Muslim 85 dan Bukhari 1 tidak dipakai lagi sebagai dalil kebiasaan harian. Bukhari 1 tetap menjadi dalil Fase 1.
 - Tersisa 4 kebiasaan untuk Fase 2 dan 3, jadi berulang tiap 4 hari. Kebiasaan baru perlu hadits terverifikasi.
+
+## Daftar cek peninjau untuk panduan puasa
+
+Dipindah dari rencana kewajiban dan puasa (sudah dibangun, berkas rencananya dihapus 23 Nov 2026). Teks aslinya berbahasa Inggris.
+
+Verify the text, number and grade in the hadith library before any entry is added. I list what to look up, not the wording.
+
+1. Qadha obligation: QS. Al-Baqarah 184-185, and Aisha's report that she made up Ramadan fasts in Sha'ban (Bukhari 1950, Muslim 1146).
+2. Mon/Thu: the Abu Hurairah and Aisha reports on deeds being presented (Tirmidhi, Nasa'i). Confirm which of Muslim 1162 / Tirmidhi 747 matches `hadith_puasa_senin_kamis`.
+3. Ayyamul Bidh: the report of Abu Dharr (Nasa'i, Tirmidhi) and its grade.
+4. Do not fast one or two days before Ramadan unless it matches a habitual fast (Bukhari, Muslim).
+5. Day of doubt report attributed to Ammar.
+6. "Do not fast once Sha'ban is half over" (Abu Dawud, Tirmidhi, Ibn Majah) and the dispute over its grade; the Shafi'i exceptions.
+7. Not singling out Friday for a fast (Bukhari, Muslim).
+8. `hadith_nisfu_syaban` (Ibn Majah 1390) grade.
+9. Whether a habit line "Pray on time, start with the one you delay" is acceptable wording.
+10. Whether awarding Hasanah for the manual qadha mission is acceptable.
+11. Whether women's voluntary fasting needs any card wording about a husband's permission, and whether qadha is treated differently. I left it out of the first build.
