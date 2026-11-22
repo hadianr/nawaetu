@@ -29,7 +29,10 @@ export function buildManifest(): NawaetuManifest {
     short_name: "Nawaetu",
     description: APP_CONFIG.description,
     gcm_sender_id: "567398306395",
-    start_url: `/?v=${APP_CONFIG.version}`,
+    // Stable identity: without it the id is start_url, which changes every release.
+    id: "/",
+    // Tagged so Analytics separates launches of the installed app from web visits.
+    start_url: `/?v=${APP_CONFIG.version}&utm_source=pwa&utm_medium=app`,
     scope: "/",
     display: "standalone",
     orientation: "any",
