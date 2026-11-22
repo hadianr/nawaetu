@@ -16,6 +16,10 @@ Posts ESLint findings as review comments on changed lines in pull requests.
 ### `codeql.yml`
 Runs GitHub CodeQL security analysis on pull requests and weekly on Mondays.
 
+### `integration.yml`
+Runs the database-backed tests against a throwaway PostgreSQL container on pull
+requests. It is a signal, not a merge gate, until the suite is proven stable.
+
 ### `dependency-review.yml`
 Checks dependency changes in pull requests for known vulnerabilities and
 unsupported licenses.
@@ -23,6 +27,10 @@ unsupported licenses.
 ### Dependabot
 `.github/dependabot.yml` opens weekly update pull requests for npm packages and
 GitHub Actions.
+
+### `finalize-release.yml`
+Tags the release and dispatches `release.yml` after a release PR merges into
+`main`.
 
 ### `release.yml`
 Publishes a GitHub Release when a version tag is pushed, or when
@@ -42,4 +50,4 @@ and `CodeQL / Analyze JavaScript and TypeScript`.
 
 ---
 
-**Last Updated**: 2026-07-27
+**Last Updated**: 2026-11-23

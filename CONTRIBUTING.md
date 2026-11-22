@@ -25,9 +25,11 @@ cd nawaetu
 ```
 
 ### 3. Setup Development Environment
+Use Node.js 24.x (the exact version is in `.node-version`) and npm.
+
 ```bash
-# Install dependencies
-npm install
+# Install dependencies from package-lock.json
+npm ci
 
 # Copy environment variable template
 cp .env.example .env.local
@@ -62,11 +64,15 @@ footer (optional)
 - `test`: Adding or updating tests
 - `chore`: Maintenance tasks or dependency updates
 - `ci`: CI/CD workflow changes
+- `build`: Build system or dependency changes
+- `revert`: Reverting an earlier commit
+
+Husky checks each commit message with commitlint and runs `npm run lint` and `npm run typecheck` before each commit.
 
 ### Example Commits:
 ```bash
 git commit -m "feat(missions): add new daily intention mission system"
-git commit -m "fix(dhikr): resolve OLED zen mode portal render issue"
+git commit -m "fix(dhikr): resolve zen mode portal render issue"
 git commit -m "docs: update contributing guidelines to English"
 git commit -m "perf(quran): optimize surah static generation"
 ```
@@ -149,13 +155,18 @@ const UserProfile = (props: any) => {
 
 ### Localization (Bilingual Support)
 - Always maintain both English (`en`) and Indonesian (`id`) translations.
-- Update translation dictionaries under `src/data/` or component locale configs.
+- Update the translation dictionaries in `src/data/translations/`.
 - Use locale hooks rather than hardcoding static text strings.
+
+### Religious Content
+- In text Nawaetu writes itself, name the Prophet in full as "Prophet Muhammad SAW" (English) or "Nabi Muhammad SAW" (Indonesian), never the ligature ﷺ or "the Prophet SAW" alone. `src/data/honorific.test.ts` enforces this.
+- Text copied from licensed sources such as HadeethEnc and QuranEnc stays exactly as published.
+- See [AGENTS.md](AGENTS.md) for the full repository conventions.
 
 ### Theming & Styling
 - Use predefined CSS variables: `text-[rgb(var(--color-primary))]`.
 - Avoid hardcoded HEX/RGB color values in components.
-- Test UI changes across all 5 available theme options (Light, Dark, OLED, etc.).
+- Test UI changes in all five themes: Daylight (default), Emerald, Midnight, Sunset and Blossom.
 
 ---
 
@@ -172,6 +183,9 @@ npm run typecheck
 
 # Run linter
 npm run lint
+
+# Check line coverage (CI requires at least 80%)
+npm run test:coverage
 
 # Validate production build
 npm run build
@@ -191,7 +205,7 @@ For complete release instructions and CI deployment steps, refer to [RELEASE_WOR
 
 ## 🙋 Community & Support
 
-- 💬 **GitHub Discussions**: [Discussions Hub](https://github.com/hadianr/nawaetu/discussions)
+- 💬 **Questions & ideas**: [GitHub Issues](https://github.com/hadianr/nawaetu/issues)
 - 🔒 **Security Reporting**: [SECURITY.md](SECURITY.md)
 - 📋 **Code of Conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - 📧 **Direct Contact**: [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com)

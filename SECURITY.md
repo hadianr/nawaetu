@@ -1,246 +1,28 @@
-# Security & Billing Protection Guide
+# Security Policy
 
-## 🔒 API Key Security
+## Supported versions
 
-### Current Protection (Implemented ✅)
+Only the latest release, deployed from `main` to [nawaetu.com](https://nawaetu.com), receives security fixes. Older releases and forks are not patched.
 
-1. **Environment Variables**
-   - API key stored in `.env.local`
-   - Never hardcoded in source code
-   - `.env.local` in `.gitignore` (won't be committed to Git)
+## Reporting a vulnerability
 
-2. **Server-Side Only**
-   - API calls in Server Actions (`"use server"`)
-   - Key never exposed to client/browser
-   - No API key in network requests visible to users
+Please do not open a public issue for a security problem. Report it privately through GitHub's [Report a vulnerability](https://github.com/hadianr/nawaetu/security/advisories/new) form, or email [hadian.rahmat@gmail.com](mailto:hadian.rahmat@gmail.com) with the subject **"Nawaetu security"** and include:
 
-3. **Rate Limiting**
-   - 10 requests per minute per user
-   - Prevents spam and abuse
-   - In-memory cache (LRU)
+- what the issue is and where it is (URL, API route, or file);
+- steps to reproduce it;
+- what an attacker could do with it, such as reading another user's data.
 
-4. **Input Validation**
-   - Max 500 characters per message
-   - Rejects empty messages
-   - Prevents excessive token usage
+Please give us time to fix the issue before disclosing it publicly.
 
-5. **Fetch Timeout Protection** (v1.2.0)
-   - Global `fetchWithTimeout` utility (15s default)
-   - Applied to all external API calls:
-     - Prayer times API (Kemenag)
-     - LLM providers (Gemini, Groq, OpenRouter)
-     - Tafsir API (Quran.com)
-     - Location reverse-geocoding (OpenStreetMap)
-   - Prevents hanging requests and resource exhaustion
+## Scope
 
-### Cache & Storage Strategy (v1.2.0)
+In scope: the web app at nawaetu.com, its API routes, and the code in this repository, including the browser extension and Android wrapper.
 
-1. **Client-Side Cache TTL**
-   - **Prayer Times**: 30 days (location-based cache)
-   - **Tafsir Data**: 7 days (verse-specific tafsir)
-   - **Last Read Position**: 7 days
-   - Automatic versioning to invalidate cache on schema changes
+Out of scope: third-party services Nawaetu uses (for example Quran.com, Aladhan, Supabase, Vercel and the AI providers), denial-of-service tests, and social engineering.
 
-2. **Global Cache Cleanup**
-   - AppOverlays component cleans expired cache entries
-   - TTL + version check ensures stale data removal
-   - Reduces localStorage bloat
+## How Nawaetu protects users
 
-3. **Direct localStorage Exception**
-   - Tasbih counter uses direct localStorage (not StorageService abstraction)
-   - Reason: Requires immediate persistence on every increment
-   - Mitigated with NaN validation and hydration guards
-
----
-
-## 💰 Billing Protection
-
-### Implemented Safeguards ✅
-
-1. **Rate Limiting**
-   - Max 10 chat requests/minute per user
-   - Max 1 greeting per hour per user
-   - Prevents runaway costs
-
-2. **Token Limits**
-   - `maxOutputTokens: 600` (prevents long responses)
-   - Short system instruction (cached)
-   - Compact user prompts
-
-3. **Topic Guardrails**
-   - Rejects off-topic questions with short response
-   - Saves 80-90% tokens on irrelevant queries
-
-4. **Error Handling**
-   - Quota errors handled gracefully
-   - User-friendly messages (no retries on user errors)
-   - Timeout protection prevents zombie requests
-
-5. **Request Tracing** (v1.2.0)
-   - Request IDs for audio preview (prevent race conditions)
-   - Prevents duplicate API calls
-   - Better error tracking in logs
-
-### Estimated Costs
-
-**Per Request:**
-- Input: ~150 tokens (cached = ~15 tokens charged after first request)
-- Output: ~100 tokens average (max 600)
-- Cost: ~$0.0001 per request
-
-**Monthly estimate (100 active users):**
-- 10 requests/user/day × 100 users × 30 days = 30,000 requests
-- With caching: ~$3-5/month
-- Without protection: Could be **unlimited** 💸
-
----
-
-## 🛡️ Additional Security Steps (Manual)
-
-### 1. Google Cloud API Restrictions
-
-Configure in [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
-
-**Application Restrictions:**
-```
-HTTP referrers (websites):
-- https://nawaetu.com/*
-- https://*.vercel.app/*
-```
-
-**API Restrictions:**
-```
-✅ Generative Language API only
-❌ All other APIs disabled
-```
-
-### 2. Budget Alerts
-
-Set up in Google Cloud Billing:
-
-1. Go to Billing → Budgets & Alerts
-2. Create budget: $10/month (adjust as needed)
-3. Set alerts at: 50%, 90%, 100%
-4. Add email notifications
-
-### 3. Usage Monitoring
-
-Monitor in Google Cloud Console:
-- Check API usage daily for first week
-- Look for unusual spikes
-- Adjust rate limits if needed
-
-### 4. Timeout Monitoring (v1.2.0)
-
-Monitor request timeouts:
-```bash
-# Check server logs for timeout errors
-tail -f logs/server.log | grep "timeout\|AbortError"
-```
-
-Set alerts for:
-- Excessive timeouts (>5% of requests)
-- Specific API endpoint failures
-- Network connectivity issues
-
----
-
-## 📊 v1.2.0 Security Improvements
-
-| Feature | Impact | Status |
-|---------|--------|--------|
-| Fetch Timeout Protection | Prevents resource exhaustion | ✅ Implemented |
-| Cache TTL + Versioning | Reduces data staleness & storage usage | ✅ Implemented |
-| Request ID Tracing | Prevents race conditions | ✅ Implemented |
-| NaN Validation | Prevents data corruption | ✅ Validated |
-| Hydration Guards | Prevents flash of bad state | ✅ Implemented |
-| Reduced-motion Support | Better UX for accessibility | ✅ Implemented |
-
----
-
-## 🚨 What to Do If Compromised
-
-If API key is exposed:
-
-1. **Immediately**: Delete key in Google Cloud Console
-2. **Generate new key** with proper restrictions
-3. **Update `.env.local`** with new key
-4. **Check billing** for unauthorized usage
-5. **Review logs** for suspicious activity
-
----
-
-## 📊 Monitoring Checklist
-
-Weekly checks:
-- [ ] Review total API usage
-- [ ] Check billing (should be < $10/month for small app)
-- [ ] Look for unusual patterns
-- [ ] Verify rate limiting is working
-
-Monthly:
-- [ ] Rotate API key (optional but recommended)
-- [ ] Review and adjust rate limits
-- [ ] Update budget alerts if needed
-
----
-
-## 🎯 Rate Limit Configuration
-
-Current settings in `src/lib/rate-limit.ts`:
-
-```typescript
-// Chat messages: 10 per minute per user
-chatRateLimiter = {
-  interval: 60 * 1000,  // 1 minute
-  limit: 10
-}
-
-// Greetings: 1 per hour per user
-greetingRateLimiter = {
-  interval: 60 * 60 * 1000,  // 1 hour
-  limit: 1
-}
-```
-
-Adjust based on your user base and needs.
-
----
-
-## ✅ Security Layers Summary
-
-| Layer | Status | Protection |
-|-------|--------|------------|
-| Environment variables | ✅ Implemented | API key isolation |
-| Server-side only | ✅ Implemented | No client exposure |
-| Rate limiting | ✅ Implemented | Abuse prevention |
-| Input validation | ✅ Implemented | Token optimization |
-| Topic guardrails | ✅ Implemented | Focused responses |
-| API restrictions | ⚠️ Manual setup | Domain/API limiting |
-| Budget alerts | ⚠️ Manual setup | Cost monitoring |
-| Vercel Security | ✅ Auto-enabled | DDoS protection, SSL |
-
-**Next Steps:**
-1. Set up Google Cloud API restrictions (domain: nawaetu.com)
-2. Configure budget alerts ($10-20/month recommended)
-3. Monitor usage for first week
-4. Review Vercel security settings
-
----
-
-## 🌐 Deployment Security
-
-**Vercel Auto-Security Features:**
-- ✅ **Automatic SSL/HTTPS** - Free SSL certificates
-- ✅ **DDoS Protection** - Edge network protection
-- ✅ **Environment Variable Encryption** - Secure storage
-- ✅ **Preview Deployments** - Isolated test environments
-- ✅ **Secure Headers** - CSP, HSTS, X-Frame-Options
-
-**Production URL:** https://nawaetu.com
-
-**Preview Deployments:** Each PR gets isolated preview URL with same security
-
----
-
-*Last updated: February 5, 2026*
+- Secrets stay on the server in environment variables and are never committed (`.env.local` is ignored).
+- API routes check authentication and ownership, validate input, and are rate limited (`src/lib/rate-limit.ts`).
+- Intentions and reflections are private to the account and are not sent to AI providers; see the [privacy policy](https://nawaetu.com/privacy).
+- CodeQL scans the code in CI.
