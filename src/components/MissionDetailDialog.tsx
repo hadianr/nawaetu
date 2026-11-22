@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils";
 import { useLocale, type TranslationTree } from "@/context/LocaleContext";
 import { getRulingLabel } from "@/lib/habits/mission-utils";
 import { parseQuranReference } from "@/lib/quran/reference-parser";
-import { resolveReferenceByText, resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
+import { resolveReferenceForMission } from "@/lib/hadith/reference-matcher";
 import { AppIcon, resolveAppIconName } from "@/components/ui/AppIcon";
 
 interface MissionDetailDialogProps {
@@ -380,7 +380,7 @@ export default function MissionDetailDialog({
                                                     )}>
                                                         {dalilTokens.map((token, idx) => {
                                                             const parsedQuran = parseQuranReference(token);
-                                                            const resolvedSpiritual = resolveReferenceByText(token) || resolveReferenceForMission(mission);
+                                                            const resolvedSpiritual = resolveReferenceForMission({ ...mission, dalil: token });
 
                                                             const isQuran = parsedQuran.isQuranRef;
                                                             const isHadith = !isQuran && (resolvedSpiritual?.type === "hadith" || /^hr\./i.test(token));

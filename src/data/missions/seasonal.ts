@@ -20,8 +20,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'QS. Al-Baqarah: 184',
-        hadithId: 'hadith_ramadhan_diampuni'
+        dalil: 'QS. Al-Baqarah: 184'
     },
     {
         id: 'health_checkup',
@@ -50,8 +49,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Tirmidzi no. 747',
-        hadithId: 'hadith_puasa_perisai'
+        dalil: 'HR. Tirmidzi no. 747'
     },
     {
         id: 'read_fiqh_article',
@@ -110,8 +108,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Muslim no. 804',
-        hadithId: 'hadith_ilmu'
+        dalil: 'HR. Muslim no. 804'
     },
     {
         id: 'tarawih_prayer',
@@ -140,8 +137,7 @@ export const RAMADHAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_during',
         gender: null,
-        dalil: 'QS. Al-A\'raf: 31',
-        hadithId: 'hadith_makan'
+        dalil: 'QS. Al-A\'raf: 31'
     },
     {
         id: 'pre_dawn_meal',
@@ -174,8 +170,7 @@ export const SYABAN_MISSIONS: Mission[] = [
         validationType: 'manual',
         phase: 'ramadhan_prep',
         gender: null,
-        dalil: 'HR. Ibn Rajab no. 385',
-        hadithId: 'hadith_ilmu'
+        dalil: 'HR. Ibn Rajab no. 385'
     },
     {
         id: 'ramadan_fiqh_study',
