@@ -1,6 +1,6 @@
 # Nawaetu Hasanah, Levels, and Partner Rewards Plan
 
-**Status:** Product and technical planning  
+**Status:** Product and technical planning. Server-side scoring (Phase 1) is mostly done through the v1.16.0 sync work (`hasanah-events.ts`); no rewards or redemption code exists yet.  
 **Prepared:** 1 September 2026  
 **Scope:** Document the current progression system and define a safe path toward sponsor-funded physical, digital, and charitable rewards. No rewards or redemption functionality exists yet.
 
@@ -82,10 +82,9 @@ Hasanah is currently awarded from several client experiences, including:
 - daily and seasonal missions;
 - obligatory and sunnah prayer check-ins;
 - dhikr milestones;
-- Sirah quizzes;
 - intentions and reflection;
 - Qur'an/khataman activity;
-- fasting, Taraweh, and other Ramadan activities.
+- fasting and other Ramadan activities (the taraweh tracker is off until Ramadan).
 
 Configured mission rewards currently range from 5 to 200 Hasanah. Some backdated activities receive 50% of the normal amount, and some missions allow an explicit completion option with a different reward.
 
@@ -129,7 +128,7 @@ The authenticated application then hydrates the canonical server progression bac
 
 ### 3.6 Why the current economy must be rebalanced
 
-The current thresholds were designed for motivation, not economic value. Level 10 begins at only 4,500 Hasanah, while the ordinary mission catalog can expose more than 800 Hasanah in one day before counting additional sunnah-prayer, quiz, dhikr-milestone, and seasonal awards. Several high-value activities are also manually confirmed by the user. A determined user could therefore reach a nominally high level in days, and an attacker could edit local storage or automate client actions.
+The current thresholds were designed for motivation, not economic value. Level 10 begins at only 4,500 Hasanah, while the ordinary mission catalog can expose more than 800 Hasanah in one day before counting additional sunnah-prayer, dhikr-milestone, and seasonal awards. Several high-value activities are also manually confirmed by the user. A determined user could therefore reach a nominally high level in days, and an attacker could edit local storage or automate client actions.
 
 No reward with material value should use the current level or browser total as sufficient proof. Before rewards launch, Nawaetu must rebalance both sides of the economy:
 
@@ -155,7 +154,6 @@ Hasanah values must represent **Nawaetu engagement effort and evidence quality**
 | Time/quantity-verified daily mission | 10–25 | Eligible when the server validates the rule | Maximum 40 per day combined |
 | Weekly mission | 30–50 | Eligible once per mission/week | Canonical week key |
 | Seasonal major goal | 50–150 | Campaign-specific review; never repeatable through reset | Explicit event limit |
-| Quiz or learning assessment | 1 per correct item, max 20 | Eligible only once per question/content version | 20 per day |
 
 Initial global controls:
 
@@ -252,7 +250,7 @@ The catalog can support the following without changing the core progression mode
 
 | Form | Examples | Best early use | Main operational issue |
 |---|---|---|---|
-| Digital content | e-books, courses, templates, premium app access | First pilot | unique code/link access control |
+| Digital content | e-books, courses, templates | First pilot | unique code/link access control |
 | Voucher | food, books, transport, data packages, merchant credit | Scalable pilot | code inventory, territory, expiry |
 | Discount/perk | percentage discount, free shipping, bonus item | Lowest sponsor cost | disclose required purchase clearly |
 | Physical item | prayer equipment, books, modest wear, food packs | Limited campaign | address privacy, shipping, returns |

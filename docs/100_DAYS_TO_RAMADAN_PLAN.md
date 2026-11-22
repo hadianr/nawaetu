@@ -1,6 +1,6 @@
 # 100 Days to Ramadan: Feature Plan
 
-**Status:** Product planning (no code yet)
+**Status:** First version shipped in November 2026 (journey card, fasting guide, dalil popup, shared streak). Still open: readiness meter, journey push with a mute, weekly mentor check-in, Eid/Shawwal hand-off, Habit Sprint, and the questions at the end
 **Prepared:** 9 November 2026
 **Goal:** Turn the run-up to Ramadan into a daily-use journey that builds habits which outlast the fasting month. Ramadan is the peak. It must not be the only reason to open Nawaetu.
 
@@ -179,7 +179,7 @@ The journey's copy should sound like a friend who gets it, not a lecturer. Match
 ## 5. Religious and trust guardrails
 
 - **Framing:** "100 days" is a training program, not a religious obligation or an act of worship with its own reward. Copy must say "a way to prepare", never imply a special merit for the number 100.
-- **No unsourced claims.** Any hadith, dua, or ruling in daily content goes through the same review used in `docs/HADITH_DUA_AUDIT_ACTION_PLAN.md`. Preserve Arabic text and references.
+- **No unsourced claims.** Any hadith, dua, or ruling in daily content goes through the review in `docs/100_DAYS_DALIL_REVIEW.md`. Preserve Arabic text and references.
 - **No guilt mechanics.** Missed days are met with encouragement. No public leaderboards of worship (matches the rewards plan non-goals).
 - **Privacy:** worship data is personal. Nothing shared unless the user explicitly taps share.
 - **Moon-sighting honesty:** show "expected" next to the Ramadan date, and update when the official announcement lands.
@@ -249,3 +249,22 @@ Baseline from last year's Ramadan usage should be measured first, so this year h
 2. Is the habit menu fixed (about 6 habits) or can users define their own?
 3. Should the journey be opt-in, or shown to everyone with a dismiss option?
 4. Is any sponsor tie-in wanted? If so, hold it until the rewards plan pilot, and keep it out of this feature.
+
+## Who owns what on Home (no overlap rule)
+
+Moved from the 100-day UI design doc (shipped; removed 23 Nov 2026).
+
+Each thing lives in one card. The 100-day card links to the owner and never keeps a second copy.
+
+| Topic | Owner | The 100-day card does |
+| --- | --- | --- |
+| Niat | Jurnal Niat Harian | Nothing. No niat habit (removed: it duplicated the journal) |
+| Five prayers | Check-in Sholat | Nothing. No prayer habit (removed). The phase goal only says "pray on time" |
+| Streak count | Header badge and streak dialog | Shows the week in the details and opens the same dialog. Never keeps its own record |
+| Quran and dhikr | Quran and Tasbih screens, Fokus Harian missions | The habit sends the user there and ticks from the same stored numbers |
+| Owed fasts, Mon/Thu, Ayyamul Bidh, Sha'ban fasts | The card's fasting row (follows the user's madhhab) | Owns it. The Sya'ban missions `qadha_puasa` and `syaban_fasting` were removed from Fokus Harian for this reason |
+| Phases and countdown | The 100-day card | Owns it |
+
+Habits left in the card are the ones no other card covers: gratitude, speaking well, sadaqah, family ties, sleep, dua, phone-free time, suhoor practice, plus the Quran and dhikr nudges above.
+
+Open item: with habits 4 and 11 gone, the Build and Sharpen phases rotate through only four habits each (it repeats every four days). New habits need a library hadith and reviewer approval first.

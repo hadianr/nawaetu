@@ -41,11 +41,11 @@ Execute the release script with your target version:
 
 For the best auto-generated changelog entries, format commit messages as:
 ```text
-<type>: <title> - <description>
+<type>(<scope>): <title>
 ```
 
 **Supported Types:**
 - `feat`: New features (categorized under **Added**)
 - `fix`: Bug fixes (categorized under **Fixed**)
 - `perf`: Performance optimizations (categorized under **Performance**)
-- `improve` / `refactor` / `chore` / `style`: Code structure & maintenance (categorized under **Improved**)
+- `refactor` / `chore` / `style`: Code structure & maintenance (categorized under **Improved**)

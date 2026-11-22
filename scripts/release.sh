@@ -19,9 +19,9 @@
 #   feat: Qibla Compass Optimization - major performance improvements for mobile
 #   fix: Alignment Feedback - enhanced visual animations with haptic response
 #   perf: React.memo implementation - prevent unnecessary re-renders
-#   improve: Compass Session Handling - better reinitialization on app reopen
+#   refactor(qibla): reinitialise the compass session on app reopen
 #
-# Types: feat, fix, perf, improve, refactor, style, chore
+# Types: feat, fix, perf, refactor, style, chore (commitlint config-conventional)
 # The script will auto-format these into readable changelog entries!
 
 set -e
