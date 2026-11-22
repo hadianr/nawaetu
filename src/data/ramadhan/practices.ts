@@ -59,7 +59,7 @@ export const TARAWEH_EVIDENCE: EvidenceData = {
 
 export const QURAN_RECITATION_EVIDENCE: EvidenceData = {
     id: 'dalil_quran_recitation',
-    shortRef: 'HR. Tirmidzi 2910',
+    shortRef: 'HR. Muslim 804',
     arabic: 'اقْرَؤُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ',
     latin: 'Iqra\'ul qur\'āna fa\'innahū ya\'tī yaumal qiyāmati syafī\'an li\'ashhābih.',
     translation: 'Bacalah Al-Quran, karena sesungguhnya ia akan datang pada hari kiamat sebagai pemberi syafaat bagi para pembacanya.',
