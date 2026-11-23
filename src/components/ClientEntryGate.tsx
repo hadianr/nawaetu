@@ -73,8 +73,8 @@ export default function ClientEntryGate({ children, homeIntro }: ClientEntryGate
     const pathname = usePathname();
     const isPublicContent = isPublicContentPath(pathname);
 
-    // No marker means onboarding will most likely show, and it opens on an animation. Start its code and the
-    // animation player (with its WASM) now, instead of after the session check settles.
+    // No marker means onboarding will most likely show. Start its code now, instead of after the session check
+    // settles. The animation player waits until after first paint (see LottieMoment).
     useEffect(() => {
         try {
             if (hasCompletedOnboarding(window.localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED))) return;
@@ -82,7 +82,6 @@ export default function ClientEntryGate({ children, homeIntro }: ClientEntryGate
             return;
         }
         void import("@/components/OnboardingOverlay");
-        void import("@/components/ui/LottiePlayer");
     }, []);
 
     useEffect(() => {

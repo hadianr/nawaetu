@@ -84,6 +84,8 @@ describe("LottieMoment", () => {
         mockMatchMedia(false);
         render(<LottieMoment src="/lottie/x.lottie" quietLoad fallback={<span>still</span>} />);
         expect(screen.queryByText("still")).toBeNull();
+        // The player waits until after first paint, so the screen is never held up by its WASM.
+        expect(screen.queryByTestId("player")).toBeNull();
         const player = await screen.findByTestId("player");
         expect(player.parentElement?.className).toContain("opacity-0");
         fireEvent.click(screen.getByTestId("play"));
