@@ -41,13 +41,13 @@ interface LottieMomentProps {
     fallback?: ReactNode;
     /** Called once, when the animation actually starts moving. */
     onPlay?: () => void;
-    /** Load the player straight away and keep the box empty until the animation is ready, then fade it in. The fallback only shows if the animation cannot play. */
+    /** Keep the box empty until the animation is ready, then fade it in. The fallback only shows if the animation cannot play. */
     quietLoad?: boolean;
 }
 
 /** Decorative animation: hidden from assistive tech, so pair it with real text. */
 export default function LottieMoment({ src, className, loop = false, hideOnComplete = false, fallback = null, onPlay, quietLoad = false }: LottieMomentProps) {
-    const [armed, setArmed] = useState(quietLoad);
+    const [armed, setArmed] = useState(false);
     const [playing, setPlaying] = useState(false);
     const [failed, setFailed] = useState(false);
     const [finished, setFinished] = useState(false);
@@ -57,16 +57,21 @@ export default function LottieMoment({ src, className, loop = false, hideOnCompl
         () => true,
     );
 
-    // Start the player download just after first paint so it never competes with the screen itself.
+    // Start the player download after first paint so its WASM never delays the screen itself (#299).
     useEffect(() => {
-        if (quietLoad) return;
-        if (typeof window.requestIdleCallback === "function") {
-            const id = window.requestIdleCallback(() => setArmed(true), { timeout: 300 });
-            return () => window.cancelIdleCallback(id);
-        }
-        const id = window.setTimeout(() => setArmed(true), 0);
-        return () => window.clearTimeout(id);
-    }, [quietLoad]);
+        let idle = 0;
+        // The next animation frame runs once this screen has been painted; then wait for the browser to be idle.
+        const frame = window.requestAnimationFrame(() => {
+            idle = typeof window.requestIdleCallback === "function"
+                ? window.requestIdleCallback(() => setArmed(true), { timeout: 2000 })
+                : window.setTimeout(() => setArmed(true), 0);
+        });
+        return () => {
+            window.cancelAnimationFrame(frame);
+            if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idle);
+            else window.clearTimeout(idle);
+        };
+    }, []);
 
     const handlePlay = () => {
         if (playing) return;
