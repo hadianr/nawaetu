@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const sections = [
     {
         title: "1. Who we are",
-        text: "Nawaetu is an Islamic worship and habit-tracking service operated by NawaetuLabs (Hadian Rahmat). This policy applies to nawaetu.com and the Nawaetu Android app, including the app experience that opens nawaetu.com.",
+        text: "Nawaetu is an Islamic worship and habit-tracking service operated by NawaetuLabs (Hadian Rahmat). This policy applies to nawaetu.com, the Nawaetu browser extension, and the Nawaetu Android app, including the app experience that opens nawaetu.com.",
     },
     {
         title: "2. Data we collect",
@@ -56,7 +56,11 @@ const sections = [
         text: "You can control location permission and push notification permission in your device or browser settings, and you can stop using AI features at any time. To request deletion of your Nawaetu account and associated personal data, use the instructions on our account deletion page. We may ask for information needed to verify that you control the account. Some records may be retained where required for legal, security, or transaction purposes.",
     },
     {
-        title: "7. Changes and contact",
+        title: "7. Browser extension",
+        text: "The Nawaetu browser extension works without an account and does not send data to Nawaetu servers. If you allow location, it sends your coordinates to Aladhan to calculate prayer times and to BigDataCloud to resolve a city name. It loads Quran, hadith, and dua text from public APIs. Your settings, bookmarks, Hijri date correction, and notification choice are stored only in your browser, and adzan notifications are scheduled locally.",
+    },
+    {
+        title: "8. Changes and contact",
         text: "We may update this policy as the service changes. The effective date below shows the latest revision. For privacy questions or account deletion requests, email hadian.rahmat@gmail.com.",
     },
 ];
@@ -67,7 +71,7 @@ export default function PrivacyPolicyPage() {
             <article className="mb-12 w-full max-w-4xl space-y-8">
                 <header className="space-y-3 text-center">
                     <h1 className="text-4xl font-bold sm:text-5xl">Privacy Policy</h1>
-                    <p className="text-[rgb(var(--color-text-muted))]">Effective date: September 27, 2026</p>
+                    <p className="text-[rgb(var(--color-text-muted))]">Effective date: November 24, 2026</p>
                 </header>
 
                 <div className="space-y-7 rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/70 p-6 leading-relaxed text-[rgb(var(--color-text-muted))] sm:p-8">
@@ -85,13 +89,14 @@ export default function PrivacyPolicyPage() {
 
                     <section className="space-y-3 border-t border-[rgb(var(--color-border))] pt-6">
                         <h2 className="text-xl font-bold text-[rgb(var(--color-text-strong))]">Kebijakan Privasi (Bahasa Indonesia)</h2>
-                        <p>Kebijakan ini berlaku untuk nawaetu.com dan aplikasi Android Nawaetu yang membuka layanan nawaetu.com. Nawaetu dioperasikan oleh NawaetuLabs (Hadian Rahmat).</p>
+                        <p>Kebijakan ini berlaku untuk nawaetu.com, aplikasi Android Nawaetu yang membuka layanan nawaetu.com, dan ekstensi browser Nawaetu. Nawaetu dioperasikan oleh NawaetuLabs (Hadian Rahmat).</p>
                         <p>Kami memproses data akun Google (nama, email, foto profil, dan ID akun); data yang Anda simpan seperti pengaturan, bookmark, progres Al-Qur’an, aktivitas ibadah, niat dan refleksi, catatan Ramadan, serta status dukungan/donasi. Masukan yang Anda kirim dapat mencakup pesan, nama, email, ID akun, detail perangkat/browser, dan screenshot yang Anda lampirkan. Teks masukan dan detail perangkat disimpan di basis data Nawaetu. Sebagian catatan dapat mengungkap informasi sensitif terkait agama atau kesehatan.</p>
                         <p>Niat dan refleksi Anda bersifat pribadi untuk akun Anda. Pengguna lain tidak dapat melihatnya, Nawaetu tidak menampilkannya kepada siapa pun, dan Nawaetu tidak mengirimkannya ke penyedia AI yang disebut di bawah (hanya yang Anda ketik ke mentor AI yang dikirim). Keduanya disimpan di basis data Nawaetu seperti data tersinkron lainnya.</p>
                         <p>Jika Anda mengaktifkan fitur berbasis lokasi, lokasi digunakan untuk waktu salat, arah kiblat, nama kota, dan notifikasi. Token notifikasi, koordinat, kota/negara, zona waktu, jenis perangkat, serta pilihan notifikasi dapat disimpan untuk mengirim pengingat.</p>
                         <p>Pertanyaan dan konteks yang Anda kirim ke mentor AI dapat diproses oleh Google Gemini, Groq, atau OpenRouter; riwayat percakapan akun tersimpan agar dapat dibuka kembali. Jika notifikasi masukan melalui Telegram diaktifkan, pesan masukan, nama, email, ID akun, detail perangkat/browser, dan screenshot yang dilampirkan akan diteruskan ke chat dukungan Telegram Nawaetu yang ditentukan untuk ditinjau. Masukan tetap tersimpan di basis data Nawaetu jika pengiriman ke Telegram tidak tersedia. Aladhan digunakan untuk waktu salat; BigDataCloud atau OpenStreetMap Nominatim untuk pencarian nama lokasi; Google untuk login, analitik, dan Firebase Cloud Messaging; Mayar untuk pembayaran/donasi; Vercel untuk hosting dan pengukuran performa; Supabase untuk basis data; serta Sentry untuk pemantauan error.</p>
                         <p>Kami tidak menjual data pribadi. Data akun disimpan selama akun aktif. Untuk meminta penghapusan akun dan data pribadi terkait, ikuti petunjuk di <Link className="underline" href="/delete-account">halaman penghapusan akun</Link> atau hubungi <a className="underline" href="mailto:hadian.rahmat@gmail.com">hadian.rahmat@gmail.com</a>. Kami dapat meminta verifikasi kepemilikan akun dan dapat menyimpan catatan tertentu bila diperlukan untuk kewajiban hukum, keamanan, atau transaksi. Data pada cadangan dan log penyedia dapat memerlukan waktu untuk terhapus sesuai jadwal retensi mereka.</p>
-                        <p>Anda dapat menonaktifkan izin lokasi dan notifikasi melalui pengaturan perangkat/browser, serta berhenti menggunakan fitur AI kapan saja. Kebijakan ini terakhir diperbarui pada 27 September 2026.</p>
+                        <p>Ekstensi browser Nawaetu bekerja tanpa akun dan tidak mengirim data ke server Nawaetu. Jika Anda mengizinkan lokasi, koordinat dikirim ke Aladhan untuk menghitung waktu salat dan ke BigDataCloud untuk menentukan nama kota. Teks Al-Qur&apos;an, hadits, dan doa dimuat dari API publik. Pengaturan, bookmark, koreksi tanggal Hijriah, dan pilihan notifikasi hanya tersimpan di browser Anda, dan notifikasi adzan dijadwalkan secara lokal.</p>
+                        <p>Anda dapat menonaktifkan izin lokasi dan notifikasi melalui pengaturan perangkat/browser, serta berhenti menggunakan fitur AI kapan saja. Kebijakan ini terakhir diperbarui pada 24 November 2026.</p>
                     </section>
 
                     <p className="border-t border-[rgb(var(--color-border))] pt-6">
