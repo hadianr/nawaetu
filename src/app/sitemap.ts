@@ -69,6 +69,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${baseUrl}/sirah/history`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/sirah/full`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/sirah/concise`, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${baseUrl}/en/about`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/en/sirah/concise`, changeFrequency: 'monthly', priority: 0.7 },
         { url: `${baseUrl}/en/sirah/history`, changeFrequency: 'monthly', priority: 0.6 },
         { url: `${baseUrl}/rewards`, changeFrequency: 'monthly', priority: 0.5 },
