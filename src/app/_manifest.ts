@@ -37,7 +37,7 @@ export function buildManifest(): NawaetuManifest {
     display: "standalone",
     orientation: "any",
     background_color: "#FAF8F3",
-    theme_color: "#158057",
+    theme_color: "#FAF8F3",
     permissions: ["notifications"],
     categories: ["lifestyle", "productivity", "education"],
     icons: [
