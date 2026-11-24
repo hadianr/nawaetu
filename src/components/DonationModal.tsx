@@ -29,6 +29,7 @@ import { useSession } from "next-auth/react";
 import { signInWithGoogle } from "@/lib/auth-client";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { useLocale } from "@/context/LocaleContext";
+import { trackInfaqStarted } from "@/lib/analytics/analytics";
 
 interface DonationModalProps {
     isOpen: boolean;
@@ -69,6 +70,7 @@ export default function DonationModal({ isOpen, onClose, headerTitle, headerDesc
             return;
         }
 
+        trackInfaqStarted(finalAmount);
         setLoading(true);
         try {
             const res = await fetch("/api/payment/create", {

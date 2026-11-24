@@ -6,6 +6,9 @@ import {
   getAiReferrer,
   trackAiReferral,
   trackAIQuery,
+  trackAccountAuth,
+  trackInfaqStarted,
+  trackInfaqCompleted,
   trackAppError,
   trackDuaView,
   trackFeatureUse,
@@ -100,5 +103,23 @@ describe("client analytics", () => {
     expect(analyticsWindow().dataLayer).toEqual([
       ["event", "ai_referral", { source: "chatgpt.com", landing_path: "/quran/1" }],
     ]);
+  });
+
+  it("sends account and infaq conversion events", () => {
+    trackAccountAuth(true);
+    trackAccountAuth(false);
+    trackInfaqStarted(25000);
+    trackInfaqCompleted(25000);
+    trackInfaqCompleted();
+
+    vi.runAllTimers();
+
+    expect(analyticsWindow().dataLayer).toEqual(expect.arrayContaining([
+      ["event", "sign_up", { method: "google" }],
+      ["event", "login", { method: "google" }],
+      ["event", "infaq_started", { currency: "IDR", value: 25000 }],
+      ["event", "infaq_completed", { currency: "IDR", value: 25000 }],
+      ["event", "infaq_completed", {}],
+    ]));
   });
 });

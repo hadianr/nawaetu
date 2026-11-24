@@ -29,7 +29,7 @@ import type { TranslationTree } from "@/context/LocaleContext";
 
 import { getStorageService, type StorageService } from "@/core/infrastructure/storage";
 import { mergeSyncRecords } from "@/lib/sync/merge-sync-data";
-import { sendGAEvent } from "@/lib/analytics/analytics";
+import { sendGAEvent, trackAccountAuth } from "@/lib/analytics/analytics";
 import { DateUtils } from "@/lib/utils/date";
 import { clearAccountData } from "@/lib/account-data";
 
@@ -358,6 +358,8 @@ export function GuestSyncManager() {
 
                 if (!res.ok) throw new Error(`Failed to fetch user data: ${res.status}`);
                 const serverData = await res.json();
+                // Runs once per account per device (LAST_SYNC_USER_ID); only a brand-new account is still guest-sync eligible.
+                trackAccountAuth(serverData.profile?.guestSyncEligible === true);
                 const hasServerProgress = checkServerProgress(serverData);
 
                 // 2. Check Local Guest Data
