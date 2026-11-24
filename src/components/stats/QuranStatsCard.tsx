@@ -40,7 +40,7 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
         {
             icon: <BookOpen className="w-4 h-4 text-[rgb(var(--color-info))]" />,
             label: t.tilawahTotalAyat,
-            value: totalQuranAyat > 0 ? totalQuranAyat.toLocaleString() : '—',
+            value: totalQuranAyat.toLocaleString(),
             sub: totalQuranAyat > 0 ? t.tilawahTotalAyatSub : t.tilawahTotalAyatEmpty,
             gradient: 'from-[rgb(var(--color-info))]/10',
             color: 'text-[rgb(var(--color-info))]',
@@ -48,7 +48,7 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
         {
             icon: <Clock className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />,
             label: t.tilawahDurationToday,
-            value: todayReadSeconds > 0 ? formatDuration(todayReadSeconds) : '—',
+            value: formatDuration(todayReadSeconds),
             sub: todayReadSeconds > 0 ? t.tilawahTodaySub : t.tilawahNoSessionToday,
             gradient: 'from-[rgb(var(--color-primary))]/10',
             color: 'text-[rgb(var(--color-primary-strong))]',
@@ -56,7 +56,7 @@ export function QuranStatsCard({ totalQuranAyat, totalQuranReadSeconds, todayRea
         {
             icon: <Flame className="w-4 h-4 text-[rgb(var(--color-accent-strong))]" />,
             label: t.tilawahTotalDuration,
-            value: totalQuranReadSeconds > 0 ? formatDuration(totalQuranReadSeconds) : '—',
+            value: formatDuration(totalQuranReadSeconds),
             sub: t.tilawahTotalDurationSub,
             gradient: 'from-[rgb(var(--color-accent))]/10',
             color: 'text-[rgb(var(--color-accent-strong))]',

@@ -30,11 +30,11 @@ export default function DynamicTitle() {
         if (!t) return;
 
         // Default title
-        let pageTitle = `Nawaetu — ${t.aboutTagline || "Begin with intention"}`;
+        let pageTitle = `Nawaetu: ${t.aboutTagline || "Begin with intention"}`;
 
         // Map pathnames to translations
         if (pathname === "/") {
-            pageTitle = `Nawaetu — ${t.aboutTagline || "Begin with intention"}`;
+            pageTitle = `Nawaetu: ${t.aboutTagline || "Begin with intention"}`;
         } else if (pathname === "/quran") {
             pageTitle = `${t.navQuran || "Quran"} - Nawaetu`;
         } else if (pathname === "/tasbih") {

@@ -23,9 +23,9 @@ export const ramadhanID = {
     ramadhanDay1: "Hari 1",
     ramadhanDay30: "Hari 30",
     ramadhanCompleted: "selesai",
-    ramadhanPeriod1: "10 Hari Pertama — Penuh Rahmat",
-    ramadhanPeriod2: "10 Hari Kedua — Penuh Ampunan",
-    ramadhanPeriod3: "10 Hari Terakhir - Bebas dari Api Neraka",
+    ramadhanPeriod1: "10 Hari Pertama: Penuh Rahmat",
+    ramadhanPeriod2: "10 Hari Kedua: Penuh Ampunan",
+    ramadhanPeriod3: "10 Hari Terakhir: Bebas dari Api Neraka",
 
     // Hero Card
     heroRamadhanLabel: "Ramadhan",
@@ -33,9 +33,9 @@ export const ramadhanID = {
     heroDay1: "Hari 1",
     heroDay30: "Hari 30",
     heroCompleted: "selesai",
-    heroPeriod1: "10 Hari Pertama — Penuh Rahmat",
-    heroPeriod2: "10 Hari Kedua — Penuh Ampunan",
-    heroPeriod3: "10 Hari Terakhir - Bebas dari Api Neraka",
+    heroPeriod1: "10 Hari Pertama: Penuh Rahmat",
+    heroPeriod2: "10 Hari Kedua: Penuh Ampunan",
+    heroPeriod3: "10 Hari Terakhir: Bebas dari Api Neraka",
 
     // Schedule Card
     scheduleTodayTitle: "Jadwal Hari Ini",

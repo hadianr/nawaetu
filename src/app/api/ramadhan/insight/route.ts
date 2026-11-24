@@ -62,7 +62,7 @@ async function generateWithGroq(prompt: string): Promise<string> {
 
 const FALLBACK_INSIGHTS = [
     "Puasa dan tarawihmu sudah bagus, yuk tingkatkan dzikir dan sholat sunnah lainnya biar ibadah makin lengkap. Semangat istiqomahnya!",
-    "Tilawah Quranmu membanggakan — tapi jangan lupa perbanyak dzikir pagi-petang juga, itu amalan ringan tapi pahalanya besar. Semoga Ramadhan ini jadi titik balik terbaik.",
+    "Tilawah Quranmu membanggakan, tapi jangan lupa perbanyak dzikir pagi-petang juga, itu amalan ringan tapi pahalanya besar. Semoga Ramadhan ini jadi titik balik terbaik.",
     "Tarawih dan qiyamulailmu luar biasa! Coba lengkapi dengan sholat sunnah rawatib yang konsisten, karena ibadah yang rutin lebih dicintai Allah daripada yang banyak tapi bolong-bolong.",
 ];
 
