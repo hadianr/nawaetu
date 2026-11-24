@@ -43,12 +43,8 @@ export default function RamadhanHeroCard() {
     const dayName = today?.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { weekday: "long" }) ?? "";
     const dateStr = today?.toLocaleDateString(locale === 'en' ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" }) ?? "";
 
-    // Progressive opacity: semakin mendekati hari ke-30, semakin solid (0.5 to 1.0)
-    let progressiveOpacity = 0.5 + (ramadhanDay / 30) * 0.5;
-    if (isNaN(progressiveOpacity)) progressiveOpacity = 0.5;
-
-    let borderOpacity = 0.4 + (ramadhanDay / 30) * 0.3; // 0.4 to 0.7
-    if (isNaN(borderOpacity)) borderOpacity = 0.4;
+    // The tint deepens with each 10-day period: mercy, forgiveness, freedom from the Fire.
+    const periodTint = ramadhanDay <= 10 ? 0.06 : ramadhanDay <= 20 ? 0.1 : 0.14;
 
     // Determine which period and its dalil
     const periodData = ramadhanDay <= 10
@@ -59,78 +55,11 @@ export default function RamadhanHeroCard() {
 
     return (
         <div
-            className="relative w-full rounded-2xl overflow-hidden shadow-[var(--shadow-floating)] backdrop-blur-xl"
+            className="relative w-full rounded-2xl overflow-hidden border border-[rgb(var(--color-primary)/0.3)] shadow-[var(--shadow-card)]"
             style={{
-                contain: "layout style paint",
-                border: `1px solid color-mix(in srgb, var(--color-primary-light) 30%, transparent)`,
-                background: `
-                    linear-gradient(135deg, 
-                        color-mix(in srgb, var(--color-primary) ${ramadhanDay <= 10 ? '40%' : ramadhanDay <= 20 ? '50%' : '60%'}, transparent) 0%,
-                        color-mix(in srgb, var(--color-primary-dark) ${ramadhanDay <= 10 ? '15%' : ramadhanDay <= 20 ? '25%' : '35%'}, transparent) 40%,
-                        rgba(0, 0, 0, 0.6) 100%
-                    ),
-                    radial-gradient(circle at top right, color-mix(in srgb, var(--color-primary-light) ${ramadhanDay <= 10 ? '20%' : ramadhanDay <= 20 ? '30%' : '40%'}, transparent) 0%, transparent 60%)
-                `,
-                boxShadow: `
-                    0 0 40px color-mix(in srgb, var(--color-primary) 20%, transparent),
-                    0 10px 30px rgba(0, 0, 0, 0.5)
-                `
+                background: `linear-gradient(rgb(var(--color-primary) / ${periodTint}), rgb(var(--color-primary) / ${periodTint})), rgb(var(--color-surface))`,
             }}
         >
-            {/* Strong glow overlay for prominence - optimized */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    opacity: 0.3 * progressiveOpacity,
-                    willChange: "opacity",
-                    background: `
-                        radial-gradient(ellipse at top left, color-mix(in srgb, var(--color-primary-light) 40%, transparent) 0%, transparent 50%),
-                        radial-gradient(ellipse at bottom right, color-mix(in srgb, var(--color-primary) 30%, transparent) 0%, transparent 50%),
-                        radial-gradient(circle at center, color-mix(in srgb, var(--color-primary) 15%, transparent) 0%, transparent 70%)
-                    `
-                }}
-            />
-
-            {/* Enhanced animated border glow - GPU accelerated */}
-            <div
-                className="absolute inset-0 rounded-2xl pointer-events-none animate-gradient-shift"
-                style={{
-                    willChange: "background-position",
-                    transform: "translate3d(0, 0, 0)",
-                    background: "linear-gradient(135deg, color-mix(in srgb, var(--color-primary-light) 30%, transparent), color-mix(in srgb, var(--color-primary) 20%, transparent), color-mix(in srgb, var(--color-primary-light) 30%, transparent))",
-                    backgroundSize: "300% 300%",
-                    mixBlendMode: "overlay"
-                }}
-            />
-
-            {/* Top border accent - progressive and GPU accelerated */}
-            <div
-                className="absolute top-0 left-0 right-0 h-0.5 pointer-events-none"
-                style={{
-                    willChange: "opacity",
-                    background: `linear-gradient(90deg, 
-                        transparent 0%, 
-                        color-mix(in srgb, var(--color-primary-light) ${Math.round(70 * progressiveOpacity)}%, transparent) 20%, 
-                        color-mix(in srgb, var(--color-primary) ${Math.round(70 * progressiveOpacity)}%, transparent) 50%, 
-                        color-mix(in srgb, var(--color-primary-light) ${Math.round(70 * progressiveOpacity)}%, transparent) 80%, 
-                        transparent 100%
-                    )`,
-                    boxShadow: `0 0 20px color-mix(in srgb, var(--color-primary) ${Math.round(50 * progressiveOpacity)}%, transparent), 0 0 40px color-mix(in srgb, var(--color-primary-light) ${Math.round(30 * progressiveOpacity)}%, transparent)`
-                }}
-            />
-
-            {/* Shimmer effect - desktop only for mobile performance */}
-            <div
-                className="absolute inset-0 pointer-events-none hidden md:block animate-shimmer"
-                style={{
-                    willChange: "background-position",
-                    transform: "translate3d(0, 0, 0)",
-                    opacity: 0.2 * progressiveOpacity,
-                    background: "linear-gradient(110deg, transparent 25%, color-mix(in srgb, var(--color-primary-light) 50%, transparent) 50%, transparent 75%)",
-                    backgroundSize: "200% 100%"
-                }}
-            />
-
             <div className="relative px-3 pt-3 pb-3 sm:px-5 sm:pt-5 sm:pb-4">
                 {/* Top row */}
                 <div className="flex items-start justify-between mb-2 sm:mb-3">
@@ -145,12 +74,7 @@ export default function RamadhanHeroCard() {
                             {t.ramadhanDay}<span style={{ color: "rgb(var(--color-primary-strong))" }}>{ramadhanDay}</span>
                         </h1>
                         <p
-                            className="text-xs sm:text-sm mt-0.5 sm:mt-1 font-medium"
-                            style={{
-                                color: `color-mix(in srgb, white ${Math.round((0.4 + (progressiveOpacity * 0.3)) * 100)}%, transparent)`,
-                                textShadow: `0 0 ${10 + ramadhanDay}px color-mix(in srgb, var(--color-primary-light) ${Math.round(30 * progressiveOpacity)}%, transparent)`,
-                                transition: "color 0.3s ease, text-shadow 0.3s ease"
-                            }}
+                            className="text-xs sm:text-sm mt-0.5 sm:mt-1 font-medium text-[rgb(var(--color-text-muted))]"
                         >
                             {dayName}, {dateStr}
                         </p>
@@ -162,7 +86,7 @@ export default function RamadhanHeroCard() {
                 <div className="mb-3 sm:mb-4">
                     <div className="flex justify-between text-xs sm:text-xs text-[rgb(var(--color-text-muted))] mb-1">
                         <span>{t.ramadhanDay1}</span>
-                        <span className="font-medium" style={{ color: "rgb(var(--color-primary-strong) / 0.8)" }}>{progress}% {t.ramadhanCompleted}</span>
+                        <span className="font-medium" style={{ color: "rgb(var(--color-primary-strong))" }}>{progress}% {t.ramadhanCompleted}</span>
                         <span>{t.ramadhanDay30}</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-[rgb(var(--color-surface-subtle))] overflow-hidden">
@@ -184,7 +108,7 @@ export default function RamadhanHeroCard() {
                 </div>
 
                 {/* Motivational text */}
-                <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3 backdrop-blur-md shadow-[var(--shadow-card)]">
+                <div className="rounded-xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 mb-2 sm:px-4 sm:py-3 sm:mb-3">
                     <div className="flex items-center justify-between gap-2">
                         <p className="text-xs sm:text-xs text-[rgb(var(--color-text-strong))] leading-relaxed font-bold">
                             {periodData.text}

@@ -83,7 +83,7 @@ export default function LoginNudge() {
                     loop
                     quietLoad
                     className="mx-auto h-28 w-28"
-                    fallback={<Flame className="h-12 w-12 text-orange-400" />}
+                    fallback={<Flame className="h-12 w-12 text-[rgb(var(--color-accent-strong))]" />}
                 />
                 <DialogHeader className="items-center text-center sm:text-center">
                     <DialogTitle>{getTranslationText(translations, copy.title)}</DialogTitle>

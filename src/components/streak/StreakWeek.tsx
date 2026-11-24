@@ -41,7 +41,7 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                             className={cn(
                                 "flex size-3.5 items-center justify-center rounded-full border",
                                 day.protected
-                                    ? "border-sky-400/60 bg-sky-500/15 text-sky-400"
+                                    ? "border-[rgb(var(--color-info))]/60 bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))]"
                                     : day.active
                                         ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                         : "border-[rgb(var(--color-text-muted))]/60",
@@ -66,7 +66,7 @@ export default function StreakWeek({ compact = false }: { compact?: boolean }) {
                     <span className={cn(
                         "flex aspect-square items-center justify-center rounded-full border text-xs",
                         day.protected
-                            ? "border-sky-400/60 bg-sky-500/15 text-sky-400"
+                            ? "border-[rgb(var(--color-info))]/60 bg-[rgb(var(--color-info))]/15 text-[rgb(var(--color-info))]"
                             : day.active
                                 ? "border-[rgb(var(--color-primary-light))] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-primary-foreground))]"
                                 : day.today

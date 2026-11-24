@@ -219,7 +219,7 @@ export default function StreakBadge({ showLabel = false, modalOnly = false, open
 
             <div className="flex items-center justify-between text-xs" aria-label={t.streakFreezeInventory}>
               <span className="flex items-center gap-1.5 text-[rgb(var(--color-text-muted))]">
-                <Snowflake className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <Snowflake className="h-4 w-4 text-[rgb(var(--color-info))]" aria-hidden="true" />
                 {t.streakHariJeda}
               </span>
               <span className="font-bold tabular-nums">{streak.freezesAvailable}/1</span>

@@ -133,7 +133,7 @@ export function StatsOverview({
                         label: t.stats.quick.currentStreak,
                         value: `${streakData.currentStreak}`,
                         sub: t.stats.quick.longestStreak.replace('{{days}}', streakData.longestStreak.toString()),
-                        gradient: "from-orange-500/10",
+                        gradient: "",
                     },
                     {
                         id: 'prayers' as const,
@@ -149,15 +149,15 @@ export function StatsOverview({
                         label: `Hasanah ${t.stats.chart.filters[timeRange === 'today' ? 'today' : timeRange === '7d' ? 'last7d' : timeRange === '30d' ? 'last30d' : timeRange === '90d' ? 'last90d' : 'last1y']}`,
                         value: totalHasanah.toLocaleString(),
                         sub: timeRange === 'today' ? t.stats.chart.subtitle : `${timeRange.toUpperCase()} ${t.stats.quick.lastDays}`,
-                        gradient: "from-yellow-500/10",
+                        gradient: "",
                     },
                     {
                         id: 'consistency' as const,
-                        icon: <Target className="w-4 h-4 text-violet-400" />,
+                        icon: <Target className="w-4 h-4 text-[rgb(var(--color-primary-strong))]" />,
                         label: t.stats.quick.consistency,
                         value: `${consistency}%`,
                         sub: t.stats.quick.last30Days,
-                        gradient: "from-violet-500/10",
+                        gradient: "",
                     },
                 ].map((stat, i) => (
                     <button
