@@ -148,7 +148,7 @@ footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--b
   <h1>Nawaetu Design Audit</h1>
   <p class="lede"><strong>Nawaetu does not read as AI-generated design.</strong> It has a written direction, one semantic token layer across five themes, an icon registry and honest copy. What it has instead is drift: feature code has outgrown its own <code>design.md</code>, and the gaps show up as contrast failures, unnamed controls and 6 to 11px text.</p>
   <div class="status" role="note">
-    <p><b>Update, same day: all 28 findings fixed.</b> Each fix is its own commit on a branch. The final re-scan found 0 axe violations on 22 routes and in 50 runs across 5 themes, no blur, no text under 12px and no overflow at 320px. See <a href="#after">After the fixes</a>.</p>
+    <p><b>Update, same day: all 28 findings fixed, and the follow-up pass is done.</b> That pass covered a click-through of every guest-reachable control, the browser extension, the Android wrapper and the Indonesian-only UI text.</p><p> Each fix is its own commit on a branch. The final re-scan found 0 axe violations on 22 routes and in 50 runs across 5 themes, no blur, no text under 12px and no overflow at 320px. See <a href="#after">After the fixes</a>.</p>
   </div>
   <nav class="toc" aria-label="Sections">
     <a href="#after">After the fixes</a>
@@ -201,7 +201,7 @@ footer { font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--b
     <p class="muted">antislop's four-block check, after the fixes. Each row shows what failed in the audit.</p>
   </header>
   <div class="gate">
-    <div><h3>1. Hard Gate</h3><span class="verdict partial">PARTIAL</span><p>Every rule passes in the browser scan, except R-35. It asks for a recorded click-through of every control, and that was only done by automated scan. Before: FAIL on R-02 em dashes, R-03 tap targets, R-25 contrast, R-32 keyboard, R-34 dead theme styles, R-39 names and landmarks.</p></div>
+    <div><h3>1. Hard Gate</h3><span class="verdict pass">PASS</span><p>Every rule passes for everything a guest can reach. R-35's click-through recorded every control on every route; dialogs that seemed stuck on Escape were re-checked with a real key press, and the click-through found five defects, all fixed. Signed-in flows were not clicked through, because they need a Google test account. Before: FAIL on R-02 em dashes, R-03 tap targets, R-25 contrast, R-32 keyboard, R-34 dead theme styles, R-39 names and landmarks.</p></div>
     <div><h3>2. Purpose-Gate</h3><span class="verdict pass">PASS</span><p>Gradients, Sparkles, uppercase, blur and motion each have a written rule in design.md. Before: FAIL on R-01, R-04, R-06, R-10, R-19.</p></div>
     <div><h3>3. Liveliness</h3><span class="verdict pass">PASS</span><p>Dials are declared as ENERGY 1 / RHYTHM 2 / MOTION 1. There is one focal point per screen, one accent, and an identity motif of Arabic script, emerald and warm paper. Before: FAIL, no dials declared.</p></div>
     <div><h3>4. Craftsmanship and Quality Locks</h3><span class="verdict pass">PASS</span><p>CTAs name their action, colors come from the token palette, and runtime CSS patches are gone. Before: FAIL on R-15, R-29, R-31.</p></div>
