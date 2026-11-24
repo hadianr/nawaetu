@@ -76,7 +76,7 @@ export function SirahQuranContextBanner({ surahId }: { surahId: number }) {
                 <div className="min-w-0 space-y-0.5">
                     <div className="flex items-center gap-2">
                         <span className={cn(
-                            "text-xs font-extrabold uppercase tracking-wider",
+                            "text-xs font-extrabold",
                             "text-[rgb(var(--color-primary-strong))]"
                         )}>
                             <span className="inline-flex items-center gap-1"><AppIcon name="scroll" size="xs" tone="primary" /> Konteks Sejarah (Sirah Nabawiyah)</span>

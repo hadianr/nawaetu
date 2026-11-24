@@ -220,7 +220,7 @@ export default function AudioCard({ t, muadzin, onMuadzinChange }: AudioCardProp
                         </div>
                         <div className="min-w-0">
                             <p className={cn(
-                                "text-xs uppercase tracking-wider font-bold mb-0.5",
+                                "text-xs font-bold mb-0.5",
                                 "text-[rgb(var(--color-text-muted))]"
                             )}>{t.muadzinLabel}</p>
                             <p className={cn(

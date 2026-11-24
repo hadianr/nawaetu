@@ -62,7 +62,7 @@ export default function HomeHeader() {
         <header className="flex w-full items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
                 <p className={cn(
-                    "text-xs font-medium uppercase tracking-wider sm:text-sm",
+                    "text-xs font-medium sm:text-sm",
                     "text-[rgb(var(--color-primary-strong))]",
                 )}>
                     {greeting}
@@ -86,7 +86,7 @@ export default function HomeHeader() {
                     <NavigationIcon className={cn("h-3.5 w-3.5 shrink-0", data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary-strong))]")} />
                     {/* Below 389px the pill is icon-only so the user's name keeps its room; the label stays for screen readers. */}
                     <span className={cn(
-                        "sr-only truncate text-xs font-bold uppercase tracking-wider xs:not-sr-only",
+                        "sr-only truncate text-xs font-bold xs:not-sr-only",
                         data?.isDefaultLocation ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-primary-strong))]",
                     )}>
                         {locationLabel ? data?.isDefaultLocation ? t.homeSetLocationNow : locationLabel : t.hijriCalendarYourLocation}

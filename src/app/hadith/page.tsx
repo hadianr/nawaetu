@@ -233,7 +233,7 @@ const HadithCard = memo(function HadithCard({
                             "p-2.5 rounded-xl text-xs space-y-1 border",
                             "bg-[rgb(var(--color-primary))]/10 border-[rgb(var(--color-primary))]/20 text-[rgb(var(--color-text))]"
                         )}>
-                            <p className="font-bold flex items-center gap-1 text-xs uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                            <p className="font-bold flex items-center gap-1 text-xs text-[rgb(var(--color-primary-strong))]">
                                 <Lightbulb className="w-3 h-3" /> {t.hadithTadabburTitle || "Tadabbur Hadits"}
                             </p>
                             <p className="text-xs leading-relaxed">{(locale === "en" && item.explanationEn) ? item.explanationEn : item.explanation}</p>

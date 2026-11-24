@@ -38,7 +38,7 @@ export function PrayerConsistency({
                         </div>
                         <div>
                             <h2 className="font-bold text-sm text-[rgb(var(--color-text-strong))] tracking-tight leading-none mb-1">{t.stats.heatmap.title.split('(')[0].trim()}</h2>
-                            <p className="text-xs text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-tighter">
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] font-bold tracking-tighter">
                                 <span className="text-[rgb(var(--color-primary-strong))]">{totalCompleted}</span>/{maxPossible} {t.stats.heatmap.total}
                             </p>
                         </div>
@@ -140,7 +140,7 @@ export function PrayerConsistency({
                 </div>
                 <div className="flex items-center gap-2 bg-[rgb(var(--color-surface-subtle))] px-2.5 py-1.5 rounded-lg border border-[rgb(var(--color-border))]">
                     <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--color-primary))]" />
-                    <span className="font-bold uppercase tracking-tighter text-xs text-[rgb(var(--color-text))]">{t.stats.heatmap.completed}</span>
+                    <span className="font-bold tracking-tighter text-xs text-[rgb(var(--color-text))]">{t.stats.heatmap.completed}</span>
                 </div>
             </div>
         </div>

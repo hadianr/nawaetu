@@ -308,11 +308,11 @@ export default function StatsPage() {
 
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
-                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase mb-1">{t.stats.level.currentHasanah}</p>
+                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.stats.level.currentHasanah}</p>
                                             <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.hasanah.toLocaleString()}</p>
                                         </div>
                                         <div className="p-3 bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] rounded-2xl">
-                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase mb-1">{t.stats.level.nextLevelHasanah}</p>
+                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.stats.level.nextLevelHasanah}</p>
                                             <p className="text-sm font-bold text-[rgb(var(--color-text-strong))]">{playerStats.nextLevelHasanah.toLocaleString()}</p>
                                         </div>
                                     </div>

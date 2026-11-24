@@ -141,7 +141,7 @@ export default function BookmarkEditDialog({
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
                             <div className="h-1 w-1 rounded-full bg-[rgb(var(--color-primary))]" />
-                            <span className="text-xs font-medium tracking-wider text-[rgb(var(--color-primary-strong))] uppercase">
+                            <span className="text-xs font-medium text-[rgb(var(--color-primary-strong))]">
                                 QS. {bookmark.surahName}: {bookmark.verseId}
                             </span>
                         </div>

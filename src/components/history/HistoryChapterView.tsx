@@ -81,7 +81,7 @@ export function HistoryChapterView({ chapter, hadiths, prev, next }: Props) {
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
                     <div className="min-w-0">
-                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                        <p className="text-xs font-bold text-[rgb(var(--color-primary-strong))]">
                             {(t.historyChapterLabel || "Bab {order}").replace("{order}", String(chapter.order))}
                             {chapter.date && ` · ${formatHistoryDate(chapter.date, locale)}`}
                         </p>

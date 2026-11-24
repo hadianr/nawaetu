@@ -44,7 +44,7 @@ export function CategoryBreakdown({
                         <div className="flex items-center justify-between mb-1.5">
                             <div className="flex items-center gap-2">
                                 <AppIcon name={cat.icon} size="sm" tone="primary" />
-                                <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))] transition-colors uppercase tracking-wider">{cat.label}</span>
+                                <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] group-hover:text-[rgb(var(--color-text-strong))] transition-colors">{cat.label}</span>
                             </div>
                             <span className="text-xs font-bold text-[rgb(var(--color-text-strong))]">{cat.count}</span>
                         </div>

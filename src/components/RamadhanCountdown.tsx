@@ -275,7 +275,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="flex flex-col gap-1 z-10">
                                 <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                                     <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                                    <span className="text-xs font-bold uppercase tracking-wider">
+                                    <span className="text-xs font-bold">
                                         Ramadhan Hub
                                     </span>
                                 </div>
@@ -327,7 +327,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
                             <div className="flex flex-col gap-1.5 z-10 w-full">
                                 <div className={`flex items-center gap-2 ${styles.text} mb-1 transition-colors duration-500`}>
                                     <MoonIcon className={`w-4 h-4 ${styles.icon}`} />
-                                    <span className="text-xs font-bold uppercase tracking-wider">
+                                    <span className="text-xs font-bold">
                                         {t.ramadhanHeading}
                                     </span>
                                 </div>
@@ -341,7 +341,7 @@ export default function RamadhanCountdown({ initialDays = 0 }: Props) {
 
                             {/* Right: Progress Ring (Visual Only) or Minimal Bar */}
                             <div className="z-10 flex flex-col items-end gap-2">
-                                <div className={`text-xs font-bold uppercase tracking-wider ${styles.text} text-right flex items-center gap-1`}>
+                                <div className={`text-xs font-bold ${styles.text} text-right flex items-center gap-1`}>
                                     {getLevelTitle(progress)}
                                 </div>
                                 {/* Minimalist Bar */}

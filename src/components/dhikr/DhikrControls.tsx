@@ -88,7 +88,7 @@ export function DhikrControls({
                 )}
             >
                 <FeedbackIcon className="h-4 w-4" />
-                <span className="text-xs font-medium uppercase tracking-tighter">
+                <span className="text-xs font-medium tracking-tighter">
                     {feedbackMode === 'sound' ? t.tasbihSound : t.tasbihMute}
                 </span>
             </Button>

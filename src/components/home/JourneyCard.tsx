@@ -155,7 +155,7 @@ export default function JourneyCard() {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                        <h2 className="truncate text-xs font-semibold uppercase tracking-wider text-[rgb(var(--color-text))]">
+                        <h2 className="truncate text-xs font-semibold text-[rgb(var(--color-text))]">
                             {String(t.journeyTitle)}
                         </h2>
                         {/* Plain text, not a pill: it names the phase; it is not a button. */}

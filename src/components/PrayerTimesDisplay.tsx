@@ -119,7 +119,7 @@ export default function PrayerTimesDisplay() {
                             <Navigation className="w-5 h-5 fill-current" />
                         </div>
                         <div className="flex-1">
-                            <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-warning))]">{t.homeLocationDefaultTitle}</p>
+                            <p className="text-xs font-bold text-[rgb(var(--color-warning))]">{t.homeLocationDefaultTitle}</p>
                             <p className="text-xs leading-tight mt-0.5 font-bold text-[rgb(var(--color-warning))]">
                                 {t.homeLocationDefaultDesc}
                             </p>
@@ -138,7 +138,7 @@ export default function PrayerTimesDisplay() {
                     )}>
                         <div className="min-w-0">
                             <div className={cn(
-                                "flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider",
+                                "flex items-center gap-1.5 text-xs font-bold",
                                 "text-[rgb(var(--color-primary-strong))]",
                             )}>
                                 <Clock className="h-3 w-3" />
@@ -167,7 +167,7 @@ export default function PrayerTimesDisplay() {
                 "bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))] flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2.5",
                 "border-[rgb(var(--color-border))]",
             )}>
-                <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">
+                <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">
                     {t.homeQuickAccessTitle}
                 </span>
                 <div className="grid w-full grid-cols-4 gap-1.5 sm:gap-2">
@@ -179,7 +179,7 @@ export default function PrayerTimesDisplay() {
                         )}
                     >
                         <CalendarDays className="h-3.5 w-3.5 shrink-0 text-[rgb(var(--color-primary-strong))]" />
-                        <span className="truncate text-xs font-bold uppercase tracking-tight">{t.homeQuickHijri}</span>
+                        <span className="truncate text-xs font-bold tracking-tight">{t.homeQuickHijri}</span>
                     </Link>
                     <Link
                         href="/qibla"
@@ -189,7 +189,7 @@ export default function PrayerTimesDisplay() {
                         )}
                     >
                         <AppIcon name="compass" size="xs" tone="primary" />
-                        <span className="text-xs font-bold uppercase tracking-wider">{t.homeQiblaLabel}</span>
+                        <span className="text-xs font-bold">{t.homeQiblaLabel}</span>
                     </Link>
                     <button
                         onClick={() => setShowMosqueFinder(true)}
@@ -200,7 +200,7 @@ export default function PrayerTimesDisplay() {
                         )}
                     >
                         <MapPin className="h-3 w-3 text-[rgb(var(--color-primary-strong))]" />
-                        <span className="truncate text-xs font-bold uppercase tracking-tight">{t.homeQuickMosque}</span>
+                        <span className="truncate text-xs font-bold tracking-tight">{t.homeQuickMosque}</span>
                     </button>
                     <Link
                         href="/mentor-ai"
@@ -212,7 +212,7 @@ export default function PrayerTimesDisplay() {
                         )}
                     >
                         <AppIcon name="message" size="xs" tone="primary" />
-                        <span className="truncate text-xs font-bold uppercase tracking-tight">{t.homeQuickAi}</span>
+                        <span className="truncate text-xs font-bold tracking-tight">{t.homeQuickAi}</span>
                     </Link>
                 </div>
             </div>

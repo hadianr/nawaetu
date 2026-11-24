@@ -69,7 +69,7 @@ export default function SirahHistoryPage() {
                                 </span>
                                 <span className="min-w-0 flex-1">
                                     {chapter.date && (
-                                        <span className="block text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+                                        <span className="block text-xs font-bold text-[rgb(var(--color-primary-strong))]">
                                             {formatHistoryDate(chapter.date, locale)}
                                         </span>
                                     )}

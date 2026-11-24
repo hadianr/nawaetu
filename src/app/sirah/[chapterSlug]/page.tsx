@@ -77,7 +77,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
                 )}
             >
                 <span className={cn(
-                    "text-xs font-bold uppercase tracking-wider",
+                    "text-xs font-bold",
                     "text-[rgb(var(--color-primary-strong))]"
                 )}>
                     {t.sirahChapterOf.replace("{order}", String(chapter.orderIndex)).replace("{total}", String(SIRAH_CHAPTERS.length))}
@@ -109,7 +109,7 @@ export default function SirahChapterDetailPage({ params }: { params: Promise<{ c
             {/* Subchapters List */}
             <div className="space-y-3">
                 <h2 className={cn(
-                    "text-xs font-bold uppercase tracking-wider",
+                    "text-xs font-bold",
                     "text-[rgb(var(--color-text-muted))]"
                 )}>
                     {t.sirahSectionListTitle.replace("{count}", String(sections.length))}

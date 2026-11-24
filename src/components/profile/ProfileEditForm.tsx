@@ -48,7 +48,7 @@ export function ProfileEditForm({
     return (
         <div className="space-y-4 mb-2 pr-2">
             <div className="space-y-1.5">
-                <Label className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{translations.profileNameLabel}</Label>
+                <Label className="text-xs text-[rgb(var(--color-text-muted))]">{translations.profileNameLabel}</Label>
                 <Input
                     type="text"
                     value={editName}
@@ -61,7 +61,7 @@ export function ProfileEditForm({
             </div>
 
             <div className="space-y-1.5">
-                <Label className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{translations.profileGenderLabel}</Label>
+                <Label className="text-xs text-[rgb(var(--color-text-muted))]">{translations.profileGenderLabel}</Label>
                 <div className="grid grid-cols-2 gap-2">
                     <button
                         onClick={() => setEditGender('male')}

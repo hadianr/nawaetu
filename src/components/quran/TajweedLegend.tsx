@@ -122,7 +122,7 @@ export default function TajweedLegend() {
                                 <div className={cn("w-3 h-3 rounded-full mt-1.5 shrink-0", rule.color)} />
                                 <div>
                                     <h4 className="text-sm font-bold leading-none mb-1 text-[rgb(var(--color-text-strong))]">{rule.name}</h4>
-                                    <p className="text-xs font-medium mb-0.5 uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{rule.desc}</p>
+                                    <p className="text-xs font-medium mb-0.5 text-[rgb(var(--color-text-muted))]">{rule.desc}</p>
                                     <p className="text-xs text-[rgb(var(--color-primary-strong))] italic">{rule.instruction}</p>
                                 </div>
                             </div>

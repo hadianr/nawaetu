@@ -78,7 +78,7 @@ const pageHref = (prefix: string, ref: Pick<ConcisePageRef, "section" | "number"
 
 function NoteLabel({ children }: { children: React.ReactNode }) {
     return (
-        <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-strong))]">
+        <p className="flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--color-primary-strong))]">
             {children}
         </p>
     );

@@ -168,12 +168,12 @@ export default function JournalPage() {
                             <div className="rounded-2xl border p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-[var(--shadow-card)] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
                                 <ScrollText className="w-4 h-4 mb-1 text-[rgb(var(--color-primary-strong))]" />
                                 <span className="text-lg font-bold mb-0.5 text-[rgb(var(--color-text-strong))]">{stats.total_intentions}</span>
-                                <span className="text-xs uppercase tracking-wider font-bold text-[rgb(var(--color-text-muted))]">{t.intention_stat_total}</span>
+                                <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.intention_stat_total}</span>
                             </div>
                             <div className="rounded-2xl border p-3 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-[var(--shadow-card)] bg-[rgb(var(--color-surface))] border-[rgb(var(--color-border))]">
                                 <Star className="w-4 h-4 mb-1 text-[rgb(var(--color-primary-strong))]" />
                                 <span className="text-lg font-bold mb-0.5 text-[rgb(var(--color-text-strong))]">{stats.reflection_rate}%</span>
-                                <span className="text-xs uppercase tracking-wider font-bold text-[rgb(var(--color-text-muted))]">{t.intention_refleksi_btn}</span>
+                                <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.intention_refleksi_btn}</span>
                             </div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ export default function JournalPage() {
 
                 {/* Timeline */}
                 <div className="space-y-4">
-                    <h2 className="text-sm font-bold uppercase tracking-wider pl-1 text-[rgb(var(--color-text-muted))]">{t.intention_history_journey}</h2>
+                    <h2 className="text-sm font-bold pl-1 text-[rgb(var(--color-text-muted))]">{t.intention_history_journey}</h2>
 
                     {isLoading && intentions.length === 0 ? (
                         // Loading Skeletons
@@ -218,13 +218,13 @@ export default function JournalPage() {
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-1.5 text-xs text-[rgb(var(--color-text-muted))]">
                                                 <Calendar className="w-3 h-3" />
-                                                <span className="font-bold uppercase tracking-wider">{formatDate(intention.intention_date)}</span>
+                                                <span className="font-bold">{formatDate(intention.intention_date)}</span>
                                             </div>
                                             {intention.reflection_rating && (
                                                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[rgb(var(--color-primary-light))]/20">
                                                     <AppIcon name={getRatingIcon(intention.reflection_rating)} size="sm" tone="primary" />
                                                     <span className={cn(
-                                                        "text-xs font-bold uppercase",
+                                                        "text-xs font-bold",
                                                         intention.reflection_rating >= 4 ? "text-[rgb(var(--color-primary-strong))]" :
                                                             intention.reflection_rating === 3 ? "text-[rgb(var(--color-warning))]" : "text-[rgb(var(--color-danger))]"
                                                     )}>
@@ -251,7 +251,7 @@ export default function JournalPage() {
                                                     </div>
                                                     <div className="flex-1">
                                                         <div className="flex items-center justify-between mb-1">
-                                                            <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{t.intention_reflection_note}</p>
+                                                            <p className="text-xs font-bold text-[rgb(var(--color-text-muted))]">{t.intention_reflection_note}</p>
                                                             <p className="text-xs font-medium italic text-[rgb(var(--color-text-muted))]">{formatTime(intention.reflected_at)}</p>
                                                         </div>
                                                         <p className="text-sm leading-relaxed font-serif text-[rgb(var(--color-text))]">{intention.reflection_text}</p>

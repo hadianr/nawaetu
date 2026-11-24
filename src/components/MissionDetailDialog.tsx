@@ -261,7 +261,7 @@ export default function MissionDetailDialog({
                                         {/* If Readings Exist (Dzikir/Doa) */}
                                         {content.readings && content.readings.length > 0 && (
                                             <div className="space-y-4">
-                                                <div className="flex items-center justify-between text-xs uppercase tracking-wider font-bold text-[rgb(var(--color-text-muted))]">
+                                                <div className="flex items-center justify-between text-xs font-bold text-[rgb(var(--color-text-muted))]">
                                                     <span>{(t as TranslationTree).mission_dialog_reading_of.replace('{current}', String(readingIndex + 1)).replace('{total}', String(content.readings.length))}</span>
                                                     {currentReading?.note && (
                                                         <span className="font-bold text-[rgb(var(--color-primary-strong))]">{currentReading.note}</span>
@@ -553,7 +553,7 @@ export default function MissionDetailDialog({
                                         <Button
                                             variant="destructive"
                                             className={cn(
-                                                "flex-1 py-5 text-xs font-bold uppercase tracking-wider transition-all",
+                                                "flex-1 py-5 text-xs font-bold transition-all",
                                                 "bg-[rgb(var(--color-danger))] hover:bg-[rgb(var(--color-danger))]/90 text-[rgb(var(--color-primary-foreground))] shadow-sm"
                                             )}
                                             onClick={() => {
@@ -615,7 +615,7 @@ export default function MissionDetailDialog({
                                             )}
 
                                             <div className="flex flex-col items-center gap-0.5 z-10">
-                                                <span className="flex items-center gap-1.5 uppercase tracking-wider">
+                                                <span className="flex items-center gap-1.5">
                                                     {option.iconKey && <AppIcon name={option.iconKey} size="sm" tone={isHighReward ? "default" : "primary"} />}
                                                     {option.label}
                                                 </span>
@@ -636,7 +636,7 @@ export default function MissionDetailDialog({
                                 onClick={() => onComplete(mission.hasanahReward)}
                             >
                                 {isLate ? <Check className="w-5 h-5 mr-2" /> : <Check className="w-5 h-5 mr-2" />}
-                                <span className="uppercase tracking-wider">
+                                <span className="">
                                     {isLate ? t.home_mission_complete_late : t.home_mission_complete} (+{mission.hasanahReward} Hasanah)
                                 </span>
                             </Button>

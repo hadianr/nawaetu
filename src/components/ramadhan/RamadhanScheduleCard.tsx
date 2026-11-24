@@ -108,7 +108,7 @@ export default function RamadhanScheduleCard() {
             {/* Countdown */}
             {countdownMs > 0 ? (
                 <div className="mx-3 mb-2 rounded-2xl bg-[rgb(var(--color-surface-subtle))] border border-[rgb(var(--color-border))] px-3 py-2 sm:mx-4 sm:mb-3 sm:px-4 sm:py-3 text-center shadow-[var(--shadow-card)]">
-                    <p className="text-xs sm:text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1.5 sm:mb-2">{countdownLabel}</p>
+                    <p className="text-xs sm:text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1.5 sm:mb-2">{countdownLabel}</p>
                     <p className="text-2xl sm:text-3xl tabular-nums font-bold" style={countdownStyle}>
                         {formatCountdown(countdownMs)}
                     </p>
@@ -139,11 +139,11 @@ export default function RamadhanScheduleCard() {
             <div className="border-t border-[rgb(var(--color-border))] px-3 py-2 sm:px-4 sm:py-2.5">
                 <div className="space-y-2">
                     <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1">{t.scheduleSuhoorDua}</p>
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.scheduleSuhoorDua}</p>
                         <IntentionCard intention={SUHOOR_PRAYER} variant="pill" />
                     </div>
                     <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1">{t.scheduleIftarDua}</p>
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-1">{t.scheduleIftarDua}</p>
                         <div className="space-y-1">
                             <IntentionCard intention={IFTAR_PRAYER} variant="pill" />
                             <IntentionCard intention={IFTAR_PRAYER_2} variant="pill" />

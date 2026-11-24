@@ -338,7 +338,7 @@ export default function DhikrCounter() {
                                                 }}
                                                 className="flex-[1.5] bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-strong))] text-[rgb(var(--color-primary-foreground))] font-bold h-11 rounded-xl flex flex-col items-center justify-center p-0"
                                             >
-                                                <span className="text-xs opacity-70 uppercase tracking-wider mb-0.5">{t.tasbihNextUp}</span>
+                                                <span className="text-xs opacity-70 mb-0.5">{t.tasbihNextUp}</span>
                                                 <span className="text-xs">{nextZikir.label}</span>
                                             </Button>
                                             <Button
@@ -361,7 +361,7 @@ export default function DhikrCounter() {
                                                 className="flex-1 bg-[rgb(var(--color-surface-subtle))] hover:bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-text-muted))] border border-[rgb(var(--color-border))] h-11 rounded-xl flex flex-row items-center justify-center gap-1.5 px-3"
                                             >
                                                 <RotateCcw className="h-3 w-3 opacity-70" />
-                                                <span className="text-xs font-bold uppercase tracking-wider">{t.tasbihRepeat}</span>
+                                                <span className="text-xs font-bold">{t.tasbihRepeat}</span>
                                             </Button>
                                         </>
                                     ) : (

@@ -310,7 +310,7 @@ export default function PrayerCheckInWidget() {
                 <div className="flex items-center justify-between mb-2 relative z-10 gap-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                         <AppIcon name="landmark" size="sm" tone="primary" />
-                        <p className="truncate text-xs font-bold uppercase tracking-tight">
+                        <p className="truncate text-xs font-bold tracking-tight">
                             {isBackdated ? t.homePrayerCheckInHistoryTitle : t.homePrayerCheckInSectionTitle}
                         </p>
                     </div>
@@ -331,7 +331,7 @@ export default function PrayerCheckInWidget() {
                             className="relative min-h-11 min-w-11 shrink-0 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg hover:bg-[rgb(var(--color-primary))]/10 transition-colors cursor-pointer touch-manipulation group/date"
                         >
                             <Calendar className="w-3 h-3 text-[rgb(var(--color-text-muted))] transition-colors" />
-                            <span className="text-xs font-bold uppercase text-[rgb(var(--color-text-muted))] transition-colors">
+                            <span className="text-xs font-bold text-[rgb(var(--color-text-muted))] transition-colors">
                                 {new Date(selectedDate).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
                                     day: '2-digit',
                                     month: 'short',
@@ -485,7 +485,7 @@ export default function PrayerCheckInWidget() {
                     >
                         <div className="flex items-center gap-1.5">
                             <Sparkles className="w-3 h-3" />
-                            <span className="text-xs font-bold uppercase tracking-wider">
+                            <span className="text-xs font-bold">
                                 {t.sunnah_prayer_section_title || "Sunnah Prayers"}
                             </span>
                         </div>
@@ -632,7 +632,7 @@ export default function PrayerCheckInWidget() {
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                     <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
-                                    <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))] relative">
+                                    <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">
                                         {locale === "id" ? "Berjamaah di Masjid" : "Congregation (Mosque)"}
                                     </span>
                                     <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">
@@ -653,7 +653,7 @@ export default function PrayerCheckInWidget() {
                                         )}
                                     >
                                         <AppIcon name="home" size="lg" tone="primary" className="group-active:scale-110 transition-transform" />
-                                        <span className="text-xs font-bold uppercase tracking-wider">{t.homePrayerCheckInOptionSolo}</span>
+                                        <span className="text-xs font-bold">{t.homePrayerCheckInOptionSolo}</span>
                                         <span className="text-xs font-bold text-[rgb(var(--color-text-muted))]">+{getHasanahReward(25)} Hasanah</span>
                                     </button>
 
@@ -670,7 +670,7 @@ export default function PrayerCheckInWidget() {
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
                                         <AppIcon name="landmark" size="lg" tone="default" className="relative group-active:scale-110 transition-transform" />
-                                        <span className="text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
+                                        <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">{t.homePrayerCheckInOptionJamaah}</span>
                                         <span className="text-xs font-bold text-[rgb(var(--color-primary-foreground))] relative">+{getHasanahReward(75)} Hasanah</span>
                                     </button>
                                 </>

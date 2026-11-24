@@ -159,7 +159,7 @@ export default function FastingDayModal({
 
                     {/* Status Picker — More compact grid */}
                     <div>
-                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-2">
                             {t.fastingDayModalStatusLabel}
                         </p>
                         <div className="grid grid-cols-4 gap-1.5">
@@ -222,7 +222,7 @@ export default function FastingDayModal({
                     {/* Consequence Preview */}
                     <div className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 ${consequenceBg}`}>
                         <span className="text-[rgb(var(--color-text-muted))] text-xs font-medium">{t.fastingDayModalRuling}</span>
-                        <span className={`text-xs font-bold uppercase tracking-wider ${consequenceColor}`}>
+                        <span className={`text-xs font-bold ${consequenceColor}`}>
                             {consequenceLabel}
                         </span>
                     </div>
@@ -230,7 +230,7 @@ export default function FastingDayModal({
                     {/* Dalil + Translation */}
                     {selectedStatus !== "fasting" && statusMeta && (
                         <div className="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-subtle))] px-4 py-4 space-y-2.5">
-                            <p className="text-xs text-[rgb(var(--color-text-muted))] font-bold uppercase tracking-wider">
+                            <p className="text-xs text-[rgb(var(--color-text-muted))] font-bold">
                                 {t.fastingDayModalDalilLabel}
                             </p>
                             <p className="text-[12px] text-[rgb(var(--color-primary-light,var(--color-primary)))] font-semibold leading-relaxed">
@@ -246,7 +246,7 @@ export default function FastingDayModal({
 
                     {/* Note */}
                     <div>
-                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] uppercase tracking-wider mb-2">
+                        <p className="text-xs font-bold text-[rgb(var(--color-text-muted))] mb-2">
                             {t.fastingDayModalNoteLabel}
                         </p>
                         <textarea

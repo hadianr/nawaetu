@@ -146,13 +146,13 @@ export default function DalilBadge({ dalil, variant = "inline", label }: DalilBa
                     )}
 
                     <div className="rounded-xl border border-[rgb(var(--color-border))]/20 bg-[rgb(var(--color-surface-subtle))] p-4">
-                        <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-[rgb(var(--color-text-muted))]">{String(t.evidenceTranslation)}</p>
+                        <p className="mb-1.5 text-xs font-bold text-[rgb(var(--color-text-muted))]">{String(t.evidenceTranslation)}</p>
                         <DialogDescription className="text-[15px] leading-relaxed text-[rgb(var(--color-text))]">
                             &ldquo;{localizedTranslation}&rdquo;
                         </DialogDescription>
                     </div>
 
-                    <p className="text-xs font-medium uppercase leading-relaxed tracking-wider text-[rgb(var(--color-text-muted))]">
+                    <p className="text-xs font-medium leading-relaxed text-[rgb(var(--color-text-muted))]">
                         {localizedSource}
                     </p>
 
